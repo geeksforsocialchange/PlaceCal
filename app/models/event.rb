@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-  has_and_belongs_to_many :organizations
+  has_and_belongs_to_many :partners
 
-  belongs_to :venue
+  belongs_to :place
 end

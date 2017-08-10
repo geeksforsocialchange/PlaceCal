@@ -15,15 +15,31 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "addresses", force: :cascade do |t|
+    t.string  "street_address"
+    t.string  "street_address2"
+    t.string  "street_address3"
+    t.string  "city"
+    t.string  "postcode"
+    t.float   "latitude"
+    t.float   "longitude"
+    t.string  "addressable_type"
+    t.integer "addressable_id"
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id", using: :btree
+  end
+
   create_table "calendars", force: :cascade do |t|
-    t.integer  "partner_id"
     t.string   "name"
     t.string   "feed_url"
     t.string   "region"
     t.string   "type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "last_import_at"
+    t.integer  "partner_id"
+    t.integer  "place_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.index ["partner_id"], name: "index_calendars_on_partner_id", using: :btree
+    t.index ["place_id"], name: "index_calendars_on_place_id", using: :btree
   end
 
   create_table "events", force: :cascade do |t|
@@ -33,6 +49,7 @@ ActiveRecord::Schema.define(version: 20170726032515) do
     t.datetime "dtend"
     t.text     "summary"
     t.text     "description"
+    t.text     "location"
     t.text     "rrule"
     t.boolean  "is_active",   default: false, null: false
     t.datetime "created_at",                  null: false
@@ -41,19 +58,10 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   end
 
   create_table "events_partners", force: :cascade do |t|
-    t.integer "events_id"
-    t.integer "partners_id"
-    t.index ["events_id"], name: "index_events_partners_on_events_id", using: :btree
-    t.index ["partners_id"], name: "index_events_partners_on_partners_id", using: :btree
-  end
-
-  create_table "locations", force: :cascade do |t|
-    t.string  "locationable_type"
-    t.integer "locationable_id"
-    t.integer "places_id"
-    t.boolean "default",           default: true, null: false
-    t.index ["locationable_type", "locationable_id"], name: "index_locations_on_locationable_type_and_locationable_id", using: :btree
-    t.index ["places_id"], name: "index_locations_on_places_id", using: :btree
+    t.integer "event_id"
+    t.integer "partner_id"
+    t.index ["event_id"], name: "index_events_partners_on_event_id", using: :btree
+    t.index ["partner_id"], name: "index_events_partners_on_partner_id", using: :btree
   end
 
   create_table "partners", force: :cascade do |t|
@@ -66,6 +74,13 @@ ActiveRecord::Schema.define(version: 20170726032515) do
     t.datetime "updated_at",  null: false
   end
 
+  create_table "partners_places", force: :cascade do |t|
+    t.integer "partner_id"
+    t.integer "place_id"
+    t.index ["partner_id"], name: "index_partners_places_on_partner_id", using: :btree
+    t.index ["place_id"], name: "index_partners_places_on_place_id", using: :btree
+  end
+
   create_table "partners_users", force: :cascade do |t|
     t.integer "partner_id"
     t.integer "user_id"
@@ -76,15 +91,8 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   create_table "places", force: :cascade do |t|
     t.string   "name"
     t.string   "status"
-    t.string   "street_address"
-    t.string   "street_address2"
-    t.string   "street_address3"
-    t.string   "city"
-    t.string   "postcode"
     t.jsonb    "hours"
     t.text     "accessibility_info"
-    t.float    "latitude"
-    t.float    "longitude"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end
@@ -110,10 +118,12 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   end
 
   add_foreign_key "calendars", "partners"
+  add_foreign_key "calendars", "places"
   add_foreign_key "events", "places"
-  add_foreign_key "events_partners", "events", column: "events_id"
-  add_foreign_key "events_partners", "partners", column: "partners_id"
-  add_foreign_key "locations", "places", column: "places_id"
+  add_foreign_key "events_partners", "events"
+  add_foreign_key "events_partners", "partners"
+  add_foreign_key "partners_places", "partners"
+  add_foreign_key "partners_places", "places"
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
 end
