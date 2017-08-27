@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20170726032515) do
     t.string   "name"
     t.string   "status"
     t.string   "logo"
+    t.string   "phone"
     t.jsonb    "opening_times"
     t.text     "short_description"
     t.text     "booking_info"
