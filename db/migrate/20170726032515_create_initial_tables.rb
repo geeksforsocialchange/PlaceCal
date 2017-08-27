@@ -2,10 +2,12 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
   def change
     create_table :partners do |t|
       t.string :name
-      t.text :description
-      t.string :region
       t.string :logo
-      t.text :hire_info
+      t.string :public_phone
+      t.string :public_email
+      t.string :admin_name
+      t.string :admin_email
+      t.text :short_description
 
       t.timestamps null: false
     end
@@ -27,7 +29,10 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
     create_table :places do |t|
       t.string :name
       t.string :status
-      t.jsonb :hours
+      t.string :logo
+      t.jsonb :opening_times
+      t.text :short_description
+      t.text :booking_info
       t.text :accessibility_info
 
       t.timestamps null: false
@@ -49,8 +54,7 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
 
     create_table :calendars do |t|
       t.string :name
-      t.string :feed_url
-      t.string :region
+      t.string :source
       t.string :type
       t.timestamp :last_import_at
       t.references :partner, foreign_key: true

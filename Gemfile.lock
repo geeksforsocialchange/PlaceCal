@@ -43,6 +43,10 @@ GEM
     bindex (0.5.0)
     builder (3.2.3)
     byebug (9.0.6)
+    carrierwave (1.0.0)
+      activemodel (>= 4.0.0)
+      activesupport (>= 4.0.0)
+      mime-types (>= 1.16)
     choice (0.2.0)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -58,6 +62,8 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
+    enumerize (2.1.2)
+      activesupport (>= 3.2)
     erubis (2.7.0)
     execjs (2.7.0)
     ffi (1.9.18)
@@ -180,8 +186,10 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  carrierwave
   coffee-rails (~> 4.2)
   devise
+  enumerize
   geocoder
   icalendar
   jbuilder (~> 2.5)
