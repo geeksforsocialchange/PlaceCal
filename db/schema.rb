@@ -16,22 +16,19 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   enable_extension "plpgsql"
 
   create_table "addresses", force: :cascade do |t|
-    t.string  "street_address"
-    t.string  "street_address2"
-    t.string  "street_address3"
-    t.string  "city"
-    t.string  "postcode"
-    t.float   "latitude"
-    t.float   "longitude"
-    t.string  "addressable_type"
-    t.integer "addressable_id"
-    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id", using: :btree
+    t.string "street_address"
+    t.string "street_address2"
+    t.string "street_address3"
+    t.string "city"
+    t.string "postcode"
+    t.string "country_code",    default: "UK"
+    t.float  "latitude"
+    t.float  "longitude"
   end
 
   create_table "calendars", force: :cascade do |t|
     t.string   "name"
-    t.string   "feed_url"
-    t.string   "region"
+    t.string   "source"
     t.string   "type"
     t.datetime "last_import_at"
     t.integer  "partner_id"
@@ -66,12 +63,16 @@ ActiveRecord::Schema.define(version: 20170726032515) do
 
   create_table "partners", force: :cascade do |t|
     t.string   "name"
-    t.text     "description"
-    t.string   "region"
     t.string   "logo"
-    t.text     "hire_info"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string   "public_phone"
+    t.string   "public_email"
+    t.string   "admin_name"
+    t.string   "admin_email"
+    t.text     "short_description"
+    t.integer  "address_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["address_id"], name: "index_partners_on_address_id", using: :btree
   end
 
   create_table "partners_places", force: :cascade do |t|
@@ -91,16 +92,22 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   create_table "places", force: :cascade do |t|
     t.string   "name"
     t.string   "status"
-    t.jsonb    "hours"
+    t.string   "logo"
+    t.jsonb    "opening_times"
+    t.text     "short_description"
+    t.text     "booking_info"
     t.text     "accessibility_info"
+    t.integer  "address_id"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.index ["address_id"], name: "index_places_on_address_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
     t.string   "first_name"
     t.string   "last_name"
     t.string   "role"
+    t.string   "phone"
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
@@ -122,8 +129,10 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   add_foreign_key "events", "places"
   add_foreign_key "events_partners", "events"
   add_foreign_key "events_partners", "partners"
+  add_foreign_key "partners", "addresses"
   add_foreign_key "partners_places", "partners"
   add_foreign_key "partners_places", "places"
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
+  add_foreign_key "places", "addresses"
 end

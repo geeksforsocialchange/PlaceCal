@@ -1,5 +1,18 @@
 class CreateInitialTables < ActiveRecord::Migration[5.0]
   def change
+    create_table :addresses do |t|
+      t.string :street_address
+      t.string :street_address2
+      t.string :street_address3
+      t.string :city
+      t.string :postcode
+      t.string :country_code, default: 'UK'
+
+      #for geocoder
+      t.float :latitude
+      t.float :longitude
+    end
+
     create_table :partners do |t|
       t.string :name
       t.string :logo
@@ -8,32 +21,22 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
       t.string :admin_name
       t.string :admin_email
       t.text :short_description
+      t.references :address, foreign_key: true
 
       t.timestamps null: false
-    end
-
-    create_table :addresses do |t|
-      t.string :street_address
-      t.string :street_address2
-      t.string :street_address3
-      t.string :city
-      t.string :postcode
-
-      #for geocoder
-      t.float :latitude
-      t.float :longitude
-
-      t.references :addressable, polymorphic: true, index: true
     end
 
     create_table :places do |t|
       t.string :name
       t.string :status
       t.string :logo
+      t.string :phone
       t.jsonb :opening_times
       t.text :short_description
       t.text :booking_info
       t.text :accessibility_info
+
+      t.references :address, foreign_key: true
 
       t.timestamps null: false
     end
