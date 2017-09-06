@@ -19,7 +19,7 @@ def import_events_from_source(calendar_id)
   calendar.import_events
   rescue => e
     puts e
-    ap e.backtrace.join('\n\n')
+    puts e.backtrace
     return
   end
 end

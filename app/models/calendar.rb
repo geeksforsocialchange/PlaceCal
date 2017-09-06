@@ -26,7 +26,6 @@ class Calendar < ApplicationRecord
         event.update_attributes!(attributes.except(:uid))
       else
         event = self.events.new(attributes)
-        puts event.inspect
         event.save!
       end
     end
