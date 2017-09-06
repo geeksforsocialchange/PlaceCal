@@ -41,27 +41,31 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
       t.timestamps null: false
     end
 
-    create_table :events do |t|
-      t.references :place, foreign_key: true
-      t.string :uid
-      t.datetime :dtstart
-      t.datetime :dtend
-      t.text :summary
-      t.text :description
-      t.text :location
-      t.text :rrule
-      t.boolean :is_active, default: false, null: false
-
-      t.timestamps null: false
-    end
-
     create_table :calendars do |t|
       t.string :name
       t.string :source
       t.string :type
+      t.jsonb :notices
       t.timestamp :last_import_at
       t.references :partner, foreign_key: true
       t.references :place, foreign_key: true
+
+      t.timestamps null: false
+    end
+
+    create_table :events do |t|
+      t.references :place, foreign_key: true
+      t.references :calendar, foreign_key: true
+      t.string :uid
+      t.text :summary
+      t.text :description
+      t.text :location
+      t.jsonb :rrule
+      t.jsonb :notices
+      t.boolean :is_active, default: true, null: false
+      t.datetime :deleted_at, index: true
+      t.datetime :dtstart
+      t.datetime :dtend
 
       t.timestamps null: false
     end

@@ -7,6 +7,6 @@ class Address < ApplicationRecord
 
 
   def full_address
-    [ :street_address, :street_address2, :street_address3, :city, :postcode, :country_code].join(', ')
+    [ street_address, street_address2, street_address3, city, postcode, country_code].reject(&:blank?).join(', ')
   end
 end
