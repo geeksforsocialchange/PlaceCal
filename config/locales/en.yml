@@ -20,4 +20,11 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  enumerize:
+    calendar:
+      type:
+        facebook: 'Facebook'
+        google: 'Google'
+        outlook: 'Outlook'
+        mac_calendar: 'Mac Calendar'
+        other: 'Other'
