@@ -15,118 +15,125 @@ ActiveRecord::Schema.define(version: 20170726032515) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "addresses", force: :cascade do |t|
+  create_table "addresses", id: :serial, force: :cascade do |t|
     t.string "street_address"
     t.string "street_address2"
     t.string "street_address3"
     t.string "city"
     t.string "postcode"
-    t.string "country_code",    default: "UK"
-    t.float  "latitude"
-    t.float  "longitude"
+    t.string "country_code", default: "UK"
+    t.float "latitude"
+    t.float "longitude"
   end
 
-  create_table "calendars", force: :cascade do |t|
-    t.string   "name"
-    t.string   "source"
-    t.string   "type"
+  create_table "calendars", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.string "source"
+    t.string "type"
+    t.jsonb "notices"
     t.datetime "last_import_at"
-    t.integer  "partner_id"
-    t.integer  "place_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.index ["partner_id"], name: "index_calendars_on_partner_id", using: :btree
-    t.index ["place_id"], name: "index_calendars_on_place_id", using: :btree
-  end
-
-  create_table "events", force: :cascade do |t|
-    t.integer  "place_id"
-    t.string   "uid"
-    t.datetime "dtstart"
-    t.datetime "dtend"
-    t.text     "summary"
-    t.text     "description"
-    t.text     "location"
-    t.text     "rrule"
-    t.boolean  "is_active",   default: false, null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.index ["place_id"], name: "index_events_on_place_id", using: :btree
-  end
-
-  create_table "events_partners", force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "partner_id"
-    t.index ["event_id"], name: "index_events_partners_on_event_id", using: :btree
-    t.index ["partner_id"], name: "index_events_partners_on_partner_id", using: :btree
-  end
-
-  create_table "partners", force: :cascade do |t|
-    t.string   "name"
-    t.string   "logo"
-    t.string   "public_phone"
-    t.string   "public_email"
-    t.string   "admin_name"
-    t.string   "admin_email"
-    t.text     "short_description"
-    t.integer  "address_id"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-    t.index ["address_id"], name: "index_partners_on_address_id", using: :btree
-  end
-
-  create_table "partners_places", force: :cascade do |t|
     t.integer "partner_id"
     t.integer "place_id"
-    t.index ["partner_id"], name: "index_partners_places_on_partner_id", using: :btree
-    t.index ["place_id"], name: "index_partners_places_on_place_id", using: :btree
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["partner_id"], name: "index_calendars_on_partner_id"
+    t.index ["place_id"], name: "index_calendars_on_place_id"
   end
 
-  create_table "partners_users", force: :cascade do |t|
+  create_table "events", id: :serial, force: :cascade do |t|
+    t.integer "place_id"
+    t.integer "calendar_id"
+    t.string "uid"
+    t.text "summary"
+    t.text "description"
+    t.text "location"
+    t.jsonb "rrule"
+    t.jsonb "notices"
+    t.boolean "is_active", default: true, null: false
+    t.datetime "deleted_at"
+    t.datetime "dtstart"
+    t.datetime "dtend"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["calendar_id"], name: "index_events_on_calendar_id"
+    t.index ["deleted_at"], name: "index_events_on_deleted_at"
+    t.index ["place_id"], name: "index_events_on_place_id"
+  end
+
+  create_table "events_partners", id: :serial, force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "partner_id"
+    t.index ["event_id"], name: "index_events_partners_on_event_id"
+    t.index ["partner_id"], name: "index_events_partners_on_partner_id"
+  end
+
+  create_table "partners", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.string "logo"
+    t.string "public_phone"
+    t.string "public_email"
+    t.string "admin_name"
+    t.string "admin_email"
+    t.text "short_description"
+    t.integer "address_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["address_id"], name: "index_partners_on_address_id"
+  end
+
+  create_table "partners_places", id: :serial, force: :cascade do |t|
+    t.integer "partner_id"
+    t.integer "place_id"
+    t.index ["partner_id"], name: "index_partners_places_on_partner_id"
+    t.index ["place_id"], name: "index_partners_places_on_place_id"
+  end
+
+  create_table "partners_users", id: :serial, force: :cascade do |t|
     t.integer "partner_id"
     t.integer "user_id"
-    t.index ["partner_id"], name: "index_partners_users_on_partner_id", using: :btree
-    t.index ["user_id"], name: "index_partners_users_on_user_id", using: :btree
+    t.index ["partner_id"], name: "index_partners_users_on_partner_id"
+    t.index ["user_id"], name: "index_partners_users_on_user_id"
   end
 
-  create_table "places", force: :cascade do |t|
-    t.string   "name"
-    t.string   "status"
-    t.string   "logo"
-    t.string   "phone"
-    t.jsonb    "opening_times"
-    t.text     "short_description"
-    t.text     "booking_info"
-    t.text     "accessibility_info"
-    t.integer  "address_id"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.index ["address_id"], name: "index_places_on_address_id", using: :btree
+  create_table "places", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.string "status"
+    t.string "logo"
+    t.string "phone"
+    t.jsonb "opening_times"
+    t.text "short_description"
+    t.text "booking_info"
+    t.text "accessibility_info"
+    t.integer "address_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["address_id"], name: "index_places_on_address_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "role"
-    t.string   "phone"
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
-    t.string   "reset_password_token"
+  create_table "users", id: :serial, force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "role"
+    t.string "phone"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.inet     "current_sign_in_ip"
-    t.inet     "last_sign_in_ip"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+    t.inet "current_sign_in_ip"
+    t.inet "last_sign_in_ip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "places"
+  add_foreign_key "events", "calendars"
   add_foreign_key "events", "places"
   add_foreign_key "events_partners", "events"
   add_foreign_key "events_partners", "partners"
