@@ -1,3 +1,4 @@
+ruby '2.4.1'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -24,6 +25,7 @@ gem 'virtus'
 gem 'koala'
 gem 'icalendar-recurrence'
 gem 'paranoia', '~> 2.2'
+gem 'listen', '~> 3.0.5'
 
 
 # Styleguide
@@ -41,7 +43,6 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.0.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
