@@ -25,6 +25,8 @@ gem 'koala'
 gem 'icalendar-recurrence'
 gem 'paranoia', '~> 2.2'
 
+gem 'mountain_view'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
