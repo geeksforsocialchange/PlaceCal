@@ -22,15 +22,19 @@
   <li><%= link_to "→", "/events/#{@next_day.year}/#{@next_day.month}/#{@next_day.day}" %></li>
 </ol>
 
-<ol class="events reset">
-  <% @events.each do |event| %>
-    <%= render_component "event", context: :day,
-                                  path: event_path(event),
-                                  place_path: place_path(event.place),
-                                  summary: event.summary,
-                                  dtstart: event.dtstart,
-                                  dtend: event.dtend,
-                                  place: event.place,
-                                  location: event.location %>
-  <% end %>
-</ol>
+<% if @events.any? %>
+  <ol class="events reset">
+    <% @events.each do |event| %>
+      <%= render_component "event", context: :day,
+                                    path: event_path(event),
+                                    place_path: place_path(event.place),
+                                    summary: event.summary,
+                                    dtstart: event.dtstart,
+                                    dtend: event.dtend,
+                                    place: event.place,
+                                    location: event.location %>
+    <% end %>
+  </ol>
+<% else %>
+  <p>No events today 😞</p>
+<% end %>

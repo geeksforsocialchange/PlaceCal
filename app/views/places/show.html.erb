@@ -1,6 +1,9 @@
 <p id="notice"><%= notice %></p>
 
 <h1><%= @place.name %></h1>
+<p><%= @place.address %></p>
+<p><%= @place.short_description %></p>
 
-<%= link_to 'Edit', edit_place_path(@place) %> |
-<%= link_to 'Back', places_path %>
+<p>Event listing coming soon.</p>
+
+<%= link_to 'Back to places', places_path %>
