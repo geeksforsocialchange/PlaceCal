@@ -4,4 +4,8 @@ class Place < ApplicationRecord
   has_many :calendars
 
   belongs_to :address
+
+  def to_s
+    name
+  end
 end

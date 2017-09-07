@@ -1,25 +1,36 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Events</h1>
+<h1><%= @current_day.strftime("%A %e %B, %Y") %></h1>
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<ol class="paginator paginator--day reset">
+  <li><%= link_to "←", "/events/#{@previous_day.year}/#{@previous_day.month}/#{@previous_day.day}" %></li>
+  <% (0..6).each do |i| %>
+    <% day = @current_day + i.day %>
+    <% day_fmt = day.strftime("%a %e %b") %>
+    <li>
+      <%= link_to "/events/#{day.year}/#{day.month}/#{day.day}" do %>
+        <% if day == @today %>
+          Today (<%= day_fmt %>)
+        <% elsif day == @today + 1.day %>
+          Tomorrow (<%= day_fmt %>)
+        <% else %>
+          <%= day_fmt %>
+        <% end %>
+      <% end %>
+    </li>
+  <% end %>
+  <li><%= link_to "→", "/events/#{@next_day.year}/#{@next_day.month}/#{@next_day.day}" %></li>
+</ol>
 
-  <tbody>
-    <% @events.each do |event| %>
-      <tr>
-        <td><%= link_to 'Show', event %></td>
-        <td><%= link_to 'Edit', edit_event_path(event) %></td>
-        <td><%= link_to 'Destroy', event, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Event', new_event_path %>
+<ol class="events reset">
+  <% @events.each do |event| %>
+    <%= render_component "event", context: :day,
+                                  path: event_path(event),
+                                  place_path: place_path(event.place),
+                                  summary: event.summary,
+                                  dtstart: event.dtstart,
+                                  dtend: event.dtend,
+                                  place: event.place,
+                                  location: event.location %>
+  <% end %>
+</ol>

@@ -2,24 +2,11 @@
 
 <h1>Partners</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @partners.each do |partner| %>
-      <tr>
-        <td><%= link_to 'Show', partner %></td>
-        <td><%= link_to 'Edit', edit_partner_path(partner) %></td>
-        <td><%= link_to 'Destroy', partner, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Partner', new_partner_path %>
+<ul class="partners reset">
+  <% @partners.each do |partner| %>
+    <li>
+      <h3><%= link_to partner.name, partner %></h3>
+      <p><%= partner.address %></p>
+    </li>
+  <% end %>
+</ul>

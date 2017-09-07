@@ -4,7 +4,7 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    @partners = Partner.all
+    @partners = Partner.order(:name)
   end
 
   # GET /partners/1
