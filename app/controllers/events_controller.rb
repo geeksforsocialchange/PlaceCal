@@ -4,7 +4,15 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.all
+    @today = Date.today
+    if params[:year] && params[:month] && params[:day]
+      @current_day = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    else
+      @current_day = @today
+    end
+    @next_day = @current_day + 1.day
+    @previous_day = @current_day - 1.day
+    @events = Event.find_by_day(@current_day)
   end
 
   # GET /events/1

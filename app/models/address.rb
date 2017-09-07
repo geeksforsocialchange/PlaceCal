@@ -6,7 +6,11 @@ class Address < ApplicationRecord
   after_validation :geocode
 
 
+
   def full_address
-    [ street_address, street_address2, street_address3, city, postcode, country_code].reject(&:blank?).join(', ')
+    [ street_address, street_address2, street_address3, city, postcode, country_code ].reject(&:blank?).join(', ')
   end
+
+  alias to_s full_address
+
 end

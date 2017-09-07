@@ -8,6 +8,8 @@ class Event < ApplicationRecord
 
   before_validation :set_place, if: Proc.new { |event| event.place_id.blank? }
 
+  scope :find_by_day, -> (day) { where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day).order(:dtstart) }
+
   class << self
     def handle_recurring_events(uid, imports, calendar_id)
       events = where('dtstart > ? AND uid = ?', Date.today, uid)
