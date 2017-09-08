@@ -4,7 +4,7 @@
 
 <ol class="paginator paginator--day reset">
   <li><%= link_to "← Previous Week", "/activities/#{@previous_week.year}/#{@previous_week.month}/#{@previous_week.day}" %></li>
-  <li><%= link_to "Next Week →", "/activities/#{@next_week.year}/#{@next_week.month}/#{@previous_week.day}" %></li>
+  <li><%= link_to "Next Week →", "/activities/#{@next_week.year}/#{@next_week.month}/#{@next_week.day}" %></li>
 </ol>
 
 <% if @events.any? %>
