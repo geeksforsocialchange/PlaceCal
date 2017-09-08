@@ -21,6 +21,18 @@ Rails.application.routes.draw do
   # Static pages
   get 'join', to: 'pages#join'
 
+  # Administration
+  namespace :admin do
+    resources :users
+    resources :addresses
+    resources :calendars
+    resources :events
+    resources :partners
+    resources :places
+
+    root to: "users#index"
+  end
+
   # Styleguide
   mount MountainView::Engine => "/styleguide"
 
