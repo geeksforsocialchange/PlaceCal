@@ -5,6 +5,8 @@ class Place < ApplicationRecord
 
   belongs_to :address
 
+  validates_presence_of :name
+
   def to_s
     name
   end

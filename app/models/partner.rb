@@ -5,4 +5,10 @@ class Partner < ApplicationRecord
 
   has_many :calendars
   belongs_to :address, required: false
+
+  validates_presence_of :name
+
+  def to_s
+    name
+  end
 end

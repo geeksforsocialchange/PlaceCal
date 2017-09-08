@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
-  # Users
-  devise_for :users
+  # Most common route at the top
+  root 'pages#home'
 
   # Core resources
   resources :partners
@@ -13,11 +13,25 @@ Rails.application.routes.draw do
     month:      /\d{1,2}/,
     day:        /\d{1,2}/
   }
+
+  # Users
+  devise_for :users
   resources :users
 
   # Static pages
   get 'join', to: 'pages#join'
-  root 'pages#home'
+
+  # Administration
+  namespace :admin do
+    resources :users
+    resources :addresses
+    resources :calendars
+    resources :events
+    resources :partners
+    resources :places
+
+    root to: "users#index"
+  end
 
   # Styleguide
   mount MountainView::Engine => "/styleguide"

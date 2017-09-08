@@ -5,10 +5,15 @@ class Calendar < ApplicationRecord
   belongs_to :place
   has_many :events
 
+  validates_presence_of :name
+
   extend Enumerize
 
   enumerize :type, in: [:facebook, :google, :outlook, :mac_calendar, :other], default: :other, scope: true
 
+  def to_s
+    name
+  end
 
   def import_events
     event_imports = type.facebook? ? Parsers::Facebook.new(source, last_import_at).events : Parsers::Ics.new(source).events
