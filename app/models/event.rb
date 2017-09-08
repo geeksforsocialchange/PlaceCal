@@ -3,14 +3,14 @@ class Event < ApplicationRecord
 
   has_and_belongs_to_many :partners
 
-  belongs_to :place
+  belongs_to :place, required: false
   belongs_to :calendar
 
-  before_validation :set_place, if: Proc.new { |event| event.place_id.blank? }
+  # before_validation :set_place, if: Proc.new { |event| event.place_id.blank? }
 
-  scope :find_by_day, -> (day) { where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day).order(:dtstart) }
+  scope :find_by_day, -> (day) { where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day).order(:dtstart).order(:dtend) }
 
-  scope :find_by_week, -> (week) { where('dtstart >= ? AND dtstart <= ?', week.midnight, week.midnight + 6.days).order(:summary) }
+  scope :find_by_week, -> (week) { where('dtstart >= ? AND dtstart <= ?', week.midnight, week.midnight + 6.days).order(:summary).order(:dtstart) }
 
   class << self
     def handle_recurring_events(uid, imports, calendar_id)

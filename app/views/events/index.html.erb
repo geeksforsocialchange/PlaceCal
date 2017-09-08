@@ -26,8 +26,9 @@
   <ol class="events reset">
     <% @events.each do |event| %>
       <%= render_component "event", context: :day,
+                                    id: event.id,
                                     path: event_path(event),
-                                    place_path: place_path(event.place),
+                                    place: event.place,
                                     summary: event.summary,
                                     dtstart: event.dtstart,
                                     dtend: event.dtend,

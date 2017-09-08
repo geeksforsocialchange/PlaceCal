@@ -2,14 +2,20 @@ class Calendar < ApplicationRecord
   self.inheritance_column = nil
 
   belongs_to :partner
-  belongs_to :place
+  belongs_to :place, required: false
   has_many :events
 
   validates_presence_of :name
 
   extend Enumerize
 
+  # What kind of calendar is this?
   enumerize :type, in: [:facebook, :google, :outlook, :mac_calendar, :other], default: :other, scope: true
+  # What strategy should we take to create Events?
+  # Event:        use event location field from import
+  # Place:        use the Calendars's associated Place
+  # Room Number:  presume location field contains a room number
+  enumerize :strategy, in: [:event, :place, :room_number], default: :place, scope: true
 
   def to_s
     name

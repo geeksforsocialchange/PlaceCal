@@ -1,4 +1,5 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_event_path(@event) %> |
+<h1><%= @event.summary %></h1>
+<%= simple_format @event.description %>
 <%= link_to 'Back', events_path %>

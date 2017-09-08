@@ -15,6 +15,7 @@ class CalendarDashboard < Administrate::BaseDashboard
     name: Field::String,
     source: Field::String,
     type: Field::String,
+    strategy: Field::String,
     notices: Field::String.with_options(searchable: false),
     last_import_at: Field::DateTime,
     created_at: Field::DateTime,
@@ -43,6 +44,7 @@ class CalendarDashboard < Administrate::BaseDashboard
     :id,
     :name,
     :source,
+    :strategy,
     :type,
     :notices,
     :last_import_at,
@@ -58,6 +60,7 @@ class CalendarDashboard < Administrate::BaseDashboard
     :place,
     :name,
     :source,
+    :strategy,
     :type,
   ].freeze
 
