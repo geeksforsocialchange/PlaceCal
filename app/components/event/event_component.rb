@@ -6,13 +6,15 @@ class EventComponent < MountainView::Presenter
     case context
     when :day
       properties[:dtstart].strftime("%H:%M")
+    when :week
+      properties[:dtstart].strftime("%a %H:%M")
     else
       properties[:dtstart].strftime("%a %e %b, %H:%M")
     end
   end
 
   def dtend
-    properties[:dtstart].strftime("%H:%M")
+    properties[:dtend].strftime("%H:%M")
   end
 
 end
