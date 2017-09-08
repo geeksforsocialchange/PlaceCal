@@ -13,6 +13,12 @@ Rails.application.routes.draw do
     month:      /\d{1,2}/,
     day:        /\d{1,2}/
   }
+  get '/activities' => 'events#activities'
+  get '/activities/:year/:month/:day' => 'events#activities', constraints: {
+    year:       /\d{4}/,
+    month:      /\d{1,2}/,
+    day:        /\d{1,2}/
+  }
 
   # Users
   devise_for :users

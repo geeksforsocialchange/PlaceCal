@@ -1,18 +1,22 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_start_day, only: [:index, :activities]
 
   # GET /events
   # GET /events.json
   def index
-    @today = Date.today
-    if params[:year] && params[:month] && params[:day]
-      @current_day = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
-    else
-      @current_day = @today
-    end
     @next_day = @current_day + 1.day
     @previous_day = @current_day - 1.day
     @events = Event.find_by_day(@current_day)
+  end
+
+  def activities
+    # Get the start of the week
+    @current_day = Date.commercial(@current_day.year, @current_day.cweek)
+    @next_week = @current_day + 1.week
+    @previous_week = @current_day - 1.week
+    @events = Event.find_by_week(@current_day)
+    # @events = @events.group_by{|e| [e.summary, e.place]}
   end
 
   # GET /events/1
@@ -73,6 +77,15 @@ class EventsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_event
       @event = Event.find(params[:id])
+    end
+
+    def set_start_day
+      @today = Date.today
+      if params[:year] && params[:month] && params[:day]
+        @current_day = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+      else
+        @current_day = @today
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

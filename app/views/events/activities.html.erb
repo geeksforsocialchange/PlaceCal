@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Activities from <%= @current_day.strftime("%A %e %B") %> &mdash; <%= (@next_week - 1.day).strftime("%A %e %B, %Y") %></h1>
+
+<ol class="paginator paginator--day reset">
+  <li><%= link_to "← Previous Week", "/activities/#{@previous_week.year}/#{@previous_week.month}/#{@previous_week.day}" %></li>
+  <li><%= link_to "Next Week →", "/activities/#{@next_week.year}/#{@next_week.month}/#{@previous_week.day}" %></li>
+</ol>
+
+<% if @events.any? %>
+  <ol class="events reset">
+    <% @events.each do |event| %>
+      <%= render_component "event", context: :week,
+                                    path: event_path(event),
+                                    place_path: place_path(event.place),
+                                    summary: event.summary,
+                                    dtstart: event.dtstart,
+                                    dtend: event.dtend,
+                                    place: event.place,
+                                    location: event.location %>
+    <% end %>
+  </ol>
+<% else %>
+  <p>No events this week 😞</p>
+<% end %>

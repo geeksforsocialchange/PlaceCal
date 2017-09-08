@@ -10,6 +10,8 @@ class Event < ApplicationRecord
 
   scope :find_by_day, -> (day) { where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day).order(:dtstart) }
 
+  scope :find_by_week, -> (week) { where('dtstart >= ? AND dtstart <= ?', week.midnight, week.midnight + 6.days).order(:summary) }
+
   class << self
     def handle_recurring_events(uid, imports, calendar_id)
       events = where('dtstart > ? AND uid = ?', Date.today, uid)
