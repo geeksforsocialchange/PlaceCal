@@ -9,18 +9,27 @@ class Calendar < ApplicationRecord
 
   extend Enumerize
 
-  # What kind of calendar is this?
+  # What kind of Calendar feed is this?
   enumerize :type, in: [:facebook, :google, :outlook, :mac_calendar, :other], default: :other, scope: true
-  # What strategy should we take to create Events?
-  # Event:        use event location field from import
-  # Place:        use the Calendars's associated Place
-  # Room Number:  presume location field contains a room number
-  enumerize :strategy, in: [:event, :place, :room_number], default: :place, scope: true
+  
+  # What strategy should we take to divine Event locations?
+  #---------------------------------------------------------------------------------------------------------------------
+  # Event:          Use the Event's location field from the imported record
+  #                   => Area calendars, or organisations with no solid base.
+  # Place:          Use the Calendars's associated Place and ignore the Event information
+  #                   => Every event is in a single location, and we want to ignore the event location entirely
+  # Room Number:    Use the Calendars's associated Place & presume the location field contains a room number
+  #                   => Every event is in a large venue and the location field is being used to store the room number
+  # EventOverride:  Use the Calendar's associated Place, unless an address is present.
+  #                   => Everything is in one place, but there are occasional away days or one-off events
+  #---------------------------------------------------------------------------------------------------------------------
+  enumerize :strategy, in: [:event, :place, :room_number, :event_override], default: :place, scope: true
 
   def to_s
     name
   end
 
+  # Create Events using this Calendar
   def import_events
     event_imports = type.facebook? ? Parsers::Facebook.new(source, last_import_at).events : Parsers::Ics.new(source).events
 

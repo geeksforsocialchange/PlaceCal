@@ -1,9 +1,9 @@
-# app/components/header/header_component.rb
+# app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :summary, :description, :dtstart, :dtend, :location, :context, :place
+  properties :summary, :description, :dtstart, :dtend, :location, :context, :place, :page
 
   def dtstart
-    case context
+    case properties[:context]
     when :day
       properties[:dtstart].strftime("%H:%M")
     when :week
@@ -13,8 +13,24 @@ class EventComponent < MountainView::Presenter
     end
   end
 
+  def summary
+    properties[:summary]
+  end
+
+  def description
+    properties[:description]
+  end
+
+  def page?
+    properties[:context] == :page
+  end
+
   def dtend
     properties[:dtend].strftime("%H:%M")
+  end
+
+  def partner
+    properties[:partner].first
   end
 
 end

@@ -1,5 +1,12 @@
 <p id="notice"><%= notice %></p>
 
-<h1><%= @event.summary %></h1>
-<%= simple_format @event.description %>
+<%= render_component "event", context: :page,
+                              id: @event.id,
+                              summary: @event.summary,
+                              description: @event.description,
+                              dtstart: @event.dtstart,
+                              dtend: @event.dtend,
+                              place: @event.place,
+                              location: @event.location %>
+
 <%= link_to 'Back', events_path %>

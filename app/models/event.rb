@@ -34,8 +34,8 @@ class Event < ApplicationRecord
 
   private
 
-  def set_place
-    Rails.logger.debug calendar.inspect
-    self.place_id = calendar.place_id
-  end
+    def set_place
+      Rails.logger.debug calendar.inspect
+      self.place_id = calendar.place_id
+    end
 end
