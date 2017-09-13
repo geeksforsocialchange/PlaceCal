@@ -1,13 +1,12 @@
-<p id="notice"><%= notice %></p>
-
 <h1>Places</h1>
 
-<ul class="reset">
+<ul class="places reset">
   <% @places.each do |place| %>
-    <li>
-      <h3><%= link_to place.name, place %></h3>
-      <p><%= place.short_description %></p>
-      <p><%= place.address %></p>
+    <li class="place">
+      <%= render_component "place", id: place.id,
+                                    name: place.name,
+                                    description: place.short_description,
+                                    address: place.address %>
     </li>
   <% end %>
 </ul>

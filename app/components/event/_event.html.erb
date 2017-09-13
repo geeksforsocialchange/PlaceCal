@@ -1,17 +1,19 @@
-<% if page? %>
-  <h1><%= summary %></h1>
-  <time><%= dtstart %> - <%= dtend %></time>
-  <%= markdown description %>
-<% else %>
-  <li class="event">
-    <h3><%= link_to summary, event_path(properties[:id]) %></h3>
-    <p>
-        🕒 <time><%= dtstart %> &mdash; <%= dtend %></time>
-        📍 <% if properties[:place] %>
-            <%= link_to properties[:place], place_path(properties[:place]) %>
-          <% elsif properties[:location] %>
-            <%= properties[:location].split(",").first.gsub("\\", "") %>
-          <% end %>
-    </p>
-  </li>
-<% end %>
+<article itemscope itemtype="http://schema.org/Event">
+  <% if page? %>
+    <h1 itemprop="name"><%= summary %></h1>
+  <% else %>
+    <h3 itemprop="name"><%= link_to summary, event_path(properties[:id]) %></h3>
+  <% end %>
+  <p>
+    🕒 <time itemprop="startDate" content="<%= properties[:dtstart] %>"><%= dtstart %></time> &mdash;
+      <time itemprop="endDate" content="<%= properties[:dtend] %>"><%= dtend %></time>
+    📍 <% if properties[:place] %>
+        <%= link_to properties[:place], place_path(properties[:place]) %>
+      <% elsif properties[:location] %>
+        <%= properties[:location].split(",").first.gsub("\\", "") %>
+      <% end %>
+  </p>
+  <% if page? %>
+    <%= markdown description %>
+  <% end %>
+</article>

@@ -1,15 +1,18 @@
+# frozen_string_literal: true
+
 # app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :summary, :description, :dtstart, :dtend, :location, :context, :place, :page
+  properties :summary, :description, :dtstart, :dtend,
+             :location, :context, :place
 
   def dtstart
     case properties[:context]
     when :day
-      properties[:dtstart].strftime("%H:%M")
+      properties[:dtstart].strftime('%H:%M')
     when :week
-      properties[:dtstart].strftime("%a %H:%M")
+      properties[:dtstart].strftime('%a %H:%M')
     else
-      properties[:dtstart].strftime("%a %e %b, %H:%M")
+      properties[:dtstart].strftime('%a %e %b, %H:%M')
     end
   end
 
@@ -26,7 +29,7 @@ class EventComponent < MountainView::Presenter
   end
 
   def dtend
-    properties[:dtend].strftime("%H:%M")
+    properties[:dtend].strftime('%H:%M')
   end
 
   def partner

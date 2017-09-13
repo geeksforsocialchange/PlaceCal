@@ -1,5 +1,3 @@
-<p id="notice"><%= notice %></p>
-
 <h1><%= @current_day.strftime("%A %e %B, %Y") %></h1>
 
 <ol class="paginator paginator--day reset">
@@ -25,16 +23,18 @@
 <% if @events.any? %>
   <ol class="events reset">
     <% @events.each do |event| %>
-      <%= render_component "event", context: :day,
-                                    id: event.id,
-                                    path: event_path(event),
-                                    place: event.place,
-                                    partner: event.partners,
-                                    summary: event.summary,
-                                    dtstart: event.dtstart,
-                                    dtend: event.dtend,
-                                    place: event.place,
-                                    location: event.location %>
+      <li class="event">
+        <%= render_component "event", context: :day,
+                                      id: event.id,
+                                      path: event_path(event),
+                                      place: event.place,
+                                      partner: event.partners,
+                                      summary: event.summary,
+                                      dtstart: event.dtstart,
+                                      dtend: event.dtend,
+                                      place: event.place,
+                                      location: event.location %>
+      </li>
     <% end %>
   </ol>
 <% else %>

@@ -1,9 +1,6 @@
-<p id="notice"><%= notice %></p>
+<%= render_component "place", context: :page,
+                              id: @place.id,
+                              name: @place.name,
+                              address: @place.address,
+                              description: @place.short_description %>
 
-<h1><%= @place.name %></h1>
-<p><%= @place.address %></p>
-<p><%= @place.short_description %></p>
-
-<p>Event listing coming soon.</p>
-
-<%= link_to 'Back to places', places_path %>
