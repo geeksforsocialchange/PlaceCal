@@ -8,7 +8,7 @@ module Parsers
       @events = []
       calendars = Icalendar::Calendar.parse(open(@file))
 
-      #it is possible for an ics file to contain multiple calendars
+      # It is possible for an ics file to contain multiple calendars
       calendars.each do |calendar|
         calendar.events.each do |event|
           if event.rrule.present?

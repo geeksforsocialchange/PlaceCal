@@ -10,7 +10,7 @@
     📍 <% if properties[:place] %>
         <%= link_to properties[:place], place_path(properties[:place]) %>
       <% elsif properties[:location] %>
-        <%= properties[:location].split(",").first.gsub("\\", "") %>
+        <%= location %>
       <% end %>
   </p>
   <% if page? %>

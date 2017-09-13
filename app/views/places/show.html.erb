@@ -4,3 +4,22 @@
                               address: @place.address,
                               description: @place.short_description %>
 
+<% if @events.any? %>
+  <h2>Events</h2>
+  <ol class="events reset">
+    <% @events.each do |event| %>
+      <li class="event">
+        <%= render_component "event", context: :place_page,
+                                      id: event.id,
+                                      path: event_path(event),
+                                      summary: event.summary,
+                                      dtstart: event.dtstart,
+                                      dtend: event.dtend,
+                                      location: event.location %>
+      </li>
+    <% end %>
+  </ol>
+<% else %>
+  <p>No events at the moment 😞</p>
+<% end %>
+                            

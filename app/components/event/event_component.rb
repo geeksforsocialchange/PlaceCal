@@ -36,4 +36,8 @@ class EventComponent < MountainView::Presenter
     properties[:partner].first
   end
 
+  def location
+    properties[:location].split(',').first&.delete('\\')
+  end
+
 end

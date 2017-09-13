@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# app/controllers/places_controller.rb
 class PlacesController < ApplicationController
-  before_action :set_place, only: [:show, :edit, :update, :destroy]
+  before_action :set_place, only: %i[show edit update destroy]
 
   # GET /places
   # GET /places.json
@@ -10,6 +13,13 @@ class PlacesController < ApplicationController
   # GET /places/1
   # GET /places/1.json
   def show
+    @current_day = Date.today
+    @events = case @place.event_view
+              when :week
+                @place.events.find_by_week(@current_day)
+              when :day
+                @place.events.find_by_day(@current_day)
+              end
   end
 
   # GET /places/new
@@ -18,8 +28,7 @@ class PlacesController < ApplicationController
   end
 
   # GET /places/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /places
   # POST /places.json
@@ -62,13 +71,14 @@ class PlacesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_place
-      @place = Place.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def place_params
-      params.fetch(:place, {})
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_place
+    @place = Place.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet
+  def place_params
+    params.fetch(:place, {})
+  end
 end

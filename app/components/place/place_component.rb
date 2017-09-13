@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/components/place/place_component.rb
 class PlaceComponent < MountainView::Presenter
   properties :name, :logo, :home, :opening_times,
@@ -6,5 +8,4 @@ class PlaceComponent < MountainView::Presenter
   def page?
     properties[:context] == :page
   end
-
 end

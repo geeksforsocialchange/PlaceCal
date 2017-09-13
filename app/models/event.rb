@@ -1,3 +1,4 @@
+# app/models/event.rb
 class Event < ApplicationRecord
   acts_as_paranoid
 
@@ -8,17 +9,31 @@ class Event < ApplicationRecord
 
   # before_validation :set_place, if: Proc.new { |event| event.place_id.blank? }
 
-  scope :find_by_day, -> (day) { where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day).order(:dtstart).order(:dtend) }
+  scope :find_by_day, lambda { |day|
+    where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day)
+      .order(:dtstart)
+      .order(:dtend)
+  }
 
-  scope :find_by_week, -> (week) { where('dtstart >= ? AND dtstart <= ?', week.midnight, week.midnight + 6.days).order(:summary).order(:dtstart) }
+  scope :find_by_week, lambda { |week|
+    where('dtstart >= ? AND dtstart <= ?', week.midnight, week.midnight + 6.days)
+      .order(:summary)
+      .order(:dtstart)
+  }
+
+  scope :in_venue, ->(venue) { where(venue: venue) }
 
   class << self
+    # UID: the root event from which we are creating events
+    # Imports: 
     def handle_recurring_events(uid, imports, calendar_id)
-      events = where('dtstart > ? AND uid = ?', Date.today, uid)
+      events = where('uid = ?', uid)
       start_dates = imports.map(&:dtstart)
       end_dates = imports.map(&:dtend)
 
-      events.where.not(dtstart: start_dates).or(events.where.not(dtend: end_dates )).destroy_all
+      events.where.not(dtstart: start_dates)
+            .or(events.where.not(dtend: end_dates))
+            .destroy_all
 
       imports.each do |import|
         attributes = import.attributes.merge(calendar_id: calendar_id)
@@ -34,8 +49,8 @@ class Event < ApplicationRecord
 
   private
 
-    def set_place
-      Rails.logger.debug calendar.inspect
-      self.place_id = calendar.place_id
-    end
+  def set_place
+    Rails.logger.debug calendar.inspect
+    self.place_id = calendar.place_id
+  end
 end
