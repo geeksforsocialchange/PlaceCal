@@ -1,12 +1,34 @@
+@import "variables_mixins.sass"
+
 .header
   display: flex
   align-items: baseline
+  justify-content: space-between
+  flex-wrap: wrap
   border-bottom: 1px solid black
   h2
     margin-bottom: 0
 
+  &__branding
+    margin: 1em 0
+    text-indent: -9999px
+    background-image: image-url('logo.png')
+    width: (458px / 2) 
+    height: (136px / 2)
+    background-size: (458px / 2) (136px / 2)
+
 .nav__primary
   display: flex
+  text-transform: uppercase
+  font-weight: bold
   li
     list-style-type: none
     margin-right: 1rem
+    a
+      text-decoration: none
+      color: $grey
+      &:hover, &:active
+        border-width: 0 0 4px 0
+        border-color: $green
+        border-style: solid
+        padding-bottom: 0.1em
