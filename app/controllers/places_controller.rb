@@ -3,6 +3,8 @@
 # app/controllers/places_controller.rb
 class PlacesController < ApplicationController
   before_action :set_place, only: %i[show edit update destroy]
+  before_action :set_day, only: :show
+  before_action :set_sort, only: :show
 
   # GET /places
   # GET /places.json
@@ -13,13 +15,11 @@ class PlacesController < ApplicationController
   # GET /places/1
   # GET /places/1.json
   def show
-    @current_day = Date.today
-    @events = case @place.event_view
-              when :week
-                @place.events.find_by_week(@current_day)
-              when :day
-                @place.events.find_by_day(@current_day)
-              end
+    @period = params[:period].to_s || 'week'
+    events = filter_events(@period, @place)
+    # Sort criteria
+    @sort = params[:sort].to_s
+    @events = sort_events(events, @sort)
   end
 
   # GET /places/new

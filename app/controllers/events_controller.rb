@@ -1,7 +1,8 @@
 # app/controllers/events_controller.rb
 class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy]
-  before_action :set_day, only: %i[index activities]
+  before_action :set_day, only: :index
+  before_action :set_sort, only: :index
 
   # GET /events
   # GET /events.json
@@ -10,7 +11,6 @@ class EventsController < ApplicationController
     @period = params[:period].to_s || 'day'
     events = filter_events(@period)
     # Sort criteria
-    @sort = params[:sort].to_s
     @events = sort_events(events, @sort)
   end
 
@@ -73,41 +73,8 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
   end
 
-  def set_day
-    @today = Date.today
-    @current_day = if params[:year] && params[:month] && params[:day]
-                     Date.new(params[:year].to_i,
-                              params[:month].to_i,
-                              params[:day].to_i)
-                   elsif params[:year] && params[:month]
-                     Date.new(params[:year].to_i,
-                              params[:month].to_i,
-                              1)
-                   else
-                     @today
-                   end
-  end
-
   # Never trust parameters from the scary internet
   def event_params
     params.fetch(:event, {})
-  end
-
-  def filter_events(period)
-    case period
-    when 'week'
-      Event.find_by_week(@current_day).includes(:place)
-    else
-      Event.find_by_day(@current_day).includes(:place)
-    end
-  end
-
-  def sort_events(events, sort)
-    case sort
-    when 'summary'
-      events.sort_by_summary
-    else
-      events.sort_by_time
-    end
   end
 end

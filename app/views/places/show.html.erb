@@ -4,8 +4,12 @@
                               address: @place.address,
                               description: @place.short_description %>
 
-<% if @events.any? %>
-  <h2>Events</h2>
+
+<%= render_component "paginator", pointer: @current_day,
+                                  period: @period,
+                                  sort: @sort,
+                                  path: "places/#{@place.id}/events" %>                                   
+<% if @events.any? %>                                    
   <ol class="events reset">
     <% @events.each do |event| %>
       <li class="event">
@@ -20,6 +24,6 @@
     <% end %>
   </ol>
 <% else %>
-  <p>No events at the moment 😞</p>
+  <p>No events with these criteria 😞</p>
 <% end %>
                             
