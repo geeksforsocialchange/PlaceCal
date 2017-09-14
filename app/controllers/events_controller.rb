@@ -8,7 +8,7 @@ class EventsController < ApplicationController
   def index
     @period = params[:period].to_s
     @sort = params[:sort].to_s
-    events = events_in_period(@period)
+    events = filter_events(@period)
     @events = sort_events(events, @sort)
   end
 
@@ -91,7 +91,7 @@ class EventsController < ApplicationController
     params.fetch(:event, {})
   end
 
-  def events_in_period(period)
+  def filter_events(period)
     case period
     when 'week'
       Event.find_by_week(@current_day).includes(:place)
