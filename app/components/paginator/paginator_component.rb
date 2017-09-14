@@ -56,14 +56,7 @@ class PaginatorComponent < MountainView::Presenter
   # Format date according to context
   def format_date(date)
     if period <= 1.day
-      # Show day name e.g. "Fri 15th Sep"
-      if date == TODAY
-        "Today (#{date.strftime('%a %e %b')})"
-      elsif date == TODAY + 1.day
-        "Tomorrow (#{date.strftime('%a %e %b')})"
-      else
-        date.strftime('%a %e %b')
-      end
+      todayify(date)
     else
       # Show date range e.g. "15 Sep - 22 Sep"
       date.strftime('%e %b') + ' - ' + (date + period).strftime('%e %b')
@@ -71,6 +64,18 @@ class PaginatorComponent < MountainView::Presenter
   end
 
   private
+
+  # Formatting for if we are seeing less than a day's worth of events
+  def todayify(date)
+    # Show day name e.g. "Fri 15th Sep"
+    if date == TODAY
+      "Today (#{date.strftime('%a %e %b')})"
+    elsif date == TODAY + 1.day
+      "Tomorrow (#{date.strftime('%a %e %b')})"
+    else
+      date.strftime('%a %e %b')
+    end
+  end
 
   # Base URL
   def path
