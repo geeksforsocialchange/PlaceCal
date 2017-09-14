@@ -1,19 +1,9 @@
+<h1><%= title %></h1>
+
 <ol class="paginator paginator--day reset">
-  <li><%= link_to "←", backwards %></li>
-  <% (0..steps).each do |i| %>
-    <% day = pointer + period * i %>
-    <% day_fmt = d_short(day) %>
+  <% paginator.each do |page| %>
     <li>
-      <%= link_to create_event_url(day) do %>
-        <% if day == @today %>
-          <strong>Today</strong> (<%= day_fmt %>)
-        <% elsif day == @today + period %>
-          <strong>Tomorrow</strong> (<%= day_fmt %>)
-        <% else %>
-          <%= day_fmt %>
-        <% end %>
-      <% end %>
+      <%= link_to page[0], page[1] %>
     </li>
   <% end %>
-  <li><%= link_to "→", forwards %></li>
 </ol>

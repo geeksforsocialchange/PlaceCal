@@ -1,6 +1,4 @@
-<h1><%= @current_day.strftime("%A %e %B, %Y") %></h1>
-
-<%= render_component "paginator", current_day: @current_day,
+<%= render_component "paginator", pointer: @current_day,
                                   period: @period %>
 
 <% if @events.any? %>

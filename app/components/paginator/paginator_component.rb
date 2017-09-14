@@ -1,12 +1,17 @@
 # app/components/paginator/paginator_component.rb
 class PaginatorComponent < MountainView::Presenter
-  properties :current_day, :period, :steps, :path
+  properties :pointer, :period, :steps, :path
 
   DEFAULT_STEPS = 7
+  TODAY = Date.today
 
-  # Reference start date
+  # Which day are we doing our calculations based on?
   def pointer
-    properties[:current_day]
+    if period == 1.week
+      properties[:pointer].beginning_of_week
+    else
+      properties[:pointer]
+    end
   end
 
   # How far each step takes us
@@ -19,26 +24,50 @@ class PaginatorComponent < MountainView::Presenter
     "/#{path}/#{dt.year}/#{dt.month}/#{dt.day}#{url_suffix}"
   end
 
-  # Back link
-  def backwards
-    create_event_url(pointer - (period * steps))
+  # Link array
+  def paginator # rubocop:disable Metrics/AbcSize
+    pages = []
+    # Create backward arrow link
+    pages << ['←', create_event_url(pointer - period)]
+    # Create in-between links according to steps requested
+    (0..steps).each do |i|
+      day = pointer + period * i
+      pages << [format_date(day), create_event_url(day)]
+    end
+    # Create forwards arrow link
+    pages << ['→', create_event_url(pointer + period)]
   end
 
-  # Forwards link
-  def forwards
-    create_event_url(pointer + (period * steps))
+  def title
+    if period <= 1.day
+      # Thursday 14 September, 2017
+      pointer.strftime('%A %e %B, %Y')
+    else
+      # Thursday 14 September - 21 September 2017
+      pointer.strftime('%A %e %B') + ' - ' + (pointer + period).strftime('%e %B %Y')
+    end
   end
 
-  # Number of options in paginator
+  # Number of steps for the paginator to have
   def steps
-    # Current day is 0, prevents off-by-one error
     (properties[:steps] || DEFAULT_STEPS) - 1
   end
 
-  # Format date
-  def d_short(date)
-    # Fri 15th Sep
-    date.strftime('%a %e %b')
+  # Format date according to context
+  def format_date(date)
+    if period <= 1.day
+      # Show day name e.g. "Fri 15th Sep"
+      if date == TODAY
+        "Today (#{date.strftime('%a %e %b')})"
+      elsif date == TODAY + 1.day
+        "Tomorrow (#{date.strftime('%a %e %b')})"
+      else
+        date.strftime('%a %e %b')
+      end
+    else
+      # Show date range e.g. "15 Sep - 22 Sep"
+      date.strftime('%e %b') + ' - ' + (date + period).strftime('%e %b')
+    end
   end
 
   private
@@ -50,6 +79,6 @@ class PaginatorComponent < MountainView::Presenter
 
   # URL params to add back in
   def url_suffix
-    properties[:period] == 'week' ? '?period=week' : ''
+    period == 1.week ? '?period=week' : ''
   end
 end

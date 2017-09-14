@@ -6,12 +6,12 @@
   <% end %>
   <p>
     🕒 <time itemprop="startDate" content="<%= properties[:dtstart] %>"><%= dtstart %></time> &mdash;
-      <time itemprop="endDate" content="<%= properties[:dtend] %>"><%= dtend %></time>
-    📍 <% if properties[:place] %>
-        <%= link_to properties[:place], place_path(properties[:place]) %>
-      <% elsif properties[:location] %>
-        <%= location %>
-      <% end %>
+    <time itemprop="endDate" content="<%= properties[:dtend] %>"><%= dtend %></time>
+    <% if properties[:place] %>
+      📍 <%= link_to properties[:place], place_path(properties[:place]) %>
+    <% elsif properties[:location] %>
+      📍 <%= location %>
+    <% end %>
   </p>
   <% if page? %>
     <%= markdown description %>
