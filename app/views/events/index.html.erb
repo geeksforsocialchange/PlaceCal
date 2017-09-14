@@ -1,24 +1,7 @@
 <h1><%= @current_day.strftime("%A %e %B, %Y") %></h1>
 
-<ol class="paginator paginator--day reset">
-  <li><%= link_to "←", "/events/#{@previous_day.year}/#{@previous_day.month}/#{@previous_day.day}" %></li>
-  <% (0..6).each do |i| %>
-    <% day = @current_day + i.day %>
-    <% day_fmt = day.strftime("%a %e %b") %>
-    <li>
-      <%= link_to "/events/#{day.year}/#{day.month}/#{day.day}" do %>
-        <% if day == @today %>
-          Today (<%= day_fmt %>)
-        <% elsif day == @today + 1.day %>
-          Tomorrow (<%= day_fmt %>)
-        <% else %>
-          <%= day_fmt %>
-        <% end %>
-      <% end %>
-    </li>
-  <% end %>
-  <li><%= link_to "→", "/events/#{@next_day.year}/#{@next_day.month}/#{@next_day.day}" %></li>
-</ol>
+<%= render_component "paginator", current_day: @current_day,
+                                  period: @period %>
 
 <% if @events.any? %>
   <ol class="events reset">

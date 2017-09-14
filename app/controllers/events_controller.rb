@@ -1,3 +1,4 @@
+# app/controllers/events_controller.rb
 class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy]
   before_action :set_start_day, only: %i[index activities]
@@ -5,24 +6,23 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @next_day = @current_day + 1.day
-    @previous_day = @current_day - 1.day
-    @events = Event.find_by_day(@current_day)
-  end
+    @period = params[:period].to_s
 
-  def activities
-    # Get the start of the week
-    @current_day = Date.commercial(@current_day.year, @current_day.cweek)
-    @next_week = @current_day + 1.week
-    @previous_week = @current_day - 1.week
-    @events = Event.find_by_week(@current_day)
-    # @events = @events.group_by{|e| [e.summary, e.place]}
+    case @period
+    when 'week'
+      @next = @current_day + 1.week
+      @previous = @current_day - 1.week
+      @events = Event.find_by_week(@current_day)
+    else
+      @next = @current_day + 1.day
+      @previous = @current_day - 1.day
+      @events = Event.find_by_day(@current_day)
+    end
   end
 
   # GET /events/1
   # GET /events/1.json
-  def show
-  end
+  def show; end
 
   # GET /events/new
   def new
@@ -30,8 +30,7 @@ class EventsController < ApplicationController
   end
 
   # GET /events/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /events
   # POST /events.json
@@ -74,22 +73,23 @@ class EventsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_event
-      @event = Event.find(params[:id])
-    end
 
-    def set_start_day
-      @today = Date.today
-      if params[:year] && params[:month] && params[:day]
-        @current_day = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
-      else
-        @current_day = @today
-      end
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_event
+    @event = Event.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def event_params
-      params.fetch(:event, {})
+  def set_start_day
+    @today = Date.today
+    @current_day = if params[:year] && params[:month] && params[:day]
+      Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    else
+      @today
     end
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def event_params
+    params.fetch(:event, {})
+  end
 end
