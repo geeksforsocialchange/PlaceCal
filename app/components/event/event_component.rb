@@ -7,9 +7,9 @@ class EventComponent < MountainView::Presenter
 
   def dtstart
     case properties[:context]
-    when :day
+    when 'day'
       properties[:dtstart].strftime('%H:%M')
-    when :week
+    when 'week'
       properties[:dtstart].strftime('%a %H:%M')
     else
       properties[:dtstart].strftime('%a %e %b, %H:%M')

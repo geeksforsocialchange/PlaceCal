@@ -1,14 +1,16 @@
 # app/controllers/events_controller.rb
 class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy]
-  before_action :set_start_day, only: %i[index activities]
+  before_action :set_day, only: %i[index activities]
 
   # GET /events
   # GET /events.json
   def index
-    @period = params[:period].to_s
-    @sort = params[:sort].to_s
+    # Duration to view
+    @period = params[:period].to_s || 'day'
     events = filter_events(@period)
+    # Sort criteria
+    @sort = params[:sort].to_s
     @events = sort_events(events, @sort)
   end
 
@@ -71,7 +73,7 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
   end
 
-  def set_start_day
+  def set_day
     @today = Date.today
     @current_day = if params[:year] && params[:month] && params[:day]
                      Date.new(params[:year].to_i,

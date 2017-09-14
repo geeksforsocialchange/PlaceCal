@@ -1,11 +1,13 @@
 <h2><%= title %></h2>
 
+<hr>
+
 <%= form_tag('', method: :get, class: 'js-pagination-sort', enforce_utf8: false) do %>
   <%= radio_button_tag(:sort, "time", sort == 'time') %>
   <%= label_tag(:sort_time, "Sort by Time") %>
   <%= radio_button_tag(:sort, "summary", sort == 'summary') %>
   <%= label_tag(:sort_summary, "Sort by Summary") %>
-
+  <br>
   <%= radio_button_tag(:period, "day", period == 1.day) %>
   <%= label_tag(:period_day, "Day View") %>
   <%= radio_button_tag(:period, "week", period == 1.week) %>
@@ -19,3 +21,5 @@
     </li>
   <% end %>
 </ol>
+
+<hr>

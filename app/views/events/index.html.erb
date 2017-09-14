@@ -8,7 +8,7 @@
   <ol class="events reset">
     <% @events.each do |event| %>
       <li class="event">
-        <%= render_component "event", context: :day,
+        <%= render_component "event", context: @period,
                                       id: event.id,
                                       path: event_path(event),
                                       place: event.place,

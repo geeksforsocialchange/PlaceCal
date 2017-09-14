@@ -15,8 +15,10 @@ class Event < ApplicationRecord
   }
 
   # Find by week
-  scope :find_by_week, lambda { |week|
-    where('dtstart >= ? AND dtstart <= ?', week.midnight, week.midnight + 6.days)
+  scope :find_by_week, lambda { |day|
+    week_start = day.beginning_of_week
+    week_end = week_start + 6.days
+    where('dtstart >= ? AND dtstart <= ?', week_start, week_end)
   }
 
   # Filter by Place

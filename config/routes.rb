@@ -1,5 +1,5 @@
+# config/routes.rb
 Rails.application.routes.draw do
-
   # Most common route at the top
   root 'pages#home'
 
@@ -9,12 +9,6 @@ Rails.application.routes.draw do
   resources :calendars
   resources :events
   get '/events/:year/:month/:day' => 'events#index', constraints: {
-    year:       /\d{4}/,
-    month:      /\d{1,2}/,
-    day:        /\d{1,2}/
-  }
-  get '/activities' => 'events#activities'
-  get '/activities/:year/:month/:day' => 'events#activities', constraints: {
     year:       /\d{4}/,
     month:      /\d{1,2}/,
     day:        /\d{1,2}/
@@ -36,10 +30,9 @@ Rails.application.routes.draw do
     resources :partners
     resources :places
 
-    root to: "users#index"
+    root to: 'users#index'
   end
 
   # Styleguide
-  mount MountainView::Engine => "/styleguide"
-
+  mount MountainView::Engine => '/styleguide'
 end

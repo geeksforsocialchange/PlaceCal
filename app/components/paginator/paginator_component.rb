@@ -8,6 +8,7 @@ class PaginatorComponent < MountainView::Presenter
   # Which day are we doing our calculations based on?
   def pointer
     if period == 1.week
+      # This should be set by the model, but just to be sure
       properties[:pointer].beginning_of_week
     else
       properties[:pointer]
