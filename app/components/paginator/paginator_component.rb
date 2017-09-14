@@ -5,31 +5,6 @@ class PaginatorComponent < MountainView::Presenter
   DEFAULT_STEPS = 7
   TODAY = Date.today
 
-  # Which day are we doing our calculations based on?
-  def pointer
-    if period == 1.week
-      # This should be set by the model, but just to be sure
-      properties[:pointer].beginning_of_week
-    else
-      properties[:pointer]
-    end
-  end
-
-  # What field are we using to sort?
-  def sort
-    properties[:sort] || 'time'
-  end
-
-  # How far does each step take us?
-  def period
-    properties[:period] == 'week' ? 1.week : 1.day
-  end
-
-  # Create URLs
-  def create_event_url(dt)
-    "/#{path}/#{dt.year}/#{dt.month}/#{dt.day}#{url_suffix}"
-  end
-
   # Link array
   def paginator # rubocop:disable Metrics/AbcSize
     pages = []
@@ -44,6 +19,7 @@ class PaginatorComponent < MountainView::Presenter
     pages << ['→', create_event_url(pointer + period)]
   end
 
+  # Paginator title
   def title
     if period <= 1.day
       # Thursday 14 September, 2017
@@ -57,21 +33,42 @@ class PaginatorComponent < MountainView::Presenter
     end
   end
 
+  # What field are we using to sort?
+  def sort
+    properties[:sort] || 'time'
+  end
+
+  # How far does each step take us?
+  def period
+    properties[:period] == 'week' ? 1.week : 1.day
+  end
+
+  # Base URL
+  def path
+    properties[:path] || 'events'
+  end
+
   # Number of steps for the paginator to have
   def steps
     (properties[:steps] || DEFAULT_STEPS) - 1
   end
 
-  # Format date according to context
-  def format_date(date)
-    if period <= 1.day
-      todayify(date)
+  private
+
+  # Which day are we doing our calculations based on?
+  def pointer
+    if period == 1.week
+      # This should be set by the model, but just to be sure
+      properties[:pointer].beginning_of_week
     else
-      weekify(date)
+      properties[:pointer]
     end
   end
 
-  private
+  # Create URLs
+  def create_event_url(dt)
+    "/#{path}/#{dt.year}/#{dt.month}/#{dt.day}#{url_suffix}"
+  end
 
   # Formatting for if we are seeing less than a day's worth of events
   def todayify(date)
@@ -103,16 +100,20 @@ class PaginatorComponent < MountainView::Presenter
     end
   end
 
-  # Base URL
-  def path
-    properties[:path] || 'events'
-  end
-
   # URL params to add back in
   def url_suffix
     str = []
     str << 'period=week' if period == 1.week
     str << "sort=#{sort}" if sort
     '?' + str.join('&') if str.any?
+  end
+
+  # Format date according to context
+  def format_date(date)
+    if period <= 1.day
+      todayify(date)
+    else
+      weekify(date)
+    end
   end
 end
