@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_sort
-    params[:sort].to_s if params[:sort]
+    @sort = params[:sort].to_s ? params[:sort] : false
   end
 
   def filter_events(period, place = false)

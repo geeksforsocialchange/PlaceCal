@@ -17,7 +17,7 @@ class PaginatorComponent < MountainView::Presenter
 
   # What field are we using to sort?
   def sort
-    properties[:sort]&.length&.positive? ? properties[:sort] : 'time'
+    properties[:sort] || 'time'
   end
 
   # How far does each step take us?
