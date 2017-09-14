@@ -16,7 +16,7 @@
 //= require mountain_view
 //= require_tree .
 
-// Mountain View isn't importing JS for some reason at the moment so leaving this here.
+// FIXME: Mountain View isn't importing JS for some reason at the moment so leaving this here.
 $(document).on('turbolinks:load', function() {
   $('.js-pagination-sort :input').on('change', function() {
     $('.js-pagination-sort').submit();

@@ -9,24 +9,26 @@ class Event < ApplicationRecord
 
   # before_validation :set_place, if: Proc.new { |event| event.place_id.blank? }
 
+  # Find by day
   scope :find_by_day, lambda { |day|
     where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day)
-      .order(:dtstart)
-      .order(:dtend)
   }
 
+  # Find by week
   scope :find_by_week, lambda { |week|
     where('dtstart >= ? AND dtstart <= ?', week.midnight, week.midnight + 6.days)
-      .order(:summary)
-      .order(:dtstart)
   }
 
-  scope :in_venue, ->(venue) { where(venue: venue) }
+  # Filter by Place
+  scope :in_place, ->(place) { where(place: place) }
+
+  # Sort by Summary or Start Time
+  scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
+  scope :sort_by_time, -> { order(dtstart: :asc).order(summary: :asc) }
 
   class << self
     # UID: the root event from which we are creating events
-    # Imports: 
-    def handle_recurring_events(uid, imports, calendar_id)
+    def handle_recurring_events(uid, imports, calendar_id) # rubocop:disable all
       events = where('uid = ?', uid)
       start_dates = imports.map(&:dtstart)
       end_dates = imports.map(&:dtend)

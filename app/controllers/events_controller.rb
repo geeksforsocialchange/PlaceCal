@@ -7,13 +7,9 @@ class EventsController < ApplicationController
   # GET /events.json
   def index
     @period = params[:period].to_s
-    @events = case @period
-              when 'week'
-                Event.find_by_week(@current_day).includes(:place)
-              else
-                Event.find_by_day(@current_day).includes(:place)
-              end
     @sort = params[:sort].to_s
+    events = events_in_period(@period)
+    @events = sort_events(events, @sort)
   end
 
   # GET /events/1
@@ -78,14 +74,38 @@ class EventsController < ApplicationController
   def set_start_day
     @today = Date.today
     @current_day = if params[:year] && params[:month] && params[:day]
-      Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+                     Date.new(params[:year].to_i,
+                              params[:month].to_i,
+                              params[:day].to_i)
+                   elsif params[:year] && params[:month]
+                     Date.new(params[:year].to_i,
+                              params[:month].to_i,
+                              1)
+                   else
+                     @today
+                   end
+  end
+
+  # Never trust parameters from the scary internet
+  def event_params
+    params.fetch(:event, {})
+  end
+
+  def events_in_period(period)
+    case period
+    when 'week'
+      Event.find_by_week(@current_day).includes(:place)
     else
-      @today
+      Event.find_by_day(@current_day).includes(:place)
     end
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def event_params
-    params.fetch(:event, {})
+  def sort_events(events, sort)
+    case sort
+    when 'summary'
+      events.sort_by_summary
+    else
+      events.sort_by_time
+    end
   end
 end
