@@ -7,17 +7,13 @@ class EventsController < ApplicationController
   # GET /events.json
   def index
     @period = params[:period].to_s
-
-    case @period
-    when 'week'
-      @next = @current_day + 1.week
-      @previous = @current_day - 1.week
-      @events = Event.find_by_week(@current_day)
-    else
-      @next = @current_day + 1.day
-      @previous = @current_day - 1.day
-      @events = Event.find_by_day(@current_day)
-    end
+    @events = case @period
+              when 'week'
+                Event.find_by_week(@current_day).includes(:place)
+              else
+                Event.find_by_day(@current_day).includes(:place)
+              end
+    @sort = params[:sort].to_s
   end
 
   # GET /events/1

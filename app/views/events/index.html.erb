@@ -1,5 +1,8 @@
+<h1>Events in Hulme &amp; Moss Side</h1>
+
 <%= render_component "paginator", pointer: @current_day,
-                                  period: @period %>
+                                  period: @period,
+                                  sort: @sort %>
 
 <% if @events.any? %>
   <ol class="events reset">

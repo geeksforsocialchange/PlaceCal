@@ -1,7 +1,9 @@
 <div class="header">
   <div class="header__branding" role="banner">
-    <h2><%= link_to "PlaceCal", root_path %></h2>
-    <p>The Community Calendar</p>
+    <%= link_to root_path do %>
+      <h2>PlaceCal</h2>
+      <p>The Community Calendar</p>
+    <% end %>
   </div>
   <nav>
     <ul class="nav nav__primary" role="navigation">

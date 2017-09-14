@@ -1,6 +1,6 @@
 # app/components/paginator/paginator_component.rb
 class PaginatorComponent < MountainView::Presenter
-  properties :pointer, :period, :steps, :path
+  properties :pointer, :period, :steps, :path, :sort
 
   DEFAULT_STEPS = 7
   TODAY = Date.today
@@ -14,7 +14,12 @@ class PaginatorComponent < MountainView::Presenter
     end
   end
 
-  # How far each step takes us
+  # What field are we using to sort?
+  def sort
+    properties[:sort] || false
+  end
+
+  # How far does each step take us?
   def period
     properties[:period] == 'week' ? 1.week : 1.day
   end
@@ -44,7 +49,10 @@ class PaginatorComponent < MountainView::Presenter
       pointer.strftime('%A %e %B, %Y')
     else
       # Thursday 14 September - 21 September 2017
-      pointer.strftime('%A %e %B') + ' - ' + (pointer + period).strftime('%e %B %Y')
+      t = pointer.strftime('%A %e %B')
+      t += ' - '
+      # FIXME: 1.day needs sorting when we add in month views
+      t + (pointer + period - 1.day).strftime('%A %e %B %Y')
     end
   end
 
@@ -58,8 +66,7 @@ class PaginatorComponent < MountainView::Presenter
     if period <= 1.day
       todayify(date)
     else
-      # Show date range e.g. "15 Sep - 22 Sep"
-      date.strftime('%e %b') + ' - ' + (date + period).strftime('%e %b')
+      weekify(date)
     end
   end
 
@@ -67,13 +74,31 @@ class PaginatorComponent < MountainView::Presenter
 
   # Formatting for if we are seeing less than a day's worth of events
   def todayify(date)
+    date_fmt = date.strftime('%a %e %b')
     # Show day name e.g. "Fri 15th Sep"
     if date == TODAY
-      "Today (#{date.strftime('%a %e %b')})"
+      "Today (#{date_fmt})"
     elsif date == TODAY + 1.day
-      "Tomorrow (#{date.strftime('%a %e %b')})"
+      "Tomorrow (#{date_fmt})"
     else
-      date.strftime('%a %e %b')
+      date_fmt
+    end
+  end
+
+  def weekify(date)
+    # Format the date
+    end_date = date + period
+    date_fmt = if date.month == end_date.month
+                 date.strftime('%e') + '-' + end_date.strftime('%e %b')
+               else
+                 # Show date range e.g. "15 Sep - 22 Sep"
+                 date.strftime('%e %b') + ' – ' + end_date.strftime('%e %b')
+               end
+    # Add in note if it's the current week
+    if date == TODAY.beginning_of_week
+      "This week (#{date_fmt})"
+    else
+      date_fmt
     end
   end
 
@@ -84,6 +109,9 @@ class PaginatorComponent < MountainView::Presenter
 
   # URL params to add back in
   def url_suffix
-    period == 1.week ? '?period=week' : ''
+    str = []
+    str << 'period=week' if period == 1.week
+    str << "sort=#{sort}" if sort
+    '?' + str.join('&') if str.any?
   end
 end
