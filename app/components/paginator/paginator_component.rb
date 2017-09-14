@@ -65,9 +65,13 @@ class PaginatorComponent < MountainView::Presenter
     end
   end
 
-  # Create URLs
-  def create_event_url(dt)
-    "/#{path}/#{dt.year}/#{dt.month}/#{dt.day}#{url_suffix}"
+  # Format date according to context
+  def format_date(date)
+    if period <= 1.day
+      todayify(date)
+    else
+      weekify(date)
+    end
   end
 
   # Formatting for if we are seeing less than a day's worth of events
@@ -85,7 +89,7 @@ class PaginatorComponent < MountainView::Presenter
 
   def weekify(date)
     # Format the date
-    end_date = date + period
+    end_date = date + period - 1.day
     date_fmt = if date.month == end_date.month
                  date.strftime('%e') + '-' + end_date.strftime('%e %b')
                else
@@ -100,20 +104,16 @@ class PaginatorComponent < MountainView::Presenter
     end
   end
 
+  # Create URLs
+  def create_event_url(dt)
+    "/#{path}/#{dt.year}/#{dt.month}/#{dt.day}#{url_suffix}"
+  end
+
   # URL params to add back in
   def url_suffix
     str = []
     str << 'period=week' if period == 1.week
     str << "sort=#{sort}" if sort
     '?' + str.join('&') if str.any?
-  end
-
-  # Format date according to context
-  def format_date(date)
-    if period <= 1.day
-      todayify(date)
-    else
-      weekify(date)
-    end
   end
 end
