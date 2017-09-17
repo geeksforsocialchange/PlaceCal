@@ -29,6 +29,8 @@ gem 'icalendar-recurrence'
 gem 'paranoia', '~> 2.2'
 gem 'listen', '~> 3.0.5'
 
+gem 'whenever', require: false
+
 # Styleguide
 gem 'mountain_view'
 

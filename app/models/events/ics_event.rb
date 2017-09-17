@@ -1,4 +1,4 @@
-module Parsers
+module Events
   class IcsEvent < DefaultEvent
 
     def initialize(event, start_date, end_date)
@@ -10,19 +10,19 @@ module Parsers
     attr_reader :dtstart, :dtend
 
     def uid
-      @event.uid.value_ical
+      @event.uid
     end
 
     def summary
-      @event.summary.value_ical
+      @event.summary
     end
 
     def description
-      @event.description.value_ical
+      @event.description.gsub(/\A(\n)+\z/, '')
     end
 
     def location
-      @event.location.value_ical
+      @event.location
     end
 
     def rrule
@@ -30,7 +30,16 @@ module Parsers
     end
 
     def last_updated
-      @event.last_modified.value_ical
+      @event.last_modified
     end
+
+    def recurring_event?
+      rrule.present?
+    end
+
+    def occurrences_between(from, to)
+      @event.occurrences_between(from, to)
+    end
+
   end
 end

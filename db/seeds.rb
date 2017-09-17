@@ -77,3 +77,11 @@ Calendar.create(name: 'Old Abbey Taphouse',
                 place_id: abbey_taphouse_place.id,
                 source: 'abbeyinnmcr')
 
+#Hulme & Moss Side Age Friendly Events
+hulme_moss = Partner.create(name: 'Hulme & Moss Side Age Friendly Events')
+
+Calendar.create(name: 'Hulme & Moss Side Age Friendly Events',
+                type: :google,
+                partner_id: hulme_moss.id,
+                source: 'https://calendar.google.com/calendar/ical/d0ok3oc2trd21adadm3b8qaimg%40group.calendar.google.com/public/basic.ics')
+

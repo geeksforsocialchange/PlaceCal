@@ -12,6 +12,7 @@ module Parsers
 
       begin
         fields = ['name', 'description', 'start_time', 'end_time', 'updated_time', 'place']
+
         #Based on experience Facebook can't decide if the `since` field is based on the event date or
         #the creation date. Play it safe and start from the last import date
         results = @api.get_connections(@page, 'events', { fields: fields, since: @last_import_date.to_time.to_i })
@@ -26,7 +27,7 @@ module Parsers
         Rails.logger.debug e
       end
 
-      @events.map { |event| FacebookEvent.new(event) }
+      @events.map { |event| Events::FacebookEvent.new(event) }
     end
 
     private

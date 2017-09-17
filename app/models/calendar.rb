@@ -39,29 +39,48 @@ class Calendar < ApplicationRecord
   end
 
   # Create Events using this Calendar
-  def import_events
-    parse_event_source.group_by(&:uid).each do |uid, imports|
-      if imports.first.rrule.present?
-        Event.handle_recurring_events(uid, imports, id)
-        next
-      end
+  def import_events(from, to)
+    parse_events_from_source.each do |event_data|
+      event_data.merge!(partner_id: partner_id)
 
-      attributes = imports.first.attributes
-
-      if events.exists?(uid: uid)
-        event = Event.find_by_uid(uid)
-        event.update_attributes!(attributes.except(:uid))
+      if event_data.recurring_event?
+        occurrences = occurrences_between(from, to)
+        handle_recurring_events(event_data, occurrences)
       else
-        event = events.new(attributes)
-        event.save!
+        event      = self.events.find_or_initialize_by(uid: event_data.uid)
+        attributes = event_data.attributes(event_data.dtstart, event_data.dtend)
+        event.update_attributes!(attributes)
       end
     end
+  end
+
+  def handle_recurring_events(event_data, occurrences) # rubocop:disable all
+    calendar_events = self.events.where(uid: event_data.uid)
+
+    return unless occurrences.present?
+
+    #If any dates of this event don't match the imported start times or end times, soft delete them
+    calendar_events.without_matching_times(ocurrences.map(&:start_time), occurrences.map(&:end_time)).destroy_all if events.present?
+
+    occurrences.each do |occurrence|
+      attributes = event_data.attributes(occurrence.start_time, occurrence.end_time)
+
+      if calendar_events.present? && event = calendar_events.find_by(event_time)
+        event.update_attributes!(attributes.except(:uid))
+      else
+        self.events.create!(attributes)
+      end
+    end
+  end
+
+  def add_location
+ 
   end
 
   private
 
   # Import events from given URL
-  def parse_event_source
+  def parse_events_from_source
     case type
     when :facebook
       Parsers::Facebook.new(source, last_import_at).events

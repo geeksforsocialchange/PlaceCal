@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170908151829) do
+ActiveRecord::Schema.define(version: 20170916030904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20170908151829) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strategy"
+    t.integer "address_id"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -56,16 +57,11 @@ ActiveRecord::Schema.define(version: 20170908151829) do
     t.datetime "dtend"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "partner_id"
+    t.integer "address_id"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
     t.index ["deleted_at"], name: "index_events_on_deleted_at"
     t.index ["place_id"], name: "index_events_on_place_id"
-  end
-
-  create_table "events_partners", id: :serial, force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "partner_id"
-    t.index ["event_id"], name: "index_events_partners_on_event_id"
-    t.index ["partner_id"], name: "index_events_partners_on_partner_id"
   end
 
   create_table "partners", id: :serial, force: :cascade do |t|
@@ -132,12 +128,13 @@ ActiveRecord::Schema.define(version: 20170908151829) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "calendars", "addresses"
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "places"
+  add_foreign_key "events", "addresses"
   add_foreign_key "events", "calendars"
+  add_foreign_key "events", "partners"
   add_foreign_key "events", "places"
-  add_foreign_key "events_partners", "events"
-  add_foreign_key "events_partners", "partners"
   add_foreign_key "partners", "addresses"
   add_foreign_key "partners_places", "partners"
   add_foreign_key "partners_places", "places"

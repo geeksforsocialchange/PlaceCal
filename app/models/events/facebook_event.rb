@@ -1,4 +1,4 @@
-module Parsers
+module Events
   class FacebookEvent < DefaultEvent
     def initialize(event)
       @event = OpenStruct.new(event)
