@@ -1,0 +1,39 @@
+@import "variables_mixins"
+
+.events li
+  width: 48%
+  &:nth-of-type(2n)
+    margin-left: 2%
+  display: inline-block
+
+.event
+  margin-bottom: 2rem
+  h3
+    margin-bottom: 0.5em
+    a
+      border-bottom-width: 0
+  &__details
+    +flexbox
+    +flex-wrap(wrap)
+    border-width: 3px 0
+    border-color: $red
+    border-style: solid
+    font-weight: $semibold
+    padding: 1rem 0
+  &__time
+    +order(1)
+    +flex(1 0 70%)
+    font-weight: $bold
+    margin-bottom: 0.5rem
+  &__location
+    +order(3)
+    +flex(1 0 70%)
+  &__repeats
+    +order(2)
+  &__location, &__time, &__repeats
+    // Align image with text
+    +flexbox
+    +align-items(center)
+    img
+      margin-right: 1rem
+ 

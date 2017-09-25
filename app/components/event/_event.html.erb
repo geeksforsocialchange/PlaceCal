@@ -1,19 +1,34 @@
-<article itemscope itemtype="http://schema.org/Event">
-  <% if page? %>
-    <h1 itemprop="name"><%= summary %></h1>
-  <% else %>
-    <h3 itemprop="name"><%= link_to summary, event_path(properties[:id]) %></h3>
-  <% end %>
-  <p>
-    🕒 <time itemprop="startDate" content="<%= properties[:dtstart] %>"><%= dtstart %></time> &mdash;
-    <time itemprop="endDate" content="<%= properties[:dtend] %>"><%= dtend %></time>
-    <% if properties[:place] %>
-      📍 <%= link_to properties[:place], place_path(properties[:place]) %>
-    <% elsif properties[:location] %>
-      📍 <%= location %>
+<div class="event">
+  <article itemscope itemtype="http://schema.org/Event">
+    <% if page? %>
+      <h1 itemprop="name"><%= summary %></h1>
+    <% else %>
+      <h3 itemprop="name" class="h2"><%= link_to summary, event_path(properties[:id]) %></h3>
     <% end %>
-  </p>
-  <% if page? %>
-    <%= markdown description %>
-  <% end %>
-</article>
+    <div class="event__details h3">
+      <div class="event__time">
+        <%= image_tag 'icons/time.svg' %>
+        <time itemprop="startDate" content="<%= properties[:dtstart] %>"><%= dtstart %></time> &mdash;
+        <time itemprop="endDate" content="<%= properties[:dtend] %>"><%= dtend %></time>
+      </div>
+      <div class="event__location">
+        <% if properties[:place] %>
+          <%= image_tag 'icons/place.svg', class: "icon" %>
+          <%= link_to properties[:place], place_path(properties[:place]) %>
+        <% elsif properties[:location] %>
+          <%= image_tag 'icons/place.svg', class: "icon" %>
+          <%= location %>
+        <% end %>
+      </div>
+      <div class="event__repeats">
+        <% if frequency %>
+          <%= image_tag 'icons/repeats.svg', class: "icon" %>
+          <%= frequency %>
+        <% end %>
+      </div>
+    </div>
+    <% if page? %>
+      <%= markdown description %>
+    <% end %>
+  </article>
+</div>

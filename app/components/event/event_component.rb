@@ -40,4 +40,7 @@ class EventComponent < MountainView::Presenter
     properties[:location].split(',').first&.delete('\\')
   end
 
+  def frequency
+    properties[:rrule] ? properties[:rrule][0]['table']['frequency'].titleize : false
+  end
 end

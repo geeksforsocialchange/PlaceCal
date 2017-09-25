@@ -1,25 +1,31 @@
-<h2><%= title %></h2>
-
-<hr>
-
-<%= form_tag('', method: :get, class: 'js-pagination-sort', enforce_utf8: false) do %>
-  <%= radio_button_tag(:sort, "time", sort == 'time') %>
-  <%= label_tag(:sort_time, "Sort by Time") %>
-  <%= radio_button_tag(:sort, "summary", sort == 'summary') %>
-  <%= label_tag(:sort_summary, "Sort by Summary") %>
-  <br>
-  <%= radio_button_tag(:period, "day", period == 1.day) %>
-  <%= label_tag(:period_day, "Day View") %>
-  <%= radio_button_tag(:period, "week", period == 1.week) %>
-  <%= label_tag(:period_week, "Week View") %>
-<% end %>
-
-<ol class="paginator paginator--day reset">
-  <% paginator.each do |page| %>
-    <li>
-      <%= link_to page[0], page[1] %>
-    </li>
-  <% end %>
-</ol>
+<div class="paginator">
+  <div class="c">
+    <h2 class="h4"><%= title %></h2>
+  </div>
+  <hr>
+  <div class="c">
+    <%= form_tag('', method: :get, class: 'js-pagination-sort paginator__sort', enforce_utf8: false) do %>
+      <div class="paginator__group">
+        <%= radio_button_tag(:sort, "time", sort == 'time') %>
+        <%= label_tag(:sort_time, "Sort by date") %>
+        <%= radio_button_tag(:sort, "summary", sort == 'summary') %>
+        <%= label_tag(:sort_summary, "Sort by name") %>
+      </div>
+      <div class="paginator__group">
+        <%= radio_button_tag(:period, "day", period == 1.day) %>
+        <%= label_tag(:period_day, "Daily view") %>
+        <%= radio_button_tag(:period, "week", period == 1.week) %>
+        <%= label_tag(:period_week, "Weekly view") %>
+      </div>
+    <% end %>
+    <ol class="paginator__buttons paginator__buttons--day reset">
+      <% paginator.each do |page| %>
+      <li>
+        <%= link_to page[0], page[1] %>
+      </li>
+      <% end %>
+    </ol>
+  </div>
+</div>
 
 <hr>

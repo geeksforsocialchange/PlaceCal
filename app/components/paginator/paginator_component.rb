@@ -3,7 +3,6 @@ class PaginatorComponent < MountainView::Presenter
   properties :pointer, :period, :steps, :path, :sort
 
   DEFAULT_STEPS = 7
-  TODAY = Date.today
 
   # Link array
   def paginator # rubocop:disable Metrics/AbcSize
@@ -74,31 +73,33 @@ class PaginatorComponent < MountainView::Presenter
     end
   end
 
-  # Formatting for if we are seeing less than a day's worth of events
+  # Format the button for a day or less of events
   def todayify(date)
+    today = Date.today
     date_fmt = date.strftime('%a %e %b')
     # Show day name e.g. "Fri 15th Sep"
-    if date == TODAY
-      "Today (#{date_fmt})"
-    elsif date == TODAY + 1.day
-      "Tomorrow (#{date_fmt})"
+    if date == today
+      'Today'
+    elsif date == today + 1.day
+      'Tomorrow'
     else
       date_fmt
     end
   end
 
-  def weekify(date)
-    # Format the date
+  # Format the button for a week of events
+  def weekify(date) # rubocop:disable Metrics/MethodLength
+    today = Date.today
     end_date = date + period - 1.day
     date_fmt = if date.month == end_date.month
-                 date.strftime('%e') + '-' + end_date.strftime('%e %b')
+                 "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
                else
                  # Show date range e.g. "15 Sep - 22 Sep"
-                 date.strftime('%e %b') + ' – ' + end_date.strftime('%e %b')
+                 "#{date.strftime('%e %b')} – #{end_date.strftime('%e %b')}"
                end
     # Add in note if it's the current week
-    if date == TODAY.beginning_of_week
-      "This week (#{date_fmt})"
+    if date == today.beginning_of_week
+      'This week'
     else
       date_fmt
     end

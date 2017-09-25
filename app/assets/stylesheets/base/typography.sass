@@ -1,10 +1,34 @@
 body
-  font-family: 'Raleway', sans-serif
+  font-family: $sans-serif
+  font-weight: $semibold
   font-size: 18px
   color: $grey
 
-h1, h2
-  font-weight: 900
+// Large titles at the top of the page
+h1
+  font-family: $serif
+  font-weight: normal
+  font-size: 2.22222rem // 40px
+
+// Main page sections
+h2, .h2
+  +h2
+
+h3, .h3
+  font-size: 1.33333rem // 24px
+  font-weight: $extra-bold
+
+h4, .h4
+  +h4
 
 a
-  color: $red
+  text-decoration: none
+  color: $grey
+  border-width: 0 0 2px 0
+  border-style: solid
+  border-color: $green
+
+hr
+  border-color: $green
+  border-width: 2px
+  border-style: solid

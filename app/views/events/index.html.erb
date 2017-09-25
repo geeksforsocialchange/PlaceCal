@@ -1,25 +1,29 @@
-<h1>Events in Hulme &amp; Moss Side</h1>
+<%= render_component "hero", title: "Hulme & Moss Side",
+                             subtitle: "Location" %>
 
 <%= render_component "paginator", pointer: @current_day,
                                   period: @period,
                                   sort: @sort %>
 
-<% if @events.any? %>
-  <ol class="events reset">
-    <% @events.each do |event| %>
-      <li class="event">
-        <%= render_component "event", context: @period,
-                                      id: event.id,
-                                      path: event_path(event),
-                                      place: event.place,
-                                      partner: event.partners,
-                                      summary: event.summary,
-                                      dtstart: event.dtstart,
-                                      dtend: event.dtend,
-                                      location: event.location %>
-      </li>
-    <% end %>
-  </ol>
-<% else %>
-  <p>No events today 😞</p>
-<% end %>
+<div class="c">
+  <% if @events.any? %>
+    <ol class="events reset">
+      <% @events.each do |event| %>
+        <li>
+          <%= render_component "event", context: @period,
+                                        id: event.id,
+                                        path: event_path(event),
+                                        place: event.place,
+                                        partner: event.partners,
+                                        summary: event.summary,
+                                        dtstart: event.dtstart,
+                                        dtend: event.dtend,
+                                        rrule: event.rrule,
+                                        location: event.location %>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <p>No events today 😞</p>
+  <% end %>
+</div>

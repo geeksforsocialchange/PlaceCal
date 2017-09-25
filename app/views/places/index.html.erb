@@ -1,12 +1,14 @@
-<h1>Places</h1>
+<%= render_component "hero", title: "Places", subtitle: "Hulme & Moss Side" %>
 
-<ul class="places reset">
-  <% @places.each do |place| %>
-    <li class="place">
-      <%= render_component "place", id: place.id,
-                                    name: place.name,
-                                    description: place.short_description,
-                                    address: place.address %>
-    </li>
-  <% end %>
-</ul>
+<div class="c">
+  <ul class="places reset">
+    <% @places.each do |place| %>
+      <li class="place">
+        <%= render_component "place", id: place.id,
+                                      name: place.name,
+                                      description: place.short_description,
+                                      address: place.address %>
+      </li>
+    <% end %>
+  </ul>
+</div>

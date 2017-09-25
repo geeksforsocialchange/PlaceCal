@@ -1,7 +1,5 @@
 <% if page? %>
-  <h1><%= properties[:name] %></h1>
-  <p><%= properties[:short_description] %></p>
-  <p><%= properties[:address] %></p>
+  <%= render_component "hero", title: properties[:name], subtitle: properties[:address] %>
 <% else %>
   <h3><%= link_to properties[:name], place_path(properties[:id]) %></h3>
 <% end %>

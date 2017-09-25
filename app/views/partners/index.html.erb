@@ -1,12 +1,12 @@
-<p id="notice"><%= notice %></p>
+<%= render_component "hero", title: "Partners", subtitle: "Hulme & Moss Side" %>
 
-<h1>Partners</h1>
-
-<ul class="partners reset">
-  <% @partners.each do |partner| %>
-    <li>
-      <h3><%= link_to partner.name, partner %></h3>
-      <p><%= partner.address %></p>
-    </li>
-  <% end %>
-</ul>
+<div class="c">
+  <ul class="partners reset">
+    <% @partners.each do |partner| %>
+      <li>
+        <h3><%= link_to partner.name, partner %></h3>
+        <p><%= partner.address %></p>
+      </li>
+    <% end %>
+  </ul>
+</div>

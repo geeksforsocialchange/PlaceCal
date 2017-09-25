@@ -1,11 +1,10 @@
-@import "variables_mixins.sass"
+@import "variables_mixins"
 
 .header
   display: flex
   align-items: baseline
   justify-content: space-between
   flex-wrap: wrap
-  border-bottom: 1px solid black
   h2
     margin-bottom: 0
 
@@ -18,15 +17,13 @@
     background-size: (458px / 2) (136px / 2)
 
 .nav__primary
+  +h4
   display: flex
-  text-transform: uppercase
-  font-weight: bold
   li
     list-style-type: none
-    margin-right: 1rem
+    margin-right: 2rem
     a
-      text-decoration: none
-      color: $grey
+      border-bottom-width: 0
       &:hover, &:active
         border-width: 0 0 4px 0
         border-color: $green

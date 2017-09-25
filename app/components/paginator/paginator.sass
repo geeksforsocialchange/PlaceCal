@@ -1,8 +1,43 @@
+@import "variables_mixins.sass"
+
+=border-highlight
+  border-color: $green
+  border-width: 3px
+  border-style: solid
+  border-radius: 1rem
+  overflow: hidden
+
 .paginator
-  display: flex
-  flex-wrap: wrap
-  justify-content: space-between
-  li
-    flex-grow: 1
+  text-align: center
+  form
+    margin-bottom: 1rem
+  h2
     text-align: center
-    margin: 0 0.5rem
+    margin: 2rem 0
+  hr
+    margin-bottom: 1rem
+  &__buttons
+    li
+      +border-highlight
+      padding: 0.3rem 1rem
+      display: inline-block
+      text-align: center
+      margin: 0 0.5rem
+      &.active, &:hover
+        background-color: $green
+    a
+      border-bottom-width: 0
+  &__group
+    +border-highlight
+    display: inline-flex // TODO: fix this
+  &__sort
+    // We will do this with labels
+    input[type=radio]
+      display: none
+      visibility: hidden
+    label
+      cursor: pointer
+      display: inline-block
+      padding: 0.3rem 1rem
+    input[type=radio]:checked + label
+      background-color: $green
