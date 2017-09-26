@@ -1,9 +1,11 @@
 @import "variables_mixins"
 
 .events li
-  width: 48%
-  &:nth-of-type(2n)
-    margin-left: 2%
+  width: 100%
+  +for-tablet-landscape-up
+    width: 48%
+    &:nth-of-type(2n)
+      margin-left: 2%
   display: inline-block
 
 .event

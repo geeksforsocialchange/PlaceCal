@@ -1,19 +1,25 @@
-<div class="c">
-  <div class="header">
-    <div class="header__branding" role="banner">
-      <%= link_to root_path do %>
-        <h2>PlaceCal</h2>
-        <p>The Community Calendar</p>
-      <% end %>
-    </div>
-    <nav>
-      <ul class="nav nav__primary" role="navigation">
-        <li><%= link_to "Home", root_path %></li>
-        <li><%= link_to "Events", events_path %></li>
-        <li><%= link_to "Places", places_path %></li>
-        <li><%= link_to "Partners", partners_path %></li>
-        <li><%= link_to "Join", join_path %></li>
-      </ul>
-    </nav>
+<div class="header">
+  <div class="header__branding" role="banner">
+    <%= link_to root_path do %>
+      <h2>PlaceCal</h2>
+      <p>The Community Calendar</p>
+    <% end %>
   </div>
+  <nav class="nav header__menu js-menu" role="navigation">
+    <ul>
+      <li><%= link_to "Home", root_path %></li>
+      <li><%= link_to "Events", events_path %></li>
+      <li><%= link_to "Places", places_path %></li>
+      <li><%= link_to "Partners", partners_path %></li>
+      <li><%= link_to "Join", join_path %></li>
+    </ul>
+  </nav>
+  <a href="#" class="header__toggle js-menu-toggle" data-turbolinks="false">
+    <svg viewBox="0 0 33 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <polygon points="0 5 33 5 33 0 0 0"></polygon>
+      <polygon points="0 18 33 18 33 13 0 13"></polygon>
+      <polygon points="0 31 33 31 33 26 0 26"></polygon>
+    </svg>
+  </a>
 </div>
+
