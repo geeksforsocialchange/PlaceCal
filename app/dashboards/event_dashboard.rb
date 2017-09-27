@@ -8,9 +8,10 @@ class EventDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    partners: Field::HasMany,
+    partner: Field::BelongsTo,
     place: Field::BelongsTo,
     calendar: Field::BelongsTo,
+    address: Field::BelongsTo,
     id: Field::Number,
     uid: Field::String,
     summary: Field::Text,
@@ -42,9 +43,10 @@ class EventDashboard < Administrate::BaseDashboard
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = [
-    :partners,
+    :partner,
     :place,
     :calendar,
+    :address,
     :id,
     :uid,
     :summary,
@@ -64,7 +66,7 @@ class EventDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
-    :partners,
+    :partner,
     :place,
     :calendar,
     :uid,

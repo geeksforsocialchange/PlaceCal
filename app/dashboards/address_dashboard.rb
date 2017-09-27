@@ -17,6 +17,7 @@ class AddressDashboard < Administrate::BaseDashboard
     country_code: Field::String,
     latitude: Field::Number.with_options(decimals: 2),
     longitude: Field::Number.with_options(decimals: 2),
+    events: Field::HasMany,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -29,6 +30,7 @@ class AddressDashboard < Administrate::BaseDashboard
     :street_address,
     :street_address2,
     :street_address3,
+    :events,
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -43,6 +45,7 @@ class AddressDashboard < Administrate::BaseDashboard
     :country_code,
     :latitude,
     :longitude,
+    :events
   ].freeze
 
   # FORM_ATTRIBUTES
