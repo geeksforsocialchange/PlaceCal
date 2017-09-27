@@ -1,11 +1,11 @@
 Geocoder.configure(
   :google_places_search => {
-    :api_key => 'AIzaSyAVpTXMhQcfXrUGt1eT5nW0FHvUCW-x_AE'
+    :api_key => ENV["GOOGLE_API_KEY"]
   },
   :google_places_details => {
-    :api_key => 'AIzaSyAVpTXMhQcfXrUGt1eT5nW0FHvUCW-x_AE'
+    :api_key => ENV["GOOGLE_API_KEY"]
   },
   :google => {
-    :api_key => 'AIzaSyAVpTXMhQcfXrUGt1eT5nW0FHvUCW-x_AE'
+    :api_key => ENV["GOOGLE_API_KEY"]
   }
 )
