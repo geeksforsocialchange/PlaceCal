@@ -3,7 +3,7 @@ namespace :import do
   #No data for calendar of type `other` right now. 
   task all_events: :environment do
     Calendar.without_type(:other).each do |calendar|
-      import_events_from_source(calendar.id)
+      import_events_from_source(calendar.id, Date.today.beginning_of_day, 1.year.from_now)
     end
   end
 
