@@ -33,6 +33,8 @@ gem 'listen', '~> 3.0.5'
 gem 'paranoia', '~> 2.2'
 gem 'virtus'
 
+gem 'whenever', require: false
+
 # Styleguide
 gem 'mountain_view'
 
@@ -45,6 +47,8 @@ gem 'administrate-field-password'
 
 # Markdown
 gem 'kramdown'
+
+gem 'delayed_job_active_record'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger

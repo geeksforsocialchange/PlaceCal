@@ -14,8 +14,8 @@ class CalendarDashboard < Administrate::BaseDashboard
     id: Field::Number,
     name: Field::String,
     source: Field::String,
-    type: Field::String,
-    strategy: Field::String,
+    type: Field::Select.with_options(collection: Calendar.type.values),
+    strategy: Field::Select.with_options(collection: Calendar.strategy.values),
     notices: Field::String.with_options(searchable: false),
     last_import_at: Field::DateTime,
     created_at: Field::DateTime,
@@ -33,6 +33,7 @@ class CalendarDashboard < Administrate::BaseDashboard
     :place,
     :events,
     :id,
+    :last_import_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
