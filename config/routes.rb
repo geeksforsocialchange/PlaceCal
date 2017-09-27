@@ -4,21 +4,21 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   root 'pages#home'
 
   # Core resources
-  resources :events
+  resources :events, only: %i[index show]
   get '/events/:year/:month/:day' => 'events#index', constraints: {
     year:       /\d{4}/,
     month:      /\d{1,2}/,
     day:        /\d{1,2}/
   }
-  resources :places
+  resources :places, only: %i[index show]
   get '/places/:id/events' => 'places#show'
   get '/places/:id/events/:year/:month/:day' => 'places#show', constraints: {
     year:       /\d{4}/,
     month:      /\d{1,2}/,
     day:        /\d{1,2}/
   }
-  resources :partners
-  resources :calendars
+  resources :partners, only: %i[index show]
+  resources :calendars, only: %i[index show]
 
   # Users
   devise_for :users
