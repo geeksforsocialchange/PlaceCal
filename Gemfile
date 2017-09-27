@@ -30,6 +30,7 @@ gem 'geocoder'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'
 gem 'listen', '~> 3.0.5'
+gem 'mailgun'
 gem 'paranoia', '~> 2.2'
 gem 'virtus'
 
