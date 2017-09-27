@@ -5,9 +5,8 @@ class Event < ApplicationRecord
   has_and_belongs_to_many :partners
 
   belongs_to :place, required: false
+  belongs_to :address, required: false
   belongs_to :calendar
-
-  before_validation :set_place_and_partner
 
   # Find by day
   scope :find_by_day, lambda { |day|
@@ -32,10 +31,4 @@ class Event < ApplicationRecord
     where.not(dtstart: start_times).or(where.not(dtend: end_times))
   }
 
-  def set_place_and_partner
-    return if place_id.present? || partner_id.present?
-
-    self.place_id   = calendar.place_id
-    self.partner_id = calendar.partner_id
-  end
 end

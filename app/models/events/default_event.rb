@@ -5,6 +5,8 @@ module Events
       @event = event
     end
 
+    attr_accessor :place_id, :address_id, :partner_id
+
     def rrule
       nil
     end
@@ -16,7 +18,10 @@ module Events
         summary:     summary&.strip,
         description: description&.strip,
         location:    location&.strip,
-        rrule:       rrule
+        rrule:       rrule,
+        place_id:    place_id,
+        address_id:  address_id,
+        partner_id:  partner_id
       }
     end
 

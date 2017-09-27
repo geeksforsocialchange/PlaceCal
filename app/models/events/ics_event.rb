@@ -9,20 +9,21 @@ module Events
 
     attr_reader :dtstart, :dtend
 
+    #to_s has to be called on any value returned by icalendar, or it will return a Icalendar::Values instead of a String
     def uid
-      @event.uid
+      @event.uid.to_s
     end
 
     def summary
-      @event.summary
+      @event.summary.to_s
     end
 
     def description
-      @event.description.gsub(/\A(\n)+\z/, '')
+      @event.description.to_s.gsub(/\A(\n)+\z/, '')
     end
 
     def location
-      @event.location
+      @event.location.to_s
     end
 
     def rrule
@@ -30,7 +31,7 @@ module Events
     end
 
     def last_updated
-      @event.last_modified
+      @event.last_modified.to_s
     end
 
     def recurring_event?

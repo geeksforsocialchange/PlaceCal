@@ -42,6 +42,7 @@ Calendar.create(name: 'Kath Locke Centre Guide',
                 type: :outlook,
                 partner_id: blc.id,
                 place_id: kath_locke_place.id,
+                strategy: 'room_number',
                 source: 'https://outlook.office365.com/owa/calendar/51588529b2f24206a4b1098e837159c7@thebiglifegroup.com/9d568b127b2c4760b726aff87e3ddaca9265853961212541948/calendar.ics')
 
 #Red Bricks - Bentley House TARA Office
@@ -83,5 +84,6 @@ hulme_moss = Partner.create(name: 'Hulme & Moss Side Age Friendly Events')
 Calendar.create(name: 'Hulme & Moss Side Age Friendly Events',
                 type: :google,
                 partner_id: hulme_moss.id,
+                strategy: 'event',
                 source: 'https://calendar.google.com/calendar/ical/d0ok3oc2trd21adadm3b8qaimg%40group.calendar.google.com/public/basic.ics')
 

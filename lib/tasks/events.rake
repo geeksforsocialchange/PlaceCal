@@ -1,13 +1,16 @@
 namespace :import do
-  task :events_from_source, [:calendar_id] => [:environment] do |t, args|
-    import_events_from_source(args[:calendar_id], Date.today.beginning_of_day, 1.year.from_now)
-  end
 
+  #No data for calendar of type `other` right now. 
   task all_events: :environment do
     Calendar.without_type(:other).each do |calendar|
       import_events_from_source(calendar.id)
     end
   end
+
+  task :events_from_source, [:calendar_id] => [:environment] do |t, args|
+    import_events_from_source(args[:calendar_id], Date.today.beginning_of_day, 1.year.from_now)
+  end
+
 
   #calendar_id - object id of calendar to be imported.
   #from - import events starting from this date. Must use format 'dd-mm-yy'.
