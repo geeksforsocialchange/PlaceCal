@@ -9,7 +9,7 @@ module Admin
     before_action :authenticate_admin
 
     def authenticate_admin
-      authorized = current_user && (current_user.role == 'administrator')
+      authorized = current_user && (current_user.role == 'admin')
       redirect_to '/', alert: 'Not authorized' unless authorized
     end
 

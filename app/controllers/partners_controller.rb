@@ -1,5 +1,5 @@
 class PartnersController < ApplicationController
-  before_action :set_partner, only: [:show, :edit, :update, :destroy]
+  before_action :set_partner, only: :show
 
   # GET /partners
   # GET /partners.json
@@ -9,8 +9,7 @@ class PartnersController < ApplicationController
 
   # GET /partners/1
   # GET /partners/1.json
-  def show
-  end
+  def show; end
 
   # GET /partners/new
   def new
@@ -18,8 +17,7 @@ class PartnersController < ApplicationController
   end
 
   # GET /partners/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /partners
   # POST /partners.json
@@ -62,13 +60,14 @@ class PartnersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_partner
-      @partner = Partner.find(params[:id])
-    end
+  
+  # Use callbacks to share common setup or constraints between actions.
+  def set_partner
+    @partner = Partner.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def partner_params
-      params.fetch(:partner, {})
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def partner_params
+    params.fetch(:partner, {})
+  end
 end

@@ -1,25 +1,18 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Users</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td><%= link_to 'Show', user %></td>
-        <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New User', new_user_path %>
+<% if user_signed_in? %>
+  <%= render_component "hero", title: current_user.email, subtitle: "Your profile" %>
+  <div class="c">
+    <p>
+      Logged in as <strong><%= current_user.email %></strong><br><br>
+      <%= link_to 'Edit profile', edit_user_registration_path %><br>
+      <%= link_to "Logout", destroy_user_session_path, method: :delete  %>
+    </p>
+  </div>
+<% else %>
+  <%= render_component "hero", title: "Sign Up", subtitle: "Create an account or log in" %>
+  <div class="c">
+    <p>
+      <%= link_to "Sign up", new_user_registration_path  %><br>
+      <%= link_to "Login", new_user_session_path  %>
+    </p>
+  </div>      
+<% end %>

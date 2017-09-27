@@ -1,4 +1,14 @@
-<p id="notice"><%= notice %></p>
+<%= render_component "hero", title: @partner.name, subtitle: "Partner" %>
 
-<%= link_to 'Edit', edit_partner_path(@partner) %> |
-<%= link_to 'Back', partners_path %>
+<div class="c">
+  <p>More useful information coming here soon.</p>
+  <% if @partner.places.any? %>
+    <h2>Places</h2>
+    <p>This organisation manages the following places:</p>
+    <ul>
+      <% @partner.places.each do |place| %>
+        <li><%= link_to place.name, place %></li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
