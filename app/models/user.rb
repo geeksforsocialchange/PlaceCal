@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_and_belongs_to_many :partners
 
   validates_presence_of :email
+  validates_uniqueness_of :email
 
   extend Enumerize
 
