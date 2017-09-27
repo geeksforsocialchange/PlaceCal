@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class UserDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -15,8 +15,8 @@ class UserDashboard < Administrate::BaseDashboard
     role: Field::String,
     phone: Field::String,
     email: Field::String,
-    password: Field::String,
-    password_confirmation: Field::String,
+    password: Field::Password,
+    password_confirmation: Field::Password,
     encrypted_password: Field::String,
     reset_password_token: Field::String,
     reset_password_sent_at: Field::DateTime,
@@ -27,7 +27,7 @@ class UserDashboard < Administrate::BaseDashboard
     current_sign_in_ip: Field::String.with_options(searchable: false),
     last_sign_in_ip: Field::String.with_options(searchable: false),
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -63,7 +63,7 @@ class UserDashboard < Administrate::BaseDashboard
     :current_sign_in_ip,
     :last_sign_in_ip,
     :created_at,
-    :updated_at,
+    :updated_at
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -73,7 +73,7 @@ class UserDashboard < Administrate::BaseDashboard
     # :partners,
     :first_name,
     :last_name,
-    # :role,
+    :role,
     :phone,
     :email,
     :password,

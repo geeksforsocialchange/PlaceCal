@@ -51,6 +51,8 @@ GEM
       momentjs-rails (~> 2.8)
       sass-rails (~> 5.0)
       selectize-rails (~> 0.6)
+    administrate-field-password (0.0.4)
+      administrate
     arel (8.0.0)
     autoprefixer-rails (7.1.4)
       execjs
@@ -267,6 +269,7 @@ PLATFORMS
 
 DEPENDENCIES
   administrate
+  administrate-field-password
   awesome_print
   better_errors
   binding_of_caller

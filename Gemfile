@@ -41,6 +41,7 @@ gem 'groupdate'
 
 # Administration
 gem 'administrate'
+gem 'administrate-field-password'
 
 # Markdown
 gem 'kramdown'
