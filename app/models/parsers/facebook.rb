@@ -33,7 +33,7 @@ module Parsers
     private
 
     def access_token
-      @oauth = Koala::Facebook::OAuth.new(ENV["APP_ID"], ENV["APP_SECRET"])
+      @oauth = Koala::Facebook::OAuth.new(ENV["FACEBOOK_APP_ID"], ENV["FACEBOOK_APP_SECRET"])
       @oauth.get_app_access_token
     end
   end

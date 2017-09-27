@@ -90,7 +90,7 @@ class Calendar < ApplicationRecord
   # Import events from given URL
   def parse_events_from_source
     case type
-    when :facebook
+    when "facebook"
       Parsers::Facebook.new(source, last_import_at).events
     else
       Parsers::Ics.new(source).events
