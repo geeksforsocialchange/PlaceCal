@@ -2,7 +2,7 @@
 class Event < ApplicationRecord
   acts_as_paranoid
 
-  has_and_belongs_to_many :partners
+  belongs_to :partner
 
   belongs_to :place, required: false
   belongs_to :address, required: false
