@@ -4,9 +4,10 @@ class Calendar < ApplicationRecord
 
   belongs_to :partner
   belongs_to :place, required: false
-  has_many :events
+  has_many :events, dependent: :destroy
 
   validates_presence_of :name
+  validates_uniqueness_of :source
 
   extend Enumerize
 

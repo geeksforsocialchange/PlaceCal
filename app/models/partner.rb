@@ -7,6 +7,7 @@ class Partner < ApplicationRecord
   belongs_to :address, required: false
 
   validates_presence_of :name
+  validates_uniqueness_of :name
 
   def to_s
     name

@@ -7,6 +7,7 @@ class Place < ApplicationRecord
   belongs_to :address
 
   validates_presence_of :name
+  validates_uniqueness_of :name
 
   # Max events to show on Place page before going to a day-by-day view
   # Needs some refactoring to work
