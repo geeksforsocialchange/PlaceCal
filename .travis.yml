@@ -1,3 +1,8 @@
 language: ruby
+
+dist: trusty
+addons:
+  postgresql: "9.6"
+
 before_script:
   - psql -c 'create database placecal_test;' -U postgres
