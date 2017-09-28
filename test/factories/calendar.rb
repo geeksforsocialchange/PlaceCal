@@ -1,13 +1,10 @@
 FactoryGirl.define do
   factory(:calendar) do
-    address_id nil
-    last_import_at "2017-09-27T14:38Z"
-    name "HCGC Big Events"
+    name 'Zion Centre'
+    source ''
     notices nil
-    partner_id 3
-    place_id 1
-    source "HulmeCommunityGardenCentre"
-    strategy "place"
-    type "facebook"
+    strategy 'place'
+    type 'outlook'
+    last_import_at '2017-09-27T14:38Z'
   end
 end
