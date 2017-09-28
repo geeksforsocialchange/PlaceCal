@@ -1,1 +1,3 @@
 language: ruby
+before_script:
+  - psql -c 'create database placecal_test;' -U postgres
