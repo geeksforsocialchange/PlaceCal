@@ -36,7 +36,7 @@ Calendar.create(name: 'Zion Centre Guide',
                 type: :outlook,
                 partner_id: blc.id,
                 place_id: zion_place.id,
-                source: 'https://outlook.office365.com/owa/calendar/51588529b2f24206a4b1098e837159c7@thebiglifegroup.com/9d568b127b2c4760b726aff87e3ddaca9265853961212541948/calendar.ics')
+                source: 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics')
 
 Calendar.create(name: 'Kath Locke Centre Guide',
                 type: :outlook,
@@ -85,5 +85,5 @@ Calendar.create(name: 'Hulme & Moss Side Age Friendly Events',
                 type: :google,
                 partner_id: hulme_moss.id,
                 strategy: 'event',
-                source: 'https://calendar.google.com/calendar/ical/d0ok3oc2trd21adadm3b8qaimg%40group.calendar.google.com/public/basic.ics')
+                source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics')
 
