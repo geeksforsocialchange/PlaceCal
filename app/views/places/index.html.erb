@@ -1,5 +1,7 @@
 <%= render_component "hero", title: "Places", subtitle: "Hulme & Moss Side" %>
 
+<%= render_component "map", points: @map %>
+
 <div class="c">
   <ul class="places reset">
     <% @places.each do |place| %>

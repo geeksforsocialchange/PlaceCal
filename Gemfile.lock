@@ -176,6 +176,8 @@ GEM
       faraday
       json (>= 1.8)
     kramdown (1.13.2)
+    leaflet-rails (1.2.0)
+      rails (>= 4.2.0)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -354,6 +356,7 @@ DEPENDENCIES
   jquery-rails
   koala
   kramdown
+  leaflet-rails
   listen (~> 3.0.5)
   mailgun_rails
   mountain_view

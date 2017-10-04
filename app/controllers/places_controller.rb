@@ -10,15 +10,16 @@ class PlacesController < ApplicationController
   # GET /places.json
   def index
     @places = Place.order(:name)
+    @map = @places.map { |p| [p.address.latitude, p.address.longitude, p.name] }
   end
 
   # GET /places/1
   # GET /places/1.json
   def show
-    @period = params[:period].to_s || 'week'
+    @period = params[:period] || 'week'
     events = filter_events(@period, @place)
     # Sort criteria
-    @sort = params[:sort].to_s
+    @sort = params[:sort].to_s || 'time'
     @events = sort_events(events, @sort)
   end
 
