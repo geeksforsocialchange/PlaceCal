@@ -2,12 +2,19 @@ class MapComponent < MountainView::Presenter
   properties :points, :zoom
 
   def markers
-    properties[:points]
+    # FIXME: for some reason tests are returning [nil] from properties[:points]
+    properties[:points] == [nil] ? [] : properties[:points]
   end
 
   def center
     m = markers
-    m.length > 1 ? find_center(m) : [m[0][:lat], m[0][:lon]]
+    if m.length > 1
+      find_center(m)
+    elsif m.length == 1
+      [m[0][:lat], m[0][:lon]]
+    else
+      false
+    end
   end
 
   def zoom

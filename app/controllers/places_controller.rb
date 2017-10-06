@@ -11,6 +11,7 @@ class PlacesController < ApplicationController
   def index
     @places = Place.order(:name)
     @map = @places.map do |p|
+      next unless p.address && p.address.latitude
       {
         lat: p.address.latitude,
         lon: p.address.longitude,
@@ -29,11 +30,15 @@ class PlacesController < ApplicationController
     @sort = params[:sort].to_s || 'time'
     @events = sort_events(events, @sort)
     # Map
-    @map = [{
-      lat: @place.address.latitude,
-      lon: @place.address.longitude,
-      name: @place.name
-    }]
+    @map = if @place.address && @place.address.latitude
+             [{
+               lat: @place.address.latitude,
+               lon: @place.address.longitude,
+               name: @place.name
+             }]
+           else
+             []
+           end
   end
 
   # GET /places/new
