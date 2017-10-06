@@ -4,7 +4,7 @@
                               address: @place.address,
                               description: @place.short_description %>
 
-<%= render_component "map", points: [[@place.address.latitude, @place.address.longitude]] %>                        
+<%= render_component "map", points: @map %>                        
 
 <%= render_component "paginator", pointer: @current_day,
                                   period: @period,

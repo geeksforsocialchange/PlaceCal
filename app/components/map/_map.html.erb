@@ -8,11 +8,13 @@
   // Iterate all the markers
   var markerArray = []
   <% markers.each do |m| %>
-    markerArray.push(L.marker(<%= m[:latlng] %>));
+    marker = L.marker(<%= [m[:lat], m[:lon]] %>).addTo(map);
+    marker.bindTooltip("<%= m[:name] %>", { permanent: true }).openTooltip();
+    markerArray.push(marker);
   <% end %>
 
   // Create a group for all markers and add to map
-  var markerGroup = L.featureGroup(markerArray).addTo(map)
+  var markerGroup = L.featureGroup(markerArray)
   map.fitBounds(markerGroup.getBounds());
 
   // Add the basemap
