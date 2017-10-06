@@ -2,14 +2,14 @@ class MapComponent < MountainView::Presenter
   properties :points, :zoom
 
   def center
-    p = properties[:points][0]
-    p.length > 1 ? properties[:points][0]
+    m = markers
+    m.length > 1 ? find_center(m) : m[0][:latlng]
   end
 
   def markers
-    # Input format: [x, y, name]
-    # Target: [
-    #           { latlng: [x, y], popup: 'hello' },
+    # Input: [x, y, name]
+    # Output: [
+    #           { latlng: [x, y], popup: 'hello', arbitrary: 'string' },
     #           { latlng: [x, y], popup: 'hello' }
     #         ]
     properties[:points].map { |p| { latlng: [p[0], p[1]] } }
@@ -17,5 +17,14 @@ class MapComponent < MountainView::Presenter
 
   def zoom
     properties[:zoom] || 16
+  end
+
+  private
+
+  def find_center(m)
+    [
+      m.map { |p| p[:latlng][0] }.sum / m.length,
+      m.map { |p| p[:latlng][1] }.sum / m.length
+    ]
   end
 end

@@ -1,8 +1,23 @@
-<%= map(
-  center: {
-    latlng: center,
-    zoom: zoom
-  },
-  markers: markers
-) 
-%>
+<div id="js-map" class="map<%= " map--high" if markers.length > 1 %>"></div>
+
+<script>  
+  // Init the map and give it a sensible starting location
+  var map = L.map('js-map');
+  map.setView(<%= center %>, <%= zoom %>);
+
+  // Iterate all the markers
+  var markerArray = []
+  <% markers.each do |m| %>
+    markerArray.push(L.marker(<%= m[:latlng] %>));
+  <% end %>
+
+  // Create a group for all markers and add to map
+  var markerGroup = L.featureGroup(markerArray).addTo(map)
+  map.fitBounds(markerGroup.getBounds());
+
+  // Add the basemap
+  L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: 'PlaceCal',
+            maxZoom: 18,
+  }).addTo(map);
+</script>

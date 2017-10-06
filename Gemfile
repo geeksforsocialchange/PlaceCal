@@ -68,6 +68,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'guard'
+  gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
   gem 'rails-erd', require: false
   gem 'spring'
