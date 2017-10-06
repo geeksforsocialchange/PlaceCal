@@ -10,16 +10,35 @@ class PlacesController < ApplicationController
   # GET /places.json
   def index
     @places = Place.order(:name)
+    @map = @places.map do |p|
+      next unless p.address && p.address.latitude
+      {
+        lat: p.address.latitude,
+        lon: p.address.longitude,
+        name: p.name
+      }
+    end
   end
 
   # GET /places/1
   # GET /places/1.json
   def show
-    @period = params[:period].to_s || 'week'
+    # Period to show
+    @period = params[:period] || 'week'
     events = filter_events(@period, @place)
     # Sort criteria
-    @sort = params[:sort].to_s
+    @sort = params[:sort].to_s || 'time'
     @events = sort_events(events, @sort)
+    # Map
+    @map = if @place.address && @place.address.latitude
+             [{
+               lat: @place.address.latitude,
+               lon: @place.address.longitude,
+               name: @place.name
+             }]
+           else
+             []
+           end
   end
 
   # GET /places/new

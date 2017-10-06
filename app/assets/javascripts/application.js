@@ -14,4 +14,5 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require mountain_view
+//= require leaflet
 //= require_tree .

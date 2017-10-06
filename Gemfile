@@ -29,6 +29,7 @@ gem 'enumerize'
 gem 'geocoder'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'
+gem 'leaflet-rails'
 gem 'listen', '~> 3.0.5'
 gem 'mailgun_rails'
 gem 'paranoia', '~> 2.2'
@@ -67,6 +68,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'guard'
+  gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
   gem 'rails-erd', require: false
   gem 'spring'
