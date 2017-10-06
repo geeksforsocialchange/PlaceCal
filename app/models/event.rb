@@ -30,4 +30,8 @@ class Event < ApplicationRecord
   scope :without_matching_times, ->(start_times, end_times) {
     where.not(dtstart: start_times).or(where.not(dtend: end_times))
   }
+
+  def repeat_frequency
+    rrule[0]["table"]["frequency"].titleize if rrule
+  end
 end
