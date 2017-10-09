@@ -1,6 +1,7 @@
 module Parsers
   class Ics
-    def initialize(file)
+
+    def initialize(file, params={})
       @file = file
     end
 

@@ -33,11 +33,11 @@ module Events
     end
 
     def dtstart
-      DateTime.parse(@event.start_time)
+      @event.start_time
     end
 
     def dtend
-      DateTime.parse(@event.end_time)
+      @event.end_time
     end
 
     def last_updated
@@ -51,12 +51,10 @@ module Events
     def occurrences_between(from, to)
       @occurrences = []
 
-      @event.event_times.each do |times|
-        start_time = DateTime.parse(times["start_time"])
-
-        if start_time >= from && start_time <= to
-          @occurrences << Dates.new(start_time, DateTime.parse(times["end_time"]))
-        end
+      unless recurring_event?
+        @occurrences << Dates.new(dtstart, dtend)
+      else
+        @event.event_times.each { |times| @occurrences << Dates.new(times["start_time"], times["end_time"]) }
       end
 
       @occurrences

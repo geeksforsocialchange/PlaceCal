@@ -1,12 +1,15 @@
 # app/models/event.rb
 class Event < ApplicationRecord
   acts_as_paranoid
+  has_paper_trail
 
   belongs_to :partner
 
   belongs_to :place, required: false
   belongs_to :address, required: false
   belongs_to :calendar
+
+  validates :summary, :dtstart, :dtend, presence: true
 
   # Find by day
   scope :find_by_day, lambda { |day|
@@ -30,4 +33,11 @@ class Event < ApplicationRecord
   scope :without_matching_times, ->(start_times, end_times) {
     where.not(dtstart: start_times).or(where.not(dtend: end_times))
   }
+
+  scope :upcoming_for_date, ->(from) { where("dtstart >= ?", from.beginning_of_day) }
+
+  def update_with_attributes(attributes)
+    unless  event.update(attributes)
+    end
+  end
 end
