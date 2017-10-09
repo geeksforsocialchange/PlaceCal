@@ -24,6 +24,7 @@ module Events
     end
 
     def location
+      return if place.blank?
       address = place['location']
       if address.present?
         [ place['name'], address['street'], address['city'], address['zip'] ].reject(&:blank?).join(', ')

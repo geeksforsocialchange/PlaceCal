@@ -87,6 +87,8 @@ class Calendar < ApplicationRecord
     upcoming_events = self.events.upcoming_for_date(from)
     deleted_events = upcoming_events.where.not(uid: uids).pluck(:uid)
 
+    return if deleted_events.blank?
+
     if type.facebook?
       #Do another check with Facebook to see if these events actually no longer exist in case of FB hiccup. If they do exist, remove from the list.
       response = Parsers::Facebook.new(source).find_by_uid(deleted_events)
@@ -102,7 +104,7 @@ class Calendar < ApplicationRecord
   def parse_events_from_source(from)
     case type
     when "facebook"
-      Parsers::Facebook.new(source, from).events
+      Parsers::Facebook.new(source, { from: from }).events
     else
       Parsers::Ics.new(source).events
     end
