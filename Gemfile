@@ -34,6 +34,7 @@ gem 'listen', '~> 3.0.5'
 gem 'mailgun_rails'
 gem 'paranoia', '~> 2.2'
 gem 'virtus'
+gem 'paper_trail'
 
 gem 'whenever', require: false
 
@@ -59,6 +60,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   # Generates factories for us
   gem 'to_factory', '~> 0.2.1'
+  gem 'timecop'
 end
 
 group :development do
