@@ -49,7 +49,7 @@ module Events
       @event.event_times.present?
     end
 
-    def occurrences_between(from, to)
+    def occurrences_between(*)
       @occurrences = []
 
       unless recurring_event?

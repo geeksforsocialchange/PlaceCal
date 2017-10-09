@@ -36,8 +36,4 @@ class Event < ApplicationRecord
 
   scope :upcoming_for_date, ->(from) { where("dtstart >= ?", from.beginning_of_day) }
 
-  def update_with_attributes(attributes)
-    unless  event.update(attributes)
-    end
-  end
 end

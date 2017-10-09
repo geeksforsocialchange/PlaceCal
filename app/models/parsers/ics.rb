@@ -3,6 +3,7 @@ module Parsers
 
     def initialize(file, params={})
       @file = file
+      @params = params
     end
 
     def events
