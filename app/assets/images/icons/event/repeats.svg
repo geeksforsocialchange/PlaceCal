@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/repeats</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/repeats" fill="#F19089">
+            <path d="M36,18 L28.394,10.394 L20.788,18 L26.791,18 C26.791,22.855 22.855,26.791 18,26.791 L18,30.204 C24.695,30.204 30.204,24.695 30.204,18 L36,18 Z" id="Fill-2"></path>
+            <path d="M18,9.209 L18,5.796 C11.305,5.796 5.796,11.305 5.796,18 L0,18 L7.606,25.606 L15.212,18 L9.209,18 C9.209,13.145 13.145,9.209 18,9.209" id="Fill-4"></path>
+        </g>
+    </g>
+</svg>

@@ -5,15 +5,22 @@ class EventComponent < MountainView::Presenter
   properties :summary, :description, :dtstart, :dtend,
              :location, :context, :place
 
-  def dtstart
-    case properties[:context]
-    when 'day'
-      properties[:dtstart].strftime('%H:%M')
-    when 'week'
-      properties[:dtstart].strftime('%a %H:%M')
-    else
-      properties[:dtstart].strftime('%a %e %b, %H:%M')
-    end
+  include ActionView::Helpers::TextHelper
+
+  def time
+    dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+  end
+
+  def duration
+    mins = ((dtend - dtstart) / 60).to_i
+    hours = mins / 60 # Ruby presumes ints not floats, and rounds down
+    mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
+    hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
+    [hours_str, mins_str].reject(&:empty?).join(' ')
+  end
+
+  def date
+    dtstart.strftime('%e %b')
   end
 
   def summary
@@ -28,10 +35,6 @@ class EventComponent < MountainView::Presenter
     properties[:context] == :page
   end
 
-  def dtend
-    properties[:dtend].strftime('%H:%M')
-  end
-
   def partner
     properties[:partner].first
   end
@@ -40,7 +43,17 @@ class EventComponent < MountainView::Presenter
     properties[:location].split(',').first&.delete('\\')
   end
 
-  def frequency
+  def repeats
     properties[:rrule].present? ? properties[:rrule][0]['table']['frequency'].titleize : false
+  end
+
+  private
+
+  def dtstart
+    properties[:dtstart]
+  end
+
+  def dtend
+    properties[:dtend]
   end
 end

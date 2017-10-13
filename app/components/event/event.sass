@@ -13,21 +13,38 @@
   &__details
     +flexbox
     +flex-wrap(wrap)
+    +align-items(center)
     border-width: 3px 0
-    border-color: $red
+    border-color: $linen
     border-style: solid
-    padding: 1rem 0
-  &__time
-    font-weight: $bold
-    margin-bottom: 0.5rem
-  &__location
-  &__repeats
-    +flex(1 1 auto)
-    text-align: right
-  &__location, &__time, &__repeats
-    // Align image with text
+    padding: 0.5rem 0
+    +for-tablet-portrait-up
+      padding: 1rem 0
+    .icon
+      width: 1.75rem
+      height: 1.75rem
+      margin-right: 0.25rem
+  &__detail
+    +for-phone-only
+      +flex(1 1 100%)
+      margin-bottom: 0.5rem
+    +for-tablet-portrait-up
+      +flex(0 1 auto)
     +flexbox
     +align-items(center)
-    img
-      margin-right: 1rem
+    margin-right: 1rem
+  &__time, &__date
+    +for-phone-only
+      +flex(1 1 44%) // Set by eye
+  &__location
+    +flex(1 1 auto)
+  &__duration
+    +for-phone-only
+      display: none
+  &__repeats
+    +for-phone-only
+      margin-bottom: 0
+    +for-tablet-portrait-up
+      +h4
+      font-size: $small-font-size
  

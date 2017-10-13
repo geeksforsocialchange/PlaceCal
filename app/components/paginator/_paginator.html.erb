@@ -2,11 +2,11 @@
   <div class="c">
     <div class="paginator__context">
       <div class="paginator__breadcrumb">
-        Community Calendar for Hulme &amp; Moss Side <span class="icon icon--arrow-right">→</span> Events
+        Community Calendar for <a href="#">Hulme &amp; Moss Side</a> <span class="icon icon--arrow-right">→</span> <a href="#">Events</a>
       </div>
       <div class="paginator__filters">
         <%= form_tag('', method: :get, class: 'js-pagination-sort paginator__sort', enforce_utf8: false) do %>
-          <div class="paginator__toggle">Filter and sort <span class="icon icon--arrow-down">↓</span></div>
+          <div class="paginator__toggle"><a href="#">Filter and sort</a> <span class="icon icon--arrow-down">↓</span></div>
           <div class="paginator__group paginator__group--hidden">
             <%= radio_button_tag(:sort, "time", sort == 'time') %>
             <%= label_tag(:sort_time, "Sort by date") %>
@@ -22,7 +22,7 @@
         <% end %>
       </div>
       <div class="paginator__help">
-        Help <span class="icon icon--question-mark">?</span>
+        <a href="#">Help</a> <span class="icon icon--question-mark">?</span>
       </div>
     </div>
 
@@ -35,5 +35,7 @@
     </ol>
 
     <hr>
+
+    <h2><%= title %></h2>
   </div>
 </div>

@@ -3,29 +3,35 @@
     <% if page? %>
       <h1 itemprop="name"><%= summary %></h1>
     <% else %>
-      <h3 itemprop="name" class="h2"><%= link_to summary, event_path(properties[:id]) %></h3>
+      <h3 itemprop="name"><%= link_to summary, event_path(properties[:id]) %></h3>
     <% end %>
-    <div class="event__details h3">
-      <div class="event__time">
-        <%= image_tag 'icons/time.svg' %>
-        <time itemprop="startDate" content="<%= properties[:dtstart] %>"><%= dtstart %></time> &mdash;
-        <time itemprop="endDate" content="<%= properties[:dtend] %>"><%= dtend %></time>
+    <div class="event__details">
+      <div class="event__detail event__time">
+        <span class="icon icon--time">🕒</span>
+        <%= time %>
       </div>
-      <div class="event__location">
+      <div class="event__detail event__duration">
+        <span class="icon icon--duration">⌛</span>
+        <%= duration %>
+      </div>
+      <div class="event__detail event__date">
+        <span class="icon icon--date">📅</span>
+        <%= date %>
+      </div>
+      <div class="event__detail event__location">
+        <span class="icon icon--place">🏠</span>
         <% if properties[:place] %>
-          <%= image_tag 'icons/place.svg', class: "icon" %>
           <%= link_to properties[:place], place_path(properties[:place]) %>
         <% elsif properties[:location] %>
-          <%= image_tag 'icons/place.svg', class: "icon" %>
           <%= location %>
         <% end %>
       </div>
-      <div class="event__repeats">
-        <% if frequency %>
-          <%= image_tag 'icons/repeats.svg', class: "icon" %>
-          <%= frequency %>
-        <% end %>
-      </div>
+      <% if repeats %>
+        <div class="event__detail event__repeats">
+          <span class="icon icon--repeats">🔁</span>
+          <%= repeats %>
+        </div>
+      <% end %>
     </div>
     <% if page? %>
       <%= markdown description %>
