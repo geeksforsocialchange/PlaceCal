@@ -2,36 +2,64 @@
 
 =border-highlight
   border-color: $green
-  border-width: 3px
+  border-width: 2px
   border-style: solid
-  border-radius: 1rem
-  overflow: hidden
+  border-radius: 3rem
 
-.paginator
-  text-align: center
-  form
-    margin-bottom: 1rem
-  h2
-    text-align: center
-    margin: 2rem 0
-  hr
-    margin-bottom: 1rem
+.paginator 
+  // Top minimenu/breadcrumb area
+  &__context
+    +flexbox
+    font-size: $small-font-size
+    margin: 1rem 0
+  &__breadcrumb
+    +flex(1 0 auto)
+  &__filters, &__help
+    +flex(0 1 auto)
+    .icon
+      margin-left: 0.5rem
+  // Filter dropdown
+  &__filters
+    margin-right: 2rem
+  // Day chooser
   &__buttons
+    +flexbox
+    list-style-type: none
+    margin: 0
+    padding: 0 3rem 0.5rem 0
+    // Creates a context for the "next" arrow button
+    position: relative
+    font-weight: $bold
+    overflow: hidden
     li
+      +flex(1 0 auto)
       +border-highlight
       padding: 0.3rem 1rem
-      display: inline-block
       text-align: center
       margin: 0
       +for-tablet-portrait-up
         margin: 0 0.25rem
       &.active, &:hover
         background-color: $green
+    li:first-child, li:last-child
+      +flex(0 0 1rem)
+      padding: 0.3rem 0.5rem
+    li:first-child a
+      // Slight adjustment to center in circle
+      margin-left: -0.3rem
+    li:last-child
+      position: absolute
+      background-color: $cream
+      right: 0
+      top: 0
     a
       border-bottom-width: 0
+  // Field group
   &__group
-    +border-highlight
     display: inline-flex // TODO: fix this
+    &--hidden
+      display: none
+  // Radio items
   &__sort
     // We will do this with labels
     input[type=radio]

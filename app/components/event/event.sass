@@ -2,11 +2,7 @@
 
 .events li
   width: 100%
-  +for-tablet-landscape-up
-    width: 48%
-    &:nth-of-type(2n)
-      margin-left: 2%
-  display: inline-block
+  display: block
 
 .event
   margin-bottom: 2rem
@@ -20,18 +16,14 @@
     border-width: 3px 0
     border-color: $red
     border-style: solid
-    font-weight: $semibold
     padding: 1rem 0
   &__time
-    +order(1)
-    +flex(1 0 70%)
     font-weight: $bold
     margin-bottom: 0.5rem
   &__location
-    +order(3)
-    +flex(1 0 70%)
   &__repeats
-    +order(2)
+    +flex(1 1 auto)
+    text-align: right
   &__location, &__time, &__repeats
     // Align image with text
     +flexbox
