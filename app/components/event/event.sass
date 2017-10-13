@@ -26,17 +26,20 @@
       margin-right: 0.25rem
   &__detail
     +for-phone-only
-      +flex(1 1 100%)
+      +flex(1 0 100%)
       margin-bottom: 0.5rem
     +for-tablet-portrait-up
-      +flex(0 1 auto)
+      +flex(0 0 auto)
     +flexbox
     +align-items(center)
     margin-right: 1rem
   &__time, &__date
     +for-phone-only
-      +flex(1 1 44%) // Set by eye
+      +flex(1 0 44%) // Set by eye
   &__location
+    +flexbox
+    .icon
+      +flex(0 0 1.75rem)
     +flex(1 1 auto)
   &__duration
     +for-phone-only
