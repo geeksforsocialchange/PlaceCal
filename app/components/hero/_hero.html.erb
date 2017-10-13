@@ -1,6 +1,9 @@
 <div class="hero">  
   <div class="c">
-    <h4><%= properties[:subtitle] %></h4>
+    <% if subtitle %>
+      <h4><%= subtitle %></h4>
+      <div role="presentation" class="hero__divider"></div>
+    <% end %>
     <h1><%= properties[:title] %></h1>
   </div>
 </div>

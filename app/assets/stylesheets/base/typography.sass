@@ -1,6 +1,6 @@
 body
   font-family: $sans-serif
-  font-weight: $semibold
+  font-weight: $regular
   font-size: 18px
   color: $grey
 
@@ -13,6 +13,17 @@ h1
 // Main page sections
 h2, .h2
   +h2
+
+.h2--alt
+  text-transform: uppercase
+  text-align: center
+  font-weight: $extra-bold
+  font-size: $base-font-size
+  margin-top: 3rem
+  margin-bottom: 3rem
+  span
+    padding-bottom: 0.5rem
+    border-bottom: 4px solid $red
 
 h3, .h3
   +h3
@@ -31,3 +42,6 @@ hr
   border-color: $green
   border-width: 2px
   border-style: solid
+
+.p--big
+  font-size: 1.5rem
