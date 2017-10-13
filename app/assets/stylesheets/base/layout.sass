@@ -8,5 +8,9 @@ body
   margin: 0 auto
   padding: 0 1.66667rem // 30 / 18
 
+  &--narrow
+    +for-tablet-portrait-up
+      width: 60%
+
 .turbolinks-progress-bar
   color: $green
