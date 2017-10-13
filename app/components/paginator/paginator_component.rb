@@ -8,14 +8,15 @@ class PaginatorComponent < MountainView::Presenter
   def paginator # rubocop:disable Metrics/AbcSize
     pages = []
     # Create backward arrow link
-    pages << [back_arrow, create_event_url(pointer - period)]
+    pages << { text: back_arrow, link: create_event_url(pointer - period) }
     # Create in-between links according to steps requested
     (0..steps).each do |i|
       day = pointer + period * i
-      pages << [format_date(day), create_event_url(day)]
+      css = day == Date.today ? 'active' : ''
+      pages << { text: format_date(day), link: create_event_url(day), class: css }
     end
     # Create forwards arrow link
-    pages << [forward_arrow, create_event_url(pointer + period)]
+    pages << { text: forward_arrow, link: create_event_url(pointer + period) }
   end
 
   # Paginator title
@@ -118,11 +119,18 @@ class PaginatorComponent < MountainView::Presenter
     '?' + str.join('&') if str.any?
   end
 
+  # Icon for back arrow
   def back_arrow
     '<span class="icon icon--arrow-left-grey">←</span>'.html_safe
   end
 
+  # Icon for forward arrow
   def forward_arrow
     '<span class="icon icon--arrow-right-grey">→</span>'.html_safe
+  end
+
+  # Is this the day we are looking at?
+  def is_current?(day)
+
   end
 end

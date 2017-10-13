@@ -29,7 +29,7 @@
     <ol class="paginator__buttons paginator__buttons--day">
       <% paginator.each do |page| %>
         <li>
-          <%= link_to page[0], page[1] %>
+          <%= link_to page[:text], page[:link], class: page[:css] %>
         </li>
       <% end %>
     </ol>
