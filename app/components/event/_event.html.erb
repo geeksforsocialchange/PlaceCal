@@ -1,4 +1,4 @@
-<div class="event">
+<div class="event <%= page? ? 'event--full' : 'event--list' %>">
   <article>
     <% if page? %>
       <%= render_component "hero", title: summary %>

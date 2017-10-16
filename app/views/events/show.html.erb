@@ -14,12 +14,13 @@
   <% if @event.place %>
     <div class="g">
       <div class="gi gi__1-3">
-        <h3 class="h4">Event planner</h3>
+        <h3 class="h4 udl">Contact information</h3>
+        <div class="small">Coming soon!</div>
       </div>
       <div class="gi gi__1-3">
-        <h3 class="h4">Event address</h3>
+        <h3 class="h4 udl">Event address</h3>
         <div class="small">
-          <strong><%= @event.place.name %></strong><br/>
+          <strong><%= link_to @event.place.name, place_path(@event.place) %></strong><br/>
           <%= @event.place.address %>
         </div>
       </div>
@@ -30,4 +31,4 @@
   <% end %>
 </div> 
 
-<%= render_component "map", points: @map %>
+<%= render_component "map", points: @map, style: :full %>

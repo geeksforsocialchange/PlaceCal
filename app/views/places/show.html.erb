@@ -7,13 +7,15 @@
 
   <div class="g g--place">
     <div class="gi gi__2-5">
-      <h1><%= @place.name %></h1>
+      <h1 class="udl udl--red sans"><%= @place.name %></h1>
 
       <% if @place.short_description %>
         <p><%= @place.short_description %></p>
       <% end %>
 
-      <p><%= link_to "Run by #{@place.partners.first}", partner_path(@place.partners.first) %></p>
+      <% if @place.partners.any? %>
+        <p><%= link_to "Run by #{@place.partners.first}", partner_path(@place.partners.first) %></p>
+      <% end %>
     </div>
     <div class="gi gi__3-5">
       <% if @map.length > 0 %>

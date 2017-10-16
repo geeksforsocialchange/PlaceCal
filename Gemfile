@@ -32,9 +32,9 @@ gem 'koala'
 gem 'leaflet-rails'
 gem 'listen', '~> 3.0.5'
 gem 'mailgun_rails'
+gem 'paper_trail'
 gem 'paranoia', '~> 2.2'
 gem 'virtus'
-gem 'paper_trail'
 
 gem 'whenever', require: false
 
@@ -50,7 +50,9 @@ gem 'administrate-field-password'
 
 # Markdown
 gem 'kramdown'
+gem 'rails_autolink'
 
+# Jobs
 gem 'delayed_job_active_record'
 
 group :development, :test do
@@ -59,8 +61,8 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'factory_girl_rails'
   # Generates factories for us
-  gem 'to_factory', '~> 0.2.1'
   gem 'timecop'
+  gem 'to_factory', '~> 0.2.1'
 end
 
 group :development do

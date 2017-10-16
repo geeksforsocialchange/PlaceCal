@@ -1,6 +1,8 @@
 <%= render_component "hero", title: "Partners", subtitle: "Hulme & Moss Side" %>
 
-<div class="c">
+<div class="c c--lg-space-after">
+  <%= render_component "breadcrumb", trail: [['Partners', partners_path]] %>
+  <hr>
   <ul class="partners reset">
     <% @partners.each do |partner| %>
       <li>
