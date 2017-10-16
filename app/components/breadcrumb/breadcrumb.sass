@@ -1,0 +1,33 @@
+@import "variables_mixins"
+
+.breadcrumb
+  +flexbox
+  font-size: $small-font-size
+  margin: 1rem 0
+  a
+    border-bottom-color: $linen
+  &__title
+    +flex(1 0 auto)
+  &__filters, &__help
+    +flex(0 1 auto)
+    .icon
+      margin-left: 0.5rem
+  // Filter dropdown
+  &__filters
+    margin-right: 2rem
+  // Field group
+  &__group
+    display: inline-flex // TODO: fix this
+    &--hidden
+      display: none
+  // Radio items
+  &__sort
+    input[type=radio]
+      display: none
+      visibility: hidden
+    label
+      cursor: pointer
+      display: inline-block
+      padding: 0.3rem 1rem
+    input[type=radio]:checked + label
+      background-color: $green
