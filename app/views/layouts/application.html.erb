@@ -11,14 +11,16 @@
   </head>
 
   <body>
-    <header>
-      <%= render_component "navigation" %>
-    </header>
-    <main>
-      <%= yield %>
-    </main>
-    <footer>
-      <%= render_component "footer" %>
-    </footer>
-  </body>
+    <div class="background">
+      <header>
+        <%= render_component "navigation" %>
+      </header>
+      <main>
+        <%= yield %>
+      </main>
+      <footer>
+        <%= render_component "footer" %>
+      </footer>
+    </body>
+  </div>
 </html>

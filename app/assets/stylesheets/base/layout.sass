@@ -1,11 +1,26 @@
-body
-  background-color: $cream
-  color: $grey
-  margin: 0
+// How far is the background pattern from the center and top?
+$bg-top: 103px
+$bg-offset: 725px
 
-.c  
+body
+  color: $grey
+  background-color: $almond
+  margin: 0
+  +for-desktop-up
+    background-image: image-url('patterns/widescreen.svg'), image-url('patterns/widescreen.svg')
+    background-position: calc(50% - #{$bg-offset}) $bg-top, calc(50% + #{$bg-offset}) $bg-top
+    background-repeat: no-repeat, no-repeat
+
+.background
   max-width: 1200px
+  background-color: $cream
   margin: 0 auto
+  +for-desktop-up
+    border-width: 0 35px
+    border-color: $grey
+    border-style: solid
+    
+.c  
   padding: 0 1.66667rem // 30 / 18
 
   &--narrow
