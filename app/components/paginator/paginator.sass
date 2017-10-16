@@ -45,3 +45,28 @@
   h2
     border-bottom: 4px solid $linen
     padding-bottom: 0.5em
+
+.filters
+  &__form
+    position: relative
+  &__toggle
+  &__dropdown
+    position: absolute
+    background-color: $cream
+    padding: 1rem
+    width: 10rem
+    z-index: 100
+    box-shadow: 7px 7px 20px 0px rgba(153, 134, 117, 0.83)
+    &--hidden
+      display: none
+  &__option
+    padding: 0.25rem 0
+    display: block
+  input
+    float: right
+    &:checked + label
+      font-weight: bold
+  label
+    display: inline-block
+  hr
+    border-width: 3px 0 0
