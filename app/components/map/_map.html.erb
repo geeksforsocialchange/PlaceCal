@@ -4,6 +4,7 @@
   // Init the map and give it a sensible starting location
   var map = L.map('js-map');
   map.setView(<%= center %>, <%= zoom %>);
+  map.scrollWheelZoom.disable();
 
   // Iterate all the markers
   var markerArray = []

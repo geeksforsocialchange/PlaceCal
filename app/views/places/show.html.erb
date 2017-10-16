@@ -1,8 +1,4 @@
-<%= render_component "place", context: :page,
-                              id: @place.id,
-                              name: @place.name,
-                              address: @place.address,
-                              description: @place.short_description %>
+<%= render_component "hero", title: "Places in Hulme & Moss Side", subtitle: "The Community Calendar" %>
 
 <% if @map.length > 0 %>
   <%= render_component "map", points: @map %>                        
