@@ -16,7 +16,13 @@ class EventsController < ApplicationController
 
   # GET /events/1
   # GET /events/1.json
-  def show; end
+  def show
+    @map = [{
+      lat: @event.place.address.latitude,
+      lon: @event.place.address.longitude,
+      name: @event.place.name
+    }]
+  end
 
   # GET /events/new
   def new

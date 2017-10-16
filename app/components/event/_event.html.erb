@@ -1,7 +1,8 @@
 <div class="event">
-  <article itemscope itemtype="http://schema.org/Event">
+  <article>
     <% if page? %>
-      <h1 itemprop="name"><%= summary %></h1>
+      <%= render_component "hero", title: summary %>
+        <div class="c">
     <% else %>
       <h3 itemprop="name"><%= link_to summary, event_path(properties[:id]) %></h3>
     <% end %>
@@ -34,7 +35,7 @@
       <% end %>
     </div>
     <% if page? %>
-      <%= markdown description %>
+      </div> <!-- </div class="c"> -->
     <% end %>
   </article>
 </div>

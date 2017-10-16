@@ -1,8 +1,11 @@
 <div class="breadcrumb">
   <div class="breadcrumb__title">
     Community Calendar for 
-    <a href="#">Hulme &amp; Moss Side</a> <span class="icon icon--arrow-right">→</span> 
-    <a href="#">Events</a>
+    <a href="#"><%= region %></a> 
+    <% properties[:trail].each do |link| %>
+      <span class="icon icon--arrow-right">→</span> 
+      <%= link_to link[0], link[1] %>
+    <% end %>
   </div>
   <%= properties[:yield] %>
   <div class="breadcrumb__help">

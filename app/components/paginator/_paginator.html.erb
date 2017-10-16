@@ -1,7 +1,7 @@
 <div class="paginator">
-  <div class="c">
-    <div class="paginator__context">
-      <%= render_component "breadcrumb" do %>
+  <div class="paginator__context">
+    <% if properties[:show_breadcrumb] %>
+      <%= render_component "breadcrumb", trail: [['Events', events_path]] do %>
         <div class="breadcrumb__filters">
           <%= form_tag('', method: :get, class: 'js-breadcrumb-sort breadcrumb__sort', enforce_utf8: false) do %>
             <div class="breadcrumb__toggle"><a href="#">Filter and sort</a> <span class="icon icon--arrow-down">↓</span></div>
@@ -20,18 +20,18 @@
           <% end %>
         </div>
       <% end %>
-    </div>
-
-    <ol class="paginator__buttons paginator__buttons--day">
-      <% paginator.each do |page| %>
-        <li>
-          <%= link_to page[:text], page[:link], class: page[:css] %>
-        </li>
-      <% end %>
-    </ol>
-
-    <hr>
-
-    <h2><%= title %></h2>
+    <% end %>
   </div>
+
+  <ol class="paginator__buttons paginator__buttons--day">
+    <% paginator.each do |page| %>
+      <li>
+        <%= link_to page[:text], page[:link], class: page[:css] %>
+      </li>
+    <% end %>
+  </ol>
+
+  <hr>
+
+  <h2><%= title %></h2>
 </div>

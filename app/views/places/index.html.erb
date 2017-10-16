@@ -1,6 +1,10 @@
 <%= render_component "hero", title: "Places in Hulme & Moss Side", subtitle: "The Community Calendar" %>
 
 <div class="c">
+  <%= render_component "breadcrumb", trail: [['Places', places_path]] %>
+
+  <hr>
+  
   <ul class="places reset">
     <% @places.each do |place| %>
       <li class="place">

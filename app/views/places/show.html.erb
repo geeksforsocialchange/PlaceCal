@@ -1,14 +1,49 @@
 <%= render_component "hero", title: "Places in Hulme & Moss Side", subtitle: "The Community Calendar" %>
 
-<% if @map.length > 0 %>
-  <%= render_component "map", points: @map %>                        
-<% end %>
-
-<%= render_component "paginator", pointer: @current_day,
-                                  period: @period,
-                                  sort: @sort,
-                                  path: "places/#{@place.id}/events" %>                                   
 <div class="c">
+  <%= render_component "breadcrumb", trail: [['Places', places_path], [@place.name, place_path(@place)]] %>
+
+  <hr>
+
+  <div class="g g--place">
+    <div class="gi gi__2-5">
+      <h1><%= @place.name %></h1>
+
+      <% if @place.short_description %>
+        <p><%= @place.short_description %></p>
+      <% end %>
+
+      <p><%= link_to "Run by #{@place.partners.first}", partner_path(@place.partners.first) %></p>
+    </div>
+    <div class="gi gi__3-5">
+      <% if @map.length > 0 %>
+        <%= render_component "map", points: @map %>                        
+      <% end %>
+      <div class="g">
+        <div class="gi gi__1-3">
+          <h3 class="h4">Opening Hours</h3>
+          <div class="small">Coming soon!</div>
+        </div>
+        <div class="gi gi__1-3">
+          <h3 class="h4">Address</h3>
+          <div class="small"><%= @place.address %></div>
+        </div>
+        <div class="gi gi__1-3">
+          <h3 class="h4">Contact</h3>
+          <div class="small">Coming soon!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <%= render_component "paginator", pointer: @current_day,
+                                    period: @period,
+                                    sort: @sort,
+                                    path: "places/#{@place.id}/events",
+                                    show_breadcrumb: false %>                                   
+
   <% if @events.any? %>                                    
     <ol class="events reset">
       <% @events.each do |event| %>
@@ -26,7 +61,5 @@
     </ol>
   <% else %>
     <p>No events with these criteria 😞</p>
-  <% end %>
-</div>             
-
-
+  <% end %>           
+</div>

@@ -1,21 +1,33 @@
-<div class="c">
-  <%= render_component "event", context: :page,
-                                id: @event.id,
-                                summary: @event.summary,
-                                description: @event.description,
-                                dtstart: @event.dtstart,
-                                dtend: @event.dtend,
-                                rrule: @event.rrule,
-                                place: @event.place,
-                                location: @event.location %>
-  
-  <% if @event.place %>
-    <h2>Location</h2>
-    <%= render_component "place", context: :event_page,
-                                  id: @event.place.id,
-                                  name: @event.place.name,
-                                  description: @event.place.short_description,
-                                  address: @event.place.address %>
-  <% end %>
+<%= render_component "event", 
+  context: :page,
+  id: @event.id,
+  summary: @event.summary,
+  dtstart: @event.dtstart,
+  dtend: @event.dtend,
+  rrule: @event.rrule,
+  place: @event.place,
+  location: @event.location 
+%>
 
-</div>  
+<div class="c c--narrow c--space-after">
+  <%= markdown @event.description %>
+  <% if @event.place %>
+    <div class="g">
+      <div class="gi gi__1-3">
+        <h3 class="h4">Event planner</h3>
+      </div>
+      <div class="gi gi__1-3">
+        <h3 class="h4">Event address</h3>
+        <div class="small">
+          <strong><%= @event.place.name %></strong><br/>
+          <%= @event.place.address %>
+        </div>
+      </div>
+      <div class="gi gi__1-3">
+
+      </div>
+    </div>
+  <% end %>
+</div> 
+
+<%= render_component "map", points: @map %>

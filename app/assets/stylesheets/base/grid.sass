@@ -1,0 +1,29 @@
+// Max width inside: 1070
+// columns: 186
+// gutters: 20 + 1/2 gutter inside and out
+// $gutter / $max-width * 100
+$gutter: 1.86915%
+// $column / $max-width * 100
+$column: 17.38317%
+
+.g
+  +flexbox
+  +align-content(flex-start)
+  
+  &--place
+    margin-top: 2rem
+    margin-bottom: 2rem
+    h1
+      margin-top: 0
+
+
+.gi
+  margin-right: 1.11111rem
+  &:last-of-type
+    margin-right: 0
+  &__2-5
+    +flex(1 1 40%)
+  &__3-5
+    +flex(1 1 60%)
+  &__1-3
+    +flex(1 1 33.3333%)

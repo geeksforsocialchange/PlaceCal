@@ -50,4 +50,9 @@
     +for-tablet-portrait-up
       // +h4
       // font-size: $small-font-size
- 
+
+// FIXME: Hack to alter borders on full page view when following a hero element
+// Probably v. brittle
+.hero + .c .event__details
+  border-top-width: 0
+  border-bottom-width: 10px
