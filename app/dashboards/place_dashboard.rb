@@ -17,6 +17,8 @@ class PlaceDashboard < Administrate::BaseDashboard
     status: Field::String,
     logo: Field::String,
     phone: Field::String,
+    email: Field::String,
+    url: Field::String,
     opening_times: Field::String.with_options(searchable: false),
     short_description: Field::Text,
     booking_info: Field::Text,
@@ -63,17 +65,19 @@ class PlaceDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
     :name,
-    :partners,
+    :short_description,
     # :events,
-    :calendars,
     :address,
     :status,
-    :logo,
     :phone,
+    :email,
+    :url,
     :opening_times,
-    :short_description,
-    :booking_info,
-    :accessibility_info,
+    :partners,
+    :calendars,
+    :logo,
+    # :booking_info,
+    # :accessibility_info,
   ].freeze
 
   # Overwrite this method to customize how places are displayed
