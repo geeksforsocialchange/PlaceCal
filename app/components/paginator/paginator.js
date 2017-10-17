@@ -1,6 +1,6 @@
 function updateButtons() {
-  var buttons = $('.paginator__buttons li.button')
-  var right_threshold = $('.paginator__buttons li.forwards').position().left - 30
+  var buttons = $('.paginator__buttons li.js-button')
+  var right_threshold = $('.paginator__buttons li.js-forwards').position().left - 30
 
   buttons.show()
   buttons.each(function(idx, ele) {

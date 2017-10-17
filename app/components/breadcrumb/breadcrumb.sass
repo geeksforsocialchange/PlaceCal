@@ -12,10 +12,11 @@
     &__tagline
       display: none
   &__element
-    +flex(1 1 100%)
-  &__filters
-    margin-right: 2rem
-  &__filters, &__help
     +flex(0 1 auto)
-    .icon
-      margin-left: 0.5rem
+    margin-right: 0.5rem
+    +for-phone-only
+      margin-bottom: 0.5rem
+    &--last
+      +flex(1 1 auto)
+      +for-tablet-portrait-up
+        text-align: right
