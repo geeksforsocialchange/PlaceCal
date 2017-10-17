@@ -14,8 +14,10 @@ class PaginatorComponent < MountainView::Presenter
     # Create in-between links according to steps requested
     (0..steps).each do |i|
       day = pointer + period * i
-      css = day == Date.today ? 'active' : ''
-      pages << { text: format_date(day), link: create_event_url(day), class: css }
+      css = 'active' if active?(day)
+      pages << { text: format_date(day),
+                 link: create_event_url(day),
+                 css: css }
     end
     # Create forwards arrow link
     pages << { text: forward_arrow, link: create_event_url(pointer + period) }
@@ -131,8 +133,8 @@ class PaginatorComponent < MountainView::Presenter
     '<span class="icon icon--arrow-right-grey">→</span>'.html_safe
   end
 
-  # Is this the day we are looking at?
-  def is_current?(day)
-
+  # Is this the current active day?
+  def active?(day)
+    pointer == day
   end
 end

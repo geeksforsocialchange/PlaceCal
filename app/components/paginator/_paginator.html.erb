@@ -38,8 +38,8 @@
 
   <ol class="paginator__buttons paginator__buttons--day">
     <% paginator.each do |page| %>
-      <li>
-        <%= link_to page[:text], page[:link], class: page[:css] %>
+      <li class="<%= page[:css] %>">
+        <%= link_to page[:text], page[:link] %>
       </li>
     <% end %>
   </ol>
