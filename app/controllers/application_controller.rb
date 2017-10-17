@@ -33,11 +33,10 @@ class ApplicationController < ActionController::Base
   end
 
   def sort_events(events, sort)
-    case sort
-    when 'summary'
-      events.sort_by_summary
+    if sort == 'summary'
+      [[Time.now, events.sort_by_summary]]
     else
-      events.sort_by_time
+      events.sort_by_time.group_by_day(&:dtstart)
     end
   end
 end

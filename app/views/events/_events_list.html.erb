@@ -1,0 +1,21 @@
+<% @events.each do |day, events| %>
+  <h2 class="udl udl--fw"><%= day.strftime('%A %e %B') %></h2>
+  <ol class="events reset">
+    <% events.each do |event| %>
+      <li>
+        <%= render_component "event", 
+          context: @period,
+          id:      event.id,
+          path:    event_path(event),
+          place:   event.place,
+          partner: event.partner,
+          summary: event.summary,
+          dtstart: event.dtstart,
+          dtend:   event.dtend,
+          rrule:   event.rrule,
+          location: event.location 
+        %>
+      </li>
+    <% end %>
+  </ol>
+<% end %>

@@ -46,22 +46,9 @@
                                     path: "places/#{@place.id}/events",
                                     show_breadcrumb: false %>                                   
 
-  <% if @events.any? %>                                    
-    <ol class="events reset">
-      <% @events.each do |event| %>
-        <li class="event">
-          <%= render_component "event", context: :place_page,
-                                        id: event.id,
-                                        path: event_path(event),
-                                        summary: event.summary,
-                                        dtstart: event.dtstart,
-                                        dtend: event.dtend,
-                                        rrule: event.rrule,
-                                        location: event.location %>
-        </li>
-      <% end %>
-    </ol>
+  <% if @events.any? %>
+    <%= render "events/events_list" %>
   <% else %>
-    <p>No events with these criteria 😞</p>
-  <% end %>           
+    <p>No events today 😞</p>
+  <% end %>         
 </div>

@@ -9,5 +9,6 @@ FactoryGirl.define do
     notices nil
     rrule nil
     uid 1
+    address
   end
 end

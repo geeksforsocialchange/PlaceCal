@@ -7,11 +7,12 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    # Duration to view
+    # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
     events = filter_events(@period)
     # Sort criteria
     @events = sort_events(events, @sort)
+    @multiple_days = true
   end
 
   # GET /events/1

@@ -7,22 +7,7 @@
                                     sort: @sort %>
 
   <% if @events.any? %>
-    <ol class="events reset">
-      <% @events.each do |event| %>
-        <li>
-          <%= render_component "event", context: @period,
-                                        id:      event.id,
-                                        path:    event_path(event),
-                                        place:   event.place,
-                                        partner: event.partner,
-                                        summary: event.summary,
-                                        dtstart: event.dtstart,
-                                        dtend:   event.dtend,
-                                        rrule:   event.rrule,
-                                        location: event.location %>
-        </li>
-      <% end %>
-    </ol>
+    <%= render "events_list" %>
   <% else %>
     <p>No events today 😞</p>
   <% end %>
