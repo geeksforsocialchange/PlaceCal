@@ -10,17 +10,17 @@ class PaginatorComponent < MountainView::Presenter
   def paginator # rubocop:disable Metrics/AbcSize
     pages = []
     # Create backward arrow link
-    pages << { text: back_arrow, link: create_event_url(pointer - period) }
+    pages << { text: back_arrow, link: create_event_url(pointer - period), css: 'back' }
     # Create in-between links according to steps requested
     (0..steps).each do |i|
       day = pointer + period * i
-      css = 'active' if active?(day)
+      css = active?(day) ? 'active button' : 'button'
       pages << { text: format_date(day),
                  link: create_event_url(day),
                  css: css }
     end
     # Create forwards arrow link
-    pages << { text: forward_arrow, link: create_event_url(pointer + period) }
+    pages << { text: forward_arrow, link: create_event_url(pointer + period), css: 'forwards' }
   end
 
   # Paginator title

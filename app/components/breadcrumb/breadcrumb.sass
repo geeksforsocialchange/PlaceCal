@@ -2,12 +2,17 @@
 
 .breadcrumb
   +flexbox
+  +flex-wrap(wrap)
+  +justify-content(flex-start)
   font-size: $small-font-size
   margin: 1rem 0
   a
     border-bottom-color: $linen
-  &__title
-    +flex(1 0 auto)
+  +for-phone-only
+    &__tagline
+      display: none
+  &__element
+    +flex(1 1 100%)
   &__filters
     margin-right: 2rem
   &__filters, &__help

@@ -1,14 +1,16 @@
 <div class="breadcrumb">
   <div class="breadcrumb__title">
-    Community Calendar for 
-    <a href="#"><%= region %></a> 
+    <div class="breadcrumb__tagline">Community Calendar for</div> 
+    <a href="#"><%= region %></a>
     <% properties[:trail].each do |link| %>
       <span class="icon icon--arrow-right">→</span> 
       <%= link_to link[0], link[1] %>
     <% end %>
   </div>
-  <%= properties[:yield] %>
-  <div class="breadcrumb__help">
+  <div class="breadcrumb_element">
+    <%= properties[:yield] %>
+  </div>
+  <div class="breadcrumb__element">
     <a href="#">Help</a> <span class="icon icon--question-mark">?</span>
   </div>
 </div>
