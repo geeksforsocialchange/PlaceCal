@@ -52,6 +52,8 @@ class PlaceDashboard < Administrate::BaseDashboard
     :status,
     :logo,
     :phone,
+    :email,
+    :url,
     :opening_times,
     :short_description,
     :booking_info,
