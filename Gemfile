@@ -23,6 +23,7 @@ gem 'icalendar'
 gem 'icalendar-recurrence'
 
 # Misc
+gem 'active_link_to'
 gem 'carrierwave'
 gem 'devise'
 gem 'enumerize'

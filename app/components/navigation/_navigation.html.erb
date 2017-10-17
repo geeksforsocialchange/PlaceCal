@@ -7,11 +7,11 @@
   </div>
   <nav class="nav header__menu js-menu" role="navigation">
     <ul>
-      <li><%= link_to "Home", root_path %></li>
-      <li><%= link_to "Events", events_path %></li>
-      <li><%= link_to "Places", places_path %></li>
-      <li><%= link_to "Partners", partners_path %></li>
-      <li><%= link_to "Join", join_path %></li>
+      <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
+      <li><%= active_link_to "Events", events_path %></li>
+      <li><%= active_link_to "Places", places_path %></li>
+      <li><%= active_link_to "Partners", partners_path %></li>
+      <li><%= active_link_to "Join", join_path %></li>
     </ul>
   </nav>
   <a href="#" class="header__toggle js-menu-toggle" data-turbolinks="false">
