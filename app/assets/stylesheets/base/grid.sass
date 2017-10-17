@@ -8,6 +8,9 @@ $column: 17.38317%
 
 .g
   +flexbox
+  +flex-wrap(wrap)
+  +for-tablet-landscape-up
+    +flex-wrap(nowrap)
   +align-content(flex-start)
   h1
     margin-bottom: 0.25rem
@@ -28,11 +31,16 @@ $column: 17.38317%
   margin-right: 1.11111rem
   &:last-of-type
     margin-right: 0
-  &__1-5
-    +flex(1 1 20%)
-  &__2-5
-    +flex(1 1 40%)
-  &__3-5
-    +flex(1 1 60%)
-  &__1-3
-    +flex(1 1 33.3333%)
+  +flex(1 1 100%)
+  +for-tablet-portrait-up
+    &__1-3
+      +flex(1 1 30%)
+    &__1-5
+      +flex(1 1 30%)
+  +for-tablet-landscape-up
+    &__1-5
+      +flex(1 1 20%)
+    &__2-5
+      +flex(1 1 40%)
+    &__3-5
+      +flex(1 1 60%)
