@@ -33,6 +33,7 @@ class MapComponent < MountainView::Presenter
   private
 
   def find_center(m)
+    m.reject!(&:nil?)
     [
       m.map { |p| p[:lat] }.sum / m.length,
       m.map { |p| p[:lon] }.sum / m.length
