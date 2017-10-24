@@ -1,0 +1,8 @@
+:meta: 'Fancy page titles' 
+:stubs:
+  -
+    :title: Main Title
+    :subtitle: Secondary Title
+  -
+    :title: Main title that is extra, extra long and really annoying
+    :subtitle: Secondary title that is extra, extra long and really annoying

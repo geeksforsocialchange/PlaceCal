@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Styleguide</title>
+  <%= stylesheet_link_tag 'mountain_view/styleguide', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'mountain_view/styleguide', 'data-turbolinks-track' => true %>
+
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <header>
+    <div class="mv-header">
+      <% if extra_pages.any? %>
+        <h3>Extra Pages</h3>
+        <ul>
+          <%- extra_pages.each do |extra_page| %>
+            <li>
+              <%= link_to prettify_word(extra_page), extra_pages_path(extra_page) %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+      <h3>Components</h3>
+      <ul>
+        <%- mv_components.each do |component| %>
+          <li>
+            <%= link_to component.title, styleguide_path(id: component.name) %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </header>
+  <main>
+    <div class="mv-main">
+        <%= yield %>
+    </div>
+  </main>
+
+</body>
+</html>
