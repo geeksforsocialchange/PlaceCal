@@ -11,10 +11,8 @@ module Events
       nil
     end
 
-    def attributes(start_time, end_time)
+    def attributes
       { uid:         uid&.strip,
-        dtstart:     start_time,
-        dtend:       end_time,
         summary:     summary&.strip,
         description: description&.strip,
         location:    location&.strip,
@@ -29,5 +27,21 @@ module Events
       false
     end
 
+    def postcode
+      postal = location.match(Address::POSTCODE_REGEX).try(:[], 0)
+      postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0) if postal.blank? #check for instances of M14 or M15 4 or whatever madness they've come up with
+
+      if postal.blank?
+        #See if Google returns a more informative address
+        results = Geocoder.search(location)
+        if results.first
+          formatted_address = results.first.data["formatted_address"]
+
+          postal = Address::POSTCODE_REGEX.match(formatted_address).try(:[], 0)
+        end
+      end
+
+      postal
+    end
   end
 end

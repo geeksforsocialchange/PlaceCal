@@ -1,5 +1,17 @@
 module Admin
   class UsersController < Admin::ApplicationController
+
+    def update
+      if requested_resource.update_without_password(resource_params)
+        redirect_to( [namespace, requested_resource],
+                     notice: translate_with_resource('update.success')
+                   )
+      else
+        render :edit, locals: {
+          page: Administrate::Page::Form.new(dashboard, requested_resource)
+        }
+      end
+    end
     # To customize the behavior of this controller,
     # you can overwrite any of the RESTful actions. For example:
     #
