@@ -127,9 +127,8 @@ class Calendar < ApplicationRecord
 
     return (strategy.event_override? ? { place_id: place_id } : {}) if location.blank?
 
-    postcode = event_data.postcode
-    regexp   = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new("UK|United Kingdom")
-
+    postcode   = event_data.postcode
+    regexp     = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new("UK|United Kingdom")
     components = location.split(', ').map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
 
     if place = Place.where(name: components).first
