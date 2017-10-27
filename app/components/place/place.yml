@@ -1,0 +1,9 @@
+:meta: Places output in various formats - needs work
+:stubs:
+  -
+    :id: 1
+    :name: Place Name Centre
+  -
+    :id: 2
+    :name: Place Name Centre
+    :context: :page

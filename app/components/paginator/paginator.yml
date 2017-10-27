@@ -1,0 +1,9 @@
+:meta: 'Paginator' 
+:stubs:
+  -
+    :id: 1
+    :pointer: 2017-10-27
+  -
+    :id: 2
+    :pointer: 2017-10-27    
+    :period: week
