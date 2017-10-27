@@ -47,17 +47,11 @@ class Address < ApplicationRecord
 
     def build_from_components(components, postcode)
       return if components.blank?
-      begin
-        address = Address.new(street_address: components[0],
-                              street_address2: components[1],
-                              street_address3: components[2],
-                              postcode: postcode)
-        address.save!
-        address
-      rescue => e
-        Rails.logger.debug e
-        Rollbar.error e
-      end
+      address = Address.new(street_address: components[0],
+                            street_address2: components[1],
+                            street_address3: components[2],
+                            postcode: postcode)
+      address if address.save
     end
   end
 end

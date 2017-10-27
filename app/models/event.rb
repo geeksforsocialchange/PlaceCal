@@ -10,6 +10,8 @@ class Event < ApplicationRecord
 
   validates :summary, :dtstart, :dtend, presence: true
 
+  validate :require_location
+
   # Find by day
   scope :find_by_day, lambda { |day|
     where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day)
@@ -39,4 +41,11 @@ class Event < ApplicationRecord
     rrule[0]["table"]["frequency"].titleize if rrule
   end
 
+  private
+
+  def require_location
+    if place_id.blank? && address_id.blank?
+      errors.add(:base, "No place or address could be created or found for the event location: #{self.location}")
+    end
+  end
 end

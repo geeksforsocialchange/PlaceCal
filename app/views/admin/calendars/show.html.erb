@@ -52,7 +52,7 @@ as well as a link to its edit page.
   <ul>
     <%- if page.resource.notices %>
       <%- page.resource.notices.each do |notice| %>
-        <li><%= notice %></li>
+        <li><em><%= notice["event"]["summary"] %></em> - <%= notice["errors"].join(", ")%></li>
       <% end %>
     <% end %>
   </ul>
