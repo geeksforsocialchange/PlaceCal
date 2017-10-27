@@ -58,8 +58,7 @@ class Calendar < ApplicationRecord
         event_data.send("#{location.keys[0]}=", location.values[0]) if location.try(:keys).present?
       end
 
-      occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
-      self.notices = create_or_update_events(event_data, occurrences) if occurrences
+      self.notices = create_or_update_events(event_data, from)
     end
 
     handle_deleted_events(from, @events_uids) if @events_uids
@@ -68,11 +67,14 @@ class Calendar < ApplicationRecord
     self.update_attributes!({last_import_at: DateTime.now, import_lock_at: nil})
   end
 
-  def create_or_update_events(event_data, occurrences) # rubocop:disable all
-    @important_notices = []
-    calendar_events    = self.events.where(uid: event_data.uid)
+  def create_or_update_events(event_data, from) # rubocop:disable all
+    occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
+    return [] if occurrences.blank?
 
-    #If any dates of this event don't match the imported start times or end times, soft delete them
+    @important_notices = []
+    calendar_events    = self.events.upcoming_for_date(from).where(uid: event_data.uid)
+
+    #If any dates of this event don't match the imported start times or end times, delete them
     if event_data.recurring_event?
       events_with_invalid_dates = calendar_events.without_matching_times(occurrences.map(&:start_time), occurrences.map(&:end_time))
       events_with_invalid_dates.destroy_all
@@ -105,7 +107,6 @@ class Calendar < ApplicationRecord
       response.keys.each { |key| deleted_events.delete(key) }
     end
 
-    puts upcoming_events.where(uid: deleted_events).inspect
     upcoming_events.where(uid: deleted_events).destroy_all
   end
 
