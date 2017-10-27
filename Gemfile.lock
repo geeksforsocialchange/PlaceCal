@@ -65,10 +65,6 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     bcrypt (3.1.11)
-    better_errors (2.3.0)
-      coderay (>= 1.0.0)
-      erubi (>= 1.0.0)
-      rack (>= 0.9.0)
     bindex (0.5.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
@@ -223,12 +219,11 @@ GEM
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
+    oj (3.3.8)
     orm_adapter (0.5.0)
     paper_trail (8.0.0)
       activerecord (>= 4.2, < 5.2)
       request_store (~> 1.1)
-    paranoia (2.3.1)
-      activerecord (>= 4.0, < 5.2)
     pg (0.21.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -281,6 +276,8 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    rollbar (2.15.4)
+      multi_json
     ruby-graphviz (1.2.3)
     ruby2ruby (2.4.0)
       ruby_parser (~> 3.1)
@@ -357,7 +354,6 @@ DEPENDENCIES
   administrate
   administrate-field-password
   awesome_print
-  better_errors
   binding_of_caller
   byebug
   carrierwave
@@ -382,13 +378,14 @@ DEPENDENCIES
   listen (~> 3.0.5)
   mailgun_rails
   mountain_view
+  oj
   paper_trail
-  paranoia (~> 2.2)
   pg
   puma (~> 3.0)
   rails (~> 5.1.0)
   rails-erd
   rails_autolink
+  rollbar
   sass-rails (~> 5.0)
   spring
   spring-watcher-listen (~> 2.0.0)

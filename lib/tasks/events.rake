@@ -13,11 +13,11 @@ namespace :import do
 
 
   #calendar_id - object id of calendar to be imported.
-  #from - import events starting from this date. Must use format 'dd-mm-yy'.
-  #to - import events up until this date. Must use format 'dd-mm-yy' and must be greater than from date.
+  #from - import events starting from this date. Must use format 'yyyy-mm-dd'.
 
   task :past_events_from_source, [:calendar_id, :from] => [:environment] do |t, args|
-    from = DateTime.parse(args[:from])
+    date = Date.parse(args[:from])
+    from = DateTime.parse(date)
 
     import_events_from_source(args[:calendar_id], from)
   end
@@ -32,8 +32,8 @@ def import_events_from_source(calendar_id, from)
     calendar.import_events(from)
   rescue => e
     #TODO: Inform admin(s) when this fails
-    puts e
-    puts e.backtrace
+    Rails.logger.debug e
+    Rollbar.error e
     return
   end
 end

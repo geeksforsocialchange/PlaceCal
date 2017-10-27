@@ -1,0 +1,96 @@
+<%#
+# Show
+
+This view is the template for the show page.
+It renders the attributes of a resource,
+as well as a link to its edit page.
+
+## Local variables:
+
+- `page`:
+  An instance of [Administrate::Page::Show][1].
+  Contains methods for accessing the resource to be displayed on the page,
+  as well as helpers for describing how each attribute of the resource
+  should be displayed.
+
+[1]: http://www.rubydoc.info/gems/administrate/Administrate/Page/Show
+%>
+
+<% content_for(:title) { "#{t("administrate.actions.show")} #{page.page_title}" } %>
+
+<header class="main-content__header" role="banner">
+  <h1 class="main-content__page-title">
+    <%= content_for(:title) %>
+  </h1>
+
+  <div>
+    <%= link_to(
+      "#{t("administrate.actions.edit")} #{page.page_title}",
+      [:edit, namespace, page.resource],
+      class: "button",
+    ) if valid_action? :edit %>
+  </div>
+</header>
+
+<section class="main-content__body">
+  <%= form_tag admin_calendar_import_path(page.resource) do %>
+    <div class="field-unit field-unit--date-time">
+      <div class="field-unit__label attribute-label">
+        <%= label_tag :starting_from, "Import Starting From" %>
+      </div>
+      <div class="field-unit__field">
+        <%= text_field_tag :starting_from, Date.today, class: 'starting-datetimepicker' %>
+      </div>
+
+      <%= submit_tag 'Run Importer' %>
+    </div>
+  <% end %>
+
+  <hr/>
+
+  <h3>Important Notices</h3>
+  <ul>
+    <%- if page.resource.notices %>
+      <%- page.resource.notices.each do |notice| %>
+        <li><%= notice %></li>
+      <% end %>
+    <% end %>
+  </ul>
+
+  <hr/>
+
+  <h3>Recent Activities</h3><br/>
+  <%- @recent_activity.each do |date, activities| %>
+    <b><%= date %></b>
+    <ul>
+      <%- activities.each do |activity| %>
+        <li>
+          <%- if activity.event == 'destroy' %>
+            Event Deleted: <%= activity.object["summary"] %> - <%= activity.object["dtstart"] %> - <%= activity.object["dtend"] %>
+          <% elsif activity.event == 'create' %>
+            Event Created: <%= activity.object_changes["summary"].last %> - <%= activity.object_changes["dtstart"].last %> - <%= activity.object_changes["dtend"].last %>
+          <% else %>
+            Event Updated: <%= activity.object["summary"] %> - <%= activity.object["dtstart"] %> -
+                           <%= activity.object_changes.keys.reject { |key| %w(notices created_at updated_at).include?(key) } %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <hr/>
+
+  <dl>
+    <% page.attributes.each do |attribute| %>
+      <dt class="attribute-label" id="<%= attribute.name %>">
+      <%= t(
+        "helpers.label.#{resource_name}.#{attribute.name}",
+        default: attribute.name.titleize,
+      ) %>
+      </dt>
+
+      <dd class="attribute-data attribute-data--<%=attribute.html_class%>"
+          ><%= render_field attribute %></dd>
+    <% end %>
+  </dl>
+</section>

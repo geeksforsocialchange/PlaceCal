@@ -43,7 +43,10 @@ class Calendar < ApplicationRecord
 
   # Create Events using this Calendar
   def import_events(from)
+    update_attribute(:import_lock_at, DateTime.now)
+
     @events_uids = []
+
     parse_events_from_source(from).each do |event_data|
       @events_uids << event_data.uid
       event_data.partner_id = partner_id
@@ -52,35 +55,41 @@ class Calendar < ApplicationRecord
         event_data.place_id = place_id
       else
         location = set_place_or_address(event_data)
-        event_data.send("#{location.keys[0]}=", location.values[0]) if location && location.keys[0]
+        event_data.send("#{location.keys[0]}=", location.values[0]) if location.try(:keys).present?
       end
 
       occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
-      handle_recurring_events(event_data, occurrences) if occurrences.present?
+      self.notices = create_or_update_events(event_data, occurrences) if occurrences
     end
 
     handle_deleted_events(from, @events_uids) if @events_uids
-    update_attribute(:last_import_at, DateTime.now)
+
+    self.reload #reload the record from database to clear out any invalid events to avoid attempts to save
+    self.update_attributes!({last_import_at: DateTime.now, import_lock_at: nil})
   end
 
-  def handle_recurring_events(event_data, occurrences) # rubocop:disable all
-    calendar_events = self.events.where(uid: event_data.uid)
+  def create_or_update_events(event_data, occurrences) # rubocop:disable all
+    @important_notices = []
+    calendar_events    = self.events.where(uid: event_data.uid)
 
     #If any dates of this event don't match the imported start times or end times, soft delete them
-    calendar_events.without_matching_times(occurrences.map(&:start_time), occurrences.map(&:end_time)).destroy_all
+    if event_data.recurring_event?
+      events_with_invalid_dates = calendar_events.without_matching_times(occurrences.map(&:start_time), occurrences.map(&:end_time))
+      events_with_invalid_dates.destroy_all
+    end
 
     occurrences.each do |occurrence|
-      attributes = event_data.attributes(occurrence.start_time, occurrence.end_time)
       event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
 
-      event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first
+      event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
+      event = self.events.new if event.blank?
 
-      if event
-        event.update_attributes(attributes.except(:uid))
-      else
-        self.events.create(attributes)
+      unless event.update_attributes event_data.attributes.merge(event_time)
+        @important_notices << { event: event, errors: event.errors.full_messages }
       end
     end
+
+    @important_notices
   end
 
   def handle_deleted_events(from, uids)
@@ -90,11 +99,13 @@ class Calendar < ApplicationRecord
     return if deleted_events.blank?
 
     if type.facebook?
-      #Do another check with Facebook to see if these events actually no longer exist in case of FB hiccup. If they do exist, remove from the list.
+      #Do another check with Facebook to see if these events actually no
+      #longer exist in case of FB hiccup. If they do exist, remove from the list.
       response = Parsers::Facebook.new(source).find_by_uid(deleted_events)
       response.keys.each { |key| deleted_events.delete(key) }
     end
 
+    puts upcoming_events.where(uid: deleted_events).inspect
     upcoming_events.where(uid: deleted_events).destroy_all
   end
 
@@ -115,34 +126,16 @@ class Calendar < ApplicationRecord
 
     return (strategy.event_override? ? { place_id: place_id } : {}) if location.blank?
 
-    postcode = extract_postcode(location)
+    postcode = event_data.postcode
+    regexp   = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new("UK|United Kingdom")
 
-    components = location.split(', ')
-    regexp = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new("UK|United Kingdom")
-    components = components.map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
+    components = location.split(', ').map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
 
-    @place = Place.where(name: components).first
-
-    return { place_id: @place.id } if @place.present?
-
-    Address.search(components, postcode)
-  end
-
-  def extract_postcode(location)
-    postcode = location.match(Address::POSTCODE_REGEX).try(:[], 0)
-    postcode = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0) if postcode.blank? #check for instances of M14 or M15 4 or whatever madness they've come up with
-
-    if postcode.blank?
-      #See if Google returns a more informative address
-      results = Geocoder.search(location)
-      if results.first
-        formatted_address = results.first.data["formatted_address"]
-
-        postcode = Address::POSTCODE_REGEX.match(formatted_address).try(:[], 0)
-      end
+    if place = Place.where(name: components).first
+      return { place_id: place.id }
+    else
+      return Address.search(components, postcode)
     end
-
-    postcode
   end
 
 end

@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20171017160904) do
     t.datetime "updated_at", null: false
     t.string "strategy"
     t.integer "address_id"
+    t.datetime "import_lock_at"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -67,7 +68,6 @@ ActiveRecord::Schema.define(version: 20171017160904) do
     t.jsonb "rrule"
     t.jsonb "notices"
     t.boolean "is_active", default: true, null: false
-    t.datetime "deleted_at"
     t.datetime "dtstart"
     t.datetime "dtend"
     t.datetime "created_at", null: false
@@ -75,7 +75,6 @@ ActiveRecord::Schema.define(version: 20171017160904) do
     t.integer "partner_id"
     t.integer "address_id"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
-    t.index ["deleted_at"], name: "index_events_on_deleted_at"
     t.index ["place_id"], name: "index_events_on_place_id"
   end
 

@@ -1,6 +1,5 @@
 # app/models/event.rb
 class Event < ApplicationRecord
-  acts_as_paranoid
   has_paper_trail ignore: [:rrule, :notices]
 
   belongs_to :partner
