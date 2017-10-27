@@ -19,14 +19,16 @@
         <span class="icon icon--date">📅</span>
         <%= date %>
       </div>
-      <div class="event__detail event__location">
-        <span class="icon icon--place">🏠</span>
-        <% if properties[:place] %>
-          <%= link_to properties[:place], place_path(properties[:place]) %>
-        <% elsif properties[:location] %>
-          <%= location %>
-        <% end %>
-      </div>
+      <% if properties[:place] || properties[:location] %>
+        <div class="event__detail event__location">
+          <span class="icon icon--place">🏠</span>
+          <% if properties[:place] %>
+            <%= link_to properties[:place], place_path(properties[:place]) %>
+          <% elsif properties[:location] %>
+            <%= location %>
+          <% end %>
+        </div>
+      <% end %>
       <% if repeats %>
         <div class="event__detail event__repeats">
           <span class="icon icon--repeats">🔁</span>

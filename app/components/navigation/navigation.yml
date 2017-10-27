@@ -1,2 +1,4 @@
--
-  id: 1
+:meta: 'Non-interactive header (for now!)' 
+:stubs:
+  -
+    :id: 1
