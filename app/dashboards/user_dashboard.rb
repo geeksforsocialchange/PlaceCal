@@ -12,7 +12,7 @@ class UserDashboard < Administrate::BaseDashboard
     id: Field::Number,
     first_name: Field::String,
     last_name: Field::String,
-    role: Field::String,
+    role: Field::Select.with_options(collection: User.role.values),
     phone: Field::String,
     email: Field::String,
     password: Field::Password,

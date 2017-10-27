@@ -54,9 +54,9 @@ class Address < ApplicationRecord
                               postcode: postcode)
         address.save!
         address
-      rescue
-        puts address
-        Rails.logger.debug address
+      rescue => e
+        Rails.logger.debug e
+        Rollbar.error e
       end
     end
   end

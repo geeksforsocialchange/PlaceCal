@@ -41,14 +41,10 @@ class CalendarDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = [
     :partner,
     :place,
-    :events,
-    :id,
     :name,
     :source,
     :strategy,
     :type,
-    :notices,
-    :last_import_at,
     :created_at,
     :updated_at,
   ].freeze

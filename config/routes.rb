@@ -31,7 +31,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   namespace :admin do
     resources :users
     resources :addresses
-    resources :calendars
+    resources :calendars do
+      post :import
+    end
     resources :events
     resources :partners
     resources :places

@@ -34,11 +34,19 @@ module Events
     end
 
     def dtstart
-      @event.start_time
+      begin
+        DateTime.parse(@event.start_time)
+      rescue
+        nil
+      end
     end
 
     def dtend
-      @event.end_time
+      begin
+        DateTime.parse(@event.end_time)
+      rescue
+        nil
+      end
     end
 
     def last_updated

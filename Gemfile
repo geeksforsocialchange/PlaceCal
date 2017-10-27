@@ -33,8 +33,9 @@ gem 'koala'
 gem 'leaflet-rails'
 gem 'listen', '~> 3.0.5'
 gem 'mailgun_rails'
+gem 'oj'
 gem 'paper_trail'
-gem 'paranoia', '~> 2.2'
+gem 'rollbar'
 gem 'virtus'
 
 gem 'whenever', require: false
@@ -70,7 +71,7 @@ group :development do
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'awesome_print'
-  gem 'better_errors'
+  #gem 'better_errors'
   gem 'binding_of_caller'
   gem 'guard'
   gem 'guard-livereload', '~> 2.5', require: false
