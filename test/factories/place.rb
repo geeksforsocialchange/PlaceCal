@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory(:place) do
     name 'Hulme Community Garden Centre'
     short_description nil

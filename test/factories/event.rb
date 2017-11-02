@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory(:event) do
     summary 'N.A (Narcotics Anonymous)'
     location 'Unformatted Address, Ungeolocated Lane, Manchester'

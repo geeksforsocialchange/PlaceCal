@@ -61,7 +61,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
   gem 'byebug', platform: :mri
   gem 'dotenv-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   # Generates factories for us
   gem 'timecop'
   gem 'to_factory', '~> 0.2.1'

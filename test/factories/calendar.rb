@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory(:calendar) do
     name 'Zion Centre'
     source ''

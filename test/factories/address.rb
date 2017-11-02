@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory(:address) do
     city 'Manchester'
     country_code 'UK'

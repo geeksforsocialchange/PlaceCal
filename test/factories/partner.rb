@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory(:partner) do
     name "Hulme Community Garden Centre"
     admin_email nil
