@@ -1,4 +1,4 @@
-ruby '2.4.1'
+ruby '2.4.2'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -77,6 +77,7 @@ group :development do
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
   gem 'rails-erd', require: false
+  gem 'rubocop'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Access an IRB console on exception pages or by using <%= console %>
