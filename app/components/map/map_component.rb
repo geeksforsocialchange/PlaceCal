@@ -18,15 +18,14 @@ class MapComponent < MountainView::Presenter
   end
 
   def zoom
-    # FIXME: currently doesn't do anything due to auto-zoom
     properties[:zoom] || 16
   end
 
   def styles
     if markers.length > 1 || properties[:style] == :full
-      ' map--high'
+      ' map--multiple'
     else
-      ''
+      ' map--single'
     end
   end
 

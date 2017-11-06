@@ -10,16 +10,16 @@
   var markerArray = []
   <% markers.each do |m| %>
     marker = L.marker(<%= [m[:lat], m[:lon]] %>).addTo(map);
-    marker.bindTooltip("<%= m[:name] %>", { permanent: true }).openTooltip();
+    marker.bindPopup("<a href='/places/<%= m[:id] %>'><%= m[:name] %></a>", { permanent: true, closeButton: false });
     markerArray.push(marker);
   <% end %>
 
   // Create a group for all markers and add to map
   var markerGroup = L.featureGroup(markerArray)
-  map.fitBounds(markerGroup.getBounds());
+  map.fitBounds(markerGroup.getBounds(), {maxZoom: <%= zoom %>});
 
   // Add the basemap
-  L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+  L.tileLayer('https://api.mapbox.com/styles/v1/studiosquid/cj9o6fykz441q2rqyqzkaal37/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic3R1ZGlvc3F1aWQiLCJhIjoiY2o5bzZmNzhvMWI2dTJ3bnQ1aHFnd3loYSJ9.NC3T07dEr_Aw7wo1O8aF-g', {
             attribution: 'PlaceCal',
             maxZoom: 18,
   }).addTo(map);

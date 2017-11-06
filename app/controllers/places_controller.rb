@@ -15,7 +15,8 @@ class PlacesController < ApplicationController
       {
         lat: p.address.latitude,
         lon: p.address.longitude,
-        name: p.name
+        name: p.name,
+        id: p.id
       }
     end
   end
@@ -30,11 +31,12 @@ class PlacesController < ApplicationController
     @sort = params[:sort].to_s || 'time'
     @events = sort_events(events, @sort)
     # Map
-    @map = if @place.address && @place.address.latitude
+    @map = if @place&.address&.latitude
              [{
                lat: @place.address.latitude,
                lon: @place.address.longitude,
-               name: @place.name
+               name: @place.name,
+               id: @place.id
              }]
            else
              []

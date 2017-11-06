@@ -1,9 +1,21 @@
 @import "variables_mixins"
 
 .map 
-  height: 300px
+  height: 330px
 
-  &--high
+  .leaflet-container, .leaflet-popup-content
+    font-family: $sans-serif
+    a
+      color: $grey
+      font-size: 0.9rem
+
+  &--single
+    border: 5px solid $linen
+    border-radius: 1rem
+    overflow: hidden
+    z-index: 0
+
+  &--multiple
     height: 500px
     border-top-width: 10px
     border-top-color: $almond
