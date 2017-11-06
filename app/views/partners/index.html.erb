@@ -3,7 +3,7 @@
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]] %>
   <hr>
-  <ul class="partners reset">
+  <ul class="partners reset two-col">
     <% @partners.each do |partner| %>
       <li>
         <h3><%= link_to partner.name, partner %></h3>
