@@ -38,6 +38,7 @@ gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
 gem 'virtus'
+gem 'pundit'
 
 gem 'whenever', require: false
 

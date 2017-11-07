@@ -49,22 +49,39 @@ as well as a link to its edit page.
   <hr/>
 
   <h3>Important Notices</h3>
-  <ul>
-    <%- if page.resource.notices %>
-      <%- page.resource.notices.each do |notice| %>
-        <li><em><%= notice["event"]["summary"] %></em> - <%= notice["errors"].join(", ")%></li>
-      <% end %>
-    <% end %>
-  </ul>
+  <%- if page.resource.notices.present? %>
 
+   <ul>
+     <%- page.resource.notices.each do |notice| %>
+      <li><em><%= notice["event"]["summary"] %></em> - <%= notice["errors"].join(", ")%></li>
+     <% end %>
+   </ul>
+  <% else %>
+    No notices to show
+  <% end %>
   <hr/>
 
   <h3>Recent Activities</h3><br/>
-  <%- @recent_activity.each do |date, activities| %>
+  <%- @versions.each do |date, activities| %>
     <b><%= date %></b>
-    <!--<ul>
+    <ul>
+      <%- by_event = activities.group_by(&:event) %>
+
+      Event Created
+      <%- by_event["create"].group_by { |version| version.object_changes["uid"].last }.each do |_, versions| %>
+        <li><%= versions.first.object_changes["summary"].last %> - <%= versions.map { |version| DateTime.parse(version.object_changes["dtstart"].last) } %></li>
+      <% end %>
+      <%- if by_event["update"] %>
+        <%- by_event["update"].group_by { |version| version.object["uid"] }.each do |_, versions| %>
+          <li>
+            <%= versions.first.object["summary"] %> - <%= versions.map { |version| DateTime.parse(version.object["dtstart"]) } %>
+            <%= versions.map(&:object_changes).uniq %>
+          </li>
+        <% end %>
+      <% end %>
+      <%#= by_event["destroy"] %>
       <%#- activities.each do |activity| %>
-        <li>
+        <!--<li>
           <%#- if activity.event == 'destroy' %>
             Event Deleted: <%#= activity.object["summary"] %> - <%#= activity.object["dtstart"] %> - <%#= activity.object["dtend"] %>
           <%# elsif activity.event == 'create' %>
@@ -73,9 +90,9 @@ as well as a link to its edit page.
             Event Updated: <%#= activity.object["summary"] %> - <%#= activity.object["dtstart"] %> -
                            <%#= activity.object_changes.keys.reject { |key| %w(notices created_at updated_at).include?(key) } %>
           <%# end %>
-        </li>
+        </li>-->
       <%# end %>
-    </ul>-->
+    </ul>
   <% end %>
 
   <hr/>

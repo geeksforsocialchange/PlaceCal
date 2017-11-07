@@ -2,10 +2,6 @@ module Admin
   class CalendarsController < Admin::ApplicationController
 
     def show
-      @events = requested_resource.events
-      @recent_activity = PaperTrail::Version.where(item_type: 'Event', item_id: @events.pluck(:id)).where("created_at >= ?", 1.week.ago)
-                                            .order(created_at: :desc)
-                                            .group_by { |version| version.created_at.to_date }
       super
     end
 

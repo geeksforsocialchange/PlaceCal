@@ -1,0 +1,20 @@
+<table class="table">
+  <thead>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Last Import</th>
+    <th>Notices</th>
+    <th></th>
+  </thead>
+  <tbody>
+    <%- @calendars.each do |calendar| %>
+      <tr>
+        <td><%= calendar.name %></td>
+        <td><%= calendar.type %></td>
+        <td><%= calendar.last_import_at %></td>
+        <td><%= calendar.notices.count %></td>
+        <td><%= link_to "Import Status", manager_calendar_path(calendar) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
