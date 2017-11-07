@@ -2,6 +2,7 @@
   <thead>
     <th>Name</th>
     <th>Type</th>
+    <th>Events</th>
     <th>Last Import</th>
     <th>Notices</th>
     <th></th>
@@ -11,8 +12,12 @@
       <tr>
         <td><%= calendar.name %></td>
         <td><%= calendar.type %></td>
+        <td>
+          Total: <%= calendar.events.count%><br/>
+          Unique: <%= calendar.events.pluck(:uid).uniq.count %>
+        </td>
         <td><%= calendar.last_import_at %></td>
-        <td><%= calendar.notices.count %></td>
+        <td><%= calendar.notices.count if calendar.notices %></td>
         <td><%= link_to "Import Status", manager_calendar_path(calendar) %></td>
       </tr>
     <% end %>

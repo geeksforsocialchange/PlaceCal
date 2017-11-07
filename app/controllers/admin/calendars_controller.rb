@@ -42,8 +42,6 @@ module Admin
       redirect_to admin_calendar_path(@calendar)
     end
 
-    def recent_activity
-    end
     # To customize the behavior of this controller,
     # you can overwrite any of the RESTful actions. For example:
     #
