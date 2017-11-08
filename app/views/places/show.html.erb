@@ -53,15 +53,12 @@
 
   <hr>
 
-  <%= render_component "paginator", pointer: @current_day,
-                                    period: @period,
-                                    sort: @sort,
-                                    path: "places/#{@place.id}/events",
-                                    show_breadcrumb: false %>                                   
-
-  <% if @events.any? %>
-    <%= render "events/events_list" %>
-  <% else %>
-    <p>No events today 😞</p>
-  <% end %>         
+  <%= render_component "event_list", 
+    events: @events,
+    pointer: @current_day,
+    period: @period,
+    sort: @sort,
+    path: "places/#{@place.id}/events",
+    show_breadcrumb: false
+  %>
 </div>
