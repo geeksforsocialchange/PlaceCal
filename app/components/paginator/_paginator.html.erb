@@ -35,11 +35,15 @@
               <!-- Show or hide repeating events -->
               <div class="filters__group">
                 <div class="filters__option">
-                  <%= radio_button_tag(:repeating, "on", repeating) %>
+                  <%= radio_button_tag(:repeating, "on", repeating == 'on') %>
                   <%= label_tag(:repeating_on, "Show repeats") %>
                 </div>
                 <div class="filters__option">
-                  <%= radio_button_tag(:repeating, "off", !repeating) %>
+                    <%= radio_button_tag(:repeating, "last", repeating == 'last') %>
+                    <%= label_tag(:repeating_last, "Show repeats last") %>
+                  </div>
+                <div class="filters__option">
+                  <%= radio_button_tag(:repeating, "off", repeating == 'off') %>
                   <%= label_tag(:repeating_off, "Hide repeats") %>
                 </div>
               </div>

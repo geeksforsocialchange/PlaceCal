@@ -36,9 +36,10 @@ class Event < ApplicationRecord
   }
 
   # Only events that don't repeat
-  scope :one_off_events, -> { where(rrule: nil) }
+  scope :one_off_events_only, -> { where(rrule: nil) }
+  scope :one_off_events_first, -> { order(rrule: :desc) }
 
-  scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day) }
+  scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day)}
 
   def repeat_frequency
     rrule[0]['table']['frequency'].titleize if rrule

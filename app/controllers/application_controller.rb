@@ -24,11 +24,11 @@ class ApplicationController < ActionController::Base
 
   def filter_events(period, **args)
     place = args[:place] || false
-    repeating = args[:repeating]
+    repeating = args[:repeating] || 'on'
     events = place ? Event.in_place(place) : Event.all
-    events = events.one_off_events unless repeating
-    case period
-    when 'week'
+    events = events.one_off_events_only if repeating == 'off'
+    events = events.one_off_events_first if repeating == 'last'
+    if period == 'week'
       events.find_by_week(@current_day).includes(:place)
     else
       events.find_by_day(@current_day).includes(:place)
