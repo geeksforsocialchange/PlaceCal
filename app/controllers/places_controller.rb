@@ -26,7 +26,7 @@ class PlacesController < ApplicationController
   def show
     # Period to show
     @period = params[:period] || 'week'
-    events = filter_events(@period, @place)
+    events = filter_events(@period, place: @place)
     # Sort criteria
     @sort = params[:sort].to_s || 'time'
     @events = sort_events(events, @sort)
