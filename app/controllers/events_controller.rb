@@ -9,7 +9,8 @@ class EventsController < ApplicationController
   def index
     # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
-    events = filter_events(@period)
+    @repeating = params[:repeating] != 'off'
+    events = filter_events(@period, repeating: @repeating)
     # Sort criteria
     @events = sort_events(events, @sort)
     @multiple_days = true

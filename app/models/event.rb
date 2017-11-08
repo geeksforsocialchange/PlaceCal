@@ -35,10 +35,13 @@ class Event < ApplicationRecord
     where.not(dtstart: start_times).or(where.not(dtend: end_times))
   }
 
-  scope :upcoming_for_date, ->(from) { where("dtstart >= ?", from.beginning_of_day) }
+  # Only events that don't repeat
+  scope :one_off_events, -> { where(rrule: nil) }
+
+  scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day) }
 
   def repeat_frequency
-    rrule[0]["table"]["frequency"].titleize if rrule
+    rrule[0]['table']['frequency'].titleize if rrule
   end
 
   private

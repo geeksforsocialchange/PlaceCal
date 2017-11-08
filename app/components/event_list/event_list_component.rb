@@ -2,6 +2,6 @@
 
 # app/components/event_list/event_list_component.rb
 class EventListComponent < MountainView::Presenter
-  properties :events, :pointer, :period, :sort, :path
+  properties :events, :pointer, :period, :sort, :path, :repeating
   property :show_breadcrumb, default: true
 end

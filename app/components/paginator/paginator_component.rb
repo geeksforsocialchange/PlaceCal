@@ -1,6 +1,6 @@
 # app/components/paginator/paginator_component.rb
 class PaginatorComponent < MountainView::Presenter
-  properties :pointer, :period, :steps, :path, :sort
+  properties :pointer, :period, :steps, :path, :sort, :repeating
   # FIXME: find a more elegant way of handling this
   property :show_breadcrumb, default: true
 
