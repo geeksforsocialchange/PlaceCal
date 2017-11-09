@@ -17,6 +17,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     month:      /\d{1,2}/,
     day:        /\d{1,2}/
   }
+  get '/places/:id/embed' => 'places#embed'
   resources :partners, only: %i[index show]
   resources :calendars, only: %i[index show]
 

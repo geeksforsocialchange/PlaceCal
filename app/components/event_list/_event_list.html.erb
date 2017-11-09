@@ -1,11 +1,13 @@
-<%= render_component "paginator", 
-  pointer: pointer,
-  period: period,
-  sort: sort,
-  repeating: repeating,
-  path: path,
-  show_breadcrumb: show_breadcrumb
-%>
+<% if show_paginator %>
+  <%= render_component "paginator", 
+    pointer: pointer,
+    period: period,
+    sort: sort,
+    repeating: repeating,
+    path: path,
+    show_breadcrumb: show_breadcrumb
+  %>
+<% end %>
 <% if events.any? %>
   <% events.each do |day, events| %>
     <h2 class="udl udl--fw"><%= day.strftime('%A %e %B') %></h2>

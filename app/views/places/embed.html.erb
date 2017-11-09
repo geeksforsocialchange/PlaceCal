@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Event listings for <%= @place.name %> powered by PlaceCal</title>
+  </head>
+  <body>
+    <h2>Upcoming events at <%= @place.name %></h2>
+
+    <%= render_component "event_list", 
+      events: @events,
+      pointer: @current_day,
+      period: @period,
+      sort: @sort,
+      show_breadcrumb: false,
+      show_paginator: false
+    %>
+
+    <p>Full listings available at <%= link_to 'PlaceCal.org', "https://placecal.org/places/#{@place.id}" %></p>
+  </body>
+</html>

@@ -14,5 +14,12 @@ module PlaceCal
     config.active_job.queue_adapter = :delayed_job
 
     config.time_zone = 'Europe/London'
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '/widget.js', headers: :any, methods: %i[get post options]
+      end
+    end
   end
 end

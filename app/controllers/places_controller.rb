@@ -2,8 +2,8 @@
 
 # app/controllers/places_controller.rb
 class PlacesController < ApplicationController
-  before_action :set_place, only: %i[show edit update destroy]
-  before_action :set_day, only: :show
+  before_action :set_place, only: %i[show edit update destroy embed]
+  before_action :set_day, only: %i[show embed]
   before_action :set_sort, only: :show
 
   # GET /places
@@ -26,10 +26,10 @@ class PlacesController < ApplicationController
   def show
     # Period to show
     @period = params[:period] || 'week'
-    events = filter_events(@period, place: @place)
+    @events = filter_events(@period, place: @place)
     # Sort criteria
     @sort = params[:sort].to_s || 'time'
-    @events = sort_events(events, @sort)
+    @events = sort_events(@events, @sort)
     # Map
     @map = if @place&.address&.latitude
              [{
@@ -41,6 +41,15 @@ class PlacesController < ApplicationController
            else
              []
            end
+  end
+
+  def embed
+    period = params[:period] || 'week'
+    limit = params[:limit] || '10'
+    @events = filter_events(period, place: @place, limit: limit)
+    @events = sort_events(@events, 'time')
+    response.headers.except! 'X-Frame-Options'
+    render layout: false
   end
 
   # GET /places/new

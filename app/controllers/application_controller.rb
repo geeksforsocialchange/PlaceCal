@@ -23,16 +23,19 @@ class ApplicationController < ActionController::Base
   end
 
   def filter_events(period, **args)
-    place = args[:place] || false
+    place     = args[:place]     || false
     repeating = args[:repeating] || 'on'
+    limit     = args[:limit]     || all
     events = place ? Event.in_place(place) : Event.all
     events = events.one_off_events_only if repeating == 'off'
     events = events.one_off_events_first if repeating == 'last'
-    if period == 'week'
-      events.find_by_week(@current_day).includes(:place)
-    else
-      events.find_by_day(@current_day).includes(:place)
-    end
+    events =
+      if period == 'week'
+        events.find_by_week(@current_day).includes(:place)
+      else
+        events.find_by_day(@current_day).includes(:place)
+      end
+    events.limit(limit) if limit
   end
 
   def sort_events(events, sort)
