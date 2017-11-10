@@ -14,6 +14,8 @@ class Event < ApplicationRecord
 
   validate :require_location
 
+  before_save :sanitize_rrule
+
   # Find by day
   scope :find_by_day, lambda { |day|
     where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day)
@@ -38,13 +40,17 @@ class Event < ApplicationRecord
   }
 
   # Only events that don't repeat
-  scope :one_off_events_only, -> { where(rrule: nil) }
-  scope :one_off_events_first, -> { order(rrule: :desc) }
+  scope :one_off_events_only, -> { where(rrule: false) }
+  scope :one_off_events_first, -> { order(rrule: :asc) }
 
   scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day)}
 
   def repeat_frequency
     rrule[0]['table']['frequency'].titleize if rrule
+  end
+
+  def sanitize_rrule
+    self.rrule = false if rrule.nil? || rrule == []
   end
 
   private
