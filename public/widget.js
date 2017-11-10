@@ -14,7 +14,7 @@ window.onload = function() {
   iframe.style.padding = 0;
   iframe.style.width = width;
   iframe.style.height = height;
-  iframe.src = 'http://localhost:3000/places/' + place + '/embed';
+  iframe.src = 'https://placecal.org/places/' + place + '/embed';
   document.body.appendChild(iframe);
 
 };
