@@ -8,6 +8,7 @@
                 <span class="icon icon--arrow-down">↓</span> <a href="#" data-turbolinks="false">Filter and sort</a> 
             </div>
             <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
+              <!-- Date or time sort -->
               <div class="filters__group">
                 <div class="filters__option">
                   <%= radio_button_tag(:sort, "time", sort == 'time') %>
@@ -19,6 +20,7 @@
                 </div>
               </div>
               <hr>
+              <!-- Day or week view -->
               <div class="filters__group">
                 <div class="filters__option">
                   <%= radio_button_tag(:period, "day", period == 1.day) %>
@@ -27,6 +29,22 @@
                 <div class="filters__option">
                   <%= radio_button_tag(:period, "week", period == 1.week) %>
                   <%= label_tag(:period_week, "Weekly view") %>
+                </div>
+              </div>
+              <hr>
+              <!-- Show or hide repeating events -->
+              <div class="filters__group">
+                <div class="filters__option">
+                  <%= radio_button_tag(:repeating, "on", repeating == 'on') %>
+                  <%= label_tag(:repeating_on, "Show repeats") %>
+                </div>
+                <div class="filters__option">
+                    <%= radio_button_tag(:repeating, "last", repeating == 'last') %>
+                    <%= label_tag(:repeating_last, "Show repeats last") %>
+                  </div>
+                <div class="filters__option">
+                  <%= radio_button_tag(:repeating, "off", repeating == 'off') %>
+                  <%= label_tag(:repeating_off, "Hide repeats") %>
                 </div>
               </div>
             </div>

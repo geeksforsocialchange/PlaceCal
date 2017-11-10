@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017160904) do
+ActiveRecord::Schema.define(version: 20171110171541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,20 @@ ActiveRecord::Schema.define(version: 20171017160904) do
     t.datetime "import_lock_at"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
+  end
+
+  create_table "collections", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "collections_events", id: false, force: :cascade do |t|
+    t.bigint "collection_id", null: false
+    t.bigint "event_id", null: false
+    t.index ["collection_id", "event_id"], name: "index_collections_events_on_collection_id_and_event_id"
+    t.index ["event_id", "collection_id"], name: "index_collections_events_on_event_id_and_collection_id"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|

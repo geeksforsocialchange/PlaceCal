@@ -59,6 +59,9 @@ gem 'rails_autolink'
 # Jobs
 gem 'delayed_job_active_record'
 
+# CORS to allow iFrames
+gem 'rack-cors', require: 'rack/cors'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
   gem 'byebug', platform: :mri

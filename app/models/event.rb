@@ -1,6 +1,6 @@
 # app/models/event.rb
 class Event < ApplicationRecord
-  has_paper_trail ignore: [:rrule, :notices]
+  has_paper_trail ignore: %i[rrule notices]
 
   belongs_to :partner
 
@@ -8,9 +8,13 @@ class Event < ApplicationRecord
   belongs_to :address, required: false
   belongs_to :calendar
 
+  has_and_belongs_to_many :collections
+
   validates :summary, :dtstart, :dtend, presence: true
 
   validate :require_location
+
+  before_save :sanitize_rrule
 
   # Find by day
   scope :find_by_day, lambda { |day|
@@ -35,10 +39,18 @@ class Event < ApplicationRecord
     where.not(dtstart: start_times).or(where.not(dtend: end_times))
   }
 
-  scope :upcoming_for_date, ->(from) { where("dtstart >= ?", from.beginning_of_day) }
+  # Only events that don't repeat
+  scope :one_off_events_only, -> { where(rrule: false) }
+  scope :one_off_events_first, -> { order(rrule: :asc) }
+
+  scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day)}
 
   def repeat_frequency
-    rrule[0]["table"]["frequency"].titleize if rrule
+    rrule[0]['table']['frequency'].titleize if rrule
+  end
+
+  def sanitize_rrule
+    self.rrule = false if rrule.nil? || rrule == []
   end
 
   private
