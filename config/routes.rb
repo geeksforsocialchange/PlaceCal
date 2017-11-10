@@ -24,6 +24,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   # Users
   devise_for :users
+  resources :users
 
   # Static pages
   get 'join', to: 'pages#join'
