@@ -20,6 +20,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   get '/places/:id/embed' => 'places#embed'
   resources :partners, only: %i[index show]
   resources :calendars, only: %i[index show]
+  resources :collections, only: %i[show]
 
   # Users
   devise_for :users
