@@ -1,12 +1,14 @@
 # app/models/event.rb
 class Event < ApplicationRecord
-  has_paper_trail ignore: [:rrule, :notices]
+  has_paper_trail ignore: %i[rrule notices]
 
   belongs_to :partner
 
   belongs_to :place, required: false
   belongs_to :address, required: false
   belongs_to :calendar
+
+  has_and_belongs_to_many :collections
 
   validates :summary, :dtstart, :dtend, presence: true
 

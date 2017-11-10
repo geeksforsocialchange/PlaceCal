@@ -39,6 +39,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :events
     resources :partners
     resources :places
+    resources :collections
 
     root to: 'users#index'
   end
