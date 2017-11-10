@@ -3,7 +3,7 @@
     <title>Event listings for <%= @place.name %> powered by PlaceCal</title>
   </head>
   <body>
-    <h2>Upcoming events at <%= @place.name %></h2>
+    <h1>Upcoming events at <%= @place.name %></h1>
 
     <%= render_component "event_list", 
       events: @events,
