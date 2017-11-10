@@ -1,66 +1,38 @@
-<h3> Import Status for <%= @calendar.name %></h3>
+<main>
+  <div class="c c--lg-space-after">
+    <%- if current_user.role.admin? %>
+      <%= link_to 'Return to Admin', admin_calendars_path %>
+    <% end %>
+    <%= link_to 'Return to Calendars', manager_calendars_path %>
 
-<br/>
 
-<h4>Important Notices</h4>
-<%- if @calendar.notices.present? %>
+    <h3> Import Status for <%= @calendar.name %></h3>
 
-  <ul>
-   <%- @calendar.notices.each do |notice| %>
-    <li><em><%= notice["event"]["summary"] %></em> - <%= notice["errors"].join(", ")%></li>
-   <% end %>
-  </ul>
-<% else %>
-  No notices to show
-<% end %>
-<hr/>
+    <br/>
 
-<h4>Recent Activities</h4><br/>
-<%- @versions.each do |date, activities| %>
-  <div class="row">
-    <div class="col-sm-2">
-      <b><%= (Date.today - date).to_i %> Days Ago</b>
-    </div>
-    <div class="col-sm-10">
+    <p>
+      <b>Last Import At:</b> <%= @calendar.last_import_at%>
+    </p>
+
+    <h4>Important Notices</h4>
+    <%- if @calendar.notices.present? %>
+      <p>The following events could not be imported due to invalid data: </p>
       <ul>
-        <%- by_event = activities.group_by(&:event) %>
-
-        <%- if by_event["create"] %>
-          <b>Event Created</b>
-          <%- by_event["create"].group_by { |version| version.object_changes["uid"].last }.each do |_, versions| %>
-            <li>
-              <%= versions.first.object_changes["summary"].last %> -
-              <%- dates = versions.map { |version| DateTime.parse(version.object_changes["dtstart"].last) } %>
-              <%= summarize_dates(dates) %>
-            </li>
-          <% end %>
-        <% end %>
-
-        <%- if by_event["update"] %>
-          <b>Event Updated</b>
-          <%- by_event["update"].group_by { |version| version.object["uid"] }.each do |_, versions| %>
-            <li>
-              <%= versions.first.object["summary"] %> -
-              <%- dates = versions.map { |version| DateTime.parse(version.object["dtstart"]) } %>
-              <ul>
-                <li>Dates: <%= summarize_dates(dates) %></li>
-                <li>Changes: <%= versions.map(&:object_changes).map(&:keys).flatten.uniq %></li>
-              </ul>
-            </li>
-          <% end %>
-        <% end %>
-
-        <%- if by_event["destroy"] %>
-          <b>Event Deleted</b>
-          <%- by_event["destroy"].group_by { |version| version.object["uid"] }.each do |_, versions| %>
-            <li>
-              <%= versions.first.object["summary"] %> -
-              <%- dates = versions.map { |version| DateTime.parse(version.object["dtstart"]) } %>
-              <%= summarize_dates(dates) %>
-            </li>
-          <% end %>
-        <% end %>
+       <%- @calendar.notices.each do |notice| %>
+        <li><em><%= notice["event"]["summary"] %></em> - <%= notice["errors"].join(", ")%></li>
+       <% end %>
       </ul>
-    </div>
+    <% else %>
+      No notices to show
+    <% end %>
+    <hr/>
+
+    <h4>Recent Activities</h4><br/>
+    <%- @versions.each do |date, activities| %>
+      <div>
+        <b><%= display_time_since(date) %></b>
+        <%= render 'shared/recent_import_activity', activities: activities %>
+      </div>
+    <% end %>
   </div>
-<% end %>
+</main>
