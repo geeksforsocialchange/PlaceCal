@@ -14,7 +14,7 @@
       <div class="gi gi__2-5 gi--image">
         <% if @collection.image? %>
           <img src="<%= @collection.image.standard.url %>"
-               srcset="<%= @collection.image.standard.url %> 1x, i<%= @collection.image.retina.url %> 2x"
+               srcset="<%= @collection.image.standard.url %> 1x, <%= @collection.image.retina.url %> 2x"
                alt="Image for <%= @collection.name %>" >
         <% end %>
       </div>
