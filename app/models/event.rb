@@ -54,7 +54,7 @@ class Event < ApplicationRecord
   end
 
   def source_link
-    if calendar.type == 'facebook'
+    if calendar&.type == 'facebook'
       "<p><a href='https://facebook.com/events/#{uid}'>Join this event on Facebook.</a></p>".html_safe
     else
       false
