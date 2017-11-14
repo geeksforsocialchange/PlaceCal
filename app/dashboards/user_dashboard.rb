@@ -78,6 +78,7 @@ class UserDashboard < Administrate::BaseDashboard
     :email,
     :password,
     :password_confirmation,
+    :partners
     # :encrypted_password,
     # :reset_password_token,
     # :reset_password_sent_at,

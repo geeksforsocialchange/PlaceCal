@@ -1,0 +1,42 @@
+<ul>
+  <%- by_event = activities.group_by(&:event) %>
+
+  <%- if by_event["create"] %>
+    <b>Events Created</b>
+    <%- by_event["create"].group_by { |version| version.object_changes["uid"].last }.each do |_, versions| %>
+      <li>
+        <%= versions.first.object_changes["summary"].last %> -
+        <%- dates = versions.map { |version| DateTime.parse(version.object_changes["dtstart"].last) } %>
+        <%= summarize_dates(dates) %>
+      </li>
+    <% end %>
+    <br/>
+  <% end %>
+
+  <%- if by_event["update"] %>
+    <b>Events Updated</b>
+    <%- by_event["update"].group_by { |version| version.object["uid"] }.each do |_, versions| %>
+      <li>
+        <%= versions.first.object["summary"] %> -
+        <%- dates = versions.map { |version| DateTime.parse(version.object["dtstart"]) } %>
+        <ul>
+          <li>Dates: <%= summarize_dates(dates) %></li>
+          <li>Changes: <%= versions.map(&:object_changes).map(&:keys).flatten.uniq.reject { |key| ["updated_at"].include? key  }.join(', ')%></li>
+        </ul>
+      </li>
+    <% end %>
+    <br/>
+  <% end %>
+
+  <%- if by_event["destroy"] %>
+    <b>Events Deleted</b>
+    <%- by_event["destroy"].group_by { |version| version.object["uid"] }.each do |_, versions| %>
+      <li>
+        <%= versions.first.object["summary"] %> -
+        <%- dates = versions.map { |version| DateTime.parse(version.object["dtstart"]) } %>
+        <%= summarize_dates(dates) %>
+      </li>
+    <% end %>
+    <br/>
+  <% end %>
+</ul>

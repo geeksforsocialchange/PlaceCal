@@ -1,0 +1,38 @@
+<main>
+  <div class="c c--lg-space-after">
+    <%- if current_user.role.admin? %>
+      <%= link_to 'Return to Admin', admin_calendars_path %>
+    <% end %>
+    <%= link_to 'Return to Calendars', manager_calendars_path %>
+
+
+    <h3> Import Status for <%= @calendar.name %></h3>
+
+    <br/>
+
+    <p>
+      <b>Last Import At:</b> <%= @calendar.last_import_at%>
+    </p>
+
+    <h4>Important Notices</h4>
+    <%- if @calendar.notices.present? %>
+      <p>The following events could not be imported due to invalid data: </p>
+      <ul>
+       <%- @calendar.notices.each do |notice| %>
+        <li><em><%= notice["event"]["summary"] %></em> - <%= notice["errors"].join(", ")%></li>
+       <% end %>
+      </ul>
+    <% else %>
+      No notices to show
+    <% end %>
+    <hr/>
+
+    <h4>Recent Activities</h4><br/>
+    <%- @versions.each do |date, activities| %>
+      <div>
+        <b><%= display_time_since(date) %></b>
+        <%= render 'shared/recent_import_activity', activities: activities %>
+      </div>
+    <% end %>
+  </div>
+</main>

@@ -242,6 +242,8 @@ GEM
       method_source (~> 0.9.0)
     public_suffix (3.0.0)
     puma (3.10.0)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (2.0.3)
     rack-cors (1.0.2)
     rack-test (0.7.0)
@@ -405,6 +407,7 @@ DEPENDENCIES
   paper_trail
   pg
   puma (~> 3.0)
+  pundit
   rack-cors
   rails (~> 5.1.0)
   rails-erd

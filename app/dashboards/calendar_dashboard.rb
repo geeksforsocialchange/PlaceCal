@@ -33,7 +33,6 @@ class CalendarDashboard < Administrate::BaseDashboard
     :place,
     :events,
     :id,
-    :last_import_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES

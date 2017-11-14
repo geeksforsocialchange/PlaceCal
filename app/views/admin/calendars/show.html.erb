@@ -48,38 +48,6 @@ as well as a link to its edit page.
 
   <hr/>
 
-  <h3>Important Notices</h3>
-  <ul>
-    <%- if page.resource.notices %>
-      <%- page.resource.notices.each do |notice| %>
-        <li><em><%= notice["event"]["summary"] %></em> - <%= notice["errors"].join(", ")%></li>
-      <% end %>
-    <% end %>
-  </ul>
-
-  <hr/>
-
-  <h3>Recent Activities</h3><br/>
-  <%- @recent_activity.each do |date, activities| %>
-    <b><%= date %></b>
-    <!--<ul>
-      <%#- activities.each do |activity| %>
-        <li>
-          <%#- if activity.event == 'destroy' %>
-            Event Deleted: <%#= activity.object["summary"] %> - <%#= activity.object["dtstart"] %> - <%#= activity.object["dtend"] %>
-          <%# elsif activity.event == 'create' %>
-            Event Created: <%#= activity.object_changes["summary"].last %> - <%#= activity.object_changes["dtstart"].last %> - <%#= activity.object_changes["dtend"].last %>
-          <%# else %>
-            Event Updated: <%#= activity.object["summary"] %> - <%#= activity.object["dtstart"] %> -
-                           <%#= activity.object_changes.keys.reject { |key| %w(notices created_at updated_at).include?(key) } %>
-          <%# end %>
-        </li>
-      <%# end %>
-    </ul>-->
-  <% end %>
-
-  <hr/>
-
   <dl>
     <% page.attributes.each do |attribute| %>
       <dt class="attribute-label" id="<%= attribute.name %>">

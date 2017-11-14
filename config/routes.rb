@@ -47,6 +47,10 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     root to: 'users#index'
   end
 
+  namespace :manager do
+    resources :calendars
+  end
+
   # Styleguide
   mount MountainView::Engine => '/styleguide'
 end
