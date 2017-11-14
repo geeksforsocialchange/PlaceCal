@@ -4,5 +4,11 @@
     :title: Main Title
     :subtitle: Secondary Title
   -
-    :title: Main title that is extra, extra long and really annoying
-    :subtitle: Secondary title that is extra, extra long and really annoying
+    :title: Titles break at 30 characters!
+    :subtitle: 30 Characters
+  -
+    :title: Titles break at 30 characterss!
+    :subtitle: 31 Characters    
+  -
+    :title: Really really long title that is extra long and just goes on for ages
+    :subtitle: 69 Characters - truncate at some point?
