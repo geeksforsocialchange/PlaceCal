@@ -3,15 +3,14 @@ dist: trusty
 addons:
   postgresql: '9.6'
 before_script:
-- psql -c 'create database placecal_test;' -U postgres
+  - psql -c 'create database placecal_test;' -U postgres
 before_install:
-- openssl aes-256-cbc -K $encrypted_d02a41da3a1f_key -iv $encrypted_d02a41da3a1f_iv
-  -in deploy.key.enc -out deploy.key -d
+  - openssl aes-256-cbc -K $encrypted_d02a41da3a1f_key -iv $encrypted_d02a41da3a1f_iv -in deploy.key.enc -out deploy.key -d
 after_success:
   - eval "$(ssh-agent -s)" #start the ssh agent
   - chmod 600 .travis/deploy.key # this key should have push access
   - ssh-add .travis/deploy.key
-  - ssh-keyscan <your dokku host> >> ~/.ssh/known_hosts
+  - ssh-keyscan placecal.org >> ~/.ssh/known_hosts
   - git remote add deploy dokku@placecal.org:placecal
   - git config --global push.default simple
   - git push deploy master
