@@ -1,11 +1,9 @@
 <%= render_component "hero", title: @collection.name, subtitle: "The Community Calendar" %>
 
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [['Collections'], [@collection.name, collection_path(@collection)]] %>
+  <%= render_component "breadcrumb", trail: [[@collection.name, '/winter2017']] %>
 
   <hr>
-
-
 
   <div class="g g--partner">
       <div class="gi gi__3-5">

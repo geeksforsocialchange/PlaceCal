@@ -29,6 +29,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Static pages
   get 'join', to: 'pages#join'
 
+  # Named routes
+  get 'winter2017', to: 'collections#show', id: 1
+
   # Administration
   namespace :admin do
     resources :users
