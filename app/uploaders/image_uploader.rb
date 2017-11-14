@@ -29,11 +29,11 @@ class ImageUploader < CarrierWave::Uploader::Base
   # end
 
   # Create different versions of your uploaded files:
-  version :twocol_retina do
+  version :retina do
     process resize_to_fit: [840, 1200]
   end
 
-  version :twocol do
+  version :standard do
     process resize_to_fit: [420, 840]
   end
 

@@ -22,3 +22,6 @@
 
 .DS_Store
 .env
+
+# File uploads
+/public/uploads/**

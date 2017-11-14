@@ -5,13 +5,18 @@
 
   <hr>
 
-  <div class="g g--partner">
+  <div class="g g--collection">
       <div class="gi gi__3-5">
         <% if @collection.description %>
           <div class="first-ele-lg"><%= markdown @collection.description %></div>
         <% end %>
       </div>
-      <div class="gi gi__2-5">
+      <div class="gi gi__2-5 gi--image">
+        <% if @collection.image? %>
+          <img src="<%= @collection.image.standard.url %>"
+               srcset="<%= @collection.image.standard.url %> 1x, i<%= @collection.image.retina.url %> 2x"
+               alt="Image for <%= @collection.name %>" >
+        <% end %>
       </div>
     </div>
 

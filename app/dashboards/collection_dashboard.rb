@@ -12,6 +12,7 @@ class CollectionDashboard < Administrate::BaseDashboard
     id: Field::Number,
     name: Field::String,
     description: Field::Text,
+    image: Field::Carrierwave,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
@@ -35,6 +36,7 @@ class CollectionDashboard < Administrate::BaseDashboard
     :id,
     :name,
     :description,
+    :image,
     :created_at,
     :updated_at,
   ].freeze
@@ -46,6 +48,7 @@ class CollectionDashboard < Administrate::BaseDashboard
     :events,
     :name,
     :description,
+    :image
   ].freeze
 
   # Overwrite this method to customize how collections are displayed
