@@ -54,6 +54,9 @@ GEM
       momentjs-rails (~> 2.8)
       sass-rails (~> 5.0)
       selectize-rails (~> 0.6)
+    administrate-field-carrierwave (0.2.0)
+      administrate (< 1.0.0)
+      rails (>= 4.2)
     administrate-field-password (0.0.4)
       administrate
     arel (8.0.0)
@@ -210,6 +213,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    mini_magick (4.8.0)
     mini_mime (0.1.4)
     mini_portile2 (2.3.0)
     minitest (5.10.3)
@@ -376,6 +380,7 @@ PLATFORMS
 DEPENDENCIES
   active_link_to
   administrate
+  administrate-field-carrierwave (~> 0.2.0)
   administrate-field-password
   awesome_print
   binding_of_caller
@@ -402,6 +407,7 @@ DEPENDENCIES
   leaflet-rails
   listen (~> 3.0.5)
   mailgun_rails
+  mini_magick
   mountain_view
   oj
   paper_trail

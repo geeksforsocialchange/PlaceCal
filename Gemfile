@@ -23,9 +23,12 @@ gem 'uglifier', '>= 1.3.0'
 gem 'icalendar'
 gem 'icalendar-recurrence'
 
+# Uploads
+gem 'carrierwave'
+gem 'mini_magick'
+
 # Misc
 gem 'active_link_to'
-gem 'carrierwave'
 gem 'devise'
 gem 'enumerize'
 gem 'geocoder'
@@ -36,20 +39,21 @@ gem 'listen', '~> 3.0.5'
 gem 'mailgun_rails'
 gem 'oj'
 gem 'paper_trail'
+gem 'pundit'
 gem 'rollbar'
 gem 'virtus'
-gem 'pundit'
-
 gem 'whenever', require: false
 
 # Styleguide
 gem 'mountain_view'
 
 # Helpers to group by time period
+# TODO: check if this is still actually used
 gem 'groupdate'
 
 # Administration
 gem 'administrate'
+gem 'administrate-field-carrierwave', '~> 0.2.0'
 gem 'administrate-field-password'
 
 # Markdown
