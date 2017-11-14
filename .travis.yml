@@ -6,7 +6,7 @@ before_script:
 - psql -c 'create database placecal_test;' -U postgres
 before_install:
 - openssl aes-256-cbc -K $encrypted_f4f309cbfdaf_key -iv $encrypted_f4f309cbfdaf_iv
-  -in deploy.key.enc -out .travis/deploy.key -d
+  -in .travis/deploy.key.enc -out .travis/deploy.key -d
 after_success:
 - eval "$(ssh-agent -s)"
 - chmod 600 .travis/deploy.key
