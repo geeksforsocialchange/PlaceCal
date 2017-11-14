@@ -11,6 +11,7 @@
 
 <div class="c c--narrow c--space-after">
   <%= markdown @event.description %>
+  <%= @event.source_link if @event.source_link %>
   <% if @event.place %>
     <div class="g">
       <div class="gi gi__1-3">
