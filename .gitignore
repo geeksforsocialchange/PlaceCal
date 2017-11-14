@@ -25,3 +25,7 @@
 
 # File uploads
 /public/uploads/**
+
+# Credentials
+.travis/*.key
+.travis/*.key.pub
