@@ -1,0 +1,21 @@
+<h2>Radio buttons</h2>
+
+<p>
+  <%= radio_button_tag(:radio, 'active', true) %>
+  <%= label_tag(:radio_active, "Active radio button") %>
+  
+  <%= radio_button_tag(:radio, 'inactive') %>
+  <%= label_tag(:radio_inactive, "Inactive radio button") %>
+</p>
+
+<h2>Buttons</h2>
+
+<p>
+  <%= link_to "Default button", '#', class: "btn" %>
+  <%= link_to "Active button", '#', class: "btn btn--active" %>
+</p>
+
+<p>
+  <%= link_to "Default large button", '#', class: "btn btn--lg" %>
+  <%= link_to "Active large button", '#', class: "btn btn--lg btn--active" %>
+</p>
