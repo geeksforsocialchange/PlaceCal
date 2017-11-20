@@ -19,19 +19,7 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    @map =
-      if @event.place
-        [{
-          lat: @event.place.address.latitude,
-          lon: @event.place.address.longitude,
-          name: @event.place.name
-        }]
-      else
-        [{
-          lat: @event.address.latitude,
-          lon: @event.address.longitude
-        }]
-      end
+    @map = generate_points([@event.place]) if @event.place
   end
 
   # GET /events/new

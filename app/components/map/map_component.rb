@@ -8,12 +8,12 @@ class MapComponent < MountainView::Presenter
 
   def center
     m = markers
-    if m.length > 1
+    if m.nil? || m.empty?
+      false
+    elsif m.length > 1
       find_center(m)
     elsif m.length == 1
       [m[0][:lat], m[0][:lon]]
-    else
-      false
     end
   end
 

@@ -10,15 +10,7 @@ class PlacesController < ApplicationController
   # GET /places.json
   def index
     @places = Place.order(:name)
-    @map = @places.map do |p|
-      next unless p.address && p.address.latitude
-      {
-        lat: p.address.latitude,
-        lon: p.address.longitude,
-        name: p.name,
-        id: p.id
-      }
-    end
+    @map = generate_points(@places)
   end
 
   # GET /places/1
@@ -31,16 +23,7 @@ class PlacesController < ApplicationController
     @sort = params[:sort].to_s || 'time'
     @events = sort_events(@events, @sort)
     # Map
-    @map = if @place&.address&.latitude
-             [{
-               lat: @place.address.latitude,
-               lon: @place.address.longitude,
-               name: @place.name,
-               id: @place.id
-             }]
-           else
-             []
-           end
+    @map = generate_points([@place])
   end
 
   def embed

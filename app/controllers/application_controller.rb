@@ -44,4 +44,24 @@ class ApplicationController < ActionController::Base
       events.sort_by_time.group_by_day(&:dtstart)
     end
   end
+
+  # Takes an array of places or addresses and returns a sanitized json array
+  def generate_points(obj)
+    obj.reduce([]) do |arr, o|
+      arr <<
+        if o.class == Place && o&.address&.latitude
+          {
+            lat: o.address.latitude,
+            lon: o.address.longitude,
+            name: o.name,
+            id: o.id
+          }
+        elsif o.class == Address
+          {
+            lat: o.latitude,
+            lon: o.longitude
+          }
+        end
+    end
+  end
 end

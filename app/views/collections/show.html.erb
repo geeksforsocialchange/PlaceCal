@@ -53,6 +53,6 @@
   %>
 </div>
 
-<% if @map.length > 0 %>
+<% if @map&.any? %>
   <%= render_component "map", points: @map %>
 <% end %>

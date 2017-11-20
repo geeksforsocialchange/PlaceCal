@@ -11,15 +11,7 @@ class CollectionsController < ApplicationController
   # GET /collections/1.json
   def show
     @events = @collection.sorted_events
-    @map = @events.map(&:place).uniq.map do |p|
-      next unless p&.address&.latitude
-      {
-        lat: p.address.latitude,
-        lon: p.address.longitude,
-        name: p.name,
-        id: p.id
-      }
-    end
+    @map = generate_points(@events.map(&:place)) if @events.detect(&:place)
     @events = sort_events(@events, 'time')
   end
 
