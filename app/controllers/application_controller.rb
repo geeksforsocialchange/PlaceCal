@@ -24,8 +24,10 @@ class ApplicationController < ActionController::Base
 
   def filter_events(period, **args)
     place     = args[:place]     || false
+    partner   = args[:partner]   || false
     repeating = args[:repeating] || 'on'
     events = place ? Event.in_place(place) : Event.all
+    events = events.by_partner(partner) if partner
     events = events.one_off_events_only if repeating == 'off'
     events = events.one_off_events_first if repeating == 'last'
     events =
@@ -49,7 +51,7 @@ class ApplicationController < ActionController::Base
   def generate_points(obj)
     obj.reduce([]) do |arr, o|
       arr <<
-        if o.class == Place && o&.address&.latitude
+        if ([Place, Partner].include? o.class) && (o&.address&.latitude)
           {
             lat: o.address.latitude,
             lon: o.address.longitude,

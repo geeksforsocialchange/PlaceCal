@@ -31,6 +31,9 @@ class Event < ApplicationRecord
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
 
+  # Filter by Partner
+  scope :by_partner, ->(partner) { where(partner: partner) }
+
   # Sort by Summary or Start Time
   scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
   scope :sort_by_time, -> { order(dtstart: :asc).order(summary: :asc) }

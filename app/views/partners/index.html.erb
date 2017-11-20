@@ -11,3 +11,7 @@
     <% end %>
   </ul>
 </div>
+
+<% if @map&.length&.positive? %>
+  <%= render_component "map", points: @map %>
+<% end %>

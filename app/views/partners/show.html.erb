@@ -61,4 +61,15 @@
     </div>
 
   <% end %>
+
+  <hr>
+
+  <%= render_component "event_list", 
+    events: @events,
+    pointer: @current_day,
+    period: @period,
+    sort: @sort,
+    path: "partners/#{@partner.id}",
+    show_breadcrumb: false
+  %>
 </div>
