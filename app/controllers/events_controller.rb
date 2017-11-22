@@ -10,10 +10,33 @@ class EventsController < ApplicationController
     # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
-    events = filter_events(@period, repeating: @repeating)
+    @events = filter_events(@period, repeating: @repeating)
     # Sort criteria
-    @events = sort_events(events, @sort)
+    @events = sort_events(@events, @sort)
     @multiple_days = true
+
+    respond_to do |format|
+      format.html
+      format.ics do
+        # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
+        ics = Event.ical_feed
+        cal = Icalendar::Calendar.new
+        ics.each do |e|
+          event = Icalendar::Event.new
+          event.dtstart = e.dtstart
+          event.dtend = e.dtend
+          event.summary = e.summary
+          event.description = e.description
+          event.location = e.location
+          cal.add_event(event)
+        end
+        cal.publish
+        render plain: cal.to_ical
+      end
+    end
+  end
+
+  def ical
   end
 
   # GET /events/1

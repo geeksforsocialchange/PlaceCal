@@ -48,6 +48,9 @@ class Event < ApplicationRecord
 
   scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day)}
 
+  # Global feed
+  scope :ical_feed, -> { where('dtstart >= ?', Time.now - 1.week).where('dtend < ?', Time.now + 1.month) }
+
   def repeat_frequency
     rrule[0]['table']['frequency'].titleize if rrule
   end
@@ -62,6 +65,10 @@ class Event < ApplicationRecord
     else
       false
     end
+  end
+
+  def location
+    place ? place.address.to_s : address.to_s
   end
 
   private
