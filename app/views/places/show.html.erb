@@ -62,3 +62,7 @@
     show_breadcrumb: false
   %>
 </div>
+
+<div class="c c--narrow c--space-after">
+  <%= link_to "Subscribe to #{@place} with iCal.", place_url(@place, protocol: :webcal, format: :ics) %>
+</div>

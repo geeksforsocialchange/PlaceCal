@@ -19,7 +19,6 @@ class EventsController < ApplicationController
       format.html
       format.ics do
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
-        # TODO: Refactor this entire monstrosity
         ics_listing = Event.ical_feed
         cal = create_calendar(ics_listing)
         cal.publish
@@ -105,25 +104,4 @@ class EventsController < ApplicationController
     params.fetch(:event, {})
   end
 
-  # Create a calendar from array of events
-  def create_calendar(events)
-    cal = Icalendar::Calendar.new
-    cal.x_wr_calname = 'PlaceCal: Hulme & Moss Side'
-    events.each do |e|
-      ical = create_ical_event(e)
-      cal.add_event(ical)
-    end
-    cal
-  end
-
-  # Convert an event object into an ics listing
-  def create_ical_event(e)
-    event = Icalendar::Event.new
-    event.dtstart = e.dtstart
-    event.dtend = e.dtend
-    event.summary = e.summary
-    event.description = e.description + "\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
-    event.location = e.location
-    event
-  end
 end

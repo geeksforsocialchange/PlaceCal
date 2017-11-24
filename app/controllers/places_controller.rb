@@ -24,6 +24,15 @@ class PlacesController < ApplicationController
     @events = sort_events(@events, @sort)
     # Map
     @map = generate_points([@place])
+
+    respond_to do |format|
+      format.html
+      format.ics do
+        cal = create_calendar(Event.in_place(@place).ical_feed, "#{@place} - Powered by PlaceCal")
+        cal.publish
+        render plain: cal.to_ical
+      end
+    end
   end
 
   def embed

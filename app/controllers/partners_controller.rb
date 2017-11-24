@@ -20,6 +20,15 @@ class PartnersController < ApplicationController
     # Sort criteria
     @sort = params[:sort].to_s || 'time'
     @events = sort_events(@events, @sort)
+
+    respond_to do |format| 
+      format.html
+      format.ics do
+        cal = create_calendar(Event.by_partner(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
+        cal.publish
+        render plain: cal.to_ical
+      end
+    end
   end
 
   # GET /partners/new

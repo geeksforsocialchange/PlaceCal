@@ -66,4 +66,27 @@ class ApplicationController < ActionController::Base
         end
     end
   end
+
+  # Create a calendar from array of events
+  def create_calendar(events, title = false)
+    cal = Icalendar::Calendar.new
+    cal.x_wr_calname = title || 'PlaceCal: Hulme & Moss Side'
+    events.each do |e|
+      ical = create_ical_event(e)
+      cal.add_event(ical)
+    end
+    cal
+  end
+
+  # TODO: Refactor this to a view or something
+  # Convert an event object into an ics listing
+  def create_ical_event(e)
+    event = Icalendar::Event.new
+    event.dtstart = e.dtstart
+    event.dtend = e.dtend
+    event.summary = e.summary
+    event.description = e.description + "\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
+    event.location = e.location
+    event
+  end
 end
