@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="gi gi__1-3">
-
+        <%= link_to 'iCal', event_url(@event, protocol: :webcal, format: :ics) %>
       </div>
     </div>
   <% end %>
