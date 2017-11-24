@@ -28,7 +28,7 @@ class EventsController < ApplicationController
           event.dtstart = e.dtstart
           event.dtend = e.dtend
           event.summary = e.summary
-          event.description = e.description + "\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal</a>"
+          event.description = e.description + "\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
           event.location = e.location
           cal.add_event(event)
         end
