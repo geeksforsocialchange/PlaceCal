@@ -63,6 +63,6 @@
   %>
 </div>
 
-<div class="c c--narrow c--space-after">
-  <%= link_to "Subscribe to #{@place} with iCal.", place_url(@place, protocol: :webcal, format: :ics) %>
-</div>
+<%= render_component "meta", permalink: "/places/#{@place.id}" do %>
+  <%= link_to "Subscribe to #{@place}'s events with iCal", place_url(@place, protocol: :webcal, format: :ics) %>
+<% end %>

@@ -71,6 +71,16 @@ class Event < ApplicationRecord
     place ? place.address.to_s : address.to_s
   end
 
+  # TODO: plan this out on paper, currently half finished
+  # Who to contact if the event is wrong
+  def blame
+    partner = calendar&.partner
+    return false unless partner
+    email = partner.admin_email
+    name = partner.admin_name
+    "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
+  end
+
   private
 
   def require_location

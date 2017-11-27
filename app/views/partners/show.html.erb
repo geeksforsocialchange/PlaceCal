@@ -76,5 +76,9 @@
 
 
 <div class="c c--narrow c--space-after">
-  <%= link_to "Subscribe to #{@partner} with iCal", partner_url(@partner, protocol: :webcal, format: :ics) %>
+  
 </div>
+
+<%= render_component "meta", permalink: "/partners/#{@partner.id}" do %>
+  <%= link_to "Subscribe to #{@partner}'s events with iCal", partner_url(@partner, protocol: :webcal, format: :ics) %>
+<% end %>
