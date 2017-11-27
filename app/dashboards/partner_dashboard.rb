@@ -11,6 +11,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     events: Field::HasMany,
     users: Field::HasMany,
     places: Field::HasMany,
+    is_a_place: Field::Boolean,
     calendars: Field::HasMany,
     address: Field::BelongsTo,
     id: Field::Number,
@@ -35,6 +36,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     # :events,
     # :users,
     :places,
+    :is_a_place,
     :calendars,
   ].freeze
 
@@ -46,6 +48,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     :address,
     :short_description,
     :places,
+    :is_a_place,
     :calendars,
     :logo,
     :public_phone,
@@ -72,6 +75,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     :admin_email,
     :users,
     :places,
+    :is_a_place,
     :calendars,
   ].freeze
 
