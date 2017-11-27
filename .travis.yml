@@ -15,4 +15,4 @@ after_success:
   - git config --global push.default simple
   - git push deploy master
 before_install:
-  - openssl aes-256-cbc -K $encrypted_d02a41da3a1f_key -iv $encrypted_d02a41da3a1f_iv -in deploy.key.enc -out deploy.key -d
+  - openssl aes-256-cbc -K $encrypted_d02a41da3a1f_key -iv $encrypted_d02a41da3a1f_iv -in deploy.key.enc -out deploy.key -d -md md5
