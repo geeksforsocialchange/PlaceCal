@@ -28,7 +28,12 @@
         <%= @partner.places.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
       <% end %>
     </div>
-    <div class="gi gi__2-5">
+    <div class="gi gi__2-5 gi--image">
+      <% if @partner.image? %>
+        <img src="<%= @partner.image.standard.url %>"
+             srcset="<%= @partner.image.standard.url %> 1x, <%= @partner.image.retina.url %> 2x"
+             alt="Image for <%= @partner.name %>" >
+      <% end %>
     </div>
   </div>
 

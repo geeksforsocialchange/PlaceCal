@@ -10,6 +10,8 @@ class Partner < ApplicationRecord
   validates_presence_of :name
   validates_uniqueness_of :name
 
+  mount_uploader :image, ImageUploader
+
   def to_s
     name
   end
