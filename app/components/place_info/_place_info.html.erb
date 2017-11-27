@@ -1,0 +1,27 @@
+<div class="g">
+  <div class="gi gi__1-3">
+    <h3 class="udl udl--fw h4">Opening hours</h3>
+    <p class="small">Coming soon!</p>
+  </div>
+  <div class="gi gi__1-3">
+    <h3 class="udl udl--fw h4">Address</h3>
+    <p class="small"><%= address %></p>
+  </div>
+  <div class="gi gi__1-3">
+    <h3 class="udl udl--fw h4">Contact</h3>
+    <p class="small">
+      <% if phone %>
+        <strong>T:</strong> <%= phone %></strong><br>
+      <% end %>
+      <% if email %>
+        <strong>E:</strong> <%= mail_to email %></strong><br>
+      <% end %>
+      <% if url %>
+        <strong>W:</strong> <%= link_to name, url %></strong>
+      <% end %>
+      <% unless contact? %>
+        No contact information - let us know!
+      <% end %>
+    </p>
+  </div>
+</div>

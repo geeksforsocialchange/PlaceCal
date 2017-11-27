@@ -14,7 +14,16 @@
           <%= markdown @partner.short_description %>
         </div>
       <% end %>
-      <% if @partner.places.any? %>
+      <% if @partner.is_a_place? %>
+        <% place = @partner.places.first %>
+        <%= render_component "place_info",
+          name: place.name,
+          email: place.email,
+          phone: place.phone,
+          address: place.address,
+          url: place.url
+        %>
+      <% elsif @partner.places.any? %>
         <p class="small"><%= @partner.name %> manage
         <%= @partner.places.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
       <% end %>
@@ -23,43 +32,28 @@
     </div>
   </div>
 
-  <% @partner.places.each do |place| %>
-    <hr>
+  <% unless @partner.is_a_place? %>
+    <% @partner.places.each do |place| %>
+      <hr>
 
-    <h2 class="place__title"><%= link_to place.name, place_path(place), class: 'udl udl--red' %></h2>
-    <div class="g g--place-list">
-      <div class="gi gi__2-5">
-        <% if place.short_description %>
-          <%= markdown place.short_description %>
-        <% end %>
-      </div>
-      <div class="gi gi__1-5">
-        <h3 class="udl udl--fw h4">Opening hours</h3>
-        <p class="small">Coming soon!</p>
-      </div>
-      <div class="gi gi__1-5">
-        <h3 class="udl udl--fw h4">Address</h3>
-        <p class="small"><%= place.address %></p>
-      </div>
-      <div class="gi gi__1-5">
-        <h3 class="udl udl--fw h4">Contact</h3>
-        <p class="small">
-          <% if place.phone.present? %>
-            <strong>T:</strong> <%= place.phone %></strong><br>
+      <h2 class="place__title"><%= link_to place.name, place_path(place), class: 'udl udl--red' %></h2>
+      <div class="g g--place-list">
+        <div class="gi gi__2-5">
+          <% if place.short_description %>
+            <%= markdown place.short_description %>
           <% end %>
-          <% if place.email.present? %>
-            <strong>E:</strong> <%= mail_to place.email %></strong><br>
-          <% end %>
-          <% if place.url.present? %>
-            <strong>W:</strong> <%= link_to "#{place.name}", place.url %></strong>
-          <% end %>
-          <% unless place.phone.present? || place.email.present? || place.url.present?  %>
-            No contact information - let us know!
-          <% end %>
-        </p>
+        </div>
+        <div class="gi gi__3-5">
+          <%= render_component "place_info",
+            name: place.name,
+            email: place.email,
+            phone: place.phone,
+            address: place.address,
+            url: place.url
+          %>
+        </div>
       </div>
-    </div>
-
+    <% end %>
   <% end %>
 
   <hr>
