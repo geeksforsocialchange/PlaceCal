@@ -1,0 +1,21 @@
+@import 'variables_mixins'
+
+*
+  background-color: transparent !important
+  border-color: $lightgrey !important
+
+body
+  margin: 0
+  padding: 0
+
+header, footer, .hero, .breadcrumb, .breadcrumb + hr, .map, .paginator
+  display: none
+
+h1, h2
+  display: block !important
+
+.place-info
+  h3
+    border-bottom-width: 3px
+    border-style: solid
+    border-color: $lightgrey
