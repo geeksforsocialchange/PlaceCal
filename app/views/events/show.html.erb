@@ -1,3 +1,4 @@
+<% content_for :title, "#{@event.summary}, #{@event.date}, #{@event.time}" %>
 <%= render_component "event", 
   context: :page,
   id: @event.id,

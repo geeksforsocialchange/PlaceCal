@@ -71,6 +71,14 @@ class Event < ApplicationRecord
     place ? place.address.to_s : address.to_s
   end
 
+  def time
+    dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+  end
+
+  def date
+    dtstart.strftime('%e %b')
+  end
+
   # TODO: plan this out on paper, currently half finished
   # Who to contact if the event is wrong
   def blame
