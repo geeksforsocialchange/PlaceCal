@@ -1,4 +1,8 @@
+# app/models/partner.rb
 class Partner < ApplicationRecord
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
   has_and_belongs_to_many :users
   has_and_belongs_to_many :places
 

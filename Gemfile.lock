@@ -132,6 +132,8 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
     formatador (0.2.5)
+    friendly_id (5.1.0)
+      activerecord (>= 4.0.0)
     geocoder (1.4.4)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
@@ -392,6 +394,7 @@ DEPENDENCIES
   dotenv-rails
   enumerize
   factory_bot_rails
+  friendly_id (~> 5.1.0)
   geocoder
   groupdate
   guard
