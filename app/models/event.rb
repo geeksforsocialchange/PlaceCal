@@ -79,6 +79,10 @@ class Event < ApplicationRecord
     dtstart.strftime('%e %b')
   end
 
+  def permalink
+    "https://placecal.org/events/#{id}"
+  end
+
   # TODO: plan this out on paper, currently half finished
   # Who to contact if the event is wrong
   def blame

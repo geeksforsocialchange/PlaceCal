@@ -1,4 +1,6 @@
 <% content_for :title, @place.name %>
+<% content_for :permalink, @place.permalink %>
+
 <%= render_component "hero", title: "Places in Hulme & Moss Side", subtitle: "The Community Calendar" %>
 
 <div class="c c--lg-space-after">
@@ -45,6 +47,6 @@
   %>
 </div>
 
-<%= render_component "meta", permalink: "/places/#{@place.id}" do %>
+<%= render_component "meta", permalink: @place.permalink do %>
   <%= link_to "Subscribe to #{@place}'s events with iCal", place_url(@place, protocol: :webcal, format: :ics) %>
 <% end %>

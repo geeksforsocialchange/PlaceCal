@@ -19,4 +19,8 @@ class Partner < ApplicationRecord
   def to_s
     name
   end
+
+  def permalink
+    "https://placecal.org/partners/#{id}"
+  end
 end

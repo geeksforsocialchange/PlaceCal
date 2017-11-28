@@ -12,4 +12,8 @@ class Collection < ApplicationRecord
   def start_date
     sorted_events&.first&.dtstart
   end
+
+  def permalink
+    "https://placecal.org/collection/#{id}"
+  end
 end

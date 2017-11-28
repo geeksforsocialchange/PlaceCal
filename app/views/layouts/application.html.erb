@@ -11,6 +11,26 @@
     <link rel="icon" type="image/png" href="<%= image_url('favicon.png') %>">
     <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>" />
+    <meta property="og:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/wide.png') %>" />
+    <meta property="og:image:width" content="1920" />
+    <meta property="og:image:height" content="1080" />
+    <meta property="og:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@PlaceCal" />
+    <meta name="twitter:title" content="PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>" />
+    <meta name="twitter:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
+    <meta name="twitter:creator" content="@kimadactl" />
+    <meta name="twitter:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/square.png') %>" />
+    <meta name="twitter:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
+
+    <% if content_for?(:permalink) %>
+    <meta property="og:url" content="<%= yield(:permalink) %>">
+    <% end %>
+
     <% if Rails.env.production? %>
       <!-- Global site tag (gtag.js) - Google Analytics -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108834722-1"></script>

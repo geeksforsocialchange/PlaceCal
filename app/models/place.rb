@@ -20,6 +20,10 @@ class Place < ApplicationRecord
     name
   end
 
+  def permalink
+    "https://placecal.org/places/#{id}"
+  end
+
   # How should we show the event listing on the Place page?
   def event_view
     :week
