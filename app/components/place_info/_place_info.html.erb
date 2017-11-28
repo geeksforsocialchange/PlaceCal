@@ -5,7 +5,7 @@
   </div>
   <div class="gi gi__1-3">
     <h3 class="udl udl--fw h4">Address</h3>
-    <p class="small"><%= address %></p>
+  <p class="small"><%= address %></p>
   </div>
   <div class="gi gi__1-3">
     <h3 class="udl udl--fw h4">Contact</h3>
@@ -17,7 +17,7 @@
         <strong>E:</strong> <%= mail_to email %></strong><br>
       <% end %>
       <% if url %>
-        <strong>W:</strong> <%= link_to name, url %></strong>
+        <strong>W:</strong> <span class='url'><%= link_to formatted_url, url %></a></strong>
       <% end %>
       <% unless contact? %>
         No contact information - let us know!

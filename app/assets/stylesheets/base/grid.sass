@@ -44,9 +44,14 @@ $column: 17.38317%
       +flex(0 1 40%)
     &__3-5
       +flex(0 1 60%)
+  +for-print
+    &__1-3
+      +flex(0 1 30%)
   &--image
     text-align: center
     margin-top: 1.5rem
     margin-bottom: 1.5rem
     img
       max-width: 100%
+    +for-print
+      display: none

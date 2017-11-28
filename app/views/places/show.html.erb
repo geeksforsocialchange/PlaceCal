@@ -21,33 +21,14 @@
       <% if @map.length > 0 %>
         <%= render_component "map", points: @map %>                        
       <% end %>
-      <div class="g">
-        <div class="gi gi__1-3">
-          <h3 class="h4">Opening Hours</h3>
-          <div class="small">Coming soon!</div>
-        </div>
-        <div class="gi gi__1-3">
-          <h3 class="h4">Address</h3>
-          <div class="small"><%= @place.address %></div>
-        </div>
-        <div class="gi gi__1-3">
-          <h3 class="h4">Contact</h3>
-          <p class="small">
-            <% if @place.phone.present? %>
-              <strong>T:</strong> <%= @place.phone %></strong><br>
-            <% end %>
-            <% if @place.email.present? %>
-              <strong>E:</strong> <%= mail_to @place.email %></strong><br>
-            <% end %>
-            <% if @place.url.present? %>
-              <strong>W:</strong> <%= link_to "#{@place.name}", @place.url %></strong>
-            <% end %>
-            <% unless @place.phone.present? || @place.email.present? || @place.url.present?  %>
-              No contact information - let us know!
-            <% end %>
-            </p>
-        </div>
-      </div>
+
+      <%= render_component "place_info",
+        name: @place.name,
+        email: @place.email,
+        phone: @place.phone,
+        address: @place.address,
+        url: @place.url
+      %>
     </div>
   </div>
 
