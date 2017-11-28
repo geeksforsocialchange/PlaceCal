@@ -4,15 +4,15 @@ addons:
   postgresql: '9.6'
 before_script:
   - psql -c 'create database placecal_test;' -U postgres
-env:
-  - CXX=g++-4.8  
-after_success:
-  - eval "$(ssh-agent -s)"
-  - chmod 600 .travis/deploy.key
-  - ssh-add .travis/deploy.key
-  - ssh-keyscan placecal.org >> ~/.ssh/known_hosts
-  - git remote add deploy dokku@placecal.org:placecal
-  - git config --global push.default simple
-  - git push deploy master
-before_install:
-  - openssl aes-256-cbc -K $encrypted_d02a41da3a1f_key -iv $encrypted_d02a41da3a1f_iv -in deploy.key.enc -out deploy.key -d -md md5
+# env:
+#   - CXX=g++-4.8  
+# after_success:
+#   - eval "$(ssh-agent -s)"
+#   - chmod 600 .travis/deploy.key
+#   - ssh-add .travis/deploy.key
+#   - ssh-keyscan placecal.org >> ~/.ssh/known_hosts
+#   - git remote add deploy dokku@placecal.org:placecal
+#   - git config --global push.default simple
+#   - git push deploy master
+# before_install:
+#   - openssl aes-256-cbc -K $encrypted_d02a41da3a1f_key -iv $encrypted_d02a41da3a1f_iv -in deploy.key.enc -out deploy.key -d -md md5
