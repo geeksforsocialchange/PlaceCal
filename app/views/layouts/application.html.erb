@@ -16,8 +16,10 @@
     <meta property="og:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/wide.png') %>" />
+  <% unless content_for?(:image) %>
     <meta property="og:image:width" content="1920" />
     <meta property="og:image:height" content="1080" />
+  <% end %>
     <meta property="og:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@PlaceCal" />
@@ -27,9 +29,9 @@
     <meta name="twitter:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/square.png') %>" />
     <meta name="twitter:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
 
-    <% if content_for?(:permalink) %>
+  <% if content_for?(:permalink) %>
     <meta property="og:url" content="<%= yield(:permalink) %>">
-    <% end %>
+  <% end %>
 
     <% if Rails.env.production? %>
       <!-- Global site tag (gtag.js) - Google Analytics -->
