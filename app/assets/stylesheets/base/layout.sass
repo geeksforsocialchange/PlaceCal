@@ -21,9 +21,11 @@ body
     border-style: solid
     
 .c  
-  padding: 0 1rem
+  padding: 0 $small-page-margin
   +for-tablet-portrait-up
     padding: 0 $page-margin // 30 / 18
+  +for-tablet-landscape-up
+    padding: 0 $big-page-margin
 
   &--narrow
     +for-tablet-landscape-up

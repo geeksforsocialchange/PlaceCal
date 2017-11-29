@@ -22,8 +22,7 @@ class Address < ApplicationRecord
       street_address2,
       street_address3,
       city,
-      postcode,
-      country_code
+      postcode
     ].reject(&:blank?).join(', ')
   end
 

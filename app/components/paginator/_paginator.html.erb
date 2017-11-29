@@ -5,7 +5,7 @@
         <div class="breadcrumb__filters filters">
           <%= form_tag('', method: :get, class: 'filters__form js-filters-form', enforce_utf8: false) do %>
             <div class="js-filters-toggle filters__toggle">
-                <span class="icon icon--arrow-down">↓</span> <a href="#" data-turbolinks="false">Filter and sort</a> 
+                <a href="#" data-turbolinks="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></a> 
             </div>
             <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
               <!-- Date or time sort -->

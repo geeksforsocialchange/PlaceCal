@@ -5,7 +5,7 @@
   <% content_for :image_alt, "Image for #{@collection.name}" %>
 <% end %>
 
-<%= render_component "hero", title: @collection.name, subtitle: "The Community Calendar" %>
+<%= render_component "hero", title: @collection.name %>
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [[@collection.name, '/winter2017']] %>

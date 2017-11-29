@@ -13,6 +13,9 @@ class PlaceInfoComponent < MountainView::Presenter
     url ? strip_url(url) : false
   end
 
+  def address
+  end
+
   def contact?
     phone || email || url
   end
@@ -23,6 +26,7 @@ class PlaceInfoComponent < MountainView::Presenter
     target_url.gsub('http://', '')
               .gsub('https://', '')
               .gsub('www.', '')
+              .gsub(/\/$/, '')
               .gsub('/', '/ ')
   end
 end

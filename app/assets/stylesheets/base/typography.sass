@@ -9,12 +9,16 @@ body
   font-family: $sans-serif
   font-weight: $regular
   color: $grey
+  line-height: 1.3333333
 
 // Large titles at the top of the page
 h1
   font-family: $serif
   font-weight: normal
   font-size: 2.22222rem // 40px
+  line-height: 1
+  +for-tablet-portrait-up
+    line-height: 1.25
 
 h1.sans
   font-family: $sans-serif
@@ -48,6 +52,7 @@ h4, .h4
 
 .small
   font-size: $small-font-size
+  line-height: 1.5
 
 .center
   text-align: center
@@ -56,28 +61,28 @@ h4, .h4
   padding-bottom: 0.5rem
   border-bottom: 3px solid $linen
   display: inline-block
+  text-decoration: none
   &--red
     border-bottom-color: $red
   &--fw
     display: block
 
 a
-  text-decoration: none
+  // text-decoration: none
+  text-decoration-color: $green
   color: $grey
-  border-width: 0 0 2px 0
-  border-style: solid
-  border-color: $green
+  // border-width: 0 0 2px 0
+  // border-style: solid
+  // border-color: $green
 
 hr
   border-color: $linen
   border-width: 5px
   border-style: solid
 
-.p--big
-  font-size: 1.5rem
-
-.first-ele-lg p:first-child
+.p--big, .first-ele-lg p:first-child
   font-size: $h3-size
+  line-height: 1.2
 
 // TODO: refactor
 h2.place__title

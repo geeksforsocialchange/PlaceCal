@@ -8,7 +8,7 @@ class EventComponent < MountainView::Presenter
   include ActionView::Helpers::TextHelper
 
   def time
-    dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+    fmt_time(dtstart) + ' – ' + fmt_time(dtend)
   end
 
   def duration
@@ -48,6 +48,14 @@ class EventComponent < MountainView::Presenter
   end
 
   private
+
+  def fmt_time(time)
+    if time.strftime('%M') == '00'
+      time.strftime('%l%P')
+    else
+      time.strftime('%l:%M%P')
+    end
+  end
 
   def dtstart
     properties[:dtstart]
