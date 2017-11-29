@@ -50,6 +50,9 @@ h4, .h4
   font-weight: $extra-bold
   letter-spacing: $title-letter-spacing
 
+.slightly-smaller
+  font-size: 0.8888889rem // 16px
+
 .small
   font-size: $small-font-size
   line-height: 1.5
@@ -83,6 +86,18 @@ hr
 .p--big, .first-ele-lg p:first-child
   font-size: $h3-size
   line-height: 1.2
+
+.p--mega
+  font-size: $h3-size
+  +for-tablet-portrait-up
+    font-size: $h2-size
+    line-height: 1.25
+  font-family: $serif
+  font-weight: normal
+
+.space-before
+  margin-top: 2rem
+
 
 // TODO: refactor
 h2.place__title
