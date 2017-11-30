@@ -7,10 +7,12 @@ class Address < ApplicationRecord
   POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
 
   validates :street_address, :postcode, :country_code, presence: true
-  after_validation :geocode
+  after_validation :geocode, if: ->(obj) { obj.street_address_changed? || obj.street_address2_changed?|| obj.postcode_changed? }
 
   has_many :places
   has_many :events
+  has_many :partners
+  has_many :calendars
 
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
@@ -29,12 +31,19 @@ class Address < ApplicationRecord
   alias to_s full_address
 
   class << self
-    # Components - Array containing parts of an event's location field
-    def search(components, postcode)
+    # location - The raw location field
+    # components - Array containing parts of an event's location field
+    def search(location, components, postcode)
       @address = Address.where(street_address: components).first
-      if postcode && postcode.length >= 6 # Minimum length of a full postal code
+
+      # Search by postcode if it is minimum length of a full postal code
+      if postcode && postcode.length >= 6
         @address ||= Address.where(postcode: postcode).first
       end
+
+      coordinates = Geocoder.coordinates(location)
+      @address ||= Address.where(latitude: coordinates[0], longitude: coordinates[1])
+
       if @address.present?
         @place = @address.places.first
         @place.present? ? { place_id: @place.id } : { address_id: @address.id }
@@ -46,11 +55,12 @@ class Address < ApplicationRecord
 
     def build_from_components(components, postcode)
       return if components.blank?
-      address = Address.new(street_address: components[0],
-                            street_address2: components[1],
-                            street_address3: components[2],
-                            postcode: postcode)
+      address = Address.new(street_address: components[0]&.strip,
+                            street_address2: components[1]&.strip,
+                            street_address3: components[2]&.strip,
+                            postcode: postcode&.strip)
       address if address.save
     end
+
   end
 end

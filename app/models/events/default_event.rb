@@ -43,5 +43,14 @@ module Events
 
       postal
     end
+
+    def ip_class
+      @event&.ip_class
+    end
+
+    def private?
+      (ip_class && ip_class.downcase == 'private') || (@event.description && @event.description.include?("#placecal-ignore"))
+    end
+
   end
 end

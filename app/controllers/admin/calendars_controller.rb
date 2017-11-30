@@ -24,19 +24,15 @@ module Admin
     def import
       @calendar = Calendar.find(params[:calendar_id])
 
-      unless @calendar.import_lock_at
-        begin
-          date = DateTime.parse(params[:starting_from])
+      begin
+        date = DateTime.parse(params[:starting_from])
 
-          @calendar.import_events(date)
-          flash[:success] = 'The import has completed. See below for details.'
-        rescue => e
-          Rails.logger.debug(e)
-          Rollbar.error(e)
-          flash[:error] = 'The import ran into an error before completion. Please check error logs for more info.'
-        end
-      else
-        flash[:alert] = 'An import is already running for this calendar. Please wait unitl it is done and try again.'
+        @calendar.import_events(date)
+        flash[:success] = 'The import has completed. See below for details.'
+      rescue => e
+        Rails.logger.debug(e)
+        Rollbar.error(e)
+        flash[:error] = 'The import ran into an error before completion. Please check error logs for more info.'
       end
 
       redirect_to admin_calendar_path(@calendar)

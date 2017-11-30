@@ -13,7 +13,7 @@ by providing a `content_for(:javascript)` block.
 
 <%= yield :javascript %>
 
-<%= javascript_include_tag 'admin/calendars' %>
+<%= javascript_include_tag 'admin/app' %>
 <% if Rails.env.test? %>
   <%= javascript_tag do %>
     $.fx.off = true;
