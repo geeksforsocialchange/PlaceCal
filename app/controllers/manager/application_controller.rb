@@ -1,9 +1,9 @@
 module Manager
   class ApplicationController < ::ApplicationController
 
-    before_action :authenticate_user!
-
     include Pundit
+
+    before_action :authenticate_user!
 
     protect_from_forgery with: :exception
 
