@@ -13,7 +13,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     places: Field::HasMany,
     is_a_place: Field::Boolean,
     calendars: Field::HasMany,
-    address: Field::BelongsTo,
+    address: AddressField,
     id: Field::Number,
     name: Field::String,
     image: Field::Carrierwave,

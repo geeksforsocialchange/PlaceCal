@@ -10,8 +10,8 @@ module Manager
       authorize @calendar, :show?
 
       @events = @calendar.events
-      @versions = PaperTrail::Version.where("item_type = 'Event' AND item_id IN (?) AND  created_at >= ?", @events.pluck(:id), 2.weeks.ago)
-        .or(PaperTrail::Version.where("item_type = 'Event' AND event = 'destroy' AND object @> ? AND created_at >= ?", { "calendar_id": @calendar.id }.to_json, 2.weeks.ago ))
+      @versions = PaperTrail::Version.with_item_keys('Event', @events.pluck(:id)).where("created_at >= ?", 2.weeks.ago)
+        .or(PaperTrail::Version.destroys.where("item_type = 'Event' AND object @> ? AND created_at >= ?", { calendar_id: @calendar.id }.to_json, 2.weeks.ago ))
 
       @versions = @versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
 

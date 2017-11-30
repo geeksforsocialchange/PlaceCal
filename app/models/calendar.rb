@@ -136,7 +136,7 @@ class Calendar < ApplicationRecord
     if place = Place.where(name: components).first
       return { place_id: place.id }
     else
-      return Address.search(components, postcode)
+      return Address.search(location, components, postcode)
     end
   end
 

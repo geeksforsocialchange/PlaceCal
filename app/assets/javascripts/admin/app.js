@@ -3,4 +3,6 @@ $(document).ready(function() {
     debug: false,
     format: "YYYY-MM-DD"
   });
+
+  $(".field-unit__field.select-search select").selectize({});
 });
