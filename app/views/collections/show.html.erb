@@ -1,7 +1,7 @@
 <% content_for :title, @collection.name %>
 <% content_for :permalink, @collection.permalink %>
 <% if @collection.image? %>
-  <% content_for :image, @collection.image.standard.url %>
+  <% content_for :image, image_url(@collection.image.standard.url) %>
   <% content_for :image_alt, "Image for #{@collection.name}" %>
 <% end %>
 
