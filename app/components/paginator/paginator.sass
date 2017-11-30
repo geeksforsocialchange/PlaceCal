@@ -7,7 +7,7 @@
   border-radius: 3rem
 
 .paginator 
-  line-height: 1.25
+  line-height: 1.3
   // Day chooser
   &__buttons
     +flexbox
@@ -18,28 +18,6 @@
     position: relative
     font-weight: $bold
     overflow: hidden
-    li
-      +flex(1 0 auto)
-      +border-highlight
-      padding: 0.3rem 1rem
-      text-align: center
-      margin-right: 0.25rem
-      +for-tablet-portrait-up
-        margin: 0 0.25rem
-      &.active, &:hover
-        background-color: $green
-    li:first-child, li:last-child
-      +flex(0 0 1rem)
-      padding: 0.3rem 0.5rem
-    li:first-child a
-      // Slight adjustment to center in circle
-      margin-left: -0.3rem
-    li:last-child
-      position: absolute
-      margin-right: 0
-      background-color: $cream
-      right: 0
-      top: 0
     a
       text-decoration: none
       border-bottom-width: 0
@@ -47,10 +25,47 @@
       width: 100%
       height: 100%
 
+  li
+    +flex(1 0 auto)
+    +border-highlight
+    padding: 0.3rem 1rem
+    text-align: center
+    margin-right: 0.25rem
+    +for-tablet-portrait-up
+      margin: 0 0.25rem
+    &.active, &:hover
+      background-color: $green
+  li.paginator__arrow
+    +flex(0 0 2.2222222rem)
+    padding: 0
+    height: 2.2222222rem
+    background-color: $green
+    border-width: 0
+    a
+      padding-top: 0.55rem
+    &:hover
+      background-color: $grey
+      border-color: $grey
+    &--back a
+      padding-right: 0.2rem
+    &--forwards
+      width: 2.2222222rem
+      position: absolute
+      margin-right: 0
+      right: 0
+      top: 0
+      a
+        padding-left: 0.2rem
+
   // Title
   h2
     border-bottom: 4px solid $linen
     padding-bottom: 0.5em
+  // Icon custom size
+  .icon
+    width: 0.5277777rem
+    height: 1.05555556rem
+
 
 .filters
   &__form
