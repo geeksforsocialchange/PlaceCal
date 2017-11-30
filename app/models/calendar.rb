@@ -50,7 +50,7 @@ class Calendar < ApplicationRecord
 
     parse_events_from_source(from).each do |event_data|
       occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
-      next if occurrences.blank?
+      next if event_data.private? || occurrences.blank?
 
       @events_uids << event_data.uid
       event_data.partner_id = partner_id
