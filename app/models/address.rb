@@ -36,13 +36,15 @@ class Address < ApplicationRecord
     def search(location, components, postcode)
       @address = Address.where(street_address: components).first
 
+      if @address.blank? #try using coordinates to match address
+        coordinates = Geocoder.coordinates(location)
+        @address ||= Address.where(latitude: coordinates[0], longitude: coordinates[1]).first
+      end
+
       # Search by postcode if it is minimum length of a full postal code
       if postcode && postcode.length >= 6
         @address ||= Address.where(postcode: postcode).first
       end
-
-      coordinates = Geocoder.coordinates(location)
-      @address ||= Address.where(latitude: coordinates[0], longitude: coordinates[1])
 
       if @address.present?
         @place = @address.places.first
