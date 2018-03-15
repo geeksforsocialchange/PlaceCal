@@ -36,6 +36,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   # Static pages
   get 'join', to: 'pages#join'
+  get 'bus', to: 'pages#bus'
 
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
