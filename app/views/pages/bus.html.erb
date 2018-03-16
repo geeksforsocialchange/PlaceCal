@@ -15,21 +15,29 @@
              ] 
   %>
 
-  <%= render_component "bus_route", 
-    time: '10:30am out',
-    time_alt: '(12:30pm Sun)',
-    stops: stops
-  %>
+  <div class="routes">
+    <%= render_component "bus_route", 
+      time: '10:30am out',
+      time_alt: '(12:30pm Sun)',
+      stops: stops
+    %>
 
-  <%= render_component "bus_route", 
-    time: '1:30pm return',
-    time_alt: '(4:00pm Sun)',
-    stops: stops.reverse
-  %>
+    <%= render_component "bus_route", 
+      time: '1:30pm return',
+      time_alt: '(4:00pm Sun)',
+      stops: stops.reverse
+    %>
+  </div>
 
   <div class="roundel">
-    <div class="roundel__main">£1</div> 
-    <div class="roundel__sub">per round trip</div>
+    <div class="roundel__text">
+      £1 
+      <div class="roundel__sub h4 small">per round trip</div>
+    </div>
   </div>
+
+  <p class="center h35">
+    Any questions email us at <a href="mailto:bus@placecal.org">bus@placecal.org</a><br> or call us on <a href="tel:+441612279662">0161 227 9662</a>.
+  </p>
 
 </div>

@@ -11,6 +11,10 @@ class ComponentControllerTest < ActionDispatch::IntegrationTest
                   text: "Hint:To see your component make sure you've created stubs:"
   end
 
+  test 'should get bus routes' do
+    get '/styleguide/styleguide/bus_route'
+  end
+
   test 'should get breadcrumb' do
     get '/styleguide/styleguide/breadcrumb'
   end
