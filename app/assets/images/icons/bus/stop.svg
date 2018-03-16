@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="23px" height="23px" viewBox="0 0 23 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.1 (51147) - http://www.bohemiancoding.com/sketch -->
+    <title>icons/bus/stop</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="icons/bus/stop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="#5B4E46" cx="11.5" cy="11.5" r="11.5"></circle>
+        <path d="M11.518,5 C8.47,5 6,7.471 6,10.518 C6,15.347 11.518,19.095 11.518,19.095 C11.518,19.095 17.036,15.347 17.036,10.518 C17.036,7.471 14.566,5 11.518,5 M11.518,12.734 C10.294,12.734 9.302,11.742 9.302,10.518 C9.302,9.294 10.294,8.302 11.518,8.302 C12.742,8.302 13.734,9.294 13.734,10.518 C13.734,11.742 12.742,12.734 11.518,12.734" id="marker" fill="#AFCF5A"></path>
+    </g>
+</svg>

@@ -5,63 +5,31 @@
 </div>
 
 
-<div class="c c--narrow">
-  <div class="route">
+<div class="c">
+  
+  <% stops = [
+               ['New Hope Fellowship Church', 'Tatton St'],
+               ['Moss Side Leisure Centre & Asda', 'Hulme High St'],
+               ['Powerhouse Library', 'Raby St'],
+               ['Hough End Leisure Centre', 'Princess Rd']
+             ] 
+  %>
 
-    <div class="route__time">
-      <div class="route__time--alt"></div>
-    </div>
+  <%= render_component "bus_route", 
+    time: '10:30am out',
+    time_alt: '(12:30pm Sun)',
+    stops: stops
+  %>
 
-    <ul class="route__stops">
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>            
-    </ul>
-
-  </div>
-
-  <div class="route">
-
-    <div class="route__time">
-      <div class="route__time--alt"></div>
-    </div>
-
-    <ul class="route__stops">
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>
-      <li>
-        <div class="stop__name"></div>
-        <div class="stop__street"></div>
-      </li>            
-    </ul>
-
-  </div>
+  <%= render_component "bus_route", 
+    time: '1:30pm return',
+    time_alt: '(4:00pm Sun)',
+    stops: stops.reverse
+  %>
 
   <div class="roundel">
-    <div class="roundel__main">£</div> <div class="roundel__sub">per round trip</div>
+    <div class="roundel__main">£1</div> 
+    <div class="roundel__sub">per round trip</div>
   </div>
 
 </div>
