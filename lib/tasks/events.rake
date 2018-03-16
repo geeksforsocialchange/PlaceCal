@@ -32,8 +32,9 @@ def import_events_from_source(calendar_id, from)
     calendar.import_events(from)
   rescue => e
     #TODO: Inform admin(s) when this fails
-    Rails.logger.debug e
-    Rollbar.error e
+    error = "Could not automatically import data for calendar #{calendar.name} (id #{calendar_id}):  #{e}"
+    puts error
+    Rollbar.error error
     return
   end
 end

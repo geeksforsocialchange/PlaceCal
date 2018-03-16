@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
     event.dtstart = e.dtstart
     event.dtend = e.dtend
     event.summary = e.summary
-    event.description = e.description + "\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
+    event.description = "#{e.description}\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
     event.location = e.location
     event
   end
