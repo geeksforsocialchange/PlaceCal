@@ -9,6 +9,9 @@ class Partner < ApplicationRecord
   has_many :calendars
   has_many :events
 
+  accepts_nested_attributes_for :places
+  accepts_nested_attributes_for :calendars
+
   belongs_to :address, required: false
 
   validates_presence_of :name

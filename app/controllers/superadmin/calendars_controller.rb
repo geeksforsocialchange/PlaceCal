@@ -1,5 +1,5 @@
-module Admin
-  class CalendarsController < Admin::ApplicationController
+module Superadmin
+  class CalendarsController < Superadmin::ApplicationController
 
     def show
       super

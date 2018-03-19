@@ -11,5 +11,5 @@ class User < ApplicationRecord
 
   extend Enumerize
 
-  enumerize :role, in: %i[admin moderator]
+  enumerize :role, in: %i[admin moderator partner secretary]
 end

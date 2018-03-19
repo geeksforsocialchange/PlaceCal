@@ -4,8 +4,9 @@
     <title>PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %></title>
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag 'admin', 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'partner', 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%#= stylesheet_link_tag 'print', media: 'print', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'partner', 'data-turbolinks-track': 'reload' %>
 
     <link rel="icon" type="image/png" href="<%= image_url('favicon.png') %>">
     <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
@@ -57,8 +58,5 @@
         <%#= render_component "footer" %>
       </footer>
     <!-- </div> -->
-    <%= yield :first_min_js %>
-    <%= javascript_include_tag 'admin', 'data-turbolinks-track': 'reload' %>
-    <%= yield :last_min_js %>
   </body>
 </html>

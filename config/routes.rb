@@ -1,7 +1,12 @@
 # config/routes.rb
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Most common route at the top
-  root 'pages#home'
+  devise_for :users
+
+  scope module: :admin, :as => :admin, :constraints => { :subdomain => "admin" } do
+    resources :partners
+    root 'partners#index'
+  end
 
   ymd = {
     year:       /\d{4}/,
@@ -31,7 +36,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   resources :collections, only: %i[show]
 
   # Users
-  devise_for :users
   resources :users
 
   # Static pages
@@ -40,8 +44,10 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
 
-  # Administration
-  namespace :admin do
+  # # Administration
+
+  namespace :superadmin do
+    get '/', to: 'users#index', as: :root
     resources :users
     resources :addresses
     resources :calendars do
@@ -51,14 +57,17 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :partners
     resources :places
     resources :collections
-
-    root to: 'users#index'
+    # root 'users#index'
   end
 
   namespace :manager do
     resources :calendars
   end
 
+  
+  root 'pages#home'
+
   # Styleguide
   mount MountainView::Engine => '/styleguide'
 end
+  

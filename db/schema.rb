@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171128152650) do
+ActiveRecord::Schema.define(version: 20180316122253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,13 @@ ActiveRecord::Schema.define(version: 20171128152650) do
     t.datetime "updated_at", null: false
     t.boolean "is_a_place"
     t.string "slug"
+    t.string "partner_email"
+    t.string "partner_name"
+    t.string "partner_phone"
+    t.string "calendar_email"
+    t.string "calendar_phone"
+    t.string "calendar_name"
+    t.string "public_name"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end

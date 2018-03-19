@@ -1,5 +1,5 @@
-module Admin
-  class UsersController < Admin::ApplicationController
+module Superadmin
+  class UsersController < Superadmin::ApplicationController
 
     def update
       if requested_resource.update_without_password(resource_params)
