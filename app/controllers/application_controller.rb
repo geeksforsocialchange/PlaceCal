@@ -89,4 +89,6 @@ class ApplicationController < ActionController::Base
     event.location = e.location
     event
   end
+
+  
 end

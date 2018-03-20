@@ -47,8 +47,8 @@ gem 'pundit'
 gem 'rollbar'
 gem 'virtus'
 gem 'whenever', require: false
-gem "nested_form"
-gem "select2-rails"
+gem 'nested_form'
+gem 'select2-rails'
 gem 'simple_form'
 
 # Styleguide
