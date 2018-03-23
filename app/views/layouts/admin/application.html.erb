@@ -54,11 +54,10 @@
         <%= yield %>
       </main>
       <footer>
-        <%#= render_component "footer" %>
       </footer>
     <!-- </div> -->
     <%= yield :first_min_js %>
-    <%= javascript_include_tag 'admin', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'admin', 'data-turbolinks-track': false %>
     <%= yield :last_min_js %>
   </body>
 </html>

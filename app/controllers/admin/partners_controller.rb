@@ -8,6 +8,7 @@ module Admin
 
     def new
       @partner = Partner.new
+      # @map = generate_points([@event.place]) if @event.place
     end
 
     def create

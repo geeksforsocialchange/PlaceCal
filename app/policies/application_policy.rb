@@ -35,7 +35,7 @@ class ApplicationPolicy
   end
 
   def secretary?
-    @user.role.secretary? ? true : false
+    @user.role && @user.role.secretary? ? true : false
   end
 
   def scope
