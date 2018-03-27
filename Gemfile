@@ -22,6 +22,8 @@ gem 'uglifier', '>= 1.3.0'
 # Calendar
 gem 'icalendar'
 gem 'icalendar-recurrence'
+gem 'feedjira'
+gem 'httparty'
 
 # Uploads
 gem 'carrierwave'

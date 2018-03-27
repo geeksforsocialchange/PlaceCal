@@ -14,7 +14,7 @@ class Calendar < ApplicationRecord
   extend Enumerize
 
   # What kind of Calendar feed is this?
-  enumerize :type, in: %i[facebook google outlook mac_calendar other],
+  enumerize :type, in: %i[facebook google outlook mac_calendar xml other],
                    default: :other,
                    scope: true
 
