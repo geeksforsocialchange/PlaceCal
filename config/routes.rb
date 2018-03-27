@@ -5,6 +5,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   scope module: :admin, :as => :admin, :constraints => { :subdomain => "admin" } do
     resources :partners
+    resources :places
     root 'partners#index'
   end
 

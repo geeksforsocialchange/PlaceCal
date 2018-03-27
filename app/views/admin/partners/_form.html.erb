@@ -1,4 +1,4 @@
-<%=  simple_nested_form_for @partner, html: { class: "form-horizontal" } do |f| %>
+<%= simple_nested_form_for @partner, html: { class: "form-horizontal" } do |f| %>
   <%= render_component "error", object: @partner %>
   <div class="row">
     <div class="col-md-10">
@@ -21,7 +21,6 @@
       <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
       <%= f.file_field :image %>
     </div>
-
   </div>
   <div class="">
     <div class="row">
@@ -128,7 +127,7 @@
         </div>
         <div class="col-md-3">
           <label>Default Place</label>
-          <%= c.select :place_id, options_for_places, {}, class: 'form-control select21' %>
+          <%= c.select :place_id, options_for_places, { include_blank: 'None'}, class: 'form-control select21' %>
         </div>
       </div>
       <div class="row">

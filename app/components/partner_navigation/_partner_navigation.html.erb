@@ -4,12 +4,11 @@
       <a class="navbar-brand" href="#">PlaceCal</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Home", admin_partners_path  %></li>
-      <li><a href="#">Place</a></li>
+      <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Partners", admin_partners_path  %></li>
+      <li class="<%= current_page?(admin_places_path) ? 'active' : '' %>"><%= link_to "Places", admin_places_path  %></li>
       <li><a href="#">Activities</a></li>
       <li><a href="#">Join</a></li>
       <li><%= link_to "Logout", destroy_user_session_path, method: :delete  %></li>
     </ul>
   </div>
 </nav>
-

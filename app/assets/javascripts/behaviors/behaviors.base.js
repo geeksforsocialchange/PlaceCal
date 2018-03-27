@@ -8,7 +8,7 @@ jQuery.fn.init_behaviors = function () {
 };
 
 var Behaviors = {
-  debugMode: false,
+  debugMode: true,
   activateBehavior: function (a) {
     if (a && a != "" && a != []) {
       if (typeof a == "string") {

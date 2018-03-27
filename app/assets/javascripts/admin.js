@@ -5,9 +5,7 @@
 //= require jquery_nested_form
 //= require select2
 //= require leaflet
-//= require ./behaviors/behaviors.base
-//= require ./behaviors/behaviors.partner
-//= require ./behaviors/behaviors.map
+//= require_tree ./behaviors
 
 $(document).ready(function (){
   $('body').init_behaviors();

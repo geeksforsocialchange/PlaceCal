@@ -7,9 +7,8 @@ class Place < ApplicationRecord
   has_many :events
   has_many :calendars
 
-  belongs_to :address
-  accepts_nested_attributes_for :address
-
+  belongs_to :address, inverse_of: :places
+  accepts_nested_attributes_for :address, reject_if: lambda { |c| c[:postcode].blank? && c[:street_address].blank?}
   validates_presence_of :name
   validates_uniqueness_of :name
 
