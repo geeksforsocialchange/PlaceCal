@@ -8,7 +8,7 @@ module Admin
 
     def new
       @partner = Partner.new
-      # @map = generate_points([@event.place]) if @event.place
+      @turves = current_user.turves.collect{ |t| [t.name, t.id] }
     end
 
     def create
@@ -16,6 +16,7 @@ module Admin
       if @partner.save
         redirect_to admin_partners_path
       else
+        @turves = current_user.turves.collect{ |t| [t.name, t.id] }
         render 'new'
       end
     end
@@ -35,7 +36,7 @@ module Admin
 
     private
       def partner_params  
-        params.require(:partner).permit(:name, :image, :short_description, :public_name, :public_email, :public_phone, :partner_name, :partner_email, :partner_phone, :calendar_phone, :calendar_name, :calendar_email, calendars_attributes: [:id, :name, :source, :type, :place_id, :_destroy], places_attributes: [:id, :name, :short_description, :booking_info, :opening_times, :_destroy, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode ]], :place_ids => [])  
+        params.require(:partner).permit(:name, :image, :short_description, :public_name, :public_email, :public_phone, :partner_name, :partner_email, :partner_phone, :calendar_phone, :calendar_name, :calendar_email, calendars_attributes: [:id, :name, :source, :type, :place_id, :_destroy], places_attributes: [:id, :name, :short_description, :booking_info, :opening_times, :_destroy, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode ]], :place_ids => [], :turf_ids => [])  
       end
   end
 end

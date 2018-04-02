@@ -22,6 +22,12 @@
       <%= f.file_field :image %>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-5">
+      <label>Turves</label>
+      <%= f.association :turves, label: false, collection: @turves, as: :check_boxes %>
+    </div>
+  </div>
   <div class="">
     <div class="row">
       <div class="col-md-12">
