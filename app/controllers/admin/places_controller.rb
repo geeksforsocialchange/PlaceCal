@@ -1,21 +1,41 @@
 module Admin
   class PlacesController < Admin::ApplicationController
-    # To customize the behavior of this controller,
-    # you can overwrite any of the RESTful actions. For example:
-    #
-    # def index
-    #   super
-    #   @resources = Place.
-    #     page(params[:page]).
-    #     per(10)
-    # end
+    before_action :secretary_authenticate
 
-    # Define a custom finder by overriding the `find_resource` method:
-    def find_resource(param)
-      Place.find_by!(slug: param)
+    def index
+      @places = Place.all.order(:name)
     end
 
-    # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
-    # for more information
+    def new
+      @place = Place.new 
+    end
+
+    def create
+      @place = Place.new(place_params)
+      if @place.save
+        redirect_to admin_places_path
+      else
+        render 'new'
+      end
+    end
+
+    def edit
+      @place = Place.friendly.find(params[:id])
+    end
+
+    def update
+      @place = Place.friendly.find(params[:id])
+      if @place.update_attributes(place_params)
+        redirect_to admin_places_path
+      else
+        render 'new'
+      end
+    end
+
+    private
+      def place_params  
+        params.require(:place).permit(:name, :short_description, :phone, :url, :address_id, :email, :status, :booking_info, :opening_times, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode, :_destroy ])  
+      end
+
   end
 end
