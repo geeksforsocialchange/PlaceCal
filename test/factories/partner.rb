@@ -7,5 +7,6 @@ FactoryBot.define do
     public_email nil
     public_phone nil
     short_description nil
+    after(:build) { |partner| partner.turves = [create(:turf)] }
   end
 end

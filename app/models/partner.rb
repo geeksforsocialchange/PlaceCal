@@ -24,7 +24,7 @@ class Partner < ApplicationRecord
   end
 
   # def custom_validation_method_with_message
-  #   errors.add(:_, "Please select atleast single truf") if turf_ids.blank?
+  #   errors.add(:_, "Select at least one Turf") if turf_ids.blank?
   # end
 
   def permalink
