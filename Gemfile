@@ -27,6 +27,9 @@ gem 'icalendar-recurrence'
 gem 'carrierwave'
 gem 'mini_magick'
 
+# UI
+gem 'bootstrap-sass', '~> 3.3.7'
+
 # Misc
 gem 'active_link_to'
 gem 'devise'
@@ -44,6 +47,9 @@ gem 'pundit'
 gem 'rollbar'
 gem 'virtus'
 gem 'whenever', require: false
+gem 'nested_form'
+gem 'select2-rails'
+gem 'simple_form'
 
 # Styleguide
 gem 'mountain_view'
@@ -51,6 +57,7 @@ gem 'mountain_view'
 # Helpers to group by time period
 # TODO: check if this is still actually used
 gem 'groupdate'
+
 
 # Administration
 gem 'administrate'

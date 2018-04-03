@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171128152650) do
+ActiveRecord::Schema.define(version: 20180328065955) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,13 @@ ActiveRecord::Schema.define(version: 20171128152650) do
     t.datetime "updated_at", null: false
     t.boolean "is_a_place"
     t.string "slug"
+    t.string "partner_email"
+    t.string "partner_name"
+    t.string "partner_phone"
+    t.string "calendar_email"
+    t.string "calendar_phone"
+    t.string "calendar_name"
+    t.string "public_name"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
@@ -127,6 +134,13 @@ ActiveRecord::Schema.define(version: 20171128152650) do
     t.integer "place_id"
     t.index ["partner_id"], name: "index_partners_places_on_partner_id"
     t.index ["place_id"], name: "index_partners_places_on_place_id"
+  end
+
+  create_table "partners_turves", id: false, force: :cascade do |t|
+    t.bigint "partner_id", null: false
+    t.bigint "turf_id", null: false
+    t.index ["partner_id", "turf_id"], name: "index_partners_turves_on_partner_id_and_turf_id"
+    t.index ["turf_id", "partner_id"], name: "index_partners_turves_on_turf_id_and_partner_id"
   end
 
   create_table "partners_users", id: :serial, force: :cascade do |t|
@@ -153,6 +167,22 @@ ActiveRecord::Schema.define(version: 20171128152650) do
     t.string "slug"
     t.index ["address_id"], name: "index_places_on_address_id"
     t.index ["slug"], name: "index_places_on_slug", unique: true
+  end
+
+  create_table "turves", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.string "turf_type"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "turves_users", id: false, force: :cascade do |t|
+    t.bigint "turf_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["turf_id", "user_id"], name: "index_turves_users_on_turf_id_and_user_id"
+    t.index ["user_id", "turf_id"], name: "index_turves_users_on_user_id_and_turf_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
