@@ -87,3 +87,31 @@ Calendar.create(name: 'Hulme & Moss Side Age Friendly Events',
                 strategy: 'event',
                 source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics')
 
+Turf.where(name: 'Hulme', 
+              slug: 'hulme', 
+              turf_type: 'neighbourhood', 
+              description: 'hulme').first_or_create
+Turf.where(name: 'Moss side', 
+              slug: 'moss-side', 
+              turf_type: 'neighbourhood', 
+              description: 'moss-side').first_or_create
+Turf.where(name: 'Rusholme', 
+              slug: 'rusholme', 
+              turf_type: 'neighbourhood', 
+              description: 'rusholme').first_or_create
+Turf.where(name: 'Age friendly', 
+              slug: 'age-friendly', 
+              turf_type: 'interest', 
+              description: 'age-friendly').first_or_create
+
+
+u = User.where(first_name: 'nikhil', last_name: 'ror', role: 'secretary', email: "abc@example.com").first_or_initialize
+unless u.persisted?
+  u.password = "password"
+  u.save
+end
+
+u.turves << Turf.first
+u.turves << Turf.last
+
+
