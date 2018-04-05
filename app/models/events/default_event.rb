@@ -1,6 +1,8 @@
 module Events
   class DefaultEvent
 
+    Dates = Struct.new(:start_time, :end_time)
+
     def initialize(event)
       @event = event
     end

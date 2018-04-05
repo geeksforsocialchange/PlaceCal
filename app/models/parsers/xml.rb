@@ -9,10 +9,16 @@ module Parsers
       xml = HTTParty.get(@file).body
       feed = Nokogiri::XML(xml)
 
-      feed.css('show') do |show|
-        events = show.css('events')
+      feed.css('show').each do |show|
+        event_data = {}
+
+        show.css('events').each do |event|
+          @events << Events::XmlEvent.new(show)
+        end
 
       end
+
+      @events
     end
   end
 end

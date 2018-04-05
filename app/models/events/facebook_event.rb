@@ -1,8 +1,6 @@
 module Events
   class FacebookEvent < DefaultEvent
 
-    Dates = Struct.new(:start_time, :end_time)
-
     def initialize(event)
       @event = OpenStruct.new(event)
     end
