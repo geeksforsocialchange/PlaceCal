@@ -9,6 +9,10 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     root 'partners#index'
   end
 
+  constraints(::Subdomains::Truf) do
+    root 'pages#turf'
+  end
+
   ymd = {
     year:       /\d{4}/,
     month:      /\d{1,2}/,
@@ -38,6 +42,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   # Users
   resources :users
+
 
   # Static pages
   get 'join', to: 'pages#join'
