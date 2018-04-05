@@ -9,9 +9,4 @@ class Turf < ApplicationRecord
 
   validates :name, :slug, presence: true
 
-  private
-
-  def create_tenant
-    Aparment::Tenant.create('ggggg')
-  end
 end
