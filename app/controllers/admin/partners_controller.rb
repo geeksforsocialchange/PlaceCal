@@ -8,7 +8,7 @@ module Admin
 
     def new
       @partner = Partner.new
-      @turves = current_user.turves.collect{ |t| [t.name, t.id] }
+      @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
     end
 
     def create
@@ -16,13 +16,14 @@ module Admin
       if @partner.save
         redirect_to admin_partners_path
       else
-        @turves = current_user.turves.collect{ |t| [t.name, t.id] }
+        @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
         render 'new'
       end
     end
 
     def edit
       @partner = Partner.friendly.find(params[:id])
+      @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
     end
 
     def update

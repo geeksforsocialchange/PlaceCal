@@ -111,7 +111,7 @@ unless u.persisted?
   u.save
 end
 
-u.turves << Turf.first
-u.turves << Turf.last
+u.turfs << Turf.first
+u.turfs << Turf.last
 
 

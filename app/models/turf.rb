@@ -1,4 +1,5 @@
 class Turf < ApplicationRecord
+  self.table_name = 'turfs'
   extend Enumerize
   after_create :create_tenant
 
