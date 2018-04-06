@@ -1,4 +1,4 @@
-<%= nested_form_for @place, html: { class: "form-horizontal" } do |f| %>
+<%= simple_nested_form_for @place, html: { class: "form-horizontal" } do |f| %>
   <%= render_component "error", object: @place %>
   <div class="row">
     <div class="col-md-10">
@@ -16,6 +16,12 @@
     <div class="col-md-5">
       <label>Short Description</label>
       <%= f.text_area :short_description, rows: 2, class: "form-control" %>
+    </div>
+  </div>
+   <div class="row">
+    <div class="col-md-5">
+      <label>Turfs</label>
+      <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes %>
     </div>
   </div>
   <div class="">

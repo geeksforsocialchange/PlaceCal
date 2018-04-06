@@ -11,5 +11,6 @@ module Admin
       def secretary_authenticate
         authorize current_user, :secretary?
       end
+
   end
 end

@@ -4,6 +4,7 @@ class Place < ApplicationRecord
   friendly_id :name, use: :slugged
 
   has_and_belongs_to_many :partners
+  has_and_belongs_to_many :turfs
   has_many :events
   has_many :calendars
 
@@ -11,6 +12,7 @@ class Place < ApplicationRecord
   accepts_nested_attributes_for :address, reject_if: lambda { |c| c[:postcode].blank? && c[:street_address].blank?}
   validates_presence_of :name
   validates_uniqueness_of :name
+  validates_presence_of :turf_ids
 
   # Max events to show on Place page before going to a day-by-day view
   # Needs some refactoring to work

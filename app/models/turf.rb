@@ -7,6 +7,7 @@ class Turf < ApplicationRecord
 
   has_and_belongs_to_many :users
   has_and_belongs_to_many :partners
+  has_and_belongs_to_many :places
 
   validates :name, :slug, presence: true
 
