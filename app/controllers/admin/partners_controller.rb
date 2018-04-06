@@ -1,6 +1,9 @@
 module Admin
   class PartnersController < Admin::ApplicationController
+    include LoadUtilities
+    
     before_action :secretary_authenticate
+    before_action :turfs, only: [:new, :create, :edit]
 
     def index
       @partners = Partner.all.order(:name)
@@ -8,7 +11,6 @@ module Admin
 
     def new
       @partner = Partner.new
-      @turves = current_user.turves.collect{ |t| [t.name, t.id] }
     end
 
     def create
@@ -16,7 +18,6 @@ module Admin
       if @partner.save
         redirect_to admin_partners_path
       else
-        @turves = current_user.turves.collect{ |t| [t.name, t.id] }
         render 'new'
       end
     end
