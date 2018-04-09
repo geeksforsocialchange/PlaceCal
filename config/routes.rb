@@ -9,7 +9,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     root 'partners#index'
   end
 
-  constraints(::Subdomains::Truf) do
+  constraints(::Subdomains::Turf) do
     root 'pages#turf'
   end
 
@@ -51,7 +51,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
 
-  # # Administration
+  # Administration
 
   namespace :superadmin do
     get '/', to: 'users#index', as: :root
@@ -71,7 +71,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :calendars
   end
 
-  
+
   root 'pages#home'
 
   # Styleguide
@@ -79,4 +79,3 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   get '/robots.txt' => 'pages#robots'
 end
-  
