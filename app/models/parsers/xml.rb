@@ -10,12 +10,7 @@ module Parsers
       feed = Nokogiri::XML(xml)
 
       feed.css('show').each do |show|
-        event_data = {}
-
-        show.css('events').each do |event|
-          @events << Events::XmlEvent.new(show)
-        end
-
+        @events << Events::XmlEvent.new(show)
       end
 
       @events
