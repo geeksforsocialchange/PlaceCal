@@ -33,7 +33,7 @@ as well as a link to its edit page.
 </header>
 
 <section class="main-content__body">
-  <%= form_tag admin_calendar_import_path(page.resource) do %>
+  <%= form_tag superadmin_calendar_import_path(page.resource) do %>
     <div class="field-unit field-unit--date-time">
       <div class="field-unit__label attribute-label">
         <%= label_tag :starting_from, "Import Starting From" %>
