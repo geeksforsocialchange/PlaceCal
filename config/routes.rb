@@ -1,12 +1,17 @@
 # config/routes.rb
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Most common route at the top
-  devise_for :users
+  devise_for :users, controllers: {
+    sessions: 'users/sessions'
+  }
+
 
   scope module: :admin, :as => :admin, :constraints => { :subdomain => "admin" } do
     resources :partners
     resources :places
-    root 'partners#index'
+    resources :users
+    get 'profile' => 'users#profile', :as => 'profile'
+    root 'pages#home'
   end
 
   constraints(::Subdomains::Turf) do
