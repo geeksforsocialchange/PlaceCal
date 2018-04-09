@@ -1,7 +1,7 @@
 class Turf < ApplicationRecord
   self.table_name = 'turfs'
   extend Enumerize
-  after_create :create_tenant
+  # after_create :create_tenant
 
   enumerize :turf_type, in: %i[interest neighbourhood]
 
