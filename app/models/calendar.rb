@@ -83,7 +83,7 @@ class Calendar < ApplicationRecord
 
     occurrences.each do |occurrence|
       event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
-      event_data[:are_spaces_available] = occurrence.status if type.xml?
+      event_time[:are_spaces_available] = occurrence.status if type.xml?
 
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
       event = self.events.new if event.blank?
