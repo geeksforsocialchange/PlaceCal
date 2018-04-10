@@ -82,7 +82,8 @@ class Calendar < ApplicationRecord
     end
 
     occurrences.each do |occurrence|
-      event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time, are_spaces_available: occurrences.status }
+      event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
+      event_data[:are_spaces_available] = occurrence.status if type.xml?
 
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
       event = self.events.new if event.blank?
@@ -119,6 +120,8 @@ class Calendar < ApplicationRecord
     case type
     when "facebook"
       Parsers::Facebook.new(source, { from: from }).events
+    when "xml"
+      Parsers::Xml.new(source).events
     else
       Parsers::Ics.new(source).events
     end

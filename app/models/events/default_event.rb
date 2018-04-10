@@ -47,7 +47,7 @@ module Events
     end
 
     def ip_class
-      @event&.ip_class
+      @event&.ip_class if @event.respond_to?(:ip_class)
     end
 
     def private?

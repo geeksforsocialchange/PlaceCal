@@ -6,7 +6,7 @@ module Parsers
 
     def events
       @events = []
-      xml = HTTParty.get(@file).body
+      xml = HTTParty.get(@file, follow_redirects: true).body
       feed = Nokogiri::XML(xml)
 
       feed.css('show').each do |show|

@@ -24,7 +24,7 @@ module Events
       true
     end
 
-    def occurrences
+    def occurrences_between(*)
       @occurrences = []
 
       @event.css('events').each do |events|
