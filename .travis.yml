@@ -1,8 +1,14 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=7e0e573cd74e3418226d922174406b38d5692b01d6464701fa57ce51e75eb72a
 language: ruby
 dist: trusty
 addons:
   postgresql: '9.6'
 before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
   - psql -c 'create database placecal_test;' -U postgres
 before_install:
   - |
@@ -21,4 +27,5 @@ deploy:
     script: bash scripts/production.sh
     on:
       branch: production
-
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
