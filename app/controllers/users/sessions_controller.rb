@@ -24,12 +24,10 @@ class Users::SessionsController < Devise::SessionsController
   # end
  
     def after_sign_in_path_for(resource)
-      if resource && resource.role.admin?
+      if resource.role && resource.role.admin?
         superadmin_root_path
-      elsif resource && resource.role.secretary?
+      else
         admin_root_url(:subdomain => 'admin')
-      else 
-        new_session_path
       end
     end
 end
