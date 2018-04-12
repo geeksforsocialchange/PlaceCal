@@ -1,6 +1,6 @@
 eval "$(ssh-agent -s)" #start the ssh agent
 echo $PWD
-echo ls -a
+ls -a
 chmod 600 $TRAVIS_BUILD_DIR/deploy.key # this key should have push access
 ssh-add $TRAVIS_BUILD_DIR/deploy.key
 ssh-keyscan placecal-staging.org >> ~/.ssh/known_hosts
