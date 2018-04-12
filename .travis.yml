@@ -19,6 +19,7 @@ before_install:
       fi
 
 deploy:
+  skip_cleanup: true
   - provider: script
     script: bash scripts/staging.sh
     on:
