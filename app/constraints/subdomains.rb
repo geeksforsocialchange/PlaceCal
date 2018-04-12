@@ -1,5 +1,5 @@
 module Subdomains
-  class Truf
+  class Turf
     def self.matches?(request)
       return unless request.subdomain.present?
       if Turf.where(slug: request.subdomain).exists?
