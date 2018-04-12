@@ -19,12 +19,13 @@ before_install:
       fi
 
 deploy:
-  skip_cleanup: true
   - provider: script
+    skip_cleanup: true
     script: bash scripts/staging.sh
     on:
       branch: master
   - provider: script
+    skip_cleanup: true
     script: bash scripts/production.sh
     on:
       branch: production
