@@ -5,7 +5,7 @@ class Partner < ApplicationRecord
 
   has_and_belongs_to_many :users
   has_and_belongs_to_many :places
-  has_and_belongs_to_many :turves
+  has_and_belongs_to_many :turfs
   has_many :calendars
   has_many :events
   belongs_to :address, required: false
@@ -24,7 +24,7 @@ class Partner < ApplicationRecord
   end
 
   # def custom_validation_method_with_message
-  #   errors.add(:_, "Please select atleast single truf") if turf_ids.blank?
+  #   errors.add(:_, "Select at least one Turf") if turf_ids.blank?
   # end
 
   def permalink

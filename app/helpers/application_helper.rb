@@ -8,4 +8,8 @@ module ApplicationHelper
       ''
     end
   end
+
+  def user_policy
+    UserPolicy.new(current_user, nil)
+  end
 end

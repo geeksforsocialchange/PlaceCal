@@ -1,6 +1,9 @@
 module Admin
   class PlacesController < Admin::ApplicationController
+    include LoadUtilities
+
     before_action :secretary_authenticate
+    before_action :turfs, only: [:new, :create, :edit]
 
     def index
       @places = Place.all.order(:name)
@@ -8,6 +11,7 @@ module Admin
 
     def new
       @place = Place.new 
+      @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
     end
 
     def create
@@ -21,6 +25,7 @@ module Admin
 
     def edit
       @place = Place.friendly.find(params[:id])
+      @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
     end
 
     def update
@@ -34,7 +39,7 @@ module Admin
 
     private
       def place_params  
-        params.require(:place).permit(:name, :short_description, :phone, :url, :address_id, :email, :status, :booking_info, :opening_times, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode, :_destroy ])  
+        params.require(:place).permit(:name, :short_description, :phone, :url, :address_id, :email, :status, :booking_info, :opening_times, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode, :_destroy ], :turf_ids => [])  
       end
 
   end

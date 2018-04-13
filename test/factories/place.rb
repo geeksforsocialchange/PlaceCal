@@ -8,5 +8,8 @@ FactoryBot.define do
     opening_times nil
     phone nil
     status nil
+    after(:build) do |place|
+      place.turfs << FactoryBot.create(:turf)
+    end
   end
 end
