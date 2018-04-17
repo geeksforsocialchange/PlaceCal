@@ -1,6 +1,8 @@
 module Events
   class DefaultEvent
 
+    Dates = Struct.new(:start_time, :end_time, :status)
+
     def initialize(event)
       @event = event
     end
@@ -45,7 +47,7 @@ module Events
     end
 
     def ip_class
-      @event&.ip_class
+      @event&.ip_class if @event.respond_to?(:ip_class)
     end
 
     def private?

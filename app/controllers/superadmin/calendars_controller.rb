@@ -35,7 +35,7 @@ module Superadmin
         flash[:error] = 'The import ran into an error before completion. Please check error logs for more info.'
       end
 
-      redirect_to admin_calendar_path(@calendar)
+      redirect_to superadmin_calendar_path(@calendar)
     end
 
     # To customize the behavior of this controller,
