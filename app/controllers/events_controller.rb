@@ -17,6 +17,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
+      format.text
       format.ics do
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
         ics_listing = Event.ical_feed

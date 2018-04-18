@@ -1,0 +1,17 @@
+<% if @events.any? %>
+  <% @events.each do |day, events| %>
+<%= day.strftime('%A %e %B') %>
+      <% events.each do |event| %>
+        <%= %(
+#{event.summary}
+#{event.dtstart} - #{event.dtend}
+#{event.description}
+#{event.place}, #{event.location}
+#{event_path(event)}
+
+      ) %>
+      <% end %>
+  <% end %>
+<% else %>
+  No events with this selection.
+<% end %>
