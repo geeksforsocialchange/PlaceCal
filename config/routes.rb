@@ -14,8 +14,8 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     root 'pages#home'
   end
 
-  constraints(::Subdomains::Truf) do
-    root 'pages#turf'
+  constraints(::Subdomains::Sites) do
+    root 'pages#site'
   end
 
   ymd = {
@@ -51,11 +51,12 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   # Static pages
   get 'join', to: 'pages#join'
+  get 'bus', to: 'pages#bus'
 
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
 
-  # # Administration
+  # Administration
 
   namespace :superadmin do
     get '/', to: 'users#index', as: :root
@@ -75,10 +76,11 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :calendars
   end
 
-  
+
   root 'pages#home'
 
   # Styleguide
   mount MountainView::Engine => '/styleguide'
+
+  get '/robots.txt' => 'pages#robots'
 end
-  

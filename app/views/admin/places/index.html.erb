@@ -20,7 +20,7 @@
     <tr>
       <td><%= place.id %></td>
       <td><%= place.name %></td>
-      <td><%= place.address.full_address %></td>
+      <td><%= place.address.full_address rescue nil %></td>
       <td><%= link_to "Edit", edit_admin_place_path(place),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
     </tr>
   <% end %>
