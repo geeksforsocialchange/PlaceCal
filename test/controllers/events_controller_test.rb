@@ -21,15 +21,8 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'superadmin: should create event' do
-    event = {
-      summary: 'N.A (Narcotics Anonymous)',
-      place: create(:place),
-      dtstart: Time.now,
-      dtend:   Time.now + 2.hours
-    }
-
     assert_difference('Event.count') do
-      post superadmin_events_url, params: { event: event }
+      post superadmin_events_url, params: { event: attributes_for(:event) }
     end
 
     assert_redirected_to superadmin_event_url(Event.last)
@@ -40,10 +33,10 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  # test 'superadmin: should update event' do
-  #   patch superadmin_event_url(@event), params: { event: {  } }
-  #   assert_redirected_to event_url(@event)
-  # end
+  test 'superadmin: should update event' do
+    patch superadmin_event_url(@event), params: { event: attributes_for(:event) }
+    assert_redirected_to superadmin_event_url(@event)
+  end
 
   test 'superadmin: should destroy event' do
     assert_difference('Event.count', -1) do

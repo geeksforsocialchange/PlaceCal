@@ -20,9 +20,9 @@ gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 
 # Calendar
+gem 'httparty'
 gem 'icalendar'
 gem 'icalendar-recurrence'
-gem 'httparty'
 
 # Uploads
 gem 'carrierwave'
@@ -42,15 +42,15 @@ gem 'koala'
 gem 'leaflet-rails'
 gem 'listen', '~> 3.0.5'
 gem 'mailgun_rails'
+gem 'nested_form'
 gem 'oj'
 gem 'paper_trail'
 gem 'pundit'
 gem 'rollbar'
-gem 'virtus'
-gem 'whenever', require: false
-gem 'nested_form'
 gem 'select2-rails'
 gem 'simple_form'
+gem 'virtus'
+gem 'whenever', require: false
 
 # Styleguide
 gem 'mountain_view'
@@ -58,7 +58,6 @@ gem 'mountain_view'
 # Helpers to group by time period
 # TODO: check if this is still actually used
 gem 'groupdate'
-
 
 # Administration
 gem 'administrate'
@@ -89,7 +88,7 @@ group :development do
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'awesome_print'
-  #gem 'better_errors'
+  gem 'better_errors'
   gem 'binding_of_caller'
   gem 'guard'
   gem 'guard-livereload', '~> 2.5', require: false
@@ -103,6 +102,8 @@ group :development do
 end
 
 group :test do
+  gem 'minitest-rails-capybara'
+  gem 'minitest-reporters'
   gem 'simplecov', require: false
 end
 

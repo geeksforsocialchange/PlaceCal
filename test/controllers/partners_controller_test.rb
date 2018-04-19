@@ -5,40 +5,42 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     @partner = create(:partner)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get partners_url
     assert_response :success
   end
 
-  test "should show partner" do
+  test 'should show partner' do
     get partner_url(@partner)
     assert_response :success
   end
 
-  test "should get new" do
+  test 'superadmin: should get new' do
     get new_superadmin_partner_url
     assert_response :success
   end
 
-  test "should create partner" do
+  test 'superadmin: should create partner' do
     assert_difference('Partner.count') do
-      post superadmin_partners_url, params: { partner: { name: "Partner Name" } }
+      post superadmin_partners_url,
+           params: { partner: { name: 'Test' } }
     end
 
     assert_redirected_to superadmin_partner_url(Partner.last)
   end
 
-  test "should get edit" do
+  test 'superadmin: should get edit' do
     get edit_superadmin_partner_url(@partner)
     assert_response :success
   end
 
-  test "should update partner" do
-    patch superadmin_partner_url(@partner), params: { partner: { name: "Partner Name" } }
+  test 'superadmin: should update partner' do
+    patch superadmin_partner_url(@partner),
+          params: { partner: { name: 'Partner Name' } }
     assert_redirected_to superadmin_partner_url(@partner)
   end
 
-  test "should destroy partner" do
+  test 'superadmin: should destroy partner' do
     assert_difference('Partner.count', -1) do
       delete superadmin_partner_url(@partner)
     end
