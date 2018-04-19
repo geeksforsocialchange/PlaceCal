@@ -55,7 +55,6 @@ class EventDashboard < Administrate::BaseDashboard
     :rrule,
     :notices,
     :is_active,
-    :deleted_at,
     :dtstart,
     :dtend,
     :created_at,
@@ -76,7 +75,6 @@ class EventDashboard < Administrate::BaseDashboard
     :rrule,
     :notices,
     :is_active,
-    :deleted_at,
     :dtstart,
     :dtend,
   ].freeze
