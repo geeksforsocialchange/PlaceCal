@@ -14,7 +14,7 @@ class Partner < ApplicationRecord
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
   validates_presence_of :name
-  validates_presence_of :turf_ids
+  # validates_presence_of :turf_ids
   validates_uniqueness_of :name
 
   mount_uploader :image, ImageUploader

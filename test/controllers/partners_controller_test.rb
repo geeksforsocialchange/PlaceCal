@@ -15,34 +15,34 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  # test "should get new" do
-  #   get new_partner_url
-  #   assert_response :success
-  # end
+  test "should get new" do
+    get new_superadmin_partner_url
+    assert_response :success
+  end
 
-  # test "should create partner" do
-  #   assert_difference('Partner.count') do
-  #     post partners_url, params: { partner: {  } }
-  #   end
+  test "should create partner" do
+    assert_difference('Partner.count') do
+      post superadmin_partners_url, params: { partner: { name: "Partner Name" } }
+    end
 
-  #   assert_redirected_to partner_url(Partner.last)
-  # end
+    assert_redirected_to superadmin_partner_url(Partner.last)
+  end
 
-  # test "should get edit" do
-  #   get edit_partner_url(@partner)
-  #   assert_response :success
-  # end
+  test "should get edit" do
+    get edit_superadmin_partner_url(@partner)
+    assert_response :success
+  end
 
-  # test "should update partner" do
-  #   patch partner_url(@partner), params: { partner: {  } }
-  #   assert_redirected_to partner_url(@partner)
-  # end
+  test "should update partner" do
+    patch superadmin_partner_url(@partner), params: { partner: { name: "Partner Name" } }
+    assert_redirected_to superadmin_partner_url(@partner)
+  end
 
-  # test "should destroy partner" do
-  #   assert_difference('Partner.count', -1) do
-  #     delete partner_url(@partner)
-  #   end
+  test "should destroy partner" do
+    assert_difference('Partner.count', -1) do
+      delete superadmin_partner_url(@partner)
+    end
 
-  #   assert_redirected_to partners_url
-  # end
+    assert_redirected_to superadmin_partners_url
+  end
 end

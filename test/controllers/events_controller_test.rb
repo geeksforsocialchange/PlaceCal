@@ -5,18 +5,18 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     @event = create(:event)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get events_url
     assert_response :success
   end
 
-  test "should show event" do
+  test 'should show event' do
     get event_url(@event)
     assert_response :success
   end
 
-  # test "should get new" do
-  #   get new_event_url
+  # test 'should get new' do
+  #   get new_superadmin_event_url
   #   assert_response :success
   # end
 
