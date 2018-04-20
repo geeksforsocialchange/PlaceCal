@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CalendarsControllerTest < ActionDispatch::IntegrationTest
+class SuperadminCalendarsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @calendar = create(:calendar)
   end

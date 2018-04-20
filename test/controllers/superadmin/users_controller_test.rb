@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class UsersControllerTest < ActionDispatch::IntegrationTest
+class SuperadminUsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = create(:user)
   end
