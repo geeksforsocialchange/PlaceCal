@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SuperadminPlacesControllerTest < ActionDispatch::IntegrationTest
+class Superadmin::PlacesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @place = create(:place)
   end
@@ -21,11 +21,14 @@ class SuperadminPlacesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'superadmin: should create place' do
+    turf = create(:turf)
+    address = create(:address)
+
     assert_difference('Place.count') do
-      post superadmin_places_url, params: { place: attributes_for(:place) }
+      post superadmin_places_url, params: { place: attributes_for(:place, name: Faker::Company.name).merge(turf_ids: [turf.id], address_id: address.id) }
     end
 
-    assert_redirected_to place_url(Place.last)
+    assert_redirected_to superadmin_place_url(Place.last)
   end
 
   test 'superadmin: should get edit' do

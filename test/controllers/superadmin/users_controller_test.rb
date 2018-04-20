@@ -17,7 +17,7 @@ class SuperadminUsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'superadmin: should create user' do
     assert_difference('User.count') do
-      post superadmin_users_url, params: { user: attributes_for(:user) }
+      post superadmin_users_url, params: { user: attributes_for(:user, email: 'test@test.com') }
     end
 
     assert_redirected_to superadmin_user_url(User.last)

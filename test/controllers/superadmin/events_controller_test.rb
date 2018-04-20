@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SuperadminEventsControllerTest < ActionDispatch::IntegrationTest
+class Superadmin::EventsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @event = create(:event)
   end
@@ -21,8 +21,10 @@ class SuperadminEventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'superadmin: should create event' do
+    address = create(:address)
+
     assert_difference('Event.count') do
-      post superadmin_events_url, params: { event: attributes_for(:event) }
+      post superadmin_events_url, params: { event: attributes_for(:event).merge( address_id: address.id ) }
     end
 
     assert_redirected_to superadmin_event_url(Event.last)
