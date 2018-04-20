@@ -16,7 +16,13 @@ class EventsController < ApplicationController
     @multiple_days = true
 
     respond_to do |format|
-      format.html
+      format.html do
+        if params[:simple].present?
+          render :index_simple, layout: false
+        else
+          render :index
+        end
+      end
       format.text
       format.ics do
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?

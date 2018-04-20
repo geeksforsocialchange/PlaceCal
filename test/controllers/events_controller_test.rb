@@ -5,44 +5,26 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     @event = create(:event)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get events_url
     assert_response :success
+    assert_template 'index'
   end
 
-  test "should show event" do
+  test 'should get simple html index' do
+    get events_url, params: { simple: true }
+    assert_response :success
+    assert_template 'index_simple'
+  end
+
+  test 'should get plain text index' do
+    get '/events.text'
+    assert_response :success
+    assert_equal 'text/plain', response.content_type
+  end
+
+  test 'should show event' do
     get event_url(@event)
     assert_response :success
   end
-
-  # test "should get new" do
-  #   get new_event_url
-  #   assert_response :success
-  # end
-
-  # test "should create event" do
-  #   assert_difference('Event.count') do
-  #     post events_url, params: { event: {  } }
-  #   end
-
-  #   assert_redirected_to event_url(Event.last)
-  # end
-
-  # test "should get edit" do
-  #   get edit_event_url(@event)
-  #   assert_response :success
-  # end
-
-  # test "should update event" do
-  #   patch event_url(@event), params: { event: {  } }
-  #   assert_redirected_to event_url(@event)
-  # end
-
-  # test "should destroy event" do
-  #   assert_difference('Event.count', -1) do
-  #     delete event_url(@event)
-  #   end
-
-  #   assert_redirected_to events_url
-  # end
 end
