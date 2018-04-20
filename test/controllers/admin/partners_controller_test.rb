@@ -11,11 +11,12 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'admin: should show partner' do
-    # puts admin_partner_url(@partner)
-    get admin_partner_url(@partner)
-    assert_response :success
-  end
+  # No show page as we go directly to edit for now
+  #
+  # test 'admin: should show partner' do
+  #   get admin_partner_url(@partner)
+  #   assert_response :success
+  # end
 
   test 'admin: should get new' do
     get new_admin_partner_url
@@ -25,10 +26,10 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   test 'admin: should create partner' do
     assert_difference('Partner.count') do
       post admin_partners_url,
-           params: { partner: attributes_for(:partner) }
+           params: { partner: { name: 'A new partner' }}
     end
-
-    assert_redirected_to admin_partner_url(Partner.last)
+    # Redirect to the main partner screen
+    assert_redirected_to admin_partners_url
   end
 
   test 'admin: should get edit' do
@@ -38,7 +39,7 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
 
   test 'admin: should update partner' do
     patch admin_partner_url(@partner),
-          params: { partner: attributes_for(:partner) }
+          params: { partner: { name: 'Updated partner name' } }
     assert_redirected_to admin_partner_url(@partner)
   end
 
