@@ -100,8 +100,8 @@ class Event < ApplicationRecord
   private
 
   def require_location
-    if place_id.blank? && address_id.blank?
-      errors.add(:base, "No place or address could be created or found for the event location: #{self.location}")
-    end
+    return unless place_id.blank? && address_id.blank?
+    errors.add(:base, "No place or address could be created or found for
+                       the event location: #{location}")
   end
 end

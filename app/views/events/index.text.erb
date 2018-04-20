@@ -1,0 +1,20 @@
+<% if @events.any? %>
+  <% @events.each do |day, events| %>
+<% padding = "#" * (day.strftime('%A %e %B').length + 4) %>
+<%= padding %>
+<%= "# " + day.strftime('%A %e %B') + " #" %>
+<%= padding %>
+  <% events.each do |event| %>
+<%= %(
+#{event.summary}
+#{"-" * event.summary.length}
+#{event.date}, #{event.time}
+#{event.description}
+#{event.place}, #{event.location}
+https://placecal.org#{event_path(event)}
+) %>
+    <% end %>
+  <% end %>
+<% else %>
+  No events with this selection.
+<% end %>

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory(:place) do
-    name 'Hulme Community Garden Centre'
+    name Faker::Company.name
     short_description nil
     accessibility_info nil
     booking_info nil

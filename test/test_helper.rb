@@ -1,5 +1,5 @@
 require 'simplecov'
-SimpleCov.start 'rails'
+SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
@@ -8,3 +8,6 @@ require 'rails/test_help'
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 end
+
+require 'minitest/reporters'
+Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new

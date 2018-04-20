@@ -7,6 +7,5 @@ FactoryBot.define do
     postcode 'M15 5DD'
     street_address '123 Moss Ln E'
     street_address2 'Manchester'
-    street_address3 nil
   end
 end

@@ -89,6 +89,18 @@ class ApplicationController < ActionController::Base
     event.description = "#{e.description}\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
     event.location = e.location
     event
-  end 
- 
+  end
+
+  def default_update(obj, obj_params)
+    respond_to do |format|
+      if obj.update(obj_params)
+        format.html { redirect_to obj, notice: "#{obj.class} was successfully updated." }
+        format.json { render :show, status: :ok, location: obj }
+      else
+        format.html { render :edit }
+        format.json { render json: obj.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
 end

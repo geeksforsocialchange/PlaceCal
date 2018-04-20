@@ -1,6 +1,6 @@
 require "administrate/base_dashboard"
 
-class PlaceDashboard < Administrate::BaseDashboard
+class TurfDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
   # a hash that describes the type of each of the model's fields.
   #
@@ -8,22 +8,14 @@ class PlaceDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
+    users: Field::HasMany,
     partners: Field::HasMany,
-    events: Field::HasMany,
-    calendars: Field::HasMany,
-    turfs: Field::HasMany,
-    address: AddressField,
+    places: Field::HasMany,
     id: Field::Number,
     name: Field::String,
-    status: Field::String,
-    logo: Field::String,
-    phone: Field::String,
-    email: Field::String,
-    url: Field::String,
-    opening_times: Field::String.with_options(searchable: false),
-    short_description: Field::Text,
-    booking_info: Field::Text,
-    accessibility_info: Field::Text,
+    slug: Field::String,
+    turf_type: Field::String,
+    description: Field::Text,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
@@ -34,31 +26,23 @@ class PlaceDashboard < Administrate::BaseDashboard
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = [
-    :name,
+    :users,
     :partners,
-    :events,
-    :calendars,
-    :address,
+    :places,
+    :id,
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = [
+    :users,
+    :partners,
+    :places,
     :id,
     :name,
-    :partners,
-    # :events,
-    :calendars,
-    :address,
-    :status,
-    :logo,
-    :phone,
-    :email,
-    :url,
-    :opening_times,
-    :short_description,
-    :booking_info,
-    :accessibility_info,
+    :slug,
+    :turf_type,
+    :description,
     :created_at,
     :updated_at,
   ].freeze
@@ -67,26 +51,19 @@ class PlaceDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
-    :name,
-    :short_description,
-    :turfs,
-    :address,
-    :status,
-    :phone,
-    :email,
-    :url,
-    :opening_times,
+    :users,
     :partners,
-    :calendars,
-    :logo,
-    # :booking_info,
-    # :accessibility_info,
+    :places,
+    :name,
+    :slug,
+    :turf_type,
+    :description,
   ].freeze
 
-  # Overwrite this method to customize how places are displayed
+  # Overwrite this method to customize how turves are displayed
   # across all pages of the admin dashboard.
   #
-  def display_resource(place)
-    place
-  end
+  # def display_resource(turf)
+  #   "Turf ##{turf.id}"
+  # end
 end
