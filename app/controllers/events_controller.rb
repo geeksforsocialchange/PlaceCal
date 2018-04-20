@@ -28,8 +28,7 @@ class EventsController < ApplicationController
     end
   end
 
-  def ical
-  end
+  def ical; end
 
   # GET /events/1
   # GET /events/1.json
@@ -104,5 +103,4 @@ class EventsController < ApplicationController
   def event_params
     params.fetch(:event, {})
   end
-
 end
