@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory(:place) do
-    name Faker::Company.name
+    name 'Zion Centre'
     short_description nil
     accessibility_info nil
     booking_info nil

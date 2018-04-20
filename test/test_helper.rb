@@ -9,5 +9,9 @@ class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 end
 
+class ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+end
+
 require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
