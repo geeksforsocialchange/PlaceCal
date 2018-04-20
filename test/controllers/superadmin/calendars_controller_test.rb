@@ -22,7 +22,8 @@ class SuperadminCalendarsControllerTest < ActionDispatch::IntegrationTest
 
   test 'superadmin: should create calendar' do
     assert_difference('Calendar.count') do
-      post superadmin_calendars_url, params: { calendar: { name: 'Test Calendar' } }
+      post superadmin_calendars_url,
+           params: { calendar: { name: 'Test Calendar' } }
     end
 
     assert_redirected_to superadmin_calendar_url(Calendar.last)
@@ -34,7 +35,8 @@ class SuperadminCalendarsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'superadmin: should update calendar' do
-    patch superadmin_calendar_url(@calendar), params: { calendar: { name: 'New Test Calendar Name' } }
+    patch superadmin_calendar_url(@calendar),
+          params: { calendar: { name: 'New Test Calendar Name' } }
     assert_redirected_to superadmin_calendar_url(@calendar)
   end
 
