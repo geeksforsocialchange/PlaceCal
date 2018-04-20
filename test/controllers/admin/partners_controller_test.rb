@@ -12,7 +12,7 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'admin: should show partner' do
-    puts admin_partner_url(@partner)
+    # puts admin_partner_url(@partner)
     get admin_partner_url(@partner)
     assert_response :success
   end
