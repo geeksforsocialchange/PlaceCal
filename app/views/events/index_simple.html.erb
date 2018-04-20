@@ -1,0 +1,17 @@
+<% if @events.any? %>
+  <% @events.each do |day, events| %>
+<h2><%= day.strftime('%A %e %B') %></h2>
+  <% events.each do |event| %>
+<p>
+  <strong><%= event.summary %></strong><br>
+  <%= "#{event.date}, #{event.time}" %><br>
+  <%= event.description %><br>
+  <%= "#{event.place}, #{event.location}" %><br>
+  <%= link_to "https://placecal.org#{event_path(event)}", "https://placecal.org#{event_path(event)}" %>
+</p>
+
+    <% end %>
+  <% end %>
+<% else %>
+  No events with this selection.
+<% end %>
