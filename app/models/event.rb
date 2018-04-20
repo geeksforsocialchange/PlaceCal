@@ -10,7 +10,7 @@ class Event < ApplicationRecord
 
   has_and_belongs_to_many :collections
 
-  validates :summary, :dtstart, :dtend, presence: true
+  validates :summary, :dtstart, presence: true
 
   validate :require_location
 
@@ -72,7 +72,11 @@ class Event < ApplicationRecord
   end
 
   def time
-    dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+    if dtend
+      dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+    else
+      dtstart.strftime('%H:%M')
+    end
   end
 
   def date

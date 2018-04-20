@@ -1,6 +1,5 @@
 module Events
   class DefaultEvent
-
     Dates = Struct.new(:start_time, :end_time, :status)
 
     def initialize(event)
@@ -21,8 +20,7 @@ module Events
         rrule:       rrule,
         place_id:    place_id,
         address_id:  address_id,
-        partner_id:  partner_id
-      }
+        partner_id:  partner_id }
     end
 
     def recurring_event?
@@ -31,13 +29,13 @@ module Events
 
     def postcode
       postal = location.match(Address::POSTCODE_REGEX).try(:[], 0)
-      postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0) if postal.blank? #check for instances of M14 or M15 4 or whatever madness they've come up with
+      postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0) if postal.blank? # check for instances of M14 or M15 4 or whatever madness they've come up with
 
       if postal.blank?
-        #See if Google returns a more informative address
+        # See if Google returns a more informative address
         results = Geocoder.search(location)
         if results.first
-          formatted_address = results.first.data["formatted_address"]
+          formatted_address = results.first.data['formatted_address']
 
           postal = Address::POSTCODE_REGEX.match(formatted_address).try(:[], 0)
         end
@@ -51,8 +49,7 @@ module Events
     end
 
     def private?
-      (ip_class && ip_class.downcase == 'private') || (@event.description && @event.description.include?("#placecal-ignore"))
+      ip_class&.casecmp('private')&.zero? || (@event.description&.include?('#placecal-ignore'))
     end
-
   end
 end

@@ -17,8 +17,7 @@ module Events
       @event.at_css('description').text.gsub(/\A(\n)+\z/, '').strip
     end
 
-    def location
-    end
+    def location; end
 
     def recurring_event?
       true
@@ -29,8 +28,11 @@ module Events
 
       @event.css('events').each do |events|
         events.xpath('event').each do |event|
-          start_time = DateTime.parse(event.at_css('opening_time_iso'))
-          @occurrences << Dates.new(start_time, start_time + 1.hour, event.at_css('status').text)
+          start_time = Time.parse(event.at_css('opening_time_iso'))
+          # TODO: Refactor to make a bit less opaque
+          @occurrences << Dates.new(start_time,
+                                    nil,
+                                    event.at_css('status').text)
         end
       end
 
