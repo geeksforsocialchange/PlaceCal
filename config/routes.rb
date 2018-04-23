@@ -50,19 +50,13 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Static pages
   get 'join', to: 'pages#join'
   get 'bus', to: 'pages#bus'
-<<<<<<< HEAD
-=======
   get 'privacy', to: 'pages#privacy'
->>>>>>> master
 
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
 
   # Administration
-<<<<<<< HEAD
 
-=======
->>>>>>> master
   namespace :superadmin do
     get '/', to: 'users#index', as: :root
     resources :users
@@ -80,11 +74,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   namespace :manager do
     resources :calendars
   end
-
-<<<<<<< HEAD
-
-=======
->>>>>>> master
   root 'pages#home'
 
   # Styleguide
