@@ -1,8 +1,9 @@
 class PagesController < ApplicationController
+  before_action :get_home_turf, only: [:site]
+
   def home
   end
 
   def site
-    @site = Site.where(slug: request.subdomain).first
   end
 end
