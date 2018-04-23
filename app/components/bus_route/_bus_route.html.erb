@@ -1,0 +1,33 @@
+<div class="route">
+
+  <h3 class="route__time">
+    <div class="route__time-clock" role="presentation">
+      <span class="icon icon--time-grey">🕒</span>
+    </div>
+    <div class="route__time-main">
+      <%= properties[:time] %>
+      <div class="route__time-alt h4">
+        <%= properties[:time_alt] %>
+      </div>
+    </div>
+  </h3>
+
+  <div class="route__stops">
+    <ol>
+      <% properties[:stops].each do |stop| %>
+        <li class="stop"> 
+          <div class="stop__icon" role="presentation">
+            <span class="icon icon--bus-stop">🏠</span>
+          </div>
+          <h3 class="stop__name h4">
+            <%= stop[0] %>
+            <div class="stop__street small allcaps">
+              <%= stop[1] %>
+            </div>
+          </h3>
+        </li>
+      <% end %>          
+    </ol>
+    <div class="route__line" role="presentation"></div>
+  </div>
+</div>

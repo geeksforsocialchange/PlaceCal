@@ -3,9 +3,8 @@ jQuery.extend(Behaviors, {
   	set_address_latlng: function (full_address, map){
       geocoder = new google.maps.Geocoder();
       geocoder.geocode({ 'address': full_address }, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {   
+        if (status == google.maps.GeocoderStatus.OK) {
           var loc = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-          
           //Set Marker on address lat long
           Behaviors.map.set_marker(map, loc, 'partner-form');
         }else{
@@ -14,7 +13,9 @@ jQuery.extend(Behaviors, {
       });
     },
 
-    set_marker: function (map, latlong, type = null){
+    set_marker: function (map, latlong, type){
+      type = typeof type === 'undefined' ? null : type
+
       var mapIcon = Behaviors.map.set_icon(type)
       var markerArray = []
       marker = L.marker(latlong, {icon: mapIcon}).addTo(map);
@@ -26,7 +27,7 @@ jQuery.extend(Behaviors, {
     },
 
     set_icon: function (type){
-      var icon_image 
+      var icon_image
       if(type == 'partner-form') icon_image = $('#map-pin-div').data('url');
       return L.icon({
         iconUrl: icon_image,

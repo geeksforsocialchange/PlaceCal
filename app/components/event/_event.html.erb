@@ -11,10 +11,12 @@
         <span class="icon icon--time">🕒</span>
         <%= time %>
       </div>
-      <div class="event__detail event__duration">
-        <span class="icon icon--duration">⌛</span>
-        <%= duration %>
-      </div>
+      <% if duration %>
+        <div class="event__detail event__duration">
+          <span class="icon icon--duration">⌛</span>
+          <%= duration %>
+        </div>
+      <% end %>
       <div class="event__detail event__date">
         <span class="icon icon--date">📅</span>
         <%= date %>
@@ -36,7 +38,7 @@
         </div>
       <% end %>
     </div>
-    <% if page? %>  
+    <% if page? %>
       </div> <!-- </div class="c"> -->
     <% end %>
   </article>

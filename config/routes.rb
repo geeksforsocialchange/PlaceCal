@@ -5,8 +5,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     sessions: 'users/sessions'
   }
 
-
-  scope module: :admin, :as => :admin, :constraints => { :subdomain => "admin" } do
+  scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :partners
     resources :places
     resources :users
@@ -48,16 +47,22 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Users
   resources :users
 
-
   # Static pages
   get 'join', to: 'pages#join'
   get 'bus', to: 'pages#bus'
+<<<<<<< HEAD
+=======
+  get 'privacy', to: 'pages#privacy'
+>>>>>>> master
 
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
 
   # Administration
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
   namespace :superadmin do
     get '/', to: 'users#index', as: :root
     resources :users
@@ -76,7 +81,10 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :calendars
   end
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
   root 'pages#home'
 
   # Styleguide

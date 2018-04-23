@@ -10,7 +10,7 @@ class Event < ApplicationRecord
 
   has_and_belongs_to_many :collections
 
-  validates :summary, :dtstart, :dtend, presence: true
+  validates :summary, :dtstart, presence: true
 
   validate :require_location
 
@@ -72,7 +72,11 @@ class Event < ApplicationRecord
   end
 
   def time
-    dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+    if dtend
+      dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+    else
+      dtstart.strftime('%H:%M')
+    end
   end
 
   def date
@@ -96,8 +100,8 @@ class Event < ApplicationRecord
   private
 
   def require_location
-    if place_id.blank? && address_id.blank?
-      errors.add(:base, "No place or address could be created or found for the event location: #{self.location}")
-    end
+    return unless place_id.blank? && address_id.blank?
+    errors.add(:base, "No place or address could be created or found for
+                       the event location: #{location}")
   end
 end

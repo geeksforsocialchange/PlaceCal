@@ -1,6 +1,6 @@
 module Admin
   class ApplicationController < ::ApplicationController
-    layout "admin/application"
+    layout 'admin/application'
 
     include Pundit
 
@@ -8,10 +8,10 @@ module Admin
     protect_from_forgery with: :exception
 
     protected
-      def secretary_authenticate
-        # authorize current_user, :secretary? 
-        true
-      end
 
+    def secretary_authenticate
+      return if current_user.role == 'secretary'
+      redirect_to admin_root_path
+    end
   end
 end

@@ -38,4 +38,4 @@ en:
         partner:
           attributes:
             turf_ids:
-              blank: "Please select atleast single truf"
+              blank: "Select at least one Turf"

@@ -14,8 +14,8 @@ class Partner < ApplicationRecord
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
   validates_presence_of :name
-  validates_presence_of :turf_ids
   validates_uniqueness_of :name
+  # validates_presence_of :turf_ids
 
   mount_uploader :image, ImageUploader
 
@@ -24,7 +24,7 @@ class Partner < ApplicationRecord
   end
 
   # def custom_validation_method_with_message
-  #   errors.add(:_, "Please select atleast single truf") if turf_ids.blank?
+  #   errors.add(:_, "Select at least one Turf") if turf_ids.blank?
   # end
 
   def permalink
