@@ -7,8 +7,6 @@
       <% if user_policy.check_role? %>
         <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Partners", admin_partners_path  %></li>
         <li class="<%= current_page?(admin_places_path) ? 'active' : '' %>"><%= link_to "Places", admin_places_path  %></li>
-        <li><a href="#">Activities</a></li>
-        <li><a href="#">Join</a></li>
       <% end %>
       <li><%= link_to "Logout", destroy_user_session_path, method: :delete  %></li>
     </ul>
