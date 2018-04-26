@@ -9,9 +9,8 @@ module Superadmin
     before_action :authenticate_admin
 
     def authenticate_admin
-      # return if ENV['RAILS_ENV'] == 'development'
-      authorized = current_user && (current_user.role.admin?)
-      # redirect_to '/', alert: 'Not authorized' unless authorized
+      authorized = current_user && (current_user.role.root?)
+      redirect_to root_path unless authorized
     end
 
     # Override this value to specify the number of elements to display at a time
