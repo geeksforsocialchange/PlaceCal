@@ -1,6 +1,7 @@
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
+  #http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
+  before_action :authenticate_by_ip, if Rails.env.staging?
   protect_from_forgery with: :exception
 
   private
@@ -103,4 +104,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_by_ip
+    #Whitelisted ips are stored as comma separated values in the dokku config
+    whitelist = ENV['WHITELISTED_IPS'].split(',')
+    return if whitelist.include?(request.remote_ip)
+    redirect_to 'https://google.com'
+  end
 end
