@@ -24,10 +24,6 @@ class Users::SessionsController < Devise::SessionsController
   # end
  
     def after_sign_in_path_for(resource)
-      if resource.role && resource.role.admin?
-        superadmin_root_path
-      else
-        admin_root_url(:subdomain => 'admin')
-      end
+      admin_root_url(:subdomain => 'admin')
     end
 end

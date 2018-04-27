@@ -6,23 +6,27 @@
     <%= link_to "Add New Partner", new_admin_partner_path, data: { turbolinks: false }, class: "btn btn-primary " %>   
   </div>
 </div>      
-<table class="table table-striped">
-<thead>
-  <tr>
-    <th>Id</th>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Action</th>
-  </tr>
-</thead>
-<tbody>
-  <% @partners.each do |partner| %>
+<% if @partners.blank? %>
+  <h3>You have no partners</h3>
+<% else %>
+  <table class="table table-striped">
+  <thead>
     <tr>
-      <td><%= partner.id %></td>
-      <td><%= partner.name %></td>
-      <td><%= partner.public_email %></td>
-      <td><%= link_to "Edit", edit_admin_partner_path(partner),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Action</th>
     </tr>
-  <% end %>
-</tbody>
-</table>
+  </thead>
+  <tbody>
+    <% @partners.each do |partner| %>
+      <tr>
+        <td><%= partner.id %></td>
+        <td><%= partner.name %></td>
+        <td><%= partner.public_email %></td>
+        <td><%= link_to "Edit", edit_admin_partner_path(partner),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  </table>
+<% end %>

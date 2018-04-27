@@ -4,11 +4,10 @@ module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
 
-    before_action :secretary_authenticate
     before_action :turfs, only: %i[new create edit]
 
     def index
-      @partners = Partner.all.order(:name)
+      @partners = policy_scope(Partner)
     end
 
     def new

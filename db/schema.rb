@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180418134612) do
+ActiveRecord::Schema.define(version: 20180426063908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -190,6 +190,8 @@ ActiveRecord::Schema.define(version: 20180418134612) do
     t.integer "turf_id"
     t.integer "site_id"
     t.string "relation_type"
+    t.integer "sitable_id"
+    t.string "sitable_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

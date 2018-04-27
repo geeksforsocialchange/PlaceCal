@@ -9,8 +9,12 @@ module Admin
 
     protected
 
-    def secretary_authenticate
-      return if current_user.role == 'secretary'
+    def user_policy
+      UserPolicy.new(current_user, nil)
+    end
+
+    def root_authenticate?
+      return if user_policy.check_root_role? 
       redirect_to admin_root_path
     end
   end

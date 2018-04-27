@@ -1,0 +1,26 @@
+<h2><center>Edit User</center></h2>
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-8">
+    <%= simple_form_for @user, html: { class: "form-horizontal" }, method: :put, url: assign_turf_admin_user_path(@user) do |f| %>
+      <div class="row">
+        <div class="col-md-5">
+          <label>Turfs</label>
+          <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label>Role</label>
+          <%= f.select :role, options_for_select(@roles), class: 'form-control' %>
+        </div>
+      </div>
+      <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
+        <div class="col-md-10"></div>
+        <div class= "col-md-2">
+          <%= f.submit "Update", class: "btn btn-primary " %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

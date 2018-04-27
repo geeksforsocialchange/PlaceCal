@@ -10,7 +10,7 @@ module Superadmin
 
     def authenticate_admin
       # return if ENV['RAILS_ENV'] == 'development'
-      authorized = current_user && (current_user.role.admin?)
+      authorized = current_user && (current_user.role.root?)
       # redirect_to '/', alert: 'Not authorized' unless authorized
     end
 

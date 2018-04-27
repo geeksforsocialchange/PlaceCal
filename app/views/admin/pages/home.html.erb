@@ -12,7 +12,7 @@
       <div class="row">
         <% unless current_user.role.nil? %>
           <h4>Role</h4>
-          <div class="col-md-8"><%= current_user.role.titleize  %></div>
+          <div class="col-md-8"><%= current_user.role.titleize %></div>
         <% end %>
       </div>
       <% if @turfs.exists? %>
@@ -34,29 +34,37 @@
           <div class="row">
             <h3>Partners</h3>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <% @partners.each do |partner| %>
-                <ul >
-                  <li class=""><%= partner.name %></li>
-                </ul>
-              <% end %>
+          <% if @partners.blank? %>
+            <h5>No Partners found</h5>
+          <% else %>
+            <div class="row">
+              <div class="col-md-12">
+                <% @partners.each do |partner| %>
+                  <ul >
+                    <li class=""><%= partner.name %></li>
+                  </ul>
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
         </div>
         <div class="">
           <div class="row">
             <h3>Places</h3>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <% @places.each do |place| %>
-                <ul >
-                  <li class=""><%= place.name %></li>
-                </ul>
-              <% end %>
+          <% if @places.blank? %>
+            <h5>No Places found</h5>
+          <% else %>
+            <div class="row">
+              <div class="col-md-12">
+                <% @places.each do |place| %>
+                  <ul >
+                    <li class=""><%= place.name %></li>
+                  </ul>
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
         </div>
       <% end %>
     </div>

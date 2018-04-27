@@ -8,7 +8,13 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :partners
     resources :places
-    resources :users
+    resources :turfs
+    resources :sites
+    resources :users do
+      member do
+        put :assign_turf
+      end
+    end
     get 'profile' => 'users#profile', :as => 'profile'
     root 'pages#home'
   end
