@@ -8,7 +8,7 @@ class Site < ApplicationRecord
   has_many :sites_turfs
   has_many :secondary_turfs, -> { where(sites_turfs: {relation_type: 'Secondary'})}, source: :turf, through: :sites_turfs
 
-  accepts_nested_attributes_for :sites_turf, update_only: true
+  accepts_nested_attributes_for :sites_turf
   accepts_nested_attributes_for :sites_turfs, :reject_if => lambda { |c| c[:turf_id].blank? } 
 
   validates :name, :slug, :domain, presence: true
