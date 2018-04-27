@@ -17,6 +17,7 @@
       <th>Id</th>
       <th>Name</th>
       <th>Slug</th>
+      <th>Description</th>
       <% if user_policy.check_root_role? %> 
         <th>Action</th>
       <% end %>
@@ -28,6 +29,7 @@
         <td><%= turf.id %></td>
         <td><%= turf.name %></td>
         <td><%= turf.slug %></td>
+        <td><%= turf.description %></td>
         <% if user_policy.allow_edit_turf? %> 
           <td><%= link_to "Edit", edit_admin_turf_path(turf),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
         <% end %>

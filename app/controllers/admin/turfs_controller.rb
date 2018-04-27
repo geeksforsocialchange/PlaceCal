@@ -11,7 +11,7 @@ module Admin
 
     def edit
       authorize current_user, :check_root_role?
-      @turf = Turf.friendly.find(params[:id])
+      @turf = Turf.find(params[:id])
     end
 
     def create 
@@ -24,7 +24,7 @@ module Admin
     end
 
     def update
-      @turf = Turf.friendly.find(params[:id])
+      @turf = Turf.find(params[:id])
       authorize current_user, :check_root_role?
       if @turf.update_attributes(turf_params)
         redirect_to admin_turfs_path

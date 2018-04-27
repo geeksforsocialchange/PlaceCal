@@ -1,8 +1,6 @@
 class Turf < ApplicationRecord
-  extend FriendlyId
   extend Enumerize
   self.table_name = 'turfs'
-  friendly_id :name, use: :slugged
 
   enumerize :turf_type, in: %i[interest neighbourhood]
 
@@ -11,5 +9,6 @@ class Turf < ApplicationRecord
   has_and_belongs_to_many :places
 
   validates :name, :slug, presence: true
+  validates :name, :slug, uniqueness: true
 
 end
