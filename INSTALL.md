@@ -170,3 +170,45 @@ dokku config:set --no-restart APP_NAME DOKKU_LETSENCRYPT_EMAIL=ADMIN_EMAIL
 dokku letsencrypt APP_NAME
 ## Make it auto-renew
 dokku letsencrypt:cron-job --add
+
+#Preventing lack of space issue on server
+#------------------
+## Logrotate docker logs
+
+Create the file `/etc/logrotate.d/docker-container` and add the
+following lines:
+
+```
+/var/lib/docker/containers/*/*.log {
+  rotate 7
+  daily
+  compress
+  size=1M
+  missingok
+  delaycompress
+  copytruncate
+}
+```
+
+You can then test the file with `logrotate -fv
+/etc/logrotate.d/docker-container`.
+
+If the command is successful you should see a file with the suffix
+`[CONTAINER ID]-json.log.1` in the output.
+
+Reference:
+https://sandro-keil.de/blog/2015/03/11/logrotate-for-docker-container/
+
+#Copy database from production to staging (the long way for now)
+#------------------
+##Generate production dump on server
+dokku postgres:export PROD_APP_NAME-db > /tmp/PROD_APP_NAME_production.dump
+##Download from production server and upload to
+In your terminal:
+```
+scp root@PROD_DOMAIN_NAME:/tmp/PROD_APP_NAME_production.dump /path/to/local/dir
+scp /path/to/local/dir/PROD_APP_NAME_production.dump root@STAGING_DOMAIN_NAME:/tmp/PROD_APP_NAME_production.dump
+```
+##Dump into staging datatbase
+dokku postgres:import STAGING_APP_NAME-db <
+/tmp/PROD_APP_NAME_production.dump
