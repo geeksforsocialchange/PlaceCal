@@ -6,10 +6,10 @@
 # you're free to overwrite the RESTful controller actions.
 module Superadmin
   class ApplicationController < Administrate::ApplicationController
-    before_action :authenticate_admin
+    before_action :authenticate_root
 
-    def authenticate_admin
-      authorized = current_user && (current_user.role.root?)
+    def authenticate_root
+      authorized = current_user && current_user.role&.root?
       redirect_to root_path unless authorized
     end
 

@@ -1,21 +1,17 @@
 require 'test_helper'
 
-class AdminPlacesControllerTest < ActionDispatch::IntegrationTest
+class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @place = create(:place)
     host! 'admin.lvh.me'
   end
 
-  test 'admin: should get index' do
-    sign_in create(:admin)
+  it_allows_admin_to_access('get', :index) do
     get admin_places_url
-    assert_response :success
   end
 
-  test "admin: non-admins can't access index" do
-    sign_in create(:user)
+  it_denies_access_to_non_admin('get', :index) do
     get admin_places_url
-    assert_redirected_to admin_root_path
   end
 
   # No show page as we go directly to edit for now
@@ -25,16 +21,12 @@ class AdminPlacesControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :success
   # end
 
-  test 'admin: should get new' do
-    sign_in create(:admin)
+  it_allows_admin_to_access('get', :new) do
     get new_admin_place_url
-    assert_response :success
   end
 
-  test "admin: non-admins can't access new" do
-    sign_in create(:user)
-    get admin_places_url
-    assert_redirected_to admin_root_path
+  it_denies_access_to_non_admin('get', :new) do
+    get new_admin_place_url
   end
 
   test 'admin: should create place' do
