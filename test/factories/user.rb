@@ -16,11 +16,11 @@ FactoryBot.define do
     # Assigning a junk turf/partner to these to check it only works for
     # the specific one assigend in our test
     factory(:turf_admin) do
-      after(:build) { |user| user.turfs = [create(:turf)] }
+      after(:build) { |user| user.turfs << [create(:turf)] }
     end
 
     factory(:partner_admin) do
-      after(:build) { |user| user.turfs = [create(:partner)] }
+      after(:build) { |user| user.turfs << [create(:partner)] }
     end
   end
 end
