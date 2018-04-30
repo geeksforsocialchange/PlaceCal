@@ -1,65 +1,60 @@
 require 'test_helper'
 
 class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
+
   setup do
+    @partner = create(:partner)
     @place = create(:place)
+    @partner.places << @place
+    @turf = create(:turf)
+    @turf.places << @place
+
+    @root = create(:root)
+    @turf_admin = create(:turf_admin)
+    @turf_admin.turfs << @turf
+    @partner_admin  = create(:partner_admin)
+    @partner_admin.partners << @partner
+
     host! 'admin.lvh.me'
   end
 
-  it_allows_admin_to_access('get', :index) do
-    get admin_places_url
+  # Place Index
+  it_allows_access_to(%i[root turf_admin partner_admin], :index) do
+    get admin_place_url
   end
 
-  it_denies_access_to_non_admin('get', :index) do
-    get admin_places_url
-  end
-
-  # No show page as we go directly to edit for now
-  #
-  # test 'admin: should show place' do
-  #   get admin_place_url(@place)
-  #   assert_response :success
-  # end
-
-  it_allows_admin_to_access('get', :new) do
+  # New Place
+  it_allows_access_to(%i[root turf_admin], :new) do
     get new_admin_place_url
   end
 
-  it_denies_access_to_non_admin('get', :new) do
-    get new_admin_place_url
-  end
-
-  test 'admin: should create place' do
-    sign_in create(:admin)
+  # Create Place
+  it_allows_access_to(%i[root turf_admin], :create) do
     assert_difference('Place.count') do
-      post admin_places_url,
-           params: { place: { name: 'Place Name' } }
+      post admin_place_url,
+           params: { place: { name: 'A new place' } }
     end
-    # Redirect to the main place screen
-    assert_redirected_to admin_places_url
   end
 
-  test 'admin: should get edit' do
-    sign_in create(:admin)
+  # Delete Place
+  it_allows_access_to(%i[root turf_admin], :delete) do
+    assert_difference('Place.count', -1) do
+      delete admin_partner_url(@place)
+    end
+
+    assert_redirected_to admin_place_url
+  end
+
+  # Edit Place
+  it_allows_access_to(%i[root turf_admin partner_admin], :edit) do
     get edit_admin_place_url(@place)
-    assert_response :success
   end
 
-  test 'admin: should update place' do
-    sign_in create(:admin)
+  # Update Place
+  it_allows_access_to(%i[root turf_admin partner_admin], :patch) do
     patch admin_place_url(@place),
           params: { place: { name: 'Updated place name' } }
-    # Redirect to main place screen
-    assert_redirected_to admin_places_url
+    # Redirect to main partner screen
+    assert_redirected_to admin_place_url
   end
-
-  # We don't let admins delete from this screen yet
-  #
-  # test 'admin: should destroy place' do
-  #   assert_difference('Partner.count', -1) do
-  #     delete admin_place_url(@place)
-  #   end
-  #
-  #   assert_redirected_to admin_places_url
-  # end
 end

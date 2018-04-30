@@ -3,84 +3,56 @@ require 'test_helper'
 class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @partner = create(:partner)
+    @turf = create(:turf)
+    @turf.partners << @partner
+
+    @root = create(:root)
+    @turf_admin = create(:turf_admin)
+    @turf_admin.turfs << @turf
+    @partner_admin  = create(:partner_admin)
+    @partner_admin.partners << @partner
+
     host! 'admin.lvh.me'
   end
 
-  # Partner Index tests
-  it_allows_access_to(%i[root turf_admin partner_admin], 'get', :index) do
+  # Partner Index
+  it_allows_access_to(%i[root turf_admin partner_admin], :index) do
     get admin_partners_url
   end
 
-  it_denies_access_to(%i[place_admin citizen guest], 'get', :index) do 
-    get admin_partners_url
-  end
-
-  # it_allows_root_to_access('get', :index) do
-  #   get admin_partners_url
-  # end
-  #
-  # it_allows_turf_admin_to_access('get', :index) do
-  #   get admin_partners_url
-  # end
-  #
-  # it_allows_partner_admin_to_access('get', :index) do
-  #   get admin_partners_url
-  # end
-  #
-  # it_denies_access_to_non_admin('get', :index) do
-  #   get admin_partners_url
-  # end
-
-  # No show page as we go directly to edit for now
-  #
-  # test 'admin: should show partner' do
-  #   get admin_partner_url(@partner)
-  #   assert_response :success
-  # end
-
-
-  # New Partner tests
-  it_allows_admin_to_access('get', :new) do
+  # New Partner
+  it_allows_access_to(%i[root turf_admin], :new) do
     get new_admin_partner_url
   end
 
-  it_denies_access_to_non_admin('get', :new) do
-    get new_admin_partner_url
-  end
-
-
-  # Create Partner tests
-  test 'admin: should create partner' do
-    sign_in create(:admin)
+  # Create Partner
+  it_allows_access_to(%i[root turf_admin], :create) do
     assert_difference('Partner.count') do
       post admin_partners_url,
            params: { partner: { name: 'A new partner' } }
     end
-    # Redirect to the main partner screen
+  end
+
+  # Delete Partner
+  it_allows_access_to(%i[root turf_admin], :delete) do
+    assert_difference('Partner.count', -1) do
+      delete admin_partner_url(@partner)
+    end
+
     assert_redirected_to admin_partners_url
   end
 
-  test 'admin: should get edit' do
-    sign_in create(:admin)
+  # Edit Partner
+  it_allows_access_to(%i[root turf_admin partner_admin], :edit) do
     get edit_admin_partner_url(@partner)
-    assert_response :success
   end
 
-  test 'admin: should update partner' do
-    sign_in create(:admin)
+  # Update Partner
+  it_allows_access_to(%i[root turf_admin partner_admin], :patch) do
     patch admin_partner_url(@partner),
           params: { partner: { name: 'Updated partner name' } }
     # Redirect to main partner screen
     assert_redirected_to admin_partners_url
   end
 
-  # We don't let admins delete from this screen yet
-  #
-  # test 'admin: should destroy partner' do
-  #   assert_difference('Partner.count', -1) do
-  #     delete admin_partner_url(@partner)
-  #   end
-  #
-  #   assert_redirected_to admin_partners_url
-  # end
 end

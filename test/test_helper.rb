@@ -10,6 +10,13 @@ Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
+  # TODO: make all tests default to :get?
+
+  # Usage:
+  #
+  # it_allows_access_to(%i[root turf_admin partner_admin place_admin citizen guest], :new) do
+  # end
+
   # Can a Root User access this action?
   def self.it_allows_root_to_access(action, method, &block)
     test "root: should #{action} #{method}" do
@@ -58,6 +65,12 @@ class ActiveSupport::TestCase
       instance_exec(&block) if block
       assert_redirected_to root_path
     end
+  end
+
+  private
+
+  def user_roles
+    %i[root turf_admin partner_admin place_admin citizen guest]
   end
 
 end
