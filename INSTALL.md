@@ -1,60 +1,96 @@
 # Creating a Digital Ocean droplet running Rails + Postgres with persistant storage and https
-#--------------------------------------------------------------------------------------------
 
-# For your ctrl-D pleasure...
-# SERVER_IP
-# APP_NAME
-# RAILS_SECRET (generate with `rails secret`)
-# ADMIN_EMAIL
+For your ctrl-D pleasure...
 
+```
+SERVER_IP
+APP_NAME
+RAILS_SECRET (generate with `rails secret`)
+ADMIN_EMAIL
+```
 
-# Create and configure droplet
-#-----------------------------
+## Create and configure droplet
 
-## Sign in and update
+### Sign in and update
+
+```
 ssh root@SERVER_IP
 apt-get update && apt-get upgrade
-## Optionally add your locale
-locale-gen en_GB en_GB.UTF-8
-dpkg-reconfigure locales 
-## Optionally add Imagemagick if we know we are going to be using it
-apt install imagemagick libmagickwand-dev
+```
 
-## Create a swap if you're using a cheapo box ($5 tier)
+### Optionally add your locale
+
+```
+locale-gen en_GB en_GB.UTF-8
+dpkg-reconfigure locales
+```
+
+### Optionally add Imagemagick if we know we are going to be using it
+
+```
+apt install imagemagick libmagickwand-dev
+```
+
+### Create a swap if you're using a cheapo box ($5 tier)
+
+```
 fallocate -l 2048m /mnt/swap_file.swap
 chmod 600 /mnt/swap_file.swap
 mkswap /mnt/swap_file.swap
 swapon /mnt/swap_file.swap
 echo "/mnt/swap_file.swap none swap sw 0 0" >> /etc/fstab
+```
 
-# Create a Dokku app and addons
-#------------------------------
+## Create a Dokku app and addons
 
-## Go to http://SERVER_IP and add a domain name (if you don't it seems to go weird: use a junk one if needed)
+### Go to http://SERVER_IP and add a domain name (if you don't it seems to go weird: use a junk one if needed)
+
+```
 dokku apps:create APP_NAME
-## Add postgresql
+```
+
+### Add postgresql
+
+```
 dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
 dokku postgres:create APP_NAME-db
 dokku postgres:link APP_NAME-db APP_NAME
-## Increase the timeout as initial setup can take a while
+```
+
+### Increase the timeout as initial setup can take a while
+
+```
 dokku config:set APP_NAME CURL_CONNECT_TIMEOUT=30 CURL_TIMEOUT=300
 dokku config APP_NAME
+```
 
-## Add persistent storage
-### http://dokku.viewdocs.io/dokku~v0.10.3/advanced-usage/persistent-storage/
-### Paperclip defaults to: /public/system/uploads
+### Add persistent storage
+
+[Guide](http://dokku.viewdocs.io/dokku~v0.10.3/advanced-usage/persistent-storage/)
+
+Paperclip defaults to: `/public/system/uploads`
+
+```
 mkdir /var/lib/dokku/data/storage/APP_NAME
 chown dokku.dokku /var/lib/dokku/data/storage/APP_NAME
-### /app comes from the Dockerfile location for the container (see below)
+```
+
+`/app` comes from the Dockerfile location for the container (see below)
+
+```
 dokku storage:mount APP_NAME /var/lib/dokku/data/storage/APP_NAME/public/system:/app/public/system
 dokku ps:rebuild APP_NAME
-### To have a look at the file structure if you get lost: dokku enter APP_NAME
+```
+
+To have a look at the file structure if you get lost: `dokku enter APP_NAME`
 
 
-# Local config
-#-------------
+## Local config
 
-## Create app.json in Rails root
+
+### Create app.json in Rails root
+
+```
 {
   "name": "APP_NAME",
   "description": "App Description",
@@ -68,22 +104,24 @@ dokku ps:rebuild APP_NAME
     }
   }
 }
+```
 
-## If creating non production environment e.g. staging
+## For non-production environments e.g. staging
 
-### Update config/secrets.yml
+Update `config/secrets.yml`
+
 ```
 staging:
   secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
 ```
 
-### Add environment file to config/environments folder
- 
+Add environment file to `config/environments` folder
+
 `cp config/environments/production.rb config/environments/staging.rb`
 
 Be sure to make any relevant changes to the file
 
-## To automate deploy with Travis for production and non-production environments (e.g staging)
+## Travis deployment for production and staging environment
 
 ```
 mkdir .travis/ #if doesn't exist
@@ -92,7 +130,7 @@ ssh-keygen -t rsa -b 4096 -f ENV_KEY_NAME
 cat KEY_NAME | ssh root@DOMAIN_NAME dokku ssh-keys:add ENV_KEY_NAME
 ```
 
-Be sure to add `.travis/*.key` and `.travis/*key.pub` to .gitignore
+Be sure to add `.travis/*.key` and `.travis/*key.pub` to `.gitignore`
 
 Then:
 
@@ -105,6 +143,7 @@ travis encrypt-file ENV_KEY_NAME --add
 This encrypts the key, creates an entry in `before_install` in .travis.yml, and adds two variables in the travis environment with the decryption keys. Repeat for each environement. Be sure to make a note of the encrypted key and encrypted key iv variables added to travis environment.
 
 Modify your travis.yml to the template below.
+
 ```
 env:
   globalss
@@ -158,25 +197,33 @@ git push deploy master #or BRANCH_NAME:master if deploying a non-master branch
 Commit, push to repo, and merge into the branch when ready.
 
 ## Set production environment variables
-### Can generate a key with `rails secret`
-dokku config:set APP_NAME RAILS_ENV=production SECRET_KEY_BASE=RAILS_SECRET RAILS_SERVE_STATIC_FILES=true
+
+You can fenerate a key with `rails secret`
+
+`dokku config:set APP_NAME RAILS_ENV=production SECRET_KEY_BASE=RAILS_SECRET RAILS_SERVE_STATIC_FILES=true`
 
 
-# Add Let's Encrypt
-#------------------
+## Add Let's Encrypt
+
 ## When site is accessible and DNS set up, we can set up https
+
+```
 dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
 dokku config:set --no-restart APP_NAME DOKKU_LETSENCRYPT_EMAIL=ADMIN_EMAIL
 dokku letsencrypt APP_NAME
+```
+
 ## Make it auto-renew
+
+```
 dokku letsencrypt:cron-job --add
+```
 
-#Preventing lack of space issue on server
-#------------------
-## Logrotate docker logs
+## Log rotate docker logs
 
-Create the file `/etc/logrotate.d/docker-container` and add the
-following lines:
+This can cause space issues if you don't do it
+
+Create the file `/etc/logrotate.d/docker-container` and add the following lines:
 
 ```
 /var/lib/docker/containers/*/*.log {
@@ -196,19 +243,26 @@ You can then test the file with `logrotate -fv
 If the command is successful you should see a file with the suffix
 `[CONTAINER ID]-json.log.1` in the output.
 
-Reference:
-https://sandro-keil.de/blog/2015/03/11/logrotate-for-docker-container/
+[Reference](https://sandro-keil.de/blog/2015/03/11/logrotate-for-docker-container/)
 
-#Copy database from production to staging (the long way for now)
-#------------------
-##Generate production dump on server
-dokku postgres:export PROD_APP_NAME-db > /tmp/PROD_APP_NAME_production.dump
-##Download from production server and upload to
+## Copy database from production to staging (the long way for now)
+
+### Generate production dump on server
+
+`dokku postgres:export PROD_APP_NAME-db > /tmp/PROD_APP_NAME_production.dump`
+
+### Download from production server and upload to
+
 In your terminal:
+
 ```
 scp root@PROD_DOMAIN_NAME:/tmp/PROD_APP_NAME_production.dump /path/to/local/dir
 scp /path/to/local/dir/PROD_APP_NAME_production.dump root@STAGING_DOMAIN_NAME:/tmp/PROD_APP_NAME_production.dump
 ```
-##Dump into staging datatbase
+
+### Dump into staging datatbase
+
+```
 dokku postgres:import STAGING_APP_NAME-db <
 /tmp/PROD_APP_NAME_production.dump
+```
