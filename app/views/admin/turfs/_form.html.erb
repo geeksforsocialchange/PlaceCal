@@ -27,12 +27,35 @@
           <%= f.text_area :description, class: "form-control" %>
         </div>
       </div>
+      <% unless @turf.new_record? %>
+        <label style="margin-top: 20px;">Partners</label>
+        <% unless @partners.empty? %>
+          <ul>
+            <% @partners.each do |partner| %>
+              <li><%= partner.name %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <h5>No partners yet</h5>
+        <% end %>
+        <label>Places</label>
+        <% unless @places.empty? %>
+          <ul>
+            <% @places.each do |place| %>
+              <li><%= place.name %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <h5>No places yet</h5>
+        <% end %>
+      <% end %>
       <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
         <div class="col-md-10"></div>
         <div class= "col-md-2">
           <%= f.submit "Save", class: "btn btn-primary " %>
         </div>
       </div>
+
     <% end %>
   </div>
 </div>

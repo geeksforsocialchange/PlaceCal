@@ -12,6 +12,8 @@ module Admin
     def edit
       authorize current_user, :check_root_role?
       @turf = Turf.find(params[:id])
+      @partners = @turf.partners
+      @places = @turf.places
     end
 
     def create 

@@ -24,7 +24,7 @@
               <div class="col-md-12">
                 <% @turfs.each do |turf| %>
                   <ul class="">
-                    <li class=""><%= turf.name %></li>
+                    <li class=""><%= link_to "#{turf.name}", edit_admin_turf_path(turf),  data: { turbolinks: false }%></li>
                   </ul>
                 <% end %>
               </div>
@@ -41,7 +41,7 @@
               <div class="col-md-12">
                 <% @partners.each do |partner| %>
                   <ul >
-                    <li class=""><%= partner.name %></li>
+                    <li class=""><%= link_to "#{partner.name}", edit_admin_partner_path(partner),  data: { turbolinks: false }%></li>
                   </ul>
                 <% end %>
               </div>
@@ -59,7 +59,7 @@
               <div class="col-md-12">
                 <% @places.each do |place| %>
                   <ul >
-                    <li class=""><%= place.name %></li>
+                    <li class=""><%= link_to "#{place.name}", edit_admin_place_path(place),  data: { turbolinks: false }%></li>
                   </ul>
                 <% end %>
               </div>
