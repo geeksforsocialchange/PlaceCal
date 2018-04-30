@@ -1,7 +1,7 @@
 # app/models/user.rb
 class User < ApplicationRecord
   extend Enumerize
-  enumerize :role, in: %i[root moderator partner secretary]
+  enumerize :role, in: %i[root]
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable
