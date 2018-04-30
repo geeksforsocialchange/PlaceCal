@@ -6,13 +6,30 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
     host! 'admin.lvh.me'
   end
 
-  it_allows_admin_to_access('get', :index) do
+  # Partner Index tests
+  it_allows_access_to(%i[root turf_admin partner_admin], 'get', :index) do
     get admin_partners_url
   end
 
-  it_denies_access_to_non_admin('get', :index) do
+  it_denies_access_to(%i[place_admin citizen guest], 'get', :index) do 
     get admin_partners_url
   end
+
+  # it_allows_root_to_access('get', :index) do
+  #   get admin_partners_url
+  # end
+  #
+  # it_allows_turf_admin_to_access('get', :index) do
+  #   get admin_partners_url
+  # end
+  #
+  # it_allows_partner_admin_to_access('get', :index) do
+  #   get admin_partners_url
+  # end
+  #
+  # it_denies_access_to_non_admin('get', :index) do
+  #   get admin_partners_url
+  # end
 
   # No show page as we go directly to edit for now
   #
@@ -21,6 +38,8 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :success
   # end
 
+
+  # New Partner tests
   it_allows_admin_to_access('get', :new) do
     get new_admin_partner_url
   end
@@ -29,6 +48,8 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
     get new_admin_partner_url
   end
 
+
+  # Create Partner tests
   test 'admin: should create partner' do
     sign_in create(:admin)
     assert_difference('Partner.count') do
