@@ -1,5 +1,10 @@
 class PagesController < ApplicationController
+  before_action :get_home_turf, only: [:site]
+
   def home
+  end
+
+  def site
   end
 
   def robots
@@ -7,7 +12,4 @@ class PagesController < ApplicationController
     render plain: robots
   end
   
-  def turf
-    @turf = Turf.where(slug: request.subdomain).first
-  end
 end

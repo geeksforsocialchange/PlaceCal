@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405122710) do
+ActiveRecord::Schema.define(version: 20180427122852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -175,6 +175,25 @@ ActiveRecord::Schema.define(version: 20180405122710) do
     t.bigint "turf_id", null: false
     t.index ["place_id", "turf_id"], name: "index_places_turfs_on_place_id_and_turf_id"
     t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
+  end
+
+  create_table "sites", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.string "domain"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "sites_turfs", force: :cascade do |t|
+    t.integer "turf_id"
+    t.integer "site_id"
+    t.string "relation_type"
+    t.integer "sitable_id"
+    t.string "sitable_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "turfs", force: :cascade do |t|

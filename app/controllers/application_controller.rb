@@ -49,6 +49,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def get_home_turf
+    @site = Site.where(slug: request.subdomain).first
+    @home_turf = @site.primary_turf
+  end
+
   # Takes an array of places or addresses and returns a sanitized json array
   def generate_points(obj)
     obj.reduce([]) do |arr, o|

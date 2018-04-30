@@ -38,6 +38,10 @@ class ApplicationPolicy
     @user.role && @user.role.secretary? ? true : false
   end
 
+  def root?
+    @user.role && @user.role.root? ? true : false
+  end
+
   def scope
     Pundit.policy_scope!(user, record.class)
   end

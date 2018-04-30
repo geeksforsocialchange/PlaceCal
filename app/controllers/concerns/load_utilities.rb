@@ -3,7 +3,11 @@ module LoadUtilities
 
   included do
     def turfs
-       @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
+      if user_policy.check_root_role? 
+        @turfs = Turf.all
+      else
+        @turfs = current_user.turfs
+      end
     end
   end
 end

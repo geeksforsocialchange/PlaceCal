@@ -114,4 +114,14 @@ end
 u.turfs << Turf.first
 u.turfs << Turf.last
 
+s = Site.where(name: 'Hulme', 
+              domain: 'hulme.placecal.org', 
+              description: 'Hulme').first_or_create
+s.sites_turfs.create(turf_id: Turf.first.id, relation_type: "primary")
+
+s1 = Site.where(name: 'South', 
+              domain: 'south.placecal.org', 
+              description: 'south').first_or_create
+s1.sites_turfs.create(turf_id: Turf.first.id, relation_type: "secondary")
+s1.sites_turfs.create(turf_id: Turf.last.id, relation_type: "secondary")
 

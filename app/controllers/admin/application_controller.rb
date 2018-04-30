@@ -9,9 +9,5 @@ module Admin
 
     protected
 
-    def secretary_authenticate
-      return if current_user && current_user.role&.secretary?
-      redirect_to admin_root_path
-    end
   end
 end

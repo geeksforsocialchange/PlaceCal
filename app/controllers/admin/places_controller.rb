@@ -2,16 +2,14 @@ module Admin
   class PlacesController < Admin::ApplicationController
     include LoadUtilities
 
-    before_action :secretary_authenticate
     before_action :turfs, only: [:new, :create, :edit]
 
     def index
-      @places = Place.all.order(:name)
+      @places = policy_scope(Place)
     end
 
     def new
       @place = Place.new 
-      @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
     end
 
     def create
@@ -25,7 +23,6 @@ module Admin
 
     def edit
       @place = Place.friendly.find(params[:id])
-      @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
     end
 
     def update
