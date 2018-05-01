@@ -15,7 +15,7 @@ ADMIN_EMAIL
 
 ```
 ssh root@SERVER_IP
-apt-get update && apt-get upgrade
+apt update && apt upgrade
 ```
 
 ### Optionally add your locale
@@ -43,15 +43,14 @@ echo "/mnt/swap_file.swap none swap sw 0 0" >> /etc/fstab
 
 ## Create a Dokku app and addons
 
-### Go to http://SERVER_IP and add a domain name (if you don't it seems to go weird: use a junk one if needed)
+### Add a domain name (mandatory)
+
+Go to http://SERVER_IP and add a domain name (if you don't it seems to go weird: use a junk one if needed)
+
+### Create the app and database
 
 ```
 dokku apps:create APP_NAME
-```
-
-### Add postgresql
-
-```
 dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
 dokku postgres:create APP_NAME-db
 dokku postgres:link APP_NAME-db APP_NAME
@@ -106,7 +105,18 @@ To have a look at the file structure if you get lost: `dokku enter APP_NAME`
 }
 ```
 
-## For non-production environments e.g. staging
+## No CI
+
+If you don't want CI you can skip to "Set production environment variables" and just do this.
+
+```
+git remote add dokku dokku@SERVER_IP:APP_NAME
+git push dokku master
+```
+
+## Fancy pants staging/prod/CI etc
+
+### For non-production environments e.g. staging
 
 Update `config/secrets.yml`
 
@@ -121,7 +131,7 @@ Add environment file to `config/environments` folder
 
 Be sure to make any relevant changes to the file
 
-## Travis deployment for production and staging environment
+### Travis deployment for production and staging environment
 
 ```
 mkdir .travis/ #if doesn't exist
@@ -203,23 +213,20 @@ You can fenerate a key with `rails secret`
 `dokku config:set APP_NAME RAILS_ENV=production SECRET_KEY_BASE=RAILS_SECRET RAILS_SERVE_STATIC_FILES=true`
 
 
-## Add Let's Encrypt
+## Nice extras
 
-## When site is accessible and DNS set up, we can set up https
+### Let's Encrypt
+
+When site is accessible and DNS set up, we can set up https
 
 ```
 dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
 dokku config:set --no-restart APP_NAME DOKKU_LETSENCRYPT_EMAIL=ADMIN_EMAIL
 dokku letsencrypt APP_NAME
-```
-
-## Make it auto-renew
-
-```
 dokku letsencrypt:cron-job --add
 ```
 
-## Log rotate docker logs
+### Log rotate docker logs
 
 This can cause space issues if you don't do it
 
