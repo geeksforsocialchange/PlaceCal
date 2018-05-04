@@ -6,19 +6,4 @@ class UserPolicy < ApplicationPolicy
     @record = record
   end
 
-  def check_root_role?
-    @user.role? && @user.role.root?
-  end
-
-  def allow_edit_turf?
-    @user.role? && @user.role.root?
-  end
-
-  def check_secretary_role?
-    @user.role? && @user.role.secretary?
-  end
-
-  def check_role?
-    @user.role? && (@user.role.secretary? || @user.role.root?)
-  end
 end

@@ -1,4 +1,32 @@
 class PartnerPolicy < ApplicationPolicy
+  def index?
+    true
+  end
+
+  def show?
+    scope.where(:id => record.id).exists?
+  end
+
+  def create?
+    !user.partner_admin?
+  end
+
+  def new?
+    create?
+  end
+
+  def update?
+    index?
+  end
+
+  def edit?
+    index?
+  end
+
+  #def destroy?
+  #  index?
+  #end
+
   class Scope < Scope
     def resolve
       if user.role.root?

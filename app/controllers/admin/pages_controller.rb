@@ -2,7 +2,7 @@ module Admin
   class PagesController < Admin::ApplicationController
 
     def home
-      if user_policy.check_root_role?
+      if user.root?
         @turfs = Turf.all.order(:name)
         @partners = Partner.all.order(:name)
         @places = Place.all.order(:name)

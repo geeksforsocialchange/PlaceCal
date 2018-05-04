@@ -4,7 +4,15 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
 
+  include Pundit
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
   private
+
+  def user_not_authorized
+    redirect_to admin_root_path
+  end
 
   # Set the day either using the URL or by today's date
   def set_day

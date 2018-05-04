@@ -2,7 +2,6 @@
 
 module Admin
   class PartnersController < Admin::ApplicationController
-    include LoadUtilities
 
     before_action :turfs, only: %i[new create edit]
 
@@ -12,10 +11,12 @@ module Admin
 
     def new
       @partner = Partner.new
+      authorize @partner
     end
 
     def create
       @partner = Partner.new(partner_params)
+      authorize @partner
       if @partner.save
         redirect_to admin_partners_path
       else
@@ -25,10 +26,12 @@ module Admin
 
     def edit
       @partner = Partner.friendly.find(params[:id])
+      authorize @partner
     end
 
     def update
       @partner = Partner.friendly.find(params[:id])
+      authorize @partner
       if @partner.update_attributes(partner_params)
         redirect_to admin_partners_path
       else

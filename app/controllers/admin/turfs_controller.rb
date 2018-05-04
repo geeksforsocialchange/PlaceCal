@@ -10,13 +10,13 @@ module Admin
     end
 
     def edit
-      authorize current_user, :check_root_role?
       @turf = Turf.find(params[:id])
+      authorize @turf
       @partners = @turf.partners
       @places = @turf.places
     end
 
-    def create 
+    def create
       @turf = Turf.new(turf_params)
       if @turf.save
         redirect_to admin_turfs_path
@@ -27,7 +27,7 @@ module Admin
 
     def update
       @turf = Turf.find(params[:id])
-      authorize current_user, :check_root_role?
+      authorize @turf
       if @turf.update_attributes(turf_params)
         redirect_to admin_turfs_path
       else
@@ -38,7 +38,7 @@ module Admin
     private
 
     def turf_params
-      params.require(:turf).permit(:name, :slug, :description, :turf_type) 
+      params.require(:turf).permit(:name, :slug, :description, :turf_type)
     end
 
   end

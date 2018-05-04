@@ -10,67 +10,35 @@ Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
-  # TODO: make all tests default to :get?
-
   # Usage:
   #
-  # it_allows_access_to(%i[root turf_admin partner_admin place_admin citizen guest], :new) do
+  # it_allows_access_to_action_for(%i[root turf_admin partner_admin place_admin citizen guest]) do
   # end
 
-  # Can a Root User access this action?
-  def self.it_allows_root_to_access(action, method, &block)
-    test "root: should #{action} #{method}" do
-      sign_in create(:root)
-      instance_exec(&block) if block
-      assert_response :success
-    end
-  end
+  [:index, :show, :new, :edit, :create, :update, :destroy].each do |action|
+    define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
+      users.each do |user|
+        test "#{user}: can #{action}" do
+          variable = instance_variable_get("@#{user}")
 
-  # Can a User that is assigned to a controlling Turf access this action?
-  def self.it_allows_turf_admin_to_access(action, method, &block)
-    test "turf admin: should #{action} #{method}" do
-      sign_in create(:turf_admin)
-      instance_exec(&block) if block
-      assert_response :success
-    end
-  end
+          sign_in variable
 
-  # Can a User that is assigned to a controlling Partner access this action?
-  def self.it_allows_partner_admin_to_access(action, method, &block)
-    test "partner admin: should #{action} #{method}" do
-      sign_in create(:partner_admin)
-      instance_exec(&block) if block
-      assert_response :success
+          instance_exec(&block) if block
+        end
+      end
     end
-  end
 
-  # Can a User that is assigned to a controlling Place access this action?
-  def self.it_allows_place_admin_to_access(action, method, &block)
-    test "place admin: should #{action} #{method}" do
-      sign_in create(:place_admin)
-      instance_exec(&block) if block
-      assert_response :success
+    define_singleton_method(:"it_denies_access_to_#{action}_for") do |users, &block|
+      users.each do |user|
+        test "#{user} : cannot #{action}" do
+          variable = instance_variable_get("@#{user}")
+
+          sign_in variable
+
+          instance_exec(&block) if block
+        end
+      end
     end
-  end
-
-  # Can a non-root non-admin user *not* access this action?
-  def self.it_denies_access_to_non_root(action, method, &block)
-    test "non-root: can't#{action} #{method}" do
-       sign_in create(:user)
-       instance_exec(&block) if block
-       assert_redirected_to root_path
-    end
-    test "admin: can't #{action} #{method}" do
-      sign_in create(:admin)
-      instance_exec(&block) if block
-      assert_redirected_to root_path
-    end
-  end
-
-  private
-
-  def user_roles
-    %i[root turf_admin partner_admin place_admin citizen guest]
   end
 
 end

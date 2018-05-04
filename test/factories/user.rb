@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory(:citizen) do
+  factory(:user) do
     first_name 'Place'
     last_name 'Cal'
     password 'password'
@@ -16,11 +16,11 @@ FactoryBot.define do
     # Assigning a junk turf/partner to these to check it only works for
     # the specific one assigend in our test
     factory(:turf_admin) do
-      after(:build) { |user| user.turfs << [create(:turf)] }
+      role 'turf_admin'
     end
 
     factory(:partner_admin) do
-      after(:build) { |user| user.turfs << [create(:partner)] }
+      role 'partner_admin'
     end
   end
 end

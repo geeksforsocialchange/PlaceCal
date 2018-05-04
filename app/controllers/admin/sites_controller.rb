@@ -20,7 +20,7 @@ module Admin
       @sites_turfs = @site.secondary_turfs.pluck(:id)
     end
 
-    def create 
+    def create
       @site = Site.new(site_params)
       if @site.save
         redirect_to admin_sites_path
@@ -42,13 +42,13 @@ module Admin
 
     def site_params
       params.require(:site).permit(
-        :name, 
-        :slug, 
-        :description, 
-        :domain, 
-        sites_turfs_attributes: %i[turf_id relation_type], 
+        :name,
+        :slug,
+        :description,
+        :domain,
+        sites_turfs_attributes: %i[turf_id relation_type],
         sites_turf_attributes: %i[turf_id relation_type]
-      ) 
+      )
     end
   end
 end
