@@ -270,6 +270,5 @@ scp /path/to/local/dir/PROD_APP_NAME_production.dump root@STAGING_DOMAIN_NAME:/t
 ### Dump into staging datatbase
 
 ```
-dokku postgres:import STAGING_APP_NAME-db <
-/tmp/PROD_APP_NAME_production.dump
+dokku postgres:import STAGING_APP_NAME-db < /tmp/PROD_APP_NAME_production.dump
 ```
