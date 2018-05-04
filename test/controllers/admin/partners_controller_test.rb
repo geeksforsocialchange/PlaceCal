@@ -21,15 +21,18 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   # Partner Index
   it_allows_access_to_index_for(%i[root turf_admin partner_admin]) do
     get admin_partners_url
+    assert_response :success
   end
 
   # New Partner
   it_allows_access_to_new_for(%i[root turf_admin]) do
     get new_admin_partner_url
+    assert_response :success
   end
 
   it_denies_access_to_new_for(%i[partner_admin]) do
     assert_redirected_to admin_root_path
+    assert_response :success
   end
 
 
@@ -45,6 +48,7 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   # Edit Partner
   it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
     get edit_admin_partner_url(@partner)
+    assert_response :success
   end
 
 
