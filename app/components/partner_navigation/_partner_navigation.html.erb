@@ -4,11 +4,10 @@
       <%= link_to "PlaceCal", admin_root_path, class: "navbar-brand" %>
     </div>
     <ul class="nav navbar-nav">
-      <% if current_user.role.root? %>
+      <% if current_user&.role&.root? %>
         <li class="<%= current_page?(admin_users_path) ? 'active' : '' %>"><%= link_to "Users", admin_users_path  %></li>
         <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Sites", admin_sites_path  %></li>
         <li class="<%= current_page?(admin_turfs_path) ? 'active' : '' %>"><%= link_to "Turfs", admin_turfs_path  %></li>
-      <% else %>
         <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Partners", admin_partners_path  %></li>
         <li class="<%= current_page?(admin_places_path) ? 'active' : '' %>"><%= link_to "Places", admin_places_path  %></li>
       <% end %>

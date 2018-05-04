@@ -1,16 +1,16 @@
 <div class="row">
   <div class="col-md-10">
-    <h2>Turfs List</h2> 
+    <h2>Turfs List</h2>
   </div>
   <div class="col-md-2">
-    <% if current_user.root.role? %> 
+    <% if current_user.role.root? %> 
       <%= link_to "Add New Turf", new_admin_turf_path, data: { turbolinks: false }, class: "btn btn-primary " %>
       <% end %>
-  </div>  
+  </div>
 </div>
 <% if @turfs.blank? %>
   <h3>You have no turfs assigned.</h3>
-<% else %>      
+<% else %>
   <table class="table table-striped">
   <thead>
     <tr>
@@ -18,7 +18,7 @@
       <th>Name</th>
       <th>Slug</th>
       <th>Description</th>
-      <% if current_user.role.root? %> 
+      <% if current_user.role.root? %>
         <th>Action</th>
       <% end %>
     </tr>
@@ -30,7 +30,7 @@
         <td><%= turf.name %></td>
         <td><%= turf.slug %></td>
         <td><%= turf.description %></td>
-        <% if user_policy.allow_edit_turf? %> 
+        <% if user_policy.allow_edit_turf? %>
           <td><%= link_to "Edit", edit_admin_turf_path(turf),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
         <% end %>
       </tr>
