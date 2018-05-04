@@ -21,13 +21,13 @@ class SuperadminUsersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('User.count') do
       post superadmin_users_url,
-        params: { user: { name: 'Test User' } }
+        params: { user: attributes_for(:user) }
     end
   end
 
   it_allows_access_to_update_for(%i[root]) do
     patch superadmin_user_url(@user),
-      params: { user: { name: 'New Test User Name' } }
+      params: { user: attributes_for(:user) }
   end
 
   it_allows_access_to_destroy_for(%i[root]) do

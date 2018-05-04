@@ -30,12 +30,6 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  it_denies_access_to_new_for(%i[partner_admin]) do
-    assert_redirected_to admin_root_path
-    assert_response :success
-  end
-
-
   # Create Partner
   it_allows_access_to_create_for(%i[root turf_admin]) do
     assert_difference('Partner.count') do
@@ -43,7 +37,6 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
            params: { partner: { name: 'A new partner' } }
     end
   end
-
 
   # Edit Partner
   it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
