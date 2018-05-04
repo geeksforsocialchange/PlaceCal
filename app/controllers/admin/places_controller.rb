@@ -1,7 +1,7 @@
 module Admin
   class PlacesController < Admin::ApplicationController
-
-    before_action :turfs, only: [:new, :create, :edit]
+    include LoadUtilities
+    before_action :set_turfs, only: [:new, :create, :edit]
 
     def index
       @places = policy_scope(Place)
@@ -39,7 +39,7 @@ module Admin
 
     private
       def place_params
-        params.require(:place).permit(:name, :short_description, :phone, :url, :address_id, :email, :status, :booking_info, :opening_times, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode, :_destroy ], :turf_ids => [])  
+        params.require(:place).permit(:name, :short_description, :phone, :url, :address_id, :email, :status, :booking_info, :opening_times, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode, :_destroy ], :turf_ids => [])
       end
 
   end

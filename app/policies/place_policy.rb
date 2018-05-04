@@ -33,7 +33,6 @@ class PlacePolicy < ApplicationPolicy
         scope.all
       else
         scope.joins(:turfs).where(turfs: { id: user.turfs }).distinct
-      else
       end
     end
   end

@@ -20,7 +20,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
 
   # Place Index
   it_allows_access_to_index_for(%i[root turf_admin partner_admin]) do
-    get admin_place_url
+    get admin_places_url
   end
 
   # New Place
@@ -35,7 +35,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   # Create Place
   it_allows_access_to_create_for(%i[root turf_admin]) do
     assert_difference('Place.count') do
-      post admin_place_url,
+      post admin_places_url,
            params: { place: { name: 'A new place' } }
     end
   end

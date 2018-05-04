@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :turf do
-    name Faker::Address.city
+    sequence(:name) do |n|
+      "Hulme #{n}"
+    end
     slug { name.parameterize }
   end
 end

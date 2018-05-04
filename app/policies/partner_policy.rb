@@ -8,7 +8,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def create?
-    !user.partner_admin?
+    !user.role.partner_admin?
   end
 
   def new?

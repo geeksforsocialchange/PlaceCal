@@ -82,7 +82,6 @@ GEM
       sass (>= 3.3.4)
     builder (3.2.3)
     byebug (10.0.2)
-    cancancan (2.2.0)
     capybara (2.18.0)
       addressable
       mini_mime (>= 0.1.3)
@@ -449,7 +448,6 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 3.3.7)
   byebug
-  cancancan
   carrierwave
   coffee-rails (~> 4.2)
   delayed_job_active_record

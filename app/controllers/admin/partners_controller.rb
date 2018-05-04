@@ -2,8 +2,8 @@
 
 module Admin
   class PartnersController < Admin::ApplicationController
-
-    before_action :turfs, only: %i[new create edit]
+    include LoadUtilities
+    before_action :set_turfs, only: %i[new create edit]
 
     def index
       @partners = policy_scope(Partner)

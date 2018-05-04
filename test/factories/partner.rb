@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory(:partner) do
-    name Faker::Company.name
+    sequence(:name) do |n|
+      "Hulme Garden Center #{n}"
+    end
     # admin_email nil
     # admin_name nil
     # image nil
