@@ -18,7 +18,7 @@ module Admin
       authorize @place
       respond_to do |format|
         if @place.save
-          format.html { redirect_to admin_places_path, notice: 'Place was successfully created.' }
+          format.html { redirect_to admin_places_url, notice: 'Place was successfully created.' }
           format.json { render :show, status: :created, location: @place }
         else
           format.html { render :new }

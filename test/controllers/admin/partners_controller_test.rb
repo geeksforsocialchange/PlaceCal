@@ -2,26 +2,34 @@ require 'test_helper'
 
 class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
-   @partner = create(:partner)
-   @turf = @partner.turfs.first
+    @partner = create(:partner)
+    @turf = @partner.turfs.first
 
-   @root = create(:root)
-   #TODO: Consider non-admin and non-root users
-   #@user = create(:user)
+    @root = create(:root)
+    @citizen = create(:user)
 
-   @turf_admin = create(:turf_admin)
-   @turf_admin.turfs << @turf
+    @turf_admin = create(:turf_admin)
+    @turf_admin.turfs << @turf
 
-   @partner_admin  = create(:partner_admin)
-   @partner_admin.partners << @partner
+    @partner_admin  = create(:partner_admin)
+    @partner_admin.partners << @partner
 
     host! 'admin.lvh.me'
   end
 
   # Partner Index
-  it_allows_access_to_index_for(%i[root turf_admin partner_admin]) do
+  it_allows_access_to_index_for(%i[root turf_admin]) do
     get admin_partners_url
     assert_response :success
+    # Returns one entry in the table
+    assert_select 'tbody tr', 1
+  end
+
+  it_allows_access_to_index_for(%i[partner_admin citizen]) do
+    get admin_partners_url
+    assert_response :success
+    # Nothing to show in the table
+    assert_select 'tbody tr', 0
   end
 
   # New Partner

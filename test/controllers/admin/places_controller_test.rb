@@ -10,24 +10,39 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     @turf.places << @place
 
     @root = create(:root)
-    @turf_admin = create(:turf_admin)
-    @partner_admin = create(:partner_admin)
-    #TODO: Consider non-admin and non-root users
-    #@user = create(:user)
+    @turf_admin = create(:user)
+    @turf_admin.turfs << @turf
+    @partner_admin = create(:user)
+    @partner_admin.partners << @partner
+    @citizen = create(:user)
 
     host! 'admin.lvh.me'
   end
 
   # Place Index
-  it_allows_access_to_index_for(%i[root turf_admin partner_admin]) do
+  it_allows_access_to_index_for(%i[root turf_admin]) do
     get admin_places_url
     assert_response :success
+    # Returns one entry in the table
+    assert_select 'tbody tr', 1
+  end
+
+  it_allows_access_to_index_for(%i[citizen]) do
+    get admin_places_url
+    assert_response :success
+    # Returns one entry in the table
+    assert_select 'tbody tr', 0
   end
 
   # New Place
   it_allows_access_to_new_for(%i[root turf_admin]) do
     get new_admin_place_url
     assert_response :success
+  end
+
+  it_denies_access_to_new_for(%i[citizen]) do
+    get new_admin_place_url
+    assert_response Pundit::NotAuthorizedError
   end
 
   # Create Place
