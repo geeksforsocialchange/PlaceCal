@@ -130,8 +130,11 @@ class ApplicationController < ActionController::Base
     @partner = Partner.friendly.find(params[:id])
   end
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_place
     @place = Place.friendly.find(params[:id])
+  end
+
+  def set_user
+    @user = User.find(params[:id])
   end
 end

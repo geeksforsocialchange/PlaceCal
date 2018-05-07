@@ -20,6 +20,11 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Place Index
+  #
+  #   Show every Place for roots
+  #   Show an empty page for citizens
+  #   TODO: Allow turf_admins and partner_admins to view their Places
+
   it_allows_access_to_index_for(%i[root]) do
     get admin_places_url
     assert_response :success
@@ -34,7 +39,12 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'tbody tr', 0
   end
 
-  # New Place
+  # New & Create Place
+  #
+  #   Allow roots to create new Places
+  #   Everyone else, redirect to admin_places_url
+  #   TODO: Allow turf_admins and partner_admins to create new Places
+
   it_allows_access_to_new_for(%i[root turf_admin]) do
     get new_admin_place_url
     assert_response :success
@@ -45,7 +55,6 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     assert_response Pundit::NotAuthorizedError
   end
 
-  # Create Place
   it_allows_access_to_create_for(%i[root turf_admin]) do
     assert_difference('Place.count') do
       post admin_places_url,
@@ -53,13 +62,17 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # Edit Place
+  # Edit & Update Place
+  #
+  #   Allow roots to edit all places
+  #   Everyone else, redirect to admin_places_url
+  #   TODO: allow turf_admins and partner_admins to edit their Places
+
   it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
     get edit_admin_place_url(@place)
     assert_response :success
   end
 
-  # Update Place
   it_allows_access_to_update_for(%i[root turf_admin partner_admin]) do
     patch admin_place_url(@place),
           params: { place: { name: 'Updated place name' } }
@@ -68,6 +81,11 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Delete Place
+  #
+  #   Allow roots to delete all Places
+  #   Everyone else redirect to admin_places_url
+  #   TODO: Allow turf_admin and partner_admins to delete Places
+
   it_allows_access_to_destroy_for(%i[root turf_admin]) do
     assert_difference('Place.count', -1) do
       delete admin_place_url(@place)
