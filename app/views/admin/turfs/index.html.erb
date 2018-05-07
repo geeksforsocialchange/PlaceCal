@@ -3,7 +3,7 @@
     <h2>Turfs List</h2>
   </div>
   <div class="col-md-2">
-    <% if current_user.role.root? %> 
+    <% if current_user&.role&.root? %>
       <%= link_to "Add New Turf", new_admin_turf_path, data: { turbolinks: false }, class: "btn btn-primary " %>
       <% end %>
   </div>
@@ -18,7 +18,7 @@
       <th>Name</th>
       <th>Slug</th>
       <th>Description</th>
-      <% if current_user.role.root? %>
+      <% if current_user&.role&.root? %>
         <th>Action</th>
       <% end %>
     </tr>
@@ -30,7 +30,7 @@
         <td><%= turf.name %></td>
         <td><%= turf.slug %></td>
         <td><%= turf.description %></td>
-        <% if user_policy.allow_edit_turf? %>
+        <% if current_user&.role&.root? %>
           <td><%= link_to "Edit", edit_admin_turf_path(turf),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
         <% end %>
       </tr>
