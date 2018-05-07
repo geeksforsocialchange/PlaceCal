@@ -42,8 +42,6 @@ module Admin
       end
     end
 
-    # DELETE /partners/1
-    # DELETE /partners/1.json
     def destroy
       @partner.destroy
       respond_to do |format|
