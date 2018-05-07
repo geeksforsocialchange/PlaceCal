@@ -39,8 +39,8 @@ class ActiveSupport::TestCase
         end
       end
     end
-  end
 
+  end
 end
 
 class ActionDispatch::IntegrationTest

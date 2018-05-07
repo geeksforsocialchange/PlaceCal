@@ -123,4 +123,10 @@ class ApplicationController < ActionController::Base
     return if whitelist.include?(request.remote_ip)
     redirect_to 'https://google.com'
   end
+
+  # Shared methods across normal, admin and superadmin
+  # Use callbacks to share common setup or constraints between actions.
+  def set_partner
+    @partner = Partner.friendly.find(params[:id])
+  end
 end

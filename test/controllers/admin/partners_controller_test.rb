@@ -54,12 +54,12 @@ class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Delete Partner
-  #it_allows_access_to_destroy_for(%i[root turf_admin]) do
-  #  assert_difference('Partner.count', -1) do
-  #    delete admin_partner_url(@partner)
-  #  end
+  it_allows_access_to_destroy_for(%i[root turf_admin]) do
+    assert_difference('Partner.count', -1) do
+      delete admin_partner_url(@partner)
+    end
 
-  #  assert_redirected_to admin_partners_url
-  #end
+   assert_redirected_to admin_partners_url
+  end
 
 end

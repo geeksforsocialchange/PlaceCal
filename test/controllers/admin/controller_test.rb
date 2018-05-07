@@ -9,9 +9,15 @@ class AdminControllerTest < ActionDispatch::IntegrationTest
     host! 'admin.lvh.me'
   end
 
-  # Partner Index
+  # Anyone logged in sees the admin index page with contextual data
   it_allows_access_to_index_for(%i[root turf_admin partner_admin citizen]) do
     get admin_root_url
     assert_response :success
+  end
+
+  # If not logged in, redirect to a login page
+  test 'redirect if guest' do
+    get admin_root_url
+    assert_redirected_to new_user_session_url
   end
 end

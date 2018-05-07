@@ -67,4 +67,12 @@
       <li class="footer__sponsor footer__sponsor--mcc"><a href="http://www.manchester.gov.uk/">Manchester City Council</a></li>
     </ul>
   </div>
+
+
+  <% if Rails.env.development? %>
+    <pre class="small">
+      <%= debug(params) %>
+      <%# console %>
+    </pre>
+  <% end %>
 </div>
