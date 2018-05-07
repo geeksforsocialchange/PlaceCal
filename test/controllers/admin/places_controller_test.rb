@@ -53,13 +53,13 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Delete Place
- # it_allows_access_to_destroy_for(%i[root turf_admin]) do
- #   assert_difference('Place.count', -1) do
- #     delete admin_partner_url(@place)
- #   end
+  it_allows_access_to_destroy_for(%i[root turf_admin]) do
+    assert_difference('Place.count', -1) do
+      delete admin_place_url(@place)
+    end
 
- #   assert_redirected_to admin_place_url
- # end
+    assert_redirected_to admin_places_url
+  end
 
 
 end
