@@ -26,6 +26,8 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_index_for(%i[root turf_admin]) do
     get admin_partners_url
     assert_response :success
+    # Has a button allowing us to add new Partners
+    assert_select "a", "Add New Partner"
     # Returns one entry in the table
     assert_select 'tbody tr', 1
   end
