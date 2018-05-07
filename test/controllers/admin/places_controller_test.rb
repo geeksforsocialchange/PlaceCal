@@ -20,17 +20,17 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Place Index
-  it_allows_access_to_index_for(%i[root turf_admin]) do
+  it_allows_access_to_index_for(%i[root]) do
     get admin_places_url
     assert_response :success
     # Returns one entry in the table
     assert_select 'tbody tr', 1
   end
 
-  it_allows_access_to_index_for(%i[citizen]) do
+  it_allows_access_to_index_for(%i[turf_admin partner_admin citizen]) do
     get admin_places_url
     assert_response :success
-    # Returns one entry in the table
+    # Results table is empty
     assert_select 'tbody tr', 0
   end
 
