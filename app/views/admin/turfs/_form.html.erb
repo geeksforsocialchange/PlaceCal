@@ -52,7 +52,8 @@
       <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
         <div class="col-md-10"></div>
         <div class= "col-md-2">
-          <%= f.submit "Save", class: "btn btn-primary " %>
+          <%= f.submit "Save", class: "btn btn-primary " %><br><br>
+          <%= button_to "Destroy Turf", @turf, method: :delete, class: "btn btn-danger" %>
         </div>
       </div>
 
