@@ -6,4 +6,24 @@ class UserPolicy < ApplicationPolicy
     @record = record
   end
 
+  def index?
+  	user.role.present? && user.role.root?
+  end
+
+  def update?
+    # index?
+  end
+
+  def assign_turf?
+  	index?
+  end
+
+  def edit?
+  	index?
+  end
+
+  def destroy?
+  	index?
+  end
+
 end

@@ -12,16 +12,19 @@ module Admin
       @site = Site.new
       @turfs = Turf.all
       @site.build_sites_turf
+      authorize @site
     end
 
     def edit
       @site = Site.friendly.find(params[:id])
+      authorize @site
       @turfs = Turf.all
       @sites_turfs = @site.secondary_turfs.pluck(:id)
     end
 
     def create
       @site = Site.new(site_params)
+      authorize @site
       if @site.save
         redirect_to admin_sites_path
       else
@@ -31,6 +34,7 @@ module Admin
 
     def update
       @site = Site.friendly.find(params[:id])
+      authorize @site
       if @site.update_attributes(site_params)
         redirect_to admin_sites_path
       else

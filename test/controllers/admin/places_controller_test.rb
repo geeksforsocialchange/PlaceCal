@@ -29,14 +29,21 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     get admin_places_url
     assert_response :success
     # Returns one entry in the table
-    assert_select 'tbody tr', 1
+    assert_select 'tbody', 1
   end
 
-  it_allows_access_to_index_for(%i[turf_admin partner_admin citizen]) do
+  it_allows_access_to_index_for(%i[turf_admin partner_admin]) do
     get admin_places_url
     assert_response :success
     # Results table is empty
-    assert_select 'tbody tr', 0
+    assert_select 'tbody', 0
+  end
+
+  it_allows_access_to_index_for(%i[citizen]) do
+    get admin_places_url
+    assert_response :success
+    # Results table is empty
+    assert_select 'tbody', 0
   end
 
   # New & Create Place
@@ -45,17 +52,12 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_places_url
   #   TODO: Allow turf_admins and partner_admins to create new Places
 
-  it_allows_access_to_new_for(%i[root turf_admin]) do
+  it_allows_access_to_new_for(%i[root]) do
     get new_admin_place_url
     assert_response :success
   end
 
-  it_denies_access_to_new_for(%i[citizen]) do
-    get new_admin_place_url
-    assert_response Pundit::NotAuthorizedError
-  end
-
-  it_allows_access_to_create_for(%i[root turf_admin]) do
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('Place.count') do
       post admin_places_url,
            params: { place: { name: 'A new place' } }
@@ -68,12 +70,17 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_places_url
   #   TODO: allow turf_admins and partner_admins to edit their Places
 
-  it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
+  it_allows_access_to_edit_for(%i[root]) do
     get edit_admin_place_url(@place)
     assert_response :success
   end
 
-  it_allows_access_to_update_for(%i[root turf_admin partner_admin]) do
+  it_allows_access_to_edit_for(%i[turf_admin partner_admin]) do
+    get admin_places_url
+    assert_response :success
+  end
+
+  it_allows_access_to_update_for(%i[root]) do
     patch admin_place_url(@place),
           params: { place: { name: 'Updated place name' } }
     # Redirect to main partner screen

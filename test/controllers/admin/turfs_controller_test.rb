@@ -22,10 +22,10 @@ class Admin::TurfsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  it_denies_access_to_index_for(%i[citizen]) do
-    get admin_turfs_url
-    assert_redirected_to admin_root_url
-  end
+  # it_denies_access_to_index_for(%i[citizen]) do
+  #   get admin_turfs_url
+  #   assert_redirected_to admin_root_url
+  # end
 
   # New & Create Turf
   #

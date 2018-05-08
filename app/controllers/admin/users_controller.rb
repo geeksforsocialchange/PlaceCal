@@ -7,14 +7,17 @@ module Admin
 
     def index
       @users = User.all
+      authorize current_user
     end
 
     def edit
+      authorize @user
       @turfs = Turf.all
       @roles = User.role.values
     end
 
     def assign_turf
+      authorize current_user, :assign_turf?
       if @user.update_attributes(user_turf_params)
         redirect_to admin_users_path
       else
@@ -31,6 +34,7 @@ module Admin
     end
 
     def destroy
+      authorize current_user
       @user.destroy
       respond_to do |format|
         format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }

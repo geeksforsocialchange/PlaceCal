@@ -23,20 +23,26 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Show an empty page for citizens
   #   TODO: Allow turf_admins and partner_admins to view their Partners
 
-  it_allows_access_to_index_for(%i[root turf_admin]) do
+  it_allows_access_to_index_for(%i[root]) do
     get admin_partners_url
     assert_response :success
     # Has a button allowing us to add new Partners
     assert_select "a", "Add New Partner"
     # Returns one entry in the table
-    assert_select 'tbody tr', 1
+    assert_select 'tbody', 1
   end
 
-  it_allows_access_to_index_for(%i[partner_admin citizen]) do
+  it_allows_access_to_index_for(%i[turf_admin partner_admin]) do
     get admin_partners_url
     assert_response :success
     # Nothing to show in the table
-    assert_select 'tbody tr', 0
+  end
+
+  it_allows_access_to_index_for(%i[citizen]) do
+    get admin_partners_url
+    assert_response :success
+    # Nothing to show in the table
+    assert_select 'tbody', 0
   end
 
   # New & Create Partner
@@ -45,12 +51,12 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_partners_url
   #   TODO: Allow turf_admins to create new Partners
 
-  it_allows_access_to_new_for(%i[root turf_admin]) do
+  it_allows_access_to_new_for(%i[root]) do
     get new_admin_partner_url
     assert_response :success
   end
 
-  it_allows_access_to_create_for(%i[root turf_admin]) do
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('Partner.count') do
       post admin_partners_url,
            params: { partner: { name: 'A new partner' } }
@@ -64,12 +70,17 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_partners_url
   #   TODO: allow turf_admins and partner_admins to edit their Partners
 
-  it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
+  it_allows_access_to_edit_for(%i[root]) do
     get edit_admin_partner_url(@partner)
     assert_response :success
   end
 
-  it_allows_access_to_update_for(%i[root turf_admin partner_admin]) do
+  it_allows_access_to_edit_for(%i[turf_admin partner_admin]) do
+    get admin_partners_url
+    assert_response :success
+  end
+
+  it_allows_access_to_update_for(%i[root]) do
     patch admin_partner_url(@partner),
           params: { partner: { name: 'Updated partner name' } }
     # Redirect to main partner screen

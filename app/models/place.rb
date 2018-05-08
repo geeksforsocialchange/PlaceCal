@@ -7,7 +7,7 @@ class Place < ApplicationRecord
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
   has_many :events
-  has_many :calendars
+  has_many :calendars, dependent: :destroy
 
   belongs_to :address, inverse_of: :places
   accepts_nested_attributes_for :address, reject_if: lambda { |c| c[:postcode].blank? && c[:street_address].blank?}

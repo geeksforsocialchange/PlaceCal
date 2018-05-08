@@ -8,7 +8,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def create?
-    !user.role.partner_admin?
+    user.role.present? && user.role.root?
   end
 
   def new?
@@ -16,11 +16,11 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    index?
+    create?
   end
 
   def edit?
-    index?
+    create?
   end
 
   # def destroy?
@@ -31,7 +31,7 @@ class PartnerPolicy < ApplicationPolicy
     def resolve
       if user&.role&.root?
         scope.all
-      else
+      elsif user&.role&.partner_admin? || user&.role&.turf_admin?
         scope.joins(:turfs).where(turfs: { id: user.turfs }).distinct
       end
     end

@@ -1,4 +1,11 @@
 class PlacePolicy < ApplicationPolicy
+  attr_reader :user, :place
+
+  def initialize(user, place)
+    @user = user
+    @place = place
+  end
+
   def index?
     true
   end
@@ -8,7 +15,7 @@ class PlacePolicy < ApplicationPolicy
   end
 
   def create?
-    !user.role.partner_admin?
+    user.role.present? && user.role.root?
   end
 
   def new?
@@ -16,11 +23,11 @@ class PlacePolicy < ApplicationPolicy
   end
 
   def update?
-    user.role.present?
+    create?
   end
 
   def edit?
-    update?
+    create?
   end
 
   # def destroy?
@@ -31,7 +38,7 @@ class PlacePolicy < ApplicationPolicy
     def resolve
       if user&.role&.root?
         scope.all
-      else
+      elsif user&.role&.partner_admin? || user&.role&.turf_admin?
         scope.joins(:turfs).where(turfs: { id: user.turfs }).distinct
       end
     end

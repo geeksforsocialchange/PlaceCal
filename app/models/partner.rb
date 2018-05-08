@@ -6,7 +6,7 @@ class Partner < ApplicationRecord
   has_and_belongs_to_many :users
   has_and_belongs_to_many :places
   has_and_belongs_to_many :turfs
-  has_many :calendars
+  has_many :calendars, dependent: :destroy
   has_many :events
   belongs_to :address, required: false
 

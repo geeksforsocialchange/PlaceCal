@@ -8,6 +8,7 @@ module Admin
 
     def new
       @turf = Turf.new
+      authorize @turf
     end
 
     def edit
