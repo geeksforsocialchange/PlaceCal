@@ -1,23 +1,17 @@
-# All Administrate controllers inherit from this `Admin::ApplicationController`,
-# making it the ideal place to put authentication logic or other
-# before_actions.
-#
-# If you want to add pagination or other controller-level concerns,
-# you're free to overwrite the RESTful controller actions.
 module Admin
-  class ApplicationController < Administrate::ApplicationController
-    before_action :authenticate_admin
+  class ApplicationController < ::ApplicationController
+    layout 'admin/application'
 
-    def authenticate_admin
-      return if ENV['RAILS_ENV'] == 'development'
-      authorized = current_user && (current_user.role.admin?)
-      redirect_to '/', alert: 'Not authorized' unless authorized
+    include Pundit
+
+    before_action :authenticate_user!
+    protect_from_forgery with: :exception
+
+    protected
+
+    def secretary_authenticate
+      return if current_user.role == 'secretary'
+      redirect_to admin_root_path
     end
-
-    # Override this value to specify the number of elements to display at a time
-    # on index pages. Defaults to 20.
-    # def records_per_page
-    #   params[:per_page] || 20
-    # end
   end
 end

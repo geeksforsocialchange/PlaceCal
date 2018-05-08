@@ -1,0 +1,64 @@
+<div class="row">
+  <div class="col-md-12"><h2><center><%= current_user.full_name.titleize %> </center><h2></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-8">
+      <div class="row">
+        <h3>User Info</h3>
+      </div>
+      <div class="row">
+        <h4>Email</h4>
+        <div class="col-md-8"><%= current_user.email %></div>
+      </div>
+      <div class="row">
+        <% unless current_user.role.nil? %>
+          <h4>Role</h4>
+          <div class="col-md-8"><%= current_user.role.titleize  %></div>
+        <% end %>
+      </div>
+      <% if @turfs.exists? %>
+        <div class="">
+            <div class="row">
+              <h3>Turfs</h3>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <% @turfs.each do |turf| %>
+                  <ul class="">
+                    <li class=""><%= turf.name %></li>
+                  </ul>
+                <% end %>
+              </div>
+            </div>
+        </div>
+        <div class="">
+          <div class="row">
+            <h3>Partners</h3>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <% @partners.each do |partner| %>
+                <ul >
+                  <li class=""><%= partner.name %></li>
+                </ul>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="">
+          <div class="row">
+            <h3>Places</h3>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <% @places.each do |place| %>
+                <ul >
+                  <li class=""><%= place.name %></li>
+                </ul>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="col-md-3"><%= link_to "Edit your Profile", admin_profile_path , class: "btn btn-primary" %></div>
+</div>

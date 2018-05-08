@@ -11,6 +11,7 @@ class PlaceDashboard < Administrate::BaseDashboard
     partners: Field::HasMany,
     events: Field::HasMany,
     calendars: Field::HasMany,
+    turfs: Field::HasMany,
     address: AddressField,
     id: Field::Number,
     name: Field::String,
@@ -68,7 +69,7 @@ class PlaceDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = [
     :name,
     :short_description,
-    # :events,
+    :turfs,
     :address,
     :status,
     :phone,

@@ -20,12 +20,16 @@ gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 
 # Calendar
+gem 'httparty'
 gem 'icalendar'
 gem 'icalendar-recurrence'
 
 # Uploads
 gem 'carrierwave'
 gem 'mini_magick'
+
+# UI
+gem 'bootstrap-sass', '~> 3.3.7'
 
 # Misc
 gem 'active_link_to'
@@ -38,10 +42,13 @@ gem 'koala'
 gem 'leaflet-rails'
 gem 'listen', '~> 3.0.5'
 gem 'mailgun_rails'
+gem 'nested_form'
 gem 'oj'
 gem 'paper_trail'
 gem 'pundit'
 gem 'rollbar'
+gem 'select2-rails'
+gem 'simple_form'
 gem 'virtus'
 gem 'whenever', require: false
 
@@ -81,7 +88,7 @@ group :development do
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'awesome_print'
-  #gem 'better_errors'
+  gem 'better_errors'
   gem 'binding_of_caller'
   gem 'guard'
   gem 'guard-livereload', '~> 2.5', require: false
@@ -92,6 +99,14 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Access an IRB console on exception pages or by using <%= console %>
   gem 'web-console', '>= 3.3.0'
+end
+
+group :test do
+  gem 'minitest-rails-capybara'
+  gem 'minitest-reporters'
+  gem 'rails-controller-testing'
+  gem 'simplecov', require: false
+  gem 'faker'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

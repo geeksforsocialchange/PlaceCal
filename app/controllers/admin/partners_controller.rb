@@ -1,21 +1,57 @@
+# frozen_string_literal: true
+
 module Admin
   class PartnersController < Admin::ApplicationController
-    # To customize the behavior of this controller,
-    # you can overwrite any of the RESTful actions. For example:
-    #
-    # def index
-    #   super
-    #   @resources = Partner.
-    #     page(params[:page]).
-    #     per(10)
-    # end
+    include LoadUtilities
 
-    # Define a custom finder by overriding the `find_resource` method:
-    def find_resource(param)
-      Partner.find_by!(slug: param)
+    before_action :secretary_authenticate
+    before_action :turfs, only: %i[new create edit]
+
+    def index
+      @partners = Partner.all.order(:name)
     end
 
-    # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
-    # for more information
+    def new
+      @partner = Partner.new
+    end
+
+    def create
+      @partner = Partner.new(partner_params)
+      if @partner.save
+        redirect_to admin_partners_path
+      else
+        render 'new'
+      end
+    end
+
+    def edit
+      @partner = Partner.friendly.find(params[:id])
+    end
+
+    def update
+      @partner = Partner.friendly.find(params[:id])
+      if @partner.update_attributes(partner_params)
+        redirect_to admin_partners_path
+      else
+        render 'new'
+      end
+    end
+
+    private
+
+    def partner_params
+      params.require(:partner).permit(
+        :name, :image, :short_description, :public_name, :public_email,
+        :public_phone, :partner_name, :partner_email, :partner_phone,
+        :calendar_phone, :calendar_name, :calendar_email,
+        calendars_attributes: %i[id name source type place_id _destroy],
+        places_attributes: [
+          :id, :name, :short_description, :booking_info,
+          :opening_times, :_destroy, :accessibility_info,
+          address_attributes: %i[id street_address street_address2 city postcode]
+        ],
+        place_ids: [], turf_ids: []
+      )
+    end
   end
 end

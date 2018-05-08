@@ -8,10 +8,15 @@ class EventComponent < MountainView::Presenter
   include ActionView::Helpers::TextHelper
 
   def time
-    fmt_time(dtstart) + ' – ' + fmt_time(dtend)
+    if dtend
+      fmt_time(dtstart) + ' – ' + fmt_time(dtend)
+    else
+      fmt_time(dtstart)
+    end
   end
 
   def duration
+    return false unless dtend
     mins = ((dtend - dtstart) / 60).to_i
     hours = mins / 60 # Ruby presumes ints not floats, and rounds down
     mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''

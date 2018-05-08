@@ -55,7 +55,6 @@ class EventDashboard < Administrate::BaseDashboard
     :rrule,
     :notices,
     :is_active,
-    :deleted_at,
     :dtstart,
     :dtend,
     :created_at,
@@ -68,6 +67,7 @@ class EventDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = [
     :partner,
     :place,
+    :address,
     :calendar,
     :uid,
     :summary,
@@ -76,9 +76,8 @@ class EventDashboard < Administrate::BaseDashboard
     :rrule,
     :notices,
     :is_active,
-    :deleted_at,
     :dtstart,
-    :dtend,
+    :dtend
   ].freeze
 
   # Overwrite this method to customize how events are displayed

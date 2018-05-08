@@ -16,7 +16,14 @@ class EventsController < ApplicationController
     @multiple_days = true
 
     respond_to do |format|
-      format.html
+      format.html do
+        if params[:simple].present?
+          render :index_simple, layout: false
+        else
+          render :index
+        end
+      end
+      format.text
       format.ics do
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
         ics_listing = Event.ical_feed
@@ -27,8 +34,7 @@ class EventsController < ApplicationController
     end
   end
 
-  def ical
-  end
+  def ical; end
 
   # GET /events/1
   # GET /events/1.json
@@ -71,15 +77,7 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   # PATCH/PUT /events/1.json
   def update
-    respond_to do |format|
-      if @event.update(event_params)
-        format.html { redirect_to @event, notice: 'Event was successfully updated.' }
-        format.json { render :show, status: :ok, location: @event }
-      else
-        format.html { render :edit }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
-      end
-    end
+    default_update(@event, event_params)
   end
 
   # DELETE /events/1
@@ -103,5 +101,4 @@ class EventsController < ApplicationController
   def event_params
     params.fetch(:event, {})
   end
-
 end

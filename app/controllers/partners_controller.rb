@@ -21,7 +21,7 @@ class PartnersController < ApplicationController
     @sort = params[:sort].to_s || 'time'
     @events = sort_events(@events, @sort)
 
-    respond_to do |format| 
+    respond_to do |format|
       format.html
       format.ics do
         cal = create_calendar(Event.by_partner(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
@@ -58,15 +58,7 @@ class PartnersController < ApplicationController
   # PATCH/PUT /partners/1
   # PATCH/PUT /partners/1.json
   def update
-    respond_to do |format|
-      if @partner.update(partner_params)
-        format.html { redirect_to @partner, notice: 'Partner was successfully updated.' }
-        format.json { render :show, status: :ok, location: @partner }
-      else
-        format.html { render :edit }
-        format.json { render json: @partner.errors, status: :unprocessable_entity }
-      end
-    end
+    default_update(@partner, partner_params)
   end
 
   # DELETE /partners/1
@@ -80,7 +72,7 @@ class PartnersController < ApplicationController
   end
 
   private
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_partner
     @partner = Partner.friendly.find(params[:id])

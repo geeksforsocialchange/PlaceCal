@@ -28,3 +28,14 @@ en:
         outlook: 'Outlook'
         mac_calendar: 'Mac Calendar'
         other: 'Other'
+
+  activerecord:
+    attributes:
+      partner:
+        turf_ids: ""
+    errors:
+      models:
+        partner:
+          attributes:
+            turf_ids:
+              blank: "Select at least one Turf"

@@ -1,0 +1,14 @@
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <%= link_to "PlaceCal", admin_root_path, class: "navbar-brand" %>
+    </div>
+    <ul class="nav navbar-nav">
+      <% if user_policy.check_role? %>
+        <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Partners", admin_partners_path  %></li>
+        <li class="<%= current_page?(admin_places_path) ? 'active' : '' %>"><%= link_to "Places", admin_places_path  %></li>
+      <% end %>
+      <li><%= link_to "Logout", destroy_user_session_path, method: :delete  %></li>
+    </ul>
+  </div>
+</nav>
