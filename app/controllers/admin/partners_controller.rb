@@ -3,37 +3,50 @@
 module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
-
-    before_action :secretary_authenticate
-    before_action :turfs, only: %i[new create edit]
+    before_action :set_partner, only: %i[show edit update destroy]
+    before_action :set_turfs, only: %i[new create edit]
 
     def index
-      @partners = Partner.all.order(:name)
+      @partners = policy_scope(Partner)
     end
 
     def new
       @partner = Partner.new
+      authorize @partner
     end
 
     def create
       @partner = Partner.new(partner_params)
-      if @partner.save
+      authorize @partner
+      respond_to do |format|
+        if @partner.save
+          format.html { redirect_to admin_partners_path, notice: 'Partner was successfully created.' }
+          format.json { render :show, status: :created, location: @partner }
+        else
+          format.html { render :new }
+          format.json { render json: @partner.errors, status: :unprocessable_entity }
+        end
+      end
+    end
+
+    def edit
+      authorize @partner
+    end
+
+    def update
+      authorize @partner
+      if @partner.update_attributes(partner_params)
         redirect_to admin_partners_path
       else
         render 'new'
       end
     end
 
-    def edit
-      @partner = Partner.friendly.find(params[:id])
-    end
-
-    def update
-      @partner = Partner.friendly.find(params[:id])
-      if @partner.update_attributes(partner_params)
-        redirect_to admin_partners_path
-      else
-        render 'new'
+    def destroy
+      @partner.destroy
+      respond_to do |format|
+        format.html { redirect_to admin_partners_url, notice: 'Partner was successfully destroyed.' }
+        format.json { head :no_content }
       end
     end
 

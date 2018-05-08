@@ -3,48 +3,37 @@ require 'test_helper'
 class SuperadminCollectionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @collection = create(:collection)
+    @root = create(:root)
   end
 
-  test 'superadmin: should get index' do
+  it_allows_access_to_index_for(%i[root]) do
     get superadmin_collections_url
-    assert_response :success
   end
 
-  test 'superadmin: should get new' do
+  it_allows_access_to_show_for(%i[root]) do
+    get superadmin_collection_url(@collection)
+  end
+
+  it_allows_access_to_new_for(%i[root]) do
     get new_superadmin_collection_url
-    assert_response :success
   end
 
-  test 'superadmin: should create collection' do
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('Collection.count') do
       post superadmin_collections_url,
-           params: { collection: attributes_for(:collection) }
+        params: { collection: { name: 'Test Collection' } }
     end
-
-    assert_redirected_to superadmin_collection_url(Collection.last)
   end
 
-  test 'superadmin: should show collection' do
-    get superadmin_collection_url(@collection)
-    assert_response :success
-  end
-
-  test 'superadmin: should get edit' do
-    get edit_superadmin_collection_url(@collection)
-    assert_response :success
-  end
-
-  test 'superadmin: should update collection' do
+  it_allows_access_to_update_for(%i[root]) do
     patch superadmin_collection_url(@collection),
-          params: { collection: attributes_for(:collection) }
-    assert_redirected_to superadmin_collection_url(@collection)
+      params: { collection: { name: 'New Test Collection Name' } }
   end
 
-  test 'superadmin: should destroy collection' do
+  it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('Collection.count', -1) do
       delete superadmin_collection_url(@collection)
     end
-
-    assert_redirected_to superadmin_collections_url
   end
+
 end

@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-md-10">
+    <h2>Sites List</h2> 
+  </div>
+  <div class="col-md-2">
+    <%= link_to "Add New Site", new_admin_site_path, data: { turbolinks: false }, class: "btn btn-primary " %>   
+  </div>
+</div>      
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Slug</th>
+    <th>Action</th>
+  </tr>
+</thead>
+<tbody>
+  <% @sites.each do |site| %>
+    <tr>
+      <td><%= site.id %></td>
+      <td><%= site.name %></td>
+      <td><%= site.slug %></td>
+      <td><%= link_to "Edit", edit_admin_site_path(site),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
+    </tr>
+  <% end %>
+</tbody>
+</table>

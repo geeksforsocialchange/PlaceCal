@@ -1,7 +1,6 @@
 class Turf < ApplicationRecord
-  self.table_name = 'turfs'
   extend Enumerize
-  # after_create :create_tenant
+  self.table_name = 'turfs'
 
   enumerize :turf_type, in: %i[interest neighbourhood]
 
@@ -10,5 +9,6 @@ class Turf < ApplicationRecord
   has_and_belongs_to_many :places
 
   validates :name, :slug, presence: true
+  validates :name, :slug, uniqueness: true
 
 end

@@ -125,11 +125,11 @@
         </div>
         <div class="col-md-3">
           <label>Platform</label>
-          <h5><%= c.radio_button :type, 'google' %>Google Calendar</h5> 
-          <h5><%= c.radio_button :type, 'outlook' %>Outlook 365</h5> 
-          <h5><%= c.radio_button :type, 'facebook' %>Facebook</h5> 
-          <h5><%= c.radio_button :type, 'mac_calendar' %>Mac Calendar</h5> 
-          <h5><%= c.radio_button :type, 'other' %>Other</h5> 
+          <h5><%= c.radio_button :type, 'google' %>Google Calendar</h5>
+          <h5><%= c.radio_button :type, 'outlook' %>Outlook 365</h5>
+          <h5><%= c.radio_button :type, 'facebook' %>Facebook</h5>
+          <h5><%= c.radio_button :type, 'mac_calendar' %>Mac Calendar</h5>
+          <h5><%= c.radio_button :type, 'other' %>Other</h5>
         </div>
         <div class="col-md-3">
           <label>Default Place</label>
@@ -181,14 +181,17 @@
         <%= f.text_field :partner_phone, class: "form-control" %>
       </div>
       <div class="col-md-6">
-        
+
       </div>
     </div>
   </div>
   <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
     <div class="col-md-10"></div>
     <div class= "col-md-2">
-      <%= f.submit "Save Partner", class: "btn btn-primary " %>
+      <%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
+      <% unless @partner.new_record? %>
+        <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
+      <% end %>
     </div>
   </div>
   <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
@@ -197,4 +200,3 @@
 <% content_for :first_min_js do %>
   <script src="//maps.google.com/maps/api/js?key=<%= ENV['GOOGLE_API_KEY'] %>"></script>
 <% end %>
-

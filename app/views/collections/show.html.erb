@@ -21,19 +21,19 @@
         <%# FIXME: this needs to be killed after launch! %>
         <% if @collection.id == 1 %>
           <p>
-            <%= link_to 'Download winter leaflet (PDF, colour)', 
-                        asset_path('files/winter2017/placecal_winter2017.pdf'),
+            <%= link_to 'Download winter leaflet (PDF, colour)',
+                        asset_path('2017/12/placecal_winter2017.pdf'),
                         class: 'btn' %><br>
-            <%= link_to 'Download winter leaflet (PDF, B&W)', 
-                        asset_path('files/winter2017/placecal_winter2017_bw.pdf'),
+            <%= link_to 'Download winter leaflet (PDF, B&W)',
+                        asset_path('2017/12/placecal_winter2017_bw.pdf'),
                         class: 'btn' %>
           </p>
           <p>
             <%= link_to 'Download winter A3 Poster (PDF, colour)', 
-                         asset_path('files/winter2017/placecal_winter2017_poster.pdf'),
+                         asset_path('2017/12/placecal_winter2017_poster.pdf'),
                          class: 'btn' %><br>
-            <%= link_to 'Download winter A3 Poster (PDF, B&W)', 
-                         asset_path('files/winter2017/placecal_winter2017_poster_bw.pdf'),
+            <%= link_to 'Download winter A3 Poster (PDF, B&W)',
+                         asset_path('2017/12/placecal_winter2017_poster_bw.pdf'),
                          class: 'btn' %>
           </p>
         <% end %>
@@ -49,10 +49,10 @@
 
   <hr>
 
-  <%= render_component "event_list", 
+  <%= render_component "event_list",
     events: @events,
     pointer: @collection.start_date,
-    period: @period,  
+    period: @period,
     sort: @sort,
     path: "collections/#{@collection.id}",
     show_breadcrumb: false,

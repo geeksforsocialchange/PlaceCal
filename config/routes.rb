@@ -8,13 +8,19 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :partners
     resources :places
-    resources :users
+    resources :turfs
+    resources :sites
+    resources :users do
+      member do
+        put :assign_turf
+      end
+    end
     get 'profile' => 'users#profile', :as => 'profile'
     root 'pages#home'
   end
 
-  constraints(::Subdomains::Turf) do
-    root 'pages#turf'
+  constraints(::Subdomains::Sites) do
+    root 'pages#site'
   end
 
   ymd = {
@@ -56,6 +62,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   get 'winter2017', to: 'collections#show', id: 1
 
   # Administration
+
   namespace :superadmin do
     get '/', to: 'users#index', as: :root
     resources :users
@@ -73,7 +80,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   namespace :manager do
     resources :calendars
   end
-
   root 'pages#home'
 
   # Styleguide

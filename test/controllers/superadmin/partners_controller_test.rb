@@ -3,48 +3,36 @@ require 'test_helper'
 class SuperadminPartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @partner = create(:partner)
+    @root = create(:root)
   end
 
-  test 'superadmin: should get index' do
+  it_allows_access_to_index_for(%i[root]) do
     get superadmin_partners_url
-    assert_response :success
   end
 
-  test 'superadmin: should show partner' do
+  it_allows_access_to_show_for(%i[root]) do
     get superadmin_partner_url(@partner)
-    assert_response :success
   end
 
-  test 'superadmin: should get new' do
+  it_allows_access_to_new_for(%i[root]) do
     get new_superadmin_partner_url
-    assert_response :success
   end
 
-  test 'superadmin: should create partner' do
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('Partner.count') do
       post superadmin_partners_url,
-           params: { partner: { name: 'Test' } }
+        params: { partner: { name: 'Test Partner' } }
     end
-
-    assert_redirected_to superadmin_partner_url(Partner.last)
   end
 
-  test 'superadmin: should get edit' do
-    get edit_superadmin_partner_url(@partner)
-    assert_response :success
-  end
-
-  test 'superadmin: should update partner' do
+  it_allows_access_to_update_for(%i[root]) do
     patch superadmin_partner_url(@partner),
-          params: { partner: { name: 'Partner Name' } }
-    assert_redirected_to superadmin_partner_url(@partner)
+      params: { partner: { name: 'New Test Partner Name' } }
   end
 
-  test 'superadmin: should destroy partner' do
+  it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('Partner.count', -1) do
       delete superadmin_partner_url(@partner)
     end
-
-    assert_redirected_to superadmin_partners_url
   end
 end

@@ -1,73 +1,105 @@
 require 'test_helper'
 
-class AdminPlacesControllerTest < ActionDispatch::IntegrationTest
+class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
+
   setup do
+    @partner = create(:partner)
     @place = create(:place)
+    @partner.places << @place
+    @turf = create(:turf)
+    @turf.places << @place
+
+    @root = create(:root)
+    @turf_admin = create(:user)
+    @turf_admin.turfs << @turf
+    @partner_admin = create(:user)
+    @partner_admin.partners << @partner
+    @citizen = create(:user)
+
     host! 'admin.lvh.me'
   end
 
-  test 'admin: should get index' do
-    sign_in create(:admin)
+  # Place Index
+  #
+  #   Show every Place for roots
+  #   Show an empty page for citizens
+  #   TODO: Allow turf_admins and partner_admins to view their Places
+
+  it_allows_access_to_index_for(%i[root]) do
     get admin_places_url
     assert_response :success
+    # Returns one entry in the table
+    assert_select 'tbody', 1
   end
 
-  test "admin: non-admins can't access index" do
-    sign_in create(:user)
+  it_allows_access_to_index_for(%i[turf_admin partner_admin]) do
     get admin_places_url
-    assert_redirected_to admin_root_path
+    assert_response :success
+    # Results table is empty
+    assert_select 'tbody', 0
   end
 
-  # No show page as we go directly to edit for now
-  #
-  # test 'admin: should show place' do
-  #   get admin_place_url(@place)
-  #   assert_response :success
-  # end
+  it_allows_access_to_index_for(%i[citizen]) do
+    get admin_places_url
+    assert_response :success
+    # Results table is empty
+    assert_select 'tbody', 0
+  end
 
-  test 'admin: should get new' do
-    sign_in create(:admin)
+  # New & Create Place
+  #
+  #   Allow roots to create new Places
+  #   Everyone else, redirect to admin_places_url
+  #   TODO: Allow turf_admins and partner_admins to create new Places
+
+  it_allows_access_to_new_for(%i[root]) do
     get new_admin_place_url
     assert_response :success
   end
 
-  test "admin: non-admins can't access new" do
-    sign_in create(:user)
-    get admin_places_url
-    assert_redirected_to admin_root_path
-  end
-
-  test 'admin: should create place' do
-    sign_in create(:admin)
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('Place.count') do
       post admin_places_url,
-           params: { place: { name: 'Place Name' } }
+           params: { place: { name: 'A new place' } }
     end
-    # Redirect to the main place screen
-    assert_redirected_to admin_places_url
   end
 
-  test 'admin: should get edit' do
-    sign_in create(:admin)
+  # Edit & Update Place
+  #
+  #   Allow roots to edit all places
+  #   Everyone else, redirect to admin_places_url
+  #   TODO: allow turf_admins and partner_admins to edit their Places
+
+  it_allows_access_to_edit_for(%i[root]) do
     get edit_admin_place_url(@place)
     assert_response :success
   end
 
-  test 'admin: should update place' do
-    sign_in create(:admin)
+  it_allows_access_to_edit_for(%i[turf_admin partner_admin]) do
+    get admin_places_url
+    assert_response :success
+  end
+
+  it_allows_access_to_update_for(%i[root]) do
     patch admin_place_url(@place),
           params: { place: { name: 'Updated place name' } }
-    # Redirect to main place screen
+    # Redirect to main partner screen
     assert_redirected_to admin_places_url
   end
 
-  # We don't let admins delete from this screen yet
+  # Delete Place
   #
-  # test 'admin: should destroy place' do
-  #   assert_difference('Partner.count', -1) do
-  #     delete admin_place_url(@place)
-  #   end
-  #
-  #   assert_redirected_to admin_places_url
-  # end
+  #   Allow roots to delete all Places
+  #   Everyone else redirect to admin_places_url
+  #   TODO: Allow turf_admin and partner_admins to delete Places
+
+  it_allows_access_to_destroy_for(%i[root]) do
+    assert_difference('Place.count', -1) do
+      delete admin_place_url(@place)
+    end
+
+    assert_redirected_to admin_places_url
+  end
+
+
 end

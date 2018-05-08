@@ -3,49 +3,36 @@ require 'test_helper'
 class Superadmin::PlacesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @place = create(:place)
+    @root = create(:root)
   end
 
-  test 'superadmin: should get index' do
+  it_allows_access_to_index_for(%i[root]) do
     get superadmin_places_url
-    assert_response :success
   end
 
-  test 'superadmin: should show place' do
+  it_allows_access_to_show_for(%i[root]) do
     get superadmin_place_url(@place)
-    assert_response :success
   end
 
-  test 'superadmin: should get new' do
+  it_allows_access_to_new_for(%i[root]) do
     get new_superadmin_place_url
-    assert_response :success
   end
 
-  test 'superadmin: should create place' do
-    turf = create(:turf)
-    address = create(:address)
-
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('Place.count') do
-      post superadmin_places_url, params: { place: attributes_for(:place, name: Faker::Company.name).merge(turf_ids: [turf.id], address_id: address.id) }
+      post superadmin_places_url,
+        params: { place: { name: 'Test Place' } }
     end
-
-    assert_redirected_to superadmin_place_url(Place.last)
   end
 
-  test 'superadmin: should get edit' do
-    get edit_superadmin_place_url(@place)
-    assert_response :success
+  it_allows_access_to_update_for(%i[root]) do
+    patch superadmin_place_url(@place),
+      params: { place: { name: 'New Test Place Name' } }
   end
 
-  test 'superadmin: should update place' do
-    patch superadmin_place_url(@place), params: { place: attributes_for(:place) }
-    assert_redirected_to superadmin_place_url(@place)
-  end
-
-  test 'superadmin: should destroy place' do
+  it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('Place.count', -1) do
       delete superadmin_place_url(@place)
     end
-
-    assert_redirected_to superadmin_places_url
   end
 end

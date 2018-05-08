@@ -1,9 +1,13 @@
 module LoadUtilities
-  extend ActiveSupport::Concern
+ extend ActiveSupport::Concern
 
   included do
-    def turfs
-       @turfs = current_user.turfs.collect{ |t| [t.name, t.id] }
+    def set_turfs
+      if current_user&.role&.root?
+         @turfs = Turf.all
+       else
+         @turfs = current_user&.turfs
+      end
     end
   end
 end

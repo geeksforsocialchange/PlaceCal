@@ -6,12 +6,14 @@
 # you're free to overwrite the RESTful controller actions.
 module Superadmin
   class ApplicationController < Administrate::ApplicationController
-    before_action :authenticate_admin
+    before_action :authenticate_user!
+    before_action :authenticate_root
 
-    def authenticate_admin
-      # return if ENV['RAILS_ENV'] == 'development'
-      authorized = current_user && (current_user.role.admin?)
-      # redirect_to '/', alert: 'Not authorized' unless authorized
+
+    private
+
+    def authenticate_root
+      redirect_to root_path unless current_user&.role&.root?
     end
 
     # Override this value to specify the number of elements to display at a time

@@ -1,73 +1,104 @@
 require 'test_helper'
 
-class AdminPartnersControllerTest < ActionDispatch::IntegrationTest
+class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @partner = create(:partner)
+    @turf = @partner.turfs.first
+
+    @root = create(:root)
+    @citizen = create(:user)
+
+    @turf_admin = create(:turf_admin)
+    @turf_admin.turfs << @turf
+
+    @partner_admin  = create(:partner_admin)
+    @partner_admin.partners << @partner
+
     host! 'admin.lvh.me'
   end
 
-  test 'admin: should get index' do
-    sign_in create(:admin)
+  # Partner Index
+  #
+  #   Show every Partner for roots
+  #   Show an empty page for citizens
+  #   TODO: Allow turf_admins and partner_admins to view their Partners
+
+  it_allows_access_to_index_for(%i[root]) do
     get admin_partners_url
     assert_response :success
+    # Has a button allowing us to add new Partners
+    assert_select "a", "Add New Partner"
+    # Returns one entry in the table
+    assert_select 'tbody', 1
   end
 
-  test "admin: non-admins can't access index" do
-    sign_in create(:user)
+  it_allows_access_to_index_for(%i[turf_admin partner_admin]) do
     get admin_partners_url
-    assert_redirected_to admin_root_path
+    assert_response :success
+    # Nothing to show in the table
   end
 
-  # No show page as we go directly to edit for now
-  #
-  # test 'admin: should show partner' do
-  #   get admin_partner_url(@partner)
-  #   assert_response :success
-  # end
+  it_allows_access_to_index_for(%i[citizen]) do
+    get admin_partners_url
+    assert_response :success
+    # Nothing to show in the table
+    assert_select 'tbody', 0
+  end
 
-  test 'admin: should get new' do
-    sign_in create(:admin)
+  # New & Create Partner
+  #
+  #   Allow roots to create new Partners
+  #   Everyone else, redirect to admin_partners_url
+  #   TODO: Allow turf_admins to create new Partners
+
+  it_allows_access_to_new_for(%i[root]) do
     get new_admin_partner_url
     assert_response :success
   end
 
-  test "admin: non-admins can't access new" do
-    sign_in create(:user)
-    get admin_partners_url
-    assert_redirected_to admin_root_path
-  end
-
-  test 'admin: should create partner' do
-    sign_in create(:admin)
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('Partner.count') do
       post admin_partners_url,
            params: { partner: { name: 'A new partner' } }
     end
-    # Redirect to the main partner screen
-    assert_redirected_to admin_partners_url
   end
 
-  test 'admin: should get edit' do
-    sign_in create(:admin)
+
+  # Edit & Update Partner
+  #
+  #   Allow roots to edit all places
+  #   Everyone else, redirect to admin_partners_url
+  #   TODO: allow turf_admins and partner_admins to edit their Partners
+
+  it_allows_access_to_edit_for(%i[root]) do
     get edit_admin_partner_url(@partner)
     assert_response :success
   end
 
-  test 'admin: should update partner' do
-    sign_in create(:admin)
+  it_allows_access_to_edit_for(%i[turf_admin partner_admin]) do
+    get admin_partners_url
+    assert_response :success
+  end
+
+  it_allows_access_to_update_for(%i[root]) do
     patch admin_partner_url(@partner),
           params: { partner: { name: 'Updated partner name' } }
     # Redirect to main partner screen
     assert_redirected_to admin_partners_url
   end
 
-  # We don't let admins delete from this screen yet
+  # Delete Partner
   #
-  # test 'admin: should destroy partner' do
-  #   assert_difference('Partner.count', -1) do
-  #     delete admin_partner_url(@partner)
-  #   end
-  #
-  #   assert_redirected_to admin_partners_url
-  # end
+  #   Allow roots to delete all Partners
+  #   Everyone else redirect to admin_partners_url
+  #   TODO: Allow turf_admin and partner_admins to delete Partners
+
+  it_allows_access_to_destroy_for(%i[root]) do
+    assert_difference('Partner.count', -1) do
+      delete admin_partner_url(@partner)
+    end
+
+   assert_redirected_to admin_partners_url
+  end
+
 end

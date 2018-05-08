@@ -3,46 +3,36 @@ require 'test_helper'
 class SuperadminUsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = create(:user)
+    @root = create(:root)
   end
 
-  test 'superadmin: should get index' do
+  it_allows_access_to_index_for(%i[root]) do
     get superadmin_users_url
-    assert_response :success
   end
 
-  test 'superadmin: should get new' do
-    get new_user_url
-    assert_response :success
+  it_allows_access_to_show_for(%i[root]) do
+    get superadmin_user_url(@user)
   end
 
-  test 'superadmin: should create user' do
+  it_allows_access_to_new_for(%i[root]) do
+    get new_superadmin_user_url
+  end
+
+  it_allows_access_to_create_for(%i[root]) do
     assert_difference('User.count') do
-      post superadmin_users_url, params: { user: attributes_for(:user, email: 'test@test.com') }
+      post superadmin_users_url,
+        params: { user: attributes_for(:user) }
     end
-
-    assert_redirected_to superadmin_user_url(User.last)
   end
 
-  test 'superadmin: should show user' do
-    get user_url(@user)
-    assert_response :success
+  it_allows_access_to_update_for(%i[root]) do
+    patch superadmin_user_url(@user),
+      params: { user: attributes_for(:user) }
   end
 
-  test 'superadmin: should get edit' do
-    get edit_superadmin_user_url(@user)
-    assert_response :success
-  end
-
-  test 'superadmin: should update user' do
-    patch superadmin_user_url(@user), params: { user: attributes_for(:user) }
-    assert_redirected_to superadmin_user_url(@user)
-  end
-
-  test 'superadmin: should destroy user' do
+  it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('User.count', -1) do
       delete superadmin_user_url(@user)
     end
-
-    assert_redirected_to superadmin_root_url
   end
 end

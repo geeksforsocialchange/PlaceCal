@@ -1,9 +1,18 @@
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
+  #http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
+  before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
 
+  include Pundit
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
   private
+
+  def user_not_authorized
+    redirect_to admin_root_path
+  end
 
   # Set the day either using the URL or by today's date
   def set_day
@@ -46,6 +55,11 @@ class ApplicationController < ActionController::Base
     else
       events.sort_by_time.group_by_day(&:dtstart)
     end
+  end
+
+  def get_home_turf
+    @site = Site.where(slug: request.subdomain).first
+    @home_turf = @site.primary_turf
   end
 
   # Takes an array of places or addresses and returns a sanitized json array
@@ -103,4 +117,28 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_by_ip
+    #Whitelisted ips are stored as comma separated values in the dokku config
+    whitelist = ENV['WHITELISTED_IPS'].split(',')
+    return if whitelist.include?(request.remote_ip)
+    redirect_to 'https://google.com'
+  end
+
+  # Shared methods across normal, admin and superadmin
+  # Use callbacks to share common setup or constraints between actions.
+  def set_partner
+    @partner = Partner.friendly.find(params[:id])
+  end
+
+  def set_place
+    @place = Place.friendly.find(params[:id])
+  end
+
+  def set_site
+    @site = Site.friendly.find(params[:id])
+  end
+
+  def set_user
+    @user = User.find(params[:id])
+  end
 end

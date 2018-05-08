@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-8">
+    <%= nested_form_for [:admin, @site], html: { class: "form-horizontal" } do |f| %>
+      <div class="row">
+        <div class="col-md-5">
+          <label>Name</label>
+         <%= f.text_field :name, class: "form-control" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5" style="margin-top: 20px; margin-bottom: 20px;">
+          <label>Domain</label>
+          <%= f.text_field :domain, class: "form-control" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label>Description</label>
+          <%= f.text_area :description, class: "form-control" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5" style="margin-top: 20px; margin-bottom: 20px;">
+          <label>Primary Turf</label>
+          <%= f.fields_for :sites_turf do |st|%>
+            <%= st.select :turf_id, options_from_collection_for_select(@turfs, 'id', 'name', st.object.turf_id), class: 'form-control' %>
+            <%= st.hidden_field :relation_type, value: "Primary" %>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label>Secondary Turfs</label>
+          <% @turfs.each do |t| %>
+            <%= fields_for "site[sites_turfs_attributes][#{t.id}]" do |st|%>
+            <%= t.name %>
+              <%= st.hidden_field :relation_type, value: "Secondary" %>
+              <%= st.check_box :turf_id, {include_hidden: false, checked: (@sites_turfs.include?(t.id) unless @sites_turfs.nil? ) }, t.id %>
+            <% end %>
+          <% end %>
+          <%#= f.association :turfs, label: false, collection: @turfs, as: :check_boxes %>
+        </div>
+      </div>
+      <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
+        <div class="col-md-8"></div>
+        <div class= "col-md-4">
+          <%= f.submit "Save", class: "btn btn-primary " %>
+          <% unless @site.new_record? %>
+            <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger" %>
+            <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
