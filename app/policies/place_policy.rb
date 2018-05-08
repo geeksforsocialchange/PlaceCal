@@ -30,9 +30,9 @@ class PlacePolicy < ApplicationPolicy
     create?
   end
 
-  # def destroy?
-  #   create?
-  # end
+  def destroy?
+    create?
+  end
 
   class Scope < Scope
     def resolve

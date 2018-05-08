@@ -63,7 +63,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
-  it_allows_access_to_update_for(%i[root]) do
+  it_allows_access_to_update_for(%i[root citizen]) do
     patch admin_user_url(@citizen),
       params: { user: attributes_for(:user) }
     # Redirect to main partner screen
@@ -76,13 +76,13 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to delete all Users
   #   Everyone else, redirect to admin_root_url
 
-  # it_allows_access_to_destroy_for(%i[root]) do
-  #   assert_difference('User.count', -1) do
-  #     delete admin_user_url(@citizen)
-  #   end
+  it_allows_access_to_destroy_for(%i[root]) do
+    assert_difference('User.count', -1) do
+      delete admin_user_url(@citizen)
+    end
 
-  #   assert_redirected_to admin_users_url
-  # end
+    assert_redirected_to admin_users_url
+  end
 
 
 end

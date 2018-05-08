@@ -1,5 +1,6 @@
 module Admin
   class SitesController < Admin::ApplicationController
+    before_action :set_site, only: %i[edit update destroy]
 
     def index
       @sites = policy_scope(Site)
@@ -16,7 +17,6 @@ module Admin
     end
 
     def edit
-      @site = Site.friendly.find(params[:id])
       authorize @site
       @turfs = Turf.all
       @sites_turfs = @site.secondary_turfs.pluck(:id)
@@ -33,12 +33,19 @@ module Admin
     end
 
     def update
-      @site = Site.friendly.find(params[:id])
       authorize @site
       if @site.update_attributes(site_params)
         redirect_to admin_sites_path
       else
         render 'edit'
+      end
+    end
+
+    def destroy
+      @site.destroy
+      respond_to do |format|
+        format.html { redirect_to admin_sites_url, notice: 'Site was successfully destroyed.' }
+        format.json { head :no_content }
       end
     end
 

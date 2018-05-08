@@ -93,7 +93,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else redirect to admin_partners_url
   #   TODO: Allow turf_admin and partner_admins to delete Partners
 
-  it_allows_access_to_destroy_for(%i[root turf_admin]) do
+  it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('Partner.count', -1) do
       delete admin_partner_url(@partner)
     end

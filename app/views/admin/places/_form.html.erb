@@ -104,7 +104,9 @@
     <div class="col-md-10"></div>
     <div class= "col-md-2">
       <%= f.submit "Save Place", class: "btn btn-primary " %><br><br>
-      <%= link_to "Destroy Place", @place, method: :delete, class: "btn btn-danger" %>
+      <% unless @place.new_record? %>
+        <%= link_to "Destroy Place", @place, method: :delete, class: "btn btn-danger" %>
+      <% end %>
     </div>
   </div>
   <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>

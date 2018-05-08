@@ -61,13 +61,13 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to delete all Sites
   #   Everyone else, redirect to admin_root_url
 
-  # it_allows_access_to_destroy_for(%i[root]) do
-  #   assert_difference('Site.count', -1) do
-  #     delete admin_site_url(@site)
-  #   end
+  it_allows_access_to_destroy_for(%i[root]) do
+    assert_difference('Site.count', -1) do
+      delete admin_site_url(@site)
+    end
 
-  #   assert_redirected_to admin_sites_url
-  # end
+    assert_redirected_to admin_sites_url
+  end
 
 
 end

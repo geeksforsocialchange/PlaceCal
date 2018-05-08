@@ -93,7 +93,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else redirect to admin_places_url
   #   TODO: Allow turf_admin and partner_admins to delete Places
 
-  it_allows_access_to_destroy_for(%i[root turf_admin]) do
+  it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('Place.count', -1) do
       delete admin_place_url(@place)
     end

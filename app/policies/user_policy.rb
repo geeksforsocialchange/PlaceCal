@@ -11,7 +11,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    # index?
+  	true
   end
 
   def assign_turf?

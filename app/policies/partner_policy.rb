@@ -23,9 +23,9 @@ class PartnerPolicy < ApplicationPolicy
     create?
   end
 
-  # def destroy?
-  #   index?
-  # end
+  def destroy?
+    create?
+  end
 
   class Scope < Scope
     def resolve

@@ -43,9 +43,12 @@
         </div>
       </div>
       <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
-        <div class="col-md-10"></div>
-        <div class= "col-md-2">
+        <div class="col-md-8"></div>
+        <div class= "col-md-4">
           <%= f.submit "Save", class: "btn btn-primary " %>
+          <% unless @site.new_record? %>
+            <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger" %>
+            <% end %>
         </div>
       </div>
     <% end %>
