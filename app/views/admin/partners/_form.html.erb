@@ -22,6 +22,12 @@
       <%= f.file_field :image %>
     </div>
   </div>
+  <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+    <div class="col-md-5">
+      <%= f.check_box :is_a_place, {}, "true", "false" %>
+      <label>Is a Place</label>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-5">
       <label>Turfs</label>
@@ -117,19 +123,27 @@
     </div>
     <%= f.simple_fields_for :calendars do |c| %>
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
           <label>Place Name</label>
           <%= c.text_field :name, class: "form-control" %>
           <label>URL</label>
           <%= c.text_field :source, class: "form-control" %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label>Platform</label>
           <h5><%= c.radio_button :type, 'google' %>Google Calendar</h5>
           <h5><%= c.radio_button :type, 'outlook' %>Outlook 365</h5>
           <h5><%= c.radio_button :type, 'facebook' %>Facebook</h5>
           <h5><%= c.radio_button :type, 'mac_calendar' %>Mac Calendar</h5>
+          <h5><%= c.radio_button :type, 'xml' %>Xml</h5>
           <h5><%= c.radio_button :type, 'other' %>Other</h5>
+        </div>
+        <div class="col-md-2">
+          <label>Import Strategy</label>
+          <h5><%= c.radio_button :strategy, 'event' %>Event</h5>
+          <h5><%= c.radio_button :strategy, 'place' %>Place</h5>
+          <h5><%= c.radio_button :strategy, 'room_number' %>Room Number</h5>
+          <h5><%= c.radio_button :strategy, 'event_override' %>Event Override</h5>
         </div>
         <div class="col-md-3">
           <label>Default Place</label>
@@ -189,7 +203,7 @@
     <div class="col-md-10"></div>
     <div class= "col-md-2">
       <%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
-      <% unless @partner.new_record? %>
+      <% if policy(Partner).destroy? && !@partner.new_record? %>
         <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
       <% end %>
     </div>

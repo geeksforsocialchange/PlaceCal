@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   #http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
   include Pundit
 
@@ -140,5 +141,16 @@ class ApplicationController < ActionController::Base
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name, :email, :password, :password_confirmation])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :email, :password, :password_confirmation, :current_password])
+  end
+
+  def after_sign_in_path_for(resource)
+    admin_root_url(subdomain: 'admin')
   end
 end

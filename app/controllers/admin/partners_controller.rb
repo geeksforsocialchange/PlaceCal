@@ -62,8 +62,8 @@ module Admin
       params.require(:partner).permit(
         :name, :image, :short_description, :public_name, :public_email,
         :public_phone, :partner_name, :partner_email, :partner_phone,
-        :calendar_phone, :calendar_name, :calendar_email,
-        calendars_attributes: %i[id name source type place_id _destroy],
+        :calendar_phone, :calendar_name, :calendar_email, :is_a_place,
+        calendars_attributes: %i[id name source type strategy place_id _destroy],
         places_attributes: [
           :id, :name, :short_description, :booking_info,
           :opening_times, :_destroy, :accessibility_info,

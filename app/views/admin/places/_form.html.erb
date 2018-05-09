@@ -104,7 +104,7 @@
     <div class="col-md-10"></div>
     <div class= "col-md-2">
       <%= f.submit "Save Place", class: "btn btn-primary " %><br><br>
-      <% unless @place.new_record? %>
+      <% if policy(Place).destroy? && !@place.new_record? %> 
         <%= link_to "Destroy Place", @place, method: :delete, class: "btn btn-danger" %>
       <% end %>
     </div>
