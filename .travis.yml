@@ -13,7 +13,7 @@ before_script:
 before_install:
   - |
       if [ "$TRAVIS_BRANCH" = "production" ]; then
-        openssl aes-256-cbc -K $encrypted_f4f309cbfdaf_key -iv $encrypted_f4f309cbfdaf_iv -in $TRAVIS_BUILD_DIR/.travis/production-deploy.key.enc -out production-deploy.key -d
+        openssl aes-256-cbc -K $encrypted_87ceb08cf37e_key -iv $encrypted_87ceb08cf37e_iv -in $TRAVIS_BUILD_DIR/.travis/production-deploy.key.enc -out production-deploy.key -d
       elif [ "$TRAVIS_BRANCH" = "master" ]; then
         openssl aes-256-cbc -K $encrypted_87ceb08cf37e_key -iv $encrypted_87ceb08cf37e_iv -in $TRAVIS_BUILD_DIR/.travis/deploy.key.enc -out deploy.key -d
       fi
