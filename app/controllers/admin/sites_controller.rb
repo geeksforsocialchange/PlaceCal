@@ -3,7 +3,8 @@ module Admin
     before_action :set_site, only: %i[edit update destroy]
 
     def index
-      @sites = policy_scope(Site)
+      @sites = Site.all
+      authorize current_user
     end
 
     def show

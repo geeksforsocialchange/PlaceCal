@@ -5,7 +5,7 @@ class Admin::TurfsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @turf = create(:turf)
     @root = create(:root)
-    @turf_admin = create(:user)
+    @turf_admin = create(:turf_admin)
     @turf_admin.turfs << @turf
     @citizen = create(:user)
 
@@ -22,10 +22,10 @@ class Admin::TurfsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  # it_denies_access_to_index_for(%i[citizen]) do
-  #   get admin_turfs_url
-  #   assert_redirected_to admin_root_url
-  # end
+  it_denies_access_to_index_for(%i[citizen]) do
+    get admin_turfs_url
+    assert_redirected_to admin_root_url
+  end
 
   # New & Create Turf
   #

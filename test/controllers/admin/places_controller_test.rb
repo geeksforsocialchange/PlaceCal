@@ -10,9 +10,9 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     @turf.places << @place
 
     @root = create(:root)
-    @turf_admin = create(:user)
+    @turf_admin = create(:turf_admin)
     @turf_admin.turfs << @turf
-    @partner_admin = create(:user)
+    @partner_admin = create(:partner_admin)
     @partner_admin.partners << @partner
     @citizen = create(:user)
 
@@ -36,7 +36,6 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     get admin_places_url
     assert_response :success
     # Results table is empty
-    assert_select 'tbody', 0
   end
 
   it_allows_access_to_index_for(%i[citizen]) do
@@ -52,12 +51,12 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_places_url
   #   TODO: Allow turf_admins and partner_admins to create new Places
 
-  it_allows_access_to_new_for(%i[root]) do
+  it_allows_access_to_new_for(%i[root turf_admin]) do
     get new_admin_place_url
     assert_response :success
   end
 
-  it_allows_access_to_create_for(%i[root]) do
+  it_allows_access_to_create_for(%i[root turf_admin]) do
     assert_difference('Place.count') do
       post admin_places_url,
            params: { place: { name: 'A new place' } }
@@ -70,17 +69,17 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_places_url
   #   TODO: allow turf_admins and partner_admins to edit their Places
 
-  it_allows_access_to_edit_for(%i[root]) do
+  it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
     get edit_admin_place_url(@place)
     assert_response :success
   end
 
-  it_allows_access_to_edit_for(%i[turf_admin partner_admin]) do
+  it_allows_access_to_edit_for(%i[citizen]) do
     get admin_places_url
     assert_response :success
   end
 
-  it_allows_access_to_update_for(%i[root]) do
+  it_allows_access_to_update_for(%i[root turf_admin partner_admin]) do
     patch admin_place_url(@place),
           params: { place: { name: 'Updated place name' } }
     # Redirect to main partner screen
@@ -93,7 +92,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else redirect to admin_places_url
   #   TODO: Allow turf_admin and partner_admins to delete Places
 
-  it_allows_access_to_destroy_for(%i[root]) do
+  it_allows_access_to_destroy_for(%i[root turf_admin partner_admin]) do
     assert_difference('Place.count', -1) do
       delete admin_place_url(@place)
     end

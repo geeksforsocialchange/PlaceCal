@@ -4,6 +4,7 @@ module Admin
 
     def index
       @turfs = policy_scope(Turf)
+      authorize @turfs
     end
 
     def new

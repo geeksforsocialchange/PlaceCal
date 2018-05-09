@@ -1,30 +1,23 @@
 class SitePolicy < ApplicationPolicy
 
   def index?
-    true
-  end
-
-  def new?
     user.role.present? && user.role.root?
   end
 
+  def new?
+    index?
+  end
+
   def create?
-    new?
+    index?
   end
 
   def edit?
-    new?
+    index?
   end
 
   def update?
-    new?
+    index?
   end
 
-  class Scope < Scope
-    def resolve
-      if user&.role&.root?
-        scope.all
-      end
-    end
-  end
 end

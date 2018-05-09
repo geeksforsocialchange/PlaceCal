@@ -133,7 +133,7 @@ class ApplicationController < ActionController::Base
   def set_place
     @place = Place.friendly.find(params[:id])
   end
-
+  
   def set_site
     @site = Site.friendly.find(params[:id])
   end

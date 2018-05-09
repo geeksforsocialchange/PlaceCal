@@ -11,6 +11,10 @@ class ApplicationPolicy
     user&.role&.root?
   end
 
+  def check_role?
+    user&.role&.present?
+  end
+
   def show?
     scope.where(:id => record.id).exists?
   end

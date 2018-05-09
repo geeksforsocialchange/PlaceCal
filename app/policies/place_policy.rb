@@ -1,11 +1,4 @@
 class PlacePolicy < ApplicationPolicy
-  attr_reader :user, :place
-
-  def initialize(user, place)
-    @user = user
-    @place = place
-  end
-
   def index?
     true
   end
@@ -15,7 +8,7 @@ class PlacePolicy < ApplicationPolicy
   end
 
   def create?
-    user.role.present? && user.role.root?
+    user.role.present? && (user.role.root? || user.role.turf_admin?)
   end
 
   def new?
@@ -23,11 +16,11 @@ class PlacePolicy < ApplicationPolicy
   end
 
   def update?
-    create?
+    user.role.present?
   end
 
   def edit?
-    create?
+    update?
   end
 
   def destroy?

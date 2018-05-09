@@ -51,12 +51,12 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_partners_url
   #   TODO: Allow turf_admins to create new Partners
 
-  it_allows_access_to_new_for(%i[root]) do
+  it_allows_access_to_new_for(%i[root turf_admin]) do
     get new_admin_partner_url
     assert_response :success
   end
 
-  it_allows_access_to_create_for(%i[root]) do
+  it_allows_access_to_create_for(%i[root turf_admin]) do
     assert_difference('Partner.count') do
       post admin_partners_url,
            params: { partner: { name: 'A new partner' } }
@@ -70,17 +70,17 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_partners_url
   #   TODO: allow turf_admins and partner_admins to edit their Partners
 
-  it_allows_access_to_edit_for(%i[root]) do
+  it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
     get edit_admin_partner_url(@partner)
     assert_response :success
   end
 
-  it_allows_access_to_edit_for(%i[turf_admin partner_admin]) do
+  it_allows_access_to_edit_for(%i[citizen]) do
     get admin_partners_url
     assert_response :success
   end
 
-  it_allows_access_to_update_for(%i[root]) do
+  it_allows_access_to_update_for(%i[root turf_admin partner_admin]) do
     patch admin_partner_url(@partner),
           params: { partner: { name: 'Updated partner name' } }
     # Redirect to main partner screen
@@ -93,7 +93,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else redirect to admin_partners_url
   #   TODO: Allow turf_admin and partner_admins to delete Partners
 
-  it_allows_access_to_destroy_for(%i[root]) do
+  it_allows_access_to_destroy_for(%i[root turf_admin partner_admin]) do
     assert_difference('Partner.count', -1) do
       delete admin_partner_url(@partner)
     end

@@ -2,7 +2,7 @@
 class Place < ApplicationRecord
   extend FriendlyId
   friendly_id :name, use: :slugged
-  attr_accessor :turf_attr
+  # attr_accessor :turf_attr
 
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs

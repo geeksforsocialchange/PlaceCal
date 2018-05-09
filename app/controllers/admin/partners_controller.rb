@@ -43,6 +43,7 @@ module Admin
     end
 
     def destroy
+      authorize @partner
       @partner.destroy
       respond_to do |format|
         format.html { redirect_to admin_partners_url, notice: 'Partner was successfully destroyed.' }
@@ -51,6 +52,11 @@ module Admin
     end
 
     private
+
+    def user_not_authorized
+      flash[:alert] = "Unable to access"
+      redirect_to admin_partners_url
+    end
 
     def partner_params
       params.require(:partner).permit(

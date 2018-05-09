@@ -1,7 +1,7 @@
 class TurfPolicy < ApplicationPolicy
 
   def index?
-    true
+    user.role.present? && (user.role.root? || user.role.turf_admin?)
   end
 
   def new?
@@ -24,7 +24,7 @@ class TurfPolicy < ApplicationPolicy
     def resolve
       if user&.role&.root?
         scope.all
-      elsif user&.role&.turf_admin?
+      else
         user.turfs
       end
     end
