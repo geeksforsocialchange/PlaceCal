@@ -45,7 +45,7 @@
         </p>
         <p>
           © 2017 Geeks For Social Change<br>
-          Build: <tt><%= ENV['GIT_REV'] %></tt>
+          Build: <tt><%= ENV['GIT_REV'][0,7] if ENV['GIT_REV'] %></tt>
         </p>
       </div>
     </div>
