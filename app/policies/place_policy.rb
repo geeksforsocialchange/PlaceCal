@@ -8,7 +8,7 @@ class PlacePolicy < ApplicationPolicy
   end
 
   def create?
-    user.role.present? && (user.role.root? || user.role.turf_admin?)
+    ['root', 'turf_admin'].include? user&.role
   end
 
   def new?
@@ -16,7 +16,7 @@ class PlacePolicy < ApplicationPolicy
   end
 
   def update?
-    user.role.present?
+    user.role?
   end
 
   def edit?
@@ -31,7 +31,7 @@ class PlacePolicy < ApplicationPolicy
     def resolve
       if user&.role&.root?
         scope.all
-      elsif user&.role&.partner_admin? || user&.role&.turf_admin?
+      elsif ['partner_admin', 'turf_admin'].include? user&.role
         scope.joins(:turfs).where(turfs: { id: user.turfs }).distinct
       end
     end

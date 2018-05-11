@@ -1,11 +1,11 @@
 class TurfPolicy < ApplicationPolicy
 
   def index?
-    user.role.present? && (user.role.root? || user.role.turf_admin?)
+    ['root', 'turf_admin'].include? user&.role
   end
 
   def new?
-    user.role.present? && user.role.root?
+    user&.role&.root?
   end
 
   def create?

@@ -7,7 +7,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-  	user.role.present? && user.role.root?
+  	user&.role&.root?
   end
 
   def update?
