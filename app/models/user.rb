@@ -20,6 +20,7 @@ class User < ApplicationRecord
 
   private
 
+  # Protects from unnecessary database queries
   def update_role
     return if self.role == 'root'
     self.role =
