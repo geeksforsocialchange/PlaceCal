@@ -1,7 +1,7 @@
 class SitePolicy < ApplicationPolicy
 
   def index?
-    user.role.present? && user.role.root?
+    user&.role&.root?
   end
 
   def new?

@@ -31,7 +31,7 @@
   <div class="row">
     <div class="col-md-5">
       <label>Turfs</label>
-      <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes %>
+      <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes, include_hidden: false %>
     </div>
   </div>
   <div class="">

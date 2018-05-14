@@ -25,16 +25,19 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   #   Show an empty page for citizens
   #   TODO: Allow turf_admins and partner_admins to view their Places
 
-  it_allows_access_to_index_for(%i[root]) do
+  it_allows_access_to_index_for(%i[root turf_admin]) do
     get admin_places_url
     assert_response :success
+    assert_select "a", "Add New Place"
+    assert_select "a", "Edit"
     # Returns one entry in the table
     assert_select 'tbody', 1
   end
 
-  it_allows_access_to_index_for(%i[turf_admin partner_admin]) do
+  it_allows_access_to_index_for(%i[partner_admin]) do
     get admin_places_url
     assert_response :success
+    assert_select "a", "Edit"
     # Results table is empty
   end
 

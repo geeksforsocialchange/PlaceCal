@@ -8,7 +8,7 @@ class PlacePolicy < ApplicationPolicy
   end
 
   def create?
-    user.role.present? && (user.role.root? || user.role.turf_admin?)
+    user&.role&.root? || user&.role&.turf_admin?
   end
 
   def new?

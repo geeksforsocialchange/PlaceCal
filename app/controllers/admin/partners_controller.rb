@@ -17,12 +17,13 @@ module Admin
 
     def create
       @partner = Partner.new(partner_params)
-      authorize @partner
+      # authorize @partner
       respond_to do |format|
         if @partner.save
           format.html { redirect_to admin_partners_path, notice: 'Partner was successfully created.' }
           format.json { render :show, status: :created, location: @partner }
         else
+          puts @partner.errors.inspect
           format.html { render :new }
           format.json { render json: @partner.errors, status: :unprocessable_entity }
         end
@@ -69,7 +70,8 @@ module Admin
           :opening_times, :_destroy, :accessibility_info,
           address_attributes: %i[id street_address street_address2 city postcode]
         ],
-        place_ids: [], turf_ids: []
+        turf_ids: [],
+        place_ids: []
       )
     end
   end
