@@ -18,8 +18,6 @@ class User < ApplicationRecord
     (first_name || "") + " " + (last_name || "")
   end
 
-  private
-
   # Protects from unnecessary database queries
   def update_role
     return if self.role == 'root'

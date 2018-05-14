@@ -19,6 +19,8 @@ class Partner < ApplicationRecord
 
   mount_uploader :image, ImageUploader
 
+  after_save :update_users
+
   def to_s
     name
   end
@@ -29,5 +31,11 @@ class Partner < ApplicationRecord
 
   def permalink
     "https://placecal.org/partners/#{id}"
+  end
+
+  private
+
+  def update_users
+    users.each { |u| u.update_role }
   end
 end
