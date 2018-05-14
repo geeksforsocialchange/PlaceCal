@@ -1,12 +1,19 @@
 <h2><center>Edit User</center></h2>
 <div class="row">
-  <div class="col-md-1"></div>
+  <div class="col-md-1">
+    <div class="behavior-trigger" data-behavior="user.form"></div>
+  </div>
   <div class="col-md-8">
     <%= simple_form_for @user, html: { class: "form-horizontal" }, method: :put, url: assign_turf_admin_user_path(@user) do |f| %>
       <div class="row">
         <div class="col-md-5">
           <label>Turfs</label>
           <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes %>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+        <div class="col-md-5">
+          <%= f.association :partners, label: "Partners", collection: options_for_partners, input_html: {class: 'form-control select2' }, include_hidden: false %>
         </div>
       </div>
       <div class="row">

@@ -5,5 +5,3 @@
 A community calendar app. In heavy development. More TBC.
 
 For now, try [the handbook](https://handbook.placecal.org/).
-
-Do it with the console. Role needs to be set to `secretary` for now.

@@ -9,7 +9,6 @@
   </div>
 </div>      
 <% if @partners.blank? %>
-<% puts "===-=---=--==-=-==" %>
   <h3>You have no partners</h3>
 <% else %>
   <table class="table table-striped">
@@ -26,7 +25,6 @@
   <tbody>
     <% @partners.each do |partner| %>
       <tr>
-        <% puts "===-=---=--==-=-==" %>
         <td><%= partner.id %></td>
         <td><%= partner.name %></td>
         <td><%= partner.public_email %></td>

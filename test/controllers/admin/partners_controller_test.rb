@@ -23,30 +23,30 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Show an empty page for citizens
   #   TODO: Allow turf_admins and partner_admins to view their Partners
 
-  # it_allows_access_to_index_for(%i[root turf_admin]) do
-  #   get admin_partners_url
-  #   assert_response :success
-  #   # Has a button allowing us to add new Partners
-  #   assert_select "a", "Add New Partner"
-  #   assert_select "a", "Edit"
-  #   # Returns one entry in the table
-  #   assert_select 'tbody', 1
-  # end
+  it_allows_access_to_index_for(%i[root turf_admin]) do
+    get admin_partners_url
+    assert_response :success
+    # Has a button allowing us to add new Partners
+    assert_select "a", "Add New Partner"
+    assert_select "a", "Edit"
+    # Returns one entry in the table
+    assert_select 'tbody', 1
+  end
 
   it_allows_access_to_index_for(%i[partner_admin]) do
     get admin_partners_url
     assert_response :success
-    # assert_select "a", "Edit", 1
-    # assert_select 'tbody', 1
+    assert_select "a", "Edit"
+    assert_select 'tbody', 1
     # Nothing to show in the table
   end
   
-  # it_allows_access_to_index_for(%i[citizen]) do
-  #   get admin_partners_url
-  #   assert_response :success
-  #   # Nothing to show in the table
-  #   assert_select 'tbody', 0
-  # end
+  it_allows_access_to_index_for(%i[citizen]) do
+    get admin_partners_url
+    assert_response :success
+    # Nothing to show in the table
+    assert_select 'tbody', 0
+  end
 
   # New & Create Partner
   #

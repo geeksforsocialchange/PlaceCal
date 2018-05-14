@@ -62,7 +62,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root turf_admin]) do
     assert_difference('Place.count') do
       post admin_places_url,
-           params: { place: { name: 'A new place' } }
+      params: { place: { name: 'A new place' } }
     end
   end
 

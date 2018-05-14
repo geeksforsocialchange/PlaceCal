@@ -11,9 +11,26 @@ class User < ApplicationRecord
   validates_presence_of :email
   validates_uniqueness_of :email
 
+  before_save :update_role
+
 
   def full_name
     (first_name || "") + " " + (last_name || "")
+  end
+
+  private
+
+  # Protects from unnecessary database queries
+  def update_role
+    return if self.role == 'root'
+    self.role =
+      if turfs.any?
+        'turf_admin'
+      elsif partners.any?
+        'partner_admin'
+      else
+        nil
+      end
   end
 
 end

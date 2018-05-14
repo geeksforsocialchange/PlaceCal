@@ -49,7 +49,7 @@ module Admin
     end
 
     def user_turf_params
-      params.require(:user).permit(:role, turf_ids: [] )
+      params.require(:user).permit(:role, turf_ids: [], partner_ids: [] )
     end
   end
 end
