@@ -7,6 +7,9 @@ require 'rails/test_help'
 require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 
+require 'minitest/autorun'
+require 'pry-rescue/minitest'
+
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 

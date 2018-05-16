@@ -18,7 +18,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   end
 
   constraints(::Subdomains::Sites) do
-    root 'pages#site'
+    root 'sites#index'
   end
 
   ymd = {
@@ -60,7 +60,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   get 'winter2017', to: 'collections#show', id: 1
 
   # Administration
-
   namespace :superadmin do
     get '/', to: 'users#index', as: :root
     resources :users
@@ -78,6 +77,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   namespace :manager do
     resources :calendars
   end
+
   root 'pages#home'
 
   # Styleguide

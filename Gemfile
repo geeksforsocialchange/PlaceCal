@@ -88,12 +88,14 @@ group :development do
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'awesome_print'
-  gem 'pry-rails'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'guard'
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
+  gem 'pry-rails'
+  gem 'pry-rescue'
+  gem 'pry-stack_explorer'
   gem 'rails-erd', require: false
   gem 'rubocop'
   gem 'spring'

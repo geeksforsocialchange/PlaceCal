@@ -8,32 +8,8 @@
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
-    <link rel="icon" type="image/png" href="<%= image_url('favicon.png') %>">
-    <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <meta property="og:title" content="PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>" />
-    <meta property="og:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/wide.png') %>" />
-  <% unless content_for?(:image) %>
-    <meta property="og:image:width" content="1920" />
-    <meta property="og:image:height" content="1080" />
-  <% end %>
-    <meta property="og:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@PlaceCal" />
-    <meta name="twitter:title" content="PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>" />
-    <meta name="twitter:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
-    <meta name="twitter:creator" content="@kimadactl" />
-    <meta name="twitter:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/square.png') %>" />
-    <meta name="twitter:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
-
-  <% if content_for?(:permalink) %>
-    <meta property="og:url" content="<%= yield(:permalink) %>">
-  <% end %>
-
-    <%= render "shared/google_analytics" %>
+    <%= render "layouts/meta" %>
+    <%= render "layouts/google_analytics" %>
   </head>
 
   <body>
@@ -48,15 +24,5 @@
         <%= render_component "footer" %>
       </footer>
      </div>
-     <!-- Start of Rocket.Chat Livechat Script -->
-<!-- <script type="text/javascript">
-(function(w, d, s, u) {
-	w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;
-	var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
-	j.async = true; j.src = 'https://chat.placecal.org/packages/rocketchat_livechat/assets/rocketchat-livechat.min.js?_=201702160944';
-	h.parentNode.insertBefore(j, h);
-})(window, document, 'script', 'https://chat.placecal.org/livechat');
-</script> -->
-<!-- End of Rocket.Chat Livechat Script -->
   </body>
 </html>

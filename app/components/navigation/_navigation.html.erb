@@ -1,7 +1,7 @@
 <div class="header">
-  <div class="header__branding" role="banner">
+  <div class="header__branding<%= " header__branding--#{@site.slug}" if @site %>" role="banner">
     <%= link_to root_path do %>
-      <h2>PlaceCal</h2>
+      <h2>PlaceCal<%= ": #{@site.name}" if @site %></h2>
       <p>The Community Calendar</p>
     <% end %>
   </div>
@@ -22,4 +22,3 @@
     </svg>
   </a>
 </div>
-

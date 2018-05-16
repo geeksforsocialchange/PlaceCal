@@ -2,7 +2,7 @@ html
   font-size: 18px
   box-sizing: border-box
 
-*, *:before, *:after 
+*, *:before, *:after
   box-sizing: inherit
 
 body
@@ -33,8 +33,7 @@ h2, .h2
   text-align: center
   font-weight: $extra-bold
   font-size: $base-font-size
-  margin-top: 3rem
-  margin-bottom: 3rem
+  letter-spacing: $title-letter-spacing
   span
     padding-bottom: 0.5rem
     border-bottom: 4px solid $red
@@ -52,6 +51,11 @@ h4, .h4
   text-transform: uppercase
   font-weight: $extra-bold
   letter-spacing: $title-letter-spacing
+
+.title-strip
+  background-color: $linen
+  padding: 0.5rem 0
+  margin: 3rem 0
 
 .slightly-smaller
   font-size: 0.8888889rem // 16px
@@ -98,9 +102,12 @@ hr
   font-family: $serif
   font-weight: normal
 
+.space-big
+  margin-top: 3rem
+  margin-bottom: 3rem
+
 .space-before
   margin-top: 2rem
-
 
 // TODO: refactor
 h2.place__title
