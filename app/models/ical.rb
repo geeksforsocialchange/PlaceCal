@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # FIXME: for some reason subclassing makes it go all weird
 # Ideally this should be its own model tho!
 # app/models/ical.rb

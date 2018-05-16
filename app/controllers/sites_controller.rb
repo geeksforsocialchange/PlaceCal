@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SitesController < ApplicationController
   before_action :get_home_turf, only: [:site]
   before_action :set_site, only: [:index]

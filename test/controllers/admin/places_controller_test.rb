@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @partner = create(:partner)
     @place = create(:place)
@@ -28,8 +29,8 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_index_for(%i[root turf_admin]) do
     get admin_places_url
     assert_response :success
-    assert_select "a", "Add New Place"
-    assert_select "a", "Edit"
+    assert_select 'a', 'Add New Place'
+    assert_select 'a', 'Edit'
     # Returns one entry in the table
     assert_select 'tbody', 1
   end
@@ -37,7 +38,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_index_for(%i[partner_admin]) do
     get admin_places_url
     assert_response :success
-    assert_select "a", "Edit"
+    assert_select 'a', 'Edit'
     # Results table is empty
   end
 
@@ -62,7 +63,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root turf_admin]) do
     assert_difference('Place.count') do
       post admin_places_url,
-      params: { place: { name: 'A new place' } }
+           params: { place: { name: 'A new place' } }
     end
   end
 
@@ -102,6 +103,4 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_places_url
   end
-
-
 end

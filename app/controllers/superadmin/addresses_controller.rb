@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Superadmin
   class AddressesController < Superadmin::ApplicationController
     # To customize the behavior of this controller,

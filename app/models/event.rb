@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/event.rb
 class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule notices]
@@ -46,7 +48,7 @@ class Event < ApplicationRecord
   scope :one_off_events_only, -> { where(rrule: false) }
   scope :one_off_events_first, -> { order(rrule: :asc) }
 
-  scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day)}
+  scope :upcoming_for_date, ->(from) { where('dtstart >= ?', from.beginning_of_day) }
 
   # Global feed
   scope :ical_feed, -> { where('dtstart >= ?', Time.now - 1.week).where('dtend < ?', Time.now + 1.month) }

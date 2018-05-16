@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Superadmin
   class EventsController < Superadmin::ApplicationController
     # To customize the behavior of this controller,

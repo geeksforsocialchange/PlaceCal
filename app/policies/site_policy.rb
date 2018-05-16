@@ -1,5 +1,6 @@
-class SitePolicy < ApplicationPolicy
+# frozen_string_literal: true
 
+class SitePolicy < ApplicationPolicy
   def index?
     user&.role&.root?
   end
@@ -19,5 +20,4 @@ class SitePolicy < ApplicationPolicy
   def update?
     index?
   end
-
 end

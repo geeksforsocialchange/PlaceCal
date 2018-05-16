@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SuperadminPartnersControllerTest < ActionDispatch::IntegrationTest
@@ -21,13 +23,13 @@ class SuperadminPartnersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('Partner.count') do
       post superadmin_partners_url,
-        params: { partner: { name: 'Test Partner' } }
+           params: { partner: { name: 'Test Partner' } }
     end
   end
 
   it_allows_access_to_update_for(%i[root]) do
     patch superadmin_partner_url(@partner),
-      params: { partner: { name: 'New Test Partner Name' } }
+          params: { partner: { name: 'New Test Partner Name' } }
   end
 
   it_allows_access_to_destroy_for(%i[root]) do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PagesHelper
   def presentation_image(id, alt = '')
     "<img src='#{src(id)}' srcset='#{srcset(id)}' alt='#{alt}'>".html_safe

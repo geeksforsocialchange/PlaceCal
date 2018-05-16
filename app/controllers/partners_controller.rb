@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PartnersController < ApplicationController
   before_action :set_partner, only: :show
   before_action :set_day, only: :show

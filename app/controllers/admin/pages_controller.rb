@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Admin
   class PagesController < Admin::ApplicationController
-
     def home
       if current_user&.role&.root?
         @turfs = Turf.all.order(:name)

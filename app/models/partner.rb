@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/partner.rb
 class Partner < ApplicationRecord
   extend FriendlyId
@@ -36,6 +38,6 @@ class Partner < ApplicationRecord
   private
 
   def update_users
-    users.each { |u| u.update_role }
+    users.each(&:update_role)
   end
 end

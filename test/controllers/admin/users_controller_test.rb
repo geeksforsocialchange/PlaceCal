@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @root = create(:root)
     @citizen = create(:user)
@@ -65,11 +66,10 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   it_allows_access_to_update_for(%i[root citizen]) do
     patch admin_user_url(@citizen),
-      params: { user: attributes_for(:user) }
+          params: { user: attributes_for(:user) }
     # Redirect to main partner screen
     assert_redirected_to admin_root_url
   end
-
 
   # Delete User
   #
@@ -83,6 +83,4 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_users_url
   end
-
-
 end

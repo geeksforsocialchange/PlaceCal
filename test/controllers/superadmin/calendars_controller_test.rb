@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SuperadminCalendarsControllerTest < ActionDispatch::IntegrationTest
@@ -42,13 +44,13 @@ class SuperadminCalendarsControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('Calendar.count') do
       post superadmin_calendars_url,
-        params: { calendar: { name: 'Test Calendar' } }
+           params: { calendar: { name: 'Test Calendar' } }
     end
   end
 
   it_allows_access_to_update_for(%i[root]) do
     patch superadmin_calendar_url(@calendar),
-      params: { calendar: { name: 'New Test Calendar Name' } }
+          params: { calendar: { name: 'New Test Calendar Name' } }
     assert_redirected_to superadmin_calendar_url(@calendar)
   end
 
@@ -58,7 +60,7 @@ class SuperadminCalendarsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "redirects if not logged in" do
+  test 'redirects if not logged in' do
     get superadmin_calendars_url
     assert_redirected_to new_user_session_path
     get superadmin_calendar_url(@calendar)

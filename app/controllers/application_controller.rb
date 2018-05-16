@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  #http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
+  # http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -119,7 +121,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_by_ip
-    #Whitelisted ips are stored as comma separated values in the dokku config
+    # Whitelisted ips are stored as comma separated values in the dokku config
     whitelist = ENV['WHITELISTED_IPS'].split(',')
     return if whitelist.include?(request.remote_ip)
     redirect_to 'https://google.com'
@@ -134,7 +136,7 @@ class ApplicationController < ActionController::Base
   def set_place
     @place = Place.friendly.find(params[:id])
   end
-  
+
   def set_site
     @site = Site.friendly.find(params[:id])
   end
@@ -146,11 +148,11 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name, :email, :password, :password_confirmation])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :email, :password, :password_confirmation, :current_password])
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name email password password_confirmation])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[first_name last_name email password password_confirmation current_password])
   end
 
-  def after_sign_in_path_for(resource)
+  def after_sign_in_path_for(_resource)
     admin_root_url(subdomain: 'admin')
   end
 end

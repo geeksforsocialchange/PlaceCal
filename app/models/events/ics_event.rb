@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Events
   class IcsEvent < DefaultEvent
-
     def initialize(event, start_date, end_date)
       @event = event
       @dtstart = start_date
@@ -9,7 +10,7 @@ module Events
 
     attr_reader :dtstart, :dtend
 
-    #to_s has to be called on any value returned by icalendar, or it will return a Icalendar::Values instead of a String
+    # to_s has to be called on any value returned by icalendar, or it will return a Icalendar::Values instead of a String
     def uid
       @event.uid.to_s
     end
@@ -41,6 +42,5 @@ module Events
     def occurrences_between(from, to)
       @event.occurrences_between(from, to)
     end
-
   end
 end

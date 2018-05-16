@@ -55,7 +55,7 @@ module Admin
     private
 
     def user_not_authorized
-      flash[:alert] = "Unable to access"
+      flash[:alert] = 'Unable to access'
       redirect_to admin_partners_url
     end
 

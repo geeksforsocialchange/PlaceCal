@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Subdomains
   class Sites
     def self.matches?(request)

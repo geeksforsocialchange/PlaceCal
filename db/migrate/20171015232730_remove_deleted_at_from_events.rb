@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveDeletedAtFromEvents < ActiveRecord::Migration[5.1]
   def up
     Event.where.not(deleted_at: nil).destroy_all

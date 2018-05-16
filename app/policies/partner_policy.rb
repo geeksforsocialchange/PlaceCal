@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 class PartnerPolicy < ApplicationPolicy
   def index?
     true
   end
 
   def show?
-    scope.where(:id => record.id).exists?
+    scope.where(id: record.id).exists?
   end
 
   def create?
-    ['root', 'turf_admin'].include? user&.role
+    %w[root turf_admin].include? user&.role
   end
 
   def new?
@@ -34,7 +36,7 @@ class PartnerPolicy < ApplicationPolicy
       elsif user&.role&.turf_admin?
         scope.joins(:turfs).where(turfs: { id: user.turfs }).distinct
       elsif user&.role&.partner_admin?
-        scope.joins(:users).where(partners_users: { user_id: user.id})
+        scope.joins(:users).where(partners_users: { user_id: user.id })
       end
     end
   end

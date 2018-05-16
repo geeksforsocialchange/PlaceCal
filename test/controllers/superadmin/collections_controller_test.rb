@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SuperadminCollectionsControllerTest < ActionDispatch::IntegrationTest
@@ -21,13 +23,13 @@ class SuperadminCollectionsControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('Collection.count') do
       post superadmin_collections_url,
-        params: { collection: { name: 'Test Collection' } }
+           params: { collection: { name: 'Test Collection' } }
     end
   end
 
   it_allows_access_to_update_for(%i[root]) do
     patch superadmin_collection_url(@collection),
-      params: { collection: { name: 'New Test Collection Name' } }
+          params: { collection: { name: 'New Test Collection Name' } }
   end
 
   it_allows_access_to_destroy_for(%i[root]) do
@@ -35,5 +37,4 @@ class SuperadminCollectionsControllerTest < ActionDispatch::IntegrationTest
       delete superadmin_collection_url(@collection)
     end
   end
-
 end

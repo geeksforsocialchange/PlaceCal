@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @site = create(:site)
     @root = create(:root)
@@ -35,11 +36,10 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('Site.count') do
       post admin_sites_url,
-        params: { site: attributes_for(:site) }
+           params: { site: attributes_for(:site) }
     end
   end
 
@@ -55,11 +55,10 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
 
   it_allows_access_to_update_for(%i[root]) do
     patch admin_site_url(@site),
-      params: { site: attributes_for(:site) }
+          params: { site: attributes_for(:site) }
     # Redirect to main partner screen
     assert_redirected_to admin_sites_url
   end
-
 
   # Delete Site
   #
@@ -73,6 +72,4 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_sites_url
   end
-
-
 end

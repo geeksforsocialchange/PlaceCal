@@ -15,11 +15,10 @@ class PlaceInfoComponent < MountainView::Presenter
 
   def address
     a = properties[:address]
-    [ a.street_address,
-      a.street_address2,
-      a.city,
-      a.postcode
-    ].reject(&:blank?).join(", <br>").html_safe
+    [a.street_address,
+     a.street_address2,
+     a.city,
+     a.postcode].reject(&:blank?).join(', <br>').html_safe
   end
 
   def contact?

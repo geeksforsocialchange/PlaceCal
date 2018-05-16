@@ -1,4 +1,6 @@
-require "administrate/base_dashboard"
+# frozen_string_literal: true
+
+require 'administrate/base_dashboard'
 
 class PartnerDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -23,7 +25,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     admin_email: Field::String,
     short_description: Field::Text,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -37,7 +39,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     # :users,
     :places,
     :is_a_place,
-    :calendars,
+    :calendars
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -64,19 +66,19 @@ class PartnerDashboard < Administrate::BaseDashboard
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :name,
-    :address,
-    :short_description,
-    :image,
-    :public_phone,
-    :public_email,
-    :admin_name,
-    :admin_email,
-    :users,
-    :places,
-    :is_a_place,
-    :calendars,
+  FORM_ATTRIBUTES = %i[
+    name
+    address
+    short_description
+    image
+    public_phone
+    public_email
+    admin_name
+    admin_email
+    users
+    places
+    is_a_place
+    calendars
   ].freeze
 
   # Overwrite this method to customize how partners are displayed

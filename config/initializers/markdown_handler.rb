@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # config/initializers/markdown_handler.rb
 module MarkdownHandler
   def self.erb

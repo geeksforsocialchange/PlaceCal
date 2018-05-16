@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # test/controllers/components_test.rb
 require 'test_helper'
 

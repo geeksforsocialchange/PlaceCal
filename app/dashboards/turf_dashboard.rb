@@ -1,4 +1,6 @@
-require "administrate/base_dashboard"
+# frozen_string_literal: true
+
+require 'administrate/base_dashboard'
 
 class TurfDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -17,7 +19,7 @@ class TurfDashboard < Administrate::BaseDashboard
     turf_type: Field::String,
     description: Field::Text,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -25,39 +27,39 @@ class TurfDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :users,
-    :partners,
-    :places,
-    :id,
+  COLLECTION_ATTRIBUTES = %i[
+    users
+    partners
+    places
+    id
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :users,
-    :partners,
-    :places,
-    :id,
-    :name,
-    :slug,
-    :turf_type,
-    :description,
-    :created_at,
-    :updated_at,
+  SHOW_PAGE_ATTRIBUTES = %i[
+    users
+    partners
+    places
+    id
+    name
+    slug
+    turf_type
+    description
+    created_at
+    updated_at
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :users,
-    :partners,
-    :places,
-    :name,
-    :slug,
-    :turf_type,
-    :description,
+  FORM_ATTRIBUTES = %i[
+    users
+    partners
+    places
+    name
+    slug
+    turf_type
+    description
   ].freeze
 
   # Overwrite this method to customize how turves are displayed

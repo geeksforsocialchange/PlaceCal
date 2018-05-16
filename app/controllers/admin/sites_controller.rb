@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class SitesController < Admin::ApplicationController
     before_action :set_site, only: %i[edit update destroy]
@@ -7,8 +9,7 @@ module Admin
       authorize current_user
     end
 
-    def show
-    end
+    def show; end
 
     def new
       @site = Site.new

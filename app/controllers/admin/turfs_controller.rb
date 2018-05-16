@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class TurfsController < Admin::ApplicationController
     before_action :set_turf, only: %i[show edit update destroy]
@@ -58,6 +60,5 @@ module Admin
     def turf_params
       params.require(:turf).permit(:name, :slug, :description, :turf_type)
     end
-
   end
 end

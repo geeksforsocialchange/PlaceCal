@@ -1,1 +1,3 @@
-json.partial! "collections/collection", collection: @collection
+# frozen_string_literal: true
+
+json.partial! 'collections/collection', collection: @collection

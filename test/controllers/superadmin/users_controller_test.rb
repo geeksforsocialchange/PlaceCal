@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SuperadminUsersControllerTest < ActionDispatch::IntegrationTest
@@ -21,13 +23,13 @@ class SuperadminUsersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('User.count') do
       post superadmin_users_url,
-        params: { user: attributes_for(:user) }
+           params: { user: attributes_for(:user) }
     end
   end
 
   it_allows_access_to_update_for(%i[root]) do
     patch superadmin_user_url(@user),
-      params: { user: attributes_for(:user) }
+          params: { user: attributes_for(:user) }
   end
 
   it_allows_access_to_destroy_for(%i[root]) do

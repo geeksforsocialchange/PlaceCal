@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PlacesIntegrationTest < ActionDispatch::IntegrationTest
@@ -5,7 +7,7 @@ class PlacesIntegrationTest < ActionDispatch::IntegrationTest
     @place = create(:place)
   end
 
-  test "should show basic information" do
+  test 'should show basic information' do
     get place_url(@place)
     assert_select 'h1', @place.name
     assert_select 'p', @place.short_description

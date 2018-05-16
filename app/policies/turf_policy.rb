@@ -1,7 +1,8 @@
-class TurfPolicy < ApplicationPolicy
+# frozen_string_literal: true
 
+class TurfPolicy < ApplicationPolicy
   def index?
-    ['root', 'turf_admin'].include? user&.role
+    %w[root turf_admin].include? user&.role
   end
 
   def new?

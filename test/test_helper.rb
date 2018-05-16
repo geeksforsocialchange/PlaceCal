@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
 require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
@@ -18,7 +20,7 @@ class ActiveSupport::TestCase
   # it_allows_access_to_action_for(%i[root turf_admin partner_admin place_admin citizen guest]) do
   # end
 
-  [:index, :show, :new, :edit, :create, :update, :destroy].each do |action|
+  %i[index show new edit create update destroy].each do |action|
     define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
       users.each do |user|
         test "#{user}: can #{action}" do
@@ -42,7 +44,6 @@ class ActiveSupport::TestCase
         end
       end
     end
-
   end
 end
 
