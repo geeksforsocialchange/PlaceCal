@@ -19,15 +19,17 @@
   </div>
   <div class="c">
     <%= markdown @site.description %>
-    <div class="">
-      <h3>Your local contact</h3>
-      <p><%= @site.site_admin.full_name %></p>
-      <p>
-        Call on: <%= @site.site_admin.phone %><br>
-        Or send an email to: <%= mail_to @site.site_admin.email %>
-      </p>
-      <%= gravatar_for @site.site_admin %>
-    </div>
+    <% if @site.site_admin.present? %>
+      <div class="">
+        <h3>Your local contact</h3>
+        <p><%= @site.site_admin.full_name %></p>
+        <p>
+          Call on: <%= @site.site_admin.phone %><br>
+          Or send an email to: <%= mail_to @site.site_admin.email %>
+        </p>
+        <%= gravatar_for @site.site_admin %>
+      </div>
+    <% end %>
   </div>
 </section>
 
