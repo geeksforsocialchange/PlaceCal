@@ -59,6 +59,7 @@ module Admin
         :slug,
         :description,
         :domain,
+        :site_admin_id,
         sites_turfs_attributes: %i[turf_id relation_type],
         sites_turf_attributes: %i[turf_id relation_type]
       )

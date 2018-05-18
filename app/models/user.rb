@@ -7,8 +7,10 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable
+
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
+  has_many :sites, foreign_key: :site_admin
 
   validates_presence_of :email
   validates_uniqueness_of :email
@@ -17,6 +19,10 @@ class User < ApplicationRecord
 
   def full_name
     (first_name || '') + ' ' + (last_name || '')
+  end
+
+  def admin_name
+    "#{last_name}, #{first_name} <#{email}>"
   end
 
   # Protects from unnecessary database queries
