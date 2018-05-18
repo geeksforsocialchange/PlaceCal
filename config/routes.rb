@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # config/routes.rb
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Most common route at the top

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module CalendarsHelper
   def summarize_dates(dates)
     if dates.length > 3
       sorted = dates.sort
-      "#{dates.count} dates between #{sorted.first.strftime("%a, %b %e, %Y")} and #{sorted.last.strftime("%a, %b %e, %Y")}"
+      "#{dates.count} dates between #{sorted.first.strftime('%a, %b %e, %Y')} and #{sorted.last.strftime('%a, %b %e, %Y')}"
     else
-      dates.map { |date| date.strftime("%b %e %Y (%a)") }.join(", ")
+      dates.map { |date| date.strftime('%b %e %Y (%a)') }.join(', ')
     end
   end
 

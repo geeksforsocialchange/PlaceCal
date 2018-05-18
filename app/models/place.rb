@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/place.rb
 class Place < ApplicationRecord
   extend FriendlyId
@@ -10,10 +12,10 @@ class Place < ApplicationRecord
   has_many :calendars, dependent: :destroy
 
   belongs_to :address, inverse_of: :places
-  accepts_nested_attributes_for :address, reject_if: lambda { |c| c[:postcode].blank? && c[:street_address].blank?}
+  accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
   validates_presence_of :name
   validates_uniqueness_of :name
-  
+
   # Max events to show on Place page before going to a day-by-day view
   # Needs some refactoring to work
   # EVENT_VIEW_AC TIVITY_LIMIT = 20

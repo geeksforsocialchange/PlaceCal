@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class PlacesController < Admin::ApplicationController
     include LoadUtilities
@@ -51,13 +53,12 @@ module Admin
     private
 
     def user_not_authorized
-      flash[:alert] = "Unable to access"
+      flash[:alert] = 'Unable to access'
       redirect_to admin_places_url
     end
 
     def place_params
-      params.require(:place).permit(:name, :short_description, :phone, :url, :address_id, :email, :status, :booking_info, :opening_times, :accessibility_info , address_attributes: [:id, :street_address, :street_address2, :city, :postcode, :_destroy ], :turf_ids => [])
+      params.require(:place).permit(:name, :short_description, :phone, :url, :address_id, :email, :status, :booking_info, :opening_times, :accessibility_info, address_attributes: %i[id street_address street_address2 city postcode _destroy], turf_ids: [])
     end
-
   end
 end

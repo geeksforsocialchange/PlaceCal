@@ -7,7 +7,7 @@ class Address < ApplicationRecord
   POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
 
   validates :street_address, :postcode, :country_code, presence: true
-  after_validation :geocode, if: ->(obj) { obj.street_address_changed? || obj.street_address2_changed?|| obj.postcode_changed? }
+  after_validation :geocode, if: ->(obj) { obj.street_address_changed? || obj.street_address2_changed? || obj.postcode_changed? }
 
   has_many :places
   has_many :events
@@ -36,7 +36,7 @@ class Address < ApplicationRecord
     def search(location, components, postcode)
       @address = Address.where(street_address: components).first
 
-      if @address.blank? #try using coordinates to match address
+      if @address.blank? # try using coordinates to match address
         coordinates = Geocoder.coordinates(location)
         @address ||= Address.where(latitude: coordinates[0], longitude: coordinates[1]).first
       end
@@ -63,6 +63,5 @@ class Address < ApplicationRecord
                             postcode: postcode&.strip)
       address if address.save
     end
-
   end
 end

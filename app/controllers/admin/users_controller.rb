@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module Admin
   class UsersController < Admin::ApplicationController
     before_action :set_user, only: %i[edit assign_turf update destroy]
 
-    def profile
-    end
+    def profile; end
 
     def index
       @users = User.all
@@ -43,13 +44,13 @@ module Admin
     end
 
     private
-    
+
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :password )
+      params.require(:user).permit(:first_name, :last_name, :email, :password)
     end
 
     def user_turf_params
-      params.require(:user).permit(:role, turf_ids: [], partner_ids: [] )
+      params.require(:user).permit(:role, turf_ids: [], partner_ids: [])
     end
   end
 end

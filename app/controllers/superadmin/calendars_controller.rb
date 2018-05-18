@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Superadmin
   class CalendarsController < Superadmin::ApplicationController
-
     def show
       super
     end
@@ -11,9 +12,8 @@ module Superadmin
       if requested_resource.save
         requested_resource.events.destroy_all if @refresh_events
 
-        redirect_to( [namespace, requested_resource],
-                     notice: translate_with_resource('update.success')
-                   )
+        redirect_to([namespace, requested_resource],
+                    notice: translate_with_resource('update.success'))
       else
         render :edit, locals: {
           page: Administrate::Page::Form.new(dashboard, requested_resource)
@@ -29,7 +29,7 @@ module Superadmin
 
         @calendar.import_events(date)
         flash[:success] = 'The import has completed. See below for details.'
-      rescue => e
+      rescue StandardError => e
         Rails.logger.debug(e)
         Rollbar.error(e)
         flash[:error] = 'The import ran into an error before completion. Please check error logs for more info.'

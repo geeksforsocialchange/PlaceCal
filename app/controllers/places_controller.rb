@@ -41,5 +41,4 @@ class PlacesController < ApplicationController
   end
 
   private
-
 end

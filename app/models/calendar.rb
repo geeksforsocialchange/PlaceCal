@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/calendar.rb
 class Calendar < ApplicationRecord
   self.inheritance_column = nil
@@ -55,7 +57,7 @@ class Calendar < ApplicationRecord
       @events_uids << event_data.uid
       event_data.partner_id = partner_id
 
-      if ['place', 'room_number'].include?(strategy)
+      if %w[place room_number].include?(strategy)
         event_data.place_id = place_id
       else
         location = set_place_or_address(event_data)
@@ -67,15 +69,15 @@ class Calendar < ApplicationRecord
 
     handle_deleted_events(from, @events_uids) if @events_uids
 
-    self.reload #reload the record from database to clear out any invalid events to avoid attempts to save them
-    self.update_attributes!({last_import_at: DateTime.now, import_lock_at: nil, notices: @notices })
+    reload # reload the record from database to clear out any invalid events to avoid attempts to save them
+    update_attributes!(last_import_at: DateTime.now, import_lock_at: nil, notices: @notices)
   end
 
   def create_or_update_events(event_data, occurrences, from) # rubocop:disable all
     @important_notices = []
-    calendar_events    = self.events.upcoming_for_date(from).where(uid: event_data.uid)
+    calendar_events    = events.upcoming_for_date(from).where(uid: event_data.uid)
 
-    #If any dates of this event don't match the imported start times or end times, delete them
+    # If any dates of this event don't match the imported start times or end times, delete them
     if event_data.recurring_event?
       events_with_invalid_dates = calendar_events.without_matching_times(occurrences.map(&:start_time), occurrences.map(&:end_time))
       events_with_invalid_dates.destroy_all
@@ -86,26 +88,25 @@ class Calendar < ApplicationRecord
       event_time[:are_spaces_available] = occurrence.status if type.xml?
 
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
-      event = self.events.new if event.blank?
+      event = events.new if event.blank?
 
       unless event.update_attributes event_data.attributes.merge(event_time)
         @important_notices << { event: event, errors: event.errors.full_messages }
       end
-
     end
 
     @important_notices
   end
 
   def handle_deleted_events(from, uids)
-    upcoming_events = self.events.upcoming_for_date(from)
+    upcoming_events = events.upcoming_for_date(from)
     deleted_events = upcoming_events.where.not(uid: uids).pluck(:uid)
 
     return if deleted_events.blank?
 
     if type.facebook?
-      #Do another check with Facebook to see if these events actually no
-      #longer exist in case of FB hiccup. If they do exist, remove from the list.
+      # Do another check with Facebook to see if these events actually no
+      # longer exist in case of FB hiccup. If they do exist, remove from the list.
       response = Parsers::Facebook.new(source).find_by_uid(deleted_events)
       response.keys.each { |key| deleted_events.delete(key) }
     end
@@ -118,9 +119,9 @@ class Calendar < ApplicationRecord
   # Import events from given URL
   def parse_events_from_source(from)
     case type
-    when "facebook"
-      Parsers::Facebook.new(source, { from: from }).events
-    when "xml"
+    when 'facebook'
+      Parsers::Facebook.new(source, from: from).events
+    when 'xml'
       Parsers::Xml.new(source).events
     else
       Parsers::Ics.new(source).events
@@ -133,7 +134,7 @@ class Calendar < ApplicationRecord
     return (strategy.event_override? ? { place_id: place_id } : {}) if location.blank?
 
     postcode   = event_data.postcode
-    regexp     = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new("UK|United Kingdom")
+    regexp     = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new('UK|United Kingdom')
     components = location.split(', ').map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
 
     if place = Place.where(name: components).first
@@ -142,5 +143,4 @@ class Calendar < ApplicationRecord
       return Address.search(location, components, postcode)
     end
   end
-
 end

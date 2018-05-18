@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Events
   class FacebookEvent < DefaultEvent
-
     def initialize(event)
       @event = OpenStruct.new(event)
     end
@@ -25,26 +26,22 @@ module Events
       return if place.blank?
       address = place['location']
       if address.present?
-        [ place['name'], address['street'], address['city'], address['zip'] ].reject(&:blank?).join(', ')
+        [place['name'], address['street'], address['city'], address['zip']].reject(&:blank?).join(', ')
       else
         place['name']
       end
     end
 
     def dtstart
-      begin
-        DateTime.parse(@event.start_time)
-      rescue
-        nil
-      end
+      DateTime.parse(@event.start_time)
+    rescue StandardError
+      nil
     end
 
     def dtend
-      begin
-        DateTime.parse(@event.end_time)
-      rescue
-        nil
-      end
+      DateTime.parse(@event.end_time)
+    rescue StandardError
+      nil
     end
 
     def last_updated
@@ -58,10 +55,10 @@ module Events
     def occurrences_between(*)
       @occurrences = []
 
-      unless recurring_event?
-        @occurrences << Dates.new(dtstart, dtend)
+      if recurring_event?
+        @event.event_times.each { |times| @occurrences << Dates.new(times['start_time'], times['end_time']) }
       else
-        @event.event_times.each { |times| @occurrences << Dates.new(times["start_time"], times["end_time"]) }
+        @occurrences << Dates.new(dtstart, dtend)
       end
 
       @occurrences

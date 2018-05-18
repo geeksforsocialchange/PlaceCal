@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 module LoadUtilities
- extend ActiveSupport::Concern
+  extend ActiveSupport::Concern
 
   included do
     def set_turfs
-      if current_user&.role&.root?
-         @turfs = Turf.all
-       else
-         @turfs = current_user&.turfs
-      end
+      @turfs = if current_user&.role&.root?
+                 Turf.all
+               else
+                 current_user&.turfs
+               end
     end
   end
 end

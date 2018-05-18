@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
@@ -11,7 +13,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     @turf_admin = create(:turf_admin)
     @turf_admin.turfs << @turf
 
-    @partner_admin  = create(:partner_admin)
+    @partner_admin = create(:partner_admin)
     @partner_admin.partners << @partner
 
     host! 'admin.lvh.me'
@@ -27,8 +29,8 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     get admin_partners_url
     assert_response :success
     # Has a button allowing us to add new Partners
-    assert_select "a", "Add New Partner"
-    assert_select "a", "Edit"
+    assert_select 'a', 'Add New Partner'
+    assert_select 'a', 'Edit'
     # Returns one entry in the table
     assert_select 'tbody', 1
   end
@@ -36,11 +38,11 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_index_for(%i[partner_admin]) do
     get admin_partners_url
     assert_response :success
-    assert_select "a", "Edit"
+    assert_select 'a', 'Edit'
     assert_select 'tbody', 1
     # Nothing to show in the table
   end
-  
+
   it_allows_access_to_index_for(%i[citizen]) do
     get admin_partners_url
     assert_response :success
@@ -65,7 +67,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
            params: { partner: { name: 'A new partner' } }
     end
   end
-
 
   # Edit & Update Partner
   #
@@ -101,7 +102,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
       delete admin_partner_url(@partner)
     end
 
-   assert_redirected_to admin_partners_url
+    assert_redirected_to admin_partners_url
   end
-
 end

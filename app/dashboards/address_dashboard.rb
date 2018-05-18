@@ -1,4 +1,6 @@
-require "administrate/base_dashboard"
+# frozen_string_literal: true
+
+require 'administrate/base_dashboard'
 
 class AddressDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -17,7 +19,7 @@ class AddressDashboard < Administrate::BaseDashboard
     country_code: Field::String,
     latitude: Field::Number.with_options(decimals: 2),
     longitude: Field::Number.with_options(decimals: 2),
-    events: Field::HasMany,
+    events: Field::HasMany
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -25,39 +27,39 @@ class AddressDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :id,
-    :street_address,
-    :street_address2,
-    :street_address3,
-    :events,
+  COLLECTION_ATTRIBUTES = %i[
+    id
+    street_address
+    street_address2
+    street_address3
+    events
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :id,
-    :street_address,
-    :street_address2,
-    :street_address3,
-    :city,
-    :postcode,
-    :country_code,
-    :latitude,
-    :longitude,
-    :events
+  SHOW_PAGE_ATTRIBUTES = %i[
+    id
+    street_address
+    street_address2
+    street_address3
+    city
+    postcode
+    country_code
+    latitude
+    longitude
+    events
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :street_address,
-    :street_address2,
-    :street_address3,
-    :city,
-    :postcode,
-    :country_code,
+  FORM_ATTRIBUTES = %i[
+    street_address
+    street_address2
+    street_address3
+    city
+    postcode
+    country_code
   ].freeze
 
   # Overwrite this method to customize how addresses are displayed

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateInitialTables < ActiveRecord::Migration[5.0]
   def change
     create_table :addresses do |t|
@@ -8,7 +10,7 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
       t.string :postcode
       t.string :country_code, default: 'UK'
 
-      #for geocoder
+      # for geocoder
       t.float :latitude
       t.float :longitude
     end
@@ -78,7 +80,6 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
     create_table :events_partners do |t|
       t.references :event, foreign_key: true
       t.references :partner, foreign_key: true
-
     end
 
     create_table :partners_users do |t|

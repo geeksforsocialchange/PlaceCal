@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/components/paginator/paginator_component.rb
 class PaginatorComponent < MountainView::Presenter
   properties :pointer, :period, :steps, :path, :sort, :repeating
@@ -10,7 +12,7 @@ class PaginatorComponent < MountainView::Presenter
   def paginator # rubocop:disable Metrics/AbcSize
     pages = []
     # Create backward arrow link
-    pages << { text: back_arrow, 
+    pages << { text: back_arrow,
                link: create_event_url(pointer - period),
                css: 'paginator__arrow paginator__arrow--back js-back' }
     # Create in-between links according to steps requested

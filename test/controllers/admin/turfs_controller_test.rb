@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Admin::TurfsControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @turf = create(:turf)
     @root = create(:root)
@@ -40,7 +41,7 @@ class Admin::TurfsControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('Turf.count') do
       post admin_turfs_url,
-        params: { turf: attributes_for(:turf) }
+           params: { turf: attributes_for(:turf) }
     end
   end
 
@@ -61,7 +62,7 @@ class Admin::TurfsControllerTest < ActionDispatch::IntegrationTest
 
   it_allows_access_to_update_for(%i[root]) do
     patch admin_turf_url(@turf),
-      params: { turf: attributes_for(:turf) }
+          params: { turf: attributes_for(:turf) }
     # Redirect to main partner screen
     assert_redirected_to admin_turfs_url
   end
@@ -83,6 +84,4 @@ class Admin::TurfsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_turfs_url
   end
-
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPolicy < ApplicationPolicy
   attr_reader :current_user, :scope
 
@@ -7,23 +9,22 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-  	user&.role&.root?
+    user&.role&.root?
   end
 
   def update?
-  	true
+    true
   end
 
   def assign_turf?
-  	index?
+    index?
   end
 
   def edit?
-  	index?
+    index?
   end
 
   def destroy?
-  	index?
+    index?
   end
-
 end

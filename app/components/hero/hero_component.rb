@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HeroComponent < MountainView::Presenter
   properties :title, :subtitle
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MapComponent < MountainView::Presenter
   properties :points, :zoom
 

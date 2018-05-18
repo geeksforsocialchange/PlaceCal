@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Superadmin::EventsControllerTest < ActionDispatch::IntegrationTest
@@ -32,7 +34,7 @@ class Superadmin::EventsControllerTest < ActionDispatch::IntegrationTest
 
   it_allows_access_to_update_for(%i[root]) do
     patch superadmin_event_url(@event),
-      params: { event: attributes_for(:event) }
+          params: { event: attributes_for(:event) }
   end
 
   it_allows_access_to_destroy_for(%i[root]) do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Turf < ApplicationRecord
   extend Enumerize
   self.table_name = 'turfs'
@@ -16,7 +18,6 @@ class Turf < ApplicationRecord
   private
 
   def update_users
-    users.each { |u| u.update_role }
+    users.each(&:update_role)
   end
-
 end

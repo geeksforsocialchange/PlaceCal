@@ -1,4 +1,6 @@
-require "administrate/base_dashboard"
+# frozen_string_literal: true
+
+require 'administrate/base_dashboard'
 
 class PlaceDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -25,7 +27,7 @@ class PlaceDashboard < Administrate::BaseDashboard
     booking_info: Field::Text,
     accessibility_info: Field::Text,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -33,12 +35,12 @@ class PlaceDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :name,
-    :partners,
-    :events,
-    :calendars,
-    :address,
+  COLLECTION_ATTRIBUTES = %i[
+    name
+    partners
+    events
+    calendars
+    address
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -60,7 +62,7 @@ class PlaceDashboard < Administrate::BaseDashboard
     :booking_info,
     :accessibility_info,
     :created_at,
-    :updated_at,
+    :updated_at
   ].freeze
 
   # FORM_ATTRIBUTES

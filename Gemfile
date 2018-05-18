@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ruby '2.4.3'
 source 'https://rubygems.org'
 
@@ -105,11 +107,11 @@ group :development do
 end
 
 group :test do
+  gem 'faker'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'simplecov', require: false
-  gem 'faker'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

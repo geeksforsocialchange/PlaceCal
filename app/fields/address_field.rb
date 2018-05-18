@@ -1,9 +1,10 @@
-require "administrate/field/base"
+# frozen_string_literal: true
+
+require 'administrate/field/base'
 
 class AddressField < Administrate::Field::Associative
-
   def self.permitted_attribute(attr)
-   :"#{attr}_id"
+    :"#{attr}_id"
   end
 
   def addresses
@@ -11,10 +12,10 @@ class AddressField < Administrate::Field::Associative
   end
 
   def selected_option
-    data && data.send(primary_key)
+    data&.send(primary_key)
   end
 
   def full_address
-    data && data.full_address
+    data&.full_address
   end
 end
