@@ -1,25 +1,24 @@
 <% content_for :title, "Hulme" %>
 
-<div class="c">
-  <section>
-    <h1>PlaceCal is a community events calendar where you can find everything near you, all in one place.</h1>
-    <div>Image credit: John Smith</div>
-  <section>
+<%= render_component 'hero_photo',
+      image_path: 'http://placekitten.com/g/1000/500',
+      image_credit: 'John Smith'
+%>
 
-  <section>
-    <p>PlaceCal is working to make Hulme a better connected neighbourhood.</p>
-    <p>We're working with (local organisations) and (places) to create a great calendar of everything that's on in your area.</p>
-    <a>See what's on</a>
-  </section>
-</div>
+<section class="region__mission">
+  <div class="c">
+    <h2>PlaceCal is working to make <%= @site.name %> a better connected neighbourhood.</h2>
+    <p>We're working with <%= link_to 'local organisations', partners_path %> and <%= link_to 'places', places_path %> to create a great calendar of everything that's on in <%= @site.name %>.</p>
+    <%= link_to "See what's on", events_path, class: "btn btn--lg btn--mt" %>
+  </div>
+</section>
 
-<section>
+<section class="region__management">
   <div class="title-strip">
     <h2 class="h2--alt">About Us</h2>
   </div>
   <div class="c">
-    <p>PlaceCal Hulme is part of the Hulme and Moss Side Age Friendly Partnership, who are working to make Hulme a better place to be for over 50s.</p>
-    <p>If you're a local organisation and want to join our network, get in touch with April below. We provide training and support to help you publish your events.</p>
+    <%= markdown @site.description %>
     <div class="">
       <h3>Your local contact</h3>
       <p>April Manderson</p>
@@ -31,7 +30,7 @@
   </div>
 </section>
 
-<section>
+<section class="region__support">
   <div class="title-strip">
     <h2 class="h2--alt">Advice and support</h2>
   </div>
