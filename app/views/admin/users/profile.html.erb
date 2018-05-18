@@ -24,6 +24,10 @@
     <br>
     <%= f.submit "Update", class: "btn btn-primary " %>
 
+
   <% end %>
+  <h3>Avatar</h3>
+  <%= gravatar_for current_user %>
+  <p>Create an avatar at <%= link_to "Gravatar.com", "https://en.gravatar.com/" %></p>
   </div>
 </div>

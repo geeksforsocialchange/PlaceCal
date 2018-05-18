@@ -26,6 +26,7 @@
         Call on: <%= @site.site_admin.phone %><br>
         Or send an email to: <%= mail_to @site.site_admin.email %>
       </p>
+      <%= gravatar_for @site.site_admin %>
     </div>
   </div>
 </section>
