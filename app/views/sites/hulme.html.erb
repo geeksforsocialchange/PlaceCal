@@ -6,7 +6,7 @@
 %>
 
 <section class="region__mission">
-  <div class="c">
+  <div class="c c--narrow">
     <h2>PlaceCal is working to make <%= @site.name %> a better connected neighbourhood.</h2>
     <p>We're working with <%= link_to 'local organisations', partners_path %> and <%= link_to 'places', places_path %> to create a great calendar of everything that's on in <%= @site.name %>.</p>
     <%= link_to "See what's on", events_path, class: "btn btn--lg btn--mt" %>
@@ -17,7 +17,7 @@
   <div class="title-strip">
     <h2 class="h2--alt">About Us</h2>
   </div>
-  <div class="c">
+  <div class="c c--narrow">
     <%= markdown @site.description %>
     <% if @site.site_admin.present? %>
       <div class="">

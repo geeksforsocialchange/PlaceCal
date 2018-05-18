@@ -1,10 +1,10 @@
 <section>
   <div class="hero_photo" style="background-image: <%= bg_image_path %>">
-    <div class="c">
+    <div class="c c--narrow">
       <h1><%= title %></h1>
-      <% if image_credit %>
-        <div class="hero_photo__caption"><%= image_credit %></div>
-      <% end %>
     </div>
+    <% if image_credit %>
+      <div class="hero_photo__caption small"><%= image_credit %></div>
+    <% end %>
   </div>
 <section>
