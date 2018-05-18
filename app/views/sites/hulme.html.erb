@@ -21,10 +21,10 @@
     <%= markdown @site.description %>
     <div class="">
       <h3>Your local contact</h3>
-      <p>April Manderson</p>
+      <p><%= @site.site_admin.full_name %></p>
       <p>
-        Call on: <br>
-        Or send an email to:
+        Call on: <%= @site.site_admin.phone %><br>
+        Or send an email to: <%= mail_to @site.site_admin.email %>
       </p>
     </div>
   </div>
