@@ -9,7 +9,7 @@
   <div class="c c--narrow">
     <h2>PlaceCal is working to make <%= @site.name %> a better connected neighbourhood.</h2>
     <p>We're working with <%= link_to 'local organisations', partners_path %> and <%= link_to 'places', places_path %> to create a great calendar of everything that's on in <%= @site.name %>.</p>
-    <%= link_to "See what's on", events_path, class: "btn btn--lg btn--mt" %>
+    <%= link_to "See what's on", events_path, class: "btn btn--lg btn--alt btn--mt" %>
   </div>
 </section>
 
@@ -20,15 +20,7 @@
   <div class="c c--narrow">
     <%= markdown @site.description %>
     <% if @site.site_admin.present? %>
-      <div class="">
-        <h3>Your local contact</h3>
-        <p><%= @site.site_admin.full_name %></p>
-        <p>
-          Call on: <%= @site.site_admin.phone %><br>
-          Or send an email to: <%= mail_to @site.site_admin.email %>
-        </p>
-        <%= gravatar_for @site.site_admin %>
-      </div>
+      <%= render_component 'profile', user: @site.site_admin %>
     <% end %>
   </div>
 </section>
@@ -38,28 +30,16 @@
     <h2 class="h2--alt">Advice and support</h2>
   </div>
   <div class="c">
-    <div>
-      <h3>Adding your events</h3>
-      <p>Want to join the PlaceCal network? Something we should know about?</p>
-      <a href="">Get in touch</a>
-    </div>
-    <div>
-      <h3>Getting online</h3>
-      <p>Computers access is available in the following places:</p>
-      <ul>
-        <li><a href="">Hulme Library</a></li>
-        <li><a href="">New Hope Fellowship Church</a></li>
-        <li><a href="">MMU Birley Campus</a></li>
-      </ul>
-    </div>
-    <div>
-      <h3>How to get help</h3>
-      <p>Supported computer sessions are available from the following groups:</p>
-      <ul>
-        <li><a href="">Coffee &amp; Computers</a></li>
-        <li><a href="">People First Wellbeing</a></li>
-        <li><a href="">Will Griffiths Court</a></li>
-      </ul>
+    <div class="g">
+      <div class="gi gi__1-3">
+        <%= render_component 'help_adding_events' %>
+      </div>
+      <div class="gi gi__1-3">
+        <%= render_component 'help_getting_online' %>
+      </div>
+      <div class="gi gi__1-3">
+        <%= render_component 'help_getting_help' %>
+      </div>
     </div>
   </div>
 </section>

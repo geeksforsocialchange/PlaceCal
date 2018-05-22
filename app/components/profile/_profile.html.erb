@@ -1,0 +1,13 @@
+<div class="profile">
+  <h3>Your local contact</h3>
+  <p><%= name %></p>
+  <p>
+    <% if phone %>
+      Call on <strong><%= phone %></strong><br>
+      Or send an email to <strong><%= mail_to email %></strong>
+    <% else %>
+      Email <strong><%= mail_to email %></strong>
+    <% end %>
+  </p>
+  <%= gravatar_for user %>
+</div>

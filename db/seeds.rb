@@ -105,7 +105,7 @@ Turf.where(name: 'Age friendly',
            turf_type: 'interest',
            description: 'age-friendly').first_or_create
 
-u = User.where(first_name: 'nikhil', last_name: 'ror', role: 'secretary', email: 'abc@example.com').first_or_initialize
+u = User.where(first_name: 'Place', last_name: 'Cal', role: 'root', email: 'info@placecal.org').first_or_initialize
 unless u.persisted?
   u.password = 'password'
   u.save
