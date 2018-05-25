@@ -1,6 +1,7 @@
 <div class="profile">
-  <h3>Your local contact</h3>
-  <p><%= name %></p>
+  <h3 class="h2--alt udl">Your local contact</h3>
+  <%= gravatar_for user %>
+  <p><strong><%= name %></strong></p>
   <p>
     <% if phone %>
       Call on <strong><%= phone %></strong><br>
@@ -9,5 +10,4 @@
       Email <strong><%= mail_to email %></strong>
     <% end %>
   </p>
-  <%= gravatar_for user %>
 </div>
