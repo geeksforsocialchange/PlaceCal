@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+# app/controllers/sites_controller.rb
 class SitesController < ApplicationController
   before_action :get_home_turf, only: [:site]
   before_action :set_site, only: [:index]
 
   def index
-    render template: "sites/#{request.subdomain}.html.erb"
+    render template: 'sites/default.html.erb'
   end
 
   def robots

@@ -7,15 +7,30 @@
         <%= f.text_field :name, class: "form-control" %>
       </div>
       <div class="form-group">
-        <label>Domain</label>
+        <%= label_tag :domain %>
         <%= f.text_field :domain, class: "form-control" %>
       </div>
       <div class="form-group">
-        <label>Description</label>
-        <%= f.text_area :description, class: "form-control" %>
+        <%= label_tag :description %>
+        <%= f.text_area :description, class: "form-control", rows: 5 %>
       </div>
       <div class="form-group">
         <%= f.association :site_admin, label_method: :admin_name %>
+      </div>
+      <div class="form-group">
+        <%= label_tag :logo %>
+        <%= f.file_field :logo %>
+        <p><em>Logos should be SVG format</em></p>
+      </div>
+      <div class="form-group">
+        <%= label_tag :hero_image %>
+        <%= f.file_field :hero_image %>
+        <p><em>Header images should be 2260x700</em></p>
+      </div>
+      <div class="form-group">
+        <%= label_tag :hero_image_credit %>
+        <%= f.text_field :hero_image_credit %>
+        <p><em>Who took this photo?</em></p>
       </div>
       <div class="form-group">
         <label>Primary Turf</label>

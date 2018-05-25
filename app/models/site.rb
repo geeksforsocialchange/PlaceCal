@@ -16,4 +16,7 @@ class Site < ApplicationRecord
   accepts_nested_attributes_for :sites_turfs, reject_if: ->(c) { c[:turf_id].blank? }
 
   validates :name, :slug, :domain, presence: true
+
+  mount_uploader :logo, SiteLogoUploader
+  mount_uploader :hero_image, HeroImageUploader
 end

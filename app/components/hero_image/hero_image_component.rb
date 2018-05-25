@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# app/components/hero_photo/hero_photo_component.rb
-class HeroPhotoComponent < MountainView::Presenter
+# app/components/hero_image/hero_image_component.rb
+class HeroImageComponent < MountainView::Presenter
   property :title, default: 'PlaceCal is a community events calendar where you can find everything near you, all in one place.'
   properties :image_path, :image_credit
 
@@ -15,6 +15,6 @@ class HeroPhotoComponent < MountainView::Presenter
   end
 
   def bg_image_path
-    "url(#{properties[:image_path]})"
+    "url(#{image_path})"
   end
 end

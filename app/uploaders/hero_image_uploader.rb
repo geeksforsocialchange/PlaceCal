@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# app/uploaders/image_uploader.rb
-class ImageUploader < CarrierWave::Uploader::Base
+# app/uploaders/hero_image_uploader.rb
+class HeroImageUploader < CarrierWave::Uploader::Base
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
@@ -16,34 +16,28 @@ class ImageUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  # Process files as they are uploaded:
-  process resize_to_fit: [1200, 1200]
-
-  # def scale(width, height)
-  #   # do something
+  # Provide a default URL as a default if there hasn't been a file uploaded:
+  # def default_url(*args)
+  #   # For Rails 3.1+ asset pipeline compatibility:
+  #   # ActionController::Base.helpers.asset_path("fallback/" + [version_name, "default.png"].compact.join('_'))
+  #
+  #   "/images/fallback/" + [version_name, "default.png"].compact.join('_')
   # end
 
-  # Create different versions of your uploaded files:
-  version :retina do
-    process resize_to_fit: [840, 1200]
-  end
+  process resize_to_fit: [2260, 700]
 
   version :standard do
-    process resize_to_fit: [420, 840]
-  end
-
-  version :thumb do
-    process resize_to_fit: [100, 100]
+    process resize_to_fit: [1130, 350]
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_whitelist
-    %w[jpg jpeg gif png]
+    %w[jpg jpeg png]
   end
 
   # Override the filename of the uploaded files:
-  # Avoid using model.id or version_name here, see uploader/store.rb for details
+  # Avoid using model.id or version_name here, see uploader/store.rb for details.
   # def filename
   #   "something.jpg" if original_filename
   # end

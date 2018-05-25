@@ -55,13 +55,17 @@ module Admin
 
     def site_params
       params.require(:site).permit(
+        :id,
         :name,
         :slug,
         :description,
         :domain,
+        :logo,
+        :hero_image,
+        :hero_image_credit,
         :site_admin_id,
-        sites_turfs_attributes: %i[turf_id relation_type],
-        sites_turf_attributes: %i[turf_id relation_type]
+        sites_turfs_attributes: %i[id turf_id relation_type],
+        sites_turf_attributes: %i[id turf_id relation_type]
       )
     end
   end

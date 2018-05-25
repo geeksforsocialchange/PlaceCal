@@ -1,5 +1,11 @@
 <div class="header">
-  <div class="header__branding<%= " header__branding--#{@site.slug}" if @site %>" role="banner">
+  <% if @site %>
+    <div class="header__branding header__branding--<%= @site.slug %>"
+         style="background-image: url(<%= image_url @site.logo %>)"
+         role="banner">
+  <% else %>
+    <div class="header__branding" role="banner">
+  <% end %>
     <%= link_to root_path do %>
       <h2>PlaceCal<%= ": #{@site.name}" if @site %></h2>
       <p>The Community Calendar</p>

@@ -16,6 +16,6 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_template 'pages/home'
     # If there's a match, display a custom homepage
     get 'http://hulme.lvh.me'
-    assert_template 'sites/hulme.html.erb'
+    assert_template 'sites/default.html.erb'
   end
 end
