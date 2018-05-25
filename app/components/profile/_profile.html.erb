@@ -1,13 +1,19 @@
 <div class="profile">
-  <h3 class="h2--alt udl">Your local contact</h3>
-  <%= gravatar_for user %>
-  <p><strong><%= name %></strong></p>
-  <p>
-    <% if phone %>
-      Call on <strong><%= phone %></strong><br>
-      Or send an email to <strong><%= mail_to email %></strong>
-    <% else %>
-      Email <strong><%= mail_to email %></strong>
-    <% end %>
-  </p>
+  <div class="profile__title">
+    <h3 class="h2--alt udl">Your local contact</h3>
+  </div>
+  <div class="profile__avatar">
+    <%= gravatar_for user %>
+  </div>
+  <div class="profile__details">
+    <p><strong><%= name %></strong></p>
+    <p>
+      <% if phone %>
+        Call on <strong><%= phone %></strong><br>
+        Or send an email to <strong><%= mail_to email %></strong>
+      <% else %>
+        Email <strong><%= mail_to email %></strong>
+      <% end %>
+    </p>
+  </div>
 </div>

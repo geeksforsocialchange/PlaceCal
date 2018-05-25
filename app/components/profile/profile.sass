@@ -1,5 +1,6 @@
 @import "variables_mixins"
 
+// TODO: convert this to grid, currently has a few messy resolutions
 .profile
   background-color: $cream
   border-radius: 1rem
@@ -9,6 +10,17 @@
   h3
     border-bottom-color: $red
     margin-bottom: 1.5rem
-  img
-    border-radius: 50%
-    max-width: 120px
+  .profile__avatar
+    img
+      border-radius: 50%
+      max-width: 120px
++for-tablet-portrait-up
+  .profile__avatar
+    display: inline-block
+    margin-top: 0.5rem
+    margin-right: 1rem
+    margin-left: 1rem
+  .profile__details
+    display: inline-block
+    text-align: left
+    vertical-align: top
