@@ -61,6 +61,7 @@ module Admin
         :description,
         :domain,
         :logo,
+        :footer_logo,
         :hero_image,
         :hero_image_credit,
         :site_admin_id,

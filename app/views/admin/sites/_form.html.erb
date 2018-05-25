@@ -9,6 +9,8 @@
       <div class="form-group">
         <%= label_tag :domain %>
         <%= f.text_field :domain, class: "form-control" %>
+        <%= label_tag :slug %>
+        <%= f.text_field :slug, class: "form-control" %>
       </div>
       <div class="form-group">
         <%= label_tag :description %>
@@ -20,6 +22,8 @@
       <div class="form-group">
         <%= label_tag :logo %>
         <%= f.file_field :logo %>
+        <%= label_tag :footer_logo %>
+        <%= f.file_field :footer_logo %>
         <p><em>Logos should be SVG format</em></p>
       </div>
       <div class="form-group">

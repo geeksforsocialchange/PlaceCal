@@ -18,5 +18,6 @@ class Site < ApplicationRecord
   validates :name, :slug, :domain, presence: true
 
   mount_uploader :logo, SiteLogoUploader
+  mount_uploader :footer_logo, SiteLogoUploader
   mount_uploader :hero_image, HeroImageUploader
 end
