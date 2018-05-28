@@ -44,12 +44,14 @@
         <% end %>
       </div>
       <div class="form-group">
-        <label>Secondary Turfs</label>
+        <label>Secondary Turfs</label><br>
         <% @turfs.each do |t| %>
           <%= fields_for "site[sites_turfs_attributes][#{t.id}]" do |st|%>
-          <%= t.name %>
-            <%= st.check_box :turf_id, {include_hidden: false, checked: (@sites_turfs.include?(t.id) unless @sites_turfs.nil? ) }, t.id %>
-            <%= st.hidden_field :relation_type, value: "Secondary" %>
+            <label>
+              <%= st.check_box :turf_id, {include_hidden: false, checked: (@sites_turfs.include?(t.id) unless @sites_turfs.nil? ) }, t.id %>
+              <%= t.name %>
+              <%= st.hidden_field :relation_type, value: "Secondary" %>
+            </label><br>
           <% end %>
         <% end %>
       </div>

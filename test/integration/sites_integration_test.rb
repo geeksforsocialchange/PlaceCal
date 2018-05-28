@@ -27,7 +27,7 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'p', @site.description
     assert_select 'strong', @admin.full_name
     assert_select 'strong', @admin.phone
-    assert_select 'strong', @admin.email
+    assert_select 'strong', @site.site_admin.email
     assert_select 'h3', 'Adding Your Events'
     assert_select 'h3', 'Getting Online'
     assert_select 'h3', 'PlaceCal Support'

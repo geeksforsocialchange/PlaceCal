@@ -14,7 +14,7 @@ module Admin
     def new
       @site = Site.new
       @turfs = Turf.all
-      @site.build_sites_turf
+      # @site.build_sites_turf
       authorize @site
     end
 
@@ -65,8 +65,8 @@ module Admin
         :hero_image,
         :hero_image_credit,
         :site_admin_id,
-        sites_turfs_attributes: %i[id turf_id relation_type],
-        sites_turf_attributes: %i[id turf_id relation_type]
+        sites_turfs_attributes: %i[_destroy id turf_id relation_type],
+        sites_turf_attributes: %i[_destroy id turf_id relation_type]
       )
     end
   end
