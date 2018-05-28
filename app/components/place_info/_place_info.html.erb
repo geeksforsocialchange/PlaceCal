@@ -10,13 +10,13 @@
   <div class="gi gi__1-3">
     <h3 class="udl udl--fw h4">Contact</h3>
     <p class="small">
-      <% if phone %>
+      <% if phone.present? %>
         <strong>T:</strong> <%= phone %></strong><br>
       <% end %>
-      <% if email %>
+      <% if email.present? %>
         <strong>E:</strong> <%= mail_to email %></strong><br>
       <% end %>
-      <% if url %>
+      <% if url.present? %>
         <strong>W:</strong> <span class='url'><%= link_to formatted_url, url %></a></strong>
       <% end %>
       <% unless contact? %>

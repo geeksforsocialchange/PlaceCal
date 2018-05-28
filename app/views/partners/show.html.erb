@@ -5,13 +5,13 @@
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]] %>
-  
+
   <hr>
 
   <div class="g g--partner">
     <div class="gi gi__3-5">
       <h1 class="udl udl--red sans"><%= @partner.name %></h1>
-  
+
       <% if @partner.short_description %>
         <div class="first-ele-lg">
           <%= markdown @partner.short_description %>
@@ -26,7 +26,16 @@
           address: place.address,
           url: place.url
         %>
-      <% elsif @partner.places.any? %>
+      <% else %>
+        <%= render_component "place_info",
+          name: @partner.name,
+          email: @partner.public_email,
+          phone: @partner.public_phone,
+          address: @partner.address,
+          url: @partner.url
+        %>
+      <% end %>
+      <% if @partner.places.any? %>
         <p class="small"><%= @partner.name %> manage
         <%= @partner.places.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
       <% end %>
@@ -66,7 +75,7 @@
 
   <hr>
 
-  <%= render_component "event_list", 
+  <%= render_component "event_list",
     events: @events,
     pointer: @current_day,
     period: @period,

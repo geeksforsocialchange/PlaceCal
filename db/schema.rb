@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180528112309) do
+ActiveRecord::Schema.define(version: 20180528161308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 20180528112309) do
     t.string "calendar_phone"
     t.string "calendar_name"
     t.string "public_name"
+    t.string "url"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end

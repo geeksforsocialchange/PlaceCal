@@ -14,5 +14,8 @@ class PlacesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'p', /123 Moss Ln E/
     assert_select 'p', /Manchester/
     assert_select 'p', /M15 5DD/
+    assert_select 'p', /#{@place.phone}/
+    assert_select 'a[href=?]', "mailto:#{@place.email}"
+    assert_select 'a[href=?]', @place.url
   end
 end
