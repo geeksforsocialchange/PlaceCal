@@ -1,8 +1,8 @@
 <div class="help help__getting_online">
   <%= image_tag "icons/help/getting-online.svg" %>
-  <h3 class="h2--alt"><span>Getting online</span></h3>
+  <h3 class="h2--alt"><span>Getting Online</span></h3>
   <p>Computer access is available in the following places:</p>
-  <% if locations %>
+  <% if locations.any? %>
     <ul>
       <% locations.each do |location| %>
         <li><%= link_to location.name, place_url(location) %></li>
