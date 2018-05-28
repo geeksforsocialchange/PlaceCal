@@ -12,7 +12,7 @@ class Site < ApplicationRecord
   has_many :secondary_turfs, -> { where(sites_turfs: { relation_type: 'Secondary' }) }, source: :turf, through: :sites_turfs
 
   has_many :turfs, through: :sites_turfs
-  
+
   belongs_to :site_admin, class_name: 'User'
 
   accepts_nested_attributes_for :sites_turf
