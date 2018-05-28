@@ -4,7 +4,6 @@ class Site < ApplicationRecord
   extend FriendlyId
   friendly_id :name, use: :slugged
 
-
   has_one :sites_turf, dependent: :destroy
   has_one :primary_turf, -> { where(sites_turfs: { relation_type: 'Primary' }) }, source: :turf, through: :sites_turf
 
@@ -12,6 +11,8 @@ class Site < ApplicationRecord
   has_many :secondary_turfs, -> { where(sites_turfs: { relation_type: 'Secondary' }) }, source: :turf, through: :sites_turfs
 
   has_many :turfs, through: :sites_turfs
+
+  has_and_belongs_to_many :supporters
 
   belongs_to :site_admin, class_name: 'User'
 

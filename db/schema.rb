@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180528161308) do
+ActiveRecord::Schema.define(version: 20180528165204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -193,10 +193,27 @@ ActiveRecord::Schema.define(version: 20180528161308) do
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 
+  create_table "sites_supporters", id: false, force: :cascade do |t|
+    t.bigint "site_id", null: false
+    t.bigint "supporter_id", null: false
+    t.index ["site_id", "supporter_id"], name: "index_sites_supporters_on_site_id_and_supporter_id"
+    t.index ["supporter_id", "site_id"], name: "index_sites_supporters_on_supporter_id_and_site_id"
+  end
+
   create_table "sites_turfs", force: :cascade do |t|
     t.integer "turf_id"
     t.integer "site_id"
     t.string "relation_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "supporters", force: :cascade do |t|
+    t.string "name"
+    t.string "url"
+    t.string "logo"
+    t.string "description"
+    t.integer "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
