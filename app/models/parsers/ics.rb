@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 module Parsers
-  class Ics
-    def initialize(file, params = {})
+  class Ics < DefaultParser
+    def initialize(file, params={})
       @file = file
       @params = params
+    end
+
+    def self.whitelist_pattern
+      /https:\/\/calendar.google.com\.*|https:\/\/outlook.office365.com\/owa\/calendar\/.*/
     end
 
     def events

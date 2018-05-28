@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 module Parsers
-  class Facebook
-    def initialize(page, params = {})
+  class Facebook < Parsers::DefaultParser
+
+    def initialize(page, params={})
       @page = page
       @from = params[:from] || Date.current.beginning_of_day
+    end
+
+    def self.whitelist_pattern
+      /https:\/\/www.facebook.com\.*/
     end
 
     def events

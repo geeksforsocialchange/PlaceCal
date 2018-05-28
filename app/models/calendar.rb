@@ -50,7 +50,7 @@ class Calendar < ApplicationRecord
     @notices = []
     @events_uids = []
 
-    parse_events_from_source(from).each do |event_data|
+    events_from_source.each do |event_data|
       occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
       next if event_data.private? || occurrences.blank?
 
@@ -117,15 +117,8 @@ class Calendar < ApplicationRecord
   private
 
   # Import events from given URL
-  def parse_events_from_source(from)
-    case type
-    when 'facebook'
-      Parsers::Facebook.new(source, from: from).events
-    when 'xml'
-      Parsers::Xml.new(source).events
-    else
-      Parsers::Ics.new(source).events
-    end
+  def events_from_source(from)
+    Parsers::DefaultParser.new(self).events
   end
 
   def set_place_or_address(event_data)
