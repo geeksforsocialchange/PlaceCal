@@ -77,7 +77,7 @@ chown dokku.dokku /var/lib/dokku/data/storage/APP_NAME
 `/app` comes from the Dockerfile location for the container (see below)
 
 ```
-dokku storage:mount APP_NAME /var/lib/dokku/data/storage/APP_NAME/public/system:/app/public/system
+dokku storage:mount APP_NAME /var/lib/dokku/data/storage/APP_NAME/public/uploads:/app/public/uploads
 dokku ps:rebuild APP_NAME
 ```
 

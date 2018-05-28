@@ -1,10 +1,14 @@
 <div class="help help__getting_online">
   <%= image_tag "icons/help/getting-online.svg" %>
   <h3 class="h2--alt"><span>Getting online</span></h3>
-  <p>Computers access is available in the following places:</p>
-  <ul>
-    <li><a href="">Hulme Library</a></li>
-    <li><a href="">New Hope Fellowship Church</a></li>
-    <li><a href="">MMU Birley Campus</a></li>
-  </ul>
+  <p>Computer access is available in the following places:</p>
+  <% if locations %>
+    <ul>
+      <% locations.each do |location| %>
+        <li><%= link_to location.name, place_url(location) %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>Information about getting online coming soon.</p>
+  <% end %>
 </div>
