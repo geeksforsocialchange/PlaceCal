@@ -2,7 +2,7 @@
   <div class="c">
     <h5>PlaceCal</h5>
 
-    <% if @site.footer_logo %>
+    <% if @site&.footer_logo %>
       <%= image_tag @site.footer_logo %>
     <% else %>
       <%= image_tag 'logo-footer.svg' %>
