@@ -25,14 +25,14 @@ class SupporterLogoUploader < CarrierWave::Uploader::Base
   # end
 
   # Process files as they are uploaded:
-  process resize_to_fit: [200, 200]
+  process resize_to_fit: [200, 200], if: :is_raster?
   #
   # def scale(width, height)
   #   # do something
   # end
 
   # Create different versions of your uploaded files:
-  version :standard do
+  version :standard, if: :is_raster? do
     process resize_to_fit: [100, 100]
   end
 
@@ -47,4 +47,10 @@ class SupporterLogoUploader < CarrierWave::Uploader::Base
   # def filename
   #   "something.jpg" if original_filename
   # end
+
+  private
+
+  def is_raster?(new_file)
+    File.extname(new_file.file) != '.svg'
+  end
 end

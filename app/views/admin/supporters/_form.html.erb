@@ -1,7 +1,14 @@
-<%= simple_form_for [:admin, @supporter] do |f| %>
+<%= simple_form_for [:admin, @supporter], html: { class: 'form' } do |f| %>
   <%= f.input :name %>
   <%= f.input :url %>
   <%= f.input :logo %>
+  <div class="card">
+    <%= image_tag f.object.logo, class: 'card-img-top' %>
+    <div class="card-title">
+      Current logo
+    </div>
+  </div>
+  <br>
   <%= f.input :description %>
   <%= f.input :weight %>
   <%= f.button :submit, class: "btn btn-primary " %>
