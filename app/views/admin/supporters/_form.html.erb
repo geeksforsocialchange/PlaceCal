@@ -1,0 +1,8 @@
+<%= simple_form_for [:admin, @supporter] do |f| %>
+  <%= f.input :name %>
+  <%= f.input :url %>
+  <%= f.input :logo %>
+  <%= f.input :description %>
+  <%= f.input :weight %>
+  <%= f.button :submit, class: "btn btn-primary " %>
+<% end %>

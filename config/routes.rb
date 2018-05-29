@@ -10,6 +10,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :places
     resources :turfs
     resources :sites
+    resources :supporters
     resources :users do
       member do
         put :assign_turf
