@@ -17,11 +17,19 @@ class Site < ApplicationRecord
   belongs_to :site_admin, class_name: 'User'
 
   accepts_nested_attributes_for :sites_turf
-  accepts_nested_attributes_for :sites_turfs, reject_if: ->(c) { c[:turf_id].blank? }
+  accepts_nested_attributes_for :sites_turfs, reject_if: ->(c) { c[:turf_id].blank? }, allow_destroy: true
 
   validates :name, :slug, :domain, presence: true
 
   mount_uploader :logo, SiteLogoUploader
   mount_uploader :footer_logo, SiteLogoUploader
   mount_uploader :hero_image, HeroImageUploader
+
+  def primary_site_turf
+    sites_turfs.where(relation_type: 'Primary').first
+  end
+
+  def secondary_site_turfs
+    sites_turfs.where(relation_type: 'Secondary')
+  end
 end

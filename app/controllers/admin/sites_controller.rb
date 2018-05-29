@@ -3,6 +3,7 @@
 module Admin
   class SitesController < Admin::ApplicationController
     before_action :set_site, only: %i[edit update destroy]
+    before_action :set_turfs, except: %i[index :show, :destroy]
 
     def index
       @sites = Site.all
@@ -13,15 +14,12 @@ module Admin
 
     def new
       @site = Site.new
-      @turfs = Turf.all
-      # @site.build_sites_turf
+      @site.build_sites_turf
       authorize @site
     end
 
     def edit
       authorize @site
-      @turfs = Turf.all
-      @sites_turfs = @site.secondary_turfs.pluck(:id)
     end
 
     def create
@@ -52,6 +50,10 @@ module Admin
     end
 
     private
+
+    def set_turfs
+      @turfs = Turf.all
+    end
 
     def site_params
       params.require(:site).permit(

@@ -30,6 +30,9 @@
   <h3>Primary Turf</h3>
 
   <%= f.fields_for :sites_turf do |st|%>
+    <%- unless @site.primary_site_turf.blank? %>
+      <%= st.hidden_field :id, value: @site.primary_site_turf&.id %>
+    <% end %>
     <%= st.select :turf_id, options_from_collection_for_select(@turfs, 'id', 'name', st.object.turf_id), class: 'form-control' %>
     <%= st.hidden_field :relation_type, value: "Primary" %>
   <% end %>
@@ -39,9 +42,15 @@
   <% @turfs.each do |t| %>
     <%= fields_for "site[sites_turfs_attributes][#{t.id}]" do |st|%>
       <label>
-        <%= st.check_box :turf_id, {include_hidden: false, checked: (@sites_turfs.include?(t.id) unless @sites_turfs.nil? ) }, t.id %>
+        <%- if (existing_site_turf  = @site.secondary_site_turfs.find_by(turf_id: t.id)).present? %>
+          <%= st.hidden_field :id, value: existing_site_turf.id %>
+          <%# if box is unchecked, this will result in the removal of the association %>
+          <%= st.check_box :_destroy, {checked: @site.secondary_site_turfs.pluck(:turf_id).include?(t.id)}, false, true %>
+        <% else %>
+           <%= st.check_box :turf_id, {include_hidden: false, checked: @site.secondary_site_turfs.pluck(:turf_id).include?(t.id)}, t.id %>
+           <%= st.hidden_field :relation_type, value: "Secondary" %>
+        <% end %>
         <%= t.name %>
-        <%= st.hidden_field :relation_type, value: "Secondary" %>
       </label><br>
     <% end %>
   <% end %>
