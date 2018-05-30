@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 20180530100533) do
     t.string "calendar_phone"
     t.string "calendar_name"
     t.string "public_name"
+    t.json "timings"
     t.string "url"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
