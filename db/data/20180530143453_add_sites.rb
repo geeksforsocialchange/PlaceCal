@@ -28,9 +28,9 @@ class AddSites < SeedMigration::Migration
         slug: 'hulme',
         description: "PlaceCal Hulme is part of the Hulme and Moss Side Age Friendly Partnership, who are working to make Hulme a better place to be for over 50s. \n\nIf you're a local organisation and want to join our network, get in touch below. We provide training and support to help you publish your events.",
         site_admin_id: 1,
-        logo: 'hulme-logo.svg',
+        logo: 'hulme-header.svg',
         footer_logo: 'hulme-footer.svg',
-        hero_image: 'hulme-header.jpg',
+        hero_image: 'hulme-hero.jpg',
         hero_image_credit: 'Jane Samuels',
         supporters: Supporter.where(name: ['Age Friendly Hulme and Moss Side', 'Buzz', 'People First Wellbeing Service'])
       },
@@ -40,9 +40,9 @@ class AddSites < SeedMigration::Migration
         slug: 'moss-side',
         description: "PlaceCal Moss Side is part of the Hulme and Moss Side Age Friendly Partnership, who are working to make Hulme a better place to be for over 50s. \n\nIf you're a local organisation and want to join our network, get in touch below. We provide training and support to help you publish your events.",
         site_admin_id: 1,
-        logo: 'hulme-logo.svg',
+        logo: 'hulme-header.svg',
         footer_logo: 'hulme-footer.svg',
-        hero_image: 'moss-side-header.jpg',
+        hero_image: 'moss-side-hero.jpg',
         hero_image_credit: 'Jane Samuels',
         supporters: Supporter.where(name: ['Age Friendly Hulme and Moss Side', 'Buzz', 'People First Wellbeing Service'])
       },
@@ -52,9 +52,9 @@ class AddSites < SeedMigration::Migration
         slug: 'rusholme',
         description: "PlaceCal Rusholme is part of the Hulme and Moss Side Age Friendly Partnership, who are working to make Hulme a better place to be for over 50s. \n\nIf you're a local organisation and want to join our network, get in touch below. We provide training and support to help you publish your events.",
         site_admin_id: 1,
-        logo: 'hulme-logo.svg',
+        logo: 'hulme-header.svg',
         footer_logo: 'hulme-footer.svg',
-        hero_image: 'rusholme-header.jpg',
+        hero_image: 'rusholme-hero.jpg',
         hero_image_credit: 'Jane Samuels',
         supporters: Supporter.where(name: ['Trinity House', 'Buzz', 'People First Wellbeing Service'])
       }

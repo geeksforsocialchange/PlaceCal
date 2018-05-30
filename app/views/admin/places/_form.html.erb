@@ -12,7 +12,7 @@
   <%= f.input :name %>
   <%= f.input :short_description %>
 
-  <%= f.input :turfs, collection: @turfs, as: :check_boxes %>
+  <%= f.association :turfs, collection: @turfs, as: :check_boxes %>
 
   <h3>Address</h3>
 
