@@ -61,7 +61,9 @@ module Admin
         :url,
         :description,
         :logo,
-        :weight
+        :is_global,
+        :weight,
+        site_ids: []
       )
     end
   end

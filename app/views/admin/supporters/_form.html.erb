@@ -11,5 +11,11 @@
   <br>
   <%= f.input :description %>
   <%= f.input :weight %>
+  <%= f.input :is_global %>
+  <%= f.association :sites, as: :check_boxes %>
   <%= f.button :submit, class: "btn btn-primary " %>
+  <br><br>
+  <% unless @supporter.new_record? %>
+    <%= link_to "Destroy Supporter", admin_supporter_path(@supporter), method: :delete, class: "btn btn-danger" %>
+  <% end %>
 <% end %>
