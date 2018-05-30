@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# db/data/20180530095605_add_supporters.rb
 class AddSupporters < SeedMigration::Migration
   def up
     records.each do |r|
@@ -13,7 +16,7 @@ class AddSupporters < SeedMigration::Migration
     records.each { |r| Supporter.where(name: r[:name]).destroy_all }
   end
 
-  def records
+  def records # rubocop:disable Metrics/MethodLength
     [
       {
         name: 'Geeks for Social Change',
@@ -50,16 +53,22 @@ class AddSupporters < SeedMigration::Migration
       },
       {
         name: 'Age Friendly Hulme and Moss Side',
-        url: 'http://mafn.org.uk/'
+        url: 'http://mafn.org.uk/',
+        logo: 'afhulme.png',
+        weight: 1
       },
       {
         name: 'Buzz',
         description: 'Manchester Health and Wellbeing Service',
-        url: 'https://buzzmanchester.co.uk/'
+        url: 'https://buzzmanchester.co.uk/',
+        logo: 'buzz.png',
+        weight: 2
       },
       {
         name: 'People First Wellbeing Service',
-        url: 'https://www.peoplefirstinfo.org.uk/health-and-well-being/'
+        url: 'https://www.peoplefirstinfo.org.uk/health-and-well-being/',
+        logo: 'people-first.png',
+        weight: 3
       }
     ]
   end

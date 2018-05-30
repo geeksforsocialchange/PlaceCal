@@ -132,7 +132,6 @@ class ApplicationController < ActionController::Base
 
   def set_supporters
     @global_supporters = Supporter.global
-    @site_supporters = Supporter.where(site: @site) if @site
   end
 
   # Shared methods across normal, admin and superadmin
