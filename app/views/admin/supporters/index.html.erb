@@ -11,7 +11,9 @@
   <tr>
     <th>Id</th>
     <th>Name</th>
-    <th>Description</th>
+    <th>Logo</th>
+    <th>Global?</th>
+    <th>Sites</th>
     <th>Action</th>
   </tr>
 </thead>
@@ -20,7 +22,9 @@
     <tr>
       <td><%= supporter.id %></td>
       <td><%= supporter.name %></td>
-      <td><%= supporter.description %></td>
+      <td style="background-color: #5b4e46"><%= image_tag supporter.logo %></td>
+      <td><%= supporter.is_global? %></td>
+      <td><%= supporter.sites.join(', ') %></td>
       <td><%= link_to "Edit", edit_admin_supporter_path(supporter),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
     </tr>
   <% end %>

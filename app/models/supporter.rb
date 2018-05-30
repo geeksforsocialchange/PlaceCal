@@ -6,5 +6,8 @@ class Supporter < ApplicationRecord
 
   validates_presence_of :name
 
+  default_scope { order(:weight) }
+  scope :global, -> { where(is_global: true) }
+
   mount_uploader :logo, SupporterLogoUploader
 end

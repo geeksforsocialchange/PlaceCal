@@ -14,10 +14,20 @@
   hr
     border-color: $red
     margin: 2em 0
+    border-width: 3px
 
   h5
-    display: none
+    margin-bottom: 0
 
+  &__nav
+    font-size: 1rem
+    ul
+      list-style-type: none
+      margin-left: 0
+      padding-left: 0
+    li
+      display: inline-block
+      margin-right: 0.5rem
 
   &__section
     +for-tablet-portrait-up
@@ -27,7 +37,7 @@
       &--main
         +flex(1 0 50%)
 
-  &__sponsors
+  &__supporters
     padding: 0
     margin: 0
     +flexbox
@@ -44,7 +54,7 @@
       +flex(0 1 250px)
       height: 100px
 
-  &__sponsor
+  &__supporter
     text-indent: -9999px
     background-size: contain
     background-position: center
@@ -54,13 +64,3 @@
       width: 100%
       height: 100%
       border: none
-    &--gfsc
-      background-image: image-url("sponsors/gfsc.png") 
-    &--phase
-      background-image: image-url("sponsors/phase.png")
-    &--mmu
-      background-image: image-url("sponsors/mmu.png")
-    &--mcc
-      background-image: image-url("sponsors/mcc.png")
-    &--cityverve
-      background-image: image-url("sponsors/cityverve.png")

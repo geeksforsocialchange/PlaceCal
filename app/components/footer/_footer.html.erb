@@ -1,23 +1,42 @@
 <div class="footer">
   <div class="c">
-    <h5>PlaceCal</h5>
-
     <% if @site&.footer_logo&.present? %>
       <%= image_tag @site.footer_logo %>
     <% else %>
       <%= image_tag 'logo-footer.svg' %>
     <% end %>
 
+    <hr>
+
+    <h5 class="allcaps small">Site Navigation</h5>
+    <nav class="footer__nav" role="navigation">
+      <ul>
+        <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
+        <li><%= active_link_to "Events", events_path %></li>
+        <li><%= active_link_to "Places", places_path %></li>
+        <li><%= active_link_to "Partners", partners_path %></li>
+        <li><%= active_link_to "Bus", bus_path %></li>
+      </ul>
+    </nav>
+
     <div class="g">
       <div class="gi gi__1-5">
+        <h5 class="allcaps small"><%= @site.name %> Enquiries</h5>
         <p>
-          <strong>T:</strong> +44 (0) 161 247 6954<br>
-          <strong>E:</strong> <a href="mailto:support@placecal.org">support@placecal.org</a>
+          <%= @site.site_admin.full_name %><br><br>
+          <strong>T:</strong> <%= @site.site_admin.phone %><br>
+          <strong>E:</strong> <%= mail_to @site.site_admin.email %>
         </p>
       </div>
       <div class="gi gi__2-5">
+        <h5 class="allcaps small">General Enquiries</h5>
         <p>
-          <strong>PlaceCal ℅‎ PHASE</strong><br>
+          Get in touch!<br><br>
+          <strong>T:</strong> +44 (0)161 247 6954<br>
+          <strong>E:</strong> <%= mail_to 'support@placecal.org' %>
+        </p>
+        <p>
+          PlaceCal ℅‎ PHASE<br>
           Chatham 510, Manchester School of Architecture<br>
           Cavendish Street, Manchester, M15 6BR
         </p>
@@ -28,24 +47,33 @@
       </div>
     </div>
 
+    <% if @site&.supporters %>
+      <hr>
+
+      <h5 class="allcaps small"> PlaceCal <%= @site.name %> Supporters</h5>
+      <ul class="footer__supporters footer__supporters--main">
+        <% @local_supporters&.each do |supporter| %>
+          <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>" style="background-image: url(<%= supporter.logo %>)">
+            <%= link_to supporter.name, supporter.url %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
     <hr>
 
-    <ul class="footer__sponsors footer__sponsors--main">
-      <li class="footer__sponsor footer__sponsor--gfsc"><a href="http://gfsc.studio/">Geeks for Social Change</a></li>
-      <li class="footer__sponsor footer__sponsor--phase"><a href="http://msaphase.org/">PHASE@MSA</a></li>
+    <h5 class="allcaps small">PlaceCal Supporters</h5>
+    <ul class="footer__supporters footer__supporters--main">
+      <% @global_supporters&.each do |supporter| %>
+        <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>" style="background-image: url(<%= supporter.logo %>)">
+          <%= link_to supporter.name, supporter.url %>
+        </li>
+      <% end %>
     </ul>
 
     <hr>
 
-    <h5>Sponsors</h5>
-
-    <ul class="footer__sponsors">
-      <li class="footer__sponsor footer__sponsor--cityverve"><a href="http://www.cityverve.org.uk/">CityVerve</a></li>
-      <li class="footer__sponsor footer__sponsor--mmu"><a href="http://www2.mmu.ac.uk/">Manchester Metropolitan University</a></li>
-      <li class="footer__sponsor footer__sponsor--mcc"><a href="http://www.manchester.gov.uk/">Manchester City Council</a></li>
-    </ul>
   </div>
-
 
   <% if Rails.env.development? %>
     <pre class="small">

@@ -32,4 +32,8 @@ class Site < ApplicationRecord
   def secondary_site_turfs
     sites_turfs.where(relation_type: 'Secondary')
   end
+
+  def to_s
+    "#{id}: #{name}"
+  end
 end
