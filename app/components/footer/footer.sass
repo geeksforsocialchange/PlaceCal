@@ -29,30 +29,18 @@
       display: inline-block
       margin-right: 0.5rem
 
-  &__section
-    +for-tablet-portrait-up
-      +flex(0 0 32%)
-    +for-desktop-up
-      +flex(1 0 25%)
-      &--main
-        +flex(1 0 50%)
-
   &__supporters
     padding: 0
     margin: 0
     +flexbox
     +justify-content(space-between)
     +align-items(center)
-    +for-tablet-portrait-up
-      +justify-content(left)
+    +flex-wrap(wrap)
     li
-      +flex(0 1 150px)
-      height: 80px
+      +flex(1 0 200px)
+      height: 200px
       list-style-type: none
       margin: 0 1rem
-    &--main li
-      +flex(0 1 250px)
-      height: 100px
 
   &__supporter
     text-indent: -9999px
