@@ -21,12 +21,14 @@
 
     <div class="g">
       <div class="gi gi__1-5">
-        <h5 class="allcaps small"><%= @site.name %> Enquiries</h5>
-        <p>
-          <%= @site.site_admin.full_name %><br><br>
-          <strong>T:</strong> <%= @site.site_admin.phone %><br>
-          <strong>E:</strong> <%= mail_to @site.site_admin.email %>
-        </p>
+        <% if @site&.site_admin %>
+          <h5 class="allcaps small"><%= @site.name %> Enquiries</h5>
+            <p>
+              <%= @site.site_admin.full_name %><br><br>
+              <strong>T:</strong> <%= @site.site_admin.phone %><br>
+              <strong>E:</strong> <%= mail_to @site.site_admin.email %>
+            </p>
+        <% end %>
       </div>
       <div class="gi gi__2-5">
         <h5 class="allcaps small">General Enquiries</h5>
