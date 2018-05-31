@@ -5,7 +5,6 @@ module Parsers
       @events = []
 
       download_calendar.xpath('//ns:event').each do |event|
-        ap event
         @events << Events::ManchesterUniEvent.new(event)
       end
 
