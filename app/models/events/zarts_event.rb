@@ -1,10 +1,6 @@
 module Events
   class ZartsEvent < DefaultEvent
 
-    def initialize(event)
-      @event = event
-    end
-
     def uid
       @event.attribute('id').text
     end
