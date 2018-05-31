@@ -1,6 +1,6 @@
 <main>
   <div class="c c--lg-space-after">
-    <%- if current_user.role.admin? %>
+    <%- if current_user.role.root? %>
       <%= link_to 'Return to Admin', superadmin_calendars_path %>
     <% end %>
     <%= link_to 'Return to Calendars', manager_calendars_path %>

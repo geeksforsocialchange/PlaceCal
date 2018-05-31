@@ -13,6 +13,7 @@ class Place < ApplicationRecord
 
   belongs_to :address, inverse_of: :places
   accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
+  accepts_nested_attributes_for :calendars
   validates_presence_of :name
   validates_uniqueness_of :name
 
