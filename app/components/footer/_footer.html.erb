@@ -53,7 +53,7 @@
       <hr>
 
       <h5 class="allcaps small"> PlaceCal <%= @site.name %> Supporters</h5>
-      <ul class="footer__supporters footer__supporters--main">
+      <ul class="footer__supporters">
         <% @site&.supporters&.each do |supporter| %>
           <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>" style="background-image: url(<%= supporter.logo %>)">
             <%= link_to supporter.name, supporter.url %>
@@ -65,7 +65,7 @@
     <hr>
 
     <h5 class="allcaps small">PlaceCal Supporters</h5>
-    <ul class="footer__supporters footer__supporters--main">
+    <ul class="footer__supporters">
       <% @global_supporters&.each do |supporter| %>
         <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>" style="background-image: url(<%= supporter.logo %>)">
           <%= link_to supporter.name, supporter.url %>

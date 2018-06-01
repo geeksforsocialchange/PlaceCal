@@ -31,16 +31,19 @@
 
   &__supporters
     padding: 0
-    margin: 0
-    +flexbox
-    +justify-content(space-between)
-    +align-items(center)
-    +flex-wrap(wrap)
+    margin: 1rem 0 0 0
+    display: grid
+    grid-template-columns: repeat(2, 1fr)
+    grid-gap: 1rem
+    +for-tablet-portrait-up
+      grid-template-columns: repeat(4, 1fr)
+    +for-tablet-landscape-up
+      grid-template-columns: repeat(6, 1fr)
     li
-      +flex(1 0 200px)
-      height: 200px
+      height: 100px
+      background-size: 100%
       list-style-type: none
-      margin: 0 1rem
+      margin: 0
 
   &__supporter
     text-indent: -9999px
