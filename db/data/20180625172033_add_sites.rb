@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# db/data/20180530143453_add_sites.rb
 class AddSites < SeedMigration::Migration
   def up
     records.each do |r|
