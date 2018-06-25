@@ -1,5 +1,5 @@
 <div class="header">
-  <% if @site %>
+  <% if @site&.logo&.present? %>
     <div class="header__branding header__branding--<%= @site.slug %>"
          style="background-image: url(<%= image_url @site.logo %>)"
          role="banner">

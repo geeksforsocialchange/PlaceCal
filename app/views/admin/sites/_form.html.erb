@@ -1,62 +1,62 @@
 <%= simple_form_for [:admin, @site], html: { class: "form-horizontal" } do |f| %>
-  <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-      <div class="form-group">
-        <label>Name</label>
-        <%= f.text_field :name, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= label_tag :domain %>
-        <%= f.text_field :domain, class: "form-control" %>
-        <%= label_tag :slug %>
-        <%= f.text_field :slug, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= label_tag :description %>
-        <%= f.text_area :description, class: "form-control", rows: 5 %>
-      </div>
-      <div class="form-group">
-        <%= f.association :site_admin, label_method: :admin_name %>
-      </div>
-      <div class="form-group">
-        <%= label_tag :logo %>
-        <%= f.file_field :logo %>
-        <%= label_tag :footer_logo %>
-        <%= f.file_field :footer_logo %>
-        <p><em>Logos should be SVG format</em></p>
-      </div>
-      <div class="form-group">
-        <%= label_tag :hero_image %>
-        <%= f.file_field :hero_image %>
-        <p><em>Header images should be 2260x700</em></p>
-      </div>
-      <div class="form-group">
-        <%= label_tag :hero_image_credit %>
-        <%= f.text_field :hero_image_credit %>
-        <p><em>Who took this photo?</em></p>
-      </div>
-      <div class="form-group">
-        <label>Primary Turf</label>
-        <%= f.fields_for :sites_turf do |st|%>
-          <%= st.select :turf_id, options_from_collection_for_select(@turfs, 'id', 'name', st.object.turf_id), class: 'form-control' %>
-          <%= st.hidden_field :relation_type, value: "Primary" %>
-        <% end %>
-      </div>
-      <div class="form-group">
-        <label>Secondary Turfs</label>
-        <% @turfs.each do |t| %>
-          <%= fields_for "site[sites_turfs_attributes][#{t.id}]" do |st|%>
-          <%= t.name %>
-            <%= st.check_box :turf_id, {include_hidden: false, checked: (@sites_turfs.include?(t.id) unless @sites_turfs.nil? ) }, t.id %>
-            <%= st.hidden_field :relation_type, value: "Secondary" %>
-          <% end %>
-        <% end %>
-      </div>
-      <%= f.submit "Save", class: "btn btn-primary " %>
-      <% unless @site.new_record? %>
-        <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger" %>
-        <% end %>
-    </div>
+  <%= f.input :name %>
+  <%= f.input :domain %>
+  <%= f.input :slug %>
+  <%= f.input :description, input_html: { rows: 5 } %>
+
+  <%= f.association :site_admin, label_method: :admin_name %>
+
+  <h3>Images</h3>
+  <p><em>Logos should be SVG format</em></p>
+
+  <%= f.input :logo %>
+
+  <%= image_tag f.object.logo, class: 'card-img-top' %>
+
+  <%= f.input :footer_logo %>
+  <div style="background-color: #5b4e46; padding: 1rem">
+    <%= image_tag f.object.footer_logo, class: 'card-img-top' %>
   </div>
+
+
+  <%= f.input :hero_image %>
+  <p><em>Header images should be 2260x700</em></p>
+
+  <%= image_tag f.object.hero_image, style: 'max-width: 300px' %>
+
+  <%= f.input :hero_image_credit %>
+  <p><em>Who took this photo?</em></p>
+
+  <h3>Primary Turf</h3>
+
+  <%= f.fields_for :sites_turf do |st|%>
+    <%- unless @site.primary_site_turf.blank? %>
+      <%= st.hidden_field :id, value: @site.primary_site_turf&.id %>
+    <% end %>
+    <%= st.select :turf_id, options_from_collection_for_select(@turfs, 'id', 'name', st.object.turf_id), class: 'form-control' %>
+    <%= st.hidden_field :relation_type, value: "Primary" %>
+  <% end %>
+
+  <h3>Secondary Turfs</h3>
+
+  <% @turfs.each do |t| %>
+    <%= fields_for "site[sites_turfs_attributes][#{t.id}]" do |st|%>
+      <label>
+        <%- if (existing_site_turf  = @site.secondary_site_turfs.find_by(turf_id: t.id)).present? %>
+          <%= st.hidden_field :id, value: existing_site_turf.id %>
+          <%# if box is unchecked, this will result in the removal of the association %>
+          <%= st.check_box :_destroy, {checked: @site.secondary_site_turfs.pluck(:turf_id).include?(t.id)}, false, true %>
+        <% else %>
+           <%= st.check_box :turf_id, {include_hidden: false, checked: @site.secondary_site_turfs.pluck(:turf_id).include?(t.id)}, t.id %>
+           <%= st.hidden_field :relation_type, value: "Secondary" %>
+        <% end %>
+        <%= t.name %>
+      </label><br>
+    <% end %>
+  <% end %>
+
+  <%= f.button :submit, class: "btn btn-primary " %>
+  <% unless @site.new_record? %>
+    <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger" %>
+  <% end %>
 <% end %>

@@ -16,7 +16,7 @@ class Calendar < ApplicationRecord
   extend Enumerize
 
   # What kind of Calendar feed is this?
-  enumerize :type, in: %i[facebook google outlook mac_calendar xml other],
+  enumerize :type, in: %i[facebook google outlook mac_calendar xml manchesteru other],
                    default: :other,
                    scope: true
 
@@ -84,6 +84,7 @@ class Calendar < ApplicationRecord
     end
 
     occurrences.each do |occurrence|
+      next if type.manchesteru? && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1  #check if more than a day apart for manchester uni feeds
       event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
       event_time[:are_spaces_available] = occurrence.status if type.xml?
 

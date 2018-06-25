@@ -8,9 +8,11 @@ FactoryBot.define do
     # admin_email nil
     # admin_name nil
     # image nil
-    # public_email nil
-    # public_phone nil
-    # short_description nil
+    public_email 'partner@placecal.org'
+    public_phone '0161 0000000'
+    short_description 'A cool garden centre'
+    address
+    url 'http://example.com'
     after(:build) { |partner| partner.turfs = [create(:turf)] }
   end
 end

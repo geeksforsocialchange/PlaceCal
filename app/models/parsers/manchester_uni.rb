@@ -1,5 +1,5 @@
 module Parsers
-  class ManchesterUni < DefaultParser
+  class ManchesterUni < Xml
     def initialize(file)
       @file = file
     end
@@ -10,11 +10,9 @@ module Parsers
 
     def events
       @events = []
-      xml = HTTParty.get(@file, follow_redirects: true).body
-      feed = Nokogiri::XML(xml)
 
-      feed.css('ns:event').each do |show|
-        @events << Events::ManchesterUniEvent.new(show)
+      download_calendar.xpath('//ns:event').each do |event|
+        @events << Events::ManchesterUniEvent.new(event)
       end
 
       @events

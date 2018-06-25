@@ -1,32 +1,39 @@
 module Events
-  class ZartsEvent < DefaultEvent
+  class ManchesterUniEvent < DefaultEvent
     def initialize(event)
       @event = event
     end
 
     def uid
-      @event.attribute('id').text
+      @event.at_xpath('./ns:id').text
     end
 
     def summary
-      @event.at_css('ns:title').text.gsub(/\A(\n)+\z/, '').strip
+      @event.at_xpath('./ns:title').text.gsub(/\A(\n)+\z/, '').strip
     end
 
     def description
-      @event.at_css('ns:description').text.gsub(/\A(\n)+\z/, '').strip
+      @event.at_xpath('./ns:description').text.gsub(/\A(\n)+\z/, '').strip
     end
 
-    def location
-     #ns:eventData > uom:location : gpp:building, gpp:city
-      #ns:eventData > uom:location > gpp:geoLocation> gpp:point 
-    end
+    def location; end
 
     def dtstart
-      DateTime.parse(@event.at_css('ns:times type='local'ns:start'))
+      date = @event.at_xpath('./ns:times[@type="local"] //ns:start //ns:date')
+      time = @event.at_xpath('./ns:times[@type="local"] //ns:start //ns:time')
+      DateTime.parse([date, time].join(', '))
+
+      rescue StandardError
+        nil
     end
 
     def dtend
-      DateTime.parse(@event.at_css('ns:times type='local'ns:start'))
+      date = @event.at_xpath('./ns:times[@type="local"] //ns:end //ns:date')
+      time = @event.at_xpath('./ns:times[@type="local"] //ns:end //ns:time')
+      DateTime.parse([date, time].join(', '))
+
+      rescue StandardError
+        nil
     end
 
     def recurring_event?
@@ -34,7 +41,10 @@ module Events
     end
 
     def occurrences_between(*)
-      []
+      #TODO: Expand when multi-day events supported
+      @occurrences = []
+      @occurrences << Dates.new(dtstart, dtend)
+      @occurrences
     end
   end
 end

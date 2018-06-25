@@ -15,6 +15,7 @@ class PlaceInfoComponent < MountainView::Presenter
 
   def address
     a = properties[:address]
+    return unless a
     [a.street_address,
      a.street_address2,
      a.city,

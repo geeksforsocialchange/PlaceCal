@@ -1,6 +1,8 @@
-<div class="help help__adding_events">
-  <%= image_tag "icons/help/adding-events.svg" %>
-  <h3 class="h2--alt"><span>Adding Your Events</span></h3>
-  <p>Want to add your organisation's events? Something on we should know about?</p>
-  <a class="btn btn--lg">Get in touch</a>
-</div>
+<% if @site.site_admin %>
+  <div class="help help__adding_events">
+    <%= image_tag "icons/help/adding-events.svg" %>
+    <h3 class="h2--alt"><span>Adding Your Events</span></h3>
+    <p>Want to add your organisation's events? Something on we should know about?</p>
+    <%= mail_to @site.site_admin.email, "Email now", class: "btn btn--lg" %>
+  </div>
+<% end %>

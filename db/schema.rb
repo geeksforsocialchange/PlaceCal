@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180525190230) do
+ActiveRecord::Schema.define(version: 20180530100533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20180525190230) do
     t.string "strategy"
     t.integer "address_id"
     t.datetime "import_lock_at"
+    t.string "last_checksum"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -126,6 +127,7 @@ ActiveRecord::Schema.define(version: 20180525190230) do
     t.string "calendar_phone"
     t.string "calendar_name"
     t.string "public_name"
+    t.string "url"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
@@ -177,6 +179,12 @@ ActiveRecord::Schema.define(version: 20180525190230) do
     t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
   end
 
+  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
+    t.string "version"
+    t.integer "runtime"
+    t.datetime "migrated_on"
+  end
+
   create_table "sites", force: :cascade do |t|
     t.string "name"
     t.string "slug"
@@ -192,12 +200,30 @@ ActiveRecord::Schema.define(version: 20180525190230) do
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 
+  create_table "sites_supporters", id: false, force: :cascade do |t|
+    t.bigint "site_id", null: false
+    t.bigint "supporter_id", null: false
+    t.index ["site_id", "supporter_id"], name: "index_sites_supporters_on_site_id_and_supporter_id"
+    t.index ["supporter_id", "site_id"], name: "index_sites_supporters_on_supporter_id_and_site_id"
+  end
+
   create_table "sites_turfs", force: :cascade do |t|
     t.integer "turf_id"
     t.integer "site_id"
     t.string "relation_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "supporters", force: :cascade do |t|
+    t.string "name"
+    t.string "url"
+    t.string "logo"
+    t.string "description"
+    t.integer "weight"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "is_global", default: false
   end
 
   create_table "turfs", force: :cascade do |t|

@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_supporters
 
   include Pundit
 
@@ -121,10 +122,16 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_by_ip
+    # Is whitelist mode enabled?
+    return unless ENV['WHITELIST_MODE']
     # Whitelisted ips are stored as comma separated values in the dokku config
     whitelist = ENV['WHITELISTED_IPS'].split(',')
     return if whitelist.include?(request.remote_ip)
     redirect_to 'https://google.com'
+  end
+
+  def set_supporters
+    @global_supporters = Supporter.global
   end
 
   # Shared methods across normal, admin and superadmin

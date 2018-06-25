@@ -2,20 +2,14 @@
 
 module Parsers
   class Xml
-    def initialize(file)
+  	def initialize(file, params = {})
       @file = file
+      @params = params
     end
 
-    def events
-      @events = []
+    def download_calendar
       xml = HTTParty.get(@file, follow_redirects: true).body
-      feed = Nokogiri::XML(xml)
-
-      feed.css('show').each do |show|
-        @events << Events::XmlEvent.new(show)
-      end
-
-      @events
+      Nokogiri::XML(xml)
     end
   end
 end

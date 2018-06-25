@@ -6,7 +6,10 @@ FactoryBot.define do
       "Zion Center #{n}"
     end
     short_description 'A description of this Place'
+    email 'place@placecal.org'
+    phone '0161 0000000'
     address
+    url 'http://example.com'
     after(:build) do |place|
       place.turfs << FactoryBot.create(:turf)
     end

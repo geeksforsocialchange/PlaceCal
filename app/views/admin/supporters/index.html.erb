@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="col-md-10">
+    <h2>Supporters List</h2>
+  </div>
+  <div class="col-md-2">
+    <%= link_to "Add New Supporter", new_admin_supporter_path, data: { turbolinks: false }, class: "btn btn-primary " %>
+  </div>
+</div>
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Logo</th>
+    <th>Global?</th>
+    <th>Sites</th>
+    <th>Action</th>
+  </tr>
+</thead>
+<tbody>
+  <% @supporters.each do |supporter| %>
+    <tr>
+      <td><%= supporter.id %></td>
+      <td><%= supporter.name %></td>
+      <td style="background-color: #5b4e46"><%= image_tag supporter.logo %></td>
+      <td><%= supporter.is_global? %></td>
+      <td><%= supporter.sites.join(', ') %></td>
+      <td><%= link_to "Edit", edit_admin_supporter_path(supporter),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
+    </tr>
+  <% end %>
+</tbody>
+</table>

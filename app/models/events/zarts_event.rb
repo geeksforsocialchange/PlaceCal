@@ -1,10 +1,5 @@
-# frozen_string_literal: true
-
 module Events
-  class XmlEvent < DefaultEvent
-    def initialize(event)
-      @event = event
-    end
+  class ZartsEvent < DefaultEvent
 
     def uid
       @event.attribute('id').text

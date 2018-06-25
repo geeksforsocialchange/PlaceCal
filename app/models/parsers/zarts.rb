@@ -1,5 +1,5 @@
 module Parsers
-  class Zarts < DefaultParser
+  class Zarts < Xml
     def initialize(file)
       @file = file
     end
@@ -12,10 +12,7 @@ module Parsers
 
     def events
       @events = []
-      xml = HTTParty.get(@file, follow_redirects: true).body
-      feed = Nokogiri::XML(xml)
-
-      feed.css('show').each do |show|
+      download_calendar.css('show').each do |show|
         @events << Events::ZartsEvent.new(show)
       end
 
