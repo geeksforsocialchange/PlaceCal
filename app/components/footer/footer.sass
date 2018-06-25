@@ -7,6 +7,17 @@
   line-height: 1.4rem
   padding: 3rem 0
 
+  &__inner
+    display: grid
+    grid-template-columns: repeat(6, 1fr)
+    grid-gap: 1rem
+
+  &__item
+    grid-column: 1 / -1
+
+  p
+    margin: 0.5rem 0
+
   a
     color: $cream
     border-color: $red
@@ -15,9 +26,6 @@
     border-color: $red
     margin: 2em 0
     border-width: 3px
-
-  h5
-    margin-bottom: 0
 
   &__nav
     font-size: 1rem
@@ -29,29 +37,26 @@
       display: inline-block
       margin-right: 0.5rem
 
-  &__supporters
+  &__enquiries
+    +for-tablet-portrait-up
+      grid-column: span 3
+
+
+  &__supporters ul
     padding: 0
     margin: 1rem 0 0 0
     display: grid
     grid-template-columns: repeat(2, 1fr)
     grid-gap: 1rem
+    list-style-type: none
     +for-tablet-portrait-up
-      grid-template-columns: repeat(4, 1fr)
+      grid-template-columns: repeat(3, 1fr)
     +for-tablet-landscape-up
       grid-template-columns: repeat(6, 1fr)
-    li
-      height: 100px
-      background-size: 100%
-      list-style-type: none
-      margin: 0
 
   &__supporter
-    text-indent: -9999px
-    background-size: contain
-    background-position: center
-    background-repeat: no-repeat
-    a
-      display: block
-      width: 100%
-      height: 100%
-      border: none
+    img
+      max-width: 100%
+
+  pre
+    overflow: hidden
