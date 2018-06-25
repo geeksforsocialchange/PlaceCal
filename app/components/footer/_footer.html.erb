@@ -90,8 +90,9 @@
           Cavendish Street, Manchester, M15 6BR
         </p>
         <p>
-          © 2017 Geeks For Social Change<br>
-          Build: <tt><%= ENV['GIT_REV'][0,7] if ENV['GIT_REV'] %></tt>
+          © 2017-18 <%= link_to "Geeks For Social Change", "http://gfsc.studio" %><br>
+          <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'master' %>
+          Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
         </p>
       </div>
 
