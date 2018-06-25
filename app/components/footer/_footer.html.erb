@@ -1,6 +1,6 @@
 <div class="footer">
   <div class="c">
-    <div class="footer__inner">
+    <div class="footer__inner <%= "footer__inner--nosite" unless @site&.site_admin %>">
       <div class="footer__item footer__logo">
         <% if @site&.footer_logo&.present? %>
           <%= image_tag @site.footer_logo %>
@@ -8,6 +8,8 @@
           <%= image_tag 'logo-footer.svg' %>
         <% end %>
       </div>
+
+      <hr class="footer__item footer__hr footer__hr--1">
 
       <div class="footer__item footer__nav">
         <h5 class="allcaps small">Site Navigation</h5>
@@ -26,11 +28,13 @@
       <% if @site&.site_admin %>
         <div class="footer__item footer__enquiries footer__enquiries--regional">
           <h5 class="allcaps small"><%= @site.name %> Enquiries</h5>
-            <p>
-              <%= @site.site_admin.full_name %><br><br>
-              <strong>T:</strong> <%= @site.site_admin.phone %><br>
-              <strong>E:</strong> <%= mail_to @site.site_admin.email %>
-            </p>
+          <p>
+            <%= @site.site_admin.full_name %>
+          </p>
+          <p>
+            <strong>T:</strong> <%= @site.site_admin.phone %><br>
+            <strong>E:</strong> <%= mail_to @site.site_admin.email %>
+          </p>
         </div>
       <% end %>
 
@@ -46,6 +50,8 @@
       </div>
 
       <% if @site&.supporters %>
+        <hr class="footer__item footer__hr">
+
         <div class="footer__item footer__supporters">
           <h5 class="allcaps small"> PlaceCal <%= @site.name %> Supporters</h5>
           <ul>
@@ -59,6 +65,8 @@
           </ul>
         </div>
       <% end %>
+
+      <hr class="footer__item footer__hr">
 
       <% if @global_supporters %>
         <div class="footer__item footer__supporters">
