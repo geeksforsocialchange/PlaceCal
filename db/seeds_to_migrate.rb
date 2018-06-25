@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: Get all this junk in seed migrations, or get rid
+
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
 #
@@ -60,11 +62,6 @@ Calendar.create(name: 'Old Abbey Taphouse',
 # Hulme & Moss Side Age Friendly Events
 hulme_moss = Partner.create(name: 'Hulme & Moss Side Age Friendly Events')
 
-Calendar.create(name: 'Hulme & Moss Side Age Friendly Events',
-                type: :google,
-                partner_id: hulme_moss.id,
-                strategy: 'event',
-                source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics')
 
 Turf.where(name: 'Hulme',
            slug: 'hulme',
