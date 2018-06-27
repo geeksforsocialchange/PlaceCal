@@ -1,13 +1,9 @@
-<div class="row">
-  <div class="col-md-10">
-    <h2>Places List</h2> 
-  </div>
-  <div class="col-md-2">
-    <% if policy(Place).create? %>
-      <%= link_to "Add New Place", new_admin_place_path, data: { turbolinks: false }, class: "btn btn-primary " %> 
-    <% end %>  
-  </div>
-</div>      
+<h2>Places List</h2>
+
+<% if policy(Place).create? %>
+  <%= link_to "Add New Place", new_admin_place_path, data: { turbolinks: false }, class: "btn btn-primary " %>
+<% end %>
+
 <% if @places.blank? %>
   <h3>You have no places</h3>
 <% else %>

@@ -15,7 +15,13 @@
       <%= render "layouts/admin/admin_navigation" %>
     </header>
     <main>
-      <%= yield %>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <%= yield %>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
     </main>
     <%= yield :first_min_js %>
     <%= javascript_include_tag 'admin', 'data-turbolinks-track': false %>
