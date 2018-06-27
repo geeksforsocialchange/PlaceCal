@@ -1,34 +1,7 @@
-<h2>Places List</h2>
-
-<% if policy(Place).create? %>
-  <%= link_to "Add New Place", new_admin_place_path, data: { turbolinks: false }, class: "btn btn-primary " %>
-<% end %>
-
-<% if @places.blank? %>
-  <h3>You have no places</h3>
-<% else %>
-  <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Id</th>
-      <th>Name</th>
-      <th>Address</th>
-      <% if policy(Place).update? %>
-        <th>Action</th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% @places.each do |place| %>
-      <tr>
-        <td><%= place.id %></td>
-        <td><%= place.name %></td>
-        <td><%= place.address.full_address rescue nil %></td>
-        <% if policy(place).update? %>
-          <td><%= link_to "Edit", edit_admin_place_path(place),  data: { turbolinks: false }, class: "btn btn-primary " %></td>
-        <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-  </table>
-<% end %>
+<%= render_component "admin_index",
+  title: "Places",
+  model: :places,
+  columns: %i[id name address],
+  data: @places,
+  new_link: new_admin_place_path
+%>
