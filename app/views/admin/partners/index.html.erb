@@ -3,7 +3,7 @@
 <%= render_component "admin_index",
   title: "Partners",
   model: :partners,
-  columns: %i[id name email],
+  columns: %i[id name address],
   data: @partners,
-  new_link: new_admin_partner_path,
+  new_link: new_admin_partner_path
 %>

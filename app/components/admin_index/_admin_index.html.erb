@@ -1,6 +1,6 @@
 <h1 class="page-header"><%= properties[:title] %></h1>
 
-<%= link_to "Add New", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary " %>
+<%= link_to "Add New #{properties[:model].to_s.chop.humanize}", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary " %>
 
 <table class="table table-striped">
   <thead>
@@ -12,7 +12,7 @@
     </tr>
   </thead>
   <tbody>
-    <% properties[:data].each do |record| %>
+    <% properties[:data]&.each do |record| %>
       <tr>
         <% record.slice(properties[:columns]).each do |key, value| %>
           <td><%= value %></td>
