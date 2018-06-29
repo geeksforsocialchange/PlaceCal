@@ -1,4 +1,1 @@
-<div class="form">
-	<h3>Edit Site</h3>
-  <%= render 'form' %>
-</div> 
+<%= render_component "admin_edit", model: :site, title: @site.name %>

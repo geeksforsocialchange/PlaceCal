@@ -1,4 +1,4 @@
-<%= simple_form_for [:admin, @site], html: { class: "form-horizontal" } do |f| %>
+<%= simple_form_for [:admin, @site] do |f| %>
   <%= f.input :name %>
   <%= f.input :domain %>
   <%= f.input :slug %>
@@ -6,7 +6,7 @@
 
   <%= f.association :site_admin, label_method: :admin_name %>
 
-  <h3>Images</h3>
+  <h2>Images</h2>
   <p><em>Logos should be SVG format</em></p>
 
   <%= f.input :logo %>
@@ -27,7 +27,7 @@
   <%= f.input :hero_image_credit %>
   <p><em>Who took this photo?</em></p>
 
-  <h3>Primary Turf</h3>
+  <h2>Primary Turf</h2>
 
   <%= f.fields_for :sites_turf do |st|%>
     <%- unless @site.primary_site_turf.blank? %>
@@ -37,7 +37,7 @@
     <%= st.hidden_field :relation_type, value: "Primary" %>
   <% end %>
 
-  <h3>Secondary Turfs</h3>
+  <h2>Secondary Turfs</h2>
 
   <% @turfs.each do |t| %>
     <%= fields_for "site[sites_turfs_attributes][#{t.id}]" do |st|%>

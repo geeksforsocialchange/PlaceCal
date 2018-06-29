@@ -1,8 +1,6 @@
-<%= simple_nested_form_for @partner, html: { class: "form-horizontal" } do |f| %>
+<%= simple_nested_form_for @partner do |f| %>
 
 <%= render_component "error", object: @partner %>
-
-<h1 class="page-header"><%= @partner.name %></h1>
 
 <h2>Basic Information</h2>
 

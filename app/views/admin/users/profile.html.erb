@@ -1,33 +1,28 @@
-<div class="row">
-  <div class="col-md-1"></div>
-  <div class="col-md-8">
-  <h2>Edit Profile</h2>
+<h1 class="page-header">Edit Profile</h1>
 
-  <%= simple_form_for current_user, html: { class: "form-horizontal" } do |f| %>
+<%= simple_form_for current_user, html: { class: "form-horizontal" } do |f| %>
 
-    <%= render_component "error", object: current_user %>
+  <%= render_component "error", object: current_user %>
 
-    <%= render "users/contact", f: f %>
+  <%= render "users/contact", f: f %>
 
-    <label>Password</label><i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "off", class: "form-control" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
-
-    <label>Password Confirmation</label><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control"%>
-
-    <label>Current Password</label> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "off", class: "form-control"%>
-    <br>
-    <%= f.submit "Update", class: "btn btn-primary " %>
-
-
+  <label>Password</label><i>(leave blank if you don't want to change it)</i><br />
+  <%= f.password_field :password, autocomplete: "off", class: "form-control" %>
+  <% if @minimum_password_length %>
+    <br />
+    <em><%= @minimum_password_length %> characters minimum</em>
   <% end %>
-  <h3>Avatar</h3>
-  <%= gravatar_for current_user %>
-  <p>Create an avatar at <%= link_to "Gravatar.com", "https://en.gravatar.com/" %></p>
-  </div>
-</div>
+
+  <label>Password Confirmation</label><br />
+  <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control"%>
+
+  <label>Current Password</label> <i>(we need your current password to confirm your changes)</i><br />
+  <%= f.password_field :current_password, autocomplete: "off", class: "form-control"%>
+  <br>
+  <%= f.submit "Update", class: "btn btn-primary " %>
+
+
+<% end %>
+<h3>Avatar</h3>
+<%= gravatar_for current_user %>
+<p>Create an avatar at <%= link_to "Gravatar.com", "https://en.gravatar.com/" %></p>
