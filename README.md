@@ -15,7 +15,8 @@ With that said, here's what you need to get rolling.
 * Rails 5 / Ruby 2.4 / postgresql
 * `rails db:setup db:migrate seed:migrate`
 * `rails import:all_events`
-* To log in you need to go to `/users` and then `/superadmin` \(for now!\)
+* Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
+* Admin interface is `admin.lvh.me:3000`
 * Seeded root user is info@placecal.org / password
 
 To set up your own server, take a look at `INSTALL.md`.
