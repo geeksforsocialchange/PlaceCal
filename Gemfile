@@ -110,6 +110,9 @@ group :development do
 end
 
 group :test do
+  gem 'vcr'
+  gem 'webmock'
+  gem 'timecop'
   gem 'faker'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'

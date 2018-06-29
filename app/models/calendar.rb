@@ -45,12 +45,12 @@ class Calendar < ApplicationRecord
 
   # Create Events using this Calendar
   def import_events(from)
-    update_attribute(:import_lock_at, DateTime.now)
-
     @notices = []
     @events_uids = []
 
-    events_from_source.each do |event_data|
+    parsed_events = events_from_source
+
+    parsed_events.events.each do |event_data|
       occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
       next if event_data.private? || occurrences.blank?
 
@@ -70,7 +70,7 @@ class Calendar < ApplicationRecord
     handle_deleted_events(from, @events_uids) if @events_uids
 
     reload # reload the record from database to clear out any invalid events to avoid attempts to save them
-    update_attributes!(last_import_at: DateTime.now, import_lock_at: nil, notices: @notices)
+    update_attributes!( notices: @notices, last_checksum: parsed_events.checksum)
   end
 
   def create_or_update_events(event_data, occurrences, from) # rubocop:disable all
@@ -84,12 +84,13 @@ class Calendar < ApplicationRecord
     end
 
     occurrences.each do |occurrence|
-      next if type.manchesteru? && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1  #check if more than a day apart for manchester uni feeds
+      next if (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1  #check if more than a day apart
       event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
-      event_time[:are_spaces_available] = occurrence.status if type.xml?
 
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
       event = events.new if event.blank?
+
+      event_time[:are_spaces_available] = occurrence.status if occurrences.status.present?
 
       unless event.update_attributes event_data.attributes.merge(event_time)
         @important_notices << { event: event, errors: event.errors.full_messages }
@@ -105,13 +106,6 @@ class Calendar < ApplicationRecord
 
     return if deleted_events.blank?
 
-    if type.facebook?
-      # Do another check with Facebook to see if these events actually no
-      # longer exist in case of FB hiccup. If they do exist, remove from the list.
-      response = Parsers::Facebook.new(source).find_by_uid(deleted_events)
-      response.keys.each { |key| deleted_events.delete(key) }
-    end
-
     upcoming_events.where(uid: deleted_events).destroy_all
   end
 
@@ -119,7 +113,11 @@ class Calendar < ApplicationRecord
 
   # Import events from given URL
   def events_from_source(from)
-    Parsers::DefaultParser.new(self).events
+    CalendarParser.new(self, from).parse
+
+  rescue StandardError => e
+    Rails.logger.debug e
+    Rollbar.error(e)
   end
 
   def set_place_or_address(event_data)

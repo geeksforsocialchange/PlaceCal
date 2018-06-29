@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'simplecov'
+require 'vcr'
 SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
 ENV['RAILS_ENV'] ||= 'test'
@@ -49,4 +50,9 @@ end
 
 class ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
+end
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'vcr_cassettes'
+  c.hook_into :webmock
 end

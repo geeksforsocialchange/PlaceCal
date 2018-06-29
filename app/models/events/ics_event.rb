@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class IcsEvent < DefaultEvent
+  class IcsEvent < Base
     def initialize(event, start_date, end_date)
       @event = event
       @dtstart = start_date

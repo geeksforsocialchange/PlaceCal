@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class DefaultEvent
+  class Base
     Dates = Struct.new(:start_time, :end_time, :status)
 
     def initialize(event)
@@ -14,15 +14,34 @@ module Events
       nil
     end
 
+    # Convert h1 and h2 to h3
+    # Strip out all shady tags
+    # Convert all html to markdown
+    def html_sanitize(input)
+      return if input.blank?
+
+      allowed_tags = %w[a strong b em i ul ol li blockquote h3 h4 h5 h6]
+
+      str = Nokogiri::HTML(input).css(*['h1', 'h2'])
+      str = str.each { |header| header.name = 'h3' }
+      str = str.to_s
+      str = ActionController::Base.helpers.sanitize(str, tags: allowed_tags)
+
+      Kramdown::Document.new(str).to_html
+    end
+
     def attributes
       { uid:         uid&.strip,
-        summary:     summary&.strip,
-        description: description&.strip,
+        summary:     html_sanitize(summary),
+        description: html_sanitize(description),
         location:    location&.strip,
         rrule:       rrule,
         place_id:    place_id,
         address_id:  address_id,
         partner_id:  partner_id }
+    end
+
+    def footer
     end
 
     def recurring_event?

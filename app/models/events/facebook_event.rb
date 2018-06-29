@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class FacebookEvent < DefaultEvent
+  class FacebookEvent < Base
     def initialize(event)
       @event = OpenStruct.new(event)
     end

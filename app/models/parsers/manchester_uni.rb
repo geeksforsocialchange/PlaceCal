@@ -1,21 +1,19 @@
 module Parsers
   class ManchesterUni < Xml
-    def initialize(file)
-      @file = file
-    end
-
     def self.whitelist_pattern
       /http:\/\/events.manchester.ac.uk\/f3vf\/calendar\/.*/
     end
 
-    def events
-      @events = []
+    def import_events_from(data)
+      events = []
 
-      download_calendar.xpath('//ns:event').each do |event|
-        @events << Events::ManchesterUniEvent.new(event)
+      data.xpath('//ns:event').each do |event|
+        puts event.inspect
+        events << Events::ManchesterUniEvent.new(event)
       end
 
-      @events
+      events
     end
+
   end
 end

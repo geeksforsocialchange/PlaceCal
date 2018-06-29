@@ -1,5 +1,5 @@
 module Events
-  class ManchesterUniEvent < DefaultEvent
+  class ManchesterUniEvent < Base
     def initialize(event)
       @event = event
     end

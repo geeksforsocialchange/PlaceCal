@@ -39,7 +39,6 @@ ActiveRecord::Schema.define(version: 20180530100533) do
     t.string "strategy"
     t.integer "address_id"
     t.datetime "import_lock_at"
-    t.string "last_checksum"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end

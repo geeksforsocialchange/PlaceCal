@@ -1,5 +1,5 @@
 module Events
-  class ZartsEvent < DefaultEvent
+  class ZartsEvent < Base
 
     def uid
       @event.attribute('id').text
@@ -14,6 +14,10 @@ module Events
     end
 
     def location; end
+
+    def footer
+      "Tickets: #{@event.at_css('url').text}"
+    end
 
     def recurring_event?
       true
