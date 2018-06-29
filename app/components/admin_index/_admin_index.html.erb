@@ -1,0 +1,33 @@
+<h1 class="page-header"><%= properties[:title] %></h1>
+
+<%= link_to "Add New #{properties[:model].to_s.chop.humanize}", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary " %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <% properties[:columns].each do |column| %>
+        <th><%= column %></th>
+      <% end %>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% properties[:data]&.each do |record| %>
+      <tr>
+        <% record.slice(properties[:columns]).each do |key, value| %>
+          <td>
+            <% if key == 'logo' %>
+              <%= image_tag value, style: 'background-color: #5b4e46' %>
+            <% else %>
+              <%= value %>
+            <% end %>
+          </td>
+        <% end %>
+        <td><%= link_to "Edit", "/#{properties[:model]}/#{record.id}/edit",
+                                data: { turbolinks: false },
+                                class: "btn btn-primary" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

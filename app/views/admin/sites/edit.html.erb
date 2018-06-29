@@ -1,7 +1,1 @@
-<div class="form">
-  <div class="col-md-1"></div>
-  <div class="col-md-10">
-  	<h3>Edit Site</h3>
-    <%= render 'form' %>
-  </div>
-</div> 
+<%= render_component "admin_edit", model: :site, title: @site.name %>

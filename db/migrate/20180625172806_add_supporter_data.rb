@@ -1,7 +1,4 @@
-# frozen_string_literal: true
-
-# db/data/20180530095605_add_supporters.rb
-class AddSupporters < SeedMigration::Migration
+class AddSupporterData < ActiveRecord::Migration[5.1]
   def up
     records.each do |r|
       if r[:logo]

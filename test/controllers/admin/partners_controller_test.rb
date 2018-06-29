@@ -32,14 +32,14 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a', 'Add New Partner'
     assert_select 'a', 'Edit'
     # Returns one entry in the table
-    assert_select 'tbody', 1
+    assert_select 'tbody tr', 1
   end
 
   it_allows_access_to_index_for(%i[partner_admin]) do
     get admin_partners_url
     assert_response :success
     assert_select 'a', 'Edit'
-    assert_select 'tbody', 1
+    assert_select 'tbody tr', 1
     # Nothing to show in the table
   end
 
@@ -47,7 +47,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     get admin_partners_url
     assert_response :success
     # Nothing to show in the table
-    assert_select 'tbody', 0
+    assert_select 'tbody tr', 0
   end
 
   # New & Create Partner
