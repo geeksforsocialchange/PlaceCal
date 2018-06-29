@@ -91,7 +91,6 @@ Add a line like: `client_max_body_size 50m;`
 
 ## Local config
 
-
 ### Create app.json in Rails root
 
 ```

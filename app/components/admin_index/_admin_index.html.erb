@@ -15,7 +15,13 @@
     <% properties[:data]&.each do |record| %>
       <tr>
         <% record.slice(properties[:columns]).each do |key, value| %>
-          <td><%= value %></td>
+          <td>
+            <% if key == 'logo' %>
+              <%= image_tag value, style: 'background-color: #5b4e46' %>
+            <% else %>
+              <%= value %>
+            <% end %>
+          </td>
         <% end %>
         <td><%= link_to "Edit", "/#{properties[:model]}/#{record.id}/edit",
                                 data: { turbolinks: false },
