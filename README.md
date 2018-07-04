@@ -12,7 +12,7 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 
 With that said, here's what you need to get rolling.
 
-* Rails 5 / Ruby 2.4 / postgresql
+* postgresql, Ruby 2.4.3, and the Bundler gem to install rails etc from the Gemfile
 * `rails db:setup db:migrate seed:migrate`
 * `rails import:all_events`
 * Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
