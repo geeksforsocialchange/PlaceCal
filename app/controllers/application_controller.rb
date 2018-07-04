@@ -152,6 +152,10 @@ class ApplicationController < ActionController::Base
     @user = User.find(params[:id])
   end
 
+  def set_calendar
+    @calendar = Calendar.find(params[:id])
+  end
+
   protected
 
   def configure_permitted_parameters

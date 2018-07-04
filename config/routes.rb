@@ -6,6 +6,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   devise_for :users
 
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
+    resources :calendars
     resources :partners
     resources :places
     resources :turfs

@@ -1,0 +1,7 @@
+<%= render_component "admin_index",
+  title: "Calendars",
+  model: :calendars,
+  columns: %i[id name source strategy place],
+  data: @calendars,
+  new_link: new_admin_calendar_path
+%>

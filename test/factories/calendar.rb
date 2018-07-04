@@ -2,7 +2,9 @@
 
 FactoryBot.define do
   factory(:calendar) do
-    name 'Zion Centre'
+    sequence :name do |n|
+      "Zion Centre #{n}"
+    end
     source ''
     strategy 'place'
     type 'outlook'
