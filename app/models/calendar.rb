@@ -48,7 +48,7 @@ class Calendar < ApplicationRecord
     @notices = []
     @events_uids = []
 
-    parsed_events = events_from_source
+    parsed_events = events_from_source(from)
 
     parsed_events.events.each do |event_data|
       occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
@@ -84,13 +84,13 @@ class Calendar < ApplicationRecord
     end
 
     occurrences.each do |occurrence|
-      next if (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1  #check if more than a day apart
+      next if occurrence.end_time && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1  #check if more than a day apart
       event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
 
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
       event = events.new if event.blank?
 
-      event_time[:are_spaces_available] = occurrence.status if occurrences.status.present?
+      event_time[:are_spaces_available] = occurrence.status if occurrence.status.present?
 
       unless event.update_attributes event_data.attributes.merge(event_time)
         @important_notices << { event: event, errors: event.errors.full_messages }
@@ -113,10 +113,11 @@ class Calendar < ApplicationRecord
 
   # Import events from given URL
   def events_from_source(from)
-    CalendarParser.new(self, from).parse
+    CalendarParser.new(self, { from: from }).parse
 
   rescue StandardError => e
     Rails.logger.debug e
+    Rails.logger.debug e.backtrace
     Rollbar.error(e)
   end
 

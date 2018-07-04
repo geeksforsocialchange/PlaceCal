@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180625172806) do
+ActiveRecord::Schema.define(version: 20180629174727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,8 @@ ActiveRecord::Schema.define(version: 20180625172806) do
     t.string "strategy"
     t.integer "address_id"
     t.datetime "import_lock_at"
+    t.string "last_checksum"
+    t.text "footer"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -90,6 +92,7 @@ ActiveRecord::Schema.define(version: 20180625172806) do
     t.integer "partner_id"
     t.integer "address_id"
     t.string "are_spaces_available"
+    t.text "footer"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
     t.index ["place_id"], name: "index_events_on_place_id"
   end

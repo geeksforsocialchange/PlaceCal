@@ -1,6 +1,6 @@
 class CalendarParser
-  class UnSupportedFeed < StandardError; end
-  class InAccessibleFeed < StandardError; end
+  class UnsupportedFeed < StandardError; end
+  class InaccessibleFeed < StandardError; end
 
   PARSERS = [Parsers::ManchesterUni, Parsers::Zarts, Parsers::Facebook, Parsers::Ics].freeze
 
@@ -21,8 +21,8 @@ class CalendarParser
   end
 
   def validate_feed
-    raise InAccessibleFeed, "The url #{@url} could not be reached for calendar #{@calendar.name}" unless is_url_accessible?
-    raise UnSupportedFeed, "The provided url #{@url} is not supported" unless parser.present?
+    raise InaccessibleFeed, "The url #{@url} could not be reached for calendar #{@calendar.name}" unless is_url_accessible?
+    raise UnsupportedFeed, "The provided url #{@url} is not supported" unless parser.present?
     true
   end
 

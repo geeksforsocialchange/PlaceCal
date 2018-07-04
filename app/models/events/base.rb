@@ -22,9 +22,10 @@ module Events
 
       allowed_tags = %w[a strong b em i ul ol li blockquote h3 h4 h5 h6]
 
-      str = Nokogiri::HTML(input).css(*['h1', 'h2'])
-      str = str.each { |header| header.name = 'h3' }
+      str = Nokogiri::HTML.fragment(input)
+      str.css(*['h1', 'h2']).each { |header| header.name = 'h3' }
       str = str.to_s
+
       str = ActionController::Base.helpers.sanitize(str, tags: allowed_tags)
 
       Kramdown::Document.new(str).to_html
@@ -32,17 +33,18 @@ module Events
 
     def attributes
       { uid:         uid&.strip,
-        summary:     html_sanitize(summary),
-        description: html_sanitize(description),
+        summary:     summary,
+        description: description,
         location:    location&.strip,
         rrule:       rrule,
         place_id:    place_id,
         address_id:  address_id,
-        partner_id:  partner_id }
+        partner_id:  partner_id,
+        footer:      footer
+      }
     end
 
-    def footer
-    end
+    def footer; end
 
     def recurring_event?
       false

@@ -48,6 +48,9 @@ module Events
       @event.updated_time
     end
 
+    #TODO: Make this a link back to facebook
+    def footer; end
+
     def recurring_event?
       @event.event_times.present?
     end

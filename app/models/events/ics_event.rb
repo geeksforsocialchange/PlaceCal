@@ -16,11 +16,11 @@ module Events
     end
 
     def summary
-      @event.summary.to_s
+      @event.summary.to_s.strip
     end
 
     def description
-      @event.description.to_s.gsub(/\A(\n)+\z/, '')
+      @event.description.to_s.gsub(/\A(\n)+\z/, '').strip
     end
 
     def location

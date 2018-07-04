@@ -4,11 +4,11 @@ module Parsers
   class Ics < Base
 
     def self.whitelist_pattern
-      /https:\/\/calendar.google.com\.*|https:\/\/outlook.office365.com\/owa\/calendar\/.*|\Awebcal:\/\//
+      /http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.office365.com\/owa\/calendar\/.*|\Awebcal:\/\//
     end
 
     def download_calendar
-      url = @url.gsub(/webcal:\/\//, '') #Remove the webcal:// and just use the part after it
+      url = @url.gsub(/webcal:\/\//, 'https://') #Remove the webcal:// and just use the part after it
       open(url)
     end
 

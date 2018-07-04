@@ -17,20 +17,20 @@ module Parsers
       data   = download_calendar
       checksum = digest(data)
 
-      if skip_checksum || (@calendar.last_checksum == checksum)
-        return []
+      if !skip_checksum && (@calendar.last_checksum == checksum)
+        return Output.new([], checksum)
       end
 
       Output.new(import_events_from(data), checksum)
     end
 
-    def download_calendar
-      #raise NotImplemented, 'This method must be implemented by the subclass'
-    end
+    #@abstract Subclass is expect to implmement #download_calendar
+    #@!method download_calendar
+    #  Make http request to download calendar file from source
 
-    def import_events_from(data)
-      #raise NotImplemented, 'This method must be implemented by the subclass'
-    end
+    #@abstract Subclass is expected to implement #import_events_from
+    #@!method import_events_from
+    #  Parse calendar file and wrap individual events in custom event class
 
     def digest(data)
       Digest::MD5.hexdigest(data)
