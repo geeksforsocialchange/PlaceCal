@@ -15,7 +15,9 @@ Q: What are the specific areas of code (i.e. files, methods) where duplication c
 A: These are not currently active, but theoretically the following should all overlap:
 
  - Name, description, logo, map
- - Contact information
+ - Contact information for the general public, for us to contact admins, for us to contact managers
+ - Address
+ - Opening times
  - Associations with Users
  - Associations with Sites
  - Associations with Turfs
