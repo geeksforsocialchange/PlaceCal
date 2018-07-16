@@ -16,7 +16,6 @@ class CalendarDashboard < Administrate::BaseDashboard
     id: Field::Number,
     name: Field::String,
     source: Field::String,
-    type: Field::Select.with_options(collection: Calendar.type.values),
     strategy: Field::Select.with_options(collection: Calendar.strategy.values),
     notices: Field::String.with_options(searchable: false),
     last_import_at: Field::DateTime,
@@ -45,7 +44,6 @@ class CalendarDashboard < Administrate::BaseDashboard
     name
     source
     strategy
-    type
     created_at
     updated_at
   ].freeze
@@ -59,7 +57,6 @@ class CalendarDashboard < Administrate::BaseDashboard
     name
     source
     strategy
-    type
   ].freeze
 
   # Overwrite this method to customize how calendars are displayed

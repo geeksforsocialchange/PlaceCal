@@ -7,6 +7,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
     @calendar = create(:calendar)
     @root = create(:root)
     @citizen = create(:user)
+    @partner = create(:partner)
 
     host! 'admin.lvh.me'
   end
@@ -39,7 +40,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[root]) do
     assert_difference('Calendar.count') do
       post admin_calendars_url,
-           params: { calendar: attributes_for(:calendar) }
+        params: { calendar: attributes_for(:calendar) }
     end
   end
 

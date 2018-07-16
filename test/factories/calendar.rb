@@ -5,8 +5,9 @@ FactoryBot.define do
     sequence :name do |n|
       "Zion Centre #{n}"
     end
-    source ''
+    sequence :source do |n|
+	  "https://outlook.office365.com/owa/calendar/#{n}/calendar.ics"
+	end
     strategy 'place'
-    type 'outlook'
   end
 end

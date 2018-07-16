@@ -1,0 +1,40 @@
+<br><hr><br>
+<div class='row'>
+  <%= simple_form_for :import, { url: import_admin_calendar_path(@calendar) } do |f| %>
+    <div class="col-sm-2">
+      <%= f.input :starting_from, input_html: { name: 'starting_from' }, placeholder: 'YYYY-MM-DD' %>
+      <%= f.submit 'Run Importer', class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>
+
+<div>
+  <h3> Import Status for <%= @calendar.name %></h3>
+
+  <br/>
+
+  <p>
+      <b>Last Import At:</b> <%= @calendar.last_import_at%>
+  </p>
+
+  <h4>Important Notices</h4>
+  <% if @calendar.notices.present? %>
+    <p>The following events could not be imported due to invalid data: </p>
+    <ul>
+       <% @calendar.notices.each do |notice| %>
+        <li><em><%= notice["event"]["summary"] %></em>  <%= notice["errors"].join(", ")%></li>
+       <% end %>
+      </ul>
+  <% else %>
+    No notices to show
+  <% end %>
+  <hr/>
+
+  <h4>Recent Activities</h4><br/>
+  <% @versions.each do |date, activities| %>
+    <div>
+        <b><%= display_time_since(date) %></b>
+        <%= render 'shared/recent_import_activity', activities: activities %>
+    </div>
+  <% end %>
+</div>

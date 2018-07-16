@@ -78,15 +78,6 @@
       <%= c.link_to_remove "Remove", class: "btn btn-primary" %>
     </div>
     <div class="col-md-3">
-      <label>Platform</label>
-      <h5><%= c.radio_button :type, 'google' %>Google Calendar</h5>
-      <h5><%= c.radio_button :type, 'outlook' %>Outlook 365</h5>
-      <h5><%= c.radio_button :type, 'facebook' %>Facebook</h5>
-      <h5><%= c.radio_button :type, 'mac_calendar' %>Mac Calendar</h5>
-      <h5><%= c.radio_button :type, 'xml' %>Xml</h5>
-      <h5><%= c.radio_button :type, 'other' %>Other</h5>
-    </div>
-    <div class="col-md-3">
       <label>Import Strategy</label>
       <h5><%= c.radio_button :strategy, 'event' %>Event</h5>
       <h5><%= c.radio_button :strategy, 'place' %>Place</h5>

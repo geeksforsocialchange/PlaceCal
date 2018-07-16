@@ -7,7 +7,6 @@ class CalendarParserTest < ActiveSupport::TestCase
   #
   test 'imports webcal calendars' do
     calendar = create(:calendar, name: 'Yellowbird',
-                                 type: 'mac_calendar',
                                  source: 'webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ')
 
     VCR.use_cassette('Yellowbird Webcal') do
@@ -24,7 +23,6 @@ class CalendarParserTest < ActiveSupport::TestCase
 
   test 'imports google calendars' do
     calendar = create(:calendar, name: 'Placecal Hulme & Moss Size',
-                                 type: 'google',
                                  source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics')
 
     VCR.use_cassette('Placecal Hulme & Moss Side Google Cal') do
@@ -55,7 +53,6 @@ class CalendarParserTest < ActiveSupport::TestCase
 
   test 'imports manchester u calendars' do
     calendar = create(:calendar, name: 'Martin Harris Centre',
-                                 type: 'manchesteru',
                                  source: 'http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml')
 
     VCR.use_cassette('Martin Harris Centre') do
@@ -72,7 +69,6 @@ class CalendarParserTest < ActiveSupport::TestCase
 
   test 'imports zarts calendars' do
     calendar = create(:calendar, name: 'Z-Arts',
-                                 type: 'xml',
                                  source: 'https://z-arts.ticketsolve.com/shows.xml')
 
     VCR.use_cassette('Z-Arts Calendar') do
@@ -89,7 +85,6 @@ class CalendarParserTest < ActiveSupport::TestCase
 
   test 'does not import if checksum is the same' do
     calendar = create(:calendar, name: 'Z-Arts',
-                                 type: 'xml',
                                  last_checksum: '56babb5e2ce537f44b8a20ea3e1484c3',
                                  source: 'https://z-arts.ticketsolve.com/shows.xml')
 

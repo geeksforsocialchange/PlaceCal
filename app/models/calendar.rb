@@ -15,11 +15,6 @@ class Calendar < ApplicationRecord
 
   extend Enumerize
 
-  # What kind of Calendar feed is this?
-  enumerize :type, in: %i[facebook google outlook mac_calendar xml manchesteru other],
-                   default: :other,
-                   scope: true
-
   # What strategy should we take to divine Event locations?
   #----------------------------------------------------------------------------
   # Event: Use the Event's location field from the imported record
@@ -50,6 +45,8 @@ class Calendar < ApplicationRecord
 
     parsed_events = events_from_source(from)
 
+    return if parsed_events.events.blank?
+
     parsed_events.events.each do |event_data|
       occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
       next if event_data.private? || occurrences.blank?
@@ -70,7 +67,7 @@ class Calendar < ApplicationRecord
     handle_deleted_events(from, @events_uids) if @events_uids
 
     reload # reload the record from database to clear out any invalid events to avoid attempts to save them
-    update_attributes!( notices: @notices, last_checksum: parsed_events.checksum)
+    update_attributes!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current)
   end
 
   def create_or_update_events(event_data, occurrences, from) # rubocop:disable all
@@ -90,7 +87,7 @@ class Calendar < ApplicationRecord
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
       event = events.new if event.blank?
 
-      event_time[:are_spaces_available] = occurrence.status if occurrence.status.present?
+      event_time[:are_spaces_available] = occurrence.status if occurrence.respond_to?(:status)
 
       unless event.update_attributes event_data.attributes.merge(event_time)
         @important_notices << { event: event, errors: event.errors.full_messages }
@@ -117,7 +114,6 @@ class Calendar < ApplicationRecord
 
   rescue StandardError => e
     Rails.logger.debug e
-    Rails.logger.debug e.backtrace
     Rollbar.error(e)
   end
 

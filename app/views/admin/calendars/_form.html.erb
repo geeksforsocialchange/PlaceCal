@@ -5,20 +5,11 @@
       <%= f.input :name %>
       <%= f.input :source %>
       <%= f.input :strategy %>
-      <%= f.input :type %>
       <%= f.input :footer %>
       <%= f.association :partner %>
     </div>
     <div class="col-md-6">
       <% unless @calendar.new_record? %>
-        <h3>Status</h3>
-        <p>Big red error here if URL currently not recognised or returning an error</p>
-        <p>Last updated at TIME, currently showing NUMBER_OF_UPCOMING events.</p>
-        <button class="btn btn-primary">Import now</button>
-        <% # TODO: add some kind of JS import updates %>
-        <% # TODO: f.input :last_import_at, disabled: true, as: :string %>
-        <% # TODO: Some kind of count for sanity %>
-        <%= f.input :notices, disabled: true %>
         <%= link_to "Destroy Calendar", admin_calendar_path(@calendar), method: :delete, class: "btn btn-danger" %>
       <% end %>
     </div>
@@ -28,3 +19,4 @@
 
 
 <% end %>
+<%= render('import') unless @calendar.new_record? %>

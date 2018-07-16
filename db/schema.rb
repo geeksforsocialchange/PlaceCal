@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180629174727) do
+ActiveRecord::Schema.define(version: 20180716040041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,7 +29,6 @@ ActiveRecord::Schema.define(version: 20180629174727) do
   create_table "calendars", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "source"
-    t.string "type"
     t.jsonb "notices"
     t.datetime "last_import_at"
     t.integer "partner_id"
@@ -37,7 +36,6 @@ ActiveRecord::Schema.define(version: 20180629174727) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strategy"
-    t.integer "address_id"
     t.datetime "import_lock_at"
     t.string "last_checksum"
     t.text "footer"
@@ -276,7 +274,6 @@ ActiveRecord::Schema.define(version: 20180629174727) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
-  add_foreign_key "calendars", "addresses"
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "places"
   add_foreign_key "events", "addresses"
