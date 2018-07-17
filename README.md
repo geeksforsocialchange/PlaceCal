@@ -12,12 +12,14 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 
 With that said, here's what you need to get rolling.
 
-* Rails 5 / Ruby 2.4 / postgresql
-* `rails db:setup db:migrate seed:migrate`
-* `rails import:all_events`
-* Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
-* Admin interface is `admin.lvh.me:3000`
-* Seeded root user is info@placecal.org / password
+ * Rails 5 / Ruby 2.4 / postgresql
+ * `rails db:setup db:migrate seed:migrate`
+ * `rails import:all_events`
+ * Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
+ * Admin interface is `admin.lvh.me:3000`
+ * Seeded root user is info@placecal.org / password
+ * `guard` is configured to run tests and [livereload](http://livereload.com/). Use it!
+ * Run the documentation server locally with `yard server --reload`
 
 To set up your own server, take a look at `INSTALL.md`.
 

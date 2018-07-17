@@ -15,30 +15,31 @@ class Calendar < ApplicationRecord
 
   extend Enumerize
 
-  # What strategy should we take to divine Event locations?
-  #----------------------------------------------------------------------------
+  # Defines the strategy this Calendar uses to assign events to locations.
+  #
   # Event: Use the Event's location field from the imported record
-  #   => Area calendars, or organisations with no solid base.
+  #   Area calendars, or organisations with no solid base.
   # Place: Use the Calendars's associated Place and ignore the Event information
-  #   => Every event is in a single location, and we want to ignore the
-  #      event location entirely
+  #   Every event is in a single location, and we want to ignore the
+  #   event location entirely
   # Room Number: Use the Calendars's associated Place & presume the location
-  #      field contains a room number
-  #   => Every event is in a large venue and the location field is being used to
-  #      store the room number
+  #   field contains a room number
+  #   Every event is in a large venue and the location field is being used to
+  #   store the room number
   # EventOverride: Use Calendar's associated Place, unless address is present.
-  #   => Everything is in one Place, with occasional away days or one-off events
-  #-----------------------------------------------------------------------------
+  #   Everything is in one Place, with occasional away days or one-off events
+  # @attr [Enumerable<Symbol>] :strategy
   enumerize :strategy, in: %i[event place room_number event_override],
                        default: :place,
                        scope: true
 
-  # Default output
+  # Output the calendar's name when it's requested as a string
   def to_s
     name
   end
 
   # Create Events using this Calendar
+  # @param from [Calendar]
   def import_events(from)
     @notices = []
     @events_uids = []

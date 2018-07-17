@@ -107,6 +107,7 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Access an IRB console on exception pages or by using <%= console %>
   gem 'web-console', '>= 3.3.0'
+  gem 'yard'
 end
 
 group :test do
