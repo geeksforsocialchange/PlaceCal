@@ -29,6 +29,8 @@ class CalendarParser
   def is_url_accessible?
     response = HTTParty.get(@url, follow_redirects: true)
     response.code == 200
+  rescue
+    false
   end
 
 
@@ -36,5 +38,6 @@ class CalendarParser
     PARSERS.each do |parse|
       return parse if @url.match(parse.whitelist_pattern)
     end
+    nil
   end
 end

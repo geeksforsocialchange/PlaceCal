@@ -1,3 +1,7 @@
+# In order for a parser to be recognized, it must be added
+# to the PARSERS constant list in app/models/calendar_parser.rb.
+# Parent parser classes should not be added.
+
 module Parsers
   class Base
 
@@ -32,6 +36,8 @@ module Parsers
     #@!method import_events_from
     #  Parse calendar file and wrap individual events in custom event class
 
+    #Returns the unique MD5 Digest string of the calendar feed
+    #
     def digest(data)
       Digest::MD5.hexdigest(data)
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180716040041) do
+ActiveRecord::Schema.define(version: 20180720112624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20180716040041) do
     t.string "strategy"
     t.string "last_checksum"
     t.text "footer"
+    t.text "critical_error"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end

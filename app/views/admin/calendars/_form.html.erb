@@ -1,3 +1,5 @@
+<%= @calendar.critical_error %>
+
 <%= simple_form_for [:admin, @calendar] do |f| %>
   <div class="row">
     <div class="col-md-6">
@@ -7,6 +9,7 @@
       <%= f.input :strategy %>
       <%= f.input :footer %>
       <%= f.association :partner %>
+      <%= f.association :place %>
     </div>
     <div class="col-md-6">
       <% unless @calendar.new_record? %>

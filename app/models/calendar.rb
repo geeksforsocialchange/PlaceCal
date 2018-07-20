@@ -11,7 +11,7 @@ class Calendar < ApplicationRecord
   validates_presence_of :name
   validates_uniqueness_of :source
 
-  IMPORT_UP_TO = 1.year.from_now
+  before_save :source_supported
 
   extend Enumerize
 
@@ -32,14 +32,30 @@ class Calendar < ApplicationRecord
   enumerize :strategy, in: %i[event place room_number event_override],
                        default: :place,
                        scope: true
+  
+  # Output constant for event import date limit
+  def self.import_up_to
+    1.year.from_now
+  end
 
   # Output the calendar's name when it's requested as a string
   def to_s
     name
   end
 
+  #Output recent calendar import activity
+  def recent_activity
+    versions = PaperTrail::Version.with_item_keys('Event', self.event_ids).where('created_at >= ?', 2.weeks.ago)
+    versions = versions.or(PaperTrail::Version.destroys
+                                              .where("item_type = 'Event' AND object @> ? AND created_at >= ?",
+                                                     { calendar_id: self.id }.to_json, 2.weeks.ago))
+
+    versions = versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
+  end
+
+
   # Create Events using this Calendar
-  # @param from [Calendar]
+  # @param from [DateTime]
   def import_events(from)
     @notices = []
     @events_uids = []
@@ -49,7 +65,7 @@ class Calendar < ApplicationRecord
     return if parsed_events.events.blank?
 
     parsed_events.events.each do |event_data|
-      occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
+      occurrences = event_data.occurrences_between(from, Calendar.import_up_to)
       next if event_data.private? || occurrences.blank?
 
       @events_uids << event_data.uid
@@ -109,13 +125,15 @@ class Calendar < ApplicationRecord
 
   private
 
+  def source_supported
+    CalendarParser.new(self).validate_feed
+  rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
+    self.critical_error = e
+  end
+
   # Import events from given URL
   def events_from_source(from)
     CalendarParser.new(self, { from: from }).parse
-
-  rescue StandardError => e
-    Rails.logger.debug e
-    Rollbar.error(e)
   end
 
   def set_place_or_address(event_data)

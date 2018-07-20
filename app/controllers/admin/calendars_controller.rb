@@ -18,11 +18,7 @@ module Admin
     def edit
       authorize @calendar
 
-      @events = @calendar.events
-      @versions = PaperTrail::Version.with_item_keys('Event', @events.pluck(:id)).where('created_at >= ?', 2.weeks.ago)
-                                     .or(PaperTrail::Version.destroys.where("item_type = 'Event' AND object @> ? AND created_at >= ?", { calendar_id: @calendar.id }.to_json, 2.weeks.ago))
-
-      @versions = @versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
+      @versions = @calendar.recent_activity
     end
 
     def create
@@ -80,11 +76,11 @@ module Admin
         :id,
         :name,
         :source,
-        :type,
         :strategy,
         :address_id,
         :strategy,
         :partner_id,
+        :place_id,
         :footer
       )
     end

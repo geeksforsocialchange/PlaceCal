@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# In order for a parser to be recognized, it must be added
+# to the PARSERS constant list in app/models/calendar_parser.rb.
+# Parent parser classes should not be added.
+
 module Parsers
   class Facebook < Base
 
@@ -16,7 +20,7 @@ module Parsers
 
       begin
         fields = %w[name description start_time end_time updated_time place event_times]
-        results = facebook_api.get_connections(page, 'events', fields: fields, since: @from.to_time.to_i, until: Calendar::IMPORT_UP_TO.to_time.to_i)
+        results = facebook_api.get_connections(page, 'events', fields: fields, since: @from.to_time.to_i, until: Calendar.import_up_to.to_time.to_i)
 
         loop do
           @events += results
