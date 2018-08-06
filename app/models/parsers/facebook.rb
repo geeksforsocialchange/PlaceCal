@@ -12,7 +12,7 @@ module Parsers
     end
 
     def page
-      @url.gsub(/https:\/\/www.facebook.com\.*/, '')
+      URI.parse(@url).path.gsub(/\A\//, '').gsub(/\/\z/, '')
     end
 
     def download_calendar
@@ -45,12 +45,7 @@ module Parsers
     private
 
     def facebook_api
-      Koala::Facebook::API.new(access_token)
-    end
-
-    def access_token
-      @oauth = Koala::Facebook::OAuth.new(ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'])
-      @oauth.get_app_access_token
+      Koala::Facebook::API.new(@calendar.page_access_token)
     end
   end
 end

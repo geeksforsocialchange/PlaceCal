@@ -15,6 +15,8 @@ class Calendar < ApplicationRecord
 
   extend Enumerize
 
+  attr_accessor :is_facebook_page, :facebook_page_id
+
   # Defines the strategy this Calendar uses to assign events to locations.
   #
   # Event: Use the Event's location field from the imported record
@@ -32,7 +34,7 @@ class Calendar < ApplicationRecord
   enumerize :strategy, in: %i[event place room_number event_override],
                        default: :place,
                        scope: true
-  
+
   # Output constant for event import date limit
   def self.import_up_to
     1.year.from_now
@@ -123,6 +125,11 @@ class Calendar < ApplicationRecord
     upcoming_events.where(uid: deleted_events).destroy_all
   end
 
+  def set_fb_page_token(user)
+    graph = Koala::Facebook::API.new(user.access_token)
+    self.page_access_token = graph.get_page_access_token(facebook_page_id)
+  end
+
   private
 
   def source_supported
@@ -151,4 +158,5 @@ class Calendar < ApplicationRecord
       return Address.search(location, components, postcode)
     end
   end
+
 end

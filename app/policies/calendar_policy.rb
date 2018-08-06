@@ -5,6 +5,10 @@ class CalendarPolicy < ApplicationPolicy
     user.role.root?
   end
 
+  def select_page?
+    true
+  end
+
   class Scope < Scope
     def resolve
       if user&.role&.root?

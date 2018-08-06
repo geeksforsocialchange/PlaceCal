@@ -3,10 +3,11 @@
 # config/routes.rb
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Most common route at the top
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'admin/omniauth_callbacks' }
 
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :calendars do
+      get :select_page, on: :collection
       member do
         post :import
       end

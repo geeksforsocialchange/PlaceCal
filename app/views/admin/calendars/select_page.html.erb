@@ -1,0 +1,9 @@
+<h2>Select the page you would like to import events from</h2>
+
+<%- @pages.each do |page| %>
+  <%- if params[:calendar_id].present? %>
+    <%= link_to page['name'], edit_admin_calendar_path(params[:calendar_id], is_facebook_page: true, page_name: page['name'], page_link: page['link'], page_id: page['id']) %>
+  <% else %>
+    <%= link_to page['name'], new_admin_calendar_path(is_facebook_page: true, page_name: page['name'], page_link: page['link'], page_id: page['id']) %>
+  <% end %>
+<% end %>

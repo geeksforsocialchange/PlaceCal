@@ -24,6 +24,11 @@ module Admin
     def create
       @calendar = Calendar.new(calendar_params)
       authorize @calendar
+
+      if @calendar.is_facebook_page
+        @calendar.set_fb_page_token(current_user)
+      end
+
       if @calendar.save
         redirect_to admin_calendars_path
       else
@@ -65,6 +70,13 @@ module Admin
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
+    def select_page
+      authorize Calendar
+
+      facebook_api = Koala::Facebook::API.new(current_user.access_token)
+      @pages = facebook_api.get_connections('me', 'accounts', fields: ['id', 'name', 'link'])
+    end
+
     private
 
     def set_calendar
@@ -81,7 +93,9 @@ module Admin
         :strategy,
         :partner_id,
         :place_id,
-        :footer
+        :footer,
+        :is_facebook_page,
+        :facebook_page_id
       )
     end
   end

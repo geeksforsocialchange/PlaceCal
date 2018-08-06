@@ -6,7 +6,8 @@ class User < ApplicationRecord
   enumerize :role, in: %i[root turf_admin partner_admin]
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable,
+         :omniauthable, omniauth_providers: %i[facebook]
 
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
