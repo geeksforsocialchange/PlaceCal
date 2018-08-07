@@ -1,218 +1,143 @@
-<%= simple_nested_form_for @partner, html: { class: "form-horizontal" } do |f| %>
-  <%= render_component "error", object: @partner %>
-  <div class="row">
-    <div class="col-md-10">
-      <h2><%= @partner.name %></h2><hr/>
-      <h4>Basic Information</h4>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-5">
-      <label>Name</label>
-      <%= f.text_field :name, class: "form-control" %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-5">
-      <label>Short Description</label>
-      <%= f.text_area :short_description, rows: 2, class: "form-control" %>
-    </div>
-    <div class="col-md-5">
-      <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
-      <%= f.file_field :image %>
-    </div>
-  </div>
-  <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
-    <div class="col-md-5">
-      <%= f.check_box :is_a_place, {}, "true", "false" %>
-      <label>Is a Place</label>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-5">
-      <label>Turfs</label>
-      <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes, include_hidden: false %>
-    </div>
-  </div>
-  <div class="">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="row">
-          <div class="col-md-12">
-          <h3>Places</h3>
-            <%= f.link_to_add "+ Add New Places", :places, class: "btn btn-primary add_place" %>
-            <%= f.association :places, label: "Existing Places", collection: options_for_places, input_html: {class: 'form-control select2' }, include_hidden: false %>
-          </div>
-        </div>
-      </div>
-    </div>
-    <%= f.simple_fields_for :places, [] do |p| %>
-      <div class="place">
-        <div class="row">
-          <div class="col-md-6">
-            <label>Place Name</label>
-            <%= p.text_field :name, class: "form-control" %>
-          </div>
-          <div class="col-md-6">
-            <label>Short Description</label>
-            <%= p.text_area :short_description, rows: 3, class: "form-control" %>
-          </div>
-        </div>
-        <div class="row">
-          <%= p.link_to_add "+ Add New Address", :address, class: "btn btn-primary add_address hide" %>
-            <%= p.fields_for :address do |a| %>
-              <div class="col-md-6">
-                <div class="row">
-                  <div class="col-md-12">
-                    <label>Address Line 1</label>
-                    <%= a.text_field :street_address, class: "form-control address_1 address_field" %>
-                    <label>Address Line 2</label>
-                    <%= a.text_field :street_address2, class: "form-control address_2 address_field" %>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <label>City</label>
-                    <%= a.text_field :city, class: "form-control city address_field" %>
-                  </div>
-                  <div class="col-md-6">
-                    <label>Postcode</label>
-                    <%= a.text_field :postcode, class: "form-control postcode address_field" %>
-                  </div>
-                </div>
-              </div>
-            <% end %>
-          <div class="col-md-6">
-            <label>Accessibility Information</label>
-            <%= p.text_area :accessibility_info, rows: 4, class: "form-control" %>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <label>Map</label>
-            <div class="row">
-              <div class="col-md-12" style="position: relative;">
-                <div id="js-map" class="map map-marker place-map"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label>Opening Times</label>
-            <%= p.text_area :opening_times, rows: 4, class: "form-control" %>
-            <label>Booking Information</label>
-            <%= p.text_area :booking_info, rows: 4, class: "form-control" %>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-10"></div>
-          <div class="col-md-2">
-            <%= p.link_to_remove "Remove", class: "btn btn-primary" %>
-          </div>
-        </div>
-      </div>
-    <% end %>
-  </div>
+<%= simple_nested_form_for @partner do |f| %>
 
+<%= render_component "error", object: @partner %>
 
-  <div class="">
-    <div class="row">
-      <div class="col-md-12">
-        <h3>Calendars</h3>
-        <%= f.link_to_add "+ Add New Calendars", :calendars, class: "btn btn-primary add_calendar" %>
-      </div>
-    </div>
-    <%= f.simple_fields_for :calendars do |c| %>
-      <div class="row">
-        <div class="col-md-5">
-          <label>Place Name</label>
-          <%= c.text_field :name, class: "form-control" %>
-          <label>URL</label>
-          <%= c.text_field :source, class: "form-control" %>
-        </div>
-        <div class="col-md-2">
-          <label>Platform</label>
-          <h5><%= c.radio_button :type, 'google' %>Google Calendar</h5>
-          <h5><%= c.radio_button :type, 'outlook' %>Outlook 365</h5>
-          <h5><%= c.radio_button :type, 'facebook' %>Facebook</h5>
-          <h5><%= c.radio_button :type, 'mac_calendar' %>Mac Calendar</h5>
-          <h5><%= c.radio_button :type, 'xml' %>Xml</h5>
-          <h5><%= c.radio_button :type, 'other' %>Other</h5>
-        </div>
-        <div class="col-md-2">
-          <label>Import Strategy</label>
-          <h5><%= c.radio_button :strategy, 'event' %>Event</h5>
-          <h5><%= c.radio_button :strategy, 'place' %>Place</h5>
-          <h5><%= c.radio_button :strategy, 'room_number' %>Room Number</h5>
-          <h5><%= c.radio_button :strategy, 'event_override' %>Event Override</h5>
-        </div>
-        <div class="col-md-3">
-          <label>Default Place</label>
-          <%= c.select :place_id, options_for_places, { include_blank: 'None'}, class: 'form-control select21' %>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-10"></div>
-        <div class="col-md-2">
-          <%= c.link_to_remove "Remove", class: "btn btn-primary" %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-  <div class="">
-    <div class="row">
-      <div class="col-md-12">
-        <h3>Contact Information</h3>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h4>Public Enquiries</h4>
-        <%= label_tag :url %>
-        <%= f.text_field :url, class: "form-control" %>
-        <%= label_tag :public_name %>
-        <%= f.text_field :public_name, class: "form-control" %>
-        <label>Contact Name</label>
-        <%= f.text_field :public_name, class: "form-control" %>
-        <label>Email</label>
-        <%= f.email_field :public_email, class: "form-control" %>
-        <label>Phone Number</label>
-        <%= f.text_field :public_phone, class: "form-control" %>
-      </div>
-      <div class="col-md-6">
-        <h4>Calendar Manager</h4>
-        <label>Contact Name</label>
-        <%= f.text_field :calendar_name, class: "form-control" %>
-        <label>Email</label>
-        <%= f.email_field :calendar_email, class: "form-control" %>
-        <label>Phone Number</label>
-        <%= f.text_field :calendar_phone, class: "form-control" %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h4>Partner Manager</h4>
-        <label>Contact Name</label>
-        <%= f.text_field :partner_name, class: "form-control" %>
-        <label>Email</label>
-        <%= f.email_field :partner_email, class: "form-control" %>
-        <label>Phone Number</label>
-        <%= f.text_field :partner_phone, class: "form-control" %>
-      </div>
-      <div class="col-md-6">
+<h2>Basic Information</h2>
 
-      </div>
-    </div>
-  </div>
-  <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
-    <div class="col-md-10"></div>
-    <div class= "col-md-2">
-      <%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
-      <% if policy(Partner).destroy? && !@partner.new_record? %>
-        <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
+<label>Name</label>
+<%= f.text_field :name, class: "form-control" %>
+
+<label>Short Description</label>
+<%= f.text_area :short_description, rows: 2, class: "form-control" %>
+
+<label>Image</label>
+<%= f.file_field :image %>
+<%= image_tag @partner.image , width: '125', class: 'brand_image' %>
+
+<label>Is this a Place?</label>
+<%= f.check_box :is_a_place, {}, "true", "false" %>
+
+<%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes, include_hidden: false %>
+
+<h2>Places</h2>
+<%= f.link_to_add "+ Add New Places", :places, class: "btn btn-primary add_place" %>
+<%= f.association :places, label: "Existing Places", collection: options_for_places, input_html: {class: 'form-control select2' }, include_hidden: false %>
+
+<%= f.simple_fields_for :places, [] do |p| %>
+  <div class="row">
+    <%= p.link_to_add "+ Add New Address", :address, class: "btn btn-primary add_address hide" %>
+    <div class="col-md-6">
+      <label>Place Name</label>
+      <%= p.text_field :name, class: "form-control" %>
+      <%= p.fields_for :address do |a| %>
+        <label>Address Line 1</label>
+        <%= a.text_field :street_address, class: "form-control address_1 address_field" %>
+        <label>Address Line 2</label>
+        <%= a.text_field :street_address2, class: "form-control address_2 address_field" %>
+        <div class="row">
+          <div class="col-md-6">
+            <label>City</label>
+            <%= a.text_field :city, class: "form-control city address_field" %>
+          </div>
+          <div class="col-md-6">
+            <label>Postcode</label>
+            <%= a.text_field :postcode, class: "form-control postcode address_field" %>
+          </div>
+        </div>
       <% end %>
+      <br>
+      <div id="js-map" class="map map-marker place-map"></div>
+    </div>
+    <div class="col-md-6">
+      <label>Short Description</label>
+      <%= p.text_area :short_description, rows: 3, class: "form-control" %>
+      <label>Accessibility Information</label>
+      <%= p.text_area :accessibility_info, rows: 4, class: "form-control" %>
+      <label>Opening Times</label>
+      <%= p.text_area :opening_times, rows: 4, class: "form-control" %>
+      <label>Booking Information</label>
+      <%= p.text_area :booking_info, rows: 4, class: "form-control" %>
+      <%= p.link_to_remove "Remove", class: "btn btn-primary" %>
     </div>
   </div>
+<% end %>
+
+<h2>Calendars</h2>
+<%= f.link_to_add "+ Add New Calendars", :calendars, class: "btn btn-primary add_calendar" %>
+
+<%= f.simple_fields_for :calendars do |c| %>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <label>Calendar Name</label>
+      <%= c.text_field :name, class: "form-control" %>
+      <label>URL</label>
+      <%= c.text_field :source, class: "form-control" %>
+      <label>Default Place</label>
+      <%= c.select :place_id, options_for_places, { include_blank: 'None'}, class: 'form-control select21' %>
+      <%= c.link_to_remove "Remove", class: "btn btn-primary" %>
+    </div>
+    <div class="col-md-3">
+      <label>Import Strategy</label>
+      <h5><%= c.radio_button :strategy, 'event' %>Event</h5>
+      <h5><%= c.radio_button :strategy, 'place' %>Place</h5>
+      <h5><%= c.radio_button :strategy, 'room_number' %>Room Number</h5>
+      <h5><%= c.radio_button :strategy, 'event_override' %>Event Override</h5>
+    </div>
+  </div>
+<% end %>
+
+<h2>Contact Information</h2>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4>Public Enquiries</h4>
+    <%= label_tag :url %>
+    <%= f.text_field :url, class: "form-control" %>
+    <%= label_tag :public_name %>
+    <%= f.text_field :public_name, class: "form-control" %>
+    <label>Contact Name</label>
+    <%= f.text_field :public_name, class: "form-control" %>
+    <label>Email</label>
+    <%= f.email_field :public_email, class: "form-control" %>
+    <label>Phone Number</label>
+    <%= f.text_field :public_phone, class: "form-control" %>
+  </div>
+  <div class="col-md-6">
+    <h4>Calendar Manager</h4>
+    <label>Contact Name</label>
+    <%= f.text_field :calendar_name, class: "form-control" %>
+    <label>Email</label>
+    <%= f.email_field :calendar_email, class: "form-control" %>
+    <label>Phone Number</label>
+    <%= f.text_field :calendar_phone, class: "form-control" %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <h4>Partner Manager</h4>
+    <label>Contact Name</label>
+    <%= f.text_field :partner_name, class: "form-control" %>
+    <label>Email</label>
+    <%= f.email_field :partner_email, class: "form-control" %>
+    <label>Phone Number</label>
+    <%= f.text_field :partner_phone, class: "form-control" %>
+  </div>
+  <div class="col-md-6">
+
+  </div>
+</div>
+
+<br>
+
+<%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
+
+<% if policy(Partner).destroy? && !@partner.new_record? %>
+  <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
+<% end %>
   <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
+
+<%# End form tag %>
 <% end %>
 
 <% content_for :first_min_js do %>

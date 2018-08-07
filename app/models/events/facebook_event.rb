@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class FacebookEvent < DefaultEvent
+  class FacebookEvent < Base
     def initialize(event)
       @event = OpenStruct.new(event)
     end
@@ -47,6 +47,9 @@ module Events
     def last_updated
       @event.updated_time
     end
+
+    #TODO: Make this a link back to facebook
+    def footer; end
 
     def recurring_event?
       @event.event_times.present?

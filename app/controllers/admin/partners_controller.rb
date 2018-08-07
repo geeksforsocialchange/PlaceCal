@@ -64,7 +64,7 @@ module Admin
         :name, :image, :short_description, :public_name, :public_email,
         :public_phone, :partner_name, :partner_email, :partner_phone,
         :calendar_phone, :calendar_name, :calendar_email, :is_a_place, :url,
-        calendars_attributes: %i[id name source type strategy place_id _destroy],
+        calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
         places_attributes: [
           :id, :name, :short_description, :booking_info,
           :opening_times, :_destroy, :accessibility_info,

@@ -1,7 +1,1 @@
-<div class="form">
-  <div class="col-md-1"></div>
-  <div class="behavior-trigger" data-behavior="place.form"></div>
-  <div class="col-md-10">
-    <%= render 'form' %>
-  </div>
-</div> 
+<%= render_component "admin_edit", model: :place, title: @place.name %>

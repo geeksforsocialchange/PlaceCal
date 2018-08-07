@@ -72,8 +72,6 @@ to display a collection of resources in an HTML table.
           </td>
         <% end %>
 
-        <td><%= link_to "Status", manager_calendar_path(resource) %></td>
-
         <% if valid_action? :edit, collection_presenter.resource_name %>
           <td><%= link_to(
             t("administrate.actions.edit"),

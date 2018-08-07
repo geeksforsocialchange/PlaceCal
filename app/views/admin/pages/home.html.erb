@@ -1,72 +1,44 @@
-<div class="row">
-  <div class="col-md-12"><h2><center><%= current_user.full_name.titleize %> </center><h2></div>
-    <div class="col-md-1"></div>
-    <div class="col-md-8">
-      <div class="row">
-        <h3>User Info</h3>
-      </div>
-      <div class="row">
-        <h4>Email</h4>
-        <div class="col-md-8"><%= current_user.email %></div>
-      </div>
-      <div class="row">
-        <% unless current_user.role.nil? %>
-          <h4>Role</h4>
-          <div class="col-md-8"><%= current_user.role.titleize %></div>
-        <% end %>
-      </div>
-      <% if @turfs.exists? %>
-        <div class="">
-            <div class="row">
-              <h3>Turfs</h3>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <% @turfs.each do |turf| %>
-                  <ul class="">
-                    <li class=""><%= link_to "#{turf.name}", edit_admin_turf_path(turf),  data: { turbolinks: false }%></li>
-                  </ul>
-                <% end %>
-              </div>
-            </div>
-        </div>
-        <div class="">
-          <div class="row">
-            <h3>Partners</h3>
-          </div>
-          <% if @partners.blank? %>
-            <h5>No Partners found</h5>
-          <% else %>
-            <div class="row">
-              <div class="col-md-12">
-                <% @partners.each do |partner| %>
-                  <ul >
-                    <li class=""><%= link_to "#{partner.name}", edit_admin_partner_path(partner),  data: { turbolinks: false }%></li>
-                  </ul>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-        <div class="">
-          <div class="row">
-            <h3>Places</h3>
-          </div>
-          <% if @places.blank? %>
-            <h5>No Places found</h5>
-          <% else %>
-            <div class="row">
-              <div class="col-md-12">
-                <% @places.each do |place| %>
-                  <ul >
-                    <li class=""><%= link_to "#{place.name}", edit_admin_place_path(place),  data: { turbolinks: false }%></li>
-                  </ul>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-    <div class="col-md-3"><%= link_to "Edit your Profile", admin_profile_path , class: "btn btn-primary" %></div>
-</div>
+<h2>Welcome back, <%= current_user.full_name.titleize %><h2>
+
+<h3>Your Information</h3>
+
+<strong>Email:</strong><%= current_user.email %><br>
+<% unless current_user.role.nil? %>
+  <strong>Role:</strong><%= current_user.role.titleize %>
+<% end %>
+<br>
+<%= link_to "Edit your Profile", admin_profile_path , class: "btn btn-primary" %>
+
+<% if @turfs.exists? %>
+  <h3>Turfs</h3>
+
+  <% @turfs.each do |turf| %>
+    <ul>
+      <li><%= link_to "#{turf.name}", edit_admin_turf_path(turf), data: { turbolinks: false } %></li>
+    </ul>
+  <% end %>
+<% end %>
+
+<h3>Partners</h3>
+
+<% if @partners.blank? %>
+  <p>No Partners found</p>
+<% else %>
+  <% @partners.each do |partner| %>
+    <ul>
+      <li><%= link_to "#{partner.name}", edit_admin_partner_path(partner), data: { turbolinks: false } %></li>
+    </ul>
+  <% end %>
+<% end %>
+
+<h3>Places</h3>
+
+<% if @places.blank? %>
+  <h5>No Places found</h5>
+<% else %>
+  <% @places.each do |place| %>
+    <ul>
+      <li><%= link_to "#{place.name}", edit_admin_place_path(place),  data: { turbolinks: false }%></li>
+    </ul>
+  <% end %>
+<% end %>

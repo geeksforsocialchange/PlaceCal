@@ -83,9 +83,13 @@ dokku ps:rebuild APP_NAME
 
 To have a look at the file structure if you get lost: `dokku enter APP_NAME`
 
+You'll also want to increase the maximum file size to something a bit more sensible.
+
+Write a file: `/home/dokku/APP_NAME/nginx.conf.d/upload_limit.conf`
+
+Add a line like: `client_max_body_size 50m;`
 
 ## Local config
-
 
 ### Create app.json in Rails root
 

@@ -1,56 +1,107 @@
 <div class="footer">
   <div class="c">
-    <h5>PlaceCal</h5>
+    <div class="footer__inner <%= "footer__inner--nosite" unless @site&.site_admin %>">
+      <div class="footer__item footer__logo">
+        <% if @site&.footer_logo&.present? %>
+          <%= image_tag @site.footer_logo %>
+        <% else %>
+          <%= image_tag 'logo-footer.svg' %>
+        <% end %>
+      </div>
 
-    <% if @site&.footer_logo&.present? %>
-      <%= image_tag @site.footer_logo %>
-    <% else %>
-      <%= image_tag 'logo-footer.svg' %>
-    <% end %>
+      <hr class="footer__item footer__hr footer__hr--1">
 
-    <div class="g">
-      <div class="gi gi__1-5">
+      <div class="footer__item footer__nav">
+        <h5 class="allcaps small">Site Navigation</h5>
+        <nav role="navigation">
+          <ul>
+            <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
+            <li><%= active_link_to "Events", events_path %></li>
+            <li><%= active_link_to "Places", places_path %></li>
+            <li><%= active_link_to "Partners", partners_path %></li>
+            <li><%= active_link_to "Log in", new_user_session_path %></li>
+            <li><%= active_link_to "Privacy", privacy_path %></li>
+          </ul>
+        </nav>
+      </div>
+
+      <% if @site&.site_admin %>
+        <div class="footer__item footer__enquiries footer__enquiries--regional">
+          <h5 class="allcaps small"><%= @site.name %> Enquiries</h5>
+          <p>
+            <%= @site.site_admin.full_name %>
+          </p>
+          <p>
+            <strong>T:</strong> <%= @site.site_admin.phone %><br>
+            <strong>E:</strong> <%= mail_to @site.site_admin.email %>
+          </p>
+        </div>
+      <% end %>
+
+      <div class="footer__item footer__enquiries footer__enquiries--general">
+        <h5 class="allcaps small">General Enquiries</h5>
         <p>
-          <strong>T:</strong> +44 (0) 161 247 6954<br>
-          <strong>E:</strong> <a href="mailto:support@placecal.org">support@placecal.org</a>
+          Get in touch!
+        </p>
+        <p>
+          <strong>T:</strong> +44 (0)161 247 6954<br>
+          <strong>E:</strong> <%= mail_to 'support@placecal.org' %>
         </p>
       </div>
-      <div class="gi gi__2-5">
+
+      <% if @site&.supporters %>
+        <hr class="footer__item footer__hr">
+
+        <div class="footer__item footer__supporters">
+          <h5 class="allcaps small"> PlaceCal <%= @site.name %> Supporters</h5>
+          <ul>
+            <% @site&.supporters&.each do |supporter| %>
+              <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>">
+                <%= link_to supporter.url do %>
+                  <%= image_tag supporter.logo %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <hr class="footer__item footer__hr">
+
+      <% if @global_supporters %>
+        <div class="footer__item footer__supporters">
+          <h5 class="allcaps small">PlaceCal Supporters</h5>
+          <ul>
+            <% @global_supporters&.each do |supporter| %>
+              <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>">
+                <%= link_to supporter.url do %>
+                  <%= image_tag supporter.logo, alt: supporter.name %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="footer__item footer__impressum">
         <p>
-          <strong>PlaceCal ℅‎ PHASE</strong><br>
+          PlaceCal ℅‎ PHASE<br>
           Chatham 510, Manchester School of Architecture<br>
           Cavendish Street, Manchester, M15 6BR
         </p>
         <p>
-          © 2017 Geeks For Social Change<br>
-          Build: <tt><%= ENV['GIT_REV'][0,7] if ENV['GIT_REV'] %></tt>
+          © 2017-18 <%= link_to "Geeks For Social Change", "http://gfsc.studio" %><br>
+          <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'master' %>
+          Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
         </p>
       </div>
+
+      <% if Rails.env.development? %>
+        <pre class="footer__item small">
+          <%= debug(params) %>
+          <%# console %>
+        </pre>
+      <% end %>
     </div>
-
-    <hr>
-
-    <ul class="footer__sponsors footer__sponsors--main">
-      <li class="footer__sponsor footer__sponsor--gfsc"><a href="http://gfsc.studio/">Geeks for Social Change</a></li>
-      <li class="footer__sponsor footer__sponsor--phase"><a href="http://msaphase.org/">PHASE@MSA</a></li>
-    </ul>
-
-    <hr>
-
-    <h5>Sponsors</h5>
-
-    <ul class="footer__sponsors">
-      <li class="footer__sponsor footer__sponsor--cityverve"><a href="http://www.cityverve.org.uk/">CityVerve</a></li>
-      <li class="footer__sponsor footer__sponsor--mmu"><a href="http://www2.mmu.ac.uk/">Manchester Metropolitan University</a></li>
-      <li class="footer__sponsor footer__sponsor--mcc"><a href="http://www.manchester.gov.uk/">Manchester City Council</a></li>
-    </ul>
   </div>
-
-
-  <% if Rails.env.development? %>
-    <pre class="small">
-      <%= debug(params) %>
-      <%# console %>
-    </pre>
-  <% end %>
 </div>

@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_supporters
 
   include Pundit
 
@@ -129,6 +130,10 @@ class ApplicationController < ActionController::Base
     redirect_to 'https://google.com'
   end
 
+  def set_supporters
+    @global_supporters = Supporter.global
+  end
+
   # Shared methods across normal, admin and superadmin
   # Use callbacks to share common setup or constraints between actions.
   def set_partner
@@ -145,6 +150,10 @@ class ApplicationController < ActionController::Base
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def set_calendar
+    @calendar = Calendar.find(params[:id])
   end
 
   protected

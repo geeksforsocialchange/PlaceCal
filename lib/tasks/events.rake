@@ -3,7 +3,7 @@
 namespace :import do
   # No data for calendar of type `other` right now.
   task all_events: :environment do
-    Calendar.without_type(:other).each do |calendar|
+    Calendar.find_each do |calendar|
       import_events_from_source(calendar.id, Date.current.beginning_of_day)
     end
   end
@@ -29,6 +29,8 @@ def import_events_from_source(calendar_id, from)
   puts "Importing events for calendar #{calendar.name} for #{calendar.place.try(:name)}"
 
   calendar.import_events(from)
+rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
+  calendar.update_attribute(:critical_error, e)
 rescue StandardError => e
   # TODO: Inform admin(s) when this fails
   error = "Could not automatically import data for calendar #{calendar.name} (id #{calendar_id}):  #{e}"

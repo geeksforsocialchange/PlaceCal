@@ -2,9 +2,12 @@
 
 FactoryBot.define do
   factory(:calendar) do
-    name 'Zion Centre'
-    source ''
+    sequence :name do |n|
+      "Zion Centre #{n}"
+    end
+    sequence :source do |n|
+	  "https://outlook.office365.com/owa/calendar/#{n}/calendar.ics"
+	end
     strategy 'place'
-    type 'outlook'
   end
 end

@@ -1,0 +1,580 @@
+digraph yard {
+  graph [rankdir=BT rank=sink outputMode=nodesfirst packMode="graph" splines=true];
+  node [shape=record rank=sink rankType=sink];
+  Root [label="{root root}" rank=sink];
+  Site [label="{class Site}" rank=sink];
+  subgraph cluster_Site {
+    label = "Site"; labelloc=b;
+  }
+  Site -> ApplicationRecord;
+  Turf [label="{class Turf}" rank=sink];
+  subgraph cluster_Turf {
+    label = "Turf"; labelloc=b;
+  }
+  Turf -> ApplicationRecord;
+  User [label="{class User}" rank=sink];
+  subgraph cluster_User {
+    label = "User"; labelloc=b;
+  }
+  User -> ApplicationRecord;
+  Event [label="{class Event}" rank=sink];
+  subgraph cluster_Event {
+    label = "Event"; labelloc=b;
+  }
+  Event -> ApplicationRecord;
+  Place [label="{class Place}" rank=sink];
+  subgraph cluster_Place {
+    label = "Place"; labelloc=b;
+  }
+  Place -> ApplicationRecord;
+  Address [label="{class Address}" rank=sink];
+  subgraph cluster_Address {
+    label = "Address"; labelloc=b;
+  }
+  Address -> ApplicationRecord;
+  Partner [label="{class Partner}" rank=sink];
+  subgraph cluster_Partner {
+    label = "Partner"; labelloc=b;
+  }
+  Partner -> ApplicationRecord;
+  Calendar [label="{class Calendar}" rank=sink];
+  subgraph cluster_Calendar {
+    label = "Calendar"; labelloc=b;
+  }
+  Calendar -> ApplicationRecord;
+  Supporter [label="{class Supporter}" rank=sink];
+  subgraph cluster_Supporter {
+    label = "Supporter"; labelloc=b;
+  }
+  Supporter -> ApplicationRecord;
+  Collection [label="{class Collection}" rank=sink];
+  subgraph cluster_Collection {
+    label = "Collection"; labelloc=b;
+  }
+  Collection -> ApplicationRecord;
+  SitesTurf [label="{class SitesTurf}" rank=sink];
+  subgraph cluster_SitesTurf {
+    label = "SitesTurf"; labelloc=b;
+  }
+  SitesTurf -> ApplicationRecord;
+  AddressField [label="{class AddressField}" rank=sink];
+  subgraph cluster_AddressField {
+    label = "AddressField"; labelloc=b;
+  }
+  AddressField -> Administrate_Field_Associative;
+  ApplicationJob [label="{class ApplicationJob}" rank=sink];
+  subgraph cluster_ApplicationJob {
+    label = "ApplicationJob"; labelloc=b;
+  }
+  ApplicationJob -> ActiveJob_Base;
+  SitePolicy [label="{class SitePolicy}" rank=sink];
+  subgraph cluster_SitePolicy {
+    label = "SitePolicy"; labelloc=b;
+  }
+  SitePolicy -> ApplicationPolicy;
+  TurfPolicy [label="{class TurfPolicy}" rank=sink];
+  TurfPolicy_Scope [label="{class Scope}" rank=sink];
+  subgraph cluster_TurfPolicy_Scope {
+    label = "Scope"; labelloc=b;
+  }
+  TurfPolicy_Scope -> Scope;
+  subgraph cluster_TurfPolicy {
+    label = "TurfPolicy"; labelloc=b;
+  }
+  TurfPolicy -> ApplicationPolicy;
+  UserPolicy [label="{class UserPolicy}" rank=sink];
+  subgraph cluster_UserPolicy {
+    label = "UserPolicy"; labelloc=b;
+  }
+  UserPolicy -> ApplicationPolicy;
+  PlacePolicy [label="{class PlacePolicy}" rank=sink];
+  PlacePolicy_Scope [label="{class Scope}" rank=sink];
+  subgraph cluster_PlacePolicy_Scope {
+    label = "Scope"; labelloc=b;
+  }
+  PlacePolicy_Scope -> Scope;
+  subgraph cluster_PlacePolicy {
+    label = "PlacePolicy"; labelloc=b;
+  }
+  PlacePolicy -> ApplicationPolicy;
+  CalendarParser [label="{class CalendarParser}" rank=sink];
+  CalendarParser_UnsupportedFeed [label="{class UnsupportedFeed}" rank=sink];
+  subgraph cluster_CalendarParser_UnsupportedFeed {
+    label = "UnsupportedFeed"; labelloc=b;
+  }
+  CalendarParser_UnsupportedFeed -> StandardError;
+  CalendarParser_InaccessibleFeed [label="{class InaccessibleFeed}" rank=sink];
+  subgraph cluster_CalendarParser_InaccessibleFeed {
+    label = "InaccessibleFeed"; labelloc=b;
+  }
+  CalendarParser_InaccessibleFeed -> StandardError;
+  subgraph cluster_CalendarParser {
+    label = "CalendarParser"; labelloc=b;
+  }
+  SitesSupporter [label="{class SitesSupporter}" rank=sink];
+  subgraph cluster_SitesSupporter {
+    label = "SitesSupporter"; labelloc=b;
+  }
+  SitesSupporter -> ApplicationRecord;
+  CollectionEvent [label="{class CollectionEvent}" rank=sink];
+  subgraph cluster_CollectionEvent {
+    label = "CollectionEvent"; labelloc=b;
+  }
+  CollectionEvent -> ApplicationRecord;
+  PartnerPolicy [label="{class PartnerPolicy}" rank=sink];
+  PartnerPolicy_Scope [label="{class Scope}" rank=sink];
+  subgraph cluster_PartnerPolicy_Scope {
+    label = "Scope"; labelloc=b;
+  }
+  PartnerPolicy_Scope -> Scope;
+  subgraph cluster_PartnerPolicy {
+    label = "PartnerPolicy"; labelloc=b;
+  }
+  PartnerPolicy -> ApplicationPolicy;
+  CalendarPolicy [label="{class CalendarPolicy}" rank=sink];
+  CalendarPolicy_Scope [label="{class Scope}" rank=sink];
+  subgraph cluster_CalendarPolicy_Scope {
+    label = "Scope"; labelloc=b;
+  }
+  CalendarPolicy_Scope -> Scope;
+  subgraph cluster_CalendarPolicy {
+    label = "CalendarPolicy"; labelloc=b;
+  }
+  CalendarPolicy -> ApplicationPolicy;
+  ImageUploader [label="{class ImageUploader}" rank=sink];
+  subgraph cluster_ImageUploader {
+    label = "ImageUploader"; labelloc=b;
+  }
+  ImageUploader -> CarrierWave_Uploader_Base;
+  TurfDashboard [label="{class TurfDashboard}" rank=sink];
+  subgraph cluster_TurfDashboard {
+    label = "TurfDashboard"; labelloc=b;
+  }
+  TurfDashboard -> Administrate_BaseDashboard;
+  UserDashboard [label="{class UserDashboard}" rank=sink];
+  subgraph cluster_UserDashboard {
+    label = "UserDashboard"; labelloc=b;
+  }
+  UserDashboard -> Administrate_BaseDashboard;
+  ApplicationRecord [label="{class ApplicationRecord}" rank=sink];
+  subgraph cluster_ApplicationRecord {
+    label = "ApplicationRecord"; labelloc=b;
+  }
+  ApplicationRecord -> ActiveRecord_Base;
+  SupporterPolicy [label="{class SupporterPolicy}" rank=sink];
+  subgraph cluster_SupporterPolicy {
+    label = "SupporterPolicy"; labelloc=b;
+  }
+  SupporterPolicy -> ApplicationPolicy;
+  EventDashboard [label="{class EventDashboard}" rank=sink];
+  subgraph cluster_EventDashboard {
+    label = "EventDashboard"; labelloc=b;
+  }
+  EventDashboard -> Administrate_BaseDashboard;
+  PlaceDashboard [label="{class PlaceDashboard}" rank=sink];
+  subgraph cluster_PlaceDashboard {
+    label = "PlaceDashboard"; labelloc=b;
+  }
+  PlaceDashboard -> Administrate_BaseDashboard;
+  ApplicationMailer [label="{class ApplicationMailer}" rank=sink];
+  subgraph cluster_ApplicationMailer {
+    label = "ApplicationMailer"; labelloc=b;
+  }
+  ApplicationMailer -> ActionMailer_Base;
+  ApplicationPolicy [label="{class ApplicationPolicy}" rank=sink];
+  ApplicationPolicy_Scope [label="{class Scope}" rank=sink];
+  subgraph cluster_ApplicationPolicy_Scope {
+    label = "Scope"; labelloc=b;
+  }
+  subgraph cluster_ApplicationPolicy {
+    label = "ApplicationPolicy"; labelloc=b;
+  }
+  MapComponent [label="{class MapComponent}" rank=sink];
+  subgraph cluster_MapComponent {
+    label = "MapComponent"; labelloc=b;
+  }
+  MapComponent -> MountainView_Presenter;
+  PagesController [label="{class PagesController}" rank=sink];
+  subgraph cluster_PagesController {
+    label = "PagesController"; labelloc=b;
+  }
+  PagesController -> ApplicationController;
+  SitesController [label="{class SitesController}" rank=sink];
+  subgraph cluster_SitesController {
+    label = "SitesController"; labelloc=b;
+  }
+  SitesController -> ApplicationController;
+  UsersController [label="{class UsersController}" rank=sink];
+  subgraph cluster_UsersController {
+    label = "UsersController"; labelloc=b;
+  }
+  UsersController -> ApplicationController;
+  AddressDashboard [label="{class AddressDashboard}" rank=sink];
+  subgraph cluster_AddressDashboard {
+    label = "AddressDashboard"; labelloc=b;
+  }
+  AddressDashboard -> Administrate_BaseDashboard;
+  PartnerDashboard [label="{class PartnerDashboard}" rank=sink];
+  subgraph cluster_PartnerDashboard {
+    label = "PartnerDashboard"; labelloc=b;
+  }
+  PartnerDashboard -> Administrate_BaseDashboard;
+  SiteLogoUploader [label="{class SiteLogoUploader}" rank=sink];
+  subgraph cluster_SiteLogoUploader {
+    label = "SiteLogoUploader"; labelloc=b;
+  }
+  SiteLogoUploader -> CarrierWave_Uploader_Base;
+  EventsController [label="{class EventsController}" rank=sink];
+  subgraph cluster_EventsController {
+    label = "EventsController"; labelloc=b;
+  }
+  EventsController -> ApplicationController;
+  PlacesController [label="{class PlacesController}" rank=sink];
+  subgraph cluster_PlacesController {
+    label = "PlacesController"; labelloc=b;
+  }
+  PlacesController -> ApplicationController;
+  CalendarDashboard [label="{class CalendarDashboard}" rank=sink];
+  subgraph cluster_CalendarDashboard {
+    label = "CalendarDashboard"; labelloc=b;
+  }
+  CalendarDashboard -> Administrate_BaseDashboard;
+  HeroImageUploader [label="{class HeroImageUploader}" rank=sink];
+  subgraph cluster_HeroImageUploader {
+    label = "HeroImageUploader"; labelloc=b;
+  }
+  HeroImageUploader -> CarrierWave_Uploader_Base;
+  HeroComponent [label="{class HeroComponent}" rank=sink];
+  subgraph cluster_HeroComponent {
+    label = "HeroComponent"; labelloc=b;
+  }
+  HeroComponent -> MountainView_Presenter;
+  PartnersController [label="{class PartnersController}" rank=sink];
+  subgraph cluster_PartnersController {
+    label = "PartnersController"; labelloc=b;
+  }
+  PartnersController -> ApplicationController;
+  CollectionDashboard [label="{class CollectionDashboard}" rank=sink];
+  subgraph cluster_CollectionDashboard {
+    label = "CollectionDashboard"; labelloc=b;
+  }
+  CollectionDashboard -> Administrate_BaseDashboard;
+  ErrorComponent [label="{class ErrorComponent}" rank=sink];
+  subgraph cluster_ErrorComponent {
+    label = "ErrorComponent"; labelloc=b;
+  }
+  ErrorComponent -> MountainView_Presenter;
+  EventComponent [label="{class EventComponent}" rank=sink];
+  subgraph cluster_EventComponent {
+    label = "EventComponent"; labelloc=b;
+  }
+  EventComponent -> MountainView_Presenter;
+  PlaceComponent [label="{class PlaceComponent}" rank=sink];
+  subgraph cluster_PlaceComponent {
+    label = "PlaceComponent"; labelloc=b;
+  }
+  PlaceComponent -> MountainView_Presenter;
+  CalendarsController [label="{class CalendarsController}" rank=sink];
+  subgraph cluster_CalendarsController {
+    label = "CalendarsController"; labelloc=b;
+  }
+  CalendarsController -> ApplicationController;
+  SupporterLogoUploader [label="{class SupporterLogoUploader}" rank=sink];
+  subgraph cluster_SupporterLogoUploader {
+    label = "SupporterLogoUploader"; labelloc=b;
+  }
+  SupporterLogoUploader -> CarrierWave_Uploader_Base;
+  ApplicationController [label="{class ApplicationController}" rank=sink];
+  subgraph cluster_ApplicationController {
+    label = "ApplicationController"; labelloc=b;
+  }
+  ApplicationController -> ActionController_Base;
+  CollectionsController [label="{class CollectionsController}" rank=sink];
+  subgraph cluster_CollectionsController {
+    label = "CollectionsController"; labelloc=b;
+  }
+  CollectionsController -> ApplicationController;
+  ProfileComponent [label="{class ProfileComponent}" rank=sink];
+  subgraph cluster_ProfileComponent {
+    label = "ProfileComponent"; labelloc=b;
+  }
+  ProfileComponent -> MountainView_Presenter;
+  PaginatorComponent [label="{class PaginatorComponent}" rank=sink];
+  subgraph cluster_PaginatorComponent {
+    label = "PaginatorComponent"; labelloc=b;
+  }
+  PaginatorComponent -> MountainView_Presenter;
+  AdminEditComponent [label="{class AdminEditComponent}" rank=sink];
+  subgraph cluster_AdminEditComponent {
+    label = "AdminEditComponent"; labelloc=b;
+  }
+  AdminEditComponent -> MountainView_Presenter;
+  BreadcrumbComponent [label="{class BreadcrumbComponent}" rank=sink];
+  subgraph cluster_BreadcrumbComponent {
+    label = "BreadcrumbComponent"; labelloc=b;
+  }
+  BreadcrumbComponent -> MountainView_Presenter;
+  EventListComponent [label="{class EventListComponent}" rank=sink];
+  subgraph cluster_EventListComponent {
+    label = "EventListComponent"; labelloc=b;
+  }
+  EventListComponent -> MountainView_Presenter;
+  HeroImageComponent [label="{class HeroImageComponent}" rank=sink];
+  subgraph cluster_HeroImageComponent {
+    label = "HeroImageComponent"; labelloc=b;
+  }
+  HeroImageComponent -> MountainView_Presenter;
+  PlaceInfoComponent [label="{class PlaceInfoComponent}" rank=sink];
+  subgraph cluster_PlaceInfoComponent {
+    label = "PlaceInfoComponent"; labelloc=b;
+  }
+  PlaceInfoComponent -> MountainView_Presenter;
+  AdminIndexComponent [label="{class AdminIndexComponent}" rank=sink];
+  subgraph cluster_AdminIndexComponent {
+    label = "AdminIndexComponent"; labelloc=b;
+  }
+  AdminIndexComponent -> MountainView_Presenter;
+  HelpGettingOnlineComponent [label="{class HelpGettingOnlineComponent}" rank=sink];
+  subgraph cluster_HelpGettingOnlineComponent {
+    label = "HelpGettingOnlineComponent"; labelloc=b;
+  }
+  HelpGettingOnlineComponent -> MountainView_Presenter;
+  subgraph cluster_ {
+    label = ""; labelloc=b;
+    Events [label="{module Events}" rank=sink];
+    Events_Base [label="{class Base}" rank=sink];
+    Events_Base_Dates [label="{class Dates}" rank=sink];
+    subgraph cluster_Events_Base_Dates {
+      label = "Dates"; labelloc=b;
+    }
+    Events_Base_Dates -> Struct;
+    subgraph cluster_Events_Base {
+      label = "Base"; labelloc=b;
+    }
+    Events_IcsEvent [label="{class IcsEvent}" rank=sink];
+    subgraph cluster_Events_IcsEvent {
+      label = "IcsEvent"; labelloc=b;
+    }
+    Events_IcsEvent -> Events_Base;
+    Events_ZartsEvent [label="{class ZartsEvent}" rank=sink];
+    subgraph cluster_Events_ZartsEvent {
+      label = "ZartsEvent"; labelloc=b;
+    }
+    Events_ZartsEvent -> Events_Base;
+    Events_FacebookEvent [label="{class FacebookEvent}" rank=sink];
+    subgraph cluster_Events_FacebookEvent {
+      label = "FacebookEvent"; labelloc=b;
+    }
+    Events_FacebookEvent -> Events_Base;
+    Events_ManchesterUniEvent [label="{class ManchesterUniEvent}" rank=sink];
+    subgraph cluster_Events_ManchesterUniEvent {
+      label = "ManchesterUniEvent"; labelloc=b;
+    }
+    Events_ManchesterUniEvent -> Events_Base;
+    subgraph cluster_Events {
+      label = "Events"; labelloc=b;
+    }
+    Parsers [label="{module Parsers}" rank=sink];
+    Parsers_Ics [label="{class Ics}" rank=sink];
+    subgraph cluster_Parsers_Ics {
+      label = "Ics"; labelloc=b;
+    }
+    Parsers_Ics -> Parsers_Base;
+    Parsers_Xml [label="{class Xml}" rank=sink];
+    subgraph cluster_Parsers_Xml {
+      label = "Xml"; labelloc=b;
+    }
+    Parsers_Xml -> Parsers_Base;
+    Parsers_Base [label="{class Base}" rank=sink];
+    Parsers_Base_Output [label="{class Output}" rank=sink];
+    subgraph cluster_Parsers_Base_Output {
+      label = "Output"; labelloc=b;
+    }
+    Parsers_Base_Output -> Struct;
+    subgraph cluster_Parsers_Base {
+      label = "Base"; labelloc=b;
+    }
+    Parsers_Zarts [label="{class Zarts}" rank=sink];
+    subgraph cluster_Parsers_Zarts {
+      label = "Zarts"; labelloc=b;
+    }
+    Parsers_Zarts -> Parsers_Xml;
+    Parsers_Facebook [label="{class Facebook}" rank=sink];
+    subgraph cluster_Parsers_Facebook {
+      label = "Facebook"; labelloc=b;
+    }
+    Parsers_Facebook -> Parsers_Base;
+    Parsers_ManchesterUni [label="{class ManchesterUni}" rank=sink];
+    subgraph cluster_Parsers_ManchesterUni {
+      label = "ManchesterUni"; labelloc=b;
+    }
+    Parsers_ManchesterUni -> Parsers_Xml;
+    subgraph cluster_Parsers {
+      label = "Parsers"; labelloc=b;
+    }
+    PagesHelper [label="{module PagesHelper}" rank=sink];
+    subgraph cluster_PagesHelper {
+      label = "PagesHelper"; labelloc=b;
+    }
+    TurfsHelper [label="{module TurfsHelper}" rank=sink];
+    subgraph cluster_TurfsHelper {
+      label = "TurfsHelper"; labelloc=b;
+    }
+    UsersHelper [label="{module UsersHelper}" rank=sink];
+    subgraph cluster_UsersHelper {
+      label = "UsersHelper"; labelloc=b;
+    }
+    EventsHelper [label="{module EventsHelper}" rank=sink];
+    subgraph cluster_EventsHelper {
+      label = "EventsHelper"; labelloc=b;
+    }
+    PlacesHelper [label="{module PlacesHelper}" rank=sink];
+    subgraph cluster_PlacesHelper {
+      label = "PlacesHelper"; labelloc=b;
+    }
+    Subdomains [label="{module Subdomains}" rank=sink];
+    Subdomains_Sites [label="{class Sites}" rank=sink];
+    subgraph cluster_Subdomains_Sites {
+      label = "Sites"; labelloc=b;
+    }
+    subgraph cluster_Subdomains {
+      label = "Subdomains"; labelloc=b;
+    }
+    PartnersHelper [label="{module PartnersHelper}" rank=sink];
+    subgraph cluster_PartnersHelper {
+      label = "PartnersHelper"; labelloc=b;
+    }
+    AddressesHelper [label="{module AddressesHelper}" rank=sink];
+    subgraph cluster_AddressesHelper {
+      label = "AddressesHelper"; labelloc=b;
+    }
+    CalendarsHelper [label="{module CalendarsHelper}" rank=sink];
+    subgraph cluster_CalendarsHelper {
+      label = "CalendarsHelper"; labelloc=b;
+    }
+    ApplicationHelper [label="{module ApplicationHelper}" rank=sink];
+    subgraph cluster_ApplicationHelper {
+      label = "ApplicationHelper"; labelloc=b;
+    }
+    CollectionsHelper [label="{module CollectionsHelper}" rank=sink];
+    subgraph cluster_CollectionsHelper {
+      label = "CollectionsHelper"; labelloc=b;
+    }
+    ApplicationCable [label="{module ApplicationCable}" rank=sink];
+    ApplicationCable_Channel [label="{class Channel}" rank=sink];
+    subgraph cluster_ApplicationCable_Channel {
+      label = "Channel"; labelloc=b;
+    }
+    ApplicationCable_Channel -> ActionCable_Channel_Base;
+    ApplicationCable_Connection [label="{class Connection}" rank=sink];
+    subgraph cluster_ApplicationCable_Connection {
+      label = "Connection"; labelloc=b;
+    }
+    ApplicationCable_Connection -> ActionCable_Connection_Base;
+    subgraph cluster_ApplicationCable {
+      label = "ApplicationCable"; labelloc=b;
+    }
+    Admin [label="{module Admin}" rank=sink];
+    Admin_PagesController [label="{class PagesController}" rank=sink];
+    subgraph cluster_Admin_PagesController {
+      label = "PagesController"; labelloc=b;
+    }
+    Admin_PagesController -> Admin_ApplicationController;
+    Admin_SitesController [label="{class SitesController}" rank=sink];
+    subgraph cluster_Admin_SitesController {
+      label = "SitesController"; labelloc=b;
+    }
+    Admin_SitesController -> Admin_ApplicationController;
+    Admin_TurfsController [label="{class TurfsController}" rank=sink];
+    subgraph cluster_Admin_TurfsController {
+      label = "TurfsController"; labelloc=b;
+    }
+    Admin_TurfsController -> Admin_ApplicationController;
+    Admin_UsersController [label="{class UsersController}" rank=sink];
+    subgraph cluster_Admin_UsersController {
+      label = "UsersController"; labelloc=b;
+    }
+    Admin_UsersController -> Admin_ApplicationController;
+    Admin_PlacesController [label="{class PlacesController}" rank=sink];
+    subgraph cluster_Admin_PlacesController {
+      label = "PlacesController"; labelloc=b;
+    }
+    Admin_PlacesController -> Admin_ApplicationController;
+    Admin_PartnersController [label="{class PartnersController}" rank=sink];
+    subgraph cluster_Admin_PartnersController {
+      label = "PartnersController"; labelloc=b;
+    }
+    Admin_PartnersController -> Admin_ApplicationController;
+    Admin_CalendarsController [label="{class CalendarsController}" rank=sink];
+    subgraph cluster_Admin_CalendarsController {
+      label = "CalendarsController"; labelloc=b;
+    }
+    Admin_CalendarsController -> Admin_ApplicationController;
+    Admin_SupportersController [label="{class SupportersController}" rank=sink];
+    subgraph cluster_Admin_SupportersController {
+      label = "SupportersController"; labelloc=b;
+    }
+    Admin_SupportersController -> Admin_ApplicationController;
+    Admin_ApplicationController [label="{class ApplicationController}" rank=sink];
+    subgraph cluster_Admin_ApplicationController {
+      label = "ApplicationController"; labelloc=b;
+    }
+    Admin_ApplicationController -> ApplicationController;
+    subgraph cluster_Admin {
+      label = "Admin"; labelloc=b;
+    }
+    LoadUtilities [label="{module LoadUtilities}" rank=sink];
+    subgraph cluster_LoadUtilities {
+      label = "LoadUtilities"; labelloc=b;
+    }
+    Superadmin [label="{module Superadmin}" rank=sink];
+    Superadmin_TurfsController [label="{class TurfsController}" rank=sink];
+    subgraph cluster_Superadmin_TurfsController {
+      label = "TurfsController"; labelloc=b;
+    }
+    Superadmin_TurfsController -> Superadmin_ApplicationController;
+    Superadmin_UsersController [label="{class UsersController}" rank=sink];
+    subgraph cluster_Superadmin_UsersController {
+      label = "UsersController"; labelloc=b;
+    }
+    Superadmin_UsersController -> Superadmin_ApplicationController;
+    Superadmin_EventsController [label="{class EventsController}" rank=sink];
+    subgraph cluster_Superadmin_EventsController {
+      label = "EventsController"; labelloc=b;
+    }
+    Superadmin_EventsController -> Superadmin_ApplicationController;
+    Superadmin_PlacesController [label="{class PlacesController}" rank=sink];
+    subgraph cluster_Superadmin_PlacesController {
+      label = "PlacesController"; labelloc=b;
+    }
+    Superadmin_PlacesController -> Superadmin_ApplicationController;
+    Superadmin_PartnersController [label="{class PartnersController}" rank=sink];
+    subgraph cluster_Superadmin_PartnersController {
+      label = "PartnersController"; labelloc=b;
+    }
+    Superadmin_PartnersController -> Superadmin_ApplicationController;
+    Superadmin_AddressesController [label="{class AddressesController}" rank=sink];
+    subgraph cluster_Superadmin_AddressesController {
+      label = "AddressesController"; labelloc=b;
+    }
+    Superadmin_AddressesController -> Superadmin_ApplicationController;
+    Superadmin_CalendarsController [label="{class CalendarsController}" rank=sink];
+    subgraph cluster_Superadmin_CalendarsController {
+      label = "CalendarsController"; labelloc=b;
+    }
+    Superadmin_CalendarsController -> Superadmin_ApplicationController;
+    Superadmin_ApplicationController [label="{class ApplicationController}" rank=sink];
+    subgraph cluster_Superadmin_ApplicationController {
+      label = "ApplicationController"; labelloc=b;
+    }
+    Superadmin_ApplicationController -> Administrate_ApplicationController;
+    Superadmin_CollectionsController [label="{class CollectionsController}" rank=sink];
+    subgraph cluster_Superadmin_CollectionsController {
+      label = "CollectionsController"; labelloc=b;
+    }
+    Superadmin_CollectionsController -> Superadmin_ApplicationController;
+    subgraph cluster_Superadmin {
+      label = "Superadmin"; labelloc=b;
+    }
+  }
+}

@@ -32,7 +32,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a', 'Add New Place'
     assert_select 'a', 'Edit'
     # Returns one entry in the table
-    assert_select 'tbody', 1
+    assert_select 'tbody tr', 1
   end
 
   it_allows_access_to_index_for(%i[partner_admin]) do
@@ -46,7 +46,7 @@ class Admin::PlacesControllerTest < ActionDispatch::IntegrationTest
     get admin_places_url
     assert_response :success
     # Results table is empty
-    assert_select 'tbody', 0
+    assert_select 'tbody tr', 0
   end
 
   # New & Create Place

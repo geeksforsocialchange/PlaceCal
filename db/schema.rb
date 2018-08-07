@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180528165204) do
+ActiveRecord::Schema.define(version: 20180720112624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,7 +29,6 @@ ActiveRecord::Schema.define(version: 20180528165204) do
   create_table "calendars", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "source"
-    t.string "type"
     t.jsonb "notices"
     t.datetime "last_import_at"
     t.integer "partner_id"
@@ -37,8 +36,9 @@ ActiveRecord::Schema.define(version: 20180528165204) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strategy"
-    t.integer "address_id"
-    t.datetime "import_lock_at"
+    t.string "last_checksum"
+    t.text "footer"
+    t.text "critical_error"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20180528165204) do
     t.integer "partner_id"
     t.integer "address_id"
     t.string "are_spaces_available"
+    t.text "footer"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
     t.index ["place_id"], name: "index_events_on_place_id"
   end
@@ -178,6 +179,12 @@ ActiveRecord::Schema.define(version: 20180528165204) do
     t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
   end
 
+  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
+    t.string "version"
+    t.integer "runtime"
+    t.datetime "migrated_on"
+  end
+
   create_table "sites", force: :cascade do |t|
     t.string "name"
     t.string "slug"
@@ -216,6 +223,7 @@ ActiveRecord::Schema.define(version: 20180528165204) do
     t.integer "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_global", default: false
   end
 
   create_table "turfs", force: :cascade do |t|
@@ -266,7 +274,6 @@ ActiveRecord::Schema.define(version: 20180528165204) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
-  add_foreign_key "calendars", "addresses"
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "places"
   add_foreign_key "events", "addresses"

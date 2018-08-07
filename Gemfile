@@ -76,6 +76,9 @@ gem 'delayed_job_active_record'
 # CORS to allow iFrames
 gem 'rack-cors', require: 'rack/cors'
 
+# Seeds and data stuff
+gem 'seed_migration'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
   gem 'byebug', platform: :mri
@@ -104,9 +107,12 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Access an IRB console on exception pages or by using <%= console %>
   gem 'web-console', '>= 3.3.0'
+  gem 'yard'
 end
 
 group :test do
+  gem 'vcr'
+  gem 'webmock'
   gem 'faker'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'

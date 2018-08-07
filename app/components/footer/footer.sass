@@ -7,60 +7,95 @@
   line-height: 1.4rem
   padding: 3rem 0
 
+  p
+    margin: 0.5rem 0
+
   a
     color: $cream
     border-color: $red
 
-  hr
-    border-color: $red
-    margin: 2em 0
-
   h5
-    display: none
+    margin-top: 0
 
-
-  &__section
+  &__inner
+    display: grid
+    grid-gap: 1rem
+    grid-template-columns: 1fr
+    grid-template-areas: "logo" "hr-1" "navigation" "regional" "general"
     +for-tablet-portrait-up
-      +flex(0 0 32%)
-    +for-desktop-up
-      +flex(1 0 25%)
-      &--main
-        +flex(1 0 50%)
+      grid-template-columns: repeat(2, 1fr)
+      grid-template-areas: "logo logo" "hr-1 hr-1" "navigation navigation" "regional general"
+    +for-tablet-landscape-up
+      grid-template-columns: repeat(3, 1fr)
+      grid-template-areas: "logo navigation navigation" ". regional general"
 
-  &__sponsors
-    padding: 0
-    margin: 0
-    +flexbox
-    +justify-content(space-between)
-    +align-items(center)
-    +for-tablet-portrait-up
-      +justify-content(left)
-    li
-      +flex(0 1 150px)
-      height: 80px
+    &--nosite
+      // One fewer region if we're not on a region page
+      grid-template-areas: "logo" "hr-1" "navigation" "general"
+      +for-tablet-portrait-up
+        grid-template-columns: 1fr
+        grid-template-areas: "logo" "hr-1" "navigation" "general"
+      +for-tablet-landscape-up
+        grid-template-columns: repeat(3, 1fr)
+        grid-template-areas: "logo navigation navigation" ". general general"
+
+  &__item
+    grid-column: 1 / -1
+
+  &__hr
+    width: 100%
+    border: 3px solid $almond
+    &--1
+      grid-area: hr-1
+      +for-tablet-landscape-up
+        display: none
+
+  &__logo
+    grid-area: logo
+    align-self: center
+
+  &__nav
+    grid-area: navigation
+    font-size: 1rem
+    ul
       list-style-type: none
-      margin: 0 1rem
-    &--main li
-      +flex(0 1 250px)
-      height: 100px
+      margin-left: 0
+      padding-left: 0
+    li
+      display: inline-block
+      margin-right: 0.5rem
 
-  &__sponsor
-    text-indent: -9999px
-    background-size: contain
-    background-position: center
-    background-repeat: no-repeat
+  &__enquiries--general
+    grid-area: general
+
+  &__enquiries--regional
+    grid-area: regional
+
+  &__supporters ul
+    padding: 0
+    margin: 1rem 0 0 0
+    display: grid
+    grid-template-columns: repeat(2, 1fr)
+    grid-gap: 1rem
+    list-style-type: none
+    +for-tablet-portrait-up
+      grid-template-columns: repeat(3, 1fr)
+    +for-tablet-landscape-up
+      grid-template-columns: repeat(6, 1fr)
+
+  &__supporter
+    display: grid
+    align-items: center
+    justify-items: center
+    img
+      max-width: 100%
+
+  &__impressum
+    margin-top: 3rem
+    color: $almond
     a
-      display: block
-      width: 100%
-      height: 100%
-      border: none
-    &--gfsc
-      background-image: image-url("sponsors/gfsc.png") 
-    &--phase
-      background-image: image-url("sponsors/phase.png")
-    &--mmu
-      background-image: image-url("sponsors/mmu.png")
-    &--mcc
-      background-image: image-url("sponsors/mcc.png")
-    &--cityverve
-      background-image: image-url("sponsors/cityverve.png")
+      color: $almond
+      text-decoration-color: $almond
+
+  pre
+    overflow: hidden

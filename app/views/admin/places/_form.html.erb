@@ -1,117 +1,61 @@
-<%= simple_nested_form_for @place, html: { class: "form-horizontal" } do |f| %>
-  <%= render_component "error", object: @place %>
-  <div class="row">
-    <div class="col-md-10">
-      <h2><%= @place.name %></h2><hr/>
-      <h4>Basic Information</h4>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-5">
-      <label>Name</label>
-      <%= f.text_field :name, class: "form-control" %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-5">
-      <label>Short Description</label>
-      <%= f.text_area :short_description, rows: 2, class: "form-control" %>
-    </div>
-  </div>
-   <div class="row">
-    <div class="col-md-5">
-      <label>Turfs</label>
-      <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes %>
-    </div>
-  </div>
-  <div class="">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="row">
-          <div class="col-md-12">
-          <h3>Address</h3>
-            <%= link_to "+ Add Existing Address", 'javascript:void(0)', class: "btn btn-primary add_existing"%>
-            <%= f.link_to_add "+ Add New Address", :address, class: "btn btn-primary add_new"%>
-            <%#= f.select :address, label: "Existing Addresses", collection: options_for_addresses, input_html: {class: 'form-control select2' }, include_hidden: false %>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- <div class="place "> -->
-      <%= f.fields_for :address, [] do |a| %>
-        <div class="row new">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-12">
-                <label>Address Line 1</label>
-                <%= a.text_field :street_address, class: "form-control address_1 address_field" %>
-                <label>Address Line 2</label>
-                <%= a.text_field :street_address2, class: "form-control address_2 address_field" %>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <label>City</label>
-                <%= a.text_field :city, class: "form-control city address_field" %>
-              </div>
-              <div class="col-md-6">
-                <label>Postcode</label>
-                <%= a.text_field :postcode, class: "form-control postcode address_field" %>
-                <%= a.link_to_remove "Remove", class: "btn btn-primary hide remove_new" %>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div id="js-map" class="map map-marker place-map"></div>
-          </div>
-        </div>
-      <% end %>
-      <div class="row existing">
-        <div class="col-md-12">
-          <%= f.select :address_id, options_for_addresses, {}, class: 'form-control select2' %>
-        </div>
-      </div>
-    <!-- </div> -->
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <h3>Information</h3>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <label>Status</label>
-      <%= f.text_field :status, class: "form-control" %>
-      <label>Phone Number</label>
-      <%= f.text_field :phone, class: "form-control" %>
-      <label>Email</label>
-      <%= f.text_field :email, class: "form-control" %>
-      <label>Url</label>
-      <%= f.text_field :url, class: "form-control" %>
-    </div>
-    <div class="col-md-6">
-      <label>Opening Times</label>
-      <%= f.text_area :opening_times, rows: 3, class: "form-control" %>
-      <label>Booking Information</label>
-      <%= f.text_area :booking_info, rows: 3, class: "form-control" %>
-      <label>Short Description</label>
-      <%= f.text_area :short_description, rows: 3, class: "form-control" %>
-      <label>Accessibility Information</label>
-      <%= f.text_area :accessibility_info, rows: 4, class: "form-control" %>
-    </div>
-  </div>
-  <div class= "row" style="margin-top: 80px; margin-bottom: 50px;">
-    <div class="col-md-10"></div>
-    <div class= "col-md-2">
-      <%= f.submit "Save Place", class: "btn btn-primary " %><br><br>
-      <% if policy(Place).destroy? && !@place.new_record? %> 
-        <%= link_to "Destroy Place", @place, method: :delete, class: "btn btn-danger" %>
-      <% end %>
-    </div>
-  </div>
-  <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
-<% end %>
-
 <% content_for :first_min_js do %>
   <script src="//maps.google.com/maps/api/js?key=<%= ENV['GOOGLE_API_KEY'] %>"></script>
+<% end %>
+
+<%= simple_nested_form_for @place do |f| %>
+  <%= render_component "error", object: @place %>
+
+  <h2>Basic Information</h2>
+
+  <%= f.input :name %>
+  <%= f.input :short_description %>
+
+  <%= f.association :turfs, collection: @turfs, as: :check_boxes %>
+
+  <h2>Address</h2>
+
+  <%= link_to "+ Add Existing Address", 'javascript:void(0)', class: "btn btn-primary add_existing"%>
+  <%= f.link_to_add "+ Add New Address", :address, class: "btn btn-primary add_new"%>
+  <%#= f.select :address, label: "Existing Addresses", collection: options_for_addresses, input_html: {class: 'form-control select2' }, include_hidden: false %>
+
+  <%= f.fields_for :address, [] do |a| %>
+    <div class="row new">
+      <div class="col-md-6">
+        <%= a.input :street_address, class: "form-control address_1 address_field" %>
+        <%= a.input :street_address2, class: "form-control address_2 address_field" %>
+        <%= a.input :city, class: "form-control city address_field" %>
+        <%= a.input :postcode, class: "form-control postcode address_field" %>
+        <%= a.link_to_remove "Remove", class: "btn btn-primary hide remove_new" %>
+      </div>
+      <div class="col-md-6">
+        <div id="js-map" class="map map-marker place-map"></div>
+      </div>
+    </div>
+  <% end %>
+
+  <%= f.select :address_id, options_for_addresses, {}, class: 'form-control select2' %>
+
+  <h2>Information</h2>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :phone %>
+      <%= f.input :email %>
+      <%= f.input :url %>
+      <%= f.input :status %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :opening_times %>
+      <%= f.input :booking_info %>
+      <%= f.input :short_description %>
+      <%= f.input :accessibility_info %>
+    </div>
+  </div>
+
+  <%= f.submit "Save Place", class: "btn btn-primary " %><br><br>
+  <% if policy(Place).destroy? && !@place.new_record? %>
+    <%= link_to "Destroy Place", @place, method: :delete, class: "btn btn-danger" %>
+  <% end %>
+
+  <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
 <% end %>

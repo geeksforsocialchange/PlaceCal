@@ -11,47 +11,61 @@ class Calendar < ApplicationRecord
   validates_presence_of :name
   validates_uniqueness_of :source
 
-  IMPORT_UP_TO = 1.year.from_now
+  before_save :source_supported
 
   extend Enumerize
 
-  # What kind of Calendar feed is this?
-  enumerize :type, in: %i[facebook google outlook mac_calendar xml other],
-                   default: :other,
-                   scope: true
-
-  # What strategy should we take to divine Event locations?
-  #----------------------------------------------------------------------------
+  # Defines the strategy this Calendar uses to assign events to locations.
+  #
   # Event: Use the Event's location field from the imported record
-  #   => Area calendars, or organisations with no solid base.
+  #   Area calendars, or organisations with no solid base.
   # Place: Use the Calendars's associated Place and ignore the Event information
-  #   => Every event is in a single location, and we want to ignore the
-  #      event location entirely
+  #   Every event is in a single location, and we want to ignore the
+  #   event location entirely
   # Room Number: Use the Calendars's associated Place & presume the location
-  #      field contains a room number
-  #   => Every event is in a large venue and the location field is being used to
-  #      store the room number
+  #   field contains a room number
+  #   Every event is in a large venue and the location field is being used to
+  #   store the room number
   # EventOverride: Use Calendar's associated Place, unless address is present.
-  #   => Everything is in one Place, with occasional away days or one-off events
-  #-----------------------------------------------------------------------------
+  #   Everything is in one Place, with occasional away days or one-off events
+  # @attr [Enumerable<Symbol>] :strategy
   enumerize :strategy, in: %i[event place room_number event_override],
                        default: :place,
                        scope: true
+  
+  # Output constant for event import date limit
+  def self.import_up_to
+    1.year.from_now
+  end
 
-  # Default output
+  # Output the calendar's name when it's requested as a string
   def to_s
     name
   end
 
-  # Create Events using this Calendar
-  def import_events(from)
-    update_attribute(:import_lock_at, DateTime.now)
+  #Output recent calendar import activity
+  def recent_activity
+    versions = PaperTrail::Version.with_item_keys('Event', self.event_ids).where('created_at >= ?', 2.weeks.ago)
+    versions = versions.or(PaperTrail::Version.destroys
+                                              .where("item_type = 'Event' AND object @> ? AND created_at >= ?",
+                                                     { calendar_id: self.id }.to_json, 2.weeks.ago))
 
+    versions = versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
+  end
+
+
+  # Create Events using this Calendar
+  # @param from [DateTime]
+  def import_events(from)
     @notices = []
     @events_uids = []
 
-    parse_events_from_source(from).each do |event_data|
-      occurrences = event_data.occurrences_between(from, Calendar::IMPORT_UP_TO)
+    parsed_events = events_from_source(from)
+
+    return if parsed_events.events.blank?
+
+    parsed_events.events.each do |event_data|
+      occurrences = event_data.occurrences_between(from, Calendar.import_up_to)
       next if event_data.private? || occurrences.blank?
 
       @events_uids << event_data.uid
@@ -70,7 +84,7 @@ class Calendar < ApplicationRecord
     handle_deleted_events(from, @events_uids) if @events_uids
 
     reload # reload the record from database to clear out any invalid events to avoid attempts to save them
-    update_attributes!(last_import_at: DateTime.now, import_lock_at: nil, notices: @notices)
+    update_attributes!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current)
   end
 
   def create_or_update_events(event_data, occurrences, from) # rubocop:disable all
@@ -84,11 +98,13 @@ class Calendar < ApplicationRecord
     end
 
     occurrences.each do |occurrence|
+      next if occurrence.end_time && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1  #check if more than a day apart
       event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
-      event_time[:are_spaces_available] = occurrence.status if type.xml?
 
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
       event = events.new if event.blank?
+
+      event_time[:are_spaces_available] = occurrence.status if occurrence.respond_to?(:status)
 
       unless event.update_attributes event_data.attributes.merge(event_time)
         @important_notices << { event: event, errors: event.errors.full_messages }
@@ -104,28 +120,20 @@ class Calendar < ApplicationRecord
 
     return if deleted_events.blank?
 
-    if type.facebook?
-      # Do another check with Facebook to see if these events actually no
-      # longer exist in case of FB hiccup. If they do exist, remove from the list.
-      response = Parsers::Facebook.new(source).find_by_uid(deleted_events)
-      response.keys.each { |key| deleted_events.delete(key) }
-    end
-
     upcoming_events.where(uid: deleted_events).destroy_all
   end
 
   private
 
+  def source_supported
+    CalendarParser.new(self).validate_feed
+  rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
+    self.critical_error = e
+  end
+
   # Import events from given URL
-  def parse_events_from_source(from)
-    case type
-    when 'facebook'
-      Parsers::Facebook.new(source, from: from).events
-    when 'xml'
-      Parsers::Xml.new(source).events
-    else
-      Parsers::Ics.new(source).events
-    end
+  def events_from_source(from)
+    CalendarParser.new(self, { from: from }).parse
   end
 
   def set_place_or_address(event_data)
