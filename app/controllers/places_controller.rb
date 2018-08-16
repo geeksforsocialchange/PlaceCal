@@ -7,7 +7,16 @@ class PlacesController < ApplicationController
   before_action :set_sort, only: :show
 
   def index
-    @places = Place.order(:name)
+    # A subdomain indicates that a local site is being requested
+    @site = Site.where(slug: request.subdomain).first
+
+    if @site
+      # Only get those places relevant to the requested site.
+      @places = Place.joins(:turfs).where(turfs: { id: @site.turfs }).distinct
+    else # this is the canonical site.
+      @places = Place.order(:name)
+    end
+      
     @map = generate_points(@places)
   end
 

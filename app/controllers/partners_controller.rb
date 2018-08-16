@@ -7,7 +7,16 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    @partners = Partner.order(:name)
+    # A subdomain indicates that a local site is being requested
+    @site = Site.where(slug: request.subdomain).first
+
+    if @site
+      # Only get those partners relevant to the requested site.
+      @partners = Partner.joins(:turfs).where(turfs: { id: @site.turfs }).distinct
+    else # this is the canonical site.
+      @partners = Partner.order(:name)
+    end
+
     @map = generate_points(@partners) if @partners.detect(&:address)
   end
 
