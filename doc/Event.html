@@ -267,28 +267,6 @@ event is wrong.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#source_link-instance_method" title="#source_link (instance method)">#<strong>source_link</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#time-instance_method" title="#time (instance method)">#<strong>time</strong>  &#x21d2; Object </a>
     
 
@@ -351,16 +329,16 @@ event is wrong</p>
       <pre class="lines">
 
 
-95
-96
-97
-98
-99
-100
-101</pre>
+86
+87
+88
+89
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_blame'>blame</span>
   <span class='id identifier rubyid_partner'>partner</span> <span class='op'>=</span> <span class='id identifier rubyid_calendar'>calendar</span><span class='op'>&amp;.</span><span class='id identifier rubyid_partner'>partner</span>
@@ -389,12 +367,12 @@ event is wrong</p>
       <pre class="lines">
 
 
-85
-86
-87</pre>
+76
+77
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_date'>date</span>
   <span class='id identifier rubyid_dtstart'>dtstart</span><span class='period'>.</span><span class='id identifier rubyid_strftime'>strftime</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>%e %b</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -419,12 +397,12 @@ event is wrong</p>
       <pre class="lines">
 
 
-73
-74
-75</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
   <span class='id identifier rubyid_place'>place</span> <span class='op'>?</span> <span class='id identifier rubyid_place'>place</span><span class='period'>.</span><span class='id identifier rubyid_address'>address</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>:</span> <span class='id identifier rubyid_address'>address</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
@@ -449,12 +427,12 @@ event is wrong</p>
       <pre class="lines">
 
 
-89
-90
-91</pre>
+80
+81
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 80</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_permalink'>permalink</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://placecal.org/events/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -525,46 +503,6 @@ event is wrong</p>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="source_link-instance_method">
-  
-    #<strong>source_link</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-64
-65
-66
-67
-68
-69
-70
-71</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 64</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_source_link'>source_link</span>
-  <span class='comment'>#TODO: Figure out new logic
-</span>  <span class='comment'>#if calendar&amp;.type == &#39;facebook&#39;
-</span>  <span class='comment'>#  &quot;&lt;p&gt;&lt;a href=&#39;https://facebook.com/events/#{uid}&#39;&gt;Join this event on Facebook.&lt;/a&gt;&lt;/p&gt;&quot;.html_safe
-</span>  <span class='comment'>#else
-</span>  <span class='comment'>#  false
-</span>  <span class='comment'>#end
-</span><span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="time-instance_method">
   
     #<strong>time</strong>  &#x21d2; <tt>Object</tt> 
@@ -579,16 +517,16 @@ event is wrong</p>
       <pre class="lines">
 
 
-77
-78
-79
-80
-81
-82
-83</pre>
+68
+69
+70
+71
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_time'>time</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_dtend'>dtend</span>
@@ -607,7 +545,7 @@ event is wrong</p>
 </div>
 
       <div id="footer">
-  Generated on Tue Jul 17 13:45:55 2018 by
+  Generated on Wed Aug 22 13:09:08 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.14 (ruby-2.4.3).
 </div>

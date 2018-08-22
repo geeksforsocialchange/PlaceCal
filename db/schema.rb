@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20180801041639) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strategy"
+    t.datetime "import_lock_at"
     t.string "last_checksum"
     t.text "footer"
     t.text "critical_error"
