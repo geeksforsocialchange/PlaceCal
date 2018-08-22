@@ -13,11 +13,12 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 With that said, here's what you need to get rolling.
 
 * postgresql, Ruby 2.4.3, and the Bundler gem to install rails 5 etc from the Gemfile
-* `rails db:setup db:migrate seed:migrate`
-* `rails import:all_events`
+* `bundle exec rails db:setup db:migrate seed:migrate`
+* `bundle exec rails import:all_events`
 * Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
 * Admin interface is `admin.lvh.me:3000`
 * Seeded root user is info@placecal.org / password
+* Access code docs through your local filesystem, and update with `bundle exec rails yard`
 
 To set up your own server, take a look at `INSTALL.md`.
 

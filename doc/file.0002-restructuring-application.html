@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: 0002-restructuring-application
+  
+    &mdash; Documentation by YARD 0.9.14
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "0002-restructuring-application";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: 0002-restructuring-application</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'><h1 id="restructuring-application">Restructuring application</h1>
+
+<h2 id="background">Background</h2>
+
+<p>Places and Partners have similar fields and instances of these often have the same name for a Partner and its associated Place. This has several implications.</p>
+
+<ul>
+  <li>For citizens, Partners and Places are ways of viewing both local offers and the sets of events that those Places/Partners organise.</li>
+  <li>For secretaries and admins, Partners and Places both require seperate information maintenance and the difference between the two is not crystal clear.</li>
+  <li>For developers, models that have a relationships with Partners will also have an indirect relationship with Places and vice versa. This is making the permission system somewhat opaque.</li>
+</ul>
+
+<p>Making further changes to the application is therefore percieved as time consuming, because adding or modifying anything that relates to Partner means adding/modifying for Place too.</p>
+
+<p>Q: What are the specific areas of code (i.e. files, methods) where duplication currently manifests? Very specific identification of problem areas might suggest different approaches.</p>
+
+<p>A: These are not currently active, but theoretically the following should all overlap:</p>
+
+<ul>
+  <li>Name, description, logo, map</li>
+  <li>Contact information for the general public, for us to contact admins, for us to contact managers</li>
+  <li>Address</li>
+  <li>Opening times</li>
+  <li>Associations with Users</li>
+  <li>Associations with Sites</li>
+  <li>Associations with Turfs</li>
+  <li>Associations with Calendars</li>
+</ul>
+
+<h2 id="a-note-on-independence-of-different-layers">A note on independence of different layers</h2>
+
+<p>Developers discussing the restructuring have mentioned multiple parts of the system:</p>
+
+<ul>
+  <li>The strategy/social layer: social and legal implementation details between commissioners and the site itself (i.e., the management outside the site)</li>
+  <li>The user interface for citizens</li>
+  <li>The user interface for admins and secretaries</li>
+  <li>The underlying software models</li>
+</ul>
+
+<p>Each layer can have its own nomenclature and granularity. Although it would probably be counter-productive to give the site-visitor UI different nomenclature from the admin UI, in all other respects these layers can be independent in their language. Avoiding real-world naming might be useful in order to shed assumptions that come with a real-world name. UI can evolve quickly if it does not need to stick to the naming and granularity used in the underlying models.</p>
+
+<h2 id="possible-restructuring-approaches">Possible restructuring approaches</h2>
+
+<ol>
+  <li>Apply the solution detailed in ADR 0001-combine-places-and-partners.</li>
+  <li>Refactor the underlying model for a cleaner set of abstractions (tentatively described below.)</li>
+  <li>Redevelop the admin UI for smoother UX independently of any refactoring of the models.</li>
+</ol>
+
+<h2 id="cleaning-abstractions">Cleaning abstractions</h2>
+
+<p>It may be that moving some data around between models could change their roles within the software system. This is my view of the roles played by models. Names are not necessarily in direct correspondence with the current architecture:</p>
+
+<ul>
+  <li>Partner - a real-world organisation that is a collaborator in PlaceCal</li>
+  <li>Event - a real-world event</li>
+  <li>Location - a human-readable identifier for somewhere at which events take place. In addition, it may be useful for a Partner to have a Location if the Partner organisation needs to be physically interacted with, other than at Events.</li>
+  <li>Place - some extra information about a location. Not all locations necessarily require this extra information. Opening times and accessibility features may be useful. A Partner who manages the given location may also be useful.</li>
+</ul>
+
+<p>### Issues with this current abstraction</p>
+
+<p>There are currently several problems with this. (will keep adding when I think of them)</p>
+
+<p>“Partner” specifically refers to someone inside the PlaceCal partnership in the real world: ideally an organisation actively taking part in age friendly activities (in our case). There is currently no way to show other organisations who might be active locally, but are either not in the partnership (i.e. we are updating their events for them) or simply don’t wish to be seen as partners.</p>
+
+<p>Partners and Places in the real world very often have almost no difference. I estimate in 90% of cases Places are also Partners. This is the main place that the distinction falls down.</p>
+
+</div></div>
+
+      <div id="footer">
+  Generated on Wed Aug 22 13:09:08 2018 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.14 (ruby-2.4.3).
+</div>
+
+    </div>
+  </body>
+</html>
