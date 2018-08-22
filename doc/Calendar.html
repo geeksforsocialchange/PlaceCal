@@ -120,28 +120,104 @@
   
 
 </div>
+
+
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#facebook_page_id-instance_method" title="#facebook_page_id (instance method)">#<strong>facebook_page_id</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute facebook_page_id.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#is_facebook_page-instance_method" title="#is_facebook_page (instance method)">#<strong>is_facebook_page</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute is_facebook_page.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+
   
     <h2>
-      Constant Summary
-      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
-    <dl class="constants">
+    <ul class="summary">
       
-        <dt id="IMPORT_UP_TO-constant" class="">IMPORT_UP_TO =
-          
-        </dt>
-        <dd><pre class="code"><span class='int'>1</span><span class='period'>.</span><span class='id identifier rubyid_year'>year</span><span class='period'>.</span><span class='id identifier rubyid_from_now'>from_now</span></pre></dd>
-      
-    </dl>
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#import_up_to-class_method" title="import_up_to (class method)">.<strong>import_up_to</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
   
 
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Output constant for event import date limit.</p>
+</div></span>
+  
+</li>
 
-
-
-
-
-
+      
+    </ul>
   
     <h2>
       Instance Method Summary
@@ -223,6 +299,52 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#recent_activity-instance_method" title="#recent_activity (instance method)">#<strong>recent_activity</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Output recent calendar import activity.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_fb_page_token-instance_method" title="#set_fb_page_token (instance method)">#<strong>set_fb_page_token</strong>(user)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#to_s-instance_method" title="#to_s (instance method)">#<strong>to_s</strong>  &#x21d2; Object </a>
     
 
@@ -238,7 +360,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Default output.</p>
+<p>Output the calendar&#39;s name when it&#39;s requested as a string.</p>
 </div></span>
   
 </li>
@@ -256,6 +378,144 @@
   
   
   
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id="facebook_page_id=-instance_method"></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="facebook_page_id-instance_method">
+  
+    #<strong>facebook_page_id</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute facebook_page_id</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 18</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_facebook_page_id'>facebook_page_id</span>
+  <span class='ivar'>@facebook_page_id</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="is_facebook_page=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="is_facebook_page-instance_method">
+  
+    #<strong>is_facebook_page</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute is_facebook_page</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 18</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_is_facebook_page'>is_facebook_page</span>
+  <span class='ivar'>@is_facebook_page</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="import_up_to-class_method">
+  
+    .<strong>import_up_to</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Output constant for event import date limit</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_import_up_to'>import_up_to</span>
+  <span class='int'>1</span><span class='period'>.</span><span class='id identifier rubyid_year'>year</span><span class='period'>.</span><span class='id identifier rubyid_from_now'>from_now</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -287,35 +547,35 @@
       <pre class="lines">
 
 
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
 92
 93
 94
 95
 96
 97
-98</pre>
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_or_update_events'>create_or_update_events</span><span class='lparen'>(</span><span class='id identifier rubyid_event_data'>event_data</span><span class='comma'>,</span> <span class='id identifier rubyid_occurrences'>occurrences</span><span class='comma'>,</span> <span class='id identifier rubyid_from'>from</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable all
 </span>  <span class='ivar'>@important_notices</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -363,17 +623,17 @@
       <pre class="lines">
 
 
-100
-101
-102
-103
-104
-105
-106
-107</pre>
+119
+120
+121
+122
+123
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_handle_deleted_events'>handle_deleted_events</span><span class='lparen'>(</span><span class='id identifier rubyid_from'>from</span><span class='comma'>,</span> <span class='id identifier rubyid_uids'>uids</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_upcoming_events'>upcoming_events</span> <span class='op'>=</span> <span class='id identifier rubyid_events'>events</span><span class='period'>.</span><span class='id identifier rubyid_upcoming_for_date'>upcoming_for_date</span><span class='lparen'>(</span><span class='id identifier rubyid_from'>from</span><span class='rparen'>)</span>
@@ -406,7 +666,22 @@
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>from</span>
+      
+      
+        <span class='type'>(<tt>DateTime</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
 
 </div><table class="source_code">
   <tr>
@@ -414,25 +689,6 @@
       <pre class="lines">
 
 
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
 61
 62
 63
@@ -443,10 +699,29 @@
 68
 69
 70
-71</pre>
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import_events'>import_events</span><span class='lparen'>(</span><span class='id identifier rubyid_from'>from</span><span class='rparen'>)</span>
   <span class='ivar'>@notices</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -457,7 +732,7 @@
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_parsed_events'>parsed_events</span><span class='period'>.</span><span class='id identifier rubyid_events'>events</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
 
   <span class='id identifier rubyid_parsed_events'>parsed_events</span><span class='period'>.</span><span class='id identifier rubyid_events'>events</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_event_data'>event_data</span><span class='op'>|</span>
-    <span class='id identifier rubyid_occurrences'>occurrences</span> <span class='op'>=</span> <span class='id identifier rubyid_event_data'>event_data</span><span class='period'>.</span><span class='id identifier rubyid_occurrences_between'>occurrences_between</span><span class='lparen'>(</span><span class='id identifier rubyid_from'>from</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Calendar (class)">Calendar</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#IMPORT_UP_TO-constant" title="Calendar::IMPORT_UP_TO (constant)">IMPORT_UP_TO</a></span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_occurrences'>occurrences</span> <span class='op'>=</span> <span class='id identifier rubyid_event_data'>event_data</span><span class='period'>.</span><span class='id identifier rubyid_occurrences_between'>occurrences_between</span><span class='lparen'>(</span><span class='id identifier rubyid_from'>from</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Calendar (class)">Calendar</a></span></span><span class='period'>.</span><span class='id identifier rubyid_import_up_to'><span class='object_link'><a href="#import_up_to-class_method" title="Calendar.import_up_to (method)">import_up_to</a></span></span><span class='rparen'>)</span>
     <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_event_data'>event_data</span><span class='period'>.</span><span class='id identifier rubyid_private?'>private?</span> <span class='op'>||</span> <span class='id identifier rubyid_occurrences'>occurrences</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
 
     <span class='ivar'>@events_uids</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_event_data'>event_data</span><span class='period'>.</span><span class='id identifier rubyid_uid'>uid</span>
@@ -484,9 +759,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="to_s-instance_method">
+  <h3 class="signature " id="recent_activity-instance_method">
   
-    #<strong>to_s</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>recent_activity</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -495,7 +770,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Default output</p>
+<p>Output recent calendar import activity</p>
 
 
   </div>
@@ -509,12 +784,95 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+49
+50
+51
+52
+53
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_recent_activity'>recent_activity</span>
+  <span class='id identifier rubyid_versions'>versions</span> <span class='op'>=</span> <span class='const'>PaperTrail</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_with_item_keys'>with_item_keys</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Event</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_event_ids'>event_ids</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>created_at &gt;= ?</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='int'>2</span><span class='period'>.</span><span class='id identifier rubyid_weeks'>weeks</span><span class='period'>.</span><span class='id identifier rubyid_ago'>ago</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_versions'>versions</span> <span class='op'>=</span> <span class='id identifier rubyid_versions'>versions</span><span class='period'>.</span><span class='id identifier rubyid_or'>or</span><span class='lparen'>(</span><span class='const'>PaperTrail</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_destroys'>destroys</span>
+                                            <span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>item_type = &#39;Event&#39; AND object @&gt; ? AND created_at &gt;= ?</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+                                                   <span class='lbrace'>{</span> <span class='label'>calendar_id:</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span><span class='comma'>,</span> <span class='int'>2</span><span class='period'>.</span><span class='id identifier rubyid_weeks'>weeks</span><span class='period'>.</span><span class='id identifier rubyid_ago'>ago</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_versions'>versions</span> <span class='op'>=</span> <span class='id identifier rubyid_versions'>versions</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='label'>created_at:</span> <span class='symbol'>:desc</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_by'>group_by</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_version'>version</span><span class='op'>|</span> <span class='id identifier rubyid_version'>version</span><span class='period'>.</span><span class='id identifier rubyid_created_at'>created_at</span><span class='period'>.</span><span class='id identifier rubyid_to_date'>to_date</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_fb_page_token-instance_method">
+  
+    #<strong>set_fb_page_token</strong>(user)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+128
+129
+130
+131</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 128</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_fb_page_token'>set_fb_page_token</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_graph'>graph</span> <span class='op'>=</span> <span class='const'>Koala</span><span class='op'>::</span><span class='const'>Facebook</span><span class='op'>::</span><span class='const'>API</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_access_token'>access_token</span><span class='rparen'>)</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_page_access_token'>page_access_token</span> <span class='op'>=</span> <span class='id identifier rubyid_graph'>graph</span><span class='period'>.</span><span class='id identifier rubyid_get_page_access_token'>get_page_access_token</span><span class='lparen'>(</span><span class='id identifier rubyid_facebook_page_id'>facebook_page_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="to_s-instance_method">
+  
+    #<strong>to_s</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Output the calendar&#39;s name when it&#39;s requested as a string</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/calendar.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='id identifier rubyid_name'>name</span>
@@ -529,7 +887,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jul 17 13:45:55 2018 by
+  Generated on Wed Aug 22 13:09:09 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.14 (ruby-2.4.3).
 </div>

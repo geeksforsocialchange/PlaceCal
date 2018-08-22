@@ -276,12 +276,12 @@
       <pre class="lines">
 
 
-6
-7
-8</pre>
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_whitelist_pattern'>whitelist_pattern</span>
   <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>https:\/\/www.facebook.com\.*</span><span class='regexp_end'>/</span></span>
@@ -312,10 +312,6 @@
       <pre class="lines">
 
 
-14
-15
-16
-17
 18
 19
 20
@@ -329,17 +325,21 @@
 28
 29
 30
-31</pre>
+31
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_download_calendar'>download_calendar</span>
   <span class='ivar'>@events</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 
   <span class='kw'>begin</span>
     <span class='id identifier rubyid_fields'>fields</span> <span class='op'>=</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>name</span><span class='words_sep'> </span><span class='tstring_content'>description</span><span class='words_sep'> </span><span class='tstring_content'>start_time</span><span class='words_sep'> </span><span class='tstring_content'>end_time</span><span class='words_sep'> </span><span class='tstring_content'>updated_time</span><span class='words_sep'> </span><span class='tstring_content'>place</span><span class='words_sep'> </span><span class='tstring_content'>event_times</span><span class='words_sep'>]</span>
-    <span class='id identifier rubyid_results'>results</span> <span class='op'>=</span> <span class='id identifier rubyid_facebook_api'>facebook_api</span><span class='period'>.</span><span class='id identifier rubyid_get_connections'>get_connections</span><span class='lparen'>(</span><span class='id identifier rubyid_page'>page</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>fields:</span> <span class='id identifier rubyid_fields'>fields</span><span class='comma'>,</span> <span class='label'>since:</span> <span class='ivar'>@from</span><span class='period'>.</span><span class='id identifier rubyid_to_time'>to_time</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='comma'>,</span> <span class='label'>until:</span> <span class='const'><span class='object_link'><a href="../Calendar.html" title="Calendar (class)">Calendar</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Calendar.html#IMPORT_UP_TO-constant" title="Calendar::IMPORT_UP_TO (constant)">IMPORT_UP_TO</a></span></span><span class='period'>.</span><span class='id identifier rubyid_to_time'>to_time</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_results'>results</span> <span class='op'>=</span> <span class='id identifier rubyid_facebook_api'>facebook_api</span><span class='period'>.</span><span class='id identifier rubyid_get_connections'>get_connections</span><span class='lparen'>(</span><span class='id identifier rubyid_page'>page</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>fields:</span> <span class='id identifier rubyid_fields'>fields</span><span class='comma'>,</span> <span class='label'>since:</span> <span class='ivar'>@from</span><span class='period'>.</span><span class='id identifier rubyid_to_time'>to_time</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='comma'>,</span> <span class='label'>until:</span> <span class='const'><span class='object_link'><a href="../Calendar.html" title="Calendar (class)">Calendar</a></span></span><span class='period'>.</span><span class='id identifier rubyid_import_up_to'><span class='object_link'><a href="../Calendar.html#import_up_to-class_method" title="Calendar.import_up_to (method)">import_up_to</a></span></span><span class='period'>.</span><span class='id identifier rubyid_to_time'>to_time</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
 
     <span class='id identifier rubyid_loop'>loop</span> <span class='kw'>do</span>
       <span class='ivar'>@events</span> <span class='op'>+=</span> <span class='id identifier rubyid_results'>results</span>
@@ -372,12 +372,12 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_by_uid'>find_by_uid</span><span class='lparen'>(</span><span class='id identifier rubyid_uids'>uids</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_facebook_api'>facebook_api</span><span class='period'>.</span><span class='id identifier rubyid_get_objects'>get_objects</span><span class='lparen'>(</span><span class='id identifier rubyid_uids'>uids</span><span class='rparen'>)</span>
@@ -402,12 +402,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import_events_from'>import_events_from</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_d'>d</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="../Events.html" title="Events (module)">Events</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Events/FacebookEvent.html" title="Events::FacebookEvent (class)">FacebookEvent</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Events/FacebookEvent.html#initialize-instance_method" title="Events::FacebookEvent#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -432,15 +432,15 @@
       <pre class="lines">
 
 
-10
-11
-12</pre>
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'app/models/parsers/facebook.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_page'>page</span>
-  <span class='ivar'>@url</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>https:\/\/www.facebook.com\.*</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='ivar'>@url</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A\/</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\/\z</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -452,7 +452,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jul 17 13:45:55 2018 by
+  Generated on Wed Aug 22 13:09:09 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.14 (ruby-2.4.3).
 </div>

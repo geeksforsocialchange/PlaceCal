@@ -1,0 +1,22 @@
+attributes:
+  - content
+  - foreign_keys
+  - inheritance
+disconnected: true
+filename: erd
+filetype: pdf
+indirect: true
+inheritance: false
+markup: true
+notation: simple
+orientation: vertical
+polymorphism: false
+sort: true
+warn: true
+title: PlaceCal Database Model
+exclude: ActiveRecord::InternalMetadata, ActiveRecord::SchemaMigration, SeedMigration::DataMigration, Delayed::Backend::ActiveRecord::Job
+only: null
+only_recursion_depth: null
+prepend_primary: false
+cluster: false
+splines: spline
