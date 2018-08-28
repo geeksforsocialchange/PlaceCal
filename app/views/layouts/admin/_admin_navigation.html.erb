@@ -10,8 +10,11 @@
         <li class="<%= current_page?(admin_turfs_path) ? 'active' : '' %>"><%= link_to "Turfs", admin_turfs_path  %></li>
         <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Partners", admin_partners_path  %></li>
         <li class="<%= current_page?(admin_places_path) ? 'active' : '' %>"><%= link_to "Places", admin_places_path  %></li>
-        <li class="<%= current_page?(admin_calendars_path) ? 'active' : '' %>"><%= link_to "Calendars", admin_calendars_path  %></li>
         <li class="<%= current_page?(admin_supporters_path) ? 'active' : '' %>"><%= link_to "Supporters", admin_supporters_path  %></li>
+      <% end %>
+
+      <%- if policy(Calendar).index? %>
+        <li class="<%= current_page?(admin_calendars_path) ? 'active' : '' %>"><%= link_to "Calendars", admin_calendars_path  %></li>
       <% end %>
       <li><%= link_to "Logout", destroy_user_session_path, method: :delete  %></li>
     </ul>

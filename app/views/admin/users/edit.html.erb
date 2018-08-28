@@ -3,16 +3,7 @@
 <div class="behavior-trigger" data-behavior="user.form"></div>
 <%= simple_form_for @user, method: :put, url: assign_turf_admin_user_path(@user) do |f| %>
 
-  <div class="form-group">
-    <%= render "users/contact", f: f %>
-
-    <%= f.label :turfs %>
-    <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes %>
-    <%= f.association :partners, label: "Partners", collection: options_for_partners, input_html: {class: 'form-control select2' }, include_hidden: false %>
-
-    <%= f.label :role %>
-    <%= f.select :role, options_for_select(@roles), class: 'form-control' %>
-  </div>
+  <%= render 'form', f: f %>
   <%= f.submit "Update", class: "btn btn-primary " %>
   </div>
 <% end %>

@@ -6,7 +6,7 @@ class User < ApplicationRecord
   enumerize :role, in: %i[root turf_admin partner_admin]
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable,
+  devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :invitable,
          :omniauthable, omniauth_providers: %i[facebook]
 
   has_and_belongs_to_many :partners
@@ -35,5 +35,15 @@ class User < ApplicationRecord
       elsif partners.any?
         'partner_admin'
       end
+  end
+
+  def valid_for_invite
+    errors.add(:email, "can't be blank") if email.blank?
+    errors.add(:first_name, "can't be blank") if first_name.blank?
+    errors.add(:last_name, "can't be blank") if last_name.blank?
+    errors.add(:partner_ids, "can't be blank") if partner_ids.blank?
+    errors.add(:role, "can't be blank") if role.blank?
+
+    errors.blank?
   end
 end
