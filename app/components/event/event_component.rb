@@ -52,6 +52,10 @@ class EventComponent < MountainView::Presenter
     properties[:rrule].present? ? properties[:rrule][0]['table']['frequency'].titleize : false
   end
 
+  def turf_name
+    properties[:turf] && properties[:turf].name
+  end
+
   private
 
   def fmt_time(time)

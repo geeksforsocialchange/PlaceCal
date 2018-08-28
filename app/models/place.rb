@@ -7,7 +7,7 @@ class Place < ApplicationRecord
   # attr_accessor :turf_attr
 
   has_and_belongs_to_many :partners
-  has_and_belongs_to_many :turfs
+  has_and_belongs_to_many :turfs # TODO?: Validate only one neighbourhood turf (as opposed to interest turfs) ?
   has_many :events
   has_many :calendars, dependent: :destroy
 
@@ -32,5 +32,12 @@ class Place < ApplicationRecord
   # How should we show the event listing on the Place page?
   def event_view
     :week
+  end
+
+  def neighbourhood_turf
+    # ASSUMPTION: The neighbourhood turf will not change within the lifetime of
+    # this object.
+    # TODO?: Should we forgo member variable and rely on ActiveRecord caching?
+    @turf ||= turfs.where( turf_type: :neighbourhood ).first
   end
 end

@@ -21,3 +21,11 @@ class Turf < ApplicationRecord
     users.each(&:update_role)
   end
 end
+
+
+# Neighbourhood turfs:
+#
+# Any entity that can belong to turfs must belong to no more than one neighbourhood turf.
+# Neighbourhood turfs are equivalent to electoral wards irl.
+# Postecodes.io returns an admin_ward for successfully geocoded postcodes.
+# Postcodes.io geocoding can therefore be used to assign an entity to exactly one neighbourhood turf.
