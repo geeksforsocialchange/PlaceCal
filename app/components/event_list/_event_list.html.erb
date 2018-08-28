@@ -14,19 +14,7 @@
     <ol class="events reset">
       <% events.each do |event| %>
         <li>
-          <%= render_component "event",
-            context: @period,
-            id:      event.id,
-            path:    event_path(event),
-            place:   event.place,
-            partner: event.partner,
-            summary: event.summary,
-            dtstart: event.dtstart,
-            dtend:   event.dtend,
-            rrule:   event.rrule,
-            location: event.location,
-            turf:    event.neighbourhood_turf
-          %>
+          <%= render_component "event", context: @period, event: event %>
         </li>
       <% end %>
     </ol>

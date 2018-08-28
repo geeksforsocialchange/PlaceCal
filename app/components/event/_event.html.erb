@@ -4,7 +4,7 @@
       <%= render_component "hero", title: summary %>
         <div class="c">
     <% else %>
-      <h3 itemprop="name"><%= link_to summary, event_path(properties[:id]) %></h3>
+      <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
     <% end %>
     <div class="event__turf">
       <span class="icon icon--turf">🕒</span>
@@ -25,12 +25,12 @@
         <span class="icon icon--date">📅</span>
         <%= date %>
       </div>
-      <% if properties[:place] || properties[:location] %>
+      <% if place || location %>
         <div class="event__detail event__location">
           <span class="icon icon--place">🏠</span>
-          <% if properties[:place] %>
-            <%= link_to properties[:place], place_path(properties[:place]) %>
-          <% elsif properties[:location] %>
+          <% if place %>
+            <%= link_to place, place_path(place) %>
+          <% elsif location %>
             <%= location %>
           <% end %>
         </div>
