@@ -1,30 +1,36 @@
-:meta: 'One event with varying information' 
-:stubs: 
+:meta: 'One event with varying information'
+:stubs:
   -
-    :id: 1
-    :summary: 'Event with just a date, time and summary'
-    :dtstart: 2017-10-02 12:30:00
-    :dtend: 2017-10-02 14:00:00
-  -
-    :id: 2
-    :summary: 'Event with a Location'
-    :dtstart: 2017-10-02 10:30:00
-    :dtend: 2017-10-02 14:00:00
-    :location: 'Name of room or un-geolocated address'
-  -
-    :id: 3
-    :summary: 'Event with a Place chooses place over address'
-    :dtstart: 2017-10-02 12:00:00
-    :dtend: 2017-10-02 14:00:00
-    :location: 'Will be ignored'
-    :place: Place that PlaceCal knows about
-  -
-    :id: 4
-    :summary: 'Event that repeats weekly'
-    :dtstart: 2017-10-02 12:00:00
-    :dtend: 2017-10-02 14:00:00
-    :place: Place that PlaceCal knows about
-    :rrule: 
-      -
-        table: 
-          frequency: WEEKLY 
+    :event: !ruby/object:Event
+      :id: 1
+      :summary: 'Event with just a date, time and summary'
+      :dtstart: 2017-10-02 12:30:00
+      :dtend: 2017-10-02 14:00:00
+      :neighbourhood_turf: !ruby/object:Turf
+        :name: Turfy
+  # -
+  #   :event:
+  #     :id: 2
+  #     :summary: 'Event with a Location'
+  #     :dtstart: 2017-10-02 10:30:00
+  #     :dtend: 2017-10-02 14:00:00
+  #     :location: 'Name of room or un-geolocated address'
+  # -
+  #   :event:
+  #     :id: 3
+  #     :summary: 'Event with a Place chooses place over address'
+  #     :dtstart: 2017-10-02 12:00:00
+  #     :dtend: 2017-10-02 14:00:00
+  #     :location: 'Will be ignored'
+  #     :place: Place that PlaceCal knows about
+  # -
+  #   :event:
+  #     :id: 4
+  #     :summary: 'Event that repeats weekly'
+  #     :dtstart: 2017-10-02 12:00:00
+  #     :dtend: 2017-10-02 14:00:00
+  #     :place: Place that PlaceCal knows about
+  #     :rrule:
+  #       -
+  #         table:
+  #           frequency: WEEKLY
