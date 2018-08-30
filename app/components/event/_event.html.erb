@@ -6,11 +6,9 @@
     <% else %>
       <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
     <% end %>
-    <div class="event__turf">
-      <span class="icon icon--turf">🕒</span>
-      <%= turf_name %>
-    </div>
     <div class="event__details">
+      <!-- Name of neighbourhood turf for this event: -->
+      <!-- <%= turf_name %> -->
       <div class="event__detail event__time">
         <span class="icon icon--time">🕒</span>
         <%= time %>
