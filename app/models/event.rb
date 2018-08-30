@@ -82,7 +82,7 @@ class Event < ApplicationRecord
   end
 
   def neighbourhood_turf
-    place && place.neighbourhood_turf
+    place&.neighbourhood_turf
   end
 
   # TODO: plan this out on paper, currently half finished
