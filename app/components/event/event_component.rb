@@ -56,7 +56,7 @@ class EventComponent < MountainView::Presenter
   end
 
   def location
-    event.location.split(',').first&.delete('\\')
+    event.location&.split(',')&.first&.delete('\\')
   end
 
   def repeats
@@ -64,7 +64,7 @@ class EventComponent < MountainView::Presenter
   end
 
   def turf_name
-    event.neighbourhood_turf && event.neighbourhood_turf.name
+    event.neighbourhood_turf&.name
   end
 
   def fmt_time(time)
