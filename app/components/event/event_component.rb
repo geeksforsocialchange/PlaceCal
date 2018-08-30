@@ -67,6 +67,8 @@ class EventComponent < MountainView::Presenter
     event.neighbourhood_turf&.name
   end
 
+  private
+
   def fmt_time(time)
     if time.strftime('%M') == '00'
       time.strftime('%l%P')
@@ -75,7 +77,7 @@ class EventComponent < MountainView::Presenter
     end
   end
 
-  private # Hide method access for named properties in erb file.
+  # Prevent method-access in erb file for named properties.
 
   def event
     properties[:event]
