@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 class CalendarPolicy < ApplicationPolicy
+  def create?
+    %w[root partner_admin].include? user&.role
+  end
+
+  def index?
+    create?
+  end
+
+  def new?
+    create?
+  end
+
+  def edit?
+    create?
+  end
+
+  def update?
+    create?
+  end
+
   def import?
     user.role.root?
   end

@@ -36,6 +36,7 @@ gem 'bootstrap-sass', '~> 3.3.7'
 # Misc
 gem 'active_link_to'
 gem 'devise'
+gem 'devise_invitable'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.1.0'
 gem 'geocoder'

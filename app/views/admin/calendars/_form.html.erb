@@ -15,8 +15,8 @@
       <% end %>
       <%= f.input :strategy %>
       <%= f.input :footer %>
-      <%= f.association :partner %>
-      <%= f.association :place %>
+      <%= f.association :partner, collection: policy_scope(Partner) %>
+      <%= f.association :place, collection: policy_scope(Place) %>
     </div>
     <div class="col-md-6">
       <% unless @calendar.new_record? %>

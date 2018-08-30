@@ -125,6 +125,9 @@ GEM
       railties (>= 4.1.0, < 6.0)
       responders
       warden (~> 1.2.3)
+    devise_invitable (1.7.4)
+      actionmailer (>= 4.1.0)
+      devise (>= 4.0.0)
     docile (1.3.0)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
@@ -484,6 +487,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   delayed_job_active_record
   devise
+  devise_invitable
   dotenv-rails
   enumerize
   factory_bot_rails
