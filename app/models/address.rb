@@ -8,6 +8,7 @@ class Address < ApplicationRecord
   validates :street_address, :postcode, :country_code, presence: true
 
   # Geocoding with postcodes.io so only postcode changes will change the result
+  before_validation :standardise_postcode, if: ->(obj) { obj.postcode_changed? }
   after_validation :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
 
   has_many :places
@@ -48,6 +49,14 @@ class Address < ApplicationRecord
     self.admin_ward= geo['admin_ward']
   end
 
+  def standardise_postcode
+    self.postcode = self.class.standardised_postcode(postcode)
+  end
+
+  def postcode_standardised?
+    postcode == self.class.standardised_postcode(postcode)
+  end
+
   class << self
     # location - The raw location field
     # components - Array containing parts of an event's location field, excluding the postcode.
@@ -68,8 +77,8 @@ class Address < ApplicationRecord
       # Search by postcode if it is minimum length of a full postal code
       # TODO? Are postcodes guaranteed to be in the same format? E.g A1 2BC
       # versus A12BC versus a12bc, all of which are valid.
-      if postcode && postcode.length >= 6
-        @address ||= Address.where(postcode: postcode).first
+      if postcode && postcode.length >= 5
+        @address ||= Address.where(postcode: standardised_postcode(postcode)).first
       end
 
       if @address.present?
@@ -86,8 +95,17 @@ class Address < ApplicationRecord
       address = Address.new(street_address: components[0]&.strip,
                             street_address2: components[1]&.strip,
                             street_address3: components[2]&.strip,
-                            postcode: postcode&.strip)
+                            postcode: standardised_postcode(postcode))
       address if address.save
+    end
+
+    # Define a standard postcode format so that postcode comparisons will can be
+    # made, including within the DB.
+    # Standard format is ALL CAPS where the only whitespace is a single space
+    # before the final three characters.
+    def standardised_postcode pc
+      return unless pc
+      pc.gsub(/\s+/, "").upcase.insert(-4, ' ')
     end
   end
 end
