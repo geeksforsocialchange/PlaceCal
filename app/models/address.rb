@@ -41,14 +41,11 @@ class Address < ApplicationRecord
     #   Geocoder::Result::PostcodesIo#data hash.
 
     geo = Geocoder.search(postcode).first&.data
+    return unless geo
 
-    if geo
-      # TODO? This works. Is there a more correct (railsy) way of doing this
-      # e.g. using write_attribute ? What is the trade off?
-      self.longitude= geo['longitude']
-      self.latitude= geo['latitude']
-      self.admin_ward= geo['admin_ward']
-    end
+    self.longitude= geo['longitude']
+    self.latitude= geo['latitude']
+    self.admin_ward= geo['admin_ward']
   end
 
   class << self
@@ -58,7 +55,7 @@ class Address < ApplicationRecord
 
       # Find the first Address whose first address line contains any one of the
       # address lines in the components argument.
-      @address = Address.where(street_address: components).first
+      @address = Address.find_by(street_address: components)
 
       # We were looking for an exact match of geocoding coordinates, but we are
       # now using postcodes.io exclusively so a postcode match is now
