@@ -75,8 +75,6 @@ class Address < ApplicationRecord
       # end
 
       # Search by postcode if it is minimum length of a full postal code
-      # TODO? Are postcodes guaranteed to be in the same format? E.g A1 2BC
-      # versus A12BC versus a12bc, all of which are valid.
       if postcode && postcode.length >= 5
         @address ||= Address.where(postcode: standardised_postcode(postcode)).first
       end
