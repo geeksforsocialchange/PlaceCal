@@ -40,20 +40,14 @@ class Address < ApplicationRecord
     # - We are accessing admin_ward directly through through
     #   Geocoder::Result::PostcodesIo#data hash.
 
-    logger.warn("I have been CALLED!!!!!")
-    logger.warn(postcode)
-
     geo = Geocoder.search(postcode).first&.data
-    logger.warn(geo.inspect)
 
     if geo
-      # write_attribute :longitude, geo['longitude']
-      # write_attribute :latitude, geo['latitude']
-      # write_attribute :admin_ward, geo['admin_ward']
+      # TODO? This works. Is there a more correct (railsy) way of doing this
+      # e.g. using write_attribute ? What is the trade off?
       self.longitude= geo['longitude']
       self.latitude= geo['latitude']
       self.admin_ward= geo['admin_ward']
-      logger.warn(self.inspect)
     end
   end
 
