@@ -157,7 +157,7 @@ GEM
     formatador (0.2.5)
     friendly_id (5.1.0)
       activerecord (>= 4.0.0)
-    geocoder (1.4.7)
+    geocoder (1.5.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     groupdate (4.0.0)
@@ -493,7 +493,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   friendly_id (~> 5.1.0)
-  geocoder
+  geocoder (~> 1.5.0)
   groupdate
   guard
   guard-livereload (~> 2.5)
@@ -552,4 +552,4 @@ RUBY VERSION
    ruby 2.4.3p205
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
