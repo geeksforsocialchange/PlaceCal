@@ -4,11 +4,16 @@
       <%= render_component "hero", title: summary %>
         <div class="c">
     <% else %>
-      <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
+      <div class="event__header">
+        <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
+        <% if turf_name %>
+          <div class="event__turf">
+            <span><%= turf_name %></span>
+          </div>
+        <% end %>
+      </div>
     <% end %>
     <div class="event__details">
-      <!-- Name of neighbourhood turf for this event: -->
-      <%= turf_name || "nil" %>
       <div class="event__detail event__time">
         <span class="icon icon--time">🕒</span>
         <%= time %>

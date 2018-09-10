@@ -8,14 +8,36 @@
   margin-bottom: 2rem
   h3
     margin-bottom: 0.5em
+    display: inline-block
     a
       border-bottom-width: 0
       text-decoration: none
+  &__header
+    display: grid
+    grid-template-columns: 1fr
+    +for-tablet-portrait-up
+      grid-template-columns: 1fr auto
+      align-items: center
+  &__turf
+    // padding-top: 0.5rem
+    span
+      +for-phone-only
+        display: none
+      margin-top: 0.8rem
+      padding: 0rem 0.7rem
+      display: inline-block
+      text-transform: uppercase
+      font-weight: $extra-bold
+      font-size: 0.77777778rem
+      border-radius: 1rem
+      letter-spacing: 0.086667rem
+      background-color: $green
+      color: $cream
   &__details
     +flexbox
     +flex-wrap(wrap)
-    +align-items(center)  
-    +justify-content(flex-start) 
+    +align-items(center)
+    +justify-content(flex-start)
     border-width: 3px 0
     border-color: $linen
     border-style: solid
@@ -26,7 +48,7 @@
       width: 1.75rem
       height: 1.75rem
       margin-right: 0.25rem
-  &--full 
+  &--full
     .event__details
       border-top-width: 0
       border-bottom-width: 10px
