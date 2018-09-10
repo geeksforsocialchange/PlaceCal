@@ -80,7 +80,7 @@ module Admin
     private
 
     def set_calendar
-      @calendar = Calendar.find(params[:id])
+      @calendar = policy_scope(Calendar).find(params[:id])
     end
 
     def calendar_params
