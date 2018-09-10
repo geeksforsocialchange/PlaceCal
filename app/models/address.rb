@@ -16,6 +16,8 @@ class Address < ApplicationRecord
   has_many :partners
   has_many :calendars
 
+  belongs_to :neighbourhood_turf, -> { where( turf_type: 'neighbourhood' ) }, class_name: 'Turf'
+
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
   }
@@ -44,9 +46,21 @@ class Address < ApplicationRecord
     geo = Geocoder.search(postcode).first&.data
     return unless geo
 
-    self.longitude= geo['longitude']
-    self.latitude= geo['latitude']
-    self.admin_ward= geo['admin_ward']
+    t = Turf.find_by( name: geo['admin_ward'] )
+
+    # Is this the first Address we have created in the given admin_ward?
+    unless t
+      # Create a new Turf to represent the given admin_ward
+      t = Turf.new
+      t.name = geo['admin_ward']
+      t.slug = t.name.downcase.gsub(/ /, "-")
+      t.turf_type = 'neighbourhood'
+      t.save
+    end
+
+    self.longitude = geo['longitude']
+    self.latitude = geo['latitude']
+    self.neighbourhood_turf = t
   end
 
   def standardise_postcode

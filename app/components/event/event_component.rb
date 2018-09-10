@@ -63,8 +63,8 @@ class EventComponent < MountainView::Presenter
     event.rrule.present? ? event.rrule[0]['table']['frequency'].titleize : false
   end
 
-  def admin_ward
-    event.admin_ward
+  def turf_name
+    event.neighbourhood_turf&.name
   end
 
   private

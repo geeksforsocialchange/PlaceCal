@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180905123823) do
+ActiveRecord::Schema.define(version: 20180910143528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,8 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.string "country_code", default: "UK"
     t.float "latitude"
     t.float "longitude"
-    t.string "admin_ward"
+    t.bigint "neighbourhood_turf_id"
+    t.index ["neighbourhood_turf_id"], name: "index_addresses_on_neighbourhood_turf_id"
   end
 
   create_table "calendars", id: :serial, force: :cascade do |t|
@@ -286,6 +287,7 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "addresses", "turfs", column: "neighbourhood_turf_id"
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "places"
   add_foreign_key "events", "addresses"
