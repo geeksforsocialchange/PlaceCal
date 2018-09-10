@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20180827120116) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strategy"
+    t.datetime "import_lock_at"
     t.string "last_checksum"
     t.text "footer"
     t.text "critical_error"
@@ -269,7 +270,7 @@ ActiveRecord::Schema.define(version: 20180827120116) do
     t.integer "invitation_limit"
     t.integer "invited_by_id"
     t.string "invited_by_type"
-    t.index ["email"], name: "index_users_on_email"
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
