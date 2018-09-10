@@ -3,8 +3,8 @@ $bg-top: 103px
 $bg-offset: 725px
 
 body
-  color: $grey
-  background-color: $almond
+  color: $base-text
+  background-color: $base-tertiary
   margin: 0
   +for-desktop-up
     background-image: image-url('patterns/widescreen.svg'), image-url('patterns/widescreen.svg')
@@ -13,11 +13,11 @@ body
 
 .background
   max-width: 1200px
-  background-color: $cream
+  background-color: $base-background
   margin: 0 auto
   +for-desktop-up
     border-width: 0 35px
-    border-color: $grey
+    border-color: $base-text
     border-style: solid
     
 .c  
@@ -42,4 +42,4 @@ body
     margin-bottom: 0 !important
 
 .turbolinks-progress-bar
-  color: $green
+  color: $base-primary

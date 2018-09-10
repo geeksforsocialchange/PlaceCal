@@ -1,6 +1,6 @@
 .btn
   display: inline-block
-  border-color: $green
+  border-color: $base-primary
   border-width: 2px
   border-style: solid
   border-radius: 3rem
@@ -9,19 +9,19 @@
   text-align: center
   font-weight: $bold
   &--lg
-    background-color: $green
-    border-color: $cream
+    background-color: $base-primary
+    border-color: $base-background
     border-width: 3px
     padding: 0.65rem 2rem
     // Needs a little space to compensate for the box shadow
     margin-bottom: 0.5rem
-    box-shadow: 0 0 0 2px $green
+    box-shadow: 0 0 0 2px $base-primary
   &--active, &:hover
-    background-color: $green
+    background-color: $base-primary
   &--lg.btn--active, &--lg:hover
-    color: $cream
-    background-color: $grey
-    box-shadow: 0 0 0 2px $grey
+    color: $base-background
+    background-color: $base-text
+    box-shadow: 0 0 0 2px $base-text
   &--mt
     margin-top: 1rem
   &:hover

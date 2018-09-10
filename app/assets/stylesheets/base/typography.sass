@@ -8,7 +8,7 @@ html
 body
   font-family: $sans-serif
   font-weight: $regular
-  color: $grey
+  color: $base-text
   line-height: 1.5
 
 // Large titles at the top of the page
@@ -36,7 +36,7 @@ h2, .h2
   letter-spacing: $title-letter-spacing
   span
     padding-bottom: 0.5rem
-    border-bottom: 4px solid $red
+    border-bottom: 4px solid $base-secondary
 
 h3, .h3
   +h3
@@ -53,7 +53,7 @@ h4, .h4
   letter-spacing: $title-letter-spacing
 
 .title-strip
-  background-color: $linen
+  background-color: $base-rules
   padding: 0.5rem 0
   margin: 3rem 0
 
@@ -76,24 +76,24 @@ h2.serif
 
 .udl
   padding-bottom: 0.5rem
-  border-bottom: 3px solid $linen
+  border-bottom: 3px solid $base-rules
   display: inline-block
   text-decoration: none
   &--red
-    border-bottom-color: $red
+    border-bottom-color: $base-secondary
   &--fw
     display: block
 
 a
   // text-decoration: none
-  text-decoration-color: $green
-  color: $grey
+  text-decoration-color: $base-primary
+  color: $base-text
   // border-width: 0 0 2px 0
   // border-style: solid
-  // border-color: $green
+  // border-color: $base-primary
 
 hr
-  border-color: $linen
+  border-color: $base-rules
   border-width: 5px
   border-style: solid
 

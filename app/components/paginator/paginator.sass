@@ -1,7 +1,7 @@
 @import "variables_mixins.sass"
 
 =border-highlight
-  border-color: $green
+  border-color: $base-primary
   border-width: 2px
   border-style: solid
   border-radius: 3rem
@@ -34,18 +34,18 @@
     +for-tablet-portrait-up
       margin: 0 0.25rem
     &.active, &:hover
-      background-color: $green
+      background-color: $base-primary
   li.paginator__arrow
     +flex(0 0 2.2222222rem)
     padding: 0
     height: 2.2222222rem
-    background-color: $green
+    background-color: $base-primary
     border-width: 0
     a
       padding-top: 0.55rem
     &:hover
-      background-color: $grey
-      border-color: $grey
+      background-color: $base-text
+      border-color: $base-text
     &--back a
       padding-right: 0.2rem
     &--forwards
@@ -59,7 +59,7 @@
 
   // Title
   h2
-    border-bottom: 4px solid $linen
+    border-bottom: 4px solid $base-rules
     padding-bottom: 0.5em
   // Icon custom size
   .icon
@@ -73,7 +73,7 @@
   &__toggle
   &__dropdown
     position: absolute
-    background-color: $cream
+    background-color: $base-background
     padding: 1rem
     right: 0rem
     width: 13rem
