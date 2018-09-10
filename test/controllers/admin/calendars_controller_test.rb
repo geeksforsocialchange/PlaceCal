@@ -67,14 +67,6 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to delete all Calendars
   #   Everyone else, redirect to admin_root_url
   #
-  it_denies_access_to_destroy_for(%i[partner_admin]) do
-    assert_difference('Calendar.count', 0) do
-      delete admin_calendar_url(@calendar)
-    end
-
-    assert_redirected_to admin_root_path
-  end
-
   it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('Calendar.count', -1) do
       delete admin_calendar_url(@calendar)
@@ -82,6 +74,4 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_calendars_url
   end
-
-
 end
