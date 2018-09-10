@@ -2,22 +2,33 @@
 
 # app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :summary, :description, :dtstart, :dtend,
-             :location, :context, :place
+  properties :context, :event
 
   include ActionView::Helpers::TextHelper
 
+  def id
+    event.id
+  end
+
+  def place
+    event.place
+  end
+
+  def location
+    event.location
+  end
+
   def time
-    if dtend
-      fmt_time(dtstart) + ' – ' + fmt_time(dtend)
+    if event.dtend
+      fmt_time(event.dtstart) + ' – ' + fmt_time(event.dtend)
     else
-      fmt_time(dtstart)
+      fmt_time(event.dtstart)
     end
   end
 
   def duration
-    return false unless dtend
-    mins = ((dtend - dtstart) / 60).to_i
+    return false unless event.dtend
+    mins = ((event.dtend - event.dtstart) / 60).to_i
     hours = mins / 60 # Ruby presumes ints not floats, and rounds down
     mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
     hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
@@ -25,31 +36,35 @@ class EventComponent < MountainView::Presenter
   end
 
   def date
-    dtstart.strftime('%e %b')
+    event.dtstart.strftime('%e %b')
   end
 
   def summary
-    properties[:summary]
+    event.summary
   end
 
   def description
-    properties[:description]
+    event.description
   end
 
   def page?
-    properties[:context] == :page
+    context == :page
   end
 
   def partner
-    properties[:partner].first
+    event.partner.first
   end
 
   def location
-    properties[:location].split(',').first&.delete('\\')
+    event.location&.split(',')&.first&.delete('\\')
   end
 
   def repeats
-    properties[:rrule].present? ? properties[:rrule][0]['table']['frequency'].titleize : false
+    event.rrule.present? ? event.rrule[0]['table']['frequency'].titleize : false
+  end
+
+  def admin_ward
+    event.admin_ward
   end
 
   private
@@ -62,11 +77,13 @@ class EventComponent < MountainView::Presenter
     end
   end
 
-  def dtstart
-    properties[:dtstart]
+  # Prevent method-access in erb file for named properties.
+
+  def event
+    properties[:event]
   end
 
-  def dtend
-    properties[:dtend]
+  def context
+    properties[:context]
   end
 end

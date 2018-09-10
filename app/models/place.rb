@@ -7,7 +7,7 @@ class Place < ApplicationRecord
   # attr_accessor :turf_attr
 
   has_and_belongs_to_many :partners
-  has_and_belongs_to_many :turfs
+  has_and_belongs_to_many :turfs # TODO?: Validate only one neighbourhood turf (as opposed to interest turfs) ?
   has_many :events
   has_many :calendars, dependent: :destroy
 

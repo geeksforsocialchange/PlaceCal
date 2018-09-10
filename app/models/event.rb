@@ -81,6 +81,10 @@ class Event < ApplicationRecord
     "https://placecal.org/events/#{id}"
   end
 
+  def admin_ward
+    address&.admin_ward || place&.address&.admin_ward
+  end
+
   # TODO: plan this out on paper, currently half finished
   # Who to contact if the event is wrong
   def blame
