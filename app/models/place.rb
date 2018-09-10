@@ -33,11 +33,4 @@ class Place < ApplicationRecord
   def event_view
     :week
   end
-
-  def neighbourhood_turf
-    # ASSUMPTION: The neighbourhood turf will not change within the lifetime of
-    # this object.
-    # TODO?: Should we forgo member variable and rely on ActiveRecord caching?
-    @turf ||= turfs.where( turf_type: :neighbourhood ).first
-  end
 end

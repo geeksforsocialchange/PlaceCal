@@ -81,8 +81,8 @@ class Event < ApplicationRecord
     "https://placecal.org/events/#{id}"
   end
 
-  def neighbourhood_turf
-    place&.neighbourhood_turf
+  def admin_ward
+    address&.admin_ward || place&.address&.admin_ward
   end
 
   # TODO: plan this out on paper, currently half finished
