@@ -7,9 +7,14 @@ class Address < ApplicationRecord
 
   validates :street_address, :postcode, :country_code, presence: true
 
-  # Geocoding with postcodes.io so only postcode changes will change the result
-  before_validation :standardise_postcode, if: ->(obj) { obj.postcode_changed? }
+  # Geocoding with postcodes.io
+  # Only postcode changes will change the result that postodes.io returns.
   after_validation :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
+
+  # We want to be able to compare an arbitrary postcode with the address
+  # postodes in the DB, so make sure all postcodes in the DB are in the same
+  # format.
+  before_save :standardise_postcode, if: ->(obj) { obj.postcode_changed? }
 
   has_many :places
   has_many :events
@@ -61,6 +66,15 @@ class Address < ApplicationRecord
     self.longitude = geo['longitude']
     self.latitude = geo['latitude']
     self.neighbourhood_turf = t
+  end
+
+  def force_geocoding
+    ### Modify the postcode in order to trigger geocoding.
+    # The postcode will be standardised before save, including stripping
+    # redundant whitespace, so the postcode value should be the same after
+    # this process.
+    self.postcode += " "
+    self.save
   end
 
   def standardise_postcode
