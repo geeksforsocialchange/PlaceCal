@@ -37,10 +37,14 @@ class ApplicationController < ActionController::Base
   end
 
   def filter_events(period, **args)
+    site      = args[:site]      || false
     place     = args[:place]     || false
     partner   = args[:partner]   || false
     repeating = args[:repeating] || 'on'
-    events = place ? Event.in_place(place) : Event.all
+
+    events = Event.all
+    events = events.for_site(site) if site
+    events = events.in_place(place) if place
     events = events.by_partner(partner) if partner
     events = events.one_off_events_only if repeating == 'off'
     events = events.one_off_events_first if repeating == 'last'
