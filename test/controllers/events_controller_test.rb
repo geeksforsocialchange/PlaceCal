@@ -4,6 +4,8 @@ require 'test_helper'
 
 class EventsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    Geocoder.configure( timeout: 10 )
+
     # Choose postcodes in different admin_wards in order to test filtering
     # events by turf.
     locations = [
