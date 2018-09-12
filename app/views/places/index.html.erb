@@ -5,11 +5,17 @@
   <%= render_component "breadcrumb", trail: [['Places', places_path]] %>
 
   <hr>
-  
+
   <ul class="places reset two-col">
     <% @places.each do |place| %>
       <li>
         <h3><%= link_to place.name, place %></h3>
+        <div class="place__details">
+          <!-- Name of admin_ward for this place: -->
+          <!-- <%= place.address.admin_ward || "nil" %> -->
+          <!-- Short description: -->
+          <!-- <%= place.short_description || "nil" %> -->
+        </div>
       </li>
     <% end %>
   </ul>

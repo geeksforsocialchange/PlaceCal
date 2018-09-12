@@ -54,15 +54,18 @@ module Events
       postal = location.match(Address::POSTCODE_REGEX).try(:[], 0)
       postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0) if postal.blank? # check for instances of M14 or M15 4 or whatever madness they've come up with
 
-      if postal.blank?
-        # See if Google returns a more informative address
-        results = Geocoder.search(location)
-        if results.first
-          formatted_address = results.first.data['formatted_address']
-
-          postal = Address::POSTCODE_REGEX.match(formatted_address).try(:[], 0)
-        end
-      end
+      # TODO? Remove? This will currently do nothing because postcodes.io only
+      # works on postcodes and we have established that a postcode does not
+      # exist in the current address.
+      # if postal.blank?
+      #   # See if Google returns a more informative address
+      #   results = Geocoder.search(location)
+      #   if results.first
+      #     formatted_address = results.first.data['formatted_address']
+      #
+      #     postal = Address::POSTCODE_REGEX.match(formatted_address).try(:[], 0)
+      #   end
+      # end
 
       postal
     end

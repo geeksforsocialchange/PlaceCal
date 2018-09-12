@@ -1,16 +1,7 @@
 <% content_for :title, "#{@event.summary}, #{@event.date}, #{@event.time}" %>
 <% content_for :permalink, @event.permalink %>
 
-<%= render_component "event", 
-  context: :page,
-  id: @event.id,
-  summary: @event.summary,
-  dtstart: @event.dtstart,
-  dtend: @event.dtend,
-  rrule: @event.rrule,
-  place: @event.place,
-  location: @event.location 
-%>
+<%= render_component "event", context: :page, event: @event %>
 
 <div class="c c--narrow c--space-after">
   <%= markdown @event.description %>
@@ -31,7 +22,7 @@
       </div>
     </div>
   <% end %>
-</div> 
+</div>
 
 <% if @map&.any? %>
   <%= render_component "map", points: @map, style: :full %>

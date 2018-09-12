@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801041639) do
+ActiveRecord::Schema.define(version: 20180905123823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20180801041639) do
     t.string "country_code", default: "UK"
     t.float "latitude"
     t.float "longitude"
+    t.string "admin_ward"
   end
 
   create_table "calendars", id: :serial, force: :cascade do |t|
@@ -36,7 +37,6 @@ ActiveRecord::Schema.define(version: 20180801041639) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strategy"
-    t.datetime "import_lock_at"
     t.string "last_checksum"
     t.text "footer"
     t.text "critical_error"
@@ -250,7 +250,7 @@ ActiveRecord::Schema.define(version: 20180801041639) do
     t.string "role"
     t.string "phone"
     t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
+    t.string "encrypted_password", default: ""
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -263,7 +263,15 @@ ActiveRecord::Schema.define(version: 20180801041639) do
     t.datetime "updated_at", null: false
     t.string "access_token"
     t.string "access_token_expires_at"
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.string "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer "invitation_limit"
+    t.integer "invited_by_id"
+    t.string "invited_by_type"
+    t.index ["email"], name: "index_users_on_email"
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

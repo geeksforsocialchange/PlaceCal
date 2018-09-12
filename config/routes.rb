@@ -3,7 +3,7 @@
 # config/routes.rb
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Most common route at the top
-  devise_for :users, controllers: { omniauth_callbacks: 'admin/omniauth_callbacks' }
+  devise_for :users, controllers: { omniauth_callbacks: 'admin/omniauth_callbacks', invitations: 'users/invitations' }
 
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :calendars do
@@ -57,9 +57,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   # Collections
   resources :collections, only: %i[show]
-
-  # Users
-  resources :users
 
   # Static pages
   get 'join', to: 'pages#join'
