@@ -7,7 +7,8 @@ namespace :addresses do
     num = 1
     Address.all.each do |a|
       $stdout.puts "#{num}: #{a.street_address}, #{a.postcode}"
-      a.force_geocoding
+      a.geocode_with_ward
+      a.save
       num+=1
     end
   end
@@ -18,7 +19,8 @@ namespace :addresses do
     num = 1
     Address.where( neighbourhood_turf: nil ).each do |a|
       $stdout.puts "#{num}: #{a.street_address}, #{a.postcode}"
-      a.force_geocoding
+      a.geocode_with_ward
+      a.save
       num+=1
     end
   end

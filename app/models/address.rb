@@ -39,15 +39,17 @@ class Address < ApplicationRecord
 
   alias to_s full_address
 
+  # Set the (lat,lon) and neighbourhood_turf from address data.
+  #
+  # This differs from calling the Geocoder::Store::ActiveRecord#geocode method
+  # through an ActiveRecord callback because, as well as (lat,lon), we are
+  # also setting the neighbourhood_turf from the admin_ward value returned by
+  # postcodes.io
+  #
+  # NOTE: Geocoder is not isolating us from geocoding-service implentation
+  # details. We currently require the geocoding result to contain the key
+  # 'admin_ward' from postcodes.io
   def geocode_with_ward
-    # TODO? Is there any point using the Geocoder gem rather than writing
-    # our own code to query postcodes.io given that using postcodes.io
-    # now defines how we use Geocoder?
-    # - Passing anything other than a postcode will cause Geocoder.search to
-    #   return an empty array.
-    # - We are accessing admin_ward directly through through
-    #   Geocoder::Result::PostcodesIo#data hash.
-
     geo = Geocoder.search(postcode).first&.data
     return unless geo
 
@@ -61,21 +63,8 @@ class Address < ApplicationRecord
     self.neighbourhood_turf = t
   end
 
-  def force_geocoding
-    ### Modify the postcode in order to trigger geocoding.
-    # The postcode will be standardised before save, including stripping
-    # redundant whitespace, so the postcode value should be the same after
-    # this process.
-    self.postcode += " "
-    self.save
-  end
-
   def standardise_postcode
     self.postcode = self.class.standardised_postcode(postcode)
-  end
-
-  def postcode_standardised?
-    postcode == self.class.standardised_postcode(postcode)
   end
 
   class << self
@@ -118,8 +107,8 @@ class Address < ApplicationRecord
       address if address.save
     end
 
-    # Define a standard postcode format so that postcode comparisons will can be
-    # made, including within the DB.
+    # Define a standard postcode format so that postcode comparisons can be
+    # made, including with postcode values the DB.
     # Standard format is ALL CAPS where the only whitespace is a single space
     # before the final three characters.
     def standardised_postcode pc
