@@ -53,15 +53,8 @@ class Address < ApplicationRecord
 
     t = Turf.find_by( name: geo['admin_ward'] )
 
-    # Is this the first Address we have created in the given admin_ward?
-    unless t
-      # Create a new Turf to represent the given admin_ward
-      t = Turf.new
-      t.name = geo['admin_ward']
-      t.slug = t.name.downcase.gsub(/ /, "-")
-      t.turf_type = 'neighbourhood'
-      t.save
-    end
+    # Is the admin_ward new to us? Then create the respective Turf.
+    t = Turf.create_from_admin_ward geo['admin_ward'] unless t
 
     self.longitude = geo['longitude']
     self.latitude = geo['latitude']
