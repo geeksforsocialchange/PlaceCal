@@ -26,11 +26,15 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def import?
-    user.role.root?
+    user.role&.root?
   end
 
   def select_page?
     index?
+  end
+
+  def destroy?
+    user.role&.root?
   end
 
   class Scope < Scope

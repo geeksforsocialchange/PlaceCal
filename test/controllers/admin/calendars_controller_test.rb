@@ -4,8 +4,8 @@ require 'test_helper'
 
 class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @calendar = create(:calendar)
     @partner = create(:partner)
+    @calendar = create(:calendar, partner_id: @partner.id)
     @root = create(:root)
     @partner_admin = create(:partner_admin, partner_ids: [@partner.id])
     @citizen = create(:user)
@@ -73,5 +73,13 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to admin_calendars_url
+  end
+
+  it_denies_access_to_destroy_for(%i[partner_admin]) do
+    assert_difference('Calendar.count', 0) do
+      delete admin_calendar_url(@calendar)
+    end
+
+    assert_redirected_to admin_root_url
   end
 end
