@@ -64,11 +64,6 @@ class Event < ApplicationRecord
     self.rrule = false if rrule.nil? || rrule == []
   end
 
-  # TODO? This hides the accessor for the location column. Is this the intention?
-  def location
-    address.to_s
-  end
-
   # Make sure that setting the event's Place also sets the event's Address. This
   # way we never need to choose between Event#address and Event#place.address
   # This is particularly important for joins for neighbourhood turfs.
