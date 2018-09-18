@@ -14,10 +14,6 @@ class EventComponent < MountainView::Presenter
     event.place
   end
 
-  def location
-    event.location
-  end
-
   def time
     if event.dtend
       fmt_time(event.dtstart) + ' – ' + fmt_time(event.dtend)
@@ -55,8 +51,8 @@ class EventComponent < MountainView::Presenter
     event.partner.first
   end
 
-  def location
-    event.location&.split(',')&.first&.delete('\\')
+  def first_address_line
+    event.address&.street_address&.delete('\\')
   end
 
   def repeats
