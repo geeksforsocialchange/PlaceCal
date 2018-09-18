@@ -5,6 +5,7 @@ class PlacesController < ApplicationController
   before_action :set_place, only: %i[show embed]
   before_action :set_day, only: %i[show embed]
   before_action :set_sort, only: :show
+  before_action :set_home_turf, only: [:index]
 
   def index
     # A subdomain indicates that a local site is being requested
@@ -16,7 +17,7 @@ class PlacesController < ApplicationController
     else # this is the canonical site.
       @places = Place.order(:name)
     end
-      
+
     @map = generate_points(@places)
   end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PagesController < ApplicationController
-  before_action :get_home_turf, only: [:site]
+  before_action :set_home_turf, only: [:site]
 
   def home; end
 

@@ -55,6 +55,10 @@ module Admin
       @turfs = Turf.all
     end
 
+    def set_site
+      @site = Site.friendly.find(params[:id])
+    end
+
     def site_params
       params.require(:site).permit(
         :id,

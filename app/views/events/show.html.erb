@@ -1,7 +1,7 @@
 <% content_for :title, "#{@event.summary}, #{@event.date}, #{@event.time}" %>
 <% content_for :permalink, @event.permalink %>
 
-<%= render_component "event", context: :page, event: @event %>
+<%= render_component "event", context: :page, event: @event, home_turf: @home_turf %>
 
 <div class="c c--narrow c--space-after">
   <%= markdown @event.description %>

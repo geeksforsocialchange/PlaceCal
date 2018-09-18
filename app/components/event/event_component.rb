@@ -2,7 +2,7 @@
 
 # app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :context, :event
+  properties :context, :event, :home_turf
 
   include ActionView::Helpers::TextHelper
 
@@ -65,6 +65,10 @@ class EventComponent < MountainView::Presenter
 
   def turf_name
     event.neighbourhood_turf&.name
+  end
+
+  def home_turf?
+    event.neighbourhood_turf == home_turf
   end
 
   private

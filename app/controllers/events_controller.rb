@@ -5,6 +5,7 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy]
   before_action :set_day, only: :index
   before_action :set_sort, only: :index
+  before_action :set_home_turf, only: [:index]
 
   # GET /events
   # GET /events.json
@@ -12,7 +13,7 @@ class EventsController < ApplicationController
     # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
-    @events = filter_events(@period, repeating: @repeating, site: get_site )
+    @events = filter_events(@period, repeating: @repeating, site: current_site )
     # Sort criteria
     @events = sort_events(@events, @sort)
     @multiple_days = true
