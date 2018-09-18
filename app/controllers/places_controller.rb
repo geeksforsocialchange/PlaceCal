@@ -8,12 +8,9 @@ class PlacesController < ApplicationController
   before_action :set_home_turf, only: [:index]
 
   def index
-    # A subdomain indicates that a local site is being requested
-    @site = Site.where(slug: request.subdomain).first
-
-    if @site
+    if current_site
       # Only get those places relevant to the requested site.
-      @places = Place.joins(:turfs).where(turfs: { id: @site.turfs }).distinct
+      @places = Place.joins(:address).where( addresses: { neighbourhood_turf: current_site.turfs } )
     else # this is the canonical site.
       @places = Place.order(:name)
     end
