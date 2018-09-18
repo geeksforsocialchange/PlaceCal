@@ -8,6 +8,10 @@
     <% @partners.each do |partner| %>
       <li>
         <h3><%= link_to partner.name, partner %></h3>
+        <div class="place__details">
+          <!-- Name of neighbourhood turf for this partner: -->
+          <!-- <%= partner.address&.neighbourhood_turf&.name || "nil" %> -->
+        </div>
       </li>
     <% end %>
   </ul>
