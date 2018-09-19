@@ -2,8 +2,8 @@
 
 module Admin
   class SitesController < Admin::ApplicationController
-    before_action :set_site, only: %i[edit update destroy]
-    before_action :set_turfs, except: %i[index :show, :destroy]
+    # TODO: Undo this shotgun approach to setting memeber variables
+    before_action :set_site_and_neighbourhoods
 
     def index
       @sites = Site.all
@@ -51,12 +51,13 @@ module Admin
 
     private
 
-    def set_turfs
-      @turfs = Turf.all
-    end
-
-    def set_site
+    def set_site_and_neighbourhoods
+      @neighbourhoods = Neighbourhood.all
       @site = Site.friendly.find(params[:id])
+      if @site
+        @primary_neighbourhood_id = @site.primary_neighbourhood&.id
+        @secondary_neighbourhood_ids = @site.secondary_neighbourhoods.pluck(:id)
+      end
     end
 
     def site_params
@@ -71,8 +72,8 @@ module Admin
         :hero_image,
         :hero_image_credit,
         :site_admin_id,
-        sites_turfs_attributes: %i[_destroy id turf_id relation_type],
-        sites_turf_attributes: %i[_destroy id turf_id relation_type]
+        sites_neighbourhoods_attributes: %i[_destroy id turf_id relation_type],
+        sites_neighbourhood_attributes: %i[_destroy id turf_id relation_type]
       )
     end
   end

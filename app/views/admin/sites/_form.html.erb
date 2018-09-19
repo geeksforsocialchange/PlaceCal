@@ -29,28 +29,28 @@
 
   <h2>Primary Turf</h2>
 
-  <%= f.fields_for :sites_turf do |st|%>
-    <%- unless @site.primary_site_turf.blank? %>
-      <%= st.hidden_field :id, value: @site.primary_site_turf&.id %>
+  <%= f.fields_for :sites_neighbourhood do |s_n|%>
+    <%- if @primary_neighbourhood_id %>
+      <%= s_n.hidden_field :id, value: @primary_neighbourhood_id %>
     <% end %>
-    <%= st.select :turf_id, options_from_collection_for_select(@turfs, 'id', 'name', st.object.turf_id), class: 'form-control' %>
-    <%= st.hidden_field :relation_type, value: "Primary" %>
+    <%= s_n.select :neighbourhood_id, options_from_collection_for_select(@neighbourhoods, 'id', 'name', s_n.object.neighbourhood_id), class: 'form-control' %>
+    <%= s_n.hidden_field :relation_type, value: "Primary" %>
   <% end %>
 
   <h2>Secondary Turfs</h2>
 
-  <% @turfs.each do |t| %>
-    <%= fields_for "site[sites_turfs_attributes][#{t.id}]" do |st|%>
+  <% @neighbourhoods.each do |neighbourhood| %>
+    <%= fields_for "site[sites_neighbourhoods_attributes][#{neighbourhood.id}]" do |s_n|%>
       <label>
-        <%- if (existing_site_turf  = @site.secondary_site_turfs.find_by(turf_id: t.id)).present? %>
-          <%= st.hidden_field :id, value: existing_site_turf.id %>
+        <%- if (@secondary_neighbourhood_ids.include?(neighbourhood.id)) %>
+          <%= s_n.hidden_field :id, value: neighbourhood.id %>
           <%# if box is unchecked, this will result in the removal of the association %>
-          <%= st.check_box :_destroy, {checked: @site.secondary_site_turfs.pluck(:turf_id).include?(t.id)}, false, true %>
+          <%= s_n.check_box :_destroy, {checked: true}, false, true %>
         <% else %>
-           <%= st.check_box :turf_id, {include_hidden: false, checked: @site.secondary_site_turfs.pluck(:turf_id).include?(t.id)}, t.id %>
-           <%= st.hidden_field :relation_type, value: "Secondary" %>
+           <%= s_n.check_box :neighbourhood_id, {include_hidden: false, checked: false}, neighbourhood.id %>
+           <%= s_n.hidden_field :relation_type, value: "Secondary" %>
         <% end %>
-        <%= t.name %>
+        <%= neighbourhood.name %>
       </label><br>
     <% end %>
   <% end %>
