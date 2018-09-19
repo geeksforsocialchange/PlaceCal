@@ -1,4 +1,4 @@
-class SplitTurfsIntoNeighbourhoodsAndInterests < ActiveRecord::Migration[5.1]
+class SplitTurfsIntoNeighbourhoodsAndTurfs < ActiveRecord::Migration[5.1]
   def up
     #1 Create and populate neighbourhoods table
     create_table :neighbourhoods do |t|
