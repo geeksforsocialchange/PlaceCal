@@ -19,8 +19,8 @@ body
     border-width: 0 35px
     border-color: $base-text
     border-style: solid
-    
-.c  
+
+.c
   padding: 0 $small-page-margin
   +for-tablet-portrait-up
     padding: 0 $page-margin // 30 / 18
@@ -31,15 +31,16 @@ body
     +for-tablet-landscape-up
       width: 60%
       margin: 0 auto
-  
+
   &--space-after
     margin-bottom: 3rem
-    
+
   &--lg-space-after
     margin-bottom: 8rem
-  
+
   +for-print
     margin-bottom: 0 !important
 
 .turbolinks-progress-bar
   color: $base-primary
+  color: var(--base-primary)

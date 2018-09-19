@@ -23,7 +23,8 @@
       line-height: 1.3
     &-alt
       color: $base-primary
-  &__stops 
+      color: var(--base-primary)
+  &__stops
     position: relative
     ol
       margin: 0
@@ -32,6 +33,7 @@
   &__line
     position: absolute
     border-left: 0.6rem solid $base-primary
+    border-left-color: var(--base-primary)
     top: 2rem
     bottom: 3rem
     left: 1.2rem
@@ -63,6 +65,7 @@
       width: auto
   &__street
     color: $base-primary
+    color: var(--base-primary)
 
 .roundel
   background-image: image-url('icons/roundel.svg')

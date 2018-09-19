@@ -1,6 +1,7 @@
 .btn
   display: inline-block
   border-color: $base-primary
+  border-color: var(--base-primary)
   border-width: 2px
   border-style: solid
   border-radius: 3rem
@@ -10,14 +11,17 @@
   font-weight: $bold
   &--lg
     background-color: $base-primary
+    background-color: var(--base-primary)
     border-color: $base-background
     border-width: 3px
     padding: 0.65rem 2rem
     // Needs a little space to compensate for the box shadow
     margin-bottom: 0.5rem
     box-shadow: 0 0 0 2px $base-primary
+    box-shadow: 0 0 0 2px var(--base-primary)
   &--active, &:hover
     background-color: $base-primary
+    background-color: var(--base-primary)
   &--lg.btn--active, &--lg:hover
     color: $base-background
     background-color: $base-text

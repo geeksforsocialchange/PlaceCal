@@ -18,7 +18,7 @@
       margin-left: 0
     text-indent: -9999px
     background-image: image-url('header.svg')
-    width: 187px 
+    width: 187px
     height: 55px
     background-size: 187px 55px
 
@@ -31,12 +31,12 @@
     +for-tablet-portrait-up
       +flex(1 1 100%)
     +for-tablet-landscape-up
-      +flex(0 1 auto)      
+      +flex(0 1 auto)
       width: auto
     ul
       +flexbox
       +flex-wrap(wrap)
-      width: 100%  
+      width: 100%
       margin: 0
       padding: 0
       +for-tablet-portrait-up
@@ -86,13 +86,14 @@
             margin: 0 auto
             border-width: 0 0 4px 0
             border-color: $base-primary
+            border-color: var(--base-primary)
             border-style: solid
             // padding-bottom: 0.1em
       +for-tablet-landscape-up
         color: $base-text
         &:hover, &.active
           color: $base-text
-  
+
   &__toggle
     +order(2)
     +for-tablet-portrait-up
