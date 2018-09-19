@@ -11,7 +11,7 @@
   <ol class="events reset">
     <% @events.each do |event| %>
       <li class="event">
-        <%= render_component "event", context: :week, event: event, home_turf: @home_turf %>
+        <%= render_component "event", context: :week, event: event, home_neighbourhood: @home_neighbourhood %>
       </li>
     <% end %>
   </ol>

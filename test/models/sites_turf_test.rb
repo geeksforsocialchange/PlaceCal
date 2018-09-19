@@ -2,16 +2,16 @@
 
 require 'test_helper'
 
-class SitesTurfTest < ActiveSupport::TestCase
+class SitesNeighbourhoodTest < ActiveSupport::TestCase
   setup do
     @site = create(:site)
-    @turf = create(:turf)
+    @neighbourhood = create(:neighbourhood)
   end
 
   test 'can only make one association for each pair' do
-    st = SitesTurf.new(site: @site, turf: @turf)
-    st2 = st.dup
-    assert st.save
-    assert_not st2.save
+    sn = SitesNeighbourhood.new(site: @site, neighbourhood: @neighbourhood)
+    sn2 = sn.dup
+    assert sn.save
+    assert_not sn2.save
   end
 end

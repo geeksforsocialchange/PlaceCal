@@ -3,14 +3,14 @@
 class PartnersController < ApplicationController
   before_action :set_partner, only: :show
   before_action :set_day, only: :show
-  before_action :set_home_turf, only: [:index]
+  before_action :set_home_neighbourhood, only: [:index]
 
   # GET /partners
   # GET /partners.json
   def index
     if current_site
       # Only get those partners relevant to the requested site.
-      @partners = Partner.joins(:address).where( addresses: { neighbourhood_turf: current_site.turfs } )
+      @partners = Partner.joins(:address).where( addresses: { neighbourhood: current_site.neighbourhoods } )
     else # this is the canonical site.
       @partners = Partner.order(:name)
     end

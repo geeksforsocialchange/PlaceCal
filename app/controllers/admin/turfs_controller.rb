@@ -58,7 +58,7 @@ module Admin
     end
 
     def turf_params
-      params.require(:turf).permit(:name, :slug, :description, :turf_type)
+      params.require(:turf).permit(:name, :slug, :description)
     end
   end
 end

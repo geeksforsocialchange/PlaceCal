@@ -5,12 +5,12 @@ class PlacesController < ApplicationController
   before_action :set_place, only: %i[show embed]
   before_action :set_day, only: %i[show embed]
   before_action :set_sort, only: :show
-  before_action :set_home_turf, only: [:index]
+  before_action :set_home_neighbourhood, only: [:index]
 
   def index
     if current_site
       # Only get those places relevant to the requested site.
-      @places = Place.joins(:address).where( addresses: { neighbourhood_turf: current_site.turfs } )
+      @places = Place.joins(:address).where( addresses: { neighbourhood: current_site.neighbourhoods } )
     else # this is the canonical site.
       @places = Place.order(:name)
     end

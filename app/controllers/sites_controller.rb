@@ -2,7 +2,7 @@
 
 # app/controllers/sites_controller.rb
 class SitesController < ApplicationController
-  before_action :set_home_turf, only: [:site]
+  before_action :set_home_neighbourhood, only: [:site]
   before_action :set_site, only: [:index]
 
   def index

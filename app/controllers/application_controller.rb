@@ -69,8 +69,8 @@ class ApplicationController < ActionController::Base
     Site.find_by(slug: request.subdomain)
   end
 
-  def set_home_turf
-    @home_turf = current_site&.primary_turf
+  def set_home_neighbourhood
+    @home_neighbourhood = current_site&.primary_neighbourhood
   end
 
   # Takes an array of places or addresses and returns a sanitized json array
