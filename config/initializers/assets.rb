@@ -12,4 +12,14 @@ Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'pdfs'
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
 #
-Rails.application.config.assets.precompile += %w[admin/app.js print.css admin.css admin.js hulme.css]
+Rails.application.config.assets.precompile += %w[
+  admin/app.js
+  print.css
+  admin.css
+  admin.js
+  sites/hulme.css
+  sites/moss-side.css
+  sites/rusholme.css
+  sites/moston.css
+  sites/mossley.css
+]
