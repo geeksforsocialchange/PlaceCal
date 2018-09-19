@@ -51,6 +51,10 @@ module Admin
 
     private
 
+    def set_site
+      @site = Site.friendly.find(params[:id])
+    end
+
     def set_turfs
       @turfs = Turf.all
     end
