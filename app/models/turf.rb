@@ -15,6 +15,16 @@ class Turf < ApplicationRecord
 
   after_save :update_users
 
+  class << self
+    def create_from_admin_ward admin_ward
+      t = Turf.new
+      t.name = admin_ward
+      t.slug = admin_ward.downcase.gsub(/ /, "-")
+      t.turf_type = 'neighbourhood'
+      t.save && t
+    end
+  end
+
   private
 
   def update_users

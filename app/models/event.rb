@@ -30,6 +30,9 @@ class Event < ApplicationRecord
     where('dtstart >= ? AND dtstart <= ?', week_start, week_end)
   }
 
+  # Filter by Site
+  scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood_turf: site.turfs } ) }
+
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
 
@@ -61,8 +64,12 @@ class Event < ApplicationRecord
     self.rrule = false if rrule.nil? || rrule == []
   end
 
-  def location
-    place ? place.address.to_s : address.to_s
+  # Make sure that setting the event's Place also sets the event's Address. This
+  # way we never need to choose between Event#address and Event#place.address
+  # This is particularly important for joins for neighbourhood turfs.
+  def place= p
+    self[:place_id] = p.id
+    self[:address_id] = p.address.id
   end
 
   def time
@@ -81,8 +88,8 @@ class Event < ApplicationRecord
     "https://placecal.org/events/#{id}"
   end
 
-  def admin_ward
-    address&.admin_ward || place&.address&.admin_ward
+  def neighbourhood_turf
+    address&.neighbourhood_turf
   end
 
   # TODO: plan this out on paper, currently half finished
@@ -98,7 +105,7 @@ class Event < ApplicationRecord
   private
 
   def require_location
-    return unless place_id.blank? && address_id.blank?
+    return unless address_id.blank?
     errors.add(:base, "No place or address could be created or found for
                        the event location: #{location}")
   end

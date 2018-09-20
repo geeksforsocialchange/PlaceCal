@@ -1,32 +1,40 @@
 # frozen_string_literal: true
 
 class CalendarPolicy < ApplicationPolicy
-  def create?
+
+  def index?
     %w[root partner_admin].include? user&.role
   end
 
-  def index?
-    create?
+  def create?
+    index?
   end
 
   def new?
-    create?
+    index?
   end
 
   def edit?
-    create?
+    return true if user&.role&.root?
+
+    user&.role&.partner_admin? &&
+      user.partner_ids.include?(record.partner_id)
   end
 
   def update?
-    create?
+    edit?
   end
 
   def import?
-    user.role.root?
+    user.role&.root?
   end
 
   def select_page?
-    true
+    index?
+  end
+
+  def destroy?
+    user.role&.root?
   end
 
   class Scope < Scope

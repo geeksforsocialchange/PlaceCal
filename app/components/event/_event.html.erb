@@ -6,9 +6,9 @@
     <% else %>
       <div class="event__header">
         <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
-        <% if admin_ward %>
+        <% if turf_name %>
           <div class="event__turf">
-            <span><%= admin_ward %></span>
+            <span><%= turf_name %></span>
           </div>
         <% end %>
       </div>
@@ -28,13 +28,13 @@
         <span class="icon icon--date">📅</span>
         <%= date %>
       </div>
-      <% if place || location %>
+      <% if place || first_address_line %>
         <div class="event__detail event__location">
           <span class="icon icon--place">🏠</span>
           <% if place %>
             <%= link_to place, place_path(place) %>
-          <% elsif location %>
-            <%= location %>
+          <% elsif first_address_line %>
+            <%= first_address_line %>
           <% end %>
         </div>
       <% end %>

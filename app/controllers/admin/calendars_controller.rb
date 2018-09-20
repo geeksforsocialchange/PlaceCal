@@ -16,8 +16,6 @@ module Admin
     end
 
     def edit
-      authorize @calendar
-
       @versions = @calendar.recent_activity
     end
 
@@ -37,7 +35,6 @@ module Admin
     end
 
     def update
-      authorize @calendar
       if @calendar.update_attributes(calendar_params)
         redirect_to admin_calendars_path
       else
@@ -54,8 +51,6 @@ module Admin
     end
 
     def import
-      authorize @calendar, :import?
-
       begin
         date = DateTime.parse(params[:starting_from])
 
@@ -80,7 +75,8 @@ module Admin
     private
 
     def set_calendar
-      @calendar = Calendar.find(params[:id])
+      @calendar = policy_scope(Calendar).find(params[:id])
+      authorize @calendar
     end
 
     def calendar_params
