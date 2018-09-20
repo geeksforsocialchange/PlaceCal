@@ -25,14 +25,6 @@ class Site < ApplicationRecord
   mount_uploader :footer_logo, SiteLogoUploader
   mount_uploader :hero_image, HeroImageUploader
 
-  # def primary_site_turf
-  #   sites_turfs.where(relation_type: 'Primary').first
-  # end
-  #
-  # def secondary_site_turfs
-  #   sites_turfs.where(relation_type: 'Secondary')
-  # end
-
   def to_s
     "#{id}: #{name}"
   end
