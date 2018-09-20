@@ -41,7 +41,6 @@ class User < ApplicationRecord
     errors.add(:email, "can't be blank") if email.blank?
     errors.add(:first_name, "can't be blank") if first_name.blank?
     errors.add(:last_name, "can't be blank") if last_name.blank?
-    errors.add(:partner_ids, "can't be blank") if partner_ids.blank?
     errors.add(:role, "can't be blank") if role.blank?
 
     errors.blank?
