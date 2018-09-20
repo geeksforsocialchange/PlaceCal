@@ -13,10 +13,4 @@ class SitesController < ApplicationController
     robots = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
     render plain: robots
   end
-
-  private
-
-  def set_site
-    @site = Site.find_by(slug: request.subdomain)
-  end
 end
