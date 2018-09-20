@@ -3,7 +3,7 @@
 # app/models/user.rb
 class User < ApplicationRecord
   extend Enumerize
-  enumerize :role, in: %i[root turf_admin partner_admin guest]
+  enumerize :role, in: %i[root turf_admin partner_admin citizen], default: :citizen
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :invitable,
