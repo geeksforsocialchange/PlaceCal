@@ -38,3 +38,6 @@ changes.md
 
 # Coverage
 coverage
+
+# ERD pdf as it's messing up diffs
+erd.pdf

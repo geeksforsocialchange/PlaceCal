@@ -159,6 +159,10 @@ class ApplicationController < ActionController::Base
     @calendar = Calendar.find(params[:id])
   end
 
+  def set_site
+    @site = Site.find_by(slug: request.subdomain)
+  end
+
   protected
 
   def configure_permitted_parameters

@@ -1,9 +1,10 @@
 <% content_for :title, "Events in Hulme & Moss Side" %>
+
 <%= render_component "hero", title: "Events in Hulme & Moss Side",
                              subtitle: "The Community Calendar" %>
-                             
+
 <div class="c c--lg-space-after">
-  <%= render_component "event_list", 
+  <%= render_component "event_list",
     events: @events,
     pointer: @current_day,
     period: @period,
