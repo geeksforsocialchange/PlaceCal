@@ -31,7 +31,7 @@ class Event < ApplicationRecord
   }
 
   # Filter by Site
-  scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood_turf: site.turfs } ) }
+  scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
 
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
@@ -88,8 +88,8 @@ class Event < ApplicationRecord
     "https://placecal.org/events/#{id}"
   end
 
-  def neighbourhood_turf
-    address&.neighbourhood_turf
+  def neighbourhood
+    address&.neighbourhood
   end
 
   # TODO: plan this out on paper, currently half finished

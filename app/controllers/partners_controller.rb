@@ -3,16 +3,14 @@
 class PartnersController < ApplicationController
   before_action :set_partner, only: :show
   before_action :set_day, only: :show
+  before_action :set_home_neighbourhood, only: [:index]
 
   # GET /partners
   # GET /partners.json
   def index
-    # A subdomain indicates that a local site is being requested
-    @site = Site.where(slug: request.subdomain).first
-
-    if @site
+    if current_site
       # Only get those partners relevant to the requested site.
-      @partners = Partner.joins(:turfs).where(turfs: { id: @site.turfs }).distinct
+      @partners = Partner.joins(:address).where( addresses: { neighbourhood: current_site.neighbourhoods } )
     else # this is the canonical site.
       @partners = Partner.order(:name)
     end

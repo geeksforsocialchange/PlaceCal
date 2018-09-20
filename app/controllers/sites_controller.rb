@@ -2,7 +2,7 @@
 
 # app/controllers/sites_controller.rb
 class SitesController < ApplicationController
-  before_action :get_home_turf, only: [:site]
+  before_action :set_home_neighbourhood, only: [:site]
   before_action :set_site, only: [:index]
 
   def index
@@ -12,11 +12,5 @@ class SitesController < ApplicationController
   def robots
     robots = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
     render plain: robots
-  end
-
-  private
-
-  def set_site
-    @site = Site.find_by(slug: request.subdomain)
   end
 end
