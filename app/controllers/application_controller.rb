@@ -65,13 +65,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def get_site
+  def current_site
     Site.find_by(slug: request.subdomain)
   end
 
-  def get_home_turf
-    @site = get_site
-    @home_turf = @site&.primary_turf
+  def set_home_neighbourhood
+    @home_neighbourhood = current_site&.primary_neighbourhood
   end
 
   # Takes an array of places or addresses and returns a sanitized json array

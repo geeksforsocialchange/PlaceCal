@@ -5,7 +5,7 @@ class HelpGettingOnlineComponent < MountainView::Presenter
 
   def locations
     # TODO: refactor as one expression
-    local = Place.joins(:turfs).where(turfs: { id: site.turfs })
+    local = Place.joins(:turfs).where(turfs: { id: site.neighbourhoods })
     internet = Place.joins(:turfs).where(turfs: { slug: 'internet' })
     # Intersection of the two
     (local & internet).sort_by(&:name.downcase)

@@ -21,7 +21,7 @@ class Address < ApplicationRecord
   has_many :partners
   has_many :calendars
 
-  belongs_to :neighbourhood_turf, -> { where( turf_type: 'neighbourhood' ) }, class_name: 'Turf'
+  belongs_to :neighbourhood
 
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
@@ -39,11 +39,11 @@ class Address < ApplicationRecord
 
   alias to_s full_address
 
-  # Set the (lat,lon) and neighbourhood_turf from address data.
+  # Set the (lat,lon) and neighbourhood from address data.
   #
   # This differs from calling the Geocoder::Store::ActiveRecord#geocode method
   # through an ActiveRecord callback because, as well as (lat,lon), we are
-  # also setting the neighbourhood_turf from the admin_ward value returned by
+  # also setting the neighbourhood from the admin_ward value returned by
   # postcodes.io
   #
   # NOTE: Geocoder is not isolating us from geocoding-service implentation
@@ -53,14 +53,14 @@ class Address < ApplicationRecord
     geo = Geocoder.search(postcode).first&.data
     return unless geo
 
-    t = Turf.find_by( name: geo['admin_ward'] )
+    t = Neighbourhood.find_by( name: geo['admin_ward'] )
 
     # Is the admin_ward new to us? Then create the respective Turf.
-    t = Turf.create_from_admin_ward geo['admin_ward'] unless t
+    t = Neighbourhood.create_from_admin_ward geo['admin_ward'] unless t
 
     self.longitude = geo['longitude']
     self.latitude = geo['latitude']
-    self.neighbourhood_turf = t
+    self.neighbourhood = t
   end
 
   def standardise_postcode
