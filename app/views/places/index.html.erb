@@ -3,9 +3,7 @@
 
 <div class="c c--space-after">
   <%= render_component "breadcrumb", trail: [['Places', places_path]] %>
-
   <hr>
-
   <ul class="places reset two-col">
     <% @places.each do |place| %>
       <%= render_component("place_partner_preview",
