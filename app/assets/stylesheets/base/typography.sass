@@ -142,5 +142,16 @@ h2.place__title
   a
     display: inline-block
 
+@supports (display: grid)
+  .two-col
+    display: grid
+    grid-template-columns: 1fr
+    +for-tablet-landscape-up
+      grid-template-columns: 1fr 1fr
+    grid-gap: 1rem
+    align-items: start
+    li:first-of-type
+      margin-top: 0
+
 .url a
   word-wrap: break-word

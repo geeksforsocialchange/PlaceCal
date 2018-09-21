@@ -9,13 +9,18 @@
   <ul class="places reset two-col">
     <% @places.each do |place| %>
       <li>
-        <h3><%= link_to place.name, place %></h3>
-        <div class="place__details">
-          <!-- Name of neighbourhood turf for this place: -->
-          <!-- <%= place.address&.neighbourhood&.name || "nil" %> -->
-          <!-- Home neighbourhood for site: -->
-          <!-- <%= @home_neighbourhood&.name || "nil" %> -->
-        </div>
+        <h3>
+          <%= link_to place.name, place %>
+          <div class="turf">
+            <span><%= place.address&.neighbourhood&.name %></span>
+          </div>
+        </h3>
+        <% if place.short_description %>
+          <div class="place__details">
+            <%= markdown place.short_description.split("\n\n", 2)[0] %>
+
+          </div>
+        <% end %>
       </li>
     <% end %>
   </ul>
