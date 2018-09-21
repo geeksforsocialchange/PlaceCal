@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 class HeroComponent < MountainView::Presenter
-  properties :title, :subtitle
-
   def title
     s = properties[:title]
-    if s.length > 30
+    if s.respond_to?(:length) && s.length > 30
       s.split.in_groups(2, false).map { |g| g.join(' ') }.join('<br> ').html_safe
     else
       s
