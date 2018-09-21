@@ -1,11 +1,13 @@
-<h3>
-  <%= link_to name, link %>
-  <div class="turf">
-    <span><%= turf %></span>
+<li class="preview">
+  <div class="preview__header">
+    <h3><%= link_to name, link %></h3>
+    <div class="turf preview__turf">
+      <span><%= turf %></span>
+    </div>
   </div>
-</h3>
-<% if description %>
-  <div class="place__details">
-    <%= markdown description.split("\n\n", 2)[0] %>
-  </div>
-<% end %>
+  <% if description %>
+    <div class="preview__details">
+      <%= markdown description.split("\n\n", 2)[0] %>
+    </div>
+  <% end %>
+</li>

@@ -1,8 +1,6 @@
 .turf
   // padding-top: 0.5rem
   span
-    +for-phone-only
-      display: none
     margin-top: 0.8rem
     padding: 0rem 0.7rem
     display: inline-block
@@ -15,3 +13,6 @@
     background-color: var(--base-primary)
     color: $base-background
     color: var(--base-background)
+    +for-phone-only
+      font-size: 0.6rem
+      padding: 0rem 0.3rem

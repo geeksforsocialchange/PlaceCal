@@ -129,29 +129,5 @@ hr
 h2.place__title
   margin-bottom: 0.5rem
 
-.two-col
-  -moz-column-count: 2
-  -webkit-column-count: 2
-  column-count: 2
-  -webkit-column-width: 20rem
-  -moz-column-width: 20rem
-  column-width: 20rem
-  margin-top: 1.35rem !important
-  li:first-of-type
-    margin-top: -1.35rem
-  a
-    display: inline-block
-
-@supports (display: grid)
-  .two-col
-    display: grid
-    grid-template-columns: 1fr
-    +for-tablet-landscape-up
-      grid-template-columns: 1fr 1fr
-    grid-gap: 1rem
-    align-items: start
-    li:first-of-type
-      margin-top: 0
-
 .url a
   word-wrap: break-word
