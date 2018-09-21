@@ -6,15 +6,12 @@
   <hr>
   <ul class="partners reset two-col">
     <% @partners.each do |partner| %>
-      <li>
-        <h3><%= link_to partner.name, partner %></h3>
-        <div class="place__details">
-          <!-- Name of neighbourhood turf for this partner: -->
-          <!-- <%= partner.address&.neighbourhood&.name || "nil" %> -->
-          <!-- Home neighbourhood for site: -->
-          <!-- <%= @home_neighbourhood&.name || "nil" %> -->
-        </div>
-      </li>
+      <%= render_component("place_partner_preview",
+        name: partner.name,
+        link: partner,
+        turf: partner.address&.neighbourhood&.name,
+        description: partner.short_description
+      ) %>
     <% end %>
   </ul>
 </div>
