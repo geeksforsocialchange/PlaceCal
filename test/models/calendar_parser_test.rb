@@ -85,7 +85,7 @@ class CalendarParserTest < ActiveSupport::TestCase
 
   test 'does not import if checksum is the same' do
     calendar = create(:calendar, name: 'Z-Arts',
-                                 last_checksum: '56babb5e2ce537f44b8a20ea3e1484c3',
+                                 last_checksum: 'd1a94a9869af91d0548a1faf0ded91d7',
                                  source: 'https://z-arts.ticketsolve.com/shows.xml')
 
     VCR.use_cassette('Z-Arts Calendar') do
