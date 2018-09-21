@@ -3,7 +3,7 @@
 # app/models/user.rb
 class User < ApplicationRecord
   extend Enumerize
-  enumerize :role, in: %i[root turf_admin partner_admin guest]
+  enumerize :role, in: %i[root turf_admin partner_admin citizen], default: :citizen
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :invitable,
@@ -41,7 +41,6 @@ class User < ApplicationRecord
     errors.add(:email, "can't be blank") if email.blank?
     errors.add(:first_name, "can't be blank") if first_name.blank?
     errors.add(:last_name, "can't be blank") if last_name.blank?
-    errors.add(:partner_ids, "can't be blank") if partner_ids.blank?
     errors.add(:role, "can't be blank") if role.blank?
 
     errors.blank?
