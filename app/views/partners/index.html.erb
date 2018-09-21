@@ -1,5 +1,5 @@
-<% content_for :title, "Partners in Hulme & Moss Side" %>
-<%= render_component "hero", title: "Partners in Hulme & Moss Side", subtitle: "The Community Calendar" %>
+<% content_for :title, @title %>
+<%= render_component "hero", title: @title, subtitle: "The Community Calendar" %>
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]] %>

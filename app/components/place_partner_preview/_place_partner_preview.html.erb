@@ -7,7 +7,7 @@
   </div>
   <% if description %>
     <div class="preview__details">
-      <%= markdown truncate(description, length: 150, separator: /\s/) %>
+      <p><%= truncate(description, length: 150, separator: /\s/) %></p>
     </div>
   <% end %>
 </li>

@@ -4,6 +4,7 @@ class PartnersController < ApplicationController
   before_action :set_partner, only: :show
   before_action :set_day, only: :show
   before_action :set_home_neighbourhood, only: [:index]
+  before_action :set_site
 
   # GET /partners
   # GET /partners.json
@@ -16,6 +17,7 @@ class PartnersController < ApplicationController
     end
 
     @map = generate_points(@partners) if @partners.detect(&:address)
+    @title = current_site ? "Partners near #{current_site.name}" : 'All Partners'
   end
 
   # GET /partners/1
