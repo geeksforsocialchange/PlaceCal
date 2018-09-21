@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
   # Create a calendar from array of events
   def create_calendar(events, title = false)
     cal = Icalendar::Calendar.new
-    cal.x_wr_calname = title || 'PlaceCal: Hulme & Moss Side'
+    cal.x_wr_calname = title || 'PlaceCal'
     events.each do |e|
       ical = create_ical_event(e)
       cal.add_event(ical)

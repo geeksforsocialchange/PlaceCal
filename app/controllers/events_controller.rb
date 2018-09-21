@@ -19,6 +19,8 @@ class EventsController < ApplicationController
     @events = sort_events(@events, @sort)
     @multiple_days = true
 
+    @title = current_site ? "Events near #{current_site.name}" : 'All Events'
+
     respond_to do |format|
       format.html do
         if params[:simple].present?

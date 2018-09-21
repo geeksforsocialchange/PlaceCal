@@ -7,6 +7,7 @@ class PlacesController < ApplicationController
   before_action :set_sort, only: :show
   before_action :set_home_neighbourhood, only: [:index]
   before_action :set_site
+  before_action :set_title, only: %i[index show]
 
   def index
     if current_site
@@ -17,7 +18,6 @@ class PlacesController < ApplicationController
     end
 
     @map = generate_points(@places)
-    @title = current_site ? "Places near #{current_site.name}" : 'All Places'
   end
 
   def show
@@ -50,4 +50,8 @@ class PlacesController < ApplicationController
   end
 
   private
+
+  def set_title
+    @title = current_site ? "Places near #{current_site.name}" : 'All Places'
+  end
 end

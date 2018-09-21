@@ -5,6 +5,7 @@ class PartnersController < ApplicationController
   before_action :set_day, only: :show
   before_action :set_home_neighbourhood, only: [:index]
   before_action :set_site
+  before_action :set_title, only: %i[index show]
 
   # GET /partners
   # GET /partners.json
@@ -17,7 +18,6 @@ class PartnersController < ApplicationController
     end
 
     @map = generate_points(@partners) if @partners.detect(&:address)
-    @title = current_site ? "Partners near #{current_site.name}" : 'All Partners'
   end
 
   # GET /partners/1
@@ -44,6 +44,9 @@ class PartnersController < ApplicationController
 
   private
 
+  def set_title
+    @title = current_site ? "Partners near #{current_site.name}" : 'All Partners'
+  end
   # This controller doesn't allow CRUD
   # def partner_params
   #   params.fetch(:partner, {})
