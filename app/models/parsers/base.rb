@@ -39,7 +39,7 @@ module Parsers
     #Returns the unique MD5 Digest string of the calendar feed
     #
     def digest(data)
-      Digest::MD5.hexdigest(data)
+      Digest::MD5.hexdigest(data.to_s)
     end
   end
 end
