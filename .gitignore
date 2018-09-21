@@ -31,10 +31,13 @@
 .travis/*.key.pub
 
 # Notes
-changes.md
+notes.md
 
 # Source images
 /app/assets/images/presentation/_source
 
 # Coverage
 coverage
+
+# ERD pdf as it's messing up diffs
+erd.pdf

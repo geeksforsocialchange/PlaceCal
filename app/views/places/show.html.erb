@@ -1,7 +1,7 @@
 <% content_for :title, @place.name %>
 <% content_for :permalink, @place.permalink %>
 
-<%= render_component "hero", title: "Places in Hulme & Moss Side", subtitle: "The Community Calendar" %>
+<%= render_component "hero", title: @title, subtitle: "The Community Calendar" %>
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Places', places_path], [@place.name, place_path(@place)]] %>
@@ -22,7 +22,7 @@
     </div>
     <div class="gi gi__3-5">
       <% if @map.length > 0 %>
-        <%= render_component "map", points: @map %>                        
+        <%= render_component "map", points: @map %>
       <% end %>
 
       <%= render_component "place_info",
@@ -37,7 +37,7 @@
 
   <hr>
 
-  <%= render_component "event_list", 
+  <%= render_component "event_list",
     events: @events,
     pointer: @current_day,
     period: @period,

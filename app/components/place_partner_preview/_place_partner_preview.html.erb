@@ -1,0 +1,13 @@
+<li class="preview">
+  <div class="preview__header">
+    <h3><%= link_to name, link %></h3>
+    <div class="turf preview__turf">
+      <span><%= turf %></span>
+    </div>
+  </div>
+  <% if description %>
+    <div class="preview__details">
+      <p><%= truncate(description, length: 150, separator: /\s/) %></p>
+    </div>
+  <% end %>
+</li>

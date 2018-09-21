@@ -3,16 +3,16 @@
 class PartnersController < ApplicationController
   before_action :set_partner, only: :show
   before_action :set_day, only: :show
+  before_action :set_home_neighbourhood, only: [:index]
+  before_action :set_site
+  before_action :set_title, only: %i[index show]
 
   # GET /partners
   # GET /partners.json
   def index
-    # A subdomain indicates that a local site is being requested
-    @site = Site.where(slug: request.subdomain).first
-
-    if @site
+    if current_site
       # Only get those partners relevant to the requested site.
-      @partners = Partner.joins(:turfs).where(turfs: { id: @site.turfs }).distinct
+      @partners = Partner.joins(:address).where( addresses: { neighbourhood: current_site.neighbourhoods } )
     else # this is the canonical site.
       @partners = Partner.order(:name)
     end
@@ -44,6 +44,9 @@ class PartnersController < ApplicationController
 
   private
 
+  def set_title
+    @title = current_site ? "Partners near #{current_site.name}" : 'All Partners'
+  end
   # This controller doesn't allow CRUD
   # def partner_params
   #   params.fetch(:partner, {})

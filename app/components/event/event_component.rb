@@ -2,7 +2,7 @@
 
 # app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :context, :event
+  properties :context, :event, :home_neighbourhood
 
   include ActionView::Helpers::TextHelper
 
@@ -12,10 +12,6 @@ class EventComponent < MountainView::Presenter
 
   def place
     event.place
-  end
-
-  def location
-    event.location
   end
 
   def time
@@ -55,16 +51,20 @@ class EventComponent < MountainView::Presenter
     event.partner.first
   end
 
-  def location
-    event.location&.split(',')&.first&.delete('\\')
+  def first_address_line
+    event.address&.street_address&.delete('\\')
   end
 
   def repeats
     event.rrule.present? ? event.rrule[0]['table']['frequency'].titleize : false
   end
 
-  def admin_ward
-    event.admin_ward
+  def turf_name
+    event.neighbourhood&.name
+  end
+
+  def home_neighbourhood?
+    event.neighbourhood == home_neighbourhood
   end
 
   private

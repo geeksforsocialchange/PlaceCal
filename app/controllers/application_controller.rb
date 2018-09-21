@@ -37,10 +37,14 @@ class ApplicationController < ActionController::Base
   end
 
   def filter_events(period, **args)
+    site      = args[:site]      || false
     place     = args[:place]     || false
     partner   = args[:partner]   || false
     repeating = args[:repeating] || 'on'
-    events = place ? Event.in_place(place) : Event.all
+
+    events = Event.all
+    events = events.for_site(site) if site
+    events = events.in_place(place) if place
     events = events.by_partner(partner) if partner
     events = events.one_off_events_only if repeating == 'off'
     events = events.one_off_events_first if repeating == 'last'
@@ -61,9 +65,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def get_home_turf
-    @site = Site.where(slug: request.subdomain).first
-    @home_turf = @site.primary_turf
+  def current_site
+    Site.find_by(slug: request.subdomain)
+  end
+
+  def set_home_neighbourhood
+    @home_neighbourhood = current_site&.primary_neighbourhood
   end
 
   # Takes an array of places or addresses and returns a sanitized json array
@@ -89,7 +96,7 @@ class ApplicationController < ActionController::Base
   # Create a calendar from array of events
   def create_calendar(events, title = false)
     cal = Icalendar::Calendar.new
-    cal.x_wr_calname = title || 'PlaceCal: Hulme & Moss Side'
+    cal.x_wr_calname = title || 'PlaceCal'
     events.each do |e|
       ical = create_ical_event(e)
       cal.add_event(ical)
@@ -144,16 +151,16 @@ class ApplicationController < ActionController::Base
     @place = Place.friendly.find(params[:id])
   end
 
-  def set_site
-    @site = Site.friendly.find(params[:id])
-  end
-
   def set_user
     @user = User.find(params[:id])
   end
 
   def set_calendar
     @calendar = Calendar.find(params[:id])
+  end
+
+  def set_site
+    @site = Site.find_by(slug: request.subdomain)
   end
 
   protected

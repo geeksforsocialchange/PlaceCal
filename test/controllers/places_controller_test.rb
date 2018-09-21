@@ -4,9 +4,12 @@ require 'test_helper'
 
 class PlacesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @places = [ create(:place), create(:place) ]
+    neighbourhoods = [ create(:neighbourhood), create(:neighbourhood) ]
+    # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
+    addresses = neighbourhoods.map {|n| a=create(:address); a.neighbourhood=n; a.save; a}
+    @places = addresses.map {|a| pl=build(:place); pl.address=a; pl.save; pl}
     @site = build(:site)
-    @site.turfs.append(@places.first.turfs.first)
+    @site.neighbourhoods.append(neighbourhoods.first)
     @site.save
   end
 

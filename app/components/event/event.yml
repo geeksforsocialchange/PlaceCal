@@ -14,8 +14,10 @@
         :summary: 'Event with a location and neighbourhood turf'
         :dtstart: 2017-10-02 10:30:00
         :dtend: 2017-10-02 14:00:00
-        :location: "Name of room or un-geolocated address"
-        :neighbourhood_turf: !ruby/object:OpenStruct
+        :address: !ruby/object:OpenStruct
+          table:
+           :street_address: "Name of room or un-geolocated address"
+        :neighbourhood: !ruby/object:OpenStruct
           table:
             :name: Turfy
   -
@@ -25,9 +27,8 @@
         :summary: 'Event with a Place chooses place over address'
         :dtstart: 2017-10-02 12:00:00
         :dtend: 2017-10-02 14:00:00
-        :location: "Will be ignored"
         :place: Place that PlaceCal knows about
-        :neighbourhood_turf: !ruby/object:OpenStruct
+        :neighbourhood: !ruby/object:OpenStruct
           table:
             :name: Turfy
   -
@@ -42,6 +43,6 @@
           -
             table:
               frequency: WEEKLY
-        :neighbourhood_turf: !ruby/object:OpenStruct
+        :neighbourhood: !ruby/object:OpenStruct
           table:
             :name: Turfy

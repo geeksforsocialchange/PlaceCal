@@ -16,7 +16,7 @@ class TurfDashboard < Administrate::BaseDashboard
     id: Field::Number,
     name: Field::String,
     slug: Field::String,
-    turf_type: Field::String,
+    # turf_type: Field::String,
     description: Field::Text,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
@@ -36,6 +36,7 @@ class TurfDashboard < Administrate::BaseDashboard
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
+  # NOTE: Removed turf_type
   SHOW_PAGE_ATTRIBUTES = %i[
     users
     partners
@@ -43,7 +44,6 @@ class TurfDashboard < Administrate::BaseDashboard
     id
     name
     slug
-    turf_type
     description
     created_at
     updated_at
@@ -52,13 +52,13 @@ class TurfDashboard < Administrate::BaseDashboard
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
+  # NOTE: Removed turf_type
   FORM_ATTRIBUTES = %i[
     users
     partners
     places
     name
     slug
-    turf_type
     description
   ].freeze
 

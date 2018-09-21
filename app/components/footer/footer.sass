@@ -1,8 +1,8 @@
 @import "variables_mixins"
 
 .footer
-  background-color: $grey
-  color: $cream
+  background-color: $base-text
+  color: $base-background
   font-size: 0.9rem
   line-height: 1.4rem
   padding: 3rem 0
@@ -11,8 +11,9 @@
     margin: 0.5rem 0
 
   a
-    color: $cream
-    border-color: $red
+    color: $base-background
+    border-color: $base-secondary
+    border-color: var(--base-secondary)
 
   h5
     margin-top: 0
@@ -44,7 +45,7 @@
 
   &__hr
     width: 100%
-    border: 3px solid $almond
+    border: 3px solid $base-tertiary
     &--1
       grid-area: hr-1
       +for-tablet-landscape-up
@@ -92,10 +93,10 @@
 
   &__impressum
     margin-top: 3rem
-    color: $almond
+    color: $base-tertiary
     a
-      color: $almond
-      text-decoration-color: $almond
+      color: $base-tertiary
+      text-decoration-color: $base-tertiary
 
   pre
     overflow: hidden

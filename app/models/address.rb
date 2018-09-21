@@ -7,14 +7,21 @@ class Address < ApplicationRecord
 
   validates :street_address, :postcode, :country_code, presence: true
 
-  # Geocoding with postcodes.io so only postcode changes will change the result
-  before_validation :standardise_postcode, if: ->(obj) { obj.postcode_changed? }
+  # Geocoding with postcodes.io
+  # Only postcode changes will change the result that postodes.io returns.
   after_validation :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
+
+  # We want to be able to compare an arbitrary postcode with the address
+  # postodes in the DB, so make sure all postcodes in the DB are in the same
+  # format.
+  before_save :standardise_postcode, if: ->(obj) { obj.postcode_changed? }
 
   has_many :places
   has_many :events
   has_many :partners
   has_many :calendars
+
+  belongs_to :neighbourhood
 
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
@@ -32,29 +39,32 @@ class Address < ApplicationRecord
 
   alias to_s full_address
 
+  # Set the (lat,lon) and neighbourhood from address data.
+  #
+  # This differs from calling the Geocoder::Store::ActiveRecord#geocode method
+  # through an ActiveRecord callback because, as well as (lat,lon), we are
+  # also setting the neighbourhood from the admin_ward value returned by
+  # postcodes.io
+  #
+  # NOTE: Geocoder is not isolating us from geocoding-service implentation
+  # details. We currently require the geocoding result to contain the key
+  # 'admin_ward' from postcodes.io
   def geocode_with_ward
-    # TODO? Is there any point using the Geocoder gem rather than writing
-    # our own code to query postcodes.io given that using postcodes.io
-    # now defines how we use Geocoder?
-    # - Passing anything other than a postcode will cause Geocoder.search to
-    #   return an empty array.
-    # - We are accessing admin_ward directly through through
-    #   Geocoder::Result::PostcodesIo#data hash.
-
     geo = Geocoder.search(postcode).first&.data
     return unless geo
 
-    self.longitude= geo['longitude']
-    self.latitude= geo['latitude']
-    self.admin_ward= geo['admin_ward']
+    t = Neighbourhood.find_by( name: geo['admin_ward'] )
+
+    # Is the admin_ward new to us? Then create the respective Turf.
+    t = Neighbourhood.create_from_admin_ward geo['admin_ward'] unless t
+
+    self.longitude = geo['longitude']
+    self.latitude = geo['latitude']
+    self.neighbourhood = t
   end
 
   def standardise_postcode
     self.postcode = self.class.standardised_postcode(postcode)
-  end
-
-  def postcode_standardised?
-    postcode == self.class.standardised_postcode(postcode)
   end
 
   class << self
@@ -97,8 +107,8 @@ class Address < ApplicationRecord
       address if address.save
     end
 
-    # Define a standard postcode format so that postcode comparisons will can be
-    # made, including within the DB.
+    # Define a standard postcode format so that postcode comparisons can be
+    # made, including with postcode values the DB.
     # Standard format is ALL CAPS where the only whitespace is a single space
     # before the final three characters.
     def standardised_postcode pc

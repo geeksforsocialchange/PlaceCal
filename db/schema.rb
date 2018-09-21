@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180905123823) do
+ActiveRecord::Schema.define(version: 20180919111400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,8 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.string "country_code", default: "UK"
     t.float "latitude"
     t.float "longitude"
-    t.string "admin_ward"
+    t.bigint "neighbourhood_id"
+    t.index ["neighbourhood_id"], name: "index_addresses_on_neighbourhood_id"
   end
 
   create_table "calendars", id: :serial, force: :cascade do |t|
@@ -37,6 +38,7 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strategy"
+    t.datetime "import_lock_at"
     t.string "last_checksum"
     t.text "footer"
     t.text "critical_error"
@@ -107,6 +109,10 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
+
+  create_table "neighbourhoods", force: :cascade do |t|
+    t.string "name"
   end
 
   create_table "partners", id: :serial, force: :cascade do |t|
@@ -202,19 +208,19 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 
+  create_table "sites_neighbourhoods", force: :cascade do |t|
+    t.integer "neighbourhood_id"
+    t.integer "site_id"
+    t.string "relation_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "sites_supporters", id: false, force: :cascade do |t|
     t.bigint "site_id", null: false
     t.bigint "supporter_id", null: false
     t.index ["site_id", "supporter_id"], name: "index_sites_supporters_on_site_id_and_supporter_id"
     t.index ["supporter_id", "site_id"], name: "index_sites_supporters_on_supporter_id_and_site_id"
-  end
-
-  create_table "sites_turfs", force: :cascade do |t|
-    t.integer "turf_id"
-    t.integer "site_id"
-    t.string "relation_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "supporters", force: :cascade do |t|
@@ -231,7 +237,6 @@ ActiveRecord::Schema.define(version: 20180905123823) do
   create_table "turfs", force: :cascade do |t|
     t.string "name"
     t.string "slug"
-    t.string "turf_type"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -270,7 +275,7 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.integer "invitation_limit"
     t.integer "invited_by_id"
     t.string "invited_by_type"
-    t.index ["email"], name: "index_users_on_email"
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -286,6 +291,7 @@ ActiveRecord::Schema.define(version: 20180905123823) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "addresses", "neighbourhoods"
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "places"
   add_foreign_key "events", "addresses"
