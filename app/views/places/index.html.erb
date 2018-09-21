@@ -9,18 +9,12 @@
   <ul class="places reset two-col">
     <% @places.each do |place| %>
       <li>
-        <h3>
-          <%= link_to place.name, place %>
-          <div class="turf">
-            <span><%= place.address&.neighbourhood&.name %></span>
-          </div>
-        </h3>
-        <% if place.short_description %>
-          <div class="place__details">
-            <%= markdown place.short_description.split("\n\n", 2)[0] %>
-
-          </div>
-        <% end %>
+        <%= render_component("place_partner_preview",
+          name: place.name,
+          link: place,
+          turf: place.address&.neighbourhood&.name,
+          description: place.short_description
+        ) %>
       </li>
     <% end %>
   </ul>
