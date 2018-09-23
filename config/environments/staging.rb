@@ -61,11 +61,13 @@ Rails.application.configure do
 
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :mailgun
-  host = 'mail.placecal.org'
-  config.action_mailer.default_url_options = { host: host }
+
+  host = ENV.fetch('SITE_DOMAIN', 'placecal-staging.org')
+
+  config.action_mailer.default_url_options = { host: host, protocol: 'https'}
   config.action_mailer.mailgun_settings = {
     api_key: ENV['MAILGUN_API_KEY'],
-    domain: 'placecal.org'
+    domain: host
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.
