@@ -1,0 +1,5 @@
+On staging server:
+    dokku postgres:export placecal-staging-db > dump.sql
+
+On local:
+    pg_restore -d placecal_dev < dump.sql
