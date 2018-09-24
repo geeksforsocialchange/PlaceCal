@@ -7,7 +7,7 @@ class Place < ApplicationRecord
   # attr_accessor :turf_attr
 
   has_and_belongs_to_many :partners
-  has_and_belongs_to_many :turfs # TODO?: Validate only one neighbourhood turf (as opposed to interest turfs) ?
+  has_and_belongs_to_many :turfs
   has_many :events
   has_many :calendars, dependent: :destroy
 
@@ -20,6 +20,10 @@ class Place < ApplicationRecord
   # Max events to show on Place page before going to a day-by-day view
   # Needs some refactoring to work
   # EVENT_VIEW_AC TIVITY_LIMIT = 20
+
+  scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
+
+  scope :of_turf, ->(turf) { joins(:places_turfs).where( places_turfs: { turf: turf } ) }
 
   def to_s
     name

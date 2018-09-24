@@ -25,6 +25,8 @@ class Partner < ApplicationRecord
 
   after_save :update_users
 
+  scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
+
   def to_s
     name
   end

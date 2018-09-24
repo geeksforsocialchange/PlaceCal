@@ -11,7 +11,7 @@
     :event: !ruby/object:OpenStruct
       table:
         :id: 2
-        :summary: 'Event with a location and neighbourhood turf'
+        :summary: 'Event with a location and neighbourhood'
         :dtstart: 2017-10-02 10:30:00
         :dtend: 2017-10-02 14:00:00
         :address: !ruby/object:OpenStruct
@@ -19,7 +19,7 @@
            :street_address: "Name of room or un-geolocated address"
         :neighbourhood: !ruby/object:OpenStruct
           table:
-            :name: Turfy
+            :name: Da Hood
   -
     :event: !ruby/object:OpenStruct
       table:
@@ -30,7 +30,7 @@
         :place: Place that PlaceCal knows about
         :neighbourhood: !ruby/object:OpenStruct
           table:
-            :name: Turfy
+            :name: Da Hood
   -
     :event: !ruby/object:OpenStruct
       table:
@@ -45,4 +45,4 @@
               frequency: WEEKLY
         :neighbourhood: !ruby/object:OpenStruct
           table:
-            :name: Turfy
+            :name: Da Hood

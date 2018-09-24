@@ -11,10 +11,9 @@ class PartnersController < ApplicationController
   # GET /partners.json
   def index
     if current_site
-      # Only get those partners relevant to the requested site.
-      @partners = Partner.joins(:address).where( addresses: { neighbourhood: current_site.neighbourhoods } )
+      @partners = Partner.for_site(current_site).order(:name)
     else # this is the canonical site.
-      @partners = Partner.order(:name)
+      @partners = Partner.all.order(:name)
     end
 
     @map = generate_points(@partners) if @partners.detect(&:address)
