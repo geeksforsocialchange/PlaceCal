@@ -5,7 +5,7 @@ class PlacesController < ApplicationController
   before_action :set_place, only: %i[show embed]
   before_action :set_day, only: %i[show embed]
   before_action :set_sort, only: :show
-  before_action :set_home_neighbourhood, only: [:index]
+  before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
   before_action :set_title, only: %i[index show]
 

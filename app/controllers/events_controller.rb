@@ -5,7 +5,7 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy]
   before_action :set_day, only: :index
   before_action :set_sort, only: :index
-  before_action :set_home_neighbourhood, only: [:index]
+  before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
 
   # GET /events

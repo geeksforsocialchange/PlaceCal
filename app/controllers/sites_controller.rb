@@ -2,7 +2,7 @@
 
 # app/controllers/sites_controller.rb
 class SitesController < ApplicationController
-  before_action :set_home_neighbourhood, only: [:site]
+  before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site, only: [:index]
   before_action :set_places_to_get_online, only: [:index]
 
