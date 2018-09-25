@@ -27,7 +27,7 @@
   <%= f.input :hero_image_credit %>
   <p><em>Who took this photo?</em></p>
 
-  <h2>Primary Neighbourhood</h2>
+  <h2>Main neighbourhood</h2>
 
   <%= f.fields_for :sites_neighbourhood do |sn|%>
     <%- if @primary_neighbourhood_id %>
@@ -37,7 +37,7 @@
     <%= sn.hidden_field :relation_type, value: "Primary" %>
   <% end %>
 
-  <h2>Secondary Neighbourhoods</h2>
+  <h2>Other neighbourhoods to include</h2>
 
   <% @all_neighbourhoods.each do |neighbourhood| %>
     <%= fields_for "site[sites_neighbourhoods_attributes][#{neighbourhood.id}]" do |sna|%>

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# app/models/sites_turf.rb
 class SitesNeighbourhood < ApplicationRecord
   self.table_name = 'sites_neighbourhoods'
   belongs_to :neighbourhood

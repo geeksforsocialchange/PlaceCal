@@ -2,9 +2,9 @@
   <%= image_tag "icons/help/getting-online.svg" %>
   <h3 class="h2--alt"><span>Getting Online</span></h3>
   <p>Computer access is available in the following places:</p>
-  <% if locations.any? %>
+  <% if places.any? %>
     <ul>
-      <% locations.each do |location| %>
+      <% places.each do |location| %>
         <li><%= link_to location.name, place_url(location) %></li>
       <% end %>
     </ul>

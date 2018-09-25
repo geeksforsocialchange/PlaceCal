@@ -7,11 +7,7 @@
   <ul class="places reset two-col">
     <% @places.each do |place| %>
       <%= render_component("place_partner_preview",
-        name: place.name,
-        link: place,
-        turf: place.address&.neighbourhood&.name,
-        description: place.short_description
-      ) %>
+        previewee: place, primary_neighbourhood: @primary_neighbourhood) %>
     <% end %>
   </ul>
 </div>

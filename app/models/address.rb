@@ -55,7 +55,7 @@ class Address < ApplicationRecord
 
     t = Neighbourhood.find_by( name: geo['admin_ward'] )
 
-    # Is the admin_ward new to us? Then create the respective Turf.
+    # Is the admin_ward new to us? Then create the respective Neighbourhood.
     t = Neighbourhood.create_from_admin_ward geo['admin_ward'] unless t
 
     self.longitude = geo['longitude']
