@@ -1,3 +1,73 @@
+@import "variables_mixins"
+
+$mossley-primary: #28a9e1
+$mossley-secondary: #f89520
+$mossley-background: #bee7f6
+$mossley-text-alt: #ffffff
+
+// For some reason these are not interpolating properly
 \:root
   --base-primary: #28a9e1
-  --base-secondary: #28a9e1
+  --base-secondary: #f89520
+
+body
+  background-color: $mossley-background
+  +for-desktop-up
+    background-image: image-url('regions/mossley/background.svg')
+    background-position: 50% 105px
+
+a
+  color: $mossley-primary
+
+.background
+  border-width: 0 10px
+  border-color: $mossley-primary
+
+.header
+  background-color: $mossley-primary
+  &__menu li a
+    color: $mossley-text-alt
+    +for-tablet-portrait-up
+      &:hover, &.active
+        color: $mossley-text-alt
+        &:after
+          border-color: $mossley-secondary
+
+.region__title--mossley
+  background-color: $mossley-secondary
+  color: $mossley-text-alt
+  h1
+    text-align: center
+    padding: 3rem 0
+    margin: 0
+    font-family: $sans-serif
+    font-weight: $bold
+
+
+.hero_image--mossley
+  background-image: image-url('regions/mossley/hero-desktop.jpg')
+  height: 258px
+
+.region__management
+  background-color: $mossley-primary
+  color: $mossley-text-alt
+  .title-strip
+    background-color: transparent
+  .profile
+    color: $mossley-primary
+    background-color: $mossley-background
+    a
+      text-decoration-color: $mossley-text-alt
+    h3
+      border-bottom-color: $mossley-text-alt
+
+.footer
+  background-color: $mossley-primary
+  hr
+    border-color: $mossley-background
+  a
+    text-decoration-color: $mossley-secondary
+  &__impressum
+    color: $mossley-background
+    a
+      color: $mossley-background
