@@ -8,7 +8,7 @@ module Admin
     def profile; end
 
     def index
-      @users = User.all
+      @users = User.all.order(:last_name, :first_name)
       authorize current_user
     end
 
