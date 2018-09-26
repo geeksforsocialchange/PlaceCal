@@ -89,7 +89,6 @@ module Admin
         :strategy,
         :partner_id,
         :place_id,
-        :footer,
         :is_facebook_page,
         :facebook_page_id
       )
