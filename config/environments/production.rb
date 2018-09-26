@@ -67,7 +67,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: host, protocol: 'https' }
   config.action_mailer.mailgun_settings = {
     api_key: ENV['MAILGUN_API_KEY'],
-    domain: host
+    domain: 'mail.placecal.org'
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.
