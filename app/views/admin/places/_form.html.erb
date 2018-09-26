@@ -14,26 +14,35 @@
 
   <h2>Address</h2>
 
-  <%= link_to "+ Add Existing Address", 'javascript:void(0)', class: "btn btn-primary add_existing"%>
-  <%= f.link_to_add "+ Add New Address", :address, class: "btn btn-primary add_new"%>
-  <%#= f.select :address, label: "Existing Addresses", collection: options_for_addresses, input_html: {class: 'form-control select2' }, include_hidden: false %>
+  <ul class="nav nav-tabs">
+    <li role="presentation" class="active select-existing-address">
+      <a>Select an existing address</a>
+    </li>
+    <li role="presentation" class="add-new-address">
+      <a>Add a new address</a>
+    </li>
+  </ul>
 
-  <%= f.fields_for :address, [] do |a| %>
-    <div class="row new">
-      <div class="col-md-6">
-        <%= a.input :street_address, class: "form-control address_1 address_field" %>
-        <%= a.input :street_address2, class: "form-control address_2 address_field" %>
-        <%= a.input :city, class: "form-control city address_field" %>
-        <%= a.input :postcode, class: "form-control postcode address_field" %>
-        <%= a.link_to_remove "Remove", class: "btn btn-primary hide remove_new" %>
+  <div id="add-new-address" class="hide">
+    <%= f.fields_for :address, [] do |a| %>
+      <div class="row new">
+        <div class="col-md-6">
+          <%= a.input :street_address, class: "form-control address_1 address_field" %>
+          <%= a.input :street_address2, class: "form-control address_2 address_field" %>
+          <%= a.input :city, class: "form-control city address_field" %>
+          <%= a.input :postcode, class: "form-control postcode address_field" %>
+          <%= a.link_to_remove "Remove", class: "btn btn-primary hide exec-remove-new-address" %>
+        </div>
+        <div class="col-md-6">
+          <div id="js-map" class="map map-marker place-map"></div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <div id="js-map" class="map map-marker place-map"></div>
-      </div>
-    </div>
-  <% end %>
-
-  <%= f.select :address_id, options_for_addresses, {}, class: 'form-control select2' %>
+    <% end %>
+    <%= f.link_to_add "Add", :address, class: "btn btn-primary hide exec-add-new-address"%>
+  </div>
+  <div id="select-existing-address">
+    <%= f.select :address_id, options_for_addresses, {}, class: 'form-control select2' %>
+  </div>
 
   <h2>Information</h2>
 

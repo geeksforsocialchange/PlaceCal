@@ -9,18 +9,26 @@ jQuery.extend(Behaviors, {
         });
 
         $(document).on('nested:fieldAdded:address', function(e) {
-          $(".add_new").addClass("hide");
-          $(".existing").addClass("hide");
           var id = 'js-map-'+e.timeStamp
           $('#js-map').attr('id',id);
           map[id] = L.map(id);
           map[id].scrollWheelZoom.disable();
         });
 
-        $(document).on('click', ".add_existing", function(){
-          $(".add_new").removeClass("hide");
-          $(".existing").removeClass("hide");
-          $(".remove_new").click();
+        $(document).on('click', "li.select-existing-address > a", function(){
+          $("#add-new-address").addClass("hide");
+          $("#select-existing-address").removeClass("hide");
+          $("li.add-new-address").removeClass("active");
+          $("li.select-existing-address").addClass("active");
+          $("a.exec-remove-new-address").click();
+        });
+
+        $(document).on('click', "li.add-new-address > a", function(){
+          $("#add-new-address").removeClass("hide");
+          $("#select-existing-address").addClass("hide");
+          $("li.add-new-address").addClass("active");
+          $("li.select-existing-address").removeClass("active");
+          $("a.exec-add-new-address").click();
         });
 
         $(document).on('blur', '.address_field', function(){
@@ -37,5 +45,5 @@ jQuery.extend(Behaviors, {
         });
       }
     }
-  } 
+  }
 });
