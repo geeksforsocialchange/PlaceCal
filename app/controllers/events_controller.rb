@@ -45,7 +45,11 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    @map = generate_points([@event.place]) if @event.place
+    if @event.place
+      @map = generate_points([@event.place])
+    elsif @event.address
+      @map = generate_points([@event.address])
+    end
     respond_to do |format|
       format.html
       format.ics do

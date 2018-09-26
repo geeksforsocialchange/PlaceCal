@@ -16,6 +16,6 @@ class AddressField < Administrate::Field::Associative
   end
 
   def full_address
-    data&.full_address
+    data&.to_s
   end
 end
