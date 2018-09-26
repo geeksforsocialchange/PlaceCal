@@ -62,31 +62,6 @@
   </div>
 <% end %>
 
-<h2>Calendars</h2>
-<%= f.link_to_add "+ Add New Calendars", :calendars, class: "btn btn-primary add_calendar" %>
-
-<%= f.simple_fields_for :calendars do |c| %>
-  <hr>
-  <div class="row">
-    <div class="col-md-6">
-      <label>Calendar Name</label>
-      <%= c.text_field :name, class: "form-control" %>
-      <label>URL</label>
-      <%= c.text_field :source, class: "form-control" %>
-      <label>Default Place</label>
-      <%= c.select :place_id, options_for_places, { include_blank: 'None'}, class: 'form-control select21' %>
-      <%= c.link_to_remove "Remove", class: "btn btn-primary" %>
-    </div>
-    <div class="col-md-3">
-      <label>Import Strategy</label>
-      <h5><%= c.radio_button :strategy, 'event' %>Event</h5>
-      <h5><%= c.radio_button :strategy, 'place' %>Place</h5>
-      <h5><%= c.radio_button :strategy, 'room_number' %>Room Number</h5>
-      <h5><%= c.radio_button :strategy, 'event_override' %>Event Override</h5>
-    </div>
-  </div>
-<% end %>
-
 <h2>Contact Information</h2>
 
 <div class="row">
