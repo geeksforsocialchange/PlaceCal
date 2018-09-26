@@ -6,10 +6,9 @@
     <% else %>
       <div class="event__header">
         <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
-        <% if turf_name %>
-          <div class="turf event__turf">
-            <span><%= turf_name %></span>
-            <!-- <%= if home_neighbourhood? then "Home neighbourhood!" else "Not home neighbourhood." end %> -->
+        <% if neighbourhood_name %>
+          <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> event__neighbourhood">
+            <span><%= neighbourhood_name %></span>
           </div>
         <% end %>
       </div>

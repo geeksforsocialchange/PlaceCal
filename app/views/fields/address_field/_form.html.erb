@@ -2,5 +2,5 @@
   <%= f.label :address_id %>
 </div>
 <div class="field-unit__field select-search">
-  <%= f.select :address_id, options_from_collection_for_select(field.addresses, :id, :full_address, field.selected_option), include_blank: true %>
+  <%= f.select :address_id, options_from_collection_for_select(field.addresses, :id, :to_s, field.selected_option), include_blank: true %>
 </div>

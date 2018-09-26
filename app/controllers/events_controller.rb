@@ -5,7 +5,7 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy]
   before_action :set_day, only: :index
   before_action :set_sort, only: :index
-  before_action :set_home_neighbourhood, only: [:index]
+  before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
 
   # GET /events
@@ -45,7 +45,11 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    @map = generate_points([@event.place]) if @event.place
+    if @event.place
+      @map = generate_points([@event.place])
+    elsif @event.address
+      @map = generate_points([@event.address])
+    end
     respond_to do |format|
       format.html
       format.ics do

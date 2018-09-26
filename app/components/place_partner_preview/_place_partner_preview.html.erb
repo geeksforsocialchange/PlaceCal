@@ -1,8 +1,8 @@
 <li class="preview">
   <div class="preview__header">
     <h3><%= link_to name, link %></h3>
-    <div class="turf preview__turf">
-      <span><%= turf %></span>
+    <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
+      <span><%= neighbourhood_name %></span>
     </div>
   </div>
   <% if description %>

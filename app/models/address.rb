@@ -27,17 +27,32 @@ class Address < ApplicationRecord
     where(street_address: street).or(where(postcode: postcode))
   }
 
-  def full_address
+  def first_address_line
+    street_address
+  end
+
+  def other_address_lines
+    [
+      street_address2,
+      street_address3,
+      city,
+      postcode
+    ].reject(&:blank?)
+  end
+
+  def all_address_lines
     [
       street_address,
       street_address2,
       street_address3,
       city,
       postcode
-    ].reject(&:blank?).join(', ')
+    ].reject(&:blank?)
   end
 
-  alias to_s full_address
+  def to_s
+    all_address_lines.join(', ')
+  end
 
   # Set the (lat,lon) and neighbourhood from address data.
   #
@@ -55,7 +70,7 @@ class Address < ApplicationRecord
 
     t = Neighbourhood.find_by( name: geo['admin_ward'] )
 
-    # Is the admin_ward new to us? Then create the respective Turf.
+    # Is the admin_ward new to us? Then create the respective Neighbourhood.
     t = Neighbourhood.create_from_admin_ward geo['admin_ward'] unless t
 
     self.longitude = geo['longitude']

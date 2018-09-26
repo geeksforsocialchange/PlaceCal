@@ -1,27 +1,32 @@
 <% content_for :title, "#{@event.summary}, #{@event.date}, #{@event.time}" %>
 <% content_for :permalink, @event.permalink %>
 
-<%= render_component "event", context: :page, event: @event, home_neighbourhood: @home_neighbourhood %>
+<%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
 
 <div class="c c--narrow c--space-after">
   <%= markdown @event.description %>
-  <% if @event.place %>
-    <div class="g">
-      <div class="gi gi__1-3">
-        <h3 class="h4 udl">Contact information</h3>
-        <div class="small">Coming soon!</div>
-      </div>
-      <div class="gi gi__1-3">
-        <h3 class="h4 udl">Event address</h3>
-        <div class="small">
+  <div class="g">
+    <div class="gi gi__1-3">
+      <h3 class="h4 udl">Contact information</h3>
+      <div class="small">Coming soon!</div>
+    </div>
+    <div class="gi gi__1-3">
+      <h3 class="h4 udl">Event address</h3>
+      <div class="small">
+        <% if @event.place %>
           <strong><%= link_to @event.place.name, place_path(@event.place) %></strong><br/>
           <%= @event.place.address %>
-        </div>
-      </div>
-      <div class="gi gi__1-3">
+        <% elsif @event.address %>
+        <strong><%= @event.address.first_address_line %></strong><br/>
+        <%= @event.address.other_address_lines.join(', ') %>
+        <% else %>
+        <div class="small">No address has been given yet.</div>
+        <% end %>
       </div>
     </div>
-  <% end %>
+    <div class="gi gi__1-3">
+    </div>
+  </div>
 </div>
 
 <% if @map&.any? %>
