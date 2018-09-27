@@ -1,7 +1,7 @@
 <%= render_component "admin_index",
   title: "Calendars",
   model: :calendars,
-  columns: %i[id name source strategy place],
+  columns: %i[id name place is_working last_import_at],
   data: @calendars,
   new_link: new_admin_calendar_path,
   additional_links: [ link_to("Add New Calendar From Facebook", user_facebook_omniauth_authorize_url, class: "btn btn-primary") ]

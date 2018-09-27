@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180919111400) do
+ActiveRecord::Schema.define(version: 20180926032437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,9 +39,9 @@ ActiveRecord::Schema.define(version: 20180919111400) do
     t.datetime "updated_at", null: false
     t.string "strategy"
     t.string "last_checksum"
-    t.text "footer"
     t.text "critical_error"
     t.string "page_access_token"
+    t.boolean "is_working", default: true, null: false
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end

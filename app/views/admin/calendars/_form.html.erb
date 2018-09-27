@@ -14,9 +14,10 @@
         <%= f.input :source %>
       <% end %>
       <%= f.input :strategy %>
-      <%= f.input :footer %>
       <%= f.association :partner, collection: policy_scope(Partner) %>
       <%= f.association :place, collection: policy_scope(Place) %>
+
+      <%= f.input :is_working %>
     </div>
     <div class="col-md-6">
       <% unless @calendar.new_record? %>
