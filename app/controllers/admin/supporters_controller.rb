@@ -6,7 +6,7 @@ module Admin
     before_action :set_supporter, only: %i[edit update destroy]
 
     def index
-      @supporters = Supporter.all
+      @supporters = Supporter.all.reorder(:name)
       authorize current_user
     end
 
