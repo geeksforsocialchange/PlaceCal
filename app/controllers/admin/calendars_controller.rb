@@ -6,7 +6,7 @@ module Admin
     before_action :set_calendar, only: %i[show edit update destroy import]
 
     def index
-      @calendars = policy_scope(Calendar)
+      @calendars = policy_scope(Calendar).order(:name)
       authorize Calendar
     end
 
@@ -89,7 +89,6 @@ module Admin
         :strategy,
         :partner_id,
         :place_id,
-        :footer,
         :is_facebook_page,
         :facebook_page_id
       )

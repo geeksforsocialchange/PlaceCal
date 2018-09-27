@@ -5,7 +5,7 @@ module Admin
     before_action :set_turf, only: %i[show edit update destroy]
 
     def index
-      @turfs = policy_scope(Turf)
+      @turfs = policy_scope(Turf).order(:name)
       authorize @turfs
     end
 

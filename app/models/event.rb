@@ -14,6 +14,7 @@ class Event < ApplicationRecord
 
   validates :summary, :dtstart, presence: true
 
+  before_validation :set_address_from_place
   validate :require_location
 
   before_save :sanitize_rrule
@@ -64,14 +65,6 @@ class Event < ApplicationRecord
     self.rrule = false if rrule.nil? || rrule == []
   end
 
-  # Make sure that setting the event's Place also sets the event's Address. This
-  # way we never need to choose between Event#address and Event#place.address
-  # This is particularly important for joins for neighbourhoods.
-  def place= p
-    self[:place_id] = p.id
-    self[:address_id] = p.address.id
-  end
-
   def time
     if dtend
       dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
@@ -104,8 +97,15 @@ class Event < ApplicationRecord
 
   private
 
+  # Make sure that setting the event's Place also sets the event's Address. This
+  # way we never need to choose between Event#address and Event#place.address
+  # This is particularly important for joins for neighbourhood turfs.
+  def set_address_from_place
+    self.address_id = self.place.address_id if self.place_id
+  end
+
   def require_location
-    return unless address_id.blank?
+    return unless self.address_id.blank?
     errors.add(:base, "No place or address could be created or found for
                        the event location: #{location}")
   end
