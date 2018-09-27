@@ -64,6 +64,8 @@ class EventComponent < MountainView::Presenter
   end
 
   def primary_neighbourhood?
+    # Show everything as primary if primary is not set
+    return true unless primary_neighbourhood
     event.neighbourhood == primary_neighbourhood
   end
 

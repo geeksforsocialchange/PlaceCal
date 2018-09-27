@@ -6,7 +6,7 @@ module Admin
     before_action :set_variables_for_sites_neighbourhoods_selection, only: [:new, :edit]
 
     def index
-      @sites = Site.all
+      @sites = Site.all.order(:name)
       authorize current_user
     end
 
