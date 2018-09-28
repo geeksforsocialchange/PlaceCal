@@ -15,22 +15,22 @@
     <% end %>
     <div class="event__details">
       <div class="event__detail event__time">
-        <span class="icon icon--time">🕒</span>
+        <span class="icon-font--time"></span>
         <%= time %>
       </div>
       <% if duration %>
         <div class="event__detail event__duration">
-          <span class="icon icon--duration">⌛</span>
+          <span class="icon-font--duration"></span>
           <%= duration %>
         </div>
       <% end %>
       <div class="event__detail event__date">
-        <span class="icon icon--date">📅</span>
+        <span class="icon-font--date"></span>
         <%= date %>
       </div>
       <% if place || first_address_line %>
         <div class="event__detail event__location">
-          <span class="icon icon--place">🏠</span>
+          <span class="icon-font--place"></span>
           <% if place %>
             <%= link_to place, place_path(place) %>
           <% elsif first_address_line %>
@@ -40,7 +40,7 @@
       <% end %>
       <% if repeats %>
         <div class="event__detail event__repeats">
-          <span class="icon icon--repeats">🔁</span>
+          <span class="icon-font--repeats"></span>
           <%= repeats %>
         </div>
       <% end %>
