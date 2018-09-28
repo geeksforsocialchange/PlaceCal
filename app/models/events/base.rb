@@ -20,10 +20,16 @@ module Events
     def html_sanitize(input)
       return if input.blank?
 
-      allowed_tags = %w[a strong b em i ul ol li blockquote h3 h4 h5 h6]
+      allowed_tags = %w[a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
 
       str = Nokogiri::HTML.fragment(input)
       str.css(*['h1', 'h2']).each { |header| header.name = 'h3' }
+
+      if footer.present?
+        str << '<br/><br/>'
+        str << footer
+      end
+
       str = str.to_s
 
       str = ActionController::Base.helpers.sanitize(str, tags: allowed_tags)
@@ -34,13 +40,12 @@ module Events
     def attributes
       { uid:         uid&.strip,
         summary:     summary,
-        description: description,
+        description: html_sanitize(description),
         location:    location&.strip,
         rrule:       rrule,
         place_id:    place_id,
         address_id:  address_id,
-        partner_id:  partner_id,
-        footer:      footer
+        partner_id:  partner_id
       }
     end
 

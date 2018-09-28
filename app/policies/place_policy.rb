@@ -37,6 +37,8 @@ class PlacePolicy < ApplicationPolicy
         scope.joins(:turfs).where(turfs: { id: user.turfs }).distinct
       elsif user&.role&.partner_admin?
         scope.joins(partners: :users).where(partners_users: { user_id: user.id })
+      else
+        scope.none
       end
     end
   end

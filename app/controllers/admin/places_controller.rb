@@ -7,7 +7,7 @@ module Admin
     before_action :set_turfs, only: %i[new create edit]
 
     def index
-      @places = policy_scope(Place)
+      @places = policy_scope(Place).order(:name)
     end
 
     def new
