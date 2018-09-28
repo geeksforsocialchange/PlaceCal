@@ -1,0 +1,51 @@
+<% content_for :title, @site.name %>
+
+<section>
+  <div class="hero_image hero_image--mossley">
+  </div>
+</section>
+
+<section class="region region__title--mossley">
+  <div class="c c--narrowish">
+    <h1>Marvellous Mossley is a project<span class="break"></span> aimed at celebrating our town and<span class="break"></span> all the community activity in it.</h1>
+  </div>
+</section>
+
+<section class="region region__mission">
+  <div class="c c--narrow">
+    <h2 class="serif"></h2>
+    <p>We're working with <%= link_to 'local organisations', partners_path %> and <%= link_to 'places', places_path %> to create a great calendar of everything that's on in <%= @site.name %>.</p>
+    <%= link_to "See what's on", events_path, class: "btn btn--lg btn--alt btn--mt" %>
+  </div>
+</section>
+
+<section class="region region__management">
+  <div class="title-strip">
+    <h2 class="h2--alt">About Us</h2>
+  </div>
+  <div class="c c--narrow first-ele-h3-serif">
+    <%= markdown @site.description %>
+    <% if @site.site_admin.present? %>
+      <%= render_component 'profile', user: @site.site_admin %>
+    <% end %>
+  </div>
+</section>
+
+<section class="region region__support">
+  <!-- <div class="title-strip">
+    <h2 class="h2--alt">Advice and support</h2>
+  </div> -->
+  <div class="c">
+    <div class="g">
+      <div class="gi gi__1-3">
+        <%= render_component 'help_adding_events' %>
+      </div>
+      <div class="gi gi__1-3">
+        <%= render_component 'help_getting_online', places: @places_to_get_online %>
+      </div>
+      <div class="gi gi__1-3">
+        <%= render_component 'help_getting_help' %>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,3 +1,122 @@
+@import "variables_mixins"
+
+$mossley-primary: #28a9e1
+$mossley-primary-dark: #5775B9
+$mossley-secondary: #f89520
+$mossley-background: #bee7f6
+$mossley-text: #4A4A4A
+$mossley-text-alt: #ffffff
+$mossley-text-buttons: #406618
+
+// For some reason these are not interpolating properly
 \:root
   --base-primary: #28a9e1
-  --base-secondary: #28a9e1
+  --base-secondary: #f89520
+
+body
+  background-color: $mossley-background
+  color: $mossley-text
+  +for-desktop-up
+    background-image: image-url('regions/mossley/background.png')
+    background-position: 50% 105px
+    background-repeat: repeat-y
+
+a
+  color: $mossley-secondary
+
+.h2--alt, .header__menu a, .footer h5
+  text-transform: none
+  letter-spacing: normal
+  font-weight: $bold
+
+.h2--alt, .footer h5
+  font-size: 1.11111rem
+
+.header__menu a
+  +for-tablet-portrait-up
+    font-size: 1.22222rem
+
+.background
+  border-width: 0 10px
+  border-color: $mossley-primary
+
+.header
+  background-color: $mossley-primary
+  &__menu li a
+    color: $mossley-text-alt
+    +for-tablet-portrait-up
+      &:hover, &.active
+        color: $mossley-text-alt
+        &:after
+          border-color: $mossley-secondary
+
+.region__title--mossley
+  background-color: $mossley-secondary
+  color: $mossley-text-alt
+  h1
+    text-align: center
+    padding: 3rem 0
+    margin: 0
+    font-family: $sans-serif
+    font-weight: $bold
+
+
+.hero_image--mossley
+  background-image: image-url('regions/mossley/hero-desktop.jpg')
+  height: 258px
+
+.region__management
+  background-color: $mossley-primary
+  color: $mossley-text-alt
+  h2
+    border-bottom-color: $mossley-secondary
+  .title-strip
+    background-color: transparent
+  .profile
+    color: $mossley-primary
+    background-color: $mossley-background
+    a
+      color: $mossley-primary
+      text-decoration-color: $mossley-primary
+    h3
+      border-bottom-color: $mossley-text-alt
+
+.footer
+  background-color: $mossley-primary
+  hr
+    border-color: $mossley-background
+  a
+    text-decoration-color: $mossley-secondary
+  &__impressum
+    color: $mossley-background
+    a
+      color: $mossley-background
+
+.svg
+  &__background
+    fill: $mossley-secondary
+  &__primary
+    fill: $mossley-text-alt
+  &__secondary
+    fill: $mossley-primary-dark
+
+.paginator
+  li
+    border-color: $mossley-secondary
+  li.paginator__arrow
+    background-color: $mossley-secondary
+  li.active, li:hover
+    background-color: $mossley-secondary
+  a
+    color: $mossley-text-buttons
+
+
+.event
+  a
+    color: $mossley-text
+
+.neighbourhood span
+  background-color: $mossley-secondary
+
+[class^="icon-font--"]:before, [class*="icon-font--"]:before
+  color: $mossley-secondary

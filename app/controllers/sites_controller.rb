@@ -7,7 +7,11 @@ class SitesController < ApplicationController
   before_action :set_places_to_get_online, only: [:index]
 
   def index
-    render template: 'sites/default.html.erb'
+    if current_site.slug == 'mossley'
+      render template: "sites/#{current_site.slug}.html.erb"
+    else
+      render template: 'sites/default.html.erb'
+    end
   end
 
   def robots
