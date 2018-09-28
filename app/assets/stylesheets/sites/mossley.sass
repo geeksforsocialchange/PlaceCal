@@ -4,7 +4,9 @@ $mossley-primary: #28a9e1
 $mossley-primary-dark: #5775B9
 $mossley-secondary: #f89520
 $mossley-background: #bee7f6
+$mossley-text: #4A4A4A
 $mossley-text-alt: #ffffff
+$mossley-text-buttons: #406618
 
 // For some reason these are not interpolating properly
 \:root
@@ -13,6 +15,7 @@ $mossley-text-alt: #ffffff
 
 body
   background-color: $mossley-background
+  color: $mossley-text
   +for-desktop-up
     background-image: image-url('regions/mossley/background.png')
     background-position: 50% 105px
@@ -96,3 +99,24 @@ a
     fill: $mossley-text-alt
   &__secondary
     fill: $mossley-primary-dark
+
+.paginator
+  li
+    border-color: $mossley-secondary
+  li.paginator__arrow
+    background-color: $mossley-secondary
+  li.active, li:hover
+    background-color: $mossley-secondary
+  a
+    color: $mossley-text-buttons
+
+
+.event
+  a
+    color: $mossley-text
+
+.neighbourhood span
+  background-color: $mossley-secondary
+
+[class^="icon-font--"]:before, [class*="icon-font--"]:before
+  color: $mossley-secondary
