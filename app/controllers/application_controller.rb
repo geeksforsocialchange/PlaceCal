@@ -66,7 +66,9 @@ class ApplicationController < ActionController::Base
   end
 
   def current_site
-    Site.find_by(slug: request.subdomain)
+    subdomain = request.subdomain
+    subdomain = 'placecal-default-site' if subdomain.blank?
+    Site.find_by(slug: subdomain)
   end
 
   def set_primary_neighbourhood
@@ -160,7 +162,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_site
-    @site = Site.find_by(slug: request.subdomain)
+    @site = current_site
   end
 
   protected

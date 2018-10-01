@@ -10,12 +10,7 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    if current_site
-      @partners = Partner.for_site(current_site).order(:name)
-    else # this is the canonical site.
-      @partners = Partner.all.order(:name)
-    end
-
+    @partners = Partner.for_site(current_site).order(:name)
     @map = generate_points(@partners) if @partners.detect(&:address)
   end
 
