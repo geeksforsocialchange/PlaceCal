@@ -186,7 +186,7 @@ ActiveRecord::Schema.define(version: 20181001150453) do
     t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
   end
 
-  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
+  create_table "seed_migration_data_migrations", id: :integer, default: nil, force: :cascade do |t|
     t.string "version"
     t.integer "runtime"
     t.datetime "migrated_on"
