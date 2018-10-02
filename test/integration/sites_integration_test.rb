@@ -11,14 +11,12 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'load different pages based on subdomain' do
 
-    skip("Skip while we figure out the default site stuff")
-
     # Default: get home page
     get 'http://lvh.me'
     assert_template 'pages/home'
     # If there's no site, also get home
     get 'http://no-site-set.lvh.me'
-    assert_template 'pages/home'
+    assert_redirected_to 'http://lvh.me/'
     # If there's a match, display a custom homepage
     get 'http://hulme.lvh.me'
     assert_template 'sites/default.html.erb'
