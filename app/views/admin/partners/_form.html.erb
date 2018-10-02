@@ -10,27 +10,24 @@
   <%= f.input :image, as: :file %>
   <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
 
+  <br><br>
+
   <%= f.input :is_a_place, as: :boolean, checked_value: true, unchecked_value: false, label: 'Is there a Place with the same name as this Partner?' %>
-  <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes, include_hidden: false %>
 
-  <div id='places'>
-    <%= link_to_add_association "+ Add New Places", f, :places, class: "btn btn-primary add_place" %>
-    <br/><br/>
-    <%= f.association :places, label: "Existing Places", collection: options_for_places, input_html: {class: 'form-control select2' }, include_hidden: false %>
-  </div>
-
-  <hr>
-
-  <div class="hack"></div>
-
+  <h3>Address</h3>
 
   <div id='address'>
-    <h3>Address</h3>
-    <%= f.fields_for :address, Address.new do |a| %>
-      <%= render 'address_fields', f: a %>
-    <% end %>
-    -or-
-    <%= f.association :address, label: 'Existing Address', collection: options_for_addresses, input_html: {  class: 'form-control' } %>
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.fields_for :address, Address.new do |a| %>
+          <%= render 'address_fields', f: a %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        -or-
+        <%= f.association :address, label: 'Select existing Address', collection: options_for_addresses, input_html: {  class: 'form-control' } %>
+      </div>
+    </div>
   </div>
 
   <h2>Contact Information</h2>
@@ -68,7 +65,11 @@
     </div>
   </div>
 
-  <br>
+  <h2>Tags</h2>
+  <p>Does this Partner provide any of the following features? (WIP!)</p>
+
+  <%= f.association :turfs, collection: @turfs, as: :check_boxes, include_hidden: false %>
+
 
   <%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
 
