@@ -18,8 +18,7 @@ body
   color: $mossley-text
   +for-desktop-up
     background-image: image-url('regions/mossley/background.png')
-    background-position: 50% 105px
-    background-repeat: repeat-y
+    background-position: 50% 3rem
 
 a
   color: $mossley-secondary
@@ -139,17 +138,21 @@ a
     fill: $mossley-primary-dark
 
 .hero
-  // background-image: image-url('regions/mossley/background.png'), image-url('regions/mossley/background.png')
-  // +for-tablet-portrait-up
-  //   background-image: image-url('regions/mossley/background.png'), image-url('regions/mossley/background.png')
+  background-image: image-url('regions/mossley/hero-bg.png'), image-url('regions/mossley/hero-bg.png')
+  background-position: -7.5rem 1.5rem, right -9.5rem top 2.5rem
+  +for-tablet-portrait-up
+    background-position: -4.5rem 1.5rem, right -4.5rem top 2.5rem
+  +for-tablet-landscape-up
+    background-image: image-url('regions/mossley/hero-bg-landscape.png'), image-url('regions/mossley/hero-bg-landscape.png')
+    background-position: -2.5rem 0rem, right -3.5rem top 1rem
   h4, &__divider
     display: none
   h1
     color: white
     font-family: $sans-serif
     font-weight: $bold
-    margin-top: 3rem
-    margin-bottom: 3rem
+    margin-top: 3.5rem
+    margin-bottom: 3.5rem
 
 
 
