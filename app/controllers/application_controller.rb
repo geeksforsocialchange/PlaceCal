@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_supporters
+  before_action :set_navigation
 
   include Pundit
 
@@ -161,6 +162,18 @@ class ApplicationController < ActionController::Base
 
   def set_site
     @site = Site.find_by(slug: request.subdomain)
+  end
+
+  def set_navigation
+    @navigation = [
+      ['Events', events_path],
+      ['Places', places_path],
+      ['Partners', partners_path]
+    ]
+    return unless current_site
+    if ['hulme', 'moss-side'].include? current_site.slug
+      @navigation << ['Bus', bus_path]
+    end
   end
 
   protected
