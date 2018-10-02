@@ -42,7 +42,19 @@ a
 
 .header
   background-color: $mossley-primary
+  padding-top: 1rem
+  &__branding
+    width: 180px
+    height: 61px
+    background-size: 180px 61px
+    +for-tablet-portrait-up
+      width: 222px
+      height: 75px
+      background-size: 222px 75px
   &__menu
+    margin-top: 0.5rem
+    +for-tablet-portrait-up
+      margin-top: 1rem
     li
       background-color: $mossley-background
       +for-phone-only
@@ -125,6 +137,17 @@ a
     fill: $mossley-text-alt
   &__secondary
     fill: $mossley-primary-dark
+
+.hero
+  h4, &__divider
+    display: none
+  h1
+    color: white
+    font-family: $sans-serif
+    font-weight: $bold
+    margin-top: 3rem
+    margin-bottom: 3rem
+
 
 .paginator
   li
