@@ -8,8 +8,7 @@ class PlacesControllerTest < ActionDispatch::IntegrationTest
     # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
     addresses = neighbourhoods.map {|n| a=create(:address); a.neighbourhood=n; a.save; a}
     @places = addresses.map {|a| pl=build(:place); pl.address=a; pl.save; pl}
-    default_site = build(:site)
-    default_site.slug = 'default-site'
+    default_site = create_default_site
     default_site.neighbourhoods.append(neighbourhoods)
     default_site.save
     @site = build(:site)

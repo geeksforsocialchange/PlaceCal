@@ -4,6 +4,7 @@ require 'test_helper'
 
 class PlacesIntegrationTest < ActionDispatch::IntegrationTest
   setup do
+    create_default_site
     @place = create(:place)
   end
 
