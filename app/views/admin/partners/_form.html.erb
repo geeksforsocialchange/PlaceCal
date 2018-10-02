@@ -10,7 +10,7 @@
   <%= f.input :image, as: :file %>
   <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
 
-  <%= f.input :is_a_place, as: :boolean, checked_value: true, unchecked_value: false, label: 'Is this a Place?' %>
+  <%= f.input :is_a_place, as: :boolean, checked_value: true, unchecked_value: false, label: 'Is there a Place with the same name as this Partner?' %>
   <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes, include_hidden: false %>
 
   <div id='places'>
@@ -20,6 +20,9 @@
   </div>
 
   <hr>
+
+  <div class="hack"></div>
+
 
   <div id='address'>
     <h3>Address</h3>
@@ -33,29 +36,35 @@
   <h2>Contact Information</h2>
 
   <div class="row">
-    <div class="col-md-6">
-      <h4>Public Enquiries</h4>
-      <%= f.input :url, class: "form-control" %>
-      <%= f.input :public_name, label: 'Contact Name', class: "form-control" %>
-      <%= f.input :public_email, as: :email, class: "form-control", label: 'Email' %>
-      <%= f.input :public_phone, class: "form-control", label: 'Phone Number' %>
+    <div class="col-md-4">
+      <h4>Public Contact</h4>
+      <p>This is the information that will be shown to the public.</p>
+      <label>Name</label>
+      <%= f.text_field :public_name, class: "form-control" %>
+      <label>Email</label>
+      <%= f.email_field :public_email, class: "form-control" %>
+      <label>Phone Number</label>
+      <%= f.text_field :public_phone, class: "form-control" %>
     </div>
-    <div class="col-md-6">
-      <h4>Calendar Manager</h4>
-      <%= f.input :calendar_name, class: "form-control", label: 'Contact Name' %>
-      <%= f.input :calendar_email, as: :email, class: "form-control", label: 'Email' %>
-      <%= f.input :calendar_phone, class: "form-control", label: 'Phone Number' %>
+    <div class="col-md-4">
+      <h4>Event Manager</h4>
+      <p>If different from public contact: The person who updates the calendar of events.</p>
+      <label>Name</label>
+      <%= f.text_field :calendar_name, class: "form-control" %>
+      <label>Email</label>
+      <%= f.email_field :calendar_email, class: "form-control" %>
+      <label>Phone Number</label>
+      <%= f.text_field :calendar_phone, class: "form-control" %>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <h4>Partner Manager</h4>
-      <%= f.input :partner_name, class: "form-control", label: 'Contact Name' %>
-      <%= f.input :partner_email, as: :email, class: "form-control", label: 'Email' %>
-      <%= f.input :partner_phone, label: 'Phone Number', class: "form-control" %>
-    </div>
-    <div class="col-md-6">
-
+      <p>If different from public contact: The contact person for PlaceCal secretaries.</p>
+      <label>Name</label>
+      <%= f.text_field :partner_name, class: "form-control" %>
+      <label>Email</label>
+      <%= f.email_field :partner_email, class: "form-control" %>
+      <label>Phone Number</label>
+      <%= f.text_field :partner_phone, class: "form-control" %>
     </div>
   </div>
 

@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_supporters
+  before_action :set_navigation
 
   include Pundit
 
@@ -66,10 +67,13 @@ class ApplicationController < ActionController::Base
   end
 
   # Get an object representing the requested site.
+  # Note:
+  #   The admin sub-site does not have a Site object.
   # Side effects:
-  # - If the requested site is invalid then redirect to the home page of the
+  #   If the requested site is invalid then redirect to the home page of the
   #   default site.
   def current_site
+    return if request.subdomain == 'admin'
 
     site_slug =
       if request.subdomain == 'www'
@@ -179,6 +183,20 @@ class ApplicationController < ActionController::Base
 
   def set_site
     @site = current_site
+  end
+
+  def set_navigation
+    return if self.class == MountainView::StyleguideController
+
+    @navigation = [
+      ['Events', events_path],
+      ['Places', places_path],
+      ['Partners', partners_path]
+    ]
+    return unless current_site
+    if ['hulme', 'moss-side'].include? current_site.slug
+      @navigation << ['Bus', bus_path]
+    end
   end
 
   protected

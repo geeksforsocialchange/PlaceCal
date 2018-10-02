@@ -7,13 +7,14 @@
 
 <section class="region region__title--mossley">
   <div class="c c--narrowish">
-    <h1>Marvellous Mossley is a project<span class="break"></span> aimed at celebrating our town and<span class="break"></span> all the community activity in it.</h1>
+    <h1>Marvellous Mossley is a project that celebrates our town and all the community activity happening here.</h1>
   </div>
 </section>
 
 <section class="region region__mission">
   <div class="c c--narrow">
-    <h2 class="serif"></h2>
+    <p>There are around 40 groups, mostly volunteer led, offering an amazing amount of activities at a variety of locations in our little town. Marvellous Mossley is a platform to bring all of this together in one place through this website and also the printed Mossley Missive.</p>
+    <p>We coordinate an annual celebration event and the great Mossley Mammoth Hunt along with other initiatives such as the Marvellous Mossley Pebble Dash. The project relies on ongoing grant funding to continue.</p>
     <p>We're working with <%= link_to 'local organisations', partners_path %> and <%= link_to 'places', places_path %> to create a great calendar of everything that's on in <%= @site.name %>.</p>
     <%= link_to "See what's on", events_path, class: "btn btn--lg btn--alt btn--mt" %>
   </div>
@@ -23,7 +24,9 @@
   <div class="title-strip">
     <h2 class="h2--alt">About Us</h2>
   </div>
-  <div class="c c--narrow first-ele-h3-serif">
+  <div class="c c--narrow first-ele-h3">
+    <p>If you&#39;re a local organisation and want to join our network, get in touch below.</p>
+    <p>We provide training and support to help you publish your events and promote your activities.</p>
     <%= markdown @site.description %>
     <% if @site.site_admin.present? %>
       <%= render_component 'profile', user: @site.site_admin %>

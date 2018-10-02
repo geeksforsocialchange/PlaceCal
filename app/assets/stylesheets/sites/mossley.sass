@@ -18,8 +18,7 @@ body
   color: $mossley-text
   +for-desktop-up
     background-image: image-url('regions/mossley/background.png')
-    background-position: 50% 105px
-    background-repeat: repeat-y
+    background-position: 50% 3rem
 
 a
   color: $mossley-secondary
@@ -42,13 +41,45 @@ a
 
 .header
   background-color: $mossley-primary
-  &__menu li a
-    color: $mossley-text-alt
+  padding-top: 1rem
+  &__branding
+    width: 180px
+    height: 61px
+    background-size: 180px 61px
     +for-tablet-portrait-up
-      &:hover, &.active
+      width: 222px
+      height: 75px
+      background-size: 222px 75px
+  &__menu
+    margin-top: 0.5rem
+    +for-tablet-portrait-up
+      margin-top: 1rem
+    li
+      background-color: $mossley-background
+      +for-phone-only
+        border-bottom-color: $mossley-text-alt
+        &.nav__item--last
+          border-bottom-width: 0
+        &:hover
+          background-color: $mossley-primary-dark
+      +for-tablet-landscape-up
+        background-color: transparent
+    a
+      color: $mossley-primary-dark
+      &:hover
         color: $mossley-text-alt
-        &:after
-          border-color: $mossley-secondary
+      +for-tablet-portrait-up
+        &:hover, &.active
+          color: $mossley-primary-dark
+          &:after
+            border-color: $base-primary
+      +for-tablet-landscape-up
+        color: $mossley-text-alt
+        &:hover, &.active
+          color: $mossley-text-alt
+          &:after
+            border-color: $mossley-secondary
+
 
 .region__title--mossley
   background-color: $mossley-secondary
@@ -63,7 +94,13 @@ a
 
 .hero_image--mossley
   background-image: image-url('regions/mossley/hero-desktop.jpg')
-  height: 258px
+  background-size: auto 100%
+  height: 220px
+  +for-tablet-landscape-up
+  +for-tablet-portrait-up
+    height: 290px
+  background-position: 50%
+  background-repeat: no-repeat
 
 .region__management
   background-color: $mossley-primary
@@ -99,6 +136,25 @@ a
     fill: $mossley-text-alt
   &__secondary
     fill: $mossley-primary-dark
+
+.hero
+  background-image: image-url('regions/mossley/hero-bg.png'), image-url('regions/mossley/hero-bg.png')
+  background-position: -7.5rem 1.5rem, right -9.5rem top 2.5rem
+  +for-tablet-portrait-up
+    background-position: -4.5rem 1.5rem, right -4.5rem top 2.5rem
+  +for-tablet-landscape-up
+    background-image: image-url('regions/mossley/hero-bg-landscape.png'), image-url('regions/mossley/hero-bg-landscape.png')
+    background-position: -2.5rem 0rem, right -3.5rem top 1rem
+  h4, &__divider
+    display: none
+  h1
+    color: white
+    font-family: $sans-serif
+    font-weight: $bold
+    margin-top: 3.5rem
+    margin-bottom: 3.5rem
+
+
 
 .paginator
   li
