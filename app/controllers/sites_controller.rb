@@ -20,7 +20,7 @@ class SitesController < ApplicationController
   end
 
   private
-
+  
   def set_places_to_get_online
     @places_to_get_online = Place
       .of_turf(Turf.find_by(slug: 'internet'))
