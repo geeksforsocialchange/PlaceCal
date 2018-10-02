@@ -65,10 +65,26 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Get an object representing the requested site.
+  # Side effects:
+  # - If the requested site is invalid then redirect to the home page of the
+  #   default site.
   def current_site
-    subdomain = request.subdomain
-    subdomain = 'placecal-default-site' if subdomain.blank?
-    Site.find_by(slug: subdomain)
+
+    site_slug =
+      if request.subdomain == 'www'
+        if request.subdomains.second
+          request.subdomains.second
+        end
+      elsif request.subdomain.present?
+        request.subdomain
+      end
+    site_slug ||= 'default-site'
+
+    site = Site.find_by(slug: site_slug)
+    redirect_to( root_url( :subdomain => false ) ) unless site
+
+    site
   end
 
   def set_primary_neighbourhood
