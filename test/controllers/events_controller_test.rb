@@ -8,6 +8,9 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
     addresses = neighbourhoods.map {|n| a=create(:address); a.neighbourhood=n; a.save; a}
     @events = addresses.map { |a| e=build(:event); e.address=a; e.dtstart=Time.now; e.dtend=Time.now+1; e.save; e }
+    default_site = create_default_site
+    default_site.neighbourhoods.append(neighbourhoods)
+    default_site.save
     @site = build(:site)
     @site.neighbourhoods.append(neighbourhoods.first)
     @site.neighbourhoods.append(neighbourhoods.second)
@@ -28,8 +31,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should get index with invalid subdomain' do
     get url_for controller: :events, subdomain: "notaknownsubdomain"
-    assert_response :success
-    assert_select "ol.events li", 3
+    assert_response :redirect
   end
 
   test 'should show event' do

@@ -3,6 +3,10 @@
 require 'test_helper'
 
 class PagesControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    create_default_site
+  end
+
   test 'should get join page' do
     get join_url
     assert_response :success

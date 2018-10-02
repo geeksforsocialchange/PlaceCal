@@ -57,3 +57,16 @@ VCR.configure do |c|
   c.hook_into :webmock
   c.allow_http_connections_when_no_cassette = true
 end
+
+# Create the default site.
+# Required for all tests that navigate to a URL without a subdomain.
+# Assumptions:
+#   FactoryBot is available.
+# Returns:
+#   The default site just created.
+def create_default_site
+  default_site = build(:site)
+  default_site.slug = 'default-site'
+  default_site.save
+  default_site
+end

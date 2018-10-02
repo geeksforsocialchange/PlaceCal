@@ -4,6 +4,7 @@ require 'test_helper'
 
 class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   setup do
+    create_default_site
     @partner = create(:partner)
   end
 

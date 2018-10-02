@@ -37,6 +37,7 @@ module Admin
       if @site.update_attributes(site_params)
         redirect_to admin_sites_path
       else
+        set_variables_for_sites_neighbourhoods_selection
         render 'edit'
       end
     end
@@ -56,9 +57,9 @@ module Admin
     end
 
     def set_variables_for_sites_neighbourhoods_selection
-      @all_neighbourhoods = Neighbourhood.all
+      @all_neighbourhoods = Neighbourhood.all.order(:name)
       begin
-        @site = Site.friendly.find(params[:id])
+        set_site
       rescue ActiveRecord::RecordNotFound
         @primary_neighbourhood_id = nil
         @secondary_neighbourhood_ids = []
