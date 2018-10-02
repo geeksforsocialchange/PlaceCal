@@ -66,10 +66,13 @@ class ApplicationController < ActionController::Base
   end
 
   # Get an object representing the requested site.
+  # Note:
+  #   The admin sub-site does not have a Site object.
   # Side effects:
-  # - If the requested site is invalid then redirect to the home page of the
+  #   If the requested site is invalid then redirect to the home page of the
   #   default site.
   def current_site
+    return if request.subdomain == 'admin'
 
     site_slug =
       if request.subdomain == 'www'
