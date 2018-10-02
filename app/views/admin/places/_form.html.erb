@@ -24,10 +24,10 @@
   </ul>
 
   <div id="add-new-address" class="hide">
-    <%= f.fields_for :address, [] do |a| %>
+    <%= f.fields_for :address, Address.new do |a| %>
       <div class="row new">
         <div class="col-md-6">
-          <%= render 'admin/shared/address', form: a %>
+          <%= render 'address_fields', f: a %>
           <%= link_to_remove_association "Remove", a, class: "btn btn-primary hide exec-remove-new-address" %>
         </div>
         <div class="col-md-6">
@@ -35,7 +35,6 @@
         </div>
       </div>
     <% end %>
-    <%= link_to_add_association "Add", f, :address, class: "btn btn-primary hide exec-add-new-address"%>
   </div>
   <div id="select-existing-address">
     <%= f.select :address_id, options_for_addresses, {}, class: 'form-control select2' %>
