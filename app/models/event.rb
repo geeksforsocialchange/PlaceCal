@@ -99,7 +99,7 @@ class Event < ApplicationRecord
 
   # Make sure that setting the event's Place also sets the event's Address. This
   # way we never need to choose between Event#address and Event#place.address
-  # This is particularly important for joins for neighbourhood turfs.
+  # This is particularly important for joins for neighbourhoods.
   def set_address_from_place
     self.address_id = self.place.address_id if self.place_id
   end

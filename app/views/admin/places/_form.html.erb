@@ -2,7 +2,7 @@
   <script src="//maps.google.com/maps/api/js?key=<%= ENV['GOOGLE_API_KEY'] %>"></script>
 <% end %>
 
-<%= simple_nested_form_for @place do |f| %>
+<%= simple_form_for @place do |f| %>
   <%= render_component "error", object: @place %>
 
   <h2>Basic Information</h2>
@@ -24,22 +24,17 @@
   </ul>
 
   <div id="add-new-address" class="hide">
-    <%= f.fields_for :address, [] do |a| %>
+    <%= f.fields_for :address, Address.new do |a| %>
       <div class="row new">
         <div class="col-md-6">
-          <%= a.input :street_address, class: "form-control address_1 address_field" %>
-          <%= a.input :street_address2, class: "form-control address_2 address_field" %>
-          <%= a.input :street_address3, class: "form-control address_3 address_field" %>
-          <%= a.input :city, class: "form-control city address_field" %>
-          <%= a.input :postcode, class: "form-control postcode address_field" %>
-          <%= a.link_to_remove "Remove", class: "btn btn-primary hide exec-remove-new-address" %>
+          <%= render 'address_fields', f: a %>
+          <%= link_to_remove_association "Remove", a, class: "btn btn-primary hide exec-remove-new-address" %>
         </div>
         <div class="col-md-6">
           <div id="js-map" class="map map-marker place-map"></div>
         </div>
       </div>
     <% end %>
-    <%= f.link_to_add "Add", :address, class: "btn btn-primary hide exec-add-new-address"%>
   </div>
   <div id="select-existing-address">
     <%= f.select :address_id, options_for_addresses, {}, class: 'form-control select2' %>
@@ -57,7 +52,6 @@
     <div class="col-md-6">
       <%= f.input :opening_times %>
       <%= f.input :booking_info %>
-      <%= f.input :short_description %>
       <%= f.input :accessibility_info %>
     </div>
   </div>

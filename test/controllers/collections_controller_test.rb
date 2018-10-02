@@ -4,6 +4,7 @@ require 'test_helper'
 
 class CollectionsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    create_default_site
     @collection = create(:collection)
   end
 

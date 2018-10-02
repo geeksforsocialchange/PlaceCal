@@ -10,12 +10,7 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    if current_site
-      @partners = Partner.for_site(current_site).order(:name)
-    else # this is the canonical site.
-      @partners = Partner.all.order(:name)
-    end
-
+    @partners = Partner.for_site(current_site).order(:name)
     @map = generate_points(@partners) if @partners.detect(&:address)
   end
 
@@ -44,7 +39,11 @@ class PartnersController < ApplicationController
   private
 
   def set_title
-    @title = current_site ? "Partners near #{current_site.name}" : 'All Partners'
+    @title = if current_site&.primary_neighbourhood
+               "Partners near #{current_site.primary_neighbourhood.name}"
+             else
+               'All Partners'
+             end
   end
   # This controller doesn't allow CRUD
   # def partner_params

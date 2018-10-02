@@ -10,12 +10,7 @@ class PlacesController < ApplicationController
   before_action :set_title, only: %i[index show]
 
   def index
-    if current_site
-      @places = Place.for_site(current_site).order(:name)
-    else # this is the canonical site.
-      @places = Place.all.order(:name)
-    end
-
+    @places = Place.for_site(current_site).order(:name)
     @map = generate_points(@places)
   end
 
@@ -51,6 +46,10 @@ class PlacesController < ApplicationController
   private
 
   def set_title
-    @title = current_site ? "Places near #{current_site.name}" : 'All Places'
+    @title = if current_site&.primary_neighbourhood
+               "Places near #{current_site.primary_neighbourhood.name}"
+             else
+               'All Places'
+             end
   end
 end
