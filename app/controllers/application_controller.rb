@@ -75,6 +75,9 @@ class ApplicationController < ActionController::Base
   def current_site
     return if request.subdomain == 'admin'
 
+    site = Site.find_by( domain: request.host )
+    return site if site
+
     site_slug =
       if request.subdomain == 'www'
         if request.subdomains.second

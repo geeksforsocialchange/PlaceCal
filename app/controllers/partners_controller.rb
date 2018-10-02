@@ -39,7 +39,7 @@ class PartnersController < ApplicationController
   private
 
   def set_title
-    @title = if current_site && current_site.slug != 'default-site'
+    @title = if current_site&.primary_neighbourhood
                "Partners near #{current_site.primary_neighbourhood.name}"
              else
                'All Partners'
