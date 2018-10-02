@@ -95,6 +95,7 @@ GEM
       mime-types (>= 1.16)
     choice (0.2.0)
     chronic (0.10.2)
+    cocoon (1.2.11)
     coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -273,7 +274,6 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     nenv (0.3.0)
-    nested_form (0.3.2)
     netrc (0.11.0)
     nio4r (2.3.0)
     nokogiri (1.8.2)
@@ -482,6 +482,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.3.7)
   byebug
   carrierwave
+  cocoon
   coffee-rails (~> 4.2)
   delayed_job_active_record
   devise
@@ -511,7 +512,6 @@ DEPENDENCIES
   minitest-rails-capybara
   minitest-reporters
   mountain_view
-  nested_form
   oj
   omniauth-facebook
   paper_trail
