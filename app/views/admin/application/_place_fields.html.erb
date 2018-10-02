@@ -1,0 +1,19 @@
+<div class="row nested-fields">
+  <div class="col-md-6">
+    <%= f.input :name, class: "form-control", label: 'Place Name' %>
+    <%= f.input :short_description, rows: 3, class: "form-control", label: 'Short Description' %>
+    <%= f.input :accessibility_info, rows: 4, class: "form-control", label: 'Accessibility Information' %>
+    <%= f.input :opening_times, rows: 4, class: "form-control", label: 'Opening Times' %>
+    <%= f.input :booking_info, rows: 4, class: "form-control", label: 'Booking Information' %>
+
+    <%= f.fields_for :address, Address.new do |a| %>
+      <%= render 'address_fields', f: a %>
+    <% end %>
+
+    <%= link_to_remove_association "Remove", f, class: "btn btn-primary" %>
+    <br>
+  </div>
+  <div class="col-md-6">
+    <div id="js-map" class="map map-marker place-map"></div>
+  </div>
+</div>

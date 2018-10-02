@@ -1,118 +1,74 @@
-<%= simple_nested_form_for @partner do |f| %>
+<%= simple_form_for @partner do |f| %>
 
-<%= render_component "error", object: @partner %>
+  <%= render_component "error", object: @partner %>
 
-<h2>Basic Information</h2>
+  <h2>Basic Information</h2>
 
-<label>Name</label>
-<%= f.text_field :name, class: "form-control" %>
+  <%= f.input :name, class: "form-control" %>
+  <%= f.input :short_description, rows: 2, class: "form-control", label: 'Short Description' %>
 
-<label>Short Description</label>
-<%= f.text_area :short_description, rows: 2, class: "form-control" %>
+  <%= f.input :image, as: :file %>
+  <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
 
-<label>Image</label>
-<%= f.file_field :image %>
-<%= image_tag @partner.image , width: '125', class: 'brand_image' %>
+  <%= f.input :is_a_place, as: :boolean, checked_value: true, unchecked_value: false, label: 'Is this a Place?' %>
+  <%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes, include_hidden: false %>
 
-<label>Is this a Place?</label>
-<%= f.check_box :is_a_place, {}, "true", "false" %>
+  <div id='places'>
+    <%= link_to_add_association "+ Add New Places", f, :places, class: "btn btn-primary add_place" %>
+    <br/><br/>
+    <%= f.association :places, label: "Existing Places", collection: options_for_places, input_html: {class: 'form-control select2' }, include_hidden: false %>
+  </div>
 
-<%= f.association :turfs, label: false, collection: @turfs, as: :check_boxes, include_hidden: false %>
+  <hr>
 
-<h2>Places</h2>
-<%= f.link_to_add "+ Add New Places", :places, class: "btn btn-primary add_place" %>
-<%= f.association :places, label: "Existing Places", collection: options_for_places, input_html: {class: 'form-control select2' }, include_hidden: false %>
+  <div id='address'>
+    <h3>Address</h3>
+    <%= f.fields_for :address, Address.new do |a| %>
+      <%= render 'address_fields', f: a %>
+    <% end %>
+    -or-
+    <%= f.association :address, label: 'Existing Address', collection: options_for_addresses, input_html: {  class: 'form-control' } %>
+  </div>
 
-<%= f.simple_fields_for :places, [] do |p| %>
+  <h2>Contact Information</h2>
+
   <div class="row">
-    <%= p.link_to_add "+ Add New Address", :address, class: "btn btn-primary add_address hide" %>
     <div class="col-md-6">
-      <label>Place Name</label>
-      <%= p.text_field :name, class: "form-control" %>
-      <%= p.fields_for :address do |a| %>
-        <label>Address Line 1</label>
-        <%= a.text_field :street_address, class: "form-control address_1 address_field" %>
-        <label>Address Line 2</label>
-        <%= a.text_field :street_address2, class: "form-control address_2 address_field" %>
-        <div class="row">
-          <div class="col-md-6">
-            <label>City</label>
-            <%= a.text_field :city, class: "form-control city address_field" %>
-          </div>
-          <div class="col-md-6">
-            <label>Postcode</label>
-            <%= a.text_field :postcode, class: "form-control postcode address_field" %>
-          </div>
-        </div>
-      <% end %>
-      <br>
-      <div id="js-map" class="map map-marker place-map"></div>
+      <h4>Public Enquiries</h4>
+      <%= f.input :url, class: "form-control" %>
+      <%= f.input :public_name, label: 'Contact Name', class: "form-control" %>
+      <%= f.input :public_email, as: :email, class: "form-control", label: 'Email' %>
+      <%= f.input :public_phone, class: "form-control", label: 'Phone Number' %>
     </div>
     <div class="col-md-6">
-      <label>Short Description</label>
-      <%= p.text_area :short_description, rows: 3, class: "form-control" %>
-      <label>Accessibility Information</label>
-      <%= p.text_area :accessibility_info, rows: 4, class: "form-control" %>
-      <label>Opening Times</label>
-      <%= p.text_area :opening_times, rows: 4, class: "form-control" %>
-      <label>Booking Information</label>
-      <%= p.text_area :booking_info, rows: 4, class: "form-control" %>
-      <%= p.link_to_remove "Remove", class: "btn btn-primary" %>
+      <h4>Calendar Manager</h4>
+      <%= f.input :calendar_name, class: "form-control", label: 'Contact Name' %>
+      <%= f.input :calendar_email, as: :email, class: "form-control", label: 'Email' %>
+      <%= f.input :calendar_phone, class: "form-control", label: 'Phone Number' %>
     </div>
   </div>
-<% end %>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Partner Manager</h4>
+      <%= f.input :partner_name, class: "form-control", label: 'Contact Name' %>
+      <%= f.input :partner_email, as: :email, class: "form-control", label: 'Email' %>
+      <%= f.input :partner_phone, label: 'Phone Number', class: "form-control" %>
+    </div>
+    <div class="col-md-6">
 
-<h2>Contact Information</h2>
-
-<div class="row">
-  <div class="col-md-6">
-    <h4>Public Enquiries</h4>
-    <%= label_tag :url %>
-    <%= f.text_field :url, class: "form-control" %>
-    <%= label_tag :public_name %>
-    <%= f.text_field :public_name, class: "form-control" %>
-    <label>Contact Name</label>
-    <%= f.text_field :public_name, class: "form-control" %>
-    <label>Email</label>
-    <%= f.email_field :public_email, class: "form-control" %>
-    <label>Phone Number</label>
-    <%= f.text_field :public_phone, class: "form-control" %>
+    </div>
   </div>
-  <div class="col-md-6">
-    <h4>Calendar Manager</h4>
-    <label>Contact Name</label>
-    <%= f.text_field :calendar_name, class: "form-control" %>
-    <label>Email</label>
-    <%= f.email_field :calendar_email, class: "form-control" %>
-    <label>Phone Number</label>
-    <%= f.text_field :calendar_phone, class: "form-control" %>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-6">
-    <h4>Partner Manager</h4>
-    <label>Contact Name</label>
-    <%= f.text_field :partner_name, class: "form-control" %>
-    <label>Email</label>
-    <%= f.email_field :partner_email, class: "form-control" %>
-    <label>Phone Number</label>
-    <%= f.text_field :partner_phone, class: "form-control" %>
-  </div>
-  <div class="col-md-6">
 
-  </div>
-</div>
+  <br>
 
-<br>
+  <%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
 
-<%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
+  <% if policy(Partner).destroy? && !@partner.new_record? %>
+    <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
+  <% end %>
+    <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
 
-<% if policy(Partner).destroy? && !@partner.new_record? %>
-  <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
-<% end %>
-  <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
-
-<%# End form tag %>
+  <%# End form tag %>
 <% end %>
 
 <% content_for :first_min_js do %>
