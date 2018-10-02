@@ -39,7 +39,11 @@ class PartnersController < ApplicationController
   private
 
   def set_title
-    @title = current_site ? "Partners near #{current_site.name}" : 'All Partners'
+    @title = if current_site && current_site.slug != 'default-site'
+               "Partners near #{current_site.primary_neighbourhood.name}"
+             else
+               'All Partners'
+             end
   end
   # This controller doesn't allow CRUD
   # def partner_params

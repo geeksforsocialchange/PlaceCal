@@ -46,6 +46,10 @@ class PlacesController < ApplicationController
   private
 
   def set_title
-    @title = current_site ? "Places near #{current_site.name}" : 'All Places'
+    @title = if current_site && current_site.slug != 'default-site'
+               "Places near #{current_site.primary_neighbourhood.name}"
+             else
+               'All Places'
+             end
   end
 end
