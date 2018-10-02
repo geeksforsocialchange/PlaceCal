@@ -14,7 +14,7 @@
   <nav class="nav header__menu js-menu" role="navigation">
     <ul>
       <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
-      <% @navigation.each do |link| %>
+      <% navigation.each do |link| %>
         <li><%= active_link_to link[0], link[1] %></li>
       <% end %>
     </ul>

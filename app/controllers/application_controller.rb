@@ -186,6 +186,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_navigation
+    return if self.class == MountainView::StyleguideController
+
     @navigation = [
       ['Events', events_path],
       ['Places', places_path],
