@@ -68,30 +68,22 @@ class ApplicationController < ActionController::Base
 
   # Get an object representing the requested site.
   # Note:
-  #   The admin sub-site does not have a Site object.
+  #   The admin site does not have a Site object.
   # Side effects:
   #   If the requested site is invalid then redirect to the home page of the
   #   default site.
   def current_site
-    return if request.subdomain == 'admin'
+    return @current_site if @current_site
 
-    site = Site.find_by( domain: request.host )
-    return site if site
+    # Do not return a site for the admin subdomain.
+    # The admin subdomain gives a global view of data.
+    return if request.subdomain == Site::ADMIN_SUBDOMAIN
 
-    site_slug =
-      if request.subdomain == 'www'
-        if request.subdomains.second
-          request.subdomains.second
-        end
-      elsif request.subdomain.present?
-        request.subdomain
-      end
-    site_slug ||= 'default-site'
+    @current_site = Site.find_by_request request
 
-    site = Site.find_by(slug: site_slug)
-    redirect_to( root_url( :subdomain => false ) ) unless site
+    redirect_to( root_url( :subdomain => false ) ) unless @current_site
 
-    site
+    @current_site
   end
 
   def set_primary_neighbourhood
@@ -210,6 +202,6 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_resource)
-    admin_root_url(subdomain: 'admin')
+    admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
   end
 end
