@@ -26,7 +26,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     root 'pages#home'
   end
 
-  constraints(::Subdomains::Sites) do
+  constraints(::Sites::Local) do
     # get '*' => 'sites#index'
     root 'sites#index'
   end

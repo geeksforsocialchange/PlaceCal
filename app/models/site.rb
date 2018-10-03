@@ -28,4 +28,47 @@ class Site < ApplicationRecord
   def to_s
     "#{id}: #{name}"
   end
+
+  # ASSUMPTION: There is no row in the sites table for the admin site, hence
+  # defining the admin subdomain string here.
+  ADMIN_SUBDOMAIN = 'admin'
+
+  def default_site?
+    slug == 'default-site'
+  end
+
+  # ASSUMPTION: All valid sites, other than the default site, are local sites.
+  def local_site?
+    not default_site?
+  end
+
+  class << self
+
+    # Find the requested Site from information in the rails request object.
+    #
+    # Parameters:
+    #   request must expose these methods; host, subdomain, subdomains
+    def find_by_request request
+
+      # First try to find the correct site by the full host name.
+      site = Site.find_by( domain: request.host )
+      return site if site
+
+      # Fall back to using the subdomain.
+      # Typically this will be for non-production sites.
+      site_slug =
+        if request.subdomain == 'www'
+          if request.subdomains.second
+            request.subdomains.second
+          end
+        elsif request.subdomain.present?
+          request.subdomain
+        end
+
+      # No subdomain? Fall back to the default site.
+      site_slug ||= 'default-site'
+
+      Site.find_by(slug: site_slug)
+    end
+  end
 end
