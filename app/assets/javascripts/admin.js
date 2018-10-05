@@ -5,6 +5,7 @@
 //= require cocoon
 //= require select2
 //= require leaflet
+//= require admin/calendars
 //= require_tree ./behaviors
 
 $(document).ready(function (){

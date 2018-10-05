@@ -39,3 +39,6 @@ en:
           attributes:
             turf_ids:
               blank: "Select at least one Turf"
+  date:
+    formats:
+      datetime: '%b %-m, %Y %l:%M'

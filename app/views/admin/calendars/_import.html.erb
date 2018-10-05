@@ -2,7 +2,7 @@
 <div class='row'>
   <%= simple_form_for :import, { url: import_admin_calendar_path(@calendar) } do |f| %>
     <div class="col-sm-2">
-      <%= f.input :starting_from, input_html: { name: 'starting_from' }, placeholder: 'YYYY-MM-DD' %>
+      <%= f.input :starting_from, input_html: { name: 'starting_from', value: Date.today.strftime('%Y-%m-%d') }, placeholder: 'YYYY-MM-DD' %>
       <%= f.submit 'Run Importer', class: 'btn btn-primary' %>
     </div>
   <% end %>
@@ -14,7 +14,7 @@
   <br/>
 
   <p>
-      <b>Last Import At:</b> <%= @calendar.last_import_at%>
+    <b>Last Import At:</b> <%= @calendar.last_import_at%>
   </p>
 
   <h4>Important Notices</h4>
@@ -33,8 +33,8 @@
   <h4>Recent Activities</h4><br/>
   <% @versions.each do |date, activities| %>
     <div>
-        <b><%= display_time_since(date) %></b>
-        <%= render 'shared/recent_import_activity', activities: activities %>
+      <b><%= l(date, format: :datetime) %> - <%= display_time_since(date) %></b>
+      <%= render 'shared/recent_import_activity', activities: activities %>
     </div>
   <% end %>
 </div>
