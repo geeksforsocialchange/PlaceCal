@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %></title>
+    <title>
+      <% if @site.default_site? %>
+        PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>
+      <% else %>
+        <%= @site.name %> - <%= yield(:title) %>
+      <% end %>
+    </title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all' %>

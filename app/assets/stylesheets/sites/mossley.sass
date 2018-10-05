@@ -12,6 +12,7 @@ $mossley-text-buttons: #406618
 \:root
   --base-primary: #28a9e1
   --base-secondary: #f89520
+  --base-background: #ffffff
 
 body
   background-color: $mossley-background
@@ -19,6 +20,9 @@ body
   +for-desktop-up
     background-image: image-url('regions/mossley/background.png')
     background-position: 50% 3rem
+
+.background
+  background-color: $mossley-text-alt
 
 a
   color: $mossley-secondary
@@ -119,6 +123,7 @@ a
       border-bottom-color: $mossley-text-alt
 
 .footer
+  color: $mossley-text-alt
   background-color: $mossley-primary
   hr
     border-color: $mossley-background
