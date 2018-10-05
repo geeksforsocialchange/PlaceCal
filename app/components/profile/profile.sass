@@ -17,11 +17,21 @@
       max-width: 120px
 +for-tablet-portrait-up
   .profile__avatar
-    display: inline-block
+    float: left
     margin-top: 0.5rem
     margin-right: 1rem
     margin-left: 1rem
   .profile__details
-    display: inline-block
     text-align: left
     vertical-align: top
+
+@supports(display: grid)
+  .profile
+    display: grid
+    grid-gap: 0 1rem
+    grid-template-columns: 1fr
+    +for-tablet-portrait-up
+      grid-template-columns: 150px auto
+  .profile__title
+    +for-tablet-portrait-up
+      grid-column: span 2
