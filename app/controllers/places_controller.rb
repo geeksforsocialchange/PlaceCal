@@ -46,10 +46,11 @@ class PlacesController < ApplicationController
   private
 
   def set_title
-    @title = if current_site&.primary_neighbourhood
-               "Places near #{current_site.primary_neighbourhood.name}"
-             else
-               'All Places'
-             end
+    @title =
+      if current_site&.primary_neighbourhood
+        "Places #{current_site.join_word} #{current_site.primary_neighbourhood.name}"
+      else
+        'All Places'
+      end
   end
 end

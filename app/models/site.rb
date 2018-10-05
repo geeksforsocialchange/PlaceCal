@@ -47,6 +47,14 @@ class Site < ApplicationRecord
     neighbourhoods.count > 1
   end
 
+  def join_word
+    if neighbourhoods.count > 1
+      'near'
+    else
+      'in'
+    end
+  end
+
   class << self
 
     # Find the requested Site from information in the rails request object.

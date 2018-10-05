@@ -102,11 +102,12 @@ class EventsController < ApplicationController
   private
 
   def set_title
-    @title = if current_site&.primary_neighbourhood
-               "Events near #{current_site.primary_neighbourhood.name}"
-             else
-               'All Events'
-             end
+    @title =
+      if current_site&.primary_neighbourhood
+        "Events #{current_site.join_word} #{current_site.primary_neighbourhood.name}"
+      else
+        'All Events'
+      end
   end
 
   # Use callbacks to share common setup or constraints between actions.
