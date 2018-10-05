@@ -1,11 +1,8 @@
-<%= f.label :first_name %>
-<%= f.text_field :first_name, class: "form-control" %>
+<%= f.input :first_name %>
+<%= f.input :last_name %>
+<%= f.input :email %>
+<%= f.input :phone %>
 
-<%= f.label :last_name %>
-<%= f.text_field :last_name, class: "form-control" %>
+<%= f.input :avatar %>
 
-<%= f.label :email %>
-<%= f.text_field :email, class: "form-control" %>
-
-<%= f.label :phone %>
-<%= f.text_field :phone, class: "form-control" %>
+<%= image_tag f.object.avatar.retina %>

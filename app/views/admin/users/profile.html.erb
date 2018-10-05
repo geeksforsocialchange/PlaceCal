@@ -1,28 +1,25 @@
 <h1 class="page-header">Edit Profile</h1>
 
 <%= simple_form_for [:admin, current_user], html: { class: "form-horizontal" } do |f| %>
+  <div class="row">
 
-  <%= render_component "error", object: current_user %>
+    <%= render_component "error", object: current_user %>
+    <div class="col-md-6">
+      <%= render "contact", f: f %>
+    </div>
 
-  <%= render "contact", f: f %>
+    <div class="col-md-6">
+      <%= f.input :password, autocomplete: "off", hint: "Leave blank if you don't want to change your password" %>
+      <% if @minimum_password_length %>
+        <br />
+        <em><%= @minimum_password_length %> characters minimum</em>
+      <% end %>
+      <%= f.input :password_confirmation, autocomplete: "off", hint: "Leave blank if you don't want to change your password" %>
 
-  <label>Password</label><i>(leave blank if you don't want to change it)</i><br />
-  <%= f.password_field :password, autocomplete: "off", class: "form-control" %>
-  <% if @minimum_password_length %>
-    <br />
-    <em><%= @minimum_password_length %> characters minimum</em>
-  <% end %>
-
-  <label>Password Confirmation</label><br />
-  <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control"%>
-
-  <label>Current Password</label> <i>(we need your current password to confirm your changes)</i><br />
-  <%= f.password_field :current_password, autocomplete: "off", class: "form-control"%>
-  <br>
+      <%= f.input :current_password, autocomplete: "off", hint: 'Enter your current password if you want to change it' %>
+      <br>
+    </div>
+  </div>
+  <br><br>
   <%= f.submit "Update", class: "btn btn-primary " %>
-
-
 <% end %>
-<h3>Avatar</h3>
-<%= gravatar_for current_user %>
-<p>Create an avatar at <%= link_to "Gravatar.com", "https://en.gravatar.com/" %></p>

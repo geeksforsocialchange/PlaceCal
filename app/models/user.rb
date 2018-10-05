@@ -18,6 +18,8 @@ class User < ApplicationRecord
 
   before_save :update_role
 
+  mount_uploader :avatar, AvatarUploader
+
   def full_name
     (first_name || '') + ' ' + (last_name || '')
   end
