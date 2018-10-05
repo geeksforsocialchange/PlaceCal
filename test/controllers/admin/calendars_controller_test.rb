@@ -43,6 +43,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
       post admin_calendars_url,
         params: { calendar: attributes_for(:calendar) }
     end
+    assert_redirected_to edit_admin_calendar_path(Calendar.last)
   end
 
   # Edit & Update Calendar
@@ -59,7 +60,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
     patch admin_calendar_url(@calendar),
           params: { calendar: attributes_for(:calendar) }
     # Redirect to main partner screen
-    assert_redirected_to admin_calendars_url
+    assert_redirected_to edit_admin_calendar_path(@calendar)
   end
 
   # Delete Calendar
