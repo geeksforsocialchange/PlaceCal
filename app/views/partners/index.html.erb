@@ -13,5 +13,5 @@
 </div>
 
 <% if @map&.length&.positive? %>
-  <%= render_component "map", points: @map %>
+  <%= render_component "map", points: @map, site: @current_site.slug %>
 <% end %>

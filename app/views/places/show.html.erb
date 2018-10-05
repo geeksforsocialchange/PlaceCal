@@ -22,7 +22,7 @@
     </div>
     <div class="gi gi__3-5">
       <% if @map.length > 0 %>
-        <%= render_component "map", points: @map %>
+        <%= render_component "map", points: @map, site: @current_site.slug %>
       <% end %>
 
       <%= render_component "place_info",

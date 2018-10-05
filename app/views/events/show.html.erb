@@ -28,9 +28,8 @@
     </div>
   </div>
 </div>
-
 <% if @map&.any? %>
-  <%= render_component "map", points: @map, style: :full %>
+  <%= render_component "map", points: @map, style: :full, site: @current_site.slug %>
 <% end %>
 
 <%= render_component "meta", permalink: "/events/#{@event.id}" do %>

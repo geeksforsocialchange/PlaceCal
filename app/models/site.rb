@@ -42,6 +42,10 @@ class Site < ApplicationRecord
     not default_site?
   end
 
+  def only_primary_neighbourhood?
+    primary_neighbourhood && secondary_neighbourhoods.count.zero?
+  end
+
   class << self
 
     # Find the requested Site from information in the rails request object.
