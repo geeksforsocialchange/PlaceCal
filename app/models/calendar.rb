@@ -86,7 +86,7 @@ class Calendar < ApplicationRecord
     handle_deleted_events(from, @events_uids) if @events_uids
 
     reload # reload the record from database to clear out any invalid events to avoid attempts to save them
-    update_attributes!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current)
+    update_attributes!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current, critical_error: nil)
   end
 
   def create_or_update_events(event_data, occurrences, from) # rubocop:disable all

@@ -28,7 +28,7 @@ module Admin
       end
 
       if @calendar.save
-        redirect_to admin_calendars_path
+        redirect_to edit_admin_calendar_path(@calendar)
       else
         render 'new'
       end
@@ -36,7 +36,7 @@ module Admin
 
     def update
       if @calendar.update_attributes(calendar_params)
-        redirect_to admin_calendars_path
+        redirect_to edit_admin_calendar_path(@calendar)
       else
         render 'edit'
       end
