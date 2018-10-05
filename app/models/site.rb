@@ -42,8 +42,9 @@ class Site < ApplicationRecord
     not default_site?
   end
 
-  def only_primary_neighbourhood?
-    primary_neighbourhood && secondary_neighbourhoods.count.zero?
+  # Should we show the neighbourhood lozenge out on this site?
+  def show_neighbourhoods?
+    neighbourhoods.count > 1
   end
 
   class << self

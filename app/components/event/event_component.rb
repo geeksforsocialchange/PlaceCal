@@ -2,7 +2,7 @@
 
 # app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :context, :event, :primary_neighbourhood
+  properties :context, :event, :primary_neighbourhood, :show_neighbourhoods
 
   include ActionView::Helpers::TextHelper
 

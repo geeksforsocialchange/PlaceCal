@@ -2,7 +2,7 @@
 
 # app/components/place/place_partner_preview_component.rb
 class PlacePartnerPreviewComponent < MountainView::Presenter
-  properties :primary_neighbourhood, :previewee
+  properties :primary_neighbourhood, :previewee, :show_neighbourhoods
 
   def name
     previewee.name
