@@ -84,6 +84,7 @@ module Admin
                                    :password,
                                    :phone,
                                    :role,
+                                   :avatar,
                                    turf_ids: [],
                                    partner_ids: [])
     end
