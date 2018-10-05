@@ -32,7 +32,7 @@
             <%= @site.site_admin.full_name %>
           </p>
           <p>
-            <% if @site.site_admin.phone.length.positive? %>
+            <% if @site.site_admin.phone&.length&.positive? %>
               <strong>T:</strong> <%= @site.site_admin.phone %><br>
             <% end %>
             <strong>E:</strong> <%= mail_to @site.site_admin.email %>
