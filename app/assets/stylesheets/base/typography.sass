@@ -55,6 +55,7 @@ h4, .h4
 
 .title-strip
   background-color: $base-rules
+  background-color: var(--base-rules)
   padding: 0.5rem 0
   margin: 3rem 0
 
@@ -78,10 +79,12 @@ h2.serif
 .udl
   padding-bottom: 0.5rem
   border-bottom: 3px solid $base-rules
+  border-bottom-color: var(--base-rules)
   display: inline-block
   text-decoration: none
   &--red
     border-bottom-color: $base-secondary
+    border-bottom-color: var(--base-secondary)
   &--fw
     display: block
 
@@ -90,12 +93,14 @@ a
   text-decoration-color: $base-primary
   text-decoration-color: var(--base-primary)
   color: $base-text
+  color: var(--base-text)
   // border-width: 0 0 2px 0
   // border-style: solid
   // border-color: $base-primary
 
 hr
   border-color: $base-rules
+  border-color: var(--base-rules)
   border-width: 5px
   border-style: solid
 
