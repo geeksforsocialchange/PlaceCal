@@ -55,6 +55,11 @@ class Calendar < ApplicationRecord
     versions = versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
   end
 
+  def critical_import_failure(error, save_now=true)
+    self.critical_error = error
+    self.is_working = false
+    self.save if save_now
+  end
 
   # Create Events using this Calendar
   # @param from [DateTime]
@@ -135,7 +140,7 @@ class Calendar < ApplicationRecord
   def source_supported
     CalendarParser.new(self).validate_feed
   rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
-    self.critical_error = e
+    critical_import_failure(e, false)
   end
 
   # Import events from given URL

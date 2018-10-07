@@ -21,6 +21,8 @@ class Partner < ApplicationRecord
   validates_uniqueness_of :name
   # validates_presence_of :turf_ids
 
+  validate :require_place_if_same_as_place
+
   mount_uploader :image, ImageUploader
 
   after_save :update_users
@@ -43,5 +45,11 @@ class Partner < ApplicationRecord
 
   def update_users
     users.each(&:update_role)
+  end
+
+  def require_place_if_same_as_place
+    if is_a_place && places.blank?
+      errors.add(:base, 'Please add at least one place if one exists with same name')
+    end
   end
 end

@@ -29,10 +29,11 @@ def import_events_from_source(calendar_id, from)
 
   calendar.import_events(from)
 rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
-  calendar.update_attribute(:critical_error, e)
+  calendar.critical_import_failure(e)
 rescue StandardError => e
   # TODO: Inform admin(s) when this fails
   error = "Could not automatically import data for calendar #{calendar.name} (id #{calendar_id}):  #{e}"
+  calendar.critical_import_failure(error)
   puts error
   Rollbar.error error
   nil
