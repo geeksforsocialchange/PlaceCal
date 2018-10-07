@@ -13,7 +13,7 @@ module Parsers
 
     def download_calendar
       url = @url.gsub(/webcal:\/\//, 'https://') #Remove the webcal:// and just use the part after it
-      open(url)
+      HTTParty.get(url, follow_redirects: true)
     end
 
     def import_events_from(data)
@@ -35,7 +35,7 @@ module Parsers
 
     def digest(data)
       #read file to get contents before creating digest
-      Digest::MD5.hexdigest(data.read)
+      Digest::MD5.hexdigest(data)
     end
 
   end

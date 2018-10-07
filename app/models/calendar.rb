@@ -91,7 +91,7 @@ class Calendar < ApplicationRecord
 
   def create_or_update_events(event_data, occurrences, from) # rubocop:disable all
     @important_notices = []
-    calendar_events    = events.upcoming_for_date(from).where(uid: event_data.uid)
+    calendar_events    = events.upcoming.where(uid: event_data.uid)
 
     # If any dates of this event don't match the imported start times or end times, delete them
     if event_data.recurring_event?
@@ -117,7 +117,7 @@ class Calendar < ApplicationRecord
   end
 
   def handle_deleted_events(from, uids)
-    upcoming_events = events.upcoming_for_date(from)
+    upcoming_events = events.upcoming
     deleted_events = upcoming_events.where.not(uid: uids).pluck(:uid)
 
     return if deleted_events.blank?
