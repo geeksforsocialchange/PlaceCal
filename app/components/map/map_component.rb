@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 class MapComponent < MountainView::Presenter
-  properties :points, :zoom
+  properties :points, :zoom, :site
 
+  # FIXME: Find out why this isn't working as a constant
+  def api_token
+    'pk.eyJ1IjoicGxhY2VjYWwiLCJhIjoiY2ptdzJqM3owMzN1bDNwbnhjbHIzb25layJ9.Kq2KjkWzSvLOpiHICuJiPA'
+  end
+
+  # FIXME: for some reason tests are returning [nil] from properties[:points]
   def markers
-    # FIXME: for some reason tests are returning [nil] from properties[:points]
     properties[:points] == [nil] ? [] : properties[:points]
   end
 
@@ -28,6 +33,16 @@ class MapComponent < MountainView::Presenter
       ' map--multiple'
     else
       ' map--single'
+    end
+  end
+
+  # IDs from Mapbox
+  def tileset
+    case site
+    when 'mossley'
+      'cjmw2kdvt70g82snxpa2gqdza'
+    else
+      'cjmw2khle4d6q2sl7sqsvak2x'
     end
   end
 

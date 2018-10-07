@@ -29,7 +29,7 @@
                         class: 'btn' %>
           </p>
           <p>
-            <%= link_to 'Download winter A3 Poster (PDF, colour)', 
+            <%= link_to 'Download winter A3 Poster (PDF, colour)',
                          asset_path('2017/12/placecal_winter2017_poster.pdf'),
                          class: 'btn' %><br>
             <%= link_to 'Download winter A3 Poster (PDF, B&W)',
@@ -61,5 +61,5 @@
 </div>
 
 <% if @map&.any? %>
-  <%= render_component "map", points: @map %>
+  <%= render_component "map", points: @map, site: @current_site.slug %>
 <% end %>

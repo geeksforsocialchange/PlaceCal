@@ -31,7 +31,7 @@
   map.fitBounds(markerGroup.getBounds(), {maxZoom: <%= zoom %>});
 
   // Add the basemap
-  L.tileLayer('https://api.mapbox.com/styles/v1/studiosquid/cj9o6fykz441q2rqyqzkaal37/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic3R1ZGlvc3F1aWQiLCJhIjoiY2o5bzZmNzhvMWI2dTJ3bnQ1aHFnd3loYSJ9.NC3T07dEr_Aw7wo1O8aF-g', {
+  L.tileLayer("https://api.mapbox.com/styles/v1/placecal/<%= tileset %>/tiles/256/{z}/{x}/{y}@2x?access_token=<%= api_token %>", {
             attribution: 'PlaceCal',
             maxZoom: 18,
   }).addTo(map);

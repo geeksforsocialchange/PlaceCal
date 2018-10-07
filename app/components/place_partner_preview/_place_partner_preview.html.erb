@@ -1,9 +1,11 @@
 <li class="preview">
   <div class="preview__header">
     <h3><%= link_to name, link %></h3>
-    <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
-      <span><%= neighbourhood_name %></span>
-    </div>
+    <% if show_neighbourhoods %>
+      <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
+        <span><%= neighbourhood_name %></span>
+      </div>
+    <% end %>
   </div>
   <% if description %>
     <div class="preview__details">

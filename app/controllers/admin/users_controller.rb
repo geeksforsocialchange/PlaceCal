@@ -73,7 +73,8 @@ module Admin
                                    :last_name,
                                    :email,
                                    :password,
-                                   :phone)
+                                   :phone,
+                                   :avatar)
     end
 
     def user_turf_params
@@ -83,6 +84,7 @@ module Admin
                                    :password,
                                    :phone,
                                    :role,
+                                   :avatar,
                                    turf_ids: [],
                                    partner_ids: [])
     end

@@ -8,6 +8,8 @@ class ProfileComponent < MountainView::Presenter
   end
 
   def phone
+    # Bloody empty string strikes again
+    return false unless user.phone&.length&.positive?
     user.phone
   end
 

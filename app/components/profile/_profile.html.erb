@@ -3,7 +3,9 @@
     <h3 class="h2--alt udl">Your local contact</h3>
   </div>
   <div class="profile__avatar">
-    <%= gravatar_for user %>
+    <% if user.avatar %>
+      <%= image_tag user.avatar.retina %>
+    <% end %>
   </div>
   <div class="profile__details">
     <p><strong><%= name %></strong></p>

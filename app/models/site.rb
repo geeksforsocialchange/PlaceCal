@@ -42,6 +42,19 @@ class Site < ApplicationRecord
     not default_site?
   end
 
+  # Should we show the neighbourhood lozenge out on this site?
+  def show_neighbourhoods?
+    neighbourhoods.count > 1
+  end
+
+  def join_word
+    if neighbourhoods.count > 1
+      'near'
+    else
+      'in'
+    end
+  end
+
   class << self
 
     # Find the requested Site from information in the rails request object.
