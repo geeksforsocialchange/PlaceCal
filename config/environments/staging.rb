@@ -59,6 +59,10 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "PlaceCal_#{Rails.env}"
   # config.action_mailer.perform_caching = false
 
+  config.action_mailer.raise_delivery_errors = true
+  host = ENV.fetch('SITE_DOMAIN', 'placecal-staging.org')
+  config.action_mailer.default_url_options = { host: host, protocol: 'https' }
+
   ActionMailer::Base.smtp_settings = {
     user_name: 'gfsc',
     password: ENV['SENDGRID_API_KEY'],
