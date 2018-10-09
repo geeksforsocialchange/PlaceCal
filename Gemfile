@@ -51,7 +51,7 @@ gem 'paper_trail'
 gem 'pundit'
 gem 'rollbar'
 gem 'select2-rails'
-gem 'sendgrid-ruby'
+gem 'sendgrid-actionmailer', github: 'eddiezane/sendgrid-actionmailer'
 gem 'simple_form'
 gem 'virtus'
 gem 'whenever', require: false

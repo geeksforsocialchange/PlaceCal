@@ -62,15 +62,10 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   host = ENV.fetch('SITE_DOMAIN', 'placecal-staging.org')
   config.action_mailer.default_url_options = { host: host, protocol: 'https' }
-
-  ActionMailer::Base.smtp_settings = {
-    user_name: 'gfsc',
-    password: ENV['SENDGRID_API_KEY'],
-    domain: 'placecal.org',
-    address: 'smtp.sendgrid.net',
-    port: 587,
-    authentication: :plain,
-    enable_starttls_auto: true
+  config.action_mailer.delivery_method = :sendgrid_actionmailer
+  config.action_mailer.sendgrid_actionmailer_settings = {
+    api_key: ENV['SENDGRID_API_KEY'],
+    raise_delivery_errors: true
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.
