@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181005091853) do
+ActiveRecord::Schema.define(version: 20181009094523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +114,14 @@ ActiveRecord::Schema.define(version: 20181005091853) do
     t.string "name"
   end
 
+  create_table "organisation_relationships", force: :cascade do |t|
+    t.bigint "subject_id", null: false
+    t.string "verb", null: false
+    t.bigint "object_id", null: false
+    t.index ["object_id"], name: "index_organisation_relationships_on_object_id"
+    t.index ["subject_id"], name: "index_organisation_relationships_on_subject_id"
+  end
+
   create_table "partners", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "image"
@@ -135,6 +143,9 @@ ActiveRecord::Schema.define(version: 20181005091853) do
     t.string "calendar_name"
     t.string "public_name"
     t.string "url"
+    t.jsonb "opening_times"
+    t.text "booking_info"
+    t.text "accessibility_info"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
@@ -186,7 +197,7 @@ ActiveRecord::Schema.define(version: 20181005091853) do
     t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
   end
 
-  create_table "seed_migration_data_migrations", id: :integer, default: nil, force: :cascade do |t|
+  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
     t.string "version"
     t.integer "runtime"
     t.datetime "migrated_on"
@@ -298,6 +309,8 @@ ActiveRecord::Schema.define(version: 20181005091853) do
   add_foreign_key "events", "calendars"
   add_foreign_key "events", "partners"
   add_foreign_key "events", "places"
+  add_foreign_key "organisation_relationships", "partners", column: "object_id"
+  add_foreign_key "organisation_relationships", "partners", column: "subject_id"
   add_foreign_key "partners", "addresses"
   add_foreign_key "partners_places", "partners"
   add_foreign_key "partners_places", "places"
