@@ -25,7 +25,7 @@ module Superadmin
       @calendar = Calendar.find(params[:calendar_id])
 
       begin
-        date = DateTime.parse(params[:starting_from])
+        date = Time.zone.parse(params[:starting_from])
 
         @calendar.import_events(date)
         flash[:success] = 'The import has completed. See below for details.'

@@ -16,8 +16,7 @@ namespace :import do
   # from - import events starting from this date. Must use format 'yyyy-mm-dd'.
 
   task :past_events_from_source, %i[calendar_id from] => [:environment] do |_t, args|
-    date = Date.parse(args[:from])
-    from = DateTime.parse(date)
+    from = Time.zone.parse(args[:from])
 
     import_events_from_source(args[:calendar_id], from)
   end

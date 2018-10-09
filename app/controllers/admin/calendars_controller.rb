@@ -52,7 +52,7 @@ module Admin
 
     def import
       begin
-        date = DateTime.parse(params[:starting_from])
+        date = Time.zone.parse(params[:starting_from])
 
         @calendar.import_events(date)
         flash[:success] = 'The import has completed. See below for details.'

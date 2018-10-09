@@ -41,4 +41,4 @@ en:
               blank: "Select at least one Turf"
   date:
     formats:
-      datetime: '%b %-m, %Y %l:%M'
+      datetime: '%b %-d, %Y %l:%M'
