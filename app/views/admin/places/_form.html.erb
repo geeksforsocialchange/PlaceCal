@@ -37,7 +37,7 @@
     <% end %>
   </div>
   <div id="select-existing-address">
-    <%= f.select :address_id, options_for_addresses, {}, class: 'form-control select2' %>
+    <%= f.select :address_id, options_for_addresses, class: 'form-control select2', include_blank: true %>
   </div>
 
   <h2>Information</h2>
