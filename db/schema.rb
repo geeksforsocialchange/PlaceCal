@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181009094523) do
+ActiveRecord::Schema.define(version: 20181009162402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,12 @@ ActiveRecord::Schema.define(version: 20181009094523) do
     t.text "critical_error"
     t.string "page_access_token"
     t.boolean "is_working", default: true, null: false
+    t.text "partnership_contact_name"
+    t.text "partnership_contact_email"
+    t.text "partnership_contact_phone"
+    t.text "public_contact_name"
+    t.text "public_contact_email"
+    t.text "public_contact_phone"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -304,7 +310,7 @@ ActiveRecord::Schema.define(version: 20181009094523) do
 
   add_foreign_key "addresses", "neighbourhoods"
   add_foreign_key "calendars", "partners"
-  add_foreign_key "calendars", "places"
+  add_foreign_key "calendars", "partners", column: "place_id"
   add_foreign_key "events", "addresses"
   add_foreign_key "events", "calendars"
   add_foreign_key "events", "partners"
