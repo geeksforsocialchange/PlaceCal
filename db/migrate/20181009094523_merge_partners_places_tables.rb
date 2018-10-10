@@ -11,6 +11,8 @@ class MergePartnersPlacesTables < ActiveRecord::Migration[5.1]
       t.text :accessibility_info
     end
 
+    max_old_partner_id = execute("SELECT max(id) from partners;").first['max']
+
     # 2) copy places data to the partners table
     # do not copy slugs because they will violate uniqueness for some rows
     execute(
@@ -19,21 +21,32 @@ SELECT name, short_description, address_id, created_at, updated_at, url, logo, p
 FROM places;)
     )
 
-    # 4) create organisation_relationships table (id, subject, verb, object)
-    create_table :organisation_relationships
-    add_reference :organisation_relationships, :subject, null: false
-    add_foreign_key :organisation_relationships, :partners, column: :subject_id
-    add_column :organisation_relationships, :verb, :string, null:false
-    add_reference :organisation_relationships, :object, null: false
-    add_foreign_key :organisation_relationships, :partners, column: :object_id
-    add_index :organisation_relationships, [:subject_id, :verb, :object_id], unique: true, name: :unique_organisation_relationship_row
+    # Map old place ids to new partner ids
+    pp_map = execute(
+%(SELECT places.id as old_place_id, partners.id as new_partner_id
+FROM partners JOIN places ON partners.name = places.name
+WHERE partners.id > #{max_old_partner_id};)
+    )
+
+    # 3) Point calendars.place_id at the partners table and set appropriate values.
+    execute("UPDATE calendars SET place_id = null;")
+
+    remove_foreign_key :calendars, :places
+    add_foreign_key :calendars, :partners, column: :place_id
+
+    pp_map.each do |pp|
+      execute("UPDATE calendars SET place_id = #{pp['new_partner_id']} WHERE place_id = #{pp['old_place_id']};")
+    end
   end
 
 
   def down
 
-    #5)
-    drop_table :organisation_relationships
+    #3)
+    execute("UPDATE calendars SET place_id = null;")
+
+    remove_foreign_key :calendars, column: :place_id
+    add_foreign_key :calendars, :places
 
     # 2)
     # Cannot delete rows. How would we idenitfy the migrated ones?
