@@ -1,0 +1,17 @@
+<% content_for :title, @title %>
+<%= render_component "hero", title: @title, subtitle: "The Community Calendar" %>
+
+<div class="c c--space-after">
+  <%= render_component "breadcrumb", trail: [['Places', places_path]] %>
+  <hr>
+  <ul class="places reset two-col">
+    <% @places.each do |place| %>
+      <%= render_component("place_partner_preview",
+        previewee: place, primary_neighbourhood: @primary_neighbourhood) %>
+    <% end %>
+  </ul>
+</div>
+
+<% if @map.length > 0 %>
+  <%= render_component "map", points: @map, site: @current_site.slug %>
+<% end %>

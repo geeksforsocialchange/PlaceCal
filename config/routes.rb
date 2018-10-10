@@ -13,7 +13,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       end
     end
     resources :partners
-    # resources :places
     resources :turfs
     resources :sites
     resources :supporters
@@ -42,15 +41,16 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   get '/events/:year/:month/:day' => 'events#index', constraints: ymd
 
   # Places
-  resources :places, only: %i[index show]
-  get '/places/:id/events' => 'places#show'
-  get '/places/:id/events/:year/:month/:day' => 'places#show', constraints: ymd
-  get '/places/:id/embed' => 'places#embed'
+  # resources :places, only: %i[index show]
+  # get '/places/:id/events' => 'places#show'
+  # get '/places/:id/events/:year/:month/:day' => 'places#show', constraints: ymd
+  # get '/places/:id/embed' => 'places#embed'
 
   # Partners
   resources :partners, only: %i[index show]
   get '/partners/:id/events' => 'partners#show'
   get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
+  get '/places' => 'partners#places_index'
 
   # Calendars
   resources :calendars, only: %i[index show]
@@ -76,7 +76,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     end
     resources :events
     resources :partners
-    resources :places
+    # resources :places
     resources :collections
     # root 'users#index'
   end

@@ -10,8 +10,31 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    @partners = Partner.for_site(current_site).order(:name)
+    # Get all Partners that manage at least one other Partner.
+    @partners = Partner
+      .joins("JOIN organisation_relationships o_r on o_r.subject_id = partners.id")
+      .where(o_r: {verb: :manages}).distinct.order(:name)
     @map = generate_points(@partners) if @partners.detect(&:address)
+  end
+
+  # GET /places
+  # GET /places.json
+  def places_index
+    # Get all Partners that have hosted an event in the last month or will host
+    # an event in the future
+    # !!!!!!!!!!! TODO !!!!!!!!!!!
+    # !!!!!!!!!!! TODO !!!!!!!!!!!
+    # !!!!!!!!!!! TODO !!!!!!!!!!!
+    # Change this to use events.place_id
+    # events.partner_id is only for testing
+    # !!!!!!!!!!! TODO !!!!!!!!!!!
+    # !!!!!!!!!!! TODO !!!!!!!!!!!
+    # !!!!!!!!!!! TODO !!!!!!!!!!!
+    @places = Partner.joins("JOIN events ON events.partner_id = partners.id")
+    .where("events.dtstart > ?", Date.today-30).distinct.order(:name)
+
+
+    @map = [] # generate_points(@places) if @places.detect(&:address)
   end
 
   # GET /partners/1

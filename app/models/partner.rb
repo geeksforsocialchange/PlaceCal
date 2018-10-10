@@ -43,6 +43,8 @@ class Partner < ApplicationRecord
 
   scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
 
+  scope :of_turf, ->(turf) { joins(:partners_turfs).where( partners_turfs: { turf: turf } ) }
+
   def to_s
     name
   end
