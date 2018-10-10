@@ -6,13 +6,29 @@ class Partner < ApplicationRecord
   friendly_id :name, use: :slugged
 
   has_and_belongs_to_many :users
-  has_and_belongs_to_many :places
   has_and_belongs_to_many :turfs, validate: true
   has_many :calendars, dependent: :destroy
   has_many :events
   belongs_to :address, required: false
 
-  accepts_nested_attributes_for :places, allow_destroy: true
+  has_and_belongs_to_many :objects,
+    class_name: "Partner",
+    join_table: :organisation_relationships,
+    foreign_key: "subject_id",
+    association_foreign_key: "object_id"
+  has_and_belongs_to_many :subjects,
+    class_name: "Partner",
+    join_table: :organisation_relationships,
+    foreign_key: "object_id",
+    association_foreign_key: "subject_id"
+
+  def managers
+    subjects.where(organisation_relationships: {verb: :manages})
+  end
+  def managees
+    objects.where(organisation_relationships: {verb: :manages})
+  end
+
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
   accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }

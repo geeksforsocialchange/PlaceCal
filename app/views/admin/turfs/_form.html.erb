@@ -18,16 +18,6 @@
     <% else %>
       <p>No partners yet.</p>
     <% end %>
-    <h2>Places</h2>
-    <% unless @places.empty? %>
-      <ul>
-        <% @places.each do |place| %>
-          <li><%= place.name %></li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p>No places yet.</p>
-    <% end %>
   <% end %>
 
   <%= f.submit "Save", class: "btn btn-primary" %><br><br>

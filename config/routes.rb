@@ -13,7 +13,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       end
     end
     resources :partners
-    resources :places
+    # resources :places
     resources :turfs
     resources :sites
     resources :supporters

@@ -17,7 +17,6 @@ module Admin
     def edit
       authorize @turf
       @partners = @turf.partners
-      @places = @turf.places
     end
 
     def create

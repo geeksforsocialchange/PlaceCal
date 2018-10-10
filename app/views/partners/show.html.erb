@@ -18,7 +18,7 @@
         </div>
       <% end %>
       <% if @partner.is_a_place? %>
-        <% place = @partner.places.first %>
+        <% place = @partner.managees.first %>
         <%= render_component "place_info",
           name: place.name,
           email: place.email,
@@ -35,9 +35,9 @@
           url: @partner.url
         %>
       <% end %>
-      <% if @partner.places.any? %>
+      <% if @partner.managees.any? %>
         <p class="small"><%= @partner.name %> manage
-        <%= @partner.places.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
+        <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
       <% end %>
     </div>
     <div class="gi gi__2-5 gi--image">
@@ -50,7 +50,7 @@
   </div>
 
   <% unless @partner.is_a_place? %>
-    <% @partner.places.each do |place| %>
+    <% @partner.managees.each do |place| %>
       <hr>
 
       <h2 class="place__title"><%= link_to place.name, place_path(place), class: 'udl udl--red' %></h2>

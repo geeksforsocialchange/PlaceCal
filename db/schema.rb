@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 20181009163931) do
     t.string "verb", null: false
     t.bigint "object_id", null: false
     t.index ["object_id"], name: "index_organisation_relationships_on_object_id"
+    t.index ["subject_id", "verb", "object_id"], name: "unique_organisation_relationship_row", unique: true
     t.index ["subject_id"], name: "index_organisation_relationships_on_subject_id"
   end
 

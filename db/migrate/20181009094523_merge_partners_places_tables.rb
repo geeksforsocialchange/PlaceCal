@@ -26,6 +26,7 @@ FROM places;)
     add_column :organisation_relationships, :verb, :string, null:false
     add_reference :organisation_relationships, :object, null: false
     add_foreign_key :organisation_relationships, :partners, column: :object_id
+    add_index :organisation_relationships, [:subject_id, :verb, :object_id], unique: true, name: :unique_organisation_relationship_row
   end
 
 

@@ -16,7 +16,6 @@ class Address < ApplicationRecord
   # format.
   before_save :standardise_postcode, if: ->(obj) { obj.postcode_changed? }
 
-  has_many :places
   has_many :events
   has_many :partners
   has_many :calendars
@@ -105,8 +104,8 @@ class Address < ApplicationRecord
       end
 
       if @address.present?
-        @place = @address.places.first
-        @place.present? ? { place_id: @place.id } : { address_id: @address.id }
+        @partner = @address.partners.first
+        @partner.present? ? { partner_id: @partner.id } : { address_id: @address.id }
       else
         address = Address.build_from_components(components, postcode)
         { address_id: address.try(:id) }
