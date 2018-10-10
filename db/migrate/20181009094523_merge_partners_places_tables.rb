@@ -14,10 +14,16 @@ class MergePartnersPlacesTables < ActiveRecord::Migration[5.1]
     max_old_partner_id = execute("SELECT max(id) from partners;").first['max']
 
     # 2) copy places data to the partners table
-    # do not copy slugs because they will violate uniqueness for some rows
+
+    # Where slugs would prevent insertion of a new row, change the existing slug
     execute(
-%(INSERT INTO partners (name, short_description, address_id, created_at, updated_at, url, image, public_phone, public_email, opening_times, booking_info, accessibility_info, is_a_place)
-SELECT name, short_description, address_id, created_at, updated_at, url, logo, phone, email, opening_times, booking_info, accessibility_info, true
+%(UPDATE partners SET slug = slug || '-old'
+WHERE slug IN (SELECT partners.slug FROM partners JOIN places ON partners.slug = places.slug);)
+    )
+
+    execute(
+%(INSERT INTO partners (name, short_description, address_id, created_at, updated_at, url, image, public_phone, public_email, opening_times, booking_info, accessibility_info, is_a_place, slug)
+SELECT name, short_description, address_id, created_at, updated_at, url, logo, phone, email, opening_times, booking_info, accessibility_info, true, slug
 FROM places;)
     )
 

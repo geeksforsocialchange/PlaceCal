@@ -30,15 +30,3 @@
     </ul>
   <% end %>
 <% end %>
-
-<h3>Places</h3>
-
-<% if @places.blank? %>
-  <h5>No Places found</h5>
-<% else %>
-  <% @places.each do |place| %>
-    <ul>
-      <li><%= link_to "#{place.name}", edit_admin_place_path(place),  data: { turbolinks: false }%></li>
-    </ul>
-  <% end %>
-<% end %>
