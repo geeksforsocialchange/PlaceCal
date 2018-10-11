@@ -12,8 +12,6 @@
 
   <br><br>
 
-  <%= f.input :is_a_place, as: :boolean, checked_value: true, unchecked_value: false, label: 'Is there a Place with the same name as this Partner?' %>
-
   <h3>Address</h3>
 
   <div id='address'>
@@ -72,6 +70,8 @@
     <br/><br/>
     <%= f.association :places, label: "Existing Places", collection: options_for_places, input_html: { class: 'form-control select2' }, include_hidden: false, multiple:true %>
   </div>
+
+  <%= f.input :is_a_place, as: :boolean, checked_value: true, unchecked_value: false, label: 'Is there a Place with the same name as this Partner?' %>
 
   <h2>Tags</h2>
   <p>Does this Partner provide any of the following things? (WIP!)</p>
