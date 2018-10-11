@@ -18,7 +18,7 @@ class PartnersController < ApplicationController
   # GET /places.json
   def places_index
     @places = Partner.event_hosts.for_site(current_site).order(:name)
-    @map = [] # generate_points(@places) if @places.detect(&:address)
+    @map = generate_points(@places) if @places.detect(&:address)
   end
 
   # GET /partners/1
