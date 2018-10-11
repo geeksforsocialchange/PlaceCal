@@ -12,22 +12,16 @@ class Partner < ApplicationRecord
   belongs_to :address, required: false
 
   has_and_belongs_to_many :objects,
-    class_name: "Partner",
-    join_table: :organisation_relationships,
-    foreign_key: "subject_id",
-    association_foreign_key: "object_id"
-  has_and_belongs_to_many :subjects,
-    class_name: "Partner",
-    join_table: :organisation_relationships,
-    foreign_key: "object_id",
-    association_foreign_key: "subject_id"
+  class_name: "Partner",
+  join_table: :organisation_relationships,
+  foreign_key: "subject_id",
+  association_foreign_key: "object_id"
 
-  def managers
-    subjects.where(organisation_relationships: {verb: :manages})
-  end
-  def managees
-    objects.where(organisation_relationships: {verb: :manages})
-  end
+  has_and_belongs_to_many :subjects,
+  class_name: "Partner",
+  join_table: :organisation_relationships,
+  foreign_key: "object_id",
+  association_foreign_key: "subject_id"
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
@@ -44,6 +38,32 @@ class Partner < ApplicationRecord
   scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
 
   scope :of_turf, ->(turf) { joins(:partners_turfs).where( partners_turfs: { turf: turf } ) }
+
+  # Get all Partners that have hosted an event in the last month or will host
+  # an event in the future
+  scope :event_hosts, -> do
+    # TODO? This might be an incredibly inefficient query. If so, add a column
+    # to the Partner table, e.g. place_latest_dtstart, which can be updated on
+    # import.
+    joins("JOIN events ON events.place_id = partners.id")
+    .where("events.dtstart > ?", Date.today-30).distinct
+  end
+
+  # Get all Partners that manage at least one other Partner.
+  scope :managers, -> do
+    joins("JOIN organisation_relationships o_r on o_r.subject_id = partners.id")
+    .where(o_r: {verb: :manages}).distinct
+  end
+
+  # Get all Partners that manage this Partner.
+  def managers
+    subjects.where(organisation_relationships: {verb: :manages})
+  end
+
+  # Get all Partners that this Partner manages.
+  def managees
+    objects.where(organisation_relationships: {verb: :manages})
+  end
 
   def to_s
     name

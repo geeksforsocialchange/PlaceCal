@@ -32,7 +32,7 @@
         <div class="event__detail event__location">
           <span class="icon-font--place"></span>
           <% if place %>
-            <%= link_to place, place_path(place) %>
+            <%= link_to place, partner_path(place) %>
           <% elsif first_address_line %>
             <%= first_address_line %>
           <% end %>
