@@ -9,7 +9,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :invitable,
          :omniauthable, omniauth_providers: %i[facebook]
 
-  crypt_keeper :facebook_app_id, :facebook_app_secret, encryptor: :active_support, key: ENV["CRYPT_KEEPER_KEY"], salt: ENV["CRYPT_KEEPER_SALT"]
+  crypt_keeper :facebook_app_id, :facebook_app_secret, encryptor: :active_support, key: Rails.application.secrets.crypt_keeper_key, salt: Rails.application.secrets.crypt_keeper_salt
 
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
