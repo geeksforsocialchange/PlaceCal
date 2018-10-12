@@ -4,5 +4,11 @@
   columns: %i[id name place is_working last_import_at],
   data: @calendars,
   new_link: new_admin_calendar_path,
-  additional_links: [ link_to("Add New Calendar From Facebook", user_facebook_omniauth_authorize_url, class: "btn btn-primary") ]
+  additional_links: [
+    if current_user.has_facebook_keys?
+      link_to("Add New Calendar From Facebook", user_facebook_omniauth_authorize_url, class: "btn btn-primary")
+    else
+      link_to("Add New Calendar From Facebook", admin_profile_path(missing_keys: true), class: 'btn btn-primary')
+    end
+  ]
 %>

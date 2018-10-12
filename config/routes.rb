@@ -5,6 +5,10 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Most common route at the top
   devise_for :users, controllers: { omniauth_callbacks: 'admin/omniauth_callbacks', invitations: 'users/invitations' }
 
+  devise_scope :user do
+    match 'users/auth/facebook/setup' => 'admin/omniauth_callbacks#setup', via: [:get, :post]
+  end
+
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :calendars do
       get :select_page, on: :collection

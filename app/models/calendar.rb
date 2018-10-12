@@ -15,7 +15,9 @@ class Calendar < ApplicationRecord
 
   extend Enumerize
 
-  attr_accessor :is_facebook_page, :facebook_page_id
+  attribute :is_facebook_page, :boolean, default: false
+  attribute :facebook_page_id, :string
+
 
   # Defines the strategy this Calendar uses to assign events to locations.
   #

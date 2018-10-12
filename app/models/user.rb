@@ -9,6 +9,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :invitable,
          :omniauthable, omniauth_providers: %i[facebook]
 
+  crypt_keeper :facebook_app_id, :facebook_app_secret, encryptor: :active_support, key: ENV["CRYPT_KEEPER_KEY"], salt: ENV["CRYPT_KEEPER_SALT"]
+
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
   has_many :sites, foreign_key: :site_admin
@@ -46,5 +48,9 @@ class User < ApplicationRecord
     errors.add(:role, "can't be blank") if role.blank?
 
     errors.blank?
+  end
+
+  def has_facebook_keys?
+    facebook_app_id.present? && facebook_app_secret.present?
   end
 end

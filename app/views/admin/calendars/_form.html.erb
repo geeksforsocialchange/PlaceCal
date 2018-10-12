@@ -17,12 +17,18 @@
       <%= f.association :partner, collection: policy_scope(Partner), input_html: { class: 'select-search' } %>
       <%= f.association :place, collection: policy_scope(Place), input_html: { class: 'select-search' } %>
 
+
+
       <%= f.input :is_working %>
     </div>
     <div class="col-md-6">
       <% unless @calendar.new_record? %>
         <%= link_to "Destroy Calendar", admin_calendar_path(@calendar), method: :delete, class: "btn btn-danger" %>
-        <%= link_to "Authorize With Facebook", user_facebook_omniauth_authorize_url(calendar_id: @calendar.id), class: "btn btn-primary" %>
+        <%- if current_user.has_facebook_keys? %>
+          <%= link_to "Authorize With Facebook", user_facebook_omniauth_authorize_url(calendar_id: @calendar.id), class: "btn btn-primary" %>
+        <% else %>
+          <%= link_to "Authorize With Facebook", admin_profile_path(missing_keys: true), class: 'btn btn-primary' %>
+        <% end %>
       <% end %>
     </div>
   </div>

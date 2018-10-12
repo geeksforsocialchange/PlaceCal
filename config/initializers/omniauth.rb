@@ -1,5 +1,6 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'],
+    setup: true,
     scope: 'pages_show_list',
     client_options: {
       site: 'https://graph.facebook.com/v3.0',

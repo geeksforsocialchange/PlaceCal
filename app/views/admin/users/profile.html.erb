@@ -1,11 +1,20 @@
 <h1 class="page-header">Edit Profile</h1>
 
+<%- if params[:missing_keys] %>
+  <div class='alert alert-warning' role='alert'>
+    Please set your Facebook App ID and App Secret before adding a calendar through facebook.
+  </div>
+<% end %>
+
 <%= simple_form_for [:admin, current_user], html: { class: "form-horizontal" } do |f| %>
   <div class="row">
 
     <%= render_component "error", object: current_user %>
     <div class="col-md-6">
       <%= render "contact", f: f %>
+
+      <%= f.input :facebook_app_id, as: :string %>
+      <%= f.input :facebook_app_secret, as: :string %>
     </div>
 
     <div class="col-md-6">

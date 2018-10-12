@@ -36,6 +36,7 @@ gem 'bootstrap-sass', '~> 3.3.7'
 # Misc
 gem 'active_link_to'
 gem 'cocoon'
+gem 'crypt_keeper', '2.0.0.rc2' #Use the newest version to avoid Rails 5 compatibility issues
 gem 'devise'
 gem 'devise_invitable'
 gem 'enumerize'

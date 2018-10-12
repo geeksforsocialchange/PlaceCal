@@ -1,9 +1,17 @@
 module Admin
   class OmniauthCallbacksController < Admin::ApplicationController
 
+    def setup
+      request.env['omniauth.strategy'].options[:client_id] = current_user.facebook_app_id
+      request.env['omniauth.strategy'].options[:client_secret] = current_user.facebook_app_secret
+      render plain: 'Omniauth setup phase.', status: 404
+    end
+
    def facebook
      temp_access_token = omniauth_params['token']
-     oauth             = Koala::Facebook::OAuth.new(ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'])
+     app_id            = current_user.facebook_app_id.presence || ENV['FACEBOOK_APP_ID']
+     app_secret        = current_user.facebook_app_secret.presence || ENV['FACEBOOK_APP_SECRET']
+     oauth             = Koala::Facebook::OAuth.new(app_id, app_secret)
      token             = oauth.exchange_access_token_info(temp_access_token)
 
      current_user.update(access_token: token['access_token'],

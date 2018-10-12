@@ -74,7 +74,10 @@ module Admin
                                    :email,
                                    :password,
                                    :phone,
-                                   :avatar)
+                                   :avatar,
+                                   :facebook_app_id,
+                                   :facebook_app_secret
+                                  )
     end
 
     def user_turf_params

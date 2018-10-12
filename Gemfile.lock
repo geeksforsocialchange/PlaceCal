@@ -118,6 +118,9 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
+    crypt_keeper (2.0.0.rc2)
+      activerecord (>= 4.2, < 5.3)
+      activesupport (>= 4.2, < 5.3)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
     debug_inspector (0.0.3)
@@ -491,6 +494,7 @@ DEPENDENCIES
   carrierwave
   cocoon
   coffee-rails (~> 4.2)
+  crypt_keeper (= 2.0.0.rc2)
   delayed_job_active_record
   devise
   devise_invitable
