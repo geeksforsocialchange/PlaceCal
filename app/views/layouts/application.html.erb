@@ -12,7 +12,7 @@
 
     <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all' %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <% if @site&.slug %>
+    <% if @site&.slug && @site.slug != 'default-site' %>
       <%= stylesheet_link_tag "sites/#{@site.slug}", media: 'all', 'data-turbolinks-track': 'reload' %>
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbolinks-track': 'reload' %>

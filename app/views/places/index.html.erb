@@ -4,10 +4,15 @@
 <div class="c c--space-after">
   <%= render_component "breadcrumb", trail: [['Places', places_path]] %>
   <hr>
+    <%= @primary_neighbourhood %>
   <ul class="places reset two-col">
     <% @places.each do |place| %>
       <%= render_component("place_partner_preview",
-        previewee: place, primary_neighbourhood: @primary_neighbourhood) %>
+            previewee: place,
+            primary_neighbourhood: @primary_neighbourhood,
+            show_neighbourhoods: @current_site.show_neighbourhoods?
+          )
+      %>
     <% end %>
   </ul>
 </div>

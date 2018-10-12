@@ -33,6 +33,10 @@ class PartnersController < ApplicationController
         cal.publish
         render plain: cal.to_ical
       end
+      format.json do
+        cal = Event.by_partner(@partner).ical_feed
+        render json: cal
+      end
     end
   end
 
