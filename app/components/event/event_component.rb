@@ -32,7 +32,11 @@ class EventComponent < MountainView::Presenter
   end
 
   def date
-    event.dtstart.strftime('%e %b')
+    if event.dtstart.year == Time.now.year
+      event.dtstart.strftime('%e %b')
+    else
+      event.dtstart.strftime('%e %b %Y')
+    end
   end
 
   def summary
