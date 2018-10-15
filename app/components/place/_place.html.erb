@@ -1,5 +1,5 @@
 <% if page? %>
   <%= render_component "hero", title: @title, subtitle: "The Community Calendar" %>
 <% else %>
-  <h3><%= link_to properties[:name], place_path(properties[:id]) %></h3>
+  <h3><%= link_to properties[:name], partner_path(properties[:id]) %></h3>
 <% end %>

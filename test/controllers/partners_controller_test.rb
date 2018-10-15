@@ -4,10 +4,21 @@ require 'test_helper'
 
 class PartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
+    # Make six partners: Two managers; two event hosts; two neither.
+    # Add all to the default site and one of each category to a second site.
+
     neighbourhoods = [ create(:neighbourhood), create(:neighbourhood) ]
     # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
     addresses = neighbourhoods.map {|n| a=create(:address); a.neighbourhood=n; a.save; a}
-    @partners = addresses.map {|a| pa=build(:partner); pa.address=a; pa.save; pa}
+    @partners = addresses.map do |a|
+      3.times.map { pa=build(:partner); pa.address=a; pa.save; pa }
+    end
+    @partners.each do |for_nbd|
+      o_r = OrganisationRelationship.new
+      o_r.subject = for_nbd[0]; o_r.verb = :manages; o_r.object = for_nbd[1]; o_r.save
+      e = build(:event); e.dtstart = Date.today; e.place = for_nbd[2]; e.save
+      for_nbd
+    end
     default_site = create_default_site
     default_site.neighbourhoods.append(neighbourhoods)
     default_site.save
@@ -22,19 +33,37 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_select "ul.partners li", 2
   end
 
+  test 'should get places_index without subdomain' do
+    get url_for action: 'places_index', controller: "partners", subdomain: false
+    assert_response :success
+    assert_select "ul.places li", 2
+  end
+
   test 'should get index with configured subdomain' do
     get url_for controller: "partners", subdomain: @site.slug
     assert_response :success
     assert_select "ul.partners li", 1
   end
 
-  test 'should get index with unknown subdomain' do
+  test 'should get places_index with configured subdomain' do
+    get url_for action: 'places_index', controller: "partners", subdomain: @site.slug
+    assert_response :success
+    assert_select "ul.places li", 1
+  end
+
+  test 'should redirect from index with unknown subdomain' do
     get url_for controller: "partners", subdomain: "notaknownsubdomain"
     assert_response :redirect
   end
 
+  test 'should redirect from places_index with unknown subdomain' do
+    get url_for action: 'places_index', controller: "partners", subdomain: "notaknownsubdomain"
+    assert_response :redirect
+  end
+
   test 'should show partner' do
-    get partner_url(@partners.first)
+    # Choose a manager to show. That will exercise more of the markup.
+    get partner_url(@partners.first.first)
     assert_response :success
   end
 end

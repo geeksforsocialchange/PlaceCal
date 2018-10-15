@@ -42,6 +42,12 @@ ActiveRecord::Schema.define(version: 20181012041853) do
     t.text "critical_error"
     t.string "page_access_token"
     t.boolean "is_working", default: true, null: false
+    t.text "partnership_contact_name"
+    t.text "partnership_contact_email"
+    t.text "partnership_contact_phone"
+    t.text "public_contact_name"
+    t.text "public_contact_email"
+    t.text "public_contact_phone"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -114,6 +120,15 @@ ActiveRecord::Schema.define(version: 20181012041853) do
     t.string "name"
   end
 
+  create_table "organisation_relationships", force: :cascade do |t|
+    t.bigint "subject_id", null: false
+    t.string "verb", null: false
+    t.bigint "object_id", null: false
+    t.index ["object_id"], name: "index_organisation_relationships_on_object_id"
+    t.index ["subject_id", "verb", "object_id"], name: "unique_organisation_relationship_row", unique: true
+    t.index ["subject_id"], name: "index_organisation_relationships_on_subject_id"
+  end
+
   create_table "partners", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "image"
@@ -135,6 +150,9 @@ ActiveRecord::Schema.define(version: 20181012041853) do
     t.string "calendar_name"
     t.string "public_name"
     t.string "url"
+    t.jsonb "opening_times"
+    t.text "booking_info"
+    t.text "accessibility_info"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
@@ -186,7 +204,7 @@ ActiveRecord::Schema.define(version: 20181012041853) do
     t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
   end
 
-  create_table "seed_migration_data_migrations", id: :integer, default: nil, force: :cascade do |t|
+  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
     t.string "version"
     t.integer "runtime"
     t.datetime "migrated_on"
@@ -295,11 +313,13 @@ ActiveRecord::Schema.define(version: 20181012041853) do
 
   add_foreign_key "addresses", "neighbourhoods"
   add_foreign_key "calendars", "partners"
-  add_foreign_key "calendars", "places"
+  add_foreign_key "calendars", "partners", column: "place_id"
   add_foreign_key "events", "addresses"
   add_foreign_key "events", "calendars"
   add_foreign_key "events", "partners"
-  add_foreign_key "events", "places"
+  add_foreign_key "events", "partners", column: "place_id"
+  add_foreign_key "organisation_relationships", "partners", column: "object_id"
+  add_foreign_key "organisation_relationships", "partners", column: "subject_id"
   add_foreign_key "partners", "addresses"
   add_foreign_key "partners_places", "partners"
   add_foreign_key "partners_places", "places"

@@ -6,7 +6,7 @@ class Event < ApplicationRecord
 
   belongs_to :partner
 
-  belongs_to :place, required: false
+  belongs_to :place, class_name: 'Partner', required: false
   belongs_to :address, required: false
   belongs_to :calendar
 

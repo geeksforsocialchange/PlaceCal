@@ -15,7 +15,7 @@
       <% end %>
       <%= f.input :strategy %>
       <%= f.association :partner, collection: policy_scope(Partner), input_html: { class: 'select-search' } %>
-      <%= f.association :place, collection: policy_scope(Place), input_html: { class: 'select-search' } %>
+      <%= f.association :place, collection: policy_scope(Partner), input_html: { class: 'select-search' } %>
 
 
 

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class PartnersController < ApplicationController
-  before_action :set_partner, only: :show
-  before_action :set_day, only: :show
+  before_action :set_partner, only: [:show, :embed]
+  before_action :set_day, only: [:show, :embed]
   before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
   before_action :set_title, only: %i[index show]
@@ -10,8 +10,15 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    @partners = Partner.for_site(current_site).order(:name)
+    @partners = Partner.managers.for_site(current_site).order(:name)
     @map = generate_points(@partners) if @partners.detect(&:address)
+  end
+
+  # GET /places
+  # GET /places.json
+  def places_index
+    @places = Partner.event_hosts.for_site(current_site).order(:name)
+    @map = generate_points(@places) if @places.detect(&:address)
   end
 
   # GET /partners/1
@@ -38,6 +45,15 @@ class PartnersController < ApplicationController
         render json: cal
       end
     end
+  end
+
+  def embed
+    period = params[:period] || 'week'
+    limit = params[:limit] || '10'
+    @events = filter_events(period, place: @partner, limit: limit)
+    @events = sort_events(@events, 'time')
+    response.headers.except! 'X-Frame-Options'
+    render layout: false
   end
 
   private

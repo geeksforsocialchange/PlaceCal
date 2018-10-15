@@ -5,7 +5,7 @@ class Calendar < ApplicationRecord
   self.inheritance_column = nil
 
   belongs_to :partner
-  belongs_to :place, required: false
+  belongs_to :place, class_name: 'Partner', required: false
   has_many :events, dependent: :destroy
 
   validates_presence_of :name
@@ -159,7 +159,7 @@ class Calendar < ApplicationRecord
     regexp     = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new('UK|United Kingdom')
     components = location.split(', ').map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
 
-    if place = Place.where(name: components).first
+    if place = Partner.where(name: components).first
       return { place_id: place.id }
     else
       return Address.search(location, components, postcode)

@@ -17,27 +17,16 @@
           <%= markdown @partner.short_description %>
         </div>
       <% end %>
-      <% if @partner.is_a_place? %>
-        <% place = @partner.places.first %>
-        <%= render_component "place_info",
-          name: place.name,
-          email: place.email,
-          phone: place.phone,
-          address: place.address,
-          url: place.url
-        %>
-      <% else %>
-        <%= render_component "place_info",
-          name: @partner.name,
-          email: @partner.public_email,
-          phone: @partner.public_phone,
-          address: @partner.address,
-          url: @partner.url
-        %>
-      <% end %>
-      <% if @partner.places.any? %>
+      <%= render_component "place_info",
+        name: @partner.name,
+        email: @partner.public_email,
+        phone: @partner.public_phone,
+        address: @partner.address,
+        url: @partner.url
+      %>
+      <% if @partner.managees.any? %>
         <p class="small"><%= @partner.name %> manage
-        <%= @partner.places.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
+        <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
       <% end %>
     </div>
     <div class="gi gi__2-5 gi--image">
@@ -49,28 +38,26 @@
     </div>
   </div>
 
-  <% unless @partner.is_a_place? %>
-    <% @partner.places.each do |place| %>
-      <hr>
+  <% @partner.managees.each do |place| %>
+    <hr>
 
-      <h2 class="place__title"><%= link_to place.name, place_path(place), class: 'udl udl--red' %></h2>
-      <div class="g g--place-list">
-        <div class="gi gi__2-5">
-          <% if place.short_description %>
-            <%= markdown place.short_description %>
-          <% end %>
-        </div>
-        <div class="gi gi__3-5">
-          <%= render_component "place_info",
-            name: place.name,
-            email: place.email,
-            phone: place.phone,
-            address: place.address,
-            url: place.url
-          %>
-        </div>
+    <h2 class="place__title"><%= link_to place.name, partner_path(place), class: 'udl udl--red' %></h2>
+    <div class="g g--place-list">
+      <div class="gi gi__2-5">
+        <% if place.short_description %>
+          <%= markdown place.short_description %>
+        <% end %>
       </div>
-    <% end %>
+      <div class="gi gi__3-5">
+        <%= render_component "place_info",
+          name: place.name,
+          email: place.public_email,
+          phone: place.public_phone,
+          address: place.address,
+          url: place.url
+        %>
+      </div>
+    </div>
   <% end %>
 
   <hr>
