@@ -10,16 +10,21 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    @partners = Partner.managers.for_site(current_site).order(:name)
+    # Get all Partners that manage at least one other partner
+    # @partners = Partner.managers.for_site(current_site).order(:name)
+
+    # Get all partners based in the neighbourhoods associated with this site.
+    @partners = Partner.for_site(current_site).order(:name)
+
     @map = get_map_markers(@partners) if @partners.detect(&:address)
   end
 
-  # GET /places
-  # GET /places.json
-  def places_index
-    @places = Partner.event_hosts.for_site(current_site).order(:name)
-    @map = get_map_markers(@places) if @places.detect(&:address)
-  end
+  # # GET /places
+  # # GET /places.json
+  # def places_index
+  #   @places = Partner.event_hosts.for_site(current_site).order(:name)
+  #   @map = get_map_markers(@places) if @places.detect(&:address)
+  # end
 
   # GET /partners/1
   # GET /partners/1.json

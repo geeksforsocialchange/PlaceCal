@@ -48,7 +48,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   resources :partners, only: %i[index show]
   get '/partners/:id/events' => 'partners#show'
   get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
-  get '/places' => 'partners#places_index'
+  get '/places' => 'partners#index' # Removing separate Places view for now.
   get '/partners/:id/embed' => 'places#embed'
 
   # Legacy routes from when some Partners were Places. Don't let Google down...

@@ -30,36 +30,36 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   test 'should get index without subdomain' do
     get url_for controller: "partners", subdomain: false
     assert_response :success
-    assert_select "ul.partners li", 2
+    assert_select "ul.partners li", 6
   end
 
-  test 'should get places_index without subdomain' do
-    get url_for action: 'places_index', controller: "partners", subdomain: false
-    assert_response :success
-    assert_select "ul.places li", 2
-  end
+  # test 'should get places_index without subdomain' do
+  #   get url_for action: 'places_index', controller: "partners", subdomain: false
+  #   assert_response :success
+  #   assert_select "ul.places li", 2
+  # end
 
   test 'should get index with configured subdomain' do
     get url_for controller: "partners", subdomain: @site.slug
     assert_response :success
-    assert_select "ul.partners li", 1
+    assert_select "ul.partners li", 3
   end
 
-  test 'should get places_index with configured subdomain' do
-    get url_for action: 'places_index', controller: "partners", subdomain: @site.slug
-    assert_response :success
-    assert_select "ul.places li", 1
-  end
+  # test 'should get places_index with configured subdomain' do
+  #   get url_for action: 'places_index', controller: "partners", subdomain: @site.slug
+  #   assert_response :success
+  #   assert_select "ul.places li", 1
+  # end
 
   test 'should redirect from index with unknown subdomain' do
     get url_for controller: "partners", subdomain: "notaknownsubdomain"
     assert_response :redirect
   end
 
-  test 'should redirect from places_index with unknown subdomain' do
-    get url_for action: 'places_index', controller: "partners", subdomain: "notaknownsubdomain"
-    assert_response :redirect
-  end
+  # test 'should redirect from places_index with unknown subdomain' do
+  #   get url_for action: 'places_index', controller: "partners", subdomain: "notaknownsubdomain"
+  #   assert_response :redirect
+  # end
 
   test 'should show partner' do
     # Choose a manager to show. That will exercise more of the markup.

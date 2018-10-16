@@ -196,7 +196,7 @@ class ApplicationController < ActionController::Base
 
     @navigation = [
       ['Events', events_path],
-      ['Places', places_path],
+      # ['Places', places_path],
       ['Partners', partners_path]
     ]
     return unless current_site
