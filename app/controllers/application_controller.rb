@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
   def generate_points(obj)
     obj.reduce([]) do |arr, o|
       arr <<
-        if ([Place, Partner].include? o.class) && (o&.address&.latitude)
+        if (Partner == o.class) && (o&.address&.latitude)
           {
             lat: o.address.latitude,
             lon: o.address.longitude,
@@ -162,10 +162,6 @@ class ApplicationController < ActionController::Base
   # Use callbacks to share common setup or constraints between actions.
   def set_partner
     @partner = Partner.friendly.find(params[:id])
-  end
-
-  def set_place
-    @place = Place.friendly.find(params[:id])
   end
 
   def set_user
