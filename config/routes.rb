@@ -52,6 +52,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   get '/partners/:id/embed' => 'places#embed'
 
   # Legacy routes from when some Partners were Places. Don't let Google down...
+  get '/places/:id' => 'partners#show'
   get '/places/:id/events' => 'partners#show'
   get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places/:id/embed' => 'places#embed'

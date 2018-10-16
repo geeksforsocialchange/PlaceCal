@@ -13,7 +13,7 @@ class CollectionsController < ApplicationController
   # GET /collections/1.json
   def show
     @events = @collection.sorted_events
-    @map = generate_points(@events.map(&:place)) if @events.detect(&:place)
+    @map = get_map_markers_from_events(@events) if @events
     @events = sort_events(@events, 'time')
   end
 

@@ -45,9 +45,9 @@ class EventsController < ApplicationController
   # GET /events/1.json
   def show
     if @event.place
-      @map = generate_points([@event.place])
+      @map = get_map_markers([@event.place])
     elsif @event.address
-      @map = generate_points([@event.address])
+      @map = get_map_markers([@event.address])
     end
     respond_to do |format|
       format.html

@@ -11,14 +11,14 @@ class PartnersController < ApplicationController
   # GET /partners.json
   def index
     @partners = Partner.managers.for_site(current_site).order(:name)
-    @map = generate_points(@partners) if @partners.detect(&:address)
+    @map = get_map_markers(@partners) if @partners.detect(&:address)
   end
 
   # GET /places
   # GET /places.json
   def places_index
     @places = Partner.event_hosts.for_site(current_site).order(:name)
-    @map = generate_points(@places) if @places.detect(&:address)
+    @map = get_map_markers(@places) if @places.detect(&:address)
   end
 
   # GET /partners/1
@@ -26,9 +26,15 @@ class PartnersController < ApplicationController
   def show
     # Period to show
     @period = params[:period] || 'week'
-    @events = filter_events(@period, partner: @partner)
+    @events = filter_events(@period, partner_or_place: @partner)
+
     # Map
-    @map = generate_points(@events.map(&:place)) if @events.detect(&:place)
+    if @events
+      @map = get_map_markers_from_events(@events)
+    else
+      @map = get_map_markers([@partner])
+    end
+
     # Sort criteria
     @sort = params[:sort].to_s || 'time'
     @events = sort_events(@events, @sort)

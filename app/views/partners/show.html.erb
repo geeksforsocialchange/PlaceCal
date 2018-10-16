@@ -17,6 +17,10 @@
           <%= markdown @partner.short_description %>
         </div>
       <% end %>
+      <% if @map.length > 0 %>
+        <%= render_component "map", points: @map, site: @current_site.slug %>
+      <% end %>
+
       <%= render_component "place_info",
         name: @partner.name,
         email: @partner.public_email,

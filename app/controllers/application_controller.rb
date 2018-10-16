@@ -38,15 +38,17 @@ class ApplicationController < ActionController::Base
   end
 
   def filter_events(period, **args)
-    site      = args[:site]      || false
-    place     = args[:place]     || false
-    partner   = args[:partner]   || false
-    repeating = args[:repeating] || 'on'
+    site             = args[:site]             || false
+    place            = args[:place]            || false
+    partner          = args[:partner]          || false
+    partner_or_place = args[:partner_or_place] || false
+    repeating        = args[:repeating]        || 'on'
 
     events = Event.all
     events = events.for_site(site) if site
     events = events.in_place(place) if place
     events = events.by_partner(partner) if partner
+    events = events.by_partner_or_place(partner_or_place) if partner_or_place
     events = events.one_off_events_only if repeating == 'off'
     events = events.one_off_events_first if repeating == 'last'
     events =
@@ -90,24 +92,37 @@ class ApplicationController < ActionController::Base
     @primary_neighbourhood = current_site&.primary_neighbourhood
   end
 
-  # Takes an array of places or addresses and returns a sanitized json array
-  def generate_points(obj)
-    obj.reduce([]) do |arr, o|
-      arr <<
-        if (Partner == o.class) && (o&.address&.latitude)
+  # Takes an array of Partners and/or Addresses and returns a sanitized json
+  # array suitable for creating map markers. Does not check for duplicates.
+  def get_map_markers(locations)
+    locations.reduce([]) do |arr, loc|
+      marker =
+        if (Partner == loc.class) && (loc&.address&.latitude)
           {
-            lat: o.address.latitude,
-            lon: o.address.longitude,
-            name: o.name,
-            id: o.id
+            lat: loc.address.latitude,
+            lon: loc.address.longitude,
+            name: loc.name,
+            id: loc.id
           }
-        elsif o.class == Address
+        elsif loc.class == Address
           {
-            lat: o.latitude,
-            lon: o.longitude
+            lat: loc.latitude,
+            lon: loc.longitude
           }
         end
+      if marker then arr << marker else arr end
     end
+  end
+
+  # Takes a reducible collection of events and returns json map markers.
+  # Removes duplicate locations.
+  def get_map_markers_from_events(events)
+    get_map_markers(
+      @events.reduce([]) do |arr, e|
+        loc = e.place || e.address
+        if loc then arr << loc else arr end
+      end.uniq
+    )
   end
 
   # Create a calendar from array of events

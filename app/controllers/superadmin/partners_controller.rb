@@ -16,7 +16,7 @@ module Superadmin
 
     # def index
     #   @partners = Partner.order(:name)
-    #   @map = generate_points(@partners) if @partners.detect(&:address)
+    #   @map = get_map_markers(@partners) if @partners.detect(&:address)
     # end
 
     def find_resource(param)
