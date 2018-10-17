@@ -19,7 +19,8 @@ module PlaceCal
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '/widget.js', headers: :any, methods: %i[get post options]
+        resource '/partners/*', headers: :any, methods: %i[get options]
+        resource '/widget.js', headers: :any, methods: %i[get options]
       end
     end
   end
