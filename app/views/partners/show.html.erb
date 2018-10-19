@@ -17,10 +17,6 @@
           <%= markdown @partner.short_description %>
         </div>
       <% end %>
-      <% if @map.length > 0 %>
-        <%= render_component "map", points: @map, site: @current_site.slug %>
-      <% end %>
-
       <%= render_component "place_info",
         name: @partner.name,
         email: @partner.public_email,
@@ -37,7 +33,12 @@
       <% if @partner.image? %>
         <img src="<%= @partner.image.standard.url %>"
              srcset="<%= @partner.image.standard.url %> 1x, <%= @partner.image.retina.url %> 2x"
-             alt="Image for <%= @partner.name %>" >
+             alt="Image for <%= @partner.name %>"
+             class="map--single" >
+      <% end %>
+
+      <% if @map.length > 0 %>
+        <%= render_component "map", points: @map, site: @current_site.slug %>
       <% end %>
     </div>
   </div>
