@@ -29,12 +29,13 @@
 
   <h2>Main neighbourhood</h2>
 
-  <%= f.fields_for :sites_neighbourhood do |sn|%>
-    <%- if @primary_neighbourhood_id %>
-      <%= sn.hidden_field :id, value: @sites_neighbourhoods_ids[@primary_neighbourhood_id] %>
+  <%= f.fields_for :sites_neighbourhood do |sn| %>
+    <% if @primary_neighbourhood_id %>
+      <p><%= @all_neighbourhoods.find(@primary_neighbourhood_id).name %></p>
+    <% else %>
+      <%= sn.hidden_field :relation_type, value: "Primary" %>
+      <%= sn.select :neighbourhood_id, options_from_collection_for_select(@all_neighbourhoods, 'id', 'name', @primary_neighbourhood_id), class: 'form-control', include_blank: true %>
     <% end %>
-    <%= sn.select :neighbourhood_id, options_from_collection_for_select(@all_neighbourhoods, 'id', 'name', sn.object.neighbourhood_id), class: 'form-control', include_blank: true %>
-    <%= sn.hidden_field :relation_type, value: "Primary" %>
   <% end %>
 
   <h2>Other neighbourhoods to include</h2>
