@@ -20,22 +20,39 @@ class Calendar < ApplicationRecord
 
 
   # Defines the strategy this Calendar uses to assign events to locations.
-  #
-  # Event: Use the Event's location field from the imported record
-  #   Area calendars, or organisations with no solid base.
-  # Place: Use the Calendars's associated Place and ignore the Event information
-  #   Every event is in a single location, and we want to ignore the
-  #   event location entirely
-  # Room Number: Use the Calendars's associated Place & presume the location
-  #   field contains a room number
-  #   Every event is in a large venue and the location field is being used to
-  #   store the room number
-  # EventOverride: Use Calendar's associated Place, unless address is present.
-  #   Everything is in one Place, with occasional away days or one-off events
   # @attr [Enumerable<Symbol>] :strategy
-  enumerize :strategy, in: %i[event place room_number event_override],
-                       default: :place,
-                       scope: true
+  enumerize(
+    :strategy,
+    in: %i[event place room_number event_override],
+    default: :place,
+    scope: true
+  )
+
+  class << self
+    def strategy_label val
+      case val.second
+      when 'event'
+        '<em>Event</em> - ' \
+        "Use the location exactly as specified in the individual event. " \
+        "This is for area calendars, or organisations with no solid base.".html_safe
+      when 'place'
+        "<em>Default location</em> - " \
+        "Always use this calendar's Default Location and ignore any location information in the individual event. " \
+        "Every event is in the same location.".html_safe
+      when 'room_number'
+        "<em>Room Number</em> - " \
+        "Each location is a combination of this calendar's Default Location and a room number " \
+        "in the individual event. Every event is in a large venue and the individual event " \
+        "information specifies the room number.".html_safe
+      when 'event_override'
+        "<em>EventOverride</em> - " \
+        "Use this calendar's Default Location unless the individual event has a location, in which case use that instead. " \
+        "Everything is in one Place, with occasional away days or one-off events.".html_safe
+      else
+        val
+      end
+    end
+  end
 
   # Output constant for event import date limit
   def self.import_up_to
