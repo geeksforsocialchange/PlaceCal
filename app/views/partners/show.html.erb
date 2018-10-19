@@ -38,7 +38,7 @@
       <% end %>
 
       <% if @map.length > 0 %>
-        <%= render_component "map", points: @map, site: @current_site.slug %>
+        <%= render_component "map", points: @map, site: @current_site.slug, style: :single %>
       <% end %>
     </div>
   </div>

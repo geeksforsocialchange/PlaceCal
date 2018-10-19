@@ -29,7 +29,11 @@ class MapComponent < MountainView::Presenter
   end
 
   def styles
-    if markers.length > 1 || properties[:style] == :full
+    if properties[:style] == :full
+      ' map--multiple'
+    elsif properties[:style] == :single
+      ' map--single'
+    elsif markers.length > 1
       ' map--multiple'
     else
       ' map--single'
