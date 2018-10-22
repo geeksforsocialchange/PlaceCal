@@ -134,6 +134,67 @@ namespace :db do
     end
   end
 
+  DB_DUMP_ENV_KEY = 'db_dump_filename'
+
+  desc "Download production DB dump"
+  task dump_production: :environment do
+
+    filename = if ENV[DB_DUMP_ENV_KEY]
+      ENV[DB_DUMP_ENV_KEY]
+    else
+      "dump_#{Time.now.to_i}.sql"
+    end
+
+    $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
+    puts `ssh root@placecal.org dokku postgres:export placecal-db > #{filename}`
+    if $?.success?
+      $stdout.puts "Downloaded production db to #{filename}"
+      ENV[DB_DUMP_ENV_KEY] = filename
+    else
+      $stderr.puts "Failed to download DB dump!"
+    end
+  end
+
+  desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to local dev DB"
+  task restore_local: :environment do
+    filename = ENV[DB_DUMP_ENV_KEY]
+    raise "Could not find #{filename} file!" if ! File.exist? filename
+
+    $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
+    puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev < #{filename}`
+    if $?.success?
+      $stdout.puts "... done."
+    else
+      $stderr.puts "Failed to restore DB dump to local dev DB!"
+      $stderr.puts "Please manually check to see whether local DB dev still exists."
+      exit
+    end
+  end
+
+  desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to staging server DB"
+  task restore_staging: :environment do
+    filename = ENV[DB_DUMP_ENV_KEY]
+    raise "Could not find #{filename} file!" if ! File.exist? filename
+
+    $stdout.puts "Restoring DB dump file #{filename} to staging server DB. (May take a while.) ..."
+    puts `< #{filename} ssh root@placecal-staging.org dokku postgres:import placecal-staging-db`
+    if $?.success?
+      $stdout.puts "... done."
+    else
+      $stderr.puts "Failed to restore DB dump to staging server DB!"
+      $stderr.puts "Please manually check to see whether staging server DB still exists."
+      exit
+    end
+  end
+
+  desc "Download production DB dump and optionally use it to restore_on_local=1 and/or restore_on_staging=1"
+  task dump_production_and_restore_other: :dump_production do
+    $stdout.puts "restore_on_local = #{ENV['restore_on_local']}" if ENV['restore_on_local']
+    $stdout.puts "restore_on_staging = #{ENV['restore_on_staging']}" if ENV['restore_on_staging']
+    Rake::Task['db:restore_local'].execute if ENV['restore_on_local']
+    Rake::Task['db:restore_staging'].execute if ENV['restore_on_staging']
+  end
+
   private
 
   def ensure_format(format)
