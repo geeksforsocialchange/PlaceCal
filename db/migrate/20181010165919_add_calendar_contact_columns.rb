@@ -11,4 +11,5 @@ class AddCalendarContactColumns < ActiveRecord::Migration[5.1]
       t.text :public_contact_phone
     end
   end
+
 end

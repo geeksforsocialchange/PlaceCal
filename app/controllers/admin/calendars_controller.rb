@@ -90,7 +90,14 @@ module Admin
         :partner_id,
         :place_id,
         :is_facebook_page,
-        :facebook_page_id
+        :facebook_page_id,
+        :is_working,
+        :public_contact_name,
+        :public_contact_phone,
+        :public_contact_email,
+        :partnership_contact_name,
+        :partnership_contact_phone,
+        :partnership_contact_email
       )
     end
   end

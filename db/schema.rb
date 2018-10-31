@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181012041853) do
+ActiveRecord::Schema.define(version: 20181031134053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,12 +42,12 @@ ActiveRecord::Schema.define(version: 20181012041853) do
     t.text "critical_error"
     t.string "page_access_token"
     t.boolean "is_working", default: true, null: false
-    t.text "partnership_contact_name"
-    t.text "partnership_contact_email"
-    t.text "partnership_contact_phone"
-    t.text "public_contact_name"
-    t.text "public_contact_email"
-    t.text "public_contact_phone"
+    t.string "partnership_contact_name"
+    t.string "partnership_contact_email"
+    t.string "partnership_contact_phone"
+    t.string "public_contact_name"
+    t.string "public_contact_email"
+    t.string "public_contact_phone"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
