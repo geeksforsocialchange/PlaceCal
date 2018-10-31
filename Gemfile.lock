@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/eddiezane/sendgrid-actionmailer.git
-  revision: e76945db2189daaa542a6656cf20348c59486361
+  revision: 766c201b3afdaca89d01774428797c1c6f5eabe4
   specs:
     sendgrid-actionmailer (2.0.1)
       mail (~> 2.5)
@@ -243,14 +243,14 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.0.13)
-    mail (2.7.0)
+    mail (2.7.1)
       mini_mime (>= 0.1.1)
     method_source (0.9.0)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_magick (4.8.0)
-    mini_mime (1.0.0)
+    mini_mime (1.0.1)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     minitest-capybara (0.8.2)
@@ -324,7 +324,7 @@ GEM
     puma (3.11.4)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
-    rack (2.0.4)
+    rack (2.0.5)
     rack-cors (1.0.2)
     rack-protection (2.0.4)
       rack
@@ -407,8 +407,8 @@ GEM
     select2-rails (4.0.3)
       thor (~> 0.14)
     selectize-rails (0.12.4.1)
-    sendgrid-ruby (5.2.0)
-      ruby_http_client (~> 3.2)
+    sendgrid-ruby (5.3.0)
+      ruby_http_client (~> 3.3.0)
       sinatra (>= 1.4.7, < 3)
     sexp_processor (4.11.0)
     shellany (0.0.1)
