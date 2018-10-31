@@ -40,7 +40,7 @@ gem 'crypt_keeper', '2.0.0.rc2' #Use the newest version to avoid Rails 5 compati
 gem 'devise'
 gem 'devise_invitable'
 gem 'enumerize'
-gem 'friendly_id', '~> 5.1.0'
+gem 'friendly_id', '~> 5.2.4'
 gem 'geocoder', '~> 1.5.0'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'

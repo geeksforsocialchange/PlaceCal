@@ -165,7 +165,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffi (1.9.25)
     formatador (0.2.5)
-    friendly_id (5.1.0)
+    friendly_id (5.2.4)
       activerecord (>= 4.0.0)
     geocoder (1.5.0)
     globalid (0.4.1)
@@ -502,7 +502,7 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   faker
-  friendly_id (~> 5.1.0)
+  friendly_id (~> 5.2.4)
   geocoder (~> 1.5.0)
   groupdate
   guard
