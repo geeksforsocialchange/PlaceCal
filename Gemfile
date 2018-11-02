@@ -66,7 +66,7 @@ gem 'groupdate'
 
 # Administration
 gem 'administrate'
-gem 'administrate-field-carrierwave', '~> 0.2.0'
+gem 'administrate-field-carrierwave', '~> 0.3.4'
 gem 'administrate-field-password'
 
 # Markdown
