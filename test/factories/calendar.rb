@@ -8,6 +8,6 @@ FactoryBot.define do
     sequence :source do |n|
 	  "https://outlook.office365.com/owa/calendar/#{n}/calendar.ics"
 	end
-    strategy 'place'
+    strategy { 'place' }
   end
 end

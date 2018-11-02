@@ -1,0 +1,9 @@
+AllCops:
+  RSpec:
+    Patterns:
+    - _test.rb
+    - "(?:^|/)test/"
+
+  RSpec/FactoryBot:
+    Patterns:
+    - test/factories/**/*.rb
