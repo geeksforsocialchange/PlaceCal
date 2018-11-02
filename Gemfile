@@ -85,7 +85,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'timecop'
-  gem 'to_factory', '~> 0.2.1'
+  gem 'to_factory', '~> 2.1.0'
 end
 
 group :development do
