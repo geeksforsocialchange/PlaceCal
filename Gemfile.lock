@@ -236,7 +236,7 @@ GEM
       minitest-capybara (~> 0.8)
       minitest-metadata (~> 0.6)
       minitest-rails (~> 3.0)
-    minitest-reporters (1.2.0)
+    minitest-reporters (1.3.5)
       ansi
       builder
       minitest (>= 5.0)
