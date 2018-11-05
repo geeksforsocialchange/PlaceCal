@@ -72,7 +72,7 @@ gem 'enumerize'
 gem 'friendly_id', '~> 5.2.4'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'
-gem 'listen', '~> 3.0.5'
+gem 'listen', '~> 3.1.5'
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
@@ -85,7 +85,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'timecop'
-  gem 'to_factory', '~> 0.2.1'
+  gem 'to_factory', '~> 2.1.0'
 end
 
 group :development do
