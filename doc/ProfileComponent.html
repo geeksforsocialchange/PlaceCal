@@ -6,7 +6,7 @@
 <title>
   Class: ProfileComponent
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -207,12 +207,12 @@
       <pre class="lines">
 
 
-14
-15
-16</pre>
+16
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/components/profile/profile_component.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'app/components/profile/profile_component.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_email'>email</span>
   <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_email'>email</span>
@@ -269,12 +269,16 @@
 
 10
 11
-12</pre>
+12
+13
+14</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/components/profile/profile_component.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_phone'>phone</span>
+  <span class='comment'># Bloody empty string strikes again
+</span>  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_phone'>phone</span><span class='op'>&amp;.</span><span class='id identifier rubyid_length'>length</span><span class='op'>&amp;.</span><span class='id identifier rubyid_positive?'>positive?</span>
   <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_phone'>phone</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -287,9 +291,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:11 2018 by
+  Generated on Thu Nov  8 19:43:51 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

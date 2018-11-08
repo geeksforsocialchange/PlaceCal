@@ -173,7 +173,7 @@ class ApplicationController < ActionController::Base
     @global_supporters = Supporter.global
   end
 
-  # Shared methods across normal, admin and superadmin
+  # Shared methods across whole site
   # Use callbacks to share common setup or constraints between actions.
   def set_partner
     @partner = Partner.friendly.find(params[:id])

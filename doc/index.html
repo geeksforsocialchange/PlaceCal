@@ -6,7 +6,7 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -59,7 +59,7 @@
 
       <div id="content"><div id='filecontents'><h1 id="placecal">PlaceCal</h1>
 
-<p><a href="https://travis-ci.org/geeksforsocialchange/PlaceCal"><img src="https://travis-ci.org/geeksforsocialchange/PlaceCal.svg?branch=master" alt="Build Status" /></a> <a href="https://codeclimate.com/github/geeksforsocialchange/PlaceCal/maintainability"><img src="https://api.codeclimate.com/v1/badges/18174238dc53c658212b/maintainability" alt="Maintainability" /></a> <a href="https://codeclimate.com/github/geeksforsocialchange/PlaceCal/test_coverage"><img src="https://api.codeclimate.com/v1/badges/18174238dc53c658212b/test_coverage" alt="Test Coverage" /></a></p>
+<p><a href="https://travis-ci.org/geeksforsocialchange/PlaceCal"><img alt="Build Status" src="https://travis-ci.org/geeksforsocialchange/PlaceCal.svg?branch=master" /></a> <a href="https://codeclimate.com/github/geeksforsocialchange/PlaceCal/maintainability"><img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/18174238dc53c658212b/maintainability" /></a> <a href="https://codeclimate.com/github/geeksforsocialchange/PlaceCal/test_coverage"><img alt="Test Coverage" src="https://api.codeclimate.com/v1/badges/18174238dc53c658212b/test_coverage" /></a></p>
 
 <h2 id="introduction--warning">Introduction / Warning</h2>
 
@@ -73,11 +73,12 @@
 
 <ul>
   <li>postgresql, Ruby 2.4.3, and the Bundler gem to install rails 5 etc from the Gemfile</li>
-  <li><code>rails db:setup db:migrate seed:migrate</code></li>
-  <li><code>rails import:all_events</code></li>
+  <li><code>bundle exec rails db:setup db:migrate seed:migrate</code></li>
+  <li><code>bundle exec rails import:all_events</code></li>
   <li>Make sure you use <code>lvh.me:3000</code> instead of <code>localhost</code> or you might have authentication problems.</li>
   <li>Admin interface is <code>admin.lvh.me:3000</code></li>
   <li>Seeded root user is info@placecal.org / password</li>
+  <li>Access code docs through your local filesystem, and update with <code>bundle exec rails yard</code></li>
 </ul>
 
 <p>To set up your own server, take a look at <code>INSTALL.md</code>.</p>
@@ -88,9 +89,9 @@
 </div></div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:08 2018 by
+  Generated on Thu Nov  8 19:43:43 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Class: Event
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -179,7 +179,7 @@ event is wrong.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#location-instance_method" title="#location (instance method)">#<strong>location</strong>  &#x21d2; Object </a>
+      <a href="#neighbourhood-instance_method" title="#neighbourhood (instance method)">#<strong>neighbourhood</strong>  &#x21d2; Object </a>
     
 
     
@@ -329,16 +329,16 @@ event is wrong</p>
       <pre class="lines">
 
 
-86
-87
-88
-89
-90
-91
-92</pre>
+93
+94
+95
+96
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 93</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_blame'>blame</span>
   <span class='id identifier rubyid_partner'>partner</span> <span class='op'>=</span> <span class='id identifier rubyid_calendar'>calendar</span><span class='op'>&amp;.</span><span class='id identifier rubyid_partner'>partner</span>
@@ -367,12 +367,12 @@ event is wrong</p>
       <pre class="lines">
 
 
-76
-77
-78</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_date'>date</span>
   <span class='id identifier rubyid_dtstart'>dtstart</span><span class='period'>.</span><span class='id identifier rubyid_strftime'>strftime</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>%e %b</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -383,9 +383,9 @@ event is wrong</p>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="location-instance_method">
+  <h3 class="signature " id="neighbourhood-instance_method">
   
-    #<strong>location</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>neighbourhood</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -397,15 +397,15 @@ event is wrong</p>
       <pre class="lines">
 
 
-64
-65
-66</pre>
+87
+88
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 87</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
-  <span class='id identifier rubyid_place'>place</span> <span class='op'>?</span> <span class='id identifier rubyid_place'>place</span><span class='period'>.</span><span class='id identifier rubyid_address'>address</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>:</span> <span class='id identifier rubyid_address'>address</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_neighbourhood'>neighbourhood</span>
+  <span class='id identifier rubyid_address'>address</span><span class='op'>&amp;.</span><span class='id identifier rubyid_neighbourhood'>neighbourhood</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -427,12 +427,12 @@ event is wrong</p>
       <pre class="lines">
 
 
-80
-81
-82</pre>
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_permalink'>permalink</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://placecal.org/events/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -457,12 +457,12 @@ event is wrong</p>
       <pre class="lines">
 
 
-56
-57
-58</pre>
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repeat_frequency'>repeat_frequency</span>
   <span class='id identifier rubyid_rrule'>rrule</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>table</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>frequency</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_titleize'>titleize</span> <span class='kw'>if</span> <span class='id identifier rubyid_rrule'>rrule</span>
@@ -487,12 +487,12 @@ event is wrong</p>
       <pre class="lines">
 
 
-60
-61
-62</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sanitize_rrule'>sanitize_rrule</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rrule'>rrule</span> <span class='op'>=</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='id identifier rubyid_rrule'>rrule</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_rrule'>rrule</span> <span class='op'>==</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -517,16 +517,16 @@ event is wrong</p>
       <pre class="lines">
 
 
-68
-69
-70
 71
 72
 73
-74</pre>
+74
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'app/models/event.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_time'>time</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_dtend'>dtend</span>
@@ -545,9 +545,9 @@ event is wrong</p>
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:08 2018 by
+  Generated on Thu Nov  8 19:43:45 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>
