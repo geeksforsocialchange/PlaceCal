@@ -6,7 +6,7 @@
 <title>
   Class: Admin::CalendarsController
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -334,6 +334,8 @@
       <pre class="lines">
 
 
+22
+23
 24
 25
 26
@@ -345,12 +347,10 @@
 32
 33
 34
-35
-36
-37</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
   <span class='ivar'>@calendar</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Calendar.html" title="Calendar (class)">Calendar</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_calendar_params'>calendar_params</span><span class='rparen'>)</span>
@@ -361,7 +361,7 @@
   <span class='kw'>end</span>
 
   <span class='kw'>if</span> <span class='ivar'>@calendar</span><span class='period'>.</span><span class='id identifier rubyid_save'>save</span>
-    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_admin_calendars_path'>admin_calendars_path</span>
+    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_edit_admin_calendar_path'>edit_admin_calendar_path</span><span class='lparen'>(</span><span class='ivar'>@calendar</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_render'>render</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>new</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>end</span>
@@ -386,16 +386,16 @@
       <pre class="lines">
 
 
+45
+46
+47
 48
 49
 50
-51
-52
-53
-54</pre>
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_destroy'>destroy</span>
   <span class='ivar'>@calendar</span><span class='period'>.</span><span class='id identifier rubyid_destroy'>destroy</span>
@@ -426,16 +426,12 @@
 
 18
 19
-20
-21
-22</pre>
+20</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_edit'>edit</span>
-  <span class='id identifier rubyid_authorize'>authorize</span> <span class='ivar'>@calendar</span>
-
   <span class='ivar'>@versions</span> <span class='op'>=</span> <span class='ivar'>@calendar</span><span class='period'>.</span><span class='id identifier rubyid_recent_activity'>recent_activity</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -458,6 +454,9 @@
       <pre class="lines">
 
 
+53
+54
+55
 56
 57
 58
@@ -468,21 +467,14 @@
 63
 64
 65
-66
-67
-68
-69
-70
-71</pre>
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import'>import</span>
-  <span class='id identifier rubyid_authorize'>authorize</span> <span class='ivar'>@calendar</span><span class='comma'>,</span> <span class='symbol'>:import?</span>
-
   <span class='kw'>begin</span>
-    <span class='id identifier rubyid_date'>date</span> <span class='op'>=</span> <span class='const'>DateTime</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:starting_from</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_date'>date</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_zone'>zone</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:starting_from</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 
     <span class='ivar'>@calendar</span><span class='period'>.</span><span class='id identifier rubyid_import_events'>import_events</span><span class='lparen'>(</span><span class='id identifier rubyid_date'>date</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:success</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The import has completed. See below for details.</span><span class='tstring_end'>&#39;</span></span>
@@ -523,7 +515,7 @@
       <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_index'>index</span>
-  <span class='ivar'>@calendars</span> <span class='op'>=</span> <span class='id identifier rubyid_policy_scope'>policy_scope</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../Calendar.html" title="Calendar (class)">Calendar</a></span></span><span class='rparen'>)</span>
+  <span class='ivar'>@calendars</span> <span class='op'>=</span> <span class='id identifier rubyid_policy_scope'>policy_scope</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../Calendar.html" title="Calendar (class)">Calendar</a></span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_authorize'>authorize</span> <span class='const'><span class='object_link'><a href="../Calendar.html" title="Calendar (class)">Calendar</a></span></span>
 <span class='kw'>end</span></pre>
     </td>
@@ -578,15 +570,15 @@
       <pre class="lines">
 
 
-73
-74
-75
-76
-77
-78</pre>
+68
+69
+70
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_page'>select_page</span>
   <span class='id identifier rubyid_authorize'>authorize</span> <span class='const'><span class='object_link'><a href="../Calendar.html" title="Calendar (class)">Calendar</a></span></span>
@@ -614,22 +606,20 @@
       <pre class="lines">
 
 
+37
+38
 39
 40
 41
 42
-43
-44
-45
-46</pre>
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/calendars_controller.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update'>update</span>
-  <span class='id identifier rubyid_authorize'>authorize</span> <span class='ivar'>@calendar</span>
   <span class='kw'>if</span> <span class='ivar'>@calendar</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes'>update_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_calendar_params'>calendar_params</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_admin_calendars_path'>admin_calendars_path</span>
+    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_edit_admin_calendar_path'>edit_admin_calendar_path</span><span class='lparen'>(</span><span class='ivar'>@calendar</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_render'>render</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>edit</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>end</span>
@@ -644,9 +634,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:11 2018 by
+  Generated on Thu Nov  8 19:43:51 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

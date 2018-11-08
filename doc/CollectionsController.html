@@ -6,7 +6,7 @@
 <title>
   Class: CollectionsController
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -261,7 +261,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_show'>show</span>
   <span class='ivar'>@events</span> <span class='op'>=</span> <span class='ivar'>@collection</span><span class='period'>.</span><span class='id identifier rubyid_sorted_events'>sorted_events</span>
-  <span class='ivar'>@map</span> <span class='op'>=</span> <span class='id identifier rubyid_generate_points'>generate_points</span><span class='lparen'>(</span><span class='ivar'>@events</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:place</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@events</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:place</span><span class='rparen'>)</span>
+  <span class='ivar'>@map</span> <span class='op'>=</span> <span class='id identifier rubyid_get_map_markers_from_events'>get_map_markers_from_events</span><span class='lparen'>(</span><span class='ivar'>@events</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@events</span>
   <span class='ivar'>@events</span> <span class='op'>=</span> <span class='id identifier rubyid_sort_events'>sort_events</span><span class='lparen'>(</span><span class='ivar'>@events</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>time</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -274,9 +274,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:11 2018 by
+  Generated on Thu Nov  8 19:43:51 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

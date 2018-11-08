@@ -6,7 +6,7 @@
 <title>
   Class: Admin::TurfsController
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -290,6 +290,7 @@
       <pre class="lines">
 
 
+22
 23
 24
 25
@@ -301,11 +302,10 @@
 31
 32
 33
-34
-35</pre>
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
   <span class='ivar'>@turf</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Turf.html" title="Turf (class)">Turf</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_turf_params'>turf_params</span><span class='rparen'>)</span>
@@ -340,16 +340,16 @@
       <pre class="lines">
 
 
+45
 46
 47
 48
 49
 50
-51
-52</pre>
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_destroy'>destroy</span>
   <span class='ivar'>@turf</span><span class='period'>.</span><span class='id identifier rubyid_destroy'>destroy</span>
@@ -381,8 +381,7 @@
 17
 18
 19
-20
-21</pre>
+20</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 17</span>
@@ -390,7 +389,6 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_edit'>edit</span>
   <span class='id identifier rubyid_authorize'>authorize</span> <span class='ivar'>@turf</span>
   <span class='ivar'>@partners</span> <span class='op'>=</span> <span class='ivar'>@turf</span><span class='period'>.</span><span class='id identifier rubyid_partners'>partners</span>
-  <span class='ivar'>@places</span> <span class='op'>=</span> <span class='ivar'>@turf</span><span class='period'>.</span><span class='id identifier rubyid_places'>places</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -421,7 +419,7 @@
       <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 7</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_index'>index</span>
-  <span class='ivar'>@turfs</span> <span class='op'>=</span> <span class='id identifier rubyid_policy_scope'>policy_scope</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../Turf.html" title="Turf (class)">Turf</a></span></span><span class='rparen'>)</span>
+  <span class='ivar'>@turfs</span> <span class='op'>=</span> <span class='id identifier rubyid_policy_scope'>policy_scope</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../Turf.html" title="Turf (class)">Turf</a></span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_authorize'>authorize</span> <span class='ivar'>@turfs</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -476,17 +474,17 @@
       <pre class="lines">
 
 
+36
 37
 38
 39
 40
 41
 42
-43
-44</pre>
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/turfs_controller.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update'>update</span>
   <span class='id identifier rubyid_authorize'>authorize</span> <span class='ivar'>@turf</span>
@@ -506,9 +504,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:10 2018 by
+  Generated on Thu Nov  8 19:43:51 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

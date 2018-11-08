@@ -6,7 +6,7 @@
 <title>
   Class: Parsers::Ics
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -262,7 +262,7 @@
       <pre class="code"><span class="info file"># File 'app/models/parsers/ics.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_whitelist_pattern'>whitelist_pattern</span>
-  <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.office365.com\/owa\/calendar\/.*|\Awebcal:\/\/</span><span class='regexp_end'>/</span></span>
+  <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.office365.com\/owa\/calendar\/.*|\Awebcal:\/\/|http:\/\/mossleycommunitycentre.org.uk</span><span class='regexp_end'>/</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -300,7 +300,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_digest'>digest</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='comment'>#read file to get contents before creating digest
-</span>  <span class='const'>Digest</span><span class='op'>::</span><span class='const'>MD5</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='rparen'>)</span>
+</span>  <span class='const'>Digest</span><span class='op'>::</span><span class='const'>MD5</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -332,7 +332,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_download_calendar'>download_calendar</span>
   <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='ivar'>@url</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>webcal:\/\/</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>https://</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='comment'>#Remove the webcal:// and just use the part after it
-</span>  <span class='id identifier rubyid_open'>open</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
+</span>  <span class='const'>HTTParty</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='label'>follow_redirects:</span> <span class='kw'>true</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -400,9 +400,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:09 2018 by
+  Generated on Thu Nov  8 19:43:46 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

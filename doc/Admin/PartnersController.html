@@ -6,7 +6,7 @@
 <title>
   Class: Admin::PartnersController
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -432,7 +432,7 @@
       <pre class="code"><span class="info file"># File 'app/controllers/admin/partners_controller.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_index'>index</span>
-  <span class='ivar'>@partners</span> <span class='op'>=</span> <span class='id identifier rubyid_policy_scope'>policy_scope</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../Partner.html" title="Partner (class)">Partner</a></span></span><span class='rparen'>)</span>
+  <span class='ivar'>@partners</span> <span class='op'>=</span> <span class='id identifier rubyid_policy_scope'>policy_scope</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../Partner.html" title="Partner (class)">Partner</a></span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -516,9 +516,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:11 2018 by
+  Generated on Thu Nov  8 19:43:51 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>
