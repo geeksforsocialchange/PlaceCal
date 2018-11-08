@@ -33,11 +33,8 @@ module Admin
 
     def update
       authorize @collection
-      if @collection.update_attributes(collection_params)
-        redirect_to admin_collections_path
-      else
-        render 'edit'
-      end
+      @collection.update_attributes(collection_params)
+      render 'edit'
     end
 
     def destroy

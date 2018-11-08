@@ -57,7 +57,7 @@ class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
     patch admin_collection_url(@collection),
           params: { collection: attributes_for(:collection) }
     # Redirect to main partner screen
-    assert_redirected_to admin_collections_url
+    assert_response :success
   end
 
   # Delete Collection
