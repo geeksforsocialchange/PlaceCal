@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/eddiezane/sendgrid-actionmailer.git
-  revision: e76945db2189daaa542a6656cf20348c59486361
+  revision: 766c201b3afdaca89d01774428797c1c6f5eabe4
   specs:
     sendgrid-actionmailer (2.0.1)
       mail (~> 2.5)
@@ -191,7 +191,7 @@ GEM
     ice_nine (0.11.2)
     interception (0.5)
     jaro_winkler (1.5.1)
-    jbuilder (2.7.0)
+    jbuilder (2.8.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
     jquery-rails (4.3.3)
@@ -381,8 +381,8 @@ GEM
     seed_migration (1.2.3)
     select2-rails (4.0.3)
       thor (~> 0.14)
-    sendgrid-ruby (5.2.0)
-      ruby_http_client (~> 3.2)
+    sendgrid-ruby (5.3.0)
+      ruby_http_client (~> 3.3.0)
       sinatra (>= 1.4.7, < 3)
     sexp_processor (4.11.0)
     shellany (0.0.1)
@@ -424,7 +424,7 @@ GEM
     turbolinks-source (5.2.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.9)
+    uglifier (4.1.19)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.4.0)
     vcr (4.0.0)
@@ -435,7 +435,7 @@ GEM
       equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.7)
       rack (>= 1.0)
-    web-console (3.6.1)
+    web-console (3.7.0)
       actionview (>= 5.0)
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
