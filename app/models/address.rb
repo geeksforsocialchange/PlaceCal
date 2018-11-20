@@ -30,9 +30,16 @@ class Address < ApplicationRecord
     street_address
   end
 
-  def other_address_lines
-    [
+  # Needed for schema.org outputs as streetAddress
+  def full_street_address
+    [ street_address,
       street_address2,
+      street_address3,
+    ].reject(&:blank?).join(', ')
+  end
+
+  def other_address_lines
+    [ street_address2,
       street_address3,
       city,
       postcode
@@ -40,8 +47,7 @@ class Address < ApplicationRecord
   end
 
   def all_address_lines
-    [
-      street_address,
+    [ street_address,
       street_address2,
       street_address3,
       city,

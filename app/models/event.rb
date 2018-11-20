@@ -76,6 +76,12 @@ class Event < ApplicationRecord
     end
   end
 
+  def duration
+    return false unless dtend
+
+    (dtend - dtstart).seconds.iso8601
+  end
+
   def date
     dtstart.strftime('%e %b')
   end
