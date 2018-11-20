@@ -6,7 +6,7 @@
 <title>
   Module: AddressesHelper
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -152,7 +152,7 @@
       <pre class="code"><span class="info file"># File 'app/helpers/addresses_helper.rb', line 4</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options_for_addresses'>options_for_addresses</span>
-  <span class='const'><span class='object_link'><a href="Address.html" title="Address (class)">Address</a></span></span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_p'>p</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_full_address'>full_address</span><span class='comma'>,</span> <span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+  <span class='const'><span class='object_link'><a href="Address.html" title="Address (class)">Address</a></span></span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_p'>p</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -164,9 +164,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:08 2018 by
+  Generated on Thu Nov  8 19:43:44 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

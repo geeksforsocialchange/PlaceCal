@@ -16,6 +16,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
         post :import
       end
     end
+    resources :collections
     resources :partners
     resources :turfs
     resources :sites
@@ -70,21 +71,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
-
-  # Administration
-  namespace :superadmin do
-    get '/', to: 'users#index', as: :root
-    resources :users
-    resources :addresses
-    resources :calendars do
-      post :import
-    end
-    resources :events
-    resources :partners
-    # resources :places
-    resources :collections
-    # root 'users#index'
-  end
+  get 'winter2018', to: 'collections#show', id: 2
 
   root 'pages#home'
 

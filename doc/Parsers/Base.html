@@ -6,7 +6,7 @@
 <title>
   Class: Parsers::Base
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -399,7 +399,7 @@
       <pre class="code"><span class="info file"># File 'app/models/parsers/base.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_digest'>digest</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
-  <span class='const'>Digest</span><span class='op'>::</span><span class='const'>MD5</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
+  <span class='const'>Digest</span><span class='op'>::</span><span class='const'>MD5</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -485,9 +485,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:09 2018 by
+  Generated on Thu Nov  8 19:43:46 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

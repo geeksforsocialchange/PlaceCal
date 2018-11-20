@@ -6,7 +6,7 @@
 <title>
   Class: Admin::OmniauthCallbacksController
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -164,6 +164,28 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setup-instance_method" title="#setup (instance method)">#<strong>setup</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -202,23 +224,27 @@
       <pre class="lines">
 
 
-4
-5
-6
-7
-8
-9
 10
 11
 12
-13</pre>
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/omniauth_callbacks_controller.rb', line 4</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/omniauth_callbacks_controller.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_facebook'>facebook</span>
   <span class='id identifier rubyid_temp_access_token'>temp_access_token</span> <span class='op'>=</span> <span class='id identifier rubyid_omniauth_params'>omniauth_params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>token</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_oauth'>oauth</span>             <span class='op'>=</span> <span class='const'>Koala</span><span class='op'>::</span><span class='const'>Facebook</span><span class='op'>::</span><span class='const'>OAuth</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>FACEBOOK_APP_ID</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>FACEBOOK_APP_SECRET</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_app_id'>app_id</span>            <span class='op'>=</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_facebook_app_id'>facebook_app_id</span><span class='period'>.</span><span class='id identifier rubyid_presence'>presence</span> <span class='op'>||</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>FACEBOOK_APP_ID</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_app_secret'>app_secret</span>        <span class='op'>=</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_facebook_app_secret'>facebook_app_secret</span><span class='period'>.</span><span class='id identifier rubyid_presence'>presence</span> <span class='op'>||</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>FACEBOOK_APP_SECRET</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_oauth'>oauth</span>             <span class='op'>=</span> <span class='const'>Koala</span><span class='op'>::</span><span class='const'>Facebook</span><span class='op'>::</span><span class='const'>OAuth</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_app_id'>app_id</span><span class='comma'>,</span> <span class='id identifier rubyid_app_secret'>app_secret</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_token'>token</span>             <span class='op'>=</span> <span class='id identifier rubyid_oauth'>oauth</span><span class='period'>.</span><span class='id identifier rubyid_exchange_access_token_info'>exchange_access_token_info</span><span class='lparen'>(</span><span class='id identifier rubyid_temp_access_token'>temp_access_token</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_update'>update</span><span class='lparen'>(</span><span class='label'>access_token:</span> <span class='id identifier rubyid_token'>token</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>access_token</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
@@ -246,15 +272,49 @@
       <pre class="lines">
 
 
-15
-16
-17</pre>
+23
+24
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/omniauth_callbacks_controller.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/omniauth_callbacks_controller.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_failure'>failure</span>
  <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_admin_calendars_path'>admin_calendars_path</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="setup-instance_method">
+  
+    #<strong>setup</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+4
+5
+6
+7
+8</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/omniauth_callbacks_controller.rb', line 4</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_setup'>setup</span>
+  <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>omniauth.strategy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:client_id</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_facebook_app_id'>facebook_app_id</span>
+  <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>omniauth.strategy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:client_secret</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_facebook_app_secret'>facebook_app_secret</span>
+  <span class='id identifier rubyid_render'>render</span> <span class='label'>plain:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Omniauth setup phase.</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>status:</span> <span class='int'>404</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -266,9 +326,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:11 2018 by
+  Generated on Thu Nov  8 19:43:52 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

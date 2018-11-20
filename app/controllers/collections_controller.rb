@@ -15,6 +15,11 @@ class CollectionsController < ApplicationController
     @events = @collection.sorted_events
     @map = get_map_markers_from_events(@events) if @events
     @events = sort_events(@events, 'time')
+
+    respond_to do |format|
+      format.html
+      format.text
+    end
   end
 
   # GET /collections/new

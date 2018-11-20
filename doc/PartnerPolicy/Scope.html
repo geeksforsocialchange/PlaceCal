@@ -6,7 +6,7 @@
 <title>
   Class: PartnerPolicy::Scope
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -171,7 +171,9 @@
 38
 39
 40
-41</pre>
+41
+42
+43</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/policies/partner_policy.rb', line 33</span>
@@ -183,6 +185,8 @@
     <span class='id identifier rubyid_scope'>scope</span><span class='period'>.</span><span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='symbol'>:turfs</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>turfs:</span> <span class='lbrace'>{</span> <span class='label'>id:</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_turfs'>turfs</span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_distinct'>distinct</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_user'>user</span><span class='op'>&amp;.</span><span class='id identifier rubyid_role'>role</span><span class='op'>&amp;.</span><span class='id identifier rubyid_partner_admin?'>partner_admin?</span>
     <span class='id identifier rubyid_scope'>scope</span><span class='period'>.</span><span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='symbol'>:users</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>partners_users:</span> <span class='lbrace'>{</span> <span class='label'>user_id:</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_scope'>scope</span><span class='period'>.</span><span class='id identifier rubyid_none'>none</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -195,9 +199,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:09 2018 by
+  Generated on Thu Nov  8 19:43:48 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

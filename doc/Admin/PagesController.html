@@ -6,7 +6,7 @@
 <title>
   Class: Admin::PagesController
   
-    &mdash; Documentation by YARD 0.9.14
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -188,9 +188,7 @@
 10
 11
 12
-13
-14
-15</pre>
+13</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/controllers/admin/pages_controller.rb', line 5</span>
@@ -199,11 +197,9 @@
   <span class='kw'>if</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='op'>&amp;.</span><span class='id identifier rubyid_role'>role</span><span class='op'>&amp;.</span><span class='id identifier rubyid_root?'>root?</span>
     <span class='ivar'>@turfs</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Turf.html" title="Turf (class)">Turf</a></span></span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
     <span class='ivar'>@partners</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Partner.html" title="Partner (class)">Partner</a></span></span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
-    <span class='ivar'>@places</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Place.html" title="Place (class)">Place</a></span></span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='ivar'>@turfs</span> <span class='op'>=</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_turfs'>turfs</span>
     <span class='ivar'>@partners</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Partner.html" title="Partner (class)">Partner</a></span></span><span class='period'>.</span><span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='symbol'>:turfs</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>turfs:</span> <span class='lbrace'>{</span> <span class='label'>id:</span> <span class='ivar'>@turfs</span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_distinct'>distinct</span>
-    <span class='ivar'>@places</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Place.html" title="Place (class)">Place</a></span></span><span class='period'>.</span><span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='symbol'>:turfs</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>turfs:</span> <span class='lbrace'>{</span> <span class='label'>id:</span> <span class='ivar'>@turfs</span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_distinct'>distinct</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -216,9 +212,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 22 13:09:10 2018 by
+  Generated on Thu Nov  8 19:43:50 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.14 (ruby-2.4.3).
+  0.9.16 (ruby-2.4.3).
 </div>
 
     </div>

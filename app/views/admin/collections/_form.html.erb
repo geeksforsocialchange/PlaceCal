@@ -1,0 +1,26 @@
+<%= simple_form_for [:admin, @collection] do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <%= f.input :name %>
+  <%= f.input :description %>
+
+  <%= f.association :events, collection: options_for_events, input_html: { class: 'select2' } %>
+
+
+  <%= f.input :image %>
+  <% if f.object.image.size.positive? %>
+    <div class="card">
+      <%= image_tag f.object.image, class: 'card-img-top', style: 'max-width: 200px' %>
+      <div class="card-title">
+        Current image
+      </div>
+    </div>
+  <% end %>
+
+  <%= f.button :submit, class: "btn btn-primary" %>
+
+  <% unless @collection.new_record? %>
+    <%= link_to "Destroy Collection", admin_collection_path(@collection), method: :delete, class: "btn btn-danger" %>
+  <% end %>
+<% end %>

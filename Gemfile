@@ -30,44 +30,27 @@ gem 'icalendar-recurrence'
 gem 'carrierwave'
 gem 'mini_magick'
 
-# UI
+# Admin
 gem 'bootstrap-sass', '~> 3.3.7'
-
-# Misc
-gem 'active_link_to'
 gem 'cocoon'
-gem 'crypt_keeper', '2.0.0.rc2' #Use the newest version to avoid Rails 5 compatibility issues
+gem 'select2-rails'
+gem 'simple_form'
+
+# Users, login, permissions
 gem 'devise'
 gem 'devise_invitable'
-gem 'enumerize'
-gem 'friendly_id', '~> 5.1.0'
-gem 'geocoder', '~> 1.5.0'
-gem 'jbuilder', '~> 2.5'
-gem 'koala'
-gem 'leaflet-rails'
-gem 'listen', '~> 3.0.5'
-gem 'oj'
 gem 'omniauth-facebook'
-gem 'paper_trail'
 gem 'pundit'
-gem 'rollbar'
-gem 'select2-rails'
-gem 'sendgrid-actionmailer', github: 'eddiezane/sendgrid-actionmailer'
-gem 'simple_form'
-gem 'virtus'
-gem 'whenever', require: false
+
+# Maps and geolocation
+gem 'geocoder', '~> 1.5.0'
+gem 'leaflet-rails'
 
 # Styleguide
 gem 'mountain_view'
 
 # Helpers to group by time period
-# TODO: check if this is still actually used
 gem 'groupdate'
-
-# Administration
-gem 'administrate'
-gem 'administrate-field-carrierwave', '~> 0.2.0'
-gem 'administrate-field-password'
 
 # Markdown
 gem 'kramdown'
@@ -76,25 +59,37 @@ gem 'rails_autolink'
 # Jobs
 gem 'delayed_job_active_record'
 
-# CORS to allow iFrames
+# iFrames and external embeds
 gem 'rack-cors', require: 'rack/cors'
 
-# Seeds and data stuff
+# Seeds and data
 gem 'seed_migration'
 
+# Utilities
+gem 'active_link_to'
+gem 'bootsnap', require: false
+gem 'crypt_keeper', '2.0.0.rc2'
+gem 'enumerize'
+gem 'friendly_id', '~> 5.2.4'
+gem 'jbuilder', '~> 2.5'
+gem 'koala'
+gem 'listen', '~> 3.1.5'
+gem 'oj'
+gem 'paper_trail'
+gem 'rollbar'
+gem 'sendgrid-actionmailer', github: 'eddiezane/sendgrid-actionmailer'
+gem 'virtus'
+gem 'whenever', require: false
+
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger
   gem 'byebug', platform: :mri
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
-  # Generates factories for us
   gem 'timecop'
-  gem 'to_factory', '~> 0.2.1'
+  gem 'to_factory', '~> 2.1.0'
 end
 
 group :development do
-  # Spring speeds up development by keeping your application running
-  # in the background. Read more: https://github.com/rails/spring
   gem 'awesome_print'
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -108,19 +103,17 @@ group :development do
   gem 'rubocop'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  # Access an IRB console on exception pages or by using <%= console %>
   gem 'web-console', '>= 3.3.0'
   gem 'yard'
 end
 
 group :test do
-  gem 'vcr'
-  gem 'webmock'
-  gem 'faker'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'simplecov', require: false
+  gem 'vcr'
+  gem 'webmock'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
