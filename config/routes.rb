@@ -78,5 +78,8 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Styleguide
   mount MountainView::Engine => '/styleguide'
 
+  # API
+  mount Placecal::Base => '/'
+
   get '/robots.txt' => 'pages#robots'
 end

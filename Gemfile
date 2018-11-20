@@ -59,7 +59,11 @@ gem 'rails_autolink'
 # Jobs
 gem 'delayed_job_active_record'
 
-# iFrames and external embeds
+# API / iFrames
+gem 'grape'
+gem 'grape-entity'
+gem 'grape-swagger-rails'
+gem 'grape_on_rails_routes'
 gem 'rack-cors', require: 'rack/cors'
 
 # Seeds and data
