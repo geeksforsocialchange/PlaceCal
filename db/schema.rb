@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181031134053) do
+ActiveRecord::Schema.define(version: 20181121122228) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 20181031134053) do
     t.string "uid"
     t.text "summary"
     t.text "description"
-    t.text "location"
+    t.text "raw_location_from_source"
     t.jsonb "rrule"
     t.jsonb "notices"
     t.boolean "is_active", default: true, null: false

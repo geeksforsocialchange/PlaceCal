@@ -38,14 +38,14 @@ module Events
     end
 
     def attributes
-      { uid:         uid&.strip,
-        summary:     summary,
-        description: html_sanitize(description),
-        location:    location&.strip,
-        rrule:       rrule,
-        place_id:    place_id,
-        address_id:  address_id,
-        partner_id:  partner_id
+      { uid:                      uid&.strip,
+        summary:                  summary,
+        description:              html_sanitize(description),
+        raw_location_from_source: location&.strip,
+        rrule:                    rrule,
+        place_id:                 place_id,
+        address_id:               address_id,
+        partner_id:               partner_id
       }
     end
 
