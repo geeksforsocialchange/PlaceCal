@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181121122228) do
+ActiveRecord::Schema.define(version: 20181121141327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,8 @@ ActiveRecord::Schema.define(version: 20181121122228) do
     t.jsonb "opening_times"
     t.text "booking_info"
     t.text "accessibility_info"
+    t.string "twitter_handle"
+    t.string "facebook_link"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
