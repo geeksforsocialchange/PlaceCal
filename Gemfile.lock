@@ -216,6 +216,9 @@ GEM
       railties (>= 3.1.0)
       turbolinks
     json (2.1.0)
+    json_matchers (0.10.0)
+      json_schema
+    json_schema (0.19.1)
     koala (3.0.0)
       addressable
       faraday
@@ -508,6 +511,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails
   jquery-turbolinks
+  json_matchers
   koala
   kramdown
   leaflet-rails

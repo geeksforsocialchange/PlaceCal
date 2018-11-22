@@ -112,6 +112,7 @@ group :development do
 end
 
 group :test do
+  gem 'json_matchers'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'

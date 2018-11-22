@@ -13,6 +13,12 @@ Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 require 'minitest/autorun'
 require 'pry-rescue/minitest'
 
+# JSON matcher stuff for API
+require 'json_matchers/minitest/assertions'
+JsonMatchers.schema_root = 'test/support/api/schemas'
+Minitest::Test.send(:include, JsonMatchers::Minitest::Assertions)
+
+
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 

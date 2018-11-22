@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "An event based on schema.org's definition",
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "startDate",
+    "location",
+    "organiser",
+    "url"
+  ],
+  "definitions": {
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "title": "ISO 8601 to second precision in UTC with time zone",
+
+      "examples": ["2018-10-20T18:00:00.000Z"]
+    }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name of event",
+      "examples": ["Coffee morning"]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description of event",
+      "examples": ["Come and have a nice cup of coffee with some friends"]
+    },
+    "url": {
+      "type": "string",
+      "title": "URL to source webpage for event",
+      "examples": ["https://placecal.org/event/1"]
+    },
+    "startDate": {
+      "$ref": "#/definitions/time",
+      "title": "Start time and date",
+    },
+    "endDate": {
+      "$ref": "#/definitions/time",
+      "title": "End time and date",
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "address"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Name of venue if it has one",
+          "examples": ["Community Resource Centre"]
+        },
+        "address": {
+          "type": "object",
+          "required": [
+            "streetAddress",
+            "postalCode"
+          ],
+          "properties": {
+            "streetAddress": {
+              "type": "string",
+              "title": "Street address",
+              "examples": ["Venue Name, Street Number, Town"]
+            },
+            "city": {
+              "type": "string",
+              "title": "City the venue is in",
+              "examples": ["Manchester"]
+            },
+            "postalCode": {
+              "type": "string",
+              "title": "Postcode for this venue",
+              "examples": ["M15 7FZ"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

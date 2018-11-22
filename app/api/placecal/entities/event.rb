@@ -5,12 +5,17 @@ module Placecal
       expose :type, as: '@type'
       expose :summary, as: 'name'
       expose :dtstart, as: 'startDate'
-      expose :dtend, as: 'endDate'
-      expose :duration, if: ->(object) { object.duration }
-      expose :description
-      expose :place do
+      expose :dtend, as: 'endDate', expose_nil: false
+      expose :duration, expose_nil: false
+      expose :description, expose_nil: false
+      expose :partner, as: 'organizer', if: ->(object) { object&.partner } do
+        expose :partner_type, as: '@type'
+        expose :partner_name, as: 'name'
+        expose :partner_url, as: 'url'
+      end
+      expose :place, as: 'location' do
         expose :place_type, as: '@type'
-        expose :place_name, as: 'name', if: ->(object) { object.place }
+        expose :place_name, as: 'name', if: ->(object) { object&.place }
         expose :address, using: Placecal::Entities::Address
       end
       expose :permalink, as: 'url'
@@ -32,6 +37,19 @@ module Placecal
       def place_name
         object.place.name
       end
+
+      def partner_type
+        'Organization'
+      end
+
+      def partner_name
+        object.partner.name
+      end
+
+      def partner_url
+        object.partner.permalink
+      end
+
     end
   end
 end
