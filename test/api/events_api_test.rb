@@ -11,12 +11,12 @@ class PlaceCal::APITest < ActiveSupport::TestCase
     Rails.application
   end
 
-  test 'GET /api/v1/events returns an array of events' do
+  test 'GET /api/v1/events returns an array of valid events' do
     create_list(:event, 10)
     get '/api/v1/events'
     assert last_response.ok?
     response = JSON.parse(last_response.body)
-    # assert_equal 10, response.length
+    assert_equal 10, response.length
     assert_matches_json_schema response[0], 'event'
   end
 

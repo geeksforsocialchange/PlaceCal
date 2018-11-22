@@ -1,84 +1,142 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "An event based on schema.org's definition",
   "type": "object",
-  "required": [
-    "name",
-    "description",
-    "startDate",
-    "location",
-    "organiser",
-    "url"
-  ],
+  "title": "PlaceCal event based on schema.org definition",
   "definitions": {
     "time": {
       "type": "string",
-      "format": "date-time",
-      "title": "ISO 8601 to second precision in UTC with time zone",
-
-      "examples": ["2018-10-20T18:00:00.000Z"]
+      "title": "ISO 8601 formatted time string with timezone",
+      "pattern": "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2})\\:(\\d{2})\\:(\\d{2})[+-](\\d{2})\\:(\\d{2})"
     }
   },
+  "required": [
+    "@context",
+    "@type",
+    "name",
+    "startDate",
+    "location",
+    "url"
+  ],
   "properties": {
+    "@context": {
+      "type": "string",
+      "pattern": "http://schema.org"
+    },
+    "@type": {
+      "type": "string",
+      "pattern": "Event"
+    },
     "name": {
       "type": "string",
-      "title": "Name of event",
-      "examples": ["Coffee morning"]
+      "title": "Event name",
+      "examples": [
+        "Credit Union drop in"
+      ]
+    },
+    "startDate": {
+      "ref": "#/definitions/time"
+    },
+    "endDate": {
+      "ref": "#/definitions/time"
+    },
+    "duration": {
+      "type": "string",
+      "title": "Duration in ISO 8601 format",
+      "pattern": "^(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$"
     },
     "description": {
       "type": "string",
-      "title": "Description of event",
-      "examples": ["Come and have a nice cup of coffee with some friends"]
+      "title": "Information about the event",
+      "examples": [
+        "open advice session from Credit Union"
+      ]
     },
-    "url": {
-      "type": "string",
-      "title": "URL to source webpage for event",
-      "examples": ["https://placecal.org/event/1"]
-    },
-    "startDate": {
-      "$ref": "#/definitions/time",
-      "title": "Start time and date",
-    },
-    "endDate": {
-      "$ref": "#/definitions/time",
-      "title": "End time and date",
+    "organizer": {
+      "type": "object",
+      "title": "Partner who organised this event",
+      "required": [
+        "@type",
+        "name",
+        "url"
+      ],
+      "properties": {
+        "@type": {
+          "type": "string",
+          "pattern": "Organization"
+        },
+        "name": {
+          "type": "string",
+          "title": "Organisation's name",
+          "examples": [
+            "One Manchester"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "title": "PlaceCal URL",
+          "pattern": "http://placecal.org/partners/(\\d+)",
+          "examples": [
+            "https://placecal.org/partners/8"
+          ]
+        }
+      }
     },
     "location": {
       "type": "object",
+      "title": "Location this event is at",
       "required": [
+        "@type",
         "address"
       ],
       "properties": {
-        "name": {
+        "@type": {
           "type": "string",
-          "title": "Name of venue if it has one",
-          "examples": ["Community Resource Centre"]
+          "pattern": "Place"
         },
         "address": {
           "type": "object",
+          "title": "Address",
           "required": [
+            "@type",
             "streetAddress",
+            "addressRegion",
             "postalCode"
           ],
           "properties": {
+            "@type": {
+              "type": "string",
+              "pattern": "PostalAddress"
+            },
             "streetAddress": {
               "type": "string",
-              "title": "Street address",
-              "examples": ["Venue Name, Street Number, Town"]
+              "pattern": "^(.*)$",
+              "examples": [
+                "The Place at Platt Lane, Platt Lane, Manchester"
+              ]
             },
-            "city": {
+            "addressRegion": {
               "type": "string",
-              "title": "City the venue is in",
-              "examples": ["Manchester"]
+              "title": "City",
+              "pattern": "^(.*)$",
+              "examples": [
+                "Manchester"
+              ]
             },
             "postalCode": {
               "type": "string",
-              "title": "Postcode for this venue",
-              "examples": ["M15 7FZ"]
+              "pattern": "^(.*)$",
+              "examples": [
+                "M14 7FZ"
+              ]
             }
           }
         }
       }
+    },
+    "url": {
+      "type": "string",
+      "title": "Event URL on PlaceCal",
+      "pattern": "https://placecal.org/events/(\\d+)"
     }
   }
 }
