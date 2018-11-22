@@ -10,6 +10,10 @@
   <%= f.input :image, as: :file %>
   <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
 
+  <%= f.input :url, class: "form-control", label: 'Website address' %>
+  <%= f.input :facebook_link, class: "form-control" %>
+  <%= f.input :twitter_handle, class: "form-control" %>
+
   <br><br>
 
   <h3>Address</h3>

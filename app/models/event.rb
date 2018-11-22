@@ -116,6 +116,6 @@ class Event < ApplicationRecord
   def require_location
     return unless self.address_id.blank?
     errors.add(:base, "No place or address could be created or found for
-                       the event location: #{location}")
+                       the event location: #{raw_location_from_source}")
   end
 end
