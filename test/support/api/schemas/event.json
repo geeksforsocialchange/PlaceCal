@@ -107,6 +107,10 @@
               "type": "string",
               "pattern": "PostalAddress"
             },
+            "url": {
+              "type": "string",
+              "pattern": "https://placecal.org/events/(\\d+)"
+            },
             "streetAddress": {
               "type": "string",
               "pattern": "^(.*)$",

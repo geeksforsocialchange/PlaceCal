@@ -8,16 +8,21 @@ module Placecal
       expose :dtend, as: 'endDate', expose_nil: false
       expose :duration, expose_nil: false
       expose :description, expose_nil: false
-      expose :partner, as: 'organizer', if: ->(object) { object&.partner } do
+
+      expose :partner, as: 'organizer', if: ->(obj) { obj&.partner } do
         expose :partner_type, as: '@type'
         expose :partner_name, as: 'name'
         expose :partner_url, as: 'url'
       end
+
       expose :place, as: 'location' do
         expose :place_type, as: '@type'
-        expose :place_name, as: 'name', if: ->(object) { object&.place }
+        expose :place_name, as: 'name', if: ->(obj) { obj.place }
+        expose :place_phone, as: 'telephone', if: ->(obj) { obj.place&.partner_phone }
         expose :address, using: Placecal::Entities::Address
+        expose :partner_url, as: 'url'
       end
+
       expose :permalink, as: 'url'
 
       private
@@ -36,6 +41,10 @@ module Placecal
 
       def place_name
         object.place.name
+      end
+
+      def place_phone
+        object.place.partner_phone
       end
 
       def partner_type

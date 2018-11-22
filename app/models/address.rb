@@ -55,6 +55,10 @@ class Address < ApplicationRecord
     ].reject(&:blank?)
   end
 
+  def last_line_of_address
+    all_address_lines[-2]
+  end
+
   def to_s
     all_address_lines.join(', ')
   end
