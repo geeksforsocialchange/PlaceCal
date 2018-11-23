@@ -1,4 +1,4 @@
-module Placecal
+module API
   module Entities
     class Event < Grape::Entity
       expose :context, as: '@context'
@@ -19,8 +19,8 @@ module Placecal
         expose :place_type, as: '@type'
         expose :place_name, as: 'name', if: ->(obj) { obj.place }
         expose :place_phone, as: 'telephone', if: ->(obj) { obj.place&.partner_phone }
-        expose :address, using: Placecal::Entities::Address
-        # expose :place_url, as: 'url', if: ->(obj) { obj.place }
+        expose :address, using: API::Entities::Address
+        expose :partner_url, as: 'url'
       end
 
       expose :permalink, as: 'url'
@@ -45,10 +45,6 @@ module Placecal
 
       def place_phone
         object.place.partner_phone
-      end
-
-      def place_url
-        object.place.permalink
       end
 
       def partner_type

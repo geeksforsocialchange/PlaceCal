@@ -14,7 +14,7 @@ module Placecal
         end
         get do
           query = Event.upcoming.sort_by_time
-          query = query.includes(:address, :partner)
+          query = query.includes(:address, :partner, :place)
           query = query.by_partner(params[:organizer]) if params[:organizer]
           query = query.in_place(params[:location]) if params[:location]
           query = query.offset(params[:page] * RESPONSE_LIMIT)

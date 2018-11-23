@@ -20,7 +20,7 @@
   "properties": {
     "@context": {
       "type": "string",
-      "pattern": "http://schema.org"
+      "pattern": "https://schema.org"
     },
     "@type": {
       "type": "string",
@@ -74,7 +74,7 @@
         "url": {
           "type": "string",
           "title": "PlaceCal URL",
-          "pattern": "http://placecal.org/partners/(\\d+)",
+          "pattern": "https://placecal.org/partners/(\\d+)",
           "examples": [
             "https://placecal.org/partners/8"
           ]

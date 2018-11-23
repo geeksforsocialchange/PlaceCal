@@ -4,9 +4,17 @@ FactoryBot.define do
   factory(:event) do
     summary { 'N.A (Narcotics Anonymous)' }
     raw_location_from_source { 'Unformatted Address, Ungeolocated Lane, Manchester' }
-    dtstart { '2017-10-02T12:30Z' }
-    dtend { '2017-10-02T14:00Z' }
+    dtstart { Time.now + 1.day }
+    dtend { Time.now + 1.day + 2.hours }
     is_active { true }
     address
+
+    trait :with_place do
+      association :place, factory: :partner
+    end
+
+    trait :with_partner do
+      association :partner
+    end
   end
 end

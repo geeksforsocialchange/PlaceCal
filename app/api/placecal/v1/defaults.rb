@@ -4,7 +4,7 @@ module Placecal
       extend ActiveSupport::Concern
 
       included do
-        version 'v1', using: :path
+        version 'v1', using: :path, vendor: 'placecal'
         format :json
         prefix :api
 
