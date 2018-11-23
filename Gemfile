@@ -62,6 +62,7 @@ gem 'delayed_job_active_record'
 # API / iFrames
 gem 'grape'
 gem 'grape-entity'
+gem 'grape-swagger'
 gem 'grape-swagger-rails'
 gem 'grape_on_rails_routes'
 gem 'rack-cors', require: 'rack/cors'
