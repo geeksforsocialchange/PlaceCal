@@ -20,7 +20,7 @@ module Placecal
         expose :place_name, as: 'name', if: ->(obj) { obj.place }
         expose :place_phone, as: 'telephone', if: ->(obj) { obj.place&.partner_phone }
         expose :address, using: Placecal::Entities::Address
-        # expose :place_url, as: 'url', if: ->(obj) { obj.place }
+        expose :place_url, as: 'url', if: ->(obj) { obj.place }
       end
 
       expose :permalink, as: 'url'
