@@ -387,7 +387,7 @@ GEM
       sinatra (>= 1.4.7, < 3)
     sexp_processor (4.11.0)
     shellany (0.0.1)
-    simple_form (4.0.1)
+    simple_form (4.1.0)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
     simplecov (0.16.1)
