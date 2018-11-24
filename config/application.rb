@@ -24,8 +24,6 @@ module PlaceCal
         origins '*'
         # API requests
         resource '/api/*', headers: :any, methods: %i[get options]
-        # Current API hack - deprecate
-        resource '/partners/*', headers: :any, methods: %i[get options]
         # Embeddable widget thing - update with new stack
         resource '/widget.js', headers: :any, methods: %i[get options]
       end
