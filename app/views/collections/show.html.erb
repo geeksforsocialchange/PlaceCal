@@ -8,7 +8,7 @@
 <%= render_component "hero", title: @collection.name %>
 
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [[@collection.name, '/winter2017']] %>
+  <%= render_component "breadcrumb", trail: [[@collection.name, collection_path(@collection)]] %>
 
   <hr>
 
