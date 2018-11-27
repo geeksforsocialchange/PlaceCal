@@ -154,7 +154,7 @@ GEM
     geocoder (1.5.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    grape (1.1.0)
+    grape (1.2.0)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
