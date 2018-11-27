@@ -2,11 +2,7 @@
 <html>
   <head>
     <title>
-      <% if @site&.default_site? %>
-        PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>
-      <% else %>
-        <%= @site&.name || 'PlaceCal' %> - <%= yield(:title) %>
-      <% end %>
+      <%= @site&.name %> - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>
     </title>
     <%= csrf_meta_tags %>
 

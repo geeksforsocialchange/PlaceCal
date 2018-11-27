@@ -7,7 +7,6 @@ class EventsController < ApplicationController
   before_action :set_sort, only: :index
   before_action :set_primary_neighbourhood, only: :index
   before_action :set_site
-  before_action :set_title, only: :index
 
   # GET /events
   # GET /events.json
@@ -100,15 +99,6 @@ class EventsController < ApplicationController
   end
 
   private
-
-  def set_title
-    @title =
-      if current_site&.primary_neighbourhood
-        "Events #{current_site.join_word} #{current_site.primary_neighbourhood.name}"
-      else
-        'All Events'
-      end
-  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_event

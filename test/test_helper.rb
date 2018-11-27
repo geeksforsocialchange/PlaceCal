@@ -71,8 +71,5 @@ end
 # Returns:
 #   The default site just created.
 def create_default_site
-  default_site = build(:site)
-  default_site.slug = 'default-site'
-  default_site.save
-  default_site
+  create(:site, slug: 'default-site')
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181126174530) do
+ActiveRecord::Schema.define(version: 20181127132710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -207,7 +207,7 @@ ActiveRecord::Schema.define(version: 20181126174530) do
     t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
   end
 
-  create_table "seed_migration_data_migrations", id: :integer, default: nil, force: :cascade do |t|
+  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
     t.string "version"
     t.integer "runtime"
     t.datetime "migrated_on"
@@ -225,6 +225,7 @@ ActiveRecord::Schema.define(version: 20181126174530) do
     t.string "hero_image"
     t.string "hero_image_credit"
     t.string "footer_logo"
+    t.string "tagline", default: "The Community Calendar"
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 

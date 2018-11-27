@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :neighbourhood do
     sequence(:name) do |n|
-      "Hulme #{n}"
+      "Neighbourhood #{n}"
     end
   end
 end
