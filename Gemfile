@@ -82,7 +82,7 @@ gem 'listen', '~> 3.1.5'
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
-gem 'sendgrid-actionmailer', github: 'eddiezane/sendgrid-actionmailer'
+gem 'sendgrid-actionmailer'
 gem 'virtus'
 gem 'whenever', require: false
 

@@ -1,11 +1,3 @@
-GIT
-  remote: https://github.com/eddiezane/sendgrid-actionmailer.git
-  revision: 766c201b3afdaca89d01774428797c1c6f5eabe4
-  specs:
-    sendgrid-actionmailer (2.0.1)
-      mail (~> 2.5)
-      sendgrid-ruby (~> 5.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -154,7 +146,7 @@ GEM
     geocoder (1.5.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    grape (1.1.0)
+    grape (1.2.0)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
@@ -164,7 +156,7 @@ GEM
     grape-entity (0.7.1)
       activesupport (>= 4.0)
       multi_json (>= 1.3.2)
-    grape-swagger (0.31.1)
+    grape-swagger (0.32.0)
       grape (>= 0.16.2)
     grape-swagger-rails (0.3.0)
       railties (>= 3.2.12)
@@ -405,12 +397,15 @@ GEM
     seed_migration (1.2.3)
     select2-rails (4.0.3)
       thor (~> 0.14)
+    sendgrid-actionmailer (2.2.0)
+      mail (~> 2.5)
+      sendgrid-ruby (~> 5.3.0)
     sendgrid-ruby (5.3.0)
       ruby_http_client (~> 3.3.0)
       sinatra (>= 1.4.7, < 3)
     sexp_processor (4.11.0)
     shellany (0.0.1)
-    simple_form (4.0.1)
+    simple_form (4.1.0)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
     simplecov (0.16.1)
@@ -543,7 +538,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   seed_migration
   select2-rails
-  sendgrid-actionmailer!
+  sendgrid-actionmailer
   simple_form
   simplecov
   spring
