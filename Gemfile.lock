@@ -164,7 +164,7 @@ GEM
     grape-entity (0.7.1)
       activesupport (>= 4.0)
       multi_json (>= 1.3.2)
-    grape-swagger (0.31.1)
+    grape-swagger (0.32.0)
       grape (>= 0.16.2)
     grape-swagger-rails (0.3.0)
       railties (>= 3.2.12)
