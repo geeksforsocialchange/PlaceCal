@@ -142,7 +142,7 @@ namespace :db do
     filename = if ENV[DB_DUMP_ENV_KEY]
       ENV[DB_DUMP_ENV_KEY]
     else
-      "dump_#{Time.now.to_i}.sql"
+      "#{Rails.root}/dump/production_#{Time.now.to_i}.sql"
     end
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
