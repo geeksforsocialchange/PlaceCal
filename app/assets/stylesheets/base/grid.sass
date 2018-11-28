@@ -84,8 +84,11 @@ $column: 17.38317%
 
   .g--partner
     display: grid
-    grid-template-columns: 6fr 1fr 5fr
-    grid-template-areas: "main gutter right"
+    grid-template-columns: 1fr
+    grid-template-areas: "main" "right"
+    +for-tablet-landscape-up
+      grid-template-columns: 6fr 1fr 5fr
+      grid-template-areas: "main gutter right"
     .gi__3-5
       grid-area: main
     .gi__2-5

@@ -34,7 +34,7 @@ class PartnersController < ApplicationController
     @events = filter_events(@period, partner_or_place: @partner)
 
     # Map
-    if @events
+    if @events&.length.positive?
       @map = get_map_markers_from_events(@events)
     else
       @map = get_map_markers([@partner])
