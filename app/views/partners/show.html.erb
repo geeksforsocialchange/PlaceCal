@@ -6,7 +6,7 @@
   <%= render_component "hero", title: @partner.name, subtitle: @site.tagline, schema: 'name' %>
 
   <div class="c c--lg-space-after">
-    <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]] %>
+    <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name %>
 
     <hr>
 

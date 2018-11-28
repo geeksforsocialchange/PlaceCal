@@ -2,7 +2,7 @@
 <%= render_component "hero", title: @title, subtitle: "The Community Calendar" %>
 
 <div class="c c--space-after">
-  <%= render_component "breadcrumb", trail: [['Places', places_path]] %>
+  <%= render_component "breadcrumb", trail: [['Places', places_path]], site_name: @site.name %>
   <hr>
   <ul class="places reset two-col">
     <% @places.each do |place| %>

@@ -2,7 +2,7 @@
 <%= render_component "hero", title: 'Partners in your area', subtitle: @site.tagline %>
 
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [['Partners', partners_path]] %>
+  <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name %>
   <hr>
   <ul class="partners reset two-col">
     <% @partners.each do |partner| %>

@@ -8,9 +8,9 @@ class ComponentControllerTest < ActionDispatch::IntegrationTest
     # Check each component loads using the options listed
     assert_response :success
     # Check we actually have some options, of course
-    assert_select 'h2',
-                  count: 0,
-                  text: "Hint:To see your component make sure you've created stubs:"
+    # assert_select 'h2',
+    #               count: 0,
+    #               text: "Hint:To see your component make sure you've created stubs:"
   end
 
   test 'should get bus routes' do
