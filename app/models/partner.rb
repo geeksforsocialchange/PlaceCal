@@ -28,8 +28,7 @@ class Partner < ApplicationRecord
   accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
 
   validates_presence_of :name
-  validates_uniqueness_of :name
-  # validates_presence_of :turf_ids
+  validates_uniqueness_of :name, case_sensitive: false
 
   mount_uploader :image, ImageUploader
 

@@ -100,8 +100,9 @@ class Calendar < ApplicationRecord
       if %w[place room_number].include?(strategy)
         event_data.place_id = place_id
       else
-        location = set_place_or_address(event_data)
-        event_data.send("#{location.keys[0]}=", location.values[0]) if location.try(:keys).present?
+        id_type, id = get_place_or_address(event_data)
+        event_data.place_id = id if id_type == :place_id
+        event_data.address_id = id if id_type == :address_id
       end
 
       @notices += create_or_update_events(event_data, occurrences, from)
@@ -167,7 +168,7 @@ class Calendar < ApplicationRecord
     CalendarParser.new(self, { from: from }).parse
   end
 
-  def set_place_or_address(event_data)
+  def get_place_or_address(event_data)
     location = event_data.location
 
     return (strategy.event_override? ? { place_id: place_id } : {}) if location.blank?
@@ -176,8 +177,8 @@ class Calendar < ApplicationRecord
     regexp     = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new('UK|United Kingdom')
     components = location.split(', ').map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
 
-    if place = Partner.where(name: components).first # TODO: Make this case insensitive!
-      return { place_id: place.id }
+    if place = Partner.where('lower(name) IN (?)', components.map(&:downcase)).first
+      return [ :place_id, place.id ]
     else
       return Address.search(location, components, postcode)
     end
