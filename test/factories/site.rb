@@ -9,5 +9,9 @@ FactoryBot.define do
     hero_image_credit { 'Place Cal' }
     domain { name.parameterize }
     slug { name.parameterize }
+
+    factory :site_local do
+      tagline { "Neighbourhood's Community Calendar" }
+    end
   end
 end

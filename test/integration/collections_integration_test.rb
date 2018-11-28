@@ -4,12 +4,16 @@ require 'test_helper'
 
 class CollectionsIntegrationTest < ActionDispatch::IntegrationTest
   setup do
-    create_default_site
+    @site = create_default_site
     @collection = create(:collection)
   end
 
-  test 'should show title based' do
-    get partner_url(@partner)
-    assert_select 'h1', @partner.name
+  test 'should show collection' do
+    get collection_url(@collection)
+    assert_response :success
+    assert_select 'title', count: 1, text: "#{@site.name} | #{@collection.name}"
+    assert_select 'div.hero h4', text: 'The Community Calendar'
+    assert_select 'div.hero h1', text: @collection.name
+    assert_select 'ol article', 5
   end
 end

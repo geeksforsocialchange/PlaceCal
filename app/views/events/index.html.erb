@@ -1,7 +1,7 @@
-<% content_for :title, "#{@site.name} | Events & activities in your area" %>
+<% content_for :title, "Events & activities in your area" %>
 
-<%= render_component "hero", title: @title,
-                             subtitle: @site.tagline || "The Community Calendar" %>
+<%= render_component "hero", title: 'Events & activities in your area',
+                             subtitle: @site.tagline %>
 
 <div class="c c--lg-space-after">
   <%= render_component "event_list",

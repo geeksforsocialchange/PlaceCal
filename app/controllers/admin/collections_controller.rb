@@ -55,6 +55,7 @@ module Admin
       params.require(:collection).permit(
         :id,
         :name,
+        :route,
         :description,
         :image,
         event_ids: []

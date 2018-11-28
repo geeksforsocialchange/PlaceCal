@@ -6,7 +6,7 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
   setup do
     # Create a default site and a neighbourhood one
     @default_site = create_default_site
-    @neighbourhood_site = create(:site)
+    @neighbourhood_site = create(:site_local)
 
     # Create one set of events for the default site
     @default_site_events = create_list :event, 5, dtstart: Time.now + 1.hour
@@ -20,24 +20,24 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood_site_events = create_list :event, 5, dtstart: Time.now + 1.hour
     @neighbourhood2 = create(:neighbourhood)
     @neighbourhood_site_events.each do |event|
-      event.address.neighbourhood = @neighbourhood2
+      event.address.update(neighbourhood: @neighbourhood2)
     end
     @neighbourhood_site.neighbourhoods << @neighbourhood2
   end
 
-  test 'default site index page shows all events that are on today' do
+  test 'site indexs page shows all events that are on today and local info' do
     get events_url
     assert_response :success
     assert_select 'title', count: 1, text: "#{@default_site.name} | Events & activities in your area"
-    assert_select 'h1', text: 'Events & activities in your area'
+    assert_select 'div.hero h4', text: 'The Community Calendar'
+    assert_select 'div.hero h1', text: 'Events & activities in your area'
     assert_select 'ol article', 5
-  end
 
-  test 'neighbourhood site index page shows events from today' do
     get "http://#{@neighbourhood_site.slug}.lvh.me/events"
     assert_response :success
     assert_select 'title', count: 1, text: "#{@neighbourhood_site.name} | Events & activities in your area"
-    assert_select 'h1', text: 'Events & activities in your area'
+    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
+    assert_select 'div.hero h1', text: 'Events & activities in your area'
     assert_select 'ol article', 5
   end
 end

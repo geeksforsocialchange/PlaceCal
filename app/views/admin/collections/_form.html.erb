@@ -1,14 +1,14 @@
 <%= simple_form_for [:admin, @collection] do |f| %>
-  <%= f.error_notification %>
-  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+  <%= render_component "error", object: @collection %>
 
-  <%= f.input :name %>
+  <%= f.input :name, id: :collection_name %>
+  <%= f.input :route %>
   <%= f.input :description %>
 
   <%= f.association :events, collection: options_for_events, input_html: { class: 'select2' } %>
 
-
   <%= f.input :image %>
+  
   <% if f.object.image.size.positive? %>
     <div class="card">
       <%= image_tag f.object.image, class: 'card-img-top', style: 'max-width: 200px' %>

@@ -1,7 +1,7 @@
 <% content_for :title, @partner.name %>
 <% content_for :permalink, @partner.permalink %>
 
-<%= render_component "hero", title: @title, subtitle: "The Community Calendar" %>
+<%= render_component "hero", title: @partner.name, subtitle: @site.tagline %>
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]] %>
@@ -10,8 +10,6 @@
 
   <div class="g g--partner">
     <div class="gi gi__3-5">
-      <h1 class="udl udl--red sans"><%= @partner.name %></h1>
-
       <% if @partner.short_description %>
         <div class="first-ele-lg">
           <%= markdown @partner.short_description %>

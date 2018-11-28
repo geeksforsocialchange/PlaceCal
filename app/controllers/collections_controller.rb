@@ -2,6 +2,7 @@
 
 class CollectionsController < ApplicationController
   before_action :set_collection, only: %i[show edit update destroy]
+  before_action :set_site
 
   # GET /collections
   # GET /collections.json

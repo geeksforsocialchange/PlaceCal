@@ -16,6 +16,10 @@ class Collection < ApplicationRecord
   end
 
   def permalink
-    "https://placecal.org/collection/#{id}"
+    "https://placecal.org/collections/#{id}"
+  end
+
+  def named_route
+    route.length.positive? ? "/#{route}" : "/collections/#{id}"
   end
 end

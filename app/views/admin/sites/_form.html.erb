@@ -1,5 +1,6 @@
 <%= simple_form_for [:admin, @site] do |f| %>
   <%= f.input :name %>
+  <%= f.input :tagline %>
   <%= f.input :domain %>
   <%= f.input :slug %>
   <%= f.input :description, input_html: { rows: 5 } %>

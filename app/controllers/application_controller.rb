@@ -200,8 +200,8 @@ class ApplicationController < ActionController::Base
       ['Partners', partners_path]
     ]
     return unless current_site
-    if ['hulme', 'moss-side'].include? current_site.slug
-      @navigation << ['Bus', bus_path]
+    unless ['mossley'].include? current_site.slug
+      @navigation << ['Winter Fest', '/winter2018']
     end
   end
 

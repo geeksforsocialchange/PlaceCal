@@ -5,10 +5,10 @@
   <% content_for :image_alt, "Image for #{@collection.name}" %>
 <% end %>
 
-<%= render_component "hero", title: @collection.name %>
+<%= render_component "hero", title: @collection.name, subtitle: @site.tagline %>
 
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [[@collection.name, collection_path(@collection)]] %>
+  <%= render_component "breadcrumb", trail: [[@collection.name, @collection.named_route]] %>
 
   <hr>
 

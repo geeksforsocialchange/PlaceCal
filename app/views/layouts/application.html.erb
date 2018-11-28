@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>
-      <%= @site&.name %> - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>
+      <%= @site&.name %> | <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>
     </title>
     <%= csrf_meta_tags %>
 

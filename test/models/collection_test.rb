@@ -3,7 +3,13 @@
 require 'test_helper'
 
 class CollectionTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  setup do
+    @collection = create(:collection)
+  end
+
+  test 'return named route if there' do
+    assert_equal '/named-route', @collection.named_route
+    @collection.update(route: '')
+    assert_equal "/collections/#{@collection.id}", @collection.named_route
+  end
 end

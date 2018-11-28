@@ -3,7 +3,7 @@
 class HeroComponent < MountainView::Presenter
   def title
     s = properties[:title]
-    if s.respond_to?(:length) && s.length > 30
+    if s.respond_to?(:length) && s.length > 32
       s.split.in_groups(2, false).map { |g| g.join(' ') }.join('<br> ').html_safe
     else
       s
@@ -11,6 +11,6 @@ class HeroComponent < MountainView::Presenter
   end
 
   def subtitle
-    properties[:subtitle]
+    properties[:subtitle]&.length&.positive? ? properties[:subtitle] : false
   end
 end
