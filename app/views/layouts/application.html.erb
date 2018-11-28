@@ -5,8 +5,8 @@
       <%= @site&.name %> | <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>
     </title>
     <%= csrf_meta_tags %>
-
-    <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all' %>
+    <%= stylesheet_link_tag 'https://cdn.rawgit.com/h-ibaldo/Raleway_Fixed_Numerals/master/css/rawline.css', media: 'all' %>
+    <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Trocchi', media: 'all' %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <% if @site&.slug && @site.slug != 'default-site' %>
       <%= stylesheet_link_tag "sites/#{@site.slug}", media: 'all', 'data-turbolinks-track': 'reload' %>

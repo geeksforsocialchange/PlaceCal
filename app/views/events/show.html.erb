@@ -3,14 +3,25 @@
 
 <%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
 
-<div class="c c--narrow c--space-after">
+<div class="c c--narrow c--space-after event__fullinfo">
   <%= markdown @event.description %>
-  <div class="g">
-    <div class="gi gi__1-3">
-      <h3 class="h4 udl">Contact information</h3>
-      <div class="small">Coming soon!</div>
+  <div class="g two-col">
+    <div class="gi gi__1-2">
+      <% if @event.partner %>
+        <h3 class="h4 udl">Contact information</h3>
+        <div class="small">
+          <%= render_component "place_info",
+            name: @event.partner.name,
+            email: @event.partner.public_email,
+            phone: @event.partner.public_phone,
+            address: @event.partner.address,
+            url: @event.partner.url,
+            simple: true
+          %>
+        <% end %>
+      </div>
     </div>
-    <div class="gi gi__1-3">
+    <div class="gi gi__1-2">
       <h3 class="h4 udl">Event address</h3>
       <div class="small">
         <% if @event.place %>
@@ -23,8 +34,6 @@
         <div class="small">No address has been given yet.</div>
         <% end %>
       </div>
-    </div>
-    <div class="gi gi__1-3">
     </div>
   </div>
 </div>

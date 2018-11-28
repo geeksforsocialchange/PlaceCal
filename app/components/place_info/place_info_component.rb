@@ -7,6 +7,7 @@ class PlaceInfoComponent < MountainView::Presenter
   property :name, default: false
   property :address, default: false
   property :email, default: false
+  property :simple, default: false
 
   def formatted_url
     url = properties[:url]

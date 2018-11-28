@@ -1,7 +1,7 @@
 <div class="event <%= page? ? 'event--full' : 'event--list' %>">
   <article>
     <% if page? %>
-      <%= render_component "hero", title: summary %>
+      <%= render_component "hero", title: summary, subtitle: @site.tagline %>
         <div class="c">
     <% else %>
       <div class="event__header">

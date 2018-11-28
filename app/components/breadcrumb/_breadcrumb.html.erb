@@ -1,9 +1,8 @@
 <div class="breadcrumb">
   <div class="breadcrumb__element">
     <span class="breadcrumb__tagline">
-      Community Calendar<%= ' for' if @site %>
+      <%= link_to @site.name, "/" %>
     </span>
-    <%= @site.name if @site %>
   </div>
   <% properties[:trail].each do |link| %>
     <div class="breadcrumb__element">

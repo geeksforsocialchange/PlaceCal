@@ -1,9 +1,11 @@
-<div class="hero">  
+<div class="hero">
   <div class="c">
     <% if subtitle %>
       <h4 class="allcaps"><%= subtitle %></h4>
       <div role="presentation" class="hero__divider"></div>
     <% end %>
-    <h1><%= title %></h1>
+    <h1 <%= "property=#{properties[:schema]}" if properties[:schema] %>>
+      <%= title %>
+    </h1>
   </div>
 </div>

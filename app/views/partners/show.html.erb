@@ -1,78 +1,81 @@
 <% content_for :title, @partner.name %>
 <% content_for :permalink, @partner.permalink %>
 
-<%= render_component "hero", title: @partner.name, subtitle: @site.tagline %>
+<div vocab="http://schema.org/" typeof="Organization">
 
-<div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]] %>
+  <%= render_component "hero", title: @partner.name, subtitle: @site.tagline, schema: 'name' %>
 
-  <hr>
+  <div class="c c--lg-space-after">
+    <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]] %>
 
-  <div class="g g--partner">
-    <div class="gi gi__3-5">
-      <% if @partner.short_description %>
-        <div class="first-ele-lg">
-          <%= markdown @partner.short_description %>
-        </div>
-      <% end %>
-      <%= render_component "place_info",
-        name: @partner.name,
-        email: @partner.public_email,
-        phone: @partner.public_phone,
-        address: @partner.address,
-        url: @partner.url
-      %>
-      <% if @partner.managees.any? %>
-        <p class="small"><%= @partner.name %> manage
-        <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
-      <% end %>
-    </div>
-    <div class="gi gi__2-5 gi--image">
-      <% if @partner.image? %>
-        <img src="<%= @partner.image.standard.url %>"
-             srcset="<%= @partner.image.standard.url %> 1x, <%= @partner.image.retina.url %> 2x"
-             alt="Image for <%= @partner.name %>"
-             class="map--single" >
-      <% end %>
-
-      <% if @map.length > 0 %>
-        <%= render_component "map", points: @map, site: @current_site.slug, style: :single %>
-      <% end %>
-    </div>
-  </div>
-
-  <% @partner.managees.each do |place| %>
     <hr>
 
-    <h2 class="place__title"><%= link_to place.name, partner_path(place), class: 'udl udl--red' %></h2>
-    <div class="g g--place-list">
-      <div class="gi gi__2-5">
-        <% if place.short_description %>
-          <%= markdown place.short_description %>
+    <div class="g g--partner">
+      <div class="gi gi__3-5">
+        <% if @partner.short_description %>
+          <div class="first-ele-lg" property="description">
+            <%= markdown @partner.short_description %>
+          </div>
+        <% end %>
+        <%= render_component "place_info",
+          name: @partner.name,
+          email: @partner.public_email,
+          phone: @partner.public_phone,
+          address: @partner.address,
+          url: @partner.url
+        %>
+        <% if @partner.managees.any? %>
+          <p class="small"><%= @partner.name %> manage
+          <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
         <% end %>
       </div>
-      <div class="gi gi__3-5">
-        <%= render_component "place_info",
-          name: place.name,
-          email: place.public_email,
-          phone: place.public_phone,
-          address: place.address,
-          url: place.url
-        %>
+      <div class="gi gi__2-5 gi--image">
+        <% if @partner.image? %>
+          <img src="<%= @partner.image.standard.url %>"
+               srcset="<%= @partner.image.standard.url %> 1x, <%= @partner.image.retina.url %> 2x"
+               alt="Image for <%= @partner.name %>"
+               class="map--single" >
+        <% end %>
+
+        <% if @map.length > 0 %>
+          <%= render_component "map", points: @map, site: @current_site.slug, style: :single %>
+        <% end %>
       </div>
     </div>
-  <% end %>
 
-  <hr>
+    <% @partner.managees.each do |place| %>
+      <hr>
 
-  <%= render_component "event_list",
-    events: @events,
-    pointer: @current_day,
-    period: @period,
-    sort: @sort,
-    path: "partners/#{@partner.id}/events",
-    show_breadcrumb: false
-  %>
+      <h2 class="place__title"><%= link_to place.name, partner_path(place), class: 'udl udl--red' %></h2>
+      <div class="g g--place-list">
+        <div class="gi gi__2-5">
+          <% if place.short_description %>
+            <%= markdown place.short_description %>
+          <% end %>
+        </div>
+        <div class="gi gi__3-5">
+          <%= render_component "place_info",
+            name: place.name,
+            email: place.public_email,
+            phone: place.public_phone,
+            address: place.address,
+            url: place.url
+          %>
+        </div>
+      </div>
+    <% end %>
+
+    <hr>
+
+    <%= render_component "event_list",
+      events: @events,
+      pointer: @current_day,
+      period: @period,
+      sort: @sort,
+      path: "partners/#{@partner.id}/events",
+      show_breadcrumb: false
+    %>
+  </div>
 </div>
 
 <%= render_component "meta", permalink: "/partners/#{@partner.id}" do %>
