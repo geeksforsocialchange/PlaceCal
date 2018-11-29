@@ -17,13 +17,22 @@
             <%= markdown @partner.short_description %>
           </div>
         <% end %>
-        <%= render_component "place_info",
+
+        <h3 class="udl udl--fw allcaps h4">Get in touch</h3>
+        <%= render_component "contact_details",
           name: @partner.name,
           email: @partner.public_email,
           phone: @partner.public_phone,
-          address: @partner.address,
-          url: @partner.url
+          url: @partner.url,
+          facebook_link: @partner.facebook_link,
+          twitter_handle: @partner.twitter_handle
         %>
+
+        <h3 class="udl udl--fw allcaps h4">Address</h3>
+        <%= render_component "address",
+          address: @partner.address
+        %>
+
         <% if @partner.managees.any? %>
           <p class="small"><%= @partner.name %> manage
           <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
@@ -48,19 +57,26 @@
 
       <h2 class="place__title"><%= link_to place.name, partner_path(place), class: 'udl udl--red' %></h2>
       <div class="g g--place-list">
-        <div class="gi gi__2-5">
+        <div class="gi gi__1-2">
           <% if place.short_description %>
             <%= markdown place.short_description %>
           <% end %>
         </div>
-        <div class="gi gi__3-5">
-          <%= render_component "place_info",
-            name: place.name,
-            email: place.public_email,
-            phone: place.public_phone,
-            address: place.address,
-            url: place.url
-          %>
+        <div class="gi gi__1-2">
+          <h3 class="udl udl--fw allcaps h4">Address</h3>
+          <div class="small">
+            <%= render_component "address",
+              address: place.address
+            %>
+          </div>
+          <h3 class="udl udl--fw allcaps h4">Contact</h3>
+          <div class="small">
+            <%= render_component "contact_details",
+              email: place.public_email,
+              phone: place.public_phone,
+              url: place.url
+            %>
+          </div>
         </div>
       </div>
     <% end %>

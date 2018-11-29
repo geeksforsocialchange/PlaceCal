@@ -10,13 +10,11 @@
       <% if @event.partner %>
         <h3 class="h4 udl">Contact information</h3>
         <div class="small">
-          <%= render_component "place_info",
+          <%= render_component "contact_details",
             name: @event.partner.name,
             email: @event.partner.public_email,
             phone: @event.partner.public_phone,
-            address: @event.partner.address,
-            url: @event.partner.url,
-            simple: true
+            url: @event.partner.url
           %>
         <% end %>
       </div>
@@ -24,15 +22,9 @@
     <div class="gi gi__1-2">
       <h3 class="h4 udl">Event address</h3>
       <div class="small">
-        <% if @event.place %>
-          <strong><%= link_to @event.place.name, partner_path(@event.place) %></strong><br/>
-          <%= @event.place.address %>
-        <% elsif @event.address %>
-        <strong><%= @event.address.first_address_line %></strong><br/>
-        <%= @event.address.other_address_lines.join(', ') %>
-        <% else %>
-        <div class="small">No address has been given yet.</div>
-        <% end %>
+        <%= render_component "address",
+          address: @event.address
+        %>
       </div>
     </div>
   </div>
