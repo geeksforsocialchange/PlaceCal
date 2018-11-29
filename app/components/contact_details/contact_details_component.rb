@@ -20,5 +20,6 @@ class ContactDetailsComponent < MountainView::Presenter
     target_url.gsub('http://', '')
               .gsub('https://', '')
               .gsub('www.', '')
+              .gsub(/\/$/, '')
   end
 end
