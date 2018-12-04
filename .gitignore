@@ -43,3 +43,6 @@ coverage
 # ERD pdf as it's messing up diffs
 erd.pdf
 sendgrid.env
+
+# Ignore the dump directory
+dump/
