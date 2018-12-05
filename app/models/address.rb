@@ -97,8 +97,8 @@ class Address < ApplicationRecord
     def search(location, components, postcode)
 
       # Find the first Address whose first address line contains any one of the
-      # address lines in the components argument.
-      @address = Address.find_by(street_address: components)
+      # address lines in the components argument. Case insensitive.
+      address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
 
       # We were looking for an exact match of geocoding coordinates, but we are
       # now using postcodes.io exclusively so a postcode match is now
@@ -108,15 +108,19 @@ class Address < ApplicationRecord
       #   @address ||= Address.where(latitude: coordinates[0], longitude: coordinates[1]).first
       # end
 
-      # Search by postcode if it is minimum length of a full postal code
-      if postcode && postcode.length >= 5
-        @address ||= Address.where(postcode: standardised_postcode(postcode)).first
+      # Make the postcode comparible with postcodes in the DB.
+      postcode = standardised_postcode(postcode)
+
+      # Find address by postcode if postcode is long enough to be a valid.
+      if ! address  &&  postcode  &&  postcode.length >= 'A1 1AA'.length
+        address = Address.find_by(postcode: postcode)
       end
 
-      if @address.present?
-        @partner = @address.partners.first
-        @partner.present? ? [ :place_id, @partner.id ] : [ :address_id, @address.id ]
+      if address
+        partner = address.partners.first
+        partner.present? ? [ :place_id, partner.id ] : [ :address_id, address.id ]
       else
+        # Make a new address.
         address = Address.build_from_components(components, postcode)
         [ :address_id, address.try(:id) ]
       end
@@ -124,10 +128,13 @@ class Address < ApplicationRecord
 
     def build_from_components(components, postcode)
       return if components.blank?
-      address = Address.new(street_address: components[0]&.strip,
-                            street_address2: components[1]&.strip,
-                            street_address3: components[2]&.strip,
-                            postcode: standardised_postcode(postcode))
+
+      address = Address.new(
+        street_address:  components[0]&.strip,
+        street_address2: components[1]&.strip,
+        street_address3: components[2]&.strip,
+        postcode:        postcode
+      )
       address if address.save
     end
 
