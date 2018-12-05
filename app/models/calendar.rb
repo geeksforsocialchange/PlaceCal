@@ -176,7 +176,7 @@ class Calendar < ApplicationRecord
     regexp     = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new('UK|United Kingdom')
     components = location.split(', ').map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
 
-    if place = Partner.where(name: components).first
+    if place = Partner.where(name: components).first # TODO: Make this case insensitive!
       return { place_id: place.id }
     else
       return Address.search(location, components, postcode)
