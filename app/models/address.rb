@@ -115,7 +115,7 @@ class Address < ApplicationRecord
 
       if @address.present?
         @partner = @address.partners.first
-        @partner.present? ? { partner_id: @partner.id } : { address_id: @address.id }
+        @partner.present? ? { place_id: @partner.id } : { address_id: @address.id }
       else
         address = Address.build_from_components(components, postcode)
         { address_id: address.try(:id) }
