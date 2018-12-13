@@ -57,6 +57,59 @@
     </div>
   </div>
 
+  <h2>Opening times</h2>
+  <div class="container" id="opening-times">
+
+    <div class="added-days">
+      <added-days :list="addedDays"></added-days>
+    </div>
+
+    <div class="form">
+      <select v-model="selectedDay">
+        <option v-for="day in days" v-bind:value="day.value">
+          {{ day.name }}
+        </option>
+      </select>
+
+      <select v-model="selectedOpeningTime">
+        <option v-for="openingTime in filteredOpeningTimes" v-bind:value="openingTime.value">
+          {{ openingTime.name }}
+        </option>
+      </select>
+
+      <select v-model="selectedClosingTime">
+        <option v-for="closingTime in filteredClosingTimes" v-bind:value="closingTime.value">
+          {{ closingTime.name }}
+        </option>
+      </select>
+
+      <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
+    </div>
+
+    <%= f.text_area :opening_times, value: '{{ $data.addedDays }}' %>
+    <pre>{{$data}}</pre>
+  </div>
+
+  <template id="added-days-template">
+    <ul class="list-unstyled">
+      <li class="clearfix" v-for="day in list">
+        {{ day.dayName }} from
+        {{ day.openingTimeName }} to
+        {{ day.closingTimeName }}
+
+        <!-- For debugging
+        {{ day.id }}
+        {{ day.openingTime }}
+        {{ day.closingTime }}
+      -->
+
+      <button class="btn btn-danger btn-sm pull-right" @click.prevent="removeDay(day)">Remove</button>
+    </li>
+  </ul>
+</template>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <script type="text/javascript" src="/js/opening_hours.js"></script>
+
   <h2>Tags</h2>
   <p>Does this Partner provide any of the following things? (WIP!)</p>
 
