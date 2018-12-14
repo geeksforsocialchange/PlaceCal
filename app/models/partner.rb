@@ -77,6 +77,8 @@ class Partner < ApplicationRecord
   end
 
   def human_readable_opening_times
+    return [] if !opening_times || opening_times.length == 0
+
     JSON.parse(opening_times).map do |s|
       d = s['dayOfWeek'].split('/').last
       o = Time.parse(s['opens']).strftime('%-l:%M %P')

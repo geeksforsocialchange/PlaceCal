@@ -33,6 +33,16 @@
           address: @partner.address
         %>
 
+        <h3 class="udl udl--fw allcaps h4">Opening times</h3>
+        <% opening_times = @partner.human_readable_opening_times %>
+        <% if ! opening_times.empty? %>
+        <ul>
+          <% opening_times.each do |slot| %>
+          <li><%= slot %></li>
+          <% end %>
+        </ul>
+        <% end %>
+
         <% if @partner.managees.any? %>
           <p class="small"><%= @partner.name %> manage
           <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
