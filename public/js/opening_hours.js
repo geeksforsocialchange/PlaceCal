@@ -1,13 +1,38 @@
+function openingHoursSpecification(addedDay) {
+  return {
+    "@type": "OpeningHoursSpecification",
+    closes: addedDay.closes,
+    dayOfWeek: addedDay.dayOfWeek,
+    opens: addedDay.opens,
+  }
+}
+
 Vue.component('added-days', {
   props: ['list'],
 
-  template: '#added-days-template',
+  template: `
+    <ul class="list-unstyled">
+      <li class="clearfix" v-for="day in list">
+        {{ day.dayName }} from
+        {{ day.openingTimeName }} to
+        {{ day.closingTimeName }}
+
+        <!-- For debugging
+          {{ day.id }}
+          {{ day.openingTime }}
+          {{ day.closingTime }}
+        -->
+
+        <button class="btn btn-danger btn-sm pull-right" @click.prevent="removeDay(day)">Remove</button>
+      </li>
+    </ul>`,
 
   methods: {
     removeDay: function(day) {
-      console.log('removed... ');
       console.log(day);
-      this.list.splice(day, 1);
+      this.$parent.addedDays.splice(this.$parent.addedDays.indexOf(day), 1);
+      this.$parent.openingHoursSpecifications =
+        this.$parent.addedDays.map( openingHoursSpecification );
     },
   }
 })
@@ -17,6 +42,7 @@ new Vue({
 
   data: {
     addedDays: [],
+    openingHoursSpecifications: [],
     selectedDay: 0,
     selectedOpeningTime: 8,
     selectedClosingTime: 17,
@@ -132,7 +158,6 @@ new Vue({
     },
 
     selectedClosingTime24Hour: function() {
-      console.log("Yep. Here, honest.")
       return this.closingTimes[this.selectedClosingTime]['24hour'];
     }
 
@@ -149,18 +174,24 @@ new Vue({
     addDay: function() {
       var day =
       {
-        "@type": "OpeningHoursSpecification",
-        "closes": this.selectedClosingTime24Hour,
-        "dayOfWeek": this.selectedDaySchemaDotOrg,
-        "opens": this.selectedOpeningTime24Hour,
+        id: this.selectedDay,
+        openingTime: this.selectedOpeningTime,
+        closingTime: this.selectedClosingTime,
 
-        // id: this.selectedDay,
-        // dayName: this.selectedDayName,
-        // openingTimeName: this.selectedOpeningTimeName,
-        // closingTimeName: this.selectedClosingTimeName,
+        dayName: this.selectedDayName,
+        openingTimeName: this.selectedOpeningTimeName,
+        closingTimeName: this.selectedClosingTimeName,
+
+        // OpeningHoursSpecification:
+        closes: this.selectedClosingTime24Hour,
+        dayOfWeek: this.selectedDaySchemaDotOrg,
+        opens: this.selectedOpeningTime24Hour,
       }
       console.log(day.closes)
       this.addedDays.push(day);
+
+      this.openingHoursSpecifications =
+        this.addedDays.map( openingHoursSpecification );
     },
   }
 })

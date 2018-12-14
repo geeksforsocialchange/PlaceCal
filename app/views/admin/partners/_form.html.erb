@@ -57,6 +57,7 @@
     </div>
   </div>
 
+
   <h2>Opening times</h2>
   <div class="container" id="opening-times">
 
@@ -86,29 +87,12 @@
       <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
     </div>
 
-    <%= f.text_area :opening_times, value: '{{ $data.addedDays }}' %>
-    <pre>{{$data}}</pre>
+    <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}' %>
   </div>
 
-  <template id="added-days-template">
-    <ul class="list-unstyled">
-      <li class="clearfix" v-for="day in list">
-        {{ day.dayName }} from
-        {{ day.openingTimeName }} to
-        {{ day.closingTimeName }}
-
-        <!-- For debugging
-        {{ day.id }}
-        {{ day.openingTime }}
-        {{ day.closingTime }}
-      -->
-
-      <button class="btn btn-danger btn-sm pull-right" @click.prevent="removeDay(day)">Remove</button>
-    </li>
-  </ul>
-</template>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
   <script type="text/javascript" src="/js/opening_hours.js"></script>
+
 
   <h2>Tags</h2>
   <p>Does this Partner provide any of the following things? (WIP!)</p>
