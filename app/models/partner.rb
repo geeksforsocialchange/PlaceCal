@@ -82,7 +82,7 @@ class Partner < ApplicationRecord
       o = Time.parse(s['opens']).strftime('%-l:%M %P')
       c = Time.parse(s['closes']).strftime('%-l:%M %P')
       "#{d} from #{o} to #{c}"
-    end.join("\n")
+    end
   end
 
   private
