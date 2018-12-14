@@ -76,6 +76,15 @@ class Partner < ApplicationRecord
     "https://placecal.org/partners/#{id}"
   end
 
+  def human_readable_opening_times
+    JSON.parse(opening_times).map do |s|
+      d = s['dayOfWeek'].split('/').last
+      o = Time.parse(s['opens']).strftime('%-l:%M %P')
+      c = Time.parse(s['closes']).strftime('%-l:%M %P')
+      "#{d} from #{o} to #{c}"
+    end.join("\n")
+  end
+
   private
 
   def update_users
