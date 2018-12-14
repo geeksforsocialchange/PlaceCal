@@ -87,9 +87,16 @@
       <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
     </div>
 
-    <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}' %>
+    <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}', hidden:true %>
   </div>
 
+  <script type="text/javascript">var openingHoursFromServer = <%=
+    if @partner.opening_times&.strip&.first == '['
+      @partner.opening_times.html_safe
+    else
+      '[]'.html_safe
+    end
+  %></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
   <script type="text/javascript" src="/js/opening_hours.js"></script>
 
