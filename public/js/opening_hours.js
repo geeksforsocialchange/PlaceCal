@@ -1,3 +1,17 @@
+//
+// opening_hours.js
+//
+// UI to allow the definition of a set of opening hours.
+//
+// The code includes a representation of the opening hours in this format:
+//     https://schema.org/OpeningHoursSpecification
+//
+// The original version of the code was taken from https://codepen.io/mariordev/pen/RRbvgW
+// Principle modifications are:
+// - addition of schema.org format
+// - The ability to convert between the schema.org representation and something
+//   more human-readable.
+// - Change of Vue major version from 1 to 2
 
 var daysArray = [
   { value: 0, name: 'Monday', "schema.org": "http://schema.org/Monday" },
