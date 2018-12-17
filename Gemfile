@@ -31,7 +31,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # Admin
-gem 'bootstrap-sass', '~> 3.3.7'
+gem 'bootstrap-sass', '~> 3.4.0'
 gem 'cocoon'
 gem 'select2-rails'
 gem 'simple_form'
