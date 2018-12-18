@@ -81,9 +81,11 @@ class Partner < ApplicationRecord
 
     JSON.parse(opening_times).map do |s|
       d = s['dayOfWeek'].split('/').last
-      o = Time.parse(s['opens']).strftime('%-l:%M %P')
-      c = Time.parse(s['closes']).strftime('%-l:%M %P')
-      "#{d} from #{o} to #{c}"
+      o = Time.parse(s['opens']).strftime('%-l:%M%P')
+      c = Time.parse(s['closes']).strftime('%-l:%M%P')
+      %( <span class='opening_times--day'>#{d}</span>
+         <span class='opening_times--time'>#{o} &ndash; #{c}</span>
+      ).html_safe
     end
   end
 

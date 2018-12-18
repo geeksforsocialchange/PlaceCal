@@ -32,6 +32,7 @@ class PartnersController < ApplicationController
     # Period to show
     @period = params[:period] || 'week'
     @events = filter_events(@period, partner_or_place: @partner)
+    @opening_times = @partner.human_readable_opening_times
 
     # Map
     if @events&.length.positive?

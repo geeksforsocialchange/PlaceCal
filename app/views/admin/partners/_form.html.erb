@@ -5,17 +5,22 @@
   <h2>Basic Information</h2>
 
   <%= f.input :name, class: "form-control" %>
-  <%= f.input :short_description, rows: 2, class: "form-control", label: 'Short Description' %>
+  <%= f.input :short_description, class: "form-control", label: 'Short Description', input_html: { rows: 7 } %>
 
-  <%= f.input :image, as: :file %>
-  <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
 
-  <%= f.input :url, class: "form-control", label: 'Website address' %>
-  <%= f.input :facebook_link, class: "form-control" %>
-  <%= f.input :twitter_handle, class: "form-control" %>
-
-  <br><br>
-
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :image, as: :file %>
+      <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :url, class: "form-control", label: 'Website address' %>
+      <%= f.input :facebook_link, class: "form-control" %>
+      <%= f.input :twitter_handle, class: "form-control" %>
+    </div>
+  </div>
+  <br>
+  <hr>
   <h3>Address</h3>
 
   <div id='address'>
@@ -32,6 +37,7 @@
     </div>
   </div>
 
+  <hr>
   <h2>Contact Information</h2>
 
   <div class="row">
@@ -56,63 +62,70 @@
       <%= f.text_field :partner_phone, class: "form-control" %>
     </div>
   </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Opening times</h2>
+      <div id="opening-times">
 
+        <div class="added-days">
+          <added-days :list="addedDays"></added-days>
+        </div>
 
-  <h2>Opening times</h2>
-  <div class="container" id="opening-times">
+        <div class="form">
+          <select v-model="selectedDay">
+            <option v-for="day in days" v-bind:value="day.value">
+              {{ day.name }}
+            </option>
+          </select>
 
-    <div class="added-days">
-      <added-days :list="addedDays"></added-days>
+          <select v-model="selectedOpeningTime">
+            <option v-for="openingTime in filteredOpeningTimes" v-bind:value="openingTime.value">
+              {{ openingTime.name }}
+            </option>
+          </select>
+
+          <select v-model="selectedClosingTime">
+            <option v-for="closingTime in filteredClosingTimes" v-bind:value="closingTime.value">
+              {{ closingTime.name }}
+            </option>
+          </select>
+
+          <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
+        </div>
+
+        <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}', hidden:true %>
+      </div>
+
+      <script type="text/javascript">var openingHoursFromServer = <%=
+        if @partner.opening_times&.strip&.first == '['
+          @partner.opening_times.html_safe
+        else
+          '[]'.html_safe
+        end
+      %></script>
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+      <script type="text/javascript" src="/js/opening_hours.js"></script>
     </div>
+    <div class="col-md-6">
+      <h2>Tags</h2>
+      <p>Does this Partner provide any of the following things? (WIP!)</p>
 
-    <div class="form">
-      <select v-model="selectedDay">
-        <option v-for="day in days" v-bind:value="day.value">
-          {{ day.name }}
-        </option>
-      </select>
+      <%= f.association :turfs, collection: @turfs, as: :check_boxes, include_hidden: false, label: "Facilities" %>
 
-      <select v-model="selectedOpeningTime">
-        <option v-for="openingTime in filteredOpeningTimes" v-bind:value="openingTime.value">
-          {{ openingTime.name }}
-        </option>
-      </select>
-
-      <select v-model="selectedClosingTime">
-        <option v-for="closingTime in filteredClosingTimes" v-bind:value="closingTime.value">
-          {{ closingTime.name }}
-        </option>
-      </select>
-
-      <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
+      <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
     </div>
-
-    <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}', hidden:true %>
   </div>
-
-  <script type="text/javascript">var openingHoursFromServer = <%=
-    if @partner.opening_times&.strip&.first == '['
-      @partner.opening_times.html_safe
-    else
-      '[]'.html_safe
-    end
-  %></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
-  <script type="text/javascript" src="/js/opening_hours.js"></script>
-
-
-  <h2>Tags</h2>
-  <p>Does this Partner provide any of the following things? (WIP!)</p>
-
-  <%= f.association :turfs, collection: @turfs, as: :check_boxes, include_hidden: false %>
-
-  <%= f.submit "Save Partner", class: "btn btn-primary" %><br><br>
-
-  <% if policy(Partner).destroy? && !@partner.new_record? %>
-    <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
-  <% end %>
-    <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
-
+  <hr>
+  <div class="row">
+    <div class="col-sm-12">
+      <%= f.submit "Save Partner", class: "btn btn-primary h1" %><br><br>
+      <br>
+      <% if policy(Partner).destroy? && !@partner.new_record? %>
+        <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
+      <% end %>
+    </div>
+  </div>
   <%# End form tag %>
 <% end %>
 
