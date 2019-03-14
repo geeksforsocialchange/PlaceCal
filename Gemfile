@@ -11,7 +11,7 @@ end
 # Core
 gem 'pg'
 gem 'puma', '~> 3.0'
-gem 'rails', '~> 5.1.0'
+gem 'rails', '~> 5.2.2'
 
 # Frontend
 gem 'coffee-rails', '~> 4.2'
