@@ -75,7 +75,7 @@ gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'crypt_keeper', '2.0.0.rc2'
 gem 'enumerize'
-gem 'friendly_id', '~> 5.2.4'
+gem 'friendly_id', '~> 5.2.5'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'
 gem 'listen', '~> 3.1.5'
