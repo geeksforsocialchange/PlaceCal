@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>
-      <%= @site&.name %> | <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>
-    </title>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'https://cdn.rawgit.com/h-ibaldo/Raleway_Fixed_Numerals/master/css/rawline.css', media: 'all' %>
     <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Trocchi', media: 'all' %>
