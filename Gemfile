@@ -105,7 +105,7 @@ group :development do
   gem 'pry-rescue'
   gem 'pry-stack_explorer'
   gem 'rails-erd'
-  gem 'rubocop'
+  gem 'rubocop-rails'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
