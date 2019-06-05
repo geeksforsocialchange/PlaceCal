@@ -28,14 +28,14 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   test 'site index page shows all partners and relevant local info' do
     get partners_url
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@default_site.name} | Partners in your area"
+    assert_select 'title', count: 1, text: "Partners in your area | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', text: 'Partners in your area'
     assert_select 'ul.partners li', 5
 
     get "http://#{@neighbourhood_site.slug}.lvh.me/partners"
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@neighbourhood_site.name} | Partners in your area"
+    assert_select 'title', count: 1, text: "Partners in your area | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: 'Partners in your area'
     assert_select 'ul.partners li', 5

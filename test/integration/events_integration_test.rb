@@ -28,14 +28,14 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
   test 'site indexs page shows all events that are on today and local info' do
     get events_url
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@default_site.name} | Events & activities in your area"
+    assert_select 'title', count: 1, text: "Events & activities in your area | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', text: 'Events & activities in your area'
     assert_select 'ol article', 5
 
     get "http://#{@neighbourhood_site.slug}.lvh.me/events"
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@neighbourhood_site.name} | Events & activities in your area"
+    assert_select 'title', count: 1, text: "Events & activities in your area | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: 'Events & activities in your area'
     assert_select 'ol article', 5
