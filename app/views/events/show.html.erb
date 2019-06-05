@@ -1,4 +1,5 @@
 <% content_for :title, "#{@event.summary}, #{@event.date}, #{@event.time}" %>
+<% content_for :description, @event.description %>
 <% content_for :permalink, @event.permalink %>
 
 <%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>

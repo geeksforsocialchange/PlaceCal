@@ -2,23 +2,41 @@
 <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta property="og:title" content="PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>" />
-<meta property="og:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
-<meta property="og:type" content="website" />
-<meta property="og:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/wide.png') %>" />
-<% unless content_for?(:image) %>
-<meta property="og:image:width" content="1920" />
-<meta property="og:image:height" content="1080" />
+<% if content_for?(:title) %>
+  <meta property="og:title" content="<%= content_for?(:title) %> | PlaceCal" />
+  <meta name="twitter:title" content="<%= content_for?(:title) %> | PlaceCal" />
+<% else %>
+  <meta property="og:title" content="PlaceCal - The Community Calendar" />
+  <meta name="twitter:title" content="PlaceCal - The Community Calendar" />
 <% end %>
-<meta property="og:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
+
+<% if content_for?(:description) %>
+  <meta property="og:description" content="<%= yield(:description) %>" />
+  <meta name="twitter:description" content="<%= yield(:description) %>" />
+<% else %>
+  <meta property="og:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
+  <meta name="twitter:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
+<% end %>
+
+<% if content_for?(:image) %>
+  <meta property="og:image" content="<%= image_url('og/wide.png') %>" />
+  <meta property="og:image:alt" content="PlaceCal logo" />
+  <meta name="twitter:image" content="<%= yield(:image) %>" />
+  <meta name="twitter:image:alt" content="<%= yield(:image_alt) %>" />
+<% else %>
+  <meta property="og:image" content="<%= yield(:image) %>" />
+  <meta property="og:image:alt" content="<%= yield(:image_alt) %>" />
+  <meta property="og:image:width" content="1920" />
+  <meta property="og:image:height" content="1080" />
+  <meta name="twitter:image" content="<%= image_url('og/square.png') %>" />
+  <meta name="twitter:image:alt" content="PlaceCal logo" />
+<% end %>
+
+<meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@PlaceCal" />
-<meta name="twitter:title" content="PlaceCal - <%= content_for?(:title) ? yield(:title) : 'The Community Calendar' %>" />
-<meta name="twitter:description" content="PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place." />
-<meta name="twitter:creator" content="@kimadactl" />
-<meta name="twitter:image" content="<%= content_for?(:image) ? yield(:image) : image_url('og/square.png') %>" />
-<meta name="twitter:image:alt" content="<%= content_for?(:image_alt) ? yield(:image_alt) : 'PlaceCal logo' %>" />
+<meta name="twitter:creator" content="@gfscstudio" />
 
 <% if content_for?(:permalink) %>
-<meta property="og:url" content="<%= yield(:permalink) %>">
+  <meta property="og:url" content="<%= yield(:permalink) %>">
 <% end %>

@@ -5,6 +5,6 @@ class AddressComponent < MountainView::Presenter
   property :address
 
   def formatted_address
-    address.all_address_lines.join(', <br>').html_safe
+    address.all_address_lines.map(&:strip).join(', <br>').html_safe
   end
 end

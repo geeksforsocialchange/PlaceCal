@@ -43,6 +43,8 @@ class MapComponent < MountainView::Presenter
   # IDs from Mapbox
   def tileset
     case site
+    when 'moston'
+      'cjwj3cf3m07wo1codspw72dnm'
     when 'mossley'
       'cjmw2kdvt70g82snxpa2gqdza'
     else

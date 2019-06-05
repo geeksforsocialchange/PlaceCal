@@ -1,4 +1,7 @@
 <% content_for :title, @partner.name %>
+<% if @partner.short_description %>
+  <% content_for :description, @partner.short_description %>
+<% end %>
 <% content_for :permalink, @partner.permalink %>
 
 <div vocab="http://schema.org/" typeof="Organization">
