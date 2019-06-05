@@ -3,8 +3,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <% if content_for?(:title) %>
-  <meta property="og:title" content="<%= content_for?(:title) %> | PlaceCal" />
-  <meta name="twitter:title" content="<%= content_for?(:title) %> | PlaceCal" />
+  <meta property="og:title" content="<%= yield(:title) %> | PlaceCal" />
+  <meta name="twitter:title" content="<%= yield(:title) %> | PlaceCal" />
 <% else %>
   <meta property="og:title" content="PlaceCal - The Community Calendar" />
   <meta name="twitter:title" content="PlaceCal - The Community Calendar" />
