@@ -12,7 +12,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   test 'should show basic information' do
     get partner_url(@partner)
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@default_site.name} | #{@partner.name}"
+    assert_select 'title', count: 1, text: "#{@partner.name} | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', @partner.name
     assert_select 'p', @partner.short_description
@@ -25,7 +25,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     get "http://#{@neighbourhood_site.slug}.lvh.me/partners/#{@partner.id}"
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@neighbourhood_site.name} | #{@partner.name}"
+    assert_select 'title', count: 1, text: "#{@partner.name} | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', @partner.name
   end

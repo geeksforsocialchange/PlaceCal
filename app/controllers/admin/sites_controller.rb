@@ -79,6 +79,7 @@ module Admin
       params.require(:site).permit(
         :id,
         :name,
+        :place_name,
         :tagline,
         :slug,
         :description,
