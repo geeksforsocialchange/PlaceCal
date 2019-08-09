@@ -10,7 +10,7 @@ end
 
 # Core
 gem 'pg'
-gem 'puma', '~> 3.0'
+gem 'puma', '~> 4.1'
 gem 'rails', '~> 5.1.0'
 
 # Frontend
