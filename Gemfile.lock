@@ -309,7 +309,8 @@ GEM
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
     public_suffix (3.0.3)
-    puma (3.12.0)
+    puma (4.1.1)
+      nio4r (~> 2.0)
     pundit (2.0.0)
       activesupport (>= 3.0.0)
     rack (2.0.7)
@@ -529,7 +530,7 @@ DEPENDENCIES
   pry-rails
   pry-rescue
   pry-stack_explorer
-  puma (~> 3.0)
+  puma (~> 4.1)
   pundit
   rack-cors
   rails (~> 5.1.0)
