@@ -210,9 +210,9 @@ GEM
       railties (>= 3.1.0)
       turbolinks
     json (2.1.0)
-    json_matchers (0.10.0)
+    json_matchers (0.11.1)
       json_schema
-    json_schema (0.19.1)
+    json_schema (0.20.8)
     jwt (2.1.0)
     koala (3.0.0)
       addressable
