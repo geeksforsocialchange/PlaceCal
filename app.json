@@ -7,7 +7,6 @@
   ],
   "scripts": {
     "dokku": {
-      "predeploy": "gem update bundler",
       "postdeploy": "bundle exec rails db:migrate"
     }
   }
