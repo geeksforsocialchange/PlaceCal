@@ -14,7 +14,7 @@ gem 'puma', '~> 4.2'
 gem 'rails', '~> 5.2.3'
 
 # Frontend
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 5.0'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'sass-rails', '~> 5.0'

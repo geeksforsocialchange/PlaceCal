@@ -92,9 +92,9 @@ GEM
     coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    coffee-rails (4.2.2)
+    coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
-      railties (>= 4.0.0)
+      railties (>= 5.2.0)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -494,7 +494,7 @@ DEPENDENCIES
   byebug
   carrierwave
   cocoon
-  coffee-rails (~> 4.2)
+  coffee-rails (~> 5.0)
   crypt_keeper (= 2.0.0.rc2)
   delayed_job_active_record
   devise
