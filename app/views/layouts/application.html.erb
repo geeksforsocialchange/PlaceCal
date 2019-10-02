@@ -5,7 +5,7 @@
     <%= stylesheet_link_tag 'https://cdn.rawgit.com/h-ibaldo/Raleway_Fixed_Numerals/master/css/rawline.css', media: 'all' %>
     <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Trocchi', media: 'all' %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <% if @site&.slug && @site.slug != 'default-site' %>
+    <% if @site&.slug && @site.slug != 'default-site' && File.exist?(Rails.root + 'app/assets/stylesheets/sites/' + "#{@site.slug}.sass") %>
       <%= stylesheet_link_tag "sites/#{@site.slug}", media: 'all', 'data-turbolinks-track': 'reload' %>
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbolinks-track': 'reload' %>
