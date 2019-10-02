@@ -3,7 +3,7 @@
     <div class="footer__inner <%= "footer__inner--nosite" unless @site&.site_admin %>">
       <div class="footer__item footer__logo">
         <% if @site&.footer_logo&.present? %>
-          <%= image_tag @site.footer_logo %>
+          <%= image_tag @site.footer_logo.url if @site.footer_logo.url %>
         <% else %>
           <%= image_tag 'logo-footer.svg' %>
         <% end %>
@@ -59,7 +59,7 @@
             <% @site&.supporters&.each do |supporter| %>
               <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>">
                 <%= link_to supporter.url do %>
-                  <%= image_tag supporter.logo %>
+                  <%= image_tag supporter.logo.url %>
                 <% end %>
               </li>
             <% end %>
@@ -76,7 +76,7 @@
             <% @global_supporters&.each do |supporter| %>
               <li class="footer__supporter footer__supporter--<%= supporter.name.parameterize %>">
                 <%= link_to supporter.url do %>
-                  <%= image_tag supporter.logo, alt: supporter.name %>
+                  <%= image_tag supporter.logo.url, alt: supporter.name %>
                 <% end %>
               </li>
             <% end %>

@@ -8,10 +8,10 @@
   <%= f.association :events, collection: options_for_events, input_html: { class: 'select2' } %>
 
   <%= f.input :image %>
-  
+
   <% if f.object.image.size.positive? %>
     <div class="card">
-      <%= image_tag f.object.image, class: 'card-img-top', style: 'max-width: 200px' %>
+      <%= image_tag f.object.image.url, class: 'card-img-top', style: 'max-width: 200px' if f.object.image.url %>
       <div class="card-title">
         Current image
       </div>

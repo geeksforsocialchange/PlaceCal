@@ -11,7 +11,7 @@
   <div class="row">
     <div class="col-md-6">
       <%= f.input :image, as: :file %>
-      <%= image_tag @partner.image , width: '125', class: 'brand_image' %>
+      <%= image_tag @partner.image.url , width: '125', class: 'brand_image' if @partner.image.url %>
     </div>
     <div class="col-md-6">
       <%= f.input :url, class: "form-control", label: 'Website address' %>

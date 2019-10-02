@@ -20,8 +20,8 @@
       <tr>
         <% record.slice(properties[:columns]).each do |key, value| %>
           <td>
-            <% if key == 'logo' %>
-              <%= image_tag value, style: 'background-color: #5b4e46' %>
+            <% if key == 'logo' && record.logo.url %>
+              <%= image_tag record.logo.url, style: 'background-color: #5b4e46' %>
             <% else %>
               <%= value %>
             <% end %>

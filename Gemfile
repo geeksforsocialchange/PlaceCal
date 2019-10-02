@@ -90,9 +90,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
-  gem 'ruby-prof', require: false
   gem 'timecop'
-  gem 'to_factory', '~> 2.1.0'
 end
 
 group :development do
@@ -119,7 +117,6 @@ group :test do
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'simplecov', require: false
-  gem 'test-prof'
   gem 'vcr'
   gem 'webmock'
 end

@@ -3,7 +3,7 @@
   <%= f.input :url %>
   <%= f.input :logo %>
   <div class="card">
-    <%= image_tag f.object.logo, class: 'card-img-top' %>
+    <%= image_tag f.object.logo.url, class: 'card-img-top' if f.object.logo.url %>
     <div class="card-title">
       Current logo
     </div>

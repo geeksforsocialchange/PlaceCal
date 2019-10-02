@@ -3,9 +3,7 @@
     <h3 class="h2--alt udl">Your local contact</h3>
   </div>
   <div class="profile__avatar">
-    <% if user.avatar %>
-      <%= image_tag user.avatar.retina %>
-    <% end %>
+    <%= image_tag user.avatar.retina.url if user.avatar.retina.url %>
   </div>
   <div class="profile__details">
     <p><strong><%= name %></strong></p>

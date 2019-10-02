@@ -5,4 +5,4 @@
 
 <%= f.input :avatar %>
 
-<%= image_tag f.object.avatar.retina %>
+<%= image_tag f.object.avatar.retina.url if f.object.avatar.retina.url %>
