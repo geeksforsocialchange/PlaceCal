@@ -11,7 +11,7 @@ end
 # Core
 gem 'pg'
 gem 'puma', '~> 4.2'
-gem 'rails', '~> 5.1.0'
+gem 'rails', '~> 5.2.3'
 
 # Frontend
 gem 'coffee-rails', '~> 4.2'
@@ -31,7 +31,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # Admin
-gem 'bootstrap-sass', '~> 3.3.7'
+gem 'bootstrap-sass', '~> 3.4.1'
 gem 'cocoon'
 gem 'select2-rails'
 gem 'simple_form'
@@ -75,7 +75,7 @@ gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'crypt_keeper', '2.0.0.rc2'
 gem 'enumerize'
-gem 'friendly_id', '~> 5.2.4'
+gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'
 gem 'listen', '~> 3.1.5'
