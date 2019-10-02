@@ -73,7 +73,7 @@ gem 'seed_migration'
 # Utilities
 gem 'active_link_to'
 gem 'bootsnap', require: false
-gem 'crypt_keeper', '2.0.0.rc2'
+gem 'crypt_keeper', '2.0.1'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'
