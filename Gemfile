@@ -14,7 +14,7 @@ gem 'puma', '~> 4.2'
 gem 'rails', '~> 5.2.3'
 
 # Frontend
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 5.0'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'sass-rails', '~> 6.0'
@@ -73,7 +73,7 @@ gem 'seed_migration'
 # Utilities
 gem 'active_link_to'
 gem 'bootsnap', require: false
-gem 'crypt_keeper', '2.0.0.rc2'
+gem 'crypt_keeper', '~> 2.0.1'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'
