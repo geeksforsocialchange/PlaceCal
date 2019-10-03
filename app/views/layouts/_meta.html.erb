@@ -2,25 +2,30 @@
 <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<% if content_for?(:title) %>
-  <% title = (yield(:title) || @site&.name) + ' | The Community Calendar' %>
-  <title><%= title %></title>
-  <meta property="og:title" content="<%= title %>" />
-  <meta name="twitter:title" content="<%= title %>" />
+<% if current_page?(root_url) && @site.slug == 'default-site' %>
+  <% title = 'PlaceCal | The Community Calendar' %>
+<% elsif content_for?(:title) && @site&.name %>
+  <% title = yield(:title) + " | " + @site.name %>
+<% elsif content_for?(:title) %>
+  <% title = yield(:title) %>
+<% elsif @site&.name %>
+  <% title = @site.name %>
 <% else %>
-  <% title = @site&.name || "The Community Calendar" %>
-  <title><%= title %></title>
-  <meta property="og:title" content="<%= title %>" />
-  <meta name="twitter:title" content="<%= title %>" />
+  <% title = 'PlaceCal | The Community Calendar' %>
 <% end %>
 
+<title><%= title %></title>
+<meta property="og:title" content="<%= title %>" />
+<meta name="twitter:title" content="<%= title %>" />
+
 <% if content_for?(:description) %>
-  <meta property="og:description" content="<%= yield(:description) %>" />
-  <meta name="twitter:description" content="<%= yield(:description) %>" />
+  <% description = yield(:description) %>
 <% else %>
-  <meta property="og:description" content="<%= @site&.name %> is a community events calendar where you can find out everything that's happening near you, all in one place." />
-  <meta name="twitter:description" content="<%= @site&.name %> is a community events calendar where you can find out everything that's happening near you, all in one place." />
+  <% description = "#{@site&.name} is a community events calendar where you can find out everything that's happening near you, all in one place." %>
 <% end %>
+
+<meta property="og:description" content="<%= description %>" />
+<meta name="twitter:description" content="<%= description %>" />
 
 <% if content_for?(:image) %>
   <meta property="og:image" content="<%= yield(:image) %>" />
