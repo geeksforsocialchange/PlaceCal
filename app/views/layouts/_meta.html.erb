@@ -3,13 +3,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <% if content_for?(:title) %>
-  <title><%= yield(:title) %> | <%= @site&.name %></title>
-  <meta property="og:title" content="<%= yield(:title) %> | <%= @site&.name %>" />
-  <meta name="twitter:title" content="<%= yield(:title) %> | <%= @site&.name %>" />
+  <% title = (yield(:title) || @site&.name) + ' | The Community Calendar' %>
+  <title><%= title %></title>
+  <meta property="og:title" content="<%= title %>" />
+  <meta name="twitter:title" content="<%= title %>" />
 <% else %>
-  <title><%= @site&.name %> | The Community Calendar %></title>
-  <meta property="og:title" content="<%= @site&.name %> - The Community Calendar" />
-  <meta name="twitter:title" content="<%= @site&.name %> - The Community Calendar" />
+  <% title = @site&.name || "The Community Calendar" %>
+  <title><%= title %></title>
+  <meta property="og:title" content="<%= title %>" />
+  <meta name="twitter:title" content="<%= title %>" />
 <% end %>
 
 <% if content_for?(:description) %>
