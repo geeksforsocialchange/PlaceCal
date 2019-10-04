@@ -76,7 +76,7 @@ gem 'bootsnap', require: false
 gem 'crypt_keeper', '~> 2.0.1'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.3.0'
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.9'
 gem 'koala'
 gem 'listen', '~> 3.1.5'
 gem 'oj'
