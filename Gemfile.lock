@@ -230,10 +230,9 @@ GEM
     kramdown (2.1.0)
     leaflet-rails (1.5.1)
       rails (>= 4.2.0)
-    listen (3.1.5)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-      ruby_dep (~> 1.2)
+    listen (3.2.0)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.3.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -393,7 +392,6 @@ GEM
     ruby-progressbar (1.10.1)
     ruby-vips (2.0.15)
       ffi (~> 1.9)
-    ruby_dep (1.5.0)
     ruby_http_client (3.3.0)
     safe_yaml (1.0.5)
     sass-rails (6.0.0)
@@ -514,7 +512,7 @@ DEPENDENCIES
   koala
   kramdown
   leaflet-rails
-  listen (~> 3.1.5)
+  listen (~> 3.2.0)
   mini_magick
   minitest-rails-capybara
   minitest-reporters
