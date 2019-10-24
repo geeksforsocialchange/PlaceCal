@@ -2,7 +2,7 @@
 <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<% if current_page?(root_url) && @site.slug == 'default-site' %>
+<% if current_page?(root_url) && @site&.slug == 'default-site' %>
   <% title = 'PlaceCal | The Community Calendar' %>
 <% elsif content_for?(:title) && @site&.name %>
   <% title = yield(:title) + " | " + @site.name %>
