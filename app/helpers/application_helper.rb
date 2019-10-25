@@ -16,10 +16,9 @@ module ApplicationHelper
   end
 
   def admin_nav_link(name, path)
-    klass = current_page?(path) ? 'active' : ''
-
-    content_tag :li, class: klass do
-      link_to name, path
+    content_tag :li, class: 'nav-item' do
+      klass = current_page?(path) ? 'nav-link active' : 'nav-link'
+      link_to name, path, class: klass
     end
   end
 end
