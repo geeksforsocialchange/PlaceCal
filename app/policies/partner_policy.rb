@@ -2,7 +2,7 @@
 
 class PartnerPolicy < ApplicationPolicy
   def index?
-    true
+    !user&.role.citizen?
   end
 
   def show?
@@ -18,7 +18,13 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    user.role?
+    return true if user&.role&.root?
+
+    if user&.role&.turf_admin?
+      record.turfs.where(turfs: { id: user.turf_ids }).exists?
+    elsif user&.role&.partner_admin?
+      user.partner_ids.include?(record.id)
+    end
   end
 
   def edit?
@@ -26,7 +32,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def destroy?
-    update?
+    user&.role&.root?
   end
 
   class Scope < Scope
