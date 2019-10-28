@@ -2,11 +2,7 @@
 
 class PartnerPolicy < ApplicationPolicy
   def index?
-    !user&.role.citizen?
-  end
-
-  def show?
-    scope.where(id: record.id).exists?
+    user&.role.present? && !user.role.citizen?
   end
 
   def create?
@@ -18,11 +14,12 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user&.role&.root?
+    return false if user.role.blank?
+    return true if user.role.root?
 
-    if user&.role&.turf_admin?
+    if user.role.turf_admin?
       record.turfs.where(turfs: { id: user.turf_ids }).exists?
-    elsif user&.role&.partner_admin?
+    elsif user.role.partner_admin?
       user.partner_ids.include?(record.id)
     end
   end
@@ -32,7 +29,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user&.role&.root?
+    update?
   end
 
   class Scope < Scope

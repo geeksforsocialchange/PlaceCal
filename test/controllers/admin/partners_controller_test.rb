@@ -10,11 +10,9 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     @root = create(:root)
     @citizen = create(:user)
 
-    @turf_admin = create(:turf_admin)
-    @turf_admin.turfs << @turf
+    @turf_admin = create(:turf_admin, turf_ids: [@turf.id])
 
-    @partner_admin = create(:partner_admin)
-    @partner_admin.partners << @partner
+    @partner_admin = create(:partner_admin, partner_ids: [@partner.id])
 
     host! 'admin.lvh.me'
   end
@@ -23,7 +21,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #
   #   Show every Partner for roots
   #   Show an empty page for citizens
-  #   TODO: Allow turf_admins and partner_admins to view their Partners
 
   it_allows_access_to_index_for(%i[root turf_admin]) do
     get admin_partners_url
@@ -72,7 +69,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #
   #   Allow roots to edit all places
   #   Everyone else, redirect to admin_partners_url
-  #   TODO: allow turf_admins and partner_admins to edit their Partners
 
   it_allows_access_to_edit_for(%i[root turf_admin partner_admin]) do
     get edit_admin_partner_url(@partner)
@@ -95,7 +91,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #
   #   Allow roots to delete all Partners
   #   Everyone else redirect to admin_partners_url
-  #   TODO: Allow turf_admin and partner_admins to delete Partners
 
   it_allows_access_to_destroy_for(%i[root turf_admin partner_admin]) do
     assert_difference('Partner.count', -1) do
@@ -103,5 +98,11 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to admin_partners_url
+  end
+
+  it_denies_access_to_destroy_for(%i[citizen]) do
+    assert_difference('Partner.count', 0) do
+      delete admin_partner_url(@partner)
+    end
   end
 end
