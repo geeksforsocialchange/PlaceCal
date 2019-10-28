@@ -11,7 +11,6 @@ require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 
 require 'minitest/autorun'
-require 'pry-rescue/minitest'
 
 # JSON matcher stuff for API
 require 'json_matchers/minitest/assertions'
@@ -52,6 +51,32 @@ class ActiveSupport::TestCase
       end
     end
   end
+
+
+  #Policy Test Helper
+  #
+  #Usage:
+  #
+  #allows_access(@root, @partner, :create)
+  #denies_access(@partner_admin, @partner, :update)
+  #permitted_records(@partner_admin, Partner)
+
+  def allows_access(user, object, action)
+    klass  = object.is_a?(Class) ? object : object.class
+    policy = "#{klass}Policy".constantize
+
+    policy.new(user, object).send("#{action}?")
+  end
+
+  def denies_access(user, object, action)
+    !allows_access(user, object, action)
+  end
+
+  def permitted_records(user, klass)
+    scope = "#{klass}Policy::Scope".constantize
+    scope.new(user, klass).resolve
+  end
+
 end
 
 class ActionDispatch::IntegrationTest
