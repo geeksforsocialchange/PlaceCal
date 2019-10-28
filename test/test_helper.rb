@@ -54,6 +54,12 @@ class ActiveSupport::TestCase
 
 
   #Policy Test Helper
+  #
+  #Usage:
+  #
+  #allows_access(@root, @partner, :create)
+  #denies_access(@partner_admin, @partner, :update)
+  #permitted_records(@partner_admin, Partner)
 
   def allows_access(user, object, action)
     klass  = object.is_a?(Class) ? object : object.class
@@ -66,9 +72,9 @@ class ActiveSupport::TestCase
     !allows_access(user, object, action)
   end
 
-  def user_scope(user, klass)
-    scope = "#{klass}Policy::Scope"
-    scope.new(user, klass)
+  def permitted_records(user, klass)
+    scope = "#{klass}Policy::Scope".constantize
+    scope.new(user, klass).resolve
   end
 
 end

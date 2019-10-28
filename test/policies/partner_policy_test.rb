@@ -54,9 +54,9 @@ class PartnerPolicyTest < ActiveSupport::TestCase
   # end
 
   def test_scope
-    assert_equal(PartnerPolicy::Scope.new(@root, Partner).resolve, [@partner, @partner_two])
-    assert_equal(PartnerPolicy::Scope.new(@partner_admin, Partner).resolve, [@partner])
-    assert_equal(PartnerPolicy::Scope.new(@partner_admin_two, Partner).resolve, [@partner_two])
-    assert_equal(PartnerPolicy::Scope.new(@turf_admin, Partner).resolve, [@partner])
+    assert_equal(permitted_records(@root, Partner), [@partner, @partner_two])
+    assert_equal(permitted_records(@partner_admin, Partner), [@partner])
+    assert_equal(permitted_records(@partner_admin_two, Partner), [@partner_two])
+    assert_equal(permitted_records(@turf_admin, Partner), [@partner])
   end
 end
