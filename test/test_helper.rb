@@ -63,7 +63,7 @@ class ActiveSupport::TestCase
   end
 
   def denies_access(user, object, action)
-    !allowed_access(user, object, action)
+    !allows_access(user, object, action)
   end
 
   def user_scope(user, klass)
