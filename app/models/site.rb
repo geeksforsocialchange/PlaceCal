@@ -14,7 +14,7 @@ class Site < ApplicationRecord
 
   has_and_belongs_to_many :supporters
 
-  belongs_to :site_admin, class_name: 'User'
+  belongs_to :site_admin, class_name: 'User', optional: true
 
   accepts_nested_attributes_for :sites_neighbourhood
   accepts_nested_attributes_for :sites_neighbourhoods, reject_if: ->(c) { c[:neighbourhood_id].blank? }, allow_destroy: true

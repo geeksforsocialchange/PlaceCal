@@ -4,7 +4,7 @@
 class Calendar < ApplicationRecord
   self.inheritance_column = nil
 
-  belongs_to :partner
+  belongs_to :partner, optional: true
   belongs_to :place, class_name: 'Partner', required: false
   has_many :events, dependent: :destroy
 
