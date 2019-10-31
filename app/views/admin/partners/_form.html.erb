@@ -121,7 +121,7 @@
     <div class="col-sm-12">
       <%= f.submit "Save Partner", class: "btn btn-primary h1" %><br><br>
       <br>
-      <% if policy(Partner).destroy? && !@partner.new_record? %>
+      <% if policy(@partner).destroy? && !@partner.new_record? %>
         <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
       <% end %>
     </div>

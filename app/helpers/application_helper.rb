@@ -14,4 +14,12 @@ module ApplicationHelper
   def user_policy
     UserPolicy.new(current_user, nil)
   end
+
+  def admin_nav_link(name, path)
+    klass = current_page?(path) ? 'active' : ''
+
+    content_tag :li, class: klass do
+      link_to name, path
+    end
+  end
 end

@@ -4,18 +4,14 @@
       <%= link_to "PlaceCal", admin_root_path, class: "navbar-brand" %>
     </div>
     <ul class="nav navbar-nav">
-      <% if current_user&.role&.root? %>
-        <li class="<%= current_page?(admin_users_path) ? 'active' : '' %>"><%= link_to "Users", admin_users_path  %></li>
-        <li class="<%= current_page?(admin_sites_path) ? 'active' : '' %>"><%= link_to "Sites", admin_sites_path  %></li>
-        <li class="<%= current_page?(admin_turfs_path) ? 'active' : '' %>"><%= link_to "Turfs", admin_turfs_path  %></li>
-        <li class="<%= current_page?(admin_partners_path) ? 'active' : '' %>"><%= link_to "Partners", admin_partners_path  %></li>
-        <li class="<%= current_page?(admin_collections_path) ? 'active' : '' %>"><%= link_to "Collections", admin_collections_path  %></li>
-        <li class="<%= current_page?(admin_supporters_path) ? 'active' : '' %>"><%= link_to "Supporters", admin_supporters_path  %></li>
-      <% end %>
+      <%= admin_nav_link('Users', admin_users_path) if policy(User).index? %>
+      <%= admin_nav_link('Sites', admin_sites_path) if policy(Site).index? %>
+      <%= admin_nav_link('Turfs', admin_turfs_path) if policy(Turf).index? %>
+      <%= admin_nav_link('Partners', admin_partners_path) if policy(Partner).index? %>
+      <%= admin_nav_link('Collections', admin_collections_path) if policy(Collection).index? %>
+      <%= admin_nav_link('Supporters', admin_supporters_path) if policy(Supporter).index? %>
+      <%= admin_nav_link('Calendars', admin_calendars_path) if policy(Calendar).index? %>
 
-      <%- if policy(Calendar).index? %>
-        <li class="<%= current_page?(admin_calendars_path) ? 'active' : '' %>"><%= link_to "Calendars", admin_calendars_path  %></li>
-      <% end %>
       <li><%= link_to "Logout", destroy_user_session_path, method: :delete  %></li>
     </ul>
   </div>

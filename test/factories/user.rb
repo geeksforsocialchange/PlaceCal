@@ -24,5 +24,9 @@ FactoryBot.define do
     factory(:partner_admin) do
       role { 'partner_admin' }
     end
+
+    factory(:citizen) do
+      role { 'citizen' }
+    end
   end
 end

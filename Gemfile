@@ -100,9 +100,6 @@ group :development do
   gem 'guard'
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
-  gem 'pry-rails'
-  gem 'pry-rescue'
-  gem 'pry-stack_explorer'
   gem 'rails-erd'
   gem 'rubocop-rails'
   gem 'spring'
