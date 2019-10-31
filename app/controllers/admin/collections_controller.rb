@@ -33,7 +33,7 @@ module Admin
 
     def update
       authorize @collection
-      @collection.update_attributes(collection_params)
+      @collection.update(collection_params)
       render 'edit'
     end
 

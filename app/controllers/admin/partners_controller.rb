@@ -36,7 +36,7 @@ module Admin
 
     def update
       authorize @partner
-      if @partner.update_attributes(partner_params)
+      if @partner.update(partner_params)
         redirect_to admin_partners_path
       else
         render 'new'

@@ -34,7 +34,7 @@ module Admin
 
     def update
       authorize @site
-      if @site.update_attributes(site_params)
+      if @site.update(site_params)
         redirect_to admin_sites_path
       else
         set_variables_for_sites_neighbourhoods_selection

@@ -4,16 +4,13 @@
 class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule notices]
 
-  belongs_to :partner
-
-  belongs_to :place, class_name: 'Partner', required: false
-  belongs_to :address, required: false
-  belongs_to :calendar
-
+  belongs_to :partner, optional: true
+  belongs_to :place, class_name: 'Partner', optional: true
+  belongs_to :address, optional: true
+  belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
   validates :summary, :dtstart, presence: true
-
   before_validation :set_address_from_place
   validate :require_location
 
