@@ -46,3 +46,6 @@ sendgrid.env
 
 # Ignore the dump directory
 dump/
+
+# Ignore node stuff
+/node_modules/**
