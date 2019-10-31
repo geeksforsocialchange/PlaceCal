@@ -522,6 +522,7 @@ DEPENDENCIES
   leaflet-rails
   listen (~> 3.2.0)
   mini_magick
+  minitest-rails
   minitest-rails-capybara
   minitest-reporters
   mountain_view

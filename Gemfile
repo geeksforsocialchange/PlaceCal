@@ -12,6 +12,7 @@ end
 gem 'pg'
 gem 'puma', '~> 4.2'
 gem 'rails', '~> 6.0'
+gem 'minitest-rails'
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'
