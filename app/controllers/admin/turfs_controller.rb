@@ -35,7 +35,7 @@ module Admin
 
     def update
       authorize @turf
-      if @turf.update_attributes(turf_params)
+      if @turf.update(turf_params)
         redirect_to admin_turfs_path
       else
         render 'edit'
