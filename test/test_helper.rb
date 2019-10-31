@@ -74,7 +74,7 @@ class ActiveSupport::TestCase
 
   def permitted_records(user, klass)
     scope = "#{klass}Policy::Scope".constantize
-    scope.new(user, klass).resolve
+    scope.new(user, klass).resolve&.to_a
   end
 
 end
