@@ -1,7 +1,7 @@
 require("cocoon")
 require("select2")
-require("bootstrap")
-require("popper")
+
+import 'bootstrap'
 
 import '../src/behaviors/behaviors.base.js'
 import '../src/behaviors/behaviors.collection.js'
@@ -16,9 +16,11 @@ $(document).on('turbolinks:load', function() {
     format: "YYYY-MM-DD"
   });
 
-  $(".field-unit__field.select-search select").selectize({});
+  $(".field-unit__field.select-search select").selectize({})
 
   $('.select-search').select2()
 
-  $('body').init_behaviors();
+  $('body').init_behaviors()
+
+  $('[data-toggle="tooltip"]').tooltip()
 })
