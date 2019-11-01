@@ -15,15 +15,21 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-require("@rails/ujs").start()
-require("turbolinks").start()
-require("leaflet")
-
-// If we need them
+// How to add actiocable/activestorage
+//
 // yarn add @rails/actioncable @rails/activestorage
 // require("@rails/activestorage").start()
 // require("channels")
 
-// TODO - migrate these
-//= require google-analytics
-//= require mountain_view
+require("@rails/ujs").start()
+require("turbolinks").start()
+require("leaflet")
+
+// Mountain View
+export default function loadComponents(context) {
+  context.keys().forEach(context);
+}
+loadComponents(require.context("../../components", true, /\.js$/));
+
+// Google Analytics
+import "../src/google-analytics.js";
