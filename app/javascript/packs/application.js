@@ -15,4 +15,15 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-console.log('Hello World from Webpacker')
+require("@rails/ujs").start()
+require("turbolinks").start()
+require("leaflet")
+
+// If we need them
+// yarn add @rails/actioncable @rails/activestorage
+// require("@rails/activestorage").start()
+// require("channels")
+
+// TODO - migrate these
+//= require google-analytics
+//= require mountain_view
