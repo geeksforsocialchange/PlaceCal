@@ -159,6 +159,8 @@ class Calendar < ApplicationRecord
 
   def source_supported
     CalendarParser.new(self).validate_feed
+    self.is_working = true
+    self.critical_error = nil
   rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
     critical_import_failure(e, false)
   end
