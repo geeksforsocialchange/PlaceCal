@@ -1,18 +1,10 @@
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <%= link_to "PlaceCal", admin_root_path, class: "navbar-brand" %>
-    </div>
-    <ul class="nav navbar-nav">
-      <%= admin_nav_link('Users', admin_users_path) if policy(User).index? %>
-      <%= admin_nav_link('Sites', admin_sites_path) if policy(Site).index? %>
-      <%= admin_nav_link('Turfs', admin_turfs_path) if policy(Turf).index? %>
-      <%= admin_nav_link('Partners', admin_partners_path) if policy(Partner).index? %>
-      <%= admin_nav_link('Collections', admin_collections_path) if policy(Collection).index? %>
-      <%= admin_nav_link('Supporters', admin_supporters_path) if policy(Supporter).index? %>
-      <%= admin_nav_link('Calendars', admin_calendars_path) if policy(Calendar).index? %>
-
-      <li><%= link_to "Logout", destroy_user_session_path, method: :delete  %></li>
-    </ul>
-  </div>
-</nav>
+<ul class="nav flex-column">
+  <%= admin_nav_link('Dashboard', admin_root_path, 'home') %>
+  <%= admin_nav_link('Users', admin_users_path) if policy(User).index? %>
+  <%= admin_nav_link('Sites', admin_sites_path) if policy(Site).index? %>
+  <%= admin_nav_link('Turfs', admin_turfs_path) if policy(Turf).index? %>
+  <%= admin_nav_link('Partners', admin_partners_path) if policy(Partner).index? %>
+  <%= admin_nav_link('Collections', admin_collections_path) if policy(Collection).index? %>
+  <%= admin_nav_link('Supporters', admin_supporters_path) if policy(Supporter).index? %>
+  <%= admin_nav_link('Calendars', admin_calendars_path) if policy(Calendar).index? %>
+</ul>
