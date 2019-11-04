@@ -3,12 +3,7 @@ require("select2")
 
 import 'bootstrap'
 
-import '../src/behaviors/behaviors.base.js'
-import '../src/behaviors/behaviors.collection.js'
-import '../src/behaviors/behaviors.map.js'
-import '../src/behaviors/behaviors.partner.js'
-import '../src/behaviors/behaviors.place.js'
-import '../src/behaviors/behaviors.user.js'
+import '../src/behaviors/all_behaviors.js'
 
 $(document).on('turbolinks:load', function() {
   $(".starting-datetimepicker").datetimepicker({

@@ -10,10 +10,6 @@
     <%= javascript_pack_tag 'admin', 'data-turbolinks-track': 'reload' %>
 
     <%= render "layouts/meta" %>
-
-    <%= yield :first_min_js %>
-    <%= javascript_include_tag 'admin', 'data-turbolinks-track': false %>
-    <%= yield :last_min_js %>
   </head>
 
   <body>

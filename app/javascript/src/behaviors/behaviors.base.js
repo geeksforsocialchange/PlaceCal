@@ -7,7 +7,7 @@ jQuery.fn.init_behaviors = function () {
     })
 };
 
-var Behaviors = {
+export const Behaviors = {
   debugMode: true,
   activateBehavior: function (a) {
     if (a && a != "" && a != []) {
