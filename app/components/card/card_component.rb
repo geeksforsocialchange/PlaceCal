@@ -8,4 +8,5 @@ class CardComponent < MountainView::Presenter
   property :description, default: false
   property :link, default: false
   property :last_updated, default: false
+  property :turf, default: false
 end

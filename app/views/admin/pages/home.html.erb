@@ -1,16 +1,4 @@
-<h2>Welcome back, <%= current_user.full_name.titleize %></h2>
-
-<h3>Your Information</h3>
-
-<strong>Email:</strong><%= current_user.email %><br>
-<% unless current_user.role.nil? %>
-  <strong>Role:</strong><%= current_user.role.titleize %>
-<% end %>
-<br>
-<%= link_to "Edit your Profile", admin_profile_path , class: "btn btn-primary" %>
-
-
-<h3>Partners</h3>
+<h1>Partners</h1>
 
 <% if @partners.blank? %>
   <p>No Partners found</p>
@@ -22,7 +10,8 @@
             subtitle: partner.slug,
             image: partner.image.url,
             description: partner.short_description,
-            path: edit_admin_partner_path(partner),
+            link: edit_admin_partner_path(partner),
+            turf: partner&.address&.neighbourhood&.name,
             last_updated: partner.updated_at
       %>
     <% end %>
