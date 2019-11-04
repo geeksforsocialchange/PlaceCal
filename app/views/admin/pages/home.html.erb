@@ -1,4 +1,4 @@
-<h1>Partners</h1>
+<h1 class="mb-3">Recently updated partners</h1>
 
 <% if @partners.blank? %>
   <p>No Partners found</p>
@@ -6,13 +6,28 @@
   <div class="card-grid">
     <% @partners.each do |partner| %>
       <%= render_component 'card',
-            title: partner.name,
-            subtitle: partner.slug,
-            image: partner.image.url,
-            description: partner.short_description,
-            link: edit_admin_partner_path(partner),
-            turf: partner&.address&.neighbourhood&.name,
-            last_updated: partner.updated_at
+          title: partner.name,
+          subtitle: partner.slug,
+          image: partner.image.url,
+          description: partner.short_description,
+          link: edit_admin_partner_path(partner),
+          turf: partner&.address&.neighbourhood&.name,
+          last_updated: partner.updated_at
+      %>
+    <% end %>
+  </div>
+<% end %>
+
+<% if @errored_calendars.any? %>
+  <h1 class="mt-5 mb-3">Failing calendars</h1>
+
+  <div class="card-grid">
+    <% @errored_calendars.each do |calendar| %>
+      <%= render_component 'card',
+          title: calendar.name,
+          subtitle: "<span class='badge badge-warning mr-1'>Error</span>" + calendar&.last_imported,
+          link: edit_admin_calendar_path(calendar),
+          last_updated: calendar.updated_at
       %>
     <% end %>
   </div>

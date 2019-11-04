@@ -5,7 +5,12 @@
     <h5 class="card-title">
       <%= link_to title, link %>
     </h5>
-    <h6 class="card-subtitle mb-2 text-muted"><span class="badge badge-secondary small"><%= turf %></span> <%= subtitle %></h6>
+    <h6 class="card-subtitle mb-2 text-muted">
+      <% if turf %>
+        <span class="badge badge-secondary small"><%= turf %></span>
+      <% end %>
+      <%= subtitle.html_safe %>
+    </h6>
     <p class="card-text"><%= description %></p>
     <%= link_to 'Edit', link, class: 'btn btn-primary' %>
   </div>

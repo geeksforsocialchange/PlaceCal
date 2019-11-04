@@ -5,8 +5,13 @@ class CardComponent < MountainView::Presenter
   property :title, default: false
   property :subtitle, default: false
   property :image, default: false
-  property :description, default: false
   property :link, default: false
   property :last_updated, default: false
   property :turf, default: false
+
+  def description
+    if properties[:description]
+      properties[:description].truncate(200)
+    end
+  end
 end

@@ -34,6 +34,8 @@ class Partner < ApplicationRecord
 
   after_save :update_users
 
+  scope :recently_updated, -> { order(updated_at: desc) }
+
   scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
 
   scope :of_turf, ->(turf) { joins(:partners_turfs).where( partners_turfs: { turf: turf } ) }
