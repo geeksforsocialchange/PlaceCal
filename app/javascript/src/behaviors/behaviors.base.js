@@ -33,3 +33,5 @@ export const Behaviors = {
     }
   }
 }
+
+window.Behaviors = Behaviors; 

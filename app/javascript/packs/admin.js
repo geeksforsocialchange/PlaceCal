@@ -6,12 +6,6 @@ import 'bootstrap'
 import '../src/behaviors/all_behaviors.js'
 
 $(document).on('turbolinks:load', function() {
-  $(".starting-datetimepicker").datetimepicker({
-    debug: false,
-    format: "YYYY-MM-DD"
-  });
-
-  $(".field-unit__field.select-search select").selectize({})
 
   $('.select-search').select2()
 
