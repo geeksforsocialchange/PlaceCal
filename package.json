@@ -7,6 +7,7 @@
     "jquery": "^3.4.1",
     "leaflet": "^1.5.1",
     "popper.js": "^1.16.0",
+    "select2": "^4.0.11",
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {

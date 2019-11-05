@@ -8,6 +8,8 @@ jQuery.extend(Behaviors, {
           multiple: true
         });
 
+        $('.select-search').select2()
+
         var preview = $(".brand_image");
         
         $("#partner_image").change(function(event){
