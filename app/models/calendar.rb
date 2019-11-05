@@ -2,6 +2,8 @@
 
 # app/models/calendar.rb
 class Calendar < ApplicationRecord
+  include ActionView::Helpers::DateHelper
+
   self.inheritance_column = nil
 
   belongs_to :partner, optional: true
@@ -153,6 +155,14 @@ class Calendar < ApplicationRecord
   def set_fb_page_token(user)
     graph = Koala::Facebook::API.new(user.access_token)
     self.page_access_token = graph.get_page_access_token(facebook_page_id)
+  end
+
+  def last_imported
+    if last_import_at
+      "Last imported #{time_ago_in_words(last_import_at)} ago"
+    else
+      'Never imported'
+    end
   end
 
   private

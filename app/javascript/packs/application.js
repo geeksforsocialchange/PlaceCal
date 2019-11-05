@@ -15,4 +15,21 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-console.log('Hello World from Webpacker')
+// How to add actiocable/activestorage
+//
+// yarn add @rails/actioncable @rails/activestorage
+// require("@rails/activestorage").start()
+// require("channels")
+
+require("@rails/ujs").start()
+require("turbolinks").start()
+require("leaflet")
+
+// Mountain View
+export default function loadComponents(context) {
+  context.keys().forEach(context);
+}
+loadComponents(require.context("../../components", true, /\.js$/));
+
+// Google Analytics
+import "../src/google-analytics.js";

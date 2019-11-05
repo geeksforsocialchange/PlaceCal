@@ -1,0 +1,12 @@
+<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+  <%= link_to 'PlaceCal', admin_root_path, class: "navbar-brand col-sm-3 col-md-2 mr-0" %>
+  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <ul class="navbar-nav flex-row px-3">
+    <li class="nav-item text-nowrap mr-4">
+      <%= link_to "Your profile", admin_profile_path, class: 'nav-link'  %>
+    </li>
+    <li class="nav-item text-nowrap">
+      <%= link_to "Sign out", destroy_user_session_path, method: :delete, class: 'nav-link'  %>
+    </li>
+  </ul>
+</nav>

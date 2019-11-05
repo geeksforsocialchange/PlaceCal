@@ -1,0 +1,6 @@
+import { Behaviors } from './behaviors.base.js'
+import './behaviors.collection.js'
+import './behaviors.map.js'
+import './behaviors.partner.js'
+import './behaviors.place.js'
+import './behaviors.user.js'

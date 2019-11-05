@@ -7,7 +7,7 @@ module Admin
     before_action :set_turfs, only: %i[new create edit]
 
     def index
-      @partners = policy_scope(Partner).order(:name)
+      @partners = policy_scope(Partner)
     end
 
     def new

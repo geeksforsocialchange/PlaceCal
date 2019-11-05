@@ -3,13 +3,9 @@
 module Admin
   class PagesController < Admin::ApplicationController
     def home
-      if current_user&.role&.root?
-        @turfs = Turf.all.order(:name)
-        @partners = Partner.all.order(:name)
-      else
-        @turfs = current_user.turfs
-        @partners = Partner.joins(:turfs).where(turfs: { id: @turfs }).distinct
-      end
+      @turfs = policy_scope(Turf).all.order(:name)
+      @partners = policy_scope(Partner).order(updated_at: :desc).limit(6)
+      @errored_calendars = policy_scope(Calendar).where(is_working: false).order(last_import_at: :desc)
     end
   end
 end
