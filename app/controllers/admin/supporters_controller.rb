@@ -33,7 +33,7 @@ module Admin
 
     def update
       authorize @supporter
-      if @supporter.update_attributes(supporter_params)
+      if @supporter.update(supporter_params)
         redirect_to admin_supporters_path
       else
         render 'edit'

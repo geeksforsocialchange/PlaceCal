@@ -21,6 +21,8 @@ Minitest::Test.send(:include, JsonMatchers::Minitest::Assertions)
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
+  parallelize(workers: :number_of_processors)
+
   # Usage:
   #
   # it_allows_access_to_action_for(%i[root turf_admin partner_admin place_admin citizen guest]) do

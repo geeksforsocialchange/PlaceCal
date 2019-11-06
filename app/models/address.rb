@@ -20,7 +20,7 @@ class Address < ApplicationRecord
   has_many :partners
   has_many :calendars
 
-  belongs_to :neighbourhood
+  belongs_to :neighbourhood, optional: true
 
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))

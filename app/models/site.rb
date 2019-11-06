@@ -14,7 +14,7 @@ class Site < ApplicationRecord
 
   has_and_belongs_to_many :supporters
 
-  belongs_to :site_admin, class_name: 'User'
+  belongs_to :site_admin, class_name: 'User', optional: true
 
   accepts_nested_attributes_for :sites_neighbourhood
   accepts_nested_attributes_for :sites_neighbourhoods, reject_if: ->(c) { c[:neighbourhood_id].blank? }, allow_destroy: true
@@ -53,6 +53,16 @@ class Site < ApplicationRecord
     else
       'in'
     end
+  end
+
+  # Get a count of all the events this week
+  def events_this_week
+    Event.for_site(self).find_by_week(Time.now).count
+  end
+
+  # Get a count of all the events last week
+  def events_last_week
+    Event.for_site(self).find_by_week(Time.now - 1.week).count
   end
 
   class << self

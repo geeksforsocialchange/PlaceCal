@@ -25,7 +25,7 @@ module Admin
 
     def assign_turf
       authorize current_user, :assign_turf?
-      if @user.update_attributes(user_turf_params)
+      if @user.update(user_turf_params)
         redirect_to admin_users_path
       else
         render 'edit'

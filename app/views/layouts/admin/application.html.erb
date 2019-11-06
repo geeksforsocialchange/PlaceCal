@@ -5,26 +5,27 @@
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag 'admin', 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'admin', 'data-turbolinks-track': 'reload' %>
 
     <%= render "layouts/meta" %>
   </head>
 
   <body>
-    <header>
-      <%= render "layouts/admin/admin_navigation" %>
-    </header>
-    <main>
+    <%= render "layouts/admin/admin_topbar" %>
+
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-10">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <%= render "layouts/admin/admin_navigation.html.erb" %>
+          </div>
+        </nav>
+        <main role="main" class="col-md-9 mt-3 ml-sm-auto col-lg-10 px-4">
           <%= yield %>
-        </div>
-        <div class="col-sm-1"></div>
+        </main>
       </div>
-    </main>
-    <%= yield :first_min_js %>
-    <%= javascript_include_tag 'admin', 'data-turbolinks-track': false %>
-    <%= yield :last_min_js %>
+    </div>
   </body>
 </html>

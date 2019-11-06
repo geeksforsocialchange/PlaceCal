@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '2.4.3'
+ruby '2.6.5'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -11,7 +11,8 @@ end
 # Core
 gem 'pg'
 gem 'puma', '~> 4.2'
-gem 'rails', '~> 5.2.3'
+gem 'rails', '~> 6.0'
+gem 'minitest-rails'
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'
@@ -20,6 +21,7 @@ gem 'jquery-turbolinks'
 gem 'sass-rails', '~> 6.0'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
+gem 'webpacker'
 
 # Calendar
 gem 'httparty'
@@ -31,8 +33,9 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # Admin
-gem 'bootstrap-sass', '~> 3.4.1'
+gem 'bootstrap', '~> 4.3.1'
 gem 'cocoon'
+gem 'font-awesome-rails'
 gem 'select2-rails'
 gem 'simple_form'
 
@@ -73,7 +76,8 @@ gem 'seed_migration'
 # Utilities
 gem 'active_link_to'
 gem 'bootsnap', require: false
-gem 'crypt_keeper', '~> 2.0.1'
+# Temp fix until https://github.com/jmazzi/crypt_keeper works with Rails 6
+gem 'crypt_keeper', github: 'taylorwilliams/crypt_keeper'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'

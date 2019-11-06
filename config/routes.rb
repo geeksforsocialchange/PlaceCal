@@ -32,7 +32,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   constraints(::Sites::Local) do
     # get '*' => 'sites#index'
-    root 'sites#index'
+    get '/' => 'sites#index'
   end
 
   ymd = {

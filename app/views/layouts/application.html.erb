@@ -2,6 +2,7 @@
 <html>
   <head>
     <%= csrf_meta_tags %>
+
     <%= stylesheet_link_tag 'https://cdn.rawgit.com/h-ibaldo/Raleway_Fixed_Numerals/master/css/rawline.css', media: 'all' %>
     <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Trocchi', media: 'all' %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
@@ -9,7 +10,8 @@
       <%= stylesheet_link_tag "sites/#{@site.slug}", media: 'all', 'data-turbolinks-track': 'reload' %>
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
 
     <%= render "layouts/meta" %>
     <%= render "layouts/google_analytics" %>

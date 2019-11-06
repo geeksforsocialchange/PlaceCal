@@ -7,7 +7,7 @@ module Admin
     before_action :set_turfs, only: %i[new create edit]
 
     def index
-      @partners = policy_scope(Partner).order(:name)
+      @partners = policy_scope(Partner)
     end
 
     def new
@@ -36,7 +36,7 @@ module Admin
 
     def update
       authorize @partner
-      if @partner.update_attributes(partner_params)
+      if @partner.update(partner_params)
         redirect_to admin_partners_path
       else
         render 'new'

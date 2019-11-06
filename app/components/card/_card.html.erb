@@ -1,0 +1,19 @@
+<div class="card">
+  <% # TODO: make this work in development mode cuz right now it has 1,000 missing image errors %>
+  <% # image_tag image, class: 'card-img-top' if image %>
+  <div class="card-body">
+    <h5 class="card-title">
+      <%= link_to title, link %>
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">
+      <%= subtitle.html_safe %>
+    </h6>
+    <p class="card-text"><%= description %></p>
+    <%= link_to 'Edit', link, class: 'btn btn-primary' if link %>
+  </div>
+  <% if last_updated %>
+    <div class="card-footer">
+      <small class="text-muted">Last updated <%= time_ago_in_words(last_updated) %> ago</small>
+    </div>
+  <% end %>
+</div>

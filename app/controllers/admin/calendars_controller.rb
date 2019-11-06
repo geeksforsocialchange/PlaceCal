@@ -35,7 +35,7 @@ module Admin
     end
 
     def update
-      if @calendar.update_attributes(calendar_params)
+      if @calendar.update(calendar_params)
         redirect_to edit_admin_calendar_path(@calendar)
       else
         render 'edit'

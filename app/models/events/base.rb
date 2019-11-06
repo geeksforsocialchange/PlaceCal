@@ -14,6 +14,10 @@ module Events
       nil
     end
 
+    def sanitize_invalid_char(input)
+      input.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
+    end
+
     # Convert h1 and h2 to h3
     # Strip out all shady tags
     # Convert all html to markdown
@@ -33,13 +37,14 @@ module Events
       str = str.to_s
 
       str = ActionController::Base.helpers.sanitize(str, tags: allowed_tags)
+      str = sanitize_invalid_char(str)
 
       Kramdown::Document.new(str).to_html
     end
 
     def attributes
       { uid:                      uid&.strip,
-        summary:                  summary,
+        summary:                  sanitize_invalid_char(summary),
         description:              html_sanitize(description),
         raw_location_from_source: location&.strip,
         rrule:                    rrule,

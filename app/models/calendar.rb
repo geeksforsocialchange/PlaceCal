@@ -2,9 +2,11 @@
 
 # app/models/calendar.rb
 class Calendar < ApplicationRecord
+  include ActionView::Helpers::DateHelper
+
   self.inheritance_column = nil
 
-  belongs_to :partner
+  belongs_to :partner, optional: true
   belongs_to :place, class_name: 'Partner', required: false
   has_many :events, dependent: :destroy
 
@@ -111,7 +113,7 @@ class Calendar < ApplicationRecord
     handle_deleted_events(from, @events_uids) if @events_uids
 
     reload # reload the record from database to clear out any invalid events to avoid attempts to save them
-    update_attributes!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current, critical_error: nil)
+    update!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current, critical_error: nil)
   end
 
   def create_or_update_events(event_data, occurrences, from) # rubocop:disable all
@@ -133,7 +135,7 @@ class Calendar < ApplicationRecord
 
       event_time[:are_spaces_available] = occurrence.status if occurrence.respond_to?(:status)
 
-      unless event.update_attributes event_data.attributes.merge(event_time)
+      unless event.update event_data.attributes.merge(event_time)
         @important_notices << { event: event, errors: event.errors.full_messages }
       end
     end
@@ -155,10 +157,25 @@ class Calendar < ApplicationRecord
     self.page_access_token = graph.get_page_access_token(facebook_page_id)
   end
 
+  def last_imported
+    if last_import_at
+      "Last imported #{time_ago_in_words(last_import_at)} ago"
+    else
+      'Never imported'
+    end
+  end
+
+  # Get a count of all the events this week
+  def events_this_week
+    events.find_by_week(Time.now).count
+  end
+
   private
 
   def source_supported
     CalendarParser.new(self).validate_feed
+    self.is_working = true
+    self.critical_error = nil
   rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
     critical_import_failure(e, false)
   end
