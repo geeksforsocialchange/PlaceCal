@@ -165,6 +165,11 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # Get a count of all the events this week
+  def events_this_week
+    events.find_by_week(Time.now).count
+  end
+
   private
 
   def source_supported

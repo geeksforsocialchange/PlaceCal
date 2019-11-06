@@ -7,7 +7,6 @@ class CardComponent < MountainView::Presenter
   property :image, default: false
   property :link, default: false
   property :last_updated, default: false
-  property :turf, default: false
 
   def description
     if properties[:description]
