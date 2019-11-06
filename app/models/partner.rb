@@ -9,7 +9,8 @@ class Partner < ApplicationRecord
   has_and_belongs_to_many :turfs, validate: true
   has_many :calendars, dependent: :destroy
   has_many :events
-  belongs_to :address, required: false
+  belongs_to :address, optional: true
+  belongs_to :neighbourhood, optional: true
 
   has_and_belongs_to_many :objects,
   class_name: "Partner",
@@ -76,6 +77,11 @@ class Partner < ApplicationRecord
 
   def permalink
     "https://placecal.org/partners/#{id}"
+  end
+
+  # Get a count of all the events this week
+  def events_this_week
+    events.find_by_week(Time.now).count
   end
 
   def human_readable_opening_times

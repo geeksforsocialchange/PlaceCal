@@ -55,6 +55,16 @@ class Site < ApplicationRecord
     end
   end
 
+  # Get a count of all the events this week
+  def events_this_week
+    Event.for_site(self).find_by_week(Time.now).count
+  end
+
+  # Get a count of all the events last week
+  def events_last_week
+    Event.for_site(self).find_by_week(Time.now - 1.week).count
+  end
+
   class << self
 
     # Find the requested Site from information in the rails request object.

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Neighbourhood < ApplicationRecord
+  has_and_belongs_to_many :sites, through: :sites_neighbourhood
+
   self.table_name = 'neighbourhoods'
 
   class << self
