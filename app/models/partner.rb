@@ -2,6 +2,10 @@
 
 # app/models/partner.rb
 class Partner < ApplicationRecord
+  URL_REGEX = /\A(?:(?:https?):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?\z/i
+  TWITTER_REGEX = /\A@?(\w){1,15}\z/
+  FACEBOOK_REGEX = /\A(\w){1,15}\z/
+
   extend FriendlyId
   friendly_id :name, use: :slugged
 
@@ -30,6 +34,10 @@ class Partner < ApplicationRecord
 
   validates_presence_of :name
   validates_uniqueness_of :name, case_sensitive: false
+  validates :name, length: { minimum: 5, too_short: 'must be at least 5 characters long' }
+  validates :url, format: { with: URL_REGEX, message: 'is invalid' }, allow_blank: true
+  validates :twitter_handle, format: { with: TWITTER_REGEX, message: 'invalid account name' }, allow_blank: true
+  validates :facebook_link, format: { with: FACEBOOK_REGEX, message: 'invalid page name' }, allow_blank: true
 
   mount_uploader :image, ImageUploader
 

@@ -14,13 +14,35 @@
       <%= image_tag @partner.image.url , width: '125', class: 'brand_image' if @partner.image.url %>
     </div>
     <div class="col-md-6">
-      <%= f.input :url, class: "form-control", label: 'Website address' %>
-      <%= f.input :facebook_link, class: "form-control" %>
-      <%= f.input :twitter_handle, class: "form-control" %>
+      <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
+
+      <div class="form-group url optional facebook_link form-group-invalid">
+        <%= f.label :facebook_link %>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text">https://facebook.com/</div>
+          </div>
+          <%= f.input_field :facebook_link, class: "form-control", placeholder: 'FacebookPageName' %>
+          <%= f.error :facebook_link, class: 'invalid-feedback' %>
+        </div>
+      </div>
+
+      <div class="form-group url optional twitter_handle form-group-invalid">
+        <%= f.label :twitter_handle %>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text">@</div>
+          </div>
+          <%= f.input_field :twitter_handle, class: "form-control", placeholder: 'FacebookPageName' %>
+          <%= f.error :twitter_handle, class: 'invalid-feedback' %>
+        </div>
+      </div>
     </div>
   </div>
+
   <br>
   <hr>
+
   <h3>Address</h3>
 
   <div id='address'>
@@ -104,8 +126,6 @@
           '[]'.html_safe
         end
       %></script>
-      <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
-      <script type="text/javascript" src="/js/opening_hours.js"></script>
     </div>
     <div class="col-md-6">
       <h2>Tags</h2>
