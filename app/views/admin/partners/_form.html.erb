@@ -102,15 +102,11 @@
           </select>
 
           <select v-model="selectedOpeningTime">
-            <option v-for="openingTime in filteredOpeningTimes" v-bind:value="openingTime.value">
-              {{ openingTime.name }}
-            </option>
+            <vue-timepicker format="hh::mm A" v-model="openingTime.name"></vue-timepicker>
           </select>
 
           <select v-model="selectedClosingTime">
-            <option v-for="closingTime in filteredClosingTimes" v-bind:value="closingTime.value">
-              {{ closingTime.name }}
-            </option>
+            <vue-timepicker format="hh::mm A" v-model="closingTime.name"></vue-timepicker>
           </select>
 
           <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>

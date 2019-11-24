@@ -10,7 +10,10 @@
     "select2": "^4.0.11",
     "turbolinks": "^5.2.0",
     "vue": "^2.6.10",
-    "vue-turbolinks": "^2.0.4"
+    "vue-loader": "^15.7.2",
+    "vue-template-compiler": "^2.6.10",
+    "vue-turbolinks": "^2.0.4",
+    "vue2-timepicker": "^1.0.4"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.9.0"
