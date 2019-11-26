@@ -88,40 +88,37 @@
   <div class="row">
     <div class="col-md-6">
       <h2>Opening times</h2>
-      <div id="opening-times">
+      <div id="opening-times" data="<%= @partner.opening_times.presence || [] %>">
 
         <div class="added-days">
           <added-days :list="addedDays"></added-days>
         </div>
 
-        <div class="form">
-          <select v-model="selectedDay">
-            <option v-for="day in days" v-bind:value="day.value">
-              {{ day.name }}
-            </option>
-          </select>
+        <div class="row">
+          <div class="col-md-3">
+            <select v-model="selectedDay" class="form-control">
+              <option v-for="day in days" v-bind:value="day.value">
+                {{ day.name }}
+              </option>
+            </select>
+          </div>
 
-          <select v-model="selectedOpeningTime">
-            <vue-timepicker format="hh::mm A" v-model="openingTime.name"></vue-timepicker>
-          </select>
+          <div class="col-md-3">
+            <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedOpeningTime"></vue-timepicker>
+          </div>
 
-          <select v-model="selectedClosingTime">
-            <vue-timepicker format="hh::mm A" v-model="closingTime.name"></vue-timepicker>
-          </select>
+          <div class="col-md-3">
+            <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedClosingTime"></vue-timepicker>
+          </div>
 
-          <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
+          </div>
         </div>
 
         <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}', hidden:true %>
       </div>
 
-      <script type="text/javascript">var openingHoursFromServer = <%=
-        if @partner.opening_times&.strip&.first == '['
-          @partner.opening_times.html_safe
-        else
-          '[]'.html_safe
-        end
-      %></script>
     </div>
     <div class="col-md-6">
       <h2>Tags</h2>

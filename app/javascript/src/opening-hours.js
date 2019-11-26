@@ -1,3 +1,9 @@
+import TurbolinksAdapter from 'vue-turbolinks'
+import Vue from 'vue/dist/vue.esm'
+import App from '../app.vue'
+import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue'
+
+Vue.use(TurbolinksAdapter)
 //
 // opening_hours.js
 //
@@ -35,12 +41,7 @@ function openingHoursSpecification(day) {
 
 // Convert a schema.org OpeningHoursSpecification to an added day.
 //
-// ?TODO?  Convert this function to use Array find() rather than reduce() ?
-//      ?  It would be a lot more compact, but I'm not sure whether I should
-//      ?  include EcmaScript 6 functions.
-//
 function addedDay(spec) {
-  console.log(spec);
   return {
     dayName: daysArray.reduce( function(acc,val) {
       if (acc) {
@@ -50,12 +51,38 @@ function addedDay(spec) {
       } else {
         return false
       }
-    }, false)
+    }, false),
 
+    openingTimeName: convertTo12Hour(spec.opens),
+    closingTimeName: convertTo12Hour(spec.closes),
     // OpeningHoursSpecification:
     closes: spec.closes,
     dayOfWeek: spec.dayOfWeek,
     opens: spec.opens,
+  }
+}
+
+function convertTo12Hour(time) {
+  var time_arr = time.split(':');
+
+  if(time_arr[0] === '0') {
+    return '12:' + time_arr[2] + ' am';
+  } else if(time_arr[0] > 12) {
+    return time_arr[0] % 12 + ':' + time_arr[1] + ' pm';
+  } else {
+    return time_arr[0] + ':' + time_arr[1] + ' am';
+  }
+}
+
+function convertTo24Hour(time) {
+  if(time['a'] === 'pm') {
+    if(time['hh'] === '12') {
+      return '00:00:00';
+    } else {
+      return (parseInt(time['hh']) + 12) + ':' + time['mm'] + ':00';
+    }
+  } else {
+    return time['hh'] + ':' + time['mm'] + ':00';
   }
 }
 
@@ -88,69 +115,80 @@ Vue.component('added-days', {
   }
 })
 
-new Vue({
-  el: '#opening-times',
+document.addEventListener('turbolinks:load',  () => {
+  var element = document.getElementById('opening-times')
+  var openingHours = JSON.parse(element.getAttribute('data'))
+  if (element != null) {
+    new Vue({
+      el: element,
 
-  data: {
-    addedDays: openingHoursFromServer.map( addedDay ),
-    openingHoursSpecifications: openingHoursFromServer,
-    selectedDay: 0,
-    selectedOpeningTime:  {
-      hh: '09',
-      mm: '00',
-      a: 'AM'
-    },
-    selectedClosingTime: {
-      hh: '05',
-      mm: '00',
-      a: 'PM'
-    },
-    days: daysArray,
-  },
+      data: {
+        addedDays: openingHours.map( addedDay ),
+        openingHoursSpecifications: openingHours,
+        selectedDay: 0,
+        selectedOpeningTime:  {
+          hh: '09',
+          mm: '00',
+          a: 'am'
+        },
+        selectedClosingTime: {
+          hh: '05',
+          mm: '00',
+          a: 'pm'
+        },
+        days: daysArray,
+      },
 
-  computed: {
 
-    selectedDayName: function() {
-      return this.days[this.selectedDay].name;
-    },
+      components: { VueTimepicker },
 
-    selectedDaySchemaDotOrg: function() {
-      return this.days[this.selectedDay]["schema.org"];
-    },
+      computed: {
 
-    selectedOpeningTimeName: function() {
-      return this.openingTimes[this.selectedOpeningTime].name;
-    },
+        selectedDayName: function() {
+          return this.days[this.selectedDay].name;
+        },
 
-    selectedOpeningTime24Hour: function() {
-      return this.openingTimes[this.selectedOpeningTime]['24hour'];
-    },
+        selectedDaySchemaDotOrg: function() {
+          return this.days[this.selectedDay]["schema.org"];
+        },
 
-    selectedClosingTimeName: function() {
-      return this.closingTimes[this.selectedClosingTime].name;
-    },
+        selectedOpeningTimeName: function() {
+          var time = this.selectedOpeningTime
+          return parseInt(time['hh']) + ':' + time['mm'] + ' ' + time['a'] ;
+        },
 
-    selectedClosingTime24Hour: function() {
-      return this.closingTimes[this.selectedClosingTime]['24hour'];
-    }
+        selectedOpeningTime24Hour: function() {
+          return convertTo24Hour(this.selectedOpeningTime);
+        },
 
-  },
+        selectedClosingTimeName: function() {
+          var time = this.selectedClosingTime
+          return parseInt(time['hh']) + ':' + time['mm'] + ' ' + time['a'];
+        },
 
-  methods: {
-    addDay: function() {
-      this.addedDays.push( {
-        dayName: this.selectedDayName,
-        openingTimeName: this.selectedOpeningTimeName,
-        closingTimeName: this.selectedClosingTimeName,
+        selectedClosingTime24Hour: function() {
+          return convertTo24Hour(this.selectedClosingTime);
+        }
 
-        // OpeningHoursSpecification:
-        closes: this.selectedClosingTime24Hour,
-        dayOfWeek: this.selectedDaySchemaDotOrg,
-        opens: this.selectedOpeningTime24Hour,
-      } );
+      },
 
-      this.openingHoursSpecifications =
-        this.addedDays.map( openingHoursSpecification );
-    },
+      methods: {
+        addDay: function() {
+          this.addedDays.push( {
+            dayName: this.selectedDayName,
+            openingTimeName: this.selectedOpeningTimeName,
+            closingTimeName: this.selectedClosingTimeName,
+
+            // OpeningHoursSpecification:
+            closes: this.selectedClosingTime24Hour,
+            dayOfWeek: this.selectedDaySchemaDotOrg,
+            opens: this.selectedOpeningTime24Hour,
+          } );
+
+          this.openingHoursSpecifications =
+            this.addedDays.map( openingHoursSpecification );
+        },
+      }
+    })
   }
 })
