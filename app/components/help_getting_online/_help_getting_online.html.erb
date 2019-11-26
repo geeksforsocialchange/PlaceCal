@@ -19,7 +19,7 @@
   <% if places.any? %>
     <ul>
       <% places.each do |location| %>
-        <li><%= link_to location.name, place_url(location) %></li>
+        <li><%= link_to location.name, places_url(location) %></li>
       <% end %>
     </ul>
   <% else %>
