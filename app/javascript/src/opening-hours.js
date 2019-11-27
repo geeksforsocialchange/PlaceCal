@@ -1,6 +1,5 @@
 import TurbolinksAdapter from 'vue-turbolinks'
 import Vue from 'vue/dist/vue.esm'
-import App from '../app.vue'
 import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue'
 
 Vue.use(TurbolinksAdapter)
@@ -87,7 +86,9 @@ function convertTo24Hour(time) {
 }
 
 Vue.component('added-days', {
-  props: ['list'],
+  props: {
+    list: Array
+  },
 
   template: `
     <ul class="list-unstyled">

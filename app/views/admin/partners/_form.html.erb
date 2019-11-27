@@ -94,26 +94,18 @@
           <added-days :list="addedDays"></added-days>
         </div>
 
-        <div class="row">
-          <div class="col-md-3">
-            <select v-model="selectedDay" class="form-control">
-              <option v-for="day in days" v-bind:value="day.value">
-                {{ day.name }}
-              </option>
-            </select>
-          </div>
+        <div class="d-flex flex-row align-items-center justify-content-sm-between">
+          <select v-model="selectedDay" class="form-control">
+            <option v-for="day in days" v-bind:value="day.value">
+              {{ day.name }}
+            </option>
+          </select>
 
-          <div class="col-md-3">
-            <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedOpeningTime"></vue-timepicker>
-          </div>
+          <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedOpeningTime"></vue-timepicker>
 
-          <div class="col-md-3">
-            <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedClosingTime"></vue-timepicker>
-          </div>
+          <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedClosingTime"></vue-timepicker>
 
-          <div class="col-md-3">
-            <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
-          </div>
+          <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
         </div>
 
         <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}', hidden:true %>

@@ -117,3 +117,12 @@ body {
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 1rem
 }
+
+/*
+ * Opening Times
+ */
+
+#opening-times select.form-control {
+  width: 25%;
+  font-size: 14px;
+}

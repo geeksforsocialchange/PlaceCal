@@ -5,6 +5,7 @@ class Partner < ApplicationRecord
   URL_REGEX = /\A(?:(?:https?):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?\z/i
   TWITTER_REGEX = /\A@?(\w){1,15}\z/
   FACEBOOK_REGEX = /\A(\w){1,15}\z/
+  UK_NUMBER_REGEX = /\A(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|\#)\d{3,4})?\z/
 
   extend FriendlyId
   friendly_id :name, use: :slugged
@@ -38,6 +39,7 @@ class Partner < ApplicationRecord
   validates :url, format: { with: URL_REGEX, message: 'is invalid' }, allow_blank: true
   validates :twitter_handle, format: { with: TWITTER_REGEX, message: 'invalid account name' }, allow_blank: true
   validates :facebook_link, format: { with: FACEBOOK_REGEX, message: 'invalid page name' }, allow_blank: true
+  validates :public_phone, :partner_phone, format: { with: UK_NUMBER_REGEX, message: 'invalid phone number' }, allow_blank: true
 
   mount_uploader :image, ImageUploader
 
