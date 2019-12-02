@@ -24,6 +24,24 @@ class CalendarTest < ActiveSupport::TestCase
   end
 
   test 'gets a contact for each calendar' do
-    @calendar = Calendar.new(name: 'Test calendar', source: 'http://my-calendar.com')
+    @calendar = create(:calendar)
+    assert @calendar.valid?
+    # If calendar contact listed, show that
+    assert_equal [ @calendar.public_contact_email,
+                   @calendar.public_contact_name
+                 ], @calendar.contact_information
+    # Otherwise, show the partner public contact if possible
+    @calendar.update(public_contact_email: nil)
+    assert_equal [ @calendar.partner.public_email,
+                   @calendar.partner.public_name
+                 ], @calendar.contact_information
+    # Otherwise, show the default location contact if possible
+    @calendar.partner.update(public_email: nil)
+    assert_equal [ @calendar.place.public_email,
+                   @calendar.place.public_name
+                 ], @calendar.contact_information
+    # Otherwise, return false
+    @calendar.place.update(public_email: nil)
+    assert_equal [false, false], @calendar.contact_information
   end
 end

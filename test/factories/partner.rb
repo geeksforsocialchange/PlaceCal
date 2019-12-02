@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory(:partner) do
+  factory :partner do
     sequence(:name) do |n|
       "Community Group #{n}"
     end
 
-    public_name { 'John Q Public' }
+    public_name { 'Partner Contact Name' }
     public_email { 'contact@communitygroup.org' }
     public_phone { '0161 0000000' }
 
@@ -21,5 +21,10 @@ FactoryBot.define do
 
     after(:build) { |partner| partner.turfs = [create(:turf)] }
     # image nil
+
+    factory :place do
+      public_name { 'Place Contact Name' }
+    end
   end
+
 end

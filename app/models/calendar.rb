@@ -172,7 +172,15 @@ class Calendar < ApplicationRecord
 
   # Who is responsible for this calendar?
   def contact_information
-
+    if public_contact_email
+      [ public_contact_email, public_contact_name ]
+    elsif partner&.public_email
+      [ partner.public_email, partner.public_name ]
+    elsif place&.public_email
+      [ place.public_email, place.public_name ]
+    else
+      [ false, false ]
+    end
   end
 
   private

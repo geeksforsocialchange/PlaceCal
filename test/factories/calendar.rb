@@ -18,5 +18,6 @@ FactoryBot.define do
     partnership_contact_phone { '0161 0000001' }
 
     partner
+    place
   end
 end
