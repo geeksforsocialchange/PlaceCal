@@ -7,11 +7,11 @@ class Calendar < ApplicationRecord
   self.inheritance_column = nil
 
   belongs_to :partner, optional: true
-  belongs_to :place, class_name: 'Partner', required: false
+  belongs_to :place, class_name: 'Partner', optional: true
   has_many :events, dependent: :destroy
 
-  validates_presence_of :name
-  validates_uniqueness_of :source
+  validates_presence_of :name, :source
+  validates_uniqueness_of :source, { message: 'Calendar source is already in use' }
 
   before_save :source_supported
 
@@ -168,6 +168,19 @@ class Calendar < ApplicationRecord
   # Get a count of all the events this week
   def events_this_week
     events.find_by_week(Time.now).count
+  end
+
+  # Who should be contacted about this calendar?
+  def contact_information
+    if public_contact_email
+      [ public_contact_email, public_contact_name ]
+    elsif partner&.public_email
+      [ partner.public_email, partner.public_name ]
+    elsif place&.public_email
+      [ place.public_email, place.public_name ]
+    else
+      false
+    end
   end
 
   private
