@@ -11,7 +11,7 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     @event = create(:event)
   end
 
-  test 'show pages have event and local info' do
+  test 'event show pages have event and local info' do
     get event_url(@event)
     assert_response :success
     assert_select 'title', count: 1, text: "#{@event.summary}, #{@event.date}, #{@event.time} | #{@default_site.name}"
@@ -19,6 +19,8 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h1', text: @event.summary
     assert_select 'div.event__detail', count: 4
     assert_select '#js-map', 1
+    assert_select 'div.contact_information', text: 'Problem with this listing? Let us know.'
+    assert_select "div.contact_information a:match('href', ?)", /mailto/
 
     get "http://#{@neighbourhood_site.slug}.lvh.me/events/#{@event.id}"
     assert_response :success

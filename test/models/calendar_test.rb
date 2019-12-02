@@ -42,6 +42,6 @@ class CalendarTest < ActiveSupport::TestCase
                  ], @calendar.contact_information
     # Otherwise, return false
     @calendar.place.update(public_email: nil)
-    assert_equal [false, false], @calendar.contact_information
+    assert_equal false, @calendar.contact_information
   end
 end

@@ -170,7 +170,7 @@ class Calendar < ApplicationRecord
     events.find_by_week(Time.now).count
   end
 
-  # Who is responsible for this calendar?
+  # Who should be contacted about this calendar?
   def contact_information
     if public_contact_email
       [ public_contact_email, public_contact_name ]
@@ -179,7 +179,7 @@ class Calendar < ApplicationRecord
     elsif place&.public_email
       [ place.public_email, place.public_name ]
     else
-      [ false, false ]
+      false
     end
   end
 

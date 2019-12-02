@@ -8,6 +8,7 @@ FactoryBot.define do
     dtend { Time.now + 1.day + 2.hours }
     is_active { true }
     address
+    calendar
 
     trait :with_place do
       association :place, factory: :partner
