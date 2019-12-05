@@ -7,9 +7,14 @@ class ContactDetailsComponent < MountainView::Presenter
   property :email, default: false
   property :facebook_link, default: false
   property :twitter_handle, default: false
+  property :is_valid_phone, default: false
 
-  def twitter_link
+  def twitter_url
     "https://twitter.com/#{twitter_handle}"
+  end
+
+  def facebook_url
+    "https://facebook.com/#{facebook_link}"
   end
 
   def contact?

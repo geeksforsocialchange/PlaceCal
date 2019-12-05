@@ -4,7 +4,7 @@
 class Partner < ApplicationRecord
   URL_REGEX = /\A(?:(?:https?):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?\z/i
   TWITTER_REGEX = /\A@?(\w){1,15}\z/
-  FACEBOOK_REGEX = /\A(\w){1,15}\z/
+  FACEBOOK_REGEX = /\A(\w){1,50}\z/
   UK_NUMBER_REGEX = /\A(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|\#)\d{3,4})?\z/
 
   extend FriendlyId
@@ -67,6 +67,10 @@ class Partner < ApplicationRecord
     .where(o_r: {verb: :manages}).distinct
   end
 
+  def twitter_handle=(handle)
+    @twitter_handle = handle.gsub('@', '')
+  end
+
   # Get all Partners that manage this Partner.
   def managers
     subjects.where(organisation_relationships: {verb: :manages})
@@ -105,6 +109,14 @@ class Partner < ApplicationRecord
          <span class='opening_times--time'>#{o} &ndash; #{c}</span>
       ).html_safe
     end
+  end
+
+  def valid_public_phone?
+    self.class.validators_on(:public_phone).each do |validator|
+      validator.validate_each(self, :public_phone, public_phone)
+    end
+
+    self.errors.blank?
   end
 
   private
