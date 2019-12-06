@@ -41,6 +41,8 @@ class Partner < ApplicationRecord
   validates :facebook_link, format: { with: FACEBOOK_REGEX, message: 'invalid page name' }, allow_blank: true
   validates :public_phone, :partner_phone, format: { with: UK_NUMBER_REGEX, message: 'invalid phone number' }, allow_blank: true
 
+  validates_associated :address
+
   mount_uploader :image, ImageUploader
 
   after_save :update_users
@@ -68,7 +70,17 @@ class Partner < ApplicationRecord
   end
 
   def twitter_handle=(handle)
-    @twitter_handle = handle.gsub('@', '')
+    super(handle&.gsub('@', ''))
+  end
+
+  def address_attributes=(value)
+    addr = Address.where("lower(street_address) = ?", value['street_address']&.downcase&.strip).first
+
+    if addr.present?
+      self.address = addr
+    else
+      super
+    end
   end
 
   # Get all Partners that manage this Partner.

@@ -48,13 +48,9 @@
   <div id='address'>
     <div class="row">
       <div class="col-md-6">
-        <%= f.fields_for :address, Address.new do |a| %>
+        <%= f.fields_for :address, @partner.address || Address.new do |a| %>
           <%= render 'address_fields', f: a %>
         <% end %>
-      </div>
-      <div class="col-md-6">
-        -or-
-        <%= f.association :address, label: 'Select existing Address', collection: options_for_addresses, input_html: {  class: 'select-search' } %>
       </div>
     </div>
   </div>
