@@ -6,6 +6,7 @@ class Address < ApplicationRecord
   POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
 
   validates :street_address, :postcode, :country_code, presence: true
+  validates :postcode, format: { with: POSTCODE_REGEX, message: 'is invalid' }
 
   # Geocoding with postcodes.io
   # Only postcode changes will change the result that postodes.io returns.
