@@ -88,6 +88,8 @@ module Admin
                                    :phone,
                                    :role,
                                    :avatar,
+                                   :facebook_app_id,
+                                   :facebook_app_secret,
                                    turf_ids: [],
                                    partner_ids: [])
     end
