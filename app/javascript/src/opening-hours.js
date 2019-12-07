@@ -118,8 +118,10 @@ Vue.component('added-days', {
 
 document.addEventListener('turbolinks:load',  () => {
   var element = document.getElementById('opening-times')
-  var openingHours = JSON.parse(element.getAttribute('data'))
   if (element != null) {
+
+    var openingHours = JSON.parse(element.getAttribute('data'))
+
     new Vue({
       el: element,
 

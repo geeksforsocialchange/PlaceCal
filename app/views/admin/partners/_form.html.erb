@@ -82,7 +82,7 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-12">
       <h2>Opening times</h2>
       <div id="opening-times" data="<%= @partner.opening_times.presence || [] %>">
 
@@ -90,7 +90,7 @@
           <added-days :list="addedDays"></added-days>
         </div>
 
-        <div class="d-flex flex-row align-items-center justify-content-sm-between">
+        <div class="d-flex flex-row align-items-center justify-content-sm-between flex-wrap">
           <select v-model="selectedDay" class="form-control">
             <option v-for="day in days" v-bind:value="day.value">
               {{ day.name }}
@@ -108,7 +108,7 @@
       </div>
 
     </div>
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-12 tags">
       <h2>Tags</h2>
       <p>Does this Partner provide any of the following things? (WIP!)</p>
 
