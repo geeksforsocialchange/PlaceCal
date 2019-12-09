@@ -33,7 +33,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # Admin
-gem 'bootstrap', '~> 4.3.1'
+gem 'bootstrap', '~> 4.4.1'
 gem 'cocoon'
 gem 'font-awesome-rails'
 gem 'select2-rails'
