@@ -2,28 +2,49 @@
 
 # app/models/user.rb
 class User < ApplicationRecord
+  include Validation
   extend Enumerize
-  enumerize :role, in: %i[root turf_admin partner_admin citizen], default: :citizen
+
+  # Non-root roles are updated after save based on assignments
+  enumerize :role,
+            in: %i[root turf_admin partner_admin citizen],
+            default: :citizen
+
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable, :invitable,
+  # :confirmable, :lockable, :timeoutable
+  devise :database_authenticatable, :recoverable, :rememberable, :trackable,
+         :validatable, :invitable,
          :omniauthable, omniauth_providers: %i[facebook]
 
-  crypt_keeper :facebook_app_id, :facebook_app_secret, encryptor: :active_support, key: Rails.application.secrets.crypt_keeper_key, salt: Rails.application.secrets.crypt_keeper_salt
+  crypt_keeper :facebook_app_id,
+               :facebook_app_secret,
+               encryptor: :active_support,
+               key: Rails.application.secrets.crypt_keeper_key,
+               salt: Rails.application.secrets.crypt_keeper_salt
 
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
   has_many :sites, foreign_key: :site_admin
 
-  validates_presence_of :email
-  validates_uniqueness_of :email
+  validates :email,
+            presence: true,
+            uniqueness: true,
+            format: { with: EMAIL_REGEX, message: 'invalid email address' }
 
   before_save :update_role
 
   mount_uploader :avatar, AvatarUploader
 
   def full_name
-    (first_name || '') + ' ' + (last_name || '')
+    if first_name.present? && last_name.present?
+      "#{first_name} #{last_name}"
+    elsif first_name.present?
+      first_name
+    elsif last_name.present?
+      last_name
+    else
+      false
+    end
   end
 
   def admin_name
@@ -33,6 +54,7 @@ class User < ApplicationRecord
   # Protects from unnecessary database queries
   def update_role
     return if role == 'root'
+
     self.role =
       if turfs.any?
         'turf_admin'

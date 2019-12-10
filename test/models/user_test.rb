@@ -26,4 +26,13 @@ class UserTest < ActiveSupport::TestCase
     @user.save
     assert_equal 'root', @user.role
   end
+
+  test 'full name method gives sensible responses' do
+    @user.update(first_name: 'Joan', last_name: '')
+    assert_equal 'Joan', @user.full_name
+    @user.update(first_name: '', last_name: 'Jones')
+    assert_equal 'Jones', @user.full_name
+    @user.update(first_name: 'Joan', last_name: 'Jones')
+    assert_equal 'Joan Jones', @user.full_name
+  end
 end
