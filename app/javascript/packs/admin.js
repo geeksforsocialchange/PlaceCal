@@ -6,7 +6,7 @@ import 'vue'
 import 'vue-turbolinks'
 
 import '../src/behaviors/all_behaviors.js'
-import '../src/opening-hours.js'
+import '../src/opening-times.js'
 
 $(document).on('turbolinks:load', function() {
 
