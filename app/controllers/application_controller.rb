@@ -3,6 +3,7 @@
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
   # http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
+  before_action :store_user_location!, if: :storable_location?
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -212,7 +213,16 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: %i[first_name last_name email password password_confirmation current_password])
   end
 
-  def after_sign_in_path_for(_resource)
-    admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
+
+  def storable_location?
+    (request.subdomain == Site::ADMIN_SUBDOMAIN) && request.get? && is_navigational_format? && !devise_controller? && !request.xhr?
+  end
+
+  def store_user_location!
+    store_location_for(:user, request.fullpath)
+  end
+
+  def after_sign_in_path_for(resource_or_scope)
+    stored_location_for(resource_or_scope) || admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
   end
 end

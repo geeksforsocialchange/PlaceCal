@@ -88,7 +88,7 @@ GEM
       debug_inspector (>= 0.0.1)
     bootsnap (1.4.5)
       msgpack (~> 1.0)
-    bootstrap (4.3.1)
+    bootstrap (4.4.1)
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 1.14.3, < 2)
       sassc-rails (>= 2.0.0)
@@ -162,7 +162,7 @@ GEM
     factory_bot_rails (5.1.1)
       factory_bot (~> 5.1.0)
       railties (>= 4.2.0)
-    faraday (0.17.0)
+    faraday (0.17.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.11.3)
     font-awesome-rails (4.7.0.5)
@@ -173,7 +173,7 @@ GEM
     geocoder (1.5.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    grape (1.2.4)
+    grape (1.2.5)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
@@ -217,7 +217,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.7.0)
       concurrent-ruby (~> 1.0)
-    icalendar (2.6.0)
+    icalendar (2.6.1)
       ice_cube (~> 0.16)
     icalendar-recurrence (1.1.3)
       icalendar (~> 2.0)
@@ -249,7 +249,7 @@ GEM
     kramdown (2.1.0)
     leaflet-rails (1.5.1)
       rails (>= 4.2.0)
-    listen (3.2.0)
+    listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.4.0)
@@ -302,7 +302,7 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
-    oj (3.9.2)
+    oj (3.10.0)
     omniauth (1.9.0)
       hashie (>= 3.4.6, < 3.7.0)
       rack (>= 1.6.2, < 3)
@@ -324,7 +324,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (4.0.1)
-    puma (4.3.0)
+    puma (4.3.1)
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
@@ -386,14 +386,14 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rollbar (2.22.1)
-    rubocop (0.76.0)
+    rubocop (0.77.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.6)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
-    rubocop-rails (2.3.2)
+    rubocop-rails (2.4.0)
       rack (>= 1.1)
       rubocop (>= 0.72.0)
     ruby-graphviz (1.2.4)
@@ -492,7 +492,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootsnap
-  bootstrap (~> 4.3.1)
+  bootstrap (~> 4.4.1)
   byebug
   carrierwave
   cocoon
