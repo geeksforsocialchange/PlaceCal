@@ -6,10 +6,12 @@ class Partner < ApplicationRecord
   TWITTER_REGEX = /\A@?(\w){1,15}\z/
   FACEBOOK_REGEX = /\A(\w){1,50}\z/
   UK_NUMBER_REGEX = /\A(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|\#)\d{3,4})?\z/
+  EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
 
   extend FriendlyId
   friendly_id :name, use: :slugged
 
+  # Associations
   has_and_belongs_to_many :users
   has_and_belongs_to_many :turfs, validate: true
   has_many :calendars, dependent: :destroy
@@ -18,28 +20,45 @@ class Partner < ApplicationRecord
   belongs_to :neighbourhood, optional: true
 
   has_and_belongs_to_many :objects,
-  class_name: "Partner",
-  join_table: :organisation_relationships,
-  foreign_key: "subject_id",
-  association_foreign_key: "object_id"
+                          class_name: 'Partner',
+                          join_table: :organisation_relationships,
+                          foreign_key: 'subject_id',
+                          association_foreign_key: 'object_id'
 
   has_and_belongs_to_many :subjects,
-  class_name: "Partner",
-  join_table: :organisation_relationships,
-  foreign_key: "object_id",
-  association_foreign_key: "subject_id"
+                          class_name: 'Partner',
+                          join_table: :organisation_relationships,
+                          foreign_key: 'object_id',
+                          association_foreign_key: 'subject_id'
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
   accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
 
-  validates_presence_of :name
-  validates_uniqueness_of :name, case_sensitive: false
-  validates :name, length: { minimum: 5, too_short: 'must be at least 5 characters long' }
-  validates :url, format: { with: URL_REGEX, message: 'is invalid' }, allow_blank: true
-  validates :twitter_handle, format: { with: TWITTER_REGEX, message: 'invalid account name' }, allow_blank: true
-  validates :facebook_link, format: { with: FACEBOOK_REGEX, message: 'invalid page name' }, allow_blank: true
-  validates :public_phone, :partner_phone, format: { with: UK_NUMBER_REGEX, message: 'invalid phone number' }, allow_blank: true
+  # Validations
+  validates :name,
+            presence: true,
+            uniqueness: true,
+            case_sensitive: false,
+            length: {
+              minimum: 5,
+              too_short: 'must be at least 5 characters long'
+            }
+  validates :url,
+            format: { with: URL_REGEX, message: 'is invalid' },
+            allow_blank: true
+  validates :twitter_handle,
+            format: { with: TWITTER_REGEX, message: 'invalid account name' },
+            allow_blank: true
+  validates :facebook_link,
+            format: { with: FACEBOOK_REGEX, message: 'invalid page name' },
+            allow_blank: true
+  validates :public_phone, :partner_phone,
+            format: { with: UK_NUMBER_REGEX, message: 'invalid phone number' },
+            allow_blank: true
+  validates :public_email, :partner_email,
+            format: { with: EMAIL_REGEX, message: 'invalid email address' },
+            allow_blank: true
 
   validates_associated :address
 
@@ -85,12 +104,12 @@ class Partner < ApplicationRecord
 
   # Get all Partners that manage this Partner.
   def managers
-    subjects.where(organisation_relationships: {verb: :manages})
+    subjects.where(organisation_relationships: { verb: :manages })
   end
 
   # Get all Partners that this Partner manages.
   def managees
-    objects.where(organisation_relationships: {verb: :manages})
+    objects.where(organisation_relationships: { verb: :manages })
   end
 
   def to_s
@@ -128,7 +147,7 @@ class Partner < ApplicationRecord
       validator.validate_each(self, :public_phone, public_phone)
     end
 
-    self.errors.blank?
+    errors.blank?
   end
 
   private

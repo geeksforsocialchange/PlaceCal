@@ -47,6 +47,15 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_select 'tbody tr', 0
   end
 
+  # Show partner
+  #
+  #   This shouldn't really happen normally.
+  #   Redirect to edit page.
+  it_allows_access_to_show_for(%i[root turf_admin]) do
+    get admin_partner_url(@partner)
+    assert_redirected_to edit_admin_partner_url(@partner)
+  end
+
   # New & Create Partner
   #
   #   Allow roots to create new Partners
@@ -84,7 +93,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     patch admin_partner_url(@partner),
           params: { partner: { name: 'Updated partner name' } }
     # Redirect to main partner screen
-    assert_redirected_to admin_partners_url
+    assert_redirected_to edit_admin_partner_url(@partner)
   end
 
   # Delete Partner

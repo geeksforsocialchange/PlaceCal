@@ -15,6 +15,11 @@ module Admin
       authorize @partner
     end
 
+    def show
+      authorize @partner
+      redirect_to edit_admin_partner_path(@partner)
+    end
+
     def create
       @partner = Partner.new(partner_params)
       # authorize @partner
@@ -37,7 +42,7 @@ module Admin
     def update
       authorize @partner
       if @partner.update(partner_params)
-        redirect_to admin_partners_path
+        redirect_to edit_admin_partner_path(@partner)
       else
         render 'new'
       end
