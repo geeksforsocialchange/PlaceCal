@@ -22,9 +22,18 @@ class User < ApplicationRecord
                key: Rails.application.secrets.crypt_keeper_key,
                salt: Rails.application.secrets.crypt_keeper_salt
 
+  # TODO: set up join models properly
+  # has_many :partners_users, dependent: :destroy
+  # has_many :partners, through: :partners_users
+  # # TODO: Rename to 'interests' on DB level
+  # has_many :turfs_users, dependent: :destroy
+  # has_many :turfs, through: :turfs_users
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
   has_many :sites, foreign_key: :site_admin
+
+  has_many :neighbourhoods_users, dependent: :destroy
+  has_many :neighbourhoods, through: :neighbourhoods_users
 
   validates :email,
             presence: true,
@@ -35,6 +44,7 @@ class User < ApplicationRecord
 
   mount_uploader :avatar, AvatarUploader
 
+  # General use throughout the site
   def full_name
     if first_name.present? && last_name.present?
       "#{first_name} #{last_name}"
@@ -47,8 +57,16 @@ class User < ApplicationRecord
     end
   end
 
+  # Shows in admin interfaces
   def admin_name
-    "#{last_name}, #{first_name} <#{email}>"
+    name = if first_name.present? && last_name.present?
+             "#{last_name.upcase}, #{first_name}"
+           elsif first_name.present?
+             first_name
+           elsif last_name.present?
+             last_name.upcase
+           end
+    "#{name} <#{email}>"
   end
 
   # Protects from unnecessary database queries
