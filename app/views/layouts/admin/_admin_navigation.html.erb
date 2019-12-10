@@ -17,6 +17,7 @@
     <span>In development</span>
   </h6>
   <%= admin_nav_link('Collections', admin_collections_path, 'list') if policy(Collection).index? %>
+  <%= admin_nav_link('Neighbourhoods', admin_neighbourhoods_path, 'tags') if policy(Neighbourhood).index? %>
   <%= admin_nav_link('Supporters', admin_supporters_path, 'credit-card') if policy(Supporter).index? %>
   <%= admin_nav_link('Tags', admin_turfs_path, 'tags') if policy(Turf).index? %>
 

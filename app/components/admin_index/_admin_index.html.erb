@@ -26,6 +26,8 @@
           <td>
             <% if key == 'logo' && record.logo.url %>
               <%= image_tag record.logo.url, style: 'background-color: #5b4e46' %>
+            <% elsif value.class.name == "ActiveRecord::Associations::CollectionProxy" %>
+              <%= value.join(', ') %>
             <% else %>
               <%= value %>
             <% end %>

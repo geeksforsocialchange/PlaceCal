@@ -28,7 +28,7 @@ class User < ApplicationRecord
   # # TODO: Rename to 'interests' on DB level
   # has_many :turfs_users, dependent: :destroy
   # has_many :turfs, through: :turfs_users
-  
+
   has_and_belongs_to_many :partners
   has_and_belongs_to_many :turfs
   has_many :sites, foreign_key: :site_admin
@@ -69,6 +69,8 @@ class User < ApplicationRecord
            end
     "#{name} <#{email}>"
   end
+
+  alias to_s admin_name
 
   # Protects from unnecessary database queries
   def update_role

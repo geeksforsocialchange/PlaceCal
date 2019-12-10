@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class Neighbourhood < ApplicationRecord
-  has_and_belongs_to_many :sites, through: :sites_neighbourhood
+  has_many :sites_neighbourhoods, dependent: :destroy
+  has_many :sites, through: :sites_neighbourhoods
 
-  self.table_name = 'neighbourhoods'
+  has_many :neighbourhoods_users, dependent: :destroy
+  has_many :users, through: :neighbourhoods_users
 
   class << self
     def create_from_admin_ward admin_ward
