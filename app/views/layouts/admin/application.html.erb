@@ -24,6 +24,13 @@
         </nav>
         <main role="main" class="col-md-9 mt-3 ml-sm-auto col-lg-10 px-4">
           <%= yield %>
+
+          <% if Rails.env.development? %>
+            <div class="text-monospace text-muted mt-5">
+              <%= debug(params) %>
+              <%# console %>
+            </div>
+          <% end %>
         </main>
       </div>
     </div>

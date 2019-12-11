@@ -10,27 +10,16 @@ module Admin
     end
 
     def new
-      @neighbourhood = Neighbourhood.new
-      authorize @neighbourhood
+      redirect_to admin_root_path
     end
 
     def edit
       authorize @neighbourhood
-      @partners = @neighbourhood.partners
+      @users = @neighbourhood.users
     end
 
     def create
-      @neighbourhood = Neighbourhood.new(neighbourhood_params)
-      authorize @neighbourhood
-      respond_to do |format|
-        if @neighbourhood.save
-          format.html { redirect_to admin_neighbourhoods_path, notice: 'Neighbourhood was successfully created.' }
-          format.json { render :show, status: :created, location: @neighbourhood }
-        else
-          format.html { render :new }
-          format.json { render json: @neighbourhood.errors, status: :unprocessable_entity }
-        end
-      end
+      redirect_to admin_root_path
     end
 
     def update
@@ -57,7 +46,7 @@ module Admin
     end
 
     def neighbourhood_params
-      params.require(:neighbourhood).permit(:name, :slug, :description)
+      params.require(:neighbourhood).permit(:name, user_ids: [])
     end
   end
 end

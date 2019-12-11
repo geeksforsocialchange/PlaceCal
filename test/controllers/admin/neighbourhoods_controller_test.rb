@@ -17,34 +17,22 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
   #   Show every Neighbourhood for roots
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root neighbourhood_admin]) do
+  it_allows_access_to_index_for(%i[root]) do
     get admin_neighbourhoods_url
     assert_response :success
   end
 
-  it_denies_access_to_index_for(%i[citizen]) do
+  it_denies_access_to_index_for(%i[neighbourhood_admin citizen]) do
     get admin_neighbourhoods_url
     assert_redirected_to admin_root_url
   end
 
   # New & Create Neighbourhood
   #
-  #   Allow roots to create new Neighbourhoods
-  #   Everyone else, redirect to admin_root_url
+  #   Noone can create these manually.
+  #   They get created automatically when new addresses are detected.
 
-  it_allows_access_to_new_for(%i[root]) do
-    get new_admin_neighbourhood_url
-    assert_response :success
-  end
-
-  it_allows_access_to_create_for(%i[root]) do
-    assert_difference('Neighbourhood.count') do
-      post admin_neighbourhoods_url,
-           params: { neighbourhood: attributes_for(:neighbourhood) }
-    end
-  end
-
-  it_denies_access_to_new_for(%i[citizen]) do
+  it_denies_access_to_new_for(%i[root neighbourhood_admin citizen]) do
     get new_admin_neighbourhood_url
     assert_redirected_to admin_root_url
   end
@@ -66,7 +54,7 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_neighbourhoods_url
   end
 
-  it_denies_access_to_edit_for(%i[citizen]) do
+  it_denies_access_to_edit_for(%i[neighbourhood_admin citizen]) do
     get edit_admin_neighbourhood_url(@neighbourhood)
     assert_redirected_to admin_root_url
   end
