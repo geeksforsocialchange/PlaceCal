@@ -7286,10 +7286,10 @@ vue-turbolinks@^2.0.4:
   dependencies:
     vue "^2.2.4"
 
-vue2-timepicker@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/vue2-timepicker/-/vue2-timepicker-1.0.5.tgz#1177c577bcebc847434812d0d05fe105eda9dde0"
-  integrity sha512-12o26Y4RuUp+D6E0vBNhvHhP7Pod9JI4oKfwf7+tWMZ1b0G3FEZyClBJ17epR7OCFOB9oefLjPSkIxzMceYFRg==
+vue2-timepicker@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/vue2-timepicker/-/vue2-timepicker-1.0.6.tgz#8e291f868a33af473159eb38df4ba9778c88098e"
+  integrity sha512-fhb/i43471Ex7dVdTbbtiCpjTdZ1FNu4yi5AXqOhxhqVuJGtwW+yVeSbGljphbpAq2NmABZJWVBytUivETxjrA==
 
 vue@^2.2.4, vue@^2.6.10:
   version "2.6.10"
