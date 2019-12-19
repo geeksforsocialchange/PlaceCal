@@ -6,19 +6,23 @@ class TagPolicy < ApplicationPolicy
   end
 
   def new?
-    index?
+    user.root?
   end
 
   def create?
-    index?
+    user.root?
   end
 
   def edit?
-    index?
+    user.root?
   end
 
   def update?
-    index?
+    user.root?
+  end
+
+  def destroy?
+    user.root?
   end
 
   class Scope < Scope

@@ -41,6 +41,7 @@ module Admin
     end
 
     def destroy
+      authorize @supporter
       @supporter.destroy
       respond_to do |format|
         format.html { redirect_to admin_supporters_url, notice: 'Supporter was successfully destroyed.' }

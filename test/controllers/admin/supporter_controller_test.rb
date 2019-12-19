@@ -72,4 +72,12 @@ class Admin::SupporterControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_supporters_url
   end
+
+  it_denies_access_to_destroy_for(%i[citizen]) do
+    assert_no_difference('Supporter.count') do
+      delete admin_supporter_url(@supporter)
+    end
+
+    assert_redirected_to admin_root_url
+  end
 end

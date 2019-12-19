@@ -43,6 +43,7 @@ module Admin
     end
 
     def destroy
+      authorize @tag
       @tag.destroy
       respond_to do |format|
         format.html { redirect_to admin_tags_url, notice: 'Tag was successfully destroyed.' }
