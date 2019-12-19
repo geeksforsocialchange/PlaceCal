@@ -38,6 +38,7 @@ module Admin
     end
 
     def destroy
+      authorize @collection
       @collection.destroy
       respond_to do |format|
         format.html { redirect_to admin_collections_url, notice: 'Collection was successfully destroyed.' }
