@@ -58,7 +58,7 @@ module Admin
     end
 
     def set_variables_for_sites_neighbourhoods_selection
-      @all_neighbourhoods = Neighbourhood.all.order(:name)
+      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
       begin
         set_site
       rescue ActiveRecord::RecordNotFound
