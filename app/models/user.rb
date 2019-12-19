@@ -47,27 +47,14 @@ class User < ApplicationRecord
 
   # General use throughout the site
   def full_name
-    if first_name.present? && last_name.present?
-      "#{first_name} #{last_name}"
-    elsif first_name.present?
-      first_name
-    elsif last_name.present?
-      last_name
-    else
-      false
-    end
+    [first_name, last_name].reject(&:blank?).join(' ')
   end
 
   # Shows in admin interfaces
   def admin_name
-    name = if first_name.present? && last_name.present?
-             "#{last_name.upcase}, #{first_name}"
-           elsif first_name.present?
-             first_name
-           elsif last_name.present?
-             last_name.upcase
-           end
-    "#{name} <#{email}>"
+    name = [last_name&.upcase, first_name].reject(&:blank?).join(', ')
+
+    "#{name} <#{email}>".strip
   end
 
   alias to_s admin_name

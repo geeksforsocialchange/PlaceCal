@@ -2,10 +2,10 @@
 
 module PartnersHelper
   def options_for_partners
-    Partner.all.order(:name).collect { |p| [p.name, p.id] }
+    Partner.all.order(:name).pluck(:name, :id)
   end
 
   def options_for_neighbourhoods
-    Neighbourhood.all.order(:name).collect { |p| [p.name, p.id] }
+    Neighbourhood.all.order(:name).pluck(:name, :id)
   end
 end
