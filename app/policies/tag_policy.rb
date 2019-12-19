@@ -2,23 +2,23 @@
 
 class TagPolicy < ApplicationPolicy
   def index?
-    user.tag_admin?
+    user.root? || user.tag_admin?
   end
 
   def new?
-    user.root?
+    index?
   end
 
   def create?
-    new?
+    index?
   end
 
   def edit?
-    new?
+    index?
   end
 
   def update?
-    new?
+    index?
   end
 
   class Scope < Scope

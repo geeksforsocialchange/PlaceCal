@@ -2,7 +2,7 @@
 
 class CalendarPolicy < ApplicationPolicy
   def index?
-    user.neighbourhood_admin? || user.partner_admin?
+    user.root? || user.neighbourhood_admin? || user.partner_admin?
   end
 
   def create?
@@ -14,7 +14,7 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def edit?
-    return true if user.neighbourhood_admin?
+    return true if user.root? || user.neighbourhood_admin?
 
     user.partner_admin? &&
       user.partner_ids.include?(record.partner_id)

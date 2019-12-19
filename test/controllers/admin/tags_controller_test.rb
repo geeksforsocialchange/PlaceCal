@@ -5,7 +5,6 @@ require 'test_helper'
 class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
-    @secretary = create(:secretary)
     @tag_admin = create(:tag_admin)
     @tag = @tag_admin.tags.first
     @citizen = create(:user)
@@ -18,7 +17,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Show every Tag for roots
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root secretary tag_admin]) do
+  it_allows_access_to_index_for(%i[root tag_admin]) do
     get admin_tags_url
     assert_response :success
   end
@@ -33,19 +32,19 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to create new Tags
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_new_for(%i[root]) do
+  it_allows_access_to_new_for(%i[root tag_admin]) do
     get new_admin_tag_url
     assert_response :success
   end
 
-  it_allows_access_to_create_for(%i[root]) do
+  it_allows_access_to_create_for(%i[root tag_admin]) do
     assert_difference('Tag.count') do
       post admin_tags_url,
            params: { tag: attributes_for(:tag) }
     end
   end
 
-  it_denies_access_to_new_for(%i[secretary tag_admin citizen]) do
+  it_denies_access_to_new_for(%i[citizen]) do
     get new_admin_tag_url
     assert_redirected_to admin_root_url
   end
@@ -55,19 +54,19 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to edit all places
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_edit_for(%i[root]) do
+  it_allows_access_to_edit_for(%i[root tag_admin]) do
     get edit_admin_tag_url(@tag)
     assert_response :success
   end
 
-  it_allows_access_to_update_for(%i[root]) do
+  it_allows_access_to_update_for(%i[root tag_admin]) do
     patch admin_tag_url(@tag),
           params: { tag: attributes_for(:tag) }
     # Redirect to main partner screen
     assert_redirected_to admin_tags_url
   end
 
-  it_denies_access_to_edit_for(%i[secretary tag_admin citizen]) do
+  it_denies_access_to_edit_for(%i[citizen]) do
     get edit_admin_tag_url(@tag)
     assert_redirected_to admin_root_url
   end

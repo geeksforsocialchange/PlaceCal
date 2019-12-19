@@ -5,7 +5,7 @@ require 'test_helper'
 class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
-    @secretary = create(:secretary)
+    @neighbourhood_admin = create(:neighbourhood_admin)
     @citizen = create(:user)
 
     @neighbourhood_admin = create(:neighbourhood_admin)
@@ -51,7 +51,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #
   #   This shouldn't really happen normally.
   #   Redirect to edit page.
-  it_allows_access_to_show_for(%i[secretary partner_admin]) do
+  it_allows_access_to_show_for(%i[neighbourhood_admin partner_admin]) do
     get admin_partner_url(@partner)
     assert_redirected_to edit_admin_partner_url(@partner)
   end
@@ -61,12 +61,12 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Allow secretaries to create new Partners
   #   Everyone else, redirect to admin_partners_url
 
-  it_allows_access_to_new_for(%i[secretary]) do
+  it_allows_access_to_new_for(%i[neighbourhood_admin]) do
     get new_admin_partner_url
     assert_response :success
   end
 
-  it_allows_access_to_create_for(%i[secretary]) do
+  it_allows_access_to_create_for(%i[neighbourhood_admin]) do
     assert_difference('Partner.count') do
       post admin_partners_url,
            params: { partner: { name: 'A new partner' } }
@@ -78,12 +78,12 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to edit all places
   #   Everyone else, redirect to admin_partners_url
 
-  it_allows_access_to_edit_for(%i[secretary partner_admin]) do
+  it_allows_access_to_edit_for(%i[neighbourhood_admin partner_admin]) do
     get edit_admin_partner_url(@partner)
     assert_response :success
   end
 
-  it_allows_access_to_update_for(%i[secretary partner_admin]) do
+  it_allows_access_to_update_for(%i[neighbourhood_admin partner_admin]) do
     patch admin_partner_url(@partner),
           params: { partner: { name: 'Updated partner name' } }
     # Redirect to main partner screen
@@ -95,7 +95,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to delete all Partners
   #   Everyone else redirect to admin_partners_url
 
-  it_allows_access_to_destroy_for(%i[secretary]) do
+  it_allows_access_to_destroy_for(%i[neighbourhood_admin]) do
     assert_difference('Partner.count', -1) do
       delete admin_partner_url(@partner)
     end

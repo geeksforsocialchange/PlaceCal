@@ -9,7 +9,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.root?
+    user.root? || user.neighbourhood_admin?
   end
 
   def update?

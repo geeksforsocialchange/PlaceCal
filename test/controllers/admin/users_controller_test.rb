@@ -5,7 +5,11 @@ require 'test_helper'
 class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
+    @neighbourhood_admin = create(:neighbourhood_admin)
     @citizen = create(:user)
+
+    @partner_admin = create(:partner_admin)
+    @partner = @partner_admin.partners.first
 
     host! 'admin.lvh.me'
   end
@@ -13,9 +17,10 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   # User Index
   #
   #   Show every User for roots
+  #   Show users in the appropriate neighbourhood for secretaries
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root]) do
+  it_allows_access_to_index_for(%i[root neighbourhood_admin]) do
     get admin_users_url
     assert_response :success
   end
@@ -32,7 +37,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to create new Users
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_new_for(%i[root]) do
+  it_allows_access_to_new_for(%i[neighbourhood_admin]) do
     get new_admin_user_url
     assert_response :success
   end

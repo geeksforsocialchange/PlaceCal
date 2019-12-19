@@ -14,10 +14,6 @@ FactoryBot.define do
       role { 'root' }
     end
 
-    factory(:secretary) do
-      role { 'secretary' }
-    end
-
     factory(:citizen) do
       role { 'citizen' }
     end
