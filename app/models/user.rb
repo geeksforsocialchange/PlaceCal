@@ -78,6 +78,10 @@ class User < ApplicationRecord
     tags.any?
   end
 
+  def site_admin?
+    Site.where(site_admin: self).any?
+  end
+
   def valid_for_invite?
     errors.add(:email, "can't be blank") if email.blank?
     errors.add(:first_name, "can't be blank") if first_name.blank?

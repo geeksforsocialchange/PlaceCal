@@ -6,8 +6,8 @@ module Admin
     before_action :set_variables_for_sites_neighbourhoods_selection, only: [:new, :edit]
 
     def index
-      @sites = Site.all.order(:name)
-      authorize current_user
+      @sites = policy_scope(Site).order(:name)
+      authorize @sites
     end
 
     def show; end
@@ -43,6 +43,7 @@ module Admin
     end
 
     def destroy
+      authorize @site
       @site.destroy
       respond_to do |format|
         format.html { redirect_to admin_sites_url, notice: 'Site was successfully destroyed.' }
@@ -57,7 +58,7 @@ module Admin
     end
 
     def set_variables_for_sites_neighbourhoods_selection
-      @all_neighbourhoods = Neighbourhood.all.order(:name)
+      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
       begin
         set_site
       rescue ActiveRecord::RecordNotFound

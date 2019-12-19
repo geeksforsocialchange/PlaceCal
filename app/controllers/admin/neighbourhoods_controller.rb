@@ -32,6 +32,7 @@ module Admin
     end
 
     def destroy
+      authorize @neighbourhood
       @neighbourhood.destroy
       respond_to do |format|
         format.html { redirect_to admin_neighbourhoods_url, notice: 'Neighbourhood was successfully destroyed.' }

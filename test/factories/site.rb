@@ -10,6 +10,8 @@ FactoryBot.define do
     domain { name.parameterize }
     slug { name.parameterize }
 
+    association :site_admin, factory: :user
+
     factory :site_local do
       tagline { "Neighbourhood's Community Calendar" }
     end
