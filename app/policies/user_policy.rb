@@ -16,7 +16,7 @@ class UserPolicy < ApplicationPolicy
     index?
   end
 
-  def assign_turf?
+  def assign_tag?
     index?
   end
 

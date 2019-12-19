@@ -9,7 +9,7 @@ class Partner < ApplicationRecord
 
   # Associations
   has_and_belongs_to_many :users
-  has_and_belongs_to_many :turfs, validate: true
+  has_and_belongs_to_many :tags, validate: true
   has_many :calendars, dependent: :destroy
   has_many :events
   belongs_to :address, optional: true
@@ -66,7 +66,7 @@ class Partner < ApplicationRecord
 
   scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
 
-  scope :of_turf, ->(turf) { joins(:partners_turfs).where( partners_turfs: { turf: turf } ) }
+  scope :of_tag, ->(tag) { joins(:partners_tags).where( partners_tags: { tag: tag } ) }
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
@@ -113,7 +113,7 @@ class Partner < ApplicationRecord
   end
 
   # def custom_validation_method_with_message
-  #   errors.add(:_, "Select at least one Turf") if turf_ids.blank?
+  #   errors.add(:_, "Select at least one Tag") if tag_ids.blank?
   # end
 
   def permalink

@@ -5,9 +5,9 @@ class User < ApplicationRecord
   include Validation
   extend Enumerize
 
-  # Non-root roles are updated after save based on assignments
+  # Site-wide roles
   enumerize :role,
-            in: %i[root turf_admin partner_admin citizen],
+            in: %i[root secretary citizen],
             default: :citizen
 
   # Include default devise modules. Others available are:
@@ -25,12 +25,12 @@ class User < ApplicationRecord
   # TODO: set up join models properly
   # has_many :partners_users, dependent: :destroy
   # has_many :partners, through: :partners_users
-  # # TODO: Rename to 'interests' on DB level
-  # has_many :turfs_users, dependent: :destroy
-  # has_many :turfs, through: :turfs_users
+  # # TODO: Rename to 'tags' on DB level
+  # has_many :tags_users, dependent: :destroy
+  # has_many :tags, through: :tags_users
 
   has_and_belongs_to_many :partners
-  has_and_belongs_to_many :turfs
+  has_and_belongs_to_many :tags
   has_many :sites, foreign_key: :site_admin
 
   has_many :neighbourhoods_users, dependent: :destroy
@@ -40,8 +40,6 @@ class User < ApplicationRecord
             presence: true,
             uniqueness: true,
             format: { with: EMAIL_REGEX, message: 'invalid email address' }
-
-  before_save :update_role
 
   mount_uploader :avatar, AvatarUploader
 
@@ -59,19 +57,20 @@ class User < ApplicationRecord
 
   alias to_s admin_name
 
-  # Protects from unnecessary database queries
-  def update_role
-    return if role == 'root'
-
-    self.role =
-      if turfs.any?
-        'turf_admin'
-      elsif partners.any?
-        'partner_admin'
-      end
+  # Admin level checks
+  def neighbourhood_admin?
+    neighbourhoods.any?
   end
 
-  def valid_for_invite
+  def partner_admin?
+    partners.any?
+  end
+
+  def tag_admin?
+    tags.any?
+  end
+
+  def valid_for_invite?
     errors.add(:email, "can't be blank") if email.blank?
     errors.add(:first_name, "can't be blank") if first_name.blank?
     errors.add(:last_name, "can't be blank") if last_name.blank?

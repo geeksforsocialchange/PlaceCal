@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Turf < ApplicationRecord
-  self.table_name = 'turfs'
+class Tag < ApplicationRecord
+  self.table_name = 'tags'
 
   has_and_belongs_to_many :users
   has_and_belongs_to_many :partners

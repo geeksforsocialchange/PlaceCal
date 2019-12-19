@@ -16,10 +16,10 @@ class UserTest < ActiveSupport::TestCase
     @user.save
     assert_equal 'partner_admin', @user.role
 
-    # If we add a turf, role is turf_admin (note this overrides above)
-    @user.turfs << create(:turf)
+    # If we add a tag, role is tag_admin (note this overrides above)
+    @user.tags << create(:tag)
     @user.save
-    assert_equal 'turf_admin', @user.role
+    assert_equal 'tag_admin', @user.role
 
     # Root users don't get overwritten
     @user.role = 'root'

@@ -6,7 +6,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def create?
-    %w[root turf_admin].include? user&.role
+    %w[root tag_admin].include? user&.role
   end
 
   def new?
@@ -17,8 +17,8 @@ class PartnerPolicy < ApplicationPolicy
     return false if user.role.blank?
     return true if user.role.root?
 
-    if user.role.turf_admin?
-      record.turfs.where(turfs: { id: user.turf_ids }).exists?
+    if user.role.tag_admin?
+      record.tags.where(tags: { id: user.tag_ids }).exists?
     elsif user.role.partner_admin?
       user.partner_ids.include?(record.id)
     end
@@ -36,8 +36,8 @@ class PartnerPolicy < ApplicationPolicy
     def resolve
       if user&.role&.root?
         scope.all
-      elsif user&.role&.turf_admin?
-        scope.joins(:turfs).where(turfs: { id: user.turfs }).distinct
+      elsif user&.role&.tag_admin?
+        scope.joins(:tags).where(tags: { id: user.tags }).distinct
       elsif user&.role&.partner_admin?
         scope.joins(:users).where(partners_users: { user_id: user.id })
       else

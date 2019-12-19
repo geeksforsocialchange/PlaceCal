@@ -2,16 +2,16 @@
 
 require 'test_helper'
 
-class TurfTest < ActiveSupport::TestCase
+class TagTest < ActiveSupport::TestCase
   setup do
-    @turf = create(:turf)
+    @tag = create(:tag)
     @user = create(:user)
   end
 
   test 'updates user roles when saved' do
     assert_nil @user.role
-    @turf.users << @user
-    @turf.save
-    assert_equal @user.role, 'turf_admin'
+    @tag.users << @user
+    @tag.save
+    assert_equal @user.role, 'tag_admin'
   end
 end

@@ -15,10 +15,10 @@ FactoryBot.define do
       role { 'root' }
     end
 
-    # Assigning a junk turf/partner to these to check it only works for
+    # Assigning a junk tag/partner to these to check it only works for
     # the specific one assigend in our test
-    factory(:turf_admin) do
-      role { 'turf_admin' }
+    factory(:tag_admin) do
+      role { 'tag_admin' }
     end
 
     factory(:neighbourhood_admin) do

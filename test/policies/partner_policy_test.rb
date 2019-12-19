@@ -13,8 +13,8 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     @partner_two = create(:partner)
     @partner_admin_two = create(:partner_admin, partner_ids: [@partner_two.id])
 
-    @turf = @partner.turfs.first
-    @turf_admin = create(:turf_admin, turf_ids: [@turf.id])
+    @tag = @partner.tags.first
+    @tag_admin = create(:tag_admin, tag_ids: [@tag.id])
 
   end
 
@@ -23,7 +23,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     assert denies_access(@guest, Partner, :index)
 
     assert allows_access(@root, Partner, :index)
-    assert allows_access(@turf_admin, Partner, :index)
+    assert allows_access(@tag_admin, Partner, :index)
     assert allows_access(@partner_admin, Partner, :index)
   end
   #
@@ -35,7 +35,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     assert denies_access(@partner_admin, Partner.new, :create)
 
     assert allows_access(@root, Partner.new, :create)
-    assert allows_access(@turf_admin, Partner.new, :create)
+    assert allows_access(@tag_admin, Partner.new, :create)
   end
   #
   #   Partner admin, root admin can update
@@ -45,7 +45,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     assert denies_access(@partner_admin_two, @partner, :update)
 
     assert allows_access(@root, @partner, :update)
-    assert allows_access(@turf_admin, @partner, :update)
+    assert allows_access(@tag_admin, @partner, :update)
     assert allows_access(@partner_admin, @partner, :update)
   end
   #
@@ -57,6 +57,6 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     assert_equal(permitted_records(@root, Partner), [@partner, @partner_two])
     assert_equal(permitted_records(@partner_admin, Partner), [@partner])
     assert_equal(permitted_records(@partner_admin_two, Partner), [@partner_two])
-    assert_equal(permitted_records(@turf_admin, Partner), [@partner])
+    assert_equal(permitted_records(@tag_admin, Partner), [@partner])
   end
 end

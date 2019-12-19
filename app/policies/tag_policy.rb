@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class TurfPolicy < ApplicationPolicy
+class TagPolicy < ApplicationPolicy
   def index?
-    %w[root turf_admin].include? user&.role
+    %w[root tag_admin].include? user&.role
   end
 
   def new?
@@ -26,7 +26,7 @@ class TurfPolicy < ApplicationPolicy
       if user&.role&.root?
         scope.all
       else
-        user.turfs
+        user.tags
       end
     end
   end
