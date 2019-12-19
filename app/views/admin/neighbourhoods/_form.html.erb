@@ -1,0 +1,7 @@
+<%= simple_form_for @neighbourhood, url: (@neighbourhood.new_record? ? admin_neighbourhoods_path : admin_neighbourhood_path) do |f| %>
+  <%= render_component "error", object: @neighbourhood %>
+
+  <%= f.association :users, label: "Users", collection: options_for_users, input_html: { class: 'form-control select2' } %>
+
+  <%= f.submit "Save", class: "btn btn-primary" %><br><br>
+<% end %>

@@ -28,7 +28,8 @@
           phone: @partner.public_phone,
           url: @partner.url,
           facebook_link: @partner.facebook_link,
-          twitter_handle: @partner.twitter_handle
+          twitter_handle: @partner.twitter_handle,
+          is_valid_phone: @partner.valid_public_phone?
         %>
 
         <h3 class="udl udl--fw allcaps h4">Address</h3>
@@ -87,7 +88,8 @@
             <%= render_component "contact_details",
               email: place.public_email,
               phone: place.public_phone,
-              url: place.url
+              url: place.url,
+              is_valid_phone: @partner.valid_public_phone?
             %>
           </div>
         </div>

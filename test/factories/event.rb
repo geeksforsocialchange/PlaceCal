@@ -4,10 +4,11 @@ FactoryBot.define do
   factory(:event) do
     summary { 'N.A (Narcotics Anonymous)' }
     raw_location_from_source { 'Unformatted Address, Ungeolocated Lane, Manchester' }
-    dtstart { Time.now + 1.day }
-    dtend { Time.now + 1.day + 2.hours }
+    dtstart { DateTime.now + 1.day }
+    dtend { DateTime.now + 1.day + 2.hours }
     is_active { true }
     address
+    calendar
 
     trait :with_place do
       association :place, factory: :partner

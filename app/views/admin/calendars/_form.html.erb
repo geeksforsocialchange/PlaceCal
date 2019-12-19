@@ -15,8 +15,8 @@
         <%= f.input :source %>
       <% end %>
       <%= f.input :strategy, as: :radio_buttons, label_method: ->(val){Calendar.strategy_label(val)} %>
-      <%= f.association :partner, label: 'Organiser', collection: policy_scope(Partner), input_html: { class: 'select-search' } %>
-      <%= f.association :place, label: 'Default location', collection: policy_scope(Partner), input_html: { class: 'select-search' } %>
+      <%= f.association :partner, label: 'Organiser', collection: options_for_organiser, input_html: { class: 'form-control select2' } %>
+      <%= f.association :place, label: 'Default location', collection: options_for_location, input_html: { class: 'form-control select2' } %>
       <%= f.input :is_working %>
     </div>
     <div class="col-md-6">

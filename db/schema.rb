@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_31_170146) do
+ActiveRecord::Schema.define(version: 2019_12_10_165905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,15 @@ ActiveRecord::Schema.define(version: 2019_10_31_170146) do
 
   create_table "neighbourhoods", force: :cascade do |t|
     t.string "name"
+  end
+
+  create_table "neighbourhoods_users", force: :cascade do |t|
+    t.bigint "neighbourhood_id"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["neighbourhood_id"], name: "index_neighbourhoods_users_on_neighbourhood_id"
+    t.index ["user_id"], name: "index_neighbourhoods_users_on_user_id"
   end
 
   create_table "organisation_relationships", force: :cascade do |t|

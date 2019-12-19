@@ -4,6 +4,9 @@ require 'simplecov'
 require 'vcr'
 SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
+require 'webmock/minitest'
+WebMock.disable_net_connect!(allow_localhost: true)
+
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
@@ -16,6 +19,8 @@ require 'minitest/autorun'
 require 'json_matchers/minitest/assertions'
 JsonMatchers.schema_root = 'test/support/api/schemas'
 Minitest::Test.send(:include, JsonMatchers::Minitest::Assertions)
+
+
 
 
 class ActiveSupport::TestCase
@@ -88,7 +93,6 @@ end
 VCR.configure do |c|
   c.cassette_library_dir = 'test/fixtures/vcr_cassettes'
   c.hook_into :webmock
-  c.allow_http_connections_when_no_cassette = true
 end
 
 # Create the default site.
@@ -100,3 +104,14 @@ end
 def create_default_site
   create(:site, slug: 'default-site')
 end
+
+Geocoder.configure(lookup: :test, ip_lookup: :test)
+
+Geocoder::Lookup::Test.add_stub(
+  'M15 5DD', [
+   { "postcode" => "M15 5DD",
+     "longitude" => -2.251226,
+     "latitude" => 53.460456,
+     "admin_ward":"Hulme"
+   } ]
+)

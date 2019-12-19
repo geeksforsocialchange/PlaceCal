@@ -7,28 +7,67 @@
 <% end %>
 
 <%= simple_form_for [:admin, current_user], html: { class: "form-horizontal" } do |f| %>
-  <div class="row">
-
+  <div class="row mt-4">
     <%= render_component "error", object: current_user %>
-    <div class="col-md-6">
+    <div class="col-md-12">
+      <h2>Basic information</h2>
       <%= render "contact", f: f %>
-
-      <%= f.input :facebook_app_id, as: :string %>
-      <%= f.input :facebook_app_secret, as: :string %>
     </div>
+  </div>
 
+  <div class="row mt-4">
     <div class="col-md-6">
-      <%= f.input :password, autocomplete: "off", hint: "Leave blank if you don't want to change your password" %>
+      <h2>Password</h2>
+      <p>Leave this blank if you don't want to change your password.</p>
+      <%= f.input :password, autocomplete: "off" %>
       <% if @minimum_password_length %>
         <br />
         <em><%= @minimum_password_length %> characters minimum</em>
       <% end %>
-      <%= f.input :password_confirmation, autocomplete: "off", hint: "Leave blank if you don't want to change your password" %>
+      <%= f.input :password_confirmation, autocomplete: "off" %>
 
       <%= f.input :current_password, autocomplete: "off", hint: 'Enter your current password if you want to change it' %>
-      <br>
+    </div>
+    <div class="col-md-6">
+      <h2>Facebook integration</h2>
+      <p>Only needed if you want to synchronise Facebook events with this account. <a href="https://handbook.placecal.org/how-to-use-placecal/admins/facebook">See the handbook page for how to do this</a>.</p>
+      <%= f.input :facebook_app_id, as: :string %>
+      <%= f.input :facebook_app_secret, as: :string %>
     </div>
   </div>
+
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <h2>Admin rights</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <% if current_user.partners.any? %>
+        <h3>Your partners</h3>
+          <ul>
+            <% current_user.partners.each do |partner| %>
+              <li>
+                <%= link_to partner.name, edit_admin_partner_path(partner) %>
+              </li>
+            <% end %>
+          </ul>
+      <% end %>
+    </div>
+    <div class="col-md-6">
+      <% if current_user.neighbourhoods.any? %>
+        <h3>Your neighbourhoods</h3>
+          <ul>
+            <% current_user.neighbourhoods.each do |neighbourhood| %>
+              <li>
+                <%= link_to neighbourhood.name, edit_admin_neighbourhood_path(neighbourhood) %>
+              </li>
+            <% end %>
+          </ul>
+      <% end %>
+    </div>
+  </div>
+
   <br><br>
   <%= f.submit "Update", class: "btn btn-primary " %>
 <% end %>
