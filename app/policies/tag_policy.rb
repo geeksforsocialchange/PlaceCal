@@ -2,11 +2,11 @@
 
 class TagPolicy < ApplicationPolicy
   def index?
-    %w[root tag_admin].include? user&.role
+    user.secretary?
   end
 
   def new?
-    user&.role&.root?
+    user.root?
   end
 
   def create?
@@ -23,7 +23,7 @@ class TagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if user&.role&.root?
+      if user.root?
         scope.all
       else
         user.tags

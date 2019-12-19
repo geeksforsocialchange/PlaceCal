@@ -3,7 +3,7 @@
 class CalendarPolicy < ApplicationPolicy
 
   def index?
-    %w[root partner_admin].include? user&.role
+    user.secretary?
   end
 
   def create?
@@ -15,9 +15,9 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def edit?
-    return true if user&.role&.root?
+    return true if user.secretary?
 
-    user&.role&.partner_admin? &&
+    user.partner_admin? &&
       user.partner_ids.include?(record.partner_id)
   end
 
@@ -26,7 +26,7 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def import?
-    user.role&.root?
+    user.root?
   end
 
   def select_page?
@@ -34,12 +34,12 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.role&.root?
+    user.root?
   end
 
   class Scope < Scope
     def resolve
-      if user&.role&.root?
+      if user.root?
         scope.all
       else
         scope.joins(partner: :users).where(partners_users: { user_id: user.id })

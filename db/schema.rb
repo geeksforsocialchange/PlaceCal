@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_165905) do
+ActiveRecord::Schema.define(version: 2019_12_19_122747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -176,11 +176,11 @@ ActiveRecord::Schema.define(version: 2019_12_10_165905) do
     t.index ["place_id"], name: "index_partners_places_on_place_id"
   end
 
-  create_table "partners_turfs", id: false, force: :cascade do |t|
+  create_table "partners_tags", id: false, force: :cascade do |t|
     t.bigint "partner_id", null: false
-    t.bigint "turf_id", null: false
-    t.index ["partner_id", "turf_id"], name: "index_partners_turfs_on_partner_id_and_turf_id"
-    t.index ["turf_id", "partner_id"], name: "index_partners_turfs_on_turf_id_and_partner_id"
+    t.bigint "tag_id", null: false
+    t.index ["partner_id", "tag_id"], name: "index_partners_tags_on_partner_id_and_tag_id"
+    t.index ["tag_id", "partner_id"], name: "index_partners_tags_on_tag_id_and_partner_id"
   end
 
   create_table "partners_users", id: :serial, force: :cascade do |t|
@@ -209,11 +209,11 @@ ActiveRecord::Schema.define(version: 2019_12_10_165905) do
     t.index ["slug"], name: "index_places_on_slug", unique: true
   end
 
-  create_table "places_turfs", id: false, force: :cascade do |t|
+  create_table "places_tags", id: false, force: :cascade do |t|
     t.bigint "place_id", null: false
-    t.bigint "turf_id", null: false
-    t.index ["place_id", "turf_id"], name: "index_places_turfs_on_place_id_and_turf_id"
-    t.index ["turf_id", "place_id"], name: "index_places_turfs_on_turf_id_and_place_id"
+    t.bigint "tag_id", null: false
+    t.index ["place_id", "tag_id"], name: "index_places_tags_on_place_id_and_tag_id"
+    t.index ["tag_id", "place_id"], name: "index_places_tags_on_tag_id_and_place_id"
   end
 
   create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
@@ -265,7 +265,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_165905) do
     t.boolean "is_global", default: false
   end
 
-  create_table "turfs", force: :cascade do |t|
+  create_table "tags", force: :cascade do |t|
     t.string "name"
     t.string "slug"
     t.text "description"
@@ -273,11 +273,11 @@ ActiveRecord::Schema.define(version: 2019_12_10_165905) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "turfs_users", id: false, force: :cascade do |t|
-    t.bigint "turf_id", null: false
+  create_table "tags_users", id: false, force: :cascade do |t|
+    t.bigint "tag_id", null: false
     t.bigint "user_id", null: false
-    t.index ["turf_id", "user_id"], name: "index_turfs_users_on_turf_id_and_user_id"
-    t.index ["user_id", "turf_id"], name: "index_turfs_users_on_user_id_and_turf_id"
+    t.index ["tag_id", "user_id"], name: "index_tags_users_on_tag_id_and_user_id"
+    t.index ["user_id", "tag_id"], name: "index_tags_users_on_user_id_and_tag_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

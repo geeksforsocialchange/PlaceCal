@@ -3,7 +3,7 @@
 # app/policies/neighbourhood_policy.rb
 class NeighbourhoodPolicy < ApplicationPolicy
   def index?
-    user&.role&.root?
+    user.root?
   end
 
   def new?

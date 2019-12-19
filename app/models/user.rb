@@ -58,6 +58,18 @@ class User < ApplicationRecord
   alias to_s admin_name
 
   # Admin level checks
+  def root?
+    role == :root
+  end
+
+  def secretary?
+    role == :root || role == :secretary
+  end
+
+  def citizen?
+    role == :citizen
+  end
+
   def neighbourhood_admin?
     neighbourhoods.any?
   end

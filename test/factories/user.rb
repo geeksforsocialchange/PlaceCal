@@ -15,10 +15,18 @@ FactoryBot.define do
       role { 'root' }
     end
 
+    factory(:secretary) do
+      role { 'secretary' }
+    end
+
+    factory(:citizen) do
+      role { 'citizen' }
+    end
+
     # Assigning a junk tag/partner to these to check it only works for
     # the specific one assigend in our test
     factory(:tag_admin) do
-      role { 'tag_admin' }
+      after(:build) { |user| user.tags = [create(:tag)] }
     end
 
     factory(:neighbourhood_admin) do
@@ -26,11 +34,7 @@ FactoryBot.define do
     end
 
     factory(:partner_admin) do
-      role { 'partner_admin' }
-    end
-
-    factory(:citizen) do
-      role { 'citizen' }
+      after(:build) { |user| user.partners = [create(:partner)] }
     end
   end
 end

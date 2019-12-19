@@ -9,7 +9,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user&.role&.root?
+    user.root?
   end
 
   def update?

@@ -3,7 +3,7 @@
 # app/policies/supporter_policy.rb
 class SupporterPolicy < ApplicationPolicy
   def index?
-    user&.role&.root?
+    user.root?
   end
 
   def new?
