@@ -7,7 +7,7 @@ class User < ApplicationRecord
 
   # Site-wide roles
   enumerize :role,
-            in: %i[root secretary citizen],
+            in: %i[root citizen],
             default: :citizen
 
   # Include default devise modules. Others available are:
@@ -60,10 +60,6 @@ class User < ApplicationRecord
   # Admin level checks
   def root?
     role == :root
-  end
-
-  def secretary?
-    role == :root || role == :secretary
   end
 
   def citizen?

@@ -2,7 +2,7 @@
 
 class PartnerPolicy < ApplicationPolicy
   def index?
-    user.secretary? || user.partner_admin?
+    user.neighbourhood_admin? || user.partner_admin?
   end
 
   def show?
@@ -10,7 +10,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def create?
-    user.secretary?
+    user.neighbourhood_admin?
   end
 
   def new?
@@ -18,7 +18,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user.secretary?
+    return true if user.neighbourhood_admin?
 
     user.partner_ids.include?(record.id)
   end
@@ -28,7 +28,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.secretary?
+    user.neighbourhood_admin?
   end
 
   class Scope < Scope

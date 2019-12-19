@@ -21,12 +21,6 @@ class UserTest < ActiveSupport::TestCase
     # Is this person a root? If they are, they're also a secretary
     @user.update(role: :root)
     assert @user.root?
-    assert @user.secretary?
-
-    # But secretaries are not roots
-    @user.update(role: :secretary)
-    assert_not @user.root?
-    assert @user.secretary?
   end
 
   test 'full name method gives sensible responses' do
