@@ -2,7 +2,11 @@
 
 class PartnerPolicy < ApplicationPolicy
   def index?
-    !user.citizen?
+    user.secretary? || user.partner_admin?
+  end
+
+  def show?
+    index?
   end
 
   def create?
@@ -14,13 +18,9 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user.role.root?
+    return true if user.secretary?
 
-    if user.tag_admin?
-      record.tags.where(tags: { id: user.tag_ids }).exists?
-    elsif user.partner_admin?
-      user.partner_ids.include?(record.id)
-    end
+    user.partner_ids.include?(record.id)
   end
 
   def edit?
@@ -28,7 +28,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def destroy?
-    update?
+    user.secretary?
   end
 
   class Scope < Scope

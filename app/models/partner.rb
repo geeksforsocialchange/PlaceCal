@@ -60,8 +60,6 @@ class Partner < ApplicationRecord
 
   mount_uploader :image, ImageUploader
 
-  after_save :update_users
-
   scope :recently_updated, -> { order(updated_at: desc) }
 
   scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
@@ -144,11 +142,5 @@ class Partner < ApplicationRecord
     end
 
     errors.blank?
-  end
-
-  private
-
-  def update_users
-    users.each(&:update_role)
   end
 end

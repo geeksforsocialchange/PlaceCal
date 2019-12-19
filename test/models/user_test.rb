@@ -8,23 +8,25 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'updates user role on save' do
-    # To start with, role is nil
-    assert_nil @user.role
-
-    # If we add a partner, role is partner_admin
+    # Does this person manage at least one partner?
     @user.partners << create(:partner)
     @user.save
-    assert_equal 'partner_admin', @user.role
+    assert @user.partner_admin?
 
-    # If we add a tag, role is tag_admin (note this overrides above)
+    # Does this person manage at least one tag?
     @user.tags << create(:tag)
     @user.save
-    assert_equal 'tag_admin', @user.role
+    assert @user.tag_admin?
 
-    # Root users don't get overwritten
-    @user.role = 'root'
-    @user.save
-    assert_equal 'root', @user.role
+    # Is this person a root? If they are, they're also a secretary
+    @user.update(role: :root)
+    assert @user.root?
+    assert @user.secretary?
+
+    # But secretaries are not roots
+    @user.update(role: :secretary)
+    assert_not @user.root?
+    assert @user.secretary?
   end
 
   test 'full name method gives sensible responses' do

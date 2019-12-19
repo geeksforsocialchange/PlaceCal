@@ -10,7 +10,6 @@ FactoryBot.define do
       "test+#{n}@placecal.org"
     end
 
-    # Superuser - accesses everything, use with caution
     factory(:root) do
       role { 'root' }
     end
@@ -23,8 +22,6 @@ FactoryBot.define do
       role { 'citizen' }
     end
 
-    # Assigning a junk tag/partner to these to check it only works for
-    # the specific one assigend in our test
     factory(:tag_admin) do
       after(:build) { |user| user.tags = [create(:tag)] }
     end

@@ -8,12 +8,4 @@ class Tag < ApplicationRecord
 
   validates :name, :slug, presence: true
   validates :name, :slug, uniqueness: true
-
-  after_save :update_users
-
-  private
-
-  def update_users
-    users.each(&:update_role)
-  end
 end

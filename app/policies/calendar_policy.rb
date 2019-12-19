@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class CalendarPolicy < ApplicationPolicy
-
   def index?
-    user.secretary?
+    user.secretary? || user.partner_admin?
   end
 
   def create?

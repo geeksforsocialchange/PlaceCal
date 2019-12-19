@@ -9,10 +9,9 @@ class PartnerTest < ActiveSupport::TestCase
   end
 
   test 'updates user roles when saved' do
-    assert_nil @user.role
     @partner.users << @user
     @partner.save
-    assert_equal @user.role, 'partner_admin'
+    assert @user.partner_admin?
   end
 
   test 'fields validate' do

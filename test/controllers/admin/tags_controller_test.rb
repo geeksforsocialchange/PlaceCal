@@ -4,10 +4,10 @@ require 'test_helper'
 
 class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @tag = create(:tag)
     @root = create(:root)
+    @secretary = create(:secretary)
     @tag_admin = create(:tag_admin)
-    @tag_admin.tags << @tag
+    @tag = @tag_admin.tags.first
     @citizen = create(:user)
 
     host! 'admin.lvh.me'
@@ -18,7 +18,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Show every Tag for roots
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root tag_admin]) do
+  it_allows_access_to_index_for(%i[root secretary tag_admin]) do
     get admin_tags_url
     assert_response :success
   end
@@ -45,7 +45,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  it_denies_access_to_new_for(%i[citizen]) do
+  it_denies_access_to_new_for(%i[secretary tag_admin citizen]) do
     get new_admin_tag_url
     assert_redirected_to admin_root_url
   end
@@ -67,7 +67,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_tags_url
   end
 
-  it_denies_access_to_edit_for(%i[citizen]) do
+  it_denies_access_to_edit_for(%i[secretary tag_admin citizen]) do
     get edit_admin_tag_url(@tag)
     assert_redirected_to admin_root_url
   end

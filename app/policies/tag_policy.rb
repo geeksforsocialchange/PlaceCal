@@ -2,7 +2,7 @@
 
 class TagPolicy < ApplicationPolicy
   def index?
-    user.secretary?
+    user.secretary? || user.tag_admin?
   end
 
   def new?

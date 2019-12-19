@@ -9,9 +9,8 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test 'updates user roles when saved' do
-    assert_nil @user.role
     @tag.users << @user
     @tag.save
-    assert_equal @user.role, 'tag_admin'
+    assert @user.tag_admin?
   end
 end
