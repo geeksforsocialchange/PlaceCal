@@ -25,27 +25,28 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
-  # TODO: allow admins to create users
+  # Admins and secretaries can create users
   #
   # New & Create User
   #
   #   Allow roots to create new Users
   #   Everyone else, redirect to admin_root_url
-  #
-  # it_allows_access_to_new_for(%i[root]) do
-  #   get new_admin_user_url
-  #   assert_response :success
-  # end
-  #
-  # it_denies_access_to_new_for(%i[citizen]) do
-  #   get new_admin_user_url
-  #   assert_redirected_to admin_root_url
-  # end
-  #
+
+  it_allows_access_to_new_for(%i[root]) do
+    get new_admin_user_url
+    assert_response :success
+  end
+
+  it_denies_access_to_new_for(%i[citizen]) do
+    get new_admin_user_url
+    assert_redirected_to admin_root_url
+  end
+
+  # TODO: Work out why this is saying host isn't set when it is
   # it_allows_access_to_create_for(%i[root]) do
   #   assert_difference('User.count') do
   #     post admin_users_url,
-  #       params: { user: attributes_for(:user) }
+  #          params: { user: attributes_for(:user) }
   #   end
   # end
 

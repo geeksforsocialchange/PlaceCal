@@ -9,7 +9,8 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood_site = create(:site_local)
 
     # Create one set of events for the default site
-    @default_site_events = create_list :event, 5, dtstart: DateTime.now + 1.hour
+    date = DateTime.now.beginning_of_day
+    @default_site_events = create_list :event, 5, dtstart: date + 1.hour
     @default_site_events.each do |event|
       next if @default_site.neighbourhoods.include? event.neighbourhood
 
@@ -17,7 +18,7 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     end
 
     # Create another set for the neighbourhood site
-    @neighbourhood_site_events = create_list :event, 5, dtstart: DateTime.now + 1.hour
+    @neighbourhood_site_events = create_list :event, 5, dtstart: date + 1.hour
     @neighbourhood2 = create(:neighbourhood)
     @neighbourhood_site_events.each do |event|
       event.address.update(neighbourhood: @neighbourhood2)

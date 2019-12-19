@@ -6,11 +6,13 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @partner = create(:partner)
     @turf = @partner.turfs.first
+    @neighbourhood = @partner.address.neighbourhood
 
     @root = create(:root)
     @citizen = create(:user)
 
     @turf_admin = create(:turf_admin, turf_ids: [@turf.id])
+    @neighbourhood_admin = create(:neighbourhood_admin, neighbourhood_ids: [@neighbourhood.id])
 
     @partner_admin = create(:partner_admin, partner_ids: [@partner.id])
 
