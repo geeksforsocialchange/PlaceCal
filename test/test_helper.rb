@@ -30,7 +30,7 @@ class ActiveSupport::TestCase
 
   # Usage:
   #
-  # it_allows_access_to_action_for(%i[root turf_admin partner_admin place_admin citizen guest]) do
+  # it_allows_access_to_action_for(%i[root tag_admin partner_admin place_admin citizen guest]) do
   # end
 
   %i[index show new edit create update destroy].each do |action|

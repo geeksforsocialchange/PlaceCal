@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :turf do
+  factory :tag do
     sequence(:name) do |n|
       "Hulme #{n}"
     end

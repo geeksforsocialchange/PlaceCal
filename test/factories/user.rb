@@ -10,15 +10,16 @@ FactoryBot.define do
       "test+#{n}@placecal.org"
     end
 
-    # Superuser - accesses everything, use with caution
     factory(:root) do
       role { 'root' }
     end
 
-    # Assigning a junk turf/partner to these to check it only works for
-    # the specific one assigend in our test
-    factory(:turf_admin) do
-      role { 'turf_admin' }
+    factory(:citizen) do
+      role { 'citizen' }
+    end
+
+    factory(:tag_admin) do
+      after(:build) { |user| user.tags = [create(:tag)] }
     end
 
     factory(:neighbourhood_admin) do
@@ -26,11 +27,7 @@ FactoryBot.define do
     end
 
     factory(:partner_admin) do
-      role { 'partner_admin' }
-    end
-
-    factory(:citizen) do
-      role { 'citizen' }
+      after(:build) { |user| user.partners = [create(:partner)] }
     end
   end
 end

@@ -32,13 +32,13 @@ en:
   activerecord:
     attributes:
       partner:
-        turf_ids: ""
+        tag_ids: ""
     errors:
       models:
         partner:
           attributes:
-            turf_ids:
-              blank: "Select at least one Turf"
+            tag_ids:
+              blank: "Select at least one Tag"
   date:
     formats:
       datetime: '%b %-d, %Y %l:%M'

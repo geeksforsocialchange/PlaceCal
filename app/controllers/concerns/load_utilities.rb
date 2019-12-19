@@ -4,11 +4,11 @@ module LoadUtilities
   extend ActiveSupport::Concern
 
   included do
-    def set_turfs
-      @turfs = if current_user&.role&.root?
-                 Turf.all
+    def set_tags
+      @tags = if current_user&.role&.root?
+                 Tag.all
                else
-                 current_user&.turfs
+                 current_user&.tags
                end
     end
   end

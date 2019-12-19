@@ -107,7 +107,7 @@
       <h2>Tags</h2>
       <p>Does this Partner provide any of the following things? (WIP!)</p>
 
-      <%= f.association :turfs, collection: @turfs, as: :check_boxes, include_hidden: false, label: "Facilities" %>
+      <%= f.association :tags, collection: @tags, as: :check_boxes, include_hidden: false, label: "Facilities" %>
 
       <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
     </div>

@@ -4,7 +4,7 @@ module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
     before_action :set_partner, only: %i[show edit update destroy]
-    before_action :set_turfs, only: %i[new create edit]
+    before_action :set_tags, only: %i[new create edit]
 
     def index
       @partners = policy_scope(Partner)
@@ -76,7 +76,7 @@ module Admin
         #   :opening_times, :_destroy, :accessibility_info,
         #   address_attributes: %i[id street_address street_address2 city postcode]
         # ],
-        turf_ids: [],
+        tag_ids: [],
         # place_ids: []
       )
     end

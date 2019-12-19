@@ -1,5 +1,5 @@
-<%= simple_form_for @turf, url: (@turf.new_record? ? admin_turfs_path : admin_turf_path) do |f| %>
-  <%= render_component "error", object: @turf %>
+<%= simple_form_for @tag, url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
+  <%= render_component "error", object: @tag %>
 
   <%= f.input :name, class: "form-control" %>
 
@@ -7,7 +7,7 @@
 
   <%= f.input :description, class: "form-control" %>
 
-  <% unless @turf.new_record? %>
+  <% unless @tag.new_record? %>
     <h2>Partners</h2>
     <% unless @partners.empty? %>
       <ul>
@@ -22,5 +22,5 @@
 
   <%= f.submit "Save", class: "btn btn-primary" %><br><br>
   <%# TODO: work out why this is failing %>
-  <%# button_to "Destroy Turf", @turf, method: :delete, class: "btn btn-danger" %>
+  <%# button_to "Destroy Tag", @tag, method: :delete, class: "btn btn-danger" %>
 <% end %>

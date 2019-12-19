@@ -117,6 +117,7 @@ group :test do
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
+  gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'vcr'
   gem 'webmock'

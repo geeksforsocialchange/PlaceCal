@@ -23,7 +23,7 @@ class SitesController < ApplicationController
 
   def set_places_to_get_online
     @places_to_get_online = Partner
-      .of_turf(Turf.find_by(slug: 'internet'))
+      .of_tag(Tag.find_by(slug: 'internet'))
       .for_site(current_site)
       .sort_by(&:name.downcase)
   end
