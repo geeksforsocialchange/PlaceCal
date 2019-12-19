@@ -21,6 +21,10 @@ FactoryBot.define do
       role { 'turf_admin' }
     end
 
+    factory(:neighbourhood_admin) do
+      after(:build) { |user| user.neighbourhoods = [create(:neighbourhood)] }
+    end
+
     factory(:partner_admin) do
       role { 'partner_admin' }
     end

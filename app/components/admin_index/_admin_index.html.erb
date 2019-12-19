@@ -2,7 +2,7 @@
 
 <h1 class="page-header"><%= properties[:title] %></h1>
 
-<%- if policy(model_name.constantize).create? %>
+<%- if policy(model_name.constantize).create? && properties[:new_link] %>
   <%= link_to "Add New #{model_name}", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary mb-3" %>
 <% end %>
 
@@ -26,6 +26,8 @@
           <td>
             <% if key == 'logo' && record.logo.url %>
               <%= image_tag record.logo.url, style: 'background-color: #5b4e46' %>
+            <% elsif value.class.name == "ActiveRecord::Associations::CollectionProxy" %>
+              <%= value.join(', ') %>
             <% else %>
               <%= value %>
             <% end %>

@@ -3,7 +3,11 @@
 # config/routes.rb
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Most common route at the top
-  devise_for :users, controllers: { omniauth_callbacks: 'admin/omniauth_callbacks', invitations: 'users/invitations' }
+  devise_for :users,
+             controllers: {
+               omniauth_callbacks: 'admin/omniauth_callbacks',
+               invitations: 'users/invitations'
+             }
 
   devise_scope :user do
     match 'users/auth/facebook/setup' => 'admin/omniauth_callbacks#setup', via: [:get, :post]
@@ -17,6 +21,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       end
     end
     resources :collections
+    resources :neighbourhoods
     resources :partners
     resources :turfs
     resources :sites
@@ -31,15 +36,12 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   end
 
   constraints(::Sites::Local) do
-    # get '*' => 'sites#index'
     get '/' => 'sites#index'
   end
 
-  ymd = {
-    year:       /\d{4}/,
-    month:      /\d{1,2}/,
-    day:        /\d{1,2}/
-  }
+  ymd = { year:  /\d{4}/,
+          month: /\d{1,2}/,
+          day:   /\d{1,2}/ }
 
   # Events
   resources :events, only: %i[index show]
