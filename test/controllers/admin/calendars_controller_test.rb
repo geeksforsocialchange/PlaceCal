@@ -4,10 +4,12 @@ require 'test_helper'
 
 class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @partner = create(:partner)
-    @calendar = create(:calendar, partner_id: @partner.id)
     @root = create(:root)
-    @partner_admin = create(:partner_admin, partner_ids: [@partner.id])
+    @partner_admin = create(:partner_admin)
+
+    @partner = @partner_admin.partners.first
+    @calendar = create(:calendar, partner: @partner)
+
     @citizen = create(:user)
 
     host! 'admin.lvh.me'

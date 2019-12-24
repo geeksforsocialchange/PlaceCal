@@ -43,6 +43,7 @@ module Admin
     end
 
     def destroy
+      authorize @calendar
       @calendar.destroy
       respond_to do |format|
         format.html { redirect_to admin_calendars_url, notice: 'Calendar was successfully destroyed.' }

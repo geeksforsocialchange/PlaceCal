@@ -23,12 +23,12 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :collections
     resources :neighbourhoods
     resources :partners
-    resources :turfs
+    resources :tags
     resources :sites
     resources :supporters
     resources :users do
       member do
-        put :assign_turf
+        put :assign_tag
       end
     end
     get 'profile' => 'users#profile', :as => 'profile'

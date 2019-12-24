@@ -2,8 +2,8 @@
 
 module Admin
   class UsersController < Admin::ApplicationController
-    before_action :set_user, only: %i[edit assign_turf update destroy]
-    before_action :set_roles_and_turfs, only: %i[new create edit assign_turf update destroy]
+    before_action :set_user, only: %i[edit assign_tag update destroy]
+    before_action :set_roles_and_tags, only: %i[new create edit assign_tag update destroy]
 
     def profile; end
 
@@ -19,13 +19,13 @@ module Admin
 
     def edit
       authorize @user
-      @turfs = Turf.all
+      @tags = Tag.all
       @roles = User.role.values
     end
 
-    def assign_turf
-      authorize current_user, :assign_turf?
-      if @user.update(user_turf_params)
+    def assign_tag
+      authorize current_user, :assign_tag?
+      if @user.update(user_tag_params)
         redirect_to admin_users_path
       else
         render 'edit'
@@ -33,7 +33,7 @@ module Admin
     end
 
     def create
-      @user = User.new(user_turf_params)
+      @user = User.new(user_tag_params)
 
       if @user.valid_for_invite
         @user.invite!
@@ -53,7 +53,7 @@ module Admin
     end
 
     def destroy
-      authorize current_user
+      authorize @user
       @user.destroy
       respond_to do |format|
         format.html { redirect_to admin_users_url, notice: 'User was successfully destroyed.' }
@@ -63,8 +63,8 @@ module Admin
 
     private
 
-    def set_roles_and_turfs
-      @turfs = Turf.all
+    def set_roles_and_tags
+      @tags = Tag.all
       @roles = User.role.values
     end
 
@@ -80,7 +80,7 @@ module Admin
                                   )
     end
 
-    def user_turf_params
+    def user_tag_params
       params.require(:user).permit(:first_name,
                                    :last_name,
                                    :email,
@@ -90,7 +90,7 @@ module Admin
                                    :avatar,
                                    :facebook_app_id,
                                    :facebook_app_secret,
-                                   turf_ids: [],
+                                   tag_ids: [],
                                    partner_ids: [],
                                    neighbourhood_ids: [])
     end

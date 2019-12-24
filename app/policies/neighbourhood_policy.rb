@@ -2,8 +2,9 @@
 
 # app/policies/neighbourhood_policy.rb
 class NeighbourhoodPolicy < ApplicationPolicy
+  # We don't really want anyone looking at this it's a bit abstract
   def index?
-    user&.role&.root?
+    user.root?
   end
 
   def new?
@@ -20,5 +21,17 @@ class NeighbourhoodPolicy < ApplicationPolicy
 
   def update?
     index?
+  end
+
+  class Scope < Scope
+    def resolve
+      if user.root?
+        scope.all
+      elsif user.neighbourhood_admin?
+        user.neighbourhoods
+      else
+        scope.none
+      end
+    end
   end
 end

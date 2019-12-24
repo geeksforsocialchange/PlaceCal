@@ -1,9 +1,9 @@
 <%# TODO: Only show Edit link for root users %>
 
 <%= render_component "admin_index",
-  title: "Turfs",
-  model: :turfs,
+  title: "Tags",
+  model: :tags,
   columns: %i[id name slug description],
-  data: @turfs,
-  new_link: new_admin_turf_path
+  data: @tags,
+  new_link: new_admin_tag_path
 %>
