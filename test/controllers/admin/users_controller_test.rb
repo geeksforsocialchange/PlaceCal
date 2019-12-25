@@ -70,7 +70,14 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
-  it_allows_access_to_update_for(%i[root citizen]) do
+  it_allows_access_to_update_for(%i[root]) do
+    patch admin_user_url(@citizen),
+          params: { user: attributes_for(:user) }
+    # Redirect to users screen
+    assert_redirected_to admin_users_url
+  end
+
+  it_denies_access_to_update_for(%i[citizen]) do
     patch admin_user_url(@citizen),
           params: { user: attributes_for(:user) }
     # Redirect to main partner screen

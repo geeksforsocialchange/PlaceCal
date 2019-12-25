@@ -8,23 +8,35 @@ class UserPolicy < ApplicationPolicy
     @record = record
   end
 
+  def profile?
+    user.id == record.id
+  end
+
+  def update_profile?
+    profile?
+  end
+
   def index?
     user.root? || user.neighbourhood_admin?
   end
 
-  def update?
+  def create?
     index?
   end
 
-  def assign_tag?
+  def new?
     index?
+  end
+
+  def update?
+    user.root?
   end
 
   def edit?
-    index?
+    update?
   end
 
   def destroy?
-    index?
+    update?
   end
 end

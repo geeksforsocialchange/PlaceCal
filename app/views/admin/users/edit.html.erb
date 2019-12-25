@@ -2,8 +2,8 @@
 
 <div class="behavior-trigger" data-behavior="user.form"></div>
 
-<%= simple_form_for @user, method: :put, url: assign_tag_admin_user_path(@user) do |f| %>
+<%= simple_form_for @user, method: :put, url: admin_user_path(@user) do |f| %>
   <%= render 'form', f: f %>
   <%= f.submit "Update", class: "btn btn-primary " %>
-  <%= link_to "Destroy User", admin_user_path(@user), method: :delete, class: "btn btn-danger" %>
+  <%= link_to "Destroy User", admin_user_path(@user), method: :delete, class: "btn btn-danger" if policy(@user).destroy? %>
 <% end %>

@@ -6,7 +6,7 @@
   </div>
 <% end %>
 
-<%= simple_form_for [:admin, current_user], html: { class: "form-horizontal" } do |f| %>
+<%= simple_form_for current_user, as: :user, method: :put, url: update_profile_admin_user_path(current_user), html: { class: "form-horizontal" } do |f| %>
   <div class="row mt-4">
     <%= render_component "error", object: current_user %>
     <div class="col-md-12">

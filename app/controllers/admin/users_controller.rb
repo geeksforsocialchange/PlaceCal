@@ -2,10 +2,21 @@
 
 module Admin
   class UsersController < Admin::ApplicationController
-    before_action :set_user, only: %i[edit assign_tag update destroy]
+    before_action :set_user, only: %i[edit update destroy]
     before_action :set_roles_and_tags, only: %i[new create edit assign_tag update destroy]
 
-    def profile; end
+    def profile
+      authorize current_user, :profile?
+    end
+
+    def update_profile
+      authorize current_user, :update_profile?
+      if current_user.update(profile_params)
+        redirect_to admin_root_path
+      else
+        render 'profile'
+      end
+    end
 
     def index
       @users = User.all.order(:last_name, :first_name)
@@ -23,9 +34,9 @@ module Admin
       @roles = User.role.values
     end
 
-    def assign_tag
-      authorize current_user, :assign_tag?
-      if @user.update(user_tag_params)
+    def update
+      authorize @user
+      if @user.update(user_params)
         redirect_to admin_users_path
       else
         render 'edit'
@@ -35,20 +46,12 @@ module Admin
     def create
       @user = User.new(user_tag_params)
 
-      if @user.valid_for_invite
+      if @user.valid_for_invite?
         @user.invite!
         redirect_to admin_users_path
       else
         Rails.logger.debug @user.errors.full_messages
         render 'new'
-      end
-    end
-
-    def update
-      if current_user.update_without_password(user_params)
-        redirect_to admin_root_path
-      else
-        render 'profile'
       end
     end
 
@@ -68,11 +71,13 @@ module Admin
       @roles = User.role.values
     end
 
-    def user_params
+    def profile_params
       params.require(:user).permit(:first_name,
                                    :last_name,
                                    :email,
                                    :password,
+                                   :password_confirmation,
+                                   :current_password,
                                    :phone,
                                    :avatar,
                                    :facebook_app_id,
@@ -80,11 +85,10 @@ module Admin
                                   )
     end
 
-    def user_tag_params
+    def user_params
       params.require(:user).permit(:first_name,
                                    :last_name,
                                    :email,
-                                   :password,
                                    :phone,
                                    :role,
                                    :avatar,

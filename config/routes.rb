@@ -28,7 +28,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :supporters
     resources :users do
       member do
-        put :assign_tag
+        put :update_profile
       end
     end
     get 'profile' => 'users#profile', :as => 'profile'
