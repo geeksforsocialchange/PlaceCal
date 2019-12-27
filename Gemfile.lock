@@ -189,7 +189,7 @@ GEM
       railties (>= 3.2.12)
     grape_on_rails_routes (0.3.2)
       rails (>= 3.1.1)
-    groupdate (4.2.0)
+    groupdate (4.3.0)
       activesupport (>= 5)
     guard (2.16.1)
       formatador (>= 0.2.4)
