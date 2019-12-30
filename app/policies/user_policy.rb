@@ -9,14 +9,14 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user&.role&.root?
+    user.root? || user.neighbourhood_admin?
   end
 
   def update?
     index?
   end
 
-  def assign_turf?
+  def assign_tag?
     index?
   end
 

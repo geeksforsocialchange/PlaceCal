@@ -71,4 +71,12 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_neighbourhoods_url
   end
+
+  it_denies_access_to_destroy_for(%i[neighbourhood_admin citizen]) do
+    assert_no_difference('Neighbourhood.count') do
+      delete admin_neighbourhood_url(@neighbourhood)
+    end
+
+    assert_redirected_to admin_root_url
+  end
 end

@@ -19,7 +19,7 @@ FactoryBot.define do
 
     address
 
-    after(:build) { |partner| partner.turfs = [create(:turf)] }
+    after(:build) { |partner| partner.tags = [create(:tag)] }
     # image nil
 
     factory :place do

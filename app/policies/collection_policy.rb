@@ -2,7 +2,7 @@
 
 class CollectionPolicy < ApplicationPolicy
   def index?
-    user&.role&.root?
+    user.root?
   end
 
   def new?

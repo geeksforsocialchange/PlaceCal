@@ -5,12 +5,12 @@ require 'test_helper'
 class SitesIntegrationTest < ActionDispatch::IntegrationTest
   setup do
     create_default_site
-    @admin = create(:user)
-    @site = create(:site, slug: 'hulme', site_admin: @admin)
+    @root = create(:root)
+    @site_admin = create(:user)
+    @site = create(:site, slug: 'hulme', site_admin: @site_admin)
   end
 
   test 'load different pages based on subdomain' do
-
     # Default: get home page
     get 'http://lvh.me'
     assert_template 'pages/home'
@@ -27,8 +27,8 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h1', 'PlaceCal is a community events calendar where you can find everything near you, all in one place.'
     assert_select 'h2', "PlaceCal is working to make #{@site.place_name} a better connected neighbourhood."
     assert_select 'p', @site.description
-    assert_select 'strong', @admin.full_name
-    assert_select 'strong', @admin.phone
+    assert_select 'strong', @site_admin.full_name
+    assert_select 'strong', @site_admin.phone
     assert_select 'strong', @site.site_admin.email
     assert_select 'h3', 'Adding Your Events'
     assert_select 'h3', 'Getting Online'

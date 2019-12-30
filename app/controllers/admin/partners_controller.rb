@@ -4,7 +4,7 @@ module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
     before_action :set_partner, only: %i[show edit update destroy]
-    before_action :set_turfs, only: %i[new create edit]
+    before_action :set_tags, only: %i[new create edit]
 
     def index
       @partners = policy_scope(Partner)
@@ -28,7 +28,6 @@ module Admin
           format.html { redirect_to admin_partners_path, notice: 'Partner was successfully created.' }
           format.json { render :show, status: :created, location: @partner }
         else
-          puts @partner.errors.inspect
           format.html { render :new }
           format.json { render json: @partner.errors, status: :unprocessable_entity }
         end
@@ -66,18 +65,14 @@ module Admin
 
     def partner_params
       params.require(:partner).permit(
-        :name, :image, :short_description, :public_name, :public_email,
-        :public_phone, :partner_name, :partner_email, :partner_phone, :address_id,
-        :url, :facebook_link, :twitter_handle, :opening_times,
+        :name, :image, :short_description,
+        :public_name, :public_email, :public_phone,
+        :partner_name, :partner_email, :partner_phone,
+        :address_id, :url, :facebook_link, :twitter_handle,
+        :opening_times,
         calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
         address_attributes: %i[street_address street_address2 street_address3 city postcode],
-        # places_attributes: [
-        #   :id, :name, :short_description, :booking_info,
-        #   :opening_times, :_destroy, :accessibility_info,
-        #   address_attributes: %i[id street_address street_address2 city postcode]
-        # ],
-        turf_ids: [],
-        # place_ids: []
+        tag_ids: []
       )
     end
   end
