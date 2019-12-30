@@ -7286,10 +7286,10 @@ vue-turbolinks@^2.0.4:
   dependencies:
     vue "^2.2.4"
 
-vue2-timepicker@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/vue2-timepicker/-/vue2-timepicker-1.0.6.tgz#8e291f868a33af473159eb38df4ba9778c88098e"
-  integrity sha512-fhb/i43471Ex7dVdTbbtiCpjTdZ1FNu4yi5AXqOhxhqVuJGtwW+yVeSbGljphbpAq2NmABZJWVBytUivETxjrA==
+vue2-timepicker@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/vue2-timepicker/-/vue2-timepicker-1.0.7.tgz#5180aab992056e0516be74bbfd8a1f221a2b0a9c"
+  integrity sha512-QfiJY2BuoBM9zvsE/WoClZEbQHUlWQrCrhJZDw9r1uGqHmqjKepOxjYYdW39pm+H+0vrgdY4NvlFzrvWQr/KBQ==
 
 vue@^2.2.4, vue@^2.6.11:
   version "2.6.11"
@@ -7353,10 +7353,10 @@ webpack-dev-middleware@^3.7.2:
     range-parser "^1.2.1"
     webpack-log "^2.0.0"
 
-webpack-dev-server@^3.10.0:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-3.10.0.tgz#725d0bdfd70a56d266a5a0ee167df8e6a422d533"
-  integrity sha512-dPNu0Kz9lh5QrRef/ulknAtEEHoZ/p49sUPE+4KbknmxkDU6V4evB2LdTWlw/DnDavxQC499+2jLHlgFjA6TmQ==
+webpack-dev-server@^3.10.1:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-3.10.1.tgz#1ff3e5cccf8e0897aa3f5909c654e623f69b1c0e"
+  integrity sha512-AGG4+XrrXn4rbZUueyNrQgO4KGnol+0wm3MPdqGLmmA+NofZl3blZQKxZ9BND6RDNuvAK9OMYClhjOSnxpWRoA==
   dependencies:
     ansi-html "0.0.7"
     bonjour "^3.5.0"
