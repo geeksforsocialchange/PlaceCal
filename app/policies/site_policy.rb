@@ -25,6 +25,39 @@ class SitePolicy < ApplicationPolicy
     user.root?
   end
 
+  def permitted_attributes
+    if user.root?
+      [
+        :id,
+        :name,
+        :place_name,
+        :tagline,
+        :slug,
+        :description,
+        :domain,
+        :logo,
+        :footer_logo,
+        :hero_image,
+        :hero_image_credit,
+        :site_admin_id,
+        sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
+        sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type]
+      ]
+    elsif user.site_admin?
+      [
+        :id,
+        :name,
+        :place_name,
+        :tagline,
+        :description,
+        :hero_image,
+        :hero_image_credit,
+        sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
+        sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type]
+      ]
+    end
+  end
+
   class Scope < Scope
     def resolve
       if user.root?

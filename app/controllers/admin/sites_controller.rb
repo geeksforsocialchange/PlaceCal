@@ -77,22 +77,7 @@ module Admin
     end
 
     def site_params
-      params.require(:site).permit(
-        :id,
-        :name,
-        :place_name,
-        :tagline,
-        :slug,
-        :description,
-        :domain,
-        :logo,
-        :footer_logo,
-        :hero_image,
-        :hero_image_credit,
-        :site_admin_id,
-        sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
-        sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type]
-      )
+      params.require(:site).permit(policy(@site).permitted_attributes)
     end
   end
 end
