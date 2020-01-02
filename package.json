@@ -4,7 +4,7 @@
   "private": true,
   "engines": {
     "node": "10.16.0",
-    "yarn": "1.21.0"
+    "yarn": "1.21.1"
   },
   "dependencies": {
     "@rails/ujs": "^6.0.2",
