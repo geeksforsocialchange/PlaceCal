@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=10.16.0, <13.5.0",
-    "yarn": ">=1.16.0, <1.21.2"
+    "node": "10.16.0",
+    "yarn": "1.16.0"
   },
   "dependencies": {
     "@rails/ujs": "^6.0.2",
