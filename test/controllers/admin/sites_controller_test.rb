@@ -69,7 +69,8 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
 
   # Edit & Update Site
   #
-  #   Allow roots to edit all places
+  #   Allow roots to edit all Sites
+  #   Allow site admins to set some properties
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_edit_for(%i[root site_admin]) do

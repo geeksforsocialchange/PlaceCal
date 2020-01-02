@@ -43,7 +43,7 @@ class SitePolicy < ApplicationPolicy
         sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
         sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type]
       ]
-    elsif user.site_admin?
+    else
       [
         :id,
         :name,

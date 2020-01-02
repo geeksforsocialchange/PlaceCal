@@ -23,7 +23,7 @@ module Admin
     end
 
     def create
-      @site = Site.new(site_params)
+      @site = Site.new(permitted_attributes(Site))
       authorize @site
       if @site.save
         redirect_to admin_sites_path
@@ -34,7 +34,7 @@ module Admin
 
     def update
       authorize @site
-      if @site.update(site_params)
+      if @site.update(permitted_attributes(@site))
         redirect_to admin_sites_path
       else
         set_variables_for_sites_neighbourhoods_selection
@@ -74,10 +74,6 @@ module Admin
           @site.sites_neighbourhoods.map {|sn| {sn.neighbourhood_id => sn.id}}
           .reduce({}, :merge)
       end
-    end
-
-    def site_params
-      params.require(:site).permit(policy(@site).permitted_attributes)
     end
   end
 end
