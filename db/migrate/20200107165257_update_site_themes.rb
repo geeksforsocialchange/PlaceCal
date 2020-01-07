@@ -9,6 +9,6 @@ class UpdateSiteThemes < ActiveRecord::Migration[6.0]
 
   def set_theme(slug, colour)
     site = Site.find_by(slug: slug)
-    site.update(theme: colour)
+    site.update(theme: colour) if site
   end
 end
