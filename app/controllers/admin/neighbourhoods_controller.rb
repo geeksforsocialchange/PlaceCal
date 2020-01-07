@@ -10,7 +10,8 @@ module Admin
     end
 
     def new
-      redirect_to admin_root_path
+      @neighbourhood = Neighbourhood.new
+      authorize @neighbourhood
     end
 
     def edit

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_19_122747) do
+ActiveRecord::Schema.define(version: 2020_01_07_174516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,19 @@ ActiveRecord::Schema.define(version: 2019_12_19_122747) do
 
   create_table "neighbourhoods", force: :cascade do |t|
     t.string "name"
+    t.string "name_abbr"
+    t.string "ward"
+    t.string "district"
+    t.string "county"
+    t.string "region"
+    t.string "WD19CD"
+    t.string "WD19NM"
+    t.string "LAD19CD"
+    t.string "LAD19NM"
+    t.string "CTY19CD"
+    t.string "CTY19NM"
+    t.string "RGN19CD"
+    t.string "RGN19NM"
   end
 
   create_table "neighbourhoods_users", force: :cascade do |t|
@@ -236,6 +249,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_122747) do
     t.string "footer_logo"
     t.string "tagline", default: "The Community Calendar"
     t.string "place_name"
+    t.string "theme"
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 
