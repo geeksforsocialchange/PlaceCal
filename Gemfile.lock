@@ -171,7 +171,7 @@ GEM
     formatador (0.2.5)
     friendly_id (5.3.0)
       activerecord (>= 4.0.0)
-    geocoder (1.5.2)
+    geocoder (1.6.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     grape (1.2.5)
@@ -511,7 +511,7 @@ DEPENDENCIES
   factory_bot_rails
   font-awesome-rails
   friendly_id (~> 5.3.0)
-  geocoder (~> 1.5.0)
+  geocoder (~> 1.6.0)
   grape
   grape-entity
   grape-swagger
