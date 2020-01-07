@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_19_122747) do
+ActiveRecord::Schema.define(version: 2020_01_07_165257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -236,6 +236,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_122747) do
     t.string "footer_logo"
     t.string "tagline", default: "The Community Calendar"
     t.string "place_name"
+    t.string "theme"
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 
