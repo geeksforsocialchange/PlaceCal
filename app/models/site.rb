@@ -2,6 +2,8 @@
 
 class Site < ApplicationRecord
   extend FriendlyId
+  extend Enumerize
+
   friendly_id :name, use: :slugged
 
   has_one :sites_neighbourhood, dependent: :destroy
@@ -24,6 +26,11 @@ class Site < ApplicationRecord
   mount_uploader :logo, SiteLogoUploader
   mount_uploader :footer_logo, SiteLogoUploader
   mount_uploader :hero_image, HeroImageUploader
+
+  # Theme picker
+  enumerize :theme,
+            in: %i[pink orange green blue custom],
+            default: :pink
 
   def to_s
     "#{id}: #{name}"
@@ -63,6 +70,16 @@ class Site < ApplicationRecord
   # Get a count of all the events last week
   def events_last_week
     Event.for_site(self).find_by_week(Time.now - 1.week).count
+  end
+
+  def stylesheet_link
+    return false if default_site?
+
+    if theme == :custom
+      "themes/custom/#{slug}"
+    else
+      "themes/#{theme}"
+    end
   end
 
   class << self

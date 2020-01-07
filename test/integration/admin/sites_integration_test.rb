@@ -28,6 +28,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Description'
     assert_select 'label', 'Site admin'
 
+    assert_select 'label', 'Theme'
     assert_select 'label', 'Logo'
     assert_select 'label', 'Footer logo'
     assert_select 'label', 'Hero image'
@@ -54,6 +55,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Description'
     assert_select 'label', text: 'Site admin', count: 0
 
+    assert_select 'label', text: 'Theme', count: 0
     assert_select 'label', text: 'Logo', count: 0
     assert_select 'label', text: 'Footer logo', count: 0
     assert_select 'label', 'Hero image'

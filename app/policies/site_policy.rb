@@ -37,6 +37,7 @@ class SitePolicy < ApplicationPolicy
         :domain,
         :logo,
         :footer_logo,
+        :theme,
         :hero_image,
         :hero_image_credit,
         :site_admin_id,
