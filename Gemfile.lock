@@ -399,7 +399,7 @@ GEM
       rubocop (>= 0.72.0)
     ruby-graphviz (1.2.4)
     ruby-progressbar (1.10.1)
-    ruby-vips (2.0.16)
+    ruby-vips (2.0.17)
       ffi (~> 1.9)
     ruby_http_client (3.3.0)
     rubyzip (2.0.0)
