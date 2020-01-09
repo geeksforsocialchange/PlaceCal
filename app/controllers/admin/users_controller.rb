@@ -35,7 +35,7 @@ module Admin
     def create
       @user = User.new(user_tag_params)
 
-      if @user.valid_for_invite
+      if @user.valid_for_invite?
         @user.invite!
         redirect_to admin_users_path
       else
