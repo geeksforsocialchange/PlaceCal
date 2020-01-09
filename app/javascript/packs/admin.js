@@ -7,6 +7,7 @@ import 'vue-turbolinks'
 
 import '../src/behaviors/all_behaviors.js'
 import '../src/opening-times.js'
+import '../src/ward-picker.js'
 
 $(document).on('turbolinks:load', function() {
 
