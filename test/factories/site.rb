@@ -9,6 +9,7 @@ FactoryBot.define do
     hero_image_credit { 'Place Cal' }
     domain { name.parameterize }
     slug { name.parameterize }
+    theme { :pink }
 
     association :site_admin, factory: :user
 

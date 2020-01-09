@@ -9,7 +9,7 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
     @root = create(:root)
     @site_admin = @site.site_admin
     @citizen = create(:user)
-
+    @neighbourhood = create(:neighbourhood)
     host! 'admin.lvh.me'
   end
 
@@ -69,7 +69,8 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
 
   # Edit & Update Site
   #
-  #   Allow roots to edit all places
+  #   Allow roots to edit all Sites
+  #   Allow site admins to set some properties
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_edit_for(%i[root site_admin]) do
@@ -77,10 +78,10 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  # Can only assign neighbourhoods that you are an admin of
   it_allows_access_to_update_for(%i[root site_admin]) do
     patch admin_site_url(@site),
           params: { site: attributes_for(:site) }
-    # Redirect to main partner screen
     assert_redirected_to admin_sites_url
   end
 
