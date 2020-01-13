@@ -2,25 +2,40 @@
   <%= f.input :name %>
   <%= f.input :place_name %>
   <%= f.input :tagline %>
-  <%= f.input :domain if policy(@site).permitted_attributes.include? :domain %>
-  <%= f.input :slug if policy(@site).permitted_attributes.include? :slug %>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :domain if policy(@site).permitted_attributes.include? :domain %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :slug if policy(@site).permitted_attributes.include? :slug %>
+    </div>
+  </div>
   <%= f.input :description, input_html: { rows: 5 } %>
 
   <%= f.association :site_admin, label_method: :admin_name if policy(@site).permitted_attributes.include? :site_admin_id %>
 
   <h2>Images</h2>
 
+  <% if policy(@site).permitted_attributes.include? :theme %>
+    <%= f.input :theme, collection: Site.theme.values, include_blank: false %>
+  <% end %>
+
   <% if policy(@site).permitted_attributes.include? :logo %>
     <p><em>Logos should be SVG or PNG format</em></p>
 
-    <%= f.input :logo %>
-    <%= image_tag f.object.logo.url, class: 'card-img-top' if f.object.logo.url %>
-
-    <%= f.input :footer_logo %>
-    <div style="background-color: #5b4e46; padding: 1rem">
-      <%= image_tag f.object.footer_logo.url, class: 'card-img-top' if f.object.footer_logo.url %>
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.input :logo %>
+        <%= image_tag f.object.logo.url, class: 'card-img-top' if f.object.logo.url %>
+      </div>
+      <div class="col-md-6">
+        <%= f.input :footer_logo %>
+        <div style="background-color: #5b4e46; padding: 1rem">
+          <%= image_tag f.object.footer_logo.url, class: 'card-img-top' if f.object.footer_logo.url %>
+        </div>
+      <% end %>
+      </div>
     </div>
-  <% end %>
 
   <%= f.input :hero_image %>
   <p><em>Header images should be 2260x700</em></p>
