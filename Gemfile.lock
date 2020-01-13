@@ -330,7 +330,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
-    rack (2.0.8)
+    rack (2.1.1)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-cors (1.1.1)
