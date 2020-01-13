@@ -19,23 +19,20 @@ module Admin
       @users = @neighbourhood.users
     end
 
+
     def create
-      @neighbourhood = Neighbourhood.new(neighbourhood_params)
+      @neighbourhood = Neighbourhood.new(permitted_attributes(Neighbourhood))
       authorize @neighbourhood
-      respond_to do |format|
-        if @neighbourhood.save
-          format.html { redirect_to admin_neighbourhoods_path, notice: 'Neighbourhood was successfully created.' }
-          format.json { render :show, status: :created, location: @neighbourhood }
-        else
-          format.html { render :new }
-          format.json { render json: @neighbourhood.errors, status: :unprocessable_entity }
-        end
+      if @neighbourhood.save
+        redirect_to admin_neighbourhoods_path
+      else
+        render 'new'
       end
     end
 
     def update
       authorize @neighbourhood
-      if @neighbourhood.update(neighbourhood_params)
+      if @neighbourhood.update(permitted_attributes(@neighbourhood))
         redirect_to admin_neighbourhoods_path
       else
         render 'edit'
@@ -55,10 +52,6 @@ module Admin
 
     def set_neighbourhood
       @neighbourhood = Neighbourhood.find(params[:id])
-    end
-
-    def neighbourhood_params
-      params.require(:neighbourhood).permit(:name, user_ids: [])
     end
   end
 end

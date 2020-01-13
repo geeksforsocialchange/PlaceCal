@@ -7,19 +7,32 @@ class NeighbourhoodPolicy < ApplicationPolicy
   end
 
   def new?
-    index?
+    user.root?
   end
 
   def create?
-    index?
+    user.root?
   end
 
   def edit?
-    index?
+    user.root? || user.neighbourhood_admin?
   end
 
   def update?
-    index?
+    user.root? || user.neighbourhood_admin?
+  end
+
+  def destroy?
+    user.root?
+  end
+
+  def permitted_attributes
+    if user.root?
+      %i[ name ward district county region
+          WD19CD WD19NM LAD19CD LAD19NM CTY19CD CTY19NM RGN19CD RGN19NM ]
+    else
+      %i[name ward district county region]
+    end
   end
 
   class Scope < Scope
