@@ -20,7 +20,17 @@ module Admin
     end
 
     def create
-      redirect_to admin_root_path
+      @neighbourhood = Neighbourhood.new(neighbourhood_params)
+      authorize @neighbourhood
+      respond_to do |format|
+        if @neighbourhood.save
+          format.html { redirect_to admin_neighbourhoods_path, notice: 'Neighbourhood was successfully created.' }
+          format.json { render :show, status: :created, location: @neighbourhood }
+        else
+          format.html { render :new }
+          format.json { render json: @neighbourhood.errors, status: :unprocessable_entity }
+        end
+      end
     end
 
     def update

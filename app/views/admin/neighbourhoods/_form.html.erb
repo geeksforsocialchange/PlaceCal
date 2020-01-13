@@ -3,7 +3,7 @@
     <div class="col-md-6">
       <div class="form-group">
         <label class="form-control-label" for="ward-input">Quick add by ward code (WD19CD)</label>
-        <input class="form-control" id="ward-lookup" v-model="ward" v-on:change="lookupWard()" placeholder="E01234567"></input>
+        <input class="form-control" id="ward-lookup" v-model="wardSearch" v-on:change="lookupWard()" placeholder="E01234567"></input>
       </div>
     </div>
   </div>
@@ -26,12 +26,12 @@
 
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :ward %>
-        <%= f.input :district %>
+        <%= f.input :ward, as: :vue_string %>
+        <%= f.input :district, as: :vue_string %>
       </div>
       <div class="col-md-6">
-        <%= f.input :county %>
-        <%= f.input :region %>
+        <%= f.input :county, as: :vue_string %>
+        <%= f.input :region, as: :vue_string %>
       </div>
     </div>
 
@@ -42,40 +42,40 @@
     <h3>Ward</h3>
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :WD19CD, label: 'WD19CD', disabled: true %>
+        <%= f.input :WD19CD, label: 'WD19CD', disabled: true, as: :vue_string %>
       </div>
       <div class="col-md-6">
-        <%= f.input :WD19NM, label: 'WD19NM', disabled: true %>
+        <%= f.input :WD19NM, label: 'WD19NM', disabled: true, as: :vue_string %>
       </div>
     </div>
 
     <h3>Local Authority District</h3>
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :LAD19CD, label: 'LAD19CD', disabled: true %>
+        <%= f.input :LAD19CD, label: 'LAD19CD', disabled: true, as: :vue_string %>
       </div>
       <div class="col-md-6">
-        <%= f.input :LAD19NM, label: 'LAD19NM', disabled: true %>
+        <%= f.input :LAD19NM, label: 'LAD19NM', disabled: true, as: :vue_string %>
       </div>
     </div>
 
     <h3>County</h3>
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :CTY19CD, label: 'CTY19CD', disabled: true %>
+        <%= f.input :CTY19CD, label: 'CTY19CD', disabled: true, as: :vue_string %>
       </div>
       <div class="col-md-6">
-        <%= f.input :CTY19NM, label: 'CTY19NM', disabled: true %>
+        <%= f.input :CTY19NM, label: 'CTY19NM', disabled: true, as: :vue_string %>
       </div>
     </div>
 
     <h3>Region</h3>
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :RGN19CD, label: 'RGN19CD', disabled: true %>
+        <%= f.input :RGN19CD, label: 'RGN19CD', disabled: true, as: :vue_string %>
       </div>
       <div class="col-md-6">
-        <%= f.input :RGN19NM, label: 'RGN19NM', disabled: true %>
+        <%= f.input :RGN19NM, label: 'RGN19NM', disabled: true, as: :vue_string %>
       </div>
     </div>
 

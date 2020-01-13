@@ -7,6 +7,9 @@ class Neighbourhood < ApplicationRecord
   has_many :neighbourhoods_users, dependent: :destroy
   has_many :users, through: :neighbourhoods_users
 
+  validates :name, :ward, presence: true
+  validates :WD19CD, uniqueness: true, allow_blank: true
+
   class << self
     def create_from_admin_ward admin_ward
       t = Neighbourhood.new

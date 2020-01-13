@@ -1,7 +1,7 @@
 # app/inputs/vue_string_input.rb
 
 class VueStringInput < SimpleForm::Inputs::StringInput
-  enable :placeholder, :maxlength, :minlength, :pattern, :vue_model
+  enable :placeholder, :maxlength, :minlength, :pattern
 
   def input(wrapper_options = nil)
     unless string?

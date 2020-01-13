@@ -5,5 +5,8 @@ FactoryBot.define do
     sequence(:name) do |n|
       "Neighbourhood #{n}"
     end
+    sequence(:ward) do |n|
+      "Ward #{n}"
+    end
   end
 end

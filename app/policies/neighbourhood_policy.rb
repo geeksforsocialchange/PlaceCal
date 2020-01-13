@@ -2,9 +2,8 @@
 
 # app/policies/neighbourhood_policy.rb
 class NeighbourhoodPolicy < ApplicationPolicy
-  # We don't really want anyone looking at this it's a bit abstract
   def index?
-    user.root?
+    user.root? || user.neighbourhood_admin?
   end
 
   def new?
