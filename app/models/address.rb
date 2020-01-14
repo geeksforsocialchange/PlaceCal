@@ -79,7 +79,7 @@ class Address < ApplicationRecord
     return unless res
 
     # If the ward already exists, use that
-    neighbourhood = Neighbourhood.find_by(WD19CD: res[:codes][:admin_ward])
+    neighbourhood = Neighbourhood.find_by(WD19CD: res['codes']['admin_ward'])
     # If it's new to us, then create a new Neighbourhood.
     neighbourhood ||= Neighbourhood.create_from_postcodesio_response(res)
     self.neighbourhood = neighbourhood
