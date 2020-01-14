@@ -17,19 +17,20 @@ document.addEventListener('turbolinks:load',  () => {
       el: element,
       data: {
         wardSearch: '',
-        neighbourhood_name: '',
-        neighbourhood_ward: '',
-        neighbourhood_district: '',
-        neighbourhood_county: '',
-        neighbourhood_region: '',
-        neighbourhood_WD19CD: '',
-        neighbourhood_WD19NM: '',
-        neighbourhood_LAD19CD: '',
-        neighbourhood_LAD19NM: '',
-        neighbourhood_CTY19CD: '',
-        neighbourhood_CTY19NM: '',
-        neighbourhood_RGN19CD: '',
-        neighbourhood_RGN19NM: ''
+        neighbourhood_name: currentInfo.name,
+        neighbourhood_name_abbr: currentInfo.name_abbr,
+        neighbourhood_ward: currentInfo.ward,
+        neighbourhood_district: currentInfo.district,
+        neighbourhood_county: currentInfo.county,
+        neighbourhood_region: currentInfo.region,
+        neighbourhood_WD19CD: currentInfo.WD19CD,
+        neighbourhood_WD19NM: currentInfo.WD19NM,
+        neighbourhood_LAD19CD: currentInfo.LAD19CD,
+        neighbourhood_LAD19NM: currentInfo.LAD19NM,
+        neighbourhood_CTY19CD: currentInfo.CTY19CD,
+        neighbourhood_CTY19NM: currentInfo.CTY19NM,
+        neighbourhood_RGN19CD: currentInfo.RGN19CD,
+        neighbourhood_RGN19NM: currentInfo.RGN19NM
       },
       methods: {
         lookupWard: function() {
@@ -37,6 +38,7 @@ document.addEventListener('turbolinks:load',  () => {
             .then((response) => {
               let res = response.data.features[0].attributes
               this.neighbourhood_name = res.WD19NM
+              this.neighbourhood_name_abbr = res.WD19NM
               this.neighbourhood_ward = res.WD19NM
               this.neighbourhood_district = res.LAD19NM
               this.neighbourhood_county = res.CTY19NM

@@ -26,10 +26,15 @@ class NeighbourhoodPolicy < ApplicationPolicy
     user.root?
   end
 
+  def set_users?
+    user.root?
+  end
+
   def permitted_attributes
     if user.root?
-      %i[ name ward district county region
-          WD19CD WD19NM LAD19CD LAD19NM CTY19CD CTY19NM RGN19CD RGN19NM ]
+      %i[ name name_abbr ward district county region
+          WD19CD WD19NM LAD19CD LAD19NM CTY19CD CTY19NM RGN19CD RGN19NM
+        ].push(user_ids: [])
     else
       %i[name ward district county region]
     end

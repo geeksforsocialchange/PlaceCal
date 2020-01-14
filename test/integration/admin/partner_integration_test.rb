@@ -13,7 +13,6 @@ class AdminPartnerIntegrationTest < ActionDispatch::IntegrationTest
     @partner = create(:partner)
     get "http://admin.lvh.me"
     sign_in @admin
-
   end
 
   test "Edit form has correct fields" do

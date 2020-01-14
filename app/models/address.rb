@@ -75,17 +75,19 @@ class Address < ApplicationRecord
   # details. We currently require the geocoding result to contain the key
   # 'admin_ward' from postcodes.io
   def geocode_with_ward
-    geo = Geocoder.search(postcode).first&.data
-    return unless geo
+    res = Geocoder.search(postcode).first&.data
+    return unless res
 
-    t = Neighbourhood.find_by( name: geo['admin_ward'] )
+    # If the ward already exists, use that
+    neighbourhood = Neighbourhood.find_by(WD19CD: res[:codes][:admin_ward])
+    # If it's new to us, then create a new Neighbourhood.
+    neighbourhood ||= Neighbourhood.create_from_postcodesio_response(res)
+    self.neighbourhood = neighbourhood
 
-    # Is the admin_ward new to us? Then create the respective Neighbourhood.
-    t = Neighbourhood.create_from_admin_ward geo['admin_ward'] unless t
-
-    self.longitude = geo['longitude']
-    self.latitude = geo['latitude']
-    self.neighbourhood = t
+    # Standardise the lat and lng for each postcode
+    # Makes it easier to catch dupes
+    self.longitude = res['longitude']
+    self.latitude = res['latitude']
   end
 
   def standardise_postcode
