@@ -30,13 +30,11 @@ module Admin
 
     def edit
       authorize @user
-      @tags = Tag.all
-      @roles = User.role.values
     end
 
     def update
       authorize @user
-      if @user.update(user_params)
+      if @user.update(permitted_attributes(@user))
         redirect_to admin_users_path
       else
         render 'edit'
@@ -44,7 +42,7 @@ module Admin
     end
 
     def create
-      @user = User.new(user_tag_params)
+      @user = User.new(permitted_attributes(User))
 
       if @user.valid?
         @user.invite!
@@ -85,18 +83,5 @@ module Admin
                                   )
     end
 
-    def user_params
-      params.require(:user).permit(:first_name,
-                                   :last_name,
-                                   :email,
-                                   :phone,
-                                   :role,
-                                   :avatar,
-                                   :facebook_app_id,
-                                   :facebook_app_secret,
-                                   tag_ids: [],
-                                   partner_ids: [],
-                                   neighbourhood_ids: [])
-    end
   end
 end

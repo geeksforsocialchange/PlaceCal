@@ -1,8 +1,8 @@
-<h1 class="page-header">Edit User</h1>
+<h1 class="page-header">Edit User: <%= @user.full_name %></h1>
 
 <div class="behavior-trigger" data-behavior="user.form"></div>
 
-<%= simple_form_for @user, method: :put, url: admin_user_path(@user) do |f| %>
+<%=  filtered_form_for(@user, method: :put, url: admin_user_path(@user), display_only: policy(@user).permitted_attributes_for_update) do |f| %>
   <%= render 'form', f: f %>
   <%= f.submit "Update", class: "btn btn-primary " %>
   <%= link_to "Destroy User", admin_user_path(@user), method: :delete, class: "btn btn-danger" if policy(@user).destroy? %>

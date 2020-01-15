@@ -7,7 +7,8 @@ class User < ApplicationRecord
 
   # Site-wide roles
   enumerize :role,
-            in: %i[root citizen]
+            in: %i[root citizen],
+            default: :citizen
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable

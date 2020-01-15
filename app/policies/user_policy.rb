@@ -29,14 +29,26 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    user.root?
+    index?
   end
 
   def edit?
-    update?
+    index?
   end
 
   def destroy?
-    update?
+    user.root?
+  end
+
+  def permitted_attributes
+    [ :first_name, :last_name, :email, :phone, :role, :avatar, :facebook_app_id, :facebook_app_secret, tag_ids: [], partner_ids: [], neighbourhood_ids: [] ]
+  end
+
+  def permitted_attributes_for_update
+    if user.root?
+      permitted_attributes
+    elsif user.neighbourhood_admin?
+      [ neighbourhood_ids: [] ]
+    end
   end
 end
