@@ -14,25 +14,30 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
 
   # Neighbourhood Index
   #
-  #   Show every Neighbourhood for roots
+  #   Show every Neighbourhood for roots and neighbourhood admins
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root]) do
+  it_allows_access_to_index_for(%i[root neighbourhood_admin]) do
     get admin_neighbourhoods_url
     assert_response :success
   end
 
-  it_denies_access_to_index_for(%i[neighbourhood_admin citizen]) do
+  it_denies_access_to_index_for(%i[citizen]) do
     get admin_neighbourhoods_url
     assert_redirected_to admin_root_url
   end
 
   # New & Create Neighbourhood
   #
-  #   Noone can create these manually.
+  #   Roots can create these manually.
   #   They get created automatically when new addresses are detected.
 
-  it_denies_access_to_new_for(%i[root neighbourhood_admin citizen]) do
+  it_allows_access_to_new_for(%i[root]) do
+    get new_admin_neighbourhood_url
+    assert_response :success
+  end
+
+  it_denies_access_to_new_for(%i[neighbourhood_admin citizen]) do
     get new_admin_neighbourhood_url
     assert_redirected_to admin_root_url
   end
@@ -42,20 +47,27 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to edit all places
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_edit_for(%i[root]) do
+  it_allows_access_to_edit_for(%i[root neighbourhood_admin]) do
     get edit_admin_neighbourhood_url(@neighbourhood)
     assert_response :success
   end
 
-  it_allows_access_to_update_for(%i[root]) do
+  it_denies_access_to_edit_for(%i[citizen]) do
+    get edit_admin_neighbourhood_url(@neighbourhood)
+    assert_redirected_to admin_root_url
+  end
+
+  it_allows_access_to_update_for(%i[root neighbourhood_admin]) do
     patch admin_neighbourhood_url(@neighbourhood),
           params: { neighbourhood: attributes_for(:neighbourhood) }
     # Redirect to main partner screen
     assert_redirected_to admin_neighbourhoods_url
   end
 
-  it_denies_access_to_edit_for(%i[neighbourhood_admin citizen]) do
-    get edit_admin_neighbourhood_url(@neighbourhood)
+  it_denies_access_to_update_for(%i[citizen]) do
+    patch admin_neighbourhood_url(@neighbourhood),
+          params: { neighbourhood: attributes_for(:neighbourhood) }
+    # Redirect to main partner screen
     assert_redirected_to admin_root_url
   end
 
