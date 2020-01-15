@@ -1,107 +1,101 @@
-<%= render_component "hero", title: "Welcome to PlaceCal", subtitle: "The Community Calendar" %>
+<article class="home">
+  <div class="card">
+    <h1>The Community Calendar</h1>
 
-<div class="c c--narrow">
-  <h2 class="h2--alt space-big">
-    <span>What is PlaceCal?</span>
-  </h2>
+    <p>PlaceCal is a community directory and events calendar where you can find out everything that’s happening in your neighbourhood all in one place.</p>
 
-  <p class="p--mega center">PlaceCal is a community events calendar where you can find out everything that's happening near you, all in one place.</p>
-</div>
-
-<div class="pres pres--alt">
-  <%= presentation_image(0) %>
-  <div class="c c--narrow">
-    <p>It's designed to help people find out about the small local events that can be hard to discover: the coffee mornings, sewing groups, computer classes and gardening groups that might be just around the corner.</p>
+    <%= link_to "Find a PlaceCal near you", find_placecal_path %>
   </div>
-</div>
 
-<div class="pres">
-  <%= presentation_image(1) %>
-  <div class="c c--narrow">
-    <p>It is a website&hellip;</p>
+  <div class="card card--alt">
+    <h2>We help communities thrive</h2>
+
+    <p class="border"><strong>Do you want to bring your neighbourhood together to create a stronger, more resilient community?</strong></p>
+
+    <p class="border"><strong>Do you want to improve the health and wellbeing of all residents and to reduce social isolation and loneliness?</strong></p>
+
+    <p class="border"><strong>Do you want to support each community group in  your area to easily publish high quality information about their activities online?</strong></p>
+
+    <%= link_to "Our story", our_story_path %>
+    <%= link_to "Who is PlaceCal?", '#who' %>
+    <%# link_to "Features", find_path %>
   </div>
-</div>
 
-<div class="pres pres--alt">
-  <%= presentation_image(2) %>
-  <div class="c c--narrow">
-    <p>But it's also a conduit for event information that's turned into posters, flyers, brochures, and hopefully local TV and radio broadcasts.</p>
+
+  <h2>How we can help</h2>
+
+  <div class="card">
+    <h3>Community groups</h3>
+    <p>Convert your local knowledge into a great community information website.</p>
+    <%= link_to "View more", community_groups_path %>
   </div>
-</div>
 
-<div class="pres">
-  <br>
-  <%= presentation_image(3) %>
-  <div class="c c--narrow">
-    <p class="space-before">PlaceCal recieves event data from many sources.</p>
+  <div class="card">
+    <h3>Metropolitan areas</h3>
+    <p>Publish what’s on guides across health, housing, and council sectors.</p>
+    <%= link_to "View more", metropolitan_areas_path %>
   </div>
-</div>
 
-<div class="pres">
-  <%= presentation_image(4) %>
-  <div class="c c--narrow">
-    <p>PlaceCal's importer adds additional information when needed, along with geolocation data and moderation for a little polish.</p>
+  <div class="card">
+    <h3>VCSEs</h3>
+    <p>Support community groups in your neighbourhood to work better together.</p>
+    <%= link_to "View more", vcses_path %>
   </div>
-</div>
 
-<div class="pres">
-  <%= presentation_image(5) %>
-  <div class="c c--narrow">
-    <p>All that information is then output across a range of media to reach the whole community.</p>
-    <p class="center"><%= link_to "Browse events", events_path, class: "btn btn--lg btn--mt" %></p>
+  <div class="card">
+    <h3>Housing providers</h3>
+    <p>Connect your tenants with their local community.</p>
+    <%= link_to "View more", housing_providers_path %>
   </div>
-</div>
 
-<div class="pres pres--alt">
-  <h2 class="h2--alt space-big">
-    <span>What we're doing</span>
-  </h2>
-  <%= presentation_image(6) %>
-  <div class="c c--narrow">
-    <p>PlaceCal is building a partnership of local organisations, charities, social housing providers, government services, health providers, and residents.</p>
+  <div class="card">
+    <h3>Social prescribers and GPs</h3>
+    <p>Publish what’s on guides across health, housing, and council sectors.</p>
+    <%= link_to "View more", social_prescribers_path %>
   </div>
-</div>
 
-<div class="pres">
-  <%= presentation_image(7) %>
-  <div class="c c--narrow">
-    <p>Together we are working to improve the quality, quantity and accessibility of community data to make better connected neighbourhoods that work for everyone. </p>
+  <div class="card">
+    <h3>Culture and tourism</h3>
+    <p>Bring more people into your venue, your area or your city.</p>
+    <%= link_to "View more", culture_tourism_path %>
   </div>
-</div>
 
-<div class="c c--narrow">
-  <p>PlaceCal was designed by Geeks for Social Change and PHASE@MMU as a community intervention to reduce social isolation for older people, and is based on our world-leading research into Age Friendly Cities. We won funding from CityVerve (Manchester City Council's technology accelerator) to make a prototype in Hulme &amp; Moss Side. We are currently seeking investors and partners to help roll PlaceCal out to other neighbourhoods.</p>
-  <p class="center"><%= link_to "Join us", join_path, class: "btn btn--lg btn--mt" %></p>
-</div>
-
-<div class="c">
-  <hr>
-</div>
-
-<div class="c c--narrow">
-  <h2 class="h2--alt space-big">
-    <span>How it works</span>
-  </h2>
-
-  <p class="p--mega center">PlaceCal is one of the first Community Technology Partnerships (CTPs).</p>
-
-  <div class="slightly-smaller">
-    <p>CTPs have three components: partnership building and strategy; support and training; and technology and information. Their goal is to create high quality data, services, support and training for people with lower social capital. </p>
-
-    <p>Each CTP builds on existing community partnerships, and combines academic and technical expertise with community groups' local knowledge, in order to understand and take action in a specific area. From this partnership we work together to identify problems and co-design and deliver solutions.</p>
-
-    <p>PlaceCal came from a discovery in our Age Friendly research that older people generally think there is nothing to do in their neighbourhoods. We created an initial events calendar ourselves which we distributed around partnership members, eventually finding there were dozens of events almost every day. We found that organisations lacked support, training and knowledge to promote their events through any means other than word of mouth, for the most part.</p>
-
-    <p>We then interviewed groups directly about what events they put on, who they are for, and what (if any) technical capacity and capability they had. We found most groups were really struggling to maintain a basic web presence, had little or no interest in social media sites like Twitter, Facebook and Eventbrite as their members generally don't use them. We also found that most people were using calendar software for some part of their organisation, but that this information was either private, incomplete, or rarely updated.</p>
-
-    <p>We realised that anything we built had to work based on existing  capacity. PlaceCal was therefore conceived of in the simplest terms as an aggregator that would bring together feeds automatically from Google Calendar, Outlook 365 or Facebook, for example. Whatever people were already using and paying for -- and in the case of larger organisations paying for support for -- we needed to support them to use effectively. We therefore developed a training and support plan based on this seemingly simple proposition: aiding community groups to publish high quality event information using existing software.</p>
-
-    <p>The final piece of the puzzle is the PlaceCal website itself. The training, support and strategy was about making high quality information sources exist; the website brings them all together in an easily digestible, simple format for all ages. Together, these three elements create a strong and resilient platform that's open and innovative, changing the way that people think about cooperative information publishing.</p>
+  <div class="card">
+    <h2>Learn how you can get PlaceCal</h2>
+    <%= link_to "Get in touch today", join_path %>
   </div>
-  <p class="center">
-    <%= link_to 'Read more on Medium',
-        'https://medium.com/@kimadactl/tech-culture-is-failing-communities-how-can-we-make-it-better-cf6f3d51ad13',
-        class: 'btn btn--lg btn--mt',
-        rel: 'noreferrer'  %>
-  </p>
-</div>
+
+
+  <div class="card" id="who">
+    <h2>Who is PlaceCal?</h2>
+
+    <p>We are a not-for-profit social enterprise established by Geeks for Social Change in conjunction with Manchester School for Architecture.</p>
+
+    <p>PlaceCal was developed to combat social isolation and loneliness in our neighbourhood. We discovered that it would have amazing wellbeing and social benefits for every neighbourhood.</p>
+
+    <p>The PlaceCal project was conceived as part of “Manchester Age Friendly Neighbourhoods”, an age friendly partnership project described as ‘world class’ by the World Health Organisation.</p>
+
+    <div class="award">
+      <p><strong>Winner:</strong> AAL Smart Ageing Prize 2018</p>
+      <%= link_to "Read more", "http://www.aal-europe.eu/the-smart-ageing-prize-awards-e50000-to-3-innovative-solutions-for-active-and-healthy-ageing/" %>
+    </div>
+
+    <div class="award">
+      <p><strong>Finalist:</strong> Nesta Tech to Connect Prize 2019</p>
+      <%= link_to "Read more", "https://techtoconnect.challenges.org/finalists/" %>
+    </div>
+
+    <%= link_to "Our story", our_story_path %>
+    <%= link_to "Get in touch", join_path %>
+  </div>
+
+  <div class="pullquote">
+    <blockquote>
+      <p>People are saying they’re bored and there’s nothing to do – with this much on that’s mad isn’t it!</p>
+      <cite>
+        <strong>Catherine</strong>
+        <span>Participant at a supported IT session for older residents</cite>
+      </cite>
+    </blockquote>
+  </div>
+</article>

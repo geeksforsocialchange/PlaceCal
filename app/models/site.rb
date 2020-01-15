@@ -73,7 +73,7 @@ class Site < ApplicationRecord
   end
 
   def stylesheet_link
-    return false if default_site?
+    return 'home' if default_site?
 
     if theme == :custom
       "themes/custom/#{slug}"

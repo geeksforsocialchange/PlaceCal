@@ -2,7 +2,7 @@
 
 # config/routes.rb
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
-  # Most common route at the top
+  # User login stuff
   devise_for :users,
              controllers: {
                omniauth_callbacks: 'admin/omniauth_callbacks',
@@ -12,6 +12,22 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   devise_scope :user do
     match 'users/auth/facebook/setup' => 'admin/omniauth_callbacks#setup', via: [:get, :post]
   end
+
+  # Most common routes at the top
+  root 'pages#home'
+
+  # Static pages
+  get 'join', to: 'pages#join'
+  get 'privacy', to: 'pages#privacy'
+  get 'find-placecal', to: 'pages#find_placecal'
+  get 'our-story', to: 'pages#our_story'
+
+  get 'community-groups', to: 'pages#community_groups'
+  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
+  get 'vcses', to: 'pages#vcses'
+  get 'housing-providers', to: 'pages#housing_providers'
+  get 'social-prescribers', to: 'pages#social_prescribers'
+  get 'culture-tourism', to: 'pages#culture_tourism'
 
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :calendars do
@@ -66,16 +82,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # Collections
   resources :collections, only: %i[show]
 
-  # Static pages
-  get 'join', to: 'pages#join'
-  get 'bus', to: 'pages#bus'
-  get 'privacy', to: 'pages#privacy'
-
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
   get 'winter2018', to: 'collections#show', id: 2
-
-  root 'pages#home'
 
   # Styleguide
   mount MountainView::Engine => '/styleguide'
