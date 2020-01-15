@@ -34,6 +34,7 @@ module Admin
 
     def update
       authorize @user
+
       if @user.update(permitted_attributes(@user))
         redirect_to admin_users_path
       else
@@ -43,6 +44,10 @@ module Admin
 
     def create
       @user = User.new(permitted_attributes(User))
+
+      authorize @user
+
+      @user.skip_password_validation = true
 
       if @user.valid?
         @user.invite!
