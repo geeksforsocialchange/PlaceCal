@@ -9,5 +9,6 @@ FactoryBot.define do
     latitude { 53.4651064 }
     longitude { -2.2484797 }
     postcode { 'M15 5DD' }
+    neighbourhood
   end
 end
