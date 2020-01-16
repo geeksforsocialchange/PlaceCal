@@ -1,13 +1,15 @@
 <article class="home">
-  <div class="card">
-    <h1>The Community Calendar</h1>
-
-    <p>PlaceCal is a community directory and events calendar where you can find out everything that’s happening in your neighbourhood all in one place.</p>
-
-    <%= link_to "Find a PlaceCal near you", find_placecal_path %>
+  <div class="card card--split card--site-title center">
+    <div class="card__title">
+      <h1>The Community Calendar</h1>
+    </div>
+    <div class="card__body">
+      <p>PlaceCal is a community directory and events calendar where you can find out everything that’s happening in your neighbourhood all in one place.</p>
+      <%= link_to "Find a PlaceCal near you", find_placecal_path, class: 'btn' %>
+    </div>
   </div>
 
-  <div class="card card--alt">
+  <div class="card card--alt center">
     <h2>We help communities thrive</h2>
 
     <p class="border"><strong>Do you want to bring your neighbourhood together to create a stronger, more resilient community?</strong></p>
@@ -22,54 +24,20 @@
   </div>
 
 
-  <h2>How we can help</h2>
+  <h2 class="fc-primary center">How we can help</h2>
 
-  <div class="card">
-    <h3>Community groups</h3>
-    <p>Convert your local knowledge into a great community information website.</p>
-    <%= link_to "View more", community_groups_path %>
-  </div>
+  <%= render 'audiences' %>
 
-  <div class="card">
-    <h3>Metropolitan areas</h3>
-    <p>Publish what’s on guides across health, housing, and council sectors.</p>
-    <%= link_to "View more", metropolitan_areas_path %>
-  </div>
-
-  <div class="card">
-    <h3>VCSEs</h3>
-    <p>Support community groups in your neighbourhood to work better together.</p>
-    <%= link_to "View more", vcses_path %>
-  </div>
-
-  <div class="card">
-    <h3>Housing providers</h3>
-    <p>Connect your tenants with their local community.</p>
-    <%= link_to "View more", housing_providers_path %>
-  </div>
-
-  <div class="card">
-    <h3>Social prescribers and GPs</h3>
-    <p>Publish what’s on guides across health, housing, and council sectors.</p>
-    <%= link_to "View more", social_prescribers_path %>
-  </div>
-
-  <div class="card">
-    <h3>Culture and tourism</h3>
-    <p>Bring more people into your venue, your area or your city.</p>
-    <%= link_to "View more", culture_tourism_path %>
-  </div>
-
-  <div class="card">
+  <div class="card card--alt center">
     <h2>Learn how you can get PlaceCal</h2>
     <%= link_to "Get in touch today", join_path %>
   </div>
 
 
   <div class="card" id="who">
-    <h2>Who is PlaceCal?</h2>
+    <h2 class="center">Who is PlaceCal?</h2>
 
-    <p>We are a not-for-profit social enterprise established by Geeks for Social Change in conjunction with Manchester School for Architecture.</p>
+    <p>We are a not-for-profit social enterprise established by Geeks for Social Change and Manchester School of Architecture.</p>
 
     <p>PlaceCal was developed to combat social isolation and loneliness in our neighbourhood. We discovered that it would have amazing wellbeing and social benefits for every neighbourhood.</p>
 

@@ -1,6 +1,6 @@
 @import 'variables_mixins'
 @use "sass:list"
-$home-base-size: 16
+$home-base-size: 18
 
 // Turns an array of sizes into responsive CSS
 // [ Size in pt, Line height, Weight]
@@ -41,7 +41,8 @@ h1
 //--------------------------------------------//
 
 // Section titles
-h2
+h1.section, h2
+  font-family: $sans-serif
   +fontstyle((32 38 300), (35 45), (), (40 50))
 
 // Phone/email section title
@@ -69,8 +70,8 @@ h3.small
   +fontstyle((14 22 bold))
 
 // Image descriptor
-.caption
-  +fontstyle((12 16 normal), (14 18 bold))
+.caption, figcaption
+  +fontstyle((12 16 bold), (14 18))
 
 //--------------------------------------------//
 
@@ -80,18 +81,19 @@ h3.small
 
 .alt-title-small
   font-family: $serif
-  +fontstyle((22, 30), (), (26 34), (30 40))
+  font-weight: normal
+  +fontstyle((22 30), (), (26 34), (30 40))
 
 //--------------------------------------------//
 
 .footer-title
   font-family: $serif
-  +fontstyle((20, 30))
+  +fontstyle((20 30))
 
 .footer-link
   font-family: $serif
-  +fontstyle((16, 30), (), (), (18, 34))
+  +fontstyle((16 30), (), (), (18 34))
 
 .footer-legal
   font-family: $serif
-  +fontstyle((12, 18 ))
+  +fontstyle((12 18))

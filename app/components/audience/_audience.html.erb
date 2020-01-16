@@ -1,0 +1,10 @@
+<div class="card card--split card--audience">
+  <div class="card__title">
+    <h3 class="small"><%= properties[:title] %></h3>
+  </div>
+  <div class="card__body">
+    <%= image_tag properties[:image], alt: properties[:image_alt], class: "card--audience__image" %>
+    <p class="small"><%= properties[:body] %></p>
+    <%= link_to "View more", properties[:link] %>
+  </div>
+</div>

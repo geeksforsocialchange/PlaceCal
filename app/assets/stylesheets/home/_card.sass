@@ -5,9 +5,49 @@
     color: $home-background
   border-radius: 1rem
   background-color: $base-primary
-  text-align: center
+  margin: 1.5rem 0.5rem
   padding: 1rem
-  margin: 0.5rem
 
+  // Split cards with diff top/bottom
+  &--split
+    padding: 0
+    .card__title
+      padding: 1rem
+    .card__body
+      padding: 1rem
+      background-color: $home-background
+      border-radius: 1rem
+    .card__body + .card__body
+      margin-top: 0.75rem
+
+  // Main site title "the community calendar"
+  &--site-title
+    .card__body
+      background-color: $base-primary-light
+
+  // "Community groups", "metro areas" etc
+  &--audience
+    text-align: left
+    .card__title
+      padding: 0.75rem 1rem
+    h3
+      margin: 0
+    .card__body p
+      margin-top: 0
+    &__image
+      border-radius: 50%
+      float: right
+      with: 100px
+      height: 100px
+
+  // Alt colour
   &--alt
     background-color: $home-background-2
+
+  // Plain background colour
+  &--plain
+    background-color: $home-background-3
+    h2
+      color: $base-text
+    .card__body
+      background-color: $home-background

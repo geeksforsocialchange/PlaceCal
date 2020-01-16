@@ -1,0 +1,46 @@
+<article class="home">
+  <div class="card center">
+    <h1 class="section">How we help community groups</h1>
+  </div>
+
+  <div class="card card--plain">
+    <h2 class="center alt-title">We turn your local knowledge into great community information websites</h2>
+    <p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p>
+    <p>The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.</p>
+    <p>We can help your partnership help everyone work together to produce a high quality and constantly updated website that’s proven to work even in areas left behind by other digital initiatives. This information helps communities work better together, improves health outcomes, and saves everyone time manually collating information.</p>
+    <%= link_to "Our story", our_story_path, class: 'btn' %>
+    <%= link_to "See it in action", find_placecal_path, class: 'btn' %>
+  </div>
+
+  <div class="card card--alt">
+    <h2 class="center">How it works for community groups</h2>
+    <%= image_tag "http://placedog.net/600/400" %>
+  </div>
+
+
+  <div class="card card--split card--plain">
+    <div class="card__title">
+      <h2 class="center">How PlaceCal has helped</h2>
+    </div>
+    <div class="card__body">
+      <h3 class="alt-title-small center">We’ve made organising community festivals and bringing people together a breeze.</h3>
+      <figure>
+        <%= image_tag "http://placedog.net/600/400?random&i=1", class: 'rounded' %>
+        <figcaption>Image credit and title</figcaption>
+      </figure>
+      <p>Community partnerships, social prescribers and neighbourhood teams in our pilot areas have been able to collaborate quickly and easily, enabling an unprecedented level of coordination.</p>
+      <p>The time and money savings from PlaceCal mean we’ve been able to focus on organising collaborative community festivals across multiple venues rather than simply struggling to find out what’s on.</p>
+    </div>
+    <div class="card__body">
+      <h3 class="alt-title-small center">We’ve made the best listings in the whole city for our area, increasing neighbourhood wealth and health.</h3>
+      <figure>
+        <%= image_tag "http://placedog.net/600/400?random&i=2", class: 'rounded' %>
+        <figcaption>Hulme Winter Festival leaflets</figcaption>
+      </figure>
+      <p>Residents in Hulme have access to a constantly updated, high quality and trusted community resource with access to dozens of groups and over 200 events a week. The city council and housing associations struggle to even publish 10.</p>
+      <p>This tackles social isolation and loneliness at the root level by making it easy for everyone to find something to do. We’ve also used the information to create and deliver physical mailouts using information gathered through PlaceCal — something which would be simply impossible for each group working alone.</p>
+    </div>
+  </div>
+
+  <%= render 'audiences', exclude: :community_groups %>
+</article>

@@ -29,9 +29,8 @@ guard :minitest, spring: 'bin/rails test', env: { 'NO_COVERAGE': 'true' } do
   # watch(%r{^spec/spec_helper\.rb$}) { 'spec' }
 end
 
-guard 'livereload' do
-  grace_period: 0.5
-  
+guard 'livereload', grace_period: 1 do
+
   extensions = {
     css: :css,
     scss: :css,
