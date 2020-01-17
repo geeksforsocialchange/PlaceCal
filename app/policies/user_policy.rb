@@ -8,15 +8,27 @@ class UserPolicy < ApplicationPolicy
     @record = record
   end
 
+  def profile?
+    user.id == record.id
+  end
+
+  def update_profile?
+    profile?
+  end
+
   def index?
     user.root? || user.neighbourhood_admin?
   end
 
-  def update?
+  def create?
     index?
   end
 
-  def assign_tag?
+  def new?
+    index?
+  end
+
+  def update?
     index?
   end
 
@@ -25,6 +37,24 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    index?
+    user.root?
+  end
+
+  def permitted_attributes
+    attrs = [ :first_name, :last_name, :email, :phone, :avatar, :facebook_app_id, :facebook_app_secret, tag_ids: [], partner_ids: [], neighbourhood_ids: [] ]
+
+    if user.root?
+      attrs << :role
+    else
+      attrs
+    end
+  end
+
+  def permitted_attributes_for_update
+    if user.root?
+      permitted_attributes
+    elsif user.neighbourhood_admin?
+      [ partner_ids: [] ]
+    end
   end
 end

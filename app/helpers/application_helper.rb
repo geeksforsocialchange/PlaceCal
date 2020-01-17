@@ -1,4 +1,15 @@
 # frozen_string_literal: true
+class StrongParametersFormBuilder < SimpleForm::FormBuilder
+  def input(attribute_name, *args, &block)
+    display_filter = self.options[:display_only].collect { |attr| attr.is_a?(Hash) ? attr.keys : attr }.flatten
+
+    if display_filter
+      super if display_filter.include?(attribute_name)
+    else
+      super
+    end
+  end
+end
 
 module ApplicationHelper
   def markdown(source)
@@ -24,5 +35,9 @@ module ApplicationHelper
         link_to name, path, class: klass
       end
     end
+  end
+
+  def filtered_form_for(object, options = {}, &block)
+    simple_form_for(object, options.merge(:builder => StrongParametersFormBuilder), &block)
   end
 end

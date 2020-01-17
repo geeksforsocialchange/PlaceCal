@@ -5,6 +5,8 @@ class User < ApplicationRecord
   include Validation
   extend Enumerize
 
+  attr_accessor :skip_password_validation, :current_password
+
   # Site-wide roles
   enumerize :role,
             in: %i[root citizen],
@@ -85,5 +87,12 @@ class User < ApplicationRecord
 
   def has_facebook_keys?
     facebook_app_id.present? && facebook_app_secret.present?
+  end
+
+  protected
+
+  def password_required?
+    return false if skip_password_validation
+    super
   end
 end
