@@ -10,7 +10,8 @@ module Admin
     end
 
     def new
-      redirect_to admin_root_path
+      @neighbourhood = Neighbourhood.new
+      authorize @neighbourhood
     end
 
     def edit
@@ -18,13 +19,20 @@ module Admin
       @users = @neighbourhood.users
     end
 
+
     def create
-      redirect_to admin_root_path
+      @neighbourhood = Neighbourhood.new(permitted_attributes(Neighbourhood))
+      authorize @neighbourhood
+      if @neighbourhood.save
+        redirect_to admin_neighbourhoods_path
+      else
+        render 'new'
+      end
     end
 
     def update
       authorize @neighbourhood
-      if @neighbourhood.update(neighbourhood_params)
+      if @neighbourhood.update(permitted_attributes(@neighbourhood))
         redirect_to admin_neighbourhoods_path
       else
         render 'edit'
@@ -44,10 +52,6 @@ module Admin
 
     def set_neighbourhood
       @neighbourhood = Neighbourhood.find(params[:id])
-    end
-
-    def neighbourhood_params
-      params.require(:neighbourhood).permit(:name, user_ids: [])
     end
   end
 end

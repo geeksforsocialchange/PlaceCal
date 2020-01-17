@@ -40,6 +40,7 @@ class MapComponent < MountainView::Presenter
     end
   end
 
+  # TODO: Hook in to new themes
   # IDs from Mapbox
   def tileset
     case site
