@@ -60,13 +60,13 @@ class ActiveSupport::TestCase
   end
 
 
-  #Policy Test Helper
+  # Policy Test Helper
   #
-  #Usage:
+  # Usage:
   #
-  #allows_access(@root, @partner, :create)
-  #denies_access(@partner_admin, @partner, :update)
-  #permitted_records(@partner_admin, Partner)
+  # allows_access(@root, @partner, :create)
+  # denies_access(@partner_admin, @partner, :update)
+  # permitted_records(@partner_admin, Partner)
 
   def allows_access(user, object, action)
     klass  = object.is_a?(Class) ? object : object.class

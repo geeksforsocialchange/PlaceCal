@@ -39,6 +39,8 @@ class PartnerPolicy < ApplicationPolicy
         scope.joins(:tags).where(tags: { id: user.tags }).distinct
       elsif user.partner_admin?
         scope.joins(:users).where(partners_users: { user_id: user.id })
+      elsif user.neighbourhood_admin?
+        scope.joins(:address).where(addresses: { neighbourhood_id: user.neighbourhood_ids })
       else
         scope.none
       end
