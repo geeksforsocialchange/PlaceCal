@@ -11,7 +11,8 @@ module Admin
 
     def update_profile
       authorize current_user, :update_profile?
-      if current_user.update(profile_params)
+      if update_user_profile
+        bypass_sign_in(current_user)
         redirect_to admin_root_path
       else
         render 'profile'
@@ -86,6 +87,17 @@ module Admin
                                    :facebook_app_id,
                                    :facebook_app_secret
                                   )
+    end
+
+    def update_user_profile
+      if profile_params[:current_password].present? ||
+         profile_params[:password].present? ||
+         profile_params[:password_confirmation].present?
+
+        current_user.update_with_password(profile_params)
+      else
+        current_user.update_without_password(profile_params)
+      end
     end
 
   end

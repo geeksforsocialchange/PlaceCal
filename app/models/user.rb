@@ -5,7 +5,7 @@ class User < ApplicationRecord
   include Validation
   extend Enumerize
 
-  attr_accessor :skip_password_validation
+  attr_accessor :skip_password_validation, :current_password
 
   # Site-wide roles
   enumerize :role,
