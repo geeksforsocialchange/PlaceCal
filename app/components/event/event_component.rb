@@ -64,7 +64,7 @@ class EventComponent < MountainView::Presenter
   end
 
   def neighbourhood_name
-    event.neighbourhood&.name
+    event.neighbourhood&.shortname
   end
 
   def primary_neighbourhood?

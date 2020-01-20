@@ -5,6 +5,8 @@ class User < ApplicationRecord
   include Validation
   extend Enumerize
 
+  attr_accessor :skip_password_validation, :current_password
+
   # Site-wide roles
   enumerize :role,
             in: %i[root citizen],
@@ -40,6 +42,7 @@ class User < ApplicationRecord
             presence: true,
             uniqueness: true,
             format: { with: EMAIL_REGEX, message: 'invalid email address' }
+  validates :role, presence: true
 
   mount_uploader :avatar, AvatarUploader
 
@@ -82,16 +85,14 @@ class User < ApplicationRecord
     Site.where(site_admin: self).any?
   end
 
-  def valid_for_invite?
-    errors.add(:email, "can't be blank") if email.blank?
-    errors.add(:first_name, "can't be blank") if first_name.blank?
-    errors.add(:last_name, "can't be blank") if last_name.blank?
-    errors.add(:role, "can't be blank") if role.blank?
-
-    errors.blank?
-  end
-
   def has_facebook_keys?
     facebook_app_id.present? && facebook_app_secret.present?
+  end
+
+  protected
+
+  def password_required?
+    return false if skip_password_validation
+    super
   end
 end

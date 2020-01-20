@@ -14,6 +14,50 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     host! 'admin.lvh.me'
   end
 
+  # Profile
+  test "root: can access profile" do
+    sign_in @root
+
+    get admin_profile_path
+    assert_response :success
+  end
+
+  test "neighbourhood_admin: can access profile" do
+    sign_in @neighbourhood_admin
+
+    get admin_profile_path
+    assert_response :success
+  end
+
+  test "citizen: can access profile" do
+    sign_in @citizen
+
+    get admin_profile_path
+    assert_response :success
+  end
+
+  #Update Profile
+  test "user can update their profile" do
+    sign_in @root
+
+    patch update_profile_admin_user_path(@root),
+          params: { user: { first_name: 'Bob' }}
+
+    assert_redirected_to admin_root_url
+    assert_equal 'Bob', @root.reload.first_name
+  end
+
+  test "user cannot update other's profile" do
+    user = create(:user, first_name: 'Test')
+
+    sign_in @root
+
+    patch update_profile_admin_user_path(user),
+          params: { user: { first_name: 'Name' }}
+
+    assert_redirected_to admin_root_url
+    assert_equal 'Test', user.reload.first_name
+  end
   # User Index
   #
   #   Show every User for roots
@@ -37,7 +81,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to create new Users
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_new_for(%i[neighbourhood_admin]) do
+  it_allows_access_to_new_for(%i[root neighbourhood_admin]) do
     get new_admin_user_url
     assert_response :success
   end
@@ -47,20 +91,24 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
-  # TODO: Work out why this is saying host isn't set when it is
-  # it_allows_access_to_create_for(%i[root]) do
-  #   assert_difference('User.count') do
-  #     post admin_users_url,
-  #          params: { user: attributes_for(:user) }
-  #   end
-  # end
+  it_allows_access_to_create_for(%i[root neighbourhood_admin]) do
+    assert_difference('User.count', 1) do
+      post admin_users_url,
+           params: { user: attributes_for(:user) }
+    end
+  end
+
+  it_denies_access_to_create_for(%i[citizen]) do
+    get new_admin_user_url
+    assert_redirected_to admin_root_url
+  end
 
   # Edit & Update User
   #
   #   Allow roots to edit all places
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_edit_for(%i[root]) do
+  it_allows_access_to_edit_for(%i[root neighbourhood_admin]) do
     get edit_admin_user_url(@citizen)
     assert_response :success
   end
@@ -70,11 +118,33 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
-  it_allows_access_to_update_for(%i[root citizen]) do
+  it_allows_access_to_update_for(%i[root neighbourhood_admin]) do
+    patch admin_user_url(@citizen),
+          params: { user: attributes_for(:user) }
+    # Redirect to users screen
+    assert_redirected_to admin_users_url
+  end
+
+  it_denies_access_to_update_for(%i[citizen]) do
     patch admin_user_url(@citizen),
           params: { user: attributes_for(:user) }
     # Redirect to main partner screen
     assert_redirected_to admin_root_url
+  end
+
+  test 'neighbourhood_admin : can only update partner_ids' do
+    sign_in @neighbourhood_admin
+
+    patch admin_user_url(@citizen),
+          params: { user: { first_name: 'Bob', last_name: 'Smith', partner_ids: [@partner.id] } }
+
+    assert_redirected_to admin_users_url
+
+    @citizen.reload #Ensure updated record is fetched
+
+    assert_not_equal 'Bob', @citizen.first_name
+    assert_not_equal 'Smith', @citizen.last_name
+    assert_equal @partner.id, @citizen.partner_ids.first
   end
 
   # Delete User
@@ -90,7 +160,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_users_url
   end
 
-  it_denies_access_to_destroy_for(%i[partner_admin citizen]) do
+  it_denies_access_to_destroy_for(%i[partner_admin neighbourhood_admin citizen]) do
     assert_no_difference('User.count') do
       delete admin_user_url(@citizen)
     end

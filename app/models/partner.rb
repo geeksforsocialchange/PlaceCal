@@ -13,7 +13,6 @@ class Partner < ApplicationRecord
   has_many :calendars, dependent: :destroy
   has_many :events
   belongs_to :address, optional: true
-  belongs_to :neighbourhood, optional: true
 
   has_and_belongs_to_many :objects,
                           class_name: 'Partner',

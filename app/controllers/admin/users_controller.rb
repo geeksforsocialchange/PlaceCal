@@ -2,10 +2,22 @@
 
 module Admin
   class UsersController < Admin::ApplicationController
-    before_action :set_user, only: %i[edit assign_tag update destroy]
+    before_action :set_user, only: %i[edit update destroy]
     before_action :set_roles_and_tags, only: %i[new create edit assign_tag update destroy]
 
-    def profile; end
+    def profile
+      authorize current_user, :profile?
+    end
+
+    def update_profile
+      authorize current_user, :update_profile?
+      if update_user_profile
+        bypass_sign_in(current_user)
+        redirect_to admin_root_path
+      else
+        render 'profile'
+      end
+    end
 
     def index
       @users = User.all.order(:last_name, :first_name)
@@ -19,13 +31,12 @@ module Admin
 
     def edit
       authorize @user
-      @tags = Tag.all
-      @roles = User.role.values
     end
 
-    def assign_tag
-      authorize current_user, :assign_tag?
-      if @user.update(user_tag_params)
+    def update
+      authorize @user
+
+      if @user.update(permitted_attributes(@user))
         redirect_to admin_users_path
       else
         render 'edit'
@@ -33,22 +44,18 @@ module Admin
     end
 
     def create
-      @user = User.new(user_tag_params)
+      @user = User.new(permitted_attributes(User))
 
-      if @user.valid_for_invite
+      authorize @user
+
+      @user.skip_password_validation = true
+
+      if @user.valid?
         @user.invite!
         redirect_to admin_users_path
       else
         Rails.logger.debug @user.errors.full_messages
         render 'new'
-      end
-    end
-
-    def update
-      if current_user.update_without_password(user_params)
-        redirect_to admin_root_path
-      else
-        render 'profile'
       end
     end
 
@@ -68,11 +75,13 @@ module Admin
       @roles = User.role.values
     end
 
-    def user_params
+    def profile_params
       params.require(:user).permit(:first_name,
                                    :last_name,
                                    :email,
                                    :password,
+                                   :password_confirmation,
+                                   :current_password,
                                    :phone,
                                    :avatar,
                                    :facebook_app_id,
@@ -80,19 +89,16 @@ module Admin
                                   )
     end
 
-    def user_tag_params
-      params.require(:user).permit(:first_name,
-                                   :last_name,
-                                   :email,
-                                   :password,
-                                   :phone,
-                                   :role,
-                                   :avatar,
-                                   :facebook_app_id,
-                                   :facebook_app_secret,
-                                   tag_ids: [],
-                                   partner_ids: [],
-                                   neighbourhood_ids: [])
+    def update_user_profile
+      if profile_params[:current_password].present? ||
+         profile_params[:password].present? ||
+         profile_params[:password_confirmation].present?
+
+        current_user.update_with_password(profile_params)
+      else
+        current_user.update_without_password(profile_params)
+      end
     end
+
   end
 end

@@ -1,7 +1,87 @@
-<%= simple_form_for @neighbourhood, url: (@neighbourhood.new_record? ? admin_neighbourhoods_path : admin_neighbourhood_path) do |f| %>
+<%= simple_form_for [:admin, @neighbourhood] do |f| %>
+
   <%= render_component "error", object: @neighbourhood %>
 
-  <%= f.association :users, label: "Users", collection: options_for_users, input_html: { class: 'form-control select2' } %>
+  <h2>Neighbourhood name</h2>
+  <p>This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too.</p>
 
-  <%= f.submit "Save", class: "btn btn-primary" %><br><br>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :name, label: 'Name', as: :vue_string %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :name_abbr, label: 'Abbreviated name' %>
+    </div>
+  </div>
+
+  <h2>PlaceCal ward info</h2>
+  <p>This information starts as the official designation, but can be changed by us if we don't like it. This is the information that shows up in the frontend where appropriate.</p>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :ward, as: :vue_string %>
+      <%= f.input :district, as: :vue_string %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :county, as: :vue_string %>
+      <%= f.input :region, as: :vue_string %>
+    </div>
+  </div>
+
+  <h2>Official ward info</h2>
+  <p>This information is the official designation set by the UK Boundary Commission. It's kept here for postcode lookups and posterity.</p>
+
+  <h3>Ward</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :WD19CD, label: 'WD19CD', readonly: true, as: :vue_string %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :WD19NM, label: 'WD19NM', readonly: true, as: :vue_string %>
+    </div>
+  </div>
+
+  <h3>Local Authority District</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :LAD19CD, label: 'LAD19CD', readonly: true, as: :vue_string %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :LAD19NM, label: 'LAD19NM', readonly: true, as: :vue_string %>
+    </div>
+  </div>
+
+  <h3>County</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :CTY19CD, label: 'CTY19CD', readonly: true, as: :vue_string %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :CTY19NM, label: 'CTY19NM', readonly: true, as: :vue_string %>
+    </div>
+  </div>
+
+  <h3>Region</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :RGN19CD, label: 'RGN19CD', readonly: true, as: :vue_string %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :RGN19NM, label: 'RGN19NM', readonly: true, as: :vue_string %>
+    </div>
+  </div>
+
+
+  <% if policy(@neighbourhood).set_users? %>
+    <h2>Neighbourhood admins</h2>
+    <p>The list of users with admin rights to this neighbourhood.</p>
+
+    <%= f.association :users, label: "Users", collection: options_for_users, input_html: { class: 'form-control select2' } %>
+  <% end %>
+
+  <%= f.submit "Save", class: "btn btn-primary" %>
+  <% if !@neighbourhood.new_record? && policy(@neighbourhood).destroy? %>
+    <%= link_to "Destroy", admin_neighbourhood_path(@neighbourhood), method: :delete, class: "ml-3 btn btn-danger" %>
+  <% end %>
+  <br><br>
 <% end %>
