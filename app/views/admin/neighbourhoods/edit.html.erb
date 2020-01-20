@@ -1,1 +1,18 @@
-<%= render_component "admin_edit", model: :neighbourhood, title: @neighbourhood.name %>
+<script>
+  const currentInfo = <%= @neighbourhood.to_json.html_safe %>
+</script>
+
+<div id="js-ward-picker">
+  <%= render_component "admin_edit", model: :neighbourhood, title: @neighbourhood.name %>
+  <% if policy(@neighbourhood).new? %>
+    <h2>Overwrite with ward info</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-control-label" for="ward-input">Quick add by ward code (WD19CD). Warning: will overwrite all the above fields!</label>
+          <input class="form-control bg-danger text-white" id="ward-lookup" v-model="wardSearch" v-on:change="lookupWard()" placeholder="E01234567"></input>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -40,4 +40,16 @@ class UserTest < ActiveSupport::TestCase
     @user.update(first_name: 'Joan', last_name: 'Jones')
     assert_equal "JONES, Joan <#{@user.email}>", @user.admin_name
   end
+
+  test 'without skip_password_validation' do
+    user = User.new(email: 'test@test.com', role: 'citizen')
+    assert_equal false, user.valid?
+  end
+
+  test 'with skip_password_valiation' do
+    user = User.new(email: 'test@test.com', role: 'citizen')
+    user.skip_password_validation = true
+    assert_equal true, user.valid?
+
+  end
 end
