@@ -1,0 +1,99 @@
+@import 'variables_mixins'
+@use "sass:list"
+$home-base-size: 18
+
+// Turns an array of sizes into responsive CSS
+// [ Size in pt, Line height, Weight]
+=fontmarkup($sizes)
+  font-size: #{nth($sizes, 1) / $home-base-size}rem
+  line-height: #{nth($sizes, 2) / nth($sizes, 1)}
+  @if length($sizes) == 3
+    font-weight: nth($sizes, 3)
+
+=fontstyle($default, $portrait: false, $landscape: false, $desktop: false)
+  +fontmarkup($default)
+
+  @if length($portrait) > 1
+    +for-tablet-portrait-up
+      +fontmarkup($portrait)
+  @if length($landscape) > 1
+    +for-tablet-landscape-up
+      +fontmarkup($landscape)
+  @if length($desktop) > 1
+    +for-desktop-up
+      +fontmarkup($desktop)
+
+//--------------------------------------------//
+
+// Hero text
+h1
+  font-family: $serif
+  +fontstyle((32 40), (45 55), (), (60 60))
+
+// Intro copy
+.intro
+  +fontstyle((16 26 medium))
+
+// Navigation
+.navlink
+  +fontstyle((18 20 semibold))
+
+//--------------------------------------------//
+
+// Section titles
+h1.section, h2
+  font-family: $sans-serif
+  +fontstyle((32 38 300), (35 45), (), (40 50))
+
+// Phone/email section title
+h2.phone
+  +fontstyle((28 40 300), (35 45), (), (40 50))
+
+// Large titles
+h3
+  +fontstyle((26 32 bold), (24 30))
+
+// Small titles
+h3.small
+  +fontstyle((20 24 bold))
+
+// Buttons & 'strong text'
+.btn
+  +fontstyle((18 26 bold))
+
+// Small / descriptor
+.small
+  +fontstyle((14 22 medium))
+
+// Tiny titles / info / dates
+.tinytitle
+  +fontstyle((14 22 bold))
+
+// Image descriptor
+.caption, figcaption
+  +fontstyle((12 16 bold), (14 18))
+
+//--------------------------------------------//
+
+.alt-title
+  font-family: $serif
+  +fontstyle((26 36), (26 34), (30 40), (40 55))
+
+.alt-title-small
+  font-family: $serif
+  font-weight: normal
+  +fontstyle((22 30), (), (26 34), (30 40))
+
+//--------------------------------------------//
+
+.footer-title
+  font-family: $serif
+  +fontstyle((20 30))
+
+.footer-link
+  font-family: $serif
+  +fontstyle((16 30), (), (), (18 34))
+
+.footer-legal
+  font-family: $serif
+  +fontstyle((12 18))
