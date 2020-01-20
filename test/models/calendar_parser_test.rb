@@ -1,5 +1,7 @@
 require 'test_helper'
 
+# TODO: Assertations are wrong way around - should be (expected, actual)
+
 class CalendarParserTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
@@ -81,6 +83,22 @@ class CalendarParserTest < ActiveSupport::TestCase
       assert_equal events.count, 38
       assert_equal first_event.summary, 'Inuk'
       assert_equal last_event.summary, 'ZYP: Unusual Theatre in Unusual Spaces'
+    end
+  end
+
+  test 'imports teamup calendars' do
+    calendar = create(:calendar, name: 'Teamup.com',
+                                 source: 'https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics')
+
+    VCR.use_cassette('Teamup.com calendar') do
+      output = CalendarParser.new(calendar).parse
+      events = output.events
+      first_event = events.first
+      last_event = events.last
+
+      assert_equal 25, events.count
+      assert_equal 'Mudeford Lifeboat Fun Day', first_event.summary
+      assert_equal 'BEETLE DRIVE', last_event.summary
     end
   end
 
