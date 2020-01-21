@@ -14,18 +14,18 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def edit?
-    return true if user.root? || user.neighbourhood_admin?
-
-    user.partner_admin? &&
-      user.partner_ids.include?(record.partner_id)
+    index?
   end
 
   def update?
-    edit?
+    return true if user.root?
+    return true if user.partner_admin? && user.partner_ids.include?(record.partner_id)
+    # return true if user.neighbourhood_admin? && user.neighbourhoods.include?(record.address.neighbourhood)
+    index?
   end
 
   def import?
-    user.root?
+    index?
   end
 
   def select_page?
@@ -33,7 +33,7 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.root?
+    index?
   end
 
   class Scope < Scope

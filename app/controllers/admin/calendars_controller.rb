@@ -33,6 +33,7 @@ module Admin
       end
 
       if @calendar.save
+        flash[:success] = "Successfully created new calendar"
         redirect_to edit_admin_calendar_path(@calendar)
       else
         render 'new'
