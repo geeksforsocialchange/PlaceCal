@@ -6,6 +6,7 @@ import 'vue'
 import 'vue-turbolinks'
 
 import '../src/behaviors/all_behaviors.js'
+import '../src/calendar-form.js'
 import '../src/opening-times.js'
 import '../src/ward-picker.js'
 
