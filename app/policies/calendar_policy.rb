@@ -38,11 +38,18 @@ class CalendarPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if user.root?
-        scope.all
-      else
-        scope.joins(partner: :users).where(partners_users: { user_id: user.id })
+      return scope.all if user.root?
+
+      cals = Calendar.none
+      if user.neighbourhood_admin?
+        cals += Calendar.joins(partner: :address, place: :address)
+                        .where(addresses: { neighbourhood_id: user.neighbourhood_ids })
       end
+      if user.partner_admin?
+        cals += Calendar.where("partner_id = :partner_ids OR place_id = :partner_ids",
+                               partner_ids: user.partner_ids)
+      end
+      cals.uniq
     end
   end
 end
