@@ -2,7 +2,9 @@
 <h2> Import Status for <%= @calendar.name %></h2>
 
 <p class="bigger">
-  <strong>Last updated <%= time_ago_in_words(@calendar.last_import_at) %> ago</strong> (<%= @calendar.last_import_at %>)
+  <% if @calendar.last_import_at %>
+    <strong>Last updated <%= time_ago_in_words(@calendar.last_import_at) %> ago</strong> (<%= @calendar.last_import_at %>)
+  <% end %>
 </p>
 
 <div class='row'>
