@@ -1,6 +1,5 @@
 import TurbolinksAdapter from 'vue-turbolinks'
 import Vue from 'vue/dist/vue.esm'
-import axios from 'axios'
 
 Vue.use(TurbolinksAdapter)
 
