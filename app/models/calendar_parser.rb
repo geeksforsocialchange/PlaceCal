@@ -21,8 +21,8 @@ class CalendarParser
   end
 
   def validate_feed
-    raise InaccessibleFeed, "The url #{@url} could not be reached for calendar #{@calendar.name}" unless is_url_accessible?
-    raise UnsupportedFeed, "The provided url #{@url} is not supported" unless parser.present?
+    raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless is_url_accessible?
+    raise UnsupportedFeed, "The provided URL is not supported" unless parser.present?
     true
   end
 
