@@ -443,7 +443,7 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
-    sendgrid-actionmailer (2.4.0)
+    sendgrid-actionmailer (2.4.1)
       mail (~> 2.5)
       sendgrid-ruby (~> 6.0)
     sendgrid-ruby (6.0.2)
