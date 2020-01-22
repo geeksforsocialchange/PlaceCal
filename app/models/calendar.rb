@@ -25,6 +25,8 @@ class Calendar < ApplicationRecord
   attribute :is_facebook_page, :boolean, default: false
   attribute :facebook_page_id, :string
 
+  default_scope { order(name: :asc) }
+
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
   enumerize(

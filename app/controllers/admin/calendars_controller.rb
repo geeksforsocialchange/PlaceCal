@@ -6,7 +6,7 @@ module Admin
     before_action :set_calendar, only: %i[show edit update destroy import]
 
     def index
-      @calendars = policy_scope(Calendar).order(:name)
+      @calendars = policy_scope(Calendar)
       authorize Calendar
     end
 
@@ -83,8 +83,7 @@ module Admin
     private
 
     def set_calendar
-      @calendar = policy_scope(Calendar).find(params[:id])
-      authorize @calendar
+      @calendar = Calendar.find(params[:id])
     end
 
     def calendar_params
