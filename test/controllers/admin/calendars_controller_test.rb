@@ -52,7 +52,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
                                            place_id: place.id,
                                            partner_id: partner.id) }
     end
-    assert_redirected_to edit_admin_calendar_path(Calendar.last)
+    assert_redirected_to edit_admin_calendar_path(assigns[:calendar])
     assert_not flash.empty?
   end
 
