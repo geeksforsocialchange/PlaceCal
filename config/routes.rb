@@ -14,7 +14,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   end
 
   # Most common routes at the top
-  root 'pages#home'
+  root 'pages#home', constraints: { subdomain: '' || 'www' }
 
   # Static pages
   get 'join', to: 'pages#join'

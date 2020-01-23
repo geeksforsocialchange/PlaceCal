@@ -1,0 +1,21 @@
+<article class="home">
+  <div class="card center">
+    <h1 class="section">Find your PlaceCal</h1>
+    <p class="alt-title-small">Pick your community to check out what’s on in your area.</p>
+  </div>
+
+  <% @grouped_sites.each do |group, sites| %>
+    <div class="card rounded district center">
+      <h2 class="district__title h3-small"><%= group %></h2>
+      <div class="district__county tinytitle">
+        <%= sites[0].primary_neighbourhood.county || sites[0].primary_neighbourhood.region %>
+      </div>
+      <% sites.each do |site| %>
+        <div class="region">
+          <h3 class="btn-size region__title"><%= site.place_name || site.name %></h3>
+          <%= image_tag site.hero_image.site_preview.path, class: 'round region__img' if site.hero_image.site_preview.path %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</article>

@@ -161,7 +161,7 @@ namespace :db do
     raise "Could not find #{filename} file!" if ! File.exist? filename
 
     $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
-    puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev < #{filename}`
+    puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev #{filename}`
     if $?.success?
       $stdout.puts "... done."
     else

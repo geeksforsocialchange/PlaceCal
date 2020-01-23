@@ -1,0 +1,31 @@
+@import "variables_mixins"
+
+.district
+  background-color: $base-text
+  border: 2px solid $base-tertiary
+  h2.district__title
+    color: $base-primary
+    margin-bottom: 0.25em
+  &__county
+    color: $base-tertiary
+    margin-bottom: 1rem
+
+.region
+  background-color: $base-tertiary
+  border-radius: 40px 1.5rem 1.5rem 40px
+  position: relative
+  height: 80px
+  margin-bottom: 1rem
+  &__title
+    color: $base-background
+    position: absolute
+    font-weight: 600
+    left: 80px
+    right: 0
+    top: 8px
+  &__img
+    height: 80px
+    width: 80px
+    position: absolute
+    left: 0
+    top: 0
