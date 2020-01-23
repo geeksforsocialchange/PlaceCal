@@ -37,9 +37,9 @@ class ActiveSupport::TestCase
     define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
       users.each do |user|
         test "#{user}: can #{action}" do
-          @variable = instance_variable_get("@#{user}")
+          variable = instance_variable_get("@#{user}")
 
-          sign_in @variable
+          sign_in variable
 
           instance_exec(&block) if block
         end
