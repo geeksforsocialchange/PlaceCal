@@ -57,6 +57,10 @@ class Partner < ApplicationRecord
 
   validates_associated :address
 
+  validate :check_ward_access
+
+  attr_accessor :accessed_by_id
+
   mount_uploader :image, ImageUploader
 
   scope :recently_updated, -> { order(updated_at: desc) }
@@ -80,6 +84,8 @@ class Partner < ApplicationRecord
     joins("JOIN organisation_relationships o_r on o_r.subject_id = partners.id")
     .where(o_r: {verb: :manages}).distinct
   end
+
+  delegate :neighbourhood_id, to: :address, allow_nil: true
 
   def twitter_handle=(handle)
     super(handle&.gsub('@', ''))
@@ -141,5 +147,25 @@ class Partner < ApplicationRecord
     end
 
     errors.blank?
+  end
+
+  def valid_name?
+    self.class.validators_on(:name).each do |validator|
+      validator.validate_each(self, :name, name)
+    end
+
+    errors.blank?
+  end
+
+  private
+
+  def check_ward_access
+    user = User.where(id: accessed_by_id).first
+
+    return if user.blank?
+
+    unless user.assigned_to_postcode?(address&.postcode)
+      errors.add(:base, 'Partners cannot be created outside of your ward.')
+    end
   end
 end
