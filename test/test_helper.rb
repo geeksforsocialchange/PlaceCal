@@ -37,9 +37,9 @@ class ActiveSupport::TestCase
     define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
       users.each do |user|
         test "#{user}: can #{action}" do
-          variable = instance_variable_get("@#{user}")
+          @variable = instance_variable_get("@#{user}")
 
-          sign_in variable
+          sign_in @variable
 
           instance_exec(&block) if block
         end
@@ -146,5 +146,44 @@ Geocoder::Lookup::Test.add_stub(
          "nuts" => "UKD33"
       }
     }
+  ]
+)
+
+Geocoder::Lookup::Test.add_stub(
+  'PL25 3NS', [
+     { "postcode" => "PL25 3NS",
+       "quality" => 1,
+       "eastings" => 203606,
+       "northings" => 52147,
+       "country" => "England",
+       "nhs_ha" => "South West",
+       "longitude" => -4.761139,
+       "latitude" => 50.336429,
+       "european_electoral_region" => "South West",
+       "primary_care_trust" => "Cornwall and Isles of Scilly",
+       "region" => "South West",
+       "lsoa" => "Cornwall 036E",
+       "msoa" => "Cornwall 036",
+       "incode" => "3NS",
+       "outcode" => "PL25",
+       "parliamentary_constituency" => "St Austell and Newquay",
+       "admin_district" => "Cornwall",
+       "parish" => "St Austell Bay",
+       "admin_county" => nil,
+       "admin_ward" => "St Austell Bay",
+       "ced" => nil, "ccg"=>"NHS Kernow",
+       "nuts" => "Cornwall and Isles of Scilly",
+       "codes" => {
+          "admin_district" => "E06000052",
+          "admin_county" => "E99999999",
+          "admin_ward" => "E05009243",
+          "parish" => "E04011530",
+          "parliamentary_constituency" => "E14000961",
+          "ccg" => "E38000089",
+          "ccg_id" => "11N",
+          "ced" => "E99999999",
+          "nuts" => "UKK30"
+        }
+      }
   ]
 )

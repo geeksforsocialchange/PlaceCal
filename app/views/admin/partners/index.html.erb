@@ -5,5 +5,5 @@
   model: :partners,
   columns: %i[id name slug address],
   data: @partners,
-  new_link: new_admin_partner_path
+  new_link: current_user.neighbourhood_admin? ? setup_admin_partners_path : new_admin_partner_path
 %>

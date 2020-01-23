@@ -6,7 +6,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def show?
-    index?
+    update?
   end
 
   def create?
@@ -18,9 +18,13 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user.root? || user.neighbourhood_admin?
+    return true if user.root?
 
-    user.partner_ids.include?(record.id)
+    if user.neighbourhood_admin?
+      user.neighbourhood_ids.include?(record.neighbourhood_id)
+    else
+      user.partner_ids.include?(record.id)
+    end
   end
 
   def edit?
@@ -28,6 +32,13 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def destroy?
+    return true if user.root?
+    return false unless user.neighbourhood_admin?
+
+    user.neighbourhood_ids.include?(record.neighbourhood_id)
+  end
+
+  def setup?
     create?
   end
 
