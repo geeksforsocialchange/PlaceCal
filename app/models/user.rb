@@ -89,6 +89,17 @@ class User < ApplicationRecord
     facebook_app_id.present? && facebook_app_secret.present?
   end
 
+  def assigned_to_postcode?(postcode)
+    return true unless neighbourhood_admin?
+
+    res = Geocoder.search(postcode).first&.data
+
+    return false unless res
+
+    neighbourhood = Neighbourhood.find_by(WD19CD: res.dig('codes', 'admin_ward'))
+    neighbourhood_ids.include?(neighbourhood&.id)
+  end
+
   protected
 
   def password_required?
