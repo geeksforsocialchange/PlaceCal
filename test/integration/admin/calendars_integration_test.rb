@@ -12,9 +12,21 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
     @partner_two = create(:ashton_partner)
     @neighbourhood = @partner.address.neighbourhood
     @neighbourhood_admin.neighbourhoods << @neighbourhood
-    @calendar = create(:calendar, partner: @partner, place: @partner)
 
+    @calendar = create(:calendar, partner: @partner, place: @partner)
     host! 'admin.lvh.me'
+  end
+
+  test "root user : can get index" do
+    sign_in @root
+    get admin_calendars_path
+    assert_select 'tbody tr', count: 1
+  end
+
+  test "neighbourhood admin : can get index" do
+    sign_in @root
+    get admin_calendars_path
+    assert_select 'tbody tr', count: 1
   end
 
   # GET new
@@ -92,5 +104,5 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
     end
 
     assert_select 'option', @partner.name, count: 1
-  end 
+  end
 end
