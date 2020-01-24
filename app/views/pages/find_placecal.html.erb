@@ -13,7 +13,7 @@
       <% sites.each do |site| %>
         <div class="region">
           <h3 class="btn-size region__title"><%= site.place_name || site.name %></h3>
-          <%= image_tag site.hero_image.site_preview.path, class: 'round region__img' if site.hero_image.site_preview.path %>
+          <%= image_tag site.hero_image.site_preview.url, class: 'round region__img' if site.hero_image.site_preview.path %>
         </div>
       <% end %>
     </div>

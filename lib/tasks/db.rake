@@ -195,6 +195,13 @@ namespace :db do
     Rake::Task['db:restore_staging'].execute if ENV['restore_on_staging']
   end
 
+  desc "SCP uploads from production to local server"
+  task get_files: :environment do
+    $stdout.puts "Getting files..."
+    `scp -r root@placecal.org:/var/lib/dokku/data/storage/placecal/public/ ./`
+    $stdout.puts "... done."
+  end
+
   private
 
   def ensure_format(format)
