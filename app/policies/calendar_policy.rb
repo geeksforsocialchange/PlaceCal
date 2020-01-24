@@ -43,7 +43,8 @@ class CalendarPolicy < ApplicationPolicy
 
       Calendar.joins(partner: :address, place: :address)
               .where(addresses: { neighbourhood_id: user.neighbourhood_ids })
-              .where("partner_id IN (:partner_id) OR place_id IN (:partner_id)", partner_id: user.partner_ids)
+              .or(Calendar.joins(partner: :address, place: :address)
+              .where("partner_id IN (:partner_id) OR place_id IN (:partner_id)", partner_id: user.partner_ids))
               .distinct
     end
   end
