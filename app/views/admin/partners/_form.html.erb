@@ -5,6 +5,7 @@
   <h2>Basic Information</h2>
 
   <%= f.input :name, class: "form-control" %>
+  <%= f.input :slug, class: "form-control" if current_user.root? %>
   <%= f.input :short_description, class: "form-control", label: 'Short Description', input_html: { rows: 7 } %>
 
 

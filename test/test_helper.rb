@@ -148,3 +148,42 @@ Geocoder::Lookup::Test.add_stub(
     }
   ]
 )
+
+Geocoder::Lookup::Test.add_stub(
+  'OL6 8BH', [
+     {"postcode" => "OL6 8BH",
+      "quality" => 1,
+      "eastings" => 394989,
+      "northings" => 401394,
+      "country" => "England",
+      "nhs_ha" => "North West",
+      "longitude" => -2.077027,
+      "latitude" => 53.509207,
+      "european_electoral_region" => "North West",
+      "primary_care_trust" => "Tameside and Glossop",
+      "region" => "North West",
+      "lsoa" => "Tameside 002A",
+      "msoa" => "Tameside 002",
+      "incode" => "8BH",
+      "outcode" => "OL6",
+      "parliamentary_constituency" => "Ashton-under-Lyne",
+      "admin_district" => "Tameside",
+      "parish" => "Tameside, unparished area",
+      "admin_county" => nil,
+      "admin_ward" => "Ashton Hurst",
+      "ced" => nil,
+      "ccg" => "NHS Tameside and Glossop",
+      "nuts" => "Greater Manchester South East",
+      "codes" => {
+        "admin_district" => "E08000008",
+        "admin_county" => "E99999999",
+        "admin_ward" => "E05000800",
+        "parish" => "E43000162",
+        "parliamentary_constituency" => "E14000537",
+        "ccg" => "E38000182",
+        "ccg_id" => "01Y",
+        "ced" => "E99999999",
+        "nuts" => "UKD35"}
+      }
+  ]
+)

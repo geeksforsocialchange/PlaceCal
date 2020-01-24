@@ -22,6 +22,10 @@ FactoryBot.define do
     after(:build) { |partner| partner.tags = [create(:tag)] }
     # image nil
 
+    factory :ashton_partner, class: 'Partner' do
+      association :address, factory: :ashton_address
+    end
+
     factory :place do
       public_name { 'Place Contact Name' }
     end

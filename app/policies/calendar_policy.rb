@@ -14,18 +14,18 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def edit?
-    return true if user.root? || user.neighbourhood_admin?
-
-    user.partner_admin? &&
-      user.partner_ids.include?(record.partner_id)
+    index?
   end
 
   def update?
-    edit?
+    return true if user.root?
+    return true if user.partner_admin? && user.partner_ids.include?(record.partner_id)
+    # return true if user.neighbourhood_admin? && user.neighbourhoods.include?(record.address.neighbourhood)
+    index?
   end
 
   def import?
-    user.root?
+    index?
   end
 
   def select_page?
@@ -33,16 +33,19 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.root?
+    index?
   end
 
   class Scope < Scope
     def resolve
-      if user.root?
-        scope.all
-      else
-        scope.joins(partner: :users).where(partners_users: { user_id: user.id })
-      end
+      return scope.all if user.root?
+      return scope.none if !user.partner_admin? && !user.neighbourhood_admin?
+
+      Calendar.joins(partner: :address, place: :address)
+              .where(addresses: { neighbourhood_id: user.neighbourhood_ids })
+              .or(Calendar.joins(partner: :address, place: :address)
+              .where("partner_id IN (:partner_id) OR place_id IN (:partner_id)", partner_id: user.partner_ids))
+              .distinct
     end
   end
 end

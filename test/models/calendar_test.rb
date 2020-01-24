@@ -9,18 +9,22 @@ class CalendarTest < ActiveSupport::TestCase
 
   test 'has required fields' do
     # Must have a name and source URL
-    @calendar.save
-    refute @calendar.valid?
-    @calendar.update(name: "A name for the calendar")
-    refute @calendar.valid?
-    @calendar.update(source: "http://my-calendar.com")
-    assert @calendar.valid?
 
+    refute @calendar.valid?
+    @calendar.name = "A name for the calendar"
+    refute @calendar.valid?
+    @calendar.source = "https://my-calendar.com"
+    refute @calendar.valid?
+    @calendar.partner = create(:partner)
+    refute @calendar.valid?
+    @calendar.place = create(:partner)
+    assert @calendar.valid?
+    @calendar.save
     # Sources must be unique
     @existing_calendar = create(:calendar)
-    @existing_calendar.update(source: "http://my-calendar.com")
+    @existing_calendar.update(source: "https://my-calendar.com")
     refute @existing_calendar.valid?
-    assert_equal ["Calendar source is already in use"], @existing_calendar.errors[:source]
+    assert_equal ["calendar source already in use"], @existing_calendar.errors[:source]
   end
 
   test 'gets a contact for each calendar' do

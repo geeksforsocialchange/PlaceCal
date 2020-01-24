@@ -25,6 +25,7 @@ before_install:
     fi
 
 install:
+  - gem install bundler
   - bundle install
   - nvm install $NODE_VERSION
   - node -v
