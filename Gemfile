@@ -46,7 +46,7 @@ gem 'omniauth-facebook'
 gem 'pundit'
 
 # Maps and geolocation
-gem 'geocoder', '~> 1.6.0'
+gem 'geocoder', '~> 1.6.1'
 gem 'leaflet-rails'
 
 # Styleguide
