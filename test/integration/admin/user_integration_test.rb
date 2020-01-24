@@ -4,7 +4,7 @@
 
 require 'test_helper'
 
-class AdminPUserIntegrationTest < ActionDispatch::IntegrationTest
+class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do

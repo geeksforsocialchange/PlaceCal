@@ -184,8 +184,8 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     params = { partner: 
                { name: 'New Partner',
                  address_attributes: { 
-                   street_address: '6 Church St',
-                   postcode: 'PL25 3NS'
+                   street_address: 'Ashton-under-Lyne',
+                   postcode: 'OL6 8BH'
                  } 
                }
              } 
