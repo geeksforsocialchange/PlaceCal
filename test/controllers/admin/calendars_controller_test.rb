@@ -41,9 +41,14 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_create_for(%i[root partner_admin]) do
+    # Factory bot doesn't allow associations in transient attributes - yet
+    place = create(:place)
+    partner = create(:partner)
     assert_difference('Calendar.count') do
       post admin_calendars_url,
-        params: { calendar: attributes_for(:calendar) }
+        params: { calendar: attributes_for(:calendar,
+                                           place_id: place.id,
+                                           partner_id: partner.id) }
     end
     assert_redirected_to edit_admin_calendar_path(Calendar.last)
   end

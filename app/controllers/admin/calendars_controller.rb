@@ -19,6 +19,11 @@ module Admin
       @versions = @calendar.recent_activity
     end
 
+    def show
+      authorize @calendar
+      redirect_to edit_admin_calendar_path(@calendar)
+    end
+
     def create
       @calendar = Calendar.new(calendar_params)
       authorize @calendar
@@ -36,6 +41,7 @@ module Admin
 
     def update
       if @calendar.update(calendar_params)
+        flash[:success] = 'Calendar successfully updated'
         redirect_to edit_admin_calendar_path(@calendar)
       else
         render 'edit'

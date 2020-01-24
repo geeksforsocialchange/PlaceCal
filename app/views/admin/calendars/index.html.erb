@@ -1,7 +1,7 @@
 <%= render_component "admin_index",
   title: "Calendars",
   model: :calendars,
-  columns: %i[id name place is_working last_import_at],
+  columns: %i[id name partner place is_working last_import_at],
   data: @calendars,
   new_link: new_admin_calendar_path,
   additional_links: [
