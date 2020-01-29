@@ -8,7 +8,7 @@ module Parsers
   class Ics < Base
 
     def self.whitelist_pattern
-      /http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.office365.com\/owa\/calendar\/.*|\Awebcal:\/\/|http:\/\/mossleycommunitycentre.org.uk|http:\/\/www.theproudtrust.org|http(s)?:\/\/ics.teamup.com\/feed\/.*/
+      /http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.(office365|live).com\/owa\/calendar\/.*|\Awebcal:\/\/|http:\/\/mossleycommunitycentre.org.uk|http:\/\/www.theproudtrust.org|http(s)?:\/\/ics.teamup.com\/feed\/.*/
     end
 
     def download_calendar

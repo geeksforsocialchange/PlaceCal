@@ -32,13 +32,13 @@ class CalendarParserTest < ActiveSupport::TestCase
       events = output.events
       first_event = events.first
 
-      assert_equal events.count, 139
-      assert_equal first_event.summary, 'Dementia Friends Walk and Talk Group'
-      assert_equal first_event.description, 'Session run by Together Dementia Support call Sally on: 0161 2839970'
+      assert_equal 139, events.count
+      assert_equal 'Dementia Friends Walk and Talk Group', first_event.summary
+      assert_equal 'Session run by Together Dementia Support call Sally on: 0161 2839970', first_event.description
     end
   end
 
-  test 'imports outlook calendars' do
+  test 'imports outlook365.com calendars' do
     skip('performance issues/no current outlook calendars')
     calendar = create(:calendar, source: 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics')
 
@@ -48,9 +48,25 @@ class CalendarParserTest < ActiveSupport::TestCase
        first_event = events.first
        last_event = events.last
 
-       assert_equal events.count, 24
-       assert_equal first_event.summary, 'Hypnotherapy'
-       assert_equal last_event.summary, 'Donna - Ashtanga Yoga'
+       assert_equal 24, events.count
+       assert_equal 'Hypnotherapy', first_event.summary
+       assert_equal 'Donna - Ashtanga Yoga', last_event.summary
+     end
+  end
+
+  test 'imports live.com calendars' do
+    calendar = create(:calendar, source: 'https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics')
+
+     VCR.use_cassette('ACCG') do
+       output = CalendarParser.new(calendar).parse
+       events = output.events
+       first_event = events.first
+       last_event = events.last
+
+       # TODO: update these tests when the calendar is populated
+       assert_equal 0, events.count
+       # assert_equal 'Hypnotherapy', first_event.summary
+       # assert_equal 'Donna - Ashtanga Yoga', last_event.summary
      end
   end
 
@@ -70,7 +86,7 @@ class CalendarParserTest < ActiveSupport::TestCase
     end
   end
 
-  test 'imports zarts calendars' do
+  test 'imports ticketsolve calendars' do
     calendar = create(:calendar, name: 'Z-Arts',
                                  source: 'https://z-arts.ticketsolve.com/shows.xml')
 
