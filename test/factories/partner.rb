@@ -26,8 +26,15 @@ FactoryBot.define do
       association :address, factory: :ashton_address
     end
 
+    opening_times { "[\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"20:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Monday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Tuesday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Wednesday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Thursday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Friday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"13:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Saturday\",\r\n    \"opens\": \"09:00:00\"\r\n  }\r\n]" }
+
     factory :place do
+      sequence(:name) do |n|
+        "Community Venue #{n}"
+      end
+
       public_name { 'Place Contact Name' }
+      public_email { 'contact@venue.org' }
     end
   end
 
