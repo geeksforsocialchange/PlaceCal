@@ -425,7 +425,7 @@ GEM
       ffi (~> 1.9)
     ruby2_keywords (0.0.2)
     ruby_http_client (3.3.0)
-    rubyzip (2.1.0)
+    rubyzip (2.2.0)
     safe_yaml (1.0.5)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
