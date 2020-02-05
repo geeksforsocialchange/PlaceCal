@@ -9,6 +9,8 @@
 
   <%= f.input :role, collection: @roles, class: 'form-control', include_blank: false %>
 
-  <%= f.input :facebook_app_id, as: :string %>
-  <%= f.input :facebook_app_secret, as: :string %>
+  <% if current_user.root? %>
+    <%= f.input :facebook_app_id, as: :string %>
+    <%= f.input :facebook_app_secret, as: :string %>
+  <% end %>
 </div>

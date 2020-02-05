@@ -36,7 +36,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  #Update Profile
+  # Update Profile
   test "user can update their profile" do
     sign_in @root
 
@@ -58,6 +58,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
     assert_equal 'Test', user.reload.first_name
   end
+
   # User Index
   #
   #   Show every User for roots
@@ -134,17 +135,22 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'neighbourhood_admin : can only update partner_ids' do
     sign_in @neighbourhood_admin
+    new_neighbourhood = create(:neighbourhood)
 
     patch admin_user_url(@citizen),
-          params: { user: { first_name: 'Bob', last_name: 'Smith', partner_ids: [@partner.id] } }
+          params: { user: { first_name: 'Bob',
+                            last_name: 'Smith',
+                            partner_ids: [@partner.id],
+                            neighbourhood_ids: [new_neighbourhood.id] } }
 
     assert_redirected_to admin_users_url
 
-    @citizen.reload #Ensure updated record is fetched
+    @citizen.reload # Ensure updated record is fetched
 
     assert_not_equal 'Bob', @citizen.first_name
     assert_not_equal 'Smith', @citizen.last_name
-    assert_equal @partner.id, @citizen.partner_ids.first
+    assert_equal [@partner.id], @citizen.partner_ids
+    assert_equal [], @citizen.neighbourhood_ids
   end
 
   # Delete User

@@ -39,6 +39,11 @@
   <div class="row mt-4">
     <div class="col-md-12">
       <h2>Admin rights</h2>
+      <% if current_user.root? %>
+        <div class="profile__is-root">
+          <p>You are a <strong>root</strong> user and can do everything! be careful!</p>
+        </div>
+      <% end %>
     </div>
   </div>
   <div class="row">
