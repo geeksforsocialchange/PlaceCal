@@ -119,6 +119,10 @@ class Partner < ApplicationRecord
   #   errors.add(:_, "Select at least one Tag") if tag_ids.blank?
   # end
 
+  def should_generate_new_friendly_id?
+    slug.blank?
+  end
+
   def permalink
     "https://placecal.org/partners/#{id}"
   end
