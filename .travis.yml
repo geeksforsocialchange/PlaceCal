@@ -23,14 +23,13 @@ before_install:
     elif [ "$TRAVIS_BRANCH" = "master" ]; then
       openssl aes-256-cbc -k "$staging_decrypt_key" -in $TRAVIS_BUILD_DIR/.travis/deploy.key.enc -out deploy.key -d
     fi
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.21.1
 
 install:
   - gem install bundler
   - bundle install
   - nvm install $NODE_VERSION
   - node -v
-  - npm i -g yarn
+  - npm i -g yarn@1.21.1
   - yarn install
 
 before_script:
