@@ -26,7 +26,7 @@ Minitest::Test.send(:include, JsonMatchers::Minitest::Assertions)
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
-  parallelize(workers: 1)
+  parallelize(workers: :number_of_processors)
 
   # Usage:
   #
