@@ -81,6 +81,17 @@ class User < ApplicationRecord
     tags.any?
   end
 
+  def admin_roles
+    types = []
+
+    types << 'root' if root?
+    types << 'neighbourhood_admin' if neighbourhood_admin?
+    types << 'partner_admin' if partner_admin?
+    types << 'tag_admin' if tag_admin?
+
+    types.join(', ')
+  end
+
   def site_admin?
     Site.where(site_admin: self).any?
   end
