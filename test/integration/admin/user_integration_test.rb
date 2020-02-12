@@ -87,8 +87,8 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Email *'
     assert_select 'label', 'Phone'
     assert_select 'label', 'Avatar'
-    assert_select 'label', 'Partners'
-    assert_select 'label', 'Neighbourhoods'
+    assert_select 'label', /\APartners/
+    assert_select 'label', /\ANeighbourhoods/
     assert_select 'label', 'Role *'
     assert_select 'label', 'Facebook app'
     assert_select 'label', 'Facebook app secret'
@@ -105,8 +105,8 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Email *'
     assert_select 'label', 'Phone'
     assert_select 'label', 'Avatar'
-    assert_select 'label', 'Partners'
-    assert_select 'label', text: 'Neighbourhoods', count: 0
+    assert_select 'label', /\APartners/
+    assert_select 'label', html: /\A'Neighbourhoods/, count: 0
     assert_select 'label', text: 'Role *', count: 0
     assert_select 'label', text: 'Facebook app', count: 0
     assert_select 'label', text: 'Facebook app secret', count: 0
@@ -124,8 +124,8 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Email *'
     assert_select 'label', 'Phone'
     assert_select 'label', 'Avatar'
-    assert_select 'label', 'Partners'
-    assert_select 'label', 'Neighbourhoods'
+    assert_select 'label', /\APartners/
+    assert_select 'label', /\ANeighbourhoods/
     assert_select 'label', 'Role *'
     assert_select 'label', 'Facebook app'
     assert_select 'label', 'Facebook app secret'
@@ -142,8 +142,8 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Email *'
     assert_select 'label', 'Phone'
     assert_select 'label', 'Avatar'
-    assert_select 'label', 'Partners'
-    assert_select 'label', text: 'Neighbourhoods', count: 0
+    assert_select 'label', /\APartners/
+    assert_select 'label', html: /\A'Neighbourhoods/, count: 0
     assert_select 'label', text: 'Role *', count: 0
     assert_select 'label', text: 'Facebook app', count: 0
     assert_select 'label', text: 'Facebook app secret', count: 0

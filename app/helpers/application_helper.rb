@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 class StrongParametersFormBuilder < SimpleForm::FormBuilder
-  def input(attribute_name, *args, &block)
+  def input(attribute_name, options = {}, &block)
+    disabled = self.options[:disabled]
     display_filter = self.options[:display_only].collect { |attr| attr.is_a?(Hash) ? attr.keys : attr }.flatten
 
-    if display_filter
+    if disabled && disabled.include?(attribute_name)
+      options[:disabled] = true
+      super
+    elsif display_filter
       super if display_filter.include?(attribute_name)
     else
       super
