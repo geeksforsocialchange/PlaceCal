@@ -118,6 +118,22 @@ class CalendarParserTest < ActiveSupport::TestCase
     end
   end
 
+  test 'imports eventbrite calendars' do
+    calendar = create(:calendar, name: 'Eventbrite - BAVS',
+                                 source: 'https://www.eventbrite.co.uk/o/berwickshire-association-for-voluntary-service-15751503063')
+
+    VCR.use_cassette('Eventbrite calendar') do
+      output = CalendarParser.new(calendar).parse
+      events = output.events
+      first_event = events.first
+      last_event = events.last
+
+      assert_equal 41, events.count
+      assert_equal 'BAVS Forum: Supporting Positive Pathways – Action Research Event', first_event.summary
+      assert_equal 'Vision 4 Eyemouth', last_event.summary
+    end
+  end
+
   test 'does not import if checksum is the same' do
     calendar = create(:calendar, name: 'Z-Arts',
                                  last_checksum: 'd1a94a9869af91d0548a1faf0ded91d7',
