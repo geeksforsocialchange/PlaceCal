@@ -27,6 +27,7 @@ gem 'webpacker'
 gem 'httparty'
 gem 'icalendar'
 gem 'icalendar-recurrence'
+gem 'eventbrite_sdk'
 
 # Uploads
 gem 'carrierwave'

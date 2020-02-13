@@ -2,7 +2,7 @@ class CalendarParser
   class UnsupportedFeed < StandardError; end
   class InaccessibleFeed < StandardError; end
 
-  PARSERS = [Parsers::ManchesterUni, Parsers::Zarts, Parsers::Facebook, Parsers::Ics].freeze
+  PARSERS = [Parsers::ManchesterUni, Parsers::Zarts, Parsers::Facebook, Parsers::Ics, Parsers::Eventbrite].freeze
 
   def initialize(calendar, options={})
     @calendar = calendar
