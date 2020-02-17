@@ -11,7 +11,7 @@ module Admin
     end
 
     def new
-      @partner = params[:partner] ? Partner.new(partner_params) : Partner.new
+      @partner = params[:partner] ? Partner.new(permitted_attributes(Partner)) : Partner.new
       authorize @partner
     end
 
@@ -21,7 +21,7 @@ module Admin
     end
 
     def create
-      @partner = Partner.new(partner_params)
+      @partner = Partner.new(permitted_attributes(Partner))
       @partner.accessed_by_id = current_user.id
 
       authorize @partner
@@ -46,7 +46,7 @@ module Admin
 
       @partner.accessed_by_id = current_user.id
 
-      if @partner.update(partner_params)
+      if @partner.update(permitted_attributes(@partner))
         redirect_to edit_admin_partner_path(@partner)
       else
         render :edit
