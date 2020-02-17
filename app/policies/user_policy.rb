@@ -41,10 +41,19 @@ class UserPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    attrs = [ :first_name, :last_name, :email, :phone, :avatar, :facebook_app_id, :facebook_app_secret, tag_ids: [], partner_ids: [], neighbourhood_ids: [] ]
-
+    attrs = [ :first_name,
+              :last_name,
+              :email,
+              :phone,
+              :avatar,
+              partner_ids: []
+            ]
     if user.root?
       attrs << :role
+      attrs << :facebook_app_id
+      attrs << :facebook_app_secret
+      attrs << { tag_ids: [] }
+      attrs << { neighbourhood_ids: [] }
     else
       attrs
     end
