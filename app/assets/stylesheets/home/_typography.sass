@@ -25,6 +25,9 @@ $home-base-size: 18
 
 //--------------------------------------------//
 
+body
+  +fontstyle((16 26), (18 28))
+
 // Hero text
 h1
   font-family: $serif
@@ -32,7 +35,7 @@ h1
 
 // Intro copy
 .intro
-  +fontstyle((16 26 medium))
+  +fontstyle((16 26 medium), (), (24 36))
 
 // Navigation
 .navlink
@@ -60,6 +63,9 @@ h3.small, .h3-small
 // Buttons & 'strong text'
 .btn, .btn-size
   +fontstyle((18 26 bold))
+
+.btn--small
+  +fontstyle((16 19 bold))
 
 // Small / descriptor
 .small

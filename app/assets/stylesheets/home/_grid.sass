@@ -1,0 +1,19 @@
+.grid
+  @supports (display: grid)
+    display: grid
+
+.grid__thrive
+  @supports (display: grid)
+    +for-tablet-landscape-up
+      grid-gap: 1.25rem
+      grid-template-columns: 1fr 1fr 1fr
+      p
+        display: grid
+        align-items: center
+
+.grid__audiences
+  +for-tablet-portrait-up
+    grid-template-columns: 1fr 1fr
+    grid-gap: 1rem
+  +for-tablet-landscape-up
+    grid-template-columns: 1fr 1fr 1fr

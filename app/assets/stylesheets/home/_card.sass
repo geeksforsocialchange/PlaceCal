@@ -7,6 +7,7 @@
   background-color: $base-primary
   margin: 1.5rem 0.5rem
   padding: 1rem
+  background-repeat: no-repeat
 
   // Split cards with diff top/bottom
   &--split
@@ -24,6 +25,44 @@
   &--site-title
     .card__body
       background-color: $base-primary-light
+    +for-phone-only
+      .card__title
+        background-image: image-url('home/site_title/mobile_top.svg'), image-url('home/site_title/mobile_bottom.svg')
+        background-repeat: no-repeat
+        background-position: 50% 0, 50% 100%
+        background-size: 241px 48px, 261px 98px
+        // To add space around the background images
+        border-width: 1rem 0
+        border-style: solid
+        border-color: transparent
+        h1
+          margin: 2.5rem 0 4.25rem
+    +for-tablet-portrait-up
+        background-image: image-url('home/site_title/portrait_left.svg'), image-url('home/site_title/portrait_right.svg')
+        background-repeat: no-repeat
+        background-position: 0 50%, 100% 50%
+        background-size: auto 100%
+        border-width: 1rem
+        border-style: solid
+        border-color: transparent
+        min-height: 444px
+        .card__body
+          background-color: transparent
+          padding: 0 155px
+        .card__title
+          padding-bottom: 0
+        h1
+          margin: 4rem 0 0 0
+    +for-tablet-landscape-up
+      background-image: image-url('home/site_title/landscape_left.svg'), image-url('home/site_title/landscape_right.svg')
+      min-height: 409px
+      .card__body
+        padding: 0 190px
+    +for-desktop-up
+      background-image: image-url('home/site_title/desktop_left.svg'), image-url('home/site_title/desktop_right.svg')
+      min-height: 477 px
+      .card__body
+        padding: 0 280px
 
   // "Community groups", "metro areas" etc
   &--audience
@@ -39,6 +78,8 @@
       float: right
       with: 100px
       height: 100px
+    .btn
+      background-color: $base-primary
 
   // Alt colour
   &--alt
