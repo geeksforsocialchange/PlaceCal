@@ -6,7 +6,7 @@ module Admin
     before_action :set_calendar, only: %i[show edit update destroy import]
 
     def index
-      @calendars = policy_scope(Calendar).order(:name)
+      @calendars = policy_scope(Calendar)
       authorize Calendar
     end
 
@@ -19,6 +19,11 @@ module Admin
       @versions = @calendar.recent_activity
     end
 
+    def show
+      authorize @calendar
+      redirect_to edit_admin_calendar_path(@calendar)
+    end
+
     def create
       @calendar = Calendar.new(calendar_params)
       authorize @calendar
@@ -28,6 +33,7 @@ module Admin
       end
 
       if @calendar.save
+        flash[:success] = "Successfully created new calendar"
         redirect_to edit_admin_calendar_path(@calendar)
       else
         render 'new'
@@ -36,6 +42,7 @@ module Admin
 
     def update
       if @calendar.update(calendar_params)
+        flash[:success] = 'Calendar successfully updated'
         redirect_to edit_admin_calendar_path(@calendar)
       else
         render 'edit'
@@ -76,8 +83,7 @@ module Admin
     private
 
     def set_calendar
-      @calendar = policy_scope(Calendar).find(params[:id])
-      authorize @calendar
+      @calendar = Calendar.find(params[:id])
     end
 
     def calendar_params

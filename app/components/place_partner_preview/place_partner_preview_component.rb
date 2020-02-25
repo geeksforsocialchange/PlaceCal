@@ -13,7 +13,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   end
 
   def neighbourhood_name
-    previewee.address&.neighbourhood&.name
+    previewee.address&.neighbourhood&.shortname
   end
 
   def description

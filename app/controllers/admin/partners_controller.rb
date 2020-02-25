@@ -11,7 +11,7 @@ module Admin
     end
 
     def new
-      @partner = Partner.new
+      @partner = params[:partner] ? Partner.new(permitted_attributes(Partner)) : Partner.new
       authorize @partner
     end
 
@@ -21,8 +21,11 @@ module Admin
     end
 
     def create
-      @partner = Partner.new(partner_params)
-      # authorize @partner
+      @partner = Partner.new(permitted_attributes(Partner))
+      @partner.accessed_by_id = current_user.id
+
+      authorize @partner
+
       respond_to do |format|
         if @partner.save
           format.html { redirect_to admin_partners_path, notice: 'Partner was successfully created.' }
@@ -40,10 +43,13 @@ module Admin
 
     def update
       authorize @partner
-      if @partner.update(partner_params)
+
+      @partner.accessed_by_id = current_user.id
+
+      if @partner.update(permitted_attributes(@partner))
         redirect_to edit_admin_partner_path(@partner)
       else
-        render 'new'
+        render :edit
       end
     end
 
@@ -56,6 +62,22 @@ module Admin
       end
     end
 
+    def setup
+      @partner = Partner.new
+      authorize @partner
+
+      render and return unless request.post?
+
+      @partner.attributes = setup_params
+      @partner.accessed_by_id = current_user.id
+
+      if @partner.valid?
+        redirect_to new_admin_partner_url(partner: setup_params)
+      else
+        render 'setup'
+      end
+    end
+
     private
 
     def user_not_authorized
@@ -64,16 +86,23 @@ module Admin
     end
 
     def partner_params
-      params.require(:partner).permit(
-        :name, :image, :short_description,
-        :public_name, :public_email, :public_phone,
-        :partner_name, :partner_email, :partner_phone,
-        :address_id, :url, :facebook_link, :twitter_handle,
-        :opening_times,
-        calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
-        address_attributes: %i[street_address street_address2 street_address3 city postcode],
-        tag_ids: []
-      )
+      attributes = [ :name, :image, :short_description,
+                     :public_name, :public_email, :public_phone,
+                     :partner_name, :partner_email, :partner_phone,
+                     :address_id, :url, :facebook_link, :twitter_handle,
+                     :opening_times,
+                     calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
+                     address_attributes: %i[street_address street_address2 street_address3 city postcode],
+                     tag_ids: [] ]
+
+      attributes << :slug if current_user.root?
+
+      params.require(:partner).permit(attributes)
     end
+
+    def setup_params
+      params.require(:partner).permit(:name, address_attributes: %i[street_address postcode])
+    end
+
   end
 end

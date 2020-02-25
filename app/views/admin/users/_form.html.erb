@@ -4,11 +4,20 @@
   <%= render "contact", f: f %>
 
   <%# f.association :tags, label: false, collection: @tags, as: :check_boxes %>
-  <%= f.association :partners, label: "Partners", collection: options_for_partners, input_html: {class: 'form-control select2' } %>
-  <%= f.association :neighbourhoods, label: "Neighbourhoods", collection: options_for_neighbourhoods, input_html: {class: 'form-control select2' } %>
+  <%= f.association :partners,
+                    label: tooltip_label('Partners', 'Partners this user can edit, as well as their associated calendars'),
+                    collection: options_for_partners,
+                    input_html: {class: 'form-control select2' } %>
+
+  <%= f.association :neighbourhoods,
+                    label: tooltip_label('Neighbourhoods', 'Grants access to every partner and calendar in these neighbourhoods. Use with care!'),
+                    collection: options_for_neighbourhoods,
+                    input_html: {class: 'form-control select2' } %>
 
   <%= f.input :role, collection: @roles, class: 'form-control', include_blank: false %>
 
-  <%= f.input :facebook_app_id, as: :string %>
-  <%= f.input :facebook_app_secret, as: :string %>
+  <% if current_user.root? %>
+    <%= f.input :facebook_app_id, as: :string %>
+    <%= f.input :facebook_app_secret, as: :string %>
+  <% end %>
 </div>

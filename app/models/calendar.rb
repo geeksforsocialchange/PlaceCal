@@ -3,6 +3,10 @@
 # app/models/calendar.rb
 class Calendar < ApplicationRecord
   include ActionView::Helpers::DateHelper
+  include Validation
+  extend Enumerize
+
+  CALENDAR_REGEX = /\A(?:(?:(https?|webcal)):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?\z/i
 
   self.inheritance_column = nil
 
@@ -10,16 +14,18 @@ class Calendar < ApplicationRecord
   belongs_to :place, class_name: 'Partner', optional: true
   has_many :events, dependent: :destroy
 
-  validates_presence_of :name, :source
-  validates_uniqueness_of :source, { message: 'Calendar source is already in use' }
+  validates :name, :partner, :source, presence: true
+  validates :place, presence: { if: :requires_default_location?,
+                                message: "can't be blank with this strategy" }
+  validates :source, uniqueness: { message: 'calendar source already in use' },
+                     format: { with: CALENDAR_REGEX, message: 'not a valid URL' }
 
   before_save :source_supported
-
-  extend Enumerize
 
   attribute :is_facebook_page, :boolean, default: false
   attribute :facebook_page_id, :string
 
+  default_scope { order(name: :asc) }
 
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
@@ -30,26 +36,29 @@ class Calendar < ApplicationRecord
     scope: true
   )
 
+  # We need a default location for some strategies
+  def requires_default_location?
+    %i[place room_number event_override].include? strategy.to_sym
+  end
+
   class << self
     def strategy_label val
       case val.second
       when 'event'
-        '<em>Event</em> - ' \
-        "Use the location exactly as specified in the individual event. " \
+        '<strong>Event</strong>: ' \
+        "Get the location of this event from the address field on the source event. " \
         "This is for area calendars, or organisations with no solid base.".html_safe
       when 'place'
-        "<em>Default location</em> - " \
-        "Always use this calendar's Default Location and ignore any location information in the individual event. " \
-        "Every event is in the same location.".html_safe
+        "<strong>Default location</strong>: " \
+        "Every event is in one location (set below). The address field on the source calendar is ignored.".html_safe
       when 'room_number'
-        "<em>Room Number</em> - " \
-        "Each location is a combination of this calendar's Default Location and a room number " \
-        "in the individual event. Every event is in a large venue and the individual event " \
-        "information specifies the room number.".html_safe
+        "<strong>Room Number</strong>: " \
+        "Every event is on one location (set below), and the address field is used " \
+        "to store a room number.".html_safe
       when 'event_override'
-        "<em>EventOverride</em> - " \
-        "Use this calendar's Default Location unless the individual event has a location, in which case use that instead. " \
-        "Everything is in one Place, with occasional away days or one-off events.".html_safe
+        "<strong>Event Override</strong>: " \
+        "Every event is in one location (set below), unless the address field " \
+        "is set to another location".html_safe
       else
         val
       end

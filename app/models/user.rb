@@ -81,12 +81,34 @@ class User < ApplicationRecord
     tags.any?
   end
 
+  def admin_roles
+    types = []
+
+    types << 'root' if root?
+    types << 'neighbourhood_admin' if neighbourhood_admin?
+    types << 'partner_admin' if partner_admin?
+    types << 'tag_admin' if tag_admin?
+
+    types.join(', ')
+  end
+
   def site_admin?
     Site.where(site_admin: self).any?
   end
 
   def has_facebook_keys?
     facebook_app_id.present? && facebook_app_secret.present?
+  end
+
+  def assigned_to_postcode?(postcode)
+    return true unless neighbourhood_admin?
+
+    res = Geocoder.search(postcode).first&.data
+
+    return false unless res
+
+    neighbourhood = Neighbourhood.find_by(WD19CD: res.dig('codes', 'admin_ward'))
+    neighbourhood_ids.include?(neighbourhood&.id)
   end
 
   protected

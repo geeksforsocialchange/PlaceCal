@@ -9,4 +9,10 @@ module UsersHelper
               alt: "A photo of #{user.full_name}",
               class: 'gravatar')
   end
+
+  def tooltip_label(attribute, title)
+    str = attribute 
+    str += button_tag('?', class: "btn btn-secondary", data: { toggle: "tooltip", placement: "top"  }, title: title)
+    sanitize(str, tags: %w(button), attributes: %w(class type data-toggle data-placement title))
+  end
 end

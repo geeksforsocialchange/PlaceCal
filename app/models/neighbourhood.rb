@@ -14,6 +14,11 @@ class Neighbourhood < ApplicationRecord
             length: { is: 9 },
             allow_blank: true
 
+  def shortname
+    name_abbr.presence || name
+  end
+
+
   class << self
     def create_from_postcodesio_response(res)
       n = Neighbourhood.new

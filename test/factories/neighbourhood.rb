@@ -21,4 +21,22 @@ FactoryBot.define do
 
     after(:build) { |n| n.users = [create(:user)] }
   end
+
+  factory :ashton_neighbourhood, class: 'Neighbourhood' do
+    name { 'Ashton Hurst' }
+    ward { 'Ashton Hurst' }
+    district { 'Tameside' }
+    county { 'Greater Manchester' }
+    region { 'North West' }
+    sequence(:WD19CD) do |n|
+      "E0#{5_000_800 + n}"
+    end
+    WD19NM { 'Ashton Hurst' }
+    LAD19CD { 'E05000800' }
+    LAD19NM { 'Tameside' }
+    CTY19CD { 'E11000001' }
+    CTY19NM { 'Greater Manchester' }
+    RGN19CD { 'E12000002' }
+    RGN19NM { 'North West' }
+  end
 end

@@ -1,62 +1,84 @@
-<%= @calendar.critical_error %>
-
-<%= simple_form_for [:admin, @calendar] do |f| %>
-
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Details</h3>
-      <%- if params[:is_facebook_page].present? %>
-        <%= f.input :name, input_html: { value: params[:page_name] } %>
-        <%= f.hidden_field :is_facebook_page, value: true %>
-        <%= f.hidden_field :facebook_page_id, value: params[:page_id] %>
-        <%= f.input :source, input_html: { value: params[:page_link] } %>
-      <% else %>
-        <%= f.input :name %>
-        <%= f.input :source %>
-      <% end %>
-      <%= f.input :strategy, as: :radio_buttons, label_method: ->(val){Calendar.strategy_label(val)} %>
-      <%= f.association :partner, label: 'Organiser', collection: options_for_organiser, input_html: { class: 'form-control select2' } %>
-      <%= f.association :place, label: 'Default location', collection: options_for_location, input_html: { class: 'form-control select2' } %>
-      <%= f.input :is_working %>
-    </div>
-    <div class="col-md-6">
-      <% unless @calendar.new_record? %>
-        <%= link_to "Destroy Calendar", admin_calendar_path(@calendar), method: :delete, class: "btn btn-danger" %>
-        <%- if current_user.has_facebook_keys? %>
-          <%= link_to "Authorize With Facebook", user_facebook_omniauth_authorize_url(calendar_id: @calendar.id), class: "btn btn-primary" %>
-        <% else %>
-          <%= link_to "Authorize With Facebook", admin_profile_path(missing_keys: true), class: 'btn btn-primary' %>
-        <% end %>
-      <% end %>
-    </div>
+<% if @calendar.critical_error %>
+  <div class="alert alert-warning" role="alert">
+    Error: <%= @calendar.critical_error %>
   </div>
-
-  <h3>Contact Information</h3>
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Public Contact</h4>
-      <p>This is the information that will be shown to the public.</p>
-      <label>Name</label>
-      <%= f.text_field :public_contact_name, class: "form-control" %>
-      <label>Email</label>
-      <%= f.email_field :public_contact_email, class: "form-control" %>
-      <label>Phone Number</label>
-      <%= f.text_field :public_contact_phone, class: "form-control" %>
-    </div>
-    <div class="col-md-6">
-      <h4>Partnership Contact</h4>
-      <p><em>If different from public contact:</em> The contact person for PlaceCal.</p>
-      <label>Name</label>
-      <%= f.text_field :partnership_contact_name, class: "form-control" %>
-      <label>Email</label>
-      <%= f.email_field :partnership_contact_email, class: "form-control" %>
-      <label>Phone Number</label>
-      <%= f.text_field :partnership_contact_phone, class: "form-control" %>
-    </div>
-  </div>
-
-  <br><br>
-  <%= f.button :submit, class: "btn btn-primary " %>
 <% end %>
+
+<div id="js-calendar-form">
+  <%= simple_form_for [:admin, @calendar] do |f| %>
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Details</h3>
+        <%= f.association :partner,
+                          label: 'Organiser',
+                          collection: options_for_organiser,
+                          input_html: { class: 'form-control select2' },
+                          hint: 'What group organises these events?' %>
+
+        <%- if params[:is_facebook_page].present? %>
+          <%= f.input :name, input_html: { value: params[:page_name] } %>
+          <%= f.hidden_field :is_facebook_page, value: true %>
+          <%= f.hidden_field :facebook_page_id, value: params[:page_id] %>
+          <%= f.input :source, input_html: { value: params[:page_link] } %>
+        <% else %>
+          <%= f.input :name, hint: 'A simple description to help rememember what this calendar is' %>
+          <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: "The source URL for your calendar feed. See the #{link_to 'PlaceCal Handbook', 'https://handbook.placecal.org/how-to-use-placecal/admins'} if you need help.".html_safe %>
+        <% end %>
+
+        <% unless @calendar.new_record? %>
+          <%- if current_user.has_facebook_keys? %>
+            <%= link_to "Authorize With Facebook", user_facebook_omniauth_authorize_url(calendar_id: @calendar.id), class: "btn btn-primary" %>
+          <% else %>
+            <%= link_to "Authorize With Facebook", admin_profile_path(missing_keys: true), class: 'btn btn-primary' %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <h3>Location</h3>
+        <%= f.input :strategy,
+                    as: :radio_buttons,
+                    label_method: ->(val){Calendar.strategy_label(val)},
+                    hint: 'How should PlaceCal decide where events on this calendar are held?',
+                    input_html: { 'v-model': 'strategy', 'v-on:change': "updateLocation" } %>
+        <div v-if="locationVisible">
+          <%= f.association :place,
+                            label: 'Default location',
+                            collection: options_for_location,
+                            input_html: { class: 'form-control select2' } %>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mt-5">Contact Information</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Public Contact</h4>
+        <p>This is the information that will be shown to the public for any enquiries about the event. If it's not set, it uses the information from the Organiser.</p>
+        <label>Name</label>
+        <%= f.text_field :public_contact_name, class: "form-control" %>
+        <label>Email</label>
+        <%= f.email_field :public_contact_email, class: "form-control" %>
+        <label>Phone Number</label>
+        <%= f.text_field :public_contact_phone, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <h4>Partnership Contact</h4>
+        <p><em>If different from public contact:</em> The contact person for PlaceCal. Use this to store an additional contact such as the public contact's manager.</p>
+        <label>Name</label>
+        <%= f.text_field :partnership_contact_name, class: "form-control" %>
+        <label>Email</label>
+        <%= f.email_field :partnership_contact_email, class: "form-control" %>
+        <label>Phone Number</label>
+        <%= f.text_field :partnership_contact_phone, class: "form-control" %>
+      </div>
+    </div>
+
+    <br><br>
+    <%= f.button :submit, class: "btn btn-primary mr-3" %>
+    <% unless @calendar.new_record? %>
+      <%= link_to "Destroy Calendar", admin_calendar_path(@calendar), method: :delete, class: "btn btn-danger" %>
+    <% end %>
+  <% end %>
+</div>
 
 <%= render('import') unless @calendar.new_record? %>

@@ -6,7 +6,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def show?
-    index?
+    update?
   end
 
   def create?
@@ -18,8 +18,9 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user.root? || user.neighbourhood_admin?
+    return true if user.root?
 
+    user.neighbourhood_ids.include?(record.neighbourhood_id) ||
     user.partner_ids.include?(record.id)
   end
 
@@ -28,21 +29,38 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def destroy?
+    return true if user.root?
+    return false unless user.neighbourhood_admin?
+
+    user.neighbourhood_ids.include?(record.neighbourhood_id)
+  end
+
+  def setup?
     create?
+  end
+
+  def permitted_attributes
+    attrs = [ :name, :image, :short_description,
+              :public_name, :public_email, :public_phone,
+              :partner_name, :partner_email, :partner_phone,
+              :address_id, :url, :facebook_link, :twitter_handle,
+              :opening_times,
+              calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
+              address_attributes: %i[street_address street_address2 street_address3 city postcode],
+              tag_ids: [] ]
+
+    attrs << :slug if user.root?
+    attrs
   end
 
   class Scope < Scope
     def resolve
       if user.root?
         scope.all
-      elsif user.tag_admin?
-        scope.joins(:tags).where(tags: { id: user.tags }).distinct
-      elsif user.partner_admin?
-        scope.joins(:users).where(partners_users: { user_id: user.id })
-      elsif user.neighbourhood_admin?
-        scope.joins(:address).where(addresses: { neighbourhood_id: user.neighbourhood_ids })
       else
-        scope.none
+        scope.left_outer_joins(:users, :address)
+             .where("partners_users.user_id = ? OR addresses.neighbourhood_id IN (?)", user.id, user.neighbourhood_ids)
+             .distinct
       end
     end
   end

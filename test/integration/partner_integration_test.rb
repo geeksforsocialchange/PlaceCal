@@ -22,6 +22,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'p', /#{@partner.public_phone}/
     assert_select 'a[href=?]', "mailto:#{@partner.public_email}"
     assert_select 'a[href=?]', @partner.url
+    assert_select 'h3', 'Opening times'
 
     get "http://#{@neighbourhood_site.slug}.lvh.me/partners/#{@partner.id}"
     assert_response :success

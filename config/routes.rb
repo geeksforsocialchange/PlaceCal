@@ -38,7 +38,11 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     end
     resources :collections
     resources :neighbourhoods
-    resources :partners
+    resources :partners do
+      collection do
+        match :setup, via: [:get, :post]
+      end
+    end
     resources :tags
     resources :sites
     resources :supporters
