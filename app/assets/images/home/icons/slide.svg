@@ -1,0 +1,14 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="110" height="40" viewBox="0 0 110 40">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #aece5a;
+      }
+    </style>
+  </defs>
+  <title>PlaceCal</title>
+  <g>
+    <path id="Path_4703" data-name="Path 4703" class="cls-1" d="M40.57,14.57H18.64v-13L.22,20,18.64,38.42v-13H40.57A5.43,5.43,0,0,0,46,20h0A5.43,5.43,0,0,0,40.57,14.57Z"/>
+    <path id="Path_4704" data-name="Path 4704" class="cls-1" d="M69.43,25.43H91.36v13L109.78,20,91.36,1.58v13H69.43a5.43,5.43,0,0,0,0,10.86Z"/>
+  </g>
+</svg>
