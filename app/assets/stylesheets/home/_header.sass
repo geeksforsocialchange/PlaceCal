@@ -1,0 +1,36 @@
+.background
+  background-color: $base-text
+
+.header
+  padding: 0.5rem 0
+  &__branding
+    background-image: url('home/icons/logo.svg')
+    background-size: 148px 43.56px
+    width: 148px
+    height: 43.56px
+    margin-left: 0.75rem
+    +for-tablet-portrait-up
+      margin-left: 1.5rem
+  &__toggle
+    margin-right: 0.75rem
+    text-decoration: none
+    display: grid
+    grid-template-columns: auto 1fr
+    grid-gap: 0.5rem
+    align-items: center
+    &::before
+      content: "Menu"
+      +fontstyle((18 20 600))
+      color: $base-background
+    +for-tablet-landscape-up
+      margin-right: 1.5rem
+      display: none
+  &__menu
+    li
+      background-color: $base-tertiary
+      border-bottom-width: 0
+      margin-bottom: 3px
+      a
+        +fontstyle((18 20 600))
+        text-transform: none
+        letter-spacing: 0
