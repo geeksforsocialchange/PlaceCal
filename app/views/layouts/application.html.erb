@@ -26,9 +26,12 @@
         <%= yield %>
       </main>
       <footer>
-        <%= render_component "footer" %>
+        <% if @site.default_site? %>
+          <%= render_component "footer_home" %>
+        <% else %>
+          <%= render_component "footer" %>
+        <% end %>
       </footer>
      </div>
-     <%= render "layouts/rocket_chat" %>
   </body>
 </html>
