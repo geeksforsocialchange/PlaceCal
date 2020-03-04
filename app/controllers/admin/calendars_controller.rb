@@ -78,6 +78,7 @@ module Admin
 
       facebook_api = Koala::Facebook::API.new(current_user.access_token)
       @pages = facebook_api.get_connections('me', 'accounts', fields: ['id', 'name', 'link'])
+      @pages.each { |p| p['has_access'] = has_fb_page_access?(p['id']) }
     end
 
     private
@@ -106,6 +107,18 @@ module Admin
         :partnership_contact_phone,
         :partnership_contact_email
       )
+    end
+
+
+    def has_fb_page_access?(facebook_page_id)
+      graph = Koala::Facebook::API.new(current_user.access_token)
+      token = graph.get_page_access_token(facebook_page_id)
+      token.present?
+
+    rescue StandardError => e
+      Rails.logger.debug(e)
+      Rollbar.error(e)
+      return false
     end
   end
 end
