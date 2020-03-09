@@ -25,3 +25,31 @@
       background-position: top left, bottom right
       padding-left: 20rem
       padding-right: 20rem
+
+.stats
+  border-spacing: 0
+  td
+    width: 25%
+    padding: 0.5rem
+    border: 1rem solid transparent
+    z-index: 1
+  &__col
+    &--labels
+
+    &--placecal
+      background-color: $home-green
+    &--council
+      background-color: $home-pink
+    &--health
+      background-color: $home-blue
+
+
+  &__stripe
+    background-color: $home-background-3
+    z-index: 5
+    td:nth-child(2)
+      background-color: rgb(202,227,140)
+    td:nth-child(3)
+      background-color: rgb(255,180,170)
+    td:nth-child(4)
+      background-color: rgb(160,228,234)
