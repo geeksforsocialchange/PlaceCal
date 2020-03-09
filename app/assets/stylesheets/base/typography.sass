@@ -158,3 +158,18 @@ h2.place__title
 
 .fc-text
   color: $base-text !important
+
+br.tablet-up
+  +for-phone-only
+    display: none
+
+br.mobile-only
+  display: none
+  +for-phone-only
+    display: block
+
+br.half
+  font-size: 0.5rem
+
+.regular-links a
+  font-weight: $regular

@@ -1,0 +1,67 @@
+.form
+  input, textarea
+    border: 2px solid $home-background
+    border-radius: 1.5rem
+    padding: 0.4rem 1rem
+    margin-bottom: 1rem
+    width: 100%
+    +fontstyle((18 24))
+    font-family: $sans-serif
+    color: $base-text
+    +placeholder
+      +fontstyle((18 24))
+      font-family: $sans-serif
+      color: $base-text
+
+  input
+    background: transparent
+
+  input.form__submit
+    border-color: $base-text
+    background-color: $base-text
+    color: $home-background
+    box-shadow: inset 0 0 0 3px $home-pink-soft
+    padding: 0.75rem 1rem
+    &:hover
+      border-color: $home-background
+      background-color: $home-background
+      color: $base-text
+
+  textarea
+    min-height: 10rem
+    margin-top: 0.5rem
+    +placeholder
+      text-align: center
+
+  &__checkbox
+    display: inline-block
+    label, input
+      display: inline-block
+      width: auto
+
+  label.hide
+    // For accessibility - hides visually but screenreader will read
+    border: 0
+    clip: rect(0 0 0 0)
+    height: 1px
+    margin: -1px
+    overflow: hidden
+    padding: 0
+    position: absolute
+    width: 1px
+
+  &__person
+    +for-tablet-portrait-up
+      width: 85%
+      max-width: 860px
+      margin: 2rem auto
+      display: grid
+      grid-template-columns: 1fr 1fr
+      grid-gap: 1rem
+      input, textarea
+        margin-bottom: 0
+
+  &__request
+    +for-tablet-portrait-up
+      width: 60%
+      margin: 0 auto
