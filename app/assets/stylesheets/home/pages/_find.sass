@@ -1,0 +1,62 @@
+@import "variables_mixins"
+
+.find-region
+  background-color: $base-text
+  border: 2px solid $base-tertiary
+  h2.find-region__title
+    color: $base-primary
+    margin-bottom: 0.25em
+    margin-top: 0.5rem
+    +fontstyle((20 24 bold))
+    +for-tablet-portrait-up
+      margin-top: 1.25rem
+  &__county
+    color: $base-tertiary
+    margin-bottom: 1.5rem
+  +for-tablet-portrait-up
+    display: grid
+    grid-template-columns: 12.5rem 1fr
+    grid-gap: 1rem
+
+.find-wards
+  +for-tablet-portrait-up
+    display: grid
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr))
+    grid-gap: 1.5rem
+
+.find-ward
+  background-color: $base-tertiary
+  border-radius: 40px 1.5rem 1.5rem 40px
+  position: relative
+  height: 80px
+  margin-bottom: 1.5rem
+  text-decoration: none
+  &__title
+    color: $base-background
+    position: absolute
+    font-weight: 600
+    left: 80px
+    right: 0
+    top: 8px
+  &:hover .find-ward__title
+    color: $base-primary
+  &__img
+    height: 80px
+    width: 80px
+    position: absolute
+    left: 0
+    top: 0
+
+  @supports (display: grid)
+    display: grid
+    grid-template-columns: 80px 1fr
+    grid-gap: 0.5rem
+    align-items: center
+    &__title, &__img
+      position: static
+      grid-row: 1
+    &__title
+      margin: 0 0.5rem 0 0
+      grid-column: 2
+    &__img
+      grid-column: 1
