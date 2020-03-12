@@ -13,6 +13,6 @@ class SiteTest < ActiveSupport::TestCase
     @site.slug = 'my-town'
     assert_equal 'themes/custom/my-town', @site.stylesheet_link
     @site.slug = 'default-site'
-    assert_equal false, @site.stylesheet_link
+    assert_equal 'home', @site.stylesheet_link
   end
 end

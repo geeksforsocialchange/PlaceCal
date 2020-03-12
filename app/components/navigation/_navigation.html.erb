@@ -7,10 +7,10 @@
     <div class="header__branding" role="banner">
   <% end %>
     <%= link_to root_path do %>
-      <% if @site.default_site? %>
+      <% if @site&.default_site? %>
         <h2>PlaceCal</h2>
       <% else %>
-        <h2><%= @site.name %></h2>
+        <h2><%= @site&.name %></h2>
         <p>The Community Calendar</p>
       <% end %>
     <% end %>

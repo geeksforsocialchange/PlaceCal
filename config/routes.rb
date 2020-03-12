@@ -13,9 +13,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     match 'users/auth/facebook/setup' => 'admin/omniauth_callbacks#setup', via: [:get, :post]
   end
 
-  # Most common routes at the top
-  root 'pages#home', constraints: { subdomain: '' || 'www' }
-
   # Static pages
   get 'join', to: 'pages#join'
   get 'privacy', to: 'pages#privacy'
@@ -58,6 +55,8 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   constraints(::Sites::Local) do
     get '/' => 'sites#index'
   end
+
+  root 'pages#home'
 
   ymd = { year:  /\d{4}/,
           month: /\d{1,2}/,

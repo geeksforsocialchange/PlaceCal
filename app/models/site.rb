@@ -21,7 +21,8 @@ class Site < ApplicationRecord
   accepts_nested_attributes_for :sites_neighbourhood
   accepts_nested_attributes_for :sites_neighbourhoods, reject_if: ->(c) { c[:neighbourhood_id].blank? }, allow_destroy: true
 
-  validates :name, :place_name, :slug, :domain, presence: true
+  validates :name, :slug, :domain, presence: true
+  validates :place_name unless :default_site?
 
   mount_uploader :logo, SiteLogoUploader
   mount_uploader :footer_logo, SiteLogoUploader

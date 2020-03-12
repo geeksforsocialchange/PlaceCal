@@ -7,8 +7,8 @@ class HomeIntegrationTest < ActionDispatch::IntegrationTest
     @default_site = create_default_site
     get "http://lvh.me"
     assert_response :success
-    assert_select 'title', count: 1, text: "PlaceCal | The Community Calendar"
-    assert_select 'h1', count: 1, text: 'Welcome to PlaceCal'
+    assert_select 'title', count: 1, text: 'PlaceCal | The Community Calendar'
+    assert_select 'h1', count: 1, text: 'The Community Calendar'
   end
 
   test 'home page for neighbourhood site has correct title' do
