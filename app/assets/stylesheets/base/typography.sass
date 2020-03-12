@@ -2,6 +2,8 @@ html
   font-size: 18px
   box-sizing: border-box
   font-variant-numeric: lining-nums
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
 
 *, *:before, *:after
   box-sizing: inherit
@@ -149,3 +151,25 @@ h2.place__title
 .break
   +for-desktop-up
     display: block
+
+
+.fc-primary
+  color: $base-primary !important
+
+.fc-text
+  color: $base-text !important
+
+br.tablet-up
+  +for-phone-only
+    display: none
+
+br.mobile-only
+  display: none
+  +for-phone-only
+    display: block
+
+br.half
+  font-size: 0.5rem
+
+.regular-links a
+  font-weight: $regular

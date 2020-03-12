@@ -3,18 +3,64 @@
     <h1 class="section">How we help community groups</h1>
   </div>
 
-  <div class="card card--plain">
-    <h2 class="center alt-title">We turn your local knowledge into great community information websites</h2>
-    <p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p>
-    <p>The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.</p>
-    <p>We can help your partnership help everyone work together to produce a high quality and constantly updated website that’s proven to work even in areas left behind by other digital initiatives. This information helps communities work better together, improves health outcomes, and saves everyone time manually collating information.</p>
-    <%= link_to "Our story", our_story_path, class: 'btn' %>
-    <%= link_to "See it in action", find_placecal_path, class: 'btn' %>
+  <div class="card card--plain reveal js-reveal">
+    <div class="reveal__teaser">
+      <h2 class="center alt-title">We turn your local knowledge into great community information websites</h2>
+      <%= image_tag 'home/audiences/communities_wide.jpg', alt: 'A photograph of a middle aged woman and young girl enjoying a pottery class' %>
+      <p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p>
+    </div>
+    <div class="reveal__body">
+      <p>The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.</p>
+      <p>We can help your partnership help everyone work together to produce a high quality and constantly updated website that’s proven to work even in areas left behind by other digital initiatives. This information helps communities work better together, improves health outcomes, and saves everyone time manually collating information.</p>
+    </div>
+    <div class="center">
+      <%= link_to "Our story", our_story_path, class: 'btn btn--big btn--home-3' %>
+      <%= link_to "See it in action", find_placecal_path, class: 'btn btn--big btn--home-3' %>
+    </div>
+    <button class="reveal__button">Open to read more</button>
   </div>
 
-  <div class="card card--alt">
-    <h2 class="center">How it works for community groups</h2>
-    <%= image_tag "http://placedog.net/600/400" %>
+  <div class="card card--split card--plain steps center">
+    <div class="card__title">
+      <h2>How it works for community groups</h2>
+    </div>
+    <div class="card__body">
+      <%= image_tag 'home/how/start.png', alt: 'A diagram of a disconected neighbourhood', class: 'steps__image' %>
+      <div class="steps__caption">
+        <p class="alt-title">Nothing is connected! People don't know where to go.</p>
+      </div>
+    </div>
+    <div class="card__body">
+      <%= image_tag 'home/how/1.png', alt: 'Two people talking on the phone', class: 'steps__image steps__image--numeral' %>
+      <div class="steps__caption">
+        <p class="btn-size">We have a chat on the phone to get the ball rolling, and set a time to come and show you how it works.</p>
+      </div>
+    </div>
+    <div class="card__body">
+      <%= image_tag 'home/how/2.png', alt: 'Two people entering information into PlaceCal', class: 'steps__image steps__image--numeral' %>
+      <div class="steps__caption">
+        <p class="btn-size">We help you enter all the information you already know about local groups into PlaceCal.</p>
+      </div>
+    </div>
+    <div class="card__body">
+      <%= image_tag 'home/how/3.png', alt: 'A noticeboard in a community centre', class: 'steps__image steps__image--numeral' %>
+      <div class="steps__caption">
+        <p class="btn-size">Next, we convert all the events you know about into an electronic calendar, and import the infomation into PlaceCal.</p>
+      </div>
+    </div>
+    <div class="card__body">
+      <%= image_tag 'home/how/4.png', alt: 'A community worker waving to a resident', class: 'steps__image steps__image--numeral' %>
+      <div class="steps__caption">
+        <p class="btn-size">You then have all the tools you need to get the rest of your neighbourhood connected.</p>
+        <p>(With ongoing support from us of course!)</p>
+      </div>
+    </div>
+    <div class="card__body">
+      <p class="alt-title">Problem solved: everyone's connected and it's easy to find out what's happening!</p>
+      <%= image_tag 'home/how/end.png', alt: 'A diagram of a connected neighbourhood', class: 'steps__image' %>
+    </div>
+    <br>
+    <%= link_to "Check out our handbook", "https://handbook.placecal.org", class: 'btn btn--big btn--home-4' %>
   </div>
 
 
@@ -44,3 +90,5 @@
 
   <%= render 'audiences', exclude: :community_groups %>
 </article>
+
+<%= render "reveal" %>

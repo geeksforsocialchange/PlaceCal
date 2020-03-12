@@ -161,7 +161,7 @@ namespace :db do
     raise "Could not find #{filename} file!" if ! File.exist? filename
 
     $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
-    puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev < #{filename}`
+    puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev #{filename}`
     if $?.success?
       $stdout.puts "... done."
     else
@@ -193,6 +193,13 @@ namespace :db do
     $stdout.puts "restore_on_staging = #{ENV['restore_on_staging']}" if ENV['restore_on_staging']
     Rake::Task['db:restore_local'].execute if ENV['restore_on_local']
     Rake::Task['db:restore_staging'].execute if ENV['restore_on_staging']
+  end
+
+  desc "SCP uploads from production to local server"
+  task get_files: :environment do
+    $stdout.puts "Getting files..."
+    `scp -r root@placecal.org:/var/lib/dokku/data/storage/placecal/public/ ./`
+    $stdout.puts "... done."
   end
 
   private

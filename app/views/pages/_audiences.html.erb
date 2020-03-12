@@ -1,0 +1,45 @@
+<div class="grid grid__audiences">
+
+<%= render_component "audience",
+    title: "Community groups",
+    body: "Convert your local knowledge into a great community information website.",
+    image: "home/audiences/communities_square.jpg",
+    image_alt: "Stock image of a community group activity",
+    link: community_groups_path unless local_assigns[:exclude] == :community_groups %>
+
+<%= render_component "audience",
+    title: "Metropolitan areas",
+    body: "Publish what’s on guides across health, housing, and council sectors.",
+    image: "home/audiences/metro_square.jpg",
+    image_alt: "Stock image of a city centre park",
+    link: metropolitan_areas_path unless local_assigns[:exclude] == :metropolitan_areas %>
+
+<%= render_component "audience",
+    title: "VCSEs",
+    body: "Support community groups in your neighbourhood to work better together.",
+    image: "home/audiences/vcses_square.jpg",
+    image_alt: "Stock image of some people in a community centre",
+    link: vcses_path unless local_assigns[:exclude] == :vcses %>
+
+<%= render_component "audience",
+    title: "Housing providers",
+    body: "Connect your tenants with their local community.",
+    image: "home/audiences/housing_square.jpg",
+    image_alt: "Stock image of some laptops",
+    link: housing_providers_path unless local_assigns[:exclude] == :housing_providers %>
+
+<%= render_component "audience",
+    title: "Social prescribers and GPs",
+    body: "Find hyperlocal social prescriptions in under 30 seconds.",
+    image: "home/audiences/social_square.jpg",
+    image_alt: "Stock image of some laptops",
+    link: social_prescribers_path unless local_assigns[:exclude] == :social_prescribers %>
+
+<%= render_component "audience",
+    title: "Culture and tourism",
+    body: "Bring more people into your venue, your area or your city.",
+    image: "home/audiences/culture_square.jpg",
+    image_alt: "Stock image of some laptops",
+    link: culture_tourism_path unless local_assigns[:exclude] == :culture_tourism %>
+
+</div>

@@ -30,6 +30,10 @@ class HeroImageUploader < CarrierWave::Uploader::Base
     process resize_to_fit: [1130, 350]
   end
 
+  version :site_preview do
+    process resize_to_fit: [160, 160]
+  end
+
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_whitelist

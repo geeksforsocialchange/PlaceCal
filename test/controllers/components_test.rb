@@ -4,6 +4,10 @@
 require 'test_helper'
 
 class ComponentControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    create_default_site
+  end
+
   teardown do
     # Check each component loads using the options listed
     assert_response :success

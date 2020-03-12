@@ -29,19 +29,17 @@ guard :minitest, spring: 'bin/rails test', env: { 'NO_COVERAGE': 'true' } do
   # watch(%r{^spec/spec_helper\.rb$}) { 'spec' }
 end
 
-guard 'livereload' do
+guard 'livereload', grace_period: 1 do
+
   extensions = {
     css: :css,
     scss: :css,
     sass: :css,
-    js: :js,
-    coffee: :js,
     html: :html,
     png: :png,
     gif: :gif,
     jpg: :jpg,
-    jpeg: :jpeg,
-    # less: :less, # uncomment if you want LESS stylesheets done in browser
+    jpeg: :jpeg
   }
 
   rails_view_exts = %w[erb haml slim]

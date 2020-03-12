@@ -12,7 +12,7 @@
 
   <div class="card-grid">
     <% @sites.each do |site| %>
-      <%= render_component 'card',
+      <%= render_component 'dashboard_card',
         title: site.name,
         subtitle: "#{pluralize(site.events_this_week, 'event')} this week (#{sprintf('%+d', site.events_this_week - site.events_last_week)})",
         link: edit_admin_site_path(site),
@@ -26,7 +26,7 @@
 <% if @partners.any? %>
   <div class="card-grid">
     <% @partners.each do |partner| %>
-      <%= render_component 'card',
+      <%= render_component 'dashboard_card',
           title: partner.name,
           subtitle: "<span class='badge badge-secondary small'>#{partner&.address&.neighbourhood&.name}</span> #{pluralize(partner.events_this_week, 'event')} this week",
           image: partner.image.url,
@@ -43,7 +43,7 @@
 
   <div class="card-grid">
     <% @errored_calendars.each do |calendar| %>
-      <%= render_component 'card',
+      <%= render_component 'dashboard_card',
           title: calendar.name,
           subtitle: "<span class='badge badge-warning mr-1'>Error</span>" + calendar&.last_imported,
           description: "#{pluralize(calendar.events_this_week, 'event')} this week",

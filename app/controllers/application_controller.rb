@@ -195,15 +195,19 @@ class ApplicationController < ActionController::Base
   def set_navigation
     return if self.class == MountainView::StyleguideController
 
-    @navigation = [
-      ['Events', events_path],
-      # ['Places', places_path],
-      ['Partners', partners_path]
-    ]
-    return unless current_site
-    # unless ['mossley'].include? current_site.slug
-    #   @navigation << ['Winter Fest', '/winter2018']
-    # end
+    @navigation = if current_site&.default_site?
+                    [
+                      ['Our story', our_story_path],
+                      ['Find your PlaceCal', find_placecal_path],
+                      ['Join us', join_path]
+                    ]
+                  else
+                    [
+                      ['Events', events_path],
+                      # ['Places', places_path],
+                      ['Partners', partners_path]
+                    ]
+                  end
   end
 
   protected

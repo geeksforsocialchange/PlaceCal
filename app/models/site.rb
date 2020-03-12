@@ -22,6 +22,7 @@ class Site < ApplicationRecord
   accepts_nested_attributes_for :sites_neighbourhoods, reject_if: ->(c) { c[:neighbourhood_id].blank? }, allow_destroy: true
 
   validates :name, :slug, :domain, presence: true
+  validates :place_name unless :default_site?
 
   mount_uploader :logo, SiteLogoUploader
   mount_uploader :footer_logo, SiteLogoUploader
@@ -73,7 +74,7 @@ class Site < ApplicationRecord
   end
 
   def stylesheet_link
-    return false if default_site?
+    return 'home' if default_site?
 
     if theme == :custom
       "themes/custom/#{slug}"

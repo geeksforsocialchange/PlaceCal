@@ -4,5 +4,31 @@
 @import "variables/typography"
 @import "variables/fonts"
 
-@import "modules/flexbox"
 @import "modules/breakpoints"
+@import "modules/flexbox"
+@import "modules/placeholders"
+
+@use "sass:list"
+$home-base-size: 18
+$default-radius: 1rem
+
+// Turns an array of sizes into responsive CSS
+// [ Size in pt, Line height, Weight]
+=fontmarkup($sizes)
+  font-size: #{nth($sizes, 1) / $home-base-size}rem
+  line-height: #{nth($sizes, 2) / nth($sizes, 1)}
+  @if length($sizes) == 3
+    font-weight: nth($sizes, 3)
+
+=fontstyle($default, $portrait: false, $landscape: false, $desktop: false)
+  +fontmarkup($default)
+
+  @if length($portrait) > 1
+    +for-tablet-portrait-up
+      +fontmarkup($portrait)
+  @if length($landscape) > 1
+    +for-tablet-landscape-up
+      +fontmarkup($landscape)
+  @if length($desktop) > 1
+    +for-desktop-up
+      +fontmarkup($desktop)

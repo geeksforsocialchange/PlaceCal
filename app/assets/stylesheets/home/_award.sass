@@ -1,0 +1,25 @@
+.award
+  background-image: url('home/icons/award.svg')
+  background-repeat: no-repeat
+  background-size: 60px 70px
+  background-position: 0.6rem 0.4rem
+  border: 2px solid $home-background-2
+  border-radius: $default-radius
+  margin-bottom: 1rem
+  // Set by eye
+  padding-left: 81px
+
+  +for-tablet-portrait-up
+    margin-left: 3rem
+    margin-right: 3rem
+    padding-right: 1rem
+    display: grid
+    grid-template-columns: 1fr auto
+    grid-gap: 1rem
+    align-items: center
+    background-position: 0.5rem 50%
+    a
+      margin-bottom: 0
+  +for-tablet-landscape-up
+    margin-left: 22%
+    margin-right: 22%

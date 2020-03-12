@@ -1,0 +1,25 @@
+@import "variables_mixins"
+
+.steps
+  .card__body
+    clear: both
+    +for-tablet-portrait-up
+      min-height: 250px
+      display: grid
+      grid-template-columns: auto 1fr
+      align-content: center
+      align-items: center
+
+  &__image
+
+  &__image--numeral
+    max-width: 250px
+    margin-left: -5%
+    +for-tablet-portrait-up
+      float: left
+      max-width: 200px
+      margin-left: 0
+      margin-right: 1rem
+
+  &__caption
+    text-align: left

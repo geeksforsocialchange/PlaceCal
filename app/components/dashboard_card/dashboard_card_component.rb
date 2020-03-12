@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # app/components/card/card_component.rb
-class CardComponent < MountainView::Presenter
+class DashboardCardComponent < MountainView::Presenter
   property :title, default: false
   property :subtitle, default: false
   property :image, default: false

@@ -7,8 +7,12 @@
     <div class="header__branding" role="banner">
   <% end %>
     <%= link_to root_path do %>
-      <h2>PlaceCal<%= ": #{@site.name}" if @site %></h2>
-      <p>The Community Calendar</p>
+      <% if @site&.default_site? %>
+        <h2>PlaceCal</h2>
+      <% else %>
+        <h2><%= @site&.name %></h2>
+        <p>The Community Calendar</p>
+      <% end %>
     <% end %>
   </div>
   <nav class="nav header__menu js-menu" role="navigation">
