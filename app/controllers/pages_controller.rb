@@ -7,9 +7,11 @@ class PagesController < ApplicationController
   def home; end
 
   def find_placecal
-    @grouped_sites = Site.joins(:primary_neighbourhood)
+    @grouped_sites = Site.where(is_published: true)
+                         .joins(:primary_neighbourhood)
                          .merge(Neighbourhood.order(district: :asc))
                          .group_by{ |s| s.primary_neighbourhood.district }
+
 
   end
 

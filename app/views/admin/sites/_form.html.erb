@@ -13,6 +13,8 @@
   </div>
   <%= f.input :description, input_html: { rows: 5 } %>
 
+  <%= f.input :is_published, label: 'Published', hint: 'Advertise this site on the PlaceCal homepage?', as: :boolean %>
+
   <%= f.association :site_admin, label_method: :admin_name if policy(@site).permitted_attributes.include? :site_admin_id %>
 
   <h2>Images</h2>
