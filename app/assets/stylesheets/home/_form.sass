@@ -12,6 +12,10 @@
       +fontstyle((18 24))
       font-family: $sans-serif
       color: $base-text
+  label
+    +fontstyle((18 26 bold))
+    display: block
+    padding-bottom: 0.5rem
 
   input
     background: transparent
@@ -33,22 +37,49 @@
     +placeholder
       text-align: center
 
-  &__checkbox
-    display: inline-block
-    label, input
-      display: inline-block
-      width: auto
+  &__field
+    text-align: left
+    label::after
+      content: ":"
 
-  label.hide
-    // For accessibility - hides visually but screenreader will read
-    border: 0
-    clip: rect(0 0 0 0)
-    height: 1px
-    margin: -1px
-    overflow: hidden
-    padding: 0
-    position: absolute
-    width: 1px
+  &__checkbox
+    label, input
+      width: auto
+    input
+      position: absolute
+      opacity: 0
+      cursor: pointer
+      height: 0
+      width: 0
+    label
+      display: inline-block
+      font-weight: normal
+      // Background width + 1rem
+      padding-right: 48px
+      line-height: 30px
+      background: url('icons/forms/unselected.svg')
+      background-position: 100% 0%
+      background-size: 30px 30px
+      background-repeat: no-repeat
+      cursor: pointer
+    input:checked + label
+      background: url('icons/forms/selected.svg')
+      background-position: 100% 0%
+      background-size: 30px 30px
+      background-repeat: no-repeat
+
+
+
+  // label.hide
+  //   // For accessibility - hides visually but screenreader will read
+  //   border: 0
+  //   clip: rect(0 0 0 0)
+  //   height: 1px
+  //   margin: -1px
+  //   overflow: hidden
+  //   padding: 0
+  //   position: absolute
+  //   width: 1px
 
   &__person
     +for-tablet-portrait-up

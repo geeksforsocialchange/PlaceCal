@@ -9,36 +9,43 @@
       <div class="card__body">
         <%= form_with class: 'form' do %>
           <div class="form__person">
-            <%= label_tag(:name, 'Name', class: 'hide') %>
-            <%= text_field_tag(:name, nil, placeholder: 'Name') %>
-
-            <%= label_tag(:email, 'Email address', class: 'hide') %>
-            <%= email_field_tag(:email, nil, placeholder: 'Email address') %>
-
-            <%= label_tag(:phone, 'Phone number', class: 'hide') %>
-            <%= telephone_field_tag(:phone, nil, placeholder: 'Phone number') %>
-
-            <%= label_tag(:job_title, 'Job title', class: 'hide') %>
-            <%= text_field_tag(:job_title, nil, placeholder: 'Job title') %>
-
-            <%= label_tag(:job_org, 'Organisation name', class: 'hide') %>
-            <%= text_field_tag(:job_org, nil, placeholder: 'Organisation name') %>
-
-            <%= label_tag(:area, 'Area you cover', class: 'hide') %>
-            <%= text_field_tag(:area, nil, placeholder: 'Region you work in') %>
+            <div class="form__field">
+              <%= label_tag(:name, 'Name') %>
+              <%= text_field_tag(:name) %>
+            </div>
+            <div class="form__field">
+              <%= label_tag(:email, 'Email address') %>
+              <%= email_field_tag(:email) %>
+            </div>
+            <div class="form__field">
+              <%= label_tag(:phone, 'Phone number') %>
+              <%= telephone_field_tag(:phone) %>
+            </div>
+            <div class="form__field">
+              <%= label_tag(:job_title, 'Job title') %>
+              <%= text_field_tag(:job_title) %>
+            </div>
+            <div class="form__field">
+              <%= label_tag(:job_org, 'Organisation name') %>
+              <%= text_field_tag(:job_org) %>
+            </div>
+            <div class="form__field">
+              <%= label_tag(:area, 'Area you cover') %>
+              <%= text_field_tag(:area) %>
+            </div>
           </div>
 
           <div class="form__request">
-            <p>I'd like:</p>
+            <p><strong>I'd like:</strong></p>
 
             <div class="form__checkbox">
-              <%= label_tag(:ringback, 'A ring back') %>
               <%= check_box_tag(:ringback, true) %>
+              <%= label_tag(:ringback, 'A ring back') %>
             </div>
 
             <div class="form__checkbox">
-              <%= label_tag(:more_info, 'More information') %>
               <%= check_box_tag(:more_info, true) %>
+              <%= label_tag(:more_info, 'More information') %>
             </div>
 
             <br>
