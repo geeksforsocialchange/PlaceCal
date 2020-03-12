@@ -6,7 +6,7 @@ env:
    - secure: z/YV6QzoqYCohEilra+aAfBLB2P9h3Sb7NFIeYOnlLLilYJxUEsqQW2a01v9otcyXMC2mqYoFeClYmX0ZsmowwB71GGlwI5qnd3pA/mtIjDHz/2d/QyMn+QysOygOwB9h+bIi6KbLsqZ/ULD0x8eCEXgYyVtq5JTS3hgXOGabIS3ZSSc7p0WnCOX9sd0DphF1C4+RerQhWPGbFL/n8Eq6m8liFE+e83/n8lcfXDrxXcPzKegvJUT34knwIqAZylz1FZMsxTJDny46S2zR9kJB7CIwgbI6TzZGoR+S91s26CiupFp2F1l08nTOW4i5DfGR74Tnhdk40JE0iyGyHdTZbKAmtlzjg9oNOI7IOju7yOgZU2OxmXjZjvrt9QV4NsZ7C+K8i25LGwOxRXJS9mc4bjAPjX7mc1S+dq14aw7kMH2MJxUfdwBYsLyuWoeCb12wD8LAt1fXNxxWV4rvTgi0p90+KR/QmCUVnBef4zLSef8ObkBHFzwWPO9OSFXATmmzcjQjk3XnsoNnADTvxUvzH+FGJ53RB0NYN9QoIZx5hl/aqpx35uTfbcMgEYn6hxwwI+KlXAAifWsh2WhjCRn+bXZSI83/oh5nJ0i96VL8yZk0QPljf4vzfOxt89lfFvMG2BqyQ7l2WAB9fAvgE4OEvggGtkGDZi3ES51qrwZjlY=
    - NODE_VERSION="10.16.0"
 language: ruby
-dist: trusty
+dist: bionic
 cache:
   bundler: true
   directories:
