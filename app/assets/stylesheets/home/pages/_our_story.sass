@@ -14,10 +14,13 @@
       background-image: image-url('home/our_story/patterns/intro_tl.svg'), image-url('home/our_story/patterns/intro_br.svg')
       background-position: top left, bottom right
       background-repeat: no-repeat
-  &__fix
+  &__fixall
     +for-tablet-landscape-up
-      padding-left: $text-spacing-portrait
-      padding-right: $text-spacing-portrait
+      padding-left: 11rem
+      padding-right: 11rem
+      p
+        padding-left: 2rem
+        padding-right: 2rem
     +for-desktop-up
       background-image: image-url('home/our_story/patterns/fix_tl.svg'), image-url('home/our_story/patterns/fix_br.svg')
       background-size: 275px 480px, 300px 480px
