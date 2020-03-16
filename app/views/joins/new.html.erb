@@ -6,32 +6,36 @@
         <p class="alt-title-small">Want PlaceCal for your community group, organisation or area?</p>
         <p>Get in touch and let’s discuss how you can<br class="tablet-up"> join our not-for-profit social enterprise.</p>
       </div>
+
       <div class="card__body">
-        <%= form_with class: 'form' do %>
+
+        <% if flash.any? %>
+          <div class="flashes">
+            <% flash.each do |key, value| -%>
+              <div class="alert alert-<%= key %>"><%= value %></div>
+            <% end -%>
+          </div>
+        <% end %>
+
+        <%= simple_form_for @join, url: join_path, html: { class: 'form' } do |f| %>
           <div class="form__person">
             <div class="form__field">
-              <%= label_tag(:name, 'Name') %>
-              <%= text_field_tag(:name) %>
+              <%= f.input :name, label: 'Name' %>
             </div>
             <div class="form__field">
-              <%= label_tag(:email, 'Email address') %>
-              <%= email_field_tag(:email) %>
+              <%= f.input :email, as: :email, label: 'Email address' %>
             </div>
             <div class="form__field">
-              <%= label_tag(:phone, 'Phone number') %>
-              <%= telephone_field_tag(:phone) %>
+              <%= f.input :phone, as: :tel, label: 'Phone number' %>
             </div>
             <div class="form__field">
-              <%= label_tag(:job_title, 'Job title') %>
-              <%= text_field_tag(:job_title) %>
+              <%= f.input :job_title, label: 'Job title' %>
             </div>
             <div class="form__field">
-              <%= label_tag(:job_org, 'Organisation name') %>
-              <%= text_field_tag(:job_org) %>
+              <%= f.input :job_org, label: 'Organisation name' %>
             </div>
             <div class="form__field">
-              <%= label_tag(:area, 'Area you cover') %>
-              <%= text_field_tag(:area) %>
+              <%= f.input :area, label: 'Area you cover' %>
             </div>
           </div>
 
@@ -39,21 +43,19 @@
             <p><strong>I'd like:</strong></p>
 
             <div class="form__checkbox">
-              <%= check_box_tag(:ringback, true) %>
-              <%= label_tag(:ringback, 'A ring back') %>
+              <%= f.check_box :ringback %>
+              <%= f.label :ringback, 'A ring back' %>
             </div>
 
             <div class="form__checkbox">
-              <%= check_box_tag(:more_info, true) %>
-              <%= label_tag(:more_info, 'More information') %>
+              <%= f.check_box :more_info %>
+              <%= f.label :more_info, 'More information' %>
             </div>
 
             <br>
+            <%= f.input :why, as: :text, label:  'Why I want PlaceCal:', placeholder: "Let us know a bit more about why you'd like to join PlaceCal." %>
 
-            <%= label_tag(:why, 'Why I want PlaceCal:') %>
-            <%= text_area_tag(:why, nil, placeholder: "Let us know a bit more about why you'd like to join PlaceCal.") %>
-
-            <%= submit_tag "Submit", class: 'btn form__submit' %>
+            <%= f.submit "Submit", class: 'btn form__submit' %>
           </div>
         <% end %>
       </div>

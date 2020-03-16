@@ -105,6 +105,7 @@ group :development do
   gem 'guard'
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
+  gem 'letter_opener'
   gem 'rails-erd'
   gem 'rubocop-rails'
   gem 'spring'

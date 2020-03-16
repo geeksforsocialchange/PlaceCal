@@ -14,7 +14,8 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   end
 
   # Static pages
-  get 'join', to: 'pages#join'
+  get 'join', to: 'joins#new'
+  post 'join', to: 'joins#create'
   get 'privacy', to: 'pages#privacy'
   get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
