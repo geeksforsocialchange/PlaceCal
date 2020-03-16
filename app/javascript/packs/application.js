@@ -25,6 +25,8 @@ require("@rails/ujs").start()
 require("turbolinks").start()
 require("leaflet")
 
+import '../src/reveal.js'
+
 // Mountain View
 export default function loadComponents(context) {
   context.keys().forEach(context);
