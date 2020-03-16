@@ -26,7 +26,7 @@
         <%= yield %>
       </main>
       <footer>
-        <% if @site.default_site? %>
+        <% if @site&.default_site? %>
           <%= render_component "footer_home" %>
         <% else %>
           <%= render_component "footer" %>

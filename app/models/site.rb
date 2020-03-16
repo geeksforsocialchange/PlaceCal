@@ -97,7 +97,7 @@ class Site < ApplicationRecord
 
       # Is it Marvellous Mossley?
       # TODO: Fix this horrible temporary fix
-      return Site.find_by(slug: mossley) if request.domain == 'marvellousmossley.org'
+      return Site.find_by(slug: 'mossley') if request.domain == 'marvellousmossley.org'
 
       # Fall back to using the subdomain.
       # Typically this will be for non-production sites.
