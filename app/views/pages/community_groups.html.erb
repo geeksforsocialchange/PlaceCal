@@ -1,32 +1,21 @@
 <article class="home">
   <div class="margin">
-    <div class="card card--first center">
-      <h1 class="section">How we help community groups</h1>
-    </div>
 
-    <div class="card card--plain audience pattern pattern--audience reveal js-reveal">
-      <div class="reveal__teaser">
-        <h2 class="center alt-title">We turn your local knowledge into great<br class="tablet-up"> community information websites</h2>
-        <div class="audience__photo">
-          <%= image_tag 'home/audiences/communities_wide.jpg', alt: 'A photograph of a middle aged woman and young girl enjoying a pottery class' %>
-        </div>
+    <%= render_component "audience_intro",
+      title: "How we help community groups",
+      subtitle: "We turn your local knowledge into great<br class='tablet-up'> community information websites",
+      image: "communities_wide.jpg",
+      image_alt: "A photograph of a middle aged woman and young girl enjoying a pottery class" do %>
+
+      <div>
+        <p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p>
+        <p class="reveal__body">The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.</p>
       </div>
-      <div class="audience__body">
-        <div>
-          <p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p>
-          <p class="reveal__body">The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.</p>
-        </div>
-        <div>
-          <p class="reveal__body">We can help your partnership help everyone work together to produce a high quality and constantly updated website that’s proven to work even in areas left behind by other digital initiatives.</p>
-          <p class="reveal__body">This information helps communities work better together, improves health outcomes, and saves everyone time manually collating information.</p>
-        </div>
+      <div>
+        <p class="reveal__body">We can help your partnership help everyone work together to produce a high quality and constantly updated website that’s proven to work even in areas left behind by other digital initiatives.</p>
+        <p class="reveal__body">This information helps communities work better together, improves health outcomes, and saves everyone time manually collating information.</p>
       </div>
-      <div class="center">
-        <%= link_to "Our story", our_story_path, class: 'btn btn--big btn--home-3' %>
-        <%= link_to "See it in action", find_placecal_path, class: 'btn btn--big btn--home-3' %>
-      </div>
-      <button class="reveal__button">Open to read more</button>
-    </div>
+    <% end %>
 
     <%= render_component "steps",
       steps: [
@@ -57,28 +46,23 @@
       <div class="card__title">
         <h2 class="center">How PlaceCal has helped</h2>
       </div>
-      <div class="card__body">
-        <h3 class="alt-title-small center">We’ve made organising community festivals and bringing people together a breeze.</h3>
-        <figure>
-          <%= image_tag "http://placedog.net/600/400?random&i=1", class: 'rounded' %>
-          <figcaption>Image credit and title</figcaption>
-        </figure>
-        <div class="impact__cols">
-          <p>Community partnerships, social prescribers and neighbourhood teams in our pilot areas have been able to collaborate quickly and easily, enabling an unprecedented level of coordination.</p>
-          <p>The time and money savings from PlaceCal mean we’ve been able to focus on organising collaborative community festivals across multiple venues rather than simply struggling to find out what’s on.</p>
-        </div>
-      </div>
-      <div class="card__body">
-        <h3 class="alt-title-small center">We’ve made the best listings in the whole city for our area, increasing neighbourhood wealth and health.</h3>
-        <figure>
-          <%= image_tag "http://placedog.net/600/400?random&i=2", class: 'rounded' %>
-          <figcaption>Hulme Winter Festival leaflets</figcaption>
-        </figure>
-        <div class="impact__cols">
-          <p>Residents in Hulme have access to a constantly updated, high quality and trusted community resource with access to dozens of groups and over 200 events a week. The city council and housing associations struggle to even publish 10.</p>
-          <p>This tackles social isolation and loneliness at the root level by making it easy for everyone to find something to do. We’ve also used the information to create and deliver physical mailouts using information gathered through PlaceCal — something which would be simply impossible for each group working alone.</p>
-        </div>
-      </div>
+      <%= render_component "impact_story",
+        title: "We’ve made organising community festivals and bringing people together a breeze.",
+        image: "http://placedog.net/600/400?random&i=1",
+        image_credit: "Image credit and title" do %>
+
+        <p>Community partnerships, social prescribers and neighbourhood teams in our pilot areas have been able to collaborate quickly and easily, enabling an unprecedented level of coordination.</p>
+        <p>The time and money savings from PlaceCal mean we’ve been able to focus on organising collaborative community festivals across multiple venues rather than simply struggling to find out what’s on.</p>
+      <% end %>
+
+      <%= render_component "impact_story",
+        title: "We’ve made the best listings in the whole city for our area, increasing neighbourhood wealth and health.",
+        image: "http://placedog.net/600/400?random&i=2",
+        image_credit: "Hulme Winter Festival leaflets" do %>
+
+        <p>Residents in Hulme have access to a constantly updated, high quality and trusted community resource with access to dozens of groups and over 200 events a week. The city council and housing associations struggle to even publish 10.</p>
+        <p>This tackles social isolation and loneliness at the root level by making it easy for everyone to find something to do. We’ve also used the information to create and deliver physical mailouts using information gathered through PlaceCal — something which would be simply impossible for each group working alone.</p>
+      <% end %>
     </div>
 
     <h2 class="fc-primary center">How PlaceCal helps other groups</h2>

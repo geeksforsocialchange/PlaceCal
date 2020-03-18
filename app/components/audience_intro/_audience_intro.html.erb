@@ -1,0 +1,20 @@
+<div class="card card--first center">
+  <h1 class="section"><%= properties[:title] %></h1>
+</div>
+
+<div class="card card--plain audience pattern pattern--audience reveal js-reveal">
+  <div class="reveal__teaser">
+    <h2 class="center alt-title"><%= properties[:subtitle].html_safe %></h2>
+    <div class="audience__photo">
+      <%= image_tag "home/audiences/#{properties[:image]}", alt: properties[:image_alt] %>
+    </div>
+  </div>
+  <div class="audience__body">
+    <%= properties[:yield] %>
+  </div>
+  <div class="center">
+    <%= link_to "Our story", our_story_path, class: 'btn btn--big btn--home-3' %>
+    <%= link_to "See it in action", find_placecal_path, class: 'btn btn--big btn--home-3' %>
+  </div>
+  <button class="reveal__button">Open to read more</button>
+</div>

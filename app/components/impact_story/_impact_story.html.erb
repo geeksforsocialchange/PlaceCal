@@ -1,0 +1,10 @@
+<div class="card__body">
+  <h3 class="alt-title-small center"><%= properties[:title] %></h3>
+  <figure>
+    <%= image_tag properties[:image], class: 'rounded' %>
+    <figcaption><%= properties[:image_caption] %></figcaption>
+  </figure>
+  <div class="impact__cols">
+    <%= properties[:yield] %>
+  </div>
+</div>
