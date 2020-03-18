@@ -1,0 +1,33 @@
+<div class="card card--split card--plain steps center">
+  <div class="card__title">
+    <h2>How it works for community groups</h2>
+  </div>
+
+  <div class="card__body card__body--wide">
+    <%= image_tag 'home/how/start.png', alt: 'A diagram of a disconected neighbourhood', class: 'steps__image' %>
+    <div class="steps__caption">
+      <p class="center"><%= start_message %></p>
+    </div>
+  </div>
+
+  <% steps.each do |step| %>
+    <div class="card__body">
+      <%= image_tag "home/how/#{step[:id]}.png", alt: step[:image_alt], class: 'steps__image steps__image--numeral' %>
+      <div class="steps__caption">
+        <%= step[:content].html_safe %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="card__body card__body--wide">
+    <div class="steps__caption">
+      <p class="center"><%= end_message %></p>
+    </div>
+    <%= image_tag 'home/how/end.png', alt: 'A diagram of a connected neighbourhood', class: 'steps__image' %>
+    <br>
+  </div>
+
+  <br>
+  <%= link_to "Check out our handbook", "https://handbook.placecal.org", class: 'btn btn--big btn--home-4' %>
+  <br class="half">
+</div>

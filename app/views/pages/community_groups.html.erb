@@ -28,53 +28,30 @@
       <button class="reveal__button">Open to read more</button>
     </div>
 
-    <div class="card card--split card--plain steps center">
-      <div class="card__title">
-        <h2>How it works for community groups</h2>
-      </div>
-      <div class="card__body card__body--wide">
-        <%= image_tag 'home/how/start.png', alt: 'A diagram of a disconected neighbourhood', class: 'steps__image' %>
-        <div class="steps__caption">
-          <p class="center">Nothing is connected! People don't know where to go.</p>
-        </div>
-      </div>
-      <div class="card__body">
-        <%= image_tag 'home/how/1.png', alt: 'Two people talking on the phone', class: 'steps__image steps__image--numeral' %>
-        <div class="steps__caption">
-          <p>We have a chat on the phone to get the ball rolling, and set a time to come and show you how it works.</p>
-        </div>
-      </div>
-      <div class="card__body">
-        <%= image_tag 'home/how/2.png', alt: 'Two people entering information into PlaceCal', class: 'steps__image steps__image--numeral' %>
-        <div class="steps__caption">
-          <p>We help you enter all the information you already know about local groups into PlaceCal.</p>
-        </div>
-      </div>
-      <div class="card__body">
-        <%= image_tag 'home/how/3.png', alt: 'A noticeboard in a community centre', class: 'steps__image steps__image--numeral' %>
-        <div class="steps__caption">
-          <p>Next, we convert all the events you know about into an electronic calendar, and import the infomation into PlaceCal.</p>
-        </div>
-      </div>
-      <div class="card__body">
-        <%= image_tag 'home/how/4.png', alt: 'A community worker waving to a resident', class: 'steps__image steps__image--numeral' %>
-        <div class="steps__caption">
-          <p>You then have all the tools you need to get the rest of your neighbourhood connected.</p>
-          <p>(With ongoing support from us of course!)</p>
-        </div>
-      </div>
-      <div class="card__body card__body--wide">
-        <div class="steps__caption">
-          <p class="center">Problem solved: everyone's connected and it's easy to find out what's happening!</p>
-        </div>
-        <%= image_tag 'home/how/end.png', alt: 'A diagram of a connected neighbourhood', class: 'steps__image' %>
-        <br>
-      </div>
-      <br>
-      <%= link_to "Check out our handbook", "https://handbook.placecal.org", class: 'btn btn--big btn--home-4' %>
-      <br class="half">
-    </div>
-
+    <%= render_component "steps",
+      steps: [
+        {
+          id: 1,
+          content: "<p>We have a chat on the phone to get the ball rolling, and set a time to come and show you how it works.</p>",
+          image_alt: "Two people talking on the phone"
+        },
+        {
+          id: 2,
+          content: "<p>We help you enter all the information you already know about local groups into PlaceCal.</p>",
+          image_alt: "Two people entering information into PlaceCal"
+        },
+        {
+          id: 3,
+          content: "<p>Next, we convert all the events you know about into an electronic calendar, and import the infomation into PlaceCal.</p>",
+          image_alt: "A noticeboard in a community centre"
+        },
+        {
+          id: 4,
+          content: "<p>You then have all the tools you need to get the rest of your neighbourhood connected.</p><p>(With ongoing support from us of course!)</p>",
+          image_alt: "A community worker waving to a resident"
+        }
+      ]
+    %>
 
     <div class="card card--split card--plain impact">
       <div class="card__title">
