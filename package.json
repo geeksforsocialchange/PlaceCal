@@ -12,7 +12,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.3.1",
     "cocoon": "^0.1.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "leaflet": "^1.6.0",
     "popper.js": "^1.16.0",
     "select2": "^4.0.11",
