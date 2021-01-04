@@ -20,7 +20,7 @@
     "vue": "^2.6.11",
     "vue-loader": "^15.8.3",
     "vue-template-compiler": "^2.6.11",
-    "vue-turbolinks": "^2.0.4",
+    "vue-turbolinks": "^2.2.0",
     "vue2-timepicker": "^1.0.8"
   },
   "devDependencies": {
