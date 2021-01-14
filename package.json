@@ -24,6 +24,6 @@
     "vue2-timepicker": "^1.0.8"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.10.2"
+    "webpack-dev-server": "^3.11.2"
   }
 }
