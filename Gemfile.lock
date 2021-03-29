@@ -268,7 +268,8 @@ GEM
       addressable
       faraday
       json (>= 1.8)
-    kramdown (2.1.0)
+    kramdown (2.3.1)
+      rexml
     leaflet-rails (1.5.1)
       rails (>= 4.2.0)
     listen (3.2.1)
@@ -286,7 +287,9 @@ GEM
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.1009)
-    mimemagic (0.3.4)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_magick (4.10.1)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
@@ -408,6 +411,7 @@ GEM
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rexml (3.2.4)
     rollbar (2.23.2)
     rubocop (0.79.0)
       jaro_winkler (~> 1.5.1)
