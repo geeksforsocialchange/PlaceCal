@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '2.6.5'
+ruby '2.6.6'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -41,7 +41,9 @@ gem 'select2-rails'
 gem 'simple_form'
 
 # Users, login, permissions
-gem 'devise'
+# FIXME: Temporary workaround for now
+# https://github.com/heartcombo/devise/commit/1d138dd40cdc291a427b89027d16a869818a5c19#diff-59866e40fe6196ebb76fa63d186b09ba0856de17e2e938743e99add37bb83f5c
+gem 'devise', github: "heartcombo/devise", branch: "master"
 gem 'devise_invitable'
 gem 'omniauth-facebook'
 gem 'pundit'
