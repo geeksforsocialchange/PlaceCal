@@ -15,12 +15,8 @@ cache:
 addons:
   postgresql: '9.6'
 before_install:
-  - |
-    if [ "$TRAVIS_BRANCH" = "production" ]; then
-      openssl aes-256-cbc -K $encrypted_437d0650e732_key -iv $encrypted_437d0650e732_iv -in $TRAVIS_BUILD_DIR/.travis/production-deploy.key.enc -out production-deploy.key -d
-    elif [ "$TRAVIS_BRANCH" = "master" ]; then
-      openssl aes-256-cbc -K $encrypted_b47cedfbbf03_key -iv $encrypted_b47cedfbbf03_iv -in $TRAVIS_BUILD_DIR/.travis/deploy.key.enc -out deploy.key -d
-    fi
+  - openssl aes-256-cbc -K $encrypted_cfd5f5b67346_key -iv $encrypted_cfd5f5b67346_iv -in $TRAVIS_BUILD_DIR/.travis/secrets.tar.enc -out secrets.tar -d
+  - tar xvf secrets.tar
 install:
   - gem install bundler
   - bundle install

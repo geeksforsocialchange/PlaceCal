@@ -31,6 +31,7 @@
 # Credentials
 .travis/*.key
 .travis/*.key.pub
+.travis/*.tar
 
 # Notes
 notes.md
