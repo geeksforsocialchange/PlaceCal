@@ -7,7 +7,7 @@
     "yarn": "1.21.1"
   },
   "dependencies": {
-    "@rails/ujs": "^6.0.2",
+    "@rails/ujs": "^6.1.4",
     "@rails/webpacker": "^4.0.7",
     "axios": "^0.19.2",
     "bootstrap": "^4.3.1",
