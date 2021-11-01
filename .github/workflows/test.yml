@@ -26,15 +26,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
-      - name: Setup Test Reporter
-        run: |
-          echo $PWD # Github literally doesn't list this AFAICT ughhh
-          echo $(ls)
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-          echo $PWD
-          echo $(ls)
-          ./cc-test-repoter before-build
       - name: Setup SQL
         run: |
           psql -c 'create database placecal_test;' -U postgres
@@ -58,9 +49,11 @@ jobs:
         if: ${{ github.ref == 'refs/heads/production' && github.event.pull_request.merged == true }}
         run: |
           ./scripts/production.sh
-      - name: Report status
-        run: |
-          ./cc-test-reporter after-build --exit-code ${{ job.status }}
+      - name: Report test status to CodeClimate
+        uses: aktions/codeclimate-test-reporter@v1
+        with:
+          codeclimate-test-reporter-id: ${{ env.CC_TEST_REPORTER_ID }}
+          command: after-build --exit-code ${{ job.status }}
       - name: Precompile Assets
         run: |
           bundle exec rails assets:precompile
