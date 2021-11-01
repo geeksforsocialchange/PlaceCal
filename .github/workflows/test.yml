@@ -1,0 +1,62 @@
+name: Build, Test and Optionally Deploy
+
+on: [push, pull_request, workflow_dispatch]
+
+# According to: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
+# Both Node and Yarn should be installed already
+# This would ideally be split up into dependent jobs maybe, but this is a direct conversion of the travis script for now
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      CC_TEST_REPORTER_ID: "7e0e573cd74e3418226d922174406b38d5692b01d6464701fa57ce51e75eb72a"
+    services:
+      postgres:
+        image: postgres:13.4 # Same version as on the server
+        env:
+          POSTGRES_DB: placecal_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: foobar
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with: # ruby version specified in .ruby-version
+          bundler-cache: true # Automagically runs bundle install
+      - name: Setup Test Reporter
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-repoter before-build
+      - name: Setup SQL
+        run: |
+          psql -c 'create database placecal_test;' -U postgres
+        env: # Not really sure how to stop the envvar replication here?
+          PGPASSWORD: foobar
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+      - name: Do Tests
+        run: |
+          bundle exec webpacker:compile
+          bundle exec rake
+        env: # Likewise, here.
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+      # No idea if these work D:
+      - name: Deploy To Staging
+        if: ${{ github.ref == 'refs/heads/main' && github.event.pull_request.merged == true }}
+        run: |
+          ./scripts/staging.sh
+      - name: Deploy To Production
+        if: ${{ github.ref == 'refs/heads/production' && github.event.pull_request.merged == true }}
+        run: |
+          ./scripts/production.sh
+      - name: Report status
+        run: |
+          ./cc-test-reporter after-build --exit-code ${{ job.status }}
+      - name: Precompile Assets
+        run: |
+          bundle exec rails assets:precompile
