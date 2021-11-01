@@ -28,8 +28,12 @@ jobs:
           bundler-cache: true # Automagically runs bundle install
       - name: Setup Test Reporter
         run: |
+          echo $PWD # Github literally doesn't list this AFAICT ughhh
+          echo $(ls)
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           chmod +x ./cc-test-reporter
+          echo $PWD
+          echo $(ls)
           ./cc-test-repoter before-build
       - name: Setup SQL
         run: |
