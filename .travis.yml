@@ -37,7 +37,7 @@ deploy:
     skip_cleanup: true
     script: bash scripts/staging.sh
     on:
-      branch: master
+      branch: main
   - provider: script
     skip_cleanup: true
     script: bash scripts/production.sh

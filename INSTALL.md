@@ -115,7 +115,7 @@ If you don't want CI you can skip to "Set production environment variables" and 
 
 ```
 git remote add dokku dokku@SERVER_IP:APP_NAME
-git push dokku master
+git push dokku main
 ```
 
 ## Fancy pants staging/prod/CI etc
@@ -184,7 +184,7 @@ deploy:
     skip_cleanup: true
     script: bash scripts/staging.sh
     on:
-      branch: master
+      branch: main
   - provider: script
     skip_cleanup: true
     script: bash scripts/production.sh
@@ -205,7 +205,7 @@ ssh-add ./ENV_KEY_NAME
 ssh-keyscan DOMAIN_NAME >> ~/.ssh/known_hosts
 git remote add deploy DOKKU_GIT_URL #i.e. dokku@DOMAIN_NAME:APP_NAME
 git config --global push.default simple
-git push deploy master #or BRANCH_NAME:master if deploying a non-master branch
+git push deploy main #or BRANCH_NAME:main if deploying a non-main branch
 ```
 
 Commit, push to repo, and merge into the branch when ready.

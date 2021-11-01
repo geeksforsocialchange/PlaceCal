@@ -92,7 +92,7 @@
         </p>
         <p>
           © 2017-18 <%= link_to "Geeks For Social Change", "http://gfsc.studio" %><br>
-          <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'master' %>
+          <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'main' %>
           Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
         </p>
       </div>
