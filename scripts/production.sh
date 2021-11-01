@@ -4,4 +4,4 @@ ssh-add ./production-deploy.key
 ssh-keyscan placecal.com >> ~/.ssh/known_hosts
 git remote add deploy dokku@placecal.com:placecal
 git config --global push.default simple
-git push deploy production:master
+git push deploy production:main
