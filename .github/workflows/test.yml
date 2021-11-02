@@ -8,7 +8,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       NODE_ENV: test
       CC_TEST_REPORTER_ID: "7e0e573cd74e3418226d922174406b38d5692b01d6464701fa57ce51e75eb72a"
@@ -19,6 +19,8 @@ jobs:
           POSTGRES_DB: placecal_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: foobar
+        ports:
+          - 5432:5432
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -32,12 +34,13 @@ jobs:
         env: # Not really sure how to stop the envvar replication here?
           PGPASSWORD: foobar
           POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
       - name: Do Tests
         run: |
           bundle exec webpacker:compile
           bundle exec rake
-        env: # Likewise, here.
+        env: # Likewise, here. We might actually need more envvar replication depending
           POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
       # No idea if these work D:
