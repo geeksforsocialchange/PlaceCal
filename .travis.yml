@@ -32,17 +32,17 @@ before_script:
 script:
   - bundle exec rails webpacker:compile
   - bundle exec rake
-deploy:
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/staging.sh
-    on:
-      branch: main
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/production.sh
-    on:
-      branch: production
+# deploy:
+#   - provider: script
+#     skip_cleanup: true
+#     script: bash scripts/staging.sh
+#     on:
+#       branch: main
+#   - provider: script
+#     skip_cleanup: true
+#     script: bash scripts/production.sh
+#     on:
+#       branch: production
 after_script:
   - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
 after_success:
