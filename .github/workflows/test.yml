@@ -57,12 +57,14 @@ jobs:
       - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
+          chmod +x ./scripts/staging.sh
           ./scripts/staging.sh
         env:
           CI_STAGING_KEY: ${{ secrets.CI_STAGING_KEY }}
       - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' }}
         run: |
+          chmod +x ./scripts/production.sh
           ./scripts/production.sh
         env:
           CI_PRODUCTION_KEY: ${{ secrets.CI_PRODUCTION_KEY }}
