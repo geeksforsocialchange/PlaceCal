@@ -35,11 +35,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
+      # Not sure why specifying PGPASSWORD at runtime is not working?
       - name: Setup SQL
         run: |
-          psql -h localhost -d postgres_db -U postgres_user -c 'create database placecal_test;'
-        env:
-          PGPASSWORD: foobar
+          PGPASSWORD='foobar' psql -h localhost -d placecal_test -U postgres_user -c 'create database placecal_test;'
       - name: Do Tests
         run: |
           bundle exec webpacker:compile
