@@ -56,15 +56,14 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && github.event.pull_request.merged == true }}
         run: |
           ./scripts/staging.sh
+        with:
+          CI_STAGING_KEY: {{ secrets.CI_STAGING_KEY }}
       - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' && github.event.pull_request.merged == true }}
         run: |
           ./scripts/production.sh
-      - name: Report test status to CodeClimate
-        uses: aktions/codeclimate-test-reporter@v1
         with:
-          codeclimate-test-reporter-id: ${{ env.CC_TEST_REPORTER_ID }}
-          command: after-build --exit-code ${{ job.status }}
+          CI_PRODUCTION_KEY: {{ secrets.CI_PRODUCTION_KEY }}
       - name: Precompile Assets
         run: |
           bundle exec rails assets:precompile
