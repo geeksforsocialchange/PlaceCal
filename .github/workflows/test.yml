@@ -35,6 +35,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
+      - name: Debug
+        run: |
+          bundle binstubs railties
+          bundle doctor
       - name: Setup Yarn
         uses: mskelton/setup-yarn@v1
         with:
