@@ -35,6 +35,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
+      - name: Setup Yarn
+        uses: mskelton/setup-yarn@v1
+        with:
+          node-version: 10.17.0
       - name: Do Tests
         run: |
           bundle exec webpacker:compile
