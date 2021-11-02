@@ -37,7 +37,7 @@ jobs:
           bundler-cache: true # Automagically runs bundle install
       - name: Setup SQL
         run: |
-          psql -h postgres -d postgres_db -U postgres_user -c 'create database placecal_test;'
+          psql -h localhost -d postgres_db -U postgres_user -c 'create database placecal_test;'
         env:
           PGPASSWORD: foobar
       - name: Do Tests
@@ -46,7 +46,7 @@ jobs:
           bundle exec rake
         env:
           POSTGRES_USER: postgres
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           PGPASSWORD: foobar
       # No idea if these work D:
