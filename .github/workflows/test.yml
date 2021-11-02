@@ -19,8 +19,15 @@ jobs:
           POSTGRES_DB: placecal_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: foobar
+          POSTGRES_PORT: 5432
         ports:
           - 5432:5432
+        # Health options to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -30,19 +37,18 @@ jobs:
           bundler-cache: true # Automagically runs bundle install
       - name: Setup SQL
         run: |
-          psql -c 'create database placecal_test;' -U postgres
-        env: # Not really sure how to stop the envvar replication here?
+          psql -h postgres -d postgres_db -U postgres_user -c 'create database placecal_test;'
+        env:
           PGPASSWORD: foobar
-          POSTGRES_HOST: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
       - name: Do Tests
         run: |
           bundle exec webpacker:compile
           bundle exec rake
-        env: # Likewise, here. We might actually need more envvar replication depending
+        env:
+          POSTGRES_USER: postgres
           POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
+          PGPASSWORD: foobar
       # No idea if these work D:
       - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/main' && github.event.pull_request.merged == true }}
