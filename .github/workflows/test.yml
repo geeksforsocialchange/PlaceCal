@@ -38,7 +38,9 @@ jobs:
       # Not sure why specifying PGPASSWORD at runtime is not working?
       - name: Setup SQL
         run: |
-          PGPASSWORD='foobar' psql -h localhost -d placecal_test -U postgres_user -c 'create database placecal_test;'
+          psql -h localhost -d placecal_test -U postgres -c 'create database placecal_test;'
+        env:
+          PGPASSWORD: foobar
       - name: Do Tests
         run: |
           bundle exec webpacker:compile
