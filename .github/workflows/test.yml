@@ -56,13 +56,13 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && github.event.pull_request.merged == true }}
         run: |
           ./scripts/staging.sh
-        with:
+        env:
           CI_STAGING_KEY: {{ secrets.CI_STAGING_KEY }}
       - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' && github.event.pull_request.merged == true }}
         run: |
           ./scripts/production.sh
-        with:
+        env:
           CI_PRODUCTION_KEY: {{ secrets.CI_PRODUCTION_KEY }}
       - name: Precompile Assets
         run: |
