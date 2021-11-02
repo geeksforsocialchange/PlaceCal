@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       NODE_ENV: test
-      CC_TEST_REPORTER_ID: "7e0e573cd74e3418226d922174406b38d5692b01d6464701fa57ce51e75eb72a"
     services:
       postgres:
         image: postgres:13.4 # Same version as on the server
@@ -51,15 +50,18 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           PGPASSWORD: foobar
-      # No idea if these work D:
+      - name: Debug Deploying
+        run: |
+          echo ${{ github.ref }}
+          echo ${{ github.even.pull_request.merged }}
       - name: Deploy To Staging
-        if: ${{ github.ref == 'refs/heads/main' && github.event.pull_request.merged == true }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           ./scripts/staging.sh
         env:
           CI_STAGING_KEY: ${{ secrets.CI_STAGING_KEY }}
       - name: Deploy To Production
-        if: ${{ github.ref == 'refs/heads/production' && github.event.pull_request.merged == true }}
+        if: ${{ github.ref == 'refs/heads/production' }}
         run: |
           ./scripts/production.sh
         env:
