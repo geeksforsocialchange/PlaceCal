@@ -50,24 +50,36 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           PGPASSWORD: foobar
-      - name: Debug Deploying
-        run: |
-          echo ${{ github.ref }}
-          echo ${{ github.even.pull_request.merged }}
       - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
-          chmod +x ./scripts/staging.sh
-          ./scripts/staging.sh
-        env:
-          CI_STAGING_KEY: ${{ secrets.CI_STAGING_KEY }}
-      - name: Deploy To Production
+        uses:  idoberko2/dokku-deploy-github-action@v1
+        with:
+          ssh-private-key: ${{ secrets.CI_STAGING_KEY }}
+          dokku-host: placecal-staging.org
+          app-name: placecal-staging
+          remote-branch: main
+      - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/production' }}
-        run: |
-          chmod +x ./scripts/production.sh
-          ./scripts/production.sh
-        env:
-          CI_PRODUCTION_KEY: ${{ secrets.CI_PRODUCTION_KEY }}
+        uses:  idoberko2/dokku-deploy-github-action@v1
+        with:
+          ssh-private-key: ${{ secrets.CI_PRODUCTION_KEY }}
+          dokku-host: placecal.com
+          app-name: placecal
+          remote-branch: main
+      # - name: Deploy To Staging
+      #   if: ${{ github.ref == 'refs/heads/main' }}
+      #   run: |
+      #     chmod +x ./scripts/staging.sh
+      #     ./scripts/staging.sh
+      #   env:
+      #     CI_STAGING_KEY: ${{ secrets.CI_STAGING_KEY }}
+      # - name: Deploy To Production
+      #   if: ${{ github.ref == 'refs/heads/production' }}
+      #   run: |
+      #     chmod +x ./scripts/production.sh
+      #     ./scripts/production.sh
+      #   env:
+      #     CI_PRODUCTION_KEY: ${{ secrets.CI_PRODUCTION_KEY }}
       - name: Precompile Assets
         run: |
           bundle exec rails assets:precompile
