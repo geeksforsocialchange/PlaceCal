@@ -9,5 +9,11 @@
     "dokku": {
       "postdeploy": "bundle exec rails db:migrate"
     }
-  }
+  },
+  "cron": [
+    {
+      "command": "bundle exec rails import:all_events",
+      "schedule": "*/10 * * * *"
+    }
+  ]
 }
