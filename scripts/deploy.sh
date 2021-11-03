@@ -31,4 +31,4 @@ git config --global push.default simple
 # export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 # Deploy
-git push deploy "$SOURCE_BRANCH:$TARGET_BRANCH"
+git push --force deploy "$SOURCE_BRANCH:$TARGET_BRANCH"
