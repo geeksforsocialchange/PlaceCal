@@ -30,9 +30,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        # with:
+        with:
           # Likely Solves the push issue, but will make everything slower
-          # fetch-depth: 0
+          fetch-depth: 0
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
 #        with: # ruby version specified in .ruby-version
