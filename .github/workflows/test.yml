@@ -30,6 +30,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        # with:
+          # Likely Solves the push issue, but will make everything slower
+          # fetch-depth: 0
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
 #        with: # ruby version specified in .ruby-version
@@ -52,20 +55,26 @@ jobs:
           PGPASSWORD: foobar
       - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses:  idoberko2/dokku-deploy-github-action@v1
-        with:
-          ssh-private-key: ${{ secrets.CI_STAGING_KEY }}
-          dokku-host: placecal-staging.org
-          app-name: placecal-staging
-          remote-branch: main
-      - name: Deploy To Staging
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.CI_STAGING_KEY }}
+          DOKKU_HOST: placecal-staging.org
+          TARGET_REPO: placecal-staging
+          TARGET_BRANCH: main
+          SOURCE_BRANCH: main
+      - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' }}
-        uses:  idoberko2/dokku-deploy-github-action@v1
-        with:
-          ssh-private-key: ${{ secrets.CI_PRODUCTION_KEY }}
-          dokku-host: placecal.com
-          app-name: placecal
-          remote-branch: main
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.CI_PRODUCTION_KEY }}
+          DOKKU_HOST: placecal.com
+          TARGET_REPO: placecal
+          TARGET_BRANCH: production
+          SOURCE_BRANCH: main
       # - name: Deploy To Staging
       #   if: ${{ github.ref == 'refs/heads/main' }}
       #   run: |
