@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '2.6.5'
+ruby '2.7.4'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -10,7 +10,7 @@ end
 
 # Core
 gem 'pg'
-gem 'puma', '~> 4.2'
+gem 'puma', '~> 4.3.9'
 gem 'rails', '~> 6.0'
 gem 'minitest-rails'
 
