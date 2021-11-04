@@ -33,6 +33,8 @@ jobs:
         with:
           # Likely Solves the push issue, but will make everything slower
           fetch-depth: "0"
+        run: |
+          git config init.defaultBranch main
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
 #        with: # ruby version specified in .ruby-version
