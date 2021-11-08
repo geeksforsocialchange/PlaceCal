@@ -31,13 +31,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          # Likely Solves the push issue, but will make everything slower
           fetch-depth: 0
-      - name: Unshallow the repo provided to us
-        run: |
-          git fetch --unshallow origin
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
+# bundler cache is broken and does not correctly set up the rails binary :(
 #        with: # ruby version specified in .ruby-version
 #          bundler-cache: true # Automagically runs bundle install
       - name: Install bundler dependencies
