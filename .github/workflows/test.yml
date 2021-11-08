@@ -28,14 +28,14 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - name: Set git config
-        run: |
-          git config --global init.defaultBranch main
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
           # Likely Solves the push issue, but will make everything slower
           fetch-depth: 0
+      - name: See remote on deploy
+        run: |
+          git remote -v
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
 #        with: # ruby version specified in .ruby-version
