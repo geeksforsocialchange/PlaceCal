@@ -23,7 +23,7 @@ cd "$GITHUB_WORKSPACE"
 # Add remote to git
 git remote add deploy "dokku@$DOKKU_HOST:$TARGET_REPO"
 # Simple push default (?)
-git config --global push.default simple
+# git config --global push.default simple
 
 # Set a nice lil ssh command for Git to use
 # The github action idoberko2/dokku-deploy-github-action@v1 does this, but also everything above
