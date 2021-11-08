@@ -33,9 +33,9 @@ jobs:
         with:
           # Likely Solves the push issue, but will make everything slower
           fetch-depth: 0
-      - name: See remote on deploy
+      - name: Unshallow the repo provided to us
         run: |
-          git remote -v
+          git fetch --unshallow origin
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
 #        with: # ruby version specified in .ruby-version
