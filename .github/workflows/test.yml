@@ -73,8 +73,8 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.CI_PRODUCTION_KEY }}
           DOKKU_HOST: placecal.com
           TARGET_REPO: placecal
-          TARGET_BRANCH: production
-          SOURCE_BRANCH: main
+          TARGET_BRANCH: main
+          SOURCE_BRANCH: production
       - name: Precompile Assets
         run: |
           bundle exec rails assets:precompile
