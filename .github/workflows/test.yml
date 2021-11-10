@@ -53,6 +53,10 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           PGPASSWORD: foobar
+      # Why was this run as the after-success step in travis?
+      # - name: Precompile Assets
+      #   run: |
+      #     bundle exec rails assets:precompile
       - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: dokku/github-action@master
@@ -64,15 +68,10 @@ jobs:
           git_push_flags: --force
       - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' }}
-        run: |
-          chmod +x scripts/deploy.sh
-          ./scripts/deploy.sh
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.CI_PRODUCTION_KEY }}
-          DOKKU_HOST: placecal.com
-          TARGET_REPO: placecal
-          TARGET_BRANCH: main
-          SOURCE_BRANCH: production
-      - name: Precompile Assets
-        run: |
-          bundle exec rails assets:precompile
+        uses: dokku/github-action@master
+        with:
+          git_remote_url: 'ssh://dokku@placecal.com:22/placecal'
+          ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
+          branch: main
+          ci_branch_name: production
+          git_push_flags: --force
