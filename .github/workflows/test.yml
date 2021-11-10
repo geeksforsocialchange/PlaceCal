@@ -55,15 +55,12 @@ jobs:
           PGPASSWORD: foobar
       - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
-          chmod +x scripts/deploy.sh
-          ./scripts/deploy.sh
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.CI_STAGING_KEY }}
-          DOKKU_HOST: placecal-staging.org
-          TARGET_REPO: placecal-staging
-          TARGET_BRANCH: main
-          SOURCE_BRANCH: main
+        uses: dokku/github-action@master
+        with:
+          git_remote_url: 'ssh://dokku@placecal-staging.org:22/placecal-staging'
+          ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
+          branch: main
+          ci_branch_name: main
       - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' }}
         run: |
