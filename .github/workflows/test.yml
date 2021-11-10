@@ -61,6 +61,7 @@ jobs:
           ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
           branch: main
           ci_branch_name: main
+          git_push_flags: --force
       - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' }}
         run: |
