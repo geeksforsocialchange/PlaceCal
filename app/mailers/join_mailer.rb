@@ -1,5 +1,4 @@
 class JoinMailer < ApplicationMailer
-
   def join_us(join)
     @join = join
 

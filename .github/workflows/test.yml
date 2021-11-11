@@ -32,27 +32,27 @@ jobs:
         uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      # - name: Setup Ruby
+      #   uses: ruby/setup-ruby@v1
 # bundler cache is broken and does not correctly set up the rails binary :(
 #        with: # ruby version specified in .ruby-version
 #          bundler-cache: true # Automagically runs bundle install
-      - name: Install bundler dependencies
-        run: |
-          bundle install
-      - name: Setup Yarn
-        uses: mskelton/setup-yarn@v1
-        with:
-          node-version: 10.17.0
-      - name: Do Tests
-        run: |
-          bundle exec rails webpacker:compile
-          bundle exec rake
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          PGPASSWORD: foobar
+      # - name: Install bundler dependencies
+      #   run: |
+      #     bundle install
+      # - name: Setup Yarn
+      #   uses: mskelton/setup-yarn@v1
+      #   with:
+      #     node-version: 10.17.0
+      # - name: Do Tests
+      #   run: |
+      #     bundle exec rails webpacker:compile
+      #     bundle exec rake
+      #   env:
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_HOST: localhost
+      #     POSTGRES_PORT: 5432
+      #     PGPASSWORD: foobar
       # Why was this run as the after-success step in travis?
       #
       # - name: Precompile Assets
