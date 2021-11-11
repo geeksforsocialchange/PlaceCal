@@ -21,8 +21,7 @@ jobs:
           POSTGRES_PORT: 5432
         ports:
           - 5432:5432
-        # Health options to wait until postgres has started
-        options: >-
+        options: >- # Health options to wait until postgres has started
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
@@ -52,17 +51,16 @@ jobs:
           yarn install --immutable
         env:
           NODE_ENV: test
-      # - name: Do Tests
-      #   run: |
-      #     bundle exec rails webpacker:compile
-      #     bundle exec rake
-      #   env:
-      #     POSTGRES_USER: postgres
-      #     POSTGRES_HOST: localhost
-      #     POSTGRES_PORT: 5432
-      #     PGPASSWORD: foobar
+      - name: Do Tests
+        run: |
+          bundle exec rails webpacker:compile
+          bundle exec rake
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          PGPASSWORD: foobar
       # Why was this run as the after-success step in travis?
-      #
       # - name: Precompile Assets
       #   run: |
       #     bundle exec rails assets:precompile
