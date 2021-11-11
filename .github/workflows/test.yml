@@ -37,13 +37,13 @@ jobs:
 # bundler cache is broken and does not correctly set up the rails binary :(
 #        with: # ruby version specified in .ruby-version
 #          bundler-cache: true # Automagically runs bundle install
-      # - name: Install bundler dependencies
-      #   run: |
-      #     bundle install
-      # - name: Setup Yarn
-      #   uses: mskelton/setup-yarn@v1
-      #   with:
-      #     node-version: 10.17.0
+      - name: Install bundler dependencies
+        run: |
+          bundle install
+      - name: Setup Yarn
+        uses: mskelton/setup-yarn@v1
+        with:
+          node-version: 10.17.0
       # - name: Do Tests
       #   run: |
       #     bundle exec rails webpacker:compile
