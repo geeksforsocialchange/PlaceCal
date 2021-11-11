@@ -34,16 +34,24 @@ jobs:
           fetch-depth: 0
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-# bundler cache is broken and does not correctly set up the rails binary :(
-#        with: # ruby version specified in .ruby-version
-#          bundler-cache: true # Automagically runs bundle install
-      - name: Install bundler dependencies
-        run: |
-          bundle install
-      - name: Setup Yarn
-        uses: mskelton/setup-yarn@v1
+        # bundler cache is broken and does not correctly set up the rails binary :(
+        # with: # ruby version specified in .ruby-version
+        #   bundler-cache: true # Automagically runs bundle install
+      - name: Setup Node
+        uses: actions/setup-node@v2
         with:
           node-version: 10.17.0
+          cache: yarn
+        env:
+          NODE_ENV: test
+      - name: Install Bundler Dependencies
+        run: |
+          bundle install
+      - name: Install Yarn Dependencies
+        run: |
+          yarn install --immutable
+        env:
+          NODE_ENV: test
       # - name: Do Tests
       #   run: |
       #     bundle exec rails webpacker:compile
