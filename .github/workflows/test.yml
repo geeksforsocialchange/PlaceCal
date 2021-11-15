@@ -73,7 +73,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/production' }}
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku@placecal.com:22/placecal'
+          git_remote_url: 'ssh://dokku@placecal.org:22/placecal'
           ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
           branch: main
           ci_branch_name: production
