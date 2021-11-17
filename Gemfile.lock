@@ -69,6 +69,8 @@ GEM
       zeitwerk (~> 2.1, >= 2.1.8)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
+    ancestry (4.1.0)
+      activerecord (>= 5.2.6)
     ansi (1.5.0)
     ast (2.4.2)
     autoprefixer-rails (10.3.3.0)
@@ -568,6 +570,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_link_to
+  ancestry
   awesome_print
   better_errors
   binding_of_caller
