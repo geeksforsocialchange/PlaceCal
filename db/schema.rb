@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_12_155023) do
+ActiveRecord::Schema.define(version: 2021_11_17_104415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,6 +132,8 @@ ActiveRecord::Schema.define(version: 2020_03_12_155023) do
     t.string "CTY19NM"
     t.string "RGN19CD"
     t.string "RGN19NM"
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_neighbourhoods_on_ancestry"
   end
 
   create_table "neighbourhoods_users", force: :cascade do |t|

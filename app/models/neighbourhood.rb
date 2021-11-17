@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Neighbourhood < ApplicationRecord
+  has_ancestry
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :sites, through: :sites_neighbourhoods
 
