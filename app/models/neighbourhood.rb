@@ -18,15 +18,15 @@ class Neighbourhood < ApplicationRecord
   end
 
   def district
-    (parent&.name if unit == 'ward') || ''
+    parent if unit == 'ward'
   end
 
   def county
-    (parent&.parent&.name if unit == 'ward') || ''
+    parent&.parent if unit == 'ward'
   end
 
   def region
-    (parent&.parent&.parent&.name if unit == 'ward') || ''
+    parent&.parent&.parent if unit == 'ward'
   end
 
   class << self

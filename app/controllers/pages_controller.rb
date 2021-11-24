@@ -10,7 +10,7 @@ class PagesController < ApplicationController
     @grouped_sites = Site.where(is_published: true)
                          .joins(:primary_neighbourhood)
                          .merge(Neighbourhood.order(ancestry: :asc))
-                         .group_by { |s| s.primary_neighbourhood.parent.name }
+                         .group_by { |s| s.primary_neighbourhood.district.name }
   end
 
   def robots

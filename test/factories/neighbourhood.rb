@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Each Neighbourhood is ordered by size, biggest to smallest.
+# The parent neighbourhood's definition is above, the child's definition is below
 FactoryBot.define do
   factory :neighbourhood_region, class: 'Neighbourhood' do
     name { 'North West' }
@@ -50,14 +52,11 @@ FactoryBot.define do
 
     after :create do |ward|
       ward.parent = create(:neighbourhood_district)
-    end
-    after :build do |ward|
-      ward.parent = create(:neighbourhood_district)
       ward.users = [create(:user)]
     end
   end
 
-  factory :ashton_district, class: 'Neighbourhood' do
+  factory :ashton_neighbourhood_district, class: 'Neighbourhood' do
     name { 'Tameside' }
     name_abbr { 'Tameside' }
     unit { 'district' }
@@ -79,7 +78,7 @@ FactoryBot.define do
     unit_name { 'Ashton Hurst' }
 
     after :create do |ward|
-      ward.parent = create(:ashton_district)
+      ward.parent = create(:ashton_neighbourhood_district)
       ward.users = [create(:user)]
     end
   end
