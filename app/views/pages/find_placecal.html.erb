@@ -10,7 +10,7 @@
         <div class="find-region__info">
           <h2 class="find-region__title h3-small"><%= group %></h2>
           <div class="find-region__county tinytitle">
-            <%= sites[0].primary_neighbourhood.county || sites[0].primary_neighbourhood.region %>
+            <%= sites[0].primary_neighbourhood.county.name || sites[0].primary_neighbourhood.region.name %>
           </div>
         </div>
         <div class="find-wards">

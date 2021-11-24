@@ -613,7 +613,7 @@ DEPENDENCIES
   letter_opener
   listen (~> 3.2.0)
   mini_magick
-  minitest-rails
+  minitest-rails (~> 6.0)
   minitest-rails-capybara
   minitest-reporters
   mountain_view

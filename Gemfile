@@ -12,7 +12,7 @@ end
 gem 'pg'
 gem 'puma', '~> 4.3.9'
 gem 'rails', '~> 6.0'
-gem 'minitest-rails'
+gem 'minitest-rails', '~> 6.0' # Fixes bogus error messages
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'

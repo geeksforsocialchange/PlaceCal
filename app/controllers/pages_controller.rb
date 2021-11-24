@@ -9,10 +9,8 @@ class PagesController < ApplicationController
   def find_placecal
     @grouped_sites = Site.where(is_published: true)
                          .joins(:primary_neighbourhood)
-                         .merge(Neighbourhood.order(district: :asc))
-                         .group_by{ |s| s.primary_neighbourhood.district }
-
-
+                         .merge(Neighbourhood.order(ancestry: :asc))
+                         .group_by { |s| s.primary_neighbourhood.parent.name }
   end
 
   def robots

@@ -19,7 +19,6 @@
 
   <div class="row">
     <div class="col-md-6">
-      <%= f.input :ward, as: :vue_string %>
       <%= f.input :district, as: :vue_string %>
     </div>
     <div class="col-md-6">
@@ -34,43 +33,12 @@
   <h3>Ward</h3>
   <div class="row">
     <div class="col-md-6">
-      <%= f.input :WD19CD, label: 'WD19CD', readonly: true, as: :vue_string %>
+      <%= f.input :unit_code_value, label: 'WD19CD', readonly: true %>
     </div>
     <div class="col-md-6">
-      <%= f.input :WD19NM, label: 'WD19NM', readonly: true, as: :vue_string %>
+      <%= f.input :unit_name, label: 'WD19NM', readonly: true %>
     </div>
   </div>
-
-  <h3>Local Authority District</h3>
-  <div class="row">
-    <div class="col-md-6">
-      <%= f.input :LAD19CD, label: 'LAD19CD', readonly: true, as: :vue_string %>
-    </div>
-    <div class="col-md-6">
-      <%= f.input :LAD19NM, label: 'LAD19NM', readonly: true, as: :vue_string %>
-    </div>
-  </div>
-
-  <h3>County</h3>
-  <div class="row">
-    <div class="col-md-6">
-      <%= f.input :CTY19CD, label: 'CTY19CD', readonly: true, as: :vue_string %>
-    </div>
-    <div class="col-md-6">
-      <%= f.input :CTY19NM, label: 'CTY19NM', readonly: true, as: :vue_string %>
-    </div>
-  </div>
-
-  <h3>Region</h3>
-  <div class="row">
-    <div class="col-md-6">
-      <%= f.input :RGN19CD, label: 'RGN19CD', readonly: true, as: :vue_string %>
-    </div>
-    <div class="col-md-6">
-      <%= f.input :RGN19NM, label: 'RGN19NM', readonly: true, as: :vue_string %>
-    </div>
-  </div>
-
 
   <% if policy(@neighbourhood).set_users? %>
     <h2>Neighbourhood admins</h2>

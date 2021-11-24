@@ -9,9 +9,7 @@ class Neighbourhood < ApplicationRecord
   has_many :users, through: :neighbourhoods_users
 
   # validates :name, presence: true
-  validates :WD19CD, uniqueness: true, allow_blank: true
-
-  validates :WD19CD, :LAD19CD, :CTY19CD, :RGN19CD,
+  validates :unit_code_value,
             length: { is: 9 },
             allow_blank: true
 
@@ -19,27 +17,51 @@ class Neighbourhood < ApplicationRecord
     name_abbr.presence || name
   end
 
+  def district
+    (parent&.name if unit == 'ward') || ''
+  end
+
+  def county
+    (parent&.parent&.name if unit == 'ward') || ''
+  end
+
+  def region
+    (parent&.parent&.parent&.name if unit == 'ward') || ''
+  end
 
   class << self
     def create_from_postcodesio_response(res)
-      n = Neighbourhood.new
-      n.name = res['admin_ward']
-      n.name_abbr = res['admin_ward']
-      n.ward = res['admin_ward']
-      n.district = res['admin_district']
-      n.county = res['admin_county']
-      n.region = res['region']
-      n.WD19CD = res['codes']['admin_ward']
-      n.WD19NM = res['admin_ward']
-      n.LAD19CD = res['codes']['admin_district']
-      n.LAD19NM = res['admin_district']
-      n.CTY19CD = res['codes']['admin_county']
-      n.CTY19NM = res['admin_county']
-      # Region not currently returned by postcodes.io
-      # n.RGN19CD = res['']
-      # n.RGN19NM = res['']
+      ward = Neighbourhood.new
+      ward.name = res['admin_ward']
+      ward.name_abbr = ward.name
 
-      n.save! && n
+      ward.unit = 'ward'
+      ward.unit_code_key = 'WD19CD'
+      ward.unit_code_value = res['codes']['admin_ward']
+      ward.unit_name = ward.name
+
+      # Postcodes.io gives us:
+      # - admin_{ward,district,county,region} (can be nil)
+      # - codes->admin_{ward,district,county} (set to "W99999999" if admin_* is nil?)
+
+      district = Neighbourhood.create_or_find_by({ name: res['admin_district'],
+                                                   unit: 'district',
+                                                   unit_code_key: 'LAD19CD',
+                                                   unit_code_value: res['codes']['admin_district'] })
+      county = Neighbourhood.create_or_find_by({ name: res['admin_county'],
+                                                 unit: 'county',
+                                                 unit_code_key: 'CTY19CD',
+                                                 unit_code_value: res['codes']['admin_county'] })
+      region = Neighbourhood.create_or_find_by({ name: res['admin_region'],
+                                                 unit: 'region',
+                                                 unit_code_key: 'RGN19CD',
+                                                 unit_code_value: '' })
+
+      county.parent = region unless county.parent
+      district.parent = county unless district.parent
+      ward.parent = district
+
+      ward.save! && ward
     end
   end
 end
