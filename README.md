@@ -1,7 +1,5 @@
 # PlaceCal
 
-[![Build Status](https://travis-ci.org/geeksforsocialchange/PlaceCal.svg?branch=main)](https://travis-ci.org/geeksforsocialchange/PlaceCal) [![Maintainability](https://api.codeclimate.com/v1/badges/18174238dc53c658212b/maintainability)](https://codeclimate.com/github/geeksforsocialchange/PlaceCal/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/18174238dc53c658212b/test_coverage)](https://codeclimate.com/github/geeksforsocialchange/PlaceCal/test_coverage)
-
 ## Introduction / Warning
 
 PlaceCal is a large and very complicated app for collating organisation and event information from a large variety of sources. In the words of one developer: "I'm not sure where the interface between the app and the real world is here".
