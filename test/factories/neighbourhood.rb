@@ -1,42 +1,85 @@
 # frozen_string_literal: true
 
+# Each Neighbourhood is ordered by size, biggest to smallest.
+# The parent neighbourhood's definition is above, the child's definition is below
 FactoryBot.define do
+  factory :neighbourhood_region, class: 'Neighbourhood' do
+    name { 'North West' }
+    name_abbr { 'North West' }
+    unit { 'region' }
+    unit_code_key { 'RGN19CD' }
+    unit_code_value { 'E12000002' }
+    unit_name { 'North West' }
+  end
+
+  factory :neighbourhood_county, class: 'Neighbourhood' do
+    name { 'Greater Manchester' }
+    name_abbr { 'Greater Manchester' }
+    unit { 'county' }
+    unit_code_key { 'CTY19CD' }
+    unit_code_value { 'E11000001' }
+    unit_name { 'Greater Manchester' }
+
+    after :create do |county|
+      county.parent = create(:neighbourhood_region)
+      # region = create(:region)
+      # county.parent = region
+    end
+  end
+
+  factory :neighbourhood_district, class: 'Neighbourhood' do
+    name { 'Manchester' }
+    name_abbr { 'Manchester' }
+    unit { 'district' }
+    unit_code_key { 'LAD19CD' }
+    unit_code_value { 'E08000003' }
+    unit_name { 'Manchester' }
+
+    after :create do |district|
+      district.parent = create(:neighbourhood_county)
+    end
+  end
+
   factory :neighbourhood do
-    name { 'Hulme Longer Name' }
+    name { 'Hulme Longname' }
     name_abbr { 'Hulme' }
-    ward { 'Hulme' }
-    district { 'Manchester' }
-    county { 'Greater Manchester' }
-    region { 'North West' }
-    sequence(:WD19CD) do |n|
+    unit { 'ward' }
+    unit_code_key { 'WD19CD' }
+    sequence(:unit_code_value) do |n|
       "E0#{5_011_368 + n}"
     end
-    WD19NM { 'Hulme' }
-    LAD19CD { 'E08000003' }
-    LAD19NM { 'Manchester' }
-    CTY19CD { 'E11000001' }
-    CTY19NM { 'Greater Manchester' }
-    RGN19CD { 'E12000002' }
-    RGN19NM { 'North West' }
+    unit_name { 'Hulme' }
 
-    after(:build) { |n| n.users = [create(:user)] }
+    after :create do |ward|
+      ward.parent = create(:neighbourhood_district)
+      ward.users = [create(:user)]
+    end
+  end
+
+  factory :ashton_neighbourhood_district, class: 'Neighbourhood' do
+    name { 'Tameside' }
+    name_abbr { 'Tameside' }
+    unit { 'district' }
+    unit_code_key { 'LAD19CD' }
+    unit_code_value { 'E11000001' }
+    unit_name { 'Tameside' }
+
+    after :create do |district|
+      district.parent = create(:neighbourhood_county)
+    end
   end
 
   factory :ashton_neighbourhood, class: 'Neighbourhood' do
     name { 'Ashton Hurst' }
-    ward { 'Ashton Hurst' }
-    district { 'Tameside' }
-    county { 'Greater Manchester' }
-    region { 'North West' }
-    sequence(:WD19CD) do |n|
-      "E0#{5_000_800 + n}"
+    name_abbr { 'Ashton Hurst' }
+    unit { 'ward' }
+    unit_code_key { 'WD19CD' }
+    unit_code_value { 'E05000800' }
+    unit_name { 'Ashton Hurst' }
+
+    after :create do |ward|
+      ward.parent = create(:ashton_neighbourhood_district)
+      ward.users = [create(:user)]
     end
-    WD19NM { 'Ashton Hurst' }
-    LAD19CD { 'E05000800' }
-    LAD19NM { 'Tameside' }
-    CTY19CD { 'E11000001' }
-    CTY19NM { 'Greater Manchester' }
-    RGN19CD { 'E12000002' }
-    RGN19NM { 'North West' }
   end
 end

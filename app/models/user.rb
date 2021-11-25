@@ -107,7 +107,9 @@ class User < ApplicationRecord
 
     return false unless res
 
-    neighbourhood = Neighbourhood.find_by(WD19CD: res.dig('codes', 'admin_ward'))
+    neighbourhood = Neighbourhood.find_by(unit: 'ward',
+                                          unit_code_key: 'WD19CD',
+                                          unit_code_value: res.dig('codes', 'admin_ward'))
     neighbourhood_ids.include?(neighbourhood&.id)
   end
 

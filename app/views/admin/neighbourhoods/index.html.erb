@@ -2,6 +2,6 @@
   title: "Neighbourhoods",
   model: :neighbourhoods,
   columns: %i[id name district county region],
-  data: @neighbourhoods,
+  data: @neighbourhoods.where(unit: 'ward'),
   new_link: new_admin_neighbourhood_path
 %>

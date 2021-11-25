@@ -12,7 +12,7 @@ end
 gem 'pg'
 gem 'puma', '~> 4.3.9'
 gem 'rails', '~> 6.0'
-gem 'minitest-rails'
+gem 'minitest-rails', '~> 6.0' # Fixes bogus error messages
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'
@@ -22,6 +22,9 @@ gem 'sass-rails', '~> 6.0'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 gem 'webpacker'
+
+# Backend
+gem 'ancestry'
 
 # Calendar
 gem 'httparty'

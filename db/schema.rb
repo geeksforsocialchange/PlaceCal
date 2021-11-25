@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_12_155023) do
+ActiveRecord::Schema.define(version: 2021_11_18_162518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,18 +120,12 @@ ActiveRecord::Schema.define(version: 2020_03_12_155023) do
   create_table "neighbourhoods", force: :cascade do |t|
     t.string "name"
     t.string "name_abbr"
-    t.string "ward"
-    t.string "district"
-    t.string "county"
-    t.string "region"
-    t.string "WD19CD"
-    t.string "WD19NM"
-    t.string "LAD19CD"
-    t.string "LAD19NM"
-    t.string "CTY19CD"
-    t.string "CTY19NM"
-    t.string "RGN19CD"
-    t.string "RGN19NM"
+    t.string "ancestry"
+    t.string "unit", default: "ward"
+    t.string "unit_code_key", default: "WD19CD"
+    t.string "unit_code_value"
+    t.string "unit_name"
+    t.index ["ancestry"], name: "index_neighbourhoods_on_ancestry"
   end
 
   create_table "neighbourhoods_users", force: :cascade do |t|

@@ -7,11 +7,16 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     # Make six partners: Two managers; two event hosts; two neither.
     # Add all to the default site and one of each category to a second site.
 
-    neighbourhoods = [ create(:neighbourhood), create(:neighbourhood) ]
+    neighbourhoods = [create(:neighbourhood), create(:neighbourhood)]
     # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
-    addresses = neighbourhoods.map {|n| a=create(:address); a.neighbourhood=n; a.save; a}
+    addresses = neighbourhoods.map do |n|
+      a = create(:address)
+      a.neighbourhood = n
+      a.save
+      a
+    end
     @partners = addresses.map do |a|
-      3.times.map { pa=build(:partner); pa.address=a; pa.save; pa }
+      3.times.map { pa = build(:partner); pa.address = a; pa.save; pa }
     end
     @partners.each do |for_nbd|
       o_r = OrganisationRelationship.new
@@ -30,6 +35,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   test 'should get index without subdomain' do
     get url_for controller: "partners", subdomain: false
     assert_response :success
+
     assert_select "ul.partners li", 6
   end
 
