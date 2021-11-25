@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
   setup do
     @neighbourhood = create(:neighbourhood)
