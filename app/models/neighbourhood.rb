@@ -18,15 +18,15 @@ class Neighbourhood < ApplicationRecord
   end
 
   def district
-    parent if unit == 'ward'
+    ancestors.where(unit: 'district').first
   end
 
   def county
-    parent&.parent if unit == 'ward'
+    ancestors.where(unit: 'county').first
   end
 
   def region
-    parent&.parent&.parent if unit == 'ward'
+    ancestors.where(unit: 'region').first
   end
 
   class << self
@@ -45,15 +45,21 @@ class Neighbourhood < ApplicationRecord
       # - codes->admin_{ward,district,county} (set to "W99999999" if admin_* is nil?)
 
       district = Neighbourhood.create_or_find_by({ name: res['admin_district'],
+                                                   name_abbr: res['admin_district'],
                                                    unit: 'district',
+                                                   unit_name: res['admin_district'],
                                                    unit_code_key: 'LAD19CD',
                                                    unit_code_value: res['codes']['admin_district'] })
       county = Neighbourhood.create_or_find_by({ name: res['admin_county'],
+                                                 name_abbr: res['admin_county'],
                                                  unit: 'county',
+                                                 unit_name: res['admin_county'],
                                                  unit_code_key: 'CTY19CD',
                                                  unit_code_value: res['codes']['admin_county'] })
-      region = Neighbourhood.create_or_find_by({ name: res['admin_region'],
+      region = Neighbourhood.create_or_find_by({ name: res['region'],
+                                                 name_abbr: res['region'],
                                                  unit: 'region',
+                                                 unit_name: res['region'],
                                                  unit_code_key: 'RGN19CD',
                                                  unit_code_value: '' })
 
