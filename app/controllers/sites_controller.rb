@@ -10,7 +10,7 @@ class SitesController < ApplicationController
     if current_site.slug == 'mossley'
       render template: "sites/#{current_site.slug}.html.erb"
     else
-      render template: 'sites/default.html.erb'
+      render template: 'sites/default'
     end
   end
 

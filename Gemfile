@@ -11,8 +11,8 @@ end
 # Core
 gem 'pg'
 gem 'puma', '~> 4.3.9'
-gem 'rails', '~> 6.0'
-gem 'minitest-rails', '~> 6.0' # Fixes bogus error messages
+gem 'rails', '~> 6.1.4.1'
+gem 'minitest-rails'
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'
@@ -34,7 +34,7 @@ gem 'eventbrite_sdk'
 
 # Uploads
 gem 'carrierwave'
-gem 'mini_magick'
+gem 'image_processing'
 
 # Admin
 gem 'bootstrap', '~> 4.4.1'
@@ -80,8 +80,7 @@ gem 'seed_migration'
 # Utilities
 gem 'active_link_to'
 gem 'bootsnap', require: false
-# Temp fix until https://github.com/jmazzi/crypt_keeper works with Rails 6
-gem 'crypt_keeper', github: 'taylorwilliams/crypt_keeper'
+gem 'crypt_keeper'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'

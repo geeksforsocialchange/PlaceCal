@@ -33,8 +33,7 @@ class Partner < ApplicationRecord
   # Validations
   validates :name,
             presence: true,
-            uniqueness: true,
-            case_sensitive: false,
+            uniqueness: { case_sensitive: false },
             length: {
               minimum: 5,
               too_short: 'must be at least 5 characters long'
@@ -75,14 +74,14 @@ class Partner < ApplicationRecord
     # TODO? This might be an incredibly inefficient query. If so, add a column
     # to the Partner table, e.g. place_latest_dtstart, which can be updated on
     # import.
-    joins("JOIN events ON events.place_id = partners.id")
-    .where("events.dtstart > ?", Date.today-30).distinct
+    joins('JOIN events ON events.place_id = partners.id')
+      .where('events.dtstart > ?', Date.today-30).distinct
   end
 
   # Get all Partners that manage at least one other Partner.
   scope :managers, -> do
-    joins("JOIN organisation_relationships o_r on o_r.subject_id = partners.id")
-    .where(o_r: {verb: :manages}).distinct
+    joins('JOIN organisation_relationships o_r on o_r.subject_id = partners.id')
+      .where(o_r: { verb: :manages }).distinct
   end
 
   delegate :neighbourhood_id, to: :address, allow_nil: true
@@ -92,7 +91,7 @@ class Partner < ApplicationRecord
   end
 
   def address_attributes=(value)
-    addr = Address.where("lower(street_address) = ?", value['street_address']&.downcase&.strip).first
+    addr = Address.where('lower(street_address) = ?', value['street_address']&.downcase&.strip).first
 
     if addr.present?
       self.address = addr
