@@ -6,7 +6,6 @@ class PartnerTest < ActiveSupport::TestCase
   setup do
     @partner = create(:partner)
     @user = create(:user)
-
   end
 
   test 'updates user roles when saved' do
