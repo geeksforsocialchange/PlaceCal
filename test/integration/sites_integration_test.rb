@@ -19,7 +19,7 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_redirected_to 'http://lvh.me/'
     # If there's a match, display a custom homepage
     get 'http://hulme.lvh.me'
-    assert_template 'sites/default.html.erb'
+    assert_template 'sites/default'
   end
 
   test 'basic page content shows up' do
