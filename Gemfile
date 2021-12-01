@@ -80,8 +80,6 @@ gem 'seed_migration'
 # Utilities
 gem 'active_link_to'
 gem 'bootsnap', require: false
-# Temp fix until https://github.com/jmazzi/crypt_keeper works with Rails 6
-# gem 'crypt_keeper', github: 'taylorwilliams/crypt_keeper'
 gem 'crypt_keeper'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.3.0'
