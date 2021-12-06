@@ -49,7 +49,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_index_for(%i[neighbourhood_admin]) do
     get admin_partners_url
     assert_response :success
-    #assert_select 'a', 'Edit'
+    # assert_select 'a', 'Edit'
     assert_select 'tbody tr', 2
     # Nothing to show in the table
   end
@@ -90,17 +90,16 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
       post admin_partners_url,
            params: { partner: { name: 'A new partner',
                                 address_attributes: {
-                                 street_address: '123 Moss Ln E',
-                                 postcode: 'M15 5DD'
-                                } 
-                              } }
+                                  street_address: '123 Moss Ln E',
+                                  postcode: 'M15 5DD'
+                                } } }
     end
   end
 
   it_denies_access_to_create_for(%i[partner_admin]) do
     assert_difference('Partner.count', 0) do
       post admin_partners_url,
-        params: { partner: { name: 'A new partner' } }
+           params: { partner: { name: 'A new partner' } }
     end
   end
 
@@ -130,7 +129,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   # For partner not assigned or in area
   it_denies_access_to_update_for(%i[partner_admin]) do
     patch admin_partner_url(@partner_two),
-      params: { partner: { name: 'Updated partner name' } }
+          params: { partner: { name: 'Updated partner name' } }
     assert_redirected_to admin_partners_url
   end
 
@@ -165,14 +164,15 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   test 'neighobourhood_admin : can setup new partner in ward' do
     sign_in @neighbourhood_admin
 
-    params = { partner: 
-               { name: 'New Partner',
-                 address_attributes: { 
-                   street_address: '123 Moss Ln E',
-                   postcode: 'M15 5DD'
-                 } 
-               }
-             } 
+    params = {
+      partner: {
+        name: 'New Partner',
+        address_attributes: {
+          street_address: '123 Moss Ln E',
+          postcode: 'M15 5DD'
+        }
+      }
+    }
 
     post setup_admin_partners_url, params: params
     assert_redirected_to new_admin_partner_url(params)
@@ -181,14 +181,15 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   test 'neighobourhood_admin : cannot setup new partner not in ward' do
     sign_in @neighbourhood_admin
 
-    params = { partner: 
-               { name: 'New Partner',
-                 address_attributes: { 
-                   street_address: 'Ashton-under-Lyne',
-                   postcode: 'OL6 8BH'
-                 } 
-               }
-             } 
+    params = {
+      partner: {
+        name: 'New Partner',
+        address_attributes: {
+          street_address: 'Ashton-under-Lyne',
+          postcode: 'OL6 8BH'
+        }
+      }
+    }
 
     post setup_admin_partners_url, params: params
 

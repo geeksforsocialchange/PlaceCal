@@ -78,12 +78,8 @@ class Address < ApplicationRecord
     res = Geocoder.search(postcode).first&.data
     return unless res
 
-    # If the ward already exists, use that
-    neighbourhood = Neighbourhood.find_by(unit: 'ward',
-                                          unit_code_key: 'WD19CD',
-                                          unit_code_value: res['codes']['admin_ward'])
-    # If it's new to us, then create a new Neighbourhood.
-    neighbourhood ||= Neighbourhood.create_from_postcodesio_response(res)
+    # There shouldn't be any wards that are outside our system, if there are we just fail.
+    neighbourhood = Neighbourhood.find_from_postcodesio_response(res)
     self.neighbourhood = neighbourhood
 
     # Standardise the lat and lng for each postcode

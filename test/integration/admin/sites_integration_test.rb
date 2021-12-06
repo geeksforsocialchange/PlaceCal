@@ -8,6 +8,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     @site = create(:site)
     @site_admin = @site.site_admin
     @neighbourhoods = create_list(:neighbourhood, 5)
+    @number_of_neighbourhoods = Neighbourhood.where(unit: 'ward').length
     host! 'admin.lvh.me'
   end
 
@@ -36,7 +37,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     # See all neighbourhoods
     assert_select '.site__neighbourhoods' do
-      assert_select 'label', 5
+      assert_select 'label', @number_of_neighbourhoods
     end
   end
 
