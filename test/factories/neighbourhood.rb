@@ -3,6 +3,15 @@
 # Each Neighbourhood is ordered by size, biggest to smallest.
 # The parent neighbourhood's definition is above, the child's definition is below
 FactoryBot.define do
+  factory :neighbourhood_country, class: 'Neighbourhood' do
+    name { 'England' }
+    name_abbr { '' }
+    unit { 'country' }
+    unit_code_key { 'CTRY19CD' }
+    unit_code_value { 'E92000001' }
+    unit_name { 'England' }
+  end
+
   factory :neighbourhood_region, class: 'Neighbourhood' do
     name { 'North West' }
     name_abbr { 'North West' }
@@ -10,6 +19,10 @@ FactoryBot.define do
     unit_code_key { 'RGN19CD' }
     unit_code_value { 'E12000002' }
     unit_name { 'North West' }
+
+    after :create do |region|
+      region.parent = create(:neighbourhood_country)
+    end
   end
 
   factory :neighbourhood_county, class: 'Neighbourhood' do
@@ -22,8 +35,6 @@ FactoryBot.define do
 
     after :create do |county|
       county.parent = create(:neighbourhood_region)
-      # region = create(:region)
-      # county.parent = region
     end
   end
 

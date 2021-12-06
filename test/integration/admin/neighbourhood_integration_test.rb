@@ -11,6 +11,7 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood = create(:neighbourhood)
     @neighbourhood_admin = @neighbourhood.users.first
     @neighbourhoods = create_list(:neighbourhood, 4)
+    @number_of_neighbourhoods = Neighbourhood.where(unit: 'ward').length
     @neighbourhoods << @neighbourhood
     get "http://admin.lvh.me"
   end
@@ -19,7 +20,7 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     sign_in(@root)
     get admin_neighbourhoods_path
     # See all neighbourhoods
-    assert_select 'tbody tr', count: 5
+    assert_select 'tbody tr', count: @number_of_neighbourhoods
   end
 
   test "Index shows correct neighbourhoods for neighbourhood admin" do
