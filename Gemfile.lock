@@ -434,7 +434,7 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    regexp_parser (2.1.1)
+    regexp_parser (2.2.0)
     request_store (1.5.0)
       rack (>= 1.4)
     responders (3.0.1)
@@ -456,7 +456,7 @@ GEM
       rubocop-ast (>= 1.12.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.13.0)
+    rubocop-ast (1.14.0)
       parser (>= 3.0.1.1)
     rubocop-rails (2.12.4)
       activesupport (>= 4.2.0)
@@ -643,7 +643,7 @@ DEPENDENCIES
   virtus
   web-console (>= 3.3.0)
   webmock
-  webpacker
+  webpacker (~> 5.4.3)
   whenever
   yard
 
