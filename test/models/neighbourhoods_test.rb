@@ -13,5 +13,14 @@ class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
 
     assert @ashton_neighbourhood.district.name == 'Tameside'
     assert @ashton_neighbourhood.district.unit == 'district'
+
+    assert @ashton_neighbourhood.county.name == 'Greater Manchester'
+    assert @ashton_neighbourhood.county.unit == 'county'
+
+    assert @ashton_neighbourhood.region.name == 'North West'
+    assert @ashton_neighbourhood.region.unit == 'region'
+
+    assert @ashton_neighbourhood.country.name == 'England'
+    assert @ashton_neighbourhood.country.unit == 'country'
   end
 end
