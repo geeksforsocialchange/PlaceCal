@@ -24,3 +24,4 @@ jobs:
            {"keywords":["feat"], "labels": ["enhancement", "minor"]},
            {"keywords":["breaking", "BREAKING CHANGE"], "labels": ["major"]}
            ]
+           
