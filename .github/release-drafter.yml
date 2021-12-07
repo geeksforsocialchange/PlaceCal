@@ -31,5 +31,5 @@ version-resolver:
         labels:
             - 'patch'
     default: patch
-name-template: '$RESOLVED_VERSION 🌈'
-tag-template: '$RESOLVED_VERSION'
+# name-template: '$RESOLVED_VERSION 🌈'
+# tag-template: '$RESOLVED_VERSION'
