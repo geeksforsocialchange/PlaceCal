@@ -21,7 +21,7 @@ gem 'jquery-turbolinks'
 gem 'sass-rails', '~> 6.0'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
-gem 'webpacker'
+gem 'webpacker', '~> 5.4.3'
 
 # Backend
 gem 'ancestry'
