@@ -5,6 +5,42 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   setup do
     @user = create(:user)
+    @neighbourhood_region_admin = create(:neighbourhood_region_admin)
+  end
+
+  test 'owned neighbourhoods returns all descendants' do
+    # Does the admin only own one region neighbourhood?
+    assert @neighbourhood_region_admin.neighbourhoods.length == 1
+    assert @neighbourhood_region_admin.neighbourhoods.first.unit == 'region'
+
+    # Does it return the region, the districts, and the wards?
+    # We have five counties with one district each, all parenting one ward, plus the region
+    # (See: factories/user.rb - neighbourhood_region_admin)
+    owned_length = 1 + (5 * 3)
+    assert @neighbourhood_region_admin.owned_neighbourhoods.to_a.length == owned_length
+
+    # does it actually return both the districts and the wards?
+    assert @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'county' }.length   == 5
+    assert @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'district' }.length == 5
+    assert @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.length     == 5
+  end
+
+  test 'can edit neighourhoods' do
+    region = @neighbourhood_region_admin.neighbourhoods.first
+
+    owned_neighbourhoods = @neighbourhood_region_admin.owned_neighbourhoods
+
+    county   = owned_neighbourhoods.find_all { |u| u.unit == 'county' }.first
+    district = owned_neighbourhoods.find_all { |u| u.unit == 'district' }.first
+    ward     = owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.first
+
+    # We do not have permissions to edit the country!
+    assert (@neighbourhood_region_admin.can_alter_neighbourhood? region.parent) == false
+
+    # We should have permissions to edit a county, district, or ward neighbourhood
+    assert @neighbourhood_region_admin.can_alter_neighbourhood?(county)
+    assert @neighbourhood_region_admin.can_alter_neighbourhood?(district)
+    assert @neighbourhood_region_admin.can_alter_neighbourhood?(ward)
   end
 
   test 'updates user role on save' do

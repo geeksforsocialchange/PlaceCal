@@ -26,6 +26,25 @@ FactoryBot.define do
       after(:build) { |user| user.neighbourhoods = [create(:neighbourhood)] }
     end
 
+    factory(:neighbourhood_region_admin) do
+      after(:build) do |user|
+        # Create the wards + region
+        wards = create_list(:neighbourhood, 5)
+        region = create(:neighbourhood_region)
+
+        # Reparent the wards so they are owned by the region
+        wards.each do |w|
+          county = w.parent.parent
+          county.parent = region
+          county.save
+        end
+
+        # Give ownership to the user
+        user.neighbourhoods = [region]
+        user.save
+      end
+    end
+
     factory(:partner_admin) do
       after(:build) { |user| user.partners = [create(:partner)] }
     end

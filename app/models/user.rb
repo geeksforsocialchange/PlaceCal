@@ -69,6 +69,16 @@ class User < ApplicationRecord
     role == :citizen
   end
 
+  def owned_neighbourhoods
+    neighbourhoods.collect { |unit| unit.descendants }.flatten + neighbourhoods
+  end
+
+  def can_alter_neighbourhood?(neighbourhood)
+    return true if owned_neighbourhoods.include? neighbourhood
+
+    return false
+  end
+
   def neighbourhood_admin?
     neighbourhoods.any?
   end

@@ -3,7 +3,7 @@
 # app/policies/neighbourhood_policy.rb
 class NeighbourhoodPolicy < ApplicationPolicy
   def index?
-    user.root? || user.neighbourhood_admin?
+    user.root? or user.neighbourhood_admin?
   end
 
   def new?
@@ -15,11 +15,11 @@ class NeighbourhoodPolicy < ApplicationPolicy
   end
 
   def edit?
-    user.root? || user.neighbourhood_admin?
+    user.root? or user.neighbourhood_admin?
   end
 
   def update?
-    user.root? || user.neighbourhood_admin?
+    user.root? or user.neighbourhood_admin?
   end
 
   def destroy?
@@ -43,7 +43,7 @@ class NeighbourhoodPolicy < ApplicationPolicy
       if user.root?
         scope.all
       elsif user.neighbourhood_admin?
-        user.neighbourhoods
+        scope.where(id: user.owned_neighbourhoods.pluck(:id))
       else
         scope.none
       end

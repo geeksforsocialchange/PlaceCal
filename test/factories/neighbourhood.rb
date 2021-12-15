@@ -22,6 +22,7 @@ FactoryBot.define do
 
     after :create do |region|
       region.parent = create(:neighbourhood_country)
+      region.save
     end
   end
 
@@ -35,6 +36,7 @@ FactoryBot.define do
 
     after :create do |county|
       county.parent = create(:neighbourhood_region)
+      county.save
     end
   end
 
@@ -48,6 +50,7 @@ FactoryBot.define do
 
     after :create do |district|
       district.parent = create(:neighbourhood_county)
+      district.save
     end
   end
 
@@ -64,6 +67,7 @@ FactoryBot.define do
     after :create do |ward|
       ward.parent = create(:neighbourhood_district)
       ward.users = [create(:user)]
+      ward.save
     end
   end
 
@@ -77,6 +81,7 @@ FactoryBot.define do
 
     after :create do |district|
       district.parent = create(:neighbourhood_county)
+      district.save
     end
   end
 
@@ -90,6 +95,7 @@ FactoryBot.define do
 
     after :create do |ward|
       ward.parent = create(:ashton_neighbourhood_district)
+      ward.save
       ward.users = [create(:user)]
     end
   end
