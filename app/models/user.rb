@@ -74,9 +74,7 @@ class User < ApplicationRecord
   end
 
   def can_alter_neighbourhood?(neighbourhood)
-    return true if owned_neighbourhoods.include? neighbourhood
-
-    return false
+    owned_neighbourhoods.include? neighbourhood
   end
 
   def neighbourhood_admin?
