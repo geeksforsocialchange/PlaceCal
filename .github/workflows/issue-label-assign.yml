@@ -1,0 +1,27 @@
+name: "Set Issue Label and Assignee"
+on:
+ issues:
+    types: [opened, edited]
+ pull_request:
+    types: [opened, edited]
+ pull_request_target:
+    types: [opened, edited]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Naturalclar/issue-action@v2.0.2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          title-or-body: 'title'
+          parameters: >
+           [
+           {"keywords":["chore", "refactor", "dependencies"], "labels": ["chore", "patch"]},
+           {"keywords":["docs", "documentation"], "labels": ["docs", "patch"]},
+           {"keywords":["bug", "fix"], "labels": ["bug", "patch"]},
+           {"keywords":["translation", "i18n"], "labels": ["translation", "patch"]},
+           {"keywords":["feat"], "labels": ["enhancement", "minor"]},
+           {"keywords":["breaking", "BREAKING CHANGE"], "labels": ["major"]}
+           ]
+           
