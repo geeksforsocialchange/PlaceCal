@@ -17,6 +17,10 @@ class Neighbourhood < ApplicationRecord
     name_abbr.presence || name
   end
 
+  def to_s
+    shortname
+  end
+
   def district
     ancestors.where(unit: 'district').first
   end

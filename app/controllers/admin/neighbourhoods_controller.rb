@@ -7,6 +7,10 @@ module Admin
     def index
       @neighbourhoods = policy_scope(Neighbourhood).order(:name)
       authorize @neighbourhoods
+      respond_to do |format|
+        format.html
+        format.json { render json: NeighbourhoodDatatable.new(params, neighbourhoods: @neighbourhoods) }
+      end
     end
 
     def new

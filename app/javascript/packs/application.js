@@ -24,6 +24,7 @@
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("leaflet")
+require("datatables.net-bs4")
 
 import '../src/reveal.js'
 
@@ -33,5 +34,3 @@ export default function loadComponents(context) {
 }
 loadComponents(require.context("../../components", true, /\.js$/));
 
-// Google Analytics
-import "../src/google-analytics.js";
