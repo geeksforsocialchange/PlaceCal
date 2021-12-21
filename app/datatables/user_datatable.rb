@@ -1,5 +1,4 @@
-class UserDatatable < AjaxDatatablesRails::ActiveRecord
-
+class UserDatatable < Datatable
   def view_columns
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format
@@ -15,11 +14,11 @@ class UserDatatable < AjaxDatatablesRails::ActiveRecord
   def data
     records.map do |record|
       {
-        id:          record.id,
-        first_name:  record.first_name,
-        last_name:   record.last_name,
+        id:          link_to(record.id, edit_admin_user_path(record)),
+        first_name:  link_to(record.first_name, edit_admin_user_path(record)),
+        last_name:   link_to(record.last_name, edit_admin_user_path(record)),
         admin_roles: record.admin_roles,
-        email:       record.email
+        email:       record.email,
       }
     end
   end

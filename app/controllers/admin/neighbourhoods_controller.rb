@@ -9,7 +9,7 @@ module Admin
       authorize @neighbourhoods
       respond_to do |format|
         format.html
-        format.json { render json: NeighbourhoodDatatable.new(params, neighbourhoods: @neighbourhoods) }
+        format.json { render json: NeighbourhoodDatatable.new(params, view_context: view_context, neighbourhoods: @neighbourhoods) }
       end
     end
 

@@ -1,13 +1,4 @@
-class NeighbourhoodDatatable < AjaxDatatablesRails::ActiveRecord
-  # extend Forwardable
-
-  # def_delegator :@view, :link_to
-
-  # def initialize(params, opts = {})
-  #   @view = opts[:view_context]
-  #   super
-  # end
-
+class NeighbourhoodDatatable < Datatable
   def view_columns
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format
@@ -23,8 +14,7 @@ class NeighbourhoodDatatable < AjaxDatatablesRails::ActiveRecord
   def data
     records.map do |record|
       {
-        id:              record.id,
-        # id:             link_to(record.id, admin_neighbourhood_path(record)),
+        id:              link_to(record.id, edit_admin_neighbourhood_path(record)),
         name:            record.name,
         unit_name:       record.unit_name,
         unit_code_key:   record.unit_code_key,

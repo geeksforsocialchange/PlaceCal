@@ -15,14 +15,5 @@
     </tr>
   </thead>
   <tbody>
-    <% data&.each do |record| %>
-      <tr>
-        <% record.slice(columns).each do |key, value| %>
-          <td>
-            <%= value.to_s %>
-          </td>
-        <% end %>
-      </tr>
-    <% end %>
   </tbody>
 </table>
