@@ -24,7 +24,6 @@
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("leaflet")
-require("datatables.net-bs4")
 
 import '../src/reveal.js'
 

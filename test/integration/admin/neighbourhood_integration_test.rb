@@ -11,7 +11,8 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood = create(:neighbourhood)
     @neighbourhood_admin = @neighbourhood.users.first
     @neighbourhoods = create_list(:neighbourhood, 4)
-    @number_of_neighbourhoods = Neighbourhood.where(unit: 'ward').length
+    # TODO: Change this 10 to be reflective of the current record limit
+    @number_of_neighbourhoods = 10
     @neighbourhoods << @neighbourhood
     get "http://admin.lvh.me"
   end
