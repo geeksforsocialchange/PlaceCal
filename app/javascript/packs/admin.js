@@ -17,20 +17,14 @@ $(document).on('turbolinks:load', function () {
 
   $('[data-toggle="tooltip"]').tooltip()
 
-  $('#neighbourhood').dataTable({
+  $('#datatable').dataTable({
     "processing": true,
     "serverSide": true,
+    "pageLength": 15,
     "ajax": {
-      "url": $('#neighbourhood').data('source')
+      "url": $('#datatable').data('source')
     },
     "pagingType": "full_numbers",
-    "columns": [
-      { "data": "id" },
-      { "data": "name" },
-      { "data": "county" },
-      { "data": "district" },
-      { "data": "region" },
-      { "data": "country" }
-    ]
-  });
-})
+    "columns": columns
+  })
+});
