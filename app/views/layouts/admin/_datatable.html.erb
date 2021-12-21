@@ -15,5 +15,15 @@
     </tr>
   </thead>
   <tbody>
+    <%# While testing, it might be easier to delete the following block %>
+    <% data&.each do |record| %>
+      <tr>
+        <% record.slice(columns).each do |key, value| %>
+          <td>
+            <%= value %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
   </tbody>
 </table>
