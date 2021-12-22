@@ -7,36 +7,45 @@
 
   <div class="row">
     <div class="col-md-6">
-      <%= f.input :name, label: 'Name', as: :vue_string %>
+      <%= f.input :name, label: 'Name' %>
     </div>
     <div class="col-md-6">
       <%= f.input :name_abbr, label: 'Abbreviated name' %>
     </div>
   </div>
 
-  <h2>PlaceCal ward info</h2>
-  <p>This information starts as the official designation, but can be changed by us if we don't like it. This is the information that shows up in the frontend where appropriate.</p>
+  <h2>Official neighbourhood info</h2>
+  <p>This information is the official designation set by the UK Boundary Commission.</p>
 
   <div class="row">
     <div class="col-md-6">
-      <%= f.input :district, as: :vue_string %>
+      <%= f.input :unit, readonly: true  %>
+      <%= f.input :unit_name, readonly: true  %>
+      
     </div>
     <div class="col-md-6">
-      <%= f.input :county, as: :vue_string %>
-      <%= f.input :region, as: :vue_string %>
+      <%= f.input :unit_code_key, readonly: true  %>
+      <%= f.input :unit_code_value, readonly: true  %>
     </div>
   </div>
 
-  <h2>Official ward info</h2>
-  <p>This information is the official designation set by the UK Boundary Commission. It's kept here for postcode lookups and posterity.</p>
-
-  <h3>Ward</h3>
+  <h2>Relations</h2>
   <div class="row">
     <div class="col-md-6">
-      <%= f.input :unit_code_value, label: 'WD19CD', readonly: true %>
+      <h3>Ancestors</h3>
+      <ul>
+        <% @neighbourhood.ancestors.each do |parent| %>
+          <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
+        <% end %>
+      </ul>
     </div>
     <div class="col-md-6">
-      <%= f.input :unit_name, label: 'WD19NM', readonly: true %>
+      <h3>Children</h3>
+      <ul>
+        <% @neighbourhood.children.each do |parent| %>
+          <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
+        <% end %>
+      </ul>
     </div>
   </div>
 

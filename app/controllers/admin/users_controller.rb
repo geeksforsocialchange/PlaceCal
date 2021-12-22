@@ -25,7 +25,12 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json { render json: UserDatatable.new(params, view_context: view_context, users: @users) }
+        format.json { render json: UserDatatable.new(
+                                     params, 
+                                     view_context: view_context, 
+                                     users: @users.includes(:neighbourhoods, :tags, :partners)
+                                   ) 
+                    }
       end
     end
 

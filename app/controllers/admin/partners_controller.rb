@@ -7,7 +7,7 @@ module Admin
     before_action :set_tags, only: %i[new create edit]
 
     def index
-      @partners = policy_scope(Partner).order(:name)
+      @partners = policy_scope(Partner).order(:name).includes(:address)
     end
 
     def new

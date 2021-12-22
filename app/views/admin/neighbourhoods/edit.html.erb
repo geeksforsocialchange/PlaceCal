@@ -2,9 +2,19 @@
   const currentInfo = <%= @neighbourhood.to_json.html_safe %>
 </script>
 
-<div id="js-ward-picker">
-  <%= render_component "admin_edit", model: :neighbourhood, title: @neighbourhood.name %>
-  <% if policy(@neighbourhood).new? %>
+<%
+=begin%>
+ <div id="js-ward-picker"> 
+<%
+=end%>
+  <%= render_component "admin_edit",
+         model: :neighbourhood, 
+         title: @neighbourhood.name 
+  %>
+  <%
+=begin%>
+  NOTE: removing this for now!
+ <% if policy(@neighbourhood).new? %>
     <h2>Overwrite with ward info</h2>
     <div class="row">
       <div class="col-md-6">
@@ -14,5 +24,8 @@
         </div>
       </div>
     </div>
-  <% end %>
+  <% end %> 
+<%
 </div>
+=end%>
+
