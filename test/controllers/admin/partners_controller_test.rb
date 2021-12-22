@@ -41,7 +41,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_index_for(%i[partner_admin]) do
     get admin_partners_url
     assert_response :success
-    assert_select 'a', 'Edit'
+    assert_select 'td', @partner.name
     assert_select 'tbody tr', 1
     # Nothing to show in the table
   end

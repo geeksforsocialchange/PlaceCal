@@ -29,25 +29,27 @@
     </div>
   </div>
 
-  <h2>Relations</h2>
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Ancestors</h3>
-      <ul>
-        <% @neighbourhood.ancestors.each do |parent| %>
-          <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
-        <% end %>
-      </ul>
+  <% unless @neighbourhood.new_record? %>
+    <h2>Relations</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Ancestors</h3>
+        <ul>
+          <% @neighbourhood.ancestors.each do |parent| %>
+            <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h3>Children</h3>
+        <ul>
+          <% @neighbourhood.children.each do |parent| %>
+            <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
+          <% end %>
+        </ul>
+      </div>
     </div>
-    <div class="col-md-6">
-      <h3>Children</h3>
-      <ul>
-        <% @neighbourhood.children.each do |parent| %>
-          <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
-        <% end %>
-      </ul>
-    </div>
-  </div>
+  <% end %>
 
   <% if policy(@neighbourhood).set_users? %>
     <h2>Neighbourhood admins</h2>

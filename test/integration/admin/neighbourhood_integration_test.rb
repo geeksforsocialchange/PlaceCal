@@ -38,14 +38,11 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select 'label', 'Name'
     assert_select 'label', 'Abbreviated name'
-    assert_select 'label', 'District'
-    assert_select 'label', 'County'
-    assert_select 'label', 'Region'
-    assert_select 'label', 'WD19CD'
-    assert_select 'label', 'WD19NM'
+    assert_select 'label', 'Unit'
+    assert_select 'label', 'Unit code key'
+    assert_select 'label', 'Unit name'
+    assert_select 'label', 'Unit code value'
     assert_select 'label', 'Users'
-
-    assert_select 'h2', 'Overwrite with ward info'
 
     assert_select 'input', value: 'Save'
     assert_select 'a', 'Destroy'
@@ -58,14 +55,11 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select 'label', 'Name'
     assert_select 'label', 'Abbreviated name'
-    assert_select 'label', 'District'
-    assert_select 'label', 'County'
-    assert_select 'label', 'Region'
-    assert_select 'label', 'WD19CD'
-    assert_select 'label', 'WD19NM'
+    assert_select 'label', 'Unit'
+    assert_select 'label', 'Unit code key'
+    assert_select 'label', 'Unit name'
+    assert_select 'label', 'Unit code value'
     assert_select 'label', text: 'Users', count: 0
-
-    assert_select 'h2', text: 'Overwrite with ward info', count: 0
 
     assert_select 'input', value: 'Save'
     assert_select 'a', text: 'Destroy', count: 0
