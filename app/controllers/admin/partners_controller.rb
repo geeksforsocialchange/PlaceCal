@@ -8,6 +8,16 @@ module Admin
 
     def index
       @partners = policy_scope(Partner).order(:name).includes(:address)
+
+      respond_to do |format|
+        format.html
+        format.json { render json: PartnerDatatable.new(
+                                     params, 
+                                     view_context: view_context, 
+                                     partners: @partners
+                                   ) 
+                      }
+      end
     end
 
     def new
