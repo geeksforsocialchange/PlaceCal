@@ -24,3 +24,13 @@ bundle exec rails server
 * Access code docs through your local filesystem, and update with `bundle exec rails yard`
 
 To set up your own server, take a look at `INSTALL.md`.
+
+## Contributing
+
+We welcome new contributors but strongly recommend you have a chat with us in [Geeks for Social Change's Discord server](http://discord.gfsc.studio) and say hi before you do. We will be happy to onboard you properly before you get stuck in.
+
+## Donations
+
+If you'd like to support development, please consider sending us a one-off or regular donation on Ko-fi.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M43THUM)
