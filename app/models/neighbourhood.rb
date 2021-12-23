@@ -14,7 +14,27 @@ class Neighbourhood < ApplicationRecord
             allow_blank: true
 
   def shortname
-    name_abbr.presence || name
+    if name_abbr.present?
+      name_abbr
+    elsif name.present?
+      name
+    else
+      "[not set]"
+    end
+  end
+
+  def fullname
+    if name.present?
+      name 
+    elsif name_abbr.present?
+      name_abbr
+    else
+      "[not set]"
+    end
+  end
+
+  def to_s
+    "#{fullname} (#{unit})"
   end
 
   def district

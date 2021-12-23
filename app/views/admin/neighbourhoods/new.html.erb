@@ -2,16 +2,6 @@
   const currentInfo = <%= @neighbourhood.to_json.html_safe %>
 </script>
 
-<h1>Quick Add</h1>
-<div id="js-ward-picker">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="form-group">
-        <label class="form-control-label" for="ward-input">Quick add by ward code (WD19CD)</label>
-        <input class="form-control" id="ward-lookup" v-model="wardSearch" v-on:change="lookupWard()" placeholder="E01234567"></input>
-      </div>
-    </div>
-  </div>
+<p class="alert alert-danger" role="alert">Warning: neighbourhoods should not be created here and this page is only left as a placeholder!</p>
 
-  <%= render_component "admin_new", model: :neighbourhood %>
-</div>
+<%= render_component "admin_new", model: :neighbourhood %>

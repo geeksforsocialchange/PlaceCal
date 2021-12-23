@@ -20,8 +20,18 @@ module Admin
     end
 
     def index
-      @users = User.all.order(:last_name, :first_name)
+      @users = policy_scope(User).order(:last_name, :first_name)
       authorize current_user
+
+      respond_to do |format|
+        format.html
+        format.json { render json: UserDatatable.new(
+                                     params, 
+                                     view_context: view_context, 
+                                     users: @users.includes(:neighbourhoods, :tags, :partners)
+                                   ) 
+                    }
+      end
     end
 
     def new

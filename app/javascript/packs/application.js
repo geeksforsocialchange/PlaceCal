@@ -33,5 +33,3 @@ export default function loadComponents(context) {
 }
 loadComponents(require.context("../../components", true, /\.js$/));
 
-// Google Analytics
-import "../src/google-analytics.js";

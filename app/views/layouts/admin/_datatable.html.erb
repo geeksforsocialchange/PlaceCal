@@ -1,0 +1,29 @@
+<h1 class="page-header"><%= title %></h1>
+
+<%- model_name = model.to_s.chop.humanize %>
+
+<%- if policy(model_name.constantize).create? && defined?(new_link) %>
+  <%= link_to "Add New #{model_name}", new_link, data: { turbolinks: false }, class: "btn btn-primary mb-3" %>
+<% end %>
+
+<table class="table table-striped" id="datatable" data-source="<%= source %>">
+  <thead>
+    <tr>
+      <% columns.each do |column| %>
+        <th><%= column %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <%# While testing, it might be easier to delete the following block %>
+    <% data&.each do |record| %>
+      <tr>
+        <% record.slice(columns).each do |key, value| %>
+          <td>
+            <%= value %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

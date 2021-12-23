@@ -10,9 +10,14 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 
 With that said, here's what you need to get rolling.
 
-* postgresql, Ruby as specified in `.ruby-version`, and the Bundler gem to install rails 5 etc from the Gemfile
-* `bundle exec rails db:setup db:migrate seed:migrate`
-* `bundle exec rails import:all_events`
+```
+git clone https://github.com/geeksforsocialchange/PlaceCal.git
+bundle && yarn
+bundle exec rails db:setup db:migrate seed:migrate`
+bundle exec rails import:all_events
+bundle exec rails server
+```
+
 * Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
 * Admin interface is `admin.lvh.me:3000`
 * Seeded root user is info@placecal.org / password
@@ -20,6 +25,12 @@ With that said, here's what you need to get rolling.
 
 To set up your own server, take a look at `INSTALL.md`.
 
-## Roadmap
+## Contributing
 
-See the current [Roadmap](developers/roadmap.md)
+We welcome new contributors but strongly recommend you have a chat with us in [Geeks for Social Change's Discord server](http://discord.gfsc.studio) and say hi before you do. We will be happy to onboard you properly before you get stuck in.
+
+## Donations
+
+If you'd like to support development, please consider sending us a one-off or regular donation on Ko-fi.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M43THUM)
