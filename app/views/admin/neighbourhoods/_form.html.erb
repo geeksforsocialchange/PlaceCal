@@ -30,10 +30,10 @@
   </div>
 
   <% unless @neighbourhood.new_record? %>
-    <h2>Relations</h2>
+    <h2>Geography</h2>
     <div class="row">
       <div class="col-md-6">
-        <h3>Ancestors</h3>
+        <h3>Is a part of&hellip;</h3>
         <ul>
           <% @neighbourhood.ancestors.each do |parent| %>
             <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
@@ -41,7 +41,7 @@
         </ul>
       </div>
       <div class="col-md-6">
-        <h3>Children</h3>
+        <h3>Contains&hellip;</h3>
         <ul>
           <% @neighbourhood.children.each do |parent| %>
             <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
