@@ -13,7 +13,7 @@ With that said, here's what you need to get rolling.
 ```
 git clone https://github.com/geeksforsocialchange/PlaceCal.git
 bundle && yarn
-bundle exec rails db:setup db:migrate seed:migrate`
+bundle exec rails db:setup db:migrate seed:migrate
 bundle exec rails import:all_events
 bundle exec rails server
 ```
