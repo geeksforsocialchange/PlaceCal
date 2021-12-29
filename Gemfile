@@ -26,6 +26,9 @@ gem 'webpacker', '~> 5.4.3'
 # Backend
 gem 'ancestry'
 
+# Datatables
+gem 'ajax-datatables-rails'
+
 # Calendar
 gem 'httparty'
 gem 'icalendar'

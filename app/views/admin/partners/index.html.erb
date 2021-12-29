@@ -1,9 +1,18 @@
-<%# TODO: Only show Edit link for users with access %>
+<script>
+var columns = [
+    {"data": "id"},
+    {"data": "name"},
+    {"data": "slug"},
+    {"data": "address"}
+  ]
+</script>
 
-<%= render_component "admin_index",
-  title: "Partners",
-  model: :partners,
-  columns: %i[id name slug address],
-  data: @partners,
-  new_link: current_user.neighbourhood_admin? ? setup_admin_partners_path : new_admin_partner_path
+<%= render partial: "layouts/admin/datatable", locals: {
+    title: "Partners",
+    model: :partners,
+    columns: %i[id name slug address],
+    data: @partners,
+    source: admin_partners_path(format: :json),
+    new_link: current_user.neighbourhood_admin? ? setup_admin_partners_path : new_admin_partner_path
+  }
 %>

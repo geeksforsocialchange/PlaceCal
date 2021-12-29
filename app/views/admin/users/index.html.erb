@@ -1,7 +1,19 @@
-<%= render_component "admin_index",
-  title: "Users",
-  model: :users,
-  columns: %i[id first_name last_name admin_roles email],
-  data: @users,
-  new_link: new_admin_user_path
+<script>
+var columns = [
+    {"data": "id"},
+    {"data": "first_name"},
+    {"data": "last_name"},
+    {"data": "admin_roles"},
+    {"data": "email"},
+  ]
+</script>
+
+<%= render partial: "layouts/admin/datatable", locals: {
+    title: "Users",
+    model: :users,
+    columns: %i[id first_name last_name admin_roles email],
+    data: @users,
+    source: admin_users_path(format: :json),
+    new_link: new_admin_user_path
+  }
 %>

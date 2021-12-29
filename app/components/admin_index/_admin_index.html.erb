@@ -1,5 +1,3 @@
-<%- model_name = properties[:model].to_s.chop.humanize %>
-
 <h1 class="page-header"><%= properties[:title] %></h1>
 
 <%- if policy(model_name.constantize).create? && properties[:new_link] %>

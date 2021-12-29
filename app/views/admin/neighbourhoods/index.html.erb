@@ -1,7 +1,18 @@
-<%= render_component "admin_index",
-  title: "Neighbourhoods",
-  model: :neighbourhoods,
-  columns: %i[id name district county region],
-  data: @neighbourhoods.where(unit: 'ward'),
-  new_link: new_admin_neighbourhood_path
+<script>
+var columns = [
+    {"data": "id"},
+    {"data": "name"},
+    {"data": "unit_name"},
+    {"data": "unit_code_key"},
+    {"data": "unit_code_value"},
+  ]
+</script>
+
+<%= render partial: "layouts/admin/datatable", locals: {
+    title: "Neighbourhoods",
+    model: :neighbourhoods,
+    columns: %i[id name unit_name unit_code_key unit_code_value],
+    data: @neighbourhoods.limit(15),
+    source: admin_neighbourhoods_path(format: :json)
+  }
 %>
