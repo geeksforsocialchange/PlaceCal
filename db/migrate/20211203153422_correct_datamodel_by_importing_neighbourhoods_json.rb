@@ -10,8 +10,9 @@ class CorrectDatamodelByImportingNeighbourhoodsJson < ActiveRecord::Migration[6.
     # We do not want to recreate wards that already exist, but we don't want to waste our
     # cycles finding unit levels that don't exist
     # Ergo, if the parent unit is a district that means that we are at ward level,
+
     u = if parent_unit == 'district'
-          Neighbourhood.create_or_find_by!(structure)
+          Neighbourhood.find_or_create_by!(structure)
         else
           u = Neighbourhood.create!(structure)
         end
@@ -23,7 +24,7 @@ class CorrectDatamodelByImportingNeighbourhoodsJson < ActiveRecord::Migration[6.
     u.save! # Now we can save the ancestry of the neighbourhood unit
 
     puts "Created #{json_unit['properties']['unit']} with name #{json_unit['properties']['name']}"
-    puts "Parent was #{parent_neighbourhood.name}" if parent_neighbourhood
+    puts "Parent was #{parent_neighbourhood.name} (#{parent_neighbourhood.unit})" if parent_neighbourhood
 
     # If it's not a ward, then we need to create it's children
     return if u.unit == 'ward'
