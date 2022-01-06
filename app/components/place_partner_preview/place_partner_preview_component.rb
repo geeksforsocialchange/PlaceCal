@@ -17,7 +17,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   end
 
   def description
-    previewee.short_description
+    previewee.summary
   end
 
   def primary_neighbourhood?

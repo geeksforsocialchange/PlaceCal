@@ -23,7 +23,8 @@ class AdminPartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select 'h2', text: 'Basic Information'
     assert_select 'label', text: 'Name *'
-    assert_select 'label', text: 'Short Description'
+    assert_select 'label', text: 'Summary'
+    assert_select 'label', text: 'Description'
     assert_select 'label', text: 'Image'
     assert_select 'label', text: 'Website address'
     assert_select 'label', text: 'Facebook link'

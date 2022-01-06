@@ -11,12 +11,11 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json { render json: PartnerDatatable.new(
-                                     params, 
-                                     view_context: view_context, 
-                                     partners: @partners
-                                   ) 
-                      }
+        format.json {
+          render json: PartnerDatatable.new(params,
+                                            view_context: view_context,
+                                            partners: @partners)
+        }
       end
     end
 
@@ -96,7 +95,7 @@ module Admin
     end
 
     def partner_params
-      attributes = [ :name, :image, :short_description,
+      attributes = [ :name, :image, :summary, :description,
                      :public_name, :public_email, :public_phone,
                      :partner_name, :partner_email, :partner_phone,
                      :address_id, :url, :facebook_link, :twitter_handle,
@@ -113,6 +112,5 @@ module Admin
     def setup_params
       params.require(:partner).permit(:name, address_attributes: %i[street_address postcode])
     end
-
   end
 end
