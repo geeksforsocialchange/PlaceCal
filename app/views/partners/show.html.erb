@@ -16,8 +16,10 @@
     <div class="g g--partner">
       <div class="gi gi__3-5">
         <% if @partner.summary %>
-          <div class="first-ele-lg" property="description">
-            <%= markdown @partner.summary %>
+          <div class="p--big">
+            <%= content_tag(:p, @partner.summary) %>
+          </div>
+          <div property="description">
             <% if @partner.description %>
               <%= markdown @partner.description %>
             <% end %>

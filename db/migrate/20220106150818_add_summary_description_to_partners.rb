@@ -9,7 +9,7 @@ class AddSummaryDescriptionToPartners < ActiveRecord::Migration[6.1]
       summary, *description = partner.short_description.split(/\r\n\r\n/)
       partner.summary = summary
       partner.description = description.join("\r\n\r\n")
-      partner.save
+      partner.save(validate: false)
     end
 
     remove_column :partners, :short_description, :text
