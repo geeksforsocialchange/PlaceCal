@@ -30,7 +30,7 @@
           title: partner.name,
           subtitle: "<span class='badge badge-secondary small'>#{partner&.address&.neighbourhood&.name}</span> #{pluralize(partner.events_this_week, 'event')} this week",
           image: partner.image.url,
-          description: partner.short_description,
+          description: partner.summary,
           link: edit_admin_partner_path(partner),
           last_updated: partner.updated_at
       %>

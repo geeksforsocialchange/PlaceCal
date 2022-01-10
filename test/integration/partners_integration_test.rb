@@ -25,19 +25,27 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood_site.neighbourhoods << @neighbourhood2
   end
 
-  test 'site index page shows all partners and relevant local info' do
+  test 'placecal partners page shows all partners and relevant local info' do
     get partners_url
     assert_response :success
     assert_select 'title', count: 1, text: "Partners in your area | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', text: 'Partners in your area'
     assert_select 'ul.partners li', 5
+    # Ensure title/summary description is displayed
+    assert_select '.preview__header', text: @default_site_partners.first.name
+    assert_select '.preview__details', text: @default_site_partners.first.summary
+  end
 
+  test 'neighbourhood site page shows all partners and relevant local info' do
     get "http://#{@neighbourhood_site.slug}.lvh.me/partners"
     assert_response :success
     assert_select 'title', count: 1, text: "Partners in your area | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: 'Partners in your area'
     assert_select 'ul.partners li', 5
+    # Ensure title/summary description is displayed
+    assert_select '.preview__header', text: @neighbourhood_site_partners.first.name
+    assert_select '.preview__details', text: @neighbourhood_site_partners.first.summary
   end
 end

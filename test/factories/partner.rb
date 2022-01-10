@@ -14,7 +14,8 @@ FactoryBot.define do
     partner_name { 'Addy Minny Strator' }
     partner_phone { '0161 0000001' }
 
-    short_description { 'A cool garden centre' }
+    summary { 'A cool garden centre' }
+    description { 'Our cool garden centre is a very cool and neat garden centre. Come to our events. Now.' }
     url { 'http://example.com' }
 
     address
@@ -26,7 +27,39 @@ FactoryBot.define do
       association :address, factory: :ashton_address
     end
 
-    opening_times { "[\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"20:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Monday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Tuesday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Wednesday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Thursday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"17:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Friday\",\r\n    \"opens\": \"09:00:00\"\r\n  },\r\n  {\r\n    \"@type\": \"OpeningHoursSpecification\",\r\n    \"closes\": \"13:00:00\",\r\n    \"dayOfWeek\": \"http://schema.org/Saturday\",\r\n    \"opens\": \"09:00:00\"\r\n  }\r\n]" }
+    opening_times {
+      '[ { "@type": "OpeningHoursSpecification",'\
+      '    "closes": "20:00:00",'\
+      '    "dayOfWeek": "http://schema.org/Monday",'\
+      '    "opens": "09:00:00"'\
+      '  },'\
+      '  { "@type": "OpeningHoursSpecification",'\
+      '    "closes": "17:00:00",'\
+      '    "dayOfWeek": "http://schema.org/Tuesday",'\
+      '    "opens": "09:00:00"'\
+      '  },'\
+      '  { "@type": "OpeningHoursSpecification",'\
+      '    "closes": "17:00:00",'\
+      '    "dayOfWeek": "http://schema.org/Wednesday",'\
+      '    "opens": "09:00:00"'\
+      '  },'\
+      '  { "@type": "OpeningHoursSpecification",'\
+      '    "closes": "17:00:00",'\
+      '    "dayOfWeek": "http://schema.org/Thursday",'\
+      '    "opens": "09:00:00"'\
+      '  },'\
+      '  { "@type": "OpeningHoursSpecification",'\
+      '    "closes": "17:00:00",'\
+      '    "dayOfWeek": "http://schema.org/Friday",'\
+      '    "opens": "09:00:00"'\
+      '  },'\
+      '  { "@type": "OpeningHoursSpecification",'\
+      '    "closes": "13:00:00",'\
+      '    "dayOfWeek": "http://schema.org/Saturday",'\
+      '    "opens": "09:00:00"'\
+      '  }'\
+      ']'
+    }
 
     factory :place do
       sequence(:name) do |n|

@@ -21,7 +21,7 @@ class PartnerPolicy < ApplicationPolicy
     return true if user.root?
 
     user.neighbourhood_ids.include?(record.neighbourhood_id) ||
-    user.partner_ids.include?(record.id)
+      user.partner_ids.include?(record.id)
   end
 
   def edit?
@@ -40,7 +40,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    attrs = [ :name, :image, :short_description,
+    attrs = [ :name, :image, :summary, :description,
               :public_name, :public_email, :public_phone,
               :partner_name, :partner_email, :partner_phone,
               :address_id, :url, :facebook_link, :twitter_handle,

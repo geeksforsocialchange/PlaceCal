@@ -6,8 +6,10 @@
 
   <%= f.input :name, class: "form-control" %>
   <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
-  <%= f.input :short_description, class: "form-control", label: 'Short Description', input_html: { rows: 7 } %>
 
+  <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>
+
+  <%= f.input :description, class: "form-control", label: 'Description', input_html: { rows: 7 } %>
 
   <div class="row">
     <div class="col-md-6">

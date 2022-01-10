@@ -15,7 +15,8 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'title', count: 1, text: "#{@partner.name} | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', @partner.name
-    assert_select 'p', @partner.short_description
+    assert_select 'p', @partner.summary
+    assert_select 'p', @partner.description
     assert_select 'p', /123 Moss Ln E/
     assert_select 'p', /Manchester/
     assert_select 'p', /M15 5DD/

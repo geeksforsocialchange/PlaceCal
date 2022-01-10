@@ -38,6 +38,16 @@ class Partner < ApplicationRecord
               minimum: 5,
               too_short: 'must be at least 5 characters long'
             }
+  validates :summary,
+            length: {
+              maximum: 200,
+              too_long: 'maxmimum length is 200 characters'
+            }
+  validates :summary,
+            presence: {
+              if: ->(p) { !p.description.nil? },
+              message: 'cannot have a description without a summary'
+            }
   validates :url,
             format: { with: URL_REGEX, message: 'is invalid' },
             allow_blank: true
