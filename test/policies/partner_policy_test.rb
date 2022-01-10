@@ -72,6 +72,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
   end
 
   def test_scope
+    # We sort these because for some reason permitted records sometimes returns results back in a different order here
     assert_equal(permitted_records(@root, Partner).sort_by(&:id),
                  [@partner, @partner_two, @ashton_partner])
     assert_equal(permitted_records(@partner_admin, Partner).sort_by(&:id),
