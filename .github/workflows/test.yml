@@ -65,7 +65,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku@placecal-staging.org:666/placecal-staging'
+          git_remote_url: 'ssh://dokku@placecal-staging.org:666/placecal'
           ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
           branch: main
           ci_branch_name: main
