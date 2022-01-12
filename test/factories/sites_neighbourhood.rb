@@ -2,8 +2,10 @@
 
 FactoryBot.define do
   factory :sites_neighbourhood do
-    tag_id { 1 }
-    site_id { 1 }
-    relation_type { 'MyString' }
+    relation_type { 'Primary' }
+
+    neighbourhood
+
+    site
   end
 end

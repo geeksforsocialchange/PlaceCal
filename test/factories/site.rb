@@ -10,6 +10,7 @@ FactoryBot.define do
     domain { name.parameterize }
     slug { name.parameterize }
     theme { :pink }
+    is_published { true }
 
     association :site_admin, factory: :user
 
