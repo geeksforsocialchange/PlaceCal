@@ -8,6 +8,9 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     @root = create(:root)
     @site_admin = create(:user)
     @site = create(:site, slug: 'hulme', site_admin: @site_admin)
+    @sites_neighbourhood = create(:sites_neighbourhood,
+                                  site: @site,
+                                  neighbourhood: create(:neighbourhood))
   end
 
   test 'load different pages based on subdomain' do
@@ -34,5 +37,11 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Getting Online'
     assert_select 'h3', 'PlaceCal Support'
     assert_select 'p', 'Information about getting online coming soon.'
+  end
+
+  test 'find placecal page shows sites with primary neighbourhood' do
+    get find_placecal_url
+    assert_select '.find-ward__title', @site.name
+    assert_equal assert_select('.find-ward').first['href'], @site.domain
   end
 end
