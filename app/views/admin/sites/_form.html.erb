@@ -62,11 +62,18 @@
   <h2>Other neighbourhoods to include</h2>
 
   <div class="site__neighbourhoods">
-    <%= f.association :neighbourhoods,
+    <%# = f.association :neighbourhoods,
                       label: tooltip_label('Secondary Neighbourhoods',
                                            'Set the neighbourhoods that will be listed on the site'),
                       collection: options_for_sites_neighbourhoods,
                       input_html: {class: 'form-control select2' } %>
+
+    <%= f.simple_fields_for :site__neighbourhoods do |neighbourhood| %>
+      <%= render 'sites_neighbourhoods', f: neighbourhood %>
+    <% end %>
+    <div class="links">
+      <%= link_to_add_association 'Add secondary neighbourhood', f, :sites_neighbourhoods %>
+    </div>
   </div>
 
   <%= f.button :submit, class: "btn btn-primary " %>
