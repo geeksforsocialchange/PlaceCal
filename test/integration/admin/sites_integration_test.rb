@@ -36,8 +36,8 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Hero image credit'
 
     # See all neighbourhoods
-    assert_select '.site__neighbourhoods' do
-      assert_select 'label', @number_of_neighbourhoods
+    assert_select '#site_neighbourhood_ids' do
+      assert_select 'option', @number_of_neighbourhoods
     end
   end
 
@@ -63,8 +63,8 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Hero image credit'
 
     # See just neighbourhoods they admin
-    assert_select '.site__neighbourhoods' do
-      assert_select 'label', 2
+    assert_select '#site_neighbourhood_ids' do
+      assert_select 'option', 2
     end
   end
 end

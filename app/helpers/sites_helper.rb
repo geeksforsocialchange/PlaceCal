@@ -2,6 +2,7 @@
 
 module SitesHelper
   def options_for_sites_neighbourhoods
-    Neighbourhood.all.order(:name).filter { |e| e.name != '' }.collect { |e| [e.name, e.id] }
+    # Remove the primary neighbourhood from the list
+    @all_neighbourhoods.filter { |e| e.name != '' }.collect { |e| [e.shortname, e.id] }
   end
 end

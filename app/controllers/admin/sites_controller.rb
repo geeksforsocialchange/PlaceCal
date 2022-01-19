@@ -34,7 +34,8 @@ module Admin
 
     def update
       authorize @site
-      if update_site(@site)
+      inject_sites_neighbourhoods_attributes(neighbourhood_ids_param) if neighbourhood_ids_param
+      if @site.update(permitted_attributes(@site))
         redirect_to admin_sites_path
       else
         set_variables_for_sites_neighbourhoods_selection
@@ -53,23 +54,39 @@ module Admin
 
     private
 
-    def update_site(attributes)
-      updated = @site.update(permitted_attributes(attributes))
-      update_sites_neighbourhoods(@_params[:site][:neighbourhood_ids]) if updated
-      updated
+    def neighbourhood_ids_param
+      @_params[:site][:neighbourhood_ids]
     end
 
-    def update_sites_neighbourhoods(neighbourhood_ids)
+    def inject_sites_neighbourhoods_attributes(neighbourhood_ids)
+      result_attributes = {}
+
+      # Grab the ids requested, filter out null entries and convert to integer
+      neighbourhood_ids = neighbourhood_ids.filter { |id| id != '' }.map(&:to_i)
+
+      # Grab the existing neighbourhoods, and their ids
       existing_sites_neighbourhoods = SitesNeighbourhood.where(relation_type: 'Secondary', site_id: @site.id)
       existing_sites_neighbourhoods_ids = existing_sites_neighbourhoods.collect(&:neighbourhood_id)
 
+      # Delete items that are not in the neighbourhood ids pile
       existing_sites_neighbourhoods.each do |sn|
-        sn.destroy unless neighbourhood_ids.include? sn.neighbourhood_id
+        attrib = { '_destroy': true,
+                   'id': sn.id.to_s,
+                   'relation_type': 'Secondary'
+                 }
+        result_attributes[sn.neighbourhood_id.to_s] = attrib unless neighbourhood_ids.include? sn.neighbourhood_id
       end
+
+      # Add the primary id to avoid creating a duplicate secondary neighbourhood association
+      existing_sites_neighbourhoods_ids << @site.primary_neighbourhood.id
+
+      # Create items that do not already exist
       neighbourhood_ids.each do |id|
-        sn = { relation_type: 'Secondary', neighbourhood_id: id, site_id: @site.id }
-        SitesNeighbourhood.create(sn) unless existing_sites_neighbourhoods_ids.include? id
+        sn = { 'relation_type': 'Secondary' }
+        result_attributes[id.to_s] = sn unless existing_sites_neighbourhoods_ids.include? id
       end
+
+      @site.sites_neighbourhoods_attributes = result_attributes
     end
 
     def set_site
@@ -77,7 +94,7 @@ module Admin
     end
 
     def set_variables_for_sites_neighbourhoods_selection
-      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
+      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name).where(unit: 'ward')
       begin
         set_site
       rescue ActiveRecord::RecordNotFound
