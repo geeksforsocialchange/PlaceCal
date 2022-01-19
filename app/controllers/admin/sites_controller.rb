@@ -34,7 +34,7 @@ module Admin
 
     def update
       authorize @site
-      if @site.update(permitted_attributes(@site))
+      if update_site(@site)
         redirect_to admin_sites_path
       else
         set_variables_for_sites_neighbourhoods_selection
@@ -52,6 +52,25 @@ module Admin
     end
 
     private
+
+    def update_site(attributes)
+      updated = @site.update(permitted_attributes(attributes))
+      update_sites_neighbourhoods(@_params[:site][:neighbourhood_ids]) if updated
+      updated
+    end
+
+    def update_sites_neighbourhoods(neighbourhood_ids)
+      existing_sites_neighbourhoods = SitesNeighbourhood.where(relation_type: 'Secondary', site_id: @site.id)
+      existing_sites_neighbourhoods_ids = existing_sites_neighbourhoods.collect(&:neighbourhood_id)
+
+      existing_sites_neighbourhoods.each do |sn|
+        sn.destroy unless neighbourhood_ids.include? sn.neighbourhood_id
+      end
+      neighbourhood_ids.each do |id|
+        sn = { relation_type: 'Secondary', neighbourhood_id: id, site_id: @site.id }
+        SitesNeighbourhood.create(sn) unless existing_sites_neighbourhoods_ids.include? id
+      end
+    end
 
     def set_site
       @site = Site.friendly.find(params[:id])

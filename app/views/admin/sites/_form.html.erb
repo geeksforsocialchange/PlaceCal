@@ -62,21 +62,12 @@
   <h2>Other neighbourhoods to include</h2>
 
   <div class="site__neighbourhoods">
-    <% @all_neighbourhoods.each do |neighbourhood| %>
-      <%= fields_for "site[sites_neighbourhoods_attributes][#{neighbourhood.id}]" do |sna|%>
-        <label>
-          <%- if (@secondary_neighbourhood_ids.include?(neighbourhood.id)) %>
-            <%= sna.hidden_field :id, value: @sites_neighbourhoods_ids[neighbourhood.id] %>
-            <%# if box is unchecked, this will result in the removal of the association %>
-            <%= sna.check_box :_destroy, {checked: true}, false, true %>
-          <% else %>
-             <%= sna.check_box :neighbourhood_id, {include_hidden: false, checked: false}, neighbourhood.id %>
-             <%= sna.hidden_field :relation_type, value: "Secondary" %>
-          <% end %>
-          <%= neighbourhood.name %>
-        </label><br>
-      <% end %>
-    <% end %>
+    <%= x= f.association :neighbourhoods,
+                      label: tooltip_label('Secondary Neighbourhoods',
+                                           'Set the neighbourhoods that will be listed on the site'),
+                      collection: options_for_sites_neighbourhoods,
+                      input_html: {class: 'form-control select2' } %>
+    <p><%= pts x %></p>
   </div>
 
   <%= f.button :submit, class: "btn btn-primary " %>
