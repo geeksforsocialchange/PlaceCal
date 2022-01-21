@@ -68,11 +68,11 @@
                       collection: options_for_sites_neighbourhoods,
                       input_html: {class: 'form-control select2' } %>
 
-    <%= f.simple_fields_for :site__neighbourhoods do |neighbourhood| %>
-      <%= render 'sites_neighbourhoods', :f => neighbourhood %>
+    <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
+      <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
     <% end %>
     <div class="links">
-      <%= link_to_add_association 'Add secondary neighbourhood', f, :site__neighbourhoods %>
+      <% link_to_add_association 'Add secondary neighbourhood', f, :sites_neighbourhoods %>
     </div>
   </div>
 
