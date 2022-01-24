@@ -7,6 +7,7 @@
     "yarn": ">= 1.21.1"
   },
   "dependencies": {
+    "@nathanvda/cocoon": "^1.2.14",
     "@rails/ujs": "^6.0.2",
     "@rails/webpacker": "5.4.3",
     "axios": "^0.24.0",

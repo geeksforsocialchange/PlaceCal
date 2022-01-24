@@ -1,5 +1,5 @@
 <div class="nested-fields">
-    <%= f.input :name %>
+    <%= f.input :name, collection: options_for_sites_neighbourhoods, include_blank: false %>
     <%= f.hidden_field :relation_type, value: 'Secondary' %>
-    <%= link_to_remove_association 'Remove', f %>
+    <%= link_to_remove_association 'Remove Secondary Neighbourhood', f, class: "btn btn-danger" %>
 </div>

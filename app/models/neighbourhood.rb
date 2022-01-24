@@ -29,6 +29,11 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
+  def contextual_name
+    # "Wardname (Region)"
+    "#{shortname} (#{unit.titleize})"
+  end
+
   def fullname
     if name.present?
       name 

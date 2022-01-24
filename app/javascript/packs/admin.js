@@ -1,4 +1,4 @@
-require("cocoon")
+require("@nathanvda/cocoon")
 require("select2")
 require("datatables.net-bs4")
 
