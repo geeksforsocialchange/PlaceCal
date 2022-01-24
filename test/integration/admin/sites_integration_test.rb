@@ -8,7 +8,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     @site = create(:site)
     @site_admin = @site.site_admin
     @neighbourhoods = create_list(:neighbourhood, 5)
-    @number_of_neighbourhoods = Neighbourhood.where(unit: 'ward').length
+    @number_of_neighbourhoods = Neighbourhood.all.length
     host! 'admin.lvh.me'
   end
 
