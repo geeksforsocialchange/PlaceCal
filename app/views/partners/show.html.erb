@@ -1,6 +1,6 @@
 <% content_for :title, @partner.name %>
-<% if @partner.short_description %>
-  <% content_for :description, @partner.short_description %>
+<% if @partner.summary %>
+  <% content_for :description, @partner.summary %>
 <% end %>
 <% content_for :permalink, @partner.permalink %>
 
@@ -15,9 +15,14 @@
 
     <div class="g g--partner">
       <div class="gi gi__3-5">
-        <% if @partner.short_description %>
-          <div class="first-ele-lg" property="description">
-            <%= markdown @partner.short_description %>
+        <% if @partner.summary %>
+          <div class="p--big">
+            <%= content_tag(:p, @partner.summary) %>
+          </div>
+          <div property="description">
+            <% if @partner.description %>
+              <%= markdown @partner.description %>
+            <% end %>
           </div>
         <% end %>
 
@@ -72,8 +77,8 @@
       <h2 class="place__title"><%= link_to place.name, partner_path(place), class: 'udl udl--red' %></h2>
       <div class="g g--place-list">
         <div class="gi gi__1-2">
-          <% if place.short_description %>
-            <%= markdown place.short_description %>
+          <% if place.summary %>
+            <%= markdown place.summary %>
           <% end %>
         </div>
         <div class="gi gi__1-2">

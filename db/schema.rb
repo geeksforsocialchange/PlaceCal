@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_03_153422) do
+ActiveRecord::Schema.define(version: 2022_01_06_150818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,7 +153,6 @@ ActiveRecord::Schema.define(version: 2021_12_03_153422) do
     t.string "public_email"
     t.string "admin_name"
     t.string "admin_email"
-    t.text "short_description"
     t.integer "address_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -172,6 +171,8 @@ ActiveRecord::Schema.define(version: 2021_12_03_153422) do
     t.text "accessibility_info"
     t.string "twitter_handle"
     t.string "facebook_link"
+    t.string "summary"
+    t.text "description"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end

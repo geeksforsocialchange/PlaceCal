@@ -14,11 +14,11 @@ class PartnerTest < ActiveSupport::TestCase
     assert @user.partner_admin?
   end
 
-  test 'validate title length' do
+  test 'validate name length' do
     partner = Partner.new
-    partner.save
+    partner.update(name: '1234')
 
-    # The only mandatory field is title (for now)
+    # The only mandatory field is name (for now)
     assert error_map = partner.errors.where(:name, :too_short).first
     assert_equal 'must be at least 5 characters long', error_map.options[:message]
     assert_equal 1, partner.errors.attribute_names.length
@@ -31,11 +31,47 @@ class PartnerTest < ActiveSupport::TestCase
     assert_equal ['has already been taken'], partner.errors[:name]
   end
 
-  test 'validate name length' do
+  test 'validate no summary or description' do
     partner = Partner.new
-    # Name must be at least five charactors
-    partner.update(name: '1234')
-    assert_equal ['must be at least 5 characters long'], partner.errors[:name]
+
+    partner.update(name: 'Test Partner')
+    assert partner.errors.empty?
+  end
+
+  test 'validate summary without description' do
+    partner = Partner.new
+
+    partner.update(name: "Test Partner", summary: "This is a test partner used for testing :)")
+    assert partner.errors.empty?, 'Should be able to submit a summary'
+  end
+
+  test 'validate description without summary' do
+    partner = Partner.new
+
+    partner.update(name: 'Test Partner', description: 'This is a test partner used for testing :)')
+    assert_equal ['cannot have a description without a summary'],
+                 partner.errors[:summary],
+                 'Should not be able to have a description without summary'
+  end
+
+  test 'validate description and summary' do
+    partner = Partner.new
+
+    partner.update(name: 'Test Partner',
+                   summary: 'This is a test summary wheee :)',
+                   description: 'This is a test partner used for testing :)')
+    assert partner.errors.empty?, 'Should be able to submit a summary and description'
+  end
+
+  test 'validate summary length' do
+    partner = Partner.new
+    # We can submit a 200 character summary
+    partner.update(name: 'Test Partner', summary: ''.ljust(200, 'a'))
+    assert partner.errors.empty?, '200 character summary should be valid'
+
+    # But not a 201 character summary
+    partner.update(name: 'Test Partner', summary: ''.ljust(201, 'a'))
+    assert partner.errors.key?(:summary), 'maximum length is 200 characters'
   end
 
   test 'validate url' do
