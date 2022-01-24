@@ -70,7 +70,8 @@ class EventComponent < MountainView::Presenter
   def primary_neighbourhood?
     # Show everything as primary if primary is not set
     return true unless primary_neighbourhood
-    event.neighbourhood == primary_neighbourhood
+
+    event.neighbourhood == primary_neighbourhood || primary_neighbourhood.children.include?(event.neighbourhood)
   end
 
   private

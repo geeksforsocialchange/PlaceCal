@@ -29,7 +29,12 @@ class Event < ApplicationRecord
   }
 
   # Filter by Site
-  scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
+  scope :for_site, lambda { |site|
+    joins(:address).where(addresses: {
+      neighbourhood: site.neighbourhoods.map { |ward| ward.subtree }.flatten
+    })
+  }
+
 
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
