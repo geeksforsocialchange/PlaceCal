@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_24_170103) do
+ActiveRecord::Schema.define(version: 2022_01_25_175817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 2022_01_24_170103) do
     t.string "unit_code_key", default: "WD19CD"
     t.string "unit_code_value"
     t.string "unit_name"
+    t.string "parent_name"
     t.index ["ancestry"], name: "index_neighbourhoods_on_ancestry"
   end
 

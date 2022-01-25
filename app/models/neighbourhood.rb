@@ -19,6 +19,8 @@ class Neighbourhood < ApplicationRecord
             length: { is: 9 },
             allow_blank: true
 
+  before_update :inject_parent_name_field
+
   def shortname
     if name_abbr.present?
       name_abbr
@@ -31,7 +33,7 @@ class Neighbourhood < ApplicationRecord
 
   def contextual_name
     # "Wardname, Countryname (Region)"
-    "#{shortname}, #{parent.shortname} (#{unit.titleize})" if parent
+    return "#{shortname}, #{parent_name} (#{unit.titleize})" if parent_name
 
     # "Wardname (Region)"
     "#{shortname} (#{unit.titleize})"
@@ -39,11 +41,11 @@ class Neighbourhood < ApplicationRecord
 
   def fullname
     if name.present?
-      name 
+      name
     elsif name_abbr.present?
       name_abbr
     else
-      "[not set]"
+      '[not set]'
     end
   end
 
@@ -74,5 +76,12 @@ class Neighbourhood < ApplicationRecord
                              unit_code_value: res['codes']['admin_ward'],
                              unit_name: res['admin_ward'])
     end
+  end
+
+  private
+
+  def inject_parent_name_field
+    self.parent_name = parent.name if parent
+    true
   end
 end
