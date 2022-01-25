@@ -3,7 +3,7 @@ jQuery.extend(Behaviors, {
     form: {
       init: function() {
         $( ".select2" ).select2({
-          multiple: true
+          multiple: false
         });
       }
     }
