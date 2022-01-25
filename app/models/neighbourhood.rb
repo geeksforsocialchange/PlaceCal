@@ -30,6 +30,9 @@ class Neighbourhood < ApplicationRecord
   end
 
   def contextual_name
+    # "Wardname, Countryname (Region)"
+    "#{shortname}, #{parent.shortname} (#{unit.titleize})" if parent
+
     # "Wardname (Region)"
     "#{shortname} (#{unit.titleize})"
   end
