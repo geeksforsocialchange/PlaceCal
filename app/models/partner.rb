@@ -14,6 +14,14 @@ class Partner < ApplicationRecord
   has_many :events
   belongs_to :address, optional: true
 
+  has_many :service_areas, dependent: :destroy
+  has_many :service_area_neighbourhoods,
+    through: :service_areas,
+    source: :neighbourhood,
+    class_name: 'Neighbourhood'
+
+  validates_associated :service_areas
+
   has_and_belongs_to_many :objects,
                           class_name: 'Partner',
                           join_table: :organisation_relationships,
@@ -65,6 +73,7 @@ class Partner < ApplicationRecord
             allow_blank: true
 
   validates_associated :address
+
 
   validate :check_ward_access
 

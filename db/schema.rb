@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_06_150818) do
+ActiveRecord::Schema.define(version: 2022_01_24_170103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -230,6 +230,16 @@ ActiveRecord::Schema.define(version: 2022_01_06_150818) do
     t.datetime "migrated_on"
   end
 
+  create_table "service_areas", force: :cascade do |t|
+    t.bigint "neighbourhood_id"
+    t.bigint "partner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["neighbourhood_id", "partner_id"], name: "index_service_areas_on_neighbourhood_id_and_partner_id", unique: true
+    t.index ["neighbourhood_id"], name: "index_service_areas_on_neighbourhood_id"
+    t.index ["partner_id"], name: "index_service_areas_on_partner_id"
+  end
+
   create_table "sites", force: :cascade do |t|
     t.string "name"
     t.string "slug"
@@ -350,5 +360,7 @@ ActiveRecord::Schema.define(version: 2022_01_06_150818) do
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
   add_foreign_key "places", "addresses"
+  add_foreign_key "service_areas", "neighbourhoods"
+  add_foreign_key "service_areas", "partners"
   add_foreign_key "sites", "users", column: "site_admin_id"
 end

@@ -22,6 +22,26 @@
   <br>
   <hr>
 
+  <h2>Service Area</h2>
+
+  <div id='service_areas'>
+    <div class="row">
+      <div class="col-md-6">
+
+        <%= f.fields_for :service_area do |sn| %>
+          <%= sn.select :neighbourhood_id, 
+            options_from_collection_for_select(@all_neighbourhoods, 'id', 'name', @service_area_neighbourhood_id), 
+            class: 'form-control', 
+            include_blank: true %>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <hr>
+
   <h2>Address</h2>
 
   <div id='address'>

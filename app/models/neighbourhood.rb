@@ -8,6 +8,12 @@ class Neighbourhood < ApplicationRecord
   has_many :neighbourhoods_users, dependent: :destroy
   has_many :users, through: :neighbourhoods_users
 
+  has_many :service_areas, dependent: :destroy
+  has_many :service_area_partners,
+    through: :service_areas,
+    source: :partner,
+    class_name: 'Partner'
+
   # validates :name, presence: true
   validates :unit_code_value,
             length: { is: 9 },

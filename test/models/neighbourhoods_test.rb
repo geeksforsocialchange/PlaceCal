@@ -1,3 +1,5 @@
+require 'test_helper'
+
 class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
   setup do
     @neighbourhood = create(:neighbourhood)
