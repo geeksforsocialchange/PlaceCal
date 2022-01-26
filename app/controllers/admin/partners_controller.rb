@@ -21,9 +21,6 @@ module Admin
     end
 
     def new
-      # @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
-      @service_area_neighbourhood_id = nil
-
       @partner = params[:partner] ? Partner.new(permitted_attributes(Partner)) : Partner.new
       authorize @partner
     end
