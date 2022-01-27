@@ -135,20 +135,20 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     # need to also test this with regards to model creation from the web front-end
   end
 
-#  test 'can be read when present' do
-#    other_neighbourhood = create(:ashton_neighbourhood)
-#
-#    @partner.service_area.create! neighbourhood: @neighbourhood
-#    @partner.service_area.create! neighbourhood: other_neighbourhood
-#
-#    neighbourhoods = @partner.service_area_neighbourhoods.order('neighbourhoods.name').all
-#    assert neighbourhoods.count == 2, 'Failed to count neighbourhoods'
-#
-#    n1 = neighbourhoods[0]
-#    assert_equal 'Ashton Hurst', n1.name
-#
-#    n2 = neighbourhoods[1]
-#    assert_equal 'Hulme Longname', n2.name
-#  end
+  test 'can be read when present' do
+    other_neighbourhood = create(:ashton_neighbourhood)
+
+    @partner.service_areas.create! neighbourhood: @neighbourhood
+    @partner.service_areas.create! neighbourhood: other_neighbourhood
+
+    neighbourhoods = @partner.service_area_neighbourhoods.order('neighbourhoods.name').all
+    assert neighbourhoods.count == 2, 'Failed to count neighbourhoods'
+
+    n1 = neighbourhoods[0]
+    assert_equal 'Ashton Hurst', n1.name
+
+    n2 = neighbourhoods[1]
+    assert_equal 'Hulme Longname', n2.name
+  end
 
 end
