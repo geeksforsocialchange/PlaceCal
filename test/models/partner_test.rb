@@ -119,6 +119,15 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     assert @partner.valid?, 'Partner (without service_area) is not valid'
   end
 
+  test 'is valid when set, can be accessed' do
+    model = build(:ashton_service_area_partner)
+    model.save!
+    assert model.valid?
+
+    service_areas = model.service_areas
+    assert_equal 1, service_areas.count
+  end
+
   test 'can be assigned' do
     @partner.service_areas.create(neighbourhood: @neighbourhood)
     assert @partner.valid?, 'Partner (with service_area) is not valid'

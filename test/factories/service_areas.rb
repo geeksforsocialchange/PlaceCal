@@ -1,6 +1,5 @@
 FactoryBot.define do
-  factory :service_area do
-    partner_id { 1 }
-    neighbourhood_id { 1 }
+  factory :ashton_service_area, class: 'ServiceArea' do
+    association :neighbourhood, factory: :ashton_neighbourhood
   end
 end

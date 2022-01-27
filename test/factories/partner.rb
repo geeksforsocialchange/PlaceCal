@@ -27,6 +27,12 @@ FactoryBot.define do
       association :address, factory: :ashton_address
     end
 
+    factory :ashton_service_area_partner, class: 'Partner' do
+      service_areas do
+        build_list(:ashton_service_area, 1)
+      end
+    end
+
     opening_times {
       '[ { "@type": "OpeningHoursSpecification",'\
       '    "closes": "20:00:00",'\
