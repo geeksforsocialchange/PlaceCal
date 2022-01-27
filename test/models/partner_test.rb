@@ -107,3 +107,57 @@ class PartnerTest < ActiveSupport::TestCase
     refute partner.errors.key?(:facebook_link), 'Valid page name not saved'
   end
 end
+
+
+class PartnerServiceAreaTest < ActiveSupport::TestCase
+  setup do
+    @partner = create(:partner)
+    @neighbourhood = create(:neighbourhood)
+  end
+
+  test 'is valid when empty' do
+    assert @partner.valid?, 'Partner (without service_area) is not valid'
+  end
+
+  test 'is valid when set, can be accessed' do
+    model = build(:ashton_service_area_partner)
+    model.save!
+    assert model.valid?
+
+    service_areas = model.service_areas
+    assert_equal 1, service_areas.count
+  end
+
+  test 'can be assigned' do
+    @partner.service_areas.create(neighbourhood: @neighbourhood)
+    assert @partner.valid?, 'Partner (with service_area) is not valid'
+
+    neighbourhood_count = @partner.service_area_neighbourhoods.count
+    assert_equal 1, neighbourhood_count, 'count neighbourhoods'
+  end
+
+  test 'must be unique' do
+    assert_raises ActiveRecord::RecordInvalid do 
+      @partner.service_areas.create!(neighbourhood: @neighbourhood)
+      @partner.service_areas.create!(neighbourhood: @neighbourhood)
+    end
+    # need to also test this with regards to model creation from the web front-end
+  end
+
+  test 'can be read when present' do
+    other_neighbourhood = create(:ashton_neighbourhood)
+
+    @partner.service_areas.create! neighbourhood: @neighbourhood
+    @partner.service_areas.create! neighbourhood: other_neighbourhood
+
+    neighbourhoods = @partner.service_area_neighbourhoods.order('neighbourhoods.name').all
+    assert neighbourhoods.count == 2, 'Failed to count neighbourhoods'
+
+    n1 = neighbourhoods[0]
+    assert_equal 'Ashton Hurst', n1.name
+
+    n2 = neighbourhoods[1]
+    assert_equal 'Hulme Longname', n2.name
+  end
+
+end

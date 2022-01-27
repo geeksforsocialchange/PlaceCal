@@ -6,6 +6,22 @@ PlaceCal is a large and very complicated app for collating organisation and even
 
 To get an idea of the project and what we're about, check out [the handbook](https://handbook.placecal.org/) which is also [in it's own respository](https://github.com/geeksforsocialchange/PlaceCal-Handbook), and especially the [Glossary](glossary.md).
 
+## Requirements
+
+To run Placecal locally you will need:
+
+- a mac or a linux machine
+- gcc
+- postgres 
+  - if you are running in a docker image you will still need the dev libraries for the gem to compile against
+- base ruby for your OS
+- [rbenv](https://github.com/rbenv/rbenv)
+  - [ruby-build](https://github.com/rbenv/ruby-build)
+  - [rbenv-gemset](https://github.com/jf/rbenv-gemset) (optional)
+- ImageMagick
+- docker (optional)
+  If you are into containerizing your dev environment
+
 ## Quickstart
 
 With that said, here's what you need to get rolling.

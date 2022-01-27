@@ -5,6 +5,7 @@ module Admin
     include LoadUtilities
     before_action :set_partner, only: %i[show edit update destroy]
     before_action :set_tags, only: %i[new create edit]
+    before_action :set_neighbourhoods, only: %i[new edit]
 
     def index
       @partners = policy_scope(Partner).order(:name).includes(:address)
@@ -88,6 +89,10 @@ module Admin
     end
 
     private
+
+    def set_neighbourhoods
+      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
+    end
 
     def user_not_authorized
       flash[:alert] = 'Unable to access'

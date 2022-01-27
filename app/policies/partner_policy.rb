@@ -47,6 +47,7 @@ class PartnerPolicy < ApplicationPolicy
               :opening_times,
               calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
               address_attributes: %i[street_address street_address2 street_address3 city postcode],
+              service_area_attributes: %i[neighbourhood_id],
               tag_ids: [] ]
 
     attrs << :slug if user.root?
