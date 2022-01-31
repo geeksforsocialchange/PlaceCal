@@ -53,9 +53,11 @@
   <%= f.fields_for :sites_neighbourhood do |sn| %>
     <% if @primary_neighbourhood_id %>
       <p><%= @all_neighbourhoods.find(@primary_neighbourhood_id).name %></p>
+      <%= sn.hidden_field :relation_type, value: "Primary" %>
+      <%= sn.hidden_field :neighbourhood_id, value: @primary_neighbourhood_id %>
     <% else %>
       <%= sn.hidden_field :relation_type, value: "Primary" %>
-      <%= sn.select :neighbourhood_id, options_from_collection_for_select(@all_neighbourhoods, 'id', 'name', @primary_neighbourhood_id), class: 'form-control', include_blank: true %>
+      <%= sn.select :neighbourhood_id, options_from_collection_for_select(@all_neighbourhoods, 'id', 'name', @primary_neighbourhood_id), class: 'form-control select2', include_blank: true %>
     <% end %>
   <% end %>
 

@@ -1,12 +1,15 @@
-<div class="input-group nested-fields">
+<fieldset class="input-group nested-fields mb-3">
     <div class="input-group-text pt-4">
-        <%= f.input :name, collection: options_for_sites_neighbourhoods, include_blank: false,
+        <%= f.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
+            value_method: ->(obj) { obj[:id] },
+            label_method: ->(obj) { obj[:name] },
             input_html: { class: 'form-control select2' },
-            label: 'Name', label_html: { class: 'mr-2' } %>
-        <%= f.hidden_field :relation_type, value: 'Secondary' %>
+            label: '', label_html: { hidden: true, class: 'mr-2' } %>
+        <%# This label causes behaviours.site.js to remove the association from the form %>
+        <%= f.label :ignore, class: 'cocoon_delete-this' if f.object.relation_type == 'Primary' %>
     </div>
     <div class="input-group-append">
-        <%= link_to_remove_association 'Remove', f, class: "btn btn-danger pt-4" %>
+        <%= f.hidden_field :relation_type, value: 'Secondary' %>
+        <%= link_to_remove_association 'Remove', f, class: "pt-4 pl-3" %>
     </div>
-</div>
-<br></br>
+</fieldset>
