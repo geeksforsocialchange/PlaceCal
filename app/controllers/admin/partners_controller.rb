@@ -41,6 +41,7 @@ module Admin
           format.html { redirect_to admin_partners_path, notice: 'Partner was successfully created.' }
           format.json { render :show, status: :created, location: @partner }
         else
+          set_neighbourhoods
           format.html { render :new }
           format.json { render json: @partner.errors, status: :unprocessable_entity }
         end
@@ -107,6 +108,7 @@ module Admin
                      :opening_times,
                      calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
                      address_attributes: %i[street_address street_address2 street_address3 city postcode],
+                     service_areas_attributes: %i[id neighbourhood_id],
                      tag_ids: [] ]
 
       attributes << :slug if current_user.root?

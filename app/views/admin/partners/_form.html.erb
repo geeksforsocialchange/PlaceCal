@@ -22,6 +22,22 @@
   <br>
   <hr>
 
+  <h2>Service Areas</h2>
+  
+  <div class="partner__service_areas">
+    <% @all_neighbourhoods.each do |neighbourhood| %>
+      <%= fields_for "partner[service_areas_attributes][#{neighbourhood.id}]" do |sna|%>
+        <label>
+          <%= sna.check_box :neighbourhood_id, {include_hidden: false, checked: false}, neighbourhood.id %>
+          <%= neighbourhood.name %>
+        </label><br>
+      <% end %>
+    <% end %>
+  </div>
+
+  <br>
+  <hr>
+
   <h2>Address</h2>
 
   <div id='address'>
