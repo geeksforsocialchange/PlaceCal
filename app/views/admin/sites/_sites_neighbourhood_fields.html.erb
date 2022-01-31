@@ -11,6 +11,6 @@
     <%= f.label :ignore, class: 'cocoon_delete-this' if f.object.relation_type == 'Primary' %>
     <div class="input-group-append p-0">
         <%= f.hidden_field :relation_type, value: 'Secondary' %>
-        <%= link_to_remove_association 'Remove', f, class: "pl-2 pt-1" %>
+        <%= link_to_remove_association 'Remove', f, class: "pl-2 pt-1 text-danger" %>
     </div>
 </fieldset>
