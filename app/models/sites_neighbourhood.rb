@@ -9,4 +9,8 @@ class SitesNeighbourhood < ApplicationRecord
               scope: :site_id,
               message: 'Neighbourhood cannot be assigned more than once to a site'
             }
+
+  def name
+    neighbourhood.to_s
+  end
 end
