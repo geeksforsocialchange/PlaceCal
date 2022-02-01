@@ -8,6 +8,7 @@ class NeighbourhoodDatatable < Datatable
       unit_name:       { source: 'Neighbourhood.unit_name' },
       unit_code_key:   { source: 'Neighbourhood.unit_code_key' },
       unit_code_value: { source: 'Neighbourhood.unit_code_value' },
+      parent_name:     { source: 'Neighbourhood.parent_name' },
     }
   end
 
@@ -19,10 +20,7 @@ class NeighbourhoodDatatable < Datatable
         unit_name:       record.unit_name,
         unit_code_key:   record.unit_code_key,
         unit_code_value: record.unit_code_value,
-        # county:   record.county,
-        # district: record.district,
-        # region:   record.region,
-        # country:  record.country
+        parent_name:     record.parent_name,
       }
     end
   end

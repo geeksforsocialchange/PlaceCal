@@ -49,38 +49,38 @@
   <p><em>Who took this photo?</em></p>
 
   <h2>Main neighbourhood</h2>
+  <p class="font-weight-light">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
 
-  <%= f.fields_for :sites_neighbourhood do |sn| %>
+  <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
     <% if @primary_neighbourhood_id %>
-      <p><%= @all_neighbourhoods.find(@primary_neighbourhood_id).name %></p>
+      <h3><span class="badge badge-secondary"><%= @all_neighbourhoods.find(@primary_neighbourhood_id).contextual_name %></span></h3>
+      <%= sn.hidden_field :relation_type, value: "Primary" %>
+      <%= sn.hidden_field :neighbourhood_id, value: @primary_neighbourhood_id %>
     <% else %>
       <%= sn.hidden_field :relation_type, value: "Primary" %>
-      <%= sn.select :neighbourhood_id, options_from_collection_for_select(@all_neighbourhoods, 'id', 'name', @primary_neighbourhood_id), class: 'form-control', include_blank: true %>
+      <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
+          value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
+          input_html: { class: 'form-control select2 col-6' },
+          label: '', label_html: { hidden: true } %>
     <% end %>
   <% end %>
+  <br />
 
   <h2>Other neighbourhoods to include</h2>
+  <p class="font-weight-light">Information from these neighbourhoods will also be displayed on this site</p>
 
-  <div class="site__neighbourhoods">
-    <% @all_neighbourhoods.each do |neighbourhood| %>
-      <%= fields_for "site[sites_neighbourhoods_attributes][#{neighbourhood.id}]" do |sna|%>
-        <label>
-          <%- if (@secondary_neighbourhood_ids.include?(neighbourhood.id)) %>
-            <%= sna.hidden_field :id, value: @sites_neighbourhoods_ids[neighbourhood.id] %>
-            <%# if box is unchecked, this will result in the removal of the association %>
-            <%= sna.check_box :_destroy, {checked: true}, false, true %>
-          <% else %>
-             <%= sna.check_box :neighbourhood_id, {include_hidden: false, checked: false}, neighbourhood.id %>
-             <%= sna.hidden_field :relation_type, value: "Secondary" %>
-          <% end %>
-          <%= neighbourhood.name %>
-        </label><br>
-      <% end %>
+  <div class="sites_neighbourhoods">
+    <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
+      <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
     <% end %>
+    <div class="links">
+      <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
+    </div>
+    <br></br>
   </div>
 
-  <%= f.button :submit, class: "btn btn-primary " %>
+  <%= f.button :submit, class: "btn btn-primary btn-lg" %>
   <% unless @site.new_record? %>
-    <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger" %>
+    <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger btn-lg" %>
   <% end %>
 <% end %>

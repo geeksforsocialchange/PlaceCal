@@ -35,10 +35,17 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Hero image'
     assert_select 'label', 'Hero image credit'
 
-    # See all neighbourhoods
-    assert_select '.site__neighbourhoods' do
-      assert_select 'label', @number_of_neighbourhoods
-    end
+    # See just neighbourhoods they admin
+    # In short:
+    # - Find the cocoon template for the Secondary Neighbourhoods <select> item
+    # - Grep for all occurences of "option value=" which grabs only the first <option> tag (not the closing tag)
+    # - That gives us all the neighbourhoods it is displaying
+    #
+    # Please replace this with Capybara in the future lol
+
+    cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
+    neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
+    assert neighbourhoods_shown == @number_of_neighbourhoods
   end
 
   test 'site admin users see appropriate fields' do
@@ -63,8 +70,8 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Hero image credit'
 
     # See just neighbourhoods they admin
-    assert_select '.site__neighbourhoods' do
-      assert_select 'label', 2
-    end
+    cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
+    neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
+    assert neighbourhoods_shown == 2
   end
 end

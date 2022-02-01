@@ -10,15 +10,23 @@ document.addEventListener("turbolinks:before-cache", function () {
 });
 
 document.addEventListener('turbolinks:load', function () {
-  dataTable = $('#datatable').DataTable({
-    "processing": true,
-    "serverSide": true,
-    "pageLength": 15,
-    "ajax": {
-      "url": $('#datatable').data('source')
-    },
-    "pagingType": "full_numbers",
-    // Column spec is loaded from a script tag in the view
-    "columns": columns
-  })
+  try {
+    dataTable = $('#datatable').DataTable({
+      "processing": true,
+      "serverSide": true,
+      "pageLength": 15,
+      "ajax": {
+        "url": $('#datatable').data('source')
+      },
+      "pagingType": "full_numbers",
+      // Column spec is loaded from a script tag in the view
+      "columns": columns
+    })
+  } catch (e) {
+    // On pages where DataTables shouldn't be used, columns is not defined.
+    // This catches that and stops it throwing an error to the console.
+    if (!(e instanceof ReferenceError)) {
+      console.error(e);
+    }
+  }
 });

@@ -1,6 +1,6 @@
-require("cocoon")
-require("select2")
 require("datatables.net-bs4")
+require("@nathanvda/cocoon")
+require("select2")
 
 import 'bootstrap'
 import 'vue'
@@ -11,7 +11,6 @@ import '../src/calendar-form.js'
 import '../src/datatable.js'
 import '../src/opening-times.js'
 import '../src/ward-picker.js'
-
 
 $(document).on('turbolinks:load', function () {
 

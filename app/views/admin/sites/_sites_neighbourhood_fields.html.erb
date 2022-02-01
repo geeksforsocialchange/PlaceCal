@@ -1,0 +1,16 @@
+<fieldset class="input-group nested-fields p-0">
+    <%# The style width setting here is applied to dynamically created elements, we do not know why. %>
+    <%# TODO: Fix the dynamic styling so that width does not get applied, so we can remove this smell %>
+    <%= f.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
+        value_method: ->(obj) { obj[:id] },
+        label_method: ->(obj) { obj[:name] },
+        input_html: { class: 'form-control select2', style: "width: 599.8px;" },
+        label: '', label_html: { hidden: true } %>
+
+    <%# This label causes behaviours.site.js to remove the association from the form %>
+    <%= f.label :ignore, class: 'cocoon_delete-this' if f.object.relation_type == 'Primary' %>
+    <div class="input-group-append p-0">
+        <%= f.hidden_field :relation_type, value: 'Secondary' %>
+        <%= link_to_remove_association 'Remove', f, class: "pl-2 pt-1 text-danger" %>
+    </div>
+</fieldset>
