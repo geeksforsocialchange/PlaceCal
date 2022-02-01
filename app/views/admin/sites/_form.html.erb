@@ -50,32 +50,36 @@
 
   <h2>Main neighbourhood</h2>
 
-  <%= f.fields_for :sites_neighbourhood do |sn| %>
+  <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
     <% if @primary_neighbourhood_id %>
-      <p><%= @all_neighbourhoods.find(@primary_neighbourhood_id).name %></p>
+      <h3><span class="badge badge-secondary"><%= @all_neighbourhoods.find(@primary_neighbourhood_id).contextual_name %></span></h3>
       <%= sn.hidden_field :relation_type, value: "Primary" %>
       <%= sn.hidden_field :neighbourhood_id, value: @primary_neighbourhood_id %>
     <% else %>
       <%= sn.hidden_field :relation_type, value: "Primary" %>
-      <%= sn.select :neighbourhood_id, options_from_collection_for_select(@all_neighbourhoods, 'id', 'name', @primary_neighbourhood_id), class: 'form-control select2', include_blank: true %>
+      <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
+          value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
+          input_html: { class: 'form-control select2 col-6' },
+          label: '', label_html: { hidden: true } %>
     <% end %>
   <% end %>
+  <br />
 
   <h2>Other neighbourhoods to include</h2>
-  <p>These neighbourhoods are added to the site event directory</p>
+  <p>Information from these neighbourhoods will also be displayed on this site</p>
 
   <div class="sites_neighbourhoods">
     <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
       <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
     <% end %>
     <div class="links">
-      <%= link_to_add_association 'Add Secondary Neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary" %>
+      <%= link_to_add_association 'Add Secondary Neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
     </div>
     <br></br>
   </div>
 
-  <%= f.button :submit, class: "btn btn-primary " %>
+  <%= f.button :submit, class: "btn btn-primary btn-lg" %>
   <% unless @site.new_record? %>
-    <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger" %>
+    <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger btn-lg" %>
   <% end %>
 <% end %>
