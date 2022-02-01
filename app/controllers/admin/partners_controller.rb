@@ -6,6 +6,7 @@ module Admin
     before_action :set_partner, only: %i[show edit update destroy]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
+    before_action :set_service_area_map_ids, only: %i[new edit]
 
     def index
       @partners = policy_scope(Partner).order(:name).includes(:address)
@@ -38,11 +39,19 @@ module Admin
 
       respond_to do |format|
         if @partner.save
-          format.html { redirect_to admin_partners_path, notice: 'Partner was successfully created.' }
+          format.html do
+            flash[:success] = 'Partner was successfully created.'
+            redirect_to admin_partners_path
+          end
+
           format.json { render :show, status: :created, location: @partner }
         else
-          set_neighbourhoods
-          format.html { render :new }
+          format.html do
+            flash.now[:danger] = 'Partner was not saved.'
+            set_neighbourhoods
+            set_service_area_map_ids
+            render :new 
+          end
           format.json { render json: @partner.errors, status: :unprocessable_entity }
         end
       end
@@ -58,8 +67,13 @@ module Admin
       @partner.accessed_by_id = current_user.id
 
       if @partner.update(permitted_attributes(@partner))
+        flash[:success] = 'Partner was successfully updated.'
         redirect_to edit_admin_partner_path(@partner)
+
       else
+        flash.now[:danger] = 'Partner was not saved.'
+        set_neighbourhoods
+        set_service_area_map_ids
         render :edit
       end
     end
@@ -68,7 +82,10 @@ module Admin
       authorize @partner
       @partner.destroy
       respond_to do |format|
-        format.html { redirect_to admin_partners_url, notice: 'Partner was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'Partner was successfully destroyed.'
+          redirect_to admin_partners_url
+        end
         format.json { head :no_content }
       end
     end
@@ -90,6 +107,19 @@ module Admin
     end
 
     private
+
+    def set_service_area_map_ids
+      # maps neighbourhood ID to service_area ID
+      if @partner
+        @service_area_id_map = @partner.
+          service_areas.select(:id, :neighbourhood_id).
+          map { |sa| { sa.neighbourhood_id => sa.id } }.
+          reduce({}, :merge)
+
+      else
+        @service_area_id_map = {}
+      end
+    end
 
     def set_neighbourhoods
       @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)

@@ -38,7 +38,7 @@ class Partner < ApplicationRecord
 
   accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
 
-  accepts_nested_attributes_for :service_areas
+  accepts_nested_attributes_for :service_areas, allow_destroy: true
 
   # Validations
   validates :name,
