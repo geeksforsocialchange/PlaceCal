@@ -49,6 +49,7 @@
   <p><em>Who took this photo?</em></p>
 
   <h2>Main neighbourhood</h2>
+  <p class="font-weight-light">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
 
   <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
     <% if @primary_neighbourhood_id %>
@@ -66,14 +67,14 @@
   <br />
 
   <h2>Other neighbourhoods to include</h2>
-  <p>Information from these neighbourhoods will also be displayed on this site</p>
+  <p class="font-weight-light">Information from these neighbourhoods will also be displayed on this site</p>
 
   <div class="sites_neighbourhoods">
     <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
       <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
     <% end %>
     <div class="links">
-      <%= link_to_add_association 'Add Secondary Neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
+      <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
     </div>
     <br></br>
   </div>
