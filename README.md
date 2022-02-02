@@ -21,7 +21,6 @@ To run Placecal locally you will need:
       -  `libpq-dev` (debian)
       -  `postgresql-libs` (arch)
       -  `dev-db/postgresql` (gentoo)
-
 - base ruby for your OS
 - [rbenv](https://github.com/rbenv/rbenv)
   - [ruby-build](https://github.com/rbenv/ruby-build)
