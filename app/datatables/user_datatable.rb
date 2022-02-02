@@ -6,7 +6,7 @@ class UserDatatable < Datatable
       id:          { source: 'User.id', cond: :eq },
       first_name:  { source: 'User.first_name' },
       last_name:   { source: 'User.last_name' },
-      admin_roles: { source: 'User.admin_roles' },
+      admin_roles: { source: 'User.admin_roles', searchable: false },
       email:       { source: 'User.email' },
     }
   end
