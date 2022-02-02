@@ -1,12 +1,14 @@
 <h1 class="page-header"><%= properties[:title] %></h1>
 
-<%- if policy(model_name.constantize).create? && properties[:new_link] %>
-  <%= link_to "Add New #{model_name}", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary mb-3" %>
-<% end %>
+<span class="mb-3">
+  <%- if policy(model_name.constantize).create? && properties[:new_link] %>
+    <%= link_to "Add New #{model_name}", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary" %>
+  <% end %>
 
-<% additional_links.each do |link| %>
-  <%= sanitize link %>
-<% end %>
+  <% additional_links.each do |link| %>
+    <%= sanitize link %>
+  <% end %>
+</span>
 
 <table class="table table-striped">
   <thead>
