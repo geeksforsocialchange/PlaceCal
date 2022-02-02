@@ -12,15 +12,21 @@ To run Placecal locally you will need:
 
 - a mac or a linux machine
 - gcc
-- postgres 
-  - if you are running in a docker image you will still need the dev libraries for the gem to compile against
+- postgres relational database
+  - server
+    - either installed for your distribution or as a docker image (with the correct open port)
+  - client
+    - you will still need the local developer libraries for postgres
+    - these are distribution specific so you need to find out what they are called to install them
+      -  `libpq-dev` (debian)
+      -  `postgresql-libs` (arch)
+      -  `dev-db/postgresql` (gentoo)
+
 - base ruby for your OS
 - [rbenv](https://github.com/rbenv/rbenv)
   - [ruby-build](https://github.com/rbenv/ruby-build)
   - [rbenv-gemset](https://github.com/jf/rbenv-gemset) (optional)
 - ImageMagick
-- docker (optional)
-  If you are into containerizing your dev environment
 
 ## Quickstart
 
