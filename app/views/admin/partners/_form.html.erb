@@ -22,21 +22,6 @@
   <br>
   <hr>
 
-  <h2>Service Areas</h2>
-  
-  <div class="sites_neighbourhoods">
-    <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-      <%= render 'service_area_fields', :f => neighbourhood %>
-    <% end %>
-    <div class="links">
-      <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
-    </div>
-    <br></br>
-  </div>
-
-  <br>
-  <hr>
-
   <h2>Address</h2>
 
   <div id='address'>
@@ -73,6 +58,24 @@
       </div>
     </div>
   </div>
+
+  <hr>
+
+  <h2>Service Areas</h2>
+
+  <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
+
+  <div class="sites_neighbourhoods">
+    <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+      <%= render 'service_area_fields', :f => neighbourhood %>
+    <% end %>
+    <div class="links">
+      <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+    </div>
+    <br></br>
+  </div>
+
+  <br>
 
   <hr>
   <h2>Contact Information</h2>
