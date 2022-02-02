@@ -4,8 +4,6 @@ jQuery.extend(Behaviors, {
       init: function() {
         var map = [];
         
-        console.log('partners sites thingy happening');
-
         /* service area bits */
 
         // Attach select2 to the current select2 nodes
