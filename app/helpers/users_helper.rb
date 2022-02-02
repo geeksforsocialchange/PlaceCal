@@ -15,4 +15,12 @@ module UsersHelper
     str += button_tag('?', class: "btn btn-secondary", data: { toggle: "tooltip", placement: "top"  }, title: title)
     sanitize(str, tags: %w(button), attributes: %w(class type data-toggle data-placement title))
   end
+
+  def options_for_partners
+    policy_scope(Partner).all.order(:name).pluck(:name, :id)
+  end
+
+  def options_for_neighbourhoods
+    policy_scope(Neighbourhood).all.order(:name).pluck(:name, :id)
+  end
 end
