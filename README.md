@@ -26,6 +26,8 @@ To run Placecal locally you will need:
   - [ruby-build](https://github.com/rbenv/ruby-build)
   - [rbenv-gemset](https://github.com/jf/rbenv-gemset) (optional)
 - ImageMagick
+- node JS
+  - And yarn
 
 ## Quickstart
 
