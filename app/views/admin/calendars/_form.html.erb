@@ -22,7 +22,7 @@
           <%= f.input :source, input_html: { value: params[:page_link] } %>
         <% else %>
           <%= f.input :name, hint: 'A simple description to help rememember what this calendar is' %>
-          <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: "The source URL for your calendar feed. See the #{link_to 'PlaceCal Handbook', 'https://handbook.placecal.org/admins/supported-sources'} if you need help.".html_safe %>
+          <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: "The source URL for your calendar feed. See the #{link_to 'PlaceCal Handbook', 'https://handbook.placecal.org/admins/supported-sources.html'} if you need help.".html_safe %>
         <% end %>
 
         <% unless @calendar.new_record? %>
