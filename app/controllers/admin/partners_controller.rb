@@ -130,22 +130,6 @@ module Admin
       redirect_to admin_partners_url
     end
 
-    def partner_params
-      attributes = [ :name, :image, :summary, :description,
-                     :public_name, :public_email, :public_phone,
-                     :partner_name, :partner_email, :partner_phone,
-                     :address_id, :url, :facebook_link, :twitter_handle,
-                     :opening_times,
-                     calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
-                     address_attributes: %i[street_address street_address2 street_address3 city postcode],
-                     service_areas_attributes: %i[id neighbourhood_id],
-                     tag_ids: [] ]
-
-      attributes << :slug if current_user.root?
-
-      params.require(:partner).permit(attributes)
-    end
-
     def setup_params
       params.require(:partner).permit(:name, address_attributes: %i[street_address postcode])
     end

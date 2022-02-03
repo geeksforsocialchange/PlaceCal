@@ -4,12 +4,18 @@ jQuery.extend(Behaviors, {
       init: function() {
         var map = [];
         
-        $( ".select2" ).select2({
-          multiple: true
+        /* service area bits */
+
+        // Attach select2 to the current select2 nodes
+        $('.select2').each(function () { $(this).select2({ multiple: false }); });
+
+        // Attach select2 to all future select2 nodes
+        $('.sites_neighbourhoods').bind('cocoon:after-insert', function (_, element) {
+          $('.select2', element).select2({ multiple: false });
         });
 
-        $('.select-search').select2()
-
+        /* */
+        
         var preview = $(".brand_image");
         
         $("#partner_image").change(function(event){

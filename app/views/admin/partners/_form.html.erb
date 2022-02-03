@@ -22,30 +22,6 @@
   <br>
   <hr>
 
-  <h2>Service Areas</h2>
-  
-  <div class="partner__service_areas">
-    <% @all_neighbourhoods.each do |neighbourhood| %>
-      <%= fields_for "partner[service_areas_attributes][#{neighbourhood.id}]" do |sna|%>
-        <label>
-          <%- if (@service_area_id_map.include?(neighbourhood.id)) %>
-            <%= sna.hidden_field :id, value: @service_area_id_map[neighbourhood.id] %>
-            <%# if box is unchecked, this will result in the removal of the association %>
-            <%= sna.check_box :_destroy, {checked: true}, false, true %>
-
-          <% else %>
-            <%= sna.check_box :neighbourhood_id, { include_hidden: false, checked: false }, neighbourhood.id %>
-          <% end %>
-
-          <%= neighbourhood.name %>
-        </label><br>
-      <% end %>
-    <% end %>
-  </div>
-
-  <br>
-  <hr>
-
   <h2>Address</h2>
 
   <div id='address'>
@@ -82,6 +58,24 @@
       </div>
     </div>
   </div>
+
+  <hr>
+
+  <h2>Service Areas</h2>
+
+  <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
+
+  <div class="sites_neighbourhoods">
+    <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+      <%= render 'service_area_fields', :f => neighbourhood %>
+    <% end %>
+    <div class="links">
+      <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+    </div>
+    <br></br>
+  </div>
+
+  <br>
 
   <hr>
   <h2>Contact Information</h2>
@@ -145,7 +139,7 @@
       <%= f.submit "Save Partner", class: "btn btn-primary h1" %><br><br>
       <br>
       <% if policy(@partner).destroy? && !@partner.new_record? %>
-        <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger" %>
+        <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger", id: 'destroy-partner'  %>
       <% end %>
     </div>
   </div>

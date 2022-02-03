@@ -48,3 +48,56 @@ class AdminPartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Partner phone'
   end
 end
+
+class PartnerShowingDeleteButtonIntegrationTest  < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
+  test 'Edit has delete button for root users' do
+    root_user = create(:root)
+    default_site = create_default_site
+    partner = create(:partner)
+    get "http://admin.lvh.me"
+    sign_in root_user
+
+    get edit_admin_partner_path(partner)
+    assert_response :success
+
+    assert_select 'a#destroy-partner', 'Destroy Partner'
+  end
+
+  test 'Edit has delete button for neighbourhood admins' do
+    hood_user = create(:neighbourhood_region_admin)
+    default_site = create_default_site
+    partner = create(:partner)
+    partner.address.update! neighbourhood_id: hood_user.neighbourhoods.first.id
+
+    get "http://admin.lvh.me"
+    sign_in hood_user
+
+    get edit_admin_partner_path(partner)
+    assert_response :success
+
+    assert_select 'a#destroy-partner', 'Destroy Partner'
+  end
+end
+
+class PartnerHidingDeleteButtonIntegrationTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
+  setup do
+    @admin = create(:neighbourhood_region_admin)
+    @default_site = create_default_site
+    @partner = create(:partner)
+    @admin.partners << @partner
+
+    get "http://admin.lvh.me"
+    sign_in @admin
+  end
+
+  test 'Edit does not have delete button for partner admins' do
+    get edit_admin_partner_path(@partner)
+    assert_response :success
+
+    assert_select 'a#destroy-partner', false, "This page must not have a Destroy Partner button"
+  end
+end
