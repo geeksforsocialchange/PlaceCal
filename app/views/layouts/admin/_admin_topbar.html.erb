@@ -3,7 +3,7 @@
   <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
   <ul class="navbar-nav flex-row px-3">
     <li class="nav-item text-nowrap mr-4">
-      <%= link_to "<i class='fa fa-user'></i> Your profile".html_safe, admin_profile_path, class: 'nav-link'  %>
+      <%= link_to "<i class='fa fa-user'></i> #{@current_user&.email} #{"👑" if @current_user&.role == :root}".html_safe, admin_profile_path, class: 'nav-link'  %>
     </li>
     <li class="nav-item text-nowrap">
       <%= link_to "<i class='fa fa-sign-out'></i> Sign out".html_safe, destroy_user_session_path, method: :delete, class: 'nav-link'  %>

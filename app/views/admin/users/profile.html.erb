@@ -21,7 +21,7 @@
       <p>Leave this blank if you don't want to change your password.</p>
       <%= f.input :password, autocomplete: "off" %>
       <% if @minimum_password_length %>
-        <br />
+        <br>
         <em><%= @minimum_password_length %> characters minimum</em>
       <% end %>
       <%= f.input :password_confirmation, autocomplete: "off" %>
