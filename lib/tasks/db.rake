@@ -134,7 +134,12 @@ namespace :db do
     end
   end
 
+  # Capitalisation differences:
+  # db_dump_filename is intended to be a direct environment argument to the rake task
+  # Whereas db_dump_ssh_url is intended to live in .bashrc / wherever
   DB_DUMP_ENV_KEY = 'db_dump_filename'
+  DB_DUMP_SSH_URL = 'DB_DUMP_SSH_URL'
+  DB_DUMP_STAGING_SSH_URL = 'DB_DUMP_STAGING_SSH_URL'
 
   desc "Download production DB dump"
   task dump_production: :environment do
@@ -145,8 +150,14 @@ namespace :db do
       "#{Rails.root}/dump/production_#{Time.now.to_i}.sql"
     end
 
+    ssh_url = if ENV[DB_DUMP_SSH_URL]
+      ENV[DB_DUMP_SSH_URL]
+    else
+      "root@placecal.org -p 666"
+    end
+
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
-    puts `ssh root@placecal.org dokku postgres:export placecal-db > #{filename}`
+    puts `ssh #{ssh_url} dokku postgres:export placecal-db > #{filename}`
     if $?.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename
@@ -174,10 +185,15 @@ namespace :db do
   desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to staging server DB"
   task restore_staging: :environment do
     filename = ENV[DB_DUMP_ENV_KEY]
+    ssh_url = if ENV[DB_DUMP_STAGING_SSH_URL]
+      ENV[DB_DUMP_STAGING_SSH_URL]
+    else
+      "root@placecal-staging.org -p 666"
+    end
     raise "Could not find #{filename} file!" if ! File.exist? filename
 
     $stdout.puts "Restoring DB dump file #{filename} to staging server DB. (May take a while.) ..."
-    puts `< #{filename} ssh root@placecal-staging.org dokku postgres:import placecal-staging-db`
+    puts `< #{filename} ssh #{ssh_url} dokku postgres:import placecal-staging-db`
     if $?.success?
       $stdout.puts "... done."
     else
