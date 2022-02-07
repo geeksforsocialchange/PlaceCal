@@ -134,7 +134,12 @@ namespace :db do
     end
   end
 
+  # Capitalisation differences:
+  # db_dump_filename is intended to be a direct environment argument to the rake task
+  # Whereas db_dump_ssh_url is intended to live in .bashrc / wherever
   DB_DUMP_ENV_KEY = 'db_dump_filename'
+  DB_DUMP_SSH_URL = 'DB_DUMP_SSH_URL'
+  DB_DUMP_STAGING_SSH_URL = 'DB_DUMP_STAGING_SSH_URL'
 
   desc "Download production DB dump"
   task dump_production: :environment do
@@ -181,7 +186,7 @@ namespace :db do
   task restore_staging: :environment do
     filename = ENV[DB_DUMP_ENV_KEY]
     ssh_url = if ENV[DB_DUMP_STAGING_SSH_URL]
-      ENV[DB_DUMP_SSH_URL]
+      ENV[DB_DUMP_STAGING_SSH_URL]
     else
       "root@placecal-staging.org -p 666"
     end
