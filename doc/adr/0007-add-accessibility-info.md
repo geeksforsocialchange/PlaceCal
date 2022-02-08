@@ -44,6 +44,7 @@ Same as above but using a rich text area.
   - A bit more effort and we don't have ActionText set up yet. Fiddlier than just plaintext/markdown.
   - Not sure how easy it is to remove ActionText features to keep the text simple
   - Can't do tags/filters to show which places have what
+  - If we do this in one place do we need to do it in others for consistency?
 
 ### Solution 2 - create a full Q&A system
 
