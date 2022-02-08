@@ -33,8 +33,11 @@ module Admin
       @neighbourhood = Neighbourhood.new(permitted_attributes(Neighbourhood))
       authorize @neighbourhood
       if @neighbourhood.save
+        flash[:success] = 'Neighbourhood saved'
         redirect_to admin_neighbourhoods_path
+
       else
+        flash.now[:danger] = 'Neighbourhood was not saved'
         render 'new'
       end
     end
@@ -42,8 +45,11 @@ module Admin
     def update
       authorize @neighbourhood
       if @neighbourhood.update(permitted_attributes(@neighbourhood))
+        flash[:success] = 'Neighbourhood was saved'
         redirect_to admin_neighbourhoods_path
+
       else
+        flash.now[:danger] = 'Neighbourhood was not saved'
         render 'edit'
       end
     end
@@ -52,7 +58,10 @@ module Admin
       authorize @neighbourhood
       @neighbourhood.destroy
       respond_to do |format|
-        format.html { redirect_to admin_neighbourhoods_url, notice: 'Neighbourhood was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'Neighbourhood was deleted'
+          redirect_to admin_neighbourhoods_url
+        end
         format.json { head :no_content }
       end
     end
