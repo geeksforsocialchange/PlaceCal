@@ -4,9 +4,9 @@ class PartnerDatatable < Datatable
     # or in aliased_join_table.column_name format
     @view_columns ||= {
       id:      { source: 'Partner.id', cond: :eq },
-      name:    { source: 'Partner.name' },
+      name:    { source: 'Partner.name', cond: :like },
       slug:    { source: 'Partner.slug' },
-      address: { source: 'Partner.address'}
+      address: { source: 'Partner.address', searchable: false }
     }
   end
 
