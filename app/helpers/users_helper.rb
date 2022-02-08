@@ -21,6 +21,10 @@ module UsersHelper
   end
 
   def options_for_neighbourhoods
-    policy_scope(Neighbourhood).all.order(:name).pluck(:name, :id)
+    policy_scope(Neighbourhood).
+      where('name is not null and name != \'\'').
+      order(:name).
+      all.
+      map { |nh| [nh.contextual_name, nh.id] }
   end
 end
