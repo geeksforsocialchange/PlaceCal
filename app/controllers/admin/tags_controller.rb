@@ -24,10 +24,18 @@ module Admin
       authorize @tag
       respond_to do |format|
         if @tag.save
-          format.html { redirect_to admin_tags_path, notice: 'Tag was successfully created.' }
+          format.html do
+            flash[:success] = 'Tag has been created'
+            redirect_to admin_tags_path
+          end
+
           format.json { render :show, status: :created, location: @tag }
         else
-          format.html { render :new }
+          format.html do
+            flash.now[:danger] = 'Tag was not created'
+            render :new 
+          end
+
           format.json { render json: @tag.errors, status: :unprocessable_entity }
         end
       end
@@ -36,8 +44,11 @@ module Admin
     def update
       authorize @tag
       if @tag.update(tag_params)
+        flash[:success] = 'Tag was saved successfully'
         redirect_to admin_tags_path
+
       else
+        flash.now[:danger] = 'Tag was not saved'
         render 'edit'
       end
     end
@@ -46,7 +57,11 @@ module Admin
       authorize @tag
       @tag.destroy
       respond_to do |format|
-        format.html { redirect_to admin_tags_url, notice: 'Tag was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'Tag was deleted'
+          redirect_to admin_tags_url
+        end
+
         format.json { head :no_content }
       end
     end

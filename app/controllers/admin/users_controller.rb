@@ -13,8 +13,11 @@ module Admin
       authorize current_user, :update_profile?
       if update_user_profile
         bypass_sign_in(current_user)
+        flash[:success] = 'User profile has been updated'
         redirect_to admin_root_path
+
       else
+        flash.now[:danger] = 'User profile was not updated'
         render 'profile'
       end
     end
@@ -47,8 +50,11 @@ module Admin
       authorize @user
 
       if @user.update(permitted_attributes(@user))
+        flash[:success] = 'User has been saved'
         redirect_to admin_users_path
+
       else
+        flash.now[:danger] = 'User was not saved'
         render 'edit'
       end
     end
@@ -62,9 +68,11 @@ module Admin
 
       if @user.valid?
         @user.invite!
+        flash[:success] = 'User has been created! An invite has been sent'
         redirect_to admin_users_path
       else
         Rails.logger.debug @user.errors.full_messages
+        flash.now[:danger] = 'User was not created'
         render 'new'
       end
     end
@@ -73,7 +81,11 @@ module Admin
       authorize @user
       @user.destroy
       respond_to do |format|
-        format.html { redirect_to admin_users_url, notice: 'User was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'User has been deleted successfully'
+          redirect_to admin_users_url
+        end
+
         format.json { head :no_content }
       end
     end
