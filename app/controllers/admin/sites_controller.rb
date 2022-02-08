@@ -26,8 +26,11 @@ module Admin
       @site = Site.new(permitted_attributes(Site))
       authorize @site
       if @site.save
+        flash[:success] = 'Site has been created'
         redirect_to admin_sites_path
+
       else
+        flash.now[:danger] = 'Site was not created'
         render 'new'
       end
     end
@@ -35,8 +38,11 @@ module Admin
     def update
       authorize @site
       if @site.update(permitted_attributes(@site))
+        flash[:success] = 'Site was saved successfully'
         redirect_to admin_sites_path
+
       else
+        flash.now[:danger] = 'Site was not saved'
         set_variables_for_sites_neighbourhoods_selection
         render 'edit'
       end
@@ -46,7 +52,11 @@ module Admin
       authorize @site
       @site.destroy
       respond_to do |format|
-        format.html { redirect_to admin_sites_url, notice: 'Site was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'Site was deleted'
+          redirect_to admin_sites_url
+        end
+
         format.json { head :no_content }
       end
     end
