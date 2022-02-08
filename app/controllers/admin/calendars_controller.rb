@@ -56,7 +56,7 @@ module Admin
       @calendar.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Calendar was successfully destroyed.' 
+          flash[:success] = 'Calendar was successfully deleted.' 
           redirect_to admin_calendars_url
         end
 
