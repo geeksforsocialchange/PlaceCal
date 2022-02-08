@@ -34,14 +34,14 @@ class PartnerTest < ActiveSupport::TestCase
   test 'validate no summary or description' do
     partner = Partner.new
 
-    partner.update(name: 'Test Partner')
+    partner.update(name: 'Test Partner', summary: '', description: '')
     assert partner.errors.empty?
   end
 
   test 'validate summary without description' do
     partner = Partner.new
 
-    partner.update(name: "Test Partner", summary: "This is a test partner used for testing :)")
+    partner.update(name: 'Test Partner', summary: 'This is a test partner used for testing :)', description: '')
     assert partner.errors.empty?, 'Should be able to submit a summary'
   end
 

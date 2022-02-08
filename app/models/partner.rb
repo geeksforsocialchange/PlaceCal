@@ -55,7 +55,7 @@ class Partner < ApplicationRecord
             }
   validates :summary,
             presence: {
-              if: ->(p) { !p.description.nil? },
+              if: ->(p) { !p.description.blank? },
               message: 'cannot have a description without a summary'
             }
   validates :url,
