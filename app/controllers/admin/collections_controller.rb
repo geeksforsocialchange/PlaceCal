@@ -25,15 +25,22 @@ module Admin
       @collection = Collection.new(collection_params)
       authorize @collection
       if @collection.save
+        flash[:success] = 'Collection has been saved'
         redirect_to admin_collections_path
       else
+
+        flash.now[:danger] = 'Collection did not save'
         render 'new'
       end
     end
 
     def update
       authorize @collection
-      @collection.update(collection_params)
+      if @collection.update(collection_params)
+        flash.now[:success] = 'Collection has been saved'
+      else
+        flash.now[:danger] = 'Collection did not save'
+      end
       render 'edit'
     end
 
@@ -41,7 +48,11 @@ module Admin
       authorize @collection
       @collection.destroy
       respond_to do |format|
-        format.html { redirect_to admin_collections_url, notice: 'Collection was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'Collection was deleted successfully'
+          redirect_to admin_collections_url
+        end
+
         format.json { head :no_content }
       end
     end

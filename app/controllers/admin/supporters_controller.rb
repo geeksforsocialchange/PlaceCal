@@ -25,8 +25,11 @@ module Admin
       @supporter = Supporter.new(supporter_params)
       authorize @supporter
       if @supporter.save
+        flash[:success] = 'Supporter has been created'
         redirect_to admin_supporters_path
+
       else
+        flash.now[:danger] = 'Supporter not created'
         render 'new'
       end
     end
@@ -34,8 +37,11 @@ module Admin
     def update
       authorize @supporter
       if @supporter.update(supporter_params)
+        flash[:success] = 'Supporter has been updated'
         redirect_to admin_supporters_path
+
       else
+        flash.now[:danger] = 'Supporter was not updated'
         render 'edit'
       end
     end
@@ -44,7 +50,11 @@ module Admin
       authorize @supporter
       @supporter.destroy
       respond_to do |format|
-        format.html { redirect_to admin_supporters_url, notice: 'Supporter was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'Supporter has been deleted'
+          redirect_to admin_supporters_url
+        end
+
         format.json { head :no_content }
       end
     end

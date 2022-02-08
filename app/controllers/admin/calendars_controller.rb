@@ -36,6 +36,7 @@ module Admin
         flash[:success] = "Successfully created new calendar"
         redirect_to edit_admin_calendar_path(@calendar)
       else
+        flash.now[:danger] = "Calendar did not save"
         render 'new'
       end
     end
@@ -45,6 +46,7 @@ module Admin
         flash[:success] = 'Calendar successfully updated'
         redirect_to edit_admin_calendar_path(@calendar)
       else
+        flash.now[:danger] = 'Calendar did not save'
         render 'edit'
       end
     end
@@ -53,23 +55,27 @@ module Admin
       authorize @calendar
       @calendar.destroy
       respond_to do |format|
-        format.html { redirect_to admin_calendars_url, notice: 'Calendar was successfully destroyed.' }
+        format.html do
+          flash[:success] = 'Calendar was successfully deleted.' 
+          redirect_to admin_calendars_url
+        end
+
         format.json { head :no_content }
       end
     end
 
     def import
-      begin
-        date = Time.zone.parse(params[:starting_from])
+      date = Time.zone.parse(params[:starting_from])
 
-        @calendar.import_events(date)
-        flash[:success] = 'The import has completed. See below for details.'
-      rescue StandardError => e
-        Rails.logger.debug(e)
-        Rollbar.error(e)
-        flash[:error] = 'The import ran into an error before completion. Please check error logs for more info.'
-      end
+      @calendar.import_events(date)
+      flash[:success] = 'The import has completed. See below for details.'
 
+    rescue StandardError => e
+      Rails.logger.debug(e)
+      Rollbar.error(e)
+      flash[:danger] = 'The import ran into an error before completion. Please check error logs for more info.'
+
+    ensure
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
