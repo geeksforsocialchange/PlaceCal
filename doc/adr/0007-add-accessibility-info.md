@@ -30,17 +30,20 @@ We could simply just pre-seed the accessibility info textarea, which is currentl
 
 ### Solution 1.2 - same but use ActionText
 
-Same as above but using a rich text area. In addition to the above:
+Same as above but using a rich text area.
 
 **Pros**
 
+  - Most flexible and allows further testing and editing, people to add or change the questions, etc
   - More intuitive and user friendly with headings and makes it easier to use bold, italic, headings etc
 
 **Cons**
 
+  - Totally unstructured - hard to do direct comparisons later and no migration path
+  - More work for partners and coordinators as they have to prepare a para of text
   - A bit more effort and we don't have ActionText set up yet. Fiddlier than just plaintext/markdown.
   - Not sure how easy it is to remove ActionText features to keep the text simple
-
+  - Can't do tags/filters to show which places have what
 
 ### Solution 2 - create a full Q&A system
 
@@ -51,6 +54,7 @@ Alternatively we could build a proper Q&A system that shows which is done and no
   - The most robust solution going forwards esp as we can add in an interface for this for other regions
   - Clean versionning of responses
   - Potentially simpler and nicer UX for respondants who just have to fill in some form fields
+  - Will make it possible to do tags/filters
 
 **Cons**
 
