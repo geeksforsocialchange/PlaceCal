@@ -70,6 +70,7 @@ gem 'rails_autolink'
 gem 'delayed_job_active_record'
 
 # API (defunct)
+gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 
 # Seeds and data
@@ -112,6 +113,7 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
   gem 'yard'
+  gem 'graphiql-rails'
 end
 
 group :test do

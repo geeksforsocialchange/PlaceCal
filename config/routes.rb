@@ -94,4 +94,11 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   mount MountainView::Engine => '/styleguide'
 
   get '/robots.txt' => 'pages#robots'
+
+  post '/grapgql', to: 'grapgql#execute'
+
+  if Rails.env.development?
+    mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: "graphql#execute"
+  end
+
 end
