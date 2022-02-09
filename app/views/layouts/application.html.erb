@@ -15,6 +15,11 @@
 
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
+
+    <% if Rails.env.development? -%>
+      <%= require_asset 'graphiql/rails/application.css' %>
+      <%= require_asset 'graphiql/rails/application.js' %>
+    <% end -%>
   </head>
 
   <body>
