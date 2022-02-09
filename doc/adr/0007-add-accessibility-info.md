@@ -1,7 +1,7 @@
 # Add accessibility info
 
-* Deciders: kimadactl
-* Date: 2020-02-08
+* Deciders: @kimadactyl, @katjam
+* Date: 2020-02-09
 
 ## Background
 
@@ -13,7 +13,7 @@ We now need to integrate this into PlaceCal.
 
 ## Routes
 
-### Solution 1.1 - use the existing textarea
+### Solution 1.1 - use the existing textarea (chosen option)
 
 We could simply just pre-seed the accessibility info textarea, which is currently unused, with the survey questions, and add the wider guidance to the handbook. Partners would need to spend a bit of time getting a few paras together under headings we give them.
 
