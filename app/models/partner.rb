@@ -85,9 +85,13 @@ class Partner < ApplicationRecord
 
   scope :recently_updated, -> { order(updated_at: desc) }
 
-  scope :for_site, ->(site) { joins(:address).where( addresses: { neighbourhood: site.neighbourhoods } ) }
+  scope :for_site, lambda { |site|
+    joins(:address).where(addresses: {
+                            neighbourhood: site.neighbourhoods.map(&:subtree).flatten
+                          })
+  }
 
-  scope :of_tag, ->(tag) { joins(:partners_tags).where( partners_tags: { tag: tag } ) }
+  scope :of_tag, ->(tag) { joins(:partners_tags).where(partners_tags: { tag: tag }) }
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
