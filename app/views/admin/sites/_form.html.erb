@@ -17,12 +17,6 @@
 
   <%= f.association :site_admin, label_method: :admin_name if policy(@site).permitted_attributes.include? :site_admin_id %>
 
-  <h3>Neighbourhood Information Display</h3>
-  <%= f.input :badge_zoom_level,
-      as: :radio_buttons,
-      label_method: ->(val){ Site.badge_zoom_level_label(val) },
-      hint: 'What level of geographical zoom should PlaceCal show information on this site?' %>
-
   <h2>Images</h2>
 
   <% if policy(@site).permitted_attributes.include? :theme %>
@@ -54,25 +48,38 @@
   <%= f.input :hero_image_credit %>
   <p><em>Who took this photo?</em></p>
 
-  <h2>Main neighbourhood</h2>
-  <p class="font-weight-light">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
+  <h2>Neighbourhood information</h2>
 
-  <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
-    <% if @primary_neighbourhood_id %>
-      <h3><span class="badge badge-secondary"><%= @all_neighbourhoods.find(@primary_neighbourhood_id).contextual_name %></span></h3>
-      <%= sn.hidden_field :relation_type, value: "Primary" %>
-      <%= sn.hidden_field :neighbourhood_id, value: @primary_neighbourhood_id %>
-    <% else %>
-      <%= sn.hidden_field :relation_type, value: "Primary" %>
-      <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
-          value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
-          input_html: { class: 'form-control select2 col-6' },
-          label: '', label_html: { hidden: true } %>
-    <% end %>
-  <% end %>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Main neighbourhood</h3>
+      <p class="font-weight-light">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
+
+      <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
+        <% if @primary_neighbourhood_id %>
+          <h3><span class="badge badge-secondary"><%= @all_neighbourhoods.find(@primary_neighbourhood_id).contextual_name %></span></h3>
+          <%= sn.hidden_field :relation_type, value: "Primary" %>
+          <%= sn.hidden_field :neighbourhood_id, value: @primary_neighbourhood_id %>
+        <% else %>
+          <%= sn.hidden_field :relation_type, value: "Primary" %>
+          <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
+              value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
+              input_html: { class: 'form-control select2 col-6' },
+              label: '', label_html: { hidden: true } %>
+        <% end %>
+      <% end %>
+  </div>
+    <div class="col-md-6">
+      <h3>Neighbourhood information display</h3>
+      <p class="font-weight-light">What level of geographical zoom should PlaceCal display on partners and events?</p>
+      <%= f.input :badge_zoom_level,
+        as: :radio_buttons,
+        label_method: ->(val){ Site.badge_zoom_level_label(val) } %>
+    </div>
+  </div>
   <br>
 
-  <h2>Other neighbourhoods to include</h2>
+  <h3>Other neighbourhoods to include</h3>
   <p class="font-weight-light">Information from these neighbourhoods will also be displayed on this site</p>
 
   <div class="sites_neighbourhoods">
