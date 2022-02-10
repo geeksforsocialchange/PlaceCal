@@ -8,6 +8,17 @@ module Admin
     def index
       @sites = policy_scope(Site).order(:name)
       authorize @sites
+
+      respond_to do |format|
+        format.html
+        format.json {
+          render json: SiteDatatable.new(
+            params,
+            view_context: view_context,
+            sites: @sites
+          )
+        }
+      end
     end
 
     def show; end

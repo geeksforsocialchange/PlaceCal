@@ -7,6 +7,17 @@ module Admin
     def index
       @tags = policy_scope(Tag).order(:name)
       authorize @tags
+
+      respond_to do |format|
+        format.html
+        format.json {
+          render json: TagDatatable.new(
+            params,
+            view_context: view_context,
+            tags: @tags
+          )
+        }
+      end
     end
 
     def new

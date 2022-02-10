@@ -1,7 +1,17 @@
-<%= render_component "admin_index",
-  title: "Sites",
-  model: :sites,
-  columns: %i[id name slug],
-  data: @sites,
-  new_link: new_admin_site_path
+<script>
+var columns = [
+    {"data": "id"},
+    {"data": "name"},
+    {"data": "slug"}
+  ]
+</script>
+
+<%= render partial: "layouts/admin/datatable", locals: {
+    title: "Sites",
+    model: :sites,
+    columns: %i[id name slug],
+    data: @sites,
+    source: admin_sites_path(format: :json),
+    new_link: new_admin_site_path
+  }
 %>

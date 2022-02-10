@@ -8,6 +8,17 @@ module Admin
     def index
       @calendars = policy_scope(Calendar)
       authorize Calendar
+
+      respond_to do |format|
+        format.html
+        format.json {
+          render json: CalendarDatatable.new(
+            params,
+            view_context: view_context,
+            calendars: @calendars
+          )
+        }
+      end
     end
 
     def new
