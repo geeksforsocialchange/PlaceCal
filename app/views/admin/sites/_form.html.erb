@@ -17,6 +17,12 @@
 
   <%= f.association :site_admin, label_method: :admin_name if policy(@site).permitted_attributes.include? :site_admin_id %>
 
+  <h3>Neighbourhood Information Display</h3>
+  <%= f.input :badge_zoom_level,
+      as: :radio_buttons,
+      label_method: ->(val){ Site.badge_zoom_level_label(val) },
+      hint: 'What level of geographical zoom should PlaceCal show information on this site?' %>
+
   <h2>Images</h2>
 
   <% if policy(@site).permitted_attributes.include? :theme %>

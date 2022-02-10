@@ -6,9 +6,9 @@
     <% else %>
       <div class="event__header">
         <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
-        <% if neighbourhood_name && show_neighbourhoods %>
+        <% if neighbourhood_name(badge_zoom_level) && show_neighbourhoods %>
           <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> event__neighbourhood">
-            <span><%= neighbourhood_name %></span>
+            <span><%= neighbourhood_name(badge_zoom_level) %></span>
           </div>
         <% end %>
       </div>

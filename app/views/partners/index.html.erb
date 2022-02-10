@@ -9,7 +9,8 @@
       <%= render_component("place_partner_preview",
         previewee: partner,
         primary_neighbourhood: @primary_neighbourhood,
-        show_neighbourhoods: @current_site.show_neighbourhoods?) %>
+        show_neighbourhoods: @current_site.show_neighbourhoods?,
+        badge_zoom_level: @current_site.badge_zoom_level) %>
     <% end %>
   </ul>
 </div>

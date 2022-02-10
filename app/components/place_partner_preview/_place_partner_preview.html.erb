@@ -3,7 +3,7 @@
     <h3><%= link_to name, link %></h3>
     <% if show_neighbourhoods %>
       <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
-        <span><%= neighbourhood_name %></span>
+        <span><%= neighbourhood_name(badge_zoom_level) %></span>
       </div>
     <% end %>
   </div>
