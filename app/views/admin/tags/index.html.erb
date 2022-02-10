@@ -1,9 +1,20 @@
 <%# TODO: Only show Edit link for root users %>
 
-<%= render_component "admin_index",
-  title: "Tags",
-  model: :tags,
-  columns: %i[id name slug description],
-  data: @tags,
-  new_link: new_admin_tag_path
+<script>
+var columns = [
+    {"data": "id"},
+    {"data": "name"},
+    {"data": "slug"},
+    {"data": "description"}
+  ]
+</script>
+
+<%= render partial: "layouts/admin/datatable", locals: {
+    title: "Tags",
+    model: :tags,
+    columns: %i[id name slug description],
+    data: @tags,
+    source: admin_tags_path(format: :json),
+    new_link: new_admin_tag_path
+  }
 %>
