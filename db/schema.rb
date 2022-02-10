@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_25_175817) do
+ActiveRecord::Schema.define(version: 2022_02_10_165818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -257,6 +257,7 @@ ActiveRecord::Schema.define(version: 2022_01_25_175817) do
     t.string "place_name"
     t.string "theme"
     t.boolean "is_published", default: false
+    t.string "badge_zoom_level"
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 

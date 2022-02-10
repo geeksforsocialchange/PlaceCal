@@ -2,7 +2,7 @@
 
 # app/components/place/place_partner_preview_component.rb
 class PlacePartnerPreviewComponent < MountainView::Presenter
-  properties :primary_neighbourhood, :previewee, :show_neighbourhoods
+  properties :primary_neighbourhood, :previewee, :show_neighbourhoods, :badge_zoom_level
 
   def name
     previewee.name
@@ -12,7 +12,9 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
     previewee
   end
 
-  def neighbourhood_name
+  def neighbourhood_name(badge_zoom_level)
+    return previewee.address&.neighbourhood&.district&.shortname if badge_zoom_level == 'district'
+
     previewee.address&.neighbourhood&.shortname
   end
 

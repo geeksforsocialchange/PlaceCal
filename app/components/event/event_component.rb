@@ -2,7 +2,7 @@
 
 # app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :context, :event, :primary_neighbourhood, :show_neighbourhoods
+  properties :context, :event, :primary_neighbourhood, :show_neighbourhoods, :badge_zoom_level
 
   include ActionView::Helpers::TextHelper
 
@@ -63,7 +63,9 @@ class EventComponent < MountainView::Presenter
     event.rrule.present? ? event.rrule[0]['table']['frequency'].titleize : false
   end
 
-  def neighbourhood_name
+  def neighbourhood_name(badge_zoom_level)
+    return event.neighbourhood&.district&.shortname if badge_zoom_level == 'district'
+
     event.neighbourhood&.shortname
   end
 

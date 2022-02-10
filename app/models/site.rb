@@ -33,6 +33,10 @@ class Site < ApplicationRecord
             in: %i[pink orange green blue custom],
             default: :pink
 
+  enumerize :badge_zoom_level,
+            in: %i[ward district],
+            default: :ward
+
   def to_s
     "#{id}: #{name}"
   end
@@ -53,6 +57,10 @@ class Site < ApplicationRecord
   # Should we show the neighbourhood lozenge out on this site?
   def show_neighbourhoods?
     neighbourhoods.count > 1
+  end
+
+  def self.badge_zoom_level_label(value)
+    value.second.to_s.titleize
   end
 
   def join_word
