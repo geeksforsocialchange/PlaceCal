@@ -1,6 +1,7 @@
 <h1 class="page-header"><%= properties[:title] %></h1>
 
-<span class="mb-3">
+<%# A weird bug in the datatables template means that we have to apply the margin for each link, rather than for the container span. So this span has no class. TODO: Fix this. %>
+<span>
   <%- if policy(model_name.constantize).create? && properties[:new_link] %>
     <%= link_to "Add New #{model_name}", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary" %>
   <% end %>

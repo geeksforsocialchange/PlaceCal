@@ -2,9 +2,17 @@
 
 <%- model_name = model.to_s.chop.humanize %>
 
-<%- if policy(model_name.constantize).create? && defined?(new_link) %>
-  <%= link_to "Add New #{model_name}", new_link, data: { turbolinks: false }, class: "btn btn-primary mb-3" %>
-<% end %>
+<span>
+  <%- if policy(model_name.constantize).create? && defined?(new_link) %>
+    <%= link_to "Add New #{model_name}", new_link, data: { turbolinks: false }, class: "btn btn-primary mb-3" %>
+  <% end %>
+
+  <% if defined?(additional_links) %>
+    <% additional_links.each do |link| %>
+      <%= sanitize link %>
+    <% end %>
+  <% end %>
+</span>
 
 <table class="table table-striped" id="datatable" data-source="<%= source %>">
   <thead>

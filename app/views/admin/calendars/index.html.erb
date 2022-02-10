@@ -1,14 +1,28 @@
-<%= render_component "admin_index",
-  title: "Calendars",
-  model: :calendars,
-  columns: %i[id name partner place is_working last_import_at],
-  data: @calendars,
-  new_link: new_admin_calendar_path,
-  additional_links: [
-    if current_user.has_facebook_keys?
-      link_to("Add New Calendar From Facebook", user_facebook_omniauth_authorize_url, class: "btn btn-primary")
-    else
-      link_to("Add New Calendar From Facebook", admin_profile_path(missing_keys: true), class: 'btn btn-primary')
-    end
+<script>
+var columns = [
+    {"data": "id"},
+    {"data": "name"},
+    {"data": "partner"},
+    {"data": "place"},
+    {"data": "is_working"},
+    {"data": "last_import_at"},
   ]
+</script>
+
+<%# A weird bug in the datatables template means that we have to apply the margin for each link, rather than for the container span. %>
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Calendars',
+    model: :calendars,
+    columns: %i[id name partner place is_working last_import_at],
+    data: @calendars,
+    source: admin_calendars_path(format: :json),
+    new_link: new_admin_calendar_path,
+    additional_links: [
+      if current_user.has_facebook_keys?
+        link_to('Add New Calendar From Facebook', user_facebook_omniauth_authorize_url, class: 'btn btn-primary mb-3')
+      else
+        link_to('Add New Calendar From Facebook', admin_profile_path(missing_keys: true), class: 'btn btn-primary mb-3')
+      end
+    ]
+  }
 %>

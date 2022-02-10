@@ -7,6 +7,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
   def_delegator :@view, :edit_admin_partner_path
   def_delegator :@view, :edit_admin_site_path
   def_delegator :@view, :edit_admin_tag_path
+  def_delegator :@view, :edit_admin_calendar_path
 
   def initialize(params, opts = {})
     @view = opts[:view_context]
