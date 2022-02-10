@@ -23,6 +23,24 @@ module Types
       Partner.all
     end
 
+    ####
+
+    field :event, EventType, "Find Event by ID" do
+      argument :id, ID
+    end
+
+    field :all_events, [EventType]
+
+    def event(id:)
+      Event.find(id)
+    end
+
+    def all_events
+      Event.all
+    end
+
+    ####
+
     field :ping, String, null: false, description: "Ping server"
 
     def ping
