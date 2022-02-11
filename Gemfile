@@ -10,7 +10,7 @@ end
 
 # Core
 gem 'pg'
-gem 'puma', '~> 4.3.9'
+gem 'puma', '~> 4.3.11'
 gem 'rails', '~> 6.1.4.1'
 gem 'minitest-rails'
 
