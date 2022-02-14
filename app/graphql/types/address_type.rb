@@ -10,6 +10,8 @@ module Types
     field :city, String
     field :postcode, String
     field :country_code, String
+    field :full_street_address, String
+    field :all_address_lines, [String]
   end
 end
 
