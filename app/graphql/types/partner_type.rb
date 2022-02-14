@@ -1,7 +1,7 @@
 module Types
   class PartnerType < Types::BaseObject
 
-    description 'A partner'
+    description 'A Partner who runs Events'
 
     field :id, ID, null: false
     field :name, String, null: false
