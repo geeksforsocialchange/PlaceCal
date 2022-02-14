@@ -1,7 +1,7 @@
 module Types
   class AddressType < Types::BaseObject
 
-    description 'An address representing a physical building'
+    description 'An address representing a physical location'
 
     # field :id, ID, null: false
     field :street_address, String
