@@ -20,7 +20,7 @@ class PartnerPolicy < ApplicationPolicy
   def update?
     return true if user.root?
 
-    user.neighbourhood_ids.include?(record.neighbourhood_id) ||
+    user.owned_neighbourhood_ids.include?(record.neighbourhood_id) ||
       user.partner_ids.include?(record.id)
   end
 
@@ -32,7 +32,7 @@ class PartnerPolicy < ApplicationPolicy
     return true if user.root?
     return false unless user.neighbourhood_admin?
 
-    user.neighbourhood_ids.include?(record.neighbourhood_id)
+    user.owned_neighbourhood_ids.include?(record.neighbourhood_id)
   end
 
   def setup?
@@ -60,7 +60,8 @@ class PartnerPolicy < ApplicationPolicy
         scope.all
       else
         scope.left_outer_joins(:users, :address)
-             .where("partners_users.user_id = ? OR addresses.neighbourhood_id IN (?)", user.id, user.neighbourhood_ids)
+             .where('partners_users.user_id = ? OR addresses.neighbourhood_id IN (?)',
+                    user.id, user.owned_neighbourhood_ids)
              .distinct
       end
     end

@@ -70,7 +70,11 @@ class User < ApplicationRecord
   end
 
   def owned_neighbourhoods
-    neighbourhoods.collect { |unit| unit.descendants }.flatten + neighbourhoods
+    neighbourhoods.collect(&:subtree).flatten
+  end
+
+  def owned_neighbourhood_ids
+    owned_neighbourhoods.map(&:id)
   end
 
   def can_alter_neighbourhood?(neighbourhood)
