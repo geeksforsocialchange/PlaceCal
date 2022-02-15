@@ -11,8 +11,14 @@ FactoryBot.define do
     postcode { 'M15 5DD' }
 
     after :create do |address|
-        address.neighbourhood.parent = create(:neighbourhood_district)
-        address.neighbourhood.save
+      parent = create(:neighbourhood_district)
+      address.neighbourhood.parent = parent
+      address.neighbourhood.save
+      parent.save
+
+      is_childed = parent.children.map(&:subtree).flatten.include?(address.neighbourhood)
+      puts "Address neighbourhood is childed: #{is_childed}"
+      puts "Address parental ID: #{parent.id}; Child ID: #{address.neighbourhood.id}"
     end
   end
 

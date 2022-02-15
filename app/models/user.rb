@@ -74,7 +74,7 @@ class User < ApplicationRecord
   end
 
   def owned_neighbourhood_ids
-    owned_neighbourhoods.map(&:id)
+    owned_neighbourhoods.collect(&:id)
   end
 
   def can_alter_neighbourhood?(neighbourhood)

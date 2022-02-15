@@ -20,8 +20,11 @@ class PartnerPolicy < ApplicationPolicy
   def update?
     return true if user.root?
 
-    user.owned_neighbourhood_ids.include?(record.neighbourhood_id) ||
-      user.partner_ids.include?(record.id)
+    r = user.owned_neighbourhood_ids.include?(record.neighbourhood_id) ||
+        user.partner_ids.include?(record.id)
+    puts "PARTNER UPDATE POLICY: #{r}"
+    puts "PARTNER UPDATE POLICY test: #{record.neighbourhood_id} in #{user.owned_neighbourhoods.each do |n| n.children.to_a end}"
+    r
   end
 
   def edit?
@@ -32,7 +35,10 @@ class PartnerPolicy < ApplicationPolicy
     return true if user.root?
     return false unless user.neighbourhood_admin?
 
-    user.owned_neighbourhood_ids.include?(record.neighbourhood_id)
+    r = user.owned_neighbourhood_ids.include?(record.neighbourhood_id)
+    puts "PARTNER DESTROY POLICY: #{r}"
+    puts "PARTNER DESTROY POLICY test: #{record.neighbourhood_id} in #{user.owned_neighbourhoods.each do |n| n.children.to_a end}"
+    r
   end
 
   def setup?
