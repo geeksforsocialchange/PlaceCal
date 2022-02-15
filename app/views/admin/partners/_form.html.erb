@@ -137,12 +137,13 @@
       </div>
     </div>
     <hr>
+    <br>
     <div class="row">
       <div class="col-sm-12">
-        <%= f.submit "Save Partner", class: "btn btn-primary h1" %><br><br>
-        <br>
+        <%= f.submit "Save Partner", class: "btn btn-primary btn-lg" %><br><br><br>
+        
         <% if policy(@partner).destroy? && !@partner.new_record? %>
-          <%= link_to "Destroy Partner", @partner, method: :delete, class: "btn btn-danger", id: 'destroy-partner'  %>
+          <%= link_to "Delete Partner", @partner, method: :delete, class: "btn btn-danger btn-sm", id: 'destroy-partner'  %>
         <% end %>
       </div>
     </div>
