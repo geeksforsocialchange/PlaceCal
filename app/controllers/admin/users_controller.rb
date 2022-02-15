@@ -38,6 +38,11 @@ module Admin
     end
 
     def new
+      if params[:partner_id]
+        # TODO: scoping for current_user
+        @partner = Partner.where(id: params[:partner_id]).first
+      end
+
       @user = User.new
       authorize @user
     end

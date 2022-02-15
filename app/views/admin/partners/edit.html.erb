@@ -5,6 +5,8 @@
 <% end -%>
 
 <h2>Calendars</h2>
+<p><%= @partner.calendars.count %> found</p>
+
 <ul>
   <% @partner.calendars.each do |calendar| -%>
     <li><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></li>
@@ -13,6 +15,19 @@
 </ul>
 
 <p><%= link_to 'Add Calendar', new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-primary mb-3 mr-2" %></p>
+
+<hr />
+
+<h2>Users</h2>
+<p><%= @partner.users.count %> found</p>
+
+<ul>
+  <% @partner.users.each do |p_user| -%>
+    <li><%= link_to p_user.full_name, edit_admin_user_path(p_user) %></li>
+  <% end -%>
+</ul>
+
+<p><%= link_to 'Add User', new_admin_user_path(partner_id: @partner.id), class: "btn btn-primary mb-3 mr-2" %></p>
 
 <hr />
 <%= render 'form', model: :partner %>

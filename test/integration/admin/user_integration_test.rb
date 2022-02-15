@@ -148,4 +148,29 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Facebook app', count: 0
     assert_select 'label', text: 'Facebook app secret', count: 0
   end
+
+  test "shows partner select list" do
+    sign_in @root
+
+    5.times do |i|
+      FactoryBot.create(:partner, users: [@root])
+    end
+
+    get new_admin_user_path
+    assert_response :success
+
+    assert_select 'select#user_partner_ids option', count: 6
+  end
+
+  test "new user has preselected partner when ID provided" do
+    sign_in @root
+    5.times do |i|
+      FactoryBot.create(:partner, users: [@root])
+    end
+
+    get new_admin_user_path(partner_id: @partner.id)
+    assert_response :success
+
+    assert_select 'select#user_partner_ids option[selected="selected"]', @partner.name
+  end
 end
