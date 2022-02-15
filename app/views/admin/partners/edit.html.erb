@@ -1,1 +1,47 @@
-<%= render_component "admin_edit", model: :partner, title: @partner.name %>
+<h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
+
+<% if current_user.root? -%>
+  <p>In neighbourhood <%= link_to @partner.address.neighbourhood.name, admin_neighbourhood_path(@partner.address.neighbourhood) %></p>
+<% end -%>
+
+<%= render 'form', model: :partner %>
+
+<br><hr><br>
+
+<h2>Connected entities</h2>
+
+<p>What other things is this Partner connected to? <em>Please save your changes above before adding connections!</em></p>
+
+<div class="row">
+  <div class="col-md-6">
+    <h3>Calendars</h3>
+    <p><%= @partner.calendars.count -%> connected <%= "calendar".pluralize(@partner.calendars.count) -%> found</p>
+    <ul>
+      <% @partner.calendars.each do |calendar| -%>
+        <li><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></li>
+      <% end -%>
+    </ul>
+
+    <p><%= link_to 'Add a new calendar', 
+                    new_admin_calendar_path(partner_id: @partner.id), 
+                    class: "btn btn-primary mb-3 mr-2 btn-sm" %></p>
+  </div>
+
+  <div class="col-md-6">
+    <h3>Partner admins</h3>
+    <p><%= @partner.users.count %> <%= "user".pluralize(@partner.users.count) -%> can edit this partner</p>
+
+    <ul>
+      <% @partner.users.each do |p_user| -%>
+        <li><%= link_to p_user.full_name, edit_admin_user_path(p_user) %></li>
+      <% end -%>
+    </ul>
+
+    <p><%= link_to 'Add new partner admin', 
+                    new_admin_user_path(partner_id: @partner.id), 
+                    class: "btn btn-primary mb-3 mr-2 btn-sm" %>
+    </p>
+  </div>
+</div>
+
+<br>
