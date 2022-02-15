@@ -22,6 +22,10 @@ module Admin
     end
 
     def new
+      if params[:partner_id]
+        # TODO: better calendar-to-user scoping
+        @partner = current_user.partners.where(id: params[:partner_id]).first
+      end
       @calendar = Calendar.new
       authorize @calendar
     end

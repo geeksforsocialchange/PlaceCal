@@ -1,1 +1,18 @@
-<%= render_component "admin_edit", model: :partner, title: @partner.name %>
+<h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
+
+<% if current_user.root? -%>
+  <p>In neighbourhood <%= link_to @partner.address.neighbourhood.name, admin_neighbourhood_path(@partner.address.neighbourhood) %></p>
+<% end -%>
+
+<h2>Calendars</h2>
+<ul>
+  <% @partner.calendars.each do |calendar| -%>
+    <li><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></li>
+
+  <% end -%>
+</ul>
+
+<p><%= link_to 'Add Calendar', new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-primary mb-3 mr-2" %></p>
+
+<hr />
+<%= render 'form', model: :partner %>

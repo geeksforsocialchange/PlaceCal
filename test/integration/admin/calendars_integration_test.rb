@@ -39,8 +39,19 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
       assert_select 'option', count: 3
     end
 
+    assert_select 'option[disabled="disabled"]', '(No Partner)', count: 1
     assert_select 'option', @partner.name, count: 1
     assert_select 'option', @partner_two.name, count: 1
+  end
+
+  # GET new
+  test "root : can get new with preselected partner" do
+    @root.partners << @partner
+
+    sign_in @root
+    get new_admin_calendar_path(partner_id: @partner.id)
+
+    assert_select 'option[selected="selected"]', @partner.name
   end
 
   test "neighbourhood_admin : can get new" do

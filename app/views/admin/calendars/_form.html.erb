@@ -9,9 +9,11 @@
     <div class="row">
       <div class="col-md-6">
         <h3>Details</h3>
+
         <%= f.association :partner,
-                          label: 'Organiser',
+                          label: 'Partner Organiser',
                           collection: options_for_organiser,
+                          selected: (@partner ? @partner.id : ''),
                           input_html: { class: 'form-control select2' },
                           hint: 'What group organises these events?' %>
 
