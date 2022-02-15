@@ -62,7 +62,7 @@ class PartnerShowingDeleteButtonIntegrationTest  < ActionDispatch::IntegrationTe
     get edit_admin_partner_path(partner)
     assert_response :success
 
-    assert_select 'a#destroy-partner', 'Destroy Partner'
+    assert_select 'a#destroy-partner', 'Delete Partner'
   end
 
   test 'Edit has delete button for neighbourhood admins' do
@@ -77,7 +77,7 @@ class PartnerShowingDeleteButtonIntegrationTest  < ActionDispatch::IntegrationTe
     get edit_admin_partner_path(partner)
     assert_response :success
 
-    assert_select 'a#destroy-partner', 'Destroy Partner'
+    assert_select 'a#destroy-partner', 'Delete Partner'
   end
 end
 
