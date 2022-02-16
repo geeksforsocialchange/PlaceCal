@@ -9,24 +9,28 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
     @partner_admin = create(:partner_admin)
     @partner = @partner_admin.partners.first
+    parent = @partner.address.neighbourhood.parent
+    puts "A: Partner address ward parental ID: #{parent.id}; Child ID: #{@partner.address.neighbourhood.id}"
+    is_childed = parent.children.map(&:subtree).flatten.include?(@partner.address.neighbourhood)
+    puts "A: Partner address ward parent contains ward: #{is_childed}"
 
     @partner_admin_two = create(:partner_admin)
     @partner_two = @partner_admin_two.partners.first
 
+    parent = @partner.address.neighbourhood.parent
+    puts "B: Partner address ward parental ID: #{parent.id}; Child ID: #{@partner.address.neighbourhood.id}"
+    is_childed = parent.children.map(&:subtree).flatten.include?(@partner.address.neighbourhood)
+    puts "B: Partner address ward parent contains ward: #{is_childed}"
+
     @neighbourhood_admin = create(:neighbourhood_admin)
     @neighbourhood_admin.neighbourhoods << @partner.address.neighbourhood
 
-    @region_admin = create(:neighbourhood_admin)
-    @region_admin.neighbourhoods = []
-    @region_admin.neighbourhoods << @partner.address.neighbourhood.parent
-
-    parent = @partner.address.neighbourhood.parent
-    puts "Partner address ward parental ID: #{parent.id}; Child ID: #{@partner.address.neighbourhood.id}"
-    is_childed = parent.children.map(&:subtree).flatten.include?(@partner.address.neighbourhood)
-    puts "Partner address ward parent contains ward: #{is_childed}"
+    @region_admin = create(:neighbourhood_region_admin)
+    @region_admin.neighbourhoods << @partner.address.neighbourhood.region
 
     @multi_admin = create(:neighbourhood_admin)
     @multi_admin.neighbourhoods << @partner.address.neighbourhood
+
     @ashton_partner = create(:ashton_partner)
     @multi_admin.partners << @ashton_partner
   end

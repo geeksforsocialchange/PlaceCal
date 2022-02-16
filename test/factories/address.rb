@@ -13,13 +13,33 @@ FactoryBot.define do
     after :create do |address|
       parent = create(:neighbourhood_district)
       address.neighbourhood.parent = parent
-      address.neighbourhood.save
-      parent.save
-
-      is_childed = parent.children.map(&:subtree).flatten.include?(address.neighbourhood)
-      puts "Address neighbourhood is childed: #{is_childed}"
-      puts "Address parental ID: #{parent.id}; Child ID: #{address.neighbourhood.id}"
+      address.neighbourhood.save!
+      parent.save!
     end
+  end
+
+  factory :moss_side_address, class: 'Address' do
+    street_address { '42 Alexandra Rd' }
+    street_address2 { 'Moss Side' }
+    city { 'Manchester' }
+    country_code { 'UK' }
+    latitude { '53.430720' }
+    longitude { '-2.436610' }
+    postcode { 'M16 7BA' }
+
+    association :neighbourhood, factory: :moss_side_neighbourhood
+  end
+
+  factory :rushholme_address, class: 'Address' do
+    street_address { '31 Walmer St' }
+    street_address2 { 'Rusholme' }
+    city { 'Manchester' }
+    country_code { 'UK' }
+    latitude { '-2.227180' }
+    longitude { '-2.227180' }
+    postcode { 'M14 5UX' }
+
+    association :neighbourhood, factory: :rusholme_neighbourhood
   end
 
   factory :ashton_address, class: 'Address' do
