@@ -44,7 +44,7 @@
 
         <% unless @partner.accessibility_info.blank? %>
           <details id='accessibility-info'>
-            <summary class="udl udl--fw allcaps h4">Accessibility</summary>
+            <summary>Accessibility information</summary>
             <%= markdown @partner.accessibility_info %>
           </details>
         <% end %>
