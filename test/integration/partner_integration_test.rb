@@ -36,7 +36,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     get partner_url(@partner)
     assert_response :success
-    assert_select 'div#accessibility-info', count: 0
+    assert_select 'details#accessibility-info', count: 0
   end
 
   test 'has accessibility text' do
@@ -45,7 +45,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     get partner_url(@partner)
     assert_response :success
-    assert_select 'div#accessibility-info', count: 1
+    assert_select 'details#accessibility-info', count: 1
   end
 
 end
