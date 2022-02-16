@@ -43,8 +43,10 @@
         %>
 
         <% unless @partner.accessibility_info.blank? %>
-          <h3 class="udl udl--fw allcaps h4">Accessibility</h3>
-          <%= markdown @partner.accessibility_info %>
+          <div id='accessibility-info'>
+            <h3 class="udl udl--fw allcaps h4">Accessibility</h3>
+            <%= markdown @partner.accessibility_info %>
+          </div>
         <% end %>
 
         <% if @partner.managees.any? %>
