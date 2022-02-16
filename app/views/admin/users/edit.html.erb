@@ -7,5 +7,11 @@
 <%=  filtered_form_for(@user, method: :put, url: admin_user_path(@user), disabled: disabled_fields, display_only: policy(@user).permitted_attributes_for_update) do |f| %>
   <%= render 'form', f: f %>
   <%= f.submit "Update", class: "btn btn-primary " %>
-  <%= link_to "Destroy User", admin_user_path(@user), method: :delete, class: "btn btn-danger" if policy(@user).destroy? %>
+  <% if policy(@user).destroy? -%>
+    <%= link_to "Delete user", 
+      admin_user_path(@user), 
+      method: :delete, 
+      class: "btn btn-danger", 
+      data: { confirm: "Please confirm you want to delete this user.\n\nThis is permanent!" } %>
+  <% end -%>
 <% end %>
