@@ -32,5 +32,20 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h1', @partner.name
   end
 
+  test 'hides accessibility area when not set' do
+
+    get partner_url(@partner)
+    assert_response :success
+    assert_select 'details#accessibility-info', count: 0
+  end
+
+  test 'has accessibility text' do
+    @partner.accessibility_info = "This is some accessibility informtation"
+    @partner.save!
+
+    get partner_url(@partner)
+    assert_response :success
+    assert_select 'details#accessibility-info', count: 1
+  end
 
 end

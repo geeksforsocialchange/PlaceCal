@@ -40,7 +40,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    attrs = [ :name, :image, :summary, :description,
+    attrs = [ :name, :image, :summary, :description, :accessibility_info,
               :public_name, :public_email, :public_phone,
               :partner_name, :partner_email, :partner_phone,
               :address_id, :url, :facebook_link, :twitter_handle,
