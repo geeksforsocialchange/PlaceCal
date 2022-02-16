@@ -122,7 +122,7 @@ class User < ApplicationRecord
     neighbourhood = Neighbourhood.find_by(unit: 'ward',
                                           unit_code_key: 'WD19CD',
                                           unit_code_value: res.dig('codes', 'admin_ward'))
-    neighbourhood_ids.include?(neighbourhood&.id)
+    owned_neighbourhood_ids.include?(neighbourhood&.id)
   end
 
   protected
