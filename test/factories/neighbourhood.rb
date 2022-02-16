@@ -66,7 +66,34 @@ FactoryBot.define do
 
     after :create do |ward|
       ward.parent = create(:neighbourhood_district)
-      ward.users = [create(:user)]
+      ward.save
+    end
+  end
+
+  factory :rusholme_neighbourhood, class: 'Neighbourhood' do
+    name { 'Rusholme' }
+    name_abbr { 'Rusholme' }
+    unit { 'ward' }
+    unit_code_key { 'WD19CD' }
+    unit_code_value { 'E05011377' }
+    unit_name { 'Rusholme' }
+
+    after :create do |ward|
+      ward.parent = create(:neighbourhood_district)
+      ward.save
+    end
+  end
+
+  factory :moss_side_neighbourhood, class: 'Neighbourhood' do
+    name { 'Moss Side' }
+    name_abbr { 'Moss Side' }
+    unit { 'ward' }
+    unit_code_key { 'WD19CD' }
+    unit_code_value { 'E05011372' }
+    unit_name { 'Moss Side' }
+
+    after :create do |ward|
+      ward.parent = create(:neighbourhood_district)
       ward.save
     end
   end
@@ -96,7 +123,6 @@ FactoryBot.define do
     after :create do |ward|
       ward.parent = create(:ashton_neighbourhood_district)
       ward.save
-      ward.users = [create(:user)]
     end
   end
 end

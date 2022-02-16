@@ -23,6 +23,14 @@ FactoryBot.define do
     after(:build) { |partner| partner.tags = [create(:tag)] }
     # image nil
 
+    factory :moss_side_partner, class: 'Partner' do
+      association :address, factory: :moss_side_address
+    end
+
+    factory :rusholme_partner, class: 'Partner' do
+      association :address, factory: :rusholme_address
+    end
+
     factory :ashton_partner, class: 'Partner' do
       association :address, factory: :ashton_address
     end
