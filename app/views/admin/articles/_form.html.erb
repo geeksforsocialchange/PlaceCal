@@ -1,8 +1,8 @@
 <%= simple_form_for [:admin, @article] do |f| %>
   <%= render_component "error", object: @article %>
 
-  <%= f.input :title, id: :article_title, input_html: { class: 'special' } %>
-  <%= f.input :body %>
+  <%= f.input :title, id: :article_title, as: :string, input_html: { class: 'special' } %>
+  <%= f.input :body, input_html: { rows: 20 } %>
   <%= f.input :is_draft %>
 
   <%= f.button :submit, class: "btn btn-primary" %>
