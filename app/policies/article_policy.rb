@@ -1,31 +1,29 @@
 # frozen_string_literal: true
 
-# policy set to allow root only while developing article functionality
-
 class ArticlePolicy < ApplicationPolicy
   def index?
-    user.root?
+    user.root? or user.editor?
   end
 
   def edit?
-    user.root?
+    user.root? or user.editor?
   end
 
   def new?
-    user.root?
+    user.root? or user.editor?
   end
 
   def create?
-    user.root?
+    user.root? or user.editor?
   end
 
   def destroy?
-    user.root?
+    user.root? or user.editor?
   end
 
   class Scope < Scope
     def resolve
-      return scope.all if user.root?
+      return scope.all if user.root? || user.editor?
     end
   end
 end

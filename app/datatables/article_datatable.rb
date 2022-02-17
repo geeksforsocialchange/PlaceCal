@@ -17,7 +17,7 @@ class ArticleDatatable < Datatable
       {
         # apparently edit_admin_article_path doesn't exist????
         id: link_to(record.id, edit_admin_article_path(record)),
-        title: record.title,
+        title: link_to(record.title, edit_admin_article_path(record)),
         body: record.body,
         published_at: record.published_at,
         is_draft: record.is_draft
