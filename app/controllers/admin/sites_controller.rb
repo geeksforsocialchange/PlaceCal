@@ -42,6 +42,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Site was not created'
+        set_variables_for_sites_neighbourhoods_selection
         render 'new'
       end
     end

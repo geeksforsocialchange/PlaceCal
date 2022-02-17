@@ -42,6 +42,13 @@
           address: @partner.address
         %>
 
+        <% unless @partner.accessibility_info.blank? %>
+          <details id='accessibility-info'>
+            <summary>Accessibility information</summary>
+            <%= markdown @partner.accessibility_info %>
+          </details>
+        <% end %>
+
         <% if @partner.managees.any? %>
           <p class="small"><%= @partner.name %> manage
           <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.

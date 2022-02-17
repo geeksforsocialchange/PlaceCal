@@ -42,7 +42,7 @@ class CalendarPolicy < ApplicationPolicy
       return scope.none if !user.partner_admin? && !user.neighbourhood_admin?
 
       Calendar.left_outer_joins(partner: :address, place: :address)
-              .where(addresses: { neighbourhood_id: user.neighbourhood_ids })
+              .where(addresses: { neighbourhood_id: user.owned_neighbourhood_ids })
               .or(Calendar.left_outer_joins(partner: :address, place: :address)
               .where("partner_id IN (:partner_id) OR place_id IN (:partner_id)", partner_id: user.partner_ids))
               .distinct

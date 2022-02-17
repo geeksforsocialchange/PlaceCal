@@ -9,10 +9,15 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     @root = create(:root)
 
     @neighbourhood = create(:neighbourhood)
-    @neighbourhood_admin = @neighbourhood.users.first
+
+    @neighbourhood_admin = create(:neighbourhood_admin)
+    # @neighbourhood_admin = @neighbourhood.users.first
+
     @neighbourhoods = create_list(:neighbourhood, 4)
+
     # TODO: Change this 15 to be reflective of the current record limit
     @number_of_neighbourhoods = 15
+
     @neighbourhoods << @neighbourhood
     get "http://admin.lvh.me"
   end
