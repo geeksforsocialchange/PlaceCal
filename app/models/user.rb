@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   # Site-wide roles
   enumerize :role,
-            in: %i[root citizen],
+            in: %i[root editor citizen],
             default: :citizen
 
   # Include default devise modules. Others available are:
@@ -69,6 +69,10 @@ class User < ApplicationRecord
     role == :citizen
   end
 
+  def editor?
+    role == :editor
+  end
+
   def owned_neighbourhoods
     neighbourhoods.collect(&:subtree).flatten
   end
@@ -97,6 +101,7 @@ class User < ApplicationRecord
     types = []
 
     types << 'root' if root?
+    types << 'editor' if editor?
     types << 'neighbourhood_admin' if neighbourhood_admin?
     types << 'partner_admin' if partner_admin?
     types << 'tag_admin' if tag_admin?
