@@ -65,7 +65,7 @@
           <ul>
             <% current_user.neighbourhoods.each do |neighbourhood| %>
               <li>
-                <%= link_to neighbourhood.name, edit_admin_neighbourhood_path(neighbourhood) %>
+                <%= link_to neighbourhood.contextual_name, edit_admin_neighbourhood_path(neighbourhood) %>
               </li>
             <% end %>
           </ul>

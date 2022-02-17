@@ -55,7 +55,7 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h3', text: 'Your neighbourhoods'
     assert_select 'a[href=?]',
                   edit_admin_neighbourhood_path(@neighbourhood),
-                  text: @neighbourhood.name
+                  text: @neighbourhood.contextual_name
   end
 
   test "Profile form has correct fields for neighbourhood admin" do

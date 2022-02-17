@@ -69,4 +69,26 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_select '.preview__header', text: @region_site_partners.first.name
     assert_select '.preview__details', text: @region_site_partners.first.summary
   end
+
+  test 'partner shows service area if available' do
+    partner = @default_site_partners.first
+    partner.service_areas.create! neighbourhood: @neighbourhood3
+
+    get partners_url 
+    assert_response :success
+
+    assert_select '.service-area span', text: @neighbourhood3.shortname
+  end
+
+  test 'partner shows "various areas" if more than one service area present' do
+    partner = @default_site_partners.first
+    partner.service_areas.create! neighbourhood: @neighbourhood3
+    partner.service_areas.create! neighbourhood: @neighbourhood2
+
+    get partners_url 
+    assert_response :success
+
+    assert_select '.service-area span', text: 'various'
+  end
+
 end
