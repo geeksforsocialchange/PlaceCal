@@ -22,4 +22,11 @@
     <%= admin_nav_link('Supporters', admin_supporters_path, 'credit-card') if policy(Supporter).index? %>
     <%= admin_nav_link('Tags', admin_tags_path, 'tags') if policy(Tag).index? %>
   <% end %>
+
+  <% if policy(Article).index? %>
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <span>News</span>
+    </h6>
+    <%= admin_nav_link('Articles', admin_articles_path, 'newspaper-o') if policy(Article).index? %>
+  <% end %>
 </ul>
