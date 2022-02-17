@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class TagsUsers < ApplicationRecord
+class TagsUser < ApplicationRecord
+  self.table_name = 'tags_users'
   belongs_to :tag
   belongs_to :user
   validates :tag_id,
