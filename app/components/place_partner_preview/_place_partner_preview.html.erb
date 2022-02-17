@@ -9,7 +9,7 @@
   </div>
   <% if description %>
     <div class="preview__details">
-      <p><%= truncate(description, length: 110, separator: /\s/) %></p>
+      <%= content_tag :p, description %>
     </div>
   <% end %>
 </li>
