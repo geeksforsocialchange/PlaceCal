@@ -7,7 +7,10 @@
 
   <%= f.input :description, class: "form-control" %>
 
-  <%= f.input :edit_permission, class: "form-control" %>
+  <%= f.input :edit_permission,
+              as: :radio_buttons,
+              label_method: ->(val){ Tag.edit_permission_label(val) },
+              hint: 'Users with this role will be granted access to assign this tag' %>
 
   <%# = f.association :partner, collection: @partners %>
   <% unless @tag.new_record? %>

@@ -3,7 +3,6 @@
 module Admin
   class UsersController < Admin::ApplicationController
     before_action :set_user, only: %i[edit update destroy]
-    before_action :set_roles_and_tags, only: %i[new create edit assign_tag update destroy]
 
     def profile
       authorize current_user, :profile?
@@ -96,11 +95,6 @@ module Admin
     end
 
     private
-
-    def set_roles_and_tags
-      @tags = Tag.all
-      @roles = User.role.values
-    end
 
     def profile_params
       params.require(:user).permit(:first_name,

@@ -3,19 +3,46 @@
 <div class="form-group">
   <%= render "contact", f: f %>
 
-  <%# f.association :tags, label: false, collection: @tags, as: :check_boxes %>
-  <%= f.association :partners,
-                    label: tooltip_label('Partners', 'Partners this user can edit, as well as their associated calendars'),
-                    collection: options_for_partners,
-                    selected: (@partner.id if @partner),
-                    input_html: {class: 'form-control select2' } %>
+  <br>
+  <hr>
 
-  <%= f.association :neighbourhoods,
-                    label: tooltip_label('Neighbourhoods', 'Grants access to every partner and calendar in these neighbourhoods. Use with care!'),
-                    collection: options_for_neighbourhoods,
-                    input_html: {class: 'form-control select2' } %>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Partners</h3>
+      <p>Partners this user can edit, as well as their associatied calendars</p>
+      <%= f.association :partners,
+                        label: false,
+                        collection: options_for_partners,
+                        input_html: {class: 'form-control select2' } %>
+    </div>
+    <div class="col-md-6">
+      <h3>Neighbourhoods</h3>
+      <p>Grants access to every partner and calendar in these neighbourhoods. Use with care!</p>
+      <%= f.association :neighbourhoods,
+                        label: false,
+                        collection: options_for_neighbourhoods,
+                        input_html: {class: 'form-control select2' } %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Allowed Tags</h3>
+      <p>Grants access to apply the given tags</p>
+      <%= f.association :tags,
+                        label: false,
+                        collection: options_for_tags,
+                        input_html: {class: 'form-control select2' } %>
+    </div>
+    <div class="col-md-6">
+      <h3>Role</h3>
+      <%= f.input :role,
+                  as: :radio_buttons,
+                  label_method: ->(val){ User.role_label(val) } %>
+    </div>
+  </div>
 
-  <%= f.input :role, collection: @roles, class: 'form-control', include_blank: false %>
+  <br>
+  <hr>
 
   <% if current_user.root? %>
     <%= f.input :facebook_app_id, as: :string %>
