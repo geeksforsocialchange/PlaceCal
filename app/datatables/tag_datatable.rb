@@ -6,7 +6,8 @@ class TagDatatable < Datatable
       id: { source: 'Tag.id', cond: :eq },
       name: { source: 'Tag.name' },
       slug: { source: 'Tag.slug' },
-      description: { source: 'Tag.description' }
+      description: { source: 'Tag.description' },
+      edit_permission: { source: 'Tag.edit_permission' }
     }
   end
 
@@ -16,7 +17,8 @@ class TagDatatable < Datatable
         id: link_to(record.id, edit_admin_tag_path(record)),
         name: link_to(record.name, edit_admin_tag_path(record)),
         slug: record.slug,
-        description: record.description
+        description: record.description,
+        edit_permission: record.edit_permission
       }
     end
   end

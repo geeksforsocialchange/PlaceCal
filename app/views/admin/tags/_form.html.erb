@@ -7,6 +7,9 @@
 
   <%= f.input :description, class: "form-control" %>
 
+  <%= f.input :edit_permission, class: "form-control" %>
+
+  <%# = f.association :partner, collection: @partners %>
   <% unless @tag.new_record? %>
     <h2>Partners</h2>
     <% unless @partners.empty? %>
