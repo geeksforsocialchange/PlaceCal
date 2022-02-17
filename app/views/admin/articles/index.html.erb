@@ -1,0 +1,19 @@
+<script>
+var columns = [
+    {"data": "id"},
+    {"data": "title"},
+    {"data": "body"},
+    {"data": "published_at"},
+    {"data": "is_draft"}
+  ]
+</script>
+
+<%= render partial: "layouts/admin/datatable", locals: {
+    title: "Articles",
+    model: :articles,
+    columns: %i[id title body published_at is_draft],
+    data: @articles,
+    source: admin_articles_path(format: :json),
+    new_link: new_admin_article_path
+  }
+%>
