@@ -8,7 +8,7 @@
       </div>
     <% end %>
 
-    <% if show_neighbourhoods %>
+    <% if show_neighbourhood? %>
       <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
         <span><%= neighbourhood_name(badge_zoom_level) %></span>
       </div>

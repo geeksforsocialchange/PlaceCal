@@ -13,6 +13,11 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
     previewee
   end
 
+  def show_neighbourhood?
+    return false if show_service_area?
+    show_neighbourhoods
+  end
+
   def neighbourhood_name(badge_zoom_level)
     return previewee.address&.neighbourhood&.district&.shortname if badge_zoom_level == 'district'
 
@@ -35,7 +40,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
 
   def service_area_name
     if previewee.service_areas.count > 1
-      "various areas"
+      "various"
     else
       previewee.service_areas.first&.neighbourhood&.shortname
     end

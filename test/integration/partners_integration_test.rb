@@ -88,7 +88,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     get partners_url 
     assert_response :success
 
-    assert_select '.service-area span', text: 'various areas'
+    assert_select '.service-area span', text: 'various'
   end
 
 end
