@@ -27,4 +27,8 @@ module UsersHelper
       all.
       map { |nh| [nh.contextual_name, nh.id] }
   end
+
+  def options_for_tags
+    policy_scope(Tags).order(:name).map { |tag| [tag.name, tag.id] }
+  end
 end

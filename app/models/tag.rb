@@ -8,8 +8,10 @@ class Tag < ApplicationRecord
 
   self.table_name = 'tags' # Maybe we can remove this? Tag should automagically railsify to tags right?
 
-  has_and_belongs_to_many :users
   has_and_belongs_to_many :partners
+
+  has_many :tags_users, dependent: :destroy
+  has_many :users, through: :tags_users
 
   validates :name, :slug, presence: true
   validates :name, :slug, uniqueness: true
