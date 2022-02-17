@@ -28,6 +28,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   get 'culture-tourism', to: 'pages#culture_tourism'
 
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
+    resources :articles
     resources :calendars do
       get :select_page, on: :collection
       member do

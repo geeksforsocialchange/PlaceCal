@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_17_050106) do
+ActiveRecord::Schema.define(version: 2022_02_17_120103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,15 @@ ActiveRecord::Schema.define(version: 2022_02_17_050106) do
     t.float "longitude"
     t.bigint "neighbourhood_id"
     t.index ["neighbourhood_id"], name: "index_addresses_on_neighbourhood_id"
+  end
+
+  create_table "articles", force: :cascade do |t|
+    t.text "title"
+    t.text "body"
+    t.date "published_at"
+    t.boolean "is_draft", default: true
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "calendars", id: :serial, force: :cascade do |t|
