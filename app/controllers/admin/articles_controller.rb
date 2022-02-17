@@ -2,6 +2,8 @@
 
 module Admin
   class ArticlesController < Admin::ApplicationController
+    before_action :set_article, only: %i[edit update destroy]
+
     def index
       @articles = policy_scope(Article).order(:title)
       authorize @articles
@@ -28,22 +30,27 @@ module Admin
     end
 
     def create
-      @article = Article.new
+      @article = Article.new(article_params)
       authorize @article
-      respond_to do |format|
-        if @article.save
-          flash[:success] = 'Article has been created'
-          redirect_to admin_articles_path
-        else
-          flash.now[:danger] = 'Article has not been created'
-          render :new
-        end
+      if @article.save
+        flash[:success] = 'Article has been created'
+        redirect_to admin_articles_path
+      else
+        flash.now[:danger] = 'Article has not been created'
+        render :new
       end
     end
 
     def update
       authorize @article
-      if @article.update(article_params)
+      @article.assign_attributes(article_params)
+      pub_date = if @article.is_draft
+                   nil
+                 else
+                   DateTime.now
+                 end
+      @article.published_at = pub_date
+      if @article.save
         flash[:success] = 'Article was saved successfully'
         redirect_to admin_articles_path
       else
