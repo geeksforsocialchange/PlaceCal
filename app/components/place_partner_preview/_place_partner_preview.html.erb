@@ -1,12 +1,20 @@
 <li class="preview">
   <div class="preview__header">
     <h3><%= link_to name, link %></h3>
+
+    <% if show_service_area? %>
+      <div class="service-area service-area--secondary preview__service-area">
+        <span><%= service_area_name %></span>
+      </div>
+    <% end %>
+
     <% if show_neighbourhoods %>
       <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
         <span><%= neighbourhood_name(badge_zoom_level) %></span>
       </div>
     <% end %>
   </div>
+  
   <% if description %>
     <div class="preview__details">
       <%= content_tag :p, description %>
