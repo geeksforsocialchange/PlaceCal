@@ -147,6 +147,10 @@ class Partner < ApplicationRecord
     slug.blank?
   end
 
+  def has_service_areas?
+    service_areas.count > 0
+  end
+
   def permalink
     "https://placecal.org/partners/#{id}"
   end

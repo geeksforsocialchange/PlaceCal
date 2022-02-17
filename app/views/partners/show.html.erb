@@ -38,6 +38,9 @@
         %>
 
         <h3 class="udl udl--fw allcaps h4">Address</h3>
+        <% if @partner.has_service_areas? %>
+          <p>We operate in <%= partner_service_area_text(@partner) %>.</p>
+        <% end %>
         <%= render_component "address",
           address: @partner.address
         %>
