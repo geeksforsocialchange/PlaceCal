@@ -24,6 +24,9 @@ class Partner < ApplicationRecord
 
   validates_associated :service_areas
 
+  has_many :article_partners
+  has_many :articles, through: :article_partners
+
   has_and_belongs_to_many :objects,
                           class_name: 'Partner',
                           join_table: :organisation_relationships,

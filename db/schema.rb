@@ -28,6 +28,16 @@ ActiveRecord::Schema.define(version: 2022_03_10_125155) do
     t.index ["neighbourhood_id"], name: "index_addresses_on_neighbourhood_id"
   end
 
+  create_table "article_partners", force: :cascade do |t|
+    t.bigint "article_id"
+    t.bigint "partner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id", "partner_id"], name: "index_article_partners_on_article_id_and_partner_id", unique: true
+    t.index ["article_id"], name: "index_article_partners_on_article_id"
+    t.index ["partner_id"], name: "index_article_partners_on_partner_id"
+  end
+
   create_table "articles", force: :cascade do |t|
     t.text "title"
     t.text "body"
