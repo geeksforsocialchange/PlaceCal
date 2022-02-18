@@ -2,7 +2,7 @@ require "test_helper"
 
 class ArticleTest < ActiveSupport::TestCase
   setup do
-    @article = Article.new(title: 'This is a news article', body: 'Lorem ipsum color dolor sit amet...')
+    @article = build(:article)
   end
 
   test 'article should be valid' do
