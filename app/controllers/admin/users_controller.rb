@@ -10,6 +10,7 @@ module Admin
 
     def update_profile
       authorize current_user, :update_profile?
+
       if update_user_profile
         bypass_sign_in(current_user)
         flash[:success] = 'User profile has been updated'
@@ -37,16 +38,15 @@ module Admin
     end
 
     def new
-      if params[:partner_id]
-        # TODO: scoping for current_user
-        @partner = Partner.where(id: params[:partner_id]).first
-      end
+      @partners = collect_partners
 
       @user = User.new
       authorize @user
     end
 
     def edit
+      @partners = collect_partners
+
       authorize @user
     end
 
@@ -95,6 +95,12 @@ module Admin
     end
 
     private
+
+    def collect_partners
+      return policy_scope(Partner).where(id: params[:partner_id]).map(&:id) if params[:partner_id]
+
+      @user.partners.map(&:id)
+    end
 
     def profile_params
       params.require(:user).permit(:first_name,
