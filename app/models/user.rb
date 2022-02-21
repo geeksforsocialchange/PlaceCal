@@ -116,20 +116,6 @@ class User < ApplicationRecord
     facebook_app_id.present? && facebook_app_secret.present?
   end
 
-  def self.role_label(value)
-    case value.second
-    when 'root'
-      '<strong>Root</strong>: Can do everything'.html_safe
-    when 'editor'
-      '<strong>Editor</strong>: Can edit news articles'.html_safe
-    when 'citizen'
-      '<strong>Citizen</strong>: ' \
-      'Can only edit entities listed on this page'.html_safe
-    else
-      value
-    end
-  end
-
   def assigned_to_postcode?(postcode)
     return true unless neighbourhood_admin?
 

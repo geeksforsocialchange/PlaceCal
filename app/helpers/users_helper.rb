@@ -29,4 +29,18 @@ module UsersHelper
   def options_for_tags
     policy_scope(Tag).order(:name).map { |tag| [tag.name, tag.id] }
   end
+
+  def role_label(value)
+    case value.second
+    when 'root'
+      '<strong>Root</strong>: Can do everything'.html_safe
+    when 'editor'
+      '<strong>Editor</strong>: Can edit news articles'.html_safe
+    when 'citizen'
+      '<strong>Citizen</strong>: ' \
+      'Can only edit entities listed on this page'.html_safe
+    else
+      value
+    end
+  end
 end

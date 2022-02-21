@@ -39,7 +39,7 @@
       <h3>Role</h3>
       <%= f.input :role,
                   as: :radio_buttons,
-                  label_method: ->(val){ User.role_label(val) } %>
+                  label_method: ->(val){ role_label(val) } %>
     </div>
   </div>
 
