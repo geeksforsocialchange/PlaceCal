@@ -3,7 +3,6 @@
 module Admin
   class UsersController < Admin::ApplicationController
     before_action :set_user, only: %i[edit update destroy]
-    before_action :set_roles_and_tags, only: %i[new create edit assign_tag update destroy]
 
     def profile
       authorize current_user, :profile?
@@ -11,6 +10,7 @@ module Admin
 
     def update_profile
       authorize current_user, :update_profile?
+
       if update_user_profile
         bypass_sign_in(current_user)
         flash[:success] = 'User profile has been updated'
@@ -38,16 +38,15 @@ module Admin
     end
 
     def new
-      if params[:partner_id]
-        # TODO: scoping for current_user
-        @partner = Partner.where(id: params[:partner_id]).first
-      end
+      @partners = collect_partners
 
       @user = User.new
       authorize @user
     end
 
     def edit
+      @partners = collect_partners
+
       authorize @user
     end
 
@@ -97,9 +96,10 @@ module Admin
 
     private
 
-    def set_roles_and_tags
-      @tags = Tag.all
-      @roles = User.role.values
+    def collect_partners
+      return policy_scope(Partner).where(id: params[:partner_id])&.map(&:id) if params[:partner_id]
+
+      @user&.partners&.map(&:id)
     end
 
     def profile_params

@@ -10,10 +10,8 @@ module UsersHelper
               class: 'gravatar')
   end
 
-  def tooltip_label(attribute, title)
-    str = attribute 
-    str += button_tag('?', class: "btn btn-secondary", data: { toggle: "tooltip", placement: "top"  }, title: title)
-    sanitize(str, tags: %w(button), attributes: %w(class type data-toggle data-placement title))
+  def options_for_roles
+    User.role.values
   end
 
   def options_for_partners
@@ -21,10 +19,28 @@ module UsersHelper
   end
 
   def options_for_neighbourhoods
-    policy_scope(Neighbourhood).
-      where('name is not null and name != \'\'').
-      order(:name).
-      all.
-      map { |nh| [nh.contextual_name, nh.id] }
+    policy_scope(Neighbourhood)
+      .where('name is not null and name != \'\'')
+      .order(:name)
+      .all
+      .map { |nh| [nh.contextual_name, nh.id] }
+  end
+
+  def options_for_tags
+    policy_scope(Tag).order(:name).map { |tag| [tag.name, tag.id] }
+  end
+
+  def role_label(value)
+    case value.second
+    when 'root'
+      '<strong>Root</strong>: Can do everything'.html_safe
+    when 'editor'
+      '<strong>Editor</strong>: Can edit news articles'.html_safe
+    when 'citizen'
+      '<strong>Citizen</strong>: ' \
+      'Can only edit entities listed on this page'.html_safe
+    else
+      value
+    end
   end
 end

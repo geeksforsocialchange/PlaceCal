@@ -27,16 +27,15 @@ class User < ApplicationRecord
   # TODO: set up join models properly
   # has_many :partners_users, dependent: :destroy
   # has_many :partners, through: :partners_users
-  # # TODO: Rename to 'tags' on DB level
-  # has_many :tags_users, dependent: :destroy
-  # has_many :tags, through: :tags_users
 
   has_and_belongs_to_many :partners
-  has_and_belongs_to_many :tags
   has_many :sites, foreign_key: :site_admin
 
   has_many :neighbourhoods_users, dependent: :destroy
   has_many :neighbourhoods, through: :neighbourhoods_users
+
+  has_many :tags_users, dependent: :destroy
+  has_many :tags, through: :tags_users
 
   validates :email,
             presence: true,
@@ -134,6 +133,7 @@ class User < ApplicationRecord
 
   def password_required?
     return false if skip_password_validation
+
     super
   end
 end
