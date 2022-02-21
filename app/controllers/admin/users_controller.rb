@@ -97,9 +97,9 @@ module Admin
     private
 
     def collect_partners
-      return policy_scope(Partner).where(id: params[:partner_id]).map(&:id) if params[:partner_id]
+      return policy_scope(Partner).where(id: params[:partner_id])&.map(&:id) if params[:partner_id]
 
-      @user.partners.map(&:id)
+      @user&.partners&.map(&:id)
     end
 
     def profile_params
