@@ -4,7 +4,7 @@ require 'test_helper'
 
 class PartnerTest < ActiveSupport::TestCase
   setup do
-    @new_partner = FactoryBot.build(:partner, address: FactoryBot.create(:address))
+    @new_partner = build(:partner, address: create(:address))
     @user = create(:user)
   end
 
@@ -184,7 +184,7 @@ class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
   end
 
   test 'is valid with address set' do
-    address = FactoryBot.build(:address)
+    address = build(:address)
 
     @new_partner.address = address
     @new_partner.validate
@@ -193,7 +193,7 @@ class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
   end
 
   test 'is valid with both service_area and address set' do
-    address = FactoryBot.build(:address)
+    address = build(:address)
 
     @new_partner.address = address
     @new_partner.service_areas.build neighbourhood: @neighbourhood
