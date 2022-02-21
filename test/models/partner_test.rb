@@ -4,107 +4,99 @@ require 'test_helper'
 
 class PartnerTest < ActiveSupport::TestCase
   setup do
-    @partner = create(:partner)
+    @new_partner = build(:partner, address: create(:address))
     @user = create(:user)
   end
 
   test 'updates user roles when saved' do
-    @partner.users << @user
-    @partner.save
+    @new_partner.users << @user
+    @new_partner.save
     assert @user.partner_admin?
   end
 
   test 'validate name length' do
-    partner = Partner.new
-    partner.update(name: '1234')
+    @new_partner.update(name: '1234')
 
-    # The only mandatory field is name (for now)
-    assert error_map = partner.errors.where(:name, :too_short).first
+    assert error_map = @new_partner.errors.where(:name, :too_short).first
     assert_equal 'must be at least 5 characters long', error_map.options[:message]
-    assert_equal 1, partner.errors.attribute_names.length
+    assert_equal 1, @new_partner.errors.attribute_names.length
   end
 
   test 'validate uniqueness' do
-    partner = Partner.new
+    other_partner = Partner.create(name: 'Alpha Name', address: @new_partner.address)
+
     # Name must be unique
-    partner.update(name: @partner.name)
-    assert_equal ['has already been taken'], partner.errors[:name]
+    @new_partner.update(name: other_partner.name)
+    assert_equal ['has already been taken'], @new_partner.errors[:name]
   end
 
   test 'validate no summary or description' do
-    partner = Partner.new
-
-    partner.update(name: 'Test Partner', summary: '', description: '')
-    assert partner.errors.empty?
+    @new_partner.update(name: 'Test Partner', summary: '', description: '')
+    assert @new_partner.errors.empty?
   end
 
   test 'validate summary without description' do
-    partner = Partner.new
-
-    partner.update(name: 'Test Partner', summary: 'This is a test partner used for testing :)', description: '')
-    assert partner.errors.empty?, 'Should be able to submit a summary'
+    @new_partner.update(name: 'Test Partner', summary: 'This is a test partner used for testing :)', description: '')
+    assert @new_partner.errors.empty?, 'Should be able to submit a summary'
   end
 
   test 'validate description without summary' do
-    partner = Partner.new
-
-    partner.update(name: 'Test Partner', description: 'This is a test partner used for testing :)')
+    @new_partner.update(
+      name: 'Test Partner', 
+      description: 'This is a test partner used for testing :)',
+      summary: ''
+    )
     assert_equal ['cannot have a description without a summary'],
-                 partner.errors[:summary],
+                 @new_partner.errors[:summary],
                  'Should not be able to have a description without summary'
   end
 
   test 'validate description and summary' do
-    partner = Partner.new
 
-    partner.update(name: 'Test Partner',
+    @new_partner.update(name: 'Test Partner',
                    summary: 'This is a test summary wheee :)',
-                   description: 'This is a test partner used for testing :)')
-    assert partner.errors.empty?, 'Should be able to submit a summary and description'
+                   description: 'This is a test new_partner used for testing :)')
+    assert @new_partner.errors.empty?, 'Should be able to submit a summary and description'
   end
 
   test 'validate summary length' do
-    partner = Partner.new
     # We can submit a 200 character summary
-    partner.update(name: 'Test Partner', summary: ''.ljust(200, 'a'))
-    assert partner.errors.empty?, '200 character summary should be valid'
+    @new_partner.update(name: 'Test Partner', summary: ''.ljust(200, 'a'))
+    assert @new_partner.errors.empty?, '200 character summary should be valid'
 
     # But not a 201 character summary
-    partner.update(name: 'Test Partner', summary: ''.ljust(201, 'a'))
-    assert partner.errors.key?(:summary), 'maximum length is 200 characters'
+    @new_partner.update(name: 'Test Partner', summary: ''.ljust(201, 'a'))
+    assert @new_partner.errors.key?(:summary), 'maximum length is 200 characters'
   end
 
   test 'validate url' do
-    partner = Partner.new
     # Url must be valid
-    partner.update(url: 'htp://bad-domain.co')
-    assert_equal ['is invalid'], partner.errors[:url], 'Partner must have a valid url'
-    partner.update(url: 'https://good-domain.com')
-    refute partner.errors.key?(:url), 'Valid URL not saved'
+    @new_partner.update(url: 'htp://bad-domain.co')
+    assert_equal ['is invalid'], @new_partner.errors[:url], 'Partner must have a valid url'
+    @new_partner.update(url: 'https://good-domain.com')
+    refute @new_partner.errors.key?(:url), 'Valid URL not saved'
   end
 
   test 'validate twitter' do
-    partner = Partner.new
     # Twitter must be valid
-    partner.update(twitter_handle: '@asdf')
-    refute partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
-    partner.update(twitter_handle: 'asdf')
-    refute partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
-    partner.update(twitter_handle: 'https://twitter.com/asdf')
-    assert partner.errors.key?(:twitter_handle), 'Should be account name not full URL'
-    partner.update(twitter_handle: 'asd£$%dsa')
-    assert partner.errors.key?(:twitter_handle), 'Invalid Twitter account name saved'
+    @new_partner.update(twitter_handle: '@asdf')
+    refute @new_partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
+    @new_partner.update(twitter_handle: 'asdf')
+    refute @new_partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
+    @new_partner.update(twitter_handle: 'https://twitter.com/asdf')
+    assert @new_partner.errors.key?(:twitter_handle), 'Should be account name not full URL'
+    @new_partner.update(twitter_handle: 'asd£$%dsa')
+    assert @new_partner.errors.key?(:twitter_handle), 'Invalid Twitter account name saved'
   end
 
   test 'validate facebook' do
-    partner = Partner.new
     # Facebook must be valid
-    partner.update(facebook_link: 'https://facebook.com/group-name')
-    assert partner.errors.key?(:facebook_link), 'Should be page name not full URL'
-    partner.update(facebook_link: 'Group-Name')
-    assert partner.errors.key?(:facebook_link), 'invalid Facebook page name saved'
-    partner.update(facebook_link: 'GroupName')
-    refute partner.errors.key?(:facebook_link), 'Valid page name not saved'
+    @new_partner.update(facebook_link: 'https://facebook.com/group-name')
+    assert @new_partner.errors.key?(:facebook_link), 'Should be page name not full URL'
+    @new_partner.update(facebook_link: 'Group-Name')
+    assert @new_partner.errors.key?(:facebook_link), 'invalid Facebook page name saved'
+    @new_partner.update(facebook_link: 'GroupName')
+    refute @new_partner.errors.key?(:facebook_link), 'Valid page name not saved'
   end
 end
 
@@ -158,6 +150,56 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
 
     n2 = neighbourhoods[1]
     assert_equal 'Hulme Longname', n2.name
+  end
+
+end
+
+class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
+
+  setup do
+    @user = create(:root)
+    @new_partner = Partner.new(
+      name: 'Alpha name',
+      summary: 'Summary of alpha',
+    )
+    @new_partner.accessed_by_id = @user.id
+    # @partner = create(:partner)
+    @neighbourhood = create(:neighbourhood)
+  end
+
+  test "is invalid if both service area and address not present" do
+    @new_partner.validate
+
+    assert @new_partner.valid? == false, 'Partner should be invalid'
+    
+    base_errors = @new_partner.errors[:base]
+    assert base_errors.length > 0
+  end
+
+  test 'is valid with service_area set' do
+    @new_partner.service_areas.build neighbourhood: @neighbourhood
+    @new_partner.validate
+
+    assert @new_partner.valid? == true, 'Partner should valid'
+  end
+
+  test 'is valid with address set' do
+    address = build(:address)
+
+    @new_partner.address = address
+    @new_partner.validate
+
+    assert @new_partner.valid? == true, 'Partner should valid'
+  end
+
+  test 'is valid with both service_area and address set' do
+    address = build(:address)
+
+    @new_partner.address = address
+    @new_partner.service_areas.build neighbourhood: @neighbourhood
+    @new_partner.validate
+
+    assert @new_partner.valid? == true, 'Partner should valid'
   end
 
 end

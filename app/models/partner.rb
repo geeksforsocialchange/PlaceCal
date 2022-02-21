@@ -76,8 +76,9 @@ class Partner < ApplicationRecord
 
   validates_associated :address
 
-
   validate :check_ward_access
+
+  validate :must_have_address_or_service_area
 
   attr_accessor :accessed_by_id
 
@@ -200,4 +201,11 @@ class Partner < ApplicationRecord
       errors.add(:base, 'Partners cannot be created outside of your ward.')
     end
   end
+
+  def must_have_address_or_service_area
+    return if service_areas.any? || address.present?
+
+    errors.add :base, 'Partners must have at least one of service area or address'
+  end
+
 end
