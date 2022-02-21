@@ -72,4 +72,15 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     get partner_url(@partners.first.first)
     assert_response :success
   end
+
+  test 'should show partner without address' do
+    partner = create(:partner)
+    partner.service_areas.create(neighbourhood: create(:neighbourhood))
+    partner.address_id = nil
+    partner.save!
+
+    # Choose a manager to show. That will exercise more of the markup.
+    get partner_url(partner)
+    assert_response :success
+  end
 end
