@@ -39,7 +39,7 @@
         <h3>Location</h3>
         <%= f.input :strategy,
                     as: :radio_buttons,
-                    label_method: ->(val){Calendar.strategy_label(val)},
+                    label_method: ->(val){strategy_label(val)},
                     hint: 'How should PlaceCal decide where events on this calendar are held?',
                     input_html: { 'v-model': 'strategy', 'v-on:change': "updateLocation" } %>
         <div v-if="locationVisible">
