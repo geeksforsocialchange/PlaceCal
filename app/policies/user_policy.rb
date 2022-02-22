@@ -50,10 +50,10 @@ class UserPolicy < ApplicationPolicy
             ]
     if user.root?
       attrs << :role
-      attrs << :facebook_app_id
-      attrs << :facebook_app_secret
       attrs << { tag_ids: [] }
       attrs << { neighbourhood_ids: [] }
+      attrs << :facebook_app_id
+      attrs << :facebook_app_secret
     else
       attrs
     end
@@ -65,5 +65,41 @@ class UserPolicy < ApplicationPolicy
     elsif user.neighbourhood_admin?
       [ partner_ids: [] ]
     end
+  end
+
+  def permitted_attributes_for_create
+    attrs = %i[
+      first_name
+      last_name
+      email
+      phone
+      avatar
+      partner_ids
+    ]
+    root_attrs = %i[
+      role
+      tag_ids
+      neighbourhood_ids
+      facebook_app_id
+      facebook_app_secret
+    ]
+
+    return attrs + root_attrs if user.root?
+
+    attrs
+  end
+
+  def disabled_attributes_for_update
+    attrs = %i[
+      first_name
+      last_name
+      email
+      phone
+      avatar
+    ]
+
+    return [] if user.root?
+
+    attrs
   end
 end

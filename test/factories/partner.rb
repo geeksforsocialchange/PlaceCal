@@ -20,7 +20,7 @@ FactoryBot.define do
 
     address
 
-    after(:build) { |partner| partner.tags = [create(:tag)] }
+    # after(:build) { |partner| partner.tags = [create(:tag)] }
     # image nil
 
     factory :moss_side_partner, class: 'Partner' do

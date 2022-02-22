@@ -2,9 +2,14 @@
 
 <div class="behavior-trigger" data-behavior="user.form"></div>
 
-<%- disabled_fields = current_user.root? ? [] : [:first_name, :last_name, :email, :phone, :avatar] %>
+<%- disabled_fields = policy(@user).disabled_attributes_for_update %>
+<%- displayable_fields = policy(@user).permitted_attributes_for_update %>
 
-<%=  filtered_form_for(@user, method: :put, url: admin_user_path(@user), disabled: disabled_fields, display_only: policy(@user).permitted_attributes_for_update) do |f| %>
+<%=  filtered_form_for(@user,
+                       method: :put,
+                       url: admin_user_path(@user),
+                       disabled: disabled_fields,
+                       display_only: displayable_fields) do |f| %>
   <%= render 'form', f: f %>
   <%= f.submit "Update", class: "btn btn-primary " %>
   <% if policy(@user).destroy? -%>

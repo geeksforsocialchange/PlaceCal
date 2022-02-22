@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 module PartnersHelper
-
   def options_for_service_area_neighbourhoods
     # Remove the primary neighbourhood from the list
     @all_neighbourhoods.filter { |e| e.name != '' }
                        .collect { |e| { name: e.contextual_name, id: e.id } }
+  end
+
+  def options_for_tags
+    policy_scope(Tag).order(:name).pluck(:name, :id)
   end
 
   def partner_service_area_text(partner)
@@ -21,7 +24,7 @@ module PartnersHelper
       "#{head.map(&:name).join(', ')} and #{tail.name}"
     end
   end
-  
+
   def service_area_links(partner)
     partner.service_area_neighbourhoods
       .order(:name)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_21_063323) do
+ActiveRecord::Schema.define(version: 2022_02_25_162314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -156,6 +156,13 @@ ActiveRecord::Schema.define(version: 2022_02_21_063323) do
     t.index ["subject_id"], name: "index_organisation_relationships_on_subject_id"
   end
 
+  create_table "partner_tags", force: :cascade do |t|
+    t.bigint "partner_id", null: false
+    t.bigint "tag_id", null: false
+    t.index ["partner_id", "tag_id"], name: "index_partner_tags_on_partner_id_and_tag_id"
+    t.index ["tag_id", "partner_id"], name: "index_partner_tags_on_tag_id_and_partner_id"
+  end
+
   create_table "partners", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "image"
@@ -194,13 +201,6 @@ ActiveRecord::Schema.define(version: 2022_02_21_063323) do
     t.index ["place_id"], name: "index_partners_places_on_place_id"
   end
 
-  create_table "partners_tags", id: false, force: :cascade do |t|
-    t.bigint "partner_id", null: false
-    t.bigint "tag_id", null: false
-    t.index ["partner_id", "tag_id"], name: "index_partners_tags_on_partner_id_and_tag_id"
-    t.index ["tag_id", "partner_id"], name: "index_partners_tags_on_tag_id_and_partner_id"
-  end
-
   create_table "partners_users", id: :serial, force: :cascade do |t|
     t.integer "partner_id"
     t.integer "user_id"
@@ -225,13 +225,6 @@ ActiveRecord::Schema.define(version: 2022_02_21_063323) do
     t.string "slug"
     t.index ["address_id"], name: "index_places_on_address_id"
     t.index ["slug"], name: "index_places_on_slug", unique: true
-  end
-
-  create_table "places_tags", id: false, force: :cascade do |t|
-    t.bigint "place_id", null: false
-    t.bigint "tag_id", null: false
-    t.index ["place_id", "tag_id"], name: "index_places_tags_on_place_id_and_tag_id"
-    t.index ["tag_id", "place_id"], name: "index_places_tags_on_tag_id_and_place_id"
   end
 
   create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
