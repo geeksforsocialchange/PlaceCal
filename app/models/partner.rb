@@ -77,6 +77,7 @@ class Partner < ApplicationRecord
   validates_associated :address
 
   validate :check_ward_access
+  validate :check_service_area_access
 
   validate :must_have_address_or_service_area
 
@@ -193,6 +194,8 @@ class Partner < ApplicationRecord
   private
 
   def check_ward_access
+    return unless address.present?
+
     user = User.where(id: accessed_by_id).first
 
     return if user.blank?
@@ -200,6 +203,21 @@ class Partner < ApplicationRecord
     unless user.assigned_to_postcode?(address&.postcode)
       errors.add(:base, 'Partners cannot be created outside of your ward.')
     end
+  end
+
+  def check_service_area_access
+    return unless service_areas.any?
+
+    user = User.where(id: accessed_by_id).first
+    return if user.blank?
+
+    my_neighbourhoods = service_area_neighbourhoods.pluck(&:id)
+    user_neighbourhoods = user.owned_neighbourhood_ids
+
+    p_nh = Set.new(my_neighbourhoods)
+    u_nh = Set.new(user_neighbourhoods)
+
+    u_nh.superset?(p_nh)
   end
 
   def must_have_address_or_service_area

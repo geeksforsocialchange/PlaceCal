@@ -168,6 +168,7 @@ class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
   end
 
   test "is invalid if both service area and address not present" do
+    
     @new_partner.validate
 
     assert @new_partner.valid? == false, 'Partner should be invalid'
@@ -201,5 +202,61 @@ class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
 
     assert @new_partner.valid? == true, 'Partner should valid'
   end
-
 end
+
+class PartnerAddressOrServiceAreaPermissionsTest < ActiveSupport::TestCase
+  setup do
+    @user = create(:user)
+    @user_neighbourhood = create(:neighbourhood, unit_code_value: "E05011368")
+    @user.neighbourhoods << @user_neighbourhood
+  end
+
+  test "verify: address in user ward" do
+    new_partner = build(
+      :partner, 
+      address: create(
+        :address,
+        neighbourhood: @user_neighbourhood
+      )
+    )
+
+    new_partner.accessed_by_id = @user.id
+    new_partner.save!
+
+    assert new_partner.valid?
+  end
+
+  test "verify: with service area in user neighbourhoods" do
+    
+    new_partner = build(
+      :partner,
+      address: nil
+    )
+
+    new_partner.service_area_neighbourhoods << @user_neighbourhood
+    new_partner.accessed_by_id = @user.id
+    new_partner.save!
+
+    assert new_partner.valid?
+  end
+
+  test "verify: with service area contained within users neighbourhood subtrees" do
+    child_neighbourhood = create(:neighbourhood)
+    parent_neighbourhood = child_neighbourhood.parent
+
+    @user.neighbourhoods << parent_neighbourhood
+
+    new_partner = build(
+      :partner,
+      address: nil
+    )
+
+    new_partner.service_area_neighbourhoods << child_neighbourhood
+    new_partner.accessed_by_id = @user.id
+    new_partner.save!
+
+    assert new_partner.valid?
+  end
+end
+
+
