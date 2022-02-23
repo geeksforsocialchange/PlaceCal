@@ -33,7 +33,7 @@ module Admin
 
     def create
       @partner = Partner.new(permitted_attributes(Partner))
-      @partner.accessed_by_id = current_user.id
+      @partner.accessed_by_user = current_user
 
       authorize @partner
 
@@ -64,7 +64,7 @@ module Admin
     def update
       authorize @partner
 
-      @partner.accessed_by_id = current_user.id
+      @partner.accessed_by_user = current_user
 
       if @partner.update(permitted_attributes(@partner))
         flash[:success] = 'Partner was successfully updated.'
@@ -97,7 +97,7 @@ module Admin
       render and return unless request.post?
 
       @partner.attributes = setup_params
-      @partner.accessed_by_id = current_user.id
+      @partner.accessed_by_user = current_user
 
       if @partner.valid?
         redirect_to new_admin_partner_url(partner: setup_params)
