@@ -4,8 +4,8 @@ require 'test_helper'
 
 class PartnerTest < ActiveSupport::TestCase
   setup do
-    @new_partner = build(:partner, address: create(:address))
     @user = create(:user)
+    @new_partner = build(:partner, address: create(:address), accessed_by_user: @user)
   end
 
   test 'updates user roles when saved' do
@@ -23,7 +23,7 @@ class PartnerTest < ActiveSupport::TestCase
   end
 
   test 'validate uniqueness' do
-    other_partner = Partner.create(name: 'Alpha Name', address: @new_partner.address)
+    other_partner = Partner.create(name: 'Alpha Name', address: @new_partner.address, accessed_by_user: @user)
 
     # Name must be unique
     @new_partner.update(name: other_partner.name)
@@ -103,11 +103,17 @@ end
 
 class PartnerServiceAreaTest < ActiveSupport::TestCase
   setup do
-    @partner = create(:partner)
-    @neighbourhood = create(:neighbourhood)
+    @neighbourhood = neighbourhoods(:one)
+    @user = create(:user)
+    @user.neighbourhoods << @neighbourhood
+    @partner = build(:partner, address: nil, accessed_by_user: @user)
   end
 
   test 'is valid when empty' do
+    # give partner an address the user administrates
+    @partner.address = create(:address, neighbourhood: @neighbourhood)
+    @partner.save!
+
     assert @partner.valid?, 'Partner (without service_area) is not valid'
   end
 
@@ -121,7 +127,10 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
   end
 
   test 'can be assigned' do
-    @partner.service_areas.create(neighbourhood: @neighbourhood)
+    @partner.accessed_by_user = @user
+    @partner.service_area_neighbourhoods << @neighbourhood
+    @partner.save!
+
     assert @partner.valid?, 'Partner (with service_area) is not valid'
 
     neighbourhood_count = @partner.service_area_neighbourhoods.count
@@ -129,6 +138,9 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
   end
 
   test 'must be unique' do
+    @partner.address = create(:address, neighbourhood: @neighbourhood)
+    @partner.save!
+
     assert_raises ActiveRecord::RecordInvalid do 
       @partner.service_areas.create!(neighbourhood: @neighbourhood)
       @partner.service_areas.create!(neighbourhood: @neighbourhood)
@@ -137,8 +149,10 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
   end
 
   test 'can be read when present' do
-    other_neighbourhood = create(:ashton_neighbourhood)
+    @partner.address = create(:address, neighbourhood: @neighbourhood)
+    @partner.save!
 
+    other_neighbourhood = create(:ashton_neighbourhood)
     @partner.service_areas.create! neighbourhood: @neighbourhood
     @partner.service_areas.create! neighbourhood: other_neighbourhood
 
@@ -149,25 +163,33 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     assert_equal 'Ashton Hurst', n1.name
 
     n2 = neighbourhoods[1]
-    assert_equal 'Hulme Longname', n2.name
+    assert_equal 'Hulme', n2.name
   end
 
+  test 'must be within users neighbourhoods' do
+    @partner.service_areas.build neighbourhood: create(:moss_side_neighbourhood)
+    @partner.validate
+
+    assert @partner.valid? == false, 'Partner should not be valid'
+  end
 end
 
 class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
 
   setup do
     @user = create(:root)
+    @neighbourhood = neighbourhoods(:one)
+    @user.neighbourhoods << @neighbourhood
+
     @new_partner = Partner.new(
       name: 'Alpha name',
       summary: 'Summary of alpha',
+      accessed_by_user: @user
     )
-    @new_partner.accessed_by_id = @user.id
-    # @partner = create(:partner)
-    @neighbourhood = create(:neighbourhood)
   end
 
   test "is invalid if both service area and address not present" do
+    
     @new_partner.validate
 
     assert @new_partner.valid? == false, 'Partner should be invalid'
@@ -180,16 +202,16 @@ class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
     @new_partner.service_areas.build neighbourhood: @neighbourhood
     @new_partner.validate
 
-    assert @new_partner.valid? == true, 'Partner should valid'
+    assert @new_partner.valid? == true, 'Partner should be valid'
   end
 
   test 'is valid with address set' do
-    address = build(:address)
+    address = build(:address, neighbourhood: @neighbourhood)
 
     @new_partner.address = address
-    @new_partner.validate
+    @new_partner.save!
 
-    assert @new_partner.valid? == true, 'Partner should valid'
+    assert @new_partner.valid? == true, 'Partner should be valid'
   end
 
   test 'is valid with both service_area and address set' do
@@ -201,5 +223,56 @@ class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
 
     assert @new_partner.valid? == true, 'Partner should valid'
   end
-
 end
+
+class PartnerAddressOrServiceAreaPermissionsTest < ActiveSupport::TestCase
+  setup do
+    @user = create(:user)
+    @user_neighbourhood =  neighbourhoods(:one)
+    
+    @user.neighbourhoods << @user_neighbourhood
+
+    @new_partner = build(
+      :partner, 
+      address: nil,
+      accessed_by_user: @user
+    )
+  end
+
+  test "valid if address is in user ward" do
+    @new_partner.address = create(:address, neighbourhood: @user_neighbourhood)
+    @new_partner.save!
+
+    assert @new_partner.valid?
+  end
+
+  test "verify: with service area in user neighbourhoods" do
+    @new_partner.service_area_neighbourhoods << @user_neighbourhood
+    @new_partner.save!
+
+    assert @new_partner.valid?
+  end
+
+  test "verify: with service area contained within users neighbourhood subtrees" do
+    child_neighbourhood = create(:neighbourhood)
+    parent_neighbourhood = child_neighbourhood.parent
+
+    @user.neighbourhoods << parent_neighbourhood
+
+    @new_partner.service_area_neighbourhoods << child_neighbourhood
+    @new_partner.save!
+
+    assert @new_partner.valid?
+  end
+
+  test "with a service area not in user's ward set" do
+    other_neighbourhood = neighbourhoods(:two)
+
+    @new_partner.service_area_neighbourhoods << @user_neighbourhood
+    @new_partner.service_area_neighbourhoods << other_neighbourhood
+
+    assert @new_partner.valid? == false, 'Users cannot create service areas outside of their neighbourhoods'
+  end
+end
+
+

@@ -77,10 +77,11 @@ class Partner < ApplicationRecord
   validates_associated :address
 
   validate :check_ward_access
+  validate :check_service_area_access
 
   validate :must_have_address_or_service_area
 
-  attr_accessor :accessed_by_id
+  attr_accessor :accessed_by_user
 
   mount_uploader :image, ImageUploader
 
@@ -193,12 +194,27 @@ class Partner < ApplicationRecord
   private
 
   def check_ward_access
-    user = User.where(id: accessed_by_id).first
+    return if accessed_by_user.nil?
+    return unless address.present?
 
-    return if user.blank?
+    unless accessed_by_user.assigned_to_postcode?(address&.postcode)
+      errors.add :base, 'Partners cannot have an address outside of your ward.'
+    end
+  end
 
-    unless user.assigned_to_postcode?(address&.postcode)
-      errors.add(:base, 'Partners cannot be created outside of your ward.')
+  def check_service_area_access
+    return if accessed_by_user.nil?
+
+    my_neighbourhoods = service_areas.map(&:neighbourhood_id)
+    return if my_neighbourhoods.empty?
+
+    user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
+
+    partner_neighbourhoods_set = Set.new(my_neighbourhoods)
+    user_neighbourhoods_set = Set.new(user_neighbourhoods)
+
+    unless user_neighbourhoods_set.superset?(partner_neighbourhoods_set)
+      errors.add :base, 'Partners cannot have a service area outside of your ward.'
     end
   end
 
