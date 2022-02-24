@@ -210,10 +210,10 @@ class Partner < ApplicationRecord
 
     user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
 
-    p_nh = Set.new(my_neighbourhoods)
-    u_nh = Set.new(user_neighbourhoods)
+    partner_neighbourhoods_set = Set.new(my_neighbourhoods)
+    user_neighbourhoods_set = Set.new(user_neighbourhoods)
 
-    unless u_nh.superset?(p_nh)
+    unless user_neighbourhoods_set.superset?(partner_neighbourhoods_set)
       errors.add :base, 'Partners cannot have a service area outside of your ward.'
     end
   end

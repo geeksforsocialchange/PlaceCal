@@ -4,9 +4,8 @@ require 'test_helper'
 
 class PartnerTest < ActiveSupport::TestCase
   setup do
-    @new_partner = build(:partner, address: create(:address))
     @user = create(:user)
-    @new_partner.accessed_by_user = @user
+    @new_partner = build(:partner, address: create(:address), accessed_by_user: @user)
   end
 
   test 'updates user roles when saved' do
@@ -111,7 +110,7 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
   end
 
   test 'is valid when empty' do
-    # give partner an address the user admins
+    # give partner an address the user administrates
     @partner.address = create(:address, neighbourhood: @neighbourhood)
     @partner.save!
 
