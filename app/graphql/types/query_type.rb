@@ -41,6 +41,21 @@ module Types
 
     ####
 
+    field :site, SiteType, "Find Site by ID" do
+      argument :id, ID
+    end
+
+    field :all_sites, [SiteType]
+
+    def site(id:)
+      Site.find(id)
+    end
+
+    def all_sites
+      Site.all
+    end
+
+    ####
     field :ping, String, null: false, description: "Ping server"
 
     def ping
