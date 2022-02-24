@@ -10,6 +10,10 @@ module Types
     field :domain, String
     field :description, String
 
+    field :neighbourhoods, [NeighbourhoodType]
+
+    # field :partners, [PartnerType]
+    
     # t.datetime "created_at", null: false
     # t.datetime "updated_at", null: false
     # t.bigint "site_admin_id"
