@@ -117,4 +117,31 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     # assert_equal(permitted_records(@multi_admin, Partner).sort_by(&:id),
     #              [@partner, @partner_two, @ashton_partner])
   end
+
+  def test_create_with_partner_permissions
+    user = create(:user)
+
+    # user with no partners
+    assert denies_access(user, Partner, :create)
+
+    neighbourhood = create(:neighbourhood)
+    user.neighbourhoods << neighbourhood
+
+    # can create partners if user has neighbourhoods
+    assert allows_access(user, Partner, :create)
+  end
+
+  def test_update_with_partner_permissions
+    user = create(:user)
+    partner = create(:partner)
+
+    # denies user with no partners
+    assert denies_access(user, partner, :update)
+    
+    # can update partners user has access to
+    user.partners << partner
+    assert allows_access(user, partner, :update)
+  end
 end
+
+
