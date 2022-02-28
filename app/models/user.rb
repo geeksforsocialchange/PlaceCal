@@ -80,10 +80,14 @@ class User < ApplicationRecord
     owned_neighbourhoods.collect(&:id)
   end
 
-  def can_alter_neighbourhood?(neighbourhood)
-    owned_neighbourhoods.include? neighbourhood
+  def can_alter_neighbourhood_by_id?(neighbourhood_id)
+    owned_neighbourhood_ids.include? neighbourhood_id
   end
 
+  def can_alter_partner_by_id?(partner_id)
+    partners.pluck(:id).include? partner_id
+  end
+  
   def neighbourhood_admin?
     neighbourhoods.any?
   end
