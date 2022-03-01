@@ -24,3 +24,14 @@
     <%= admin_nav_link('Tags', admin_tags_path, 'tags') if policy(Tag).index? %>
   <% end %>
 </ul>
+
+<br><br><br>
+
+<p class="small text-info ml-3">
+<i class="fa fa-bug"></i> <%= link_to "Report a bug", "https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md" %>
+
+
+<% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'development' %>
+<br><i class="fa fa-git"></i> Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
+
+</p>

@@ -86,12 +86,12 @@
 
       <div class="footer__item footer__impressum">
         <p>
-          PlaceCal ℅‎ PHASE<br>
+          PlaceCal ℅ PHASE<br>
           Chatham 510, Manchester School of Architecture<br>
           Cavendish Street, Manchester, M15 6BR
         </p>
         <p>
-          © 2017-18 <%= link_to "Geeks For Social Change", "http://gfsc.studio" %><br>
+          © 2017-<%= Time.now.strftime('%y') %> <%= link_to "Geeks For Social Change", "http://gfsc.studio" %><br>
           <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'main' %>
           Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
         </p>
