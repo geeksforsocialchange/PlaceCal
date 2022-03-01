@@ -35,12 +35,20 @@ class UserTest < ActiveSupport::TestCase
     ward     = owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.first
 
     # We do not have permissions to edit the country!
-    assert (@neighbourhood_region_admin.can_alter_neighbourhood? region.parent) == false
+    assert (@neighbourhood_region_admin.can_alter_neighbourhood_by_id? region.parent.id) == false
 
     # We should have permissions to edit a county, district, or ward neighbourhood
-    assert @neighbourhood_region_admin.can_alter_neighbourhood?(county)
-    assert @neighbourhood_region_admin.can_alter_neighbourhood?(district)
-    assert @neighbourhood_region_admin.can_alter_neighbourhood?(ward)
+    assert @neighbourhood_region_admin.can_alter_neighbourhood_by_id?(county.id)
+    assert @neighbourhood_region_admin.can_alter_neighbourhood_by_id?(district.id)
+    assert @neighbourhood_region_admin.can_alter_neighbourhood_by_id?(ward.id)
+  end
+
+  test 'can edit partners' do
+    user = create(:user)
+    partner = create(:partner)
+    user.partners << partner
+
+    assert user.can_alter_partner_by_id?(partner.id)
   end
 
   test 'updates user role on save' do
