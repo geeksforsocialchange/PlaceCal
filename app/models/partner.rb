@@ -88,9 +88,11 @@ class Partner < ApplicationRecord
   scope :recently_updated, -> { order(updated_at: desc) }
 
   scope :for_site, lambda { |site|
-    joins(:address).where(addresses: {
-                            neighbourhood: site.neighbourhoods.map(&:subtree).flatten
-                          })
+    site_neighbourhood_ids = site.neighbourhoods.map(&:subtree).flatten.map(&:id)
+
+    joins('left join addresses on addresses.id = partners.address_id')
+      .joins('left join service_areas on partners.id = service_areas.partner_id')
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', site_neighbourhood_ids, site_neighbourhood_ids)
   }
 
   scope :of_tag, ->(tag) { joins(:partners_tags).where(partners_tags: { tag: tag }) }
