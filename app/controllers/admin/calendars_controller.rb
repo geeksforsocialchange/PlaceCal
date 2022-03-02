@@ -33,6 +33,7 @@ module Admin
 
     def edit
       @versions = @calendar.recent_activity
+      @partner = @calendar.partner
     end
 
     def show

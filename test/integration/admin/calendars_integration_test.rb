@@ -89,7 +89,7 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
       assert_select 'option', count: 3
     end
 
-    assert_select 'option', @partner.name, count: 1
+    assert_select 'option[selected="selected"]', @partner.name
     assert_select 'option', @partner_two.name, count: 1
   end
 
