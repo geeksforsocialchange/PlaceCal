@@ -186,3 +186,49 @@ Geocoder::Lookup::Test.add_stub(
       } }
   ]
 )
+
+# this compliments the neighbourhood fixture in test/fixtures/neighbourhood.yml
+Geocoder::Lookup::Test.add_stub(
+  'M16 7BA', [
+    {
+      'postcode' => 'M16 7BA',
+      'quality' => 1,
+      'eastings' => 383321,
+      'northings' => 395843,
+      'country' => 'England',
+      'nhs_ha' => 'North West',
+      'longitude' => -2.252664,
+      'latitude' => 53.459069,
+      'european_electoral_region' => 'North West',
+      'primary_care_trust' => 'Manchester Teaching',
+      'region' => 'North West',
+      'lsoa' => 'Manchester 024B',
+      'msoa' => 'Manchester 024',
+      'incode' => '7BA',
+      'outcode' => 'M16',
+      'parliamentary_constituency' => 'Manchester Central',
+      'admin_district' => 'Manchester',
+      'parish' => 'Manchester, unparished area',
+      'admin_county' => nil,
+      'admin_ward' => 'Moss Side',
+      'ced' => nil,
+      'ccg' => 'NHS Manchester',
+      'nuts' => 'Manchester',
+      'codes' => {
+        'admin_district' => 'E08000003',
+        'admin_county' => 'E99999999',
+        'admin_ward' => 'E05011372',
+        'parish' => 'E43000157',
+        'parliamentary_constituency' => 'E14000807',
+        'ccg' => 'E38000217',
+        'ccg_id' => '14L',
+        'ced' => 'E99999999',
+        'nuts' => 'TLD33',
+        'lsoa' => 'E01005243',
+        'msoa' => 'E02001068',
+        'lau2' => 'E08000003'
+      }
+    }
+  ]
+)
+
