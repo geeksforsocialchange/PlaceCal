@@ -172,6 +172,20 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
 
     assert @partner.valid? == false, 'Partner should not be valid'
   end
+
+  test 'can be set by root users' do
+    root_user = create(:root)
+    other_neighbourhood = create(:moss_side_neighbourhood)
+
+    @partner.accessed_by_user = root_user
+    @partner.service_area_neighbourhoods << other_neighbourhood
+    @partner.save!
+
+    assert @partner.valid?, 'Partner (with service_area) should be valid'
+
+    neighbourhood_count = @partner.service_area_neighbourhoods.count
+    assert_equal 1, neighbourhood_count, 'count neighbourhoods'
+  end
 end
 
 class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
