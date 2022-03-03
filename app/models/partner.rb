@@ -205,7 +205,7 @@ class Partner < ApplicationRecord
   end
 
   def check_service_area_access
-    return if accessed_by_user.nil?
+    return if accessed_by_user.nil? || accessed_by_user.root?
 
     my_neighbourhoods = service_areas.map(&:neighbourhood_id)
     return if my_neighbourhoods.empty?
