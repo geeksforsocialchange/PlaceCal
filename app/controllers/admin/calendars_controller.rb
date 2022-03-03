@@ -22,18 +22,18 @@ module Admin
     end
 
     def new
+      @calendar = Calendar.new
+
       if params[:partner_id]
         # TODO: better calendar-to-user scoping
         # @partner = current_user.partners.where(id: params[:partner_id]).first
-        @partner = policy_scope(Partner).where(id: params[:partner_id]).first
+        @calendar.partner = policy_scope(Partner).where(id: params[:partner_id]).first
       end
-      @calendar = Calendar.new
       authorize @calendar
     end
 
     def edit
       @versions = @calendar.recent_activity
-      @partner = @calendar.partner
     end
 
     def show
