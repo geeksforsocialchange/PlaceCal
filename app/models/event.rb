@@ -16,6 +16,8 @@ class Event < ApplicationRecord
 
   before_save :sanitize_rrule
 
+  # has_many :service_areas, through: :partner
+
   # Find by day
   scope :find_by_day, lambda { |day|
     where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day)
@@ -30,11 +32,13 @@ class Event < ApplicationRecord
 
   # Filter by Site
   scope :for_site, lambda { |site|
-    joins(:address).where(addresses: {
-      neighbourhood: site.neighbourhoods.map { |ward| ward.subtree }.flatten
-    })
-  }
+    site_neighbourhood_ids = site.neighbourhoods.map(&:subtree).flatten.map(&:id)
 
+    joins(:address)
+      .joins('left join partners on events.partner_id = partners.id')
+      .joins('left join service_areas on partners.id = service_areas.partner_id')
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', site_neighbourhood_ids, site_neighbourhood_ids)
+  }
 
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
