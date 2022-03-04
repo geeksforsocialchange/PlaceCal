@@ -7,7 +7,8 @@ class TagDatatable < Datatable
       name: { source: 'Tag.name' },
       slug: { source: 'Tag.slug' },
       description: { source: 'Tag.description' },
-      edit_permission: { source: 'Tag.edit_permission' }
+      edit_permission: { source: 'Tag.edit_permission' },
+      updated_at: { source: 'Tag.updated_at' }
     }
   end
 
@@ -18,7 +19,8 @@ class TagDatatable < Datatable
         name: link_to(record.name, edit_admin_tag_path(record)),
         slug: record.slug,
         description: record.description,
-        edit_permission: record.edit_permission
+        edit_permission: record.edit_permission,
+        updated_at: record.updated_at
       }
     end
   end

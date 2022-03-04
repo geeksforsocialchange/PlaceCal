@@ -8,7 +8,8 @@ class ArticleDatatable < Datatable
       title: { source: 'Article.title' },
       body: { source: 'Article.body' },
       published_at: { source: 'Article.published_at' },
-      is_draft: { source: 'Article.is_draft' }
+      is_draft: { source: 'Article.is_draft' },
+      updated_at: { source: 'Article.updated_at' }
     }
   end
 
@@ -20,7 +21,8 @@ class ArticleDatatable < Datatable
         title: link_to(record.title, edit_admin_article_path(record)),
         body: record.body,
         published_at: record.published_at,
-        is_draft: record.is_draft
+        is_draft: record.is_draft,
+        updated_at: record.updated_at
       }
     end
   end

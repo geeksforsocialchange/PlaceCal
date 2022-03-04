@@ -8,7 +8,8 @@ class CalendarDatatable < Datatable
       partner: { source: 'Calendar.partner', searchable: false, orderable: false },
       place: { source: 'Calendar.place', searchable: false, orderable: false },
       is_working: { source: 'Calendar.is_working' },
-      last_import_at: { source: 'Calendar.last_import_at' }
+      last_import_at: { source: 'Calendar.last_import_at' },
+      updated_at: { source: 'Calendar.updated_at' }
     }
   end
 
@@ -20,7 +21,8 @@ class CalendarDatatable < Datatable
         partner: record.partner,
         place: record.place,
         is_working: record.is_working,
-        last_import_at: record.last_import_at
+        last_import_at: record.last_import_at,
+        updated_at: record.updated_at
       }
     end
   end
