@@ -1,32 +1,51 @@
+<%- disabled_fields = policy(@tag).disabled_fields %>
 <%= simple_form_for @tag, url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
   <%= render_component "error", object: @tag %>
 
-  <%= f.input :name, class: "form-control" %>
+  <%= f.input :name, class: 'form-control',
+              disabled: disabled_fields.include?(:name) %>
 
-  <%= f.input :slug, class: "form-control" %>
+  <%= f.input :slug, class: 'form-control',
+              disabled: disabled_fields.include?(:slug) %>
 
-  <%= f.input :description, class: "form-control" %>
+  <%= f.input :description, class: 'form-control',
+              disabled: disabled_fields.include?(:description) %>
 
   <%= f.input :edit_permission,
               as: :radio_buttons,
-              label_method: ->(val){ Tag.edit_permission_label(val) },
-              hint: 'Users with this role will be granted access to assign this tag' %>
+              label_method: ->(val){ edit_permission_label(val) },
+              hint: 'Users with this role will be granted access to assign this tag',
+              disabled: disabled_fields.include?(:edit_permission) %>
 
-  <%# = f.association :partner, collection: @partners %>
-  <% unless @tag.new_record? %>
-    <h2>Partners</h2>
-    <% unless @partners.empty? %>
-      <ul>
-        <% @partners.each do |partner| %>
-          <li><%= partner.name %></li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p>No partners yet.</p>
-    <% end %>
+  <h2>Tagged Partners</h2>
+  <p>Apply this tag to the given partners</p>
+  <% if disabled_fields.include?(:partner_ids) %>
+    <%# # Create a dummy field, because f.assoc disappears %>
+    <%= f.input :partners, collection: options_for_partners,
+        input_html: { class: 'form-control select2' }, disabled: true %>
+  <% else %>
+    <%= f.association :partners, collection: options_for_partners,
+        input_html: { class: 'form-control select2' } %>
   <% end %>
 
-  <%= f.submit "Save", class: "btn btn-primary" %><br><br>
-  <%# TODO: work out why this is failing %>
-  <%# button_to "Destroy Tag", @tag, method: :delete, class: "btn btn-danger" %>
+  <h2>Assigned Users</h2>
+  <p>Grant permission to assign this tag</p>
+  <% if disabled_fields.include?(:user_ids) %>
+    <%# # Create a dummy field, because f.assoc disappears %>
+    <%= f.association :users,
+        input_html: { class: 'form-control select2' }, disabled: true %>
+  <% else %>
+    <%= f.association :users, collection: options_for_users,
+        input_html: { class: 'form-control select2' } %>
+  <% end %>
+
+  <span>
+    <br>
+    <br>
+    <%= f.submit "Save", class: "btn btn-primary" %>
+    <% if !@tag.new_record? && policy(@tag).destroy? %>
+      <%= link_to "Destroy", admin_tag_path(@tag), method: :delete, class: "ml-3 btn btn-danger" %>
+    <% end %>
+  </span>
+  <br>
 <% end %>

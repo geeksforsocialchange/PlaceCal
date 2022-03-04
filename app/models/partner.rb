@@ -9,10 +9,12 @@ class Partner < ApplicationRecord
 
   # Associations
   has_and_belongs_to_many :users
-  has_and_belongs_to_many :tags, validate: true
   has_many :calendars, dependent: :destroy
   has_many :events
   belongs_to :address, optional: true
+
+  has_many :partner_tags, dependent: :destroy
+  has_many :tags, through: :partner_tags
 
   has_many :service_areas, dependent: :destroy
   has_many :service_area_neighbourhoods,
@@ -95,7 +97,7 @@ class Partner < ApplicationRecord
       .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', site_neighbourhood_ids, site_neighbourhood_ids)
   }
 
-  scope :of_tag, ->(tag) { joins(:partners_tags).where(partners_tags: { tag: tag }) }
+  scope :of_tag, ->(tag) { joins(:partner_tags).where(partner_tags: { tag: tag }) }
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future

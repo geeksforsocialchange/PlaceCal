@@ -9,9 +9,9 @@ FactoryBot.define do
     description { 'I am a tag' }
     edit_permission { 'root' }
 
-    factory :tag_perms_all, class: :tag do
-      description { 'I am a public tag' }
-      edit_permission { 'public' }
+    factory :tag_public, class: :tag do
+      description { 'I am a tag everyone can edit' }
+      edit_permission { 'all' }
     end
   end
 end

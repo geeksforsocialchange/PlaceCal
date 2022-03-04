@@ -31,7 +31,7 @@ module Admin
     end
 
     def create
-      @tag = Tag.new(tag_params)
+      @tag = Tag.new(permitted_attributes(Tag))
       authorize @tag
       respond_to do |format|
         if @tag.save
@@ -44,7 +44,7 @@ module Admin
         else
           format.html do
             flash.now[:danger] = 'Tag was not created'
-            render :new 
+            render :new
           end
 
           format.json { render json: @tag.errors, status: :unprocessable_entity }
@@ -54,7 +54,7 @@ module Admin
 
     def update
       authorize @tag
-      if @tag.update(tag_params)
+      if @tag.update(permitted_attributes(@tag))
         flash[:success] = 'Tag was saved successfully'
         redirect_to admin_tags_path
 
@@ -81,10 +81,6 @@ module Admin
 
     def set_tag
       @tag = Tag.friendly.find(params[:id])
-    end
-
-    def tag_params
-      params.require(:tag).permit(:name, :slug, :description)
     end
   end
 end

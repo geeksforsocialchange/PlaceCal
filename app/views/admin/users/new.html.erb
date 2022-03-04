@@ -1,8 +1,11 @@
 <h1 class="page-header">New User</h1>
 
 <div class="behavior-trigger" data-behavior="user.form"></div>
-<%= filtered_form_for([:admin, @user], display_only: policy(@user).permitted_attributes) do |f| %>
+<%- display_fields = policy(@current_user).permitted_attributes_for_create %>
 
+<%= filtered_form_for([:admin, @user],
+                      method: :put,
+                      display_only: display_fields) do |f| %>
   <%= render 'form', f: f %>
   <%= f.submit "Invite", class: "btn btn-primary " %>
 <% end %>

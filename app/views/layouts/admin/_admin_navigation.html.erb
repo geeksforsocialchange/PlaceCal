@@ -14,14 +14,14 @@
   <%= admin_nav_link('Sites', admin_sites_path, 'sitemap') if policy(Site).index? %>
   <%= admin_nav_link('Neighbourhoods', admin_neighbourhoods_path, 'location-arrow') if policy(Neighbourhood).index? %>
   <%= admin_nav_link('Articles', admin_articles_path, 'newspaper-o') if policy(Article).index? %>
+  <%= admin_nav_link('Tags', admin_tags_path, 'tags') if policy(Tag).index? %>
 
-  <% if policy(Collection).index? || policy(Supporter).index? || policy(Tag).index? %>
+  <% if policy(Collection).index? || policy(Supporter).index? %>
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
       <span>In development</span>
     </h6>
     <%= admin_nav_link('Collections', admin_collections_path, 'list') if policy(Collection).index? %>
     <%= admin_nav_link('Supporters', admin_supporters_path, 'credit-card') if policy(Supporter).index? %>
-    <%= admin_nav_link('Tags', admin_tags_path, 'tags') if policy(Tag).index? %>
   <% end %>
 </ul>
 

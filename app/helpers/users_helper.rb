@@ -23,11 +23,11 @@ module UsersHelper
       .where('name is not null and name != \'\'')
       .order(:name)
       .all
-      .map { |nh| [nh.contextual_name, nh.id] }
+      .collect { |ward| [ward.contextual_name, ward.id] }
   end
 
   def options_for_tags
-    policy_scope(Tag).order(:name).map { |tag| [tag.name, tag.id] }
+    policy_scope(Tag).order(:name).pluck(:name, :id)
   end
 
   def role_label(value)
