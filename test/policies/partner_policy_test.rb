@@ -102,22 +102,6 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     # assert allows_access(@multi_admin, @partner_two, :destroy)
   end
 
-  def test_scope
-    # We sort these because for some reason permitted records sometimes returns results back in a different order here
-    # assert_equal(permitted_records(@root, Partner).sort_by(&:id),
-    #              [@partner, @partner_two, @ashton_partner])
-    # assert_equal(permitted_records(@correct_partner_admin, Partner).sort_by(&:id),
-    #              [@partner])
-    # assert_equal(permitted_records(@wrong_partner_admin, Partner).sort_by(&:id),
-    #              [@partner_two])
-    # assert_equal(permitted_records(@correct_ward_admin, Partner).sort_by(&:id),
-    #              [@partner, @partner_two])
-    # assert_equal(permitted_records(@correct_district_admin, Partner).sort_by(&:id),
-    #              [@partner, @partner_two])
-    # assert_equal(permitted_records(@multi_admin, Partner).sort_by(&:id),
-    #              [@partner, @partner_two, @ashton_partner])
-  end
-
   def test_create_with_partner_permissions
     user = create(:user)
 
@@ -144,4 +128,59 @@ class PartnerPolicyTest < ActiveSupport::TestCase
   end
 end
 
+class TestPartnerScope < ActiveSupport::TestCase
+  setup do
+    @other_neighbourhood = neighbourhoods(:two)
+
+    @normal_user = create(:citizen)
+    @partner = create(:partner)
+  end
+
+  test "returns nothing" do
+    assert permitted_records(@normal_user, Partner) == []
+  end
+
+  test "scope on ownership" do # test_scope_for_ownership
+    @partner.users << @normal_user
+
+    partner_2 = create(:partner, address: create(:address, neighbourhood: @other_neighbourhood))
+    partner_2.users << @normal_user
+
+    partner_3 = create(:partner, address: create(:address, neighbourhood: @other_neighbourhood))
+    partner_3.users << @normal_user
+
+    found_partners = permitted_records(@normal_user, Partner)
+    assert found_partners.count == 3
+  end
+
+  test "scope on address" do # test_scope_for_address
+    neighbourhood = neighbourhoods(:one)
+    @normal_user.neighbourhoods << neighbourhood
+
+    @partner.address.neighbourhood = neighbourhood
+
+    partner_2 = create(:partner, address: create(:address, neighbourhood: neighbourhood))
+    partner_3 = create(:partner, address: create(:address, neighbourhood: neighbourhood))
+    partner_4 = create(:partner, address: create(:address, neighbourhood: neighbourhood))
+
+    found_partners = permitted_records(@normal_user, Partner)
+    assert found_partners.count == 4
+  end
+
+  test "scope on service areas" do # test_scope_for_service_areas
+    neighbourhood = neighbourhoods(:one)
+    @normal_user.neighbourhoods << neighbourhood
+
+    @partner.service_areas.create neighbourhood: neighbourhood
+
+    4.times do
+      partner = build(:partner, address: nil)
+      partner.service_areas.build neighbourhood: neighbourhood
+      partner.save!
+    end
+
+    found_partners = permitted_records(@normal_user, Partner)
+    assert found_partners.count == 5
+  end
+end
 
