@@ -6,7 +6,7 @@ module Admin
     before_action :set_variables_for_sites_neighbourhoods_selection, only: [:new, :edit]
 
     def index
-      @sites = policy_scope(Site).order(:name)
+      @sites = policy_scope(Site).order({ :updated_at => :desc }, :name)
       authorize @sites
 
       respond_to do |format|

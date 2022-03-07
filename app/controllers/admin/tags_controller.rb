@@ -5,7 +5,7 @@ module Admin
     before_action :set_tag, only: %i[show edit update destroy]
 
     def index
-      @tags = policy_scope(Tag).order(:name)
+      @tags = policy_scope(Tag).order({ :updated_at => :desc }, :name)
       authorize @tags
 
       respond_to do |format|

@@ -9,7 +9,7 @@ module Admin
     before_action :set_service_area_map_ids, only: %i[new edit]
 
     def index
-      @partners = policy_scope(Partner).order(:name).includes(:address)
+      @partners = policy_scope(Partner).order({ :updated_at => :desc }, :name).includes(:address)
 
       respond_to do |format|
         format.html

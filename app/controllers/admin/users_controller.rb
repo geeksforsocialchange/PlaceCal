@@ -23,7 +23,7 @@ module Admin
     end
 
     def index
-      @users = policy_scope(User).order(:last_name, :first_name)
+      @users = policy_scope(User).order({ :updated_at => :desc }, :last_name, :first_name)
       authorize current_user
 
       respond_to do |format|
