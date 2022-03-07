@@ -102,6 +102,22 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     # assert allows_access(@multi_admin, @partner_two, :destroy)
   end
 
+  def test_scope
+    # We sort these because for some reason permitted records sometimes returns results back in a different order here
+    # assert_equal(permitted_records(@root, Partner).sort_by(&:id),
+    #              [@partner, @partner_two, @ashton_partner])
+    # assert_equal(permitted_records(@correct_partner_admin, Partner).sort_by(&:id),
+    #              [@partner])
+    # assert_equal(permitted_records(@wrong_partner_admin, Partner).sort_by(&:id),
+    #              [@partner_two])
+    # assert_equal(permitted_records(@correct_ward_admin, Partner).sort_by(&:id),
+    #              [@partner, @partner_two])
+    # assert_equal(permitted_records(@correct_district_admin, Partner).sort_by(&:id),
+    #              [@partner, @partner_two])
+    # assert_equal(permitted_records(@multi_admin, Partner).sort_by(&:id),
+    #              [@partner, @partner_two, @ashton_partner])
+  end
+
   def test_create_with_partner_permissions
     user = create(:user)
 
@@ -130,10 +146,8 @@ end
 
 class TestPartnerScope < ActiveSupport::TestCase
   setup do
-    @other_neighbourhood = neighbourhoods(:two)
-
     @normal_user = create(:citizen)
-    @partner = create(:partner)
+    @basic_partner = create(:partner)
   end
 
   test "returns nothing" do
@@ -141,37 +155,50 @@ class TestPartnerScope < ActiveSupport::TestCase
   end
 
   test "scope on ownership" do # test_scope_for_ownership
-    @partner.users << @normal_user
+    # user doesn't own this
+    other_neighbourhood = neighbourhoods(:two)
+    not_user_address = create(:address, neighbourhood: other_neighbourhood)
 
-    partner_2 = create(:partner, address: create(:address, neighbourhood: @other_neighbourhood))
-    partner_2.users << @normal_user
+    # set up some partners that are not in the users neighbourhoods
+    owned_partner_2 = create(:partner, address: not_user_address)
+    owned_partner_3 = create(:partner, address: not_user_address)
 
-    partner_3 = create(:partner, address: create(:address, neighbourhood: @other_neighbourhood))
-    partner_3.users << @normal_user
+    # let the user own these partners
+    @basic_partner.users  << @normal_user
+    owned_partner_2.users << @normal_user
+    owned_partner_3.users << @normal_user
 
+    # now we should see all the partners the user owns
     found_partners = permitted_records(@normal_user, Partner)
     assert found_partners.count == 3
   end
 
   test "scope on address" do # test_scope_for_address
+
+    # give the user a neighbourhood to admin
     neighbourhood = neighbourhoods(:one)
     @normal_user.neighbourhoods << neighbourhood
 
-    @partner.address.neighbourhood = neighbourhood
+    # create some partners with the users' address
+    @basic_partner.address.neighbourhood = neighbourhood
 
-    partner_2 = create(:partner, address: create(:address, neighbourhood: neighbourhood))
-    partner_3 = create(:partner, address: create(:address, neighbourhood: neighbourhood))
-    partner_4 = create(:partner, address: create(:address, neighbourhood: neighbourhood))
+    user_address = create(:address, neighbourhood: neighbourhood)
+    partner_2 = create(:partner, address: user_address)
+    partner_3 = create(:partner, address: user_address)
+    partner_4 = create(:partner, address: user_address)
 
+    # now we should get all the partners in this users neighbourhoods
     found_partners = permitted_records(@normal_user, Partner)
     assert found_partners.count == 4
   end
 
   test "scope on service areas" do # test_scope_for_service_areas
+    # give the user a neighbourhood to admin
     neighbourhood = neighbourhoods(:one)
     @normal_user.neighbourhoods << neighbourhood
 
-    @partner.service_areas.create neighbourhood: neighbourhood
+    # create some service areas
+    @basic_partner.service_areas.create neighbourhood: neighbourhood
 
     4.times do
       partner = build(:partner, address: nil)
@@ -179,6 +206,8 @@ class TestPartnerScope < ActiveSupport::TestCase
       partner.save!
     end
 
+    # we should be able to see all the partners with service areas
+    # in the users' neighbourhoods
     found_partners = permitted_records(@normal_user, Partner)
     assert found_partners.count == 5
   end
