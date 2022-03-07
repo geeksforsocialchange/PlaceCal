@@ -64,9 +64,15 @@ class PartnerPolicy < ApplicationPolicy
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
 
-        scope.left_outer_joins(:users, :address, :service_areas)
-          .where('partners_users.user_id = ? OR addresses.neighbourhood_id IN (?) OR service_areas.neighbourhood_id IN (?)',
-                 user.id, user_neighbourhood_ids, user_neighbourhood_ids)
+        clause = <<-SQL
+          partners_users.user_id = ?
+            OR addresses.neighbourhood_id IN (?)
+            OR service_areas.neighbourhood_id IN (?)
+        SQL
+
+        scope
+          .left_outer_joins(:users, :address, :service_areas)
+          .where(clause, user.id, user_neighbourhood_ids, user_neighbourhood_ids)
           .distinct
       end
     end
