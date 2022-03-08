@@ -100,6 +100,7 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get new_admin_user_path(@citizen)
     assert_response :success
 
+    assert_select 'input[type="hidden"][name="_method"][value="put"]', count: 0
     assert_select 'h1', 'New User'
     assert_select 'label', 'First name'
     assert_select 'label', 'Last name'
@@ -120,6 +121,7 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get edit_admin_user_path(@citizen)
     assert_response :success
 
+    assert_select 'input[type="hidden"][name="_method"][value="put"]', count: 1
     assert_select 'h1', "Edit User: #{@citizen.full_name}"
     assert_select 'label', 'First name'
     assert_select 'label', 'Last name'
