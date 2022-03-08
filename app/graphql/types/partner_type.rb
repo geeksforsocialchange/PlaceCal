@@ -9,6 +9,16 @@ module Types
     field :summary, String
 
     field :url, String
+
+    field :contact_info, ContactInfoType 
+    
+    def contact_info
+      {
+        name: object.public_name,
+        phone: object.public_phone,
+        email: object.public_email
+      }
+    end
   end
 end
 

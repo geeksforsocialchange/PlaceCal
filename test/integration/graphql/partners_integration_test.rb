@@ -46,4 +46,36 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert data_partner['name'] == partner.name
 
   end
+
+  test 'can view contact info when selected' do
+
+    partner = FactoryBot.create(:partner)
+
+    query_string = <<-GRAPHQL
+      query {
+        partner(id: #{partner.id}) {
+          id
+          name
+          contactInfo {
+            name
+            phone
+            email
+          }
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+
+    data = result['data']
+    assert data.has_key?('partner')
+
+    data_partner = data['partner']
+    assert data_partner.has_key?('contactInfo')
+
+    contact_data = data_partner['contactInfo']
+    assert contact_data['name'] == partner.public_name
+    assert contact_data['phone'] == partner.public_phone
+    assert contact_data['email'] == partner.public_email
+  end
 end
