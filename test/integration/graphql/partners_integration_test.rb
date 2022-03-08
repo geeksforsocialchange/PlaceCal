@@ -56,11 +56,12 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
         partner(id: #{partner.id}) {
           id
           name
-          contactInfo {
-            name
-            phone
-            email
-          }
+          contactName
+          telephone
+          email
+          twitter
+          url
+          facebook
         }
       }
     GRAPHQL
@@ -71,11 +72,23 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert data.has_key?('partner')
 
     data_partner = data['partner']
-    assert data_partner.has_key?('contactInfo')
+    assert data_partner.has_key?('contactName')
+    assert data_partner['contactName'] == partner.public_name
 
-    contact_data = data_partner['contactInfo']
-    assert contact_data['name'] == partner.public_name
-    assert contact_data['phone'] == partner.public_phone
-    assert contact_data['email'] == partner.public_email
+    assert data_partner.has_key?('telephone')
+    assert data_partner['telephone'] == partner.public_phone
+
+    assert data_partner.has_key?('email')
+    assert data_partner['email'] == partner.public_email
+    
+    assert data_partner.has_key?('url')
+    assert data_partner['url'] == partner.url
+    
+    assert data_partner.has_key?('twitter')
+    assert data_partner['twitter'] == partner.twitter_handle
+    
+    assert data_partner.has_key?('facebook')
+    assert data_partner['facebook'] == partner.facebook_link
+
   end
 end

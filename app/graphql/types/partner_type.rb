@@ -9,16 +9,12 @@ module Types
     field :summary, String
 
     field :url, String
+    field :twitter, String, method: :twitter_handle
+    field :facebook, String, method: :facebook_link
 
-    field :contact_info, ContactInfoType 
-    
-    def contact_info
-      {
-        name: object.public_name,
-        phone: object.public_phone,
-        email: object.public_email
-      }
-    end
+    field :telephone, String, method: :public_phone
+    field :email, String, method: :public_email
+    field :contact_name, String, method: :public_name
   end
 end
 
