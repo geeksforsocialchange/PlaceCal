@@ -6,6 +6,7 @@ var columns = [
     {"data": "place"},
     {"data": "is_working"},
     {"data": "last_import_at"},
+    {"data": "updated_at"}
   ]
 </script>
 
@@ -13,7 +14,7 @@ var columns = [
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Calendars',
     model: :calendars,
-    columns: %i[id name partner place is_working last_import_at],
+    columns: %i[id name partner place is_working last_import_at updated_at],
     data: @calendars,
     source: admin_calendars_path(format: :json),
     new_link: new_admin_calendar_path,

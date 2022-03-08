@@ -6,7 +6,7 @@ module Admin
     before_action :set_calendar, only: %i[show edit update destroy import]
 
     def index
-      @calendars = policy_scope(Calendar)
+      @calendars = policy_scope(Calendar).order({ :updated_at => :desc }, :name)
       authorize Calendar
 
       respond_to do |format|

@@ -7,7 +7,8 @@ class UserDatatable < Datatable
       first_name:  { source: 'User.first_name' },
       last_name:   { source: 'User.last_name' },
       admin_roles: { source: 'User.admin_roles', searchable: false, orderable: false },
-      email:       { source: 'User.email' }
+      email:       { source: 'User.email' },
+      updated_at:  { source: 'User.updated_at' }
     }
   end
 
@@ -19,6 +20,7 @@ class UserDatatable < Datatable
         last_name:   link_to(record.last_name, edit_admin_user_path(record)),
         admin_roles: record.admin_roles,
         email:       record.email,
+        updated_at:  record.updated_at
       }
     end
   end

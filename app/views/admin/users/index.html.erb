@@ -5,13 +5,14 @@ var columns = [
     {"data": "last_name"},
     {"data": "admin_roles"},
     {"data": "email"},
+    {"data": "updated_at"}
   ]
 </script>
 
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Users",
     model: :users,
-    columns: %i[id first_name last_name admin_roles email],
+    columns: %i[id first_name last_name admin_roles email updated_at],
     data: @users,
     source: admin_users_path(format: :json),
     new_link: new_admin_user_path

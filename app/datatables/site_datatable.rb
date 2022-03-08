@@ -6,6 +6,7 @@ class SiteDatatable < Datatable
       id: { source: 'Site.id', cond: :eq },
       name: { source: 'Site.name' },
       slug: { source: 'Site.slug' },
+      updated_at: { source: 'Site.updated_at' }
     }
   end
 
@@ -15,6 +16,7 @@ class SiteDatatable < Datatable
         id: link_to(record.id, edit_admin_site_path(record)),
         name: link_to(record.name, edit_admin_site_path(record)),
         slug: record.slug,
+        updated_at: record.updated_at
       }
     end
   end
