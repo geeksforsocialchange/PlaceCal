@@ -14,8 +14,7 @@ class GraphQLSitesTest < ActionDispatch::IntegrationTest
           edges {
             node {
               id
-              summary
-              description
+              name
             }
           }
         }
