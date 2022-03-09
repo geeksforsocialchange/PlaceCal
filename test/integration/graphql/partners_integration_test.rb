@@ -10,19 +10,28 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     query_string = <<-GRAPHQL
       query {
-        allPartners {
-          id
-          name
+        partnerConnection {
+          edges {
+            node {
+              id
+              summary
+              description
+            }
+          }
         }
       }
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
     data = result['data']
-    assert data.has_key?('allPartners')
 
-    partners = data['allPartners']
-    assert partners.length == 5
+    assert data.has_key?('partnerConnection'), 'result is missing key `partnerConnection`'
+    connection = data['partnerConnection']
+
+    assert connection.has_key?('edges')
+    edges = connection['edges']
+
+    assert edges.length == 5
   end
 
   test 'can show specific partner' do

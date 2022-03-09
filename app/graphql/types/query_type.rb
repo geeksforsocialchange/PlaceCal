@@ -7,14 +7,14 @@ module Types
         argument :id, ID
       end
 
-      klass.field :all_partners, [PartnerType]
+      klass.field :partner_connection, Types::PartnerType.connection_type
     end
 
     def partner(id:)
       Partner.find(id)
     end
 
-    def all_partners
+    def partner_connection(**args)
       Partner.all
     end
   end
@@ -24,8 +24,6 @@ module Types
       klass.field :event, EventType, "Find Event by ID" do
         argument :id, ID
       end
-
-      # klass.field :all_events, [EventType]
 
       klass.field :event_connection, Types::EventType.connection_type
     end
