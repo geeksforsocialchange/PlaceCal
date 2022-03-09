@@ -1,21 +1,25 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/StringLiterals
-
 require 'test_helper'
 
-class AdminPartnerIntegrationTest < ActionDispatch::IntegrationTest
+class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
     @admin = create(:root)
-    @default_site = create_default_site
+
     @partner = create(:partner)
-    get "http://admin.lvh.me"
-    sign_in @admin
+
+    @neighbourhood_region_admin = create(:neighbourhood_region_admin)
+
+    @tag = create(:tag)
+
+    host! 'admin.lvh.me'
   end
 
   test "Edit form has correct fields" do
+    sign_in @admin
+
     get edit_admin_partner_path(@partner)
     assert_response :success
 
@@ -47,57 +51,53 @@ class AdminPartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Partner email'
     assert_select 'label', text: 'Partner phone'
   end
-end
-
-class PartnerShowingDeleteButtonIntegrationTest  < ActionDispatch::IntegrationTest
-  include Devise::Test::IntegrationHelpers
 
   test 'Edit has delete button for root users' do
-    root_user = create(:root)
-    default_site = create_default_site
-    partner = create(:partner)
-    get "http://admin.lvh.me"
-    sign_in root_user
+    sign_in @admin
 
-    get edit_admin_partner_path(partner)
+    get edit_admin_partner_path(@partner)
     assert_response :success
 
     assert_select 'a#destroy-partner', 'Delete Partner'
   end
 
   test 'Edit has delete button for neighbourhood admins' do
-    hood_user = create(:neighbourhood_region_admin)
-    default_site = create_default_site
-    partner = create(:partner)
-    partner.address.update! neighbourhood_id: hood_user.neighbourhoods.first.id
+    @partner.address.update!(
+      neighbourhood_id: @neighbourhood_region_admin.neighbourhoods.first.id
+    )
 
-    get "http://admin.lvh.me"
-    sign_in hood_user
+    sign_in @neighbourhood_region_admin
 
-    get edit_admin_partner_path(partner)
+    get edit_admin_partner_path(@partner)
     assert_response :success
 
     assert_select 'a#destroy-partner', 'Delete Partner'
   end
-end
-
-class PartnerHidingDeleteButtonIntegrationTest < ActionDispatch::IntegrationTest
-  include Devise::Test::IntegrationHelpers
-
-  setup do
-    @admin = create(:neighbourhood_region_admin)
-    @default_site = create_default_site
-    @partner = create(:partner)
-    @admin.partners << @partner
-
-    get "http://admin.lvh.me"
-    sign_in @admin
-  end
 
   test 'Edit does not have delete button for partner admins' do
+    @neighbourhood_region_admin.partners << @partner
+
+    sign_in @neighbourhood_region_admin
+
     get edit_admin_partner_path(@partner)
     assert_response :success
 
     assert_select 'a#destroy-partner', false, "This page must not have a Destroy Partner button"
+  end
+
+  test 'Partner has owned tag preselected' do
+    @neighbourhood_region_admin.tags << @tag
+
+    sign_in @neighbourhood_region_admin
+
+    get new_admin_partner_path(@partner)
+    assert_response :success
+
+    assert_select 'div.tags > fieldset.check_boxes' do |checkbox|
+      tag = assert_select checkbox, 'div.form-check', 1 # We have one tag
+
+      assert_select tag, 'label', text: @tag.name
+      assert_select tag, 'input:match("checked", ?)', 'checked'
+    end
   end
 end

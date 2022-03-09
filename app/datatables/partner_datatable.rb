@@ -7,7 +7,7 @@ class PartnerDatatable < Datatable
       name:       { source: 'Partner.name', cond: :like },
       slug:       { source: 'Partner.slug' },
       address:    { source: 'Partner.address', searchable: false },
-      updated_at: { source: 'Partner.address' },
+      updated_at: { source: 'Partner.updated_at' },
     }
   end
 

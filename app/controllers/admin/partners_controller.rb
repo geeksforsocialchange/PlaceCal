@@ -23,6 +23,8 @@ module Admin
 
     def new
       @partner = params[:partner] ? Partner.new(permitted_attributes(Partner)) : Partner.new
+      @partner.tags = current_user.tags
+
       authorize @partner
     end
 
