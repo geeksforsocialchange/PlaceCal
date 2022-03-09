@@ -19,7 +19,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     assert @calendar, 'Failed to create calendar from partner'
   end
 
-  test 'can show partners' do
+  test 'can show partners (with pagination)' do
 
     (0...5).collect do |n|
       @partner.events.create!(
@@ -32,20 +32,28 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
     query_string = <<-GRAPHQL
       query {
-        allEvents {
-          id
-          summary
-          description
+        eventConnection {
+          edges {
+            node {
+              id
+              summary
+              description
+            }
+          }
         }
       }
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
     data = result['data']
-    assert data.has_key?('allEvents'), 'result is missing key `allEvents`'
 
-    events = data['allEvents']
-    assert events.length == 5
+    assert data.has_key?('eventConnection'), 'result is missing key `eventConnection`'
+    connection = data['eventConnection']
+
+    assert connection.has_key?('edges')
+    edges = connection['edges']
+
+    assert edges.length == 5
   end
 
   test 'can show specific event' do

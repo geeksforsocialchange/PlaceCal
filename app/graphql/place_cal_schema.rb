@@ -1,6 +1,8 @@
 class PlaceCalSchema < GraphQL::Schema
   # mutation(Types::MutationType)
 
+  default_max_page_size 100
+
   query Types::QueryType
 
   # For batch-loading (see https://graphql-ruby.org/dataloader/overview.html)

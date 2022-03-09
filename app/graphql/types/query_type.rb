@@ -25,14 +25,16 @@ module Types
         argument :id, ID
       end
 
-      klass.field :all_events, [EventType]
+      # klass.field :all_events, [EventType]
+
+      klass.field :event_connection, Types::EventType.connection_type
     end
 
     def event(id:)
       Event.find(id)
     end
 
-    def all_events
+    def event_connection(**args)
       Event.all
     end
   end
