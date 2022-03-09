@@ -50,25 +50,40 @@
     <div class="col-md-6">
       <% if current_user.partners.any? %>
         <h3>Your partners</h3>
-          <ul>
-            <% current_user.partners.each do |partner| %>
-              <li>
-                <%= link_to partner.name, edit_admin_partner_path(partner) %>
-              </li>
-            <% end %>
-          </ul>
+        <ul>
+          <% current_user.partners.each do |partner| %>
+            <li>
+              <%= link_to partner.name, edit_admin_partner_path(partner) %>
+            </li>
+          <% end %>
+        </ul>
       <% end %>
     </div>
     <div class="col-md-6">
       <% if current_user.neighbourhoods.any? %>
         <h3>Your neighbourhoods</h3>
-          <ul>
-            <% current_user.neighbourhoods.each do |neighbourhood| %>
-              <li>
-                <%= link_to neighbourhood.contextual_name, edit_admin_neighbourhood_path(neighbourhood) %>
-              </li>
-            <% end %>
-          </ul>
+        <ul>
+          <% current_user.neighbourhoods.each do |neighbourhood| %>
+            <li>
+              <%= link_to neighbourhood.contextual_name, edit_admin_neighbourhood_path(neighbourhood) %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <% if current_user.tag_admin? %>
+        <h3>Your assigned tags</h3>
+        <p>Please note these tags will be pre-selected when creating a new partner<p>
+        <ul>
+          <% current_user.tags.each do |tag| %>
+            <li>
+              <%= link_to tag.name, edit_admin_tag_path(tag) %>
+            </li>
+          <% end %>
+        </ul>
       <% end %>
     </div>
   </div>
