@@ -14,8 +14,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     @tag = create(:tag)
 
-    @default_site = create_default_site
-    get 'http://admin.lvh.me'
+    host! 'admin.lvh.me'
   end
 
   test "Edit form has correct fields" do
