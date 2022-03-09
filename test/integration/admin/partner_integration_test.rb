@@ -12,8 +12,10 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
 
+    @tag = create(:tag)
+
     @default_site = create_default_site
-    get "http://admin.lvh.me"
+    get 'http://admin.lvh.me'
   end
 
   test "Edit form has correct fields" do
@@ -82,5 +84,21 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'a#destroy-partner', false, "This page must not have a Destroy Partner button"
+  end
+
+  test 'Partner has owned tag preselected' do
+    @neighbourhood_region_admin.tags << @tag
+
+    sign_in @neighbourhood_region_admin
+
+    get new_admin_partner_path(@partner)
+    assert_response :success
+
+    assert_select 'div.tags > fieldset.check_boxes' do |checkbox|
+      tag = assert_select checkbox, 'div.form-check', 1 # We have one tag
+
+      assert_select tag, 'label', text: @tag.name
+      assert_select tag, 'input:match("checked", ?)', 'checked'
+    end
   end
 end
