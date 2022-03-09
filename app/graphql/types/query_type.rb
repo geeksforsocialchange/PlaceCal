@@ -43,14 +43,14 @@ module Types
         argument :id, ID
       end
 
-      klass.field :all_sites, [SiteType]
+      klass.field :site_connection, Types::SiteType.connection_type
     end
 
     def site(id:)
       Site.find(id)
     end
 
-    def all_sites
+    def site_connection(**args)
       Site.all
     end
   end
