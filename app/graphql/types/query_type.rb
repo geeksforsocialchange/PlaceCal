@@ -7,14 +7,14 @@ module Types
         argument :id, ID
       end
 
-      klass.field :all_partners, [PartnerType]
+      klass.field :partner_connection, Types::PartnerType.connection_type
     end
 
     def partner(id:)
       Partner.find(id)
     end
 
-    def all_partners
+    def partner_connection(**args)
       Partner.all
     end
   end
@@ -25,14 +25,14 @@ module Types
         argument :id, ID
       end
 
-      klass.field :all_events, [EventType]
+      klass.field :event_connection, Types::EventType.connection_type
     end
 
     def event(id:)
       Event.find(id)
     end
 
-    def all_events
+    def event_connection(**args)
       Event.all
     end
   end
@@ -43,14 +43,14 @@ module Types
         argument :id, ID
       end
 
-      klass.field :all_sites, [SiteType]
+      klass.field :site_connection, Types::SiteType.connection_type
     end
 
     def site(id:)
       Site.find(id)
     end
 
-    def all_sites
+    def site_connection(**args)
       Site.all
     end
   end

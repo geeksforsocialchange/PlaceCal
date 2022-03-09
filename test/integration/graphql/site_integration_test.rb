@@ -10,19 +10,27 @@ class GraphQLSitesTest < ActionDispatch::IntegrationTest
 
     query_string = <<-GRAPHQL
       query {
-        allSites {
-          id
-          name
+        siteConnection {
+          edges {
+            node {
+              id
+              name
+            }
+          }
         }
       }
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
     data = result['data']
-    assert data.has_key?('allSites')
 
-    partners = data['allSites']
-    assert partners.length == 5
+    assert data.has_key?('siteConnection'), 'result is missing key `siteConnection`'
+    connection = data['siteConnection']
+
+    assert connection.has_key?('edges')
+    edges = connection['edges']
+
+    assert edges.length == 5
   end
 
   test 'can show specific site' do
