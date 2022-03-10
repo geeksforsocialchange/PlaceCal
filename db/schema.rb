@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_25_162314) do
+ActiveRecord::Schema.define(version: 2022_03_10_125155) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -278,6 +278,16 @@ ActiveRecord::Schema.define(version: 2022_02_25_162314) do
     t.index ["supporter_id", "site_id"], name: "index_sites_supporters_on_supporter_id_and_site_id"
   end
 
+  create_table "sites_tags", force: :cascade do |t|
+    t.bigint "site_id"
+    t.bigint "tag_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["site_id", "tag_id"], name: "index_sites_tags_on_site_id_and_tag_id", unique: true
+    t.index ["site_id"], name: "index_sites_tags_on_site_id"
+    t.index ["tag_id"], name: "index_sites_tags_on_tag_id"
+  end
+
   create_table "supporters", force: :cascade do |t|
     t.string "name"
     t.string "url"
@@ -368,4 +378,6 @@ ActiveRecord::Schema.define(version: 2022_02_25_162314) do
   add_foreign_key "service_areas", "neighbourhoods"
   add_foreign_key "service_areas", "partners"
   add_foreign_key "sites", "users", column: "site_admin_id"
+  add_foreign_key "sites_tags", "sites"
+  add_foreign_key "sites_tags", "tags"
 end

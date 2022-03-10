@@ -7,11 +7,15 @@ jQuery.extend(Behaviors, {
         /* service area bits */
 
         // Attach select2 to the current select2 nodes
-        $('.select2').each(function () { $(this).select2({ multiple: false }); });
+        $('.select2').each(function () {
+          multiple = $(this).hasClass('multi-select');
+          $(this).select2({ multiple: multiple });
+        });
 
         // Attach select2 to all future select2 nodes
-        $('.sites_neighbourhoods').bind('cocoon:after-insert', function (_, element) {
-          $('.select2', element).select2({ multiple: false });
+        $('.sites_neighbourhoods').bind('cocoon:after-insert', function (_, __) {
+          multiple = $('.select2', element).hasClass('multi-select');
+          $('.select2', element).select2({ multiple: multiple });
         });
 
         /* */

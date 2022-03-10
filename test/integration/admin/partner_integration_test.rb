@@ -93,11 +93,9 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     get new_admin_partner_path(@partner)
     assert_response :success
 
-    assert_select 'div.tags > fieldset.check_boxes' do |checkbox|
-      tag = assert_select checkbox, 'div.form-check', 1 # We have one tag
+    tag_options = assert_select 'div.partner_tags option', count: 1, text: @tag.name
 
-      assert_select tag, 'label', text: @tag.name
-      assert_select tag, 'input:match("checked", ?)', 'checked'
-    end
+    tag = tag_options.first
+    assert tag.attributes.key?('selected')
   end
 end

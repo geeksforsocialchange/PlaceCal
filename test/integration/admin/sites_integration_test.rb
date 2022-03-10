@@ -5,10 +5,15 @@ require 'test_helper'
 class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
+
     @site = create(:site)
     @site_admin = @site.site_admin
+
     @neighbourhoods = create_list(:neighbourhood, 5)
     @number_of_neighbourhoods = Neighbourhood.all.length
+
+    @tag = create(:tag)
+
     host! 'admin.lvh.me'
   end
 
@@ -73,5 +78,19 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
     neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
     assert neighbourhoods_shown == 2
+  end
+
+  test 'site tags show up' do
+    @site.tags << @tag
+    @site_admin.tags << @tag
+
+    sign_in(@site_admin)
+    get edit_admin_site_path(@site)
+    assert_response :success
+
+    tag_options = assert_select 'div.site_tags option', count: 1, text: @tag.name
+
+    tag = tag_options.first
+    assert tag.attributes.key?('selected')
   end
 end

@@ -92,6 +92,21 @@
     <br></br>
   </div>
 
+  <h2>Tags information</h2>
+
+  <div class="row">
+    <div class="col-md-6">
+      <p class="font-weight-light">These tags allow filtering for the partners that appear on a site</p>
+      <%= f.association :tags,
+                        label: false,
+                        collection: options_for_tags,
+                        input_html: { class: 'form-check select2 multi-select' } %>
+    </div>
+  </div>
+  <br>
+  <br>
+
+
   <%= f.button :submit, class: "btn btn-primary btn-lg" %>
   <% unless @site.new_record? %>
     <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger btn-lg" %>

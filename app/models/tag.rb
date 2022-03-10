@@ -14,6 +14,9 @@ class Tag < ApplicationRecord
   has_many :partner_tags, dependent: :destroy
   has_many :partners, through: :partner_tags
 
+  has_many :sites_tag, dependent: :destroy
+  has_many :sites, through: :sites_tag
+
   validates :name, :slug, presence: true
   validates :name, :slug, uniqueness: true
   validates :description,
