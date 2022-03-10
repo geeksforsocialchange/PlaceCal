@@ -1,5 +1,6 @@
 module Types
   class PartnerType < Types::BaseObject
+    
 
     description 'A Partner who runs Events'
 
@@ -11,7 +12,7 @@ module Types
 
     field :accessibility_summary, String, method: :accessibility_info
 
-    field :logo, String, method: :image
+    field :logo, String
     field :address, AddressType
 
     field :url, String
@@ -34,6 +35,12 @@ module Types
 
     def opening_hours
       JSON.parse object.opening_times
+    end
+
+    def logo
+      return '' if object.image.blank?
+
+      ActionController::Base.helpers.image_url(object.image.url, skip_pipeline: true) 
     end
   end
 end
