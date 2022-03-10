@@ -56,6 +56,58 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
   end
 
+  def verify_field_presence(obj, name, value: nil)
+    assert obj.has_key?(name), "field #{name} is missing"
+    if value
+      assert obj[name] == value, "field #{name} has incorrect value: wanted=#{value}, but got=#{obj[name]}"
+    end
+  end
+
+  def check_address(data, address)
+    verify_field_presence data, 'streetAddress'
+    verify_field_presence data, 'postalCode'
+    verify_field_presence data, 'addressLocality'
+    verify_field_presence data, 'addressRegion'
+
+    verify_field_presence data, 'neighbourhood'
+    hood = data['neighbourhood']
+
+    verify_field_presence hood, 'name'
+    verify_field_presence hood, 'abbreviatedName'
+    verify_field_presence hood, 'unit'
+    verify_field_presence hood, 'unitName'
+    verify_field_presence hood, 'unitCodeKey'
+    verify_field_presence hood, 'unitCodeValue'
+  end
+
+  def check_contact(data, contact)
+    verify_field_presence data, 'name', value: contact.public_name
+
+    verify_field_presence data, 'telephone', value: contact.public_phone
+
+    verify_field_presence data, 'email', value: contact.public_email
+  end
+  
+  def check_opening_hours(data, opening_hours)
+    assert data.is_a?(Array), 'openingHours should be an array'
+  end
+
+  def check_areas_served(data, service_areas)
+    assert data.is_a?(Array), 'areasServed should be an array'
+  end
+
+  def check_basic_fields(data, partner)
+    verify_field_presence data, 'id', value: partner.id.to_s
+    verify_field_presence data, 'name', value: partner.name
+    verify_field_presence data, 'summary', value: partner.summary
+    verify_field_presence data, 'description', value: partner.description
+    verify_field_presence data, 'accessibilitySummary', value: partner.accessibility_info
+    verify_field_presence data, 'logo', value: partner.image.to_s
+    verify_field_presence data, 'url', value: partner.url
+    verify_field_presence data, 'twitterHandle', value: partner.twitter_handle
+    verify_field_presence data, 'facebookPage', value: partner.facebook_link
+  end
+
   test 'can view contact info when selected' do
 
     partner = FactoryBot.create(:partner)
@@ -65,39 +117,72 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
         partner(id: #{partner.id}) {
           id
           name
-          contactName
-          telephone
-          email
-          twitter
+          summary
+          description
+          accessibilitySummary
+          logo
           url
-          facebook
+          facebookPage
+          twitterHandle
+
+          address {
+            streetAddress
+            postalCode
+            addressLocality
+            addressRegion
+            neighbourhood {
+              name
+              abbreviatedName
+              unit
+              unitName
+              unitCodeKey
+              unitCodeValue
+          	}
+          }
+
+          contact {
+            name
+            email
+            telephone
+          }
+          openingHours {
+            dayOfWeek
+            opens
+            closes
+          }
+          areasServed {
+            name
+            abbreviatedName
+            unit
+            unitName
+            unitCodeKey
+            unitCodeValue
+          }
         }
       }
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
+    assert result.has_key?('errors') == false, 'errors are present'
 
     data = result['data']
-    assert data.has_key?('partner')
 
-    data_partner = data['partner']
-    assert data_partner.has_key?('contactName')
-    assert data_partner['contactName'] == partner.public_name
+    verify_field_presence data, 'partner'
+    partner_data = data['partner']
+    
+    check_basic_fields partner_data, partner
 
-    assert data_partner.has_key?('telephone')
-    assert data_partner['telephone'] == partner.public_phone
+    verify_field_presence partner_data, 'address'
+    check_address partner_data['address'], partner.address
 
-    assert data_partner.has_key?('email')
-    assert data_partner['email'] == partner.public_email
-    
-    assert data_partner.has_key?('url')
-    assert data_partner['url'] == partner.url
-    
-    assert data_partner.has_key?('twitter')
-    assert data_partner['twitter'] == partner.twitter_handle
-    
-    assert data_partner.has_key?('facebook')
-    assert data_partner['facebook'] == partner.facebook_link
+    verify_field_presence partner_data, 'contact'
+    check_contact partner_data['contact'], partner
+
+    verify_field_presence partner_data, 'openingHours'
+    check_opening_hours partner_data['openingHours'], partner.opening_times
+
+    verify_field_presence partner_data, 'areasServed'
+    check_areas_served partner_data['areasServed'], partner.service_area_neighbourhoods
 
   end
 end

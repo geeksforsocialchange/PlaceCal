@@ -72,8 +72,9 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
           description
           address {
             streetAddress
-            city
-            postcode
+            postalCode
+            addressLocality
+            addressRegion
           }
         }
       }
