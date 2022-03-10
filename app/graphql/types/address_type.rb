@@ -5,13 +5,31 @@ module Types
 
     # field :id, ID, null: false
     field :street_address, String
-    field :street_address2, String
-    field :street_address3, String
-    field :city, String
-    field :postcode, String
-    field :country_code, String
-    field :full_street_address, String
-    field :all_address_lines, [String]
+    field :address_locality, String
+    field :address_region, String
+    field :address_country, String, method: :country_code
+    field :postal_code, String, method: :postcode
+    field :neighbourhood, NeighbourhoodType
+
+    # TODO: figure out parent and children accessors
+    # field :containedInPlace
+    # field :containedPlace
+
+    def street_address
+      [ 
+        object.street_address,
+        object.street_address2,
+        object.street_address3
+      ].reject { |line| (line || '').empty? }.join(', ')
+    end
+
+    def address_locality
+      object.neighbourhood.name
+    end
+
+    def address_region
+      object.neighbourhood.region
+    end
   end
 end
 
