@@ -14,6 +14,9 @@ class Site < ApplicationRecord
 
   has_many :neighbourhoods, through: :sites_neighbourhoods
 
+  has_many :sites_tag, dependent: :destroy
+  has_many :tags, through: :sites_tag
+
   has_and_belongs_to_many :supporters
 
   belongs_to :site_admin, class_name: 'User', optional: true
