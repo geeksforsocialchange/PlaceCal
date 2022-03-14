@@ -2,6 +2,8 @@ module Types
   class EventType < Types::BaseObject
 
     field :id, ID, null: false
+    # Summary and name are aliases, this is left as a convenience 
+    #   for people used to iCal format
     field :name, String, method: :summary
     field :summary, String
     field :description, String
