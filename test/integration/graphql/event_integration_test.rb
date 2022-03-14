@@ -68,24 +68,41 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       query {
         event(id: #{event.id}) {
           id
+          name
           summary
           description
+          startDate
+          endDate
           address {
             streetAddress
             postalCode
             addressLocality
             addressRegion
           }
+          organizer {
+            id
+            name
+          }
         }
       }
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
+    assert result.has_key?('errors') == false, 'errors are present'
 
     data = result['data']
     assert data.has_key?('event'), 'Data structure does not contain event key'
 
     data_event = data['event']
+
     assert data_event['summary'] == event.summary
+    assert data_event['name'] == event.summary
+
+    assert data_event.has_key?('startDate'), 'missing startDate'
+    assert data_event['startDate'] =~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}$/, 'startDate is not in ISO format'
+
+    assert data_event.has_key?('endDate'), 'missing endDate'
+    assert data_event.has_key?('address'), 'missing address'
+    assert data_event.has_key?('organizer'), 'missing organizer'
   end
 end

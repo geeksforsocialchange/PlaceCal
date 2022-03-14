@@ -33,7 +33,7 @@ module Types
     end
 
     def event_connection(**args)
-      Event.all
+      Event.sort_by_time.all
     end
   end
 
