@@ -96,10 +96,10 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   get '/robots.txt' => 'pages#robots'
 
-  post '/api/v1', to: 'graphql#execute'
+  post '/api/v1/graphql', to: 'graphql#execute'
 
   if Rails.env.development?
-    mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: "/api/v1"
+    mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: "/api/v1/graphql"
   end
 
 end
