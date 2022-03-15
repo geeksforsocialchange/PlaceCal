@@ -141,7 +141,7 @@ namespace :db do
   DB_DUMP_SSH_URL = 'DB_DUMP_SSH_URL'
   DB_DUMP_STAGING_SSH_URL = 'DB_DUMP_STAGING_SSH_URL'
 
-  desc "Synchronize staging with the production database in one fell swoop (Currently untested)"
+  desc "Synchronize staging with the production database in one fell swoop"
   task sync_prod_staging: :environment do
 
     prod_ssh_url = if ENV[DB_DUMP_SSH_URL]
@@ -157,7 +157,7 @@ namespace :db do
       end
 
     $stdout.puts "Backing up staging db (May take a while.) ..."
-    puts `ssh #{ssh_url} dokku postgres:export placecal-db > $(time -Im)_placecal-staging.sql`
+    puts `ssh #{ssh_url} dokku postgres:export placecal-db > $(date -Im)_placecal-staging.sql`
     $stdout.puts "Replicating production db to staging db (May take a while.) ..."
     puts `ssh #{prod_ssh_url} dokku postgres:export placecal-db2 | ssh #{ssh_url} dokku postgres:import placecal-db`
     if $?.success?
