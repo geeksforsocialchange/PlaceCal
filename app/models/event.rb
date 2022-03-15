@@ -30,6 +30,16 @@ class Event < ApplicationRecord
     where('DATE(dtstart) >= ? AND DATE(dtstart) <= ?', week_start, week_end)
   }
 
+  # For the API eventFilter find by neighbourhood
+  scope :for_neighbourhoods, lambda { |neighbourhoods|
+    neighbourhood_ids = neighbourhoods.map(&:id)
+
+    joins('left outer join partners on events.partner_id = partners.id')
+      .joins('left outer join addresses on partners.address_id = addresses.id')
+      .joins('left outer join service_areas on partners.id = service_areas.partner_id')
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', neighbourhood_ids, neighbourhood_ids)
+  }
+
   # Filter by Site
   scope :for_site, lambda { |site|
     site_neighbourhood_ids = site.neighbourhoods.map(&:subtree).flatten.map(&:id)

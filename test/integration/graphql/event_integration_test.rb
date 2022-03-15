@@ -5,7 +5,8 @@ require 'test_helper'
 class GraphQLEventTest < ActionDispatch::IntegrationTest
 
   setup do
-    @partner = FactoryBot.create(:partner)
+    partner_address = FactoryBot.create(:bare_address_1, neighbourhood: neighbourhoods(:one))
+    @partner = FactoryBot.create(:partner, address: partner_address)
 
     @address = @partner.address
     assert @address, 'Failed to create Address from partner'
@@ -227,5 +228,50 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       events = data['eventByFilter']
       assert events.length == 5, 'was expecting to see only some future events'
     end
+  end
+
+  # this should mainly be tested elsewhere
+  test 'can scope to neighbourhood (via partner address)' do
+
+    3.times do
+      @partner.events.create!(
+        dtstart: Date.today,
+        summary: "partner 1: An event summary",
+        description: 'Longer text covering the event in more detail',
+        address: @address
+      )
+    end
+
+
+    other_address = FactoryBot.create(:bare_address_2, neighbourhood: neighbourhoods(:two))
+    other_partner = FactoryBot.create(:moss_side_partner, address: other_address)
+
+    5.times do
+      other_partner.events.create!(
+        dtstart: Date.today,
+        summary: "partner 2: An event summary",
+        description: 'Longer text covering the event in more detail',
+        address: other_address
+      )
+    end
+
+    query_string = <<-GRAPHQL
+      query {
+        eventByFilter(neighbourhoodId: #{other_address.neighbourhood_id}) {
+          id
+          name
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+    # puts JSON.pretty_generate(result.as_json)
+    assert result.has_key?('errors') == false, 'errors are present'
+
+    data = result['data']
+    assert data.has_key?('eventByFilter'), 'Data structure does not contain event key'
+
+    events = data['eventByFilter']
+    assert events.length == 5, 'was expecting to see only events from other_partner'
   end
 end

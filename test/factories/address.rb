@@ -18,6 +18,26 @@ FactoryBot.define do
     end
   end
 
+  factory :bare_address_1, class: 'Address' do
+    street_address { '123 Moss Ln E' }
+    street_address2 { 'Manchester' }
+    city { 'Manchester' }
+    country_code { 'UK' }
+    latitude { 53.4651064 }
+    longitude { -2.2484797 }
+    postcode { 'M15 5DD' }
+  end
+
+  factory :bare_address_2, class: 'Address' do
+    street_address { '42 Alexandra Rd' }
+    street_address2 { 'Moss Side' }
+    city { 'Manchester' }
+    country_code { 'UK' }
+    latitude { '53.430720' }
+    longitude { '-2.436610' }
+    postcode { 'M16 7BA' }
+  end
+
   factory :moss_side_address, class: 'Address' do
     street_address { '42 Alexandra Rd' }
     street_address2 { 'Moss Side' }
