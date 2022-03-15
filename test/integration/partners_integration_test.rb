@@ -78,9 +78,9 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: 'Partners in your area'
     assert_select 'ul.partners li', 5
-    # Ensure title/summary description is displayed
-    assert_select '.preview__header', text: @region_site_partners.first.name
-    assert_select '.preview__details', text: @region_site_partners.first.summary
+    # Ensure title/summary description is displayed (select the h3 tag to avoid badge selection)
+    assert_select 'div.preview__header h3', text: @region_site_partners.first.name
+    assert_select 'div.preview__details', text: @region_site_partners.first.summary
   end
 
   test 'tagged site page shows only tagged partners' do

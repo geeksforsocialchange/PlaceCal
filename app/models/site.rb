@@ -44,6 +44,10 @@ class Site < ApplicationRecord
     "#{id}: #{name}"
   end
 
+  def owned_neighbourhoods
+    neighbourhoods.map(&:subtree).flatten
+  end
+
   # ASSUMPTION: There is no row in the sites table for the admin site, hence
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
@@ -59,7 +63,7 @@ class Site < ApplicationRecord
 
   # Should we show the neighbourhood lozenge out on this site?
   def show_neighbourhoods?
-    neighbourhoods.count > 1
+    owned_neighbourhoods.count > 1
   end
 
   def self.badge_zoom_level_label(value)
@@ -67,7 +71,7 @@ class Site < ApplicationRecord
   end
 
   def join_word
-    if neighbourhoods.count > 1
+    if owned_neighbourhoods.count > 1
       'near'
     else
       'in'
