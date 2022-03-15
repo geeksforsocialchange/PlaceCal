@@ -141,6 +141,32 @@ namespace :db do
   DB_DUMP_SSH_URL = 'DB_DUMP_SSH_URL'
   DB_DUMP_STAGING_SSH_URL = 'DB_DUMP_STAGING_SSH_URL'
 
+  desc "Synchronize staging with the production database in one fell swoop (Currently untested)"
+  task sync_prod_staging: :environment do
+
+    prod_ssh_url = if ENV[DB_DUMP_SSH_URL]
+        ENV[DB_DUMP_SSH_URL]
+      else
+        'root@placecal.org -p 666'
+      end
+
+    ssh_url = if ENV[DB_DUMP_STAGING_SSH_URL]
+        ENV[DB_DUMP_STAGING_SSH_URL]
+      else
+        'root@placecal-staging.org -p 666'
+      end
+
+    $stdout.puts "Backing up staging db (May take a while.) ..."
+    puts `ssh #{ssh_url} dokku postgres:export placecal-db > $(time -Im)_placecal-staging.sql`
+    $stdout.puts "Replicating production db to staging db (May take a while.) ..."
+    puts `ssh #{prod_ssh_url} dokku postgres:export placecal-db2 | ssh #{ssh_url} dokku postgres:import placecal-db`
+    if $?.success?
+      $stdout.puts "Replicated production to staging (you might have to run rails db:migrate in dokku?)"
+    else
+      $stderr.puts "Failed to replicate production to staging!"
+    end
+  end
+
   desc "Download production DB dump"
   task dump_production: :environment do
 
@@ -157,7 +183,7 @@ namespace :db do
     end
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
-    puts `ssh #{ssh_url} dokku postgres:export placecal-db > #{filename}`
+    puts `ssh #{ssh_url} dokku postgres:export placecal-db2 > #{filename}`
     if $?.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename
