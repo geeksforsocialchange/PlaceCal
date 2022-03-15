@@ -98,12 +98,10 @@ class Partner < ApplicationRecord
                .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
                       site_neighbourhood_ids, site_neighbourhood_ids)
 
-    return partners.of_tag(site_tag_ids) unless site_tag_ids.empty?
-
-    partners
+    site_tag_ids.any? ? partners.with_tags(site_tag_ids) : partners
   }
 
-  scope :of_tag, ->(tag) { joins(:partner_tags).where(partner_tags: { tag: tag }) }
+  scope :with_tags, ->(tag) { joins(:partner_tags).where(partner_tags: { tag: tag }) }
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
