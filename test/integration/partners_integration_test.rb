@@ -8,6 +8,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     @default_site = create_default_site
     @neighbourhood_site = create(:site_local)
     @region_site = create(:site_local)
+    @tagged_site = create(:site_local)
 
     # Create one set of partners for the default site
     @default_site_partners = create_list :partner, 5
@@ -32,6 +33,18 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
       partner.address.update(neighbourhood: @neighbourhood3)
     end
     @region_site.neighbourhoods << @neighbourhood3.region
+
+    # Create a region site, with partners bound similarily, and then tag one of them
+    @tagged_site_partners = create_list :partner, 5
+    @neighbourhood4 = create(:neighbourhood)
+    @tagged_site_partners.each do |partner|
+      partner.address.update(neighbourhood: @neighbourhood4)
+    end
+    @tagged_site.neighbourhoods << @neighbourhood4
+
+    @tag = create(:tag)
+    @tagged_site.tags << @tag
+    @tagged_site_partners.first.tags << @tag
   end
 
   test 'placecal partners page shows all partners and relevant local info' do
@@ -70,6 +83,19 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_select '.preview__details', text: @region_site_partners.first.summary
   end
 
+  test 'tagged site page shows only tagged partners' do
+    get "http://#{@tagged_site.slug}.lvh.me/partners"
+    assert_response :success
+
+    assert_select 'title', count: 1, text: "Partners in your area | #{@tagged_site.name}"
+    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
+    assert_select 'div.hero h1', text: 'Partners in your area'
+    assert_select 'ul.partners li', 1
+    # Ensure title/summary description is displayed
+    assert_select '.preview__header', text: @tagged_site_partners.first.name
+    assert_select '.preview__details', text: @tagged_site_partners.first.summary
+  end
+
   test 'partner shows service area if available' do
     partner = @default_site_partners.first
     partner.service_areas.create! neighbourhood: @neighbourhood3
@@ -90,5 +116,4 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select '.service-area span', text: 'various'
   end
-
 end
