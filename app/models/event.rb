@@ -50,7 +50,7 @@ class Event < ApplicationRecord
 
   # Filter by Site
   scope :for_site, lambda { |site|
-    site_neighbourhood_ids = site.neighbourhoods.map(&:subtree).flatten.map(&:id)
+    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
 
     joins(:address)
       .joins('left join partners on events.partner_id = partners.id')
