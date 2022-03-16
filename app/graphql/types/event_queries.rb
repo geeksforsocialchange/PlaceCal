@@ -8,10 +8,11 @@ module Types
 
       klass.field :event_connection, Types::EventType.connection_type
 
-      klass.field :event_by_filter, [Types::EventType] do
+      klass.field :events_by_filter, [Types::EventType] do
         argument :from_date, String, required: false
         argument :to_date, String, required: false
         argument :neighbourhood_id, Integer, required: false
+        argument :tag_id, Integer, required: false
       end
     end
 
@@ -23,7 +24,7 @@ module Types
       Event.sort_by_time.all
     end
 
-    def event_by_filter(**args)
+    def events_by_filter(**args)
       query = Event.sort_by_time
       from_date = DateTime.now.beginning_of_day
 
@@ -68,16 +69,19 @@ module Types
 
       if args[:neighbourhood_id].present?
         neighbourhood = Neighbourhood.where(id: args[:neighbourhood_id]).first
-        raise GraphQL::ExecutionError, "Could not find neighbourhood with that ID" if neighbourhood.nil?
+        raise GraphQL::ExecutionError, "Could not find neighbourhood with that ID (#{args[:neighbourhood_id]})" if neighbourhood.nil?
 
         query = query.for_neighbourhoods(neighbourhood.subtree)
       end
 
-      # query.where('dtend < ?', args[:end_date]) if args[:end_date]
+      if args[:tag_id].present?
+        tag = Tag.where(id: args[:tag_id]).first
+        raise GraphQL::ExecutionError, "Could not find tag with that ID (#{args[:tag_id]})" if tag.nil?
+
+        query = query.for_tag(tag)
+      end
 
       query.all
     end
   end
 end
-
-
