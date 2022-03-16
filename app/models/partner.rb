@@ -90,7 +90,7 @@ class Partner < ApplicationRecord
   scope :recently_updated, -> { order(updated_at: desc) }
 
   scope :for_site, lambda { |site|
-    site_neighbourhood_ids = site.neighbourhoods.map(&:subtree).flatten.map(&:id)
+    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
     site_tag_ids = site.tags.map(&:id)
 
     partners = joins('left join addresses on addresses.id = partners.address_id')
