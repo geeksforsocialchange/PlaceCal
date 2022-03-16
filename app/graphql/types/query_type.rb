@@ -19,24 +19,6 @@ module Types
     end
   end
 
-  module EventQueries
-    def self.included(klass)
-      klass.field :event, EventType, "Find Event by ID" do
-        argument :id, ID
-      end
-
-      klass.field :event_connection, Types::EventType.connection_type
-    end
-
-    def event(id:)
-      Event.find(id)
-    end
-
-    def event_connection(**args)
-      Event.sort_by_time.all
-    end
-  end
-
   module SiteQueries
     def self.included(klass)
       klass.field :site, SiteType, "Find Site by ID" do
