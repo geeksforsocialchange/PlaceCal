@@ -104,13 +104,13 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     verify_field_presence data, 'accessibilitySummary', value: partner.accessibility_info
     verify_field_presence data, 'logo', value: partner.image.to_s
     verify_field_presence data, 'url', value: partner.url
-    verify_field_presence data, 'twitterHandle', value: partner.twitter_handle
-    verify_field_presence data, 'facebookPage', value: partner.facebook_link
+    verify_field_presence data, 'twitterUrl', value: "https://twitter.com/#{partner.twitter_handle}"
+    verify_field_presence data, 'facebookUrl', value: partner.facebook_link
   end
 
   test 'can view contact info when selected' do
 
-    partner = FactoryBot.create(:partner)
+    partner = FactoryBot.create(:partner, twitter_handle: 'Alpha')
 
     query_string = <<-GRAPHQL
       query {
@@ -122,8 +122,8 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
           accessibilitySummary
           logo
           url
-          facebookPage
-          twitterHandle
+          facebookUrl
+          twitterUrl
 
           address {
             streetAddress
