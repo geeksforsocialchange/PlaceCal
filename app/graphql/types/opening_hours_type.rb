@@ -1,6 +1,6 @@
 module Types
   class OpeningHoursType < Types::BaseObject
-    description 'The open hours within a specific weekday'
+    description 'A period of time that this partner is open for'
 
     field :day_of_week, String,
       description: 'Monday, Tuesday, Wednesday etc'

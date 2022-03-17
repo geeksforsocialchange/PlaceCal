@@ -13,7 +13,7 @@ module Types
       description: 'A short string about this partner, an alias for `summary`'
 
     field :summary, String,
-      description: 'A short string describing partner'
+      description: 'A short summary describing what this partner does'
 
     field :description, String,
       description: 'Longer text about partner with more detail (in Markdown syntax)'
@@ -31,13 +31,13 @@ module Types
     field :url, String,
       description: 'The URL provided by the partner for users to find out more info'
 
-    field :facebook_page, String,
+    field :facebook_url, String,
       method: :facebook_link,
-      description: 'The possible facebook URL of this partner'
+      description: 'The URL of the partner\'s Facebook page'
 
     field :twitter_url, String, 
       method: :twitter_handle,
-      description: 'The URL to the partner\'s twitter profile'
+      description: 'The URL to the partner\'s Twitter profile'
 
     field :areas_served, [NeighbourhoodType],
       method: :service_area_neighbourhoods,
