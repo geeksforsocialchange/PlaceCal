@@ -9,18 +9,18 @@ module Types
       description: 'The first few lines of the address like: 123 Road, Eastleigh, Southampton'
 
     field :address_locality, String,
-      description: 'The nieghbourhood name of this address (see neighbourhood type)'
+      description: 'The ward this address is in'
 
     field :address_region, String,
-      description: 'The neighbourhood region of this address (see neighbourhood type)'
+      description: 'The district this address is in'
 
     field :address_country, String, 
       method: :country_code,
-      description: 'The country of this event (at the moment is only UK)'
+      description: 'The country of this event (England, Scotland, Wales, or Northern Ireland)'
 
     field :postal_code, String, 
       method: :postcode,
-      description: '(UK) Postcode of address'
+      description: 'A UK postcode'
 
     field :neighbourhood, NeighbourhoodType,
       description: 'The neighbourhood of this address (see neighbourhood type)'

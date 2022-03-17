@@ -13,7 +13,7 @@ module Types
       description: 'An alias for `summary`'
 
     field :summary, String,
-      description: 'A description of this specific event'
+      description: 'The title of the event'
 
     field :description, String,
       description: 'A longer text about this event covering more detail'

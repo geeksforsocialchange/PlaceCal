@@ -8,7 +8,7 @@ module Types
       end
 
       klass.field :event_connection, Types::EventType.connection_type do
-        description "Get events in more manageble chunks sort of like pagination."
+        description "Get events in chunks"
       end
 
       klass.field :events_by_filter, [Types::EventType] do
@@ -26,11 +26,11 @@ module Types
 
         argument :neighbourhood_id, Integer,
           required: false,
-          description: 'The neighbourhood ID to scope the events to. Works through both address and service areas.'
+          description: 'Will filter events who are inside this neighbourhood, or who have a service area contained in this neighbourhood.'
 
         argument :tag_id, Integer,
           required: false,
-          description: 'The tag ID to scope events to'
+          description: 'Will only show events whose partners have this tag'
       end
     end
 

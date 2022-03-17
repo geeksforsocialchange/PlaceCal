@@ -1,7 +1,7 @@
 module Types
   class ContactType < Types::BaseObject
 
-    description 'Contact information for a person'
+    description 'Contact information for a person or venue'
 
     field :name, String, 
       null: false, 

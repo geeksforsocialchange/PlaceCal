@@ -11,7 +11,7 @@ module Types
 
       klass.field :partner_connection, Types::PartnerType.connection_type do
         description \
-          'Get partners in more manageble chunks sort of like pagination.'
+          'Get partners in chunks'
       end
     end
 
@@ -33,7 +33,7 @@ module Types
 
       klass.field :site_connection, Types::SiteType.connection_type do
         description \
-          'Get sites in more manageble chunks sort of like pagination.'
+          'Get sites in chunks'
       end
     end
 
@@ -60,7 +60,7 @@ module Types
 
   class QueryType < Types::BaseObject 
 
-    description "The base query schema for all of PlaceCals GraphQL queries"
+    description "The base query schema for all of PlaceCal's GraphQL queries"
 
     # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
     # include GraphQL::Types::Relay::HasNodeField
