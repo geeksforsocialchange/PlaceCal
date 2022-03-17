@@ -20,7 +20,7 @@ module Types
 
     field :accessibility_summary, String,
       method: :accessibility_info,
-      description: 'Information about this Partner\'s accessibility'
+      description: 'An accessibility statement written by this partner'
 
     field :logo, String,
       description: 'The URL of the logo that is served from PlaceCal'

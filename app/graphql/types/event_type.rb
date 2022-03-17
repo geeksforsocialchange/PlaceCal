@@ -25,7 +25,7 @@ module Types
 
     field :endDate, String, 
       method: :dtend,
-      description: 'The (optional) end date of this event if the event goes on for more than one day (i.e. a conference weekend)'
+      description: 'The end date of this event if the event goes on for more than one day (i.e. a conference weekend)'
 
     field :address, AddressType,
       description: 'The address where this event will take place'
