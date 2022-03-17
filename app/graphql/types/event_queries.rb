@@ -2,17 +2,35 @@ module Types
   
   module EventQueries
     def self.included(klass)
-      klass.field :event, EventType, "Find Event by ID" do
+      klass.field :event, EventType do
+        description 'Retrieve one event based on specific ID'
         argument :id, ID
       end
 
-      klass.field :event_connection, Types::EventType.connection_type
+      klass.field :event_connection, Types::EventType.connection_type do
+        description "Get events in chunks"
+      end
 
       klass.field :events_by_filter, [Types::EventType] do
-        argument :from_date, String, required: false
-        argument :to_date, String, required: false
-        argument :neighbourhood_id, Integer, required: false
-        argument :tag_id, Integer, required: false
+        
+        description \
+          'Find events with various filter parameters. By default `eventsByFilter` will show all events from the current time.'
+
+        argument :from_date, String, 
+          required: false,
+          description: 'Time to start filter from. Format like "YYYY-MM-DD HH:MM". Defaults to current time'
+
+        argument :to_date, String, 
+          required: false,
+          description: 'Optional, same format as `fromDate`. Represents a future cut off point to limit query to'
+
+        argument :neighbourhood_id, Integer,
+          required: false,
+          description: 'Will filter events who are inside this neighbourhood, or who have a service area contained in this neighbourhood.'
+
+        argument :tag_id, Integer,
+          required: false,
+          description: 'Will only show events whose partners have this tag'
       end
     end
 

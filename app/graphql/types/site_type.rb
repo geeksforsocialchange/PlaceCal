@@ -3,29 +3,26 @@ module Types
 
     description 'Sites represent a collection of neighbourhoods or service areas'
 
-    field :id, ID, null: false
-    field :name, String, null: false
-    field :slug, String, null: false
+    field :id, ID, 
+      null: false,
+      description: 'Internal reference ID'
 
-    field :domain, String
-    field :description, String
+    field :name, String,
+      null: false,
+      description: 'Full name of site'
 
-    field :neighbourhoods, [NeighbourhoodType]
+    field :slug, String, 
+      null: false,
+      description: 'Short unique URL friendly version of name'
 
-    # field :partners, [PartnerType]
-    
-    # t.datetime "created_at", null: false
-    # t.datetime "updated_at", null: false
-    # t.bigint "site_admin_id"
-    # t.string "logo"
-    # t.string "hero_image"
-    # t.string "hero_image_credit"
-    # t.string "footer_logo"
-    # t.string "tagline", default: "The Community Calendar"
-    # t.string "place_name"
-    # t.string "theme"
-    # t.boolean "is_published", default: false
-    # t.string "badge_zoom_level"
+    field :domain, String,
+      description: 'The public URL that this site can be found on PlaceCal'
+
+    field :description, String,
+      description: 'Longer description of site'
+
+    field :neighbourhoods, [NeighbourhoodType],
+      description: 'The neighbourhoods that this site encompasses'
 
   end
 end

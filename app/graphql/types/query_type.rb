@@ -3,11 +3,16 @@ module Types
 
   module PartnerQueries
     def self.included(klass)
-      klass.field :partner, PartnerType, "Find Partner by ID" do
+
+      klass.field :partner, PartnerType  do
+        description 'Retrieve one Partner based on specific ID'
         argument :id, ID
       end
 
-      klass.field :partner_connection, Types::PartnerType.connection_type
+      klass.field :partner_connection, Types::PartnerType.connection_type do
+        description \
+          'Get partners in chunks'
+      end
     end
 
     def partner(id:)
@@ -21,11 +26,15 @@ module Types
 
   module SiteQueries
     def self.included(klass)
-      klass.field :site, SiteType, "Find Site by ID" do
+      klass.field :site, SiteType do
+        description 'Retrieve one Site based on specific ID'
         argument :id, ID
       end
 
-      klass.field :site_connection, Types::SiteType.connection_type
+      klass.field :site_connection, Types::SiteType.connection_type do
+        description \
+          'Get sites in chunks'
+      end
     end
 
     def site(id:)
@@ -39,7 +48,9 @@ module Types
 
   module MiscQueries
     def self.included(klass)
-      klass.field :ping, String, null: false, description: "Ping server"
+      klass.field :ping, String,
+        null: false,
+        description: "Ping server, returns a happy message and a timestamp"
     end
 
     def ping
@@ -48,6 +59,8 @@ module Types
   end
 
   class QueryType < Types::BaseObject 
+
+    description "The base query schema for all of PlaceCal's GraphQL queries"
 
     # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
     # include GraphQL::Types::Relay::HasNodeField
