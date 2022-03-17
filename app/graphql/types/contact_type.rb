@@ -1,11 +1,22 @@
 module Types
   class ContactType < Types::BaseObject
 
-    description ''
+    description 'Contact information for a person'
 
-    field :name, String, null: false, method: :public_name
-    field :email, String, null: false, method: :public_email
-    field :telephone, String, null: false, method: :public_phone
+    field :name, String, 
+      null: false, 
+      method: :public_name,
+      description: 'Name of contact'
+
+    field :email, String, 
+      null: false,
+      method: :public_email,
+      description: 'Email address of contact'
+
+    field :telephone, String,
+      null: false, 
+      method: :public_phone,
+      description: 'Telephone number of contact'
 
   end
 end

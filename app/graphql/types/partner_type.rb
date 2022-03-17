@@ -2,32 +2,57 @@ module Types
   class PartnerType < Types::BaseObject
     
 
-    description 'A Partner who runs Events'
+    description 'Organisations that run events'
 
-    # placecalID
-    field :id, ID, null: false
-    field :name, String, null: false
-    field :summary, String
-    field :description, String
+    field :id, ID, 
+      null: false,
+      description: 'ID of partner'
 
-    field :accessibility_summary, String, method: :accessibility_info
+    field :name, String, 
+      null: false,
+      description: 'A short string about this partner, an alias for `summary`'
 
-    field :logo, String
-    field :address, AddressType
+    field :summary, String,
+      description: 'A short string describing partner'
 
-    field :url, String
-    field :facebook_page, String, method: :facebook_link
-    field :twitter_handle, String, method: :twitter_handle
+    field :description, String,
+      description: 'Longer text about partner with more detail'
 
-    field :areas_served, [NeighbourhoodType], method: :service_area_neighbourhoods
+    field :accessibility_summary, String,
+      method: :accessibility_info,
+      description: 'Accessibility information about this partner and the kind of events they run'
 
-    field :contact, ContactType
+    field :logo, String,
+      description: 'The URL of the logo that is served from placecal'
 
-    field :telephone, String, method: :public_phone
-    field :email, String, method: :public_email
-    field :contact_name, String, method: :public_name
+    field :address, AddressType,
+      description: 'The physical address of this partner'
 
-    field :opening_hours, [OpeningHoursType], null: true
+    field :url, String,
+      description: 'The URL provided by the partner for users to find out more info'
+
+    field :facebook_page, String,
+      method: :facebook_link,
+      description: 'The possible facebook URL of this partner'
+
+    field :twitter_handle, String, 
+      method: :twitter_handle,
+      description: 'The twitter handle of partner so users can see their tweet feed'
+
+    field :areas_served, [NeighbourhoodType],
+      method: :service_area_neighbourhoods,
+      description: 'Areas served by partner that are not at a physical address'
+
+    field :contact, ContactType,
+      description: 'Contact information of a person within the partner organisation'
+
+    # field :telephone, String, method: :public_phone
+    # field :email, String, method: :public_email
+    # field :contact_name, String, method: :public_name
+
+    field :opening_hours, [OpeningHoursType], 
+      null: true,
+      description: 'The hours that this partner opens for at their physical address'
 
     def contact
       object
