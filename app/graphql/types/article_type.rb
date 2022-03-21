@@ -2,7 +2,7 @@ module Types
   class ArticleType < Types::BaseObject
     
 
-    description 'A piece of news article posted on PlaceCal'
+    description 'A news article posted on PlaceCal'
 
     # field :id, ID, 
     #   null: false,
