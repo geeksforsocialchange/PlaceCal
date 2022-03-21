@@ -2,7 +2,7 @@ module Types
   class ArticleType < Types::BaseObject
     
 
-    description 'A piece of news involving a partner'
+    description 'A piece of news article posted on PlaceCal'
 
     # field :id, ID, 
     #   null: false,
@@ -36,7 +36,7 @@ module Types
       description: 'The time that the article was modified on PlaceCal',
       method: :updated_at
 
-    field :provider, [PartnerType],      
+    field :providers, [PartnerType],
       description: 'The partner this article is about',
       method: :partners
 
