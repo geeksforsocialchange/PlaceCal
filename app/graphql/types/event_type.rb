@@ -18,12 +18,12 @@ module Types
     field :description, String,
       description: 'A longer text about this event covering more detail'
 
-    field :startDate, String, 
+    field :startDate, GraphQL::Types::ISO8601DateTime, 
       method: :dtstart, 
       null: false,
       description: 'The date (and time) when this event begins'
 
-    field :endDate, String, 
+    field :endDate, GraphQL::Types::ISO8601DateTime, 
       method: :dtend,
       description: 'The end date of this event if the event goes on for more than one day (i.e. a conference weekend)'
 

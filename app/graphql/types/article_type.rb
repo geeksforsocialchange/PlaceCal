@@ -24,15 +24,15 @@ module Types
       description: 'The contents of the article (in markdown format)',
       method: :body
 
-    field :date_published, String, 
-      description: 'Date that the article was published on',
+    field :date_published, GraphQL::Types::ISO8601DateTime, 
+      description: 'Date that the article was published on PlaceCal',
       method: :published_at
 
-    field :date_created, String, 
+    field :date_created, GraphQL::Types::ISO8601DateTime, 
       description: 'The time that the article was created on PlaceCal',
       method:  :created_at
 
-    field :date_updated, String, 
+    field :date_updated, GraphQL::Types::ISO8601DateTime, 
       description: 'The time that the article was modified on PlaceCal',
       method: :updated_at
 

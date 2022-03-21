@@ -47,7 +47,7 @@ module Types
       from_date = DateTime.now.beginning_of_day
 
       if args[:from_date].present?
-        if args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/
+        if args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
           from_date = DateTime.new(
             $1.to_i, # year
             $2.to_i, # month
@@ -64,7 +64,7 @@ module Types
       query = query.where('dtstart >= ?', from_date)
 
       if args[:to_date].present?
-        if args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/
+        if args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
           to_date = DateTime.new(
             $1.to_i, # year
             $2.to_i, # month

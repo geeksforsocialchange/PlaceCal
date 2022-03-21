@@ -101,7 +101,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     assert data_event['name'] == event.summary
 
     assert data_event.has_key?('startDate'), 'missing startDate'
-    assert data_event['startDate'] =~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}$/, 'startDate is not in ISO format'
+    assert data_event['startDate'] =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, 'startDate is not in ISO format'
 
     assert data_event.has_key?('endDate'), 'missing endDate'
     assert data_event.has_key?('address'), 'missing address'
