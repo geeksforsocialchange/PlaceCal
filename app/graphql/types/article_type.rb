@@ -38,7 +38,7 @@ module Types
 
     field :provider, [PartnerType],      
       description: 'The partner this article is about',
-      method: :partner
+      method: :partners
 
 
     # creativeWorkStatus: string, from is_draft
