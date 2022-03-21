@@ -54,6 +54,9 @@ module Types
       null: true,
       description: 'The hours that this partner opens for at their physical address'
 
+    field :articles, [ArticleType],
+      description: 'News and information from this partner'
+
     def contact
       object
     end
@@ -70,6 +73,10 @@ module Types
 
     def twitter_url
       "https://twitter.com/#{object.twitter_handle}" if object.twitter_handle
+    end
+
+    def articles
+      object.articles.published.by_publish_date
     end
   end
 end
