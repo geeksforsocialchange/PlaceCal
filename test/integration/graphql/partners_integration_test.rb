@@ -185,4 +185,42 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     check_areas_served partner_data['areasServed'], partner.service_area_neighbourhoods
 
   end
+
+  test 'can see published articles by partnetr' do
+    partner = FactoryBot.create(:partner, twitter_handle: 'Alpha')
+    article_1 = partner.articles.create!(
+      title: 'A published article',
+      body: 'This article has been published',
+      is_draft: false,
+      published_at: Date.today
+    )
+
+    article_2 = partner.articles.create!(
+      title: 'An article that is not published',
+      body: 'This article has not been published',
+      is_draft: true,
+      published_at: nil
+    )
+
+    query_string = <<-GRAPHQL
+      query {
+        partner(id: #{partner.id}) {
+          articles {
+            headline
+            articleBody
+            datePublished
+          }
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+    assert result.has_key?('errors') == false, 'errors are present'
+
+    data = result['data']
+    partner_data = data['partner']
+    article_data = partner_data['articles']
+
+    assert article_data.length == 1, 'Should only see the one article published by this partenr'
+  end
 end
