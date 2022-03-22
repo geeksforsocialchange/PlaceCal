@@ -18,6 +18,10 @@ FactoryBot.define do
       role { 'citizen' }
     end
 
+    factory(:editor) do
+      role { 'editor' }
+    end
+
     factory(:tag_admin) do
       after(:build) { |user| user.tags = [create(:tag)] }
     end

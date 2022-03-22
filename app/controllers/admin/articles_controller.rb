@@ -30,8 +30,11 @@ module Admin
     end
 
     def create
-      @article = Article.new(article_params)
+      @article = Article.new(permitted_attributes(Article))
+      @article.partners = current_user.partners if current_user.partners.count == 1
+
       authorize @article
+
       if @article.save
         flash[:success] = 'Article has been created'
         redirect_to admin_articles_path
@@ -43,14 +46,8 @@ module Admin
 
     def update
       authorize @article
-      @article.assign_attributes(article_params)
-      pub_date = if @article.is_draft
-                   nil
-                 else
-                   DateTime.now
-                 end
-      @article.published_at = pub_date
-      if @article.save
+
+      if @article.update(permitted_attributes(@article))
         flash[:success] = 'Article was saved successfully'
         redirect_to admin_articles_path
       else
@@ -70,10 +67,6 @@ module Admin
 
     def set_article
       @article = Article.find(params[:id])
-    end
-
-    def article_params
-      params.require(:article).permit(:title, :body, :published_at, :is_draft)
     end
   end
 end
