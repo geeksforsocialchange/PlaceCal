@@ -69,8 +69,6 @@ module Types
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
 
-    # field :fetch_partners, resolver: Beans # Queries::FetchPartners
-
     include PartnerQueries
     include EventQueries
     include SiteQueries
