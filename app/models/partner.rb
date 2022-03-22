@@ -168,6 +168,14 @@ class Partner < ApplicationRecord
     "https://placecal.org/partners/#{id}"
   end
 
+  def twitter_url
+    "https://twitter.com/#{twitter_handle}" if twitter_handle.present?
+  end
+
+  def logo_url
+    image_url(image.url, skip_pipeline: true) if image.present?
+  end
+
   # Get a count of all the events this week
   def events_this_week
     events.find_by_week(Time.now).count
