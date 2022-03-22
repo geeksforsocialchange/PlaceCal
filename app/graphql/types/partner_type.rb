@@ -46,10 +46,6 @@ module Types
     field :contact, ContactType,
       description: 'Venue contact information - could be a person or a general contact'
 
-    # field :telephone, String, method: :public_phone
-    # field :email, String, method: :public_email
-    # field :contact_name, String, method: :public_name
-
     field :opening_hours, [OpeningHoursType], 
       null: true,
       description: 'The hours that this partner opens for at their physical address'
