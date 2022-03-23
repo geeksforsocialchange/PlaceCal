@@ -8,7 +8,6 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
-
     @default_site = create_default_site
     @partner = create(:partner)
     @neighbourhood = create(:neighbourhood)
@@ -25,6 +24,24 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
     @citizen = create(:user)
     get "http://admin.lvh.me"
+  end
+
+  test "User admin index has appropriate title" do
+    sign_in(@root)
+    get admin_users_path
+    assert_response :success
+
+    assert_select 'title', text: "Users | PlaceCal Admin"
+    assert_select 'h1', text: "Users"
+  end
+
+
+  test "root : can get new user" do
+    sign_in @root
+
+    get new_admin_user_path
+
+    assert_select 'title', text: "New User | PlaceCal Admin"
   end
 
   test "Profile form has correct fields for root" do

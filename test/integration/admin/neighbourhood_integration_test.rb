@@ -26,6 +26,8 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     sign_in(@root)
     get admin_neighbourhoods_path
     # See all neighbourhoods
+
+    assert_select 'title', text: "Neighbourhoods | PlaceCal Admin"
     assert_select 'tbody tr', count: @number_of_neighbourhoods
   end
 

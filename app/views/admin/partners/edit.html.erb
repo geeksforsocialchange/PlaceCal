@@ -1,3 +1,5 @@
+<% content_for :title do %>Editing <%= @partner.name %><% end %>
+
 <h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
 
 <% if current_user.root? -%>
