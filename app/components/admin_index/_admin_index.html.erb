@@ -1,3 +1,5 @@
+<% content_for :title do %><%= properties[:title] %><% end %>
+
 <h1 class="page-header"><%= properties[:title] %></h1>
 
 <%# A weird bug in the datatables template means that we have to apply the margin for each link, rather than for the container span. So this span has no class. TODO: Fix this. %>

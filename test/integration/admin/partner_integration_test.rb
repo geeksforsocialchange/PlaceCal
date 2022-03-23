@@ -17,12 +17,30 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     host! 'admin.lvh.me'
   end
 
+  test "Partner admin index has appropriate fields" do
+    sign_in(@admin)
+    get admin_partners_path
+    assert_response :success
+
+    assert_select 'title', text: "Partners | PlaceCal Admin"
+    assert_select 'h1', text: "Partners"
+  end
+
+  test "root : can get new partner" do
+    sign_in @admin
+
+    get new_admin_partner_path
+
+    assert_select 'title', text: "New Partner | PlaceCal Admin"
+  end
+
   test "Edit form has correct fields" do
     sign_in @admin
 
     get edit_admin_partner_path(@partner)
     assert_response :success
 
+    assert_select 'title', text: "Editing #{@partner.name} | PlaceCal Admin"
     assert_select 'h1', text: "Edit Partner: #{@partner.name}"
 
     assert_select 'h2', text: 'Basic Information'
