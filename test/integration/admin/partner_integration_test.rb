@@ -116,4 +116,49 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     tag = tag_options.first
     assert tag.attributes.key?('selected')
   end
+
 end
+
+=begin
+
+Capybara feature test that doesn't work and i have no time to fix
+
+class PartnerAddressUpdatesTest < ActionDispatch::IntegrationTest # Capybara::Rails::TestCase
+
+  include Devise::Test::IntegrationHelpers
+  include Capybara::DSL
+  include Capybara::Minitest::Assertions
+
+  setup do
+    # @admin = create(:root)
+    host! 'admin.lvh.me'
+  end
+
+  test 'can change postcode of partner' do
+    # sign_in @admin
+
+
+    visit '/users/sign_in'
+
+    click 'Partners'
+    click @partner.title
+
+    fill_in 'Postcode', with: 'OL6 8BH'
+
+
+    #update_args = @partner_two.as_json
+    #update_args['partner']['address']['postcode'] = 
+    #patch admin_partner_url(@partner_two), params: update_args
+    click_button 'Update'
+    assert_redirected_to admin_partners_url
+
+    click @partner.title
+
+    puts 'is this runing?'
+    assert_have_selector 'input[name="partner_postcode"]'
+
+    #@partner_two.reload
+    #assert @partner_two.address.postcode == 'OL6 8BH'
+  end
+end
+=end

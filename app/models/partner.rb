@@ -129,7 +129,10 @@ class Partner < ApplicationRecord
   end
 
   def address_attributes=(value)
-    addr = Address.where('lower(street_address) = ?', value['street_address']&.downcase&.strip).first
+    addr = Address
+      .where('lower(street_address) = ?', value[:street_address]&.downcase&.strip)
+      .where(postcode: value[:postcode]&.upcase&.strip)
+      .first
 
     if addr.present?
       self.address = addr
