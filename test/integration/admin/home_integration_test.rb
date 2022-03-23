@@ -16,6 +16,8 @@ class AdminHomeIntegrationTest < ActionDispatch::IntegrationTest
     sign_in @admin
     get "http://admin.lvh.me"
     assert_response :success
+
+    assert_select 'title', text: "Dashboard | PlaceCal Admin"
     assert_select 'h1', text: "Recently updated partners"
   end
 end

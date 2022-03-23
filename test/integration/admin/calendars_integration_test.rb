@@ -20,6 +20,7 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
   test "root user : can get index" do
     sign_in @root
     get admin_calendars_path
+    assert_select 'title', text: "Calendars | PlaceCal Admin"
     assert_select 'tbody tr', count: 1
   end
 
@@ -34,6 +35,8 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
     sign_in @root
 
     get new_admin_calendar_path
+
+    assert_select 'title', text: "New Calendar | PlaceCal Admin"
 
     assert_select 'select#calendar_partner_id' do
       assert_select 'option', count: 3
