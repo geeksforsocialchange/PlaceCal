@@ -216,7 +216,7 @@ class Partner < ApplicationRecord
   private
 
   def check_ward_access
-    return if accessed_by_user.nil?
+    return if accessed_by_user.nil? || accessed_by_user.root?
     return unless address.present?
 
     unless accessed_by_user.assigned_to_postcode?(address&.postcode)
