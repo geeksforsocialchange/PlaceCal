@@ -5,13 +5,47 @@ require 'test_helper'
 class PartnerTest < ActiveSupport::TestCase
   setup do
     @user = create(:user)
-    @new_partner = build(:partner, address: create(:address), accessed_by_user: @user)
+    @new_address = create(:address)
+    @new_partner = build(:partner, address: @new_address, accessed_by_user: @user)
   end
 
   test 'updates user roles when saved' do
     @new_partner.users << @user
     @new_partner.save
     assert @user.partner_admin?
+  end
+
+  test 'can change postcode of partner' do
+    @new_partner.save!
+
+    new_postcode = 'OL6 8BH'
+    new_params = {
+      address_attributes: {
+        'street_address': @new_address.street_address,
+        'postcode': new_postcode
+      }
+    }
+
+    @new_partner.update! new_params
+    @new_partner.reload
+
+    assert @new_partner.address.postcode == new_postcode
+  end
+
+  test 'it recycles addresses if it can' do
+    @new_partner.save!
+
+    other_partner = build(:partner, address: nil, accessed_by_user: @user)
+    other_params = {
+      address_attributes: {
+        'street_address': @new_address.street_address,
+        'postcode': @new_address.postcode
+      }
+    }
+    other_partner.update! other_params
+    other_partner.reload
+
+    assert @new_partner.address_id == other_partner.address_id, 'should have same address ID'
   end
 
   test 'validate name length' do

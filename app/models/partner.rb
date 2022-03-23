@@ -129,7 +129,10 @@ class Partner < ApplicationRecord
   end
 
   def address_attributes=(value)
-    addr = Address.where('lower(street_address) = ?', value['street_address']&.downcase&.strip).first
+    addr = Address
+      .where('lower(street_address) = ?', value[:street_address]&.downcase&.strip)
+      .where(postcode: value[:postcode]&.upcase&.strip)
+      .first
 
     if addr.present?
       self.address = addr
@@ -213,7 +216,7 @@ class Partner < ApplicationRecord
   private
 
   def check_ward_access
-    return if accessed_by_user.nil?
+    return if accessed_by_user.nil? || accessed_by_user.root?
     return unless address.present?
 
     unless accessed_by_user.assigned_to_postcode?(address&.postcode)

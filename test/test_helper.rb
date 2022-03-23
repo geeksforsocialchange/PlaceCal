@@ -4,8 +4,9 @@ require 'simplecov'
 require 'vcr'
 SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
-require 'webmock/minitest'
-WebMock.disable_net_connect!(allow_localhost: true)
+# require 'webmock/minitest'
+# require 'minitest-rails'
+# WebMock.disable_net_connect!(allow_localhost: true)
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
@@ -19,6 +20,9 @@ require 'minitest/autorun'
 require 'json_matchers/minitest/assertions'
 JsonMatchers.schema_root = 'test/support/api/schemas'
 include JsonMatchers::Minitest::Assertions
+
+require "capybara/rails"
+require "capybara/minitest"
 
 module ActiveSupport
   class TestCase
