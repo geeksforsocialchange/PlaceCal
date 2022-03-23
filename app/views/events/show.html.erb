@@ -35,7 +35,7 @@
 <% end %>
 
 <%= render_component "meta", permalink: "/events/#{@event.id}" do %>
-  <%= link_to 'Subscribe to this event with iCal', event_url(@event, protocol: :webcal, format: :ics) %><br>
+  <%# link_to 'Subscribe to this event with iCal', event_url(@event, protocol: :webcal, format: :ics) %>
   <% contact = @event&.calendar&.contact_information %>
   <% if contact %>
     <div class="contact_information">

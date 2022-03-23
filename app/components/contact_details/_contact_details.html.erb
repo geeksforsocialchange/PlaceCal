@@ -3,23 +3,23 @@
     <strong>T:</strong>
     <span>
       <%- if is_valid_phone %>
-        <%= link_to phone, "tel:#{phone}", { property: 'telephone' } %>
+        <%= link_to phone, "tel:#{phone}", target: '_blank' %>
       <% else %>
         <%= phone %>
       <% end %>
     </span>
   <% end %>
   <% if email.present? %>
-    <strong>E:</strong> <span><%= mail_to email, email, { property: 'email' } %></span>
+    <strong>E:</strong> <span><%= mail_to email, email, target: '_blank' %></span>
   <% end %>
   <% if url.present? %>
-    <strong>W:</strong> <span><%= link_to strip_url(url), url, { property: 'url' } %></span>
+    <strong>W:</strong> <span><%= link_to strip_url(url), url, target: '_blank' %></span>
   <% end %>
   <% if facebook_link.present? %>
-    <strong>F:</strong> <span><%= link_to facebook_link, facebook_url %></span>
+    <strong>F:</strong> <span><%= link_to facebook_link, facebook_url, target: '_blank' %></span>
   <% end %>
   <% if twitter_handle.present? %>
-    <strong>T:</strong> <span><%= link_to "@#{twitter_handle}", twitter_url %></span>
+    <strong>T:</strong> <span><%= link_to "@#{twitter_handle}", twitter_url, target: '_blank' %></span>
   <% end %>
   <% unless contact? %>
     No contact information - let us know!
