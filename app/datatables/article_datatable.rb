@@ -6,7 +6,7 @@ class ArticleDatatable < Datatable
     @view_columns ||= {
       id: { source: 'Article.id', cond: :eq },
       title: { source: 'Article.title' },
-      body: { source: 'Article.body' },
+      partners: { source: 'Article.partners', orderable: false, searchable: false, cond: :null_value },
       published_at: { source: 'Article.published_at' },
       is_draft: { source: 'Article.is_draft' },
       updated_at: { source: 'Article.updated_at' }
@@ -19,7 +19,7 @@ class ArticleDatatable < Datatable
         # apparently edit_admin_article_path doesn't exist????
         id: link_to(record.id, edit_admin_article_path(record)),
         title: link_to(record.title, edit_admin_article_path(record)),
-        body: record.body,
+        partners: record.partners.map(&:name),
         published_at: record.published_at,
         is_draft: record.is_draft,
         updated_at: record.updated_at
@@ -32,5 +32,4 @@ class ArticleDatatable < Datatable
     # User.all
     options[:articles]
   end
-
 end

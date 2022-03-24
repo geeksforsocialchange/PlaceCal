@@ -161,7 +161,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'neighobourhood_admin : can setup new partner in ward' do
+  test 'neighbourhood_admin : can setup new partner in ward' do
     sign_in @neighbourhood_admin
 
     params = {
@@ -178,7 +178,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_admin_partner_url(params)
   end
 
-  test 'neighobourhood_admin : cannot setup new partner not in ward' do
+  test 'neighbourhood_admin : cannot setup new partner not in ward' do
     sign_in @neighbourhood_admin
 
     params = {

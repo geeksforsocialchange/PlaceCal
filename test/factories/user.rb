@@ -18,16 +18,20 @@ FactoryBot.define do
       role { 'citizen' }
     end
 
+    factory(:editor) do
+      role { 'editor' }
+    end
+
     factory(:tag_admin) do
-      after(:build) { |user| user.tags = [create(:tag)] }
+      after(:create) { |user| user.tags = [create(:tag)] }
     end
 
     factory(:neighbourhood_admin) do
-      after(:build) { |user| user.neighbourhoods = [create(:neighbourhood)] }
+      after(:create) { |user| user.neighbourhoods = [create(:neighbourhood)] }
     end
 
     factory(:neighbourhood_region_admin) do
-      after(:build) do |user|
+      after(:create) do |user|
         # Create the wards + region
         wards = create_list(:neighbourhood, 5)
         region = create(:neighbourhood_region)
@@ -46,7 +50,7 @@ FactoryBot.define do
     end
 
     factory(:partner_admin) do
-      after(:build) { |user| user.partners = [create(:partner)] }
+      after(:create) { |user| user.partners = [create(:partner)] }
     end
   end
 end

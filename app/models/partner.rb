@@ -24,7 +24,7 @@ class Partner < ApplicationRecord
 
   validates_associated :service_areas
 
-  has_many :article_partners
+  has_many :article_partners, dependent: :destroy
   has_many :articles, through: :article_partners
 
   has_and_belongs_to_many :objects,
@@ -92,14 +92,17 @@ class Partner < ApplicationRecord
 
   scope :recently_updated, -> { order(updated_at: desc) }
 
+  scope :from_neighbourhoods_and_service_areas, lambda { |ids|
+    left_joins(:address, :service_areas)
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
+             ids, ids)
+  }
+
   scope :for_site, lambda { |site|
     site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
-    site_tag_ids = site.tags.map(&:id)
 
-    partners = joins('left join addresses on addresses.id = partners.address_id')
-               .joins('left join service_areas on partners.id = service_areas.partner_id')
-               .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
-                      site_neighbourhood_ids, site_neighbourhood_ids)
+    site_tag_ids = site.tags.map(&:id)
+    partners = from_neighbourhoods_and_service_areas(site_neighbourhood_ids)
 
     site_tag_ids.any? ? partners.with_tags(site_tag_ids) : partners
   }
@@ -108,12 +111,13 @@ class Partner < ApplicationRecord
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
+  #
+  # TODO? This might be an incredibly inefficient query. If so, add a column
+  # to the Partner table, e.g. place_latest_dtstart, which can be updated on
+  # import.
   scope :event_hosts, -> do
-    # TODO? This might be an incredibly inefficient query. If so, add a column
-    # to the Partner table, e.g. place_latest_dtstart, which can be updated on
-    # import.
     joins('JOIN events ON events.place_id = partners.id')
-      .where('events.dtstart > ?', Date.today-30).distinct
+      .where('events.dtstart > ?', Date.today - 30).distinct
   end
 
   # Get all Partners that manage at least one other Partner.

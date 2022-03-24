@@ -1,3 +1,4 @@
+<%- disabled_fields = policy(@article).disabled_fields %>
 <%= simple_form_for [:admin, @article] do |f| %>
   <%= render_component "error", object: @article %>
 
@@ -5,9 +6,24 @@
   <%= f.input :body, input_html: { rows: 20 } %>
   <%= f.input :is_draft %>
 
-  <%= f.button :submit, class: "btn btn-primary" %>
+  <hr>
 
-  <% unless @article.new_record? %>
-    <%= link_to "Destroy Article", admin_article_path(@article), method: :delete, class: "btn btn-danger" %>
+  <h2>Partners</h2>
+  <p>Display this in relation to the given partners</p>
+  <% if disabled_fields.include?(:partner_ids) %>
+    <%# # Create a dummy field, because f.assoc disappears %>
+    <%= f.input :partners, collection: options_for_partners,
+        input_html: { class: 'form-control select2' }, disabled: true %>
+  <% else %>
+    <%= f.association :partners, collection: options_for_partners,
+                      input_html: { class: 'form-control select2' } %>
   <% end %>
+
+  <span>
+    <br>
+    <%= f.submit 'Save', class: "btn btn-primary" %>
+    <% if !@article.new_record? && policy(@article).destroy? %>
+      <%= link_to "Destroy", admin_article_path(@article), method: :delete, class: "ml-3 btn btn-danger" %>
+    <% end %>
+  </span>
 <% end %>
