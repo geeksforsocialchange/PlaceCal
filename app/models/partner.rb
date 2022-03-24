@@ -93,8 +93,7 @@ class Partner < ApplicationRecord
   scope :recently_updated, -> { order(updated_at: desc) }
 
   scope :from_neighbourhoods_and_service_areas, lambda { |ids|
-    joins('left join addresses on addresses.id = partners.address_id')
-      .joins('left join service_areas on partners.id = service_areas.partner_id')
+    left_joins(:address, :service_areas)
       .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
              ids, ids)
   }
