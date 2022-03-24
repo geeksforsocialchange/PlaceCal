@@ -46,7 +46,12 @@ class ApplicationController < ActionController::Base
     repeating        = args[:repeating]        || 'on'
 
     events = Event.all
-    events = events.for_site(site) if site
+    
+    if site
+      events = events.for_site(site)
+      events = events.with_tags(site.tags) if site.tags.any?
+    end
+
     events = events.in_place(place) if place
     events = events.by_partner(partner) if partner
     events = events.by_partner_or_place(partner_or_place) if partner_or_place
