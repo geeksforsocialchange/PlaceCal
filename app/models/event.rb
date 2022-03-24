@@ -47,6 +47,13 @@ class Event < ApplicationRecord
       .where('partner_tags.tag_id = ?', tag.id) 
   }
   
+  scope :with_tags, lambda { |tags|
+    tag_ids = tags.map(&:id)
+
+    joins(:partner)
+      .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
+      .where('partner_tags.tag_id in (?)', tag_ids)
+  }
 
   # Filter by Site
   scope :for_site, lambda { |site|
