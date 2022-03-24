@@ -2,7 +2,6 @@
 
 class ArticlePolicy < ApplicationPolicy
   def index?
-    user.root? or user.editor? or user.neighbourhood_admin? or user.partner_admin?
     return true if user.root? or user.editor?
     return true if user.partner_admin? && user.partners.count.positive?
 
@@ -35,7 +34,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[title body published_at is_draft].push(partner_ids: [])
+    [:title, :body, :published_at, :is_draft, partner_ids: []]
   end
 
   def disabled_fields
@@ -57,9 +56,7 @@ class ArticlePolicy < ApplicationPolicy
       neighbourhood_partners = Partner.from_neighbourhoods_and_service_areas(neighbourhood_ids)
       partner_ids = user.partners + neighbourhood_partners.map(&:id)
 
-      # luckily this is a single sql line, but this whole thing could probably be condensed a bit better
-      # ew ew ew ew
-      Article.where(id: ArticlePartner.where(partner_id: partner_ids).map(&:article_id))
+      Article.joins(:article_partners).where('article_partners.partner_id' => partner_ids)
     end
   end
 
