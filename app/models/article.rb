@@ -5,7 +5,7 @@ class Article < ApplicationRecord
 
   before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
 
-  has_many :article_partners
+  has_many :article_partners, dependent: :destroy
   has_many :partners, through: :article_partners
 
   scope :published, -> { where is_draft: false }

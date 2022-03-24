@@ -4,9 +4,9 @@ require 'test_helper'
 
 class ArticleTest < ActiveSupport::TestCase
   setup do
-    @article = build(:article)
+    @article = create(:article)
 
-    @article_draft = build(:article_draft)
+    @article_draft = create(:article_draft)
   end
 
   test 'article should be valid' do
