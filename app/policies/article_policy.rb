@@ -2,7 +2,7 @@
 
 class ArticlePolicy < ApplicationPolicy
   def index?
-    return true if user.root? or user.editor?
+    return true if user.root? || user.editor?
     return true if user.partner_admin? && user.partners.count.positive?
 
     # True if neighbourhood admin oversees any partners
