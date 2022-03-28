@@ -197,6 +197,9 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   end
 end
 
+module Neighbourhoods
+end
+
 class PartnerUpdatePostcodeTest < ActionDispatch::IntegrationTest
 
   setup do
@@ -257,3 +260,25 @@ class PartnerUpdatePostcodeTest < ActionDispatch::IntegrationTest
     assert @partner.address.postcode == 'OL6 8BH'
   end
 end
+
+class PartnerEditSiteTest < ActionDispatch::IntegrationTest
+  setup do
+    @root_user = create(:root)
+    sign_in @root_user
+    
+    @site = build(:site)
+    @site.save!
+
+    @partner = build(:partner)
+    @partner.save!
+  end
+
+  test 'user can see sites this partner is involved with' do
+    @site.neighbourhoods << @partner.address.neighbourhood
+    get edit_admin_partner_url(@partner)
+
+    assert_select 'ul#partner-sites li', count: 1
+    assert_select 'ul#partner-sites li:first a', text: @site.name
+  end
+end
+

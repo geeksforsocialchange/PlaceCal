@@ -9,6 +9,14 @@
   <% if @partner.service_areas.any? -%>
     <p>In service areas <%= service_area_links(@partner) %>.</p>
   <% end -%>
+  <h2>Partner Site Visibility</h2>
+  <p>This partner (and their events) appear on the following sites</p>
+  <ul class='list-group' id='partner-sites'>
+  <% @sites.order(:name).each do |site| -%>
+    <li class='list-group-item'><%= link_to site.name, edit_admin_site_path(site) %></li>
+  <% end -%>
+  </ul>
+  <br>
 <% end -%>
 
 <%= render 'form', model: :partner %>
