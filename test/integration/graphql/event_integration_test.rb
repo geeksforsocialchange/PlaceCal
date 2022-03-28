@@ -149,6 +149,10 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def verify_correct_number_of_items(count_got, count_wanted, desc)
+    assert count_got == count_wanted, "#{desc}: wanted=#{count_wanted}, got=#{count_got}"
+  end
+
   test 'returns events from today' do
     now_time = DateTime.new(1990, 1, 1, 0, 0, 0)
     build_time_events now_time
@@ -172,7 +176,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert events.length == 10, 'was expecting only events in the future'
+      verify_correct_number_of_items events.length, 10, 'was expecting only events in the future'
+      # assert events.length == 10, 'was expecting only events in the future'
     end
   end
 
@@ -199,7 +204,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert events.length == 15, 'was expecting to see all events'
+      verify_correct_number_of_items events.length, 15, 'was expecting to see all events'
+      # assert events.length == 15, 'was expecting to see all events'
     end
   end
 
@@ -226,7 +232,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert events.length == 5, 'was expecting to see only some future events'
+      verify_correct_number_of_items events.length, 5, 'was expecting to see only some future events'
+      # assert events.length == 5, 'was expecting to see only some future events'
     end
   end
 
@@ -274,7 +281,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert events.length == 5, 'was expecting to see only events from other_partner'
+      verify_correct_number_of_items events.length, 5, 'was expecting to see only events from other_partner'
+      # assert events.length == 5, 'was expecting to see only events from other_partner'
     end
   end
 
@@ -326,7 +334,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert events.length == 5, 'was expecting to see only events within neighbourhood_good service area'
+      verify_correct_number_of_items events.length, 5, 'was expecting to see only events within neighbourhood_good service area'
+      # assert events.length == 5, 'was expecting to see only events within neighbourhood_good service area'
     end
   end
   # this should mainly be tested elsewhere
@@ -379,7 +388,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert events.length == 6, 'was expecting to see only events from have_tag'
+      verify_correct_number_of_items events.length, 6,'was expecting to see only events from have_tag'
+      # assert events.length == 6, 'was expecting to see only events from have_tag'
     end
   end
 end
