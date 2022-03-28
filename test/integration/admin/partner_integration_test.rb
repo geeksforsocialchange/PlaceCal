@@ -119,10 +119,9 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
 end
 
+
+# Capybara feature test that doesn't work and i have no time to fix
 =begin
-
-Capybara feature test that doesn't work and i have no time to fix
-
 class PartnerAddressUpdatesTest < ActionDispatch::IntegrationTest # Capybara::Rails::TestCase
 
   include Devise::Test::IntegrationHelpers
@@ -130,18 +129,20 @@ class PartnerAddressUpdatesTest < ActionDispatch::IntegrationTest # Capybara::Ra
   include Capybara::Minitest::Assertions
 
   setup do
+    @admin = create(:root)
+    @site = FactoryBot.create(:site, slug: 'default-site')
+    @partner = create(:partner)
     # @admin = create(:root)
     host! 'admin.lvh.me'
   end
 
   test 'can change postcode of partner' do
-    # sign_in @admin
+    sign_in @admin
 
+    visit '/'
 
-    visit '/users/sign_in'
-
-    click 'Partners'
-    click @partner.title
+    click_link 'Partners'
+    click_link @partner.title
 
     fill_in 'Postcode', with: 'OL6 8BH'
 
