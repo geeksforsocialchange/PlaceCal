@@ -234,146 +234,152 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
   #   (the same place service area scoping is tested)
   test 'can scope to neighbourhood (via partner address)' do
 
-    3.times do
-      @partner.events.create!(
-        dtstart: Date.today,
-        summary: "partner 1: An event summary",
-        description: 'Longer text covering the event in more detail',
-        address: @address
-      )
-    end
+    Partner.transaction do
+      3.times do
+        @partner.events.create!(
+          dtstart: Date.today,
+          summary: "partner 1: An event summary",
+          description: 'Longer text covering the event in more detail',
+          address: @address
+        )
+      end
 
 
-    other_address = FactoryBot.create(:bare_address_2, neighbourhood: neighbourhoods(:two))
-    other_partner = FactoryBot.create(:moss_side_partner, address: other_address)
+      other_address = FactoryBot.create(:bare_address_2, neighbourhood: neighbourhoods(:two))
+      other_partner = FactoryBot.create(:moss_side_partner, address: other_address)
 
-    5.times do
-      other_partner.events.create!(
-        dtstart: Date.today,
-        summary: "partner 2: An event summary",
-        description: 'Longer text covering the event in more detail',
-        address: other_address
-      )
-    end
+      5.times do
+        other_partner.events.create!(
+          dtstart: Date.today,
+          summary: "partner 2: An event summary",
+          description: 'Longer text covering the event in more detail',
+          address: other_address
+        )
+      end
 
-    query_string = <<-GRAPHQL
+      query_string = <<-GRAPHQL
       query {
         eventsByFilter(neighbourhoodId: #{other_address.neighbourhood_id}) {
           id
           name
         }
       }
-    GRAPHQL
+      GRAPHQL
 
-    result = PlaceCalSchema.execute(query_string)
-    # puts JSON.pretty_generate(result.as_json)
-    assert result.has_key?('errors') == false, 'errors are present'
+      result = PlaceCalSchema.execute(query_string)
+      # puts JSON.pretty_generate(result.as_json)
+      assert result.has_key?('errors') == false, 'errors are present'
 
-    data = result['data']
-    assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      data = result['data']
+      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
-    events = data['eventsByFilter']
-    assert events.length == 5, 'was expecting to see only events from other_partner'
+      events = data['eventsByFilter']
+      assert events.length == 5, 'was expecting to see only events from other_partner'
+    end
   end
 
   test 'can scope to neighbourhood (via partner service area)' do
 
-    neighbourhood_good = neighbourhoods(:one)
-    neighbourhood_bad  = neighbourhoods(:two)
+    Partner.transaction do
+      neighbourhood_good = neighbourhoods(:one)
+      neighbourhood_bad  = neighbourhoods(:two)
 
-    @partner.service_areas.create! neighbourhood: neighbourhood_good
-    @partner.update! address: nil
+      @partner.service_areas.create! neighbourhood: neighbourhood_good
+      @partner.update! address: nil
 
-    5.times do
-      @partner.events.create!(
-        dtstart: Date.today,
-        summary: "partner in good neighbourhood: An event summary",
-        description: 'Longer text covering the event in more detail',
-        address: @address
-      )
-    end
+      5.times do
+        @partner.events.create!(
+          dtstart: Date.today,
+          summary: "partner in good neighbourhood: An event summary",
+          description: 'Longer text covering the event in more detail',
+          address: @address
+        )
+      end
 
-    other_partner = FactoryBot.build(:moss_side_partner, address: nil)
-    other_partner.service_areas.build neighbourhood: neighbourhood_bad
-    other_partner.save!
+      other_partner = FactoryBot.build(:moss_side_partner, address: nil)
+      other_partner.service_areas.build neighbourhood: neighbourhood_bad
+      other_partner.save!
 
-    3.times do
-      other_partner.events.create!(
-        dtstart: Date.today,
-        summary: "partner in bad neighbourhood: An event summary",
-        description: 'Longer text covering the event in more detail',
-        address: FactoryBot.create(:bare_address_2)
-      )
-    end
+      3.times do
+        other_partner.events.create!(
+          dtstart: Date.today,
+          summary: "partner in bad neighbourhood: An event summary",
+          description: 'Longer text covering the event in more detail',
+          address: FactoryBot.create(:bare_address_2)
+        )
+      end
 
-    query_string = <<-GRAPHQL
+      query_string = <<-GRAPHQL
       query {
         eventsByFilter(neighbourhoodId: #{neighbourhood_good.id}) {
           id
           name
         }
       }
-    GRAPHQL
+      GRAPHQL
 
-    result = PlaceCalSchema.execute(query_string)
-    # puts JSON.pretty_generate(result.as_json)
-    assert result.has_key?('errors') == false, 'errors are present'
+      result = PlaceCalSchema.execute(query_string)
+      # puts JSON.pretty_generate(result.as_json)
+      assert result.has_key?('errors') == false, 'errors are present'
 
-    data = result['data']
-    assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      data = result['data']
+      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
-    events = data['eventsByFilter']
-    assert events.length == 5, 'was expecting to see only events within neighbourhood_good service area'
+      events = data['eventsByFilter']
+      assert events.length == 5, 'was expecting to see only events within neighbourhood_good service area'
+    end
   end
   # this should mainly be tested elsewhere
   test 'can scope to tag (via partner tags)' do
 
-    have_tag = FactoryBot.create(:tag)
-    have_not_tag = FactoryBot.create(:tag)
+    Partner.transaction do
+      have_tag = FactoryBot.create(:tag)
+      have_not_tag = FactoryBot.create(:tag)
 
-    @partner.tags << have_not_tag
+      @partner.tags << have_not_tag
 
-    2.times do
-      @partner.events.create!(
-        dtstart: Date.today,
-        summary: "partner 1: An event summary",
-        description: 'Longer text covering the event in more detail',
-        address: @address
-      )
-    end
+      2.times do
+        @partner.events.create!(
+          dtstart: Date.today,
+          summary: "partner 1: An event summary",
+          description: 'Longer text covering the event in more detail',
+          address: @address
+        )
+      end
 
 
-    other_address = FactoryBot.create(:bare_address_2, neighbourhood: neighbourhoods(:two))
-    other_partner = FactoryBot.create(:moss_side_partner, address: other_address)
+      other_address = FactoryBot.create(:bare_address_2, neighbourhood: neighbourhoods(:two))
+      other_partner = FactoryBot.create(:moss_side_partner, address: other_address)
 
-    other_partner.tags << have_tag
+      other_partner.tags << have_tag
 
-    6.times do
-      other_partner.events.create!(
-        dtstart: Date.today,
-        summary: "partner 2: An event summary",
-        description: 'Longer text covering the event in more detail',
-        address: other_address
-      )
-    end
+      6.times do
+        other_partner.events.create!(
+          dtstart: Date.today,
+          summary: "partner 2: An event summary",
+          description: 'Longer text covering the event in more detail',
+          address: other_address
+        )
+      end
 
-    query_string = <<-GRAPHQL
+      query_string = <<-GRAPHQL
       query {
         eventsByFilter(tagId: #{have_tag.id}) {
           id
           name
         }
       }
-    GRAPHQL
+      GRAPHQL
 
-    result = PlaceCalSchema.execute(query_string)
-    # puts JSON.pretty_generate(result.as_json)
-    assert result.has_key?('errors') == false, 'errors are present'
+      result = PlaceCalSchema.execute(query_string)
+      # puts JSON.pretty_generate(result.as_json)
+      assert result.has_key?('errors') == false, 'errors are present'
 
-    data = result['data']
-    assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      data = result['data']
+      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
-    events = data['eventsByFilter']
-    assert events.length == 6, 'was expecting to see only events from have_tag'
+      events = data['eventsByFilter']
+      assert events.length == 6, 'was expecting to see only events from have_tag'
+    end
   end
 end
