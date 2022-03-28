@@ -130,5 +130,17 @@ class Site < ApplicationRecord
 
       Site.find_by(slug: site_slug)
     end
+
+    def sites_that_contain_partner(partner)
+      partner_neighbourhood_ids = partner.service_areas.pluck(:neighbourhood_id)
+      partner_neighbourhood_ids << partner.address.neighbourhood_id if partner.address && partner.address.neighbourhood_id
+
+      partner_tag_ids = partner.partner_tags.pluck(:tag_id)
+
+      Site
+        .left_outer_joins(:sites_tag)
+        .left_outer_joins(:sites_neighbourhoods)
+        .where('neighbourhood_id in (?) or tag_id in (?)', partner_neighbourhood_ids, partner_tag_ids)
+    end
   end
 end
