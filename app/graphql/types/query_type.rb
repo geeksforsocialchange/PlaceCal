@@ -13,6 +13,11 @@ module Types
         description \
           'Get partners in chunks'
       end
+
+      klass.field :partners_by_tag, [PartnerType] do
+        description 'Retrieve list of partners that have been given a certain tag'
+        argument :tag_id, ID
+      end
     end
 
     def partner(id:)
@@ -21,6 +26,10 @@ module Types
 
     def partner_connection(**args)
       Partner.all
+    end
+
+    def partners_by_tag(tag_id:)
+      Partner.with_tags(tag_id).order(:name)
     end
   end
 
