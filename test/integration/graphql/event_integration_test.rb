@@ -244,7 +244,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     Partner.transaction do
       3.times do
         @partner.events.create!(
-          dtstart: Date.today,
+          dtstart: DateTime.now + 1.hours,
           summary: "partner 1: An event summary",
           description: 'Longer text covering the event in more detail',
           address: @address
@@ -257,7 +257,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
       5.times do
         other_partner.events.create!(
-          dtstart: Date.today,
+          dtstart: DateTime.now + 1.hours,
           summary: "partner 2: An event summary",
           description: 'Longer text covering the event in more detail',
           address: other_address
@@ -297,7 +297,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
       5.times do
         @partner.events.create!(
-          dtstart: Date.today,
+          dtstart: DateTime.now + 1.hours,
           summary: "partner in good neighbourhood: An event summary",
           description: 'Longer text covering the event in more detail',
           address: @address
@@ -310,7 +310,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
       3.times do
         other_partner.events.create!(
-          dtstart: Date.today,
+          dtstart: DateTime.now + 1.hours,
           summary: "partner in bad neighbourhood: An event summary",
           description: 'Longer text covering the event in more detail',
           address: FactoryBot.create(:bare_address_2)
@@ -349,7 +349,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
       2.times do
         @partner.events.create!(
-          dtstart: Date.today,
+          dtstart: DateTime.now + 1.hours,
           summary: "partner 1: An event summary",
           description: 'Longer text covering the event in more detail',
           address: @address
@@ -364,7 +364,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
       6.times do
         other_partner.events.create!(
-          dtstart: Date.today,
+          dtstart: DateTime.now + 1.hours,
           summary: "partner 2: An event summary",
           description: 'Longer text covering the event in more detail',
           address: other_address
