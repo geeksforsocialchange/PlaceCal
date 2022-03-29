@@ -21,7 +21,7 @@ namespace :import do
     import_events_from_source(args[:calendar_id], from)
   end
 
-  task nuke_papertrail: :environment do
+  task purge_papertrail: :environment do
     PaperTrail::Version.all.delete_all
   end
 end
