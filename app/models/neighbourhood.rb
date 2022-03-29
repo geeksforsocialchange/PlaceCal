@@ -50,13 +50,19 @@ class Neighbourhood < ApplicationRecord
   end
 
   def abbreviated_name
-    abbr_name = name_abbr.to_s.strip
+    abbr_name = self.name_abbr.to_s.strip
 
     return abbr_name if abbr_name.present?
 
     name
   end
 
+  def name_abbr=(value)
+    value = value.to_s.strip
+
+    self['name_abbr'] = value.present? ? value : nil
+  end
+                 
   def to_s
     "#{fullname} (#{unit})"
   end
