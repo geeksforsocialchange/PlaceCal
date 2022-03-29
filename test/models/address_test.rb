@@ -6,14 +6,24 @@ class AddressTest < ActiveSupport::TestCase
   test 'normalizes postcode' do
     Geocoder.stub :search, [] do
 
-      address = Address.create(
-        street_address: '123 street',
-        postcode: '   ha8 5ha ',
-        country_code: 'gb'
-      )
-      address.save!
+      table = [
+        [ '   w1w 5aa', 'W1W 5AA' ],
+        [ 'ng12 4fz  ', 'NG12 4FZ' ],
+        [ '  ha8  8ha ', 'HA8 8HA'],
+        [ 'W1W5AA', 'W1W 5AA' ],
+        [ 'W1W      5AA', 'W1W 5AA' ]
+      ]
 
-      assert address.postcode == 'HA8 5HA'
+      table.each do |try_data, expected_output|
+        address = Address.create(
+          street_address: '123 street',
+          postcode: try_data,
+          country_code: 'gb'
+        )
+        address.save!
+
+        assert address.postcode == expected_output
+      end
     end
   end
 end
