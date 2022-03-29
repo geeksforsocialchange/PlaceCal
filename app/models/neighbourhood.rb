@@ -49,7 +49,7 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
-  # give us a name we can use for the abbrevaited name even if
+  # give us a name we can use for the abbreviated name even if
   # such a thing does not exist
   #
   # == Parameters: none
