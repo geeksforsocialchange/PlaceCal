@@ -33,6 +33,18 @@ module Types
     end
   end
 
+  module ArticleQueries
+    def self.included(klass)
+      klass.field :all_articles, [ArticleType] do
+        description 'Return news articles from all sites for all partners'
+      end
+    end
+
+    def all_articles(**args)
+      Article.all
+    end
+  end
+
   module SiteQueries
     def self.included(klass)
       klass.field :site, SiteType do
@@ -81,6 +93,7 @@ module Types
     include PartnerQueries
     include EventQueries
     include SiteQueries
+    include ArticleQueries
     include MiscQueries
   end
 end
