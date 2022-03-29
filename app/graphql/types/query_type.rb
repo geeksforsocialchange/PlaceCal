@@ -46,7 +46,7 @@ module Types
     end
 
     def article_connection(**args)
-      Article.published.order(published_at: :desc).all
+      Article.global_newsfeed
     end
   end
 
