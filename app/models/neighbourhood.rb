@@ -49,6 +49,14 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
+  def abbreviated_name
+    abbr_name = name_abbr.to_s.strip
+
+    return abbr_name if abbr_name.present?
+
+    name
+  end
+
   def to_s
     "#{fullname} (#{unit})"
   end

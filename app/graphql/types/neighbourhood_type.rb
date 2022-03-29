@@ -9,7 +9,6 @@ module Types
       description: 'The common name for this region'
 
     field :abbreviated_name, String,
-      method: :name_abbr,
       description: 'Shorthand version of name in common use'
 
     field :unit, String,

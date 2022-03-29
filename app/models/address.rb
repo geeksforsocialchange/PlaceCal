@@ -143,9 +143,9 @@ class Address < ApplicationRecord
     # made, including with postcode values the DB.
     # Standard format is ALL CAPS where the only whitespace is a single space
     # before the final three characters.
-    def standardised_postcode pc
+    def standardised_postcode(pc)
       return unless pc
-      pc.gsub(/\s+/, "").upcase.insert(-4, ' ')
+      pc.gsub(/\s+/, "").strip.upcase.insert(-4, ' ')
     end
   end
 end

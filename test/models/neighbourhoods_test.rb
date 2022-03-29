@@ -25,4 +25,23 @@ class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
     assert @ashton_neighbourhood.country.name == 'England'
     assert @ashton_neighbourhood.country.unit == 'country'
   end
+
+  test 'uses name if name_abbr is missing' do
+    # missing altogether
+    hood = Neighbourhood.new(name: 'neighbourhood')
+    assert hood.abbreviated_name == 'neighbourhood'
+
+    # is empty string
+    hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: '')
+    assert hood.abbreviated_name == 'neighbourhood'
+
+    # is a blank string
+    hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: '   ')
+    assert hood.abbreviated_name == 'neighbourhood'
+
+    # is fine with a value
+    hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: 'hood')
+    assert hood.abbreviated_name == 'hood'
+  end
+
 end
