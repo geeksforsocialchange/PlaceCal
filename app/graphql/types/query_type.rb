@@ -35,13 +35,18 @@ module Types
 
   module ArticleQueries
     def self.included(klass)
-      klass.field :all_articles, [ArticleType] do
-        description 'Return news articles from all sites for all partners'
+      #klass.field :all_articles, [ArticleType] do
+      #  description 'Return news articles from all sites for all partners'
+      #end
+
+      klass.field :article_connection, Types::ArticleType.connection_type do
+        description \
+          'Get articles in chunks'
       end
     end
 
-    def all_articles(**args)
-      Article.all
+    def article_connection(**args)
+      Article.published.order(published_at: :desc).all
     end
   end
 

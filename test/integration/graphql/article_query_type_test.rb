@@ -12,15 +12,21 @@ class ArticleIndexTest< ActionDispatch::IntegrationTest
     5.times do |n|
       Article.create!(
         title: "News article #{n}",
-        body: 'article body text'
+        body: 'article body text',
+        is_draft: false,
+        published_at: DateTime.now
       )
     end
 
     query_string = <<-GRAPHQL
       query {
-        allArticles {
-          name
-          text
+        articleConnection {
+          edges {
+            node {
+              name
+              text
+            }
+          }
         }
       }
     GRAPHQL
@@ -29,9 +35,10 @@ class ArticleIndexTest< ActionDispatch::IntegrationTest
     # puts JSON.pretty_generate(result.as_json)
     data = result['data']
 
-    assert data.has_key?('allArticles'), 'result is missing key `allArticles`'
-    articles = data['allArticles']
+    assert data.has_key?('articleConnection'), 'result is missing key `allArticles`'
+    article_connection = data['articleConnection']
+    edges = article_connection['edges']
 
-    assert articles.length == 5
+    assert edges.length == 5
   end
 end
