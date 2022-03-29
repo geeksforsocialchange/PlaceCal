@@ -11,6 +11,7 @@ module Admin
     def index
       @partners = policy_scope(Partner).order({ :updated_at => :desc }, :name).includes(:address)
 
+
       respond_to do |format|
         format.html
         format.json {
@@ -61,6 +62,7 @@ module Admin
 
     def edit
       authorize @partner
+      @sites = Site.sites_that_contain_partner(@partner)
     end
 
     def update

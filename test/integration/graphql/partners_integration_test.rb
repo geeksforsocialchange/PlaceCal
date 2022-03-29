@@ -229,4 +229,27 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     assert article_data.length == 1, 'Should only see the one article published by this partenr'
   end
+
+  test 'finding partners by tag' do
+
+    partner = FactoryBot.create(:partner)
+    tag = FactoryBot.create(:tag)
+    partner.tags << tag
+
+    query_string = <<-GRAPHQL
+      query {
+        partnersByTag(tagId: #{tag.id}) {
+          name
+          description
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+    assert result.has_key?('errors') == false, 'errors are present'
+
+    data = result['data']
+    partner_data = data['partnersByTag']
+    assert partner_data.length == 1, 'expecting to see a tag on this partner'
+  end
 end

@@ -11,6 +11,8 @@ class Article < ApplicationRecord
   scope :published, -> { where is_draft: false }
   scope :by_publish_date, -> { order(:published_at) }
 
+  scope :global_newsfeed, -> { published.order(published_at: :desc) }
+
   def update_published_at
     self.published_at = self.is_draft ? nil : DateTime.now
   end

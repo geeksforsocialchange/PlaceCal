@@ -13,6 +13,11 @@ module Types
         description \
           'Get partners in chunks'
       end
+
+      klass.field :partners_by_tag, [PartnerType] do
+        description 'Retrieve list of partners that have been given a certain tag'
+        argument :tag_id, ID
+      end
     end
 
     def partner(id:)
@@ -21,6 +26,27 @@ module Types
 
     def partner_connection(**args)
       Partner.all
+    end
+
+    def partners_by_tag(tag_id:)
+      Partner.with_tags(tag_id).order(:name)
+    end
+  end
+
+  module ArticleQueries
+    def self.included(klass)
+      #klass.field :all_articles, [ArticleType] do
+      #  description 'Return news articles from all sites for all partners'
+      #end
+
+      klass.field :article_connection, Types::ArticleType.connection_type do
+        description \
+          'Get articles in chunks'
+      end
+    end
+
+    def article_connection(**args)
+      Article.global_newsfeed
     end
   end
 
@@ -72,6 +98,7 @@ module Types
     include PartnerQueries
     include EventQueries
     include SiteQueries
+    include ArticleQueries
     include MiscQueries
   end
 end
