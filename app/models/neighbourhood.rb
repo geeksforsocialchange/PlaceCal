@@ -49,6 +49,32 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
+  # give us a name we can use for the abbreviated name even if
+  # such a thing does not exist
+  #
+  # == Parameters: none
+  #
+  # == Returns
+  #   A string of the name
+  def abbreviated_name
+    name_abbr.present? ? name_abbr : name
+  end
+
+  # normalize abbreviated names (usually coming from calendar
+  #   importer)
+  #
+  # == Parameters:
+  # value::
+  #   A string with the name value, or a blank string, or nil
+  #
+  # == Returns
+  #   The input value normalized as a string or nil
+  def name_abbr=(value)
+    value = value.to_s.strip
+
+    self['name_abbr'] = value.present? ? value : nil
+  end
+                 
   def to_s
     "#{fullname} (#{unit})"
   end

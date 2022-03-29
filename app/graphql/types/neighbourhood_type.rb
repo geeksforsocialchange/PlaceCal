@@ -9,8 +9,7 @@ module Types
       description: 'The common name for this region'
 
     field :abbreviated_name, String,
-      method: :name_abbr,
-      description: 'Shorthand version of name in common use'
+      description: 'Abbreviated version of name or just the name if this is not set'
 
     field :unit, String,
       description: 'Size of neighbourhood: country -> region -> county -> district -> ward'
