@@ -51,7 +51,9 @@ class Calendar < ApplicationRecord
     name
   end
 
-  #Output recent calendar import activity
+  # Output recent calendar import activity
+  # This uses PaperTrail to get historical records of the Event models, including deletes
+  # It does this to show a "event added" / "event removed" thing
   def recent_activity
     versions = PaperTrail::Version.with_item_keys('Event', self.event_ids).where('created_at >= ?', 2.weeks.ago)
     versions = versions.or(PaperTrail::Version.destroys
