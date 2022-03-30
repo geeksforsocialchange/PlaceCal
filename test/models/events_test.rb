@@ -56,6 +56,6 @@ class EventTest < ActiveSupport::TestCase
     assert a.save
 
     b = Event.new(calendar: create(:calendar), **event_hash)
-    assert b
+    assert b.valid?
   end
 end
