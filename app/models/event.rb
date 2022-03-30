@@ -13,6 +13,7 @@ class Event < ApplicationRecord
   validates :summary, :dtstart, presence: true
   before_validation :set_address_from_place
   validate :require_location
+  validate :unique_event
 
   before_save :sanitize_rrule
 
@@ -146,7 +147,21 @@ class Event < ApplicationRecord
 
   def require_location
     return unless self.address_id.blank?
+
     errors.add(:base, "No place or address could be created or found for
                        the event location: #{raw_location_from_source}")
+  end
+
+  # Ensures that the event added is unique
+  # Checks for a duplicate event with the properties dtstart, summary, and calendar_id
+  def unique_event
+    return unless Event.where(dtstart: dtstart,
+                              summary: summary,
+                              calendar_id: calendar_id)
+                       .count
+                       .positive?
+
+    errors.add(:base, "Unfortunately this event is a duplicate of an
+                      existing event for calendar: #{calendar_id}")
   end
 end
