@@ -94,6 +94,7 @@ class Calendar < ApplicationRecord
         event_data.address_id = id if id_type == :address_id
       end
 
+      # Create/Update the new event and update the Calendar import error log (notices) with any errors
       @notices += create_or_update_events(event_data, occurrences, from)
     end
 
@@ -103,7 +104,7 @@ class Calendar < ApplicationRecord
     update!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current, critical_error: nil)
   end
 
-  def create_or_update_events(event_data, occurrences, from) # rubocop:disable all
+  def create_or_update_events(event_data, occurrences, from)
     @important_notices = []
     calendar_events    = events.upcoming.where(uid: event_data.uid)
 
@@ -114,7 +115,8 @@ class Calendar < ApplicationRecord
     end
 
     occurrences.each do |occurrence|
-      next if occurrence.end_time && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1  #check if more than a day apart
+      # Skip if more than a day apart
+      next if occurrence.end_time && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1
       event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
 
       event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
@@ -130,6 +132,14 @@ class Calendar < ApplicationRecord
     @important_notices
   end
 
+  # Destroys all events in the future if their UID is not included in the input `uids` list
+  #
+  # == Parameters
+  # from::
+  #   Unused.
+  #
+  # uids::
+  #   A list of UID strings
   def handle_deleted_events(from, uids)
     upcoming_events = events.upcoming
     deleted_events = upcoming_events.where.not(uid: uids).pluck(:uid)
