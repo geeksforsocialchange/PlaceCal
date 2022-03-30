@@ -148,8 +148,8 @@ class Event < ApplicationRecord
   def require_location
     return unless self.address_id.blank?
 
-    errors.add(:base, "No place or address could be created or found for
-                       the event location: #{raw_location_from_source}")
+    errors.add(:base, 'No place or address could be created or found for ' \
+                      "the event location: #{raw_location_from_source}")
   end
 
   # Ensures that the event added is unique
@@ -161,7 +161,7 @@ class Event < ApplicationRecord
                        .count
                        .positive?
 
-    errors.add(:base, "Unfortunately this event is a duplicate of an
-                      existing event for calendar: #{calendar_id}")
+    errors.add(:base, 'Unfortunately this event is a duplicate of an ' \
+                      "existing event for calendar: #{calendar_id}")
   end
 end
