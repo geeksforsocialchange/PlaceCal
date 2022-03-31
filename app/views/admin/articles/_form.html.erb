@@ -3,6 +3,7 @@
   <%= render_component "error", object: @article %>
 
   <%= f.input :title, id: :article_title, as: :string, input_html: { class: 'special' } %>
+  <%= f.input :author %>
   <%= f.input :body, input_html: { rows: 20 } %>
   <%= f.input :is_draft %>
 
