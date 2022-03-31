@@ -74,23 +74,43 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
   # /create
   # Basically the same as index
   it_allows_access_to_create_for(%i[root editor]) do
+    article_hash = { title: 'Article Title',
+                     author: 'Foonly',
+                     body: 'AAAAAAAAAAAAAAAA' }
+
     assert_difference('Article.count') do
       post admin_articles_url,
-           params: { article: { title: 'Article Title', body: 'AAAAAAAA' } }
+           params: { article: article_hash }
     end
+
+    a = Article.last
+    assert_equal a.title, article_hash[:title]
+    assert_equal a.author, article_hash[:author]
+    assert_equal a.body, article_hash[:body]
   end
 
   it_allows_access_to_create_for(%i[partner_admin neighbourhood_admin]) do
+    article_hash = { title: 'Article Title',
+                     author: 'Foonly',
+                     body: 'AAAAAAAAAAAAAAAA' }
+
     assert_difference('Article.count') do
       post admin_articles_url,
-           params: { article: { title: 'Article Title', body: 'AAAAAAAA' } }
+           params: { article: article_hash }
     end
+
+    a = Article.last
+    assert_equal a.title, article_hash[:title]
+    assert_equal a.author, article_hash[:author]
+    assert_equal a.body, article_hash[:body]
   end
 
   it_denies_access_to_create_for(%i[citizen partnerless_neighbourhood_admin]) do
     assert_difference('Article.count', 0) do
       post admin_articles_url,
-           params: { article: { title: 'Article Title', body: 'AAAAAAAA' } }
+           params: { article: { title: 'Article Title',
+                                author: 'Foonly',
+                                body: 'AAAAAAAA' } }
     end
   end
 

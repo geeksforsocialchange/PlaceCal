@@ -34,7 +34,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :body, :published_at, :is_draft, partner_ids: []]
+    [:title, :author, :body, :published_at, :is_draft, partner_ids: []]
   end
 
   def disabled_fields
