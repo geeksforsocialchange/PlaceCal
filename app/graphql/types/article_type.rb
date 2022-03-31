@@ -12,7 +12,11 @@ module Types
       description: 'The name of the article (alias for headline)',
       method: :title
 
-    field :headline, String, 
+    field :author, [UserType],
+      description: 'The user who authored this article',
+      method: :author
+
+    field :headline, String,
       description: 'The title of the article',
       method: :title
 

@@ -75,7 +75,7 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
   # Basically the same as index
   it_allows_access_to_create_for(%i[root editor]) do
     article_hash = { title: 'Article Title',
-                     author: 'Foonly',
+                     author_id: @citizen.id,
                      body: 'AAAAAAAAAAAAAAAA' }
 
     assert_difference('Article.count') do
@@ -85,13 +85,13 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
 
     a = Article.last
     assert_equal a.title, article_hash[:title]
-    assert_equal a.author, article_hash[:author]
+    assert_equal a.author_id, article_hash[:author_id]
     assert_equal a.body, article_hash[:body]
   end
 
   it_allows_access_to_create_for(%i[partner_admin neighbourhood_admin]) do
     article_hash = { title: 'Article Title',
-                     author: 'Foonly',
+                     author_id: @citizen.id,
                      body: 'AAAAAAAAAAAAAAAA' }
 
     assert_difference('Article.count') do
@@ -101,7 +101,7 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
 
     a = Article.last
     assert_equal a.title, article_hash[:title]
-    assert_equal a.author, article_hash[:author]
+    assert_equal a.author_id, article_hash[:author_id]
     assert_equal a.body, article_hash[:body]
   end
 
@@ -109,7 +109,7 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Article.count', 0) do
       post admin_articles_url,
            params: { article: { title: 'Article Title',
-                                author: 'Foonly',
+                                author_id: @citizen.id,
                                 body: 'AAAAAAAA' } }
     end
   end

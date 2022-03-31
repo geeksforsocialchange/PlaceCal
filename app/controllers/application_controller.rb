@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   before_action :set_supporters
   before_action :set_navigation
 
-  include Pundit
+  include Pundit::Authorization
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
