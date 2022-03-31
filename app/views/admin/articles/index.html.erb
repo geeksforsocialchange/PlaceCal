@@ -2,6 +2,7 @@
 var columns = [
     {"data": "id"},
     {"data": "title"},
+    {"data": "author"},
     {"data": "partners"},
     {"data": "published_at"},
     {"data": "is_draft"},
@@ -12,7 +13,7 @@ var columns = [
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Articles",
     model: :articles,
-    columns: %i[id title partners published_at is_draft updated_at],
+    columns: %i[id title author partners published_at is_draft updated_at],
     data: @articles,
     source: admin_articles_path(format: :json),
     new_link: new_admin_article_path
