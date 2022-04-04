@@ -8,6 +8,8 @@ class Article < ApplicationRecord
   has_many :article_partners, dependent: :destroy
   has_many :partners, through: :article_partners
 
+  belongs_to :author, class_name: 'User'
+
   scope :published, -> { where is_draft: false }
   scope :by_publish_date, -> { order(:published_at) }
 
@@ -15,5 +17,9 @@ class Article < ApplicationRecord
 
   def update_published_at
     self.published_at = self.is_draft ? nil : DateTime.now
+  end
+
+  def author_name
+    author.full_name
   end
 end

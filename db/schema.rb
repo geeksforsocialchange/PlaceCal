@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_29_140520) do
+ActiveRecord::Schema.define(version: 2022_03_30_160817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_140520) do
     t.boolean "is_draft", default: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "author_id"
+    t.index ["author_id"], name: "index_articles_on_author_id"
   end
 
   create_table "calendars", id: :serial, force: :cascade do |t|
@@ -371,6 +373,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_140520) do
   end
 
   add_foreign_key "addresses", "neighbourhoods"
+  add_foreign_key "articles", "users", column: "author_id"
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "partners", column: "place_id"
   add_foreign_key "events", "addresses"

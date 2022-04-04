@@ -8,6 +8,10 @@ FactoryBot.define do
     published_at { '2022-02-16' }
     is_draft { false }
 
+    after(:build) do |article|
+      article.author = create(:user)
+    end
+
     factory :article_draft do
       published_at { nil }
       is_draft { true }

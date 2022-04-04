@@ -34,13 +34,15 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :body, :published_at, :is_draft, partner_ids: []]
+    [:title, :author_id, :body, :published_at, :is_draft, partner_ids: []]
   end
 
   def disabled_fields
     # Partner admins can edit the assigned partners for the article
-    if user.root? || user.editor? || user.partner_admin? || user.neighbourhood_admin?
+    if user.root?
       %i[]
+    elsif user.editor? || user.partner_admin? || user.neighbourhood_admin?
+      %i[author_id]
     else # Should never be hit, but it's useful as a guard
       %i[title body published_at is_draft partner_ids]
     end

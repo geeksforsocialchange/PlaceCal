@@ -69,7 +69,7 @@ gem 'rails_autolink'
 # Jobs
 gem 'delayed_job_active_record'
 
-# API (defunct)
+# API
 gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 

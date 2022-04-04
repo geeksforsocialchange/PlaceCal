@@ -34,4 +34,25 @@ class Admin::ArticlesTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#article_partner_ids option[selected="selected"]', @partner.name
   end
+
+  test 'editor : author is preselected on /new' do
+    sign_in @editor
+    get new_admin_article_path
+
+    assert_select 'select#article_author_id option[selected="selected"]', @editor.admin_name
+  end
+
+  test 'neighbourhood admin : author is preselected on /new' do
+    sign_in @neighbourhood_admin
+    get new_admin_article_path
+
+    assert_select 'select#article_author_id option[selected="selected"]', @neighbourhood_admin.admin_name
+  end
+
+  test 'partner admin : author is preselected on /new' do
+    sign_in @partner_admin
+    get new_admin_article_path
+
+    assert_select 'select#article_author_id option[selected="selected"]', @partner_admin.admin_name
+  end
 end
