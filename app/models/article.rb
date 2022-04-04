@@ -18,4 +18,8 @@ class Article < ApplicationRecord
   def update_published_at
     self.published_at = self.is_draft ? nil : DateTime.now
   end
+
+  def author_name
+    "#{author.first_name} #{author.last_name}"
+  end
 end

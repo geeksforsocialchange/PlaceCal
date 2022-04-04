@@ -25,10 +25,10 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     result = PlaceCalSchema.execute(query_string)
     data = result['data']
 
-    assert data.has_key?('partnerConnection'), 'result is missing key `partnerConnection`'
+    assert data.key?('partnerConnection'), 'result is missing key `partnerConnection`'
     connection = data['partnerConnection']
 
-    assert connection.has_key?('edges')
+    assert connection.key?('edges')
     edges = connection['edges']
 
     assert edges.length == 5
@@ -49,7 +49,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     result = PlaceCalSchema.execute(query_string)
 
     data = result['data']
-    assert data.has_key?('partner')
+    assert data.key?('partner')
 
     data_partner = data['partner']
     assert data_partner['name'] == partner.name
@@ -57,13 +57,13 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   def verify_field_presence(obj, name, value: nil)
-    assert obj.has_key?(name), "field #{name} is missing"
+    assert obj.key?(name), "field #{name} is missing"
     if value
       assert obj[name] == value, "field #{name} has incorrect value: wanted=#{value}, but got=#{obj[name]}"
     end
   end
 
-  def check_address(data, address)
+  def check_address(data)
     verify_field_presence data, 'streetAddress'
     verify_field_presence data, 'postalCode'
     verify_field_presence data, 'addressLocality'
@@ -87,7 +87,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     verify_field_presence data, 'email', value: contact.public_email
   end
-  
+
   def check_opening_hours(data, opening_hours)
     assert data.is_a?(Array), 'openingHours should be an array'
   end
@@ -111,7 +111,6 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   test 'can view contact info when selected' do
-
     partner = FactoryBot.create(:partner, twitter_handle: 'Alpha', image: 'https://example.com/logo.png')
     # FIXME: logo URL field is tricky as it expects an upload from rails
     #   which would require a fixture file. also not sure how this works
@@ -143,7 +142,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
               unitName
               unitCodeKey
               unitCodeValue
-          	}
+              }
           }
 
           contact {
@@ -169,13 +168,13 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    assert result.has_key?('errors') == false, 'errors are present'
+    assert result.key?('errors') == false, 'errors are present'
 
     data = result['data']
 
     verify_field_presence data, 'partner'
     partner_data = data['partner']
-    
+
     check_basic_fields partner_data, partner
 
     verify_field_presence partner_data, 'address'
@@ -189,13 +188,15 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     verify_field_presence partner_data, 'areasServed'
     check_areas_served partner_data['areasServed'], partner.service_area_neighbourhoods
-
   end
 
   test 'can see published articles by partnetr' do
+    user = create(:user)
     partner = FactoryBot.create(:partner, twitter_handle: 'Alpha')
+
     article_1 = partner.articles.create!(
       title: 'A published article',
+      author: user,
       body: 'This article has been published',
       is_draft: false,
       published_at: Date.today
@@ -203,6 +204,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     article_2 = partner.articles.create!(
       title: 'An article that is not published',
+      author: user,
       body: 'This article has not been published',
       is_draft: true,
       published_at: nil
@@ -221,7 +223,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    assert result.has_key?('errors') == false, 'errors are present'
+    assert result.key?('errors') == false, 'errors are present'
 
     data = result['data']
     partner_data = data['partner']
@@ -231,7 +233,6 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   test 'finding partners by tag' do
-
     partner = FactoryBot.create(:partner)
     tag = FactoryBot.create(:tag)
     partner.tags << tag
@@ -246,7 +247,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    assert result.has_key?('errors') == false, 'errors are present'
+    assert result.key?('errors') == false, 'errors are present'
 
     data = result['data']
     partner_data = data['partnersByTag']

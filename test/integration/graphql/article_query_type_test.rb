@@ -7,11 +7,13 @@ class ArticleIndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'returns articles when invoked' do
+    @user = create(:user)
+
     5.times do |n|
       Article.create!(
         title: "News article #{n}",
         body: 'article body text',
-        author: 'Foonly McFlooly',
+        author: @user,
         is_draft: false,
         published_at: DateTime.now
       )
