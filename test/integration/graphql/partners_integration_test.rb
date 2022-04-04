@@ -178,7 +178,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     check_basic_fields partner_data, partner
 
     verify_field_presence partner_data, 'address'
-    check_address partner_data['address'] #, partner.address
+    check_address partner_data['address'] # , partner.address
 
     verify_field_presence partner_data, 'contact'
     check_contact partner_data['contact'], partner

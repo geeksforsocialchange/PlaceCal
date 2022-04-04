@@ -20,6 +20,6 @@ class Article < ApplicationRecord
   end
 
   def author_name
-    "#{author.first_name} #{author.last_name}"
+    author.full_name
   end
 end
