@@ -253,4 +253,29 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     partner_data = data['partnersByTag']
     assert partner_data.length == 1, 'expecting to see a tag on this partner'
   end
+
+  test 'returns null properly if openning times are missing' do
+
+    partner = FactoryBot.create(:partner, opening_times: nil)
+
+    query_string = <<-GRAPHQL
+      query {
+        partner(id: #{partner.id}) {
+          openingHours {
+            opens
+            closes
+            dayOfWeek
+          }
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+    assert result.key?('errors') == false, 'errors are present'
+
+    data = result['data']
+    opening_hours = data['partner']['openingHours']
+    assert opening_hours == nil
+  end
+
 end

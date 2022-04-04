@@ -58,7 +58,7 @@ module Types
     end
 
     def opening_hours
-      JSON.parse object.opening_times
+      JSON.parse(object.opening_times) if object.opening_times
     end
 
     def articles
