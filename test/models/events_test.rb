@@ -58,4 +58,35 @@ class EventTest < ActiveSupport::TestCase
     b = Event.new(calendar: create(:calendar), **event_hash)
     assert b.valid?
   end
+
+  test 'has blank location with no addresses at all' do
+    event = Event.new
+
+    assert_equal '', event.location, 'expected event location to be blank'
+  end
+
+  test 'has location pulled from its own address' do
+    address = create(:address)
+    event = Event.new(address: address)
+
+    wanted = '123 Moss Ln E, Manchester, Manchester, M15 5DD'
+    assert_equal wanted, event.location
+  end
+
+  test 'uses partners address if it has partner' do
+    partner = create(:partner, address: create(:moss_side_address))
+    event = Event.new(partner: partner)
+
+    wanted = '42 Alexandra Rd, Moss Side, Manchester, M16 7BA'
+    assert_equal wanted, event.location
+  end
+
+  test 'prioritises events address over partners address' do
+    partner = create(:partner, address: create(:moss_side_address))
+    address = create(:address)
+    event = Event.new(address: address, partner: partner)
+
+    wanted = '123 Moss Ln E, Manchester, Manchester, M15 5DD'
+    assert_equal wanted, event.location
+  end
 end

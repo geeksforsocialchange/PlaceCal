@@ -126,6 +126,16 @@ class Event < ApplicationRecord
     address&.neighbourhood
   end
 
+  def location
+    use_address = address || partner&.address
+    #  (address if address.present?) ||
+    #  (partner.address if partner.present?)
+
+    return '' if use_address.nil?
+
+    use_address.to_s
+  end
+
   # TODO: plan this out on paper, currently half finished
   # Who to contact if the event is wrong
   def blame
