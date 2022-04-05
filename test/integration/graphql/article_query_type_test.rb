@@ -81,6 +81,8 @@ class ArticleIndexTest < ActionDispatch::IntegrationTest
       assert_field_equals gql_article, 'dateCreated', value: article.created_at.iso8601
       assert_field_equals gql_article, 'dateUpdated', value: article.updated_at.iso8601
 
+      # Partners are Providers, here we are only checking the length of the providers dict because otherwise
+      # it just gets super annoying and messy doing nested maps and the like
       providers = assert_field gql_article, 'providers', 'Returned article has no providers'
       assert_equal providers.length, article.partners.length
     end
