@@ -5,7 +5,7 @@ module Admin
     before_action :set_article, only: %i[edit update destroy]
 
     def index
-      @articles = policy_scope(Article).order({ :updated_at => :desc }, :title)
+      @articles = policy_scope(Article).order({ updated_at: :desc }, :title)
       authorize @articles
 
       respond_to do |format|

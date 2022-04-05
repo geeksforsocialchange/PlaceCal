@@ -22,6 +22,17 @@
                       input_html: { class: 'form-control select2 multi-select' } %>
   <% end %>
 
+  <hr>
+
+  <h2>Header</h2>
+  <p>Headers should be one of: svg, png, jpg<p>
+  <% if disabled_fields.include?(:article_image) %>
+    <%= f.input :article_image, disabled: true %>
+  <% else %>
+    <%= f.input :article_image %>
+  <% end %>
+  <%= image_tag f.object.article_image.highres.url, class: 'card-img-top' if f.object.article_image.highres.url %>
+
   <span>
     <br>
     <%= f.submit 'Save', class: "btn btn-primary" %>

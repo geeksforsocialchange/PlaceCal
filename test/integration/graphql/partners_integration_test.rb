@@ -53,47 +53,33 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     data_partner = data['partner']
     assert data_partner['name'] == partner.name
-
-  end
-
-  def verify_field_presence(obj, name, value: nil)
-    assert obj.key?(name), "field #{name} is missing"
-    if value
-      assert_equal value, obj[name], "field #{name} has incorrect value: wanted='#{value}', but got='#{obj[name]}'"
-    end
-
-  rescue Minitest::Assertion => e
-    # ugh- we need to see the line that actually caused the problem here and not
-    # just the above assertion line
-    puts e.backtrace[2]
-    raise e
   end
 
   def check_address(data, address)
     neighbourhood = address.neighbourhood
 
-    verify_field_presence data, 'streetAddress', value: address.full_street_address
-    verify_field_presence data, 'postalCode', value: address.postcode
-    verify_field_presence data, 'addressLocality', value: neighbourhood.name
-    verify_field_presence data, 'addressRegion', value: neighbourhood.region.to_s
+    assert_field_equals data, 'streetAddress', value: address.full_street_address
+    assert_field_equals data, 'postalCode', value: address.postcode
+    assert_field_equals data, 'addressLocality', value: neighbourhood.name
+    assert_field_equals data, 'addressRegion', value: neighbourhood.region.to_s
 
-    verify_field_presence data, 'neighbourhood'
+    assert_field data, 'neighbourhood'
     hood = data['neighbourhood']
 
-    verify_field_presence hood, 'name', value: neighbourhood.name
-    verify_field_presence hood, 'abbreviatedName', value: neighbourhood.abbreviated_name
-    verify_field_presence hood, 'unit', value: neighbourhood.unit
-    verify_field_presence hood, 'unitName', value: neighbourhood.unit_name
-    verify_field_presence hood, 'unitCodeKey', value: neighbourhood.unit_code_key
-    verify_field_presence hood, 'unitCodeValue', value: neighbourhood.unit_code_value
+    assert_field_equals hood, 'name', value: neighbourhood.name
+    assert_field_equals hood, 'abbreviatedName', value: neighbourhood.abbreviated_name
+    assert_field_equals hood, 'unit', value: neighbourhood.unit
+    assert_field_equals hood, 'unitName', value: neighbourhood.unit_name
+    assert_field_equals hood, 'unitCodeKey', value: neighbourhood.unit_code_key
+    assert_field_equals hood, 'unitCodeValue', value: neighbourhood.unit_code_value
   end
 
   def check_contact(data, contact)
-    verify_field_presence data, 'name', value: contact.public_name
+    assert_field_equals data, 'name', value: contact.public_name
 
-    verify_field_presence data, 'telephone', value: contact.public_phone
+    assert_field_equals data, 'telephone', value: contact.public_phone
 
-    verify_field_presence data, 'email', value: contact.public_email
+    assert_field_equals data, 'email', value: contact.public_email
   end
 
   def check_opening_hours(data, opening_hours)
@@ -104,11 +90,11 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert data.length == 6 # from factory
     first_day = data.first
 
-    expected_day_of_week = expected_day['dayOfWeek'] =~ /\/([^\/]*)$/ && $1
-    verify_field_presence first_day, 'dayOfWeek', value: expected_day_of_week
+    expected_day_of_week = expected_day['dayOfWeek'] =~ %r{/([^/]*)$} && Regexp.last_match(1)
+    assert_field_equals first_day, 'dayOfWeek', value: expected_day_of_week
 
-    verify_field_presence first_day, 'opens', value: expected_day['opens']
-    verify_field_presence first_day, 'closes', value: expected_day['closes']
+    assert_field_equals first_day, 'opens', value: expected_day['opens']
+    assert_field_equals first_day, 'closes', value: expected_day['closes']
   end
 
   def check_areas_served(data, service_areas)
@@ -118,26 +104,27 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     wanted_area = service_areas.first
     service_area = data.first
 
-    verify_field_presence service_area, 'name', value: wanted_area.name
-    verify_field_presence service_area, 'abbreviatedName', value: wanted_area.abbreviated_name
-    verify_field_presence service_area, 'unit', value: wanted_area.unit
-    verify_field_presence service_area, 'unitName', value: wanted_area.unit_name
-    verify_field_presence service_area, 'unitCodeKey', value: wanted_area.unit_code_key
-    verify_field_presence service_area, 'unitCodeValue', value: wanted_area.unit_code_value
+    assert_field_equals service_area, 'name', value: wanted_area.name
+    assert_field_equals service_area, 'abbreviatedName', value: wanted_area.abbreviated_name
+    assert_field_equals service_area, 'unit', value: wanted_area.unit
+    assert_field_equals service_area, 'unitName', value: wanted_area.unit_name
+    assert_field_equals service_area, 'unitCodeKey', value: wanted_area.unit_code_key
+    assert_field_equals service_area, 'unitCodeValue', value: wanted_area.unit_code_value
   end
 
   def check_basic_fields(data, partner)
-    verify_field_presence data, 'id', value: partner.id.to_s
-    verify_field_presence data, 'name', value: partner.name
-    verify_field_presence data, 'summary', value: partner.summary
-    verify_field_presence data, 'description', value: partner.description
-    verify_field_presence data, 'accessibilitySummary', value: partner.accessibility_info
-    verify_field_presence data, 'url', value: partner.url
-    verify_field_presence data, 'twitterUrl', value: "https://twitter.com/#{partner.twitter_handle}"
-    verify_field_presence data, 'facebookUrl', value: partner.facebook_link
+    assert_field_equals data, 'id', value: partner.id.to_s
+
+    assert_field_equals data, 'name', value: partner.name
+    assert_field_equals data, 'summary', value: partner.summary
+    assert_field_equals data, 'description', value: partner.description
+    assert_field_equals data, 'accessibilitySummary', value: partner.accessibility_info
+    assert_field_equals data, 'url', value: partner.url
+    assert_field_equals data, 'twitterUrl', value: "https://twitter.com/#{partner.twitter_handle}"
+    assert_field_equals data, 'facebookUrl', value: partner.facebook_link
 
     # see note below
-    # verify_field_presence data, 'logo', value: partner.image.url
+    # assert_field_equals data, 'logo', value: partner.image.url
   end
 
   test 'can view contact info when selected' do
@@ -204,21 +191,21 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     data = result['data']
 
-    verify_field_presence data, 'partner'
+    assert_field data, 'partner'
     partner_data = data['partner']
 
     check_basic_fields partner_data, partner
 
-    verify_field_presence partner_data, 'address'
+    assert_field partner_data, 'address'
     check_address partner_data['address'], partner.address
 
-    verify_field_presence partner_data, 'contact'
+    assert_field partner_data, 'contact'
     check_contact partner_data['contact'], partner
 
-    verify_field_presence partner_data, 'openingHours'
+    assert_field partner_data, 'openingHours'
     check_opening_hours partner_data['openingHours'], partner.opening_times
 
-    verify_field_presence partner_data, 'areasServed'
+    assert_field partner_data, 'areasServed'
     check_areas_served partner_data['areasServed'], partner.service_area_neighbourhoods
   end
 
@@ -313,5 +300,4 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     opening_hours = data_partner['openingHours']
     assert_nil opening_hours
   end
-
 end

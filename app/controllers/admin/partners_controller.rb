@@ -9,8 +9,7 @@ module Admin
     before_action :set_service_area_map_ids, only: %i[new edit]
 
     def index
-      @partners = policy_scope(Partner).order({ :updated_at => :desc }, :name).includes(:address)
-
+      @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
 
       respond_to do |format|
         format.html
@@ -115,11 +114,10 @@ module Admin
     def set_service_area_map_ids
       # maps neighbourhood ID to service_area ID
       if @partner
-        @service_area_id_map = @partner.
-          service_areas.select(:id, :neighbourhood_id).
-          map { |sa| { sa.neighbourhood_id => sa.id } }.
-          reduce({}, :merge)
-
+        @service_area_id_map = @partner
+                               .service_areas.select(:id, :neighbourhood_id)
+                               .map { |sa| { sa.neighbourhood_id => sa.id } }
+                               .reduce({}, :merge)
       else
         @service_area_id_map = {}
       end
