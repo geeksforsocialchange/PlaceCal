@@ -59,25 +59,33 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   def verify_field_presence(obj, name, value: nil)
     assert obj.key?(name), "field #{name} is missing"
     if value
-      assert obj[name] == value, "field #{name} has incorrect value: wanted=#{value}, but got=#{obj[name]}"
+      assert_equal value, obj[name], "field #{name} has incorrect value: wanted='#{value}', but got='#{obj[name]}'"
     end
+
+  rescue Minitest::Assertion => e
+    # ugh- we need to see the line that actually caused the problem here and not
+    # just the above assertion line
+    puts e.backtrace[2]
+    raise e
   end
 
-  def check_address(data)
-    verify_field_presence data, 'streetAddress'
-    verify_field_presence data, 'postalCode'
-    verify_field_presence data, 'addressLocality'
-    verify_field_presence data, 'addressRegion'
+  def check_address(data, address)
+    neighbourhood = address.neighbourhood
+
+    verify_field_presence data, 'streetAddress', value: address.full_street_address
+    verify_field_presence data, 'postalCode', value: address.postcode
+    verify_field_presence data, 'addressLocality', value: neighbourhood.name
+    verify_field_presence data, 'addressRegion', value: neighbourhood.region.to_s
 
     verify_field_presence data, 'neighbourhood'
     hood = data['neighbourhood']
 
-    verify_field_presence hood, 'name'
-    verify_field_presence hood, 'abbreviatedName'
-    verify_field_presence hood, 'unit'
-    verify_field_presence hood, 'unitName'
-    verify_field_presence hood, 'unitCodeKey'
-    verify_field_presence hood, 'unitCodeValue'
+    verify_field_presence hood, 'name', value: neighbourhood.name
+    verify_field_presence hood, 'abbreviatedName', value: neighbourhood.abbreviated_name
+    verify_field_presence hood, 'unit', value: neighbourhood.unit
+    verify_field_presence hood, 'unitName', value: neighbourhood.unit_name
+    verify_field_presence hood, 'unitCodeKey', value: neighbourhood.unit_code_key
+    verify_field_presence hood, 'unitCodeValue', value: neighbourhood.unit_code_value
   end
 
   def check_contact(data, contact)
@@ -89,11 +97,33 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   def check_opening_hours(data, opening_hours)
-    assert data.is_a?(Array), 'openingHours should be an array'
+    opening_hours = JSON.parse(opening_hours)
+    expected_day = opening_hours.first
+
+    assert_kind_of Array, data, 'openingHours should be an array'
+    assert data.length == 6 # from factory
+    first_day = data.first
+
+    expected_day_of_week = expected_day['dayOfWeek'] =~ /\/([^\/]*)$/ && $1
+    verify_field_presence first_day, 'dayOfWeek', value: expected_day_of_week
+
+    verify_field_presence first_day, 'opens', value: expected_day['opens']
+    verify_field_presence first_day, 'closes', value: expected_day['closes']
   end
 
   def check_areas_served(data, service_areas)
-    assert data.is_a?(Array), 'areasServed should be an array'
+    assert_kind_of Array, data, 'areasServed should be an array'
+    assert data.length == service_areas.count
+
+    wanted_area = service_areas.first
+    service_area = data.first
+
+    verify_field_presence service_area, 'name', value: wanted_area.name
+    verify_field_presence service_area, 'abbreviatedName', value: wanted_area.abbreviated_name
+    verify_field_presence service_area, 'unit', value: wanted_area.unit
+    verify_field_presence service_area, 'unitName', value: wanted_area.unit_name
+    verify_field_presence service_area, 'unitCodeKey', value: wanted_area.unit_code_key
+    verify_field_presence service_area, 'unitCodeValue', value: wanted_area.unit_code_value
   end
 
   def check_basic_fields(data, partner)
@@ -112,6 +142,8 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
   test 'can view contact info when selected' do
     partner = FactoryBot.create(:partner, twitter_handle: 'Alpha', image: 'https://example.com/logo.png')
+    partner.service_area_neighbourhoods << neighbourhoods(:one)
+
     # FIXME: logo URL field is tricky as it expects an upload from rails
     #   which would require a fixture file. also not sure how this works
     #   on a production environment because of how the URL is generated
@@ -168,7 +200,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    assert result.key?('errors') == false, 'errors are present'
+    refute result.key?('errors'), 'errors are present'
 
     data = result['data']
 
@@ -178,7 +210,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     check_basic_fields partner_data, partner
 
     verify_field_presence partner_data, 'address'
-    check_address partner_data['address'] # , partner.address
+    check_address partner_data['address'], partner.address
 
     verify_field_presence partner_data, 'contact'
     check_contact partner_data['contact'], partner
@@ -223,7 +255,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    assert result.key?('errors') == false, 'errors are present'
+    refute result.key?('errors'), 'errors are present'
 
     data = result['data']
     partner_data = data['partner']
@@ -247,7 +279,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    assert result.key?('errors') == false, 'errors are present'
+    refute result.key?('errors'), 'errors are present'
 
     data = result['data']
     partner_data = data['partnersByTag']
@@ -255,7 +287,6 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   test 'returns null properly if openning times are missing' do
-
     partner = FactoryBot.create(:partner, opening_times: nil)
 
     query_string = <<-GRAPHQL
@@ -274,8 +305,13 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert result.key?('errors') == false, 'errors are present'
 
     data = result['data']
-    opening_hours = data['partner']['openingHours']
-    assert opening_hours == nil
+    assert data.key?('partner')
+
+    data_partner = data['partner']
+    assert data_partner.key?('openingHours')
+
+    opening_hours = data_partner['openingHours']
+    assert_nil opening_hours
   end
 
 end
