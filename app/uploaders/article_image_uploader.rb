@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArticleHeaderUploader < CarrierWave::Uploader::Base
+class ArticleImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
   storage :file
