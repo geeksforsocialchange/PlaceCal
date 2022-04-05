@@ -21,7 +21,7 @@ module Admin
     end
 
     def new
-      @article = Article.new(permitted_attributes(Article))
+      @article = params[:article] ? Article.new(permitted_attributes(Article)) : Article.new
       @article.partners = current_user.partners if current_user.partners.count == 1
       @article.author = current_user unless current_user.root?
       authorize @article

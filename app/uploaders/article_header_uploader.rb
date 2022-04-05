@@ -9,10 +9,10 @@ class ArticleHeaderUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  process resize_to_fit: [1920, 1280]
+  process resize_to_fill: [1920, 1280, :center]
 
   version :highres do
-    process resize_to_fit: [1272, 714]
+    process resize_to_fill: [1272, 714, :center]
   end
 
   def extension_allowlist

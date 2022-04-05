@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 2022_04_05_102801) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "author_id"
-    t.string "article_header"
+    t.string "article_image"
     t.index ["author_id"], name: "index_articles_on_author_id"
   end
 

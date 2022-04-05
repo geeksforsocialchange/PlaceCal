@@ -26,12 +26,12 @@
 
   <h2>Header</h2>
   <p>Headers should be one of: svg, png, jpg<p>
-  <% if disabled_fields.include?(:article_header) %>
-    <%= f.input :article_header, disabled: true %>
+  <% if disabled_fields.include?(:article_image) %>
+    <%= f.input :article_image, disabled: true %>
   <% else %>
-    <%= f.input :article_header %>
+    <%= f.input :article_image %>
   <% end %>
-  <%= image_tag f.object.article_header.url, class: 'card-img-top' if f.object.article_header.url %>
+  <%= image_tag f.object.article_image.highres.url, class: 'card-img-top' if f.object.article_image.highres.url %>
 
   <span>
     <br>
