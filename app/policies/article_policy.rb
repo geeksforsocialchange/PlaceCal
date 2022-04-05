@@ -34,7 +34,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :author_id, :body, :published_at, :is_draft, partner_ids: []]
+    [:title, :author_id, :body, :published_at, :is_draft, :article_header, partner_ids: []]
   end
 
   def disabled_fields
@@ -44,7 +44,7 @@ class ArticlePolicy < ApplicationPolicy
     elsif user.editor? || user.partner_admin? || user.neighbourhood_admin?
       %i[author_id]
     else # Should never be hit, but it's useful as a guard
-      %i[title body published_at is_draft partner_ids]
+      %i[title author_id body published_at is_draft article_header partner_ids]
     end
   end
 

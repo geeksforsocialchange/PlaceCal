@@ -5,7 +5,7 @@ module Admin
     before_action :set_article, only: %i[edit update destroy]
 
     def index
-      @articles = policy_scope(Article).order({ :updated_at => :desc }, :title)
+      @articles = policy_scope(Article).order({ updated_at: :desc }, :title)
       authorize @articles
 
       respond_to do |format|
@@ -21,7 +21,7 @@ module Admin
     end
 
     def new
-      @article = params[:article] ? Article.new(permitted_attributes(Article)) : Article.new
+      @article = Article.new(permitted_attributes(Article))
       @article.partners = current_user.partners if current_user.partners.count == 1
       @article.author = current_user unless current_user.root?
       authorize @article

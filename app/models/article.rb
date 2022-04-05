@@ -10,6 +10,8 @@ class Article < ApplicationRecord
 
   belongs_to :author, class_name: 'User'
 
+  mount_uploader :article_header, ArticleHeaderUploader
+
   scope :published, -> { where is_draft: false }
   scope :by_publish_date, -> { order(:published_at) }
 

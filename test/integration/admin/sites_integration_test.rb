@@ -17,22 +17,21 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     host! 'admin.lvh.me'
   end
 
-  test "Site admin index has appropriate title" do
+  test 'Site admin index has appropriate title' do
     sign_in(@root)
     get admin_sites_path
     assert_response :success
 
-    assert_select 'title', text: "Sites | PlaceCal Admin"
-    assert_select 'h1', text: "Sites"
+    assert_select 'title', text: 'Sites | PlaceCal Admin'
+    assert_select 'h1', text: 'Sites'
   end
 
-
-  test "root : can get new site" do
+  test 'root : can get new site' do
     sign_in @root
 
     get new_admin_site_path
 
-    assert_select 'title', text: "New Site | PlaceCal Admin"
+    assert_select 'title', text: 'New Site | PlaceCal Admin'
   end
 
   test 'create a site through the admin page' do
