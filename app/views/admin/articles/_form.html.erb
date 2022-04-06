@@ -12,7 +12,7 @@
   <hr>
 
   <div class='row'>
-    <div class="col-md-4">
+    <div class="col-md-6">
       <h2>Partners</h2>
       <p>Display this in relation to the given partners</p>
       <% if disabled_fields.include?(:partner_ids) %>
@@ -24,7 +24,7 @@
                           input_html: { class: 'form-control select2 multi-select' } %>
       <% end %>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
       <h2>Tags</h2>
       <p>What tags should this article be associated with?</p>
       <% if disabled_fields.include?(:tag_ids) %>
