@@ -15,7 +15,12 @@
 
   <%# Show a list of sites that the partner is related to %>
   <span id="partner-sites">
-    <p>This partner (and their events) appear on the following sites: <%= site_links %>.</p>
+    <% partners_sites_links = site_links %>
+    <% if partners_sites_links.present? %>
+      <p>This partner (and their events) appear on the following sites: <%= site_links %>.</p>
+    <% else %>
+      <p class="text-danger">This partner (and their events) do not appear on any sites</p>
+    <% end %>
   </span>
   <br>
 <% end -%>

@@ -25,6 +25,12 @@ module PartnersHelper
     end
   end
 
+  # Get a String containing a list of <a> tags for each service area related to
+  # Partner, where the name is the Neighbourhood's name, and the URL is the
+  # admin edit page for the Neighbourhood
+  #
+  # @param [Partner]
+  # @return [String] HTML string
   def service_area_links(partner)
     partner.service_area_neighbourhoods
            .order(:name)
@@ -33,6 +39,10 @@ module PartnersHelper
            .html_safe
   end
 
+  # Get a String containing a list of <a> tags for each site,
+  # where the name is the Site's name, and the URL is the site's domain
+  #
+  # @return [String] HTML string
   def site_links
     @sites.order(:name)
           .map { |site| link_to site.name, site.domain }
