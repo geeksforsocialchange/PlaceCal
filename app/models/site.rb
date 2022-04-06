@@ -99,15 +99,13 @@ class Site < ApplicationRecord
   end
 
   class << self
-
     # Find the requested Site from information in the rails request object.
     #
-    # Parameters:
-    #   request must expose these methods; host, subdomain, subdomains
-    def find_by_request request
-
+    # @param request The request must expose the methods: host, subdomain, subdomains
+    # @return [Site]
+    def find_by_request(request)
       # First try to find the correct site by the full host name.
-      site = Site.find_by( domain: request.host )
+      site = Site.find_by(domain: request.host)
       return site if site
 
       # Is it Marvellous Mossley?
@@ -118,9 +116,7 @@ class Site < ApplicationRecord
       # Typically this will be for non-production sites.
       site_slug =
         if request.subdomain == 'www'
-          if request.subdomains.second
-            request.subdomains.second
-          end
+          request.subdomains.second if request.subdomains.second
         elsif request.subdomain.present?
           request.subdomain
         end
@@ -131,16 +127,19 @@ class Site < ApplicationRecord
       Site.find_by(slug: site_slug)
     end
 
+    # Get a list of Sites that are either share neighbourhoods
+    # with the Site, or share Tags with the Site
+    #
+    # @param [Partner]
+    # @return [ActiveRecord::Relation<Site>]
     def sites_that_contain_partner(partner)
-      partner_neighbourhood_ids = partner.service_areas.pluck(:neighbourhood_id)
-      partner_neighbourhood_ids << partner.address.neighbourhood_id if partner.address && partner.address.neighbourhood_id
+      neighbourhood_ids = partner.owned_neighbourhood_ids
+      tag_ids = partner.partner_tags.pluck(:tag_id)
 
-      partner_tag_ids = partner.partner_tags.pluck(:tag_id)
-
-      Site
-        .left_outer_joins(:sites_tag)
-        .left_outer_joins(:sites_neighbourhoods)
-        .where('neighbourhood_id in (?) or tag_id in (?)', partner_neighbourhood_ids, partner_tag_ids)
+      Site.left_outer_joins(:sites_tag, :sites_neighbourhoods)
+          .group(:id)
+          .where('neighbourhood_id in (?) or tag_id in (?)',
+                 neighbourhood_ids, tag_ids)
     end
   end
 end

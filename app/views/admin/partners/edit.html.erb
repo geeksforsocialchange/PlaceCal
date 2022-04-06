@@ -3,19 +3,20 @@
 <h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
 
 <% if current_user.root? -%>
+  <%# Show the Neighbourhood the partner is related to via Address %>
   <% if @partner.address -%>
     <p>In neighbourhood <%= link_to @partner.address.neighbourhood.name, admin_neighbourhood_path(@partner.address.neighbourhood) %>.</p>
   <% end -%>
+
+  <%# Show a list of Service Areas that the partner is related to %>
   <% if @partner.service_areas.any? -%>
     <p>In service areas <%= service_area_links(@partner) %>.</p>
   <% end -%>
-  <h2>Partner Site Visibility</h2>
-  <p>This partner (and their events) appear on the following sites</p>
-  <ul class='list-group' id='partner-sites'>
-  <% @sites.order(:name).each do |site| -%>
-    <li class='list-group-item'><%= link_to site.name, edit_admin_site_path(site) %></li>
-  <% end -%>
-  </ul>
+
+  <%# Show a list of sites that the partner is related to %>
+  <span id="partner-sites">
+    <p>This partner (and their events) appear on the following sites: <%= site_links %>.</p>
+  </span>
   <br>
 <% end -%>
 

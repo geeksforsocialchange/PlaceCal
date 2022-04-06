@@ -27,9 +27,16 @@ module PartnersHelper
 
   def service_area_links(partner)
     partner.service_area_neighbourhoods
-      .order(:name)
-      .map { |hood| link_to hood.name, edit_admin_neighbourhood_path(hood) }
-      .join(', ')
-      .html_safe
+           .order(:name)
+           .map { |hood| link_to hood.name, edit_admin_neighbourhood_path(hood) }
+           .join(', ')
+           .html_safe
+  end
+
+  def site_links
+    @sites.order(:name)
+          .map { |site| link_to site.name, site.domain }
+          .join(', ')
+          .html_safe
   end
 end

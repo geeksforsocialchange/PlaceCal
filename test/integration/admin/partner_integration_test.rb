@@ -17,24 +17,24 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     host! 'admin.lvh.me'
   end
 
-  test "Partner admin index has appropriate fields" do
+  test 'Partner admin index has appropriate fields' do
     sign_in(@admin)
     get admin_partners_path
     assert_response :success
 
-    assert_select 'title', text: "Partners | PlaceCal Admin"
-    assert_select 'h1', text: "Partners"
+    assert_select 'title', text: 'Partners | PlaceCal Admin'
+    assert_select 'h1', text: 'Partners'
   end
 
-  test "root : can get new partner" do
+  test 'root : can get new partner' do
     sign_in @admin
 
     get new_admin_partner_path
 
-    assert_select 'title', text: "New Partner | PlaceCal Admin"
+    assert_select 'title', text: 'New Partner | PlaceCal Admin'
   end
 
-  test "Edit form has correct fields" do
+  test 'Edit form has correct fields' do
     sign_in @admin
 
     get edit_admin_partner_path(@partner)
@@ -100,7 +100,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     get edit_admin_partner_path(@partner)
     assert_response :success
 
-    assert_select 'a#destroy-partner', false, "This page must not have a Destroy Partner button"
+    assert_select 'a#destroy-partner', false, 'This page must not have a Destroy Partner button'
   end
 
   test 'Partner has owned tag preselected' do
@@ -116,9 +116,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     tag = tag_options.first
     assert tag.attributes.key?('selected')
   end
-
 end
-
 
 # Capybara feature test that doesn't work and i have no time to fix
 =begin

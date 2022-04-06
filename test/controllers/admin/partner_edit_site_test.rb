@@ -5,21 +5,24 @@ require 'test_helper'
 class PartnerEditSiteTest < ActionDispatch::IntegrationTest
   setup do
     @root_user = create(:root)
-    sign_in @root_user
-    
-    @site = build(:site)
-    @site.save!
+    @partner = create(:partner, service_area_neighbourhoods: [create(:neighbourhood)])
 
-    @partner = build(:partner)
-    @partner.save!
+    sign_in @root_user
   end
 
-  test 'user can see sites this partner is involved with' do
-    @site.neighbourhoods << @partner.address.neighbourhood
+  test 'user can see sites this partner is involved with via addresses' do
+    @site = create(:site, neighbourhoods: [@partner.address.neighbourhood])
     get edit_admin_partner_url(@partner)
 
-    assert_select 'ul#partner-sites li', count: 1
-    assert_select 'ul#partner-sites li:first a', text: @site.name
+    assert_select 'span#partner-sites a', count: 1
+    assert_select 'span#partner-sites a:first', text: @site.name
+  end
+
+  test 'user can see sites this partner is involved with via service areas' do
+    @site = create(:site, neighbourhoods: @partner.service_area_neighbourhoods)
+    get edit_admin_partner_url(@partner)
+
+    assert_select 'span#partner-sites a', count: 1
+    assert_select 'span#partner-sites a:first', text: @site.name
   end
 end
-

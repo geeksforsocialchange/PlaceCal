@@ -92,12 +92,22 @@ class Partner < ApplicationRecord
 
   scope :recently_updated, -> { order(updated_at: desc) }
 
+  # Takes in a list of neighbourhood ids, and returns a list of Partners
+  # that 'own' those neighbourhoods, either as Service Areas or as Addresses
+  #
+  # @param ids [Array<Int>] A list of neighbourhood ids
+  # @return [ActiveRecord::Relation<Partner>]
   scope :from_neighbourhoods_and_service_areas, lambda { |ids|
     left_joins(:address, :service_areas)
       .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
              ids, ids)
   }
 
+  # Takes in a Site and fetches all Partners for that site
+  # If the site has tags, the list of partners will be filtered by those tags
+  #
+  # @param site [Site] The site we want partners for.
+  # @return [ActiveRecord::Relation<Partner>]
   scope :for_site, lambda { |site|
     site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
 
@@ -107,7 +117,11 @@ class Partner < ApplicationRecord
     site_tag_ids.any? ? partners.with_tags(site_tag_ids) : partners
   }
 
-  scope :with_tags, ->(tag) { joins(:partner_tags).where(partner_tags: { tag: tag }) }
+  # Get a list of Partners that have the given tags
+  #
+  # @param tags [Array<Tag>] A list of tags
+  # @return [ActiveRecord::Relation<Partner>]
+  scope :with_tags, ->(tags) { joins(:partner_tags).where(partner_tags: { tag: tags }) }
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
@@ -215,6 +229,14 @@ class Partner < ApplicationRecord
     end
 
     errors.blank?
+  end
+
+  # @return [Array<Int>] A list of Neighbourhood IDs
+  def owned_neighbourhood_ids
+    neighbourhood_ids = service_areas.pluck(:neighbourhood_id)
+    neighbourhood_ids << address.neighbourhood_id if address&.neighbourhood_id
+
+    neighbourhood_ids
   end
 
   private
