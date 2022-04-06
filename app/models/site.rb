@@ -116,7 +116,7 @@ class Site < ApplicationRecord
       # Typically this will be for non-production sites.
       site_slug =
         if request.subdomain == 'www'
-          request.subdomains.second if request.subdomains.second
+          request.subdomains.second if request&.subdomains&.second
         elsif request.subdomain.present?
           request.subdomain
         end
