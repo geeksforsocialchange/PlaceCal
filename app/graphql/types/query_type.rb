@@ -43,10 +43,19 @@ module Types
         description \
           'Get articles in chunks'
       end
+
+      klass.field :articles_by_tag, [Types::ArticleType] do
+        description 'Find all news articles that have a given tag attached'
+        argument :tag_id, ID
+      end
     end
 
     def article_connection(**args)
       Article.global_newsfeed
+    end
+
+    def articles_by_tag(tag_id:)
+      Article.with_tag(tag_id).global_newsfeed.order(:title)
     end
   end
 

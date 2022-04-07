@@ -32,6 +32,33 @@ class ArticleTest < ActiveSupport::TestCase
     assert @article_draft.published_at
   end
 
+  test '::with_tag finds articles tagged with tag' do
+    user = create(:user)
+    tag = create(:tag)
+
+    # articles without tag
+    4.times do |n|
+      Article.create!(
+        title: "Article title no. #{n}",
+        body: "lorem ipsum ...",
+        author: user
+      )
+    end
+
+    # with tags
+    2.times do |n|
+      article = Article.create!(
+        title: "Article title no. #{n}",
+        body: "lorem ipsum ...",
+        author: user
+      )
+      article.tags << tag
+    end
+
+    found = Article.with_tag(tag.id)
+    assert_equal 2, found.count, 'Expected to only find articles with given tag'
+  end
+
   # Unsure as to why this doesn't work. update_published_at triggers correctly
   # for the above test, but not for this one. Happens only during testing
   #

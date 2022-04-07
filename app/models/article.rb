@@ -19,6 +19,8 @@ class Article < ApplicationRecord
   scope :by_publish_date, -> { order(:published_at) }
 
   scope :global_newsfeed, -> { published.order(published_at: :desc) }
+  
+  scope :with_tag, ->(tag_id) { joins(:article_tags).where(article_tags: { tag: tag_id }) }
 
   def update_published_at
     self.published_at = self.is_draft ? nil : DateTime.now
