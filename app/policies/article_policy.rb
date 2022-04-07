@@ -57,9 +57,9 @@ class ArticlePolicy < ApplicationPolicy
   # @return [Array<String>] A list of URL Parameters the user cannot edit
   def disabled_fields
     # Partner admins can edit the assigned partners for the article
-    if user.root?
+    if user.root? || user.editor?
       %i[]
-    elsif user.editor? || user.partner_admin? || user.neighbourhood_admin?
+    elsif user.partner_admin? || user.neighbourhood_admin?
       %i[author_id]
     else # Should never be hit, but it's useful as a guard
       %i[title author_id body published_at is_draft article_image partner_ids]
