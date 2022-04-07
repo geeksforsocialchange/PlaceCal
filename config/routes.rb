@@ -6,7 +6,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   devise_for :users,
              controllers: {
                omniauth_callbacks: 'admin/omniauth_callbacks',
-               invitations: 'users/invitations'
+               invitations: 'users/invitations',
+               sessions: 'users/sessions',
+               passwords: 'users/passwords'
              }
 
   devise_scope :user do

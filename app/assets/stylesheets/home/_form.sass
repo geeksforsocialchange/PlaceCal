@@ -20,6 +20,21 @@
   input
     background: transparent
 
+  input[type='checkbox'].round
+    width: 1.3rem
+    height: 1.3rem
+    padding: 0rem
+    border-radius: 50%
+    vertical-align: middle
+    border: 2px solid $base-primary
+    appearance: none
+    -webkit-appearance: none
+    outline: none
+    cursor: pointer
+    &:checked
+      background-color: $base-primary
+
+
   input.form__submit
     border-color: $base-text
     background-color: $base-text
@@ -97,3 +112,28 @@
     +for-tablet-portrait-up
       width: 60%
       margin: 0 auto
+
+  &--login
+    input
+      border-color: $base-primary
+    input[type='submit']
+      background-color: $base-primary
+      width: auto
+      margin: 0 auto
+      padding-left: 3rem
+      padding-right: 3rem
+      display: block
+      cursor: pointer
+    label
+      text-align: center
+    +for-tablet-portrait-up
+      width: 50%
+      margin: 0 auto
+    .devise
+      font-size: 90%
+      text-align: center
+    .form__field--remember
+      text-align: center
+      label, input
+        display: inline-block
+        width: auto
