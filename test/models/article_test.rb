@@ -59,6 +59,35 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal 2, found.count, 'Expected to only find articles with given tag'
   end
 
+  test '::with_partner_tag finds articles from partners with a given tag' do
+    user = create(:user)
+    tag = create(:tag)
+    partner = create(:partner)
+    partner.tags << tag
+
+    # articles not by partner (no tag)
+    3.times do |n|
+      Article.create!(
+        title: "Article title no. #{n}",
+        body: "lorem ipsum ...",
+        author: user
+      )
+    end
+
+    # articles by tagged partner
+    5.times do |n|
+      article = Article.create!(
+        title: "Article title no. #{n}",
+        body: "lorem ipsum ...",
+        author: user
+      )
+      article.partners << partner
+    end
+
+    found = Article.with_partner_tag(tag.id)
+    assert_equal 5, found.length, 'Expected to only find articles from tagged partners'
+  end
+
   # Unsure as to why this doesn't work. update_published_at triggers correctly
   # for the above test, but not for this one. Happens only during testing
   #

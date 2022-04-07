@@ -22,6 +22,12 @@ class Article < ApplicationRecord
   
   scope :with_tag, ->(tag_id) { joins(:article_tags).where(article_tags: { tag: tag_id }) }
 
+  scope :with_partner_tag, lambda { |tag_id|
+    joins('left outer join article_partners on articles.id=article_partners.article_id')
+    .joins('left outer join partner_tags on article_partners.partner_id = partner_tags.partner_id')
+    .where('partner_tags.tag_id = ?', tag_id)
+  }
+
   def update_published_at
     self.published_at = self.is_draft ? nil : DateTime.now
   end

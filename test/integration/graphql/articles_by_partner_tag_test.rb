@@ -2,8 +2,8 @@
 
 require 'test_helper'
 
-class ArticlesByTagTest < ActionDispatch::IntegrationTest
-  test 'returns published articles with tag sorted by publish_date' do
+class ArticlesByPartnerTagTest < ActionDispatch::IntegrationTest
+  test 'returns published articles that are from a partner of a given tag, sorted by publish_date' do
     user = create(:user)
 
     not_published_article = Article.create!(
@@ -23,8 +23,10 @@ class ArticlesByTagTest < ActionDispatch::IntegrationTest
     )
 
     tag = create(:tag)
+    partner = create(:partner)
+    partner.tags << tag
 
-    live_tagged_articles = (0..2).to_a.map do |n|
+    live_tagged_articles = (0..4).to_a.map do |n|
       article = Article.create!(
         title: "Tagged published article #{n}",
         body: 'article body text',
@@ -34,13 +36,13 @@ class ArticlesByTagTest < ActionDispatch::IntegrationTest
       )
       article.update! published_at: epoch + (n + 1).days
 
-      article.tags << tag
+      article.partners << partner
       article
     end
 
     query_string = <<-GRAPHQL
       query {
-        articlesByTag(tagId: #{tag.id}) {
+        articlesByPartnerTag(tagId: #{tag.id}) {
           name
           author
           text
@@ -52,13 +54,13 @@ class ArticlesByTagTest < ActionDispatch::IntegrationTest
     refute result.key?('errors'), 'errors are present'
 
     data = result['data']
-    assert data.key?('articlesByTag')
+    assert data.key?('articlesByPartnerTag')
 
-    articles = data['articlesByTag']
-    assert_equal 3, articles.length, 'expected to only find articles that are published and tagged correctly'
+    articles = data['articlesByPartnerTag']
+    assert_equal 5, articles.length, 'expected to only find articles that are published and tagged correctly'
 
     # newest to oldest
-    expected_titles = [ 2, 1, 0 ].map { |index| live_tagged_articles[index].title }
+    expected_titles = [ 4, 3, 2, 1, 0 ].map { |index| live_tagged_articles[index].title }
     found_titles = articles.map { |article| article['name'] }
     assert_equal expected_titles, found_titles
   end
