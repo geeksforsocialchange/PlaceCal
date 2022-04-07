@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 # frozen_string_literal: true
 
 require 'test_helper'
@@ -28,6 +26,9 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
       article.save!
     end
     @unpartnered_article = create(:article)
+
+    @tags = create_list(:tag, 3)
+    @partners = create_list(:partner, 3) # I know we already-kinda-have partners; now we have more
 
     host! 'admin.lvh.me'
   end
@@ -155,5 +156,81 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Article.count', 0) do
       delete admin_article_url(@article)
     end
+  end
+
+  # --------------------------------------------------------------
+  # Just some litmus testing to ensure that the partner_ids and tag_ids are editable by Root/Editor role users
+  # These seemed like they should be separate from the above litmus tests
+  #
+  # Also, TODO: Expand these to be for partners/neighbourhood admins
+  # However just note that as per the docs on ArticlePolicy#permitted_attributes, we can't test denial here
+  # it needs to be in the integration test :)
+
+  test 'root admin : can create with tag_ids' do
+    article_hash = { title: 'Article Title',
+                     author_id: @citizen.id,
+                     body: 'AAAAAAAAAAAAAAAA',
+                     tag_ids: @tags.map(&:id) }
+
+    sign_in @root
+
+    assert_difference('Article.count') do
+      post admin_articles_url,
+           params: { article: article_hash }
+    end
+
+    a = Article.last
+    assert_equal a.tags.count, @tags.length
+  end
+
+  test 'editor admin : can create with tag_ids' do
+    article_hash = { title: 'Article Title',
+                     author_id: @citizen.id,
+                     body: 'AAAAAAAAAAAAAAAA',
+                     tag_ids: @tags.map(&:id) }
+
+    sign_in @editor
+
+    assert_difference('Article.count') do
+      post admin_articles_url,
+           params: { article: article_hash }
+    end
+
+    a = Article.last
+    assert_equal a.tags.count, @tags.length
+  end
+
+  test 'root admin : can create with partner_ids' do
+    article_hash = { title: 'Article Title',
+                     author_id: @citizen.id,
+                     body: 'AAAAAAAAAAAAAAAA',
+                     partner_ids: @partners.map(&:id) }
+
+    sign_in @root
+
+    assert_difference('Article.count') do
+      post admin_articles_url,
+           params: { article: article_hash }
+    end
+
+    a = Article.last
+    assert_equal a.partners.count, @partners.length
+  end
+
+  test 'editor admin : can create with partner_ids' do
+    article_hash = { title: 'Article Title',
+                     author_id: @citizen.id,
+                     body: 'AAAAAAAAAAAAAAAA',
+                     partner_ids: @partners.map(&:id) }
+
+    sign_in @editor
+
+    assert_difference('Article.count') do
+      post admin_articles_url,
+           params: { article: article_hash }
+    end
+
+    a = Article.last
+    assert_equal a.partners.count, @partners.length
   end
 end

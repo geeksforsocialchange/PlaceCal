@@ -11,16 +11,32 @@
 
   <hr>
 
-  <h2>Partners</h2>
-  <p>Display this in relation to the given partners</p>
-  <% if disabled_fields.include?(:partner_ids) %>
-    <%# # Create a dummy field, because f.assoc disappears %>
-    <%= f.input :partners, collection: options_for_partners,
-        input_html: { class: 'form-control select2 multi-select' }, disabled: true %>
-  <% else %>
-    <%= f.association :partners, collection: options_for_partners,
-                      input_html: { class: 'form-control select2 multi-select' } %>
-  <% end %>
+  <div class='row'>
+    <div class="col-md-6">
+      <h2>Partners</h2>
+      <p>Display this in relation to the given partners</p>
+      <% if disabled_fields.include?(:partner_ids) %>
+        <%# # Create a dummy field, because f.assoc disappears %>
+        <%= f.input :partners, collection: options_for_partners,
+            input_html: { class: 'form-control select2 multi-select' }, disabled: true %>
+      <% else %>
+        <%= f.association :partners, collection: options_for_partners,
+                          input_html: { class: 'form-control select2 multi-select' } %>
+      <% end %>
+    </div>
+    <div class="col-md-6">
+      <h2>Tags</h2>
+      <p>What tags should this article be associated with?</p>
+      <% if disabled_fields.include?(:tag_ids) %>
+        <%# # Create a dummy field, because f.assoc disappears %>
+        <%= f.input :tags, collection: options_for_tags,
+            input_html: { class: 'form-control select2 multi-select' }, disabled: true %>
+      <% else %>
+        <%= f.association :tags, collection: options_for_tags,
+                          input_html: { class: 'form-control select2 multi-select' } %>
+      <% end %>
+    </div>
+  </div>
 
   <hr>
 

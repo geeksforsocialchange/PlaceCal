@@ -8,6 +8,9 @@ class Article < ApplicationRecord
   has_many :article_partners, dependent: :destroy
   has_many :partners, through: :article_partners
 
+  has_many :article_tags, dependent: :destroy
+  has_many :tags, through: :article_tags
+
   belongs_to :author, class_name: 'User'
 
   mount_uploader :article_image, ArticleImageUploader

@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class GraphQLEventTest < ActionDispatch::IntegrationTest
-
   setup do
     partner_address = FactoryBot.create(:bare_address_1, neighbourhood: neighbourhoods(:one))
     @partner = FactoryBot.create(:partner, address: partner_address)
@@ -21,7 +20,6 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
   end
 
   test 'can show partners (with pagination)' do
-
     (0...5).collect do |n|
       @partner.events.create!(
         dtstart: Time.now,
@@ -93,31 +91,30 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     assert result.has_key?('errors') == false, 'errors are present'
 
     data = result['data']
-    assert data.has_key?('event'), 'Data structure does not contain event key'
+    assert_field data, 'event', 'Data structure does not contain event key'
 
     data_event = data['event']
 
-    assert data_event['summary'] == event.summary
-    assert data_event['name'] == event.summary
+    assert_field_equals data_event, 'summary', value: event.summary
+    assert_field_equals data_event, 'name', value: event.summary
 
-    assert data_event.has_key?('startDate'), 'missing startDate'
+    assert_field data_event, 'startDate', 'missing startDate'
     assert data_event['startDate'] =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, 'startDate is not in ISO format'
 
-    assert data_event.has_key?('endDate'), 'missing endDate'
-    assert data_event.has_key?('address'), 'missing address'
-    assert data_event.has_key?('organizer'), 'missing organizer'
+    assert_field data_event, 'endDate', 'missing endDate'
+    assert_field data_event, 'address', 'missing address'
+    assert_field data_event, 'organizer', 'missing organizer'
   end
 
   # the filter tests
 
   def build_time_events(now_time)
-
     # events in the past
     time = now_time - 100.days
     5.times do
       @partner.events.create!(
         dtstart: time,
-        summary: "past: An event summary",
+        summary: 'past: An event summary',
         description: 'Longer text covering the event in more detail',
         address: @address
       )
@@ -129,7 +126,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     5.times do
       @partner.events.create!(
         dtstart: time,
-        summary: "present: An event summary",
+        summary: 'present: An event summary',
         description: 'Longer text covering the event in more detail',
         address: @address
       )
