@@ -1,1 +1,3 @@
+<% content_for :title do %>Editing <%= @article.title %><% end %>
+
 <%= render_component "admin_edit", model: :article, title: @article.title %>

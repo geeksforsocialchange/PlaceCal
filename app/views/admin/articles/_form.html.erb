@@ -7,53 +7,83 @@
   <%= f.association :author, input_html: { class: 'form-control select2' } %>
 
   <%= f.input :body, input_html: { rows: 20 } %>
-  <%= f.input :is_draft %>
+  <p>This field accepts <a href="https://www.markdownguide.org/basic-syntax/">Markdown syntax</a>.</p>
 
-  <hr>
+  <h3>Image</h3>
+  <p>Headers should be one of: svg, png, jpg. Image will be cropped to 16:9 ratio.<p>
+  <% if disabled_fields.include?(:article_image) %>
+    <%= f.input :article_image, disabled: true %>
+  <% else %>
+    <%= f.input :article_image,
+                label: false %>
+  <% end %>
+  <%= image_tag f.object.article_image.highres.url, 
+                class: 'card-img-top' if f.object.article_image.highres.url %>
 
+  <br><hr><br>
+  <h2>Connected entities</h2>
+  <p>What other things is this article linked to?</p>
   <div class='row'>
     <div class="col-md-6">
-      <h2>Partners</h2>
-      <p>Display this in relation to the given partners</p>
+      <h4>Partners</h4>
       <% if disabled_fields.include?(:partner_ids) %>
         <%# # Create a dummy field, because f.assoc disappears %>
         <%= f.input :partners, collection: options_for_partners,
-            input_html: { class: 'form-control select2 multi-select' }, disabled: true %>
+            input_html: { class: 'form-control select2 multi-select' }, 
+            disabled: true %>
       <% else %>
         <%= f.association :partners, collection: options_for_partners,
-                          input_html: { class: 'form-control select2 multi-select' } %>
+                          input_html: { class: 'form-control select2 multi-select' },
+                          label: false %>
       <% end %>
     </div>
     <div class="col-md-6">
-      <h2>Tags</h2>
-      <p>What tags should this article be associated with?</p>
+      <h4>Tags</h4>
       <% if disabled_fields.include?(:tag_ids) %>
         <%# # Create a dummy field, because f.assoc disappears %>
         <%= f.input :tags, collection: options_for_tags,
             input_html: { class: 'form-control select2 multi-select' }, disabled: true %>
       <% else %>
         <%= f.association :tags, collection: options_for_tags,
-                          input_html: { class: 'form-control select2 multi-select' } %>
+                          input_html: { class: 'form-control select2 multi-select' },
+                          label: false %>
       <% end %>
     </div>
   </div>
 
   <hr>
 
-  <h2>Header</h2>
-  <p>Headers should be one of: svg, png, jpg<p>
-  <% if disabled_fields.include?(:article_image) %>
-    <%= f.input :article_image, disabled: true %>
-  <% else %>
-    <%= f.input :article_image %>
-  <% end %>
-  <%= image_tag f.object.article_image.highres.url, class: 'card-img-top' if f.object.article_image.highres.url %>
+  <h2>Publish</h2>
+  <div class='row'>
+    <div class="col-md-6">
+    <p>This box must be checked for the article to show up on the PlaceCal frontend and API feed.</p>
+    <%= f.input :is_draft,
+                as: :boolean,
+                checked_value: false, 
+                unchecked_value: true,
+                label: "Publish this article!" %>
+    <% unless @article.new_record? %>
+      <% if disabled_fields.include?(:published_at) %>
+        Published <%= @article.published_at %>.<br>
+        Last updated <%= @article.updated_at %>.
+      <% else %>
+        <%= f.input :published_at,
+                    label: 'Publication date' %>
+      <% end %>
+    <% end %>
+    </div>
+  </div>
+
+  <hr>
+
 
   <span>
     <br>
-    <%= f.submit 'Save', class: "btn btn-primary" %>
+    <%= f.submit 'Save Article', class: "btn btn-primary btn-lg" %><br><br><br>
     <% if !@article.new_record? && policy(@article).destroy? %>
-      <%= link_to "Destroy", admin_article_path(@article), method: :delete, class: "ml-3 btn btn-danger" %>
+      <%= link_to "Delete Article", admin_article_path(@article), method: :delete, class: "btn btn-danger btn-sm" %>
     <% end %>
   </span>
 <% end %>
+
+<br><br><br><br><br>
