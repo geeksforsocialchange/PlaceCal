@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'auth_common'
+
 class Users::ConfirmationsController < Devise::ConfirmationsController
-  include AuthCommon
+  include Users::AuthCommon
 end

@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
+require_relative 'auth_common'
+
 class Users::InvitationsController < Devise::InvitationsController
-  include AuthCommon
+  include Users::AuthCommon
 
   protected
 
