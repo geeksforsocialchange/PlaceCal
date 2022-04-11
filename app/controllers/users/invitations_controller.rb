@@ -1,4 +1,5 @@
 class Users::InvitationsController < Devise::InvitationsController
+  include AuthCommon
 
   protected
 
