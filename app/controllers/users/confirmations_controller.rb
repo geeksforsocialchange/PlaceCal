@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::ConfirmationsController < Devise::ConfirmationsController
+  before_filter :devise_check_on_root_site
+
   # GET /resource/confirmation/new
   # def new
   #   super

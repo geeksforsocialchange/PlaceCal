@@ -1,4 +1,5 @@
 class Users::InvitationsController < Devise::InvitationsController
+  before_action :devise_check_on_root_site
 
   protected
 

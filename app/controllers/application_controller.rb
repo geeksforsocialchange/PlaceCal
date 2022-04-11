@@ -215,6 +215,12 @@ class ApplicationController < ActionController::Base
                   end
   end
 
+  def devise_check_on_root_site
+    return if not request.subdomain.present?
+    
+    redirect_to url_for(subdomain: nil)
+  end
+
   protected
 
   def configure_permitted_parameters
