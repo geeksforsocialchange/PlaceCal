@@ -215,7 +215,14 @@ class ApplicationController < ActionController::Base
                   end
   end
 
+  # action filter:
+  #
+  # In devise controllers: push all users on any subdomain of placecal to 
+  #   authenticate on the base placecal.org site so the site is set up
+  #   properly and the styling will work
+  #
   def devise_check_on_root_site
+    return if current_user.present?
     return if not request.subdomain.present?
     
     redirect_to url_for(subdomain: nil)
