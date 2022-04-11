@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
-  before_action :devise_check_on_root_site
+  include AuthCommon
   before_action :set_site
 
   protected
