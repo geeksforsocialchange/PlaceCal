@@ -10,15 +10,15 @@ end
 
 # Core
 gem 'pg'
-gem 'puma', '~> 4.3.12'
-gem 'rails', '~> 6.1.5'
-gem 'minitest-rails'
+gem 'puma', '~> 5.0'
+gem 'rails', '~> 7.0.2.3'
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'sass-rails', '~> 6.0'
+gem 'stimulus-rails'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 gem 'webpacker', '~> 5.4.3'
@@ -117,8 +117,8 @@ group :development do
 end
 
 group :test do
+  gem 'capybara'
   gem 'json_matchers'
-  gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
