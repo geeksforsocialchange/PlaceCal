@@ -51,7 +51,7 @@ jobs:
       - name: Do Tests
         run: |
           bundle exec rails webpacker:compile
-          bundle exec rake
+          bundle exec rails test
         env:
           POSTGRES_USER: postgres
           POSTGRES_HOST: localhost
