@@ -35,7 +35,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
-          cache-version: 3    # Invalidate originally used corrupted cache
+          cache-version: 4    # Invalidate originally used corrupted cache
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
