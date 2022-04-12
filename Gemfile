@@ -87,7 +87,7 @@ gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'
 gem 'listen', '~> 3.2.0'
-gem 'net-http' # Prevents test deprecation warning
+# gem 'net-http' # Prevents test deprecation warning
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
