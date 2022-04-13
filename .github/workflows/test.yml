@@ -33,9 +33,9 @@ jobs:
           fetch-depth: 0
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-        with: # ruby version specified in .ruby-version
-          bundler-cache: true # Automagically runs bundle install
-          cache-version: 3    # Invalidate originally used corrupted cache
+        # with: # ruby version specified in .ruby-version
+        #   bundler-cache: true # Automagically runs bundle install
+        #   cache-version: 10   # Invalidate originally used corrupted cache
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
@@ -50,6 +50,7 @@ jobs:
           NODE_ENV: test
       - name: Do Tests
         run: |
+          bundle install
           bundle exec rails webpacker:compile
           bundle exec rake
         env:
