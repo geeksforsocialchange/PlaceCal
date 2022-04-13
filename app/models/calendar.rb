@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # app/models/calendar.rb
 class Calendar < ApplicationRecord
   include ActionView::Helpers::DateHelper
@@ -99,7 +98,19 @@ class Calendar < ApplicationRecord
     handle_deleted_events(from, @events_uids) if @events_uids
 
     reload # reload the record from database to clear out any invalid events to avoid attempts to save them
-    update!( notices: @notices, last_checksum: parsed_events.checksum, last_import_at: DateTime.current, critical_error: nil)
+    begin
+      Calendar.record_timestamps = false
+      update!( 
+        notices: @notices, 
+        last_checksum: parsed_events.checksum,
+        last_import_at: DateTime.current,
+        critical_error: nil
+      )
+
+    ensure
+      Calendar.record_timestamps = true
+
+    end
   end
 
   def create_or_update_events(event_data, occurrences, from)

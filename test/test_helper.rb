@@ -24,6 +24,10 @@ include JsonMatchers::Minitest::Assertions
 require "capybara/rails"
 require "capybara/minitest"
 
+Dir.glob(File.join(Rails.root, 'test/system/**/*.rb')) do |path|
+  require path
+end
+
 module ActiveSupport
   class TestCase
     include FactoryBot::Syntax::Methods
