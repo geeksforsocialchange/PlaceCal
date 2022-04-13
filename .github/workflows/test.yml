@@ -50,7 +50,6 @@ jobs:
           NODE_ENV: test
       - name: Do Tests
         run: |
-          gem update --system
           bundle exec rails webpacker:compile
           bundle exec rake
         env:
