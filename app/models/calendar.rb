@@ -69,6 +69,8 @@ class Calendar < ApplicationRecord
   # Create Events using this Calendar
   # @param from [DateTime]
   def import_events(from)
+    return unless place.present? # a quick fix to stop broken code from running
+
     @notices = []
     @events_uids = []
 
@@ -85,6 +87,7 @@ class Calendar < ApplicationRecord
 
       if %w[place room_number].include?(strategy)
         event_data.place_id = place_id
+
       else
         id_type, id = get_place_or_address(event_data)
         event_data.place_id = id if id_type == :place_id
