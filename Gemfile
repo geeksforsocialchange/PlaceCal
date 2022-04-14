@@ -17,13 +17,13 @@ gem 'sprockets-rails'
 # Frontend
 gem 'coffee-rails', '~> 5.0'
 gem 'importmap-rails'
+gem 'jsbundling-rails'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'sass-rails', '~> 6.0'
 gem 'stimulus-rails'
 gem 'terser'
 gem 'turbolinks', '~> 5' # TODO: This needs swapping out for 'turbo-rails'
-gem 'webpacker', '~> 5.4.3'
 
 # Backend
 gem 'ancestry'

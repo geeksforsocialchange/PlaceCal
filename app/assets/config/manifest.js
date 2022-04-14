@@ -4,3 +4,6 @@
 //= link_directory ../stylesheets .css
 //= link_directory ../stylesheets/themes .css
 //= link_directory ../stylesheets/themes/custom .css
+//= link_tree ../builds
+//= link admin.js
+//= link application.js
