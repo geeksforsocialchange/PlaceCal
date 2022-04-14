@@ -28,7 +28,7 @@ jobs:
           --health-retries 5
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Setup Ruby
@@ -37,7 +37,7 @@ jobs:
         #   bundler-cache: true # Automagically runs bundle install
         #   cache-version: 10   # Invalidate originally used corrupted cache
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16.14.2
           cache: yarn
