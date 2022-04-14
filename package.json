@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">= 10.17.0",
-    "yarn": ">= 1.21.1"
+    "node": ">= 16.14.2",
+    "yarn": ">= 1.22.18"
   },
   "dependencies": {
     "@nathanvda/cocoon": "^1.2.14",
