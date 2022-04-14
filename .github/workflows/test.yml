@@ -45,7 +45,7 @@ jobs:
           NODE_ENV: test
       - name: Setup Yarn Dependencies
         run: |
-          yarn install --immutable
+          yarn install --immutable --check-files
         env:
           NODE_ENV: test
       - name: Do Tests
