@@ -28,29 +28,28 @@ jobs:
           --health-retries 5
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-        # with: # ruby version specified in .ruby-version
-        #   bundler-cache: true # Automagically runs bundle install
-        #   cache-version: 10   # Invalidate originally used corrupted cache
+        with: # ruby version specified in .ruby-version
+          bundler-cache: true # Automagically runs bundle install
+          cache-version: 3    # Invalidate originally used corrupted cache
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: 16.14.2
+          node-version: 14.15.0
           cache: yarn
         env:
           NODE_ENV: test
       - name: Setup Yarn Dependencies
         run: |
-          yarn install --immutable --check-files
+          yarn install --immutable
         env:
           NODE_ENV: test
       - name: Do Tests
         run: |
-          bundle install
           bundle exec rails webpacker:compile
           bundle exec rake
         env:
