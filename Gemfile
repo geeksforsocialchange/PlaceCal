@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '2.7.4'
+ruby '2.7.6'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -11,7 +11,7 @@ end
 # Core
 gem 'pg'
 gem 'puma', '~> 4.3.12'
-gem 'rails', '~> 6.1.4.7'
+gem 'rails', '~> 6.1.5'
 gem 'minitest-rails'
 
 # Frontend
@@ -122,7 +122,7 @@ group :test do
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
-  gem 'simplecov', require: false
+  # gem 'simplecov', require: false
   gem 'vcr'
   gem 'webmock'
 end
