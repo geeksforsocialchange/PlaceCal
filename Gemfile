@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '2.7.5'
+ruby '2.7.6'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -122,7 +122,7 @@ group :test do
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
-  gem 'simplecov', require: false
+  # gem 'simplecov', require: false
   gem 'vcr'
   gem 'webmock'
 end
