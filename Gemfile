@@ -10,16 +10,18 @@ end
 
 # Core
 gem 'pg'
-gem 'puma', '~> 4.3.12'
-gem 'rails', '~> 6.1.5'
-gem 'minitest-rails'
+gem 'puma', '~> 5.0'
+gem 'rails', '~> 7.0'
+gem 'sprockets-rails'
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'
+gem 'importmap-rails'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'sass-rails', '~> 6.0'
-gem 'turbolinks', '~> 5'
+gem 'stimulus-rails'
+gem 'turbolinks', '~> 5' # TODO: This needs swapping out for 'turbo-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'webpacker', '~> 5.4.3'
 
@@ -85,6 +87,7 @@ gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'
 gem 'koala'
 gem 'listen', '~> 3.2.0'
+gem 'net-http'
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
@@ -93,7 +96,7 @@ gem 'virtus'
 gem 'whenever', require: false
 
 group :development, :test do
-  gem 'byebug', platform: :mri
+  gem 'debug', platforms: %i[ mri mingw x64_mingw ]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'timecop'
@@ -107,23 +110,25 @@ group :development do
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
   gem 'letter_opener'
+  gem 'rack-mini-profiler'
   gem 'rails-erd'
   gem 'rubocop-rails'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'web-console', '>= 3.3.0'
+  gem 'web-console'
   gem 'yard'
   gem 'graphiql-rails'
 end
 
 group :test do
+  gem 'capybara'
   gem 'json_matchers'
-  gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   # gem 'simplecov', require: false
   gem 'vcr'
+  gem 'webdrivers'
   gem 'webmock'
 end
 
