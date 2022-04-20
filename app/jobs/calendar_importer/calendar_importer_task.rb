@@ -10,25 +10,24 @@ class CalendarImporter::CalendarImporterTask
   
   # the main importing function
   def run
-    parser = CalendarPuller.new(calendar, from: from)
-    parsed_events = parser.parse.map { |event| EventResolver.new(event_data, calendar) }
-    return if parsed_events.events.blank?
-
-    event_uids = []
     notices = []
 
-    parsed_events.each do |parsed_event|
-      next if parsed_event.is_private?
-      next if parsed_event.occurrences.empty?
+    parser = CalendarPuller.new(calendar, from: from)
+    parsed_events = parser.parse.map { |event| EventResolver.new(event_data, calendar, notices) }
+    return if parsed_events.events.blank?
 
-      event_uids << parsed_event.uid
+    #event_uids = []
 
-      event.determine_location
+    parsed_events.events.each do |parsed_event|
+      next unless parsed_event.is_valid?
+      
+      # event_uids << parsed_event.uid
 
-      notices += event.create_or_update_events
+      parsed_event.determine_location_for_strategy
+      parsed_event.save
     end
 
-    handle_deleted_events(from, @events_uids) if @events_uids
+    #handle_deleted_events(from, events_uids) unless events_uids.empty?
 
     reload # reload the record from database to clear out any invalid events to avoid attempts to save them
 
