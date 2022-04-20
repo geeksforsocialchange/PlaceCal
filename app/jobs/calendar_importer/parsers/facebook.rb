@@ -4,11 +4,11 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module Parsers
+module CalendarImporter::Parsers
   class Facebook < Base
 
     def self.whitelist_pattern
-      /https:\/\/www.facebook.com\.*/
+      /^https:\/\/www.facebook.com\.*/
     end
 
     def page
@@ -35,7 +35,7 @@ module Parsers
     end
 
     def import_events_from(data)
-      data.map { |d| Events::FacebookEvent.new(d) }
+      data.map { |d| CalendarImporter::Events::FacebookEvent.new(d) }
     end
 
     def find_by_uid(uids)

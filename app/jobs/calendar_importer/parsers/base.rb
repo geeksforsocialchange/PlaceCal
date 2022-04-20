@@ -2,10 +2,14 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module Parsers
+module CalendarImporter::Parsers
   class Base
 
     Output = Struct.new(:events, :checksum)
+
+    def self.handles_url?(url)
+      url =~ whitelist_pattern
+    end
 
     def initialize(calendar, url, options={})
       @calendar = calendar

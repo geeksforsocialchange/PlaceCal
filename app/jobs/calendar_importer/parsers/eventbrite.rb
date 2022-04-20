@@ -4,10 +4,10 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module Parsers
+module CalendarImporter::Parsers
   class Eventbrite < Base
     def self.whitelist_pattern
-      /https:\/\/www.eventbrite\.(com|co.uk)\/o\/[A-Za-z0-9-]+/
+      /^https:\/\/www.eventbrite\.(com|co.uk)\/o\/[A-Za-z0-9-]+/
     end
 
     def organizer_id
@@ -31,7 +31,7 @@ module Parsers
     end
 
     def import_events_from(data)
-      data.map { |d|  Events::EventbriteEvent.new(d) }
+      data.map { |d|  CalendarImporter::Events::EventbriteEvent.new(d) }
     end
   end
 end

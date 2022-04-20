@@ -4,7 +4,7 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module Parsers
+module CalendarImporter::Parsers
   class Meetup < Base
     def self.whitelist_pattern
       /^https:\/\/www\.meetup\.com\/[^\/]*\/?$/
@@ -20,7 +20,7 @@ module Parsers
     end
 
     def import_events_from(data)
-      data.map { |d| Events::MeetupEvent.new(d) }
+      data.map { |d| CalendarImporter::Events::MeetupEvent.new(d) }
     end
   end
 end

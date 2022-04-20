@@ -2,17 +2,17 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module Parsers
+module CalendarImporter::Parsers
   class ManchesterUni < Xml
     def self.whitelist_pattern
-      /http(s)?:\/\/events.manchester.ac.uk\/f3vf\/calendar\/.*/
+      /^http(s)?:\/\/events.manchester.ac.uk\/f3vf\/calendar\/.*/
     end
 
     def import_events_from(data)
       events = []
 
       data.xpath('//ns:event').each do |event|
-        events << Events::ManchesterUniEvent.new(event)
+        events << CalendarImporter::Events::ManchesterUniEvent.new(event)
       end
 
       events

@@ -4,7 +4,7 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module Parsers
+module CalendarImporter::Parsers
   class Xml < Base
     def download_calendar
       xml = HTTParty.get(@url, follow_redirects: true).body
