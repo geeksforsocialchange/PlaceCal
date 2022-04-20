@@ -3,13 +3,17 @@
 namespace :import do
   # No data for calendar of type `other` right now.
   task all_events: :environment do
+    from = Date.current.beginning_of_day
     Calendar.find_each do |calendar|
-      import_events_from_source(calendar.id, Date.current.beginning_of_day)
+      CalendarImporterJob.perform_later calendar.id, from
     end
   end
 
   task :events_from_source, [:calendar_id] => [:environment] do |_t, args|
-    import_events_from_source(args[:calendar_id], Date.current.beginning_of_day)
+    from = Date.current.beginning_of_day
+    calendar_id = args[:calendar_id]
+
+    CalendarImporterJob.perform_later calendar_id, from
   end
 
   # calendar_id - object id of calendar to be imported.
@@ -17,8 +21,9 @@ namespace :import do
 
   task :past_events_from_source, %i[calendar_id from] => [:environment] do |_t, args|
     from = Time.zone.parse(args[:from])
+    calendar_id = args[:calendar_id]
 
-    import_events_from_source(args[:calendar_id], from)
+    CalendarImporterJob.perform_later calendar_id, from
   end
 
   task purge_papertrail: :environment do
@@ -26,19 +31,3 @@ namespace :import do
   end
 end
 
-def import_events_from_source(calendar_id, from)
-  calendar = Calendar.find(calendar_id)
-
-  puts "Importing events for calendar #{calendar.name} for #{calendar.place.try(:name)}"
-
-  calendar.import_events(from)
-rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
-  calendar.critical_import_failure(e)
-rescue StandardError => e
-  # TODO: Inform admin(s) when this fails
-  error = "Could not automatically import data for calendar #{calendar.name} (id #{calendar_id}):  #{e}"
-  calendar.critical_import_failure(error)
-  puts error
-  Rollbar.error error
-  nil
-end

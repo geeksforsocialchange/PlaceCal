@@ -1,4 +1,4 @@
-module Events
+module CallendarImporter::Events
   class ManchesterUniEvent < Base
     def initialize(event)
       @event = event

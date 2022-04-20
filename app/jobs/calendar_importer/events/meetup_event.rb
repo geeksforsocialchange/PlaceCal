@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Events
+module CallendarImporter::Events
   class MeetupEvent < Base
     def initialize(event)
       @event = event

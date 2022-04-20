@@ -4,7 +4,7 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module Parsers
+module CalendarImporter::Parsers
   class Ics < Base
 
     def self.whitelist_pattern
@@ -26,7 +26,7 @@ module Parsers
           @start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
           @end_time = DateTime.parse(event.dtend.value_ical) if event.dtend
 
-          @events << Events::IcsEvent.new(event, @start_time, @end_time)
+          @events << CalendarImporter::Events::IcsEvent.new(event, @start_time, @end_time)
         end
       end
 

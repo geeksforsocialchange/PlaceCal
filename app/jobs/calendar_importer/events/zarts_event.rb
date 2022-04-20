@@ -1,4 +1,4 @@
-module Events
+module CallendarImporter::Events
   class ZartsEvent < Base
 
     def uid
