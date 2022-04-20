@@ -6,6 +6,8 @@ class CalendarImporter::EventResolver
     @data = event_data
     @uid = data.uid
     @calendar = calendar
+
+    @event = calendar.events.new # ???
   end
 
   def event
@@ -29,12 +31,20 @@ class CalendarImporter::EventResolver
     when 'event'
       if data.has_location?
         if place.present?
-          place = 'attempt to match location'
-          address = 'calendar.place.address || location'
+          # place = 'attempt to match location'
+          # address = 'calendar.place.address || location'
+
+          place = Partner.where('name like \'?\'', data.location).first
+          address = place.address
+          address ||= Address.search(data.location)
 
         else # no place, yes location
-          place = 'try to look up place from location'
-          address = 'place address or location'
+          #place = 'try to look up place from location'
+          #address = 'place address or location'
+
+          place = Partner.where('name like \'?\'', data.location).first
+          address = place.address
+          address ||= Address.search(data.location)
         end
         
       else # no location
@@ -49,30 +59,44 @@ class CalendarImporter::EventResolver
     when 'event_override'
       if data.has_location?
         if place.present?
-          place = 'attempt to match location'
-          address = 'calendar.place.address || location'
+          # place = 'attempt to match location'
+          # address = 'calendar.place.address || location'
+          place = Place.find_like_name(data.location)
+          address = place.address
+          address ||= Address.search(data.location)
+
 
         else # no place, yes location
-          place = 'attempt to match location'
-          address = 'place.address || location'
-          warn_user
+          #place = 'attempt to match location'
+          #address = 'place.address || location'
+          place = Place.find_like_name(data.location)
+          address = place.address
+          address ||= Address.search(data.location)
+
+          if address.nil?
+            raise 'info1: could not match location or place, would you like to add it?'
+          end
         end
         
       else # no location
         if place.present?
-          place = 'calendar.place'
-          address = 'calendar.place.address'
+          #place = 'calendar.place'
+          #address = 'calendar.place.address'
+          place = calendar.place
+          address = place.address
 
         else # no place, no location
-          'error: warning1'
+          raise 'error: warning1: could not determine where this event is.'
         end
       end
 
     when 'place' # location
       if data.has_location?
         if place.present?
-          place = 'calendar.place'
-          address = 'calendar.place.address'
+          #place = 'calendar.place'
+          #address = 'calendar.place.address'
+          place = calendar.place.address
+          address = place.address
 
         else # no place, yes location
           raise 'N/A'
@@ -80,8 +104,10 @@ class CalendarImporter::EventResolver
         
       else # no location
         if place.present?
-          place = 'calendar.place'
-          address = 'calendar.place.address'
+          #place = 'calendar.place'
+          #address = 'calendar.place.address'
+          place = calendar.place.address
+          address = place.address
 
         else # no place, no location
           raise 'N/A'
@@ -91,8 +117,11 @@ class CalendarImporter::EventResolver
     when 'room_number'
       if data.has_location?
         if place.present?
-          place = 'calendar.place'
-          address = '#{location}, place.address'
+          #place = 'calendar.place'
+          #address = '#{location}, place.address'
+          place = calendar.place.address
+          address = place.address.prepend_line(data.location)
+
 
         else # no place, yes location
           raise 'N/A'
@@ -100,8 +129,10 @@ class CalendarImporter::EventResolver
         
       else # no location
         if place.present?
-          place = 'calendar.place'
-          address = 'calendar.place.address'
+          #place = 'calendar.place'
+          #address = 'calendar.place.address'
+          place = calendar.place.address
+          address = place.address
 
         else # no place, no location
           raise 'N/A'
