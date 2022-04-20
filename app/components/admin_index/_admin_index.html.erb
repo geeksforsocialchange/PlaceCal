@@ -5,7 +5,7 @@
 <%# A weird bug in the datatables template means that we have to apply the margin for each link, rather than for the container span. So this span has no class. TODO: Fix this. %>
 <span>
   <%- if policy(model_name.constantize).create? && properties[:new_link] %>
-    <%= link_to "Add New #{model_name}", properties[:new_link], data: { turbolinks: false }, class: "btn btn-primary" %>
+    <%= link_to "Add New #{model_name}", properties[:new_link], data: { turbo: false }, class: "btn btn-primary" %>
   <% end %>
 
   <% additional_links.each do |link| %>
@@ -37,7 +37,7 @@
           </td>
         <% end %>
         <td><%= link_to "Edit", "/#{properties[:model]}/#{record.id}/edit",
-                                data: { turbolinks: false },
+                                data: { turbo: false },
                                 class: "btn btn-primary" %>
         </td>
       </tr>

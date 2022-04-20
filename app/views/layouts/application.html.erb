@@ -5,11 +5,11 @@
 
     <%= stylesheet_link_tag 'https://cdn.rawgit.com/h-ibaldo/Raleway_Fixed_Numerals/master/css/rawline.css', media: 'all' %>
     <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Trocchi', media: 'all' %>
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
     <% if @site&.stylesheet_link %>
-      <%= stylesheet_link_tag @site.stylesheet_link, media: 'all', 'data-turbolinks-track': 'reload' %>
+      <%= stylesheet_link_tag @site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' %>
     <% end %>
-    <%= stylesheet_link_tag 'print', media: 'print', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload' %>
 
     <% if current_page?(root_url) && @site&.slug == 'default-site' %>
       <% title = 'PlaceCal | The Community Calendar' %>
@@ -29,7 +29,7 @@
 
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
-    <%= javascript_include_tag "application", "data-turbolinks-track": "reload", defer: true %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
   </head>
 

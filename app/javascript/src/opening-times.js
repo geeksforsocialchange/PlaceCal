@@ -116,7 +116,7 @@ Vue.component('added-days', {
   }
 })
 
-document.addEventListener('turbolinks:load',  () => {
+document.addEventListener('turbo:load',  () => {
   var element = document.getElementById('opening-times')
   if (element != null) {
 

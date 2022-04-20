@@ -1,5 +1,5 @@
 require("@rails/ujs").start()
-require("turbolinks").start()
+import "@hotwired/turbo-rails"
 
 import "bootstrap"
 import "./src/jquery"
@@ -21,7 +21,7 @@ import "./src/behaviors/all_behaviors.js"
 import "./src/calendar-form.js"
 import "./src/ward-picker.js"
 
-$(document).on("turbolinks:load", function () {
+$(document).on("turbo:load", function () {
 
   $("body").init_behaviors()
 

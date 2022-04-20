@@ -20,8 +20,9 @@
 // yarn add @rails/actioncable @rails/activestorage
 // require("@rails/activestorage").start()
 // require("channels")
+import "@hotwired/turbo-rails"
+
 require("@rails/ujs").start()
-require("turbolinks").start()
 require("leaflet")
 
 import "./src/jquery"
@@ -30,3 +31,4 @@ import './src/reveal.js'
 import './src/components/breadcrumb'
 import './src/components/navigation'
 import './src/components/paginator'
+

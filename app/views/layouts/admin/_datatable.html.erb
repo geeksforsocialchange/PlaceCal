@@ -6,7 +6,7 @@
 
 <span>
   <%- if policy(model_name.constantize).create? && defined?(new_link) %>
-    <%= link_to "Add New #{model_name}", new_link, data: { turbolinks: false }, class: "btn btn-primary mb-3" %>
+    <%= link_to "Add New #{model_name}", new_link, data: { turbo: false }, class: "btn btn-primary mb-3" %>
   <% end %>
 
   <% if defined?(additional_links) %>

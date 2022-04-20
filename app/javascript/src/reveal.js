@@ -1,4 +1,4 @@
-document.addEventListener('turbolinks:load',  () => {
+document.addEventListener('turbo:load',  () => {
   const eles = document.getElementsByClassName('js-reveal')
   for (let i = 0; i < eles.length; i++) {
     let ele = eles[i]
