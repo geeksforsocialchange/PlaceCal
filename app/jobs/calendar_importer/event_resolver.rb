@@ -16,6 +16,12 @@ class CalendarImporter::EventResolver
     calendar.place
   end
   
+  def determine_place
+  end
+
+  def determine_address
+  end
+
   def location_for_strategy
     place_address = calendar&.place&.address
 
@@ -27,67 +33,84 @@ class CalendarImporter::EventResolver
           address = 'calendar.place.address || location'
 
         else # no place, yes location
-          'look up event source location'
+          place = 'try to look up place from location'
+          address = 'place address or location'
         end
         
       else # no location
         if place.present?
-          'warning2'
+          'error: warning2'
+
         else # no place, no location
-          'warning1'
+          'error: warning1'
         end
       end
 
     when 'event_override'
       if data.has_location?
         if place.present?
-          'try to use'
+          place = 'attempt to match location'
+          address = 'calendar.place.address || location'
 
         else # no place, yes location
+          place = 'attempt to match location'
+          address = 'place.address || location'
+          warn_user
         end
         
       else # no location
         if place.present?
+          place = 'calendar.place'
+          address = 'calendar.place.address'
+
         else # no place, no location
+          'error: warning1'
         end
       end
 
     when 'place' # location
       if data.has_location?
         if place.present?
+          place = 'calendar.place'
+          address = 'calendar.place.address'
+
         else # no place, yes location
+          raise 'N/A'
         end
         
       else # no location
         if place.present?
+          place = 'calendar.place'
+          address = 'calendar.place.address'
+
         else # no place, no location
+          raise 'N/A'
         end
       end
 
     when 'room_number'
       if data.has_location?
         if place.present?
+          place = 'calendar.place'
+          address = '#{location}, place.address'
+
         else # no place, yes location
+          raise 'N/A'
         end
         
       else # no location
         if place.present?
+          place = 'calendar.place'
+          address = 'calendar.place.address'
+
         else # no place, no location
+          raise 'N/A'
         end
       end
 
     else
       raise "Calendar import strategy unknown! (#{calendar.strategy})"
     end
-    
-#    if %w[place room_number].include?(calendar.strategy)
-#      event_data.place_id = place_id
-#
-#    else
-#      id_type, id = get_place_or_address(event_data)
-#      event_data.place_id = id if id_type == :place_id
-#      event_data.address_id = id if id_type == :address_id
-#    end
   end
   
   def create_or_update_events
