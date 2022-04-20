@@ -1,32 +1,26 @@
 class CalendarImporter::EventResolver
   attr_reader :data
   attr_reader :uid
+  attr_reader :notices
 
-  def initialize(event_data, calendar)
+  def initialize(event_data, calendar, notices)
     @data = event_data
     @uid = data.uid
     @calendar = calendar
+    @notices = notices
+  end
 
-    @event = calendar.events.new # ???
+  def is_valid?
+    return false if parsed_event.is_private?
+    return false if parsed_event.occurrences.empty?
+    true
   end
 
   def event
-    return @event if @event
+    @event ||= calendar.events.new # ???
   end
   
-  def place
-    calendar.place
-  end
-  
-  def determine_place
-  end
-
-  def determine_address
-  end
-
   def location_for_strategy
-    place_address = calendar&.place&.address
-
     case calendar.strategy
     when 'event'
       if data.has_location?
@@ -34,7 +28,7 @@ class CalendarImporter::EventResolver
           # place = 'attempt to match location'
           # address = 'calendar.place.address || location'
 
-          place = Partner.where('name like \'?\'', data.location).first
+          place = Partner.find_like_name(data.location)
           address = place.address
           address ||= Address.search(data.location)
 
@@ -42,17 +36,17 @@ class CalendarImporter::EventResolver
           #place = 'try to look up place from location'
           #address = 'place address or location'
 
-          place = Partner.where('name like \'?\'', data.location).first
+          place = Partner.find_like_name(data.location)
           address = place.address
           address ||= Address.search(data.location)
         end
         
       else # no location
         if place.present?
-          'error: warning2'
+          raise 'error: warning2: '
 
         else # no place, no location
-          'error: warning1'
+          raise 'error: warning1: '
         end
       end
 
@@ -64,7 +58,6 @@ class CalendarImporter::EventResolver
           place = Place.find_like_name(data.location)
           address = place.address
           address ||= Address.search(data.location)
-
 
         else # no place, yes location
           #place = 'attempt to match location'
@@ -142,6 +135,9 @@ class CalendarImporter::EventResolver
     else
       raise "Calendar import strategy unknown! (#{calendar.strategy})"
     end
+
+    event.place = place
+    event.address = address
   end
   
   def create_or_update_events
