@@ -6,9 +6,9 @@
 
     <%= stylesheet_link_tag 'admin', 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all', 'data-turbolinks-track': 'reload' %>
 
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'admin', 'data-turbolinks-track': 'reload' %>
-    <%= stylesheet_pack_tag 'admin', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'admin', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'admin', 'data-turbolinks-track': 'reload' %>
 
     <%= render "layouts/meta" %>
   </head>
