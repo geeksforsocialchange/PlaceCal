@@ -1,3 +1,5 @@
+require('datatables.net-bs4')(window, $)
+
 // This makes sure Turbolinks doesn't double load the datatable code
 // if you press the browser back button
 let dataTable = ""

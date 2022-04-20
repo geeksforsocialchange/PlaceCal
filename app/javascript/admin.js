@@ -1,21 +1,29 @@
-require("datatables.net-bs4")
+require("@rails/ujs").start()
+require("turbolinks").start()
+
+import "bootstrap"
+import "./src/jquery"
+
+// Input selectors
 require("@nathanvda/cocoon")
 require("select2")
-require("jquery")
 
-import 'bootstrap'
-import 'vue'
-import 'vue-turbolinks'
+// Datatables
+import "./src/datatable.js"
 
-import './src/behaviors/all_behaviors.js'
-import './src/calendar-form.js'
-import './src/datatable.js'
-import './src/opening-times.js'
-import './src/ward-picker.js'
+// Opening times stuff
+import  Vue from "vue"
+import "vue-turbolinks"
+import "./src/opening-times.js"
 
-$(document).on('turbolinks:load', function () {
+// Specific pages
+import "./src/behaviors/all_behaviors.js"
+import "./src/calendar-form.js"
+import "./src/ward-picker.js"
 
-  $('body').init_behaviors()
+$(document).on("turbolinks:load", function () {
 
-  $('[data-toggle="tooltip"]').tooltip()
+  $("body").init_behaviors()
+
+  $("[data-toggle='tooltip']").tooltip()
 });

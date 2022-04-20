@@ -11,8 +11,6 @@
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbolinks-track': 'reload' %>
 
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-
     <% if current_page?(root_url) && @site&.slug == 'default-site' %>
       <% title = 'PlaceCal | The Community Calendar' %>
     <% elsif content_for?(:title) && @site&.name %>
@@ -31,7 +29,7 @@
 
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_include_tag "application", "data-turbolinks-track": "reload", defer: true %>
 
   </head>
 

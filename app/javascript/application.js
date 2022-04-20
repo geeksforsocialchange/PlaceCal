@@ -20,16 +20,13 @@
 // yarn add @rails/actioncable @rails/activestorage
 // require("@rails/activestorage").start()
 // require("channels")
-
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("leaflet")
 
+import "./src/jquery"
 import './src/reveal.js'
 
-// Mountain View
-export default function loadComponents(context) {
-  context.keys().forEach(context);
-}
-loadComponents(require.context("../components", true, /\.js$/));
-
+import './src/components/breadcrumb'
+import './src/components/navigation'
+import './src/components/paginator'
