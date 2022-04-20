@@ -38,9 +38,10 @@ git clone https://github.com/geeksforsocialchange/PlaceCal.git
 bundle && yarn
 bundle exec rails db:setup db:migrate seed:migrate
 bundle exec rails import:all_events
-bundle exec rails server
+./bin/dev
 ```
 
+* Start the server with `./bin/dev` instead of `bundle exec rails s` due to migration to jsbundling
 * Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
 * Admin interface is `admin.lvh.me:3000`
 * Seeded root user is info@placecal.org / password

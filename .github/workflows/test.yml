@@ -50,7 +50,7 @@ jobs:
           NODE_ENV: test
       - name: Do Tests
         run: |
-          bundle exec rails webpacker:compile
+          yarn build
           bundle exec rake
         env:
           POSTGRES_USER: postgres
