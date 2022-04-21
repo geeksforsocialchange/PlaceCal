@@ -1,4 +1,4 @@
-class CallendarImporter::CalendarPuller
+class CallendarImporter::CalendarImporter
   # detect calendar url and use appropriate adapter
 
   class UnsupportedFeed < StandardError; end

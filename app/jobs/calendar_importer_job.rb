@@ -6,7 +6,7 @@ class CalendarImporterJob < ApplicationJob
 
     puts "Importing events for calendar #{calendar.name} for #{calendar.place.try(:name)}"
 
-    calendar.import_events(from)
+    # calendar.import_events(from)
     CalendarImporter::CalendarImporterTask.new(calendar, from_date).run
 
   #rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
@@ -18,5 +18,5 @@ class CalendarImporterJob < ApplicationJob
   #  calendar.critical_import_failure(error)
   #  puts error
   #  Rollbar.error error
-  #end
+  end
 end
