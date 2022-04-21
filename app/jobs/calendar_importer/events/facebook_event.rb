@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CallendarImporter::Events
+module CalendarImporter::Events
   class FacebookEvent < Base
     def initialize(event)
       @event = OpenStruct.new(event)

@@ -3,23 +3,26 @@ class CalendarImporter::EventResolver
   attr_reader :uid
   attr_reader :notices
 
-  def initialize(event_data, calendar, notices)
+  def initialize(event_data, calendar, notices, from_date)
     @data = event_data
     @uid = data.uid
     @calendar = calendar
     @notices = notices
+    @from_date = from_date
   end
 
-  def is_valid?
-    return false if parsed_event.is_private?
-    return false if parsed_event.occurrences.empty?
-    true
+  def is_private?
+    data.is_private?
   end
 
-  def event
-    @event ||= calendar.events.new # ???
+  def has_occurences?
+    occurrence.count > 0
   end
-  
+
+  def occurences
+    @occurences ||= data.occurrences_between(@from_date, Calendar.import_up_to)
+  end
+
   def location_for_strategy
     case calendar.strategy
     when 'event'
@@ -28,17 +31,17 @@ class CalendarImporter::EventResolver
           # place = 'attempt to match location'
           # address = 'calendar.place.address || location'
 
-          place = Partner.find_like_name(data.location)
+          place = Partner.fuzzy_find_by_location(event_location_components)
           address = place.address
-          address ||= Address.search(data.location)
+          address ||= Address.search(data.location, event_location_components, data.postcode)
 
         else # no place, yes location
           #place = 'try to look up place from location'
           #address = 'place address or location'
 
-          place = Partner.find_like_name(data.location)
+          place = Partner.fuzzy_find_by_location(event_location_components)
           address = place.address
-          address ||= Address.search(data.location)
+          address ||= Address.search(data.location, event_location_components, data.postcode)
         end
         
       else # no location
@@ -55,16 +58,16 @@ class CalendarImporter::EventResolver
         if place.present?
           # place = 'attempt to match location'
           # address = 'calendar.place.address || location'
-          place = Place.find_like_name(data.location)
+          place = Place.fuzzy_find_by_location(event_location_components)
           address = place.address
-          address ||= Address.search(data.location)
+          address ||= Address.search(data.location, event_location_components, data.postcode)
 
         else # no place, yes location
           #place = 'attempt to match location'
           #address = 'place.address || location'
-          place = Place.find_like_name(data.location)
+          place = Place.fuzzy_find_by_location(event_location_components)
           address = place.address
-          address ||= Address.search(data.location)
+          address ||= Address.search(data.location, event_location_components, data.postcode)
 
           if address.nil?
             raise 'info1: could not match location or place, would you like to add it?'
@@ -113,7 +116,8 @@ class CalendarImporter::EventResolver
           #place = 'calendar.place'
           #address = '#{location}, place.address'
           place = calendar.place.address
-          address = place.address.prepend_line(data.location)
+          new_address = place.address.dup
+          address = new_address.prepend_room_number(data.location)
 
 
         else # no place, yes location
@@ -136,52 +140,56 @@ class CalendarImporter::EventResolver
       raise "Calendar import strategy unknown! (#{calendar.strategy})"
     end
 
-    event.place = place
-    event.address = address
+    data.place_id = place.id
+    data.address_id = address.id
   end
   
-  def create_or_update_events
-    @important_notices = []
-    calendar_events    = events.upcoming.where(uid: event_data.uid)
+  def save_all_occurences
+    calendar_events = calendar.events.upcoming.where(uid: data.uid)
 
     # If any dates of this event don't match the imported start times or end times, delete them
-    if event_data.recurring_event?
+    if data.recurring_event?
       events_with_invalid_dates = calendar_events.without_matching_times(occurrences.map(&:start_time), occurrences.map(&:end_time))
       events_with_invalid_dates.destroy_all
     end
 
     occurrences.each do |occurrence|
-      # Skip if more than a day apart
+      # Skip if occurence is longer than 1 day
       next if occurrence.end_time && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1
-      event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
 
-      event = event_data.recurring_event? ? calendar_events.find_by(event_time) : calendar_events.first if calendar_events.present?
-      event = events.new if event.blank?
+      event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
+      event = nil
+
+      if calendar_events.present?
+        if data.recurring_event?
+          event = calendar_events.find_by(event_time)
+        else 
+          event = calendar_events.first
+        end
+      end
+
+      event ||= calendar.events.new
 
       event_time[:are_spaces_available] = occurrence.status if occurrence.respond_to?(:status)
 
-      unless event.update event_data.attributes.merge(event_time)
-        @important_notices << { event: event, errors: event.errors.full_messages }
+      unless event.update data.attributes.merge(event_time)
+        notices << { event: event, errors: event.errors.full_messages }
       end
     end
-
-    @important_notices
   end
-  
-#  def get_place_or_address(event_data)
-#    location = event_data.location
-#
-#    return (strategy.event_override? ? { place_id: place_id } : {}) if location.blank?
-#
-#    postcode   = event_data.postcode
-#    regexp     = postcode.present? ? Regexp.new("#{postcode.strip}|UK|United Kingdom") : Regexp.new('UK|United Kingdom')
-#    components = location.split(', ').map { |component| component.gsub(regexp, '').strip }.reject(&:blank?)
-#
-#    if place = Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
-#      return [ :place_id, place.id ]
-#    else
-#      return Address.search(location, components, postcode)
-#    end
-#  end
+
+  def event_location_components
+    return @event_location_components if @event_location_components
+
+    regex_string = 'UK|United Kingdom'
+    regex_string += "|#{data.postcode.strip}" if data.postcode.present?
+
+    regexp = Regexp.new(regex_string, Regexp::IGNORECASE)
+
+    @event_location_components = data.location
+      .split(', ')
+      .map { |component| component.gsub(regexp, '').strip }
+      .reject(&:blank?)
+  end
 end
 

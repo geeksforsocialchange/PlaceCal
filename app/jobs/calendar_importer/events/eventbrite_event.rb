@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CallendarImporter::Events
+module CalendarImporter::Events
   class EventbriteEvent < Base
     def initialize(event)
       @event = event

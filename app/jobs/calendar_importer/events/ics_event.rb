@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CallendarImporter::Events
+module CalendarImporter::Events
   class IcsEvent < Base
     def initialize(event, start_date, end_date)
       @event = event
