@@ -51,7 +51,12 @@ Rails.application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
-  config.assets.debug = true
+  #
+  #   KF: Disabling this due to this comment:
+  #     https://github.com/rails/jsbundling-rails/issues/40#issuecomment-1006503192
+  #   I imagine this is because asset bundling is done with esbuild now so this is just 
+  #   confusing matters and overwriting the sourcemap url.
+  config.assets.debug = false
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true

@@ -6,7 +6,7 @@ import "./src/jquery"
 
 // Input selectors
 require("@nathanvda/cocoon")
-require("select2")
+require("select2")(window, $)
 
 // Datatables
 import "./src/datatable.js"
