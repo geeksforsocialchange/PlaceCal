@@ -27,6 +27,12 @@ class Address < ApplicationRecord
     where(street_address: street).or(where(postcode: postcode))
   }
 
+  def prepend_room_number(room_number_string)
+    street_address3 = street_address2
+    street_address2 = street_address
+    street_address = room_number_string
+  end
+
   def first_address_line
     street_address
   end

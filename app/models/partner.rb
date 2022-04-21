@@ -239,6 +239,10 @@ class Partner < ApplicationRecord
     neighbourhood_ids
   end
 
+  def self.fuzzy_find_by_location(components)
+    Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
+  end
+
   private
 
   def check_ward_access

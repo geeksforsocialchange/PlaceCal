@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CallendarImporter::Events
+module CalendarImporter::Events
   class Base
     Dates = Struct.new(:start_time, :end_time, :status)
 
