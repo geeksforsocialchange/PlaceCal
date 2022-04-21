@@ -4,30 +4,30 @@
 
 PlaceCal is a large and very complicated app for collating organisation and event information from a large variety of sources. In the words of one developer: "I'm not sure where the interface between the app and the real world is here".
 
-To get an idea of the project and what we're about, check out [the handbook](https://handbook.placecal.org/) which is also [in it's own respository](https://github.com/geeksforsocialchange/PlaceCal-Handbook), and especially the [Glossary](glossary.md).
+To get an idea of the project and what we're about, check out [the handbook](https://handbook.placecal.org/).
 
 ## Requirements
 
-To run Placecal locally you will need:
+To run PlaceCal locally you will need:
 
-- a mac or a linux machine
-- gcc
-- postgres relational database
-  - server
+- A Mac or a Linux machine (we don't support Windows at present)
+- Postgres relational database. We are currently using v14.
+  - Server
     - either installed for your distribution or as a docker image (with the correct open port)
-  - client
+  - Client
     - you will still need the local developer libraries for postgres
     - these are distribution specific so you need to find out what they are called to install them
       -  `libpq-dev` (debian)
       -  `postgresql-libs` (arch)
       -  `dev-db/postgresql` (gentoo)
-- base ruby for your OS
-- [rbenv](https://github.com/rbenv/rbenv)
-  - [ruby-build](https://github.com/rbenv/ruby-build)
-  - [rbenv-gemset](https://github.com/jf/rbenv-gemset) (optional)
+- Ruby 2.7.x. We reccomend using a version manager for this such as `rvm` or `rbenv`. Current version we are using is in `.ruby-version`.
+  - [rvm](https://rvm.io/)
+  - [rbenv](https://github.com/rbenv/rbenv)
+    - [ruby-build](https://github.com/rbenv/ruby-build)
+    - [rbenv-gemset](https://github.com/jf/rbenv-gemset) (optional)
+- Node.js. Current version we are using is in `.nvmrc`. We suggest using [nvm](https://github.com/nvm-sh/nvm) to manage this.
+  - [yarn](https://yarnpkg.com/getting-started/install)
 - ImageMagick
-- node JS
-  - And yarn
 
 ## Quickstart
 
@@ -41,8 +41,8 @@ bundle exec rails import:all_events
 ./bin/dev
 ```
 
-* Start the server with `./bin/dev` instead of `bundle exec rails s` due to migration to jsbundling
-* Make sure you use `lvh.me:3000` instead of `localhost` or you might have authentication problems.
+* Start the server with `./bin/dev` instead of `bundle exec rails server` due to migration to jsbundling
+* Make sure you use `lvh.me:3000` instead of `localhost` or you **will** have authentication problems.
 * Admin interface is `admin.lvh.me:3000`
 * Seeded root user is info@placecal.org / password
 * Access code docs through your local filesystem, and update with `bundle exec rails yard`
