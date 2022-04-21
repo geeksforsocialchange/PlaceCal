@@ -21,7 +21,8 @@ class EventsImportTest < ActiveSupport::TestCase
     partner2.address.save
 
     VCR.use_cassette(:import_test_calendar) do
-      calendar.import_events(Date.new(2018,11,20))
+      from_date = Date.new(2018,11,20)
+      CalendarImporter::CalendarImporterTask.new(calendar, from_date).run
     end
 
     # pp Event.all
@@ -56,7 +57,8 @@ class EventsImportTest < ActiveSupport::TestCase
     partner = create(:partner, name: 'Z-aRtS')
 
     VCR.use_cassette(:import_test_calendar) do
-      calendar.import_events(Date.new(2018,11,20))
+      from_date = Date.new(2018,11,20)
+      CalendarImporter::CalendarImporterTask.new(calendar, from_date).run
     end
 
     assert_equal calendar_time, calendar.updated_at, 'Importer should not touch updated at'

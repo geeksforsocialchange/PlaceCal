@@ -5,7 +5,7 @@ namespace :import do
   task all_events: :environment do
     from = Date.current.beginning_of_day
     Calendar.find_each do |calendar|
-      CalendarImporterJob.perform_later calendar.id, from
+      CalendarImporterJob.perform_now calendar.id, from
     end
   end
 
@@ -13,7 +13,7 @@ namespace :import do
     from = Date.current.beginning_of_day
     calendar_id = args[:calendar_id]
 
-    CalendarImporterJob.perform_later calendar_id, from
+    CalendarImporterJob.perform_now calendar_id, from
   end
 
   # calendar_id - object id of calendar to be imported.
@@ -23,7 +23,7 @@ namespace :import do
     from = Time.zone.parse(args[:from])
     calendar_id = args[:calendar_id]
 
-    CalendarImporterJob.perform_later calendar_id, from
+    CalendarImporterJob.perform_now calendar_id, from
   end
 
   task purge_papertrail: :environment do

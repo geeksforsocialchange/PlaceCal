@@ -2,7 +2,7 @@ require 'test_helper'
 
 # TODO: Assertations are wrong way around - should be (expected, actual)
 
-class CalendarParserTest < ActiveSupport::TestCase
+class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
@@ -12,7 +12,7 @@ class CalendarParserTest < ActiveSupport::TestCase
                                  source: 'webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ')
 
     VCR.use_cassette('Yellowbird Webcal') do
-      output = CalendarParser.new(calendar).parse
+      output = CalendarImporter::CalendarImporter.new(calendar).parse
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -28,7 +28,7 @@ class CalendarParserTest < ActiveSupport::TestCase
                                  source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics')
 
     VCR.use_cassette('Placecal Hulme & Moss Side Google Cal') do
-      output = CalendarParser.new(calendar).parse
+      output = CalendarImporter::CalendarImporter.new(calendar).parse
       events = output.events
       first_event = events.first
 
@@ -43,7 +43,7 @@ class CalendarParserTest < ActiveSupport::TestCase
     calendar = create(:calendar, source: 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics')
 
      VCR.use_cassette('Zion Centre Guide') do
-       output = CalendarParser.new(calendar).parse
+       output = CalendarImporter::CalendarImporter.new(calendar).parse
        events = output.events
        first_event = events.first
        last_event = events.last
@@ -58,7 +58,7 @@ class CalendarParserTest < ActiveSupport::TestCase
     calendar = create(:calendar, source: 'https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics')
 
      VCR.use_cassette('ACCG') do
-       output = CalendarParser.new(calendar).parse
+       output = CalendarImporter::CalendarImporter.new(calendar).parse
        events = output.events
        first_event = events.first
        last_event = events.last
@@ -75,7 +75,7 @@ class CalendarParserTest < ActiveSupport::TestCase
                                  source: 'http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml')
 
     VCR.use_cassette('Martin Harris Centre') do
-      output = CalendarParser.new(calendar).parse
+      output = CalendarImporter::CalendarImporter.new(calendar).parse
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -91,7 +91,7 @@ class CalendarParserTest < ActiveSupport::TestCase
                                  source: 'https://z-arts.ticketsolve.com/shows.xml')
 
     VCR.use_cassette('Z-Arts Calendar') do
-      output = CalendarParser.new(calendar).parse
+      output = CalendarImporter::CalendarImporter.new(calendar).parse
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -107,7 +107,7 @@ class CalendarParserTest < ActiveSupport::TestCase
                                  source: 'https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics')
 
     VCR.use_cassette('Teamup.com calendar') do
-      output = CalendarParser.new(calendar).parse
+      output = CalendarImporter::CalendarImporter.new(calendar).parse
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -123,7 +123,7 @@ class CalendarParserTest < ActiveSupport::TestCase
                                  source: 'https://www.eventbrite.co.uk/o/berwickshire-association-for-voluntary-service-15751503063')
 
     VCR.use_cassette('Eventbrite calendar') do
-      output = CalendarParser.new(calendar).parse
+      output = CalendarImporter::CalendarImporter.new(calendar).parse
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -140,7 +140,7 @@ class CalendarParserTest < ActiveSupport::TestCase
                                  source: 'https://z-arts.ticketsolve.com/shows.xml')
 
     VCR.use_cassette('Z-Arts Calendar') do
-      output = CalendarParser.new(calendar).parse
+      output = CalendarImporter::CalendarImporter.new(calendar).parse
 
       assert_empty output.events
     end

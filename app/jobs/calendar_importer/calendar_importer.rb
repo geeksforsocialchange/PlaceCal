@@ -1,16 +1,16 @@
-class CallendarImporter::CalendarImporter
+class CalendarImporter::CalendarImporter
   # detect calendar url and use appropriate adapter
 
   class UnsupportedFeed < StandardError; end
   class InaccessibleFeed < StandardError; end
 
   PARSERS = [
-    Parsers::ManchesterUni,
-    Parsers::Zarts,
-    Parsers::Facebook,
-    Parsers::Ics,
-    Parsers::Eventbrite,
-    Parsers::Meetup
+    CalendarImporter::Parsers::ManchesterUni,
+    CalendarImporter::Parsers::Zarts,
+    CalendarImporter::Parsers::Facebook,
+    CalendarImporter::Parsers::Ics,
+    CalendarImporter::Parsers::Eventbrite,
+    CalendarImporter::Parsers::Meetup
   ].freeze
 
   def initialize(calendar, options={})

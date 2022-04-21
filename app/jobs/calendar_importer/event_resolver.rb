@@ -12,7 +12,7 @@ class CalendarImporter::EventResolver
   end
 
   def is_private?
-    data.is_private?
+    data.private?
   end
 
   def has_occurences?

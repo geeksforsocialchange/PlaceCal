@@ -12,9 +12,10 @@ class CalendarImporter::CalendarImporterTask
   def run
     notices = []
 
-    calendar_source = CalendarImporter.new(calendar, from: from_date).parse
+    calendar_source = CalendarImporter::CalendarImporter.new(calendar, from: from_date).parse
+    return if calendar.last_checksum == calendar_source.checksum
 
-    parsed_events = calendar_source.events.map { |event_data| EventResolver.new(event_data, calendar, notices, from_date) }
+    parsed_events = calendar_source.events.map { |event_data| CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date) }
     return if parsed_events.blank?
 
     all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
@@ -22,7 +23,7 @@ class CalendarImporter::CalendarImporterTask
     
     #event_uids = []
 
-    parsed_events.events.each do |parsed_event|
+    parsed_events.each do |parsed_event|
 
       # is source event valid?
       # now find all occurrences of event in calendar
@@ -61,12 +62,12 @@ class CalendarImporter::CalendarImporterTask
 
     #handle_deleted_events(from, events_uids) unless events_uids.empty?
 
-    reload # reload the record from database to clear out any invalid events to avoid attempts to save them
+    calendar.reload # reload the record from database to clear out any invalid events to avoid attempts to save them
 
     Calendar.record_timestamps = false
     calendar.update!( 
                      notices: notices, 
-                     last_checksum: parsed_events.checksum,
+                     last_checksum: calendar_source.checksum,
                      last_import_at: DateTime.current,
                      critical_error: nil
                     )
