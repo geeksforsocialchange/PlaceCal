@@ -4,7 +4,7 @@
   <%- if policy(model_name.constantize).create? %>
     <%= link_to "Add New #{model_name}",
                 eval("new_admin_#{model_name.downcase}_path"),
-                data: { turbolinks: false },
+                data: { turbo: false },
                 class: "btn btn-primary mb-3 mr-2" %>
   <% end %>
 <% end %>

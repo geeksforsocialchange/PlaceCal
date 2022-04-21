@@ -4,7 +4,7 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 //
-// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
+// To reference this file, add <%= javascript_include_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
 
@@ -20,16 +20,15 @@
 // yarn add @rails/actioncable @rails/activestorage
 // require("@rails/activestorage").start()
 // require("channels")
+import "@hotwired/turbo-rails"
 
 require("@rails/ujs").start()
-require("turbolinks").start()
 require("leaflet")
 
-import '../src/reveal.js'
+import "./src/jquery"
+import './src/reveal.js'
 
-// Mountain View
-export default function loadComponents(context) {
-  context.keys().forEach(context);
-}
-loadComponents(require.context("../../components", true, /\.js$/));
+import './src/components/breadcrumb'
+import './src/components/navigation'
+import './src/components/paginator'
 

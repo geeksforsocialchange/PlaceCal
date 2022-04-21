@@ -1,15 +1,17 @@
+require('datatables.net-bs4')(window, $)
+
 // This makes sure Turbolinks doesn't double load the datatable code
 // if you press the browser back button
 let dataTable = ""
 
-document.addEventListener("turbolinks:before-cache", function () {
+document.addEventListener("turbo:before-cache", function () {
   if (dataTable !== null) {
       dataTable.destroy();
       dataTable = null;
   }
 });
 
-document.addEventListener('turbolinks:load', function () {
+document.addEventListener('turbo:load', function () {
   try {
     dataTable = $('#datatable').DataTable({
       "processing": true,

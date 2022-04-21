@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
   // Toggle the sort criteria
   $('.js-filters-toggle').click(function() {
     $('.js-filters-dropdown').toggle();
