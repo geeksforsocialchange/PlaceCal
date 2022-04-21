@@ -168,11 +168,6 @@ class CalendarImporter::EventResolver
     @important_notices
   end
   
-  def try_to_find_location
-    return if data.location.blank?
-    
-  end
-  
 #  def get_place_or_address(event_data)
 #    location = event_data.location
 #
@@ -189,21 +184,4 @@ class CalendarImporter::EventResolver
 #    end
 #  end
 end
-
-__END__
-
-      if data.has_location?
-        if place.present?
-          'look up location'
-        else
-          'look up location'
-        end
-        
-      else
-        if place.present?
-          'no location is present'
-        else
-          error 'No location or place'
-        end
-      end
 
