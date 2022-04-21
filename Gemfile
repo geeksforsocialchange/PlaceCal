@@ -23,7 +23,6 @@ gem 'jsbundling-rails'
 gem 'sass-rails', '~> 6.0'
 gem 'turbo-rails'
 gem 'stimulus-rails'
-gem 'uglifier', '>= 1.3.0'
 
 # Backend
 gem 'ancestry'
