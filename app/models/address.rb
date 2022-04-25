@@ -31,6 +31,7 @@ class Address < ApplicationRecord
     street_address3 = street_address2
     street_address2 = street_address
     street_address = room_number_string
+    self
   end
 
   def first_address_line
