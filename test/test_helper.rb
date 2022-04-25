@@ -243,9 +243,9 @@ Geocoder::Lookup::Test.add_stub(
 # GraphQL helpers
 
 def assert_field_equals(obj, key, value: nil)
-  assert obj.key?(key), "field #{key} is missing"
+  assert obj.key?(key), "field '#{key}' is missing"
 
-  error_msg = "Field #{key} has incorrect value: wanted '#{value}', but got '#{obj[key]}'"
+  error_msg = "Field '#{key}' has incorrect value: wanted '#{value}', but got '#{obj[key]}'"
 
   # This is super awkward and horrible. Basically if both parameters ending up at assert_equal are nil,
   # it throws a deprecation warning:
@@ -267,8 +267,15 @@ rescue Minitest::Assertion => e
 end
 
 def assert_field(obj, key, message = nil)
-  message ||= "#{key} doesn't exist / is nil in #{obj}"
+  message ||= "Field '#{key}' doesn't exist / is nil in: #{obj}"
   assert obj.key?(key), message # obj.key? returns false if an item is nil, ergo...
+
+  obj[key]
+end
+
+def refute_field(obj, key, message = nil)
+  message ||= "Field '#{key}' exists in: #{obj}"
+  refute obj.key?(key), message # obj.key? returns false if an item is nil, ergo...
 
   obj[key]
 end

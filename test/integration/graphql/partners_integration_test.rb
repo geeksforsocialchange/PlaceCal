@@ -4,9 +4,7 @@ require 'test_helper'
 
 class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   test 'can show partners' do
-    5.times do |n|
-      FactoryBot.create(:partner, name: "Partner #{n}")
-    end
+    partner_list = create_list(:partner, 5)
 
     query_string = <<-GRAPHQL
       query {
@@ -14,6 +12,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
           edges {
             node {
               id
+              name
               summary
               description
             }
@@ -23,19 +22,27 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    data = result['data']
+    refute_field result, 'errors'
 
-    assert data.key?('partnerConnection'), 'result is missing key `partnerConnection`'
-    connection = data['partnerConnection']
+    data = assert_field result, 'data'
+    connection = assert_field data, 'partnerConnection'
+    edges = assert_field connection, 'edges'
 
-    assert connection.key?('edges')
-    edges = connection['edges']
+    assert_equal edges.length, 5
 
-    assert edges.length == 5
+    # Validate that we are in-fact returning the partner's data, too
+    edges.lazy.zip(partner_list).each do |edge, partner|
+      node = assert_field(edge, 'node')
+
+      assert_field_equals node, 'id', value: partner.id.to_s
+      assert_field_equals node, 'name', value: partner.name
+      assert_field_equals node, 'summary', value: partner.summary
+      assert_field_equals node, 'description', value: partner.description
+    end
   end
 
   test 'can show specific partner' do
-    partner = FactoryBot.create(:partner)
+    partner = create(:partner)
 
     query_string = <<-GRAPHQL
       query {
@@ -47,12 +54,13 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
+    refute_field result, 'errors'
 
-    data = result['data']
-    assert data.key?('partner')
+    data = assert_field result, 'data'
+    data_partner = assert_field data, 'partner'
 
-    data_partner = data['partner']
-    assert data_partner['name'] == partner.name
+    assert_field_equals data_partner, 'id', value: partner.id.to_s
+    assert_field_equals data_partner, 'name', value: partner.name
   end
 
   def check_address(data, address)
@@ -63,8 +71,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert_field_equals data, 'addressLocality', value: neighbourhood.name
     assert_field_equals data, 'addressRegion', value: neighbourhood.region.to_s
 
-    assert_field data, 'neighbourhood'
-    hood = data['neighbourhood']
+    hood = assert_field data, 'neighbourhood'
 
     assert_field_equals hood, 'name', value: neighbourhood.name
     assert_field_equals hood, 'abbreviatedName', value: neighbourhood.abbreviated_name
@@ -76,9 +83,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
   def check_contact(data, contact)
     assert_field_equals data, 'name', value: contact.public_name
-
     assert_field_equals data, 'telephone', value: contact.public_phone
-
     assert_field_equals data, 'email', value: contact.public_email
   end
 
@@ -128,7 +133,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   test 'can view contact info when selected' do
-    partner = FactoryBot.create(:partner, twitter_handle: 'Alpha', image: 'https://example.com/logo.png')
+    partner = create(:partner, twitter_handle: 'Alpha', image: 'https://example.com/logo.png')
     partner.service_area_neighbourhoods << neighbourhoods(:one)
 
     # FIXME: logo URL field is tricky as it expects an upload from rails
@@ -187,7 +192,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute result.key?('errors'), 'errors are present'
+    refute_field result, 'errors'
 
     data = result['data']
 
@@ -211,7 +216,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
   test 'can see published articles by partnetr' do
     user = create(:user)
-    partner = FactoryBot.create(:partner, twitter_handle: 'Alpha')
+    partner = create(:partner, twitter_handle: 'Alpha')
 
     article_1 = partner.articles.create!(
       title: 'A published article',
@@ -242,7 +247,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute result.key?('errors'), 'errors are present'
+    refute_field result, 'errors'
 
     data = result['data']
     partner_data = data['partner']
@@ -252,8 +257,8 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   test 'finding partners by tag' do
-    partner = FactoryBot.create(:partner)
-    tag = FactoryBot.create(:tag)
+    partner = create(:partner)
+    tag = create(:tag)
     partner.tags << tag
 
     query_string = <<-GRAPHQL
@@ -266,7 +271,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute result.key?('errors'), 'errors are present'
+    refute_field result, 'errors'
 
     data = result['data']
     partner_data = data['partnersByTag']
@@ -274,7 +279,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
   end
 
   test 'returns null properly if openning times are missing' do
-    partner = FactoryBot.create(:partner, opening_times: nil)
+    partner = create(:partner, opening_times: nil)
 
     query_string = <<-GRAPHQL
       query {
@@ -289,15 +294,84 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    assert result.key?('errors') == false, 'errors are present'
+    refute_field result, 'errors'
 
-    data = result['data']
-    assert data.key?('partner')
+    data = assert_field result, 'data'
+    partner = assert_field data, 'partner'
 
-    data_partner = data['partner']
-    assert data_partner.key?('openingHours')
+    assert_field_equals partner, 'openingHours', value: nil
+  end
 
-    opening_hours = data_partner['openingHours']
-    assert_nil opening_hours
+  test 'test that we have geo location' do
+    partner = create(:partner,
+                     address: create(:address,
+                                     latitude: 69.420666,
+                                     longitude: -2.666666))
+
+    query_string = <<-GRAPHQL
+      query {
+        partnerConnection {
+          edges {
+            node {
+              id
+              geo {
+                longitude
+                latitude
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+    refute_field result, 'errors'
+
+    data = assert_field result, 'data'
+    connection = assert_field data, 'partnerConnection'
+    edges = assert_field connection, 'edges'
+
+    assert_equal edges.length, 1
+    data_partner = assert_field edges.first, 'node'
+
+    assert_field_equals data_partner, 'id', value: partner.id.to_s
+    geo = assert_field data_partner, 'geo'
+    assert_field_equals geo, 'longitude', value: partner.address.longitude.to_s
+    assert_field_equals geo, 'latitude', value: partner.address.latitude.to_s
+  end
+
+  test 'test that we have geo location with nil' do
+    partner = create(:partner,
+                     address: nil,
+                     service_area_neighbourhoods: [create(:neighbourhood)])
+
+    query_string = <<-GRAPHQL
+      query {
+        partnerConnection {
+          edges {
+            node {
+              id
+              geo {
+                longitude
+                latitude
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+    refute_field result, 'errors'
+
+    data = assert_field result, 'data'
+    connection = assert_field data, 'partnerConnection'
+    edges = assert_field connection, 'edges'
+
+    assert_equal edges.length, 1
+    data_partner = assert_field edges.first, 'node'
+
+    assert_field_equals data_partner, 'id', value: partner.id.to_s
+    assert_field_equals data_partner, 'geo', value: nil
   end
 end
