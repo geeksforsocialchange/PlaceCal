@@ -57,6 +57,10 @@ module CalendarImporter::Events
 
     def footer; end
 
+    def has_location?
+      !location.blank?
+    end
+
     def recurring_event?
       false
     end

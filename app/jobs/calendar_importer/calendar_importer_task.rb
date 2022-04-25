@@ -44,8 +44,8 @@ class CalendarImporter::CalendarImporterTask
       #
       # delete all upcoming events that have not been created/updated by this import
 
-      next unless parsed_event.is_private?
-      next unless parsed_event.has_occurences?
+      next if parsed_event.is_private?
+      next if parsed_event.has_no_occurences?
 
       # occurrences = event_data.occurrences_between(from, Calendar.import_up_to)
       
