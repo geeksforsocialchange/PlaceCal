@@ -51,10 +51,11 @@ class CalendarImporter::CalendarImporterTask
       
       # event_uids << parsed_event.uid
 
+      parsed_event.determine_location_for_strategy
+      next if parsed_event.is_address_missing?
+
       active_event_uids << parsed_event.uid
 
-      parsed_event.determine_location_for_strategy
-      
       parsed_event.save_all_occurences
     end
 

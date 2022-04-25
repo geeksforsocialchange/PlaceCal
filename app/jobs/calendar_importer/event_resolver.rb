@@ -4,6 +4,9 @@ class CalendarImporter::EventResolver
   attr_reader :notices
   attr_reader :calendar
 
+  class Problem < StandardError
+  end
+
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
     @uid = data.uid
@@ -18,6 +21,10 @@ class CalendarImporter::EventResolver
 
   def has_no_occurences?
     occurences.count == 0
+  end
+
+  def is_address_missing?
+    data.address_id.nil?
   end
 
   def occurences
@@ -52,10 +59,10 @@ class CalendarImporter::EventResolver
         
       else # no location
         if place.present?
-          raise 'error: warning2: '
+          raise Problem.new('error: warning2: ')
 
         else # no place, no location
-          raise 'error: warning1: '
+          raise Problem.new('error: warning1: ')
         end
       end
 
@@ -64,19 +71,19 @@ class CalendarImporter::EventResolver
         if place.present?
           # place = 'attempt to match location'
           # address = 'calendar.place.address || location'
-          place = Place.fuzzy_find_by_location(event_location_components)
-          address = place.address
+          place = Partner.fuzzy_find_by_location(event_location_components)
+          address = place&.address
           address ||= Address.search(data.location, event_location_components, data.postcode)
 
         else # no place, yes location
           #place = 'attempt to match location'
           #address = 'place.address || location'
-          place = Place.fuzzy_find_by_location(event_location_components)
-          address = place.address
+          place = Partner.fuzzy_find_by_location(event_location_components)
+          address = place&.address
           address ||= Address.search(data.location, event_location_components, data.postcode)
 
           if address.nil?
-            raise 'info1: could not match location or place, would you like to add it?'
+            raise Problem.new('info1: could not match location or place, would you like to add it?')
           end
         end
         
@@ -88,7 +95,7 @@ class CalendarImporter::EventResolver
           address = place.address
 
         else # no place, no location
-          raise 'error: warning1: could not determine where this event is.'
+          raise Problem.new('error: warning1: could not determine where this event is.')
         end
       end
 
@@ -97,22 +104,22 @@ class CalendarImporter::EventResolver
         if place.present?
           #place = 'calendar.place'
           #address = 'calendar.place.address'
-          place = calendar.place.address
+          # xx place = calendar.place.address
           address = place.address
 
         else # no place, yes location
-          raise 'N/A'
+          raise Problem.new('N/A')
         end
         
       else # no location
         if place.present?
           #place = 'calendar.place'
           #address = 'calendar.place.address'
-          place = calendar.place.address
+          # xx place = calendar.place.address
           address = place.address
 
         else # no place, no location
-          raise 'N/A'
+          raise Problem.new('N/A')
         end
       end
 
@@ -121,33 +128,34 @@ class CalendarImporter::EventResolver
         if place.present?
           #place = 'calendar.place'
           #address = '#{location}, place.address'
-          place = calendar.place.address
+          
+          # xx place = calendar.place.address
           new_address = place.address.dup
           address = new_address.prepend_room_number(data.location)
-
+          address.save
 
         else # no place, yes location
-          raise 'N/A'
+          raise Problem.new('N/A')
         end
         
       else # no location
         if place.present?
           #place = 'calendar.place'
           #address = 'calendar.place.address'
-          place = calendar.place.address
+          # xx place = calendar.place.address
           address = place.address
 
         else # no place, no location
-          raise 'N/A'
+          raise Problem.new('N/A')
         end
       end
 
     else
-      raise "Calendar import strategy unknown! (#{calendar.strategy})"
+      raise Problem.new("Calendar import strategy unknown! (#{calendar.strategy})")
     end
 
     data.place_id = place.id if place
-    data.address_id = address.id
+    data.address_id = address&.id
   end
   
   def save_all_occurences
@@ -155,7 +163,7 @@ class CalendarImporter::EventResolver
 
     # If any dates of this event don't match the imported start times or end times, delete them
     if data.recurring_event?
-      events_with_invalid_dates = calendar_events.without_matching_times(occurrences.map(&:start_time), occurrences.map(&:end_time))
+      events_with_invalid_dates = calendar_events.without_matching_times(occurences.map(&:start_time), occurences.map(&:end_time))
       events_with_invalid_dates.destroy_all
     end
 

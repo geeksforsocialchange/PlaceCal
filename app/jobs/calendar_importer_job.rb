@@ -4,10 +4,16 @@ class CalendarImporterJob < ApplicationJob
   def perform(calendar_id, from_date)
     calendar = Calendar.find(calendar_id)
 
-    puts "Importing events for calendar #{calendar.name} for #{calendar.place.try(:name)}"
+    puts "Importing events for calendar #{calendar.name} (ID #{calendar_id}) for #{calendar.place.try(:name)}"
 
     # calendar.import_events(from)
     CalendarImporter::CalendarImporterTask.new(calendar, from_date).run
+
+  rescue CalendarImporter::CalendarImporter::InaccessibleFeed => e
+    puts "could not fetch URL #{calendar.source}"
+
+  rescue EventbriteSDK::Unauthorized => e
+    puts "EventBrite unauthorized"
 
   #rescue CalendarParser::InaccessibleFeed, CalendarParser::UnsupportedFeed => e
   #  calendar.critical_import_failure(e)

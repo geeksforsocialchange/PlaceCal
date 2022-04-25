@@ -6,6 +6,12 @@ namespace :import do
     from = Date.current.beginning_of_day
     Calendar.find_each do |calendar|
       CalendarImporterJob.perform_now calendar.id, from
+
+    rescue StandardError => e
+      puts "\n"
+      puts "#{e.class}: bad thing: #{e}"
+      puts e.backtrace
+      puts "-" * 20
     end
   end
 
