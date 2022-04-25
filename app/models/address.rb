@@ -103,6 +103,59 @@ class Address < ApplicationRecord
     # components - Array containing parts of an event's location field, excluding the postcode.
     def search(location, components, postcode)
 
+      # try by street name string match
+      address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
+      return address if address
+
+      # try by postcode
+      postcode = standardised_postcode(postcode)
+
+      if postcode && postcode.length >= 'A1 1AA'.length
+        address = Address.find_by(postcode: postcode)
+        return address if address
+      end
+
+      # now just create one
+      Address.build_from_components(components, postcode)
+    end
+
+    def build_from_components(components, postcode)
+      return if components.blank?
+
+      address = Address.new(
+        street_address:  components[0]&.strip,
+        street_address2: components[1]&.strip,
+        street_address3: components[2]&.strip,
+        postcode:        postcode
+      )
+      address if address.save
+    end
+
+    # Define a standard postcode format so that postcode comparisons can be
+    # made, including with postcode values the DB.
+    # Standard format is ALL CAPS where the only whitespace is a single space
+    # before the final three characters.
+    def standardised_postcode(pc)
+      return unless pc
+      pc.gsub(/\s+/, "").strip.upcase.insert(-4, ' ')
+    end
+  end
+end
+
+__END__
+
+the old Address.search tried to find an adress directly through the addresses table,
+  matching by text first and then by postcode.
+  If it found an address it would look to see if a partner existed at that address
+  and return that partner.
+  otherwise it would create a new address
+
+How the event resolver works now is that place (partner) is derived explicitly in
+  the resolver algorithm.
+  this means that this method (on address) should only find-or-create an address
+
+    def search(location, components, postcode)
+
       # Find the first Address whose first address line contains any one of the
       # address lines in the components argument. Case insensitive.
       address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
@@ -132,26 +185,3 @@ class Address < ApplicationRecord
         [ :address_id, address.try(:id) ]
       end
     end
-
-    def build_from_components(components, postcode)
-      return if components.blank?
-
-      address = Address.new(
-        street_address:  components[0]&.strip,
-        street_address2: components[1]&.strip,
-        street_address3: components[2]&.strip,
-        postcode:        postcode
-      )
-      address if address.save
-    end
-
-    # Define a standard postcode format so that postcode comparisons can be
-    # made, including with postcode values the DB.
-    # Standard format is ALL CAPS where the only whitespace is a single space
-    # before the final three characters.
-    def standardised_postcode(pc)
-      return unless pc
-      pc.gsub(/\s+/, "").strip.upcase.insert(-4, ' ')
-    end
-  end
-end

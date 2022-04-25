@@ -2,6 +2,7 @@ class CalendarImporter::EventResolver
   attr_reader :data
   attr_reader :uid
   attr_reader :notices
+  attr_reader :calendar
 
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
@@ -15,15 +16,17 @@ class CalendarImporter::EventResolver
     data.private?
   end
 
-  def has_occurences?
-    occurrence.count > 0
+  def has_no_occurences?
+    occurences.count == 0
   end
 
   def occurences
     @occurences ||= data.occurrences_between(@from_date, Calendar.import_up_to)
   end
 
-  def location_for_strategy
+  def determine_location_for_strategy
+    place = calendar.place
+
     case calendar.strategy
     when 'event'
       if data.has_location?
@@ -31,16 +34,19 @@ class CalendarImporter::EventResolver
           # place = 'attempt to match location'
           # address = 'calendar.place.address || location'
 
+          # place may not exist
           place = Partner.fuzzy_find_by_location(event_location_components)
-          address = place.address
+          address = place&.address
           address ||= Address.search(data.location, event_location_components, data.postcode)
+
+          place ||= address.partners.first
 
         else # no place, yes location
           #place = 'try to look up place from location'
           #address = 'place address or location'
 
           place = Partner.fuzzy_find_by_location(event_location_components)
-          address = place.address
+          address = place&.address
           address ||= Address.search(data.location, event_location_components, data.postcode)
         end
         
@@ -140,7 +146,7 @@ class CalendarImporter::EventResolver
       raise "Calendar import strategy unknown! (#{calendar.strategy})"
     end
 
-    data.place_id = place.id
+    data.place_id = place.id if place
     data.address_id = address.id
   end
   
@@ -153,11 +159,11 @@ class CalendarImporter::EventResolver
       events_with_invalid_dates.destroy_all
     end
 
-    occurrences.each do |occurrence|
+    occurences.each do |occurence|
       # Skip if occurence is longer than 1 day
-      next if occurrence.end_time && (occurrence.end_time.to_date - occurrence.start_time.to_date).to_i > 1
+      next if occurence.end_time && (occurence.end_time.to_date - occurence.start_time.to_date).to_i > 1
 
-      event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
+      event_time = { dtstart: occurence.start_time, dtend: occurence.end_time }
       event = nil
 
       if calendar_events.present?
@@ -170,7 +176,7 @@ class CalendarImporter::EventResolver
 
       event ||= calendar.events.new
 
-      event_time[:are_spaces_available] = occurrence.status if occurrence.respond_to?(:status)
+      event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
       unless event.update data.attributes.merge(event_time)
         notices << { event: event, errors: event.errors.full_messages }

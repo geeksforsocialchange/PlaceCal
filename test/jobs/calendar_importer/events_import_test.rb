@@ -18,7 +18,7 @@ class EventsImportTest < ActiveSupport::TestCase
     # (Other automatically created fields will not match event location.)
     partner2 = create(:partner)
     partner2.address.street_address = 'MartIn HarriS cEntre for Music and Drama'
-    partner2.address.save
+    partner2.address.save!
 
     VCR.use_cassette(:import_test_calendar) do
       from_date = Date.new(2018,11,20)
