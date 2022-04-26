@@ -44,6 +44,8 @@ module PartnersHelper
   #
   # @return [String] HTML string
   def site_links
+    return unless @sites
+
     @sites.order(:name)
           .map { |site| link_to site.name, site.domain }
           .join(', ')
