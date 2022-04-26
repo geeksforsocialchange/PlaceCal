@@ -5,7 +5,7 @@ module Admin
     before_action :set_tag, only: %i[show edit update destroy]
 
     def index
-      @tags = policy_scope(Tag).order({ :updated_at => :desc }, :name)
+      @tags = policy_scope(Tag).order({ updated_at: :desc }, :name)
       authorize @tags
 
       respond_to do |format|
@@ -44,7 +44,7 @@ module Admin
         else
           format.html do
             flash.now[:danger] = 'Tag was not created'
-            render :new
+            render :new, status: :unprocessable_entity
           end
 
           format.json { render json: @tag.errors, status: :unprocessable_entity }
@@ -52,6 +52,8 @@ module Admin
       end
     end
 
+    # TODO: Is it a problem that we are missing format.json for the update method here?
+    #       We should either have it here, or remove the json format on create, surely
     def update
       authorize @tag
       if @tag.update(permitted_attributes(@tag))
@@ -60,7 +62,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Tag was not saved'
-        render 'edit'
+        render 'edit', status: :unprocessable_entity
       end
     end
 
