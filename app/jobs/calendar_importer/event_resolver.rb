@@ -1,4 +1,9 @@
 class CalendarImporter::EventResolver
+
+  WARNING1_MSG = 'Could not determine where this event is. Add an address to the location field of the source calendar, or choose another import strategy with a default location'
+  WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set to ignore this. Add an address to the location field of the source calendar, or choose another import strategy with a default location.'
+  INFO1_MSG = 'This location was not recognised by PlaceCal, woulfd you like to add it?'
+
   attr_reader :data
   attr_reader :uid
   attr_reader :notices
@@ -62,10 +67,10 @@ class CalendarImporter::EventResolver
 
       else # no location
         if place.present?
-          raise Problem.new('error: warning2: ')
+          raise Problem.new(WARNING2_MSG)
 
         else # no place, no location
-          raise Problem.new('error: warning1: ')
+          raise Problem.new(WARNING1_MSG)
         end
       end
 
@@ -79,7 +84,7 @@ class CalendarImporter::EventResolver
 
         if not place.present? # no place, yes location
           if address.nil?
-            raise Problem.new('info1: could not match location or place, would you like to add it?')
+            raise Problem.new(INFO1_MSG)
           end
         end
         
@@ -91,7 +96,7 @@ class CalendarImporter::EventResolver
           address = place.address
 
         else # no place, no location
-          raise Problem.new('error: warning1: could not determine where this event is.')
+          raise Problem.new(WARNING1_MSG)
         end
       end
 
