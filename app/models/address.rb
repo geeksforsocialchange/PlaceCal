@@ -2,7 +2,6 @@
 
 # app/models/address.rb
 class Address < ApplicationRecord
-
   POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
 
   validates :street_address, :postcode, :country_code, presence: true
@@ -35,7 +34,7 @@ class Address < ApplicationRecord
   def full_street_address
     [ street_address,
       street_address2,
-      street_address3,
+      street_address3
     ].reject(&:blank?).join(', ')
   end
 
@@ -95,7 +94,7 @@ class Address < ApplicationRecord
   class << self
     # location - The raw location field
     # components - Array containing parts of an event's location field, excluding the postcode.
-    def search(location, components, postcode)
+    def search(_location, components, postcode)
 
       # Find the first Address whose first address line contains any one of the
       # address lines in the components argument. Case insensitive.
@@ -113,17 +112,17 @@ class Address < ApplicationRecord
       postcode = standardised_postcode(postcode)
 
       # Find address by postcode if postcode is long enough to be a valid.
-      if ! address  &&  postcode  &&  postcode.length >= 'A1 1AA'.length
+      if !address && postcode && postcode.length >= 'A1 1AA'.length
         address = Address.find_by(postcode: postcode)
       end
 
       if address
         partner = address.partners.first
-        partner.present? ? [ :place_id, partner.id ] : [ :address_id, address.id ]
+        partner.present? ? [:place_id, partner.id] : [:address_id, address.id]
       else
         # Make a new address.
         address = Address.build_from_components(components, postcode)
-        [ :address_id, address.try(:id) ]
+        [:address_id, address.try(:id)]
       end
     end
 
@@ -131,10 +130,10 @@ class Address < ApplicationRecord
       return if components.blank?
 
       address = Address.new(
-        street_address:  components[0]&.strip,
+        street_address: components[0]&.strip,
         street_address2: components[1]&.strip,
         street_address3: components[2]&.strip,
-        postcode:        postcode
+        postcode: postcode
       )
       address if address.save
     end
@@ -145,7 +144,7 @@ class Address < ApplicationRecord
     # before the final three characters.
     def standardised_postcode(pc)
       return unless pc
-      pc.gsub(/\s+/, "").strip.upcase.insert(-4, ' ')
+      pc.gsub(/\s+/, '').strip.upcase.insert(-4, ' ')
     end
   end
 end

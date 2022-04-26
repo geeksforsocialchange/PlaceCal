@@ -53,10 +53,6 @@ module Types
     field :articles, [ArticleType],
           description: 'News and information from this partner'
 
-    field :geo, GeoCoordinatesType,
-          null: true,
-          description: 'The geo coordinates of the place.'
-
     def contact
       object
     end
@@ -67,10 +63,6 @@ module Types
 
     def articles
       object.articles.published.by_publish_date
-    end
-
-    def geo
-      object&.address
     end
   end
 end

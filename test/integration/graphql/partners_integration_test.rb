@@ -314,9 +314,11 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
           edges {
             node {
               id
-              geo {
-                longitude
-                latitude
+              address {
+                geo {
+                  longitude
+                  latitude
+                }
               }
             }
           }
@@ -335,43 +337,9 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     data_partner = assert_field edges.first, 'node'
 
     assert_field_equals data_partner, 'id', value: partner.id.to_s
-    geo = assert_field data_partner, 'geo'
+    address = assert_field data_partner, 'address'
+    geo = assert_field address, 'geo'
     assert_field_equals geo, 'longitude', value: partner.address.longitude.to_s
     assert_field_equals geo, 'latitude', value: partner.address.latitude.to_s
-  end
-
-  test 'test that we have geo location with nil' do
-    partner = create(:partner,
-                     address: nil,
-                     service_area_neighbourhoods: [create(:neighbourhood)])
-
-    query_string = <<-GRAPHQL
-      query {
-        partnerConnection {
-          edges {
-            node {
-              id
-              geo {
-                longitude
-                latitude
-              }
-            }
-          }
-        }
-      }
-    GRAPHQL
-
-    result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
-
-    data = assert_field result, 'data'
-    connection = assert_field data, 'partnerConnection'
-    edges = assert_field connection, 'edges'
-
-    assert_equal edges.length, 1
-    data_partner = assert_field edges.first, 'node'
-
-    assert_field_equals data_partner, 'id', value: partner.id.to_s
-    assert_field_equals data_partner, 'geo', value: nil
   end
 end

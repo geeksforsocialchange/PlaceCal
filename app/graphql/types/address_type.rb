@@ -26,9 +26,17 @@ module Types
     field :neighbourhood, NeighbourhoodType,
           description: 'The neighbourhood of this address (see neighbourhood type)'
 
+    field :geo, GeoCoordinatesType,
+          null: true,
+          description: 'The geo coordinates of the place.'
+
     # TODO: figure out parent and children accessors
     # field :containedInPlace
     # field :containedPlace
+
+    def geo
+      object
+    end
 
     def address_locality
       object.neighbourhood.name
