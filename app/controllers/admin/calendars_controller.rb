@@ -45,16 +45,14 @@ module Admin
       @calendar = Calendar.new(calendar_params)
       authorize @calendar
 
-      if @calendar.is_facebook_page
-        @calendar.set_fb_page_token(current_user)
-      end
+      @calendar.set_fb_page_token(current_user) if @calendar.is_facebook_page
 
       if @calendar.save
-        flash[:success] = "Successfully created new calendar"
+        flash[:success] = 'Successfully created new calendar'
         redirect_to edit_admin_calendar_path(@calendar)
       else
-        flash.now[:danger] = "Calendar did not save"
-        render 'new'
+        flash.now[:danger] = 'Calendar did not save'
+        render 'new', status: :unprocessable_entity
       end
     end
 
@@ -64,7 +62,7 @@ module Admin
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'edit'
+        render 'edit', status: :unprocessable_entity
       end
     end
 
@@ -73,7 +71,7 @@ module Admin
       @calendar.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Calendar was successfully deleted.' 
+          flash[:success] = 'Calendar was successfully deleted.'
           redirect_to admin_calendars_url
         end
 
@@ -86,12 +84,10 @@ module Admin
 
       @calendar.import_events(date)
       flash[:success] = 'The import has completed. See below for details.'
-
     rescue StandardError => e
       Rails.logger.debug(e)
       Rollbar.error(e)
       flash[:danger] = 'The import ran into an error before completion. Please check error logs for more info.'
-
     ensure
       redirect_to edit_admin_calendar_path(@calendar)
     end
@@ -100,8 +96,8 @@ module Admin
       authorize Calendar
 
       facebook_api = Koala::Facebook::API.new(current_user.access_token)
-      @pages = facebook_api.get_connections('me', 'accounts', fields: ['id', 'name', 'link'])
-      @pages.each { |p| p['has_access'] = has_fb_page_access?(p['id']) }
+      @pages = facebook_api.get_connections('me', 'accounts', fields: %w[id name link])
+      @pages.each { |p| p['has_access'] = fb_page_access?(p['id']) }
     end
 
     private
@@ -132,12 +128,10 @@ module Admin
       )
     end
 
-
-    def has_fb_page_access?(facebook_page_id)
+    def fb_page_access?(facebook_page_id)
       graph = Koala::Facebook::API.new(current_user.access_token)
       token = graph.get_page_access_token(facebook_page_id)
       token.present?
-
     rescue StandardError => e
       Rails.logger.debug(e)
       Rollbar.error(e)

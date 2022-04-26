@@ -18,22 +18,23 @@ module Admin
 
       else
         flash.now[:danger] = 'User profile was not updated'
-        render 'profile'
+        render 'profile', status: :unprocessable_entity
       end
     end
 
     def index
-      @users = policy_scope(User).order({ :updated_at => :desc }, :last_name, :first_name)
+      @users = policy_scope(User).order({ updated_at: :desc }, :last_name, :first_name)
       authorize current_user
 
       respond_to do |format|
         format.html
-        format.json { render json: UserDatatable.new(
-                                     params, 
-                                     view_context: view_context, 
-                                     users: @users.includes(:neighbourhoods, :tags, :partners)
-                                   ) 
-                    }
+        format.json do
+          render json: UserDatatable.new(
+            params,
+            view_context: view_context,
+            users: @users.includes(:neighbourhoods, :tags, :partners)
+          )
+        end
       end
     end
 
@@ -59,7 +60,7 @@ module Admin
 
       else
         flash.now[:danger] = 'User was not saved'
-        render 'edit'
+        render 'edit', status: :unprocessable_entity
       end
     end
 
@@ -77,7 +78,7 @@ module Admin
       else
         Rails.logger.debug @user.errors.full_messages
         flash.now[:danger] = 'User was not created'
-        render 'new'
+        render 'new', status: :unprocessable_entity
       end
     end
 
@@ -112,8 +113,7 @@ module Admin
                                    :phone,
                                    :avatar,
                                    :facebook_app_id,
-                                   :facebook_app_secret
-                                  )
+                                   :facebook_app_secret)
     end
 
     def update_user_profile
@@ -126,6 +126,5 @@ module Admin
         current_user.update_without_password(profile_params)
       end
     end
-
   end
 end

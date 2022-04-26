@@ -3,21 +3,21 @@
 module Admin
   class SitesController < Admin::ApplicationController
     before_action :set_site, only: %i[update destroy]
-    before_action :set_variables_for_sites_neighbourhoods_selection, only: [:new, :edit]
+    before_action :set_variables_for_sites_neighbourhoods_selection, only: %i[new edit]
 
     def index
-      @sites = policy_scope(Site).order({ :updated_at => :desc }, :name)
+      @sites = policy_scope(Site).order({ updated_at: :desc }, :name)
       authorize @sites
 
       respond_to do |format|
         format.html
-        format.json {
+        format.json do
           render json: SiteDatatable.new(
             params,
             view_context: view_context,
             sites: @sites
           )
-        }
+        end
       end
     end
 
@@ -43,7 +43,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not created'
         set_variables_for_sites_neighbourhoods_selection
-        render 'new'
+        render 'new', status: :unprocessable_entity
       end
     end
 
@@ -56,7 +56,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not saved'
         set_variables_for_sites_neighbourhoods_selection
-        render 'edit'
+        render 'edit', status: :unprocessable_entity
       end
     end
 
@@ -93,8 +93,8 @@ module Admin
 
         # Make a dictionary of { neighbourhood_id => sites_neighbourhood_id }
         @sites_neighbourhoods_ids =
-          @site.sites_neighbourhoods.map {|sn| {sn.neighbourhood_id => sn.id}}
-          .reduce({}, :merge)
+          @site.sites_neighbourhoods.map { |sn| { sn.neighbourhood_id => sn.id } }
+               .reduce({}, :merge)
       end
     end
   end

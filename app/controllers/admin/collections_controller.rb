@@ -28,9 +28,8 @@ module Admin
         flash[:success] = 'Collection has been saved'
         redirect_to admin_collections_path
       else
-
         flash.now[:danger] = 'Collection did not save'
-        render 'new'
+        render 'new', status: :unprocessable_entity
       end
     end
 
@@ -38,10 +37,11 @@ module Admin
       authorize @collection
       if @collection.update(collection_params)
         flash.now[:success] = 'Collection has been saved'
+        render 'edit'
       else
         flash.now[:danger] = 'Collection did not save'
+        render 'edit', status: :unprocessable_entity
       end
-      render 'edit'
     end
 
     def destroy

@@ -52,7 +52,7 @@ module Admin
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
             set_service_area_map_ids
-            render :new 
+            render :new, status: :unprocessable_entity
           end
           format.json { render json: @partner.errors, status: :unprocessable_entity }
         end
@@ -77,7 +77,7 @@ module Admin
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
         set_service_area_map_ids
-        render :edit
+        render :edit, status: :unprocessable_entity
       end
     end
 
@@ -105,7 +105,7 @@ module Admin
       if @partner.valid?
         redirect_to new_admin_partner_url(partner: setup_params)
       else
-        render 'setup'
+        render 'setup', status: :unprocessable_entity
       end
     end
 

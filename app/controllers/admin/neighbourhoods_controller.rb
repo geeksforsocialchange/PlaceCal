@@ -9,12 +9,13 @@ module Admin
       authorize @neighbourhoods
       respond_to do |format|
         format.html
-        format.json { render json: NeighbourhoodDatatable.new(
-                                    params,
-                                    view_context: view_context,
-                                    neighbourhoods: @neighbourhoods
-                                  )
-                    }
+        format.json do
+          render json: NeighbourhoodDatatable.new(
+            params,
+            view_context: view_context,
+            neighbourhoods: @neighbourhoods
+          )
+        end
       end
     end
 
@@ -28,17 +29,15 @@ module Admin
       @users = @neighbourhood.users
     end
 
-
     def create
       @neighbourhood = Neighbourhood.new(permitted_attributes(Neighbourhood))
       authorize @neighbourhood
       if @neighbourhood.save
         flash[:success] = 'Neighbourhood saved'
         redirect_to admin_neighbourhoods_path
-
       else
         flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'new'
+        render 'new', status: :unprocessable_entity
       end
     end
 
@@ -50,7 +49,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'edit'
+        render 'edit', status: :unprocessable_entity
       end
     end
 
