@@ -2,6 +2,7 @@
 
 # app/models/address.rb
 class Address < ApplicationRecord
+
   POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
 
   validates :street_address, :postcode, :country_code, presence: true
@@ -25,6 +26,13 @@ class Address < ApplicationRecord
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
   }
+
+  def prepend_room_number(room_number_string)
+    street_address3 = street_address2
+    street_address2 = street_address
+    street_address = room_number_string
+    self
+  end
 
   def first_address_line
     street_address
@@ -94,46 +102,32 @@ class Address < ApplicationRecord
   class << self
     # location - The raw location field
     # components - Array containing parts of an event's location field, excluding the postcode.
-    def search(_location, components, postcode)
+    def search(location, components, postcode)
 
-      # Find the first Address whose first address line contains any one of the
-      # address lines in the components argument. Case insensitive.
+      # try by street name string match
       address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
+      return address if address
 
-      # We were looking for an exact match of geocoding coordinates, but we are
-      # now using postcodes.io exclusively so a postcode match is now
-      # equivalent to a coordinate match.
-      # if @address.blank?
-      #   coordinates = Geocoder.coordinates(postcode)
-      #   @address ||= Address.where(latitude: coordinates[0], longitude: coordinates[1]).first
-      # end
-
-      # Make the postcode comparible with postcodes in the DB.
+      # try by postcode
       postcode = standardised_postcode(postcode)
 
-      # Find address by postcode if postcode is long enough to be a valid.
-      if !address && postcode && postcode.length >= 'A1 1AA'.length
+      if postcode && postcode.length >= 'A1 1AA'.length
         address = Address.find_by(postcode: postcode)
+        return address if address
       end
 
-      if address
-        partner = address.partners.first
-        partner.present? ? [:place_id, partner.id] : [:address_id, address.id]
-      else
-        # Make a new address.
-        address = Address.build_from_components(components, postcode)
-        [:address_id, address.try(:id)]
-      end
+      # now just create one
+      Address.build_from_components(components, postcode)
     end
 
     def build_from_components(components, postcode)
       return if components.blank?
 
       address = Address.new(
-        street_address: components[0]&.strip,
+        street_address:  components[0]&.strip,
         street_address2: components[1]&.strip,
         street_address3: components[2]&.strip,
-        postcode: postcode
+        postcode:        postcode
       )
       address if address.save
     end
