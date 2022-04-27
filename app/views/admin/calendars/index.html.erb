@@ -1,12 +1,30 @@
 <script>
 var columns = [
-    {"data": "id"},
     {"data": "name"},
     {"data": "partner"},
-    {"data": "place"},
-    {"data": "is_working"},
-    {"data": "last_import_at"},
-    {"data": "updated_at"}
+    {"data": "notices"},
+    {"data": "events"},
+    {"data": "is_working",
+     "render": function (data, type, row) {
+         if (type == "display") {
+             return (data == "true") ? "✅" : "❌";
+         } else {
+             return data;
+         }
+     }
+    },
+    {"data": "last_import_at",
+     "render": function (data, type, row) {
+         date = JSON.parse(data.replace(/&quot;/g, '"'));
+         return (type == "display") ? date.strtime : date.unixtime;
+     }
+    },
+    {"data": "updated_at",
+     "render": function (data, type, row) {
+         date = JSON.parse(data.replace(/&quot;/g, '"'));
+         return (type == "display") ? date.strtime : date.unixtime;
+     }
+    },
   ]
 </script>
 
@@ -14,7 +32,7 @@ var columns = [
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Calendars',
     model: :calendars,
-    columns: %i[id name partner place is_working last_import_at updated_at],
+    columns: %i[name partner notices events is_working last_import_at updated_at],
     data: @calendars,
     source: admin_calendars_path(format: :json),
     new_link: new_admin_calendar_path,
