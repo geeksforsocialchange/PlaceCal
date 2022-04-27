@@ -7,7 +7,7 @@ class CalendarImporter::CalendarImporterTask
     @calendar = calendar
     @from_date = from_date
   end
-  
+
   # the main importing function
   def run
     notices = []
@@ -20,13 +20,13 @@ class CalendarImporter::CalendarImporterTask
 
     all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
     active_event_uids = Set.new
-    
+
     parsed_events.each do |parsed_event|
 
       # is source event valid?
       # now find all occurrences of event in calendar
       # set up location from strategy
-      
+
       # find all events in calendar with same UID
       # if recurring event?
       #   delete upcoming calendar events that have the same start and end time as our parsed_event
@@ -46,7 +46,7 @@ class CalendarImporter::CalendarImporterTask
       next if parsed_event.has_no_occurences?
 
       parsed_event.determine_location_for_strategy
-      next if parsed_event.is_address_missing?
+      # next if parsed_event.is_address_missing?
 
       active_event_uids << parsed_event.uid
 
@@ -58,8 +58,8 @@ class CalendarImporter::CalendarImporterTask
     calendar.reload # reload the record from database to clear out any invalid events to avoid attempts to save them
 
     Calendar.record_timestamps = false
-    calendar.update!( 
-                     notices: notices, 
+    calendar.update!(
+                     notices: notices,
                      last_checksum: calendar_source.checksum,
                      last_import_at: DateTime.current,
                      critical_error: nil
