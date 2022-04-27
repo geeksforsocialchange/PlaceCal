@@ -4,6 +4,7 @@
 
 module CalendarImporter::Parsers
   class ManchesterUni < Xml
+    PUBLIC = false
     NAME = 'Manchester University'
     DOMAINS = %w[events.manchester.ac.uk]
 
