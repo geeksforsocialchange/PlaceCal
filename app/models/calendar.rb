@@ -20,6 +20,7 @@ class Calendar < ApplicationRecord
                      format: { with: CALENDAR_REGEX, message: 'not a valid URL' }
 
   before_save :source_supported
+  before_save :update_notice_count
 
   attribute :is_facebook_page, :boolean, default: false
   attribute :facebook_page_id, :string
@@ -92,6 +93,10 @@ class Calendar < ApplicationRecord
 
   def self.import_up_to
     1.year.from_now
+  end
+
+  def update_notice_count
+    self.notice_count = self.notices&.count || 0
   end
   
   def source_supported

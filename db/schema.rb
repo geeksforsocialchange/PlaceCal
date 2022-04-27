@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_06_135448) do
+ActiveRecord::Schema.define(version: 2022_04_27_131452) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 2022_04_06_135448) do
     t.string "public_contact_name"
     t.string "public_contact_email"
     t.string "public_contact_phone"
+    t.integer "notice_count"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
