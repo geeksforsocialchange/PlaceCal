@@ -6,7 +6,7 @@
 
 module CalendarImporter::Parsers
   class Eventbrite < Base
-    NAME = 'Event Brite'
+    NAME = 'Eventbrite'
     DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk]
 
     def self.whitelist_pattern
