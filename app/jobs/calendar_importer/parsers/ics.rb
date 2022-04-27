@@ -6,7 +6,7 @@
 
 module CalendarImporter::Parsers
   class Ics < Base
-    NAME = 'ICS'
+    NAME = 'Generic iCal / .ics'
     DOMAINS = %w[
       calendar.google.com
       outlook.office365.com
