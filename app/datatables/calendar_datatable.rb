@@ -1,4 +1,12 @@
+# frozen_string_literal: true
+
+# Don't worry, this code will soon be purged from existence :)
+require 'action_view'
+require 'action_view/helpers'
+
 class CalendarDatatable < Datatable
+  include ActionView::Helpers::DateHelper
+
   def view_columns
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format
@@ -6,10 +14,11 @@ class CalendarDatatable < Datatable
       id: { source: 'Calendar.id', cond: :eq },
       name: { source: 'Calendar.name' },
       partner: { source: 'Calendar.partner', searchable: false, orderable: false },
-      place: { source: 'Calendar.place', searchable: false, orderable: false },
-      is_working: { source: 'Calendar.is_working' },
-      last_import_at: { source: 'Calendar.last_import_at' },
-      updated_at: { source: 'Calendar.updated_at' }
+      notices: { source: 'Calendar.notices', searchable: false, orderable: false },
+      events: { source: 'Calendar.events', searchable: false, orderable: false },
+      is_working: { source: 'Calendar.is_working', searchable: false, orderable: false },
+      last_import_at: { source: 'Calendar.last_import_at', searchable: false, orderable: false },
+      updated_at: { source: 'Calendar.updated_at', searchable: false, orderable: false }
     }
   end
 
@@ -19,10 +28,11 @@ class CalendarDatatable < Datatable
         id: link_to(record.id, edit_admin_calendar_path(record)),
         name: link_to(record.name, edit_admin_calendar_path(record)),
         partner: record.partner,
-        place: record.place,
+        notices: record.notices&.count&.to_s || 0,
+        events: record.events&.count&.to_s || 0,
         is_working: record.is_working,
-        last_import_at: record.last_import_at,
-        updated_at: record.updated_at
+        last_import_at: json_datetime(record.last_import_at),
+        updated_at: json_datetime(record.updated_at)
       }
     end
   end
@@ -31,5 +41,14 @@ class CalendarDatatable < Datatable
     # insert query here
     # Calendar.all
     options[:calendars]
+  end
+
+  private
+
+  def json_datetime(datetime)
+    {
+      unixtime: datetime.to_i,
+      strtime: datetime ? "#{time_ago_in_words(datetime)} ago" : 'never'
+    }.to_json
   end
 end
