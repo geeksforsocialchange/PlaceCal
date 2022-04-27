@@ -30,11 +30,9 @@
               Calendar source URLs that PlaceCal currently supports are:
             </p>
             <ul>
-              <li>Facebook</li>
-              <li>Google</li>
-              <li>Office 365</li>
-              <li>EventBrite</li>
-              <li>Meetup</li>
+            <% calendar_import_sources do |name, domains| -%>
+              <li><%= name %> (<%= domains.join(', ') %>)</li>
+            <% end -%>
             </ul>
           </div>
 

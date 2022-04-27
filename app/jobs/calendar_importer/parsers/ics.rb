@@ -6,6 +6,13 @@
 
 module CalendarImporter::Parsers
   class Ics < Base
+    NAME = 'ICS'
+    DOMAINS = %w[
+      calendar.google.com
+      outlook.office365.com
+      outlook.live.com
+      ics.teamup.com
+    ]
 
     def self.whitelist_pattern
       /http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.(office365|live).com\/owa\/calendar\/.*|\Awebcal:\/\/|http:\/\/mossleycommunitycentre.org.uk|http:\/\/www.theproudtrust.org|http(s)?:\/\/ics.teamup.com\/feed\/.*/

@@ -4,6 +4,8 @@
 
 module CalendarImporter::Parsers
   class Zarts < Xml
+    NAME = 'Z-Arts / Ticket Solve'
+    DOMAINS = %w[z-arts.ticketsolve.com]
 
     def self.whitelist_pattern
       /^http(s)?:\/\/z-arts.ticketsolve.com\.*/
