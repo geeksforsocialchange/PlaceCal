@@ -42,7 +42,11 @@ module CalendarImporter::Events
     end
 
     def dtend
-      dtstart + (@event['duration'] / 1000)
+      if @event['duration'].nil?
+        dtstart + 1.hour 
+      else
+        dtstart + (@event['duration'] / 1000)
+      end
     end
 
     def occurrences_between(*)
