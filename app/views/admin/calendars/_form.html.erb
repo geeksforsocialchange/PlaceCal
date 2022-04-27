@@ -25,6 +25,19 @@
         <% else %>
           <%= f.input :name, hint: 'A simple description to help rememember what this calendar is' %>
           <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: "The source URL for your calendar feed. See the #{link_to 'PlaceCal Handbook', 'https://handbook.placecal.org/admins/supported-sources.html'} if you need help.".html_safe %>
+          <div class='hint'>
+            <p>
+              Calendar source URLs that PlaceCal currently supports are:
+            </p>
+            <ul>
+              <li>Facebook</li>
+              <li>Google</li>
+              <li>Office 365</li>
+              <li>EventBrite</li>
+              <li>Meetup</li>
+            </ul>
+          </div>
+
         <% end %>
 
         <% unless @calendar.new_record? %>
