@@ -42,7 +42,7 @@ module CalendarImporter::Events
     end
 
     def dtend
-      return dtstart if @event['duration'].nil?
+      return dtstart + 1.hour if @event['duration'].nil?
       dtstart + (@event['duration'] / 1000)
     end
 
