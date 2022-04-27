@@ -50,4 +50,15 @@ module CalendarsHelper
       val
     end
   end
+
+  def calendar_import_sources
+    parsers = CalendarImporter::CalendarImporter::PARSERS
+      .dup
+      .keep_if { |parser| parser::PUBLIC }
+      .sort { |a, b| a::NAME <=> b::NAME }
+
+    parsers.each do |parser|
+      yield parser::NAME, parser::DOMAINS
+    end
+  end
 end

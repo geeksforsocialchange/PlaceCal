@@ -6,6 +6,9 @@
 
 module CalendarImporter::Parsers
   class Eventbrite < Base
+    NAME = 'Eventbrite'
+    DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk]
+
     def self.whitelist_pattern
       /^https:\/\/www.eventbrite\.(com|co.uk)\/o\/[A-Za-z0-9-]+/
     end
@@ -23,7 +26,7 @@ module CalendarImporter::Parsers
 
       loop do
         @events += results
-        results = results.next_page 
+        results = results.next_page
         break if results.blank?
       end
 

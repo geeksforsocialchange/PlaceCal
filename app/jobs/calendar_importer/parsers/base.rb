@@ -4,7 +4,7 @@
 
 module CalendarImporter::Parsers
   class Base
-
+    PUBLIC = true
     Output = Struct.new(:events, :checksum)
 
     def self.handles_url?(url)

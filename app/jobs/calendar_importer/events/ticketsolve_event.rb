@@ -1,5 +1,5 @@
 module CalendarImporter::Events
-  class ZartsEvent < Base
+  class TicketsolveEvent < Base
 
     def uid
       @event.attribute('id').text
