@@ -3,19 +3,19 @@
 # Parent parser classes should not be added.
 
 module CalendarImporter::Parsers
-  class Zarts < Xml
-    NAME = 'Z-Arts / Ticket Solve'
-    DOMAINS = %w[z-arts.ticketsolve.com]
+  class Ticketsolve < Xml
+    NAME = 'Ticket Solve'
+    DOMAINS = %w[*.ticketsolve.com]
 
     def self.whitelist_pattern
-      /^http(s)?:\/\/z-arts.ticketsolve.com\.*/
+      %r{^https?://([^.]*).ticketsolve.com/?}
     end
 
     def import_events_from(data)
       @events = []
 
       data.css('show').each do |show|
-        @events << CalendarImporter::Events::ZartsEvent.new(show)
+        @events << CalendarImporter::Events::TicketsolveEvent.new(show)
       end
 
       @events
