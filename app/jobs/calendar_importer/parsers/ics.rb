@@ -6,20 +6,31 @@
 
 module CalendarImporter::Parsers
   class Ics < Base
+    # This is only used for the frontend interface
     NAME = 'Generic iCal / .ics'
     DOMAINS = %w[
       calendar.google.com
       outlook.office365.com
       outlook.live.com
       ics.teamup.com
+      webcal://
     ]
 
     def self.whitelist_pattern
-      /http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.(office365|live).com\/owa\/calendar\/.*|\Awebcal:\/\/|http:\/\/mossleycommunitycentre.org.uk|http:\/\/www.theproudtrust.org|http(s)?:\/\/ics.teamup.com\/feed\/.*/
+      whitelists = {
+        gcal: %r{http(s)?://calendar.google.com\.*},
+        outlook: %r{http(s)?://outlook.(office365|live).com/owa/calendar/.*},
+        webcal: %r{webcal://},
+        mossley: %r{http(s)?://mossleycommunitycentre.org.uk},
+        theproudtrust: %r{http(s)?://www.theproudtrust.org},
+        teamup: %r{http(s)?://ics.teamup.com/feed/.*}
+      }
+      Regexp.union(whitelists.values)
     end
 
     def download_calendar
-      url = @url.gsub(/webcal:\/\//, 'https://') #Remove the webcal:// and just use the part after it
+      # Why are we doing this?
+      url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
       HTTParty.get(url, follow_redirects: true)
     end
 
@@ -41,7 +52,7 @@ module CalendarImporter::Parsers
     end
 
     def digest(data)
-      #read file to get contents before creating digest
+      # read file to get contents before creating digest
       Digest::MD5.hexdigest(data)
     end
 
