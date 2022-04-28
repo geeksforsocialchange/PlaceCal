@@ -1,5 +1,4 @@
 module Types
-  
   module EventQueries
     def self.included(klass)
       klass.field :event, EventType do
@@ -8,29 +7,28 @@ module Types
       end
 
       klass.field :event_connection, Types::EventType.connection_type do
-        description "Get events in chunks"
+        description 'Get events in chunks'
       end
 
       klass.field :events_by_filter, [Types::EventType] do
-        
         description \
           'Find events with various filter parameters. By default `eventsByFilter` will show all events from the current time.'
 
-        argument :from_date, String, 
-          required: false,
-          description: 'Time to start filter from. Format like "YYYY-MM-DD HH:MM". Defaults to current time'
+        argument :from_date, String,
+                 required: false,
+                 description: 'Time to start filter from. Format like "YYYY-MM-DD HH:MM". Defaults to current time'
 
-        argument :to_date, String, 
-          required: false,
-          description: 'Optional, same format as `fromDate`. Represents a future cut off point to limit query to'
+        argument :to_date, String,
+                 required: false,
+                 description: 'Optional, same format as `fromDate`. Represents a future cut off point to limit query to'
 
         argument :neighbourhood_id, Integer,
-          required: false,
-          description: 'Will filter events who are inside this neighbourhood, or who have a service area contained in this neighbourhood.'
+                 required: false,
+                 description: 'Will filter events who are inside this neighbourhood, or who have a service area contained in this neighbourhood.'
 
         argument :tag_id, Integer,
-          required: false,
-          description: 'Will only show events whose partners have this tag'
+                 required: false,
+                 description: 'Will only show events whose partners have this tag'
       end
     end
 
@@ -38,7 +36,7 @@ module Types
       Event.find(id)
     end
 
-    def event_connection(**args)
+    def event_connection(*)
       Event.sort_by_time.all
     end
 
@@ -74,9 +72,7 @@ module Types
             0,       # seconds
           )
 
-          if to_date <= from_date
-            raise GraphQL::ExecutionError, "toDate is before fromDate"
-          end
+          raise GraphQL::ExecutionError, 'toDate is before fromDate' if to_date <= from_date
 
         else
           raise GraphQL::ExecutionError, "toDate not in 'YYYY-MM-DD HH:MM' format"
@@ -87,7 +83,9 @@ module Types
 
       if args[:neighbourhood_id].present?
         neighbourhood = Neighbourhood.where(id: args[:neighbourhood_id]).first
-        raise GraphQL::ExecutionError, "Could not find neighbourhood with that ID (#{args[:neighbourhood_id]})" if neighbourhood.nil?
+        if neighbourhood.nil?
+          raise GraphQL::ExecutionError, "Could not find neighbourhood with that ID (#{args[:neighbourhood_id]})"
+        end
 
         query = query.for_neighbourhoods(neighbourhood.subtree)
       end
@@ -96,7 +94,7 @@ module Types
         tag = Tag.where(id: args[:tag_id]).first
         raise GraphQL::ExecutionError, "Could not find tag with that ID (#{args[:tag_id]})" if tag.nil?
 
-        query = query.for_tag(tag)
+        query = query.with_tags([tag])
       end
 
       query.all

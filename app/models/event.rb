@@ -41,13 +41,6 @@ class Event < ApplicationRecord
       .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', neighbourhood_ids, neighbourhood_ids)
   }
 
-  # For the API eventFilter find by tag
-  scope :for_tag, lambda { |tag|
-    joins(:partner)
-      .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
-      .where('partner_tags.tag_id = ?', tag.id) 
-  }
-  
   scope :with_tags, lambda { |tags|
     tag_ids = tags.map(&:id)
 
