@@ -1,14 +1,13 @@
-# frozen_string_literal: true
-
 class CalendarImporter::EventResolver
-  WARNING1_MSG = 'Could not determine where this event is. Add an address to the location field of the source ' \
-                 'calendar, or choose another import strategy with a default location'
-  WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set '  \
-                 'to ignore this. Add an address to the location field of the source calendar, or choose '      \
-                 'another import strategy with a default location.'
+
+  WARNING1_MSG = 'Could not determine where this event is. Add an address to the location field of the source calendar, or choose another import strategy with a default location'
+  WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set to ignore this. Add an address to the location field of the source calendar, or choose another import strategy with a default location.'
   INFO1_MSG = 'This location was not recognised by PlaceCal, woulfd you like to add it?'
 
-  attr_reader :data, :uid, :notices, :calendar
+  attr_reader :data
+  attr_reader :uid
+  attr_reader :notices
+  attr_reader :calendar
 
   class Problem < StandardError
   end
@@ -40,7 +39,7 @@ class CalendarImporter::EventResolver
   def determine_location_for_strategy
     place = calendar.place
 
-    # this algorithm is derived from the notion doc at
+    # this algorithm is derived from the notion doc at 
     #   GFSC
     #     PlaceCal
     #       PlaceCal Handbook
@@ -54,7 +53,7 @@ class CalendarImporter::EventResolver
         # place = 'attempt to match location'
         # address = 'calendar.place.address || location'
 
-        # try to find the place
+        # try to find the place 
         place = Partner.fuzzy_find_by_location(event_location_components)
 
         # try to use that address
@@ -64,14 +63,14 @@ class CalendarImporter::EventResolver
         address ||= Address.search(data.location, event_location_components, data.postcode)
 
         # if we have an address, try to use the place that address points to
-        place ||= address&.partners&.first
+        place ||= address&.partners.first
 
       else # no location
         if place.present?
-          raise Problem, WARNING2_MSG
+          raise Problem.new(WARNING2_MSG)
 
         else # no place, no location
-          raise Problem, WARNING1_MSG
+          raise Problem.new(WARNING1_MSG)
         end
       end
 
@@ -85,10 +84,10 @@ class CalendarImporter::EventResolver
 
         if not place.present? # no place, yes location
           if address.nil?
-            raise Problem, INFO1_MSG
+            raise Problem.new(INFO1_MSG)
           end
         end
-
+        
       else # no location
         if place.present?
           #place = 'calendar.place'
@@ -97,7 +96,7 @@ class CalendarImporter::EventResolver
           address = place.address
 
         else # no place, no location
-          raise Problem, WARNING1_MSG
+          raise Problem.new(WARNING1_MSG)
         end
       end
 
@@ -110,9 +109,9 @@ class CalendarImporter::EventResolver
           address = place.address
 
         else # no place, yes location
-          raise Problem, 'N/A'
+          raise Problem.new('N/A')
         end
-
+        
       else # no location
         if place.present?
           #place = 'calendar.place'
@@ -121,25 +120,25 @@ class CalendarImporter::EventResolver
           address = place.address
 
         else # no place, no location
-          raise Problem, 'N/A'
+          raise Problem.new('N/A')
         end
       end
 
     when 'room_number'
       if data.has_location?
         if place.present?
-          # place = 'calendar.place'
-          # address = '#{location}, place.address'
-
+          #place = 'calendar.place'
+          #address = '#{location}, place.address'
+          
           # xx place = calendar.place.address
           new_address = place.address.dup
           address = new_address.prepend_room_number(data.location)
           address.save
 
         else # no place, yes location
-          raise Problem, 'N/A'
+          raise Problem.new('N/A')
         end
-
+        
       else # no location
         if place.present?
           #place = 'calendar.place'
@@ -148,12 +147,12 @@ class CalendarImporter::EventResolver
           address = place.address
 
         else # no place, no location
-          raise Problem, 'N/A'
+          raise Problem.new('N/A')
         end
       end
 
     else
-      raise Problem, "Calendar import strategy unknown! (#{calendar.strategy})"
+      raise Problem.new("Calendar import strategy unknown! (#{calendar.strategy})")
     end
 
     data.place_id = place.id if place
@@ -203,8 +202,8 @@ class CalendarImporter::EventResolver
     regexp = Regexp.new(regex_string, Regexp::IGNORECASE)
 
     @event_location_components = data.location
-                                     .split(', ')
-                                     .map { |component| component.gsub(regexp, '').strip }
-                                     .reject(&:blank?)
+      .split(', ')
+      .map { |component| component.gsub(regexp, '').strip }
+      .reject(&:blank?)
   end
 end

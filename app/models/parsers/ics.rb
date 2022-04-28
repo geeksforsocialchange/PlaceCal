@@ -4,15 +4,8 @@
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
 
-module CalendarImporter::Parsers
+module Parsers
   class Ics < Base
-    NAME = 'Generic iCal / .ics'
-    DOMAINS = %w[
-      calendar.google.com
-      outlook.office365.com
-      outlook.live.com
-      ics.teamup.com
-    ]
 
     def self.whitelist_pattern
       /http(s)?:\/\/calendar.google.com\.*|http(s)?:\/\/outlook.(office365|live).com\/owa\/calendar\/.*|\Awebcal:\/\/|http:\/\/mossleycommunitycentre.org.uk|http:\/\/www.theproudtrust.org|http(s)?:\/\/ics.teamup.com\/feed\/.*/
@@ -33,7 +26,7 @@ module CalendarImporter::Parsers
           @start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
           @end_time = DateTime.parse(event.dtend.value_ical) if event.dtend
 
-          @events << CalendarImporter::Events::IcsEvent.new(event, @start_time, @end_time)
+          @events << Events::IcsEvent.new(event, @start_time, @end_time)
         end
       end
 
