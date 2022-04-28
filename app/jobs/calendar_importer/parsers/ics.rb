@@ -13,6 +13,7 @@ module CalendarImporter::Parsers
       outlook.office365.com
       outlook.live.com
       ics.teamup.com
+      webcal://
     ]
 
     def self.whitelist_pattern
