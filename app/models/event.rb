@@ -27,7 +27,7 @@ class Event < ApplicationRecord
   # Find by week
   scope :find_by_week, lambda { |day|
     week_start = day.beginning_of_week
-    week_end = day.end_of_week 
+    week_end = day.end_of_week
     where('DATE(dtstart) >= ? AND DATE(dtstart) <= ?', week_start, week_end)
   }
 
@@ -38,7 +38,9 @@ class Event < ApplicationRecord
     joins('left outer join partners on events.partner_id = partners.id')
       .joins('left outer join addresses on partners.address_id = addresses.id')
       .joins('left outer join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', neighbourhood_ids, neighbourhood_ids)
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
+             neighbourhood_ids,
+             neighbourhood_ids)
   }
 
   scope :with_tags, lambda { |tags|
@@ -56,7 +58,9 @@ class Event < ApplicationRecord
     joins(:address)
       .joins('left join partners on events.partner_id = partners.id')
       .joins('left join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', site_neighbourhood_ids, site_neighbourhood_ids)
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
+             site_neighbourhood_ids,
+             site_neighbourhood_ids)
   }
 
   # Filter by Place
@@ -80,7 +84,7 @@ class Event < ApplicationRecord
   scope :one_off_events_only, -> { where(rrule: false) }
   scope :one_off_events_first, -> { order(rrule: :asc) }
 
-  scope :upcoming, ->() { where('dtstart >= ?', DateTime.current.beginning_of_day) }
+  scope :upcoming, -> { where('dtstart >= ?', DateTime.current.beginning_of_day) }
   scope :past, ->() { where('dtstart <= ?', DateTime.current.beginning_of_day) }
 
   # Global feed
@@ -139,6 +143,7 @@ class Event < ApplicationRecord
   def blame
     partner = calendar&.partner
     return false unless partner
+
     email = partner.admin_email
     name = partner.admin_name
     "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
