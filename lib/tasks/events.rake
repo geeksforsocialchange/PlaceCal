@@ -11,15 +11,18 @@ namespace :import do
       puts "\n"
       puts "#{e.class}: bad thing: #{e}"
       puts e.backtrace
-      puts "-" * 20
+      puts '-' * 20
     end
   end
 
-  task :events_from_source, [:calendar_id] => [:environment] do |_t, args|
-    from = Date.current.beginning_of_day
-    calendar_id = args[:calendar_id]
+  # Import one or many events from source
+  # @param args A list of calendar IDs
+  task :events_from_source, [] => [:environment] do |_t, args|
+    args.extras.each do |calendar_id|
+      from = Date.current.beginning_of_day
 
-    CalendarImporterJob.perform_now calendar_id, from
+      CalendarImporterJob.perform_now calendar_id, from
+    end
   end
 
   # calendar_id - object id of calendar to be imported.
@@ -36,4 +39,3 @@ namespace :import do
     PaperTrail::Version.all.delete_all
   end
 end
-

@@ -18,7 +18,7 @@ module CalendarImporter::Parsers
       @to = options.delete(:to)
     end
 
-	  # Takes a calendar feed and imports it
+    # Takes a calendar feed and imports it
     # Returns array of events
     #
     def calendar_to_events(skip_checksum=false)
@@ -32,15 +32,15 @@ module CalendarImporter::Parsers
       Output.new(import_events_from(data), checksum)
     end
 
-    #@abstract Subclass is expect to implmement #download_calendar
-    #@!method download_calendar
+    # @abstract Subclass is expect to implmement #download_calendar
+    # @!method download_calendar
     #  Make http request to download calendar file from source
 
-    #@abstract Subclass is expected to implement #import_events_from
-    #@!method import_events_from
+    # @abstract Subclass is expected to implement #import_events_from
+    # @!method import_events_from
     #  Parse calendar file and wrap individual events in custom event class
 
-    #Returns the unique MD5 Digest string of the calendar feed
+    # Returns the unique MD5 Digest string of the calendar feed
     #
     def digest(data)
       Digest::MD5.hexdigest(data.to_s)
