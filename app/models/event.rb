@@ -88,6 +88,7 @@ class Event < ApplicationRecord
   scope :one_off_events_first, -> { order(rrule: :asc) }
 
   scope :upcoming, ->() { where('dtstart >= ?', DateTime.current.beginning_of_day) }
+  scope :past, ->() { where('dtstart <= ?', DateTime.current.beginning_of_day) }
 
   # Global feed
   scope :ical_feed, -> { where('dtstart >= ?', Time.now - 1.week).where('dtend < ?', Time.now + 1.month) }
@@ -116,6 +117,10 @@ class Event < ApplicationRecord
 
   def date
     dtstart.strftime('%e %b')
+  end
+
+  def date_year
+    dtstart.strftime('%e %b %Y')
   end
 
   def permalink

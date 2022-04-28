@@ -38,7 +38,6 @@ module Admin
 
     def show
       authorize @calendar
-      redirect_to edit_admin_calendar_path(@calendar)
     end
 
     def create

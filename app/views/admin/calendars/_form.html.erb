@@ -4,6 +4,11 @@
   </div>
 <% end %>
 
+<p><%= link_to "View this calendar", 
+                admin_calendar_path(@calendar.id), 
+                class: "btn btn-sm btn-primary" unless @calendar.new_record? %>
+</p>
+
 <div id="js-calendar-form">
   <%= simple_form_for [:admin, @calendar] do |f| %>
     <div class="row">
