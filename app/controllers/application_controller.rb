@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
     repeating        = args[:repeating]        || 'on'
 
     events = Event.all
-    
+
     if site
       events = events.for_site(site)
       events = events.with_tags(site.tags) if site.tags.any?
@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
   def get_map_markers(locations)
     locations.reduce([]) do |arr, loc|
       marker =
-        if (Partner == loc.class) && (loc&.address&.latitude)
+        if (Partner == loc.class) && (loc&.address&.latitude) && loc.service_areas.count == 0
           {
             lat: loc.address.latitude,
             lon: loc.address.longitude,
