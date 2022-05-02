@@ -8,6 +8,7 @@ labels: bug
 ## Description
 
 What were you doing?
+
 ## Steps to reproduce
 
 1. What you did first
@@ -16,6 +17,7 @@ What were you doing?
 ## What you expected to happen
 
 What would you like to happen instead?
+
 ## Platform (if relevant)
 
 What device and browser were you using?
