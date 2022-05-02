@@ -14,7 +14,7 @@ class EventsController < ApplicationController
     # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
-    @events = filter_events(@period, repeating: @repeating, site: current_site )
+    @events = filter_events(@period, repeating: @repeating, site: current_site)
     # Sort criteria
     @events = sort_events(@events, @sort)
     @multiple_days = true

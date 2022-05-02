@@ -14,8 +14,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   end
 
   def show_neighbourhood?
-    return false if show_service_area?
-    show_neighbourhoods
+    show_service_area? ? false : show_neighbourhoods
   end
 
   def neighbourhood_name(badge_zoom_level)
@@ -31,6 +30,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   def primary_neighbourhood?
     # Show everything as primary if primary is not set
     return true unless primary_neighbourhood
+
     primary_neighbourhood && (previewee.address&.neighbourhood == primary_neighbourhood)
   end
 
@@ -40,12 +40,12 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
 
   def service_area_name
     if previewee.service_areas.count > 1
-      "various"
+      'various'
     else
       previewee.service_areas.first&.neighbourhood&.shortname
     end
   end
-  
+
   private
 
   def previewee

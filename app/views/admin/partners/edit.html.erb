@@ -5,7 +5,7 @@
 <% if current_user.root? -%>
   <%# Show the Neighbourhood the partner is related to via Address %>
   <% if @partner.address -%>
-    <p>In neighbourhood <%= link_to @partner.address.neighbourhood.name, admin_neighbourhood_path(@partner.address.neighbourhood) %>.</p>
+    <p>In neighbourhood <%= link_to @partner.address.neighbourhood.name, edit_admin_neighbourhood_path(@partner.address.neighbourhood) %>.</p>
   <% end -%>
 
   <%# Show a list of Service Areas that the partner is related to %>

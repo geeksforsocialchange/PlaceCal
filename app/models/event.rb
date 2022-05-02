@@ -10,7 +10,7 @@ class Event < ApplicationRecord
   belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
-  validates :summary, :dtstart, presence: true
+  validates :summary, :dtstart, :partner, presence: true
   before_validation :set_address_from_place
   validate :require_location
   validate :unique_event
@@ -21,14 +21,14 @@ class Event < ApplicationRecord
 
   # Find by day
   scope :find_by_day, lambda { |day|
-    where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day)
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day.midnight, (day.midnight + 1.day))
   }
 
   # Find by week
   scope :find_by_week, lambda { |day|
     week_start = day.beginning_of_week
-    week_end = day.end_of_week 
-    where('DATE(dtstart) >= ? AND DATE(dtstart) <= ?', week_start, week_end)
+    week_end = day.end_of_week
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', week_start, week_end)
   }
 
   # For the API eventFilter find by neighbourhood
@@ -38,16 +38,11 @@ class Event < ApplicationRecord
     joins('left outer join partners on events.partner_id = partners.id')
       .joins('left outer join addresses on partners.address_id = addresses.id')
       .joins('left outer join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', neighbourhood_ids, neighbourhood_ids)
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
+             neighbourhood_ids,
+             neighbourhood_ids)
   }
 
-  # For the API eventFilter find by tag
-  scope :for_tag, lambda { |tag|
-    joins(:partner)
-      .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
-      .where('partner_tags.tag_id = ?', tag.id) 
-  }
-  
   scope :with_tags, lambda { |tags|
     tag_ids = tags.map(&:id)
 
@@ -63,7 +58,9 @@ class Event < ApplicationRecord
     joins(:address)
       .joins('left join partners on events.partner_id = partners.id')
       .joins('left join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))', site_neighbourhood_ids, site_neighbourhood_ids)
+      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
+             site_neighbourhood_ids,
+             site_neighbourhood_ids)
   }
 
   # Filter by Place
@@ -87,8 +84,8 @@ class Event < ApplicationRecord
   scope :one_off_events_only, -> { where(rrule: false) }
   scope :one_off_events_first, -> { order(rrule: :asc) }
 
-  scope :upcoming, ->() { where('dtstart >= ?', DateTime.current.beginning_of_day) }
-  scope :past, ->() { where('dtstart <= ?', DateTime.current.beginning_of_day) }
+  scope :upcoming, -> { where('dtstart >= ?', DateTime.current.beginning_of_day) }
+  scope :past, -> { where('dtstart <= ?', DateTime.current.beginning_of_day) }
 
   # Global feed
   scope :ical_feed, -> { where('dtstart >= ?', Time.now - 1.week).where('dtend < ?', Time.now + 1.month) }
@@ -146,6 +143,7 @@ class Event < ApplicationRecord
   def blame
     partner = calendar&.partner
     return false unless partner
+
     email = partner.admin_email
     name = partner.admin_name
     "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"

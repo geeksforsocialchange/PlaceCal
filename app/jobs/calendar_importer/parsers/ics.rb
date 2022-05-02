@@ -6,7 +6,7 @@
 
 module CalendarImporter::Parsers
   class Ics < Base
-    # This is only used for the frontend interface
+    # These constants are only used for the frontend interface
     NAME = 'Generic iCal / .ics'
     DOMAINS = %w[
       calendar.google.com
@@ -23,7 +23,8 @@ module CalendarImporter::Parsers
         webcal: %r{webcal://},
         mossley: %r{http(s)?://mossleycommunitycentre.org.uk},
         theproudtrust: %r{http(s)?://www.theproudtrust.org},
-        teamup: %r{http(s)?://ics.teamup.com/feed/.*}
+        teamup: %r{http(s)?://ics.teamup.com/feed/.*},
+        consortium: %r{https://www.consortium.lgbt/events/.*}
       }
       Regexp.union(whitelists.values)
     end
@@ -55,6 +56,5 @@ module CalendarImporter::Parsers
       # read file to get contents before creating digest
       Digest::MD5.hexdigest(data)
     end
-
   end
 end
