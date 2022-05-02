@@ -14,9 +14,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   end
 
   def show_neighbourhood?
-    return false if show_service_area?
-
-    show_neighbourhoods
+    show_service_area? ? false : show_neighbourhoods
   end
 
   def neighbourhood_name(badge_zoom_level)
