@@ -80,14 +80,9 @@ module Admin
 
     def import
       date = Time.zone.parse(params[:starting_from])
+      CalendarImporterJob.perform_now @calendar.id, date
 
-      @calendar.import_events(date)
       flash[:success] = 'The import has completed. See below for details.'
-    rescue StandardError => e
-      Rails.logger.debug(e)
-      Rollbar.error(e)
-      flash[:danger] = 'The import ran into an error before completion. Please check error logs for more info.'
-    ensure
       redirect_to edit_admin_calendar_path(@calendar)
     end
 

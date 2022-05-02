@@ -94,4 +94,11 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_root_url
   end
+
+  test "import runs importer" do
+    sign_in @root
+
+    post import_admin_calendar_path(@calendar), params: { starting_from: Date.today }
+    assert_redirected_to edit_admin_calendar_path(@calendar)
+  end
 end
