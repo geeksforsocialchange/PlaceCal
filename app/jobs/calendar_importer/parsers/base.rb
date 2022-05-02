@@ -22,7 +22,7 @@ module CalendarImporter::Parsers
     # Returns array of events
     #
     def calendar_to_events(skip_checksum=false)
-      data   = download_calendar
+      data = download_calendar
       checksum = digest(data)
 
       if !skip_checksum && (@calendar.last_checksum == checksum)

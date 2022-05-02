@@ -10,6 +10,7 @@ class EventTest < ActiveSupport::TestCase
       dtend: DateTime.now + 1.day,
       is_active: true,
       address: create(:address),
+      partner: create(:partner),
       raw_location_from_source: \
         'Unformatted Address,' \
         'Ungeolocated Lane,' \

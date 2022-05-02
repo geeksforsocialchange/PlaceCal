@@ -83,7 +83,7 @@ class CalendarImporter::EventResolver
         address = place&.address
         address ||= Address.search(data.location, event_location_components, data.postcode)
 
-        if not place.present? # no place, yes location
+        unless place.present? # no place, yes location
           if address.nil?
             raise Problem, INFO1_MSG
           end
@@ -91,8 +91,8 @@ class CalendarImporter::EventResolver
 
       else # no location
         if place.present?
-          #place = 'calendar.place'
-          #address = 'calendar.place.address'
+          # place = 'calendar.place'
+          # address = 'calendar.place.address'
           place = calendar.place
           address = place.address
 
@@ -104,8 +104,8 @@ class CalendarImporter::EventResolver
     when 'place' # location
       if data.has_location?
         if place.present?
-          #place = 'calendar.place'
-          #address = 'calendar.place.address'
+          # place = 'calendar.place'
+          # address = 'calendar.place.address'
           # xx place = calendar.place.address
           address = place.address
 
@@ -115,8 +115,8 @@ class CalendarImporter::EventResolver
 
       else # no location
         if place.present?
-          #place = 'calendar.place'
-          #address = 'calendar.place.address'
+          # place = 'calendar.place'
+          # address = 'calendar.place.address'
           # xx place = calendar.place.address
           address = place.address
 
@@ -142,8 +142,8 @@ class CalendarImporter::EventResolver
 
       else # no location
         if place.present?
-          #place = 'calendar.place'
-          #address = 'calendar.place.address'
+          # place = 'calendar.place'
+          # address = 'calendar.place.address'
           # xx place = calendar.place.address
           address = place.address
 
@@ -158,14 +158,16 @@ class CalendarImporter::EventResolver
 
     data.place_id = place.id if place
     data.address_id = address&.id
+    data.partner_id = calendar.partner_id
   end
-  
+
   def save_all_occurences
     calendar_events = calendar.events.upcoming.where(uid: data.uid)
 
     # If any dates of this event don't match the imported start times or end times, delete them
     if data.recurring_event?
-      events_with_invalid_dates = calendar_events.without_matching_times(occurences.map(&:start_time), occurences.map(&:end_time))
+      events_with_invalid_dates = calendar_events.without_matching_times(occurences.map(&:start_time),
+                                                                         occurences.map(&:end_time))
       events_with_invalid_dates.destroy_all
     end
 
@@ -177,11 +179,11 @@ class CalendarImporter::EventResolver
       event = nil
 
       if calendar_events.present?
-        if data.recurring_event?
-          event = calendar_events.find_by(event_time)
-        else 
-          event = calendar_events.first
-        end
+        event = if data.recurring_event?
+                  calendar_events.find_by(event_time)
+                else
+                  calendar_events.first
+                end
       end
 
       event ||= calendar.events.new

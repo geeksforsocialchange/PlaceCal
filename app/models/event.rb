@@ -10,7 +10,7 @@ class Event < ApplicationRecord
   belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
-  validates :summary, :dtstart, presence: true
+  validates :summary, :dtstart, :partner, presence: true
   before_validation :set_address_from_place
   validate :require_location
   validate :unique_event
@@ -21,14 +21,14 @@ class Event < ApplicationRecord
 
   # Find by day
   scope :find_by_day, lambda { |day|
-    where('dtstart >= ? AND dtstart <= ?', day.midnight, day.midnight + 1.day)
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day.midnight, (day.midnight + 1.day))
   }
 
   # Find by week
   scope :find_by_week, lambda { |day|
     week_start = day.beginning_of_week
     week_end = day.end_of_week
-    where('DATE(dtstart) >= ? AND DATE(dtstart) <= ?', week_start, week_end)
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', week_start, week_end)
   }
 
   # For the API eventFilter find by neighbourhood

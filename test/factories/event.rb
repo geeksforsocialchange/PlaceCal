@@ -17,5 +17,9 @@ FactoryBot.define do
     trait :with_partner do
       association :partner
     end
+
+    after(:build) do |event|
+      event.partner = create(:partner)
+    end
   end
 end
