@@ -23,7 +23,8 @@ module CalendarImporter::Parsers
         webcal: %r{webcal://},
         mossley: %r{http(s)?://mossleycommunitycentre.org.uk},
         theproudtrust: %r{http(s)?://www.theproudtrust.org},
-        teamup: %r{http(s)?://ics.teamup.com/feed/.*}
+        teamup: %r{http(s)?://ics.teamup.com/feed/.*},
+        consortium: %r{https://www.consortium.lgbt/events/.*}
       }
       Regexp.union(whitelists.values)
     end

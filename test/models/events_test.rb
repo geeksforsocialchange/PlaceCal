@@ -22,8 +22,7 @@ class EventTest < ActiveSupport::TestCase
     event_hash = { summary: 'Mom and Pops Pet Store',
                    dtstart: DateTime.now - 1.hour,
                    calendar: @calendar,
-                   **@event_data
-                 }
+                   **@event_data }
 
     assert Event.new(event_hash).save
     refute Event.new(event_hash).valid?
