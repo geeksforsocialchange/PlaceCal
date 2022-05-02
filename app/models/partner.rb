@@ -123,6 +123,11 @@ class Partner < ApplicationRecord
   # @return [ActiveRecord::Relation<Partner>]
   scope :with_tags, ->(tags) { joins(:partner_tags).where(partner_tags: { tag: tags }) }
 
+  # only select partners that have addresses
+  scope :with_address, -> do
+    where('address_id is not null')
+  end
+
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
   #
