@@ -2,10 +2,10 @@
 
 namespace :import do
   # No data for calendar of type `other` right now.
-  task :all_events, [:force_import] => [:environment] do |_t, args|
-    force_import = args[:force_import]
+  task :all_events, %i[force_import from] => [:environment] do |_t, args|
+    force_import = args[:force_import] || false
+    from = args[:from] || Date.current.beginning_of_day
 
-    from = Date.current.beginning_of_day
     Calendar.find_each do |calendar|
       CalendarImporterJob.perform_now calendar.id, from, force_import
 
