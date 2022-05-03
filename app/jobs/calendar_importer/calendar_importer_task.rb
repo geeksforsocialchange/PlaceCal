@@ -1,28 +1,34 @@
+# frozen_string_literal: true
 
 class CalendarImporter::CalendarImporterTask
-  attr_reader :calendar
-  attr_reader :from_date
+  attr_reader :calendar,
+              :from_date,
+              :force_import
 
-  def initialize(calendar, from_date)
+  def initialize(calendar, from_date, force_import)
     @calendar = calendar
     @from_date = from_date
+    @force_import = force_import
   end
 
   # the main importing function
   def run
     notices = []
 
-    calendar_source = CalendarImporter::CalendarImporter.new(calendar, from: from_date).parse
-    return if calendar.last_checksum == calendar_source.checksum
+    calendar_source = CalendarImporter::CalendarImporter.new(calendar,
+                                                             from: from_date,
+                                                             force_import: @force_import).parse
+    return if !@force_import && calendar.last_checksum == calendar_source.checksum
 
-    parsed_events = calendar_source.events.map { |event_data| CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date) }
+    parsed_events = calendar_source.events.map do |event_data|
+      CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
+    end
     return if parsed_events.blank?
 
     all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
     active_event_uids = Set.new
 
     parsed_events.each do |parsed_event|
-
       # is source event valid?
       # now find all occurrences of event in calendar
       # set up location from strategy
@@ -64,7 +70,6 @@ class CalendarImporter::CalendarImporterTask
                      last_import_at: DateTime.current,
                      critical_error: nil
                     )
-
   ensure
     Calendar.record_timestamps = true
   end

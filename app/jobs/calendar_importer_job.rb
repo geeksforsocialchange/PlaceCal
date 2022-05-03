@@ -4,13 +4,17 @@ class CalendarImporterJob < ApplicationJob
   # Imports all events from a given calendar
   # @param calendar_id [int] The ID of the Calendar object to import from
   # @param from_date [Date] The Date from which to import from
-  def perform(calendar_id, from_date)
+  def perform(calendar_id, from_date, force_import)
     calendar = Calendar.find(calendar_id)
 
-    puts "Importing events for calendar #{calendar.name} (ID #{calendar_id}) for #{calendar.place.try(:name)}"
+    name = calendar.name
+    id = calendar.id
+    place = " for #{calendar.place.try(:name)}" if calendar.place.try(:name)
+    force_import = force_import ? ' (Forced)' : ''
+    puts "Importing events for calendar #{name} (ID #{id})#{place}#{force_import}"
 
     # calendar.import_events(from)
-    CalendarImporter::CalendarImporterTask.new(calendar, from_date).run
+    CalendarImporter::CalendarImporterTask.new(calendar, from_date, force_import).run
   rescue CalendarImporter::EventResolver::Problem => e
     error = "Could not automatically import data for calendar #{calendar.name} (id #{calendar_id}):  #{e}"
     backtrace = e.backtrace[...6]

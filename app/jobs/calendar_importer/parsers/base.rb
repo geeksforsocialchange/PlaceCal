@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # In order for a parser to be recognized, it must be added
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
@@ -11,21 +13,22 @@ module CalendarImporter::Parsers
       url =~ whitelist_pattern
     end
 
-    def initialize(calendar, url, options={})
+    def initialize(calendar, url, options = {})
       @calendar = calendar
       @url = url
       @from = options.delete(:from)
       @to = options.delete(:to)
+      @force_import = options.delete(:force_import)
     end
 
     # Takes a calendar feed and imports it
     # Returns array of events
     #
-    def calendar_to_events(skip_checksum=false)
+    def calendar_to_events
       data = download_calendar
       checksum = digest(data)
 
-      if !skip_checksum && (@calendar.last_checksum == checksum)
+      if !@force_import && (@calendar.last_checksum == checksum)
         return Output.new([], checksum)
       end
 

@@ -2,10 +2,12 @@
 
 namespace :import do
   # No data for calendar of type `other` right now.
-  task all_events: :environment do
+  task :all_events, [:force_import] => [:environment] do |_t, args|
+    force_import = args[:force_import]
+
     from = Date.current.beginning_of_day
     Calendar.find_each do |calendar|
-      CalendarImporterJob.perform_now calendar.id, from
+      CalendarImporterJob.perform_now calendar.id, from, force_import
 
     rescue StandardError => e
       puts "\n"
@@ -28,11 +30,12 @@ namespace :import do
   # calendar_id - object id of calendar to be imported.
   # from - import events starting from this date. Must use format 'yyyy-mm-dd'.
 
-  task :past_events_from_source, %i[calendar_id from] => [:environment] do |_t, args|
+  task :past_events_from_source, %i[calendar_id from force_import] => [:environment] do |_t, args|
     from = Time.zone.parse(args[:from])
     calendar_id = args[:calendar_id]
+    force_import = args[:force_import]
 
-    CalendarImporterJob.perform_now calendar_id, from
+    CalendarImporterJob.perform_now calendar_id, from, force_import
   end
 
   task purge_papertrail: :environment do
