@@ -9,7 +9,7 @@ class CalendarImporterJob < ApplicationJob
 
     name = calendar.name
     id = calendar.id
-    place = " for #{calendar.place.try(:name)}" if calendar.place.try(:name)
+    place = calendar.place.try(:name) ? " for #{calendar.place.try(:name)}" : ''
     force_import = force_import ? ' (Forced)' : ''
     puts "Importing events for calendar #{name} (ID #{id})#{place}#{force_import}"
 

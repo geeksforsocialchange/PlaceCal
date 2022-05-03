@@ -95,10 +95,18 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
-  test "import runs importer" do
+  test 'import runs importer' do
+    calendar = create(:calendar,
+                      source: 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics',
+                      partner: @partner,
+                      place: @partner)
     sign_in @root
 
-    post import_admin_calendar_path(@calendar), params: { starting_from: Date.today }
-    assert_redirected_to edit_admin_calendar_path(@calendar)
+    suppress_stdout do # The importer uses stdout to tell us progress when we run it locally. Avoid this in tests
+      VCR.use_cassette('Zion Centre Guide') do
+        post import_admin_calendar_path(calendar), params: { starting_from: Date.today }
+        assert_redirected_to edit_admin_calendar_path(calendar)
+      end
+    end
   end
 end

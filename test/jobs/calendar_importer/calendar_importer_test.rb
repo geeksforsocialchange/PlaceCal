@@ -6,7 +6,6 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
-  #
   test 'imports webcal calendars' do
     calendar = create(:calendar, name: 'Yellowbird',
                                  source: 'webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ')
@@ -146,8 +145,8 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
     end
   end
 
-  #TODO: for whenever facebook decides to work again
-  #test 'imports facebook' do
-  #end
+  # TODO: for whenever facebook decides to work again
+  # test 'imports facebook' do
+  # end
   #
 end

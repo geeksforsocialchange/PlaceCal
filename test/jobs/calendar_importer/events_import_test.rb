@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class EventsImportTest < ActiveSupport::TestCase
-
   test 'imports webcal calendars' do
     calendar = create(
       :calendar,
@@ -21,8 +20,9 @@ class EventsImportTest < ActiveSupport::TestCase
     partner2.address.save!
 
     VCR.use_cassette(:import_test_calendar) do
-      from_date = Date.new(2018,11,20)
-      CalendarImporter::CalendarImporterTask.new(calendar, from_date).run
+      from_date = Date.new(2018, 11, 20)
+      force_import = false
+      CalendarImporter::CalendarImporterTask.new(calendar, from_date, force_import).run
     end
 
     # pp Event.all
@@ -38,8 +38,8 @@ class EventsImportTest < ActiveSupport::TestCase
     # assert_equal 3, Address.count
 
     # Were the correct number of events found at each partner location?
-    assert_equal 2, Event.where( place: partner1 ).count
-    assert_equal 1, Event.where( place: partner2 ).count
+    assert_equal 2, Event.where(place: partner1).count
+    assert_equal 1, Event.where(place: partner2).count
   end
 
   test 'does not touch calendar updated_at timestamp' do
@@ -57,8 +57,9 @@ class EventsImportTest < ActiveSupport::TestCase
     partner = create(:partner, name: 'Z-aRtS')
 
     VCR.use_cassette(:import_test_calendar) do
-      from_date = Date.new(2018,11,20)
-      CalendarImporter::CalendarImporterTask.new(calendar, from_date).run
+      from_date = Date.new(2018, 11, 20)
+      force_import = false
+      CalendarImporter::CalendarImporterTask.new(calendar, from_date, force_import).run
     end
 
     assert_equal calendar_time, calendar.updated_at, 'Importer should not touch updated at'
