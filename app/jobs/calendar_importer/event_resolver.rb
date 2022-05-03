@@ -172,9 +172,6 @@ class CalendarImporter::EventResolver
     end
 
     occurences.each do |occurence|
-      # Skip if occurence is longer than 1 day
-      next if occurence.end_time && (occurence.end_time.to_date - occurence.start_time.to_date).to_i > 1
-
       event_time = { dtstart: occurence.start_time, dtend: occurence.end_time }
       event = nil
 

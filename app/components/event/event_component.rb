@@ -5,6 +5,7 @@ class EventComponent < MountainView::Presenter
   properties :context, :event, :primary_neighbourhood, :show_neighbourhoods, :badge_zoom_level
 
   include ActionView::Helpers::TextHelper
+  include ActionView::Helpers::DateHelper
 
   def id
     event.id
@@ -26,9 +27,14 @@ class EventComponent < MountainView::Presenter
     return false unless event.dtend
     mins = ((event.dtend - event.dtstart) / 60).to_i
     hours = mins / 60 # Ruby presumes ints not floats, and rounds down
-    mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
-    hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
-    [hours_str, mins_str].reject(&:empty?).join(' ')
+
+    if hours < 24
+      mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
+      hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
+      [hours_str, mins_str].reject(&:empty?).join(' ')
+    else
+      distance_of_time_in_words event.dtend - event.dtstart
+    end
   end
 
   def date
