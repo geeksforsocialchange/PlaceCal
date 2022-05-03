@@ -4,9 +4,10 @@ import Vue from 'vue/dist/vue.esm'
 Vue.use(TurbolinksAdapter)
 
 document.addEventListener('turbo:load',  () => {
-  var element = document.getElementById('js-calendar-form')
+  /* var element = document.getElementById('js-calendar-form')
 
   if (element != null) {
+
     new Vue({
       el: element,
       data: {
@@ -19,5 +20,5 @@ document.addEventListener('turbo:load',  () => {
         }
       }
     })
-  }
+  } */
 })
