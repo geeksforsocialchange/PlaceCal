@@ -1,6 +1,7 @@
-class CalendarImporter::CalendarImporter
-  # detect calendar url and use appropriate adapter
+# frozen_string_literal: true
 
+# CalendarImporter - detect calendar url and use appropriate adapter
+class CalendarImporter::CalendarImporter
   class UnsupportedFeed < StandardError; end
   class InaccessibleFeed < StandardError; end
 
@@ -13,7 +14,7 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::Meetup
   ].freeze
 
-  def initialize(calendar, options={})
+  def initialize(calendar, options = {})
     @calendar = calendar
     @url = calendar.source
     @options = options
@@ -26,7 +27,8 @@ class CalendarImporter::CalendarImporter
 
   def validate_feed
     raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless is_url_accessible?
-    raise UnsupportedFeed, "The provided URL is not supported" unless parser.present?
+    raise UnsupportedFeed, 'The provided URL is not supported' unless parser.present?
+
     true
   end
 

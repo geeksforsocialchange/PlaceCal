@@ -279,3 +279,10 @@ def refute_field(obj, key, message = nil)
 
   obj[key]
 end
+
+def suppress_stdout
+  stdout = $stdout
+  $stdout = File.open(File::NULL, 'w')
+  yield
+  $stdout = stdout
+end
