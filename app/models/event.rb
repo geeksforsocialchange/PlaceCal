@@ -55,7 +55,7 @@ class Event < ApplicationRecord
   scope :for_site, lambda { |site|
     site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
 
-    joins(:address)
+    joins('left join addresses on events.address_id = addresses.id')
       .joins('left join partners on events.partner_id = partners.id')
       .joins('left join service_areas on partners.id = service_areas.partner_id')
       .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
