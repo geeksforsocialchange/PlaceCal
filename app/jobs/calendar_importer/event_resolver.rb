@@ -73,13 +73,11 @@ class CalendarImporter::EventResolver
         # NOTE: Address.search can also return Nil if there are no event_location_components, or
         #       if the address failed to save
         # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
-      else # no location
-        if place.present?
-          raise Problem, WARNING2_MSG
 
-        else # no place, no location
-          raise Problem, WARNING1_MSG
-        end
+      else # no location
+        raise Problem, WARNING2_MSG if place.present?
+        # No longer an error if place is not present -- see #1198
+        # Passthrough here
       end
 
     when 'event_override'
@@ -113,7 +111,7 @@ class CalendarImporter::EventResolver
       # We assign address to the place's address if possible, and otherwise we exit
 
       # This should theoretically never run ! :) (At least, it's not accounted for in Kim's table)
-      raise Problem, 'N/A - Unaccounted for in table' if place.nil?
+      raise Problem, 'N/A - Unaccounted for in table' if calendar.place.nil?
 
       address = calendar.place.address
 
@@ -184,6 +182,11 @@ class CalendarImporter::EventResolver
 
       unless event.update data.attributes.merge(event_time)
         notices << { event: event, errors: event.errors.full_messages }
+      end
+
+      if event.address_id.blank? && calendar.strategy == 'event'
+        notices << { event: event, errors: ['No place or address could be created or found for '\
+                                            " the event location: #{event.raw_location_from_source}"] }
       end
     end
   end
