@@ -40,24 +40,30 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-#  test 'events with no location show up on index' do
-#    calendar = create(:calendar)
-#
-#    @site.events.destroy_all
-#
-#    5.times do |n|
-#      @site.events.create!(
-#        calendar: calendar,
-#        summary: "Event #{n}",
-#        description: 'A description',
-#        dtstart: Time.now
-#      )
-#    end
-#
-#    get url_for controller: :events, subdomain: @site.slug
-#    assert_response :success
-#
-#    events = assigns(:events).values.first
-#    assert events.length == 3
-#  end
+  test 'events with no location show up on index' do
+    neighbourhood = create(:neighbourhood)
+    partner = build(:partner, address: nil)
+    partner.service_area_neighbourhoods << neighbourhood
+    partner.save!
+
+    calendar = create(:calendar, partner: partner, strategy: 'no_location')
+
+    @site.neighbourhoods.destroy_all
+    @site.neighbourhoods << neighbourhood
+
+    5.times do |n|
+      partner.events.create!(
+        calendar: calendar,
+        summary: "Event #{n}",
+        description: 'A description',
+        dtstart: Time.now
+      )
+    end
+
+    get url_for(controller: :events, subdomain: @site.slug)
+    assert_response :success
+
+    events = assigns(:events).values.first
+    assert events.length == 5
+  end
 end
