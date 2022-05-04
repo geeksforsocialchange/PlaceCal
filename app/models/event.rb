@@ -159,6 +159,7 @@ class Event < ApplicationRecord
   end
 
   def require_location
+    return if self.calendar&.strategy == 'event'
     return unless self.address_id.blank?
 
     errors.add(:base, 'No place or address could be created or found for ' \
