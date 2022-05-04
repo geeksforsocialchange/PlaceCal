@@ -31,6 +31,9 @@
     "vue-turbolinks": "^2.0.4",
     "vue2-timepicker": "^1.0.8"
   },
+  "peerDependencies": {
+    "postcss": "^8.4.13"
+  },
   "scripts": {
     "build": "node esbuild.config.js",
     "build:css": "sass ./app/assets/stylesheets/application.sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
