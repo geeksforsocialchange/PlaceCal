@@ -83,4 +83,23 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     get partner_url(partner)
     assert_response :success
   end
+
+  test 'should show events with no place or address' do
+    calendar = create(:calendar, strategy: 'no_location')
+    partner = create(:partner)
+
+    3.times do |n|
+      partner.events.create!(
+        calendar: calendar,
+        summary: "Event #{n}",
+        description: 'A description',
+        dtstart: Time.now
+      )
+    end
+
+    get partner_url(partner)
+
+    events = assigns(:events).values.first
+    assert events.length == 3
+  end
 end

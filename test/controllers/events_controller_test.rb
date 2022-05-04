@@ -39,4 +39,25 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     get event_url(@events[0])
     assert_response :success
   end
+
+#  test 'events with no location show up on index' do
+#    calendar = create(:calendar)
+#
+#    @site.events.destroy_all
+#
+#    5.times do |n|
+#      @site.events.create!(
+#        calendar: calendar,
+#        summary: "Event #{n}",
+#        description: 'A description',
+#        dtstart: Time.now
+#      )
+#    end
+#
+#    get url_for controller: :events, subdomain: @site.slug
+#    assert_response :success
+#
+#    events = assigns(:events).values.first
+#    assert events.length == 3
+#  end
 end
