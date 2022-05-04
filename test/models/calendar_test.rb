@@ -48,4 +48,34 @@ class CalendarTest < ActiveSupport::TestCase
     @calendar.place.update(public_email: nil)
     assert_equal false, @calendar.contact_information
   end
+
+  test "notices get counted when saved" do
+    messages = [
+      "alpha",
+      "beta",
+      "cappa"
+    ]
+
+    calendar = build(:calendar)
+    calendar.notices = messages
+    calendar.save!
+
+    assert_equal 3, calendar.notice_count
+
+  end
+
+  test "notices are not counted if notices have not changed value" do
+    messages = [
+      "alpha",
+      "beta",
+      "cappa"
+    ]
+
+    calendar = create(:calendar, notices: messages)
+
+    calendar.name = 'A new name'
+    calendar.save!
+
+    assert_equal 3, calendar.notice_count
+  end
 end
