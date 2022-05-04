@@ -61,11 +61,18 @@ class CalendarImporter::EventResolver
         address = place&.address
 
         # if no place, try to find an address
+        # (This only executes if there is no place given)
         address ||= Address.search(data.location, event_location_components, data.postcode)
 
         # if we have an address, try to use the place that address points to
+        # (Only runs if the fuzzy find and calendar.place are both nil)
         place ||= address&.partners&.first
 
+        # NOTE: What happens if address has zero partners and the earlier assignments fail?
+        #       'place' is nil in this instance
+        # NOTE: Address.search can also return Nil if there are no event_location_components, or
+        #       if the address failed to save
+        # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
       else # no location
         if place.present?
           raise Problem, WARNING2_MSG
@@ -83,12 +90,12 @@ class CalendarImporter::EventResolver
         address = place&.address
         address ||= Address.search(data.location, event_location_components, data.postcode)
 
-        unless place.present? # no place, yes location
-          if address.nil?
-            raise Problem, INFO1_MSG
-          end
-        end
+        raise Problem, INFO1_MSG if place.nil? && address.nil?
 
+        # NOTE: Either one of 'place' or 'address' is unset here but not both
+        # NOTE: place is possibly unset here - fuzzy_find_by_location can be nil
+        # NOTE: address is possibly unset here - place might be nil or Address.search can return nil
+        #       In either case we will just drop this event on the floor
       else # no location
         if place.present?
           # place = 'calendar.place'
@@ -102,28 +109,16 @@ class CalendarImporter::EventResolver
       end
 
     when 'place' # location
-      if data.has_location?
-        if place.present?
-          # place = 'calendar.place'
-          # address = 'calendar.place.address'
-          # xx place = calendar.place.address
-          address = place.address
+      # Regardless of if the data has a location, we act the same
+      # We assign address to the place's address if possible, and otherwise we exit
 
-        else # no place, yes location
-          raise Problem, 'N/A'
-        end
+      # This should theoretically never run ! :) (At least, it's not accounted for in Kim's table)
+      raise Problem, 'N/A - Unaccounted for in table' if place.nil?
 
-      else # no location
-        if place.present?
-          # place = 'calendar.place'
-          # address = 'calendar.place.address'
-          # xx place = calendar.place.address
-          address = place.address
+      address = calendar.place.address
 
-        else # no place, no location
-          raise Problem, 'N/A'
-        end
-      end
+      # NOTE: calendar.place can be nil, in which case this event will be dropped on the floor
+      #       (Likely what is happening with Velociposse?)
 
     when 'room_number'
       if data.has_location?
