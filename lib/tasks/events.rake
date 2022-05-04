@@ -22,8 +22,10 @@ namespace :import do
   task :events_from_source, [] => [:environment] do |_t, args|
     args.extras.each do |calendar_id|
       from = Date.current.beginning_of_day
+      # Generally if you're importing by hand you want to avoid the checksum
+      force_import = true
 
-      CalendarImporterJob.perform_now calendar_id, from
+      CalendarImporterJob.perform_now calendar_id, from, force_import
     end
   end
 
