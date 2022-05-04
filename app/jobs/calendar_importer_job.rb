@@ -41,6 +41,6 @@ class CalendarImporterJob < ApplicationJob
 
     calendar.critical_import_failure full_message
     puts full_message, backtrace if Rails.env.dev?
-    Rollbar.error error, { exception_type: e.class.name, backtrace: backtrace }
+    Rollbar.error full_message, { exception_type: e.class.name, backtrace: backtrace }
   end
 end
