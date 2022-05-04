@@ -96,7 +96,7 @@ class Calendar < ApplicationRecord
   end
 
   def update_notice_count
-    self.notice_count = self.notices&.count || 0
+    self.notice_count = (notices || []).count if notices_changed?
   end
 
   def source_supported
