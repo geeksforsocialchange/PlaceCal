@@ -29,7 +29,7 @@ class Calendar < ApplicationRecord
   # @attr [Enumerable<Symbol>] :strategy
   enumerize(
     :strategy,
-    in: %i[event place room_number event_override],
+    in: %i[event place room_number event_override no_location],
     default: :place,
     scope: true
   )
@@ -98,7 +98,7 @@ class Calendar < ApplicationRecord
   def update_notice_count
     self.notice_count = self.notices&.count || 0
   end
-  
+
   def source_supported
     CalendarImporter::CalendarImporter.new(self).validate_feed
     self.is_working = true

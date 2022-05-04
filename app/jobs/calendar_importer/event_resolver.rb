@@ -145,6 +145,9 @@ class CalendarImporter::EventResolver
         end
       end
 
+    when 'no_location'
+      place = nil
+
     else
       raise Problem, "Calendar import strategy unknown! (#{calendar.strategy})"
     end

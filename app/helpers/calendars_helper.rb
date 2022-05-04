@@ -50,6 +50,10 @@ module CalendarsHelper
       '<strong>Event Override</strong>: ' \
       'Every event is in one location (set below), unless the address field ' \
       'is set to another location'.html_safe
+    when 'no_location'
+      '<strong>No Location</strong>: ' \
+      'Events imported will have no location information set in PlaceCal, even if it is present on' \
+      'the remote feed'.html_safe
     else
       val
     end
