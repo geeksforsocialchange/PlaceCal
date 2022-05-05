@@ -15,7 +15,7 @@ module CalendarImporter::Events
     end
 
     def sanitize_invalid_char(input)
-      input = I18n.transliterate(input)
+      # input = I18n.transliterate(input)
       input.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
     end
 
