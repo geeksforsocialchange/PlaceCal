@@ -89,4 +89,18 @@ class EventTest < ActiveSupport::TestCase
     wanted = '123 Moss Ln E, Manchester, Manchester, M15 5DD'
     assert_equal wanted, event.location
   end
+
+  test 'ensure find_by_day returns items from current day' do
+    partner = create(:partner, address: create(:moss_side_address))
+    yesterday = Date.today.midnight - 1.day
+    today = Date.today.midnight
+
+    create_list(:event, 5, partner: partner, dtstart: yesterday + 12.hours)
+    todays_event = create(:event, partner: partner, dtstart: today + 12.hours)
+
+    events = Event.all.find_by_day(Date.today)
+
+    assert_equal events.length, 1
+    assert_equal events.first.dtstart, todays_event.dtstart
+  end
 end

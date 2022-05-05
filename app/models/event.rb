@@ -21,7 +21,7 @@ class Event < ApplicationRecord
 
   # Find by day
   scope :find_by_day, lambda { |day|
-    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day.midnight, (day.midnight + 1.day))
+    where('(dtstart >= (?)) AND (dtstart <= (?))', day.midnight, (day.midnight + 1.day))
   }
 
   # Find by week

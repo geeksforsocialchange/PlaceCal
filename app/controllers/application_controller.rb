@@ -63,6 +63,7 @@ class ApplicationController < ActionController::Base
       else
         events.find_by_day(@current_day).includes(:place)
       end
+
     args[:limit] ? events.limit(limit) : events
   end
 
