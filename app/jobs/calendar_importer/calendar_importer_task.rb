@@ -28,6 +28,11 @@ class CalendarImporter::CalendarImporterTask
     all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
     active_event_uids = Set.new
 
+    # this can be useful if you want to force import on your local machine
+    # if @force_import
+    #   calendar.events.destroy_all
+    # end
+
     parsed_events.each do |parsed_event|
       # is source event valid?
       # now find all occurrences of event in calendar

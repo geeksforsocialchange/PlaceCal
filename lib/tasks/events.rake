@@ -20,7 +20,7 @@ namespace :import do
 
   # Import one or many events from source
   # @param args A list of calendar IDs
-  #   e.g. rails import:events_from_source[1234.12.34,56]
+  #   e.g. rails import:events_from_source[1234,12,34,56]
   task :events_from_source, [] => [:environment] do |_t, args|
     args.extras.each do |calendar_id|
       from = Date.current.beginning_of_day
