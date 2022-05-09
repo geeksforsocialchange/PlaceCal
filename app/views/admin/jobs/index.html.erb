@@ -1,0 +1,30 @@
+<h1>Jobs</h1>
+
+<p>Currently have <%= @job_count %> jobs</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Priority</th>
+      <th>Attempts</th>
+      <th>Created</th>
+      <th>Last Error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @job_list.each do |job_info| -%>
+      <tr>
+        <td><%= job_info['id'] %></td>
+        <td><%= job_info['priority'] %></td>
+        <td><%= job_info['attempts'] %></td>
+        <td><%= job_info['created_at'] %></td>
+        <td><%= job_info['last_error'].present? ? 'Yes' : 'No' %></td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>
+
+<!-- pre>
+<%# = JSON.pretty_generate(@job_list.first) %>
+</pre -->

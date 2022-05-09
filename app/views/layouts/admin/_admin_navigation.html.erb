@@ -22,6 +22,7 @@
     </h6>
     <%= admin_nav_link('Collections', admin_collections_path, 'list') if policy(Collection).index? %>
     <%= admin_nav_link('Supporters', admin_supporters_path, 'credit-card') if policy(Supporter).index? %>
+    <%= admin_nav_link('Jobs', admin_jobs_path, 'gear') if current_user.root? %>
   <% end %>
 </ul>
 

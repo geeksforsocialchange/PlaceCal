@@ -52,7 +52,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
         patch :update_profile
       end
     end
-    get 'profile' => 'users#profile', :as => 'profile'
+    get 'profile' => 'users#profile', as: :profile
+    get 'jobs' => 'jobs#index', as: :jobs
+
     root 'pages#home'
   end
 
