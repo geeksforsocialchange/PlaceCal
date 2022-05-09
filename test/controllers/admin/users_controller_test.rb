@@ -93,10 +93,13 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_create_for(%i[root neighbourhood_admin]) do
+    @partner = create(:partner)
+    @user = attributes_for(:citizen, partner_ids: [@partner.id.to_s])
     assert_difference('User.count', 1) do
       post admin_users_url,
-           params: { user: attributes_for(:user) }
+           params: { user: @user }
     end
+    assert_equal 1, User.last.partners.length
   end
 
   it_denies_access_to_create_for(%i[citizen]) do
