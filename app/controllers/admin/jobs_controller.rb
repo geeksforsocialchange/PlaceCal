@@ -10,7 +10,7 @@ module Admin
         .first["count"]
 
       @job_list = ActiveRecord::Base
-        .connection.execute("select * from delayed_jobs limit 150")
+        .connection.execute("select * from delayed_jobs order by created_at desc limit 150 ")
     end
 
     private
