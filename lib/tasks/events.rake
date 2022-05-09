@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
 namespace :import do
+  task :scan_for_calendars_needing_import, %i[force_import from] => [:environment] do |_t, args|
+
+    force_import = args[:force_import] || false
+    from = args[:from] || Date.current.beginning_of_day
+
+    Calendar.find_each do |calendar|
+      puts "queueing #{calendar.name}"
+
+      CalendarImporterJob.perform_later calendar.id, from, force_import
+
+    rescue StandardError => e
+      puts "\n"
+      puts "#{e.class}: bad thing: #{e}"
+      puts e.backtrace
+      puts '-' * 20
+    end
+  end
+
   # No data for calendar of type `other` right now.
   #   e.g. rails import:all_events[true]
   task :all_events, %i[force_import from] => [:environment] do |_t, args|
