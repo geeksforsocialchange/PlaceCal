@@ -41,52 +41,51 @@ class UserPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    attrs = [ :first_name,
-              :last_name,
-              :email,
-              :phone,
-              :avatar,
-              partner_ids: []
-            ]
-    if user.root?
-      attrs << :role
-      attrs << { tag_ids: [] }
-      attrs << { neighbourhood_ids: [] }
-      attrs << :facebook_app_id
-      attrs << :facebook_app_secret
-    else
-      attrs
-    end
+    attrs = [
+      :first_name,
+      :last_name,
+      :email,
+      :phone,
+      :avatar,
+      { partner_ids: [] }
+    ]
+    root_attrs = [
+      :role,
+      :facebook_app_id,
+      :facebook_app_secret,
+      { tag_ids: [],
+        neighbourhood_ids: [] }
+    ]
+
+    user.root? ? attrs + root_attrs : attrs
   end
 
   def permitted_attributes_for_update
     if user.root?
       permitted_attributes
     elsif user.neighbourhood_admin?
-      [ partner_ids: [] ]
+      [partner_ids: []]
     end
   end
 
   def permitted_attributes_for_create
-    attrs = %i[
-      first_name
-      last_name
-      email
-      phone
-      avatar
-      partner_ids
+    attrs = [
+      :first_name,
+      :last_name,
+      :email,
+      :phone,
+      :avatar,
+      { partner_ids: [] }
     ]
-    root_attrs = %i[
-      role
-      tag_ids
-      neighbourhood_ids
-      facebook_app_id
-      facebook_app_secret
+    root_attrs = [
+      :role,
+      :facebook_app_id,
+      :facebook_app_secret,
+      { tag_ids: [],
+        neighbourhood_ids: [] }
     ]
 
-    return attrs + root_attrs if user.root?
-
-    attrs
+    user.root? ? attrs + root_attrs : attrs
   end
 
   def disabled_attributes_for_update
