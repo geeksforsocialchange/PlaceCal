@@ -92,11 +92,32 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
-  it_allows_access_to_create_for(%i[root neighbourhood_admin]) do
+  it_allows_access_to_create_for(%i[neighbourhood_admin]) do
+    @partner = create(:partner)
+    @user = attributes_for(:citizen, partner_ids: [@partner.id.to_s])
     assert_difference('User.count', 1) do
       post admin_users_url,
-           params: { user: attributes_for(:user) }
+           params: { user: @user }
     end
+    assert_equal 1, User.last.partners.length
+  end
+
+  it_allows_access_to_create_for(%i[root]) do
+    @user = attributes_for(:citizen,
+                           partner_ids: [create(:partner).id.to_s],
+                           neighbourhood_ids: [create(:neighbourhood).id.to_s],
+                           tag_ids: [create(:tag).id.to_s])
+
+    assert_difference('User.count', 1) do
+      post admin_users_url,
+           params: { user: @user }
+    end
+
+    # We are just checking that the user has been created with the relations
+    # If it fails, these will be zero, so we only have to check length
+    assert_equal 1, User.last.partners.length
+    assert_equal 1, User.last.neighbourhoods.length
+    assert_equal 1, User.last.tags.length
   end
 
   it_denies_access_to_create_for(%i[citizen]) do
