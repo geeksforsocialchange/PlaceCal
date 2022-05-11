@@ -4,15 +4,7 @@ var columns = [
     {"data": "partner"},
     {"data": "notice_count"},
     {"data": "events"},
-    {"data": "is_working",
-     "render": function (data, type, row) {
-         if (type == "display") {
-             return (data == "true") ? "✅" : "❌";
-         } else {
-             return data;
-         }
-     }
-    },
+    {"data": "state"},
     {"data": "last_import_at",
      "render": function (data, type, row) {
          date = JSON.parse(data.replace(/&quot;/g, '"'));
@@ -32,16 +24,16 @@ var columns = [
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Calendars',
     model: :calendars,
-    columns: %i[name partner notice_count events is_working last_import_at updated_at],
+    columns: %i[name partner notice_count events calendar_state last_import_at updated_at],
     data: @calendars,
     source: admin_calendars_path(format: :json),
     new_link: new_admin_calendar_path,
-    additional_links: [
-      if current_user.has_facebook_keys?
-        link_to('Add New Calendar From Facebook', user_facebook_omniauth_authorize_url, class: 'btn btn-primary mb-3')
-      else
-        link_to('Add New Calendar From Facebook', admin_profile_path(missing_keys: true), class: 'btn btn-primary mb-3')
-      end
-    ]
+    # additional_links: [
+    #   if current_user.has_facebook_keys?
+    #     link_to('Add New Calendar From Facebook', user_facebook_omniauth_authorize_url, class: 'btn btn-primary mb-3')
+    #   else
+    #     link_to('Add New Calendar From Facebook', admin_profile_path(missing_keys: true), class: 'btn btn-primary mb-3')
+    #   end
+    # ]
   }
 %>

@@ -66,17 +66,9 @@ class CalendarImporter::CalendarImporterTask
 
     purge_stale_events_from_calendar all_event_uids - active_event_uids
 
-    calendar.reload # reload the record from database to clear out any invalid events to avoid attempts to save them
+    # calendar.reload # reload the record from database to clear out any invalid events to avoid attempts to save them
 
-    Calendar.record_timestamps = false
-    calendar.update!(
-                     notices: notices,
-                     last_checksum: calendar_source.checksum,
-                     last_import_at: DateTime.current,
-                     critical_error: nil
-                    )
-  ensure
-    Calendar.record_timestamps = true
+    calendar.flag_complete_import_job! notices, calendar_source.checksum
   end
 
   def purge_stale_events_from_calendar(stale_event_uids)

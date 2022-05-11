@@ -60,3 +60,8 @@ yarn-debug.log*
 .yarn-integrity
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+doc/**/*.html
+doc/**/*.css
+doc/**/*.js
+.yardoc

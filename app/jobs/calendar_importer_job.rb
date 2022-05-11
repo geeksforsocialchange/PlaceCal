@@ -11,6 +11,8 @@ class CalendarImporterJob < ApplicationJob
   def perform(calendar_id, from_date, force_import)
     @calendar_id = calendar_id
 
+    calendar.flag_start_import_job!
+
     print "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
     print " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place
     print " is forced" if force_import
@@ -18,6 +20,8 @@ class CalendarImporterJob < ApplicationJob
 
     # calendar.import_events(from)
     CalendarImporter::CalendarImporterTask.new(calendar, from_date, force_import).run
+
+    # calendar.flag_complete_import_job!
 
   rescue CalendarImporter::EventResolver::Problem => e
     report_error e, "Could not automatically import data"
@@ -39,7 +43,7 @@ class CalendarImporterJob < ApplicationJob
     full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{e}"
     backtrace = e.backtrace[...6]
 
-    calendar.critical_import_failure full_message
+    calendar.flag_error_import_job! full_message
     puts full_message, backtrace if Rails.env.dev?
     Rollbar.error full_message, { exception_type: e.class.name, backtrace: backtrace }
   end
