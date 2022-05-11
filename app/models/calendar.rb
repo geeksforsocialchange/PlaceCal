@@ -126,7 +126,7 @@ class Calendar < ApplicationRecord
   # @return nothing
   def queue_for_import!(force_import, from_date)
     transaction do
-      return unless calendar_state.idle?
+      return unless calendar_state.idle? || calendar_state.error?
 
       update! calendar_state: :in_queue
 
@@ -195,9 +195,9 @@ class Calendar < ApplicationRecord
   def state_colour
     case calendar_state
     when 'in_queue'
-      'primary' 
+      'primary'
     when 'in_worker'
-      'success' 
+      'success'
     when 'error'
       'danger'
     else
