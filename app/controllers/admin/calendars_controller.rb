@@ -84,7 +84,7 @@ module Admin
       # CalendarImporterJob.perform_now @calendar.id, date, force_import
       @calendar.queue_for_import! force_import, date
 
-      flash[:success] = 'The calendar will be imported in a few minutes.'
+      flash[:success] = 'Calendar added to the import queue'
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
