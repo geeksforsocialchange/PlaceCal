@@ -1,30 +1,26 @@
-<h1>Jobs</h1>
+<h1>Calendar Importer Status</h1>
 
 <p>Currently have <%= @job_count %> jobs</p>
+
+<% states = %w[idle in_queue in_worker error] -%>
 
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Priority</th>
-      <th>Attempts</th>
-      <th>Created</th>
-      <th>Last Error</th>
+      <th>State</th>
+      <th>Count</th>
     </tr>
   </thead>
   <tbody>
-    <% @job_list.each do |job_info| -%>
+    <% states.each do |state_name| -%>
       <tr>
-        <td><%= job_info['id'] %></td>
-        <td><%= job_info['priority'] %></td>
-        <td><%= job_info['attempts'] %></td>
-        <td><%= job_info['created_at'] %></td>
-        <td><%= job_info['last_error'].present? ? 'Yes' : 'No' %></td>
+        <td><%= state_name %></td>
+        <td><%= @calendar_counts[state_name] || 0 %></td>
       </tr>
     <% end -%>
   </tbody>
 </table>
 
 <!-- pre>
-<%# = JSON.pretty_generate(@job_list.first) %>
+<% #= JSON.pretty_generate(@calendar_counts) %>
 </pre -->

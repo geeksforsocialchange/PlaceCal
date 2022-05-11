@@ -9,8 +9,7 @@ module Admin
         .connection.execute("select count(*) from delayed_jobs")
         .first["count"]
 
-      @job_list = ActiveRecord::Base
-        .connection.execute("select * from delayed_jobs order by created_at desc limit 150")
+      @calendar_counts = Calendar.group(:calendar_state).count
     end
 
     private
