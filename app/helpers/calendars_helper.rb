@@ -71,7 +71,7 @@ module CalendarsHelper
   end
 
   def calendar_last_imported(calendar)
-    if calendar && calendar.last_import_at
+    if calendar&.last_import_at
       "Last imported #{time_ago_in_words(calendar.last_import_at)} ago"
     else
       'Never imported'
