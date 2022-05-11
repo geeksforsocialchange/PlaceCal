@@ -25,6 +25,9 @@ class Calendar < ApplicationRecord
   attribute :is_facebook_page, :boolean, default: false
   attribute :facebook_page_id, :string
 
+  # Output the calendar's name when it's requested as a string
+  alias_attribute :to_s, :name
+
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
   enumerize(
@@ -51,11 +54,6 @@ class Calendar < ApplicationRecord
     %i[place room_number event_override].include? strategy.to_sym
   end
 
-  # Output the calendar's name when it's requested as a string
-  def to_s
-    name
-  end
-
   # Output recent calendar import activity
   # This uses PaperTrail to get historical records of the Event models, including deletes
   # It does this to show a "event added" / "event removed" thing
@@ -71,14 +69,6 @@ class Calendar < ApplicationRecord
   def set_fb_page_token(user)
     graph = Koala::Facebook::API.new(user.access_token)
     self.page_access_token = graph.get_page_access_token(facebook_page_id)
-  end
-
-  def last_imported
-    if last_import_at
-      "Last imported #{time_ago_in_words(last_import_at)} ago"
-    else
-      'Never imported'
-    end
   end
 
   # Get a count of all the events this week

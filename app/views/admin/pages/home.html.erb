@@ -47,7 +47,7 @@
     <% @errored_calendars.each do |calendar| %>
       <%= render_component 'dashboard_card',
           title: calendar.name,
-          subtitle: "<span class='badge badge-warning mr-1'>Error</span>" + calendar&.last_imported,
+          subtitle: "<span class='badge badge-warning mr-1'>Error</span>" + calendar_last_imported(calendar),
           description: "#{pluralize(calendar.events_this_week, 'event')} this week",
           link: edit_admin_calendar_path(calendar),
           last_updated: calendar.updated_at

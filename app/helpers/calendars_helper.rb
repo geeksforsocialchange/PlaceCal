@@ -69,4 +69,12 @@ module CalendarsHelper
       yield parser::NAME, parser::DOMAINS
     end
   end
+
+  def calendar_last_imported(calendar)
+    if calendar && calendar.last_import_at
+      "Last imported #{time_ago_in_words(calendar.last_import_at)} ago"
+    else
+      'Never imported'
+    end
+  end
 end
