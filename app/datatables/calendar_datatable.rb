@@ -16,7 +16,7 @@ class CalendarDatatable < Datatable
       partner: { source: 'Calendar.partner', searchable: false, orderable: false },
       notice_count: { source: 'Calendar.notice_count', searchable: false, orderable: false },
       events: { source: 'Calendar.events', searchable: false, orderable: false },
-      is_working: { source: 'Calendar.is_working', searchable: false, orderable: false },
+      state: { source: 'Calendar.calendar_state', searchable: false, orderable: false },
       last_import_at: { source: 'Calendar.last_import_at', searchable: false, orderable: false },
       updated_at: { source: 'Calendar.updated_at', searchable: false, orderable: false }
     }
@@ -30,7 +30,7 @@ class CalendarDatatable < Datatable
         partner: record.partner,
         notice_count: record.notice_count&.to_s || 0,
         events: record.events&.count&.to_s || 0,
-        is_working: record.is_working,
+        state: record.calendar_state,
         last_import_at: json_datetime(record.last_import_at),
         updated_at: json_datetime(record.updated_at)
       }
