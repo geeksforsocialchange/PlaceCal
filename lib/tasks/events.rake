@@ -6,16 +6,14 @@ namespace :import do
     force_import = args[:force_import] || false
     from = args[:from] || Date.current.beginning_of_day
 
-    Calendar.find_each do |calendar|
+    scope = Calendar
+
+    # this could be useful?
+    # scope = scope.where_idle if force_import == false
+
+    scope.find_each do |calendar|
       puts "queueing #{calendar.name}"
-
-      CalendarImporterJob.perform_later calendar.id, from, force_import
-
-    rescue StandardError => e
-      puts "\n"
-      puts "#{e.class}: bad thing: #{e}"
-      puts e.backtrace
-      puts '-' * 20
+      calendar.queue_for_import! force_import, from
     end
   end
 
