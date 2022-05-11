@@ -5,13 +5,12 @@ require 'test_helper'
 class AddressTest < ActiveSupport::TestCase
   test 'normalizes postcode' do
     Geocoder.stub :search, [] do
-
       table = [
-        [ '   w1w 5aa', 'W1W 5AA' ],
-        [ 'ng12 4fz  ', 'NG12 4FZ' ],
-        [ '  ha8  8ha ', 'HA8 8HA'],
-        [ 'W1W5AA', 'W1W 5AA' ],
-        [ 'W1W      5AA', 'W1W 5AA' ]
+        ['   w1w 5aa', 'W1W 5AA'],
+        ['ng12 4fz  ', 'NG12 4FZ'],
+        ['  ha8  8ha ', 'HA8 8HA'],
+        ['W1W5AA', 'W1W 5AA'],
+        ['W1W      5AA', 'W1W 5AA']
       ]
 
       table.each do |try_data, expected_output|

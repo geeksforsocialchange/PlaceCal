@@ -75,6 +75,6 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def purge_stale_events_from_calendar(stale_event_uids)
-    calendar.events.upcoming.where( uid: stale_event_uids).destroy_all
+    calendar.events.upcoming.where(uid: stale_event_uids).destroy_all
   end
 end
