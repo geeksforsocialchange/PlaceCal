@@ -1,9 +1,7 @@
 <br><hr><br>
-<h2> Import Status for <%= @calendar.name %></h2>
+<h2>Import Status for <%= @calendar.name %></h2>
 
-<% if current_user.root? -%>
-<pre>Calendar state '<%= @calendar.calendar_state %>'</pre>
-<% end %>
+<%= render 'status' %>
 
 <% if @calendar.calendar_state.idle? %>
   <p class="bigger">

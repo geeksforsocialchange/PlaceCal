@@ -1,20 +1,16 @@
-<%= content_tag :h1, @calendar.name %>
+<h1><%= @calendar.name %></h1>
 
-<p>Published by <%= link_to @calendar.partner, edit_admin_partner_path(@calendar.partner) %>. Using <%= content_tag :tt, @calendar.strategy %> strategy to import <%= content_tag :tt, @calendar.events.count %> events.</p>
+<%= render 'status' %>
+
+<p>Published by <%= link_to @calendar.partner, edit_admin_partner_path(@calendar.partner) %>. Using <%= content_tag :tt, @calendar.strategy %> strategy to import <%= content_tag :tt, @calendar.events.count %> events. <%= calendar_last_imported(@calendar) %>.</p>
 
 <p>
   <% if @calendar.place %>
-    This calendar's default location is <%= @calendar.place %>.
+    This calendar's default location is <%= link_to @calendar.place, edit_admin_partner_path(@calendar.place) %>.
   <% else %>
     This calendar does not have a default location set.
   <% end %>
 </p>
-
-<% if current_user.root? -%>
-  <p>Current state <em><%= @calendar.calendar_state %></em></p>
-<% end -%>
-
-<p><%= calendar_last_imported(@calendar) %>.</p>
 
 <p><%= link_to "Edit this calendar", edit_admin_calendar_path(@calendar.id), class: "btn btn-primary btn-sm" %></p>
 

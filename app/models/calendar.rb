@@ -200,6 +200,19 @@ class Calendar < ApplicationRecord
     end
   end
 
+  def state_colour
+    case calendar_state
+    when 'in_queue'
+      'primary' 
+    when 'in_worker'
+      'success' 
+    when 'error'
+      'danger'
+    else
+      'info'
+    end
+  end
+
   def is_busy?
     calendar_state.in_queue? || calendar_state.in_worker?
   end
