@@ -1,39 +1,59 @@
 <br><hr><br>
 <h2> Import Status for <%= @calendar.name %></h2>
 
-<p class="bigger">
+<% if current_user.root? -%>
+<pre>Calendar state '<%= @calendar.calendar_state %>'</pre>
+<% end %>
+
+<% if @calendar.calendar_state.idle? %>
+  <p class="bigger">
   <% if @calendar.last_import_at %>
     <strong>Last updated <%= time_ago_in_words(@calendar.last_import_at) %> ago</strong> (<%= @calendar.last_import_at %>)
   <% end %>
-</p>
+  </p>
 
-<div class='row'>
-  <div class="col-md-4">
-    <h3>Update now</h3>
-    <%= simple_form_for :import, { url: import_admin_calendar_path(@calendar) } do |f| %>
-      <%= f.input :starting_from, input_html: { name: 'starting_from', value: Date.today.strftime('%Y-%m-%d') }, placeholder: 'YYYY-MM-DD', hint: 'What date should the importer start from?' %>
-      <%= f.submit 'Run importer', class: 'btn btn-primary' %>
-    <% end %>
-    <br>
-    <h3>Important Notices</h3>
-    <% if @calendar.notices.present? %>
-      <p>The following events could not be imported due to invalid data: </p>
-      <ul>
-         <% @calendar.notices.each do |notice| %>
-          <li><em><%= notice["event"]["summary"] %></em>  <%= notice["errors"].join(", ")%></li>
-         <% end %>
+  <div class='row'>
+    <div class="col-md-4">
+      <h3>Update now</h3>
+      <%= simple_form_for :import, { url: import_admin_calendar_path(@calendar) } do |f| %>
+        <%= f.input :starting_from, input_html: { name: 'starting_from', value: Date.today.strftime('%Y-%m-%d') }, placeholder: 'YYYY-MM-DD', hint: 'What date should the importer start from?' %>
+        <%= f.submit 'Queue for import now', class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+    <div class="col-md-6">
+
+      <h3>Important Notices</h3>
+      <% if @calendar.notices.present? %>
+        <p>The following events could not be imported due to invalid data: </p>
+        <ul>
+          <% @calendar.notices.each do |notice| %>
+            <li><em><%= notice["event"]["summary"] %></em>  <%= notice["errors"].join(", ")%></li>
+          <% end %>
         </ul>
-    <% else %>
-      No notices to show
-    <% end %>
+      <% else %>
+        No notices to show
+      <% end %>
+    </div>
+
   </div>
-  <div class="col-md-8">
-    <h3>Recent Updates</h3>
-    <% @versions&.each do |date, activities| %>
-      <div>
-        <b><%= l(date, format: :datetime) %> - <%= display_time_since(date) %></b>
-        <%= render 'shared/recent_import_activity', activities: activities %>
-      </div>
-    <% end %>
-  </div>
+
+<% elsif @calendar.is_busy? %>
+<p>The calendar is currently being imported, please check back in a few minutes</p>
+
+<% elsif @calendar.calendar_state.error? %>
+<h3>Recent Updates</h3>
+<p>Unfortunately a <em>critical error</em> has occurred that means we cannot continue importing your calendar</p>
+<p>Error: <%= @calendar.critical_error %></p>
+<% end %>
+
+<br><hr><br>
+
+<div>
+  <h3>Recent Updates</h3>
+  <% @versions&.each do |date, activities| %>
+    <div>
+      <b><%= l(date, format: :datetime) %> - <%= display_time_since(date) %></b>
+      <%= render 'shared/recent_import_activity', activities: activities %>
+    </div>
+  <% end %>
 </div>

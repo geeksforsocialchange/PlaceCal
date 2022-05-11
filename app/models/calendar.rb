@@ -199,5 +199,9 @@ class Calendar < ApplicationRecord
       )
     end
   end
+
+  def is_busy?
+    calendar_state.in_queue? || calendar_state.in_worker?
+  end
 end
 

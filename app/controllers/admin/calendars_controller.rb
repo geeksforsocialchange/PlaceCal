@@ -81,9 +81,10 @@ module Admin
     def import
       date = Time.zone.parse(params[:starting_from])
       force_import = true
-      CalendarImporterJob.perform_now @calendar.id, date, force_import
+      # CalendarImporterJob.perform_now @calendar.id, date, force_import
+      @calendar.queue_for_import! force_import, date
 
-      flash[:success] = 'The import has completed. See below for details.'
+      flash[:success] = 'The calendar will be imported in a few minutes.'
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
