@@ -51,11 +51,14 @@ module CalendarImporter::Events
         rrule:                    rrule,
         place_id:                 place_id,
         address_id:               address_id,
-        partner_id:               partner_id
+        partner_id:               partner_id,
+        publisher_url:            publisher_url
       }
     end
 
     def footer; end
+
+    def publisher_url; end
 
     def has_location?
       !location.blank?

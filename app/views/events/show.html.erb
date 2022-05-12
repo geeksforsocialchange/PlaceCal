@@ -5,6 +5,7 @@
 <%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
 
 <div class="c c--narrow c--space-after event__fullinfo">
+  <%= event_link(@event) %>
   <%= markdown @event.description %>
   <div class="g two-col">
     <div class="gi gi__1-2">

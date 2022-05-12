@@ -22,6 +22,10 @@ module CalendarImporter::Events
       @event.place
     end
 
+    def publisher_url
+      "https://www.facebook.com/events/#{uid}"
+    end
+
     def location
       return if place.blank?
       address = place['location']
