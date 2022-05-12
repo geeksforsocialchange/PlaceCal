@@ -2,11 +2,11 @@ class CalendarImporterJob < ApplicationJob
   queue_as :default
 
   rescue_from CalendarImporter::CalendarImporter::UnsupportedFeed do |exception|
-    report_error exception, "Calendar has unsupported feed URL"
+    report_error exception, "Calendar URL is not supported"
   end
 
   rescue_from CalendarImporter::CalendarImporter::InaccessibleFeed do |exception|
-    report_error exception, "Calendar has inaccessible feed URL"
+    report_error exception, "Calendar URL is not accessible"
   end
 
 
