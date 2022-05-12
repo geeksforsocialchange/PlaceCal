@@ -1,6 +1,15 @@
 class CalendarImporterJob < ApplicationJob
   queue_as :default
 
+  rescue_from CalendarImporter::CalendarImporter::UnsupportedFeed do |exception|
+    report_error exception, "Calendar has unsupported feed URL"
+  end
+
+  rescue_from CalendarImporter::CalendarImporter::InaccessibleFeed do |exception|
+    report_error exception, "Calendar has inaccessible feed URL"
+  end
+
+
   def calendar
     @calendar ||= Calendar.find(@calendar_id)
   end
@@ -19,22 +28,9 @@ class CalendarImporterJob < ApplicationJob
     print "\n"
 
     # calendar.import_events(from)
-    CalendarImporter::CalendarImporterTask.new(calendar, from_date, force_import).run
-
-    # calendar.flag_complete_import_job!
-
-  rescue CalendarImporter::EventResolver::Problem => e
-    report_error e, "Could not automatically import data"
-
-  rescue CalendarImporter::CalendarImporter::UnsupportedFeed => e
-    report_error e, "Calendar has unsupported feed URL"
-
-  rescue CalendarImporter::CalendarImporter::InaccessibleFeed => e
-    report_error e, "Calendar has inaccessible feed URL"
-
-  rescue StandardError => e
-    report_error e, "Could not automatically import data"
-    raise e unless Rails.env.production?
+    CalendarImporter::CalendarImporterTask
+      .new(calendar, from_date, force_import)
+      .run
   end
 
   private

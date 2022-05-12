@@ -62,6 +62,9 @@ class CalendarImporter::CalendarImporterTask
       active_event_uids << parsed_event.uid
 
       parsed_event.save_all_occurences
+
+    rescue CalendarImporter::EventResolver::Problem => e
+      notices << e.message
     end
 
     purge_stale_events_from_calendar all_event_uids - active_event_uids
