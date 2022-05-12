@@ -6,6 +6,7 @@
 
 <div class="c c--narrow c--space-after event__fullinfo">
   <%= markdown @event.description %>
+  <%= event_link(@event) %>
   <div class="g two-col">
     <div class="gi gi__1-2">
       <% if @event.partner %>

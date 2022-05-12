@@ -18,6 +18,10 @@ module CalendarImporter::Events
       @event['description']['text']
     end
 
+    def publisher_url
+      @event['url']
+    end
+
     def place
       @place ||= @event['venue']
     end

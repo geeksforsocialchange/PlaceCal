@@ -22,6 +22,10 @@ module CalendarImporter::Events
       '' # N/A
     end
 
+    def publisher_url
+      @event['link']
+    end
+
     def location
       return nil
 
@@ -43,7 +47,7 @@ module CalendarImporter::Events
 
     def dtend
       if @event['duration'].nil?
-        dtstart + 1.hour 
+        dtstart + 1.hour
       else
         dtstart + (@event['duration'] / 1000)
       end
