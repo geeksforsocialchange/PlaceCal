@@ -9,7 +9,7 @@ module EventsHelper
     return if @event.publisher_url.blank?
 
     link_to(
-      'Event Page',
+      'Visit the webpage for this event',
       event.publisher_url,
       class: 'btn btn-primary'
     ).html_safe
