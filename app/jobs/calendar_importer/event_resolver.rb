@@ -149,7 +149,8 @@ class CalendarImporter::EventResolver
       place = nil
 
     else
-      raise Problem, "Calendar import strategy unknown! (#{calendar.strategy})"
+      # this shouldn't happen and should be fatal to the entire job
+      raise "Calendar import strategy unknown! (ID=#{calendar.id}, strategy=#{calendar.strategy})"
     end
 
     data.place_id = place.id if place
