@@ -52,8 +52,12 @@ module CalendarsHelper
       'is set to another location'.html_safe
     when 'no_location'
       '<strong>No Location</strong>: ' \
-      'Events imported will have no location information set in PlaceCal, even if it is present on' \
+      'Events imported will have no location information set in PlaceCal, even if it is present on ' \
       'the remote feed'.html_safe
+    when 'online_only'
+      '<strong>Online Only</strong>: ' \
+      'Events imported will have no physical location information set in PlaceCal, even if it is present on ' \
+      'the remote feed, but will maintain the online information'.html_safe
     else
       val
     end

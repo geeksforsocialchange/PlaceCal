@@ -47,14 +47,15 @@ class CalendarImporter::EventResolver
     strategies = {
       'event' => :event_strategy,
       'event_override' => :event_override_strategy,
-      'room_number' => :room_number_strategy,
       'place' => :place_strategy,
-      'no_location' => :no_location_strategy
+      'room_number' => :room_number_strategy,
+      'no_location' => :no_location_strategy,
+      'online_only' => :online_only_strategy
     }
 
     if strategies.keys.include?(calendar.strategy)
       strategy = strategies[calendar.strategy]
-      place, address = self.public_send(strategy, calendar.place)
+      place, address = method(strategy).call(calendar.place)
     else
       # this shouldn't happen and should be fatal to the entire job
       raise "Calendar import strategy unknown! (ID=#{calendar.id}, strategy=#{calendar.strategy})"
@@ -172,6 +173,10 @@ class CalendarImporter::EventResolver
   end
 
   def no_location_strategy(_place, _address: nil)
+    return nil, nil
+  end
+
+  def online_only_strategy(_place, _address: nil)
     return nil, nil
   end
 

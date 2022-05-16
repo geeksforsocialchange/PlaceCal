@@ -11,6 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2022_05_12_144807) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,7 +80,6 @@ ActiveRecord::Schema.define(version: 2022_05_12_144807) do
     t.string "public_contact_email"
     t.string "public_contact_phone"
     t.integer "notice_count"
-    t.string "source_type", default: ""
     t.string "calendar_state", default: "idle"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
