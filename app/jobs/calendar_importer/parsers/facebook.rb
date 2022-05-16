@@ -7,6 +7,7 @@
 module CalendarImporter::Parsers
   class Facebook < Base
     NAME = 'Facebook'
+    KEY = 'facebook'
     DOMAINS = %w[www.facebook.com]
 
     def self.whitelist_pattern

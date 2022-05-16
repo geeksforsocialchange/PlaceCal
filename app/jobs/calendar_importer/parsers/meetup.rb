@@ -7,6 +7,7 @@
 module CalendarImporter::Parsers
   class Meetup < Base
     NAME = 'Meetup'
+    KEY = 'meetup'
     DOMAINS = %w[www.meetup.com]
 
     def self.whitelist_pattern

@@ -5,6 +5,7 @@
 module CalendarImporter::Parsers
   class Ticketsolve < Xml
     NAME = 'Ticket Solve'
+    KEY = 'ticket-solve'
     DOMAINS = %w[*.ticketsolve.com]
 
     def self.whitelist_pattern

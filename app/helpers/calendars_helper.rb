@@ -16,6 +16,14 @@ module CalendarsHelper
       .order(:name)
   end
 
+  def options_for_importer
+    CalendarImporter::CalendarImporter::PARSERS
+      .dup
+      .keep_if { |parser| parser::PUBLIC }
+      .map { |parser| [ parser::NAME, parser::KEY ] }
+      .prepend([ '(Auto detect)', 'auto' ])
+  end
+
   def summarize_dates(dates)
     if dates.length > 3
       sorted = dates.sort
