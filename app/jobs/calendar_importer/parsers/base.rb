@@ -7,15 +7,17 @@
 module CalendarImporter::Parsers
   class Base
     PUBLIC = true
+    NAME = ''
+    KEY = ''
     Output = Struct.new(:events, :checksum)
 
     def self.handles_url?(url)
       url =~ whitelist_pattern
     end
 
-    def initialize(calendar, url, options = {})
+    def initialize(calendar, options = {})
       @calendar = calendar
-      @url = url
+      @url = calendar.source
       @from = options.delete(:from)
       @to = options.delete(:to)
       @force_import = options.delete(:force_import)

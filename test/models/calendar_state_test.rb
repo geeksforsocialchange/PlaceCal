@@ -45,7 +45,7 @@ class CalendarStateTest < ActiveSupport::TestCase
   test "can move into idle state" do
     VCR.use_cassette(:import_test_calendar) do
       calendar = create(:calendar, calendar_state: :in_worker, source: SOURCE_URL)
-      calendar.flag_complete_import_job! [], 0
+      calendar.flag_complete_import_job! [], 0, 'ical'
       assert calendar.calendar_state.idle?
       # are we close enough?
       # deal with weird database encoding serialisations

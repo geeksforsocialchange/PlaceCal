@@ -14,32 +14,33 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::Meetup
   ].freeze
 
-  def initialize(calendar, options = {})
+  def initialize(calendar)
     @calendar = calendar
-    @url = calendar.source
-    @options = options
+
+    validate_feed!
   end
 
-  def parse
-    validate_feed
-    parser.new(@calendar, @url, @options).calendar_to_events
+  def parser
+    @parser ||=
+      if @calendar.importer_mode == 'auto'
+        PARSERS.find { |parser| parser.handles_url?(@calendar.source) }
+      else
+        PARSERS.find { |parser| parser::KEY == @calendar.importer_mode }
+      end
   end
 
-  def validate_feed
+  private
+
+  def validate_feed!
     raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless is_url_accessible?
     raise UnsupportedFeed, 'The provided URL is not supported' unless parser.present?
-
-    true
   end
 
   def is_url_accessible?
-    response = HTTParty.get(@url, follow_redirects: true)
+    response = HTTParty.get(@calendar.source, follow_redirects: true)
     response.code == 200
   rescue
     false
   end
 
-  def parser
-    PARSERS.find { |parser| parser.handles_url? @url }
-  end
 end

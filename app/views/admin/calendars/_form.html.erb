@@ -4,8 +4,8 @@
   </div>
 <% end %>
 
-<p><%= link_to "View this calendar", 
-                admin_calendar_path(@calendar.id), 
+<p><%= link_to "View this calendar",
+                admin_calendar_path(@calendar.id),
                 class: "btn btn-sm btn-primary" unless @calendar.new_record? %>
 </p>
 
@@ -30,6 +30,12 @@
         <% else %>
           <%= f.input :name, hint: 'A simple description to help rememember what this calendar is' %>
           <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: "The source URL for your calendar feed. See the #{link_to 'PlaceCal Handbook', 'https://handbook.placecal.org/admins/supported-sources.html'} if you need help.".html_safe %>
+          <%= f.input :importer_mode,
+            collection: options_for_importer,
+            default: 'auto',
+            input_html: { class: 'form-control' } %>
+
+
           <div class='hint'>
             <p>
               Calendar source URLs that PlaceCal currently supports are:
@@ -40,6 +46,9 @@
             <% end -%>
             </ul>
           </div>
+          <% if @calendar.importer_used.present? -%>
+            <p>The calendar was last imported using the <%= @calendar.importer_used %> importer.</p>
+          <% end -%>
 
         <% end %>
 

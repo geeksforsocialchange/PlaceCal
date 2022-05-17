@@ -15,14 +15,21 @@ class CalendarImporter::CalendarImporterTask
   def run
     notices = []
 
-    calendar_source = CalendarImporter::CalendarImporter.new(calendar,
-                                                             from: from_date,
-                                                             force_import: @force_import).parse
+    parser = CalendarImporter::CalendarImporter.new(calendar).parser
+
+    calendar_source = parser.new(
+      @calendar,
+      from: from_date,
+      force_import: force_import
+    ).calendar_to_events
+
     return if !@force_import && calendar.last_checksum == calendar_source.checksum
 
     parsed_events = calendar_source.events.map do |event_data|
       CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
     end
+
+
     return if parsed_events.blank?
 
     all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
@@ -71,7 +78,7 @@ class CalendarImporter::CalendarImporterTask
 
     # calendar.reload # reload the record from database to clear out any invalid events to avoid attempts to save them
 
-    calendar.flag_complete_import_job! notices, calendar_source.checksum
+    calendar.flag_complete_import_job! notices, calendar_source.checksum, parser::KEY
   end
 
   def purge_stale_events_from_calendar(stale_event_uids)

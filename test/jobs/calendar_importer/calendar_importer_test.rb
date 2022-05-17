@@ -3,15 +3,14 @@ require 'test_helper'
 # TODO: Assertations are wrong way around - should be (expected, actual)
 
 class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
   test 'imports webcal calendars' do
-    calendar = create(:calendar, name: 'Yellowbird',
-                                 source: 'webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ')
+    url = 'webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ'
 
-    VCR.use_cassette('Yellowbird Webcal') do
-      output = CalendarImporter::CalendarImporter.new(calendar).parse
+    VCR.use_cassette('Yellowbird Webcal', allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'Yellowbird', source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -23,11 +22,13 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   end
 
   test 'imports google calendars' do
-    calendar = create(:calendar, name: 'Placecal Hulme & Moss Size',
-                                 source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics')
+    url = 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics'
 
-    VCR.use_cassette('Placecal Hulme & Moss Side Google Cal') do
-      output = CalendarImporter::CalendarImporter.new(calendar).parse
+    VCR.use_cassette('Placecal Hulme & Moss Side Google Cal', allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'Placecal Hulme & Moss Size', source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
       events = output.events
       first_event = events.first
 
@@ -38,43 +39,51 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   end
 
   test 'imports outlook365.com calendars' do
+    url = 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics'
     # skip('performance issues/no current outlook calendars')
-    calendar = create(:calendar, source: 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics')
 
-     VCR.use_cassette('Zion Centre Guide') do
-       output = CalendarImporter::CalendarImporter.new(calendar).parse
-       events = output.events
-       first_event = events.first
-       last_event = events.last
+    VCR.use_cassette('Zion Centre Guide', allow_playback_repeats: true) do
+      calendar = create(:calendar, source: url)
 
-       assert_equal 24, events.count
-       assert_equal 'Hypnotherapy', first_event.summary
-       assert_equal 'Donna - Ashtanga Yoga', last_event.summary
-     end
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
+      events = output.events
+      first_event = events.first
+      last_event = events.last
+
+      assert_equal 24, events.count
+      assert_equal 'Hypnotherapy', first_event.summary
+      assert_equal 'Donna - Ashtanga Yoga', last_event.summary
+    end
   end
 
   test 'imports live.com calendars' do
-    calendar = create(:calendar, source: 'https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics')
+    url = 'https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics'
 
-     VCR.use_cassette('ACCG') do
-       output = CalendarImporter::CalendarImporter.new(calendar).parse
-       events = output.events
-       first_event = events.first
-       last_event = events.last
+    VCR.use_cassette('ACCG', allow_playback_repeats: true) do
+      calendar = create(:calendar, source: url)
 
-       # TODO: update these tests when the calendar is populated
-       assert_equal 0, events.count
-       # assert_equal 'Hypnotherapy', first_event.summary
-       # assert_equal 'Donna - Ashtanga Yoga', last_event.summary
-     end
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
+      events = output.events
+      first_event = events.first
+      last_event = events.last
+
+      # TODO: update these tests when the calendar is populated
+      assert_equal 0, events.count
+      # assert_equal 'Hypnotherapy', first_event.summary
+      # assert_equal 'Donna - Ashtanga Yoga', last_event.summary
+    end
   end
 
   test 'imports manchester u calendars' do
-    calendar = create(:calendar, name: 'Martin Harris Centre',
-                                 source: 'http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml')
+    url = 'http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml'
 
-    VCR.use_cassette('Martin Harris Centre') do
-      output = CalendarImporter::CalendarImporter.new(calendar).parse
+    VCR.use_cassette('Martin Harris Centre', allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'Martin Harris Centre', source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -86,11 +95,13 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   end
 
   test 'imports ticketsolve calendars' do
-    calendar = create(:calendar, name: 'Z-Arts',
-                                 source: 'https://z-arts.ticketsolve.com/shows.xml')
+    url = 'https://z-arts.ticketsolve.com/shows.xml'
 
-    VCR.use_cassette('Z-Arts Calendar') do
-      output = CalendarImporter::CalendarImporter.new(calendar).parse
+    VCR.use_cassette('Z-Arts Calendar', allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'Z-Arts', source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -102,11 +113,13 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   end
 
   test 'imports teamup calendars' do
-    calendar = create(:calendar, name: 'Teamup.com',
-                                 source: 'https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics')
+    url = 'https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics'
 
-    VCR.use_cassette('Teamup.com calendar') do
-      output = CalendarImporter::CalendarImporter.new(calendar).parse
+    VCR.use_cassette('Teamup.com calendar', allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'Teamup.com', source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -118,11 +131,13 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   end
 
   test 'imports eventbrite calendars' do
-    calendar = create(:calendar, name: 'Eventbrite - BAVS',
-                                 source: 'https://www.eventbrite.co.uk/o/berwickshire-association-for-voluntary-service-15751503063')
+    url = 'https://www.eventbrite.co.uk/o/berwickshire-association-for-voluntary-service-15751503063'
 
-    VCR.use_cassette('Eventbrite calendar') do
-      output = CalendarImporter::CalendarImporter.new(calendar).parse
+    VCR.use_cassette('Eventbrite calendar', allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'Eventbrite - BAVS', source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
       events = output.events
       first_event = events.first
       last_event = events.last
@@ -134,12 +149,15 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   end
 
   test 'does not import if checksum is the same' do
-    calendar = create(:calendar, name: 'Z-Arts',
-                                 last_checksum: 'd1a94a9869af91d0548a1faf0ded91d7',
-                                 source: 'https://z-arts.ticketsolve.com/shows.xml')
+    url = 'https://z-arts.ticketsolve.com/shows.xml'
+    checksum = 'd1a94a9869af91d0548a1faf0ded91d7'
 
-    VCR.use_cassette('Z-Arts Calendar') do
-      output = CalendarImporter::CalendarImporter.new(calendar).parse
+
+    VCR.use_cassette('Z-Arts Calendar', allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'Z-Arts', last_checksum: checksum, source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
 
       assert_empty output.events
     end

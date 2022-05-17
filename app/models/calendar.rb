@@ -104,9 +104,9 @@ class Calendar < ApplicationRecord
 
   # called before save
   def source_supported
-    CalendarImporter::CalendarImporter.new(self).validate_feed
-    # self.is_working = true
-    # self.critical_error = nil
+    # The calendar importer will raise an exception if the source
+    #   URL has a problem
+    CalendarImporter::CalendarImporter.new(self)
 
   rescue CalendarImporter::CalendarImporter::InaccessibleFeed, CalendarImporter::CalendarImporter::UnsupportedFeed => e
     flag_error_import_job! e.to_s
@@ -153,7 +153,7 @@ class Calendar < ApplicationRecord
   # @param checksum [integer]
   #   integer checksum of retrieved source payload
   # @return nothing
-  def flag_complete_import_job!(notices, checksum)
+  def flag_complete_import_job!(notices, checksum, importer_used)
     transaction do
       return unless calendar_state.in_worker?
 
@@ -164,7 +164,8 @@ class Calendar < ApplicationRecord
         notices: notices,
         last_checksum: checksum,
         last_import_at: DateTime.current,
-        critical_error: nil
+        critical_error: nil,
+        importer_used: importer_used
       )
 
     ensure

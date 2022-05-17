@@ -8,6 +8,7 @@ module CalendarImporter::Parsers
   class Ics < Base
     # These constants are only used for the frontend interface
     NAME = 'Generic iCal / .ics'
+    KEY = 'ical'
     DOMAINS = %w[
       calendar.google.com
       outlook.office365.com
