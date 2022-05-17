@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_12_135923) do
+ActiveRecord::Schema.define(version: 2022_05_12_144807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,7 +80,6 @@ ActiveRecord::Schema.define(version: 2022_05_12_135923) do
     t.string "public_contact_email"
     t.string "public_contact_phone"
     t.integer "notice_count"
-    t.string "source_type", default: ""
     t.string "calendar_state", default: "idle"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
@@ -136,7 +135,9 @@ ActiveRecord::Schema.define(version: 2022_05_12_135923) do
     t.string "are_spaces_available"
     t.text "footer"
     t.string "publisher_url"
+    t.bigint "online_address_id"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
+    t.index ["online_address_id"], name: "index_events_on_online_address_id"
     t.index ["place_id"], name: "index_events_on_place_id"
   end
 
@@ -171,6 +172,12 @@ ActiveRecord::Schema.define(version: 2022_05_12_135923) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["neighbourhood_id"], name: "index_neighbourhoods_users_on_neighbourhood_id"
     t.index ["user_id"], name: "index_neighbourhoods_users_on_user_id"
+  end
+
+  create_table "online_addresses", force: :cascade do |t|
+    t.string "url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "organisation_relationships", force: :cascade do |t|
@@ -392,6 +399,7 @@ ActiveRecord::Schema.define(version: 2022_05_12_135923) do
   add_foreign_key "calendars", "partners", column: "place_id"
   add_foreign_key "events", "addresses"
   add_foreign_key "events", "calendars"
+  add_foreign_key "events", "online_addresses"
   add_foreign_key "events", "partners"
   add_foreign_key "events", "partners", column: "place_id"
   add_foreign_key "organisation_relationships", "partners", column: "object_id"

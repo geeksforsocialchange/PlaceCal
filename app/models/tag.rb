@@ -18,7 +18,7 @@ class Tag < ApplicationRecord
   has_many :sites, through: :sites_tag
 
   has_many :article_tags, dependent: :destroy
-  has_many :articles, through: :articles_tags
+  has_many :articles, through: :article_tags
 
   validates :name, :slug, presence: true
   validates :name, :slug, uniqueness: true

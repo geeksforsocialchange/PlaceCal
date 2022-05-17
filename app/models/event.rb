@@ -7,6 +7,7 @@ class Event < ApplicationRecord
   belongs_to :partner, optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   belongs_to :address, optional: true
+  belongs_to :online_address, optional: true
   belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
@@ -180,6 +181,7 @@ class Event < ApplicationRecord
                        .positive?
 
     errors.add(:base, 'Unfortunately this event is a duplicate of an ' \
-                      "existing event for calendar: #{calendar_id}")
+                      "existing event for calendar: #{calendar_id} " \
+                      "('#{calendar.name}')")
   end
 end

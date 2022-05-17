@@ -10,8 +10,7 @@ class CalendarImporter::EventResolver
 
   attr_reader :data, :uid, :notices, :calendar
 
-  class Problem < StandardError
-  end
+  class Problem < StandardError; end
 
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
@@ -38,8 +37,6 @@ class CalendarImporter::EventResolver
   end
 
   def determine_location_for_strategy
-    place = calendar.place
-
     # this algorithm is derived from the notion doc at
     #   GFSC
     #     PlaceCal
@@ -47,107 +44,18 @@ class CalendarImporter::EventResolver
     #         PlaceCal developer handbook
     #           How does the Calendar importer detect Places and Addresses?
 
-    case calendar.strategy
-    when 'event'
-      if data.has_location?
+    strategies = {
+      'event' => :event_strategy,
+      'event_override' => :event_override_strategy,
+      'place' => :place_strategy,
+      'room_number' => :room_number_strategy,
+      'no_location' => :no_location_strategy,
+      'online_only' => :online_only_strategy
+    }
 
-        # place = 'attempt to match location'
-        # address = 'calendar.place.address || location'
-
-        # try to find the place
-        place = Partner.fuzzy_find_by_location(event_location_components)
-
-        # try to use that address
-        address = place&.address
-
-        # if no place, try to find an address
-        # (This only executes if there is no place given)
-        address ||= Address.search(data.location, event_location_components, data.postcode)
-
-        # if we have an address, try to use the place that address points to
-        # (Only runs if the fuzzy find and calendar.place are both nil)
-        place ||= address&.partners&.first
-
-        # NOTE: What happens if address has zero partners and the earlier assignments fail?
-        #       'place' is nil in this instance
-        # NOTE: Address.search can also return Nil if there are no event_location_components, or
-        #       if the address failed to save
-        # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
-
-      else # no location
-        raise Problem, WARNING2_MSG if place.present?
-        # No longer an error if place is not present -- see #1198
-        # Passthrough here
-      end
-
-    when 'event_override'
-      if data.has_location?
-        # place = 'attempt to match location'
-        # address = 'calendar.place.address || location'
-        place = Partner.fuzzy_find_by_location(event_location_components)
-        address = place&.address
-        address ||= Address.search(data.location, event_location_components, data.postcode)
-
-        raise Problem, INFO1_MSG if place.nil? && address.nil?
-
-        # NOTE: Either one of 'place' or 'address' is unset here but not both
-        # NOTE: place is possibly unset here - fuzzy_find_by_location can be nil
-        # NOTE: address is possibly unset here - place might be nil or Address.search can return nil
-        #       In either case we will just drop this event on the floor
-      else # no location
-        if place.present?
-          # place = 'calendar.place'
-          # address = 'calendar.place.address'
-          place = calendar.place
-          address = place.address
-
-        else # no place, no location
-          raise Problem, WARNING1_MSG
-        end
-      end
-
-    when 'place' # location
-      # Regardless of if the data has a location, we act the same
-      # We assign address to the place's address if possible, and otherwise we exit
-
-      # This should theoretically never run ! :) (At least, it's not accounted for in Kim's table)
-      raise Problem, 'N/A - Unaccounted for in table' if calendar.place.nil?
-
-      address = calendar.place.address
-
-      # NOTE: calendar.place can be nil, in which case this event will be dropped on the floor
-      #       (Likely what is happening with Velociposse?)
-
-    when 'room_number'
-      if data.has_location?
-        if place.present?
-          # place = 'calendar.place'
-          # address = '#{location}, place.address'
-
-          # xx place = calendar.place.address
-          new_address = place.address.dup
-          address = new_address.prepend_room_number(data.location)
-          address.save
-
-        else # no place, yes location
-          raise Problem, 'N/A'
-        end
-
-      else # no location
-        if place.present?
-          # place = 'calendar.place'
-          # address = 'calendar.place.address'
-          # xx place = calendar.place.address
-          address = place.address
-
-        else # no place, no location
-          raise Problem, 'N/A'
-        end
-      end
-
-    when 'no_location'
-      place = nil
-
+    if strategies.keys.include?(calendar.strategy)
+      strategy = strategies[calendar.strategy]
+      place, address = method(strategy).call(calendar.place)
     else
       # this shouldn't happen and should be fatal to the entire job
       raise "Calendar import strategy unknown! (ID=#{calendar.id}, strategy=#{calendar.strategy})"
@@ -156,6 +64,120 @@ class CalendarImporter::EventResolver
     data.place_id = place.id if place
     data.address_id = address&.id
     data.partner_id = calendar.partner_id
+  end
+
+  def event_strategy(place, address: nil)
+    if data.has_location?
+      # place = 'attempt to match location'
+      # address = 'calendar.place.address || location'
+
+      # try to find the place
+      place = Partner.fuzzy_find_by_location(event_location_components)
+
+      # try to use that address
+      address = place&.address
+
+      # if no place, try to find an address
+      # (This only executes if there is no place given)
+      address ||= Address.search(data.location, event_location_components, data.postcode)
+
+      # if we have an address, try to use the place that address points to
+      # (Only runs if the fuzzy find and calendar.place are both nil)
+      place ||= address&.partners&.first
+
+      # NOTE: What happens if address has zero partners and the earlier assignments fail?
+      #       'place' is nil in this instance
+      # NOTE: Address.search can also return Nil if there are no event_location_components, or
+      #       if the address failed to save
+      # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
+
+    else # no location
+      raise Problem, WARNING2_MSG if place.present?
+      # No longer an error if place is not present -- see #1198
+      # Passthrough here
+    end
+
+    return place, address
+  end
+
+  def event_override_strategy(place, address: nil)
+    if data.has_location?
+      # place = 'attempt to match location'
+      # address = 'calendar.place.address || location'
+      place = Partner.fuzzy_find_by_location(event_location_components)
+      address = place&.address
+      address ||= Address.search(data.location, event_location_components, data.postcode)
+
+      raise Problem, INFO1_MSG if place.nil? && address.nil?
+
+      # NOTE: Either one of 'place' or 'address' is unset here but not both
+      # NOTE: place is possibly unset here - fuzzy_find_by_location can be nil
+      # NOTE: address is possibly unset here - place might be nil or Address.search can return nil
+      #       In either case we will just drop this event on the floor
+    else # no location
+      if place.present?
+        # place = 'calendar.place'
+        # address = 'calendar.place.address'
+        place = calendar.place
+        address = place.address
+
+      else # no place, no location
+        raise Problem, WARNING1_MSG
+      end
+    end
+
+    return place, address
+  end
+
+  def place_strategy(_place, _address: nil)
+    # Regardless of if the data has a location, we act the same
+    # We assign address to the place's address if possible, and otherwise we exit
+
+    # This should theoretically never run ! :) (At least, it's not accounted for in Kim's table)
+    raise Problem, 'N/A - Unaccounted for in table' if calendar.place.nil?
+
+    return calendar.place, calendar.place.address
+
+    # NOTE: calendar.place can be nil, in which case this event will be dropped on the floor
+    #       (Likely what is happening with Velociposse?)
+  end
+
+  def room_number_strategy(place, address: nil)
+    if data.has_location?
+      if place.present?
+        # place = 'calendar.place'
+        # address = '#{location}, place.address'
+
+        # xx place = calendar.place.address
+        new_address = place.address.dup
+        address = new_address.prepend_room_number(data.location)
+        address.save
+
+      else # no place, yes location
+        raise Problem, 'N/A'
+      end
+
+    else # no location
+      if place.present?
+        # place = 'calendar.place'
+        # address = 'calendar.place.address'
+        # xx place = calendar.place.address
+        address = place.address
+
+      else # no place, no location
+        raise Problem, 'N/A'
+      end
+    end
+
+    return address, place
+  end
+
+  def no_location_strategy(_place, _address: nil)
+    return nil, nil
+  end
+
+  def online_only_strategy(_place, _address: nil)
+    return nil, nil
   end
 
   def save_all_occurences

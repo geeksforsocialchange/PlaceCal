@@ -4,7 +4,7 @@ require 'test_helper'
 
 class CalendarsHelperTest < ActionView::TestCase
   include Devise::Test::IntegrationHelpers
-  include Pundit
+  include Pundit::Authorization
 
   setup do
     @root = create(:root)
