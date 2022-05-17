@@ -28,6 +28,8 @@ class CalendarImporter::CalendarImporterTask
     parsed_events = calendar_source.events.map do |event_data|
       CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
     end
+
+
     return if parsed_events.blank?
 
     all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
