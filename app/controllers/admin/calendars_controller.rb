@@ -114,7 +114,7 @@ module Admin
         :place_id,
         :is_facebook_page,
         :facebook_page_id,
-        :is_working,
+        :importer_mode,
         :public_contact_name,
         :public_contact_phone,
         :public_contact_email,
