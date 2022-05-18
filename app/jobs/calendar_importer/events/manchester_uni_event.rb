@@ -22,8 +22,7 @@ module CalendarImporter::Events
       date = @event.at_xpath('./ns:times[@type="local"] //ns:start //ns:date')
       time = @event.at_xpath('./ns:times[@type="local"] //ns:start //ns:time')
       DateTime.parse([date, time].join(', '))
-
-      rescue StandardError
+    rescue StandardError
         nil
     end
 
@@ -31,8 +30,7 @@ module CalendarImporter::Events
       date = @event.at_xpath('./ns:times[@type="local"] //ns:end //ns:date')
       time = @event.at_xpath('./ns:times[@type="local"] //ns:end //ns:time')
       DateTime.parse([date, time].join(', '))
-
-      rescue StandardError
+    rescue StandardError
         nil
     end
 
@@ -41,7 +39,7 @@ module CalendarImporter::Events
     end
 
     def occurrences_between(*)
-      #TODO: Expand when multi-day events supported
+      # TODO: Expand when multi-day events supported
       @occurrences = []
       @occurrences << Dates.new(dtstart, dtend)
       @occurrences

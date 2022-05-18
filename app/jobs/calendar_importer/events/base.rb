@@ -8,7 +8,10 @@ module CalendarImporter::Events
       @event = event
     end
 
-    attr_accessor :place_id, :address_id, :partner_id
+    attr_accessor :place_id,
+                  :address_id,
+                  :partner_id,
+                  :online_address_id
 
     def rrule
       nil
@@ -52,7 +55,8 @@ module CalendarImporter::Events
         place_id:                 place_id,
         address_id:               address_id,
         partner_id:               partner_id,
-        publisher_url:            publisher_url
+        publisher_url:            publisher_url,
+        online_address_id:        online_address_id
       }
     end
 
@@ -94,6 +98,11 @@ module CalendarImporter::Events
 
     def private?
       ip_class&.casecmp('private')&.zero? || (description&.include?('#placecal-ignore'))
+    end
+
+    def online_event?
+      # TODO: Put in default here
+      return nil
     end
   end
 end

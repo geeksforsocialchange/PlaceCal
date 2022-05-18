@@ -211,4 +211,3 @@ class Calendar < ApplicationRecord
     calendar_state.in_queue? || calendar_state.in_worker?
   end
 end
-

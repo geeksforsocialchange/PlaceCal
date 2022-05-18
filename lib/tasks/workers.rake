@@ -4,7 +4,7 @@ require 'yaml'
 
 namespace :workers do
   desc 'Clear and remove all jobs'
-  task purge_all: [] do
+  task purge_all: :environment do
     puts 'Force stopping all workers...'
 
     # Force stop of all workers
@@ -25,7 +25,7 @@ namespace :workers do
   end
 
   desc 'Show any salient worker errors (You should pipe this into less)'
-  task inspect_errors: [] do
+  task inspect_errors: :environment do
     workers = ActiveRecord::Base.connection
                                 .execute('select * from delayed_jobs')
                                 .to_a

@@ -35,7 +35,7 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      data.map { |d|  CalendarImporter::Events::EventbriteEvent.new(d) }
+      data.map { |d| CalendarImporter::Events::EventbriteEvent.new(d) }
     end
   end
 end

@@ -14,7 +14,7 @@ class Event < ApplicationRecord
   validates :summary, :dtstart, :partner, presence: true
   before_validation :set_address_from_place
   validate :require_location
-  validate :unique_event
+  validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
 
   before_save :sanitize_rrule
 
@@ -160,11 +160,13 @@ class Event < ApplicationRecord
   end
 
   def require_location
-    if calendar.present?
-      return if calendar.strategy == 'event'
-      return if calendar.strategy == 'no_location'
-    end
+    # 'event', 'no_location', and 'online_only' do not require a Location
+    return if %w[event no_location online_only].include?(calendar.strategy)
 
+    # If we have an online address we don't need a physical one
+    return if self.online_address_id.present?
+
+    # If the address exists then the error doesn't apply
     return unless self.address_id.blank?
 
     errors.add(:base, 'No place or address could be created or found for ' \
