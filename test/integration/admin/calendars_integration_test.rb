@@ -119,4 +119,26 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     assert_select 'option', @partner.name, count: 1
   end
+
+  test "partner : can see which importer is selected" do
+    @calendar.update! importer_mode: 'ical'
+
+    sign_in @partner_admin
+    get edit_admin_calendar_path(@calendar)
+
+    assert_select 'option[value="ical"][selected="selected"]', nil, count: 1
+  end
+
+  test "partner : can change importer" do
+    sign_in @partner_admin
+
+    params = { calendar: @calendar.attributes }
+    params[:calendar]['importer_mode'] = 'eventbrite'
+
+    put admin_calendar_path(@calendar), params: params
+
+    @calendar.reload
+    assert_equal 'eventbrite', @calendar.importer_mode
+  end
+
 end
