@@ -28,6 +28,7 @@ module CalendarImporter::Events
 
     def location
       return if place.blank?
+
       address = place['location']
       if address.present?
         [place['name'], address['street'], address['city'], address['zip']].reject(&:blank?).join(', ')
@@ -52,7 +53,7 @@ module CalendarImporter::Events
       @event.updated_time
     end
 
-    #TODO: Make this a link back to facebook
+    # TODO: Make this a link back to facebook
     def footer; end
 
     def recurring_event?

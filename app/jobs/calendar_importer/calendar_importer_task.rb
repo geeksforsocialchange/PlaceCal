@@ -63,6 +63,8 @@ class CalendarImporter::CalendarImporterTask
       next if parsed_event.is_private?
       next if parsed_event.has_no_occurences?
 
+      parsed_event.determine_online_location
+
       parsed_event.determine_location_for_strategy
       # next if parsed_event.is_address_missing?
 

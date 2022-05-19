@@ -27,7 +27,7 @@ module CalendarImporter::Events
     end
 
     def location
-      return nil
+      return nil # TODO: ??? Why are we ignoring the venue for meetup events
 
       venue = @event['venue']
       if venue
@@ -54,7 +54,14 @@ module CalendarImporter::Events
     end
 
     def occurrences_between(*)
-      [ Dates.new(dtstart, dtend) ]
+      [Dates.new(dtstart, dtend)]
+    end
+
+    def online_event?
+      return unless @event['is_online_event']
+
+      online_address = OnlineAddress.find_or_create_by(url: @event['link'])
+      online_address.id
     end
   end
 end

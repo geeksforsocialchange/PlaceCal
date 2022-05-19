@@ -25,7 +25,7 @@ class CalendarImporter::EventResolver
   end
 
   def has_no_occurences?
-    occurences.count == 0
+    occurences.count.zero?
   end
 
   def is_address_missing?
@@ -34,6 +34,10 @@ class CalendarImporter::EventResolver
 
   def occurences
     @occurences ||= data.occurrences_between(@from_date, Calendar.import_up_to)
+  end
+
+  def determine_online_location
+    data.online_address_id = data.online_event?
   end
 
   def determine_location_for_strategy

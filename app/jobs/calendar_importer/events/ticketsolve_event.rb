@@ -1,6 +1,5 @@
 module CalendarImporter::Events
   class TicketsolveEvent < Base
-
     def uid
       @event.attribute('id').text
     end

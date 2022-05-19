@@ -28,10 +28,12 @@ module CalendarImporter::Events
 
     def location
       return if place.blank?
+
       address = place['address']
 
       if address.present?
-        [ place['name'],
+        [
+          place['name'],
           address['address_1'],
           address['address_2'],
           address['city'],
@@ -56,11 +58,17 @@ module CalendarImporter::Events
     end
 
     def occurrences_between(*)
-      #TODO: Expand when multi-day events supported
+      # TODO: Expand when multi-day events supported
       @occurrences = []
       @occurrences << Dates.new(dtstart, dtend)
       @occurrences
     end
 
+    def online_event?
+      return nil unless @event['online_event']
+
+      online_address = OnlineAddress.find_or_create_by(url: @event['url'])
+      online_address.id
+    end
   end
 end
