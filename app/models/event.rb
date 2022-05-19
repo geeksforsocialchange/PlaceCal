@@ -161,7 +161,7 @@ class Event < ApplicationRecord
 
   def require_location
     # 'event', 'no_location', and 'online_only' do not require a Location
-    return if %w[event no_location online_only].include?(calendar.strategy)
+    return if %w[event no_location online_only].include?(calendar&.strategy)
 
     # If we have an online address we don't need a physical one
     return if self.online_address_id.present?
