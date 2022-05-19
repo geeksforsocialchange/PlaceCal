@@ -68,24 +68,27 @@ module CalendarImporter::Events
     end
 
     def event_link_regex
-      # (http(s)?://)? - will match against https:// or http:// or nothing
-      # [A-Za-z0-9]+   - will match against alphanumeric strings
-      # [^\s]+         - grab until we see a whitespace character
-      #
+      http = %r{(http(s)?://)?}        # - https:// or http:// or nothing
+      alphanum = %r{[A-Za-z0-9]+}      # - alphanumeric strings
+      subdomain = %r{(#{alphanum}\.)?} # - matches the www. or us04web in the zoom link
+      suffix = %r{[^\s<"]+}            # - matches until we see a whitespace character,
+                                       #   an angle bracket, or a quote (thanks html)
+
       # We deal with the following strings:
       #   meet.jit.si/foobarbaz
       #   meet.google.com/kbv-byuf-cvq
       #   facebook.com/events/(really long url)
       #   us04web.zoom.us/j/(really long url)
       #   zoom.us/j/(really long url)
+      # We also deal with strings like
+      #   <a href="(event url)">
+      #   <p>(event url)</p>
 
-      http = %r{(http(s)?://)?}
-      alphanum = %r{[A-Za-z0-9]+}
       links = {
-        'jitsi': %r{#{http}meet.jit.si/[^\s]+},
-        'meets': %r{#{http}meet.google.com/[^\s]+},
-        'facebook': %r{#{http}facebook.com/events/[^\s]+},
-        'zoom': %r{#{http}(#{alphanum}\.)?zoom.us/j/[^\s]+}
+        'jitsi': %r{#{http}#{subdomain}meet.jit.si/#{suffix}},
+        'meets': %r{#{http}#{subdomain}meet.google.com/#{suffix}},
+        'facebook': %r{#{http}#{subdomain}facebook.com/events/#{suffix}},
+        'zoom': %r{#{http}#{subdomain}zoom.us/j/#{suffix}}
       }
 
       Regexp.union links.values

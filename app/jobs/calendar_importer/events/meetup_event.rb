@@ -27,7 +27,7 @@ module CalendarImporter::Events
     end
 
     def location
-      return nil
+      return nil # TODO: ??? Why are we ignoring the venue for meetup events
 
       venue = @event['venue']
       if venue
