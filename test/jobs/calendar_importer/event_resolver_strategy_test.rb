@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'minitest/spec'
+# require 'minitest/spec'
 
 =begin
 
@@ -21,10 +21,178 @@ require 'minitest/spec'
   override strategy
   address = partner.location
 
+note:
+
+event locations can either
+  be addresses like '123 Street, place, city, postcode'
+  or places like 'The Science Museum'
+  or hybrids like 'Goldsmiths university, 123 street, place, etc'
+  or rooms like 'Room 250, Goldsmiths university, 123 street, place, etc'
+  (or URLs like 'https://zoom.com/igfjgjybviutkhy')
+  or missing
+
 =end
 
+class EventResolverStrategyTest < ActiveSupport::TestCase
+  FakeEvent = Struct.new(
+    :uid,
+    :summary,
+    :description,
+    :location,
+    :rrule,
+    :last_modified,
+    :ocurrences_between,
+    :has_location?,
+    :postcode,
+    keyword_init: true
+  )
+
+  def setup
+    @neighbourhood = create(:neighbourhood, unit_code_value: 'E05011368')
+    @start_date = Date.new(1990, 1, 1)
+    @end_date = Date.new(1990, 1, 2)
+
+    @address = create(:address, neighbourhood: @neighbourhood, postcode: 'M15 5DD')
+
+    @address_partner = create(:partner, name: 'Address Partner', address: @address)
+
+    @notices = []
+    @from_date = Date.new(1990, 1, 1)
+  end
+
+  def test_event_strategy_with_data_location_with_place_uses_partner_place
+    # theory of test:
+    #   given
+    #     data location is present
+    #     calendar strategy is 'event'
+    #
+    #   then
+    #     use location from data
+    #       (not from calendar)
+
+    data = FakeEvent.new(
+      uid: 123,
+      summary: 'A summary',
+      description: 'A description',
+      location: @address_partner.name,
+      rrule: '',
+      last_modified: '',
+      ocurrences_between: [[@start_date, @end_date]],
+      has_location?: true,
+      postcode: ''
+    )
+
+    calendar = create(:calendar, strategy: 'event')
+
+    resolver = CalendarImporter::EventResolver.new(data, calendar, @notices, @from_date)
+
+    place, address = resolver.event_strategy(calendar.place)
+    assert_equal place, @address_partner
+  end
+
+  def test_event_overide_strategy_with_data_location_with_place_uses_partner_place
+    # (same as above?)
+
+    # theory of test:
+    #   given
+    #     data location is present
+    #     calendar strategy is 'event_override'
+    #   then
+    #     use location from data
+    #       (not from calendar)
+
+    data = FakeEvent.new(
+      uid: 123,
+      summary: 'A summary',
+      description: 'A description',
+      location: @address_partner.name,
+      rrule: '',
+      last_modified: '',
+      ocurrences_between: [[@start_date, @end_date]],
+      has_location?: true,
+      postcode: ''
+    )
+
+    calendar = create(:calendar, strategy: 'event_override') # <--- different strategy
+
+    resolver = CalendarImporter::EventResolver.new(data, calendar, @notices, @from_date)
+
+    place, address = resolver.event_strategy(calendar.place)
+    assert_equal place, @address_partner
+  end
+
+  def test_place_strategy_works
+    # theory of test:
+    #   given
+    #     data location is address
+    #     calendar strategy is 'place'
+    #
+    #   then
+    #     event address = data address
+    #     event place = calendar place
+
+    data = FakeEvent.new(
+      uid: 123,
+      summary: 'A summary',
+      description: 'A description',
+      location: @address_partner.name,
+      rrule: '',
+      last_modified: '',
+      ocurrences_between: [[@start_date, @end_date]],
+      has_location?: true,
+      postcode: ''
+    )
+
+    calendar = create(:calendar, strategy: 'place')
+
+    resolver = CalendarImporter::EventResolver.new(data, calendar, @notices, @from_date)
+
+    place, address = resolver.event_strategy(calendar.place)
+    assert_equal place, @address_partner
+  end
+
+  def test_override_strategy_works
+    # theory of test
+    #   given
+    #     data location is missing
+    #     calendar strategy is 'event_override'
+    #
+    #   then
+    #     event place = calendar place
+    #     event address = calendar place address
+
+    data = FakeEvent.new(
+      uid: 123,
+      summary: 'A summary',
+      description: 'A description',
+      location: @address_partner.name,
+      rrule: '',
+      last_modified: '',
+      ocurrences_between: [[@start_date, @end_date]],
+      has_location?: true,
+      postcode: ''
+    )
+
+    calendar = create(:calendar, strategy: 'event_override')
+
+    resolver = CalendarImporter::EventResolver.new(data, calendar, @notices, @from_date)
+
+    place, address = resolver.event_strategy(calendar.place)
+    assert_equal place, @address_partner
+  end
+end
+
+=begin
 describe 'EventResolver strategies' do
   # include FactoryBot::Syntax::Methods
+
+  before do
+    Address.delete_all
+    Neighbourhood.delete_all
+    Partner.delete_all
+    Calendar.delete_all
+    User.delete_all
+  end
 
   FakeEvent = Struct.new(
     :uid,
@@ -80,15 +248,15 @@ describe 'EventResolver strategies' do
       end
 
       describe 'with address' do
-        it 'fuzzy finds address and place'
+        #it 'fuzzy finds address and place'
       end
 
       describe 'with no place or address' do
-        it 'returns nothing'
+        #it 'returns nothing'
       end
     end
     describe 'with no data.location' do
-      it 'stops processing with an exception'
+      #it 'stops processing with an exception'
     end
   end
 
@@ -102,13 +270,6 @@ describe 'EventResolver strategies' do
   end
 
 end
+=end
 
 
-
-class FakeTest < ActiveSupport::TestCase
-  test "look at db" do
-    puts '***'
-    puts Partner.count
-    puts Calendar.count
-  end
-end
