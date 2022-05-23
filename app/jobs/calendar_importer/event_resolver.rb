@@ -225,9 +225,9 @@ class CalendarImporter::EventResolver
 
     regexp = Regexp.new(regex_string, Regexp::IGNORECASE)
 
-    @event_location_components = data.location
-                                     .split(', ')
-                                     .map { |component| component.gsub(regexp, '').strip }
-                                     .reject(&:blank?)
+    @event_location_components = (data.location || '')
+      .split(', ')
+      .map { |component| component.gsub(regexp, '').strip }
+      .reject(&:blank?)
   end
 end

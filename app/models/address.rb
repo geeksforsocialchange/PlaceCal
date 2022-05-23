@@ -103,6 +103,8 @@ class Address < ApplicationRecord
     # location - The raw location field
     # components - Array containing parts of an event's location field, excluding the postcode.
     def search(_location, components, postcode)
+      return nil if components.empty?
+
       # try by street name string match
       address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
       return address if address
