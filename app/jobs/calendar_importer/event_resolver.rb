@@ -185,7 +185,7 @@ class CalendarImporter::EventResolver
   end
 
   def save_all_occurences
-    calendar_events = calendar.events.upcoming.where(uid: data.uid)
+    calendar_events = calendar.events.where(uid: data.uid)
 
     # If any dates of this event don't match the imported start times or end times, delete them
     if data.recurring_event?
