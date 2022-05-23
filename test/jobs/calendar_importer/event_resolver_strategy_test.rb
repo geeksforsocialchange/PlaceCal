@@ -53,8 +53,8 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     @start_date = Date.new(1990, 1, 1)
     @end_date = Date.new(1990, 1, 2)
 
-    @address = create(:address, neighbourhood: @neighbourhood, postcode: 'M15 5DD')
-    @other_address = create(:address, neighbourhood: @other_neighbourhood, postcode: 'OL6 8BH')
+    @address = create(:address, street_address: '123 alpha', neighbourhood: @neighbourhood, postcode: 'M15 5DD')
+    @other_address = create(:address, street_address: '456 beta', neighbourhood: @other_neighbourhood, postcode: 'OL6 8BH')
 
     @address_partner = create(:partner, name: 'Address Partner', address: @address)
     @other_address_partner = create(:partner, name: 'Other Address Partner', address: @other_address)
@@ -110,7 +110,7 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     calendar = create(:calendar, strategy: 'event_override', place: @other_address_partner) # <--- different strategy
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
-    place, address = resolver.event_strategy(calendar.place)
+    place, address = resolver.event_override_strategy(calendar.place)
 
     # these come from the event data
     assert_equal place, @address_partner
@@ -131,13 +131,13 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
 
-    place, address = resolver.event_strategy(calendar.place)
+    place, address = resolver.place_strategy(calendar.place)
 
     # place comes from calendar
-    # assert_equal place, @other_address_partner # FIXME: is this a bug?
+    assert_equal place, @other_address_partner
 
     # address comes from event data
-    assert_equal address, @address_partner.address
+    assert_equal address, @other_address_partner.address
   end
 
   def test_override_strategy_works_with_no_data_location
@@ -153,12 +153,19 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     calendar = create(:calendar, strategy: 'event_override', place: @address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
-    place, address = resolver.event_strategy(calendar.place)
+
+    assert_raises(CalendarImporter::EventResolver::Problem) do
+      place, address = resolver.event_override_strategy(calendar.place)
+    end
+
+    #puts "address_partner=#{@address_partner.to_json}"
+    #puts "place=#{place.to_json}"
+    #puts "address=#{address.to_json}"
 
     # FIXME
     # these come from the calendar
-    # assert_equal place, @address_partner
-    # assert_equal address, @address_partner.address
+    #assert_equal place, @address_partner
+    #assert_equal address, @address_partner.address
   end
 end
 

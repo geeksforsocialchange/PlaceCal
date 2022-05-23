@@ -118,7 +118,7 @@ class CalendarImporter::EventResolver
       if place.present?
         # place = 'calendar.place'
         # address = 'calendar.place.address'
-        place = calendar.place
+        # place = calendar.place
         address = place.address
 
       else # no place, no location
