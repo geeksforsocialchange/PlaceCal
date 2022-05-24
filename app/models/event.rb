@@ -12,7 +12,6 @@ class Event < ApplicationRecord
   has_and_belongs_to_many :collections
 
   validates :summary, :dtstart, :partner, presence: true
-  before_validation :set_address_from_place
   validate :require_location
   validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
 
@@ -151,13 +150,6 @@ class Event < ApplicationRecord
   end
 
   private
-
-  # Make sure that setting the event's Place also sets the event's Address. This
-  # way we never need to choose between Event#address and Event#place.address
-  # This is particularly important for joins for neighbourhoods.
-  def set_address_from_place
-    self.address_id = self.place.address_id if self.place_id
-  end
 
   def require_location
     # 'event', 'no_location', and 'online_only' do not require a Location

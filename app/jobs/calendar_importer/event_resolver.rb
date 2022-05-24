@@ -122,7 +122,7 @@ class CalendarImporter::EventResolver
       if place.present?
         # place = 'calendar.place'
         # address = 'calendar.place.address'
-        place = calendar.place
+        # place = calendar.place
         address = place.address
 
       else # no place, no location
@@ -229,9 +229,9 @@ class CalendarImporter::EventResolver
 
     regexp = Regexp.new(regex_string, Regexp::IGNORECASE)
 
-    @event_location_components = data.location
-                                     .split(', ')
-                                     .map { |component| component.gsub(regexp, '').strip }
-                                     .reject(&:blank?)
+    @event_location_components = (data.location || '')
+      .split(', ')
+      .map { |component| component.gsub(regexp, '').strip }
+      .reject(&:blank?)
   end
 end
