@@ -3,7 +3,7 @@
 class Article < ApplicationRecord
   validates :title, :body, presence: true
 
-  before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
+  before_save :update_published_at
 
   has_many :article_partners, dependent: :destroy
   has_many :partners, through: :article_partners
@@ -19,7 +19,7 @@ class Article < ApplicationRecord
   scope :by_publish_date, -> { order(:published_at) }
 
   scope :global_newsfeed, -> { published.order(published_at: :desc) }
-  
+
   scope :with_tag, ->(tag_id) { joins(:article_tags).where(article_tags: { tag: tag_id }) }
 
   scope :with_partner_tag, lambda { |tag_id|
@@ -29,7 +29,7 @@ class Article < ApplicationRecord
   }
 
   def update_published_at
-    self.published_at = self.is_draft ? nil : DateTime.now
+    self.published_at = is_draft ? nil : DateTime.now
   end
 
   # This retrieves the author's name for use in the GQL output
