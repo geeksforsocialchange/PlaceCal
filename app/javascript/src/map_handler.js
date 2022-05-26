@@ -8,16 +8,13 @@ document.MapHandler = {
   initialize(args) {
     if(Object.keys(args).length == 0) return;
 
-    console.log("starting map")
     let map = this._findOrCreateMap(args);
     if(!map) return;
 
     map.setView(args.center, args.zoom);
 
-    console.log('destroying markers: c=', this.markers.length);
     this.markers.forEach( m => m.remove() );
 
-    console.log('adding markers: c=', args.markers.length);
     this.markers = args.markers.map( m => {
       let mapMarker = L.marker(m.position, {icon: this.mapIcon});
       mapMarker.addTo(map);
@@ -33,7 +30,6 @@ document.MapHandler = {
   _findOrCreateMap(args) {
     let parent = document.getElementById('js-map-outer');
     if(!parent) return null;
-    console.log("parent=", parent);
 
     if(!this.mapContainer) {
 
@@ -75,12 +71,10 @@ document.MapHandler = {
 }
 
 /* this is loaded only once on initial page load */
-console.log('setting up map loader');
 if(typeof(document.mapData) == 'undefined') {
   document.mapData = {};
 }
 
 document.addEventListener("turbo:load", () => {
-  console.log("page nav,  mapData=", document.mapData);
   document.MapHandler.initialize(document.mapData);
 });
