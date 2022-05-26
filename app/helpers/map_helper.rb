@@ -1,6 +1,5 @@
 
 module MapHelper
-  API_TOKEN = 'pk.eyJ1IjoicGxhY2VjYWwiLCJhIjoiY2ptdzJqM3owMzN1bDNwbnhjbHIzb25layJ9.Kq2KjkWzSvLOpiHICuJiPA'
 
   def args_for_map(map_points, site, style_mode)
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
@@ -45,6 +44,14 @@ module MapHelper
     ]
   end
 
+  def api_token
+    return '' if Rails.env.test?
+
+    token = ENV['MAPBOX_TOKEN']
+    return token if token
+
+    raise 'MAPBOX_TOKEN is missing from ENV, please see .env.example'
+  end
 
   def tileset_for_site_url(site)
     tileset = case site
@@ -56,7 +63,7 @@ module MapHelper
                 'cjmw2khle4d6q2sl7sqsvak2x'
               end
 
-    "https://api.mapbox.com/styles/v1/placecal/#{tileset}/tiles/256/{z}/{x}/{y}@2x?access_token=#{API_TOKEN}"
+    "https://api.mapbox.com/styles/v1/placecal/#{tileset}/tiles/256/{z}/{x}/{y}@2x?access_token=#{api_token}"
   end
 end
 
