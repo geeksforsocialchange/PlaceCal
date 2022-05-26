@@ -17,5 +17,6 @@
 </div>
 
 <% if @map&.length&.positive? %>
-  <%= render_component "map", points: @map, site: @current_site.slug %>
+  <% #= render_component "map", points: @map, site: @current_site.slug %>
+  <%= render 'shared/map', points: @map, site: @current_site.slug %>
 <% end %>

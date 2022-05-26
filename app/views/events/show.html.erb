@@ -32,7 +32,8 @@
   </div>
 </div>
 <% if @map&.any? %>
-  <%= render_component "map", points: @map, style: :full, site: @current_site.slug %>
+  <% #= render_component "map", points: @map, style: :full, site: @current_site.slug %>
+  <%= render 'shared/map', points: @map, site: @current_site.slug %>
 <% end %>
 
 <%= render_component "meta", permalink: "/events/#{@event.id}" do %>

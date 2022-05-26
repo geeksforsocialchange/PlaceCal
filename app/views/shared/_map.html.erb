@@ -1,0 +1,16 @@
+<div id="js-map-outer" class="map"></div>
+
+<script>
+  var mapData = <%= args_for_map(points, site) %>;
+
+  /* window.onload = () => {
+    // on initial page load
+    document.MapHandler.initialize(mapData);
+  }; */
+
+  document.addEventListener("turbo:load", () => {
+    // on turbo navigation
+    document.MapHandler.initialize(mapData);
+  });
+
+</script>

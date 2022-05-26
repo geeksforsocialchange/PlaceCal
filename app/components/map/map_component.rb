@@ -1,7 +1,48 @@
 # frozen_string_literal: true
 
 class MapComponent < MountainView::Presenter
+  # include ActionView::Helpers::AssetUrlHelper
+  include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::AssetTagHelper
+
   properties :points, :zoom, :site
+
+  def args_for_map
+    data_for_markers = markers.map do |mrkr|
+      {
+        position: [mrkr[:lat], mrkr[:lon]],
+        anchor: link_to(mrkr[:name], "/partners/#{(mrkr[:id])}")
+        #id: mrkr[:id],
+        #name: mrkr[:name]
+      }
+    end
+
+    tileset_url = "https://api.mapbox.com/styles/v1/placecal/#{tileset}/tiles/256/{z}/{x}/{y}@2x?access_token=#{api_token}"
+
+    # payload
+    {
+      center: center,
+      zoom: zoom,
+      iconUrl: asset_tag('icons/map/map-marker.png'),
+      shadowUrl: asset_tag('icons/map/map-shadow.png'),
+      markers: data_for_markers,
+      tilesetUrl: tileset_url
+    }.to_json.html_safe
+  end
+
+  def styles
+    if properties[:style] == :full
+      ' map--multiple'
+    elsif properties[:style] == :single
+      ' map--single'
+    elsif markers.length > 1
+      ' map--multiple'
+    else
+      ' map--single'
+    end
+  end
+
+  private
 
   # FIXME: Find out why this isn't working as a constant
   def api_token
@@ -28,17 +69,6 @@ class MapComponent < MountainView::Presenter
     properties[:zoom] || 16
   end
 
-  def styles
-    if properties[:style] == :full
-      ' map--multiple'
-    elsif properties[:style] == :single
-      ' map--single'
-    elsif markers.length > 1
-      ' map--multiple'
-    else
-      ' map--single'
-    end
-  end
 
   # TODO: Hook in to new themes
   # IDs from Mapbox
@@ -52,8 +82,6 @@ class MapComponent < MountainView::Presenter
       'cjmw2khle4d6q2sl7sqsvak2x'
     end
   end
-
-  private
 
   def find_center(m)
     m.reject!(&:nil?)
