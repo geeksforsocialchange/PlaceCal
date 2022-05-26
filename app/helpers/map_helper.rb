@@ -3,12 +3,11 @@ module MapHelper
   API_TOKEN = 'pk.eyJ1IjoicGxhY2VjYWwiLCJhIjoiY2ptdzJqM3owMzN1bDNwbnhjbHIzb25layJ9.Kq2KjkWzSvLOpiHICuJiPA'
 
   def args_for_map(map_points, site, style_mode)
-
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
-      {
-        position: [mrkr[:lat], mrkr[:lon]],
-        anchor: link_to(mrkr[:name], partner_path(mrkr[:id]))
-      }
+      {}.tap do |pin|
+        pin[:position] = [mrkr[:lat], mrkr[:lon]]
+        pin[:anchor] = link_to(mrkr[:name], partner_path(mrkr[:id])) if mrkr[:id]
+      end
     end
 
     # payload

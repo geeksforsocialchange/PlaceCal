@@ -76,7 +76,9 @@ document.MapHandler = {
 
 /* this is loaded only once on initial page load */
 console.log('setting up map loader');
-//document.mapData = {};
+if(typeof(document.mapData) == 'undefined') {
+  document.mapData = {};
+}
 
 document.addEventListener("turbo:load", () => {
   console.log("page nav,  mapData=", document.mapData);
