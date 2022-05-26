@@ -19,7 +19,7 @@
     <ul>
       <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
       <% navigation.each do |link| %>
-        <li><%= active_link_to link[0], link[1] %></li>
+        <li><%= active_link_to link[0], link[1], data: { turbolinks: false } %></li>
       <% end %>
     </ul>
   </nav>

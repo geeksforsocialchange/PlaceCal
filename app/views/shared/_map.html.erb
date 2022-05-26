@@ -1,0 +1,7 @@
+<% if (points || []).length > 0 -%>
+  <div id="js-map-outer" class="map"></div>
+
+  <script>
+    document.mapData = <%= args_for_map(points, site, local_assigns[:style]) %>;
+  </script>
+<% end -%>
