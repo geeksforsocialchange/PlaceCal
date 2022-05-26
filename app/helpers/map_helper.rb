@@ -2,13 +2,12 @@
 module MapHelper
   API_TOKEN = 'pk.eyJ1IjoicGxhY2VjYWwiLCJhIjoiY2ptdzJqM3owMzN1bDNwbnhjbHIzb25layJ9.Kq2KjkWzSvLOpiHICuJiPA'
 
-  def args_for_map(map_points, site)
+  def args_for_map(map_points, site, style_mode)
+
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
       {
         position: [mrkr[:lat], mrkr[:lon]],
         anchor: link_to(mrkr[:name], partner_path(mrkr[:id]))
-        #id: mrkr[:id],
-        #name: mrkr[:name]
       }
     end
 
@@ -19,15 +18,23 @@ module MapHelper
       iconUrl: image_path('icons/map/map-marker.png'),
       shadowUrl: image_path('icons/map/map-shadow.png'),
       markers: data_for_markers,
-      tilesetUrl: tileset_for_site_url(site)
+      tilesetUrl: tileset_for_site_url(site),
+      styleClass: map_style_class(data_for_markers, style_mode)
     }.to_json.html_safe
   end
 
-  def map_style_class(points)
-    points.length > 1 ? ' map--multiple' : ' map--single'
-  end
-
   private
+
+  def map_style_class(points, style_mode)
+    case style_mode
+    when :single
+      'map--single'
+    when :multi
+      'map--multiple'
+    else
+      points.length > 1 ? 'map--multiple' : 'map--single'
+    end
+  end
 
   def center(marker_data)
     return false if marker_data.blank?

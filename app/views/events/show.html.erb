@@ -31,10 +31,7 @@
     </div>
   </div>
 </div>
-<% if @map&.any? %>
-  <% #= render_component "map", points: @map, style: :full, site: @current_site.slug %>
-  <%= render 'shared/map', points: @map, site: @current_site.slug %>
-<% end %>
+<%= render 'shared/map', points: @map, site: @current_site.slug, style: :multi %>
 
 <%= render_component "meta", permalink: "/events/#{@event.id}" do %>
   <%# link_to 'Subscribe to this event with iCal', event_url(@event, protocol: :webcal, format: :ics) %>

@@ -67,9 +67,7 @@
           </div>
         <% end %>
 
-        <% if @map.length > 0 %>
-          <%= render "shared/map", points: @map, site: @current_site.slug %>
-        <% end %>
+        <%= render "shared/map", points: @map, site: @current_site.slug %>
 
         <% if @opening_times.any? %>
           <br>

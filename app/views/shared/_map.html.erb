@@ -1,16 +1,8 @@
-<div id="js-map-outer" class="map"></div>
+<% if (points || []).length > 0 -%>
+  <div id="js-map-outer" class="map"></div>
 
-<script>
-  var mapData = <%= args_for_map(points, site) %>;
-
-  /* window.onload = () => {
-    // on initial page load
-    document.MapHandler.initialize(mapData);
-  }; */
-
-  document.addEventListener("turbo:load", () => {
-    // on turbo navigation
-    document.MapHandler.initialize(mapData);
-  });
-
-</script>
+  <script>
+    console.log('setting data for map');
+    document.mapData = <%= args_for_map(points, site, local_assigns[:style]) %>;
+  </script>
+<% end -%>

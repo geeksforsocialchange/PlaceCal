@@ -6,6 +6,8 @@ document.MapHandler = {
   markers: [],
 
   initialize(args) {
+    if(Object.keys(args).length == 0) return;
+
     console.log("starting map")
     let map = this._findOrCreateMap(args);
     if(!map) return;
@@ -23,7 +25,6 @@ document.MapHandler = {
       return mapMarker;
     });
 
-
     // Create a group for all markers and add to map
     let markerGroup = L.featureGroup(this.markers);
     map.fitBounds(markerGroup.getBounds(), {maxZoom: args.zoom});
@@ -37,7 +38,6 @@ document.MapHandler = {
     if(!this.mapContainer) {
 
       this.mapContainer = document.createElement('div');
-      this.mapContainer.classList.add('map--single');
       this.mapContainer.classList.add('map');
 
       this.map = L.map(this.mapContainer);
@@ -64,10 +64,21 @@ document.MapHandler = {
       }
     }
 
-    parent.appendChild(this.mapContainer);
+    this.mapContainer.classList.remove('map--single', 'map--multiple');
+    this.mapContainer.classList.add(args.styleClass);
 
+    parent.appendChild(this.mapContainer);
 
     this.map.invalidateSize(true);
     return this.map;
   }
 }
+
+/* this is loaded only once on initial page load */
+console.log('setting up map loader');
+//document.mapData = {};
+
+document.addEventListener("turbo:load", () => {
+  console.log("page nav,  mapData=", document.mapData);
+  document.MapHandler.initialize(document.mapData);
+});
