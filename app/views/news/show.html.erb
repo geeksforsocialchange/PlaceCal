@@ -1,5 +1,10 @@
 <% content_for :title, @article.title %>
 
+<p>Published <em title="<%= @article.published_at %>"><%= time_ago_in_words(@article.published_at) %></em> ago.</p>
+<% if @article.partners.present? %>
+  <p>From <%= article_partner_links(@article) %>.</p>
+<% end %>
+
 <div class="c c--narrow c--space-after event__fullinfo">
   <%= markdown @article.body %>
 </div>

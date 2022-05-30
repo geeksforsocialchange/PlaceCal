@@ -6,5 +6,9 @@
 <% @articles.each do |article| -%>
   <div class='article'>
     <%= link_to article.title, news_path(article) %>
+    <p>Published <%= time_ago_in_words(article.published_at) %> ago.</p>
+    <% if article.partners.present? %>
+      <p>From <%= article_partner_links(article) %>.</p>
+    <% end %>
   </div>
 <% end -%>
