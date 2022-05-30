@@ -211,7 +211,8 @@ class ApplicationController < ActionController::Base
                     [
                       ['Events', events_path],
                       # ['Places', places_path],
-                      ['Partners', partners_path]
+                      ['Partners', partners_path],
+                      ['News', news_index_path]
                     ]
                   end
   end

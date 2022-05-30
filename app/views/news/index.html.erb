@@ -1,0 +1,10 @@
+<% content_for :title, "News from your area" %>
+
+<%= render_component "hero", title: 'News from your area', subtitle: @site.tagline %>
+
+<div class="c c--lg-space-after">
+<% @articles.each do |article| -%>
+  <div class='article'>
+    <%= link_to article.title, news_path(article) %>
+  </div>
+<% end -%>
