@@ -29,7 +29,7 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     # assert_select 'p', { text: 'Found 5 articles.' }
 
     # pagination
-    assert_select 'p', { text: 'No more news items' }
+    # assert_select 'p', { text: 'No more news items' }
     assert_select 'p', { count: 0, text: 'Older news items' }
   end
 
@@ -57,7 +57,7 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     # assert_select 'p', { text: 'Found 30 articles.' }
 
     # pagination
-    assert_select 'p', { count: 0, text: 'No more news items' }
+    # assert_select 'p', { count: 0, text: 'No more news items' }
     assert_select 'p', { text: 'Older news items' }
 
     get news_index_url(subdomain: @site.domain, offset: 20)
@@ -65,7 +65,7 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".article-card", 10 # only ten left
 
     # pagination
-    assert_select 'p', { text: 'No more news items' }
+    # assert_select 'p', { text: 'No more news items' }
     assert_select 'p', { count: 0, text: 'Older news items' }
   end
 

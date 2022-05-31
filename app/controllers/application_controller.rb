@@ -208,12 +208,21 @@ class ApplicationController < ActionController::Base
                       ['Join us', join_path]
                     ]
                   else
-                    [
-                      ['Events', events_path],
-                      # ['Places', places_path],
-                      ['Partners', partners_path],
-                      ['News', news_index_path]
+                    article_count = if @site
+                                      Article
+                                        .for_site(@site)
+                                        .published
+                                        .count
+                                    else
+                                      0
+                                    end
+                    items = [
+                        ['Events', events_path],
+                        # ['Places', places_path],
+                        ['Partners', partners_path]
                     ]
+                    items << ['News', news_index_path] if article_count > 0
+                    items
                   end
   end
 
