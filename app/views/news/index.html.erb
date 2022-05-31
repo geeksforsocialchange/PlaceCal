@@ -1,19 +1,37 @@
 <% content_for :title, "News from your area" %>
 
-<%= render_component "hero", title: 'News from your area', subtitle: @site.tagline %>
+<%= render_component 'hero', title: 'News from your area', subtitle: @site.tagline %>
 
-<p>Found <%= @article_count %> articles.</p>
 
-<div class="c c--lg-space-after">
-<% @articles.each do |article| -%>
-  <div class='article'>
-    <%= link_to article.title, news_path(article) %>
-    <p>Published <%= time_ago_in_words(article.published_at) %> ago.</p>
-    <% if article.partners.present? %>
-      <p>From <%= article_partner_links(article) %>.</p>
-    <% end %>
-  </div>
-<% end -%>
+<div id='article-index'>
+
+  <% @articles.each do |article| -%>
+    <% card_class = article.article_image.present? ? 'gi__2-5' : 'gi__3-5' -%>
+    <div class='article-card g'>
+
+      <div class='gi gi__1-5 aside'>
+        <p class='published' title="<%= article.published_at %>"><%= article.published_at.strftime('%B %Y') %></p>
+      </div>
+
+      <div class='gi <%= card_class %> main'>
+        <h2><%= link_to article.title, news_path(article) %></h2>
+        <div class='content'>
+          <%= markdown article.body[0..200] %>
+        </div>
+        <p><%= link_to 'Find out more', news_path(article), class: 'btn btn--alt btn--mt' %></p>
+      </div>
+
+      <% if article.article_image.present? %>
+        <div class='gi gi__2-5 main'>
+          <div class='image'>
+            <%= image_tag article.article_image.url, class: 'border' %>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+  <% end %>
+</div>
 
 <p class='pagination'>
 <% if @articles.count < 20 -%>

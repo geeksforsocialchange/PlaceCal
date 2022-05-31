@@ -23,10 +23,10 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
   test 'should get index subdomain' do
     get news_index_url(subdomain: @site.domain)
     assert_response :success
-    assert_select ".article", 5
+    assert_select ".article-card", 5
 
     # counts
-    assert_select 'p', { text: 'Found 5 articles.' }
+    # assert_select 'p', { text: 'Found 5 articles.' }
 
     # pagination
     assert_select 'p', { text: 'No more news items' }
@@ -51,10 +51,10 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     # this is capped
-    assert_select ".article", NewsController::ARTICLES_PER_PAGE
+    assert_select ".article-card", NewsController::ARTICLES_PER_PAGE
 
     # counts
-    assert_select 'p', { text: 'Found 30 articles.' }
+    # assert_select 'p', { text: 'Found 30 articles.' }
 
     # pagination
     assert_select 'p', { count: 0, text: 'No more news items' }
@@ -62,7 +62,7 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
 
     get news_index_url(subdomain: @site.domain, offset: 20)
 
-    assert_select ".article", 10 # only ten left
+    assert_select ".article-card", 10 # only ten left
 
     # pagination
     assert_select 'p', { text: 'No more news items' }
