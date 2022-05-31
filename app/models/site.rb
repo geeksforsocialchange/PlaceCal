@@ -52,6 +52,13 @@ class Site < ApplicationRecord
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
 
+  def news_article_count
+    Article
+      .for_site(self)
+      .published
+      .count
+  end
+
   def default_site?
     slug == 'default-site'
   end
