@@ -7,7 +7,8 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     # Make six partners: Two managers; two event hosts; two neither.
     # Add all to the default site and one of each category to a second site.
 
-    neighbourhoods = [create(:neighbourhood), create(:neighbourhood)]
+    neighbourhoods = create_list(:neighbourhood, 2)
+
     # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
     addresses = neighbourhoods.map do |n|
       a = create(:address)
@@ -15,18 +16,24 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
       a.save
       a
     end
+    # NOTE: Uhhh? What? Is this a factorybot thing? Why does create(:address, neighbourhood: n) not work here?
+
     @partners = addresses.map do |a|
-      3.times.map { pa = build(:partner); pa.address = a; pa.save; pa }
+      create_list(:partner, 3, address: a)
     end
+
+    # NOTE: Uhhh, what does this do? - Alexandria, 2022-05-31
     @partners.each do |for_nbd|
       o_r = OrganisationRelationship.new
       o_r.subject = for_nbd[0]; o_r.verb = :manages; o_r.object = for_nbd[1]; o_r.save
       e = build(:event); e.dtstart = Date.today; e.place = for_nbd[2]; e.save
       for_nbd
     end
+
     default_site = create_default_site
     default_site.neighbourhoods.append(neighbourhoods)
     default_site.save
+
     @site = build(:site)
     @site.neighbourhoods.append(neighbourhoods.first)
     @site.save
@@ -88,14 +95,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     calendar = create(:calendar, strategy: 'no_location')
     partner = create(:partner)
 
-    3.times do |n|
-      partner.events.create!(
-        calendar: calendar,
-        summary: "Event #{n}",
-        description: 'A description',
-        dtstart: Time.now
-      )
-    end
+    partner.events += create_list(:event, 3, calendar: calendar, dtstart: Time.now)
 
     get partner_url(partner)
 

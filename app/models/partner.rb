@@ -81,10 +81,10 @@ class Partner < ApplicationRecord
 
   validates_associated :address
 
-  validate :check_ward_access
-  validate :check_service_area_access
+  validate :check_ward_access, on: :create
+  validate :check_service_area_access, on: :create
 
-  validate :must_have_address_or_service_area
+  validate :must_have_address_or_service_area, on: :create
 
   attr_accessor :accessed_by_user
 
@@ -280,5 +280,4 @@ class Partner < ApplicationRecord
 
     errors.add :base, 'Partners must have at least one of service area or address'
   end
-
 end

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory(:event) do
-    summary { 'N.A (Narcotics Anonymous)' }
+    sequence(:summary) { |n| "N.A. (Narcotics Anonymous) - Meetup #{n}" }
     raw_location_from_source { 'Unformatted Address, Ungeolocated Lane, Manchester' }
     dtstart { DateTime.now + 1.day }
     dtend { DateTime.now + 1.day + 2.hours }

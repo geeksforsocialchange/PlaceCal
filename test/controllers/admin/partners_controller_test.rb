@@ -133,6 +133,20 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_partners_url
   end
 
+  test 'it allows access to update for wardless user' do
+    partner = create(:partner)
+    user = create(:citizen, partners: [partner])
+    access_info = 'This is some accessibility info'
+
+    sign_in user
+
+    patch admin_partner_url(partner),
+          params: { partner: { accessibility_info: access_info } }
+
+    assert_redirected_to edit_admin_partner_url(partner)
+    assert_equal Partner.find_by(id: partner.id).accessibility_info, access_info
+  end
+
   # Delete Partner
   #
   #   Allow roots to delete all Partners
