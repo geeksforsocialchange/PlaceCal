@@ -34,9 +34,7 @@
 </div>
 
 <p class='pagination'>
-<% if @articles.count < 20 -%>
-  No more news items
-<% else -%>
+<% if @articles.count == NewsController::ARTICLES_PER_PAGE -%>
   <%= link_to 'Older news items', "?offset=#{@next_offset}" %>
 <% end -%>
 </p>
