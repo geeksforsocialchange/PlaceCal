@@ -20,11 +20,55 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     @site.neighbourhoods << @neighbourhood
   end
 
-  test 'should get index without subdomain' do
+  test 'should get index subdomain' do
     get news_index_url(subdomain: @site.domain)
     assert_response :success
     assert_select ".article", 5
+
+    # counts
+    assert_select 'p', { text: 'Found 5 articles.' }
+
+    # pagination
+    assert_select 'p', { text: 'No more news items' }
+    assert_select 'p', { count: 0, text: 'Older news items' }
   end
+
+  test "with too many articles only 20 are shown and a 'more content' link" do
+    @articles += (0...25).map do |n|
+      @partner.articles.create!(
+        title: "#{n} Article, again",
+        is_draft: false,
+        body: 'Some text about this news piece',
+        author: @author)
+    end
+
+    @epoch = Date.new(2000, 1, 31)
+    @articles.each.with_index do |art, n|
+      art.update! published_at: @epoch - n
+    end
+
+    get news_index_url(subdomain: @site.domain)
+    assert_response :success
+
+    # this is capped
+    assert_select ".article", NewsController::ARTICLES_PER_PAGE
+
+    # counts
+    assert_select 'p', { text: 'Found 30 articles.' }
+
+    # pagination
+    assert_select 'p', { count: 0, text: 'No more news items' }
+    assert_select 'p', { text: 'Older news items' }
+
+    get news_index_url(subdomain: @site.domain, offset: 20)
+
+    assert_select ".article", 10 # only ten left
+
+    # pagination
+    assert_select 'p', { text: 'No more news items' }
+    assert_select 'p', { count: 0, text: 'Older news items' }
+  end
+
 
   #test 'should get index with configured subdomain' do
   #  get url_for controller: :news, subdomain: @site.slug

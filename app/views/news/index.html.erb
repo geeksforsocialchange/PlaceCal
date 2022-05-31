@@ -2,6 +2,8 @@
 
 <%= render_component "hero", title: 'News from your area', subtitle: @site.tagline %>
 
+<p>Found <%= @article_count %> articles.</p>
+
 <div class="c c--lg-space-after">
 <% @articles.each do |article| -%>
   <div class='article'>
@@ -12,3 +14,11 @@
     <% end %>
   </div>
 <% end -%>
+
+<p class='pagination'>
+<% if @articles.count < 20 -%>
+  No more news items
+<% else -%>
+  <%= link_to 'Older news items', "?offset=#{@next_offset}" %>
+<% end -%>
+</p>

@@ -16,7 +16,7 @@ class Article < ApplicationRecord
   mount_uploader :article_image, ArticleImageUploader
 
   scope :published, -> { where is_draft: false }
-  scope :by_publish_date, -> { order(:published_at) }
+  scope :by_publish_date, -> { order(published_at: :desc) }
 
   scope :global_newsfeed, -> { published.order(published_at: :desc) }
 
