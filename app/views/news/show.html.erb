@@ -1,0 +1,25 @@
+<% content_for :title, @article.title %>
+
+<div class='g article'>
+
+  <div class='gi gi__1-5 article__aside'>
+    <p class='article__published' title="<%= @article.published_at %>"><%= @article.published_at.strftime('%B %Y') %></p>
+  </div>
+
+  <div class='gi gi__4-5 article__main'>
+    <h1><%= @article.title %></h1>
+
+    <% if @article.partners.present? %>
+      <p>From <%= article_partner_links(@article) %>.</p>
+    <% end %>
+    <% if @article.article_image.present? -%>
+    <div class='article__image'>
+      <%= image_tag @article.article_image.url, class: 'border' %>
+      <p class='article__image-attribute'>Image credit and/or title</p>
+    </div>
+    <% end -%>
+    <div class='article__content'>
+      <%= markdown @article.body %>
+    </div>
+  </div>
+</div>

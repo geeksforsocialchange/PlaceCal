@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_16_083725) do
+ActiveRecord::Schema.define(version: 2022_06_01_153635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,7 +56,9 @@ ActiveRecord::Schema.define(version: 2022_05_16_083725) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "author_id"
     t.string "article_image"
+    t.string "slug"
     t.index ["author_id"], name: "index_articles_on_author_id"
+    t.index ["slug"], name: "index_articles_on_slug", unique: true
   end
 
   create_table "calendars", id: :serial, force: :cascade do |t|
@@ -80,6 +82,7 @@ ActiveRecord::Schema.define(version: 2022_05_16_083725) do
     t.string "public_contact_email"
     t.string "public_contact_phone"
     t.integer "notice_count"
+    t.string "source_type", default: ""
     t.string "calendar_state", default: "idle"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"

@@ -88,6 +88,45 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal 5, found.length, 'Expected to only find articles from tagged partners'
   end
 
+  test '::for_site returns articles for site' do
+    neighbourhood_1 = neighbourhoods(:one)
+    neighbourhood_2 = neighbourhoods(:two)
+
+    author = create(:root)
+
+    site = create(:site)
+    site.neighbourhoods << neighbourhood_1
+    site.neighbourhoods << neighbourhood_2
+
+    partner_1 = create(:partner, address: create(:address, neighbourhood: neighbourhood_1))
+    partner_2 = create(:partner, address: create(:address, neighbourhood: neighbourhood_2))
+
+    # from first partner
+    2.times do |n|
+      partner_1.articles.create!(
+        title: "#{n} Article from Partner 1",
+        is_draft: nil,
+        body: 'lorem ipsum dorem ditsum',
+        author: author
+      )
+    end
+
+    # from second partner
+    3.times do |n|
+      partner_2.articles.create!(
+        title: "#{n} Article from Partner 2",
+        is_draft: nil,
+        body: 'lorem ipsum dorem ditsum',
+        author: author
+      )
+    end
+
+    found = Article.for_site(site)
+    assert_equal 5, found.count
+
+
+  end
+
   # Unsure as to why this doesn't work. update_published_at triggers correctly
   # for the above test, but not for this one. Happens only during testing
   #

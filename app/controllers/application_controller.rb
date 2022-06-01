@@ -199,20 +199,13 @@ class ApplicationController < ActionController::Base
   end
 
   def set_navigation
+    return @navigation if @navigation
     return if self.class == MountainView::StyleguideController
 
-    @navigation = if current_site&.default_site?
-                    [
-                      ['Our story', our_story_path],
-                      ['Find your PlaceCal', find_placecal_path],
-                      ['Join us', join_path]
-                    ]
+    @navigation = if default_site?
+                    default_site_navigation
                   else
-                    [
-                      ['Events', events_path],
-                      # ['Places', places_path],
-                      ['Partners', partners_path]
-                    ]
+                    sub_site_navigation
                   end
   end
 
@@ -235,5 +228,29 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource_or_scope)
     stored_location_for(resource_or_scope) || admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
+  end
+
+  def default_site?
+    current_site&.default_site?
+  end
+
+  def default_site_navigation
+    [
+      ['Our story', our_story_path],
+      ['Find your PlaceCal', find_placecal_path],
+      ['Join us', join_path]
+    ]
+  end
+
+  def sub_site_navigation
+    article_count = @site&.news_article_count || 0
+
+    items = [
+      ['Events', events_path],
+      # ['Places', places_path],
+      ['Partners', partners_path]
+    ]
+    items << ['News', news_index_path] if article_count > 0
+    items
   end
 end
