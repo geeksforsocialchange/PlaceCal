@@ -182,6 +182,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_161025) do
     t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_stream"
   end
 
   create_table "organisation_relationships", force: :cascade do |t|

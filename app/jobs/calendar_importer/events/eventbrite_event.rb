@@ -67,7 +67,7 @@ module CalendarImporter::Events
     def online_event?
       return nil unless @event['online_event']
 
-      online_address = OnlineAddress.find_or_create_by(url: @event['url'])
+      online_address = OnlineAddress.find_or_create_by url: @event['url'], is_stream: false
       online_address.id
     end
   end

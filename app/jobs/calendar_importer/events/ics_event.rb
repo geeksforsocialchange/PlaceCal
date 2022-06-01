@@ -56,11 +56,18 @@ module CalendarImporter::Events
       # Then grab the first element of either the match object or the conference array
       # (The match object returns ICal Text, not a String, so we have to cast)
       # (We can't use .first here because the match object doesn't support it!)
-      online_address = OnlineAddress.find_or_create_by url: link[0].to_s
+      #
+      online_address = OnlineAddress.find_or_create_by url: link[0].to_s,
+                                                       is_stream: is_stream_event(link[0].to_s)
       online_address.id
     end
 
     private
+
+    def is_stream_event(link)
+      # All the other ICS links we grab are videoconferencing URLs
+      !link.include? 'facebook.com'
+    end
 
     def find_event_link
       regex = event_link_regex

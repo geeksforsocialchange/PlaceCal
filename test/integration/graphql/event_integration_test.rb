@@ -20,14 +20,10 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
   end
 
   test 'can show partners (with pagination)' do
-    (0...5).collect do |n|
-      @partner.events.create!(
-        dtstart: Time.now,
-        summary: "An event summary #{n}",
-        description: 'Longer text covering the event in more detail',
-        address: @address
-      )
-    end
+    create_list(:event, 5,
+                partner: @partner,
+                dtstart: Time.now,
+                address: @address)
 
     query_string = <<-GRAPHQL
       query {
@@ -46,15 +42,11 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     result = PlaceCalSchema.execute(query_string)
     refute_field result, 'errors'
 
-    data = result['data']
+    data = assert_field result, 'data'
+    connection = assert_field data, 'eventConnection'
+    edges = assert_field connection, 'edges'
 
-    assert data.has_key?('eventConnection'), 'result is missing key `eventConnection`'
-    connection = data['eventConnection']
-
-    assert connection.has_key?('edges')
-    edges = connection['edges']
-
-    assert edges.length == 5
+    assert_equal edges.length, 5
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
@@ -207,7 +199,6 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     build_time_events now_time
 
     DateTime.stub :now, now_time do
-
       query_string = <<-GRAPHQL
       query {
         eventsByFilter(fromDate: "1990-01-01 00:00", toDate: "1990-03-01 00:00") {
@@ -323,39 +314,38 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
+  # in cases where we have eventConnection { edges { node { ... } } }
+  def map_edges_to_ids(edges)
+    # [{ 'node': { 'id': 23, etc } }, ...] => { '23': { 'id': 23, etc }, ... }
+    edges.map { |edge| [edge['node']['id'].to_i, edge['node']] }.to_h
+  end
+
+  # in cases where we have eventsByFilter { ... }
+  def map_results_to_ids(events)
+    # [{ 'id': 23, etc }, ...] => { '23': { 'id': 23, etc }, ... }
+    events.map { |event| [event['id'].to_i, event] }.to_h
+  end
+
   # this should mainly be tested elsewhere
   test 'can scope to tag (via partner tags)' do
-    have_tag = create(:tag)
-    have_not_tag = create(:tag)
+    blue_tag = create(:tag)
+    red_tag = create(:tag)
 
-    @partner.tags << have_not_tag
+    # Red Events should not show up in the results
+    @partner.tags << red_tag
+    _red_events = create_list(:event, 2, address: @address, partner: @partner)
 
-    2.times do
-      @partner.events.create!(
-        dtstart: DateTime.now + 1.hours,
-        summary: 'partner 1: An event summary',
-        description: 'Longer text covering the event in more detail',
-        address: @address
-      )
-    end
-
-    other_address = create(:bare_address_2, neighbourhood: neighbourhoods(:two))
-    other_partner = create(:moss_side_partner,
-                           address: other_address,
-                           tags: [have_tag])
-
-    6.times do
-      other_partner.events.create!(
-        dtstart: DateTime.now + 1.hours,
-        summary: 'partner 2: An event summary',
-        description: 'Longer text covering the event in more detail',
-        address: other_address
-      )
-    end
+    # Blue events should show up in the results
+    blue_address = create(:bare_address_2, neighbourhood: neighbourhoods(:two))
+    blue_events = create_list(:event, 6, address: blue_address)
+    _blue_partner = create(:moss_side_partner,
+                           address: blue_address,
+                           events: blue_events,
+                           tags: [blue_tag])
 
     query_string = <<-GRAPHQL
     query {
-      eventsByFilter(tagId: #{have_tag.id}) {
+      eventsByFilter(tagId: #{blue_tag.id}) {
         id
         name
       }
@@ -366,9 +356,15 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     refute_field result, 'errors'
 
     data = assert_field result, 'data'
-    events = assert_field data, 'eventsByFilter'
-    assert_equal events.length, 6, 'was expecting to see only events from have_tag'
-    # TODO: Actually test that the events we are getting back are the ones we want
+    event_data = assert_field data, 'eventsByFilter'
+    assert_equal event_data.length, blue_events.length, 'was expecting to see only events from blue_tag'
+
+    events = map_results_to_ids event_data
+
+    blue_events.each do |blue_event|
+      event = events[blue_event.id]
+      assert_field_equals event, 'name', value: blue_event.summary
+    end
   end
 
   test 'test that we have geo location' do
@@ -410,5 +406,49 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     geo = assert_field address, 'geo'
     assert_field_equals geo, 'longitude', value: event.address.longitude.to_s
     assert_field_equals geo, 'latitude', value: event.address.latitude.to_s
+  end
+
+  test 'has correct details for online event' do
+    online_addresses = [
+      create(:online_address, url: 'https://zoom.us/j/sdflgkjshfgls', is_stream: true),
+      create(:online_address, url: 'https://eventbrite.com/blahblahblah', is_stream: false),
+      nil
+    ]
+    events = build_list(:event, 3, partner: @partner, dtstart: Time.now, address: @address)
+
+    # splice the lists so we get a reasonable number of events, this also replaces? the `events` list :)
+    # stuff off rubocop this is perfectly fine
+    events.zip(online_addresses).each { |event, oa| event.online_address = oa; event.save! }
+
+    query_string = <<-GRAPHQL
+      query {
+        eventConnection {
+          edges {
+            node {
+              id
+              onlineEventUrl
+              isOnlineStream
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    result = PlaceCalSchema.execute(query_string)
+    refute_field result, 'errors'
+
+    data = assert_field result, 'data'
+    connection = assert_field data, 'eventConnection'
+    edges = assert_field connection, 'edges'
+
+    assert_equal edges.length, events.length
+
+    nodes = map_edges_to_ids edges
+
+    events.each do |event|
+      node = nodes[event.id]
+      assert_field_equals node, 'onlineEventUrl', value: event.online_address&.url
+      assert_field_equals node, 'isOnlineStream', value: event.online_address&.is_stream&.to_s
+    end
   end
 end

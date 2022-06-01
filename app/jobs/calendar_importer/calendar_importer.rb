@@ -31,16 +31,18 @@ class CalendarImporter::CalendarImporter
 
   private
 
+  # This validates the feed URL to ensure that we do support it, and that it's live on the internet
+  # As a side effect, it runs CalendarImporter#parser, which sets self.parser to one of the values above
+  # This ensures that self.parser is set during calendar_importer_task
   def validate_feed!
-    raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless is_url_accessible?
+    raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless url_accessible?
     raise UnsupportedFeed, 'The provided URL is not supported' unless parser.present?
   end
 
-  def is_url_accessible?
+  def url_accessible?
     response = HTTParty.get(@calendar.source, follow_redirects: true)
     response.code == 200
   rescue
     false
   end
-
 end

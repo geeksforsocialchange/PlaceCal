@@ -14,7 +14,6 @@ class CalendarImporterJob < ApplicationJob
     report_error exception, "Internal database error"
   end
 
-
   def calendar
     @calendar ||= Calendar.find(@calendar_id)
   end
