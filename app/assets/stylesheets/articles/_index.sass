@@ -11,19 +11,35 @@
     border-bottom: 2px solid #998675
     margin: 1em 0
 
-    h2
-      margin-top: 0px
-      line-height: 1em
-
-  &__image img
-    border-radius: 1rem;
-    overflow: hidden
-
-  &__image-attribute
-    margin: 0px
+  &__title
+    margin-top: 0px
     line-height: 1em
-    font-size: 0.85em
+
+  &__content
+    flex-direction: row;
+    display: flex
+
+  &__body
+    flex-grow: 5
+
+  &__image
+    flex-grow: 5
+
+    img
+      max-width: 100%
+      border-radius: 1rem;
+      overflow: hidden
 
   &__pagination
     padding: 2em;
 
+  +for-phone-only
+    &__body
+      order: 2
+
+    &__image
+      order: 1
+
+    &__published
+      text-align: left
+      padding-bottom: 1em
