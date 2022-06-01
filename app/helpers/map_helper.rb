@@ -1,7 +1,7 @@
 
 module MapHelper
 
-  def args_for_map(map_points, site, style_mode)
+  def args_for_map(map_points, site, style_mode, compact_mode)
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
       {}.tap do |pin|
         pin[:position] = [mrkr[:lat], mrkr[:lon]]
@@ -17,21 +17,24 @@ module MapHelper
       shadowUrl: image_path('icons/map/map-shadow.png'),
       markers: data_for_markers,
       tilesetUrl: tileset_for_site_url(site),
-      styleClass: map_style_class(data_for_markers, style_mode)
+      styleClass: map_style_class(data_for_markers, style_mode, compact_mode)
     }.to_json.html_safe
   end
 
   private
 
-  def map_style_class(points, style_mode)
+  def map_style_class(points, style_mode, compact_mode)
+    out = []
     case style_mode
     when :single
-      'map--single'
+      out << 'map--single'
     when :multi
-      'map--multiple'
+      out << 'map--multiple'
     else
-      points.length > 1 ? 'map--multiple' : 'map--single'
+      out << ((points.length > 1) ? 'map--multiple' : 'map--single')
     end
+    out << 'map--compact' if compact_mode
+    out
   end
 
   def center(marker_data)

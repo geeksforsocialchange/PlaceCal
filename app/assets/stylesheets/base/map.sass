@@ -1,13 +1,15 @@
 @import "variables_mixins"
 
 .map
-  height: 330px
 
   .leaflet-container, .leaflet-popup-content
     font-family: $sans-serif
     a
       color: $base-text
       font-size: 0.9rem
+
+  &--compact
+    height: 330px
 
   &--single
     border: 5px solid $base-rules

@@ -60,8 +60,10 @@ document.MapHandler = {
       }
     }
 
-    this.mapContainer.classList.remove('map--single', 'map--multiple');
-    this.mapContainer.classList.add(args.styleClass);
+    this.mapContainer.classList.remove('map--single', 'map--multiple', 'map--compact');
+    args.styleClass.forEach( style =>
+      this.mapContainer.classList.add(style)
+    );
 
     parent.appendChild(this.mapContainer);
 
