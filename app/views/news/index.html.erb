@@ -3,29 +3,27 @@
 <%= render_component 'hero', title: 'News from your area', subtitle: @site.tagline %>
 
 
-<div id='article-index'>
+<div class='articles'>
 
   <% @articles.each do |article| -%>
     <% card_class = article.article_image.present? ? 'gi__2-5' : 'gi__3-5' -%>
-    <div class='article-card g'>
+    <div class='articles__article-card g'>
 
-      <div class='gi gi__1-5 aside'>
-        <p class='published' title="<%= article.published_at %>"><%= article.published_at.strftime('%B %Y') %></p>
+      <div class='gi gi__1-5 articles__aside'>
+        <p class='articles__published' title="<%= article.published_at %>"><%= article.published_at.strftime('%B %Y') %></p>
       </div>
 
-      <div class='gi <%= card_class %> main'>
+      <div class='gi <%= card_class %> articles__main'>
         <h2><%= link_to article.title, news_path(article) %></h2>
-        <div class='content'>
+        <div class='articles__content'>
           <%= markdown article.body[0..200] %>
         </div>
         <p><%= link_to 'Find out more', news_path(article), class: 'btn btn--alt btn--mt' %></p>
       </div>
 
       <% if article.article_image.present? %>
-        <div class='gi gi__2-5 main'>
-          <div class='image'>
-            <%= image_tag article.article_image.url, class: 'border' %>
-          </div>
+        <div class='gi gi__2-5 articles__image'>
+          <%= image_tag article.article_image.url, class: 'border' %>
         </div>
       <% end %>
 
@@ -33,7 +31,7 @@
   <% end %>
 </div>
 
-<p class='pagination'>
+<p class='articles__pagination'>
 <% if @articles.count == NewsController::ARTICLES_PER_PAGE -%>
   <%= link_to 'Older news items', "?offset=#{@next_offset}" %>
 <% end -%>
