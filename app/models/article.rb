@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Article < ApplicationRecord
+  extend FriendlyId
+
+  friendly_id :slug_candidates, use: :slugged
+
   validates :title, :body, presence: true
 
   before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
@@ -49,5 +53,9 @@ class Article < ApplicationRecord
   # We let it return nil because articles are not guaranteed to have images
   def highres_image
     article_image&.highres&.url
+  end
+
+  def slug_candidates
+   [ %i[title id] ]
   end
 end

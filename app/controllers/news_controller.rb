@@ -31,6 +31,6 @@ class NewsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_article
-    @article = Article.published.find(params[:id])
+    @article = Article.published.friendly.find(params[:id])
   end
 end
