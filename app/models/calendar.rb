@@ -155,12 +155,9 @@ class Calendar < ApplicationRecord
   # @return nothing
   def flag_complete_import_job!(notices, checksum, importer_used)
     transaction do
-      puts "   saving?  (state=#{calendar_state})"
       return unless calendar_state.in_worker?
 
       Calendar.record_timestamps = false
-
-      puts "   saving!"
 
       update!(
         calendar_state: :idle,

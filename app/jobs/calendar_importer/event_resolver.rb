@@ -210,7 +210,7 @@ class CalendarImporter::EventResolver
 
       event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
-      unless event.update data.attributes.merge(event_time)
+      unless event.update!(data.attributes.merge(event_time))
         notices << { event: event, errors: event.errors.full_messages }
       end
 
