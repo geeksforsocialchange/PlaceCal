@@ -29,53 +29,54 @@ class CalendarImporter::CalendarImporterTask
       CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
     end
 
-    return if parsed_events.blank?
+    if parsed_events.present?
 
-    all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
-    active_event_uids = Set.new
+      all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
+      active_event_uids = Set.new
 
-    # this can be useful if you want to force import on your local machine
-    # if @force_import
-    #   calendar.events.destroy_all
-    # end
+      # this can be useful if you want to force import on your local machine
+      # if @force_import
+      #   calendar.events.destroy_all
+      # end
 
-    parsed_events.each do |parsed_event|
-      # is source event valid?
-      # now find all occurrences of event in calendar
-      # set up location from strategy
+      parsed_events.each do |parsed_event|
+        # is source event valid?
+        # now find all occurrences of event in calendar
+        # set up location from strategy
 
-      # find all events in calendar with same UID
-      # if recurring event?
-      #   delete upcoming calendar events that have the same start and end time as our parsed_event
-      #
-      # for each occurence
-      #   skip if more than a day apart (?)
-      #   setup start_time and end_time
-      #   if this is recurring
-      #     try to find an event with the same start time and end time
-      #     or make a new event
-      #   set are_spaces_available
-      #   save event
-      #
-      # delete all upcoming events that have not been created/updated by this import
+        # find all events in calendar with same UID
+        # if recurring event?
+        #   delete upcoming calendar events that have the same start and end time as our parsed_event
+        #
+        # for each occurence
+        #   skip if more than a day apart (?)
+        #   setup start_time and end_time
+        #   if this is recurring
+        #     try to find an event with the same start time and end time
+        #     or make a new event
+        #   set are_spaces_available
+        #   save event
+        #
+        # delete all upcoming events that have not been created/updated by this import
 
-      next if parsed_event.is_private?
-      next if parsed_event.has_no_occurences?
+        next if parsed_event.is_private?
+        next if parsed_event.has_no_occurences?
 
-      parsed_event.determine_online_location
+        parsed_event.determine_online_location
 
-      parsed_event.determine_location_for_strategy
-      # next if parsed_event.is_address_missing?
+        parsed_event.determine_location_for_strategy
+        # next if parsed_event.is_address_missing?
 
-      active_event_uids << parsed_event.uid
+        active_event_uids << parsed_event.uid
 
-      parsed_event.save_all_occurences
+        parsed_event.save_all_occurences
 
-    rescue CalendarImporter::EventResolver::Problem => e
-      notices << e.message
+      rescue CalendarImporter::EventResolver::Problem => e
+        notices << e.message
+      end
+
+      purge_stale_events_from_calendar all_event_uids - active_event_uids
     end
-
-    purge_stale_events_from_calendar all_event_uids - active_event_uids
 
     # calendar.reload # reload the record from database to clear out any invalid events to avoid attempts to save them
 

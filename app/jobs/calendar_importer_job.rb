@@ -9,6 +9,11 @@ class CalendarImporterJob < ApplicationJob
     report_error exception, "Calendar URL is not accessible"
   end
 
+  rescue_from ActiveRecord::ActiveRecordError do |exception|
+    raise exception if Rails.env.development? && @silence_db_exceptions == false
+    report_error exception, "Internal database error"
+  end
+
 
   def calendar
     @calendar ||= Calendar.find(@calendar_id)
@@ -17,7 +22,9 @@ class CalendarImporterJob < ApplicationJob
   # Imports all events from a given calendar
   # @param calendar_id [int] The ID of the Calendar object to import from
   # @param from_date [Date] The Date from which to import from
-  def perform(calendar_id, from_date, force_import)
+  def perform(calendar_id, from_date, force_import, silence_db_exceptions=nil)
+
+    @silence_db_exceptions = silence_db_exceptions
     @calendar_id = calendar_id
 
     calendar.flag_start_import_job!
@@ -40,7 +47,7 @@ class CalendarImporterJob < ApplicationJob
     backtrace = e.backtrace[...6]
 
     calendar.flag_error_import_job! full_message
-    puts full_message, backtrace if Rails.env.dev?
+    puts full_message, backtrace if Rails.env.development?
     Rollbar.error full_message, { exception_type: e.class.name, backtrace: backtrace }
   end
 end
