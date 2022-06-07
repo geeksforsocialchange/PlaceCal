@@ -10,7 +10,7 @@ class CalendarImporterJob < ApplicationJob
   end
 
   rescue_from ActiveRecord::ActiveRecordError do |exception|
-    raise exception if Rails.env.development? && @silence_db_exceptions == false
+    raise exception if Rails.env != 'production' && @silence_db_exceptions == false
     report_error exception, "Internal database error"
   end
 
@@ -22,7 +22,7 @@ class CalendarImporterJob < ApplicationJob
   # Imports all events from a given calendar
   # @param calendar_id [int] The ID of the Calendar object to import from
   # @param from_date [Date] The Date from which to import from
-  def perform(calendar_id, from_date, force_import, silence_db_exceptions=nil)
+  def perform(calendar_id, from_date, force_import, silence_db_exceptions=false)
 
     @silence_db_exceptions = silence_db_exceptions
     @calendar_id = calendar_id
