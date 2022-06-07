@@ -40,7 +40,7 @@ module CalendarImporter::Parsers
       @events = []
 
       # It is possible for an ics file to contain multiple calendars
-      Icalendar::Calendar.parse(data).each do |calendar|
+      parse_remote_calendars(data).each do |calendar|
         calendar.events.each do |event|
           # Date can't be parsed with calling `value_ical` first
           @start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
@@ -56,6 +56,15 @@ module CalendarImporter::Parsers
     def digest(data)
       # read file to get contents before creating digest
       Digest::MD5.hexdigest(data)
+    end
+
+    def parse_remote_calendars(data)
+      Icalendar::Calendar.parse data
+
+    rescue StandardError => e
+      # FIXME this should set an error flag that is checked by the importer and
+      #   logged to the calendar
+      []
     end
   end
 end
