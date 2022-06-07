@@ -184,6 +184,8 @@ class Calendar < ApplicationRecord
   #   nothing
   def flag_error_import_job!(problem)
     transaction do
+      reload # clear any bad state that may have built up
+
       return unless calendar_state.in_worker?
 
       update!(
