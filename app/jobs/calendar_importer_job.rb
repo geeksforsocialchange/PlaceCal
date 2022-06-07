@@ -46,6 +46,9 @@ class CalendarImporterJob < ApplicationJob
     full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{e}"
     backtrace = e.backtrace[...6]
 
+    # FIXME: we should not be reloading the calendar here.
+    #   see note in Calendar#flag_error_import_job! for details
+    calendar.reload
     calendar.flag_error_import_job! full_message
     puts full_message, backtrace if Rails.env.development?
     Rollbar.error full_message, { exception_type: e.class.name, backtrace: backtrace }
