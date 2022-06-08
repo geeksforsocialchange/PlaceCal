@@ -3,65 +3,60 @@
 require 'test_helper'
 
 class Admin::TagsTest < ActionDispatch::IntegrationTest
+  include Capybara::DSL
+  include Capybara::Minitest::Assertions
+
   setup do
     @root = create(:root)
     @citizen = create(:citizen)
 
     @tag = create(:tag)
 
+    create_default_site
     host! 'admin.lvh.me'
   end
 
   test 'root user editing a tag can see system_tag option' do
-    sign_in @root
-    get edit_admin_tag_path(@tag)
+    log_in_with @root.email
+    visit edit_admin_tag_url(@tag)
+    #puts page.html
 
-    assert_select 'input[name="tag[system_tag]"]'
+    assert_selector 'input#tag_system_tag'
   end
 
   test 'citizen user editing a tag cannot see system_tag option' do
-    sign_in @citizen
-    get edit_admin_tag_path(@tag)
+    log_in_with @citizen.email
+    visit edit_admin_tag_url(@tag)
 
-    assert_select 'input[name="tag[system_tag]"]', count: 0
+    assert_selector 'input#tag_system_tag', count: 0
   end
 
+  test 'root users can modify system tag' do
+    log_in_with @root.email
 
-=begin
-  test 'neighbourhood admin : can see partner on /new' do
-    sign_in @neighbourhood_admin
-    get new_admin_article_path
+    visit edit_admin_tag_url(@tag)
+    fill_in 'Name', with: 'A new tag name'
+    click_button 'Save'
 
-    assert_select 'select#article_partner_ids option', @partner.name
+    assert_has_flash :success, 'Tag was saved successfully'
+
+    # this should be the tags index page
+    assert_content 'A new tag name'
   end
 
-  test 'partner admin : partner is preselected on /new' do
-    sign_in @partner_admin
-    get new_admin_article_path
+#   test 'citizen users cannot modify tag'
 
-    assert_select 'select#article_partner_ids option[selected="selected"]', @partner.name
+  private
+
+  def assert_has_flash(type, message)
+    assert_css ".flashes .alert-#{type}", text: message
   end
 
-  test 'editor : author is preselected on /new' do
-    sign_in @editor
-    get new_admin_article_path
-
-    assert_select 'select#article_author_id option[selected="selected"]', @editor.admin_name
+  def log_in_with(email, password='password')
+    # NOTE: make sure you have a default site set up in DB
+    visit 'http://lvh.me/users/sign_in'
+    fill_in 'Email', with: email
+    fill_in 'Password', with: password
+    click_button 'Log in'
   end
-
-  test 'neighbourhood admin : author is preselected on /new' do
-    sign_in @neighbourhood_admin
-    get new_admin_article_path
-
-    assert_select 'select#article_author_id option[selected="selected"]', @neighbourhood_admin.admin_name
-  end
-
-  test 'partner admin : author is preselected on /new' do
-    sign_in @partner_admin
-    get new_admin_article_path
-
-    assert_select 'select#article_author_id option[selected="selected"]', @partner_admin.admin_name
-  end
-=end
-
 end
