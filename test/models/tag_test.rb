@@ -21,4 +21,15 @@ class TagTest < ActiveSupport::TestCase
 
     assert @tag.partners.length > 0
   end
+
+  test 'system_tags cannot modify name or slug' do
+    @tag.system_tag = true
+    @tag.name = 'This is a new name'
+    @tag.slug = 'a-new-tag-slug'
+
+    refute @tag.validate
+
+    assert @tag.errors.has_key?(:name)
+    assert @tag.errors.has_key?(:slug)
+  end
 end

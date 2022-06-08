@@ -58,16 +58,15 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
   test 'root users can make a tag a system tag' do
     log_in_with @root.email
 
-    visit edit_admin_tag_url(@tag)
 
     # toggle on
+    visit edit_admin_tag_url(@tag)
     check 'System tag'
     click_button 'Save'
     assert_has_flash :success, 'Tag was saved successfully'
 
     # check is toggled
     visit edit_admin_tag_url(@tag)
-    #puts page.html
     assert_selector :xpath, '//input[@name="tag[system_tag]"][@checked="checked"]'
 
     # now toggle off

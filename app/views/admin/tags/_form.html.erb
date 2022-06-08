@@ -1,8 +1,10 @@
 <%- disabled_fields = policy(@tag).disabled_fields %>
 
 <% if @tag.system_tag %>
-  <div class="alert alert-warning" role="alert">
-    WARNING: This tag is used by the PlaceCal backend and should not be edited!
+  <div class="card text-black bg-warning mb-3">
+    <div class="card-header">
+      <h6>WARNING: This tag is used by the PlaceCal backend so you cannot change the Name or Slug values.</h6>
+    </div>
   </div>
 <% end %>
 
@@ -10,10 +12,10 @@
   <%= render_component "error", object: @tag %>
 
   <%= f.input :name, class: 'form-control',
-              disabled: disabled_fields.include?(:name) %>
+              disabled: disabled_fields.include?(:name) || @tag.system_tag %>
 
   <%= f.input :slug, class: 'form-control',
-              disabled: disabled_fields.include?(:slug) %>
+              disabled: disabled_fields.include?(:slug) || @tag.system_tag %>
 
   <%= f.input :description, class: 'form-control',
               disabled: disabled_fields.include?(:description) %>
