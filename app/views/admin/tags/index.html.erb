@@ -6,6 +6,7 @@ var columns = [
     {"data": "name"},
     {"data": "slug"},
     {"data": "edit_permission"},
+    {"data": "system_tag"},
     {"data": "description"},
     {"data": "updated_at"}
   ]
@@ -14,8 +15,8 @@ var columns = [
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Tags",
     model: :tags,
-    column_titles: ['ID', 'Name', 'Slug', 'Access', 'Description', 'Last updated'],
-    columns: %i[id name slug edit_permission description updated_at],
+    column_titles: ['ID', 'Name', 'Slug', 'Access', 'System tag', 'Description', 'Last updated'],
+    columns: %i[id name slug edit_permission system_tag description updated_at],
     data: @tags,
     source: admin_tags_path(format: :json),
     new_link: new_admin_tag_path

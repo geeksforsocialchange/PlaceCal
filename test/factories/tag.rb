@@ -13,5 +13,10 @@ FactoryBot.define do
       description { 'I am a tag everyone can edit' }
       edit_permission { 'all' }
     end
+
+    factory :system_tag do
+      system_tag { true }
+    end
+
   end
 end

@@ -20,8 +20,12 @@ class TagPolicy < ApplicationPolicy
   def update?
     return true if user.root?
 
+    # system tags can only be edited by root
+    return false if @record.system_tag
+
     # If the user is a tag admin and has been assigned this tag
     return true if user.tag_admin? && user.tags.include?(@record)
+
 
     # NB: We literally can't filter by partners added because otherwise itll wipe existing partners
     #
@@ -39,7 +43,7 @@ class TagPolicy < ApplicationPolicy
 
   def permitted_attributes
     if user.root?
-      %i[name slug description edit_permission]
+      %i[name slug description edit_permission system_tag]
         .push(partner_ids: [], user_ids: [])
     elsif user.tag_admin? && user.tags.include?(@record)
       %i[].push(partner_ids: [])
@@ -54,9 +58,9 @@ class TagPolicy < ApplicationPolicy
     if user.root?
       %i[]
     elsif user.tag_admin? || @record.edit_permission == :all
-      %i[name slug description users edit_permission user_ids]
+      %i[name slug description users edit_permission user_ids system_tag]
     else # Should never be hit, but it's useful as a guard
-      %i[name slug description users edit_permission partner_ids user_ids]
+      %i[name slug description users edit_permission partner_ids user_ids system_tag]
     end
   end
 

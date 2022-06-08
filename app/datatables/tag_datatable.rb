@@ -8,6 +8,7 @@ class TagDatatable < Datatable
       slug: { source: 'Tag.slug' },
       description: { source: 'Tag.description' },
       edit_permission: { source: 'Tag.edit_permission' },
+      system_tag: { source: 'Tag.system_tag' },
       updated_at: { source: 'Tag.updated_at' }
     }
   end
@@ -20,6 +21,7 @@ class TagDatatable < Datatable
         slug: record.slug,
         description: record.description,
         edit_permission: record.edit_permission,
+        system_tag: record.system_tag,
         updated_at: record.updated_at
       }
     end
