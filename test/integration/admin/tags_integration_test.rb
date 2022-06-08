@@ -11,6 +11,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
     @citizen = create(:citizen)
 
     @tag = create(:tag)
+    @system_tag = create(:system_tag)
 
     create_default_site
     host! 'admin.lvh.me'
@@ -19,7 +20,6 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
   test 'root user editing a tag can see system_tag option' do
     log_in_with @root.email
     visit edit_admin_tag_url(@tag)
-    #puts page.html
 
     assert_selector 'input#tag_system_tag'
   end
@@ -44,7 +44,41 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
     assert_content 'A new tag name'
   end
 
-#   test 'citizen users cannot modify tag'
+  test 'citizen users cannot modify tag' do
+    @citizen.tags << @tag
+    @citizen.tags << @system_tag
+
+    log_in_with @citizen.email
+
+    visit edit_admin_tag_url(@system_tag)
+
+    assert_content 'This tag is a system tag meaning that it cannot be edited by non-root admins.'
+  end
+
+  test 'root users can make a tag a system tag' do
+    log_in_with @root.email
+
+    visit edit_admin_tag_url(@tag)
+
+    # toggle on
+    check 'System tag'
+    click_button 'Save'
+    assert_has_flash :success, 'Tag was saved successfully'
+
+    # check is toggled
+    visit edit_admin_tag_url(@tag)
+    #puts page.html
+    assert_selector :xpath, '//input[@name="tag[system_tag]"][@checked="checked"]'
+
+    # now toggle off
+    uncheck 'System tag'
+    click_button 'Save'
+    assert_has_flash :success, 'Tag was saved successfully'
+
+    # check is NOT toggled
+    visit edit_admin_tag_url(@tag)
+    assert_selector :xpath, '//input[@name="tag[system_tag]"][@checked="checked"]', count: 0
+  end
 
   private
 
