@@ -3,6 +3,7 @@
 <%= render_component "admin_index",
   title: "Collections",
   model: :collections,
+  column_titles: ['ID', 'Name', 'Description'],
   columns: %i[id name description],
   data: @collections,
   new_link: new_admin_collection_path

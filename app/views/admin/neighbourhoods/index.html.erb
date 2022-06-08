@@ -11,6 +11,7 @@ var columns = [
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Neighbourhoods",
     model: :neighbourhoods,
+    column_titles: ['ID', 'Our name', 'Official name', 'Official key', 'Official value'],
     columns: %i[id name unit_name unit_code_key unit_code_value],
     data: @neighbourhoods.limit(15),
     source: admin_neighbourhoods_path(format: :json)

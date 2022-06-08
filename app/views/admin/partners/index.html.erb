@@ -11,6 +11,7 @@ var columns = [
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Partners",
     model: :partners,
+    column_titles: ['ID', 'Name', 'Slug', 'Address', 'Last updated'],
     columns: %i[id name slug address updated_at],
     data: @partners,
     source: admin_partners_path(format: :json),
