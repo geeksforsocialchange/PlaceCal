@@ -11,11 +11,18 @@
   <%= f.input :description, class: 'form-control',
               disabled: disabled_fields.include?(:description) %>
 
+  <% if current_user.root? -%>
+    <%= f.input :system_tag, class: 'form-control',
+      disabled: disabled_fields.include?(:system_tag),
+      hint: 'Only root users can modify this tag' %>
+  <% end -%>
+
   <%= f.input :edit_permission,
               as: :radio_buttons,
               label_method: ->(val){ edit_permission_label(val) },
               hint: 'Users with this role will be granted access to assign this tag',
               disabled: disabled_fields.include?(:edit_permission) %>
+
 
   <h2>Tagged Partners</h2>
   <p>Apply this tag to the given partners</p>
