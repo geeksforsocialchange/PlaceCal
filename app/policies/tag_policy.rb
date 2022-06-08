@@ -20,8 +20,12 @@ class TagPolicy < ApplicationPolicy
   def update?
     return true if user.root?
 
+    # system tags can only be edited by root
+    return false if @record.system_tag
+
     # If the user is a tag admin and has been assigned this tag
     return true if user.tag_admin? && user.tags.include?(@record)
+
 
     # NB: We literally can't filter by partners added because otherwise itll wipe existing partners
     #
