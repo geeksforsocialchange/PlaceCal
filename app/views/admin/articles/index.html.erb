@@ -13,6 +13,7 @@ var columns = [
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Articles",
     model: :articles,
+    column_titles: ['ID', 'Title', 'Author', 'Partners', 'Published on', 'Draft?', 'Last updated'],
     columns: %i[id title author partners published_at is_draft updated_at],
     data: @articles,
     source: admin_articles_path(format: :json),
