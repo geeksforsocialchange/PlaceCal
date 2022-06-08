@@ -1,1 +1,11 @@
-<%= render_component "admin_edit", model: :tag, title: @tag.name %>
+<% if @tag.system_tag && !current_user.root? %>
+  <% content_for :title do %><%= @tag.name%><% end %>
+
+  <h1 class="page-header"><%= @tag.name %></h1>
+
+  <!-- TODO: come up with better words here -->
+  <p>This tag is a <em>system tag</em> meaning that it cannot be edited by non-root admins.</p>
+
+<% else %>
+  <%= render_component "admin_edit", model: :tag, title: @tag.name %>
+<% end %>

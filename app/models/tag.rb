@@ -28,6 +28,7 @@ class Tag < ApplicationRecord
               too_long: 'maximum length is 200 characters'
             }
   validates :edit_permission, presence: true
+  validate :check_editable_fields
 
   enumerize :edit_permission,
             in: %i[root all],
@@ -38,4 +39,13 @@ class Tag < ApplicationRecord
 
     where(id: tag_ids.uniq)
   }
+
+  private
+
+  def check_editable_fields
+    return if new_record? || !system_tag
+
+    errors.add :name, 'Cannot be changed on a system_tag' if name_changed?
+    errors.add :slug, 'Cannot be changed on a system_tag' if slug_changed?
+  end
 end
