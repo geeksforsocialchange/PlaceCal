@@ -1,0 +1,28 @@
+<div class="help help__free_public_wifi">
+  <svg width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="support/getting-online" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g id="Group-9">
+        <!-- Background -->
+        <rect class="svg__background" id="Rectangle-4-Copy" fill="#F1E9DA" x="0" y="0" width="191" height="150" rx="20"></rect>
+        <!-- Map icon outline -->
+        <path class="svg__secondary" d="M37.0628589,101.22744 L158.936276,101.22744 L158.936276,35.5016658 L37.0628589,35.5016658 L37.0628589,101.22744 Z M159.951512,29 L36.0484876,29 C33.2719493,29 31,31.2590169 31,34.0197507 L31,106.810869 C31,109.571603 33.2719493,111.83062 36.0484876,111.83062 L80.7275599,111.83062 L80.7275599,124.644624 L73.2963384,124.644624 L73.2963384,130 L122.703662,130 L122.703662,124.644624 L115.27244,124.644624 L115.27244,111.83062 L159.951512,111.83062 C162.728051,111.83062 165,109.571603 165,106.810869 L165,34.0197507 C165,31.2590169 162.728051,29 159.951512,29 Z" id="Fill-6" fill="#5B4E47"></path>
+        <!-- Clock face -->
+        <polygon id="Fill-8" fill="#5B4E47" points="99.8620089 65.2864893 104 61.2885759 101.631327 59 98.0892064 62.4220136 96.3695444 60.761085 94 63.0504956 95.719662 64.7114241 97.7067689 66.6302556 98.0892064 67"></polygon>
+        <!-- Monitor bezel -->
+        <path class="svg__primary" d="M97.9995647,75.9458779 C91.9631466,75.9458779 87.0688946,71.0504413 87.0688946,65.0095399 C87.0688946,58.9695023 91.9631466,54.0732019 97.9995647,54.0732019 C104.037724,54.0732019 108.931105,58.9695023 108.931105,65.0095399 C108.931105,71.0504413 104.037724,75.9458779 97.9995647,75.9458779 M97.9995647,47 C88.0595846,47 80,55.0631737 80,65.0095399 C80,80.7687512 97.9995647,93 97.9995647,93 C97.9995647,93 116,80.7687512 116,65.0095399 C116,55.0631737 107.940415,47 97.9995647,47" id="Fill-9" fill="#F19089"></path>
+      </g>
+    </g>
+  </svg>
+  <h3 class="h2--alt"><span>Public Wifi</span></h3>
+  <p>Free public wifi is available in the following places:</p>
+  <% if places.any? %>
+    <ul>
+      <% places.each do |location| %>
+        <li><%= link_to location.name, places_url(location) %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>Information about getting public wifi coming soon.</p>
+  <% end %>
+</div>
