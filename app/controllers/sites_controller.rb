@@ -31,7 +31,7 @@ class SitesController < ApplicationController
 
   def set_places_with_free_wifi
     @places_with_free_wifi = Partner
-      .with_tags(Tag.find_by(slug: 'public-wifi'))
+      .with_tags(Tag.find_by(slug: 'wifi'))
       .for_site(current_site)
       .sort_by(&:name.downcase)
   end
