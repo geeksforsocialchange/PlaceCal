@@ -21,8 +21,8 @@ module EventsHelper
     # If the online address has a web stream, we want a direct link to join that
     # Otherwise we should probably only show the online url if publisher_url is missing,
     # to avoid having two links that head to the same place
-    if online_address.is_stream?
-      link_to('Visit this web stream',
+    if online_address.link_type == :stream
+      link_to('Join this meeting',
               online_address.url,
               class: 'btn btn-primary').html_safe
     elsif @event.publisher_url.blank?

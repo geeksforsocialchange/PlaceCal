@@ -2,6 +2,8 @@
 
 module CalendarImporter::Events
   class IcsEvent < Base
+    class MissingTypeForURL < StandardError; end
+
     def initialize(event, start_date, end_date)
       @event = event
       @dtstart = start_date
@@ -58,23 +60,32 @@ module CalendarImporter::Events
       # (We can't use .first here because the match object doesn't support it!)
       #
       online_address = OnlineAddress.find_or_create_by url: link[0].to_s,
-                                                       is_stream: is_stream_event(link[0].to_s)
+                                                       link_type: have_direct_url_to_stream?(link[0].to_s)
       online_address.id
     end
 
     private
 
-    def is_stream_event(link)
-      # All the other ICS links we grab are videoconferencing URLs
-      !link.include? 'facebook.com'
+    def have_direct_url_to_stream?(link)
+      # Oh my god why is ruby's iteration stuff so annoying
+      # also TODO: find a different name than "value"
+      domain = event_link_types.keys.find(proc { nil }) { |domain| link.include?(domain) }
+
+      return event_link_types[domain][:type] if domain
+
+      # Because there is a type for each URL handled, this should never occur
+      # However, in the future, those URLs will be edited, so we should guard against this
+      raise MissingTypeForURL, "Type (direct/indirect) missing for URL #{link}"
     end
 
     def find_event_link
-      regex = event_link_regex
+      link_regexes = event_link_types.values.map { |v| v[:regex] }
+      regex = Regexp.union link_regexes
+
       regex.match description
     end
 
-    def event_link_regex
+    def event_link_types
       http = %r{(http(s)?://)?}        # - https:// or http:// or nothing
       alphanum = %r{[A-Za-z0-9]+}      # - alphanumeric strings
       subdomain = %r{(#{alphanum}\.)?} # - matches the www. or us04web in the zoom link
@@ -91,14 +102,12 @@ module CalendarImporter::Events
       #   <a href="(event url)">
       #   <p>(event url)</p>
 
-      links = {
-        'jitsi': %r{#{http}#{subdomain}meet.jit.si/#{suffix}},
-        'meets': %r{#{http}#{subdomain}meet.google.com/#{suffix}},
-        'facebook': %r{#{http}#{subdomain}facebook.com/events/#{suffix}},
-        'zoom': %r{#{http}#{subdomain}zoom.us/j/#{suffix}}
+      {
+        'meet.jit.si' =>     { regex: %r{#{http}#{subdomain}meet.jit.si/#{suffix}}, type: 'direct' },
+        'meet.google.com' => { regex: %r{#{http}#{subdomain}meet.google.com/#{suffix}}, type: 'direct' },
+        'facebook.com' =>    { regex: %r{#{http}#{subdomain}facebook.com/events/#{suffix}}, type: 'indirect' },
+        'zoom.us' =>         { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' }
       }
-
-      Regexp.union links.values
     end
   end
 end

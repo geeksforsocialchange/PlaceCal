@@ -65,7 +65,8 @@ class CalendarImporter::EventResolver
       raise "Calendar import strategy unknown! (ID=#{calendar.id}, strategy=#{calendar.strategy})"
     end
 
-    # NOTE: Data is a... Calendar object? Huh??
+    # NOTE: In this context, data is a calendar object. But this doesn't make sense because
+    #       determine_online_location sees a CalendarImporter::Events::IcsEvent object?
     data.place_id = place.id if place
     data.address_id = address&.id
     data.partner_id = calendar.partner_id

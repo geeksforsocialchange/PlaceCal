@@ -39,17 +39,18 @@ module Types
           description: 'The URL of the partners original page'
 
     field :onlineEventUrl, String,
-          description: 'The URL of the event. Can be an event link e.g. Eventbrite, or a Zoom/Meet/Jitsi link'
+          description: 'The URL of the online event. Can be an event link e.g. Eventbrite, or a Zoom/Meet/Jitsi link'
 
-    field :isOnlineStream, String,
-          description: 'Whether the url is to an event (e.g. Eventbrite event ticketing) or a stream (e.g. Zoom join link)'
+    field :onlineEventUrlType, String,
+          description: 'Whether the URL of the online event is a link to the live stream (direct)'\
+                       ' or to an intermediary (indirect).'
 
     def onlineEventUrl
       object&.online_address&.url
     end
 
-    def isOnlineStream
-      object&.online_address&.is_stream
+    def onlineEventUrlType
+      object&.online_address&.link_type
     end
   end
 end

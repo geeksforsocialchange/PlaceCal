@@ -410,8 +410,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
   test 'has correct details for online event' do
     online_addresses = [
-      create(:online_address, url: 'https://zoom.us/j/sdflgkjshfgls', is_stream: true),
-      create(:online_address, url: 'https://eventbrite.com/blahblahblah', is_stream: false),
+      create(:online_address, url: 'https://zoom.us/j/sdflgkjshfgls', link_type: 'direct'),
+      create(:online_address, url: 'https://eventbrite.com/blahblahblah', link_type: 'indirect'),
       nil
     ]
     events = build_list(:event, 3, partner: @partner, dtstart: Time.now, address: @address)
@@ -427,7 +427,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
             node {
               id
               onlineEventUrl
-              isOnlineStream
+              onlineEventUrlType
             }
           }
         }
@@ -448,7 +448,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     events.each do |event|
       node = nodes[event.id]
       assert_field_equals node, 'onlineEventUrl', value: event.online_address&.url
-      assert_field_equals node, 'isOnlineStream', value: event.online_address&.is_stream&.to_s
+      assert_field_equals node, 'onlineEventUrlType', value: event.online_address&.link_type
     end
   end
 end
