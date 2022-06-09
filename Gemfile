@@ -11,7 +11,7 @@ end
 # Core
 gem 'pg'
 gem 'puma', '~> 5'
-gem 'rails', '~> 6.1.5'
+gem 'rails', '~> 6.1.6'
 gem 'minitest-rails'
 
 # Frontend
