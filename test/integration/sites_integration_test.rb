@@ -34,9 +34,9 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'strong', @site_admin.phone
     assert_select 'strong', @site.site_admin.email
     assert_select 'h3', 'Adding Your Events'
-    assert_select 'h3', 'Getting Online'
+    # assert_select 'h3', 'Getting Online'
     assert_select 'h3', 'PlaceCal Support'
-    assert_select 'p', 'Information about getting online coming soon.'
+    # assert_select 'p', 'Information about getting online coming soon.'
   end
 
   test 'find placecal page shows sites with primary neighbourhood' do
