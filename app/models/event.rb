@@ -4,6 +4,10 @@
 class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule notices]
 
+  include HtmlRenderCache
+  html_render_cache :description
+  html_render_cache :summary
+
   belongs_to :partner, optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   belongs_to :address, optional: true

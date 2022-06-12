@@ -7,6 +7,11 @@ class Partner < ApplicationRecord
   extend FriendlyId
   friendly_id :name, use: :slugged
 
+  include HtmlRenderCache
+  html_render_cache :description
+  html_render_cache :summary
+  html_render_cache :accessibility_info
+
   # Associations
   has_and_belongs_to_many :users
   has_many :calendars, dependent: :destroy

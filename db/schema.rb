@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_07_161025) do
+ActiveRecord::Schema.define(version: 2022_06_11_154511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_161025) do
     t.bigint "author_id"
     t.string "article_image"
     t.string "slug"
+    t.string "body_html"
     t.index ["author_id"], name: "index_articles_on_author_id"
     t.index ["slug"], name: "index_articles_on_slug", unique: true
   end
@@ -82,6 +83,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_161025) do
     t.string "public_contact_email"
     t.string "public_contact_phone"
     t.integer "notice_count"
+    t.string "source_type", default: ""
     t.string "calendar_state", default: "idle"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
@@ -140,6 +142,8 @@ ActiveRecord::Schema.define(version: 2022_06_07_161025) do
     t.text "footer"
     t.string "publisher_url"
     t.bigint "online_address_id"
+    t.string "description_html"
+    t.string "summary_html"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
     t.index ["online_address_id"], name: "index_events_on_online_address_id"
     t.index ["place_id"], name: "index_events_on_place_id"
@@ -228,6 +232,9 @@ ActiveRecord::Schema.define(version: 2022_06_07_161025) do
     t.string "facebook_link"
     t.string "summary"
     t.text "description"
+    t.string "description_html"
+    t.string "summary_html"
+    t.string "accessibility_info_html"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
@@ -298,6 +305,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_161025) do
     t.string "theme"
     t.boolean "is_published", default: false
     t.string "badge_zoom_level"
+    t.string "description_html"
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 
