@@ -8,9 +8,10 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     @root = create(:root)
     @site_admin = create(:user)
     @site = create(:site, slug: 'hulme', site_admin: @site_admin)
+    @neighbourhood = create(:neighbourhood)
     @sites_neighbourhood = create(:sites_neighbourhood,
                                   site: @site,
-                                  neighbourhood: create(:neighbourhood))
+                                  neighbourhood: @neighbourhood)
   end
 
   test 'load different pages based on subdomain' do
@@ -43,5 +44,39 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     get find_placecal_url
     assert_select '.find-ward__title', @site.name
     assert_equal assert_select('.find-ward').first['href'], @site.domain
+  end
+
+  test 'tag cards are hidden by default' do
+    get 'http://hulme.lvh.me'
+
+    assert_select '.help__computer_access', count: 0
+    assert_select '.help__free_public_wifi', count: 0
+  end
+
+  test 'show computer access card when partners are tagged for it' do
+    tag = create(:tag, name: 'computers')
+    @site.tags << tag
+
+    partner = build(:partner)
+    partner.service_area_neighbourhoods << @neighbourhood
+    partner.tags << tag
+    partner.save!
+
+    get 'http://hulme.lvh.me'
+
+    assert_select '.help__computer_access'
+  end
+
+  test 'show public wifi card when partners are tagged for it' do
+    tag = create(:tag, name: 'wifi')
+    @site.tags << tag
+
+    partner = build(:partner)
+    partner.service_area_neighbourhoods << @neighbourhood
+    partner.tags << tag
+    partner.save!
+
+    get 'http://hulme.lvh.me'
+    assert_select '.help__free_public_wifi'
   end
 end

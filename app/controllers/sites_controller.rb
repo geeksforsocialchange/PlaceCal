@@ -23,15 +23,27 @@ class SitesController < ApplicationController
   private
 
   def set_places_to_get_computer_access
+    tag = Tag.find_by(slug: 'computers')
+    if tag.nil?
+      @places_to_get_computer_access = []
+      return
+    end
+
     @places_to_get_computer_access = Partner
-      .with_tags(Tag.find_by(slug: 'computers'))
+      .with_tags(tag)
       .for_site(current_site)
       .sort_by(&:name.downcase)
   end
 
   def set_places_with_free_wifi
+    tag = Tag.find_by(slug: 'wifi')
+    if tag.nil?
+      @places_with_free_wifi = []
+      return
+    end
+
     @places_with_free_wifi = Partner
-      .with_tags(Tag.find_by(slug: 'wifi'))
+      .with_tags(tag)
       .for_site(current_site)
       .sort_by(&:name.downcase)
   end
