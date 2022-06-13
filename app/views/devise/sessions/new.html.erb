@@ -5,7 +5,8 @@
     <div class="centre form--login">
       <%= form_for(resource, as: resource_name,
                             url: session_path(resource_name),
-                            html: { class: 'form' } ) do |f| %>
+                            html: { class: 'form' },
+                            data: { turbo: 'false' } ) do |f| %>
         <div class="form__field">
           <%= f.label :email %>
           <%= f.email_field :email, autofocus: true %>
