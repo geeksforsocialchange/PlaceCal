@@ -28,7 +28,7 @@
   <div class="c c--narrow first-ele-h3">
     <p>If you&#39;re a local organisation and want to join our network, get in touch below.</p>
     <p>We provide training and support to help you publish your events and promote your activities.</p>
-    <%= markdown @site.description %>
+    <%= @site.description_html.to_s.html_safe %>
     <% if @site.site_admin.present? %>
       <%= render_component 'profile', user: @site.site_admin %>
     <% end %>
