@@ -26,24 +26,24 @@ module CalendarImporter::Events
     # Strip out all shady tags
     # Convert all html to markdown
     def html_sanitize(input)
-      return if input.blank?
+      return '' if input.blank?
 
-      allowed_tags = %w[a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
+      clean_input = sanitize_invalid_char(input)
 
-      str = Nokogiri::HTML.fragment(input)
-      str.css(*['h1', 'h2']).each { |header| header.name = 'h3' }
+      doc = Nokogiri::HTML.fragment(clean_input)
+      doc.css('h1', 'h2').each { |header| header.name = 'h3' }
 
       if footer.present?
-        str << '<br/><br/>'
-        str << footer
+        doc << '<br/><br/>'
+        doc << footer
       end
 
-      str = str.to_s
+      body_text = doc.serialize
 
-      str = ActionController::Base.helpers.sanitize(str, tags: allowed_tags)
-      str = sanitize_invalid_char(str)
+      allowed_tags = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
+      str = ActionController::Base.helpers.sanitize(body_text, tags: allowed_tags)
 
-      Kramdown::Document.new(str).to_html
+      Kramdown::Document.new(str, input: 'html').to_kramdown.strip
     end
 
     def attributes
