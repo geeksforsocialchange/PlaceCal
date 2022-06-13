@@ -82,6 +82,10 @@ class EventComponent < MountainView::Presenter
     event.neighbourhood == primary_neighbourhood || primary_neighbourhood.children.include?(event.neighbourhood)
   end
 
+  def online?
+    event.online_address.present?
+  end
+
   private
 
   def fmt_time(time)

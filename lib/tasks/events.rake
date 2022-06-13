@@ -64,6 +64,12 @@ namespace :import do
       force_import = true
 
       CalendarImporterJob.perform_now calendar_id, from, force_import
+    rescue StandardError => e
+      backtrace = e.backtrace[...6]
+      puts "\n"
+      puts "#{e.class}: bad thing: #{e}"
+      puts backtrace
+      puts '-' * 20
     end
   end
 
@@ -81,6 +87,15 @@ namespace :import do
   desc 'empty the papertrail table for calendars'
   task purge_papertrail: :environment do
     PaperTrail::Version.all.delete_all
+  end
+
+  task refresh_online_addresses: :environment do
+    # Clean out all OnlineAddress entities
+    Event.where.not(online_address_id: nil).map { |e| e.online_address_id = nil; e.save! }
+    OnlineAddress.delete_all
+
+    # TODO: For all ICS calendars, check their events and refresh their online event data
+    # Currently it is impossible to do this because we don't know what parser an Event used after the fact :(
   end
 
   private
