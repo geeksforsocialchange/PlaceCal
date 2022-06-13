@@ -6,6 +6,7 @@ $gutter: 1.86915%
 // $column / $max-width * 100
 $column: 17.38317%
 
+// Grid class - a bit over abbreviated, apols!
 .g
   +flexbox
   +flex-wrap(wrap)
@@ -93,3 +94,15 @@ $column: 17.38317%
       grid-area: main
     .gi__2-5
       grid-area: right
+
+
+// Beginning of refactor in CSS grid
+.gr
+  display: grid
+  grid-gap: 1.11111rem
+  grid-template-columns: 1fr
+  &--3
+    +for-tablet-portrait-up
+      grid-template-columns: 1fr 1fr
+    +for-desktop-up
+      grid-template-columns: 1fr 1fr 1fr
