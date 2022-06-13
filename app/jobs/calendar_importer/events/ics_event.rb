@@ -59,8 +59,8 @@ module CalendarImporter::Events
       # (The match object returns ICal Text, not a String, so we have to cast)
       # (We can't use .first here because the match object doesn't support it!)
       #
-      online_address = OnlineAddress.find_or_create_by url: link[0].to_s,
-                                                       link_type: have_direct_url_to_stream?(link[0].to_s)
+      online_address = OnlineAddress.find_or_create_by(url: link[0].to_s,
+                                                       link_type: have_direct_url_to_stream?(link[0].to_s))
       online_address.id
     end
 
