@@ -280,4 +280,8 @@ class Partner < ApplicationRecord
 
     errors.add :base, 'Partners must have at least one of service area or address'
   end
+
+  def unix_updated_at
+    updated_at.to_time.to_i
+  end
 end
