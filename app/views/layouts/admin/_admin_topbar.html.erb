@@ -6,7 +6,9 @@
       <%= link_to "<i class='fa fa-user'></i> #{@current_user&.email} #{"👑" if @current_user&.role == :root}".html_safe, admin_profile_path, class: 'nav-link'  %>
     </li>
     <li class="nav-item text-nowrap">
-      <%= link_to "<i class='fa fa-sign-out'></i> Sign out".html_safe, destroy_user_session_path, method: :delete, class: 'nav-link'  %>
+      <%= button_to destroy_user_session_path, method: :delete, class: 'btn nav-link', form: { data: { turbo: 'false' } } do %>
+      <i class='fa fa-sign-out'></i> Sign out
+    <% end %>
     </li>
   </ul>
 </nav>
