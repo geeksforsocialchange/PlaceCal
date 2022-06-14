@@ -16,7 +16,7 @@
     <h2 class="h2--alt">About Us</h2>
   </div>
   <div class="c c--narrow first-ele-h3-serif">
-    <%= markdown @site.description %>
+    <%= @site.description_html.to_s.html_safe %>
     <% if @site.site_admin.present? %>
       <%= render_component 'profile', user: @site.site_admin %>
     <% end %>

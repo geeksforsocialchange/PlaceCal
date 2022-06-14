@@ -142,4 +142,11 @@ class ArticleTest < ActiveSupport::TestCase
   #   pp [@article.published_at, @article.is_draft]
   #   assert @article.published_at.nil?
   # end
+
+  test 'body is renered to html' do
+    art = create(:article)
+    art.body = 'A body of text about something'
+    art.save!
+    assert art.body_html.present?
+  end
 end

@@ -4,6 +4,9 @@ class Site < ApplicationRecord
   extend FriendlyId
   extend Enumerize
 
+  include HtmlRenderCache
+  html_render_cache :description
+
   friendly_id :name, use: :slugged
 
   has_one :sites_neighbourhood, dependent: :destroy
