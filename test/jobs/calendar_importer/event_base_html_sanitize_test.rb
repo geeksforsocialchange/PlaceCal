@@ -49,6 +49,35 @@ Another Paragraph
     assert_equal expected_output.strip, output
   end
 
+  test 'handles badly formed HTML' do
+    input = <<-HTML
+      <h1>A title!</h2>
+      <p>This is input
+      <p>Another Paragraph
+      <ul>
+      </button>
+      <p>Things</p>
+    HTML
+
+    event = EventBase.new(nil)
+    output = event.html_sanitize(input)
+
+    expected_output = [
+      # there is a space on the end of this line
+      #   that gets stripped by vim when in
+      #   heredoc mode. -ik
+      '### A title! ',
+      '',
+      'This is input',
+      '',
+      'Another Paragraph',
+      '',
+      'Things',
+    ].join("\n")
+
+    assert_equal expected_output.strip, output
+  end
+
 #  test 'cleans out non utf-8 input' do
 #    # pulled from https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
 #    input = '��This is a �����bad string�����'
