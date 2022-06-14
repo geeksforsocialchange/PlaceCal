@@ -5,6 +5,8 @@ namespace :data do
   desc 'Fix fields that need to be rendered to HTML'
   task :render_html_fields => :environment do
 
+    PaperTrail.enabled = false
+
     @bad_count = 0
 
     fix_model Article do |article|
@@ -13,6 +15,7 @@ namespace :data do
 
     fix_model Site
     fix_model Partner
+
 
     fix_model Event do |event|
       description_text = Kramdown::Document.new(event.description.to_s, input: 'html').to_kramdown.strip
@@ -25,7 +28,8 @@ namespace :data do
   end
 
   def fix_model(model)
-    model.transaction do
+    # model.transaction do
+    if true
       model.record_timestamps = false
       puts "#{model}s (#{model.count})..."
       model.find_each do |record|
