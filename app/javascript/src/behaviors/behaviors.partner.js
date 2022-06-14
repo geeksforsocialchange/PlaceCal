@@ -13,7 +13,7 @@ jQuery.extend(Behaviors, {
         });
 
         // Attach select2 to all future select2 nodes
-        $('.sites_neighbourhoods').bind('cocoon:after-insert', function (_, __) {
+        $('.sites_neighbourhoods').bind('cocoon:after-insert', function (_, element) {
           multiple = $('.select2', element).hasClass('multi-select');
           $('.select2', element).select2({ multiple: multiple });
         });
