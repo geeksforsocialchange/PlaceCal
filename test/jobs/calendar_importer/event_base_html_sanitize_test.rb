@@ -78,6 +78,28 @@ Another Paragraph
     assert_equal expected_output.strip, output
   end
 
+  test 'given markdown input nothing is changed on output' do
+    input = <<-MARKDOWN
+### A title!
+
+This is input
+
+Another Paragraph
+
+* One
+* Two
+* Three
+    MARKDOWN
+
+    input.strip!
+
+    event = EventBase.new(nil)
+    output = event.html_sanitize(input)
+
+    assert_equal input, output
+  end
+
+
 #  test 'cleans out non utf-8 input' do
 #    # pulled from https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
 #    input = '��This is a �����bad string�����'
