@@ -20,8 +20,8 @@
             <%= content_tag(:p, @partner.summary) %>
           </div>
           <div property="description">
-            <% if @partner.description %>
-              <%= markdown @partner.description %>
+            <% if @partner.description_html.present? %>
+              <%= @partner.description_html.to_s.html_safe %>
             <% end %>
           </div>
         <% end %>
@@ -45,10 +45,10 @@
           address: @partner.address
         %>
 
-        <% unless @partner.accessibility_info.blank? %>
+        <% unless @partner.accessibility_info_html.blank? %>
           <details id='accessibility-info'>
             <summary>Accessibility information</summary>
-            <%= markdown @partner.accessibility_info %>
+            <%= @partner.accessibility_info_html.to_s.html_safe %>
           </details>
         <% end %>
 
@@ -85,8 +85,8 @@
       <h2 class="place__title"><%= link_to place.name, partner_path(place), class: 'udl udl--red' %></h2>
       <div class="g g--place-list">
         <div class="gi gi__1-2">
-          <% if place.summary %>
-            <%= markdown place.summary %>
+          <% if place.summary_html.present? %>
+            <%= place.summary_html.to_s.html_safe %>
           <% end %>
         </div>
         <div class="gi gi__1-2">

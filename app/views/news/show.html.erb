@@ -19,7 +19,7 @@
     </div>
     <% end -%>
     <div class='article__content'>
-      <%= markdown @article.body %>
+      <%= @article.body_html.to_s.html_safe %>
     </div>
   </div>
 </div>

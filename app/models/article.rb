@@ -3,6 +3,9 @@
 class Article < ApplicationRecord
   extend FriendlyId
 
+  include HtmlRenderCache
+  html_render_cache :body
+
   friendly_id :slug_candidates, use: :slugged
 
   validates :title, :body, presence: true

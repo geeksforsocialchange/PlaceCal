@@ -2,6 +2,8 @@
 
 module CalendarImporter::Events
   class Base
+    ALLOWED_TAGS = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
+
     Dates = Struct.new(:start_time, :end_time, :status)
 
     def initialize(event)
@@ -26,24 +28,35 @@ module CalendarImporter::Events
     # Strip out all shady tags
     # Convert all html to markdown
     def html_sanitize(input)
-      return if input.blank?
+      input = input.to_s.strip
+      return '' if input.blank?
 
-      allowed_tags = %w[a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
+      clean_text = sanitize_invalid_char(input)
+      input_mode = 'markdown'
 
-      str = Nokogiri::HTML.fragment(input)
-      str.css(*['h1', 'h2']).each { |header| header.name = 'h3' }
+      doc = Nokogiri::HTML.fragment(clean_text)
+      if doc.css('*').length > 0
+        input_mode = 'html'
+        # looks like HTML to us
 
-      if footer.present?
-        str << '<br/><br/>'
-        str << footer
+        #if doc.errors.any? # this could be useful?
+        #  puts 'errors found:'
+        #  puts doc.errors
+        #  return ''
+        #end
+
+        doc.css('h1', 'h2').each { |header| header.name = 'h3' }
+
+        if footer.present?
+          doc << '<br/><br/>'
+          doc << footer
+        end
+
+        body_text = doc.serialize
+        clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
       end
 
-      str = str.to_s
-
-      str = ActionController::Base.helpers.sanitize(str, tags: allowed_tags)
-      str = sanitize_invalid_char(str)
-
-      Kramdown::Document.new(str).to_html
+      Kramdown::Document.new(clean_text, input: input_mode).to_kramdown.strip
     end
 
     def attributes

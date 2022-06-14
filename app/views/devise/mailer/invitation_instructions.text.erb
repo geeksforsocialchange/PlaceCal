@@ -1,11 +1,11 @@
-<%= t("devise.mailer.invitation_instructions.hello", email: @resource.email) %>
+Hello <%=  @resource.email %>
 
-<%= t("devise.mailer.invitation_instructions.someone_invited_you", url: root_url) %>
+You've been invited to join PlaceCal! You can accept this invite by copying the link below into your browser.
 
 <%= accept_invitation_url(@resource, invitation_token: @token) %>
 
-<% if @resource.invitation_due_at %>
-  <%= t("devise.mailer.invitation_instructions.accept_until", due_date: l(@resource.invitation_due_at, format: :'devise.mailer.invitation_instructions.accept_until_format')) %>
-<% end %>
+If you don't want to accept the invitation, please ignore this email.
 
-<%= t("devise.mailer.invitation_instructions.ignore") %>
+Your account won't be created until you access the link above and set your password.
+
+- The PlaceCal Team

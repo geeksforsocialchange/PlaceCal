@@ -5,7 +5,7 @@
 <%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
 
 <div class="c c--narrow c--space-after event__fullinfo">
-  <%= markdown @event.description %>
+  <%= @event.description_html.to_s.html_safe %>
   <%= event_link(@event) %>
 
   <br>
