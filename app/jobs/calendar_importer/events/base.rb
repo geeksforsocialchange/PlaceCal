@@ -2,6 +2,8 @@
 
 module CalendarImporter::Events
   class Base
+    ALLOWED_TAGS = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
+
     Dates = Struct.new(:start_time, :end_time, :status)
 
     def initialize(event)
@@ -40,8 +42,7 @@ module CalendarImporter::Events
 
       body_text = doc.serialize
 
-      allowed_tags = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
-      str = ActionController::Base.helpers.sanitize(body_text, tags: allowed_tags)
+      str = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
 
       Kramdown::Document.new(str, input: 'html').to_kramdown.strip
     end
