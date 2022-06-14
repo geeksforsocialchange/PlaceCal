@@ -1,11 +1,11 @@
 <p>Hello <%=  @resource.email %></p>
 
 <p>
-  You've been invited to join PlaceCal! You can accept this invite by clicking the link below
+  You've been invited to join PlaceCal! You can accept this invite by clicking the link below.
 </p>
 
 <p>
-  Please <%= link_to "accept this invitation", accept_invitation_url(@resource, invitation_token: @token) %> right away.
+  <%= link_to "Join PlaceCal", accept_invitation_url(@resource, invitation_token: @token) %>
 </p>
 
 <p>
