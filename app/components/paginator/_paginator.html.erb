@@ -1,4 +1,4 @@
-<div class="paginator">
+<div class="paginator" id="paginator">
   <div class="paginator__context">
     <% if properties[:show_breadcrumb] %>
       <%= render_component "breadcrumb", trail: [['Events', events_path]], site_name: @site.name do %>

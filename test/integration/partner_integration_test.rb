@@ -48,4 +48,36 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'details#accessibility-info', count: 1
   end
 
+  test 'tells you if no calendar is connected' do
+    get partner_url(@partner)
+    assert_select 'em', 'This partner does not list events on PlaceCal.'
+  end
+
+  test 'tells you if no events are connected' do
+    calendar = create(:calendar)
+    partner = calendar.partner
+
+    get partner_url(partner)
+    assert_select 'em', 'This partner has no upcoming events.'
+  end
+
+  test 'if theres a few events show them' do
+    @partner.events << create(:event)
+    @partner.save
+
+    get partner_url(@partner)
+    assert_select 'div.event', count: 1
+    # Paginator should not show up
+    assert_select 'div#paginator', count: 0
+  end
+
+  test 'if theres a lot of events show them with a paginator' do
+    @partner.events << create_list(:event, 30)
+    @partner.save
+
+    get partner_url(@partner)
+    assert_select 'div.event', minimum: 5
+    # Paginator should not show up
+    assert_select 'div#paginator', count: 1
+  end
 end

@@ -111,14 +111,19 @@
 
     <hr>
 
-    <%= render_component "event_list",
-      events: @events,
-      pointer: @current_day,
-      period: @period,
-      sort: @sort,
-      path: "partners/#{@partner.id}/events",
-      show_breadcrumb: false
-    %>
+    <% if @events.any? %>
+      <%= render_component "event_list",
+        events: @events,
+        pointer: @current_day,
+        period: @period,
+        sort: @sort,
+        path: "partners/#{@partner.id}/events",
+        show_breadcrumb: false,
+        show_paginator: @paginator
+      %>
+    <% else %>
+      <p><em><%= @no_event_message %></em></p>
+    <% end %>
   </div>
 </div>
 

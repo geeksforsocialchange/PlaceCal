@@ -118,7 +118,7 @@ class PaginatorComponent < MountainView::Presenter
 
   # Create URLs
   def create_event_url(dt)
-    "/#{path}/#{dt.year}/#{dt.month}/#{dt.day}#{url_suffix}"
+    "/#{path}/#{dt.year}/#{dt.month}/#{dt.day}#{url_suffix}#paginator"
   end
 
   # URL params to add back in
