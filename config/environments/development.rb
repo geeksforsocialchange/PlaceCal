@@ -54,7 +54,7 @@ Rails.application.configure do
   #
   #   KF: Disabling this due to this comment:
   #     https://github.com/rails/jsbundling-rails/issues/40#issuecomment-1006503192
-  #   I imagine this is because asset bundling is done with esbuild now so this is just 
+  #   I imagine this is because asset bundling is done with esbuild now so this is just
   #   confusing matters and overwriting the sourcemap url.
   config.assets.debug = false
 
@@ -68,7 +68,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.action_mailer.default_url_options = { host: 'https://admin.lvh.me:3000' }
+  config.action_mailer.default_url_options = { host: 'http://lvh.me:3000' }
   config.action_mailer.raise_delivery_errors = true
 
   config.action_mailer.delivery_method = :letter_opener

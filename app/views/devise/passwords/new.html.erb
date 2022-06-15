@@ -3,9 +3,9 @@
     <h1 class="center fc-primary">Forgot your password?</h1>
 
     <div class="centre form--login">
-      <%= form_for(resource, as: resource_name, 
-                            url: password_path(resource_name), 
-                            html: { method: :post, class: 'form' }) do |f| %>
+      <%= form_for(resource, as: resource_name,
+                            url: password_path(resource_name),
+                            html: { method: :post, class: 'form', data: { turbo: 'false' } }) do |f| %>
       <%= devise_error_messages! %>
 
       <div class="form__field">
