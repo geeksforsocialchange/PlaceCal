@@ -77,7 +77,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     get partner_url(@partner)
     assert_select 'div.event', minimum: 5
-    # Paginator should not show up
+    # Paginator should show up
     assert_select 'div#paginator', count: 1
   end
 end
