@@ -7,6 +7,8 @@ class PartnersController < ApplicationController
   before_action :set_site
   before_action :set_title, only: %i[index show]
 
+  PAGINATION_THRESHOLD = 20
+
   # GET /partners
   # GET /partners.json
   def index
@@ -29,21 +31,29 @@ class PartnersController < ApplicationController
   # GET /partners/1
   # GET /partners/1.json
   def show
-    # Period to show
-    @period = params[:period] || 'week'
-    @events = filter_events(@period, partner_or_place: @partner)
+    upcoming_events = Event.by_partner(@partner).upcoming
+    if upcoming_events.none?
+      # If no events, show an appropriate message why
+      @events = []
+      @no_event_message = no_upcoming_events_reason(@partner)
+    elsif upcoming_events.length < PAGINATION_THRESHOLD
+      # If only a few, show them all with no pagination
+      @events = sort_events(upcoming_events, 'time')
+      @paginator = false
+    else
+      # If a lot, show a paginator by week
+      @period = params[:period] || 'week'
+      @events = filter_events(@period, partner_or_place: @partner)
+      # Sort criteria
+      @sort = params[:sort].to_s || 'time'
+      @events = sort_events(@events, @sort)
+      @paginator = true
+    end
+
     @opening_times = @partner.human_readable_opening_times
 
     # Map
-    if @events&.length.positive?
-      @map = get_map_markers_from_events(@events)
-    else
-      @map = get_map_markers([@partner])
-    end
-
-    # Sort criteria
-    @sort = params[:sort].to_s || 'time'
-    @events = sort_events(@events, @sort)
+    @map = get_map_markers([@partner])
 
     respond_to do |format|
       format.html
@@ -65,6 +75,14 @@ class PartnersController < ApplicationController
   end
 
   private
+
+  def no_upcoming_events_reason(partner)
+    if partner.calendars.none?
+      "This partner does not list events on PlaceCal."
+    else
+      "This partner has no upcoming events."
+    end
+  end
 
   def set_title
     @title =

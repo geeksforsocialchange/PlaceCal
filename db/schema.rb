@@ -83,7 +83,6 @@ ActiveRecord::Schema.define(version: 2022_06_11_154511) do
     t.string "public_contact_email"
     t.string "public_contact_phone"
     t.integer "notice_count"
-    t.string "source_type", default: ""
     t.string "calendar_state", default: "idle"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
