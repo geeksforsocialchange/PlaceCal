@@ -90,7 +90,9 @@ class ApplicationController < ActionController::Base
 
     @current_site = Site.find_by_request request
 
-    redirect_to( root_url( :subdomain => false ) ) unless @current_site
+    if @current_site.nil? && !response.redirect?
+      redirect_to( root_url( :subdomain => false ) )
+    end
 
     @current_site
   end
@@ -243,7 +245,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sub_site_navigation
-    article_count = @site&.news_article_count || 0
+    article_count = current_site&.news_article_count || 0
 
     items = [
       ['Events', events_path],
