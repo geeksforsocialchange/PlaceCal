@@ -42,14 +42,6 @@ class Article < ApplicationRecord
       .where(address: { neighbourhood_id: site_neighbourhood_ids } )
   }
 
-  def summary_text
-    body_str = body.to_s.strip
-
-    return body_str if body_str.length < 200
-
-    body_str[0...200]
-  end
-
   def update_published_at
     self.published_at = self.is_draft ? nil : DateTime.now
   end

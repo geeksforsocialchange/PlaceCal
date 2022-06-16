@@ -149,26 +149,4 @@ class ArticleTest < ActiveSupport::TestCase
     art.save!
     assert art.body_html.present?
   end
-
-  test 'a summary is generated before save' do
-    art = build(:article)
-
-    art.body = 'a' * 1000 # very long
-    assert_equal 200, art.summary_text.length
-
-    art.body = 'nothing' # too short
-    assert_equal 7, art.summary_text.length
-
-    art.body = nil # non existant
-    assert_equal 0, art.summary_text.length
-  end
-
-  test 'summaries work on loaded articles' do
-    create(:article)
-
-    art = Article.first
-    assert art.summary_text.is_a?(String)
-    assert_equal 164, art.summary_text.length
-  end
-
 end
