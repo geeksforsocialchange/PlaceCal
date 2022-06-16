@@ -16,7 +16,7 @@
 
         <div class='g articles__content'>
           <div class='gi articles__body'>
-            <% #= markdown article.body[0..200] %>
+            <p><%= article.summary_text %></p>
           </div>
 
           <% if article.article_image.present? %>
