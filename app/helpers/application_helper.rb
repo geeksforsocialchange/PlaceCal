@@ -34,4 +34,11 @@ module ApplicationHelper
   def filtered_form_for(object, options = {}, &block)
     simple_form_for(object, options.merge(:builder => StrongParametersFormBuilder), &block)
   end
+
+  def has_any_global_admin_links?
+    models = [User, Site, Neighbourhood, Article, Tag]
+
+    models.any? { |model| policy(model).index? }
+  end
+
 end
