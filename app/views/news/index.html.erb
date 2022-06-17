@@ -11,7 +11,7 @@
         <p class='articles__published' title="<%= article.published_at %>"><%= article.published_at.strftime('%B %Y') %></p>
 
         <% if article.partners.present? %>
-          <p>From <%= article_partner_links(article) %>.</p>
+          <p class='article_partners'>From <%= article_partner_links(article) %>.</p>
         <% end %>
       </div>
 

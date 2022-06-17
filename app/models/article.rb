@@ -40,6 +40,7 @@ class Article < ApplicationRecord
 
     joins(partners: [:address])
       .where(address: { neighbourhood_id: site_neighbourhood_ids } )
+      .distinct
   }
 
   def update_published_at

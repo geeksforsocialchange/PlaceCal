@@ -10,9 +10,11 @@
     <h1><%= @article.title %></h1>
 
     <% if @article.partners.present? %>
-      <p>From <%= article_partner_links(@article) %>.</p>
+      <p class='article_partners'>From <%= article_partner_links(@article) %>.</p>
     <% end %>
-    <p>By <em><%= @article.author.full_name %></em></p>
+    <% if @article.author&.full_name.present? -%>
+      <p class='article_author'>By <em><%= @article.author.full_name %></em></p>
+    <% end -%>
 
     <% if @article.article_image.present? -%>
     <div class='article__image'>
