@@ -36,7 +36,7 @@ class Article < ApplicationRecord
   }
 
   scope :for_site, lambda { |site|
-    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
+    site_neighbourhood_ids = site.owned_neighbourhoods.pluck(:id)
 
     joins(partners: [:address])
       .where(address: { neighbourhood_id: site_neighbourhood_ids } )

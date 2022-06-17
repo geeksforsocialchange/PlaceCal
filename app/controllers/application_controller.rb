@@ -88,7 +88,7 @@ class ApplicationController < ActionController::Base
     # The admin subdomain gives a global view of data.
     return if request.subdomain == Site::ADMIN_SUBDOMAIN
 
-    @current_site = Site.find_by_request request
+    @current_site = Site.find_by_request(request)
 
     if @current_site.nil? && !response.redirect?
       redirect_to( root_url( :subdomain => false ) )
