@@ -14,6 +14,10 @@
       <div class='gi gi__4-5 articles__main'>
         <h2 class='articles__title'><%= link_to article.title, news_path(article) %></h2>
 
+        <% if article.partners.present? %>
+          <p class='articles__partners'><%= article_partner_links(article) %>.</p>
+        <% end %>
+
         <div class='g articles__content'>
           <div class='gi articles__body'>
             <p><%= article_summary_text article %></p>
