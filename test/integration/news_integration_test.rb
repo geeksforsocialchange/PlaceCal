@@ -43,14 +43,14 @@ class NewsIntegrationTest < ActionDispatch::IntegrationTest
     article.partners << create(:partner, address: @address)
 
     get news_index_url(subdomain: @site.slug)
-    assert_select '.article_partners a', count: 2
+    assert_select '.articles__partners a', count: 2
   end
 
   test 'index: articles with no partners have no partner link component' do
     article = create(:article, is_draft: false)
 
     get news_index_url(subdomain: @site.slug)
-    assert_select '.article_partners', count: 0
+    assert_select '.articles__partners', count: 0
   end
 
   test 'show: articles with partners have parter links' do
@@ -59,14 +59,14 @@ class NewsIntegrationTest < ActionDispatch::IntegrationTest
     article.partners << create(:partner, address: @address)
 
     get news_url(article, subdomain: @site.slug)
-    assert_select '.article_partners a', count: 2
+    assert_select '.article__partners a', count: 2
   end
 
   test 'show: articles with no partners have no partner link component' do
     article = create(:article, is_draft: false)
 
     get news_url(article, subdomain: @site.slug)
-    assert_select '.article_partners', count: 0
+    assert_select '.article__partners', count: 0
   end
 
   test 'show: author with name shows up' do
@@ -77,7 +77,7 @@ class NewsIntegrationTest < ActionDispatch::IntegrationTest
     article.save!
 
     get news_url(article, subdomain: @site.slug)
-    assert_select '.article_author', count: 1, text: 'By Alpha Beta'
+    assert_select '.article__author', count: 1, text: 'By Alpha Beta'
   end
 
   test 'show: author missing name is skipped' do
@@ -88,7 +88,7 @@ class NewsIntegrationTest < ActionDispatch::IntegrationTest
     article.save!
 
     get news_url(article, subdomain: @site.slug)
-    assert_select '.article_author', count: 0
+    assert_select '.article__author', count: 0
   end
 end
 

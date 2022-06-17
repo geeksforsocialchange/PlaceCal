@@ -9,7 +9,7 @@ module ArticlesHelper
   def article_partner_links(article)
     article.partners.map { |partner|
       link_to(partner.name, partner_path(partner))
-    }.join(', ').html_safe
+    }.join(' | ').html_safe
   end
 
   def article_summary_text(article)

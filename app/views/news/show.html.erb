@@ -9,12 +9,13 @@
   <div class='gi gi__4-5 article__main'>
     <h1><%= @article.title %></h1>
 
-    <% if @article.partners.present? %>
-      <p class='article_partners'>From <%= article_partner_links(@article) %>.</p>
-    <% end %>
     <% if @article.author&.full_name.present? -%>
-      <p class='article_author'>By <em><%= @article.author.full_name %></em></p>
+      <p class='article__author'>By <em><%= @article.author.full_name %></em></p>
     <% end -%>
+
+    <% if @article.partners.present? %>
+      <p class='article__partners'><%= article_partner_links(@article) %>.</p>
+    <% end %>
 
     <% if @article.article_image.present? -%>
     <div class='article__image'>
