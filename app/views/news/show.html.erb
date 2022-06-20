@@ -8,8 +8,6 @@
     <hr>
 
     <div class='g article'>
-
-
       <div class='gi gi__1-5 article__aside'>
         <p class='article__published' title="<%= @article.published_at %>"><%= @article.published_at.strftime('%B %Y') %></p>
       </div>
@@ -29,10 +27,16 @@
             <p class='article__image-attribute'>Image credit and/or title</p>
           </div>
         <% end -%>
+
         <div class='article__content'>
           <%= @article.body_html.to_s.html_safe %>
         </div>
+
+        <div class='article__back'>
+          <%= link_to 'Back to news', news_path %>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
