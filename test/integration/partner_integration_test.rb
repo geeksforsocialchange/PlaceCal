@@ -4,13 +4,19 @@ require 'test_helper'
 
 class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   setup do
-    @default_site = create_default_site
+    @slugless_site = create_default_site
+    @default_site = create(:site)
     @neighbourhood_site = create(:site_local)
     @partner = create(:partner)
   end
 
-  test 'should show basic information' do
+  test 'slugless site should redirect' do
     get partner_url(@partner)
+    assert_response :redirect
+  end
+
+  test 'should show basic information' do
+    get from_site_slug(@default_site, partner_path(@partner))
     assert_response :success
     assert_select 'title', count: 1, text: "#{@partner.name} | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
@@ -25,7 +31,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', @partner.url
     assert_select 'h3', 'Opening times'
 
-    get "http://#{@neighbourhood_site.slug}.lvh.me/partners/#{@partner.id}"
+    get from_site_slug(@neighbourhood_site, partner_path(@partner))
     assert_response :success
     assert_select 'title', count: 1, text: "#{@partner.name} | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
@@ -33,8 +39,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'hides accessibility area when not set' do
-
-    get partner_url(@partner)
+    get from_site_slug(@default_site, partner_path(@partner))
     assert_response :success
     assert_select 'details#accessibility-info', count: 0
   end
@@ -43,13 +48,13 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     @partner.accessibility_info = "This is some accessibility informtation"
     @partner.save!
 
-    get partner_url(@partner)
+    get from_site_slug(@default_site, partner_path(@partner))
     assert_response :success
     assert_select 'details#accessibility-info', count: 1
   end
 
   test 'tells you if no calendar is connected' do
-    get partner_url(@partner)
+    get from_site_slug(@default_site, partner_path(@partner))
     assert_select 'em', 'This partner does not list events on PlaceCal.'
   end
 
@@ -57,7 +62,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     calendar = create(:calendar)
     partner = calendar.partner
 
-    get partner_url(partner)
+    get from_site_slug(@default_site, partner_path(partner))
     assert_select 'em', 'This partner has no upcoming events.'
   end
 
@@ -65,7 +70,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     @partner.events << create(:event)
     @partner.save
 
-    get partner_url(@partner)
+    get from_site_slug(@default_site, partner_path(@partner))
     assert_select 'div.event', count: 1
     # Paginator should not show up
     assert_select 'div#paginator', count: 0
@@ -75,7 +80,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     @partner.events << create_list(:event, 30)
     @partner.save
 
-    get partner_url(@partner)
+    get from_site_slug(@default_site, partner_path(@partner))
     assert_select 'div.event', minimum: 5
     # Paginator should show up
     assert_select 'div#paginator', count: 1

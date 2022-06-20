@@ -6,6 +6,7 @@ class PartnersController < ApplicationController
   before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
   before_action :set_title, only: %i[index show]
+  before_action :redirect_from_default_site
 
   PAGINATION_THRESHOLD = 20
 

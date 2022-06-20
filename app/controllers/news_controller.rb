@@ -5,6 +5,7 @@ class NewsController < ApplicationController
 
   before_action :set_article, only: %i[show]
   before_action :set_site
+  before_action :redirect_from_default_site
 
   def index
     @offset = params[:offset].to_i

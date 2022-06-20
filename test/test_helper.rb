@@ -286,3 +286,8 @@ def suppress_stdout
   yield
   $stdout = stdout
 end
+
+def from_site_slug(site, path)
+  host = Rails.application.routes.default_url_options[:host]
+  "http://#{site.slug}.#{host}/#{path}"
+end

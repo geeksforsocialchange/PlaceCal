@@ -5,7 +5,9 @@ require 'test_helper'
 class EventsIntegrationTest < ActionDispatch::IntegrationTest
   setup do
     # Create a default site and a neighbourhood one
-    @default_site = create_default_site
+    @slugless_site = create_default_site
+
+    @default_site = create(:site)
     @neighbourhood_site = create(:site_local)
     @regional_neighbourhood_site = create(:site_local)
 
@@ -36,8 +38,13 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     @regional_neighbourhood_site.neighbourhoods << @ward.region
   end
 
-  test 'default site index page shows all events that are on today and local info' do
+  test 'site with no slug redirects to find my placecal' do
     get events_url
+    assert_response :redirect
+  end
+
+  test 'default site index page shows all events that are on today and local info' do
+    get from_site_slug(@default_site, events_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Events & activities in your area | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
@@ -46,7 +53,7 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'neighbourhood site index page shows all events that are on today and local info' do
-    get "http://#{@neighbourhood_site.slug}.lvh.me/events"
+    get from_site_slug(@neighbourhood_site, events_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Events & activities in your area | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
@@ -55,7 +62,7 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'regional site index page shows all events that are on today and local info' do
-    get "http://#{@regional_neighbourhood_site.slug}.lvh.me/events"
+    get from_site_slug(@regional_neighbourhood_site, events_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Events & activities in your area | #{@regional_neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
