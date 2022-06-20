@@ -200,6 +200,10 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
+  def redirect_from_default_site
+    redirect_to '/find-placecal' if default_site?
+  end
+
   def set_navigation
     return @navigation if @navigation
     return if self.class == MountainView::StyleguideController

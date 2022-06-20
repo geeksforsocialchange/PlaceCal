@@ -7,6 +7,7 @@ class EventsController < ApplicationController
   before_action :set_sort, only: :index
   before_action :set_primary_neighbourhood, only: :index
   before_action :set_site
+  before_action :redirect_from_default_site
 
   # GET /events
   # GET /events.json

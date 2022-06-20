@@ -30,9 +30,11 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
       for_nbd
     end
 
-    default_site = create_default_site
-    default_site.neighbourhoods.append(neighbourhoods)
-    default_site.save
+    @slugless_site = create_default_site
+
+    @default_site = create(:site)
+    @default_site.neighbourhoods.append(neighbourhoods)
+    @default_site.save
 
     @site = build(:site)
     @site.neighbourhoods.append(neighbourhoods.first)
@@ -41,9 +43,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
 
   test 'should get index without subdomain' do
     get url_for controller: "partners", subdomain: false
-    assert_response :success
-
-    assert_select "ul.partners li", 6
+    assert_response :redirect
   end
 
   # test 'should get places_index without subdomain' do
@@ -53,7 +53,8 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test 'should get index with configured subdomain' do
-    get url_for controller: "partners", subdomain: @site.slug
+    get from_site_slug(@site, partners_path)
+
     assert_response :success
     assert_select "ul.partners li", 3
   end
@@ -76,7 +77,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
 
   test 'should show partner' do
     # Choose a manager to show. That will exercise more of the markup.
-    get partner_url(@partners.first.first)
+    get from_site_slug(@site, partner_path(@partners.first.first))
     assert_response :success
   end
 
@@ -87,7 +88,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     partner.save!
 
     # Choose a manager to show. That will exercise more of the markup.
-    get partner_url(partner)
+    get from_site_slug(@site, partner_path(partner))
     assert_response :success
   end
 
@@ -97,7 +98,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
 
     partner.events += create_list(:event, 3, calendar: calendar, dtstart: Time.now)
 
-    get partner_url(partner)
+    get from_site_slug(@site, partner_path(partner))
 
     events = assigns(:events).values.first
     assert events.length == 3

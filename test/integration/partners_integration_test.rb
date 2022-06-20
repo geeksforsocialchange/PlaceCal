@@ -5,7 +5,9 @@ require 'test_helper'
 class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   setup do
     # Create a default site and a neighbourhood one
-    @default_site = create_default_site
+    @slugless_site = create_default_site
+
+    @default_site = create(:site)
     @neighbourhood_site = create(:site_local)
     @region_site = create(:site_local)
     @tagged_site = create(:site_local)
@@ -47,8 +49,13 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     @tagged_site_partners.first.tags << @tag
   end
 
-  test 'placecal partners page shows all partners and relevant local info' do
+  test 'no slug redirects to find my placecal' do
     get partners_url
+    assert_response :redirect
+  end
+
+  test 'placecal partners page shows all partners and relevant local info' do
+    get from_site_slug(@default_site, partners_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Partners in your area | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
@@ -60,7 +67,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'neighbourhood site page shows all partners and relevant local info' do
-    get "http://#{@neighbourhood_site.slug}.lvh.me/partners"
+    get from_site_slug(@neighbourhood_site, partners_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Partners in your area | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
@@ -72,7 +79,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'region site page shows descendent partners' do
-    get "http://#{@region_site.slug}.lvh.me/partners"
+    get from_site_slug(@region_site, partners_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Partners in your area | #{@region_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
@@ -84,7 +91,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'tagged site page shows only tagged partners' do
-    get "http://#{@tagged_site.slug}.lvh.me/partners"
+    get from_site_slug(@tagged_site, partners_path)
     assert_response :success
 
     assert_select 'title', count: 1, text: "Partners in your area | #{@tagged_site.name}"
@@ -100,7 +107,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     partner = @default_site_partners.first
     partner.service_areas.create! neighbourhood: @neighbourhood3
 
-    get partners_url 
+    get from_site_slug(@default_site, partners_path)
     assert_response :success
 
     assert_select '.service-area span', text: @neighbourhood3.shortname
@@ -111,7 +118,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     partner.service_areas.create! neighbourhood: @neighbourhood3
     partner.service_areas.create! neighbourhood: @neighbourhood2
 
-    get partners_url 
+    get from_site_slug(@default_site, partners_path)
     assert_response :success
 
     assert_select '.service-area span', text: 'various'
