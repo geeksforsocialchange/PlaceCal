@@ -1,30 +1,38 @@
 <% content_for :title, @article.title %>
 
-<div class='g article'>
+<div vocab="http://schema.org/" typeof="Article">
+  <%= render_component "hero", title: @article.title, subtitle: @site.tagline, schema: 'name' %>
 
-  <div class='gi gi__1-5 article__aside'>
-    <p class='article__published' title="<%= @article.published_at %>"><%= @article.published_at.strftime('%B %Y') %></p>
-  </div>
+  <div class="c c--lg-space-after">
+    <%= render_component "breadcrumb", trail: [['News', news_index_path], [@article.title, news_path(@article)]], site_name: @site.name %>
+    <hr>
 
-  <div class='gi gi__4-5 article__main'>
-    <h1><%= @article.title %></h1>
+    <div class='g article'>
 
-    <% if @article.author&.full_name.present? -%>
-      <p class='article__author'>By <em><%= @article.author.full_name %></em></p>
-    <% end -%>
 
-    <% if @article.partners.present? %>
-      <p class='article__partners'><%= article_partner_links(@article) %>.</p>
-    <% end %>
+      <div class='gi gi__1-5 article__aside'>
+        <p class='article__published' title="<%= @article.published_at %>"><%= @article.published_at.strftime('%B %Y') %></p>
+      </div>
 
-    <% if @article.article_image.present? -%>
-    <div class='article__image'>
-      <%= image_tag @article.article_image.url, class: 'border' %>
-      <p class='article__image-attribute'>Image credit and/or title</p>
-    </div>
-    <% end -%>
-    <div class='article__content'>
-      <%= @article.body_html.to_s.html_safe %>
+      <div class='gi gi__4-5 article__main'>
+        <% if @article.author&.full_name.present? -%>
+          <h3 class='article__author'>By <em><%= @article.author.full_name %></em></h3>
+        <% end -%>
+
+        <% if @article.partners.present? %>
+          <p class='article__partners'><%= article_partner_links(@article) %>.</p>
+        <% end %>
+
+        <% if @article.article_image.present? -%>
+          <div class='article__image'>
+            <%= image_tag @article.article_image.url, class: 'border' %>
+            <p class='article__image-attribute'>Image credit and/or title</p>
+          </div>
+        <% end -%>
+        <div class='article__content'>
+          <%= @article.body_html.to_s.html_safe %>
+        </div>
+      </div>
     </div>
   </div>
 </div>
