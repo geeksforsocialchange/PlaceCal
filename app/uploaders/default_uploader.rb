@@ -11,6 +11,6 @@ class DefaultUploader < CarrierWave::Uploader::Base
 
   # This is limited by Nginx
   def size_range
-    1.byte..1.megabytes
+    1.byte..10.megabytes
   end
 end
