@@ -16,6 +16,7 @@
   </div>
 </div>
 
-<%= f.input :avatar %>
+<%= f.input :avatar,
+  hint: image_uploader_hint(f.object.avatar)  %>
 
 <%= image_tag f.object.avatar.retina.url if f.object.avatar.retina.url %>

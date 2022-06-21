@@ -41,4 +41,13 @@ module ApplicationHelper
     models.any? { |model| policy(model).index? }
   end
 
+  def image_uploader_hint(uploader_field)
+    return if uploader_field.nil?
+
+    sprintf(
+      "Supported file formats: %s. Max file size: %s",
+      uploader_field.extension_allowlist.to_sentence,
+      number_to_human_size(uploader_field.size_range.max)
+    )
+  end
 end
