@@ -16,6 +16,7 @@
   </div>
 </div>
 
-<%= f.input :avatar %>
+<%= f.input :avatar,
+  hint: 'Image should be one of: svg, png, jpg. File size limit is 1 megabyte.' %>
 
 <%= image_tag f.object.avatar.retina.url if f.object.avatar.retina.url %>
