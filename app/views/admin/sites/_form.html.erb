@@ -27,11 +27,11 @@
 
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :logo, hint: 'Image should be one of: svg, png, jpg. File size limit is 1 megabyte.' %>
+        <%= f.input :logo, hint: image_uploader_hint(@site.logo) %>
         <%= image_tag f.object.logo.url, class: 'card-img-top' if f.object.logo.url %>
       </div>
       <div class="col-md-6">
-        <%= f.input :footer_logo, hint: 'Image should be one of: svg, png, jpg. File size limit is 1 megabyte.' %>
+        <%= f.input :footer_logo, hint: image_uploader_hint(@site.footer_logo) %>
         <div style="background-color: #5b4e46; padding: 1rem">
           <%= image_tag f.object.footer_logo.url, class: 'card-img-top' if f.object.footer_logo.url %>
         </div>
@@ -39,7 +39,7 @@
       </div>
     </div>
 
-  <%= f.input :hero_image, hint: 'Image should be one of: svg, png, jpg. File size limit is 1 megabyte.' %>
+  <%= f.input :hero_image, hint: image_uploader_hint(@site.hero_image) %>
   <p><em>Header images should be 2260x700</em></p>
 
   <%= image_tag f.object.hero_image.url, style: 'max-width: 300px' if f.object.hero_image.url %>

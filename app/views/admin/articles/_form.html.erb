@@ -15,7 +15,7 @@
   <%= f.input :article_image,
       disabled: disabled_fields.include?(:article_image),
       label: false,
-      hint: 'Image should be one of: svg, png, jpg. File size limit is 1 megabyte.' %>
+      hint: image_uploader_hint(@article.article_image) %>
 
   <%= image_tag f.object.article_image.highres.url,
                 class: 'card-img-top' if f.object.article_image.highres.url %>
