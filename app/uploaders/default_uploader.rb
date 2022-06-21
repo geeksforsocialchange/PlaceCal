@@ -9,7 +9,7 @@ class DefaultUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  # This is limited by Nginx
+  # remember to change this in nginx.conf.d/increase_upload_size.conf
   def size_range
     1.byte..10.megabytes
   end
