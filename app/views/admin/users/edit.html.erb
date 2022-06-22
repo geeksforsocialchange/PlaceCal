@@ -13,10 +13,10 @@
   <%= render 'form', f: f %>
   <%= f.submit "Update", class: "btn btn-primary " %>
   <% if policy(@user).destroy? -%>
-    <%= link_to "Delete user", 
-      admin_user_path(@user), 
-      method: :delete, 
-      class: "btn btn-danger", 
+    <%= link_to "Delete user",
+      admin_user_path(@user),
+      method: :delete,
+      class: "btn btn-danger",
       data: { confirm: "Please confirm you want to delete this user.\n\nThis is permanent!" } %>
   <% end -%>
 <% end %>

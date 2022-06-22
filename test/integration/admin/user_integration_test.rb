@@ -196,4 +196,40 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#user_partner_ids option[selected="selected"]', @partner.name
   end
+
+  test "root users can edit neighbourhoods" do
+    @root.neighbourhoods.destroy_all
+
+    @root.neighbourhoods << neighbourhoods(:one)
+    @root.neighbourhoods << neighbourhoods(:two)
+
+    sign_in @root
+    get edit_admin_user_path(@root)
+
+    assert_response :success
+
+    # selector box with two pre-selected values
+    assert_select "select#user_neighbourhood_ids option[@selected='selected']", count: 2
+
+    # cannot see the neighbourhood list
+    assert_select "ul.neighbourhood-list", count: 0
+  end
+
+  test "citizen users can see a list of their neighbourhoods" do
+    @citizen.neighbourhoods.destroy_all
+
+    @citizen.neighbourhoods << neighbourhoods(:one)
+    @citizen.neighbourhoods << neighbourhoods(:two)
+
+    sign_in @citizen
+    get edit_admin_user_path(@citizen)
+
+    assert_response :success
+
+    # selector box is not visible
+    assert_select "select#user_neighbourhood_ids", count: 0
+
+    # neighbourhood list has two entries
+    assert_select "ul.neighbourhood-list li", count: 2
+  end
 end
