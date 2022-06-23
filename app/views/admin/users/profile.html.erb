@@ -47,6 +47,10 @@
         <div class="profile__is-root">
           <p>You are a <strong>root</strong> user and can do everything! be careful!</p>
         </div>
+      <% else %>
+        <% if user_has_no_rights?(current_user) -%>
+          <p class='has-no-admin-rights-warning'>You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!</p>
+        <% end -%>
       <% end %>
     </div>
   </div>

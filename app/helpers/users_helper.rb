@@ -14,6 +14,14 @@ module UsersHelper
     User.role.values
   end
 
+  def user_has_no_rights?(user)
+    return false if user.tag_admin?
+    return false if user.neighbourhood_admin?
+    return false if user.partner_admin?
+
+    true # they have no rights
+  end
+
   def options_for_partners
     policy_scope(Partner).all.order(:name).pluck(:name, :id)
   end

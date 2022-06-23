@@ -232,4 +232,16 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     # neighbourhood list has two entries
     assert_select "ul.neighbourhood-list li", count: 2
   end
+
+  test "citizens with no rights get a warning message on their profile" do
+    @citizen.neighbourhoods.destroy_all
+    @citizen.tags.destroy_all
+    @citizen.partners.destroy_all
+
+    sign_in @citizen
+    get admin_profile_path(@citizen)
+    assert_response :success
+
+    assert_select "p.has-no-admin-rights-warning"
+  end
 end
