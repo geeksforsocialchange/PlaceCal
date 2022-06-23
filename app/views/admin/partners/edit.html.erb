@@ -19,7 +19,12 @@
     <% if partners_sites_links.present? %>
       <p>This partner appears on the following sites: <%= site_links %>.</p>
     <% else %>
-      <p class="text-danger">This partner does not appear on any sites.</p>
+      <p class="text-danger">This partner does not appear on any sites. This usually means one of two things:</p>
+      <ul>
+        <li>The address is outside any current PlaceCal instance's range due to where actual ward boundaries happen to fall. Please contact your PlaceCal organiser if this is the case.</li>
+        <li>It is inside a PlaceCal range, but you forgot to add a tag. Resave this partner with the appropriate tag.</li>
+        <li>If neither of these are the case, please contact <a href='mailto:support@placecal.org'>support@placecal.org</a> with the link to this page.</li>
+      </ul>
     <% end %>
   </span>
   <br>
@@ -43,8 +48,8 @@
       <% end -%>
     </ul>
 
-    <p><%= link_to 'Add a new calendar', 
-                    new_admin_calendar_path(partner_id: @partner.id), 
+    <p><%= link_to 'Add a new calendar',
+                    new_admin_calendar_path(partner_id: @partner.id),
                     class: "btn btn-primary mb-3 mr-2 btn-sm" %></p>
   </div>
 
@@ -58,8 +63,8 @@
       <% end -%>
     </ul>
 
-    <p><%= link_to 'Add new partner admin', 
-                    new_admin_user_path(partner_id: @partner.id), 
+    <p><%= link_to 'Add new partner admin',
+                    new_admin_user_path(partner_id: @partner.id),
                     class: "btn btn-primary mb-3 mr-2 btn-sm" %>
     </p>
   </div>
