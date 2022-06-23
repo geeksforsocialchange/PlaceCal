@@ -20,7 +20,6 @@
 
     <div class="col-md-6">
       <h3>Neighbourhoods</h3>
-      <p>This user has <%= pluralize @user.neighbourhoods.count, 'neighbourhood' %>.</p>
 
       <% if current_user.root? %>
         <p>Grants access to every partner and calendar in these neighbourhoods. Use with care!</p>
