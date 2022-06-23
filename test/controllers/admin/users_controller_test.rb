@@ -43,7 +43,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     patch update_profile_admin_user_path(@root),
           params: { user: { first_name: 'Bob' }}
 
-    assert_redirected_to admin_root_url
+    assert_redirected_to admin_profile_url
     assert_equal 'Bob', @root.reload.first_name
   end
 
@@ -55,7 +55,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     patch update_profile_admin_user_path(user),
           params: { user: { first_name: 'Name' }}
 
-    assert_redirected_to admin_root_url
+    assert_redirected_to admin_profile_url
     assert_equal 'Test', user.reload.first_name
   end
 
