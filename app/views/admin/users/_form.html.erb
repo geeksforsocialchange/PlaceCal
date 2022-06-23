@@ -17,13 +17,27 @@
                         input_html: {class: 'form-control select2' }
           %>
     </div>
+
     <div class="col-md-6">
       <h3>Neighbourhoods</h3>
-      <p>Grants access to every partner and calendar in these neighbourhoods. Use with care!</p>
-      <%= f.association :neighbourhoods,
-                        label: false,
-                        collection: options_for_neighbourhoods,
-                        input_html: {class: 'form-control select2' } %>
+      <p>This user has <%= pluralize @user.neighbourhoods.count, 'neighbourhood' %>.</p>
+
+      <% if current_user.root? %>
+        <p>Grants access to every partner and calendar in these neighbourhoods. Use with care!</p>
+
+        <%= f.association :neighbourhoods,
+          label: false,
+          collection: options_for_neighbourhoods,
+          input_html: {class: 'form-control select2' } %>
+
+      <% else %>
+        <ul class='neighbourhood-list'>
+          <% @user.neighbourhoods.order(:name).each do |hood| -%>
+            <li><%= link_to hood.name, admin_neighbourhood_path(hood) %></li>
+          <% end -%>
+        </ul>
+      <% end %>
+
     </div>
   </div>
   <div class="row">
