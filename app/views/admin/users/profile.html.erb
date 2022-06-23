@@ -6,6 +6,10 @@
   </div>
 <% end %>
 
+<% if current_user.root? -%>
+  <p>To modify neighbourhoods, tags and partners go to the <%= link_to 'user edit page', edit_admin_user_path(current_user) %>.</p>
+<% end -%>
+
 <%= simple_form_for current_user, as: :user, method: :patch, url: update_profile_admin_user_path(current_user), html: { class: "form-horizontal" } do |f| %>
   <div class="row mt-4">
     <%= render_component "error", object: current_user %>

@@ -14,7 +14,7 @@ module Admin
       if update_user_profile
         bypass_sign_in(current_user)
         flash[:success] = 'User profile has been updated'
-        redirect_to admin_root_path
+        redirect_to admin_profile_path
 
       else
         flash.now[:danger] = 'User profile was not updated'
