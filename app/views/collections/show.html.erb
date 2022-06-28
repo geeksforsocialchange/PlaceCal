@@ -16,7 +16,7 @@
   <div class="g g--collection">
       <div class="gi gi__3-5">
         <% if @collection.description %>
-          <div class="first-ele-lg"><%= markdown @collection.description %></div>
+          <div class="first-ele-lg"><% #= markdown @collection.description %></div>
         <% end %>
 
         <%# FIXME: this needs to be killed after launch! %>
