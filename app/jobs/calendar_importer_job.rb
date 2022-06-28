@@ -49,7 +49,7 @@ class CalendarImporterJob < ApplicationJob
     #   see note in Calendar#flag_error_import_job! for details
     calendar.reload
     calendar.flag_error_import_job! full_message
-    puts full_message, backtrace if Rails.env.development?
-    Rollbar.error full_message, { exception_type: e.class.name, backtrace: backtrace }
+    # puts full_message, backtrace if Rails.env.development?
+    # Rollbar.error full_message, { exception_type: e.class.name, backtrace: backtrace }
   end
 end
