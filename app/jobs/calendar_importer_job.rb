@@ -23,6 +23,8 @@ class CalendarImporterJob < ApplicationJob
   # @param from_date [Date] The Date from which to import from
   def perform(calendar_id, from_date, force_import, silence_db_exceptions=false)
 
+    Calendar.record_timestamps = false
+
     @silence_db_exceptions = silence_db_exceptions
     @calendar_id = calendar_id
 
