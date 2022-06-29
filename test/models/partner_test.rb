@@ -76,7 +76,7 @@ class PartnerTest < ActiveSupport::TestCase
 
   test 'validate description without summary' do
     @new_partner.update(
-      name: 'Test Partner', 
+      name: 'Test Partner',
       description: 'This is a test partner used for testing :)',
       summary: ''
     )
@@ -131,5 +131,12 @@ class PartnerTest < ActiveSupport::TestCase
     assert @new_partner.errors.key?(:facebook_link), 'invalid Facebook page name saved'
     @new_partner.update(facebook_link: 'GroupName')
     refute @new_partner.errors.key?(:facebook_link), 'Valid page name not saved'
+  end
+
+  test 'deals with badly formatted opening times' do
+    partner = build(:partner)
+    partner.opening_times = '{{ $data.openingHoursSpecifications }}'
+
+    assert_equal [], partner.human_readable_opening_times
   end
 end
