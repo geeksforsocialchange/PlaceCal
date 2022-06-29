@@ -13,11 +13,12 @@ class AdminHomeIntegrationTest < ActionDispatch::IntegrationTest
     @default_site = create_default_site
     get "http://admin.lvh.me"
     assert_redirected_to "http://admin.lvh.me/users/sign_in"
+
     sign_in @admin
     get "http://admin.lvh.me"
     assert_response :success
 
     assert_select 'title', text: "Dashboard | PlaceCal Admin"
-    assert_select 'h1', text: "Recently updated partners"
+    assert_select 'h1', text: "Missing Permissions"
   end
 end
