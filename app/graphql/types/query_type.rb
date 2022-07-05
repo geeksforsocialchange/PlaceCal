@@ -60,7 +60,7 @@ module Types
     end
 
     def articles_by_tag(tag_id:)
-      Article.with_tag(tag_id).global_newsfeed.order(:title)
+      Article.with_tags(tag_id).global_newsfeed.order(:title)
     end
 
     def articles_by_partner_tag(tag_id:)
@@ -102,7 +102,7 @@ module Types
     end
   end
 
-  class QueryType < Types::BaseObject 
+  class QueryType < Types::BaseObject
 
     description "The base query schema for all of PlaceCal's GraphQL queries"
 

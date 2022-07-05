@@ -27,20 +27,48 @@ class Article < ApplicationRecord
 
   scope :global_newsfeed, -> { published.order(published_at: :desc) }
 
-  scope :with_tag, ->(tag_id) { joins(:article_tags).where(article_tags: { tag: tag_id }) }
-
   scope :with_partner_tag, lambda { |tag_id|
     joins('left outer join article_partners on articles.id=article_partners.article_id')
     .joins('left outer join partner_tags on article_partners.partner_id = partner_tags.partner_id')
     .where('partner_tags.tag_id = ?', tag_id)
   }
 
-  scope :for_site, lambda { |site|
-    site_neighbourhood_ids = site.owned_neighbourhoods.pluck(:id)
+  scope :with_tags, lambda { |tag_ids|
+    joins(:article_tags).where(article_tags: { tag: tag_ids })
+  }
 
-    joins(partners: [:address])
-      .where(address: { neighbourhood_id: site_neighbourhood_ids } )
-      .distinct
+  scope :for_site, lambda { |site|
+    scope = all
+
+    site_neighbourhood_ids = site.owned_neighbourhoods.pluck(:id)
+    site_tag_ids = site.tags.pluck(:id)
+    return scope if site_neighbourhood_ids.empty? && site_tag_ids.empty?
+
+    where_fragments = []
+    where_params = []
+
+    # articles by neighbourhood
+    if site_neighbourhood_ids.any?
+      scope = scope
+        .joins('left outer join article_partners on articles.id=article_partners.article_id')
+        .joins('left outer join partners on article_partners.partner_id = partners.id')
+        .joins('left outer join addresses on partners.address_id = addresses.id')
+      where_fragments << 'addresses.neighbourhood_id in (?)'
+      where_params << site_neighbourhood_ids
+    end
+
+    # articles by tag
+    if site_tag_ids.any?
+      scope = scope
+        .joins(' LEFT OUTER JOIN article_tags ON articles.id=article_tags.article_id')
+      where_fragments << 'article_tags.tag_id in (?)'
+      where_params << site_tag_ids
+    end
+
+    scope = scope
+      .where("(#{where_fragments.join(' OR ')})", *where_params)
+
+    scope.distinct('articles.id')
   }
 
   def update_published_at
