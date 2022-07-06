@@ -16,6 +16,8 @@ module UsersHelper
 
   def user_has_no_rights?(user)
     return false if user.root?
+    return false if user.editor?
+
     return false if user.tag_admin?
     return false if user.neighbourhood_admin?
     return false if user.partner_admin?
