@@ -55,7 +55,7 @@ class ArticleTest < ActiveSupport::TestCase
       article.tags << tag
     end
 
-    found = Article.with_tag(tag.id)
+    found = Article.with_tags(tag.id)
     assert_equal 2, found.count, 'Expected to only find articles with given tag'
   end
 
@@ -88,7 +88,7 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal 5, found.length, 'Expected to only find articles from tagged partners'
   end
 
-  test '::for_site returns articles for site' do
+  test '::for_site returns articles for site (via neighbourhood)' do
     neighbourhood_1 = neighbourhoods(:one)
     neighbourhood_2 = neighbourhoods(:two)
 
@@ -121,10 +121,66 @@ class ArticleTest < ActiveSupport::TestCase
       )
     end
 
-    found = Article.for_site(site)
+    found = Article.for_site(site).select(:id)
     assert_equal 5, found.count
+  end
 
+  test '::for_site returns articles with site tags applied' do
+    tag = create(:tag)
+    author = create(:root)
 
+    site = create(:site)
+    site.tags << tag
+    site.validate!
+
+    3.times do |n|
+      article = Article.create!(
+        title: "#{n} Article with tag",
+        is_draft: nil,
+        body: 'lorem ipsum dorem ditsum',
+        author: author
+      )
+      article.tags << tag
+      article.validate!
+    end
+
+    found = Article.for_site(site)
+    assert_equal 3, found.count
+  end
+
+  test '::for_site finds articles by both neighbourhood and tag' do
+    author = create(:root)
+    site = create(:site)
+
+    neighbourhood = neighbourhoods(:one)
+    site.neighbourhoods << neighbourhood
+
+    partner = create(:partner, address: create(:address, neighbourhood: neighbourhood))
+
+    3.times do |n|
+      partner.articles.create!(
+        title: "#{n} Article from Partner by neighbourhood",
+        is_draft: nil,
+        body: 'lorem ipsum dorem ditsum',
+        author: author
+      )
+    end
+
+    tag = create(:tag)
+    site.tags << tag
+
+    5.times do |n|
+      article = Article.create!(
+        title: "#{n} Article with tag",
+        is_draft: nil,
+        body: 'lorem ipsum dorem ditsum',
+        author: author
+      )
+      article.tags << tag
+    end
+
+    found = Article.for_site(site).select(:id)
+    assert_equal 8, found.count
   end
 
   # Unsure as to why this doesn't work. update_published_at triggers correctly
