@@ -38,22 +38,47 @@ class Article < ApplicationRecord
   }
 
   scope :for_site, lambda { |site|
-    scope = all
+
+    # this is a bit complicated but necessary
+    # the main problem to overcome is that we want articles by tag OR location
+    # (emphasis on OR).
+    #
+    # in simple AR land we would just chain scope methods like
+    #   `Article.by_tag(tags).by_location(neighbourhoods)` and be done with it
+    # each scope would set up its `joins` to pull in tables and its `wheres`
+    # to filter based on those joins. simple!
+    # but unfortunately these scopes get combined with 'AND' clauses in
+    # the `where` part.
+    #
+    # so what this does is build up the query for tags and locations like
+    # we were chaining scope methods without the conditions. we store
+    # the conditions as (clause, params) in an array as we go. when we reach
+    # the end we then extend the scope with a `where` clause that combines
+    # everything with `OR' as is needed and then return that to the
+    # calling code as a regular scope for further chaining.
+    #
+    # this also also allows us to skip an entire chunk of query if the
+    # site has no tags or locations.
 
     site_neighbourhood_ids = site.owned_neighbourhoods.pluck(:id)
     site_tag_ids = site.tags.pluck(:id)
-    return scope if site_neighbourhood_ids.empty? && site_tag_ids.empty?
+
+    # if site has no tags or neighbourhoods then just return nothing to caller
+    return none if site_neighbourhood_ids.empty? && site_tag_ids.empty?
+
+    scope = all
 
     where_fragments = []
     where_params = []
 
     # articles by neighbourhood
     if site_neighbourhood_ids.any?
+      # TODO: service areas?
       scope = scope
-        .joins('left outer join article_partners on articles.id=article_partners.article_id')
-        .joins('left outer join partners on article_partners.partner_id = partners.id')
-        .joins('left outer join addresses on partners.address_id = addresses.id')
-      where_fragments << 'addresses.neighbourhood_id in (?)'
+        .joins('LEFT OUTER JOIN article_partners ON articles.id=article_partners.article_id')
+        .joins('LEFT OUTER JOIN partners ON article_partners.partner_id = partners.id')
+        .joins('LEFT OUTER JOIN addresses ON partners.address_id = addresses.id')
+      where_fragments << 'addresses.neighbourhood_id IN (?)'
       where_params << site_neighbourhood_ids
     end
 
@@ -61,10 +86,11 @@ class Article < ApplicationRecord
     if site_tag_ids.any?
       scope = scope
         .joins(' LEFT OUTER JOIN article_tags ON articles.id=article_tags.article_id')
-      where_fragments << 'article_tags.tag_id in (?)'
+      where_fragments << 'article_tags.tag_id IN (?)'
       where_params << site_tag_ids
     end
 
+    # combine conditions with params to extend the scope
     scope = scope
       .where("(#{where_fragments.join(' OR ')})", *where_params)
 
