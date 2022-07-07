@@ -1,5 +1,10 @@
 <% content_for :title do %>Dashboard<% end %>
 
+<% if user_has_no_rights?(current_user) -%>
+  <h1 class="mt-5 mb-3">Missing Permissions</h1>
+  <p class='has-no-admin-rights-warning'>You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!</p>
+<% end -%>
+
 <% ['Partner', 'Calendar', 'User'].each do |model_name| %>
   <%- if policy(model_name.constantize).create? %>
     <%= link_to "Add New #{model_name}",
@@ -23,9 +28,9 @@
   </div>
 <% end %>
 
-<h1 class="mt-5 mb-3">Recently updated partners</h1>
-
 <% if @partners.any? %>
+
+  <h1 class="mt-5 mb-3">Recently updated partners</h1>
   <div class="card-grid">
     <% @partners.each do |partner| %>
       <%= render_component 'dashboard_card',

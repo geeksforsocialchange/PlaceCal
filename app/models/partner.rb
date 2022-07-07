@@ -223,6 +223,9 @@ class Partner < ApplicationRecord
          <span class='opening_times--time'>#{o} &ndash; #{c}</span>
       ).html_safe
     end
+
+  rescue JSON::ParserError
+    []
   end
 
   def valid_public_phone?
