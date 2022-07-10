@@ -2,6 +2,8 @@
   <div class="card card--plainer">
     <h1 class="center fc-primary"><%= t "devise.invitations.edit.header" %></h1>
 
+    <%= render_component "error", object: resource %>
+
     <div class="centre form--login">
       <%= form_for(resource,  as: resource_name,
                               url: invitation_path(resource_name),
@@ -12,7 +14,8 @@
         <div class="form__field">
           <%= f.label :password, "New password" %>
           <%= f.password_field :password %>
-           <%= f.label :password, "Repeat password" %>
+
+          <%= f.label :password_confirmation, "Repeat password" %>
           <%= f.password_field :password_confirmation %>
         </div>
 
