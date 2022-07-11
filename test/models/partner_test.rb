@@ -123,16 +123,6 @@ class PartnerTest < ActiveSupport::TestCase
     assert @new_partner.errors.key?(:twitter_handle), 'Invalid Twitter account name saved'
   end
 
-  test 'validate facebook' do
-    # Facebook must be valid
-    @new_partner.update(facebook_link: 'https://facebook.com/group-name')
-    assert @new_partner.errors.key?(:facebook_link), 'Should be page name not full URL'
-    @new_partner.update(facebook_link: 'Group-Name')
-    assert @new_partner.errors.key?(:facebook_link), 'invalid Facebook page name saved'
-    @new_partner.update(facebook_link: 'GroupName')
-    refute @new_partner.errors.key?(:facebook_link), 'Valid page name not saved'
-  end
-
   test 'deals with badly formatted opening times' do
     partner = build(:partner)
     partner.opening_times = '{{ $data.openingHoursSpecifications }}'

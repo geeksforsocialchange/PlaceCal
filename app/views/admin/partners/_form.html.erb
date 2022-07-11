@@ -42,17 +42,6 @@
         <div class="col-md-6">
           <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
 
-          <div class="form-group url optional facebook_link form-group-invalid">
-            <%= f.label :facebook_link %>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text">https://facebook.com/</div>
-              </div>
-              <%= f.input_field :facebook_link, class: "form-control", placeholder: 'FacebookPageName' %>
-              <%= f.error :facebook_link, class: 'invalid-feedback' %>
-            </div>
-          </div>
-
           <div class="form-group url optional twitter_handle form-group-invalid">
             <%= f.label :twitter_handle %>
             <div class="input-group">

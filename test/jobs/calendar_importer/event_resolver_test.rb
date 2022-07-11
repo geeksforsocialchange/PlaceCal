@@ -158,22 +158,6 @@ class EventsResolverTest < ActiveSupport::TestCase
     assert_equal online_address.url, meet_link
   end
 
-  test 'ics: can detect facebook event link in description' do
-    fb_link = 'https://www.facebook.com/events/349588176081231/'
-    @fake_ics_event[:description] = "See more info on facebook: #{fb_link} words words words"
-    ics_event_data = CalendarImporter::Events::IcsEvent.new(@fake_ics_event, @start_date, @end_date)
-
-    calendar = create(:calendar, strategy: 'event')
-
-    resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
-    resolver.determine_online_location
-
-    assert resolver.data.online_address_id.present?
-
-    online_address = OnlineAddress.find(resolver.data.online_address_id)
-    assert_equal online_address.url, fb_link
-  end
-
   test 'ics: can detect zoom link in description' do
     zoom_link = 'https://us04web.zoom.us/j/78434510758?pwd=aILSsYSJRSb_uO87tFjulZuLAA0eXT.1'
     @fake_ics_event[:description] = "join us on zoom: <p>#{zoom_link}<p> words words words"

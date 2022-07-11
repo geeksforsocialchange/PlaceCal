@@ -23,7 +23,6 @@ en:
   enumerize:
     calendar:
       type:
-        facebook: 'Facebook'
         google: 'Google'
         outlook: 'Outlook'
         mac_calendar: 'Mac Calendar'

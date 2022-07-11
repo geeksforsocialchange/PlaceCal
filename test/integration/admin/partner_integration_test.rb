@@ -49,7 +49,6 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Description'
     assert_select 'label', text: 'Image'
     assert_select 'label', text: 'Website address'
-    assert_select 'label', text: 'Facebook link'
     assert_select 'label', text: 'Twitter handle'
 
     assert_select 'h2', text: 'Address'
@@ -146,7 +145,7 @@ class PartnerAddressUpdatesTest < ActionDispatch::IntegrationTest # Capybara::Ra
 
 
     #update_args = @partner_two.as_json
-    #update_args['partner']['address']['postcode'] = 
+    #update_args['partner']['address']['postcode'] =
     #patch admin_partner_url(@partner_two), params: update_args
     click_button 'Update'
     assert_redirected_to admin_partners_url

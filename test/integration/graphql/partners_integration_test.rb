@@ -126,7 +126,6 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert_field_equals data, 'accessibilitySummary', value: partner.accessibility_info
     assert_field_equals data, 'url', value: partner.url
     assert_field_equals data, 'twitterUrl', value: "https://twitter.com/#{partner.twitter_handle}"
-    assert_field_equals data, 'facebookUrl', value: partner.facebook_link
 
     # see note below
     # assert_field_equals data, 'logo', value: partner.image.url
@@ -151,7 +150,6 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
           accessibilitySummary
           logo
           url
-          facebookUrl
           twitterUrl
 
           address {

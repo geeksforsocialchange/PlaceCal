@@ -22,9 +22,6 @@ class Calendar < ApplicationRecord
   before_save :source_supported
   before_save :update_notice_count
 
-  attribute :is_facebook_page, :boolean, default: false
-  attribute :facebook_page_id, :string
-
   # Output the calendar's name when it's requested as a string
   alias_attribute :to_s, :name
 
@@ -64,11 +61,6 @@ class Calendar < ApplicationRecord
                                                      { calendar_id: self.id }.to_json, 2.weeks.ago))
 
     versions = versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
-  end
-
-  def set_fb_page_token(user)
-    graph = Koala::Facebook::API.new(user.access_token)
-    self.page_access_token = graph.get_page_access_token(facebook_page_id)
   end
 
   # Get a count of all the events this week

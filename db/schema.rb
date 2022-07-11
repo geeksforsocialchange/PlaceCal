@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_11_154511) do
+ActiveRecord::Schema.define(version: 2022_07_11_161804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 2022_06_11_154511) do
     t.string "public_contact_email"
     t.string "public_contact_phone"
     t.integer "notice_count"
+    t.string "source_type", default: ""
     t.string "calendar_state", default: "idle"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
@@ -228,7 +229,6 @@ ActiveRecord::Schema.define(version: 2022_06_11_154511) do
     t.text "booking_info"
     t.text "accessibility_info"
     t.string "twitter_handle"
-    t.string "facebook_link"
     t.string "summary"
     t.text "description"
     t.string "description_html"
@@ -388,8 +388,6 @@ ActiveRecord::Schema.define(version: 2022_06_11_154511) do
     t.integer "invited_by_id"
     t.string "invited_by_type"
     t.string "avatar"
-    t.text "facebook_app_id"
-    t.text "facebook_app_secret"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

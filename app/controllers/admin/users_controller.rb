@@ -111,9 +111,7 @@ module Admin
                                    :password_confirmation,
                                    :current_password,
                                    :phone,
-                                   :avatar,
-                                   :facebook_app_id,
-                                   :facebook_app_secret)
+                                   :avatar)
     end
 
     def update_user_profile

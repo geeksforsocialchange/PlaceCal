@@ -12,7 +12,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
              }
 
   devise_scope :user do
-    match 'users/auth/facebook/setup' => 'admin/omniauth_callbacks#setup', via: [:get, :post]
   end
 
   # Static pages
