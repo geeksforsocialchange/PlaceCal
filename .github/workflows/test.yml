@@ -29,9 +29,23 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        uses: nanasess/setup-chromedriver@v1
         with:
           fetch-depth: 0
+
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+
+      - name: Download Chrome driver
+        uses: nanasess/setup-chromedriver@master
+
+      - name: Unzip and install chrome driver
+        run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
