@@ -1,8 +1,10 @@
 require 'test_helper'
 
 Capybara.app_host = 'http://lvh.me'
-VCR.turn_off!
-WebMock.allow_net_connect!
+
+VCR.configure do |c|
+  c.ignore_localhost = true
+end
 
 Capybara.register_driver :headless_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
@@ -19,4 +21,3 @@ end
 #Dir.glob(File.join(Rails.root, 'test/system/**/*.rb')) do |path|
 #  require path
 #end
-
