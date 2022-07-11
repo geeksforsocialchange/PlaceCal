@@ -1,5 +1,3 @@
-puts "loading create_admin_users_test.rb"
-
 require_relative "./application_system_test_case"
 
 class CreateAdminUsersTest < ApplicationSystemTestCase
