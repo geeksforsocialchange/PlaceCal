@@ -27,7 +27,8 @@ To run PlaceCal locally you will need:
     - [rbenv-gemset](https://github.com/jf/rbenv-gemset) (optional)
 - Node.js. Current version we are using is in `.nvmrc`. We suggest using [nvm](https://github.com/nvm-sh/nvm) to manage this.
   - [yarn](https://yarnpkg.com/getting-started/install)
-- ImageMagick
+- ImageMagick for image manipulation
+- Chrome/Chromium for system tests
 
 ## Quickstart
 
@@ -48,6 +49,18 @@ bundle exec rails import:all_events
 * Access code docs through your local filesystem, and update with `bundle exec rails yard`
 
 To set up your own server, take a look at `INSTALL.md`.
+
+## Testing
+
+All PlaceCal tests are written in minitest. Before running tests make sure you dev environment has all the migrations run and then run `rails db:test:prepare` which will load the schema into the test database.
+
+Running unit tests is as simple as `rails test` for all tests, `rails test test/models/user.rb` to run every test in one test file and `rails test test/models/user.rb:123` to run only ONE test.
+
+System tests are where the application is started and connected to a 'headless' browser that is then used to verify functionality. This is employed as it allows us to verify our javascript is behaving.
+When running the unit tests these systems tests are NOT run as they can take a lot of time and use a large amount of RAM.
+To run system tests invoke `rails test:system`. It has the same options as the unit tests above.
+
+When pushing to a branch on github all tests are run (unit and system). This is configured [here](.github/workflows/test.yml). You are not allowed to merge a branch (onto main or production) without a passing test suite.
 
 ## Contributing
 
