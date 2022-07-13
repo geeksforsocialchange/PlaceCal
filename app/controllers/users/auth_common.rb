@@ -12,7 +12,7 @@ module Users
 
     # action filter:
     #
-    # In devise controllers: push all users on any subdomain of placecal to 
+    # In devise controllers: push all users on any subdomain of placecal to
     #   authenticate on the base placecal.org site so the site is set up
     #   properly and the styling will work
     #
@@ -45,6 +45,48 @@ module Users
         flash.now[:danger] = flash.now[:alert]
         flash.now.flash.delete :alert
       end
+    end
+
+    # when we logging the user in- take them to the admin site
+    #
+    # == Parameters
+    #   resource_or_scope: ignored
+    #
+    # == Returns
+    #   URL of admin site with correct path and subdomain
+    def after_sign_in_path_for(resource_or_scope)
+      route_for(
+        :root,
+        subdomain: Site::ADMIN_SUBDOMAIN
+      )
+    end
+
+    # used by password set/reset
+    #
+    # == Parameters
+    #   resource_or_scope: ignored
+    #
+    # == Returns
+    #   full url with domain to take user to
+    def after_accept_path_for(resource_or_scope)
+      route_for(
+        :root,
+        subdomain: Site::ADMIN_SUBDOMAIN
+      )
+    end
+
+    # the path to redirect to the user to when sign out happens
+    #
+    # == Parameters
+    #   resource_or_scope: ignored
+    #
+    # == Returns
+    #   full url with domain to take user to
+    def after_sign_out_path_for(resource_or_scope)
+      route_for(
+        :root,
+        subdomain: nil
+      )
     end
   end
 
