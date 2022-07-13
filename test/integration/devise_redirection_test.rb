@@ -51,10 +51,47 @@ class DeviseRedirectTest < ActionDispatch::IntegrationTest
     assert_equal  'http://admin.lvh.me:3000/', current_url
   end
 
-  test 'change password (when logged in)' do
-  end
-
   test 'invitation to set password' do
+    visit 'http://lvh.me/users/sign_in'
+
+    # log in
+    fill_in 'Email', with: 'root@placecal.org'
+    fill_in 'Password', with: 'password'
+    click_button 'Log in'
+
+    assert_selector '.alert-success', text: 'Signed in successfully.'
+
+    # navigate to create user
+    click_link 'Users'
+    click_link 'Add New User'
+
+    # fill in new user details
+    fill_in 'First name', with: 'Root'
+    fill_in 'Last name', with: 'User'
+    fill_in 'Email', with: 'root.user@lvh.me'
+    choose 'Root: Can do everything'
+    click_button 'Invite'
+
+    # that should be successful
+    assert_selector '.alert-success', text: 'User has been created! An invite has been sent'
+    click_button 'Sign out'
+
+    # accept invitation
+    email = last_email_delivered
+    assert email, 'No email sent'
+
+    invitation_url = extract_link_from(email)
+    assert invitation_url, 'Could not find invitation URL in email'
+
+    # set password
+    visit invitation_url
+    fill_in 'New password', with: 'password'
+    fill_in 'Repeat password', with: 'password'
+    click_button 'Set password'
+
+    # user should be logged in
+    assert_equal  'http://admin.lvh.me:3000/', current_url
+    assert_selector '.alert-success', text: 'Your password was set successfully. You are now signed in'
   end
 end
 
