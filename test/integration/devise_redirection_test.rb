@@ -35,14 +35,20 @@ class DeviseRedirectTest < ActionDispatch::IntegrationTest
 
     # now pick up the reset email and extract the link
     email = last_email_delivered
-    puts email.to_json
     assert email, 'Expected email is missing'
 
     link = extract_link_from(email)
-    puts ">>>> link=#{link}"
     assert link, 'Missing link in email?'
 
+    # do the reset
     visit link
+    fill_in 'New password', with: 'password2'
+    fill_in 'Confirm new password', with: 'password2'
+    click_button 'Change my password'
+
+    # we are now logged in
+    assert_selector '.alert-success', text: 'Your password has been changed successfully. You are now signed in.'
+    assert_equal  'http://admin.lvh.me:3000/', current_url
   end
 
   test 'change password (when logged in)' do
