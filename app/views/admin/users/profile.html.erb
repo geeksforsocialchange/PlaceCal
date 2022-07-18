@@ -35,6 +35,8 @@
     <div class="col-md-6">
       <h2>Facebook integration</h2>
       <p>Only needed if you want to synchronise Facebook events with this account. <a href="https://handbook.placecal.org/how-to-use-placecal/admins/facebook">See the handbook page for how to do this</a>.</p>
+      <%= f.input :facebook_app_id, as: :string %>
+      <%= f.input :facebook_app_secret, as: :string %>
     </div>
   </div>
 
