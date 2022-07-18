@@ -25,6 +25,6 @@ module EmailHelper
       body_text = html_body.decoded
     end
 
-    body_text =~ /<a href="(https?:\/\/[^"]*)"/ && $1
+    body_text =~ %r{<a href="(https?://[^"]*)"} && $1
   end
 end
