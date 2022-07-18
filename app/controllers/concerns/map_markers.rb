@@ -26,7 +26,7 @@ module MapMarkers
       next loc unless loc.is_a?(Partner)
 
       # reject partner with no resolvable address
-      next if loc.address&.latitude&.blank?
+      next if loc.address.nil? || loc.address.latitude.blank?
 
       if addresses_only
         # reject partner if they have no service areas?
@@ -50,19 +50,7 @@ module MapMarkers
       }
     end
 
-    locations.keep_if { |loc|
-      # puts loc.class
-      loc.is_a?(Hash) }
+    locations.keep_if { |loc| loc.is_a?(Hash) }
   end
 
-  # Takes a reducible collection of events and returns json map markers.
-  # Removes duplicate locations.
-  def get_map_markers_from_events(events)
-    get_map_markers(
-      @events.reduce([]) do |arr, e|
-        loc = e.place || e.address
-        if loc then arr << loc else arr end
-      end.uniq
-    )
-  end
 end
