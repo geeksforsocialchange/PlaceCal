@@ -21,7 +21,8 @@ class PartnersController < ApplicationController
     # Get all partners based in the neighbourhoods associated with this site.
     @partners = Partner.for_site(current_site).order(:name)
 
-    @map = get_map_markers(@partners) if @partners.detect(&:address)
+    # show only partners with no service_areas
+    @map = get_map_markers(@partners, true) if @partners.detect(&:address)
   end
 
   # # GET /places

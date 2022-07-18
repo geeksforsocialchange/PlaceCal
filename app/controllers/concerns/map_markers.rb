@@ -29,8 +29,8 @@ module MapMarkers
       next if loc.address.nil? || loc.address.latitude.blank?
 
       if addresses_only
-        # reject partner if they have no service areas?
-        next if loc.service_areas.count == 0
+        # reject partner if they have any service areas?
+        next if loc.service_areas.count > 0
       end
 
       {
