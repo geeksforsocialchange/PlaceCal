@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
   def get_map_markers(locations)
     locations.reduce([]) do |arr, loc|
       marker =
-        if (Partner == loc.class) && (loc&.address&.latitude) && loc.service_areas.count == 0
+        if (Partner == loc.class) && (loc&.address&.latitude)
           {
             lat: loc.address.latitude,
             lon: loc.address.longitude,
