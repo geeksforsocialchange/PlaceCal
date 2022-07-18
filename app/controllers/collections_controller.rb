@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CollectionsController < ApplicationController
+  include MapMarkers
+
   before_action :set_collection, only: %i[show edit update destroy]
   before_action :set_site
 

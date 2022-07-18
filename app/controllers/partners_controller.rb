@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PartnersController < ApplicationController
+  include MapMarkers
+
   before_action :set_partner, only: [:show, :embed]
   before_action :set_day, only: [:show, :embed]
   before_action :set_primary_neighbourhood, only: [:index]
