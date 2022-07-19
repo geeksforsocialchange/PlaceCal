@@ -11,8 +11,11 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
                passwords: 'users/passwords'
              }
 
-  devise_scope :user do
-  end
+  # NOTE: see app/controllers/admin/omniauth_callbacks_controller.rb
+  #   for why this is commented and not removed
+  # devise_scope :user do
+  #   match 'users/auth/facebook/setup' => 'admin/omniauth_callbacks#setup', via: [:get, :post]
+  # end
 
   # Static pages
   get 'join', to: 'joins#new'

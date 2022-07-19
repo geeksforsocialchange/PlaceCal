@@ -6,6 +6,10 @@ module Admin
     #   facebook integration. it is left here as it may become desirable
     #   to have omniauth in the future and the code is already here
 
+    # def facebook
+    #   redirect_to select_page_admin_calendars_path(calendar_id: request_params['calendar_id'])
+    # end
+
     def setup
     end
 
