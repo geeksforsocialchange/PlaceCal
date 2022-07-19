@@ -19,7 +19,7 @@
                           label: 'Partner Organiser',
                           collection: options_for_organiser,
                           selected: (@partner ? @partner.id : ''),
-                          input_html: { class: 'form-control select2' },
+                          input_html: { class: 'form-control', data: {controller: "select2"} },
                           hint: 'What group organises these events?' %>
 
         <%- if params[:is_facebook_page].present? %>
@@ -71,7 +71,7 @@
           <%= f.association :place,
                             label: 'Default location',
                             collection: options_for_location,
-                            input_html: { class: 'form-control select2' } %>
+                            input_html: { class: 'form-control', data: {controller: "select2"} } %>
         </div>
       </div>
     </div>
