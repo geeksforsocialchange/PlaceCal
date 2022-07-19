@@ -86,10 +86,6 @@ module Admin
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
-    def select_page
-      authorize Calendar
-    end
-
     private
 
     def set_calendar

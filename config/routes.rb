@@ -5,17 +5,10 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   # User login stuff
   devise_for :users,
              controllers: {
-               omniauth_callbacks: 'admin/omniauth_callbacks',
                invitations: 'users/invitations',
                sessions: 'users/sessions',
                passwords: 'users/passwords'
              }
-
-  # NOTE: see app/controllers/admin/omniauth_callbacks_controller.rb
-  #   for why this is commented and not removed
-  # devise_scope :user do
-  #   match 'users/auth/facebook/setup' => 'admin/omniauth_callbacks#setup', via: [:get, :post]
-  # end
 
   # Static pages
   get 'join', to: 'joins#new'
@@ -34,7 +27,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :articles
     resources :calendars do
-      get :select_page, on: :collection
       member do
         post :import
       end

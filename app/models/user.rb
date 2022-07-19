@@ -15,8 +15,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable,
-         :validatable, :invitable,
-         :omniauthable, omniauth_providers: %i[]
+         :validatable, :invitable
 
   # TODO: set up join models properly
   # has_many :partners_users, dependent: :destroy
