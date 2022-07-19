@@ -55,7 +55,7 @@
     <h2>Neighbourhood admins</h2>
     <p>The list of users with admin rights to this neighbourhood.</p>
 
-    <%= f.association :users, label: "Users", collection: options_for_users, input_html: { class: 'form-control select2' } %>
+    <%= f.association :users, label: "Users", collection: options_for_users, input_html: { class: "form-control", data: { controller: "select2"}} %>
   <% end %>
 
   <%= f.submit "Save", class: "btn btn-primary" %>
