@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CollectionsController < ApplicationController
+  include MapMarkers
+
   before_action :set_collection, only: %i[show edit update destroy]
   before_action :set_site
 
@@ -14,7 +16,7 @@ class CollectionsController < ApplicationController
   # GET /collections/1.json
   def show
     @events = @collection.sorted_events
-    @map = get_map_markers_from_events(@events) if @events
+    @map = get_map_markers(@events) if @events
     @events = sort_events(@events, 'time')
 
     respond_to do |format|
