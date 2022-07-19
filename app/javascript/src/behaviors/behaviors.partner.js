@@ -6,18 +6,6 @@ jQuery.extend(Behaviors, {
         
         /* service area bits */
 
-        // Attach select2 to the current select2 nodes
-        $('.select2').each(function () {
-          multiple = $(this).hasClass('multi-select');
-          $(this).select2({ multiple: multiple });
-        });
-
-        // Attach select2 to all future select2 nodes
-        $('.sites_neighbourhoods').bind('cocoon:after-insert', function (_, element) {
-          multiple = $('.select2', element).hasClass('multi-select');
-          $('.select2', element).select2({ multiple: multiple });
-        });
-
         /* */
         
         var preview = $(".brand_image");
@@ -38,10 +26,6 @@ jQuery.extend(Behaviors, {
           $('#js-map').attr('id',id);
           map[id] = L.map(id);
           map[id].scrollWheelZoom.disable();
-        });
-
-        $(document).on('nested:fieldAdded:calendars', function(e,h) {
-          $( ".select21" ).select2();
         });
 
         $(document).on('click', ".add_place", function() {

@@ -6,7 +6,7 @@
                 include_blank: false,
                 value_method: ->(obj) { obj[:id] },
                 label_method: ->(obj) { obj[:name] },
-                input_html: { class: 'form-control select2', style: "width: 599.8px;" },
+                input_html: { class: 'form-control', data: { controller: "select2" } , style: "width: 599.8px;" },
                 label: '', label_html: { hidden: true } %>
 
     <div class="input-group-append p-0">
