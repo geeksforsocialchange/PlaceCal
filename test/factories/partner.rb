@@ -18,6 +18,8 @@ FactoryBot.define do
     description { 'Our cool garden centre is a very cool and neat garden centre. Come to our events. Now.' }
     url { 'http://example.com' }
 
+    facebook_link { 'facebookgroup' }
+
     address
 
     # after(:build) { |partner| partner.tags = [create(:tag)] }

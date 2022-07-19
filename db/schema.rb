@@ -231,6 +231,7 @@ ActiveRecord::Schema.define(version: 2022_07_11_161804) do
     t.string "twitter_handle"
     t.string "summary"
     t.text "description"
+    t.string "facebook_link"
     t.string "description_html"
     t.string "summary_html"
     t.string "accessibility_info_html"

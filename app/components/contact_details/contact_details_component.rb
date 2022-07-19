@@ -5,6 +5,7 @@ class ContactDetailsComponent < MountainView::Presenter
   property :phone, default: false
   property :url, default: false
   property :email, default: false
+  property :facebook_link, default: false
   property :twitter_handle, default: false
   property :is_valid_phone, default: false
 
@@ -12,8 +13,12 @@ class ContactDetailsComponent < MountainView::Presenter
     "https://twitter.com/#{twitter_handle}"
   end
 
+  def facebook_url
+    "https://facebook.com/#{facebook_link}"
+  end
+
   def contact?
-    phone || email || url || twitter_handle
+    phone || email || url || facebook_link || twitter_handle
   end
 
   def strip_url(target_url)

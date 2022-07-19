@@ -26,6 +26,7 @@ en:
         google: 'Google'
         outlook: 'Outlook'
         mac_calendar: 'Mac Calendar'
+        facebook: 'Facebook'
         other: 'Other'
 
   activerecord:

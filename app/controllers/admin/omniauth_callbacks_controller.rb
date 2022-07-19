@@ -2,6 +2,10 @@
 
 module Admin
   class OmniauthCallbacksController < Admin::ApplicationController
+    # NOTE: this is currently not used (July '22) as it was a part of the
+    #   facebook integration. it is left here as it may become desirable
+    #   to have omniauth in the future and the code is already here
+
     def setup
     end
 

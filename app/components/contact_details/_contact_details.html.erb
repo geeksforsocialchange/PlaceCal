@@ -17,6 +17,10 @@
     <strong class="icon icon--contact icon--website"> Website:</strong>
     <span><%= link_to strip_url(url), url, target: '_blank' %></span>
   <% end %>
+  <% if facebook_link.present? %>
+    <strong class="icon icon--contact icon--facebook">Facebook:</strong>
+    <span><%= link_to facebook_link, facebook_url, target: '_blank' %></span>
+  <% end %>
   <% if twitter_handle.present? %>
     <strong class="icon icon--contact icon--twitter">Twitter:</strong>
     <span><%= link_to "@#{twitter_handle}", twitter_url, target: '_blank' %></span>
