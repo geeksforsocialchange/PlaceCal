@@ -15,14 +15,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable,
-         :validatable, :invitable,
-         :omniauthable, omniauth_providers: %i[facebook]
-
-  crypt_keeper :facebook_app_id,
-               :facebook_app_secret,
-               encryptor: :active_support,
-               key: Rails.application.secrets.crypt_keeper_key,
-               salt: Rails.application.secrets.crypt_keeper_salt
+         :validatable, :invitable
 
   # TODO: set up join models properly
   # has_many :partners_users, dependent: :destroy
@@ -87,7 +80,7 @@ class User < ApplicationRecord
   def can_alter_partner_by_id?(partner_id)
     partners.pluck(:id).include? partner_id
   end
-  
+
   def neighbourhood_admin?
     neighbourhoods.any?
   end
@@ -114,10 +107,6 @@ class User < ApplicationRecord
 
   def site_admin?
     Site.where(site_admin: self).any?
-  end
-
-  def has_facebook_keys?
-    facebook_app_id.present? && facebook_app_secret.present?
   end
 
   def assigned_to_postcode?(postcode)

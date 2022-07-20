@@ -95,7 +95,6 @@ module CalendarImporter::Events
       # We deal with the following strings:
       #   meet.jit.si/foobarbaz
       #   meet.google.com/kbv-byuf-cvq
-      #   facebook.com/events/(really long url)
       #   us04web.zoom.us/j/(really long url)
       #   zoom.us/j/(really long url)
       # We also deal with strings like
@@ -105,8 +104,8 @@ module CalendarImporter::Events
       {
         'meet.jit.si' =>     { regex: %r{#{http}#{subdomain}meet.jit.si/#{suffix}}, type: 'direct' },
         'meet.google.com' => { regex: %r{#{http}#{subdomain}meet.google.com/#{suffix}}, type: 'direct' },
-        'facebook.com' =>    { regex: %r{#{http}#{subdomain}facebook.com/events/#{suffix}}, type: 'indirect' },
-        'zoom.us' =>         { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' }
+        'zoom.us' =>         { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' },
+        'facebook.com' =>    { regex: %r{#{http}#{subdomain}facebook.com/events/#{suffix}}, type: 'indirect' }
       }
     end
   end

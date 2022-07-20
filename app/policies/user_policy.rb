@@ -51,8 +51,6 @@ class UserPolicy < ApplicationPolicy
     ]
     root_attrs = [
       :role,
-      :facebook_app_id,
-      :facebook_app_secret,
       { tag_ids: [],
         neighbourhood_ids: [] }
     ]
@@ -79,8 +77,6 @@ class UserPolicy < ApplicationPolicy
     ]
     root_attrs = [
       :role,
-      :facebook_app_id,
-      :facebook_app_secret,
       { tag_ids: [],
         neighbourhood_ids: [] }
     ]

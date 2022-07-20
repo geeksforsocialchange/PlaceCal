@@ -108,8 +108,6 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Neighbourhoods'
     assert_select 'h3', 'Allowed Tags'
     assert_select 'h3', 'Role'
-    assert_select 'label', 'Facebook app'
-    assert_select 'label', 'Facebook app secret'
   end
 
   test "Create form has correct fields for neighbourhood admin" do
@@ -128,8 +126,6 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Allowed Tags'
     assert_select 'h3', 'Neighbourhoods', count: 0
     assert_select 'h3', 'Role', count: 0
-    assert_select 'label', text: 'Facebook app', count: 0
-    assert_select 'label', text: 'Facebook app secret', count: 0
   end
 
 
@@ -149,8 +145,6 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Neighbourhoods'
     assert_select 'h3', 'Allowed Tags'
     assert_select 'h3', 'Role'
-    assert_select 'label', 'Facebook app'
-    assert_select 'label', 'Facebook app secret'
   end
 
   test "Edit form has correct fields for neighbourhood admin" do
@@ -168,8 +162,6 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Neighbourhoods', count: 0
     assert_select 'h3', 'Allowed Tags'
     assert_select 'h3', 'Role', count: 0
-    assert_select 'label', text: 'Facebook app', count: 0
-    assert_select 'label', text: 'Facebook app secret', count: 0
   end
 
   test "shows partner select list" do
