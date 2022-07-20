@@ -64,24 +64,13 @@
     <h3 class="mt-5">Contact Information</h3>
     <div class="row">
       <div class="col-md-6">
-        <h4>Public Contact</h4>
-        <p>This is the information that will be shown to the public for any enquiries about the event. If it's not set, it uses the information from the Organiser.</p>
+        <p>The contact info for the email account that manages this calendar</p>
         <label>Name</label>
         <%= f.text_field :public_contact_name, class: "form-control" %>
         <label>Email</label>
         <%= f.email_field :public_contact_email, class: "form-control" %>
         <label>Phone Number</label>
         <%= f.text_field :public_contact_phone, class: "form-control" %>
-      </div>
-      <div class="col-md-6">
-        <h4>Partnership Contact</h4>
-        <p><em>If different from public contact:</em> The contact person for PlaceCal. Use this to store an additional contact such as the public contact's manager.</p>
-        <label>Name</label>
-        <%= f.text_field :partnership_contact_name, class: "form-control" %>
-        <label>Email</label>
-        <%= f.email_field :partnership_contact_email, class: "form-control" %>
-        <label>Phone Number</label>
-        <%= f.text_field :partnership_contact_phone, class: "form-control" %>
       </div>
     </div>
 
