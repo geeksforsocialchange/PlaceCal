@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_11_161804) do
+ActiveRecord::Schema.define(version: 2022_07_20_151156) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,9 +76,6 @@ ActiveRecord::Schema.define(version: 2022_07_11_161804) do
     t.text "critical_error"
     t.string "page_access_token"
     t.boolean "is_working", default: true, null: false
-    t.string "partnership_contact_name"
-    t.string "partnership_contact_email"
-    t.string "partnership_contact_phone"
     t.string "public_contact_name"
     t.string "public_contact_email"
     t.string "public_contact_phone"
