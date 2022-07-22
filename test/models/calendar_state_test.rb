@@ -63,6 +63,38 @@ class CalendarStateTest < ActiveSupport::TestCase
     end
   end
 
+  test 'can move into error state even if calendar is invalid' do
+    VCR.use_cassette(:import_test_calendar) do
+      bad_message = 'A description of the error'
+      name = 'Calendar name'
+      calendar = create(:calendar, calendar_state: :in_worker, source: SOURCE_URL, name: name)
+
+      # build some duplicate events
+      event_args = {
+        dtstart: Date.new,
+        summary: 'This is a summary',
+        calendar_id: calendar.id
+      }
+      calendar.events.build event_args
+      calendar.events.build event_args
+
+      # set some invalid state
+      calendar.name = nil
+      assert (calendar.valid? == false), 'Calendar should be invalid'
+
+      # flag bad thing
+      calendar.flag_error_import_job! bad_message
+
+      # check the calendar is back to how it was
+      assert_equal name, calendar.name
+      assert calendar.valid?, 'Calendar should be valid now'
+
+      # check the error was saved to calendar
+      assert calendar.calendar_state.error?
+      assert_equal bad_message, calendar.critical_error
+    end
+  end
+
   # error'd
   test "can be tested for" do
     calendar = create(:calendar, calendar_state: :error)
