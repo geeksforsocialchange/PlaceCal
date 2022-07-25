@@ -37,11 +37,19 @@ class EventComponent < MountainView::Presenter
     end
   end
 
-  def date
-    if event.dtstart.year == Time.now.year
-      event.dtstart.strftime('%e %b')
+  def formatted_date(date)
+    if date.year == Time.now.year
+      date.strftime('%e %b')
     else
-      event.dtstart.strftime('%e %b %Y')
+      date.strftime('%e %b %Y')
+    end
+  end
+
+  def date
+    if event.dtstart.to_date == event.dtend.to_date
+      formatted_date(event.dtstart)
+    else
+      "#{formatted_date(event.dtstart)} - #{formatted_date(event.dtend)}"
     end
   end
 
