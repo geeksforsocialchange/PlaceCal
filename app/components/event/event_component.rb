@@ -25,10 +25,11 @@ class EventComponent < MountainView::Presenter
 
   def duration
     return false unless event.dtend
+
     mins = ((event.dtend - event.dtstart) / 60).to_i
     hours = mins / 60 # Ruby presumes ints not floats, and rounds down
 
-    if hours < 24
+    if hours < 25
       mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
       hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
       [hours_str, mins_str].reject(&:empty?).join(' ')
