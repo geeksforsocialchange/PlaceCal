@@ -15,7 +15,10 @@
 
   <%= f.input :is_published, label: 'Published', hint: 'Advertise this site on the PlaceCal homepage?', as: :boolean %>
 
-  <%= f.association :site_admin, label_method: :admin_name if policy(@site).permitted_attributes.include? :site_admin_id %>
+  <% if policy(@site).permitted_attributes.include? :site_admin_id %>
+    <%= f.association(:site_admin, label_method: :admin_name, input_html: { class: 'select2' }) %>
+  <% end %>
+
 
   <h2>Images</h2>
 
