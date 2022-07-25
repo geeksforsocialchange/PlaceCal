@@ -118,6 +118,7 @@ group :development do
 end
 
 group :test do
+  gem 'capybara-select-2', '~> 0.5.1'
   gem 'json_matchers'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
