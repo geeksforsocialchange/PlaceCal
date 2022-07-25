@@ -129,6 +129,8 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    cssbundling-rails (1.1.1)
+      railties (>= 6.0.0)
     debug_inspector (1.1.0)
     delayed_job (4.1.10)
       activesupport (>= 3.0, < 8.0)
@@ -541,6 +543,7 @@ DEPENDENCIES
   carrierwave
   cocoon
   coffee-rails (~> 5.0)
+  cssbundling-rails
   delayed_job_active_record
   devise
   devise_invitable

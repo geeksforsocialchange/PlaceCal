@@ -15,6 +15,7 @@ gem 'rails', '~> 6.1.6.1'
 gem 'minitest-rails'
 
 # Frontend
+gem 'cssbundling-rails'
 gem 'coffee-rails', '~> 5.0'
 gem 'importmap-rails'
 gem 'jquery-rails'

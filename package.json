@@ -24,7 +24,7 @@
     "leaflet": "^1.6.0",
     "minimist": "1.2.6",
     "popper.js": "1.16.1",
-    "sass": "^1.50.1",
+    "sass": "^1.54.0",
     "select2": "^4.0.11",
     "vue": "^2.6.11",
     "vue-template-compiler": "^2.6.14",
@@ -37,6 +37,6 @@
   },
   "scripts": {
     "build": "node esbuild.config.js",
-    "build:css": "sass ./app/assets/stylesheets/application.sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
+    "build:css": "sass ./app/assets/stylesheets/application.sass:./app/assets/builds/application.css --no-source-map --load-path=node_modules"
   }
 }
