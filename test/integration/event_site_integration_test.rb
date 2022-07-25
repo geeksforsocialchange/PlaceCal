@@ -16,6 +16,7 @@ class EventForSiteScopeTest < ActiveSupport::TestCase
       partner: @partner,
       summary: 'A summary of this event',
       dtstart: Date.today,
+      dtend: Date.today + 1.hour,
       address: @partner.address
     )
 
@@ -23,6 +24,7 @@ class EventForSiteScopeTest < ActiveSupport::TestCase
       partner: @partner,
       summary: 'A second event',
       dtstart: Date.today,
+      dtend: Date.today + 1.hour,
       address: @partner.address
     )
   end
@@ -112,6 +114,7 @@ class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
         partner: partner_with_tag,
         summary: "Event with tagged partner #{n}",
         dtstart: DateTime.now + 1.hours,
+        dtend: DateTime.now + 2.hours,
         address: address
       )
     end
@@ -122,6 +125,7 @@ class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
         partner: partner_without_tag,
         summary: "Event without tagged partner #{n}",
         dtstart: DateTime.now + 1.hours,
+        dtend: DateTime.now + 2.hours,
         address: address
       )
     end
