@@ -13,7 +13,7 @@ To run PlaceCal locally you will need:
 - A Mac or a Linux machine (we don't support Windows at present)
 - Postgres relational database. We are currently using v14.
   - Server
-    - either installed for your distribution or as a docker image (with the correct open port)
+    - either installed for your distribution or as a docker image (with the correct open port -- see below)
   - Client
     - you will still need the local developer libraries for postgres
     - these are distribution specific so you need to find out what they are called to install them
@@ -33,6 +33,30 @@ To run PlaceCal locally you will need:
 ## Quickstart
 
 With that said, here's what you need to get rolling.
+
+### Set up postgresql server (Via docker)
+
+**Note: Skip this step if you're using a system-installed docker**
+
+Creating a postgres docker image is simple:
+
+``` sh
+docker network create placecal-network
+docker create --name placecal-db --network placecal-network --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 -e 'POSTGRES_DB=placecal_db' -e 'POSTGRES_USER=postgres' -e 'POSTGRES_PASSWORD=foobar' -e 'POSTGRES_PORT=5432' postgres:14.1
+docker start placecal-db
+```
+
+You should now set the following values in your `.env`:
+
+``` sh
+POSTGRES_HOST=localhost
+POSTGRES_USER=postgres
+PGPASSWORD=foobar
+```
+
+If you've changed the port, or something else, please remember to represent that change in `.env`
+
+### Set up the local placecal repository, set up the database, and run it
 
 ```
 git clone https://github.com/geeksforsocialchange/PlaceCal.git
