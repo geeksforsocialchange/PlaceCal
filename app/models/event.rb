@@ -25,7 +25,13 @@ class Event < ApplicationRecord
 
   # Find by day
   scope :find_by_day, lambda { |day|
-    where('(dtstart >= (?)) AND (dtstart <= (?))', day.midnight, (day.midnight + 1.day))
+    # This is simple single-axis bounding box collision logic :)
+    # the x+w is event_end/day_end and the x is event_start/day_start
+    # day_end >= event_start AND day_start <= event_end
+    day_start = day.midnight
+    day_end = (day.midnight + 1.day)
+    where('((?) >= dtstart AND ((?) <= dtend))',
+          day_end, day_start)
   }
 
   # Find by week
