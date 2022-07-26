@@ -40,8 +40,8 @@ class Select2InputTest < ApplicationSystemTestCase
     click_link 'Add New Calendar'
 
     # test that select2 has rendered and is single
-    partner_orginiser = page.all(:css, '.select2-container')[0]
-    default_location = page.all(:css, '.select2-container')[1]
+    partner_orginiser = select2_node 'calendar_partner'
+    default_location = select2_node 'calendar_place'
 
     select2 'Community Group 2', xpath: partner_orginiser.path
     assert_select2_single 'Community Group 2', partner_orginiser
@@ -58,8 +58,8 @@ class Select2InputTest < ApplicationSystemTestCase
     click_sidebar 'calendars'
     await_datatables
     click_link 'test cal'
-    partner_orginiser = page.all(:css, '.select2-container')[0]
-    default_location = page.all(:css, '.select2-container')[1]
+    partner_orginiser = select2_node 'calendar_partner'
+    default_location = select2_node 'calendar_place'
     assert_select2_single 'Community Group 2', partner_orginiser
     assert_select2_single 'Community Group 3', default_location
   end
@@ -73,9 +73,9 @@ class Select2InputTest < ApplicationSystemTestCase
     within datatable_1st_row do
       click_link('Place')
     end
-    partners = all_select2[0]
-    neighbourhoods = all_select2[1]
-    tags = all_select2[2]
+    partners = select2_node 'user_partners'
+    neighbourhoods = select2_node 'user_neighbourhoods'
+    tags = select2_node 'user_tags'
     select2 'Community Group 1', 'Community Group 2', xpath: partners.path
     assert_select2_multiple ['Community Group 1', 'Community Group 2'], partners
     select2 'Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)', xpath: neighbourhoods.path
@@ -92,9 +92,9 @@ class Select2InputTest < ApplicationSystemTestCase
     within datatable_1st_row do
       click_link('Place')
     end
-    partners = all_select2[0]
-    neighbourhoods = all_select2[1]
-    tags = all_select2[2]
+    partners = select2_node 'user_partners'
+    neighbourhoods = select2_node 'user_neighbourhoods'
+    tags = select2_node 'user_tags'
     assert_select2_multiple ['Community Group 1', 'Community Group 2'], partners
     assert_select2_multiple ['Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)'], neighbourhoods
     assert_select2_multiple ['Hulme 1', 'Hulme 2'], tags
@@ -121,6 +121,12 @@ class Select2InputTest < ApplicationSystemTestCase
 
   def all_select2
     page.all(:css, '.select2-container')
+  end
+
+  def select2_node(stable_identifier)
+    within ".#{stable_identifier}" do
+      find(:css, '.select2-container')
+    end
   end
 
   def assert_select2_single(option, node)
