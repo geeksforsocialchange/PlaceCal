@@ -2,13 +2,13 @@
 
 require_relative './application_system_test_case'
 
-class NeighbourhoodsFormTest < ApplicationSystemTestCase
+class NeighbourhoodFormTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
 
   setup do
     create_default_site
-    create :root, email: 'root@lvh.me'
+    @root_user = create :root, email: 'root@lvh.me'
     @neighbourhood_admin = create(:neighbourhood_admin)
     @partner_admin = create(:partner_admin)
 
@@ -33,7 +33,24 @@ class NeighbourhoodsFormTest < ApplicationSystemTestCase
   test 'select2 inputs on neighbourhoods form' do
     click_sidebar 'neighbourhoods'
     await_datatables
-    click_link '298486374'
-    save_and_open_screenshot
+    datatable_1st_row = page.all(:css, '.odd')[0]
+    within datatable_1st_row do
+      click_link
+    end
+    # click_link '298486374'
+    await_select2
+    users = select2_node 'neighbourhood_users'
+    select2 @root_user.to_s, @neighbourhood_admin.to_s, xpath: users.path
+    assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
+    click_button 'Save'
+
+    click_sidebar 'neighbourhoods'
+    await_datatables
+    datatable_1st_row = page.all(:css, '.odd')[0]
+    within datatable_1st_row do
+      click_link
+    end
+    await_select2
+    assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
   end
 end
