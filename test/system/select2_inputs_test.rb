@@ -74,12 +74,12 @@ class Select2InputTest < ApplicationSystemTestCase
       click_link('Place')
     end
     partners = all_select2[0]
-    neighborhoods = all_select2[1]
+    neighbourhoods = all_select2[1]
     tags = all_select2[2]
     select2 'Community Group 1', 'Community Group 2', xpath: partners.path
     assert_select2_multiple ['Community Group 1', 'Community Group 2'], partners
-    select2 'Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)', xpath: neighborhoods.path
-    assert_select2_multiple ['Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)'], neighborhoods
+    select2 'Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)', xpath: neighbourhoods.path
+    assert_select2_multiple ['Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)'], neighbourhoods
     select2 'Hulme 1', 'Hulme 2', xpath: tags.path
     assert_select2_multiple ['Hulme 1', 'Hulme 2'], tags
     click_button 'Update'
@@ -93,16 +93,22 @@ class Select2InputTest < ApplicationSystemTestCase
       click_link('Place')
     end
     partners = all_select2[0]
-    neighborhoods = all_select2[1]
+    neighbourhoods = all_select2[1]
     tags = all_select2[2]
     assert_select2_multiple ['Community Group 1', 'Community Group 2'], partners
-    assert_select2_multiple ['Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)'], neighborhoods
+    assert_select2_multiple ['Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)'], neighbourhoods
     assert_select2_multiple ['Hulme 1', 'Hulme 2'], tags
+  end
+
+  test 'visiting a neighbourhoods form' do
+    click_sidebar 'neighbourhoods'
+    await_datatables
+    click_link '298486374'
     save_and_open_screenshot
   end
 
-  # I think the icons are interfering with click_link
   def click_sidebar(href)
+    # I think the icons are interfering with click_link
     within '.sidebar-sticky' do
       link = page.find(:css, "a[href*='#{href}']")
       visit link['href']
