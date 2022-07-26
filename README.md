@@ -44,11 +44,20 @@ bundle exec rails import:all_events
 
 * Start the server with `./bin/dev` instead of `bundle exec rails server` due to migration to jsbundling
 * Make sure you use `lvh.me:3000` instead of `localhost` or you **will** have authentication problems.
-* Admin interface is `admin.lvh.me:3000`
-* Seeded root user is info@placecal.org / password
+* Admin interface is `admin.lvh.me:3000` (You will need to make a new admin user -- see below)
 * Access code docs through your local filesystem, and update with `bundle exec rails yard`
 
 To set up your own server, take a look at `INSTALL.md`.
+
+### Creating an admin user
+
+To create an admin user, open the console (`bin/rails c`) and run the following:
+
+```
+User.create!(email: 'info@placecal.org', password: 'password', password_confirmation: 'password', role: :root)
+```
+
+(Note: You should replace 'info@placecal.org' and 'password' with more appropriate values)
 
 ## Testing
 
