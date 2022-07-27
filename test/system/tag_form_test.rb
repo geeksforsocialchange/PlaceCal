@@ -2,7 +2,7 @@
 
 require_relative './application_system_test_case'
 
-class PartnerFormTest < ApplicationSystemTestCase
+class TagFormTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
 
@@ -23,6 +23,8 @@ class PartnerFormTest < ApplicationSystemTestCase
     @tag = create :tag
     @tag_pub = create :tag_public
 
+    @article = create :article
+
     # logging in as root user
     visit '/users/sign_in'
     fill_in 'Email', with: 'root@lvh.me'
@@ -30,22 +32,27 @@ class PartnerFormTest < ApplicationSystemTestCase
     click_button 'Log in'
   end
 
-  test 'select2 inputs on partner form' do
-    click_sidebar 'partners'
+  test 'select2 inputs on tag form' do
+    click_sidebar 'tags'
     await_datatables
-    click_link(@partner.name)
+    click_link(@tag.name)
     await_select2
-    tags = select2_node 'partner_tags'
-    # TODO: ServiceArea what do I do about this cocoon stuff???
-    select2 @tag.name, @tag_pub.name, xpath: tags.path
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
-    click_button 'Save Partner'
 
-    click_sidebar 'partners'
+    partners = select2_node 'tag_partners'
+    users = select2_node 'tag_users'
+
+    select2 @partner.name, @partner_two.name, xpath: partners.path
+    assert_select2_multiple [@partner.name, @partner_two.name], partners
+    select2 @root_user.to_s, @partner_admin.to_s, xpath: users.path
+    assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
+    click_button 'Save'
+
+    click_sidebar 'tags'
     await_datatables
-    click_link(@partner.name)
+    click_link(@tag.name)
     await_select2
-    tags = select2_node 'partner_tags'
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+
+    assert_select2_multiple [@partner.name, @partner_two.name], partners
+    assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
   end
 end

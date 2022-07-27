@@ -2,7 +2,7 @@
 
 require_relative './application_system_test_case'
 
-class PartnerFormTest < ApplicationSystemTestCase
+class SiteFormTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
 
@@ -22,6 +22,7 @@ class PartnerFormTest < ApplicationSystemTestCase
     create :event, address: @address, calendar: @calendar
     @tag = create :tag
     @tag_pub = create :tag_public
+    @site = create :site
 
     # logging in as root user
     visit '/users/sign_in'
@@ -30,22 +31,26 @@ class PartnerFormTest < ApplicationSystemTestCase
     click_button 'Log in'
   end
 
-  test 'select2 inputs on partner form' do
-    click_sidebar 'partners'
+  test 'select2 inputs on site form' do
+    click_sidebar 'sites'
     await_datatables
-    click_link(@partner.name)
+    click_link 'Add New Site'
     await_select2
-    tags = select2_node 'partner_tags'
-    # TODO: ServiceArea what do I do about this cocoon stuff???
+    tags = select2_node 'site_tags'
+    neighbourhood_main = select2_node 'site_sites_neighbourhood_neighbourhood_id'
+    # TODO: main  Neighbourhood HAS TO BE ON NEW SITE
+    # TODO: Other  Neighbourhoods what do I do about this cocoon stuff???
+    # neighbourhood_others = select2_node 'site_sites_neighbourhoods_neighbourhood_id'
     select2 @tag.name, @tag_pub.name, xpath: tags.path
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
-    click_button 'Save Partner'
+    click_button 'Create Site'
 
-    click_sidebar 'partners'
+    click_sidebar 'sites'
     await_datatables
-    click_link(@partner.name)
-    await_select2
-    tags = select2_node 'partner_tags'
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    save_and_open_screenshot
+    # click_link(@site.name)
+    # await_select2
+    # tags = select2_node 'site_tags'
+    # assert_select2_multiple [@tag.name, @tag_pub.name], tags
   end
 end
