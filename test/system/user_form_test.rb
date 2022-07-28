@@ -22,6 +22,12 @@ class UserFormTest < ApplicationSystemTestCase
     create :event, address: @address, calendar: @calendar
     @tag = create :tag
     @tag_pub = create :tag_public
+    
+    # TODO: turn into variables
+    # @neighbourhood_one = 'Ashton Hurst (Ward)'
+    # @neighbourhood_two = 'Ashton Hurst, Tameside (Ward)'
+    @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
+    @neighbourhood_two = neighbourhoods[2].to_s.gsub('w', 'W')
 
     # logging in as root user
     visit '/users/sign_in'
@@ -46,9 +52,8 @@ class UserFormTest < ApplicationSystemTestCase
     select2 @partner.name, @partner_two.name, xpath: partners.path
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    # TODO: turn into variables
-    select2 'Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)', xpath: neighbourhoods.path
-    assert_select2_multiple ['Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)'], neighbourhoods
+    select2 @neighbourhood_one, @neighbourhood_two, xpath: neighbourhoods.path
+    assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
     select2 @tag.name, @tag_pub.name, xpath: tags.path
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
@@ -68,8 +73,7 @@ class UserFormTest < ApplicationSystemTestCase
     tags = select2_node 'user_tags'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    # TODO: turn into variables
-    assert_select2_multiple ['Ashton Hurst (Ward)', 'Ashton Hurst, Tameside (Ward)'], neighbourhoods
+    assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
   end

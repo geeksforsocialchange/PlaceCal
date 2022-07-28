@@ -264,6 +264,12 @@ def select2_node(stable_identifier)
   end
 end
 
+def all_cocoon_select2_nodes(css_class)
+  within ".#{css_class}" do
+    all(:css, '.select2-container')
+  end
+end
+
 def assert_select2_single(option, node)
   within :xpath, node.path do
     assert_selector '.select2-selection__rendered', text: option
