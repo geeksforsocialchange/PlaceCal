@@ -14,16 +14,7 @@ class TagFormTest < ApplicationSystemTestCase
 
     @partner = @partner_admin.partners.first
     @partner_two = create(:ashton_partner)
-    @neighbourhood = @partner.address.neighbourhood
-    @neighbourhood_admin.neighbourhoods << @neighbourhood
-
-    @calendar = create(:calendar, partner: @partner, place: @partner)
-    @address = create :address
-    create :event, address: @address, calendar: @calendar
     @tag = create :tag
-    @tag_pub = create :tag_public
-
-    @article = create :article
 
     # logging in as root user
     visit '/users/sign_in'
