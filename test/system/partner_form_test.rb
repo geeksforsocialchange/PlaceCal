@@ -9,20 +9,9 @@ class PartnerFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
-    @neighbourhood_admin = create(:neighbourhood_admin)
-    @partner_admin = create(:partner_admin)
-
-    @partner = @partner_admin.partners.first
-    @partner_two = create(:ashton_partner)
-    @neighbourhood = @partner.address.neighbourhood
-    @neighbourhood_admin.neighbourhoods << @neighbourhood
-
-    @calendar = create(:calendar, partner: @partner, place: @partner)
-    @address = create :address
-    create :event, address: @address, calendar: @calendar
+    @partner = create(:ashton_partner)
     @tag = create :tag
     @tag_pub = create :tag_public
-
     @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.gsub('w', 'W')
 
@@ -39,6 +28,8 @@ class PartnerFormTest < ApplicationSystemTestCase
     click_link(@partner.name)
     await_select2
 
+    # because of the nested forms we get an array of node
+    # the link adds a select2_node to the end of the array
     click_link 'Add Service Area'
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     select2 @neighbourhood_one, xpath: service_areas[-1].path
@@ -58,6 +49,7 @@ class PartnerFormTest < ApplicationSystemTestCase
     await_datatables
     click_link(@partner.name)
     await_select2
+
     tags = select2_node 'partner_tags'
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
 
