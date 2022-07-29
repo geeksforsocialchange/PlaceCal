@@ -9,17 +9,6 @@ class SiteFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
-    @neighbourhood_admin = create(:neighbourhood_admin)
-    @partner_admin = create(:partner_admin)
-
-    @partner = @partner_admin.partners.first
-    @partner_two = create(:ashton_partner)
-    @neighbourhood = @partner.address.neighbourhood
-    @neighbourhood_admin.neighbourhoods << @neighbourhood
-
-    @calendar = create(:calendar, partner: @partner, place: @partner)
-    @address = create :address
-    create :event, address: @address, calendar: @calendar
     @tag = create :tag
     @tag_pub = create :tag_public
     @site = create :site
@@ -40,12 +29,13 @@ class SiteFormTest < ApplicationSystemTestCase
     click_link 'Add New Site'
     await_select2
 
+    # this select2 node will only appear when creating the site
     neighbourhood_main = select2_node 'site_sites_neighbourhood_neighbourhood_id'
     select2 @neighbourhood_one, xpath: neighbourhood_main.path
     assert_select2_single @neighbourhood_one, neighbourhood_main
 
-    # TODO: Other  Neighbourhoods what do I do about this cocoon stuff???
-    # neighbourhood_others = select2_node 'site_sites_neighbourhoods_neighbourhood_id'
+    # because of the nested forms we get an array of node
+    # the link adds a select2_node to the end of the array
     click_link 'Add neighbourhood'
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     select2 @neighbourhood_two, xpath: service_areas[-1].path
@@ -66,6 +56,7 @@ class SiteFormTest < ApplicationSystemTestCase
     click_link new_site_name
     await_select2
 
+    # check that data persists
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     assert_select2_single @neighbourhood_two, service_areas[0]
 
