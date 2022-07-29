@@ -14,18 +14,10 @@ class UserFormTest < ApplicationSystemTestCase
 
     @partner = @partner_admin.partners.first
     @partner_two = create(:ashton_partner)
-    @neighbourhood = @partner.address.neighbourhood
-    @neighbourhood_admin.neighbourhoods << @neighbourhood
 
-    @calendar = create(:calendar, partner: @partner, place: @partner)
-    @address = create :address
-    create :event, address: @address, calendar: @calendar
     @tag = create :tag
     @tag_pub = create :tag_public
     
-    # TODO: turn into variables
-    # @neighbourhood_one = 'Ashton Hurst (Ward)'
-    # @neighbourhood_two = 'Ashton Hurst, Tameside (Ward)'
     @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.gsub('w', 'W')
 
@@ -46,15 +38,16 @@ class UserFormTest < ApplicationSystemTestCase
       click_link('Place')
     end
     await_select2
+
     partners = select2_node 'user_partners'
-    neighbourhoods = select2_node 'user_neighbourhoods'
-    tags = select2_node 'user_tags'
     select2 @partner.name, @partner_two.name, xpath: partners.path
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
+    neighbourhoods = select2_node 'user_neighbourhoods'
     select2 @neighbourhood_one, @neighbourhood_two, xpath: neighbourhoods.path
     assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
+    tags = select2_node 'user_tags'
     select2 @tag.name, @tag_pub.name, xpath: tags.path
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
     click_button 'Update'
@@ -68,13 +61,14 @@ class UserFormTest < ApplicationSystemTestCase
       click_link('Place')
     end
     await_select2
+
     partners = select2_node 'user_partners'
-    neighbourhoods = select2_node 'user_neighbourhoods'
-    tags = select2_node 'user_tags'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
+    neighbourhoods = select2_node 'user_neighbourhoods'
     assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
+    tags = select2_node 'user_tags'
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
   end
 end
