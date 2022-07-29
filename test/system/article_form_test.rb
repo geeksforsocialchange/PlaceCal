@@ -9,17 +9,10 @@ class ArticleFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
-    @neighbourhood_admin = create(:neighbourhood_admin)
-    @partner_admin = create(:partner_admin)
 
-    @partner = @partner_admin.partners.first
+    @partner = create(:partner)
     @partner_two = create(:ashton_partner)
-    @neighbourhood = @partner.address.neighbourhood
-    @neighbourhood_admin.neighbourhoods << @neighbourhood
 
-    @calendar = create(:calendar, partner: @partner, place: @partner)
-    @address = create :address
-    create :event, address: @address, calendar: @calendar
     @tag = create :tag
     @tag_pub = create :tag_public
 
@@ -33,32 +26,39 @@ class ArticleFormTest < ApplicationSystemTestCase
   end
 
   test 'select2 inputs on article form' do
+    # Edit an article
     click_sidebar 'articles'
     await_datatables
     click_link(@article.title)
-    # click_link '298486374'
     await_select2
-    author = select2_node 'article_author'
-    partners = select2_node 'article_partners'
-    tags = select2_node 'article_tags'
 
+    author = select2_node 'article_author'
     select2 @root_user.to_s, xpath: author.path
     assert_select2_single @root_user.to_s, author
+
+    partners = select2_node 'article_partners'
     select2 @partner.name, @partner_two.name, xpath: partners.path
     assert_select2_multiple [@partner.name, @partner_two.name], partners
+
+    tags = select2_node 'article_tags'
     select2 @tag.name, @tag_pub.name, xpath: tags.path
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
+
     click_button 'Save Article'
 
+    # Check that the changes persist
     click_sidebar 'articles'
     await_datatables
     click_link(@article.title)
     await_select2
+
     author = select2_node 'article_author'
-    partners = select2_node 'article_partners'
-    tags = select2_node 'article_tags'
     assert_select2_single @root_user.to_s, author
+
+    partners = select2_node 'article_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
+
+    tags = select2_node 'article_tags'
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
   end
 end
