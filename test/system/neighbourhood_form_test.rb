@@ -9,7 +9,7 @@ class NeighbourhoodFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
-    @neighbourhood_admin = create(:neighbourhood_admin)
+    @neighbourhood_admin = create :neighbourhood_admin
 
     # logging in as root user
     visit '/users/sign_in'

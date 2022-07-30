@@ -10,8 +10,8 @@ class ArticleFormTest < ApplicationSystemTestCase
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
 
-    @partner = create(:partner)
-    @partner_two = create(:ashton_partner)
+    @partner = create :partner
+    @partner_two = create :ashton_partner
 
     @tag = create :tag
     @tag_pub = create :tag_public
@@ -29,7 +29,7 @@ class ArticleFormTest < ApplicationSystemTestCase
     # Edit an article
     click_sidebar 'articles'
     await_datatables
-    click_link(@article.title)
+    click_link @article.title
     await_select2
 
     author = select2_node 'article_author'
@@ -49,7 +49,7 @@ class ArticleFormTest < ApplicationSystemTestCase
     # Check that the changes persist
     click_sidebar 'articles'
     await_datatables
-    click_link(@article.title)
+    click_link @article.title
     await_select2
 
     author = select2_node 'article_author'

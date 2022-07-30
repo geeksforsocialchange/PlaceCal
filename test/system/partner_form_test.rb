@@ -9,7 +9,7 @@ class PartnerFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
-    @partner = create(:ashton_partner)
+    @partner = create :ashton_partner
     @tag = create :tag
     @tag_pub = create :tag_public
     @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
@@ -25,7 +25,7 @@ class PartnerFormTest < ApplicationSystemTestCase
   test 'select2 inputs on partner form' do
     click_sidebar 'partners'
     await_datatables
-    click_link(@partner.name)
+    click_link @partner.name
     await_select2
 
     # because of the nested forms we get an array of node
@@ -47,7 +47,7 @@ class PartnerFormTest < ApplicationSystemTestCase
 
     click_sidebar 'partners'
     await_datatables
-    click_link(@partner.name)
+    click_link @partner.name
     await_select2
 
     tags = select2_node 'partner_tags'

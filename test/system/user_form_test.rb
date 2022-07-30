@@ -9,11 +9,11 @@ class UserFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     create :root, email: 'root@lvh.me'
-    @neighbourhood_admin = create(:neighbourhood_admin)
-    @partner_admin = create(:partner_admin)
+    @neighbourhood_admin = create :neighbourhood_admin
+    @partner_admin = create :partner_admin
 
     @partner = @partner_admin.partners.first
-    @partner_two = create(:ashton_partner)
+    @partner_two = create :ashton_partner
 
     @tag = create :tag
     @tag_pub = create :tag_public
@@ -35,7 +35,7 @@ class UserFormTest < ApplicationSystemTestCase
     # edit a root user because they have access to all potential select2 inputs
     datatable_1st_row = page.all(:css, '.odd')[0]
     within datatable_1st_row do
-      click_link('Place')
+      click_link 'Place'
     end
     await_select2
 
@@ -58,7 +58,7 @@ class UserFormTest < ApplicationSystemTestCase
     # return to user to check data is intact
     datatable_1st_row = page.all(:css, '.odd')[0]
     within datatable_1st_row do
-      click_link('Place')
+      click_link 'Place'
     end
     await_select2
 

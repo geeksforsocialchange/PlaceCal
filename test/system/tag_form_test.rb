@@ -9,11 +9,11 @@ class TagFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
-    @neighbourhood_admin = create(:neighbourhood_admin)
-    @partner_admin = create(:partner_admin)
+    @neighbourhood_admin = create :neighbourhood_admin
+    @partner_admin = create :partner_admin
 
     @partner = @partner_admin.partners.first
-    @partner_two = create(:ashton_partner)
+    @partner_two = create :ashton_partner
     @tag = create :tag
 
     # logging in as root user
@@ -26,7 +26,7 @@ class TagFormTest < ApplicationSystemTestCase
   test 'select2 inputs on tag form' do
     click_sidebar 'tags'
     await_datatables
-    click_link(@tag.name)
+    click_link @tag.name
     await_select2
 
     partners = select2_node 'tag_partners'
@@ -40,7 +40,7 @@ class TagFormTest < ApplicationSystemTestCase
 
     click_sidebar 'tags'
     await_datatables
-    click_link(@tag.name)
+    click_link @tag.name
     await_select2
 
     assert_select2_multiple [@partner.name, @partner_two.name], partners

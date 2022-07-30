@@ -9,8 +9,8 @@ class CalendarFormTest < ApplicationSystemTestCase
   setup do
     create_default_site
     create :root, email: 'root@lvh.me'
-    @partner = create(:partner)
-    @partner_two = create(:ashton_partner)
+    @partner = create :partner
+    @partner_two = create :ashton_partner
 
     # logging in as root user
     visit '/users/sign_in'
