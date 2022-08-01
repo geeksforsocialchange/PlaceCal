@@ -151,8 +151,8 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
           accessibilitySummary
           logo
           url
-          facebookUrl
           twitterUrl
+          facebookUrl
 
           address {
             streetAddress

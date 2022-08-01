@@ -25,10 +25,11 @@ class EventComponent < MountainView::Presenter
 
   def duration
     return false unless event.dtend
+
     mins = ((event.dtend - event.dtstart) / 60).to_i
     hours = mins / 60 # Ruby presumes ints not floats, and rounds down
 
-    if hours < 24
+    if hours < 25
       mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
       hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
       [hours_str, mins_str].reject(&:empty?).join(' ')
@@ -37,11 +38,19 @@ class EventComponent < MountainView::Presenter
     end
   end
 
-  def date
-    if event.dtstart.year == Time.now.year
-      event.dtstart.strftime('%e %b')
+  def formatted_date(date)
+    if date.year == Time.now.year
+      date.strftime('%e %b')
     else
-      event.dtstart.strftime('%e %b %Y')
+      date.strftime('%e %b %Y')
+    end
+  end
+
+  def date
+    if event.dtstart.to_date == event.dtend.to_date
+      formatted_date(event.dtstart)
+    else
+      "#{formatted_date(event.dtstart)} - #{formatted_date(event.dtend)}"
     end
   end
 

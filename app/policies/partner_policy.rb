@@ -22,7 +22,7 @@ class PartnerPolicy < ApplicationPolicy
 
     return true if user.can_alter_neighbourhood_by_id?(record.neighbourhood_id)
     return true if user.can_alter_partner_by_id?(record.id)
-    
+
     false
   end
 

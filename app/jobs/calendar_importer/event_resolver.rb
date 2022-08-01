@@ -140,7 +140,13 @@ class CalendarImporter::EventResolver
     # We assign address to the place's address if possible, and otherwise we exit
 
     # This should theoretically never run ! :) (At least, it's not accounted for in Kim's table)
-    raise Problem, 'N/A - Unaccounted for in table' if calendar.place.nil?
+    message = <<-TEXT
+    You have selected the "Default Location" strategy to set events on this calendar's locations,
+    but the "Default Location" field has not been set.
+    Please edit the calendar and set a Default Location, or choose another strategy.
+    TEXT
+
+    raise Problem, message if calendar.place.nil?
 
     return calendar.place, calendar.place.address
 

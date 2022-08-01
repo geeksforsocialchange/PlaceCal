@@ -13,10 +13,6 @@ FactoryBot.define do
     public_contact_email { 'public@communitygroup.com'}
     public_contact_phone { '0161 0000000' }
 
-    partnership_contact_name { 'Back Office Manager' }
-    partnership_contact_email { 'backoffice@communitygroup.com' }
-    partnership_contact_phone { '0161 0000001' }
-
     partner
 
     place

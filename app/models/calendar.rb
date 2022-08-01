@@ -22,9 +22,6 @@ class Calendar < ApplicationRecord
   before_save :source_supported
   before_save :update_notice_count
 
-  attribute :is_facebook_page, :boolean, default: false
-  attribute :facebook_page_id, :string
-
   # Output the calendar's name when it's requested as a string
   alias_attribute :to_s, :name
 
@@ -64,11 +61,6 @@ class Calendar < ApplicationRecord
                                                      { calendar_id: self.id }.to_json, 2.weeks.ago))
 
     versions = versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
-  end
-
-  def set_fb_page_token(user)
-    graph = Koala::Facebook::API.new(user.access_token)
-    self.page_access_token = graph.get_page_access_token(facebook_page_id)
   end
 
   # Get a count of all the events this week
@@ -176,6 +168,8 @@ class Calendar < ApplicationRecord
   # Flag calendar record a problem has occurred and that all
   # future processing will cease until the user resets this calendar
   # elsewhere
+  # NOTE: this reloads the model object so if you want to keep any
+  # built up state then this WILL clobber that.
   #
   # @param problem [String]
   #   string describing the basic problem the importer failed on
@@ -184,18 +178,15 @@ class Calendar < ApplicationRecord
   #   nothing
   def flag_error_import_job!(problem)
     transaction do
-      # FIXME: we really should be reloading the calendar as it
-      #  is an internal problem but it breaks a few tests as they
-      #  sort of assume that this is being ignored. the tests are a
-      #  little untidy.
-      # reload unless new_record? # clear any bad state that may have built up
-
       return unless calendar_state.in_worker?
 
-      update!(
-        calendar_state: :error,
-        critical_error: problem
-      )
+      # we need the state to be valid so we discard everything
+      # before saving error
+      reload
+
+      self.calendar_state = :error
+      self.critical_error = problem
+      save validate: false
     end
   end
 
