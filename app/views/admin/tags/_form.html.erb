@@ -38,10 +38,10 @@
   <% if disabled_fields.include?(:partner_ids) %>
     <%# # Create a dummy field, because f.assoc disappears %>
     <%= f.input :partners, collection: options_for_partners,
-        input_html: { class: 'form-control select2' }, disabled: true %>
+        input_html: { class: 'form-control', data: { controller: "select2" } }, disabled: true %>
   <% else %>
     <%= f.association :partners, collection: options_for_partners,
-        input_html: { class: 'form-control select2' } %>
+        input_html: { class: 'form-control', data: { controller: "select2" } } %>
   <% end %>
 
   <h2>Assigned Users</h2>
@@ -49,10 +49,10 @@
   <% if disabled_fields.include?(:user_ids) %>
     <%# # Create a dummy field, because f.assoc disappears %>
     <%= f.association :users,
-        input_html: { class: 'form-control select2' }, disabled: true %>
+        input_html: { class: 'form-control', data: { controller: "select2" } }, disabled: true %>
   <% else %>
     <%= f.association :users, collection: options_for_users,
-        input_html: { class: 'form-control select2' } %>
+        input_html: { class: 'form-control', data: { controller: "select2" } } %>
   <% end %>
 
   <span>

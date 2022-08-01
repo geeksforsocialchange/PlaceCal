@@ -4,7 +4,7 @@
 
   <%= f.input :title, id: :article_title, as: :string, input_html: { class: 'special' } %>
 
-  <%= f.association :author, input_html: { class: 'form-control select2' } %>
+  <%= f.association :author, input_html: { class: 'form-control', data: { controller: "select2"} } %>
 
   <%= f.input :body, input_html: { rows: 20 } %>
   <p>This field accepts <a href="https://www.markdownguide.org/basic-syntax/">Markdown syntax</a>.</p>
@@ -29,11 +29,11 @@
       <% if disabled_fields.include?(:partner_ids) %>
         <%# # Create a dummy field, because f.assoc disappears %>
         <%= f.input :partners, collection: options_for_partners,
-            input_html: { class: 'form-control select2 multi-select' },
+            input_html: { class: 'form-control', data: { controller: "select2"} },
             disabled: true %>
       <% else %>
         <%= f.association :partners, collection: options_for_partners,
-                          input_html: { class: 'form-control select2 multi-select' },
+                          input_html: { class: 'form-control', data: { controller: "select2"} },
                           label: false %>
       <% end %>
     </div>
@@ -42,10 +42,10 @@
       <% if disabled_fields.include?(:tag_ids) %>
         <%# # Create a dummy field, because f.assoc disappears %>
         <%= f.input :tags, collection: options_for_tags,
-            input_html: { class: 'form-control select2 multi-select' }, disabled: true %>
+            input_html: { class: 'form-control', data: { controller: "select2"} }, disabled: true %>
       <% else %>
         <%= f.association :tags, collection: options_for_tags,
-                          input_html: { class: 'form-control select2 multi-select' },
+                          input_html: { class: 'form-control', data: { controller: "select2"} },
                           label: false %>
       <% end %>
     </div>

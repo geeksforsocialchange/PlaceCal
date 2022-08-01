@@ -6,19 +6,6 @@ jQuery.extend(Behaviors, {
         // with the class 'cocoon_delete-this'. This allows us to remove it from the form
         // so it does not submit a primary relation as being a secondary one or remove it
         $('.cocoon_delete-this').parents('.nested-fields').remove();
-
-        // Attach select2 to the current select2 nodes
-        // If it is a multiple select item, then we account for that
-        $('.select2').each(function () {
-          multiple = $(this).hasClass('multi-select');
-          $(this).select2({ multiple: multiple });
-        });
-
-        // Attach select2 to all future select2 nodes
-        $('.sites_neighbourhoods').bind('cocoon:after-insert', function (_, element) {
-          multiple = $('.select2', element).hasClass('multi-select');
-          $('.select2', element).select2({ multiple: multiple });
-        });
       }
     }
   }

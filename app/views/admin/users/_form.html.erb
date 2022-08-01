@@ -14,8 +14,7 @@
                         label: false,
                         collection: options_for_partners,
                         selected: @partners,
-                        input_html: {class: 'form-control select2' }
-          %>
+                        input_html: { class: 'form-control', data: { controller: "select2" } } %>
     </div>
 
     <div class="col-md-6">
@@ -27,7 +26,7 @@
         <%= f.association :neighbourhoods,
           label: false,
           collection: options_for_neighbourhoods,
-          input_html: {class: 'form-control select2' } %>
+          input_html: { class: 'form-control', data: { controller: "select2" } } %>
 
       <% else %>
         <ul class='neighbourhood-list'>
@@ -46,7 +45,7 @@
       <%= f.association :tags,
                         label: false,
                         collection: options_for_tags,
-                        input_html: {class: 'form-control select2' } %>
+                        input_html: { class: 'form-control', data: { controller: "select2" } } %>
     </div>
     <div class="col-md-6">
       <h3>Role</h3>

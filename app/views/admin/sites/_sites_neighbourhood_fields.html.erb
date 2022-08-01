@@ -4,7 +4,7 @@
     <%= f.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
         value_method: ->(obj) { obj[:id] },
         label_method: ->(obj) { obj[:name] },
-        input_html: { class: 'form-control select2', style: "width: 599.8px;" },
+        input_html: { class: 'form-control', data: { controller: "select2" }, style: "width: 599.8px;" },
         label: '', label_html: { hidden: true } %>
 
     <%# This label causes behaviours.site.js to remove the association from the form %>
