@@ -75,7 +75,7 @@ class EventTest < ActiveSupport::TestCase
 
   test 'uses partners address if it has partner' do
     partner = create(:partner, address: create(:moss_side_address))
-    event = Event.new(partner: partner)
+    event = Event.new(partner: partner, dtstart: Time.now)
 
     wanted = '42 Alexandra Rd, Moss Side, Manchester, M16 7BA'
     assert_equal wanted, event.location
@@ -90,17 +90,57 @@ class EventTest < ActiveSupport::TestCase
     assert_equal wanted, event.location
   end
 
-  test 'ensure find_by_day returns items from current day' do
+  test 'ensure find_by_day returns items from current day and not from the past or future' do
     partner = create(:partner, address: create(:moss_side_address))
     yesterday = Date.today.midnight - 1.day
     today = Date.today.midnight
+    tomorrow = Date.today.midnight + 1.day
 
-    create_list(:event, 5, partner: partner, dtstart: yesterday + 12.hours)
-    todays_event = create(:event, partner: partner, dtstart: today + 12.hours)
+    start_date = today + 12.hours
+    end_date = start_date + 1.hour
+
+    create_list(:event, 5, partner: partner, dtstart: yesterday + 12.hours, dtend: yesterday + 13.hours)
+    create_list(:event, 5, partner: partner, dtstart: tomorrow + 12.hours, dtend: tomorrow + 13.hours)
+    todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
 
     events = Event.all.find_by_day(Date.today)
 
     assert_equal events.length, 1
     assert_equal events.first.dtstart, todays_event.dtstart
+  end
+
+  test 'ensure find_by_day returns items from two-day events' do
+    # Instances where the dtend is on the same day that we are looking
+    partner = create(:partner, address: create(:moss_side_address))
+    yesterday = Date.today.midnight - 1.day
+    today = Date.today.midnight
+
+    start_date = yesterday + 12.hours
+    end_date = today + 12.hours
+
+    create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour)
+    todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+
+    events = Event.all.find_by_day(Date.today)
+
+    assert_equal events.length, 1
+    assert_equal events.first.dtstart, todays_event.dtstart
+  end
+
+  test 'ensure find_by_day returns items from multi-day events' do
+    partner = create(:partner, address: create(:moss_side_address))
+    yesterday = Date.today.midnight - 1.day
+    tomorrow = Date.today.midnight + 1.day
+
+    start_date = yesterday + 12.hours
+    end_date = tomorrow + 12.hours
+
+    create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour)
+    tomorrows_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+
+    events = Event.all.find_by_day(Date.today)
+
+    assert_equal events.length, 1
+    assert_equal events.first.dtstart, tomorrows_event.dtstart
   end
 end

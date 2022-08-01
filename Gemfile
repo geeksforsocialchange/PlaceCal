@@ -11,7 +11,7 @@ end
 # Core
 gem 'pg'
 gem 'puma', '~> 5'
-gem 'rails', '~> 6.1.6'
+gem 'rails', '~> 6.1.6.1'
 gem 'minitest-rails'
 
 # Frontend
@@ -80,11 +80,9 @@ gem 'seed_migration'
 # Utilities
 gem 'active_link_to'
 gem 'bootsnap', require: false
-gem 'crypt_keeper'
 gem 'enumerize'
 gem 'friendly_id', '~> 5.3.0'
 gem 'jbuilder', '~> 2.5'
-gem 'koala'
 gem 'listen', '~> 3.2.0'
 gem 'oj'
 gem 'paper_trail'

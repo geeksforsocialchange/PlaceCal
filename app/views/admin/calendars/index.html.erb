@@ -28,13 +28,6 @@ var columns = [
     columns: %i[name partner notice_count events calendar_state last_import_at updated_at],
     data: @calendars,
     source: admin_calendars_path(format: :json),
-    new_link: new_admin_calendar_path,
-    # additional_links: [
-    #   if current_user.has_facebook_keys?
-    #     link_to('Add New Calendar From Facebook', user_facebook_omniauth_authorize_url, class: 'btn btn-primary mb-3')
-    #   else
-    #     link_to('Add New Calendar From Facebook', admin_profile_path(missing_keys: true), class: 'btn btn-primary mb-3')
-    #   end
-    # ]
+    new_link: new_admin_calendar_path
   }
 %>

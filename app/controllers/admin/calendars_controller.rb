@@ -44,8 +44,6 @@ module Admin
       @calendar = Calendar.new(calendar_params)
       authorize @calendar
 
-      @calendar.set_fb_page_token(current_user) if @calendar.is_facebook_page
-
       if @calendar.save
         flash[:success] = 'Successfully created new calendar'
         redirect_to edit_admin_calendar_path(@calendar)
@@ -88,14 +86,6 @@ module Admin
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
-    def select_page
-      authorize Calendar
-
-      facebook_api = Koala::Facebook::API.new(current_user.access_token)
-      @pages = facebook_api.get_connections('me', 'accounts', fields: %w[id name link])
-      @pages.each { |p| p['has_access'] = fb_page_access?(p['id']) }
-    end
-
     private
 
     def set_calendar
@@ -112,26 +102,11 @@ module Admin
         :strategy,
         :partner_id,
         :place_id,
-        :is_facebook_page,
-        :facebook_page_id,
         :importer_mode,
         :public_contact_name,
         :public_contact_phone,
-        :public_contact_email,
-        :partnership_contact_name,
-        :partnership_contact_phone,
-        :partnership_contact_email
+        :public_contact_email
       )
-    end
-
-    def fb_page_access?(facebook_page_id)
-      graph = Koala::Facebook::API.new(current_user.access_token)
-      token = graph.get_page_access_token(facebook_page_id)
-      token.present?
-    rescue StandardError => e
-      Rails.logger.debug(e)
-      Rollbar.error(e)
-      return false
     end
   end
 end

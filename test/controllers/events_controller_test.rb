@@ -78,7 +78,8 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
         calendar: calendar,
         summary: "Event #{n}",
         description: 'A description',
-        dtstart: Time.now
+        dtstart: Time.now,
+        dtend: Time.now + 1.hour
       )
     end
 

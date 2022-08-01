@@ -1,11 +1,5 @@
 <h1 class="page-header">Edit Profile</h1>
 
-<%- if params[:missing_keys] %>
-  <div class='alert alert-warning' role='alert'>
-    Please set your Facebook App ID and App Secret before adding a calendar through facebook.
-  </div>
-<% end %>
-
 <% if current_user.root? -%>
   <p>To modify neighbourhoods, tags and partners go to the <%= link_to 'user edit page', edit_admin_user_path(current_user) %>.</p>
 <% end -%>
@@ -31,12 +25,6 @@
       <%= f.input :password_confirmation, autocomplete: "off" %>
 
       <%= f.input :current_password, autocomplete: "off", hint: 'Enter your current password if you want to change it' %>
-    </div>
-    <div class="col-md-6">
-      <h2>Facebook integration</h2>
-      <p>Only needed if you want to synchronise Facebook events with this account. <a href="https://handbook.placecal.org/how-to-use-placecal/admins/facebook">See the handbook page for how to do this</a>.</p>
-      <%= f.input :facebook_app_id, as: :string %>
-      <%= f.input :facebook_app_secret, as: :string %>
     </div>
   </div>
 

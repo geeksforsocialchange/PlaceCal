@@ -2,6 +2,8 @@
 
 # app/controllers/events_controller.rb
 class EventsController < ApplicationController
+  include MapMarkers
+
   before_action :set_event, only: %i[show edit update destroy]
   before_action :set_day, only: :index
   before_action :set_sort, only: :index

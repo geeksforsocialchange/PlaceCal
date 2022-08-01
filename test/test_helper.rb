@@ -4,9 +4,9 @@
 require 'vcr'
 # SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
-# require 'webmock/minitest'
+require 'webmock/minitest'
 # require 'minitest-rails'
-# WebMock.disable_net_connect!(allow_localhost: true)
+WebMock.disable_net_connect!(allow_localhost: true)
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
@@ -24,7 +24,7 @@ include JsonMatchers::Minitest::Assertions
 require "capybara/rails"
 require "capybara/minitest"
 
-Dir.glob(File.join(Rails.root, 'test/system/**/*.rb')) do |path|
+Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')) do |path|
   require path
 end
 

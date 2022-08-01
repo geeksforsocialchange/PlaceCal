@@ -16,7 +16,7 @@
         <div class="find-wards">
           <% sites.each do |site| %>
 
-              <%= link_to site.domain, class: 'find-ward' do %>
+              <%= link_to root_url(subdomain: site.slug), class: 'find-ward' do %>
                 <h3 class="btn-size find-ward__title">
                   <%= site.place_name || site.name %>
                 </h3>

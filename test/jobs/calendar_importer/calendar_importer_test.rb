@@ -162,9 +162,4 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       assert_empty output.events
     end
   end
-
-  # TODO: for whenever facebook decides to work again
-  # test 'imports facebook' do
-  # end
-  #
 end
