@@ -38,7 +38,7 @@ With that said, here's what you need to get rolling.
 
 **Note: Skip this step if you're using a system-installed docker**
 
-Creating a postgres docker image is simple:
+Creating a postgres docker image is reasonably quick:
 
 ``` sh
 docker network create placecal-network
@@ -85,13 +85,21 @@ User.create!(email: 'info@placecal.org', password: 'password', password_confirma
 
 ## Testing
 
-All PlaceCal tests are written in minitest. Before running tests make sure you dev environment has all the migrations run and then run `rails db:test:prepare` which will load the schema into the test database.
+PlaceCal tests are written in minitest. Before running the tests please ensure your dev environment has all of the migrations run, and ensure you have loaded the schema into the test database by running:
 
-Running unit tests is as simple as `rails test` for all tests, `rails test test/models/user.rb` to run every test in one test file and `rails test test/models/user.rb:123` to run only ONE test.
+``` sh
+rails db:test:prepare
+```
 
-System tests are where the application is started and connected to a 'headless' browser that is then used to verify functionality. This is employed as it allows us to verify our javascript is behaving.
-When running the unit tests these systems tests are NOT run as they can take a lot of time and use a large amount of RAM.
-To run system tests invoke `rails test:system`. It has the same options as the unit tests above.
+The following commands are used for running tests:
+
+``` sh
+rails test        # To run all of the unit tests
+rails test:system # To run all of the system tests (Invokes a headless browser)
+rails test:all    # To run both the unit tests and the system tests at once
+```
+
+Please note that when running unit tests, system tests are **not** run, this is because they can take a while to run and are quite resource intensive. To perform more advanced usage like executing only a specific test or test file, see the documentation [here](https://guides.rubyonrails.org/testing.html)
 
 When pushing to a branch on github all tests are run (unit and system). This is configured [here](.github/workflows/test.yml). You are not allowed to merge a branch (onto main or production) without a passing test suite.
 
