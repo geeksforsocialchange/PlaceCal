@@ -30,12 +30,13 @@ class TagFormTest < ApplicationSystemTestCase
     await_select2
 
     partners = select2_node 'tag_partners'
-    users = select2_node 'tag_users'
-
     select2 @partner.name, @partner_two.name, xpath: partners.path
     assert_select2_multiple [@partner.name, @partner_two.name], partners
+
+    users = select2_node 'tag_users'
     select2 @root_user.to_s, @partner_admin.to_s, xpath: users.path
     assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
+
     click_button 'Save'
 
     click_sidebar 'tags'
@@ -43,7 +44,10 @@ class TagFormTest < ApplicationSystemTestCase
     click_link @tag.name
     await_select2
 
+    partners = select2_node 'tag_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
+
+    users = select2_node 'tag_users'
     assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
   end
 end
