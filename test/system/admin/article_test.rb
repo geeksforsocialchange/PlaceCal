@@ -2,7 +2,7 @@
 
 require_relative '../application_system_test_case'
 
-class ArticleFormTest < ApplicationSystemTestCase
+class AdminArticleTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
 
