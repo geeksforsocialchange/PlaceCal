@@ -29,6 +29,10 @@ class SiteFormTest < ApplicationSystemTestCase
     click_link 'Add New Site'
     await_select2
 
+    site_admin = select2_node 'site_site_admin'
+    select2 @root_user.to_s, xpath: site_admin.path
+    assert_select2_single @root_user.to_s, site_admin
+
     # this select2 node will only appear when creating the site
     neighbourhood_main = select2_node 'site_sites_neighbourhood_neighbourhood_id'
     select2 @neighbourhood_one, xpath: neighbourhood_main.path
@@ -57,6 +61,9 @@ class SiteFormTest < ApplicationSystemTestCase
     await_select2
 
     # check that data persists
+    site_admin = select2_node 'site_site_admin'
+    assert_select2_single @root_user.to_s, site_admin
+
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     assert_select2_single @neighbourhood_two, service_areas[0]
 
