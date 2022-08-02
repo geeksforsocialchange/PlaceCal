@@ -57,4 +57,15 @@ class AdminPartnerTest < ApplicationSystemTestCase
     assert_select2_single @neighbourhood_one, service_areas[0]
     assert_select2_single @neighbourhood_two, service_areas[1]
   end
+
+  test 'image preview on partner form' do
+    click_sidebar 'partners'
+    await_datatables
+    click_link @partner.name
+    find(:css, '#partner_image', wait: 15)
+    attach_file('partner_image', File.absolute_path('./test/system/admin/disdain.png'))
+    base64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABVYAAAMACAIAAABAX'
+    preview = find(:css, '.brand_image', wait: 15)
+    assert preview['src'].starts_with?(base64), 'The preview image src is not the expected value'
+  end
 end
