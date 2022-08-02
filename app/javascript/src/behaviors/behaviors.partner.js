@@ -17,6 +17,7 @@ jQuery.extend(Behaviors, {
            reader.onload = function(e){
               image_base64 = e.target.result;
               preview.attr("src", image_base64);
+							preview.css("display", "block");
            };
            reader.readAsDataURL(file);
         });

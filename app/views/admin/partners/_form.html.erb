@@ -21,8 +21,11 @@
         <%= f.input :image,
           hint: image_uploader_hint(@partner.image),
           as: :file %>
-
-        <%= image_tag @partner.image.url, width: '125', class: 'brand_image' if @partner.image.url %>
+        <% if @partner.image.url  %>
+          <%= image_tag @partner.image.url,  width: '125', class: 'brand_image' %>
+        <% else  %>
+          <%= image_tag "", style: 'display:none;', width: '125', class: 'brand_image' %>
+        <% end  %>
       </div>
 
     </div>
