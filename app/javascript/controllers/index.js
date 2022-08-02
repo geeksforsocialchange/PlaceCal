@@ -4,5 +4,8 @@
 
 import { application } from "./application"
 
+import ImagePreviewController from "./image_preview_controller.js"
+application.register("image-preview", ImagePreviewController)
+
 import Select2Controller from "./select2_controller.js"
 application.register("select2", Select2Controller)
