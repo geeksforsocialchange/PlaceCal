@@ -16,6 +16,10 @@ class AdminSiteTest < ApplicationSystemTestCase
     @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.gsub('w', 'W')
 
+    @sites_neighbourhood = create(:sites_neighbourhood,
+                                  site: @site,
+                                  neighbourhood: neighbourhoods[1])
+
     # logging in as root user
     visit '/users/sign_in'
     fill_in 'Email', with: 'root@lvh.me'
@@ -69,5 +73,14 @@ class AdminSiteTest < ApplicationSystemTestCase
 
     tags = select2_node 'site_tags'
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
+  end
+  test 'primary neighbourhood not rendering on other neighbourhoods section' do
+    click_sidebar 'sites'
+    await_datatables
+    click_link @site.name
+    await_select2
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    msg = '@site should only have a primary neighbourhood, if this fails either this is now rendering where it should\'t or another neighborhood has been added at setup and the test should be adjusted' 
+    assert service_areas.length.zero?, msg
   end
 end
