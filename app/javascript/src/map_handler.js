@@ -13,6 +13,7 @@ document.MapHandler = {
 
     map.setView(args.center, args.zoom);
 
+		// if markers exist delete them and replace with args.markers
     this.markers.forEach( m => m.remove() );
 
     this.markers = args.markers.map( m => {
@@ -36,6 +37,7 @@ document.MapHandler = {
       this.mapContainer = document.createElement('div');
       this.mapContainer.classList.add('map');
 
+			// is this where the map is made
       this.map = L.map(this.mapContainer);
       this.map.scrollWheelZoom.disable();
 
@@ -60,6 +62,7 @@ document.MapHandler = {
       }
     }
 
+		// remove all the style options then add back the ones from args
     this.mapContainer.classList.remove('map--single', 'map--multiple', 'map--compact');
     args.styleClass.forEach( style =>
       this.mapContainer.classList.add(style)

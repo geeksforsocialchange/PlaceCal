@@ -33,3 +33,4 @@ import './src/components/navigation'
 import './src/components/paginator'
 import './src/map_handler'
 
+import "./controllers"
