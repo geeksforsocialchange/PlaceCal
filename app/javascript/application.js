@@ -23,7 +23,6 @@
 import "@hotwired/turbo-rails"
 
 require("@rails/ujs").start()
-require("leaflet")
 
 import "./src/jquery"
 import './src/reveal.js'
@@ -31,6 +30,6 @@ import './src/reveal.js'
 import './src/components/breadcrumb'
 import './src/components/navigation'
 import './src/components/paginator'
-import './src/map_handler'
+// import './src/map_handler'
 
 import "./controllers"

@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import "leaflet";
 
 // Connects to data-controller="leaflet"
 // Its important to use single quotes in the template when declaring the args values
@@ -8,7 +9,42 @@ export default class extends Controller {
 	static values = { args: Object };
 	// {center, iconUrl, markers, shadowUrl, styleClass, tilesetUrl, zoom}
 	connect() {
-		console.log("connected");
-		console.log(Object.keys(this.argsValue));
+		this.createMap();
+	}
+
+	createMap() {
+		const map = L.map(this.element);
+		this.argsValue.styleClass.forEach((className) => {
+			this.element.classList.add(className);
+		});
+		map.scrollWheelZoom.disable();
+		L.tileLayer(this.argsValue.tilesetUrl, {
+			attribution: "PlaceCal",
+			maxZoom: 18,
+		}).addTo(map);
+		map.invalidateSize(true);
+
+		const mapIcon = L.icon({
+			iconUrl: this.argsValue.iconUrl,
+			shadowUrl: this.argsValue.shadowUrl,
+
+			iconSize: [46, 43], // size of the icon
+			shadowSize: [46, 43], // size of the shadow
+			iconAnchor: [17, 0], // point of the icon which will correspond to marker's location
+			shadowAnchor: [17, 0], // the same for the shadow
+			popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+		});
+
+		map.setView(this.argsValue.center, this.argsValue.zoom);
+
+		const markers = this.argsValue.markers.map((m) => {
+			const mapMarker = L.marker(m.position, { icon: mapIcon });
+			mapMarker.addTo(map);
+			mapMarker.bindPopup(m.anchor, { permanent: true, closeButton: false });
+			return mapMarker;
+		});
+
+		const markerGroup = L.featureGroup(markers);
+		map.fitBounds(markerGroup.getBounds(), { maxZoom: this.argsValue.zoom });
 	}
 }
