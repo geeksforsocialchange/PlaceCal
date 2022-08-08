@@ -63,8 +63,8 @@ class AdminPartnerTest < ApplicationSystemTestCase
     await_datatables
     click_link @partner.name
     find(:css, '#partner_image', wait: 15)
-    attach_file('partner_image', File.absolute_path('./test/system/admin/disdain.png'))
-    base64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABVYAAAMACAIAAABAX'
+    attach_file('partner_image', File.absolute_path('./test/system/admin/damir-omerovic-UMaGtammiSI-unsplash.jpg'))
+    base64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gIcSUNDX1BST0ZJTEUAAQEAAAIMbGNtcwIQAABtbnRyUkdCIFhZWi'
     preview = find(:css, '.brand_image', wait: 15)
     assert preview['src'].starts_with?(base64), 'The preview image src is not the expected value'
   end
