@@ -13,6 +13,9 @@ export default class extends Controller {
 
 	connect() {
 		this.element.classList.add("map");
+		this.argsValue.styleClass.forEach((className) => {
+			this.element.classList.add(className);
+		});
 		this.createMap();
 	}
 
@@ -26,9 +29,6 @@ export default class extends Controller {
 
 	createMap() {
 		this.map = L.map(this.element);
-		this.argsValue.styleClass.forEach((className) => {
-			this.element.classList.add(className);
-		});
 		this.map.scrollWheelZoom.disable();
 		L.tileLayer(this.argsValue.tilesetUrl, {
 			attribution: "PlaceCal",
