@@ -9,8 +9,6 @@ export default class extends Controller {
 	static values = { args: Object };
 	// {center, iconUrl, markers, shadowUrl, styleClass, tilesetUrl, zoom}
 
-	map;
-
 	connect() {
 		this.element.classList.add("map");
 		this.argsValue.styleClass.forEach((className) => {
