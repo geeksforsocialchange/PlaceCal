@@ -30,6 +30,5 @@ import './src/reveal.js'
 import './src/components/breadcrumb'
 import './src/components/navigation'
 import './src/components/paginator'
-// import './src/map_handler'
 
 import "./controllers"
