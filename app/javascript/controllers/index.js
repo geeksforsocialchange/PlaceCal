@@ -7,5 +7,8 @@ import { application } from "./application"
 import ImagePreviewController from "./image_preview_controller.js"
 application.register("image-preview", ImagePreviewController)
 
+import LeafletController from "./leaflet_controller.js"
+application.register("leaflet", LeafletController)
+
 import Select2Controller from "./select2_controller.js"
 application.register("select2", Select2Controller)
