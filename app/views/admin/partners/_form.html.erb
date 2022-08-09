@@ -1,6 +1,4 @@
 <div class="form">
-  <div class="behavior-trigger" data-behavior="<%= model.to_s.downcase %>.form"></div>
-
   <%= simple_form_for @partner do |f| %>
 
     <%= render_component "error", object: @partner %>
