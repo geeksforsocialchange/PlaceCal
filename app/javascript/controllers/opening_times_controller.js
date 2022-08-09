@@ -27,11 +27,21 @@ export default class extends Controller {
 	}
 
 	updateList() {
+		this.listTarget.innerHTML = "";
 		console.log("walking");
 		this.dataValue
 			.map((timeObj) => el("li", JSON.stringify(timeObj)))
 			.forEach((element) => {
 				this.listTarget.append(element);
 			});
+	}
+
+	update(event) {
+		event.preventDefault();
+		console.log("CLICKED");
+		const day = this.element.querySelector("#day").value;
+		const open = this.element.querySelector("#open").value;
+		const close = this.element.querySelector("#close").value;
+		this.dataValue = [...this.dataValue, { day, open, close }];
 	}
 }

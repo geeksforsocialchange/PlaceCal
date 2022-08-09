@@ -115,8 +115,26 @@
         <h2>Opening times</h2>
         <div data-controller="opening-times" data-opening-times-data-value='<%= @partner.opening_times %>'>
           <ul data-opening-times-target="list">
-            
           </ul>
+
+          <%# add some sort of formgroup that updates data %>
+          <div class="input-group">
+            <label for="day"></label>
+            <select id="day">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+            <label for="open">Opening Time</label>
+            <input id="open" type="time" name="" value="">
+            <label for="close">Closing Time</label>
+            <input id="close" type="time" name="" value="">
+            <button data-action="click->opening-times#update" type="" class="btn btn-primary">Add</button>
+          </div>
 
           <%= f.text_area :opening_times, data: { opening_times_target: "textarea" }, hidden: true %> 
         </div>
