@@ -21,9 +21,6 @@ import "./src/calendar-form.js"
 import "./src/ward-picker.js"
 
 $(document).on("turbo:load", function () {
-
-  $("body").init_behaviors()
-
   $("[data-toggle='tooltip']").tooltip()
 });
 
