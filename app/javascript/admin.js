@@ -17,7 +17,6 @@ import "vue-turbolinks"
 import "./src/opening-times.js"
 
 // Specific pages
-import "./src/behaviors/all_behaviors.js"
 import "./src/calendar-form.js"
 import "./src/ward-picker.js"
 
