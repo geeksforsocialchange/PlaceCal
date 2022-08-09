@@ -8,19 +8,6 @@ jQuery.extend(Behaviors, {
 
         /* */
         
-        var preview = $(".brand_image");
-        
-        $("#partner_image").change(function(event){
-           var input = $(event.currentTarget);
-           var file = input[0].files[0];
-           var reader = new FileReader();
-           reader.onload = function(e){
-              image_base64 = e.target.result;
-              preview.attr("src", image_base64);
-           };
-           reader.readAsDataURL(file);
-        });
-
         $(document).on('nested:fieldAdded:places', function(e) {
           var id = 'js-map-'+e.timeStamp
           $('#js-map').attr('id',id);
