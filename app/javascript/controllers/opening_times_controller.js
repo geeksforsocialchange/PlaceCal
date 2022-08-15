@@ -3,9 +3,7 @@ import { Controller } from "@hotwired/stimulus";
 /*
  * TODO
  *
- * The value of the time input is always in 24-hour format that includes leading zeros: hh:mm
  *
- * Convert from form input to openingTimesSpecification and back.
  * {
   "@context": "https://schema.org",
   "@type": "Store",
@@ -38,9 +36,7 @@ import { Controller } from "@hotwired/stimulus";
 }
 
  *
- * Read exising opening time and display in human readable language
- *
- * Display in chronological order, not creation order
+ * Form validation - possible to submit times as "" - Neither JS prevents this nor does the model validate it.
  *
  * Remove an entry, probably .filter on the array, maybe create a closure for the test
  * added to the onclick of the remove button that embeds the opening times to remove?
@@ -96,9 +92,9 @@ export default class extends Controller {
 	static values = { data: Array };
 	static targets = ["textarea", "list"];
 	connect() {
-		console.log("CONNECTED");
-		console.log(this.hasDataValue);
-		console.log(this.dataValue);
+		// console.log("CONNECTED");
+		// console.log(this.hasDataValue);
+		// console.log(this.dataValue);
 		this.dataValue = sortOpeningHours(this.dataValue);
 	}
 
@@ -108,13 +104,13 @@ export default class extends Controller {
 	}
 
 	updateTextarea() {
-		console.log("running");
+		// console.log("running");
 		this.textareaTarget.value = JSON.stringify(this.dataValue);
 	}
 
 	updateList() {
 		this.listTarget.innerHTML = "";
-		console.log("walking");
+		// console.log("walking");
 		this.dataValue
 			.map((timeObj) => el("li", openingHoursEnglish(timeObj)))
 			.forEach((element) => {
@@ -124,10 +120,13 @@ export default class extends Controller {
 
 	updateFromForm(event) {
 		event.preventDefault();
-		console.log("CLICKED");
+		// console.log("CLICKED");
 		const day = this.element.querySelector("#day").value;
 		const open = this.element.querySelector("#open").value;
 		const close = this.element.querySelector("#close").value;
+		this.element.querySelector("#day").value = "";
+		this.element.querySelector("#open").value = "";
+		this.element.querySelector("#close").value = "Monday";
 		this.dataValue = sortOpeningHours([
 			...this.dataValue,
 			openingHoursSpec(day, open, close),
