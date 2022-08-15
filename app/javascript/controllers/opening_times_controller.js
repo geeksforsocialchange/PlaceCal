@@ -61,6 +61,25 @@ const openingHoursObj = (openSpec) => ({
 	close: openSpec.closes.slice(0, 5),
 });
 
+const sortOpeningHours = (openSpecArray) => {
+	const dayOrder = [
+		"Monday",
+		"Tuesday",
+		"Wednesday",
+		"Thursday",
+		"Friday",
+		"Saturday",
+		"Sunday",
+	];
+	return [...openSpecArray]
+		.sort((a, b) => openingHoursObj(a).open > openingHoursObj(b).open)
+		.sort(
+			(a, b) =>
+				dayOrder.indexOf(openingHoursObj(a).day) >
+				dayOrder.indexOf(openingHoursObj(b).day),
+		);
+};
+
 const openingHoursEnglish = (openSpec) => {
 	const { day, open, close } = openingHoursObj(openSpec);
 	return `${day} from ${open} to ${close}`;
@@ -80,6 +99,7 @@ export default class extends Controller {
 		console.log("CONNECTED");
 		console.log(this.hasDataValue);
 		console.log(this.dataValue);
+		this.dataValue = sortOpeningHours(this.dataValue);
 	}
 
 	dataValueChanged() {
@@ -108,6 +128,9 @@ export default class extends Controller {
 		const day = this.element.querySelector("#day").value;
 		const open = this.element.querySelector("#open").value;
 		const close = this.element.querySelector("#close").value;
-		this.dataValue = [...this.dataValue, openingHoursSpec(day, open, close)];
+		this.dataValue = sortOpeningHours([
+			...this.dataValue,
+			openingHoursSpec(day, open, close),
+		]);
 	}
 }
