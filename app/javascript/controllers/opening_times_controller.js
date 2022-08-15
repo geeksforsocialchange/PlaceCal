@@ -55,6 +55,17 @@ const openingHoursSpec = (day, open, close) => ({
 	closes: `${close}:00`,
 });
 
+const openingHoursObj = (openSpec) => ({
+	day: openSpec.dayOfWeek.split("/").filter((str) => str.includes("day"))[0],
+	open: openSpec.opens.slice(0, 5),
+	close: openSpec.closes.slice(0, 5),
+});
+
+const openingHoursEnglish = (openSpec) => {
+	const { day, open, close } = openingHoursObj(openSpec);
+	return `${day} from ${open} to ${close}`;
+};
+
 const el = (type, content) => {
 	const el = document.createElement(type);
 	el.innerHTML = content;
@@ -85,7 +96,7 @@ export default class extends Controller {
 		this.listTarget.innerHTML = "";
 		console.log("walking");
 		this.dataValue
-			.map((timeObj) => el("li", JSON.stringify(timeObj)))
+			.map((timeObj) => el("li", openingHoursEnglish(timeObj)))
 			.forEach((element) => {
 				this.listTarget.append(element);
 			});
