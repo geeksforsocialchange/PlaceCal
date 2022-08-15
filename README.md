@@ -13,7 +13,7 @@ To run PlaceCal locally you will need:
 - A Mac or a Linux machine (we don't support Windows at present)
 - Postgres relational database. We are currently using v14.
   - Server
-    - either installed for your distribution or as a docker image (with the correct open port)
+    - either installed for your distribution or as a docker image (with the correct open port -- see below)
   - Client
     - you will still need the local developer libraries for postgres
     - these are distribution specific so you need to find out what they are called to install them
@@ -34,6 +34,30 @@ To run PlaceCal locally you will need:
 
 With that said, here's what you need to get rolling.
 
+### Set up postgresql server (Via docker)
+
+**Note: Skip this step if you're using a system-installed docker**
+
+Creating a postgres docker image is reasonably quick:
+
+``` sh
+docker network create placecal-network
+docker create --name placecal-db --network placecal-network --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 -e 'POSTGRES_DB=placecal_db' -e 'POSTGRES_USER=postgres' -e 'POSTGRES_PASSWORD=foobar' -e 'POSTGRES_PORT=5432' postgres:14.1
+docker start placecal-db
+```
+
+Make a copy of `.env.example` in `.env` in the root directory of the application. These will be loaded in as environment variables when you start the development server.
+
+You can now set the following in `.env`:
+
+``` sh
+POSTGRES_HOST=localhost
+POSTGRES_USER=postgres
+PGPASSWORD=foobar
+```
+
+### Set up the local placecal repository, set up the database, and run it
+
 ```
 git clone https://github.com/geeksforsocialchange/PlaceCal.git
 bundle && yarn
@@ -44,21 +68,38 @@ bundle exec rails import:all_events
 
 * Start the server with `./bin/dev` instead of `bundle exec rails server` due to migration to jsbundling
 * Make sure you use `lvh.me:3000` instead of `localhost` or you **will** have authentication problems.
-* Admin interface is `admin.lvh.me:3000`
-* Seeded root user is info@placecal.org / password
+* Admin interface is `admin.lvh.me:3000` (You will need to make a new admin user -- see below)
 * Access code docs through your local filesystem, and update with `bundle exec rails yard`
 
 To set up your own server, take a look at `INSTALL.md`.
 
+### Creating an admin user
+
+To create an admin user, open the console (`bin/rails c`) and run the following:
+
+```
+User.create!(email: 'info@placecal.org', password: 'password', password_confirmation: 'password', role: :root)
+```
+
+(Note: You should replace 'info@placecal.org' and 'password' with more appropriate values)
+
 ## Testing
 
-All PlaceCal tests are written in minitest. Before running tests make sure you dev environment has all the migrations run and then run `rails db:test:prepare` which will load the schema into the test database.
+PlaceCal tests are written in minitest. Before running the tests please ensure your dev environment has all of the migrations run, and ensure you have loaded the schema into the test database by running:
 
-Running unit tests is as simple as `rails test` for all tests, `rails test test/models/user.rb` to run every test in one test file and `rails test test/models/user.rb:123` to run only ONE test.
+``` sh
+rails db:test:prepare
+```
 
-System tests are where the application is started and connected to a 'headless' browser that is then used to verify functionality. This is employed as it allows us to verify our javascript is behaving.
-When running the unit tests these systems tests are NOT run as they can take a lot of time and use a large amount of RAM.
-To run system tests invoke `rails test:system`. It has the same options as the unit tests above.
+The following commands are used for running tests:
+
+``` sh
+rails test        # To run all of the unit tests
+rails test:system # To run all of the system tests (Invokes a headless browser)
+rails test:all    # To run both the unit tests and the system tests at once
+```
+
+Please note that when running unit tests, system tests are **not** run, this is because they can take a while to run and are quite resource intensive. To perform more advanced usage like executing only a specific test or test file, see the documentation [here](https://guides.rubyonrails.org/testing.html)
 
 When pushing to a branch on github all tests are run (unit and system). This is configured [here](.github/workflows/test.yml). You are not allowed to merge a branch (onto main or production) without a passing test suite.
 
