@@ -55,7 +55,7 @@ const removeTime = (openSpecArray, openSpec) =>
 		(el) => JSON.stringify(el) !== JSON.stringify(openSpec),
 	);
 
-const el = (type, content) => {
+const el = (type, content = "") => {
 	const el = document.createElement(type);
 	el.innerHTML = content;
 	return el;
@@ -65,10 +65,8 @@ const el = (type, content) => {
 export default class extends Controller {
 	static values = { data: Array };
 	static targets = ["textarea", "list"];
+
 	connect() {
-		// console.log("CONNECTED");
-		// console.log(this.hasDataValue);
-		// console.log(this.dataValue);
 		this.dataValue = sortedOpeningHours(this.dataValue);
 	}
 
@@ -78,13 +76,11 @@ export default class extends Controller {
 	}
 
 	updateTextarea() {
-		// console.log("running");
 		this.textareaTarget.value = JSON.stringify(this.dataValue);
 	}
 
 	updateList() {
 		this.listTarget.innerHTML = "";
-		// console.log("walking");
 		this.dataValue
 			.map((openSpec) => {
 				const li = el("li", openingHoursEnglish(openSpec) + " [remove X]");
@@ -99,9 +95,8 @@ export default class extends Controller {
 			});
 	}
 
-	updateFromForm(event) {
+	addOpeningTime(event) {
 		event.preventDefault();
-		// console.log("CLICKED");
 		const day = this.element.querySelector("#day").value;
 		const open = this.element.querySelector("#open").value;
 		const close = this.element.querySelector("#close").value;

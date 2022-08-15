@@ -133,7 +133,7 @@
             <input id="open" type="time" name="" value="">
             <label for="close">Closing Time</label>
             <input id="close" type="time" name="" value="">
-            <button data-action="click->opening-times#updateFromForm" type="" class="btn btn-primary">Add</button>
+            <button data-action="click->opening-times#addOpeningTime" type="" class="btn btn-primary">Add</button>
           </div>
 
           <%= f.text_area :opening_times, data: { opening_times_target: "textarea" }, hidden: true %> 
