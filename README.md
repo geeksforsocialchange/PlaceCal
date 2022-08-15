@@ -46,15 +46,15 @@ docker create --name placecal-db --network placecal-network --network-alias post
 docker start placecal-db
 ```
 
-You should now set the following values in your `.env`:
+Make a copy of `.env.example` in `.env` in the root directory of the application. These will be loaded in as environment variables when you start the development server.
+
+You can now set the following in `.env`:
 
 ``` sh
 POSTGRES_HOST=localhost
 POSTGRES_USER=postgres
 PGPASSWORD=foobar
 ```
-
-If you've changed the port, or something else, please remember to represent that change in `.env`
 
 ### Set up the local placecal repository, set up the database, and run it
 
