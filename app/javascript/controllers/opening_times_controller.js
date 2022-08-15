@@ -1,5 +1,24 @@
 import { Controller } from "@hotwired/stimulus";
 
+/*
+ * TODO
+ *
+ * Handle 12+24hr time inputs (determined by user system settings 😬)
+ * 24hr format = string "12:22"
+ * 12hr format = ???
+ *
+ * Convert from form input to openingTimesSpecification and back.
+ *
+ * Read exising opening time and display in human readable language
+ *
+ * Display in chronological order, not creation order
+ *
+ * Remove an entry, probably .filter on the array, maybe create a closure for the test
+ * added to the onclick of the remove button that embeds the opening times to remove?
+ * Not sure how that will work with stimulus
+ *
+ * */
+
 const el = (type, content) => {
 	const el = document.createElement(type);
 	el.innerHTML = content;
@@ -36,12 +55,13 @@ export default class extends Controller {
 			});
 	}
 
-	update(event) {
+	updateFromForm(event) {
 		event.preventDefault();
 		console.log("CLICKED");
 		const day = this.element.querySelector("#day").value;
 		const open = this.element.querySelector("#open").value;
 		const close = this.element.querySelector("#close").value;
+		console.log(open);
 		this.dataValue = [...this.dataValue, { day, open, close }];
 	}
 }
