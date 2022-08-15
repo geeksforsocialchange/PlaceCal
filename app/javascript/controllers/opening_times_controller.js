@@ -3,44 +3,13 @@ import { Controller } from "@hotwired/stimulus";
 /*
  * TODO
  *
- *
- * {
-  "@context": "https://schema.org",
-  "@type": "Store",
-  "name": "Middle of Nowhere Foods",
-  "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-14:00",
-  "openingHoursSpecification":
-  [
-    {
-      "@type": "OpeningHoursSpecification",
-      "validFrom": "2013-12-24",
-      "validThrough": "2013-12-25",
-      "opens": "09:00:00",
-      "closes": "11:00:00"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "validFrom": "2014-01-01",
-      "validThrough": "2014-01-01",
-      "opens": "12:00:00",
-      "closes": "14:00:00"
-    }
-  ]
-}
-
-{
-	"@type": "OpeningHoursSpecification",
-	closes: "16:00:00",
-	dayOfWeek: "http://schema.org/Monday",
-	opens: "10:00:00",
-}
-
- *
  * Form validation - possible to submit times as "" - Neither JS prevents this nor does the model validate it.
  *
- * Remove an entry, probably .filter on the array, maybe create a closure for the test
- * added to the onclick of the remove button that embeds the opening times to remove?
- * Not sure how that will work with stimulus
+ * UI Stuff
+ *
+ * Full days
+ *
+ * https://schema.org/OpeningHoursSpecification
  *
  * */
 
@@ -81,6 +50,11 @@ const openingHoursEnglish = (openSpec) => {
 	return `${day} from ${open} to ${close}`;
 };
 
+const removeTime = (openSpecArray, openSpec) =>
+	[...openSpecArray].filter(
+		(el) => JSON.stringify(el) !== JSON.stringify(openSpec),
+	);
+
 const el = (type, content) => {
 	const el = document.createElement(type);
 	el.innerHTML = content;
@@ -112,9 +86,16 @@ export default class extends Controller {
 		this.listTarget.innerHTML = "";
 		// console.log("walking");
 		this.dataValue
-			.map((timeObj) => el("li", openingHoursEnglish(timeObj)))
-			.forEach((element) => {
-				this.listTarget.append(element);
+			.map((openSpec) => {
+				const li = el("li", openingHoursEnglish(openSpec));
+				// remove the option by clicking on the list item - worst UI ever
+				li.onclick = () => {
+					this.dataValue = removeTime(this.dataValue, openSpec);
+				};
+				return li;
+			})
+			.forEach((li) => {
+				this.listTarget.append(li);
 			});
 	}
 
