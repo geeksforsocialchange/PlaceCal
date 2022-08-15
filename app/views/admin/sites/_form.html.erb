@@ -16,7 +16,7 @@
   <%= f.input :is_published, label: 'Published', hint: 'Advertise this site on the PlaceCal homepage?', as: :boolean %>
 
   <% if policy(@site).permitted_attributes.include? :site_admin_id %>
-    <%= f.association(:site_admin, label_method: :admin_name, input_html: { class: 'select2' }) %>
+    <%= f.association(:site_admin, label_method: :admin_name, input_html: { data: { controller:  'select2' } }) %>
   <% end %>
 
 
@@ -66,7 +66,7 @@
           <%= sn.hidden_field :relation_type, value: "Primary" %>
           <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
               value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
-              input_html: { class: 'form-control select2 col-6' },
+              input_html: { class: 'form-control col-6', data: { controller: "select2" } },
               label: '', label_html: { hidden: true } %>
         <% end %>
       <% end %>
@@ -102,7 +102,7 @@
       <%= f.association :tags,
                         label: false,
                         collection: options_for_tags,
-                        input_html: { class: 'form-check select2 multi-select' } %>
+                        input_html: { class: 'form-check', data: { controller: "select2" } } %>
     </div>
   </div>
   <br>
