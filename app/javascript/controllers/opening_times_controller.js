@@ -87,7 +87,7 @@ export default class extends Controller {
 		// console.log("walking");
 		this.dataValue
 			.map((openSpec) => {
-				const li = el("li", openingHoursEnglish(openSpec));
+				const li = el("li", openingHoursEnglish(openSpec) + " [remove X]");
 				// remove the option by clicking on the list item - worst UI ever
 				li.onclick = () => {
 					this.dataValue = removeTime(this.dataValue, openSpec);
