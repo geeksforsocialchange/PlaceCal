@@ -57,7 +57,7 @@ const openingHoursObj = (openSpec) => ({
 	close: openSpec.closes.slice(0, 5),
 });
 
-const sortOpeningHours = (openSpecArray) => {
+const sortedOpeningHours = (openSpecArray) => {
 	const dayOrder = [
 		"Monday",
 		"Tuesday",
@@ -95,7 +95,7 @@ export default class extends Controller {
 		// console.log("CONNECTED");
 		// console.log(this.hasDataValue);
 		// console.log(this.dataValue);
-		this.dataValue = sortOpeningHours(this.dataValue);
+		this.dataValue = sortedOpeningHours(this.dataValue);
 	}
 
 	dataValueChanged() {
@@ -124,10 +124,10 @@ export default class extends Controller {
 		const day = this.element.querySelector("#day").value;
 		const open = this.element.querySelector("#open").value;
 		const close = this.element.querySelector("#close").value;
-		this.element.querySelector("#day").value = "";
+		this.element.querySelector("#day").value = "Monday";
 		this.element.querySelector("#open").value = "";
-		this.element.querySelector("#close").value = "Monday";
-		this.dataValue = sortOpeningHours([
+		this.element.querySelector("#close").value = "";
+		this.dataValue = sortedOpeningHours([
 			...this.dataValue,
 			openingHoursSpec(day, open, close),
 		]);
