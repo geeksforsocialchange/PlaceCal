@@ -3,11 +3,40 @@ import { Controller } from "@hotwired/stimulus";
 /*
  * TODO
  *
- * Handle 12+24hr time inputs (determined by user system settings 😬)
- * 24hr format = string "12:22"
- * 12hr format = ???
+ * The value of the time input is always in 24-hour format that includes leading zeros: hh:mm
  *
  * Convert from form input to openingTimesSpecification and back.
+ * {
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "Middle of Nowhere Foods",
+  "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-14:00",
+  "openingHoursSpecification":
+  [
+    {
+      "@type": "OpeningHoursSpecification",
+      "validFrom": "2013-12-24",
+      "validThrough": "2013-12-25",
+      "opens": "09:00:00",
+      "closes": "11:00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "validFrom": "2014-01-01",
+      "validThrough": "2014-01-01",
+      "opens": "12:00:00",
+      "closes": "14:00:00"
+    }
+  ]
+}
+
+{
+	"@type": "OpeningHoursSpecification",
+	closes: "16:00:00",
+	dayOfWeek: "http://schema.org/Monday",
+	opens: "10:00:00",
+}
+
  *
  * Read exising opening time and display in human readable language
  *
@@ -18,6 +47,13 @@ import { Controller } from "@hotwired/stimulus";
  * Not sure how that will work with stimulus
  *
  * */
+
+const openingHoursSpec = (day, open, close) => ({
+	"@type": "OpeningHoursSpecification",
+	dayOfWeek: `http://schema.org/${day}`,
+	opens: `${open}:00`,
+	closes: `${close}:00`,
+});
 
 const el = (type, content) => {
 	const el = document.createElement(type);
@@ -61,7 +97,6 @@ export default class extends Controller {
 		const day = this.element.querySelector("#day").value;
 		const open = this.element.querySelector("#open").value;
 		const close = this.element.querySelector("#close").value;
-		console.log(open);
-		this.dataValue = [...this.dataValue, { day, open, close }];
+		this.dataValue = [...this.dataValue, openingHoursSpec(day, open, close)];
 	}
 }
