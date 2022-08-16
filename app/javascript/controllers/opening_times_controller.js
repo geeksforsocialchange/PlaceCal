@@ -47,7 +47,9 @@ const sortedOpeningHours = (openSpecArray) => {
 
 const openingHoursEnglish = (openSpec) => {
 	const { day, open, close } = openingHoursObj(openSpec);
-	return `${day} from ${open} to ${close}`;
+	return open === "00:00" && close === "23:59"
+		? `${day} all day`
+		: `${day} from ${open} to ${close}`;
 };
 
 const removeTime = (openSpecArray, openSpec) =>
