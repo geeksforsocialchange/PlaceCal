@@ -140,39 +140,7 @@
 
           <%= f.text_area :opening_times, data: { opening_times_target: "textarea" }, hidden: true %> 
         </div>
-        <%# <%1# .presence returns the object if it exists or nil if not, becayse nil is falsey you can use the || on it %1> %>
-        <%# <div id="opening-times" class="opening-times" data="<%= @partner.opening_times.presence || [] %1>"> %> 
-
-        <%#   <div class="added-days"> %>
-        <%#     <added-days :list="addedDays"></added-days> %>
-        <%#   </div> %>
-
-        <%#   <div class="d-flex flex-row align-items-center justify-content-sm-between flex-wrap"> %>
-        <%#     <select v-model="selectedDay" class="form-control"> %>
-        <%#       <option v-for="day in days" v-bind:value="day.value"> %>
-        <%#       <%1# is this vue code running in the template? %1> %>
-        <%#       {{ day.name }} %>
-        <%#       </option> %>
-        <%#     </select> %>
-
-        <%#     <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedOpeningTime"></vue-timepicker> %>
-
-        <%#     <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedClosingTime"></vue-timepicker> %>
-
-        <%#     <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button> %>
-        <%#   </div> %>
-
-        <%#   <%= 'opening_times.presence' %1> %>
-        <%#   <%= @partner.opening_times.presence %1> %>
-        <%#   <% puts 'opening_times' %1> %>
-        <%#   <% puts @partner.opening_times %1> %>
-        <%#   <% puts 'opening_times.presence' %1> %>
-        <%#   <% puts @partner.opening_times.presence %1> %>
-        <%#   <%1# is this vue code running in the template? %1> %>
-        <%#   <%1# <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}', hidden:true %2> %1> %> 
-        <%#   <%= f.text_area :opening_times, value: @partner.opening_times %1> %> 
-        <%# </div> %>
-
+      </div>
       <div class="col-lg-6 col-md-12 tags">
         <h2>Tags</h2>
         <p>Does this Partner provide any of the following things?</p>
