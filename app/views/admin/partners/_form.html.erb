@@ -118,22 +118,26 @@
           </ul>
 
           <div class="mt-3 input-group flex-row align-items-center justify-content-sm-between flex-wrap">
-            <label for="day">Day</label>
-            <select id="day" data-opening-times-target="day">
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-              <option value="Sunday">Sunday</option>
-            </select>
-            <label for="allDay">All Day</label>
-            <input id="allDay" type="checkbox" name="" value="" data-opening-times-target="allDay" data-action="change->opening-times#allDay" >
-            <label for="open">Opening Time</label>
-            <input id="open" type="time" name="" value="" data-opening-times-target="open">
-            <label for="close">Closing Time</label>
-            <input id="close" type="time" name="" value="" data-opening-times-target="close">
+            <label for="day">Day
+              <select class="ml-1" id="day" data-opening-times-target="day">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+            </label>
+            <label for="allDay">All Day
+              <input class="ml-1" id="allDay" type="checkbox" name="" value="" data-opening-times-target="allDay" data-action="change->opening-times#allDay" >
+            </label>
+            <label for="open">Opening Time
+              <input class="ml-1" id="open" type="time" name="" value="" data-opening-times-target="open">
+            </label>
+            <label for="close">Closing Time
+              <input class="ml-1" id="close" type="time" name="" value="" data-opening-times-target="close">
+            </label>
             <button data-action="click->opening-times#addOpeningTime" type="" class="btn btn-primary">Add</button>
           </div>
 
