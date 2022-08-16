@@ -1,18 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
-/*
- * TODO
- *
- * Form validation - possible to submit times as "" - Neither JS prevents this nor does the model validate it.
- *
- * UI Stuff - A bit of padding between the form and the list would be nice
- *
- * Full days
- *
- * https://schema.org/OpeningHoursSpecification
- *
- * */
+// stateless helper functions
 
+// https://schema.org/OpeningHoursSpecification
 const openingHoursSpec = (day, open, close) => ({
 	"@type": "OpeningHoursSpecification",
 	dayOfWeek: `http://schema.org/${day}`,
