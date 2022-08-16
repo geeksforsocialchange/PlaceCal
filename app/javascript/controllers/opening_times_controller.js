@@ -5,7 +5,7 @@ import { Controller } from "@hotwired/stimulus";
  *
  * Form validation - possible to submit times as "" - Neither JS prevents this nor does the model validate it.
  *
- * UI Stuff
+ * UI Stuff - A bit of padding between the form and the list would be nice
  *
  * Full days
  *
@@ -55,9 +55,12 @@ const removeTime = (openSpecArray, openSpec) =>
 		(el) => JSON.stringify(el) !== JSON.stringify(openSpec),
 	);
 
-const el = (type, content = "") => {
+const element = (type, content = "", classes = []) => {
 	const el = document.createElement(type);
 	el.innerHTML = content;
+	classes.forEach((className) => {
+		el.classList.add(className);
+	});
 	return el;
 };
 
@@ -90,16 +93,29 @@ export default class extends Controller {
 	}
 
 	updateList() {
+		// clear the list
 		this.listTarget.innerHTML = "";
+		// generate new HTML from data
 		this.dataValue
 			.map((openSpec) => {
-				const li = el("li", openingHoursEnglish(openSpec) + " [remove X]");
-				// remove the option by clicking on the list item - worst UI ever
-				li.onclick = () => {
+				const li = element("li", openingHoursEnglish(openSpec), [
+					"list-group-item",
+					"d-flex",
+					"align-items-center",
+					"justify-content-between",
+				]);
+				const btn = element("button", "Remove", [
+					"btn",
+					"btn-danger",
+					"btn-sm",
+				]);
+				btn.onclick = () => {
 					this.dataValue = removeTime(this.dataValue, openSpec);
 				};
+				li.appendChild(btn);
 				return li;
 			})
+			// insert into DOM
 			.forEach((li) => {
 				this.listTarget.append(li);
 			});
