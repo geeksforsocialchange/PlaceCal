@@ -7,7 +7,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
   # this verifies that partner#for_site is behaving
 
   setup do
-    neighbourhood = neighbourhoods(:one) 
+    neighbourhood = neighbourhoods(:one)
 
     @site = create(:site)
     @site.neighbourhoods << neighbourhood
@@ -78,6 +78,42 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     output = Partner.for_site(other_site)
     count = output.count
     assert count == 2 # only two partners in other site
+  end
+
+  test "it returns distinct partners that don't repeat" do
+    # even if there are multiple paths from site to partner
+
+    site = create(:site)
+
+    neighbourhood = create(:neighbourhood_country, name: 'Alpha')
+    site.neighbourhoods << neighbourhood
+
+    other_neighbourhood = create(:neighbourhood_country, name: 'Beta')
+    site.neighbourhoods << other_neighbourhood
+
+    tag = create(:tag)
+    site.tags << tag
+
+    other_tag = create(:tag)
+    site.tags << other_tag
+
+    # by address
+    partner_address = create(:bare_address_1, neighbourhood: neighbourhood)
+    partner = create(:partner, address: partner_address)
+
+    # by service area
+    partner.service_area_neighbourhoods << other_neighbourhood
+    partner.service_area_neighbourhoods << neighbourhood
+
+    # by tag
+    partner.tags << tag
+    partner.tags << other_tag
+
+    found = Partner.for_site(site)
+    assert_equal 1, found.count, 'Partner should only appear once'
+
+    first = Partner.for_site(site).first
+    assert_equal partner.name, first.name
   end
 end
 
