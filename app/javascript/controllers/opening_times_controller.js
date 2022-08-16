@@ -36,13 +36,18 @@ const sortedOpeningHours = (openSpecArray) => {
 		"Saturday",
 		"Sunday",
 	];
-	return [...openSpecArray]
-		.sort((a, b) => openingHoursObj(a).open > openingHoursObj(b).open)
+	const sorted = [...openSpecArray]
 		.sort(
 			(a, b) =>
-				dayOrder.indexOf(openingHoursObj(a).day) >
+				parseFloat(openingHoursObj(a).open.replace(":", ".")) -
+				parseFloat(openingHoursObj(b).open.replace(":", ".")),
+		)
+		.sort(
+			(a, b) =>
+				dayOrder.indexOf(openingHoursObj(a).day) -
 				dayOrder.indexOf(openingHoursObj(b).day),
 		);
+	return sorted;
 };
 
 const openingHoursEnglish = (openSpec) => {
@@ -79,8 +84,8 @@ export default class extends Controller {
 	resetForm() {
 		this.dayTarget.value = "Monday";
 		this.allDayTarget.checked = false;
-		this.openTarget.value = "";
-		this.closeTarget.value = "";
+		this.openTarget.value = "00:00";
+		this.closeTarget.value = "00:00";
 		this.openTarget.disabled = false;
 		this.closeTarget.disabled = false;
 	}
