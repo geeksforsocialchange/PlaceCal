@@ -64,10 +64,20 @@ const el = (type, content = "") => {
 // Connects to data-controller="opening-times"
 export default class extends Controller {
 	static values = { data: Array };
-	static targets = ["textarea", "list"];
+	static targets = ["textarea", "list", "day", "allDay", "open", "close"];
 
 	connect() {
 		this.dataValue = sortedOpeningHours(this.dataValue);
+		this.resetForm();
+	}
+
+	resetForm() {
+		this.dayTarget.value = "Monday";
+		this.allDayTarget.checked = false;
+		this.openTarget.value = "";
+		this.closeTarget.value = "";
+		this.openTarget.disabled = false;
+		this.closeTarget.disabled = false;
 	}
 
 	dataValueChanged() {
@@ -95,14 +105,26 @@ export default class extends Controller {
 			});
 	}
 
+	allDay(event) {
+		event.preventDefault();
+		if (this.allDayTarget.checked) {
+			this.openTarget.value = "00:00";
+			this.closeTarget.value = "23:59";
+			this.openTarget.disabled = true;
+			this.closeTarget.disabled = true;
+		}
+		if (!this.allDayTarget.checked) {
+			this.openTarget.disabled = false;
+			this.closeTarget.disabled = false;
+		}
+	}
+
 	addOpeningTime(event) {
 		event.preventDefault();
-		const day = this.element.querySelector("#day").value;
-		const open = this.element.querySelector("#open").value;
-		const close = this.element.querySelector("#close").value;
-		this.element.querySelector("#day").value = "Monday";
-		this.element.querySelector("#open").value = "";
-		this.element.querySelector("#close").value = "";
+		const day = this.dayTarget.value;
+		const open = this.openTarget.value;
+		const close = this.closeTarget.value;
+		this.resetForm();
 		this.dataValue = sortedOpeningHours([
 			...this.dataValue,
 			openingHoursSpec(day, open, close),
