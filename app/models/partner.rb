@@ -114,40 +114,19 @@ class Partner < ApplicationRecord
   # @param site [Site] The site we want partners for.
   # @return [ActiveRecord::Relation<Partner>]
   scope :for_site, lambda { |site|
-    query = Partner
-    where_parts = []
-    where_args = []
-
     site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
 
-    if site_neighbourhood_ids.any?
-      query = query.left_joins(:address, :service_areas)
-      where_parts << '(service_areas.neighbourhood_id in (?))'
-      where_args << site_neighbourhood_ids
-
-      where_parts << '(addresses.neighbourhood_id in (?))'
-      where_args << site_neighbourhood_ids
-    end
-
     site_tag_ids = site.tags.map(&:id)
-    if site_tag_ids.any?
-      query = query.left_joins(:partner_tags)
-      where_parts << "(partner_tags.tag_id in (?))"
-      where_args << site_tag_ids
-    end
+    partners = from_neighbourhoods_and_service_areas(site_neighbourhood_ids)
 
-    partners = query.where(where_parts.join(' OR '), *where_args)
-    partners.distinct
+    site_tag_ids.any? ? partners.with_tags(site_tag_ids) : partners
   }
 
   # Get a list of Partners that have the given tags
   #
   # @param tags [Array<Tag>] A list of tags
   # @return [ActiveRecord::Relation<Partner>]
-  scope :with_tags, ->(tag_ids) {
-    left_joins(:partner_tags)
-      .where("partner_tags.tag_id in (?)", tag_ids)
-  }
+  scope :with_tags, ->(tags) { joins(:partner_tags).where(partner_tags: { tag: tags }) }
 
   # only select partners that have addresses
   scope :with_address, -> do
