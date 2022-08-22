@@ -7,7 +7,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
   # this verifies that partner#for_site is behaving
 
   setup do
-    neighbourhood = neighbourhoods(:one) 
+    neighbourhood = neighbourhoods(:one)
 
     @site = create(:site)
     @site.neighbourhoods << neighbourhood
@@ -79,5 +79,77 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     count = output.count
     assert count == 2 # only two partners in other site
   end
+
+  test "it returns distinct partners that don't repeat" do
+    # even if there are multiple paths from site to partner
+
+    site = create(:site)
+
+    neighbourhood = create(:neighbourhood_country, name: 'Alpha')
+    site.neighbourhoods << neighbourhood
+
+    other_neighbourhood = create(:neighbourhood_country, name: 'Beta')
+    site.neighbourhoods << other_neighbourhood
+
+    # by address
+    partner_address = create(:bare_address_1, neighbourhood: neighbourhood)
+    partner = create(:partner, address: partner_address)
+
+    # by service area
+    partner.service_area_neighbourhoods << other_neighbourhood
+    partner.service_area_neighbourhoods << neighbourhood
+
+    found = Partner.for_site(site)
+    assert_equal 1, found.count, 'Partner should only appear once'
+
+    first = found.first
+    assert_equal partner.name, first.name
+  end
+
+  test "only finds partners with tags if site has tags" do
+    neighbourhood = create(:neighbourhood_country, name: 'Alpha')
+    tag = create(:tag)
+    other_tag = create(:tag)
+
+    site = create(:site)
+    site.neighbourhoods << neighbourhood
+    site.tags << tag
+    site.tags << other_tag
+
+    # NOTE: we assume the relations between partners and sites via address
+    #   neighbourhoods works and is tested elsewhere
+
+    # present
+    partner_a = create_partner_with_tags(neighbourhood, tag)
+
+    # present
+    partner_b = create_partner_with_tags(neighbourhood, other_tag)
+
+    # present
+    partner_c = create_partner_with_tags(neighbourhood, tag, other_tag)
+
+    # skipped
+    partner_d = create_partner_with_tags(neighbourhood)
+
+    found = Partner.for_site(site)
+    assert_equal 3, found.count, 'Partner should only appear once'
+
+    found_ids = found.map(&:id)
+    should_be_ids = [partner_a.id, partner_b.id, partner_c.id]
+
+    assert_equal found_ids, should_be_ids
+  end
+
+  def create_partner_with_tags(neighbourhood, *tags)
+    partner = build(:partner, address: nil)
+    partner.service_area_neighbourhoods << neighbourhood
+    tags.each do |tag|
+      partner.tags << tag
+    end
+    partner.save!
+
+    partner
+  end
+
 end
 

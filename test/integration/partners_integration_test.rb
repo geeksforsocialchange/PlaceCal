@@ -13,7 +13,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     @tagged_site = create(:site_local)
 
     # Create one set of partners for the default site
-    @default_site_partners = create_list :partner, 5
+    @default_site_partners = create_list(:partner, 5)
     @default_site_partners.each do |partner|
       next if @default_site.neighbourhoods.include? partner.address.neighbourhood
 
@@ -21,7 +21,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     end
 
     # Create another set for the neighbourhood site
-    @neighbourhood_site_partners = create_list :partner, 5
+    @neighbourhood_site_partners = create_list(:partner, 5)
     @neighbourhood2 = create(:neighbourhood)
     @neighbourhood_site_partners.each do |partner|
       partner.address.update(neighbourhood: @neighbourhood2)
@@ -29,7 +29,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood_site.neighbourhoods << @neighbourhood2
 
     # Set up a site bound to a region, and partners bound to a region descendant
-    @region_site_partners = create_list :partner, 5
+    @region_site_partners = create_list(:partner, 5)
     @neighbourhood3 = create(:neighbourhood)
     @region_site_partners.each do |partner|
       partner.address.update(neighbourhood: @neighbourhood3)
@@ -37,7 +37,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     @region_site.neighbourhoods << @neighbourhood3.region
 
     # Create a region site, with partners bound similarily, and then tag one of them
-    @tagged_site_partners = create_list :partner, 5
+    @tagged_site_partners = create_list(:partner, 5)
     @neighbourhood4 = create(:neighbourhood)
     @tagged_site_partners.each do |partner|
       partner.address.update(neighbourhood: @neighbourhood4)
@@ -46,7 +46,10 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
 
     @tag = create(:tag)
     @tagged_site.tags << @tag
-    @tagged_site_partners.first.tags << @tag
+
+    @tagged_site_partners.each do |partner|
+      partner.tags << @tag
+    end
   end
 
   test 'no slug redirects to find my placecal' do
