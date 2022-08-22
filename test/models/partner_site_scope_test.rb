@@ -150,6 +150,4 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
 
     partner
   end
-
 end
-

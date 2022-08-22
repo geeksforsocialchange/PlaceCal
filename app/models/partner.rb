@@ -109,7 +109,14 @@ class Partner < ApplicationRecord
   }
 
   # Takes in a Site and fetches all Partners for that site
-  # If the site has tags, the list of partners will be filtered by those tags
+  #   In its basic mode (without tags) it looks for partners by address
+  #   or service area and returns a distinct set (as a partner can
+  #   have many service areas or an address that overlaps).
+  #   If the site has tags present then the filter is constrained to
+  #   only allow partners that have had that tag applied (and then the
+  #   same rule applies as above).
+  #   If no site tags exist then skip that part of the query. If no
+  #   site neighbourhoods exist then return an empty scope
   #
   # @param site [Site] The site we want partners for.
   # @return [ActiveRecord::Relation<Partner>]
@@ -124,23 +131,18 @@ class Partner < ApplicationRecord
         .where("partner_tags.tag_id in (?)", site_tag_ids)
     end
 
+    # now look for addresses and service areas
     site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
-    if site_neighbourhood_ids.any?
-      query = query
-        .left_joins(:address, :service_areas)
-        .where(
-          '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-          neighbourhood_ids: site_neighbourhood_ids)
-    end
 
-    site_tag_ids = site.tags.map(&:id)
-    if site_tag_ids.any?
-      query = query.left_joins(:partner_tags)
-      where_parts << "(partner_tags.tag_id in (?))"
-      where_args << site_tag_ids
-    end
+    # skip everything if site has no neighbourhoods
+    return none if site_neighbourhood_ids.empty?
 
-    query.distinct
+    query
+      .left_joins(:address, :service_areas)
+      .where(
+        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        neighbourhood_ids: site_neighbourhood_ids)
+      .distinct
   }
 
   # Get a list of Partners that have the given tags
