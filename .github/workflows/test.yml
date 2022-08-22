@@ -66,8 +66,8 @@ jobs:
       - name: Do Tests
         run: |
           yarn build
-          bundle exec rake
-          bundle exec rake test:system
+          bundle exec rails test
+          bundle exec rails test:system
 
         env:
           POSTGRES_USER: postgres

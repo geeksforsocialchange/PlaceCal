@@ -25,7 +25,7 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', text: @event.summary
     assert_select 'div.event__detail', count: 4
-    assert_select '#js-map-outer', 1
+    assert_select '[data-controller="leaflet"]', 1
     assert_select 'div.contact_information', text: 'Problem with this listing? Let us know.'
     assert_select "div.contact_information a:match('href', ?)", /mailto/
 
@@ -36,6 +36,6 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: @event.summary
     assert_select 'div.event__detail', count: 4
-    assert_select '#js-map-outer', 1
+    assert_select '[data-controller="leaflet"]', 1
   end
 end

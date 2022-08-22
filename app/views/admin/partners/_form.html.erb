@@ -1,6 +1,4 @@
 <div class="form">
-  <div class="behavior-trigger" data-behavior="<%= model.to_s.downcase %>.form"></div>
-
   <%= simple_form_for @partner do |f| %>
 
     <%= render_component "error", object: @partner %>
@@ -17,12 +15,17 @@
     <%= f.input :accessibility_info, class: "form-control", label: 'Accessibility Information', input_html: { rows: 7 } %>
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6" data-controller="image-preview">
         <%= f.input :image,
           hint: image_uploader_hint(@partner.image),
-          as: :file %>
-
-        <%= image_tag @partner.image.url, width: '125', class: 'brand_image' if @partner.image.url %>
+          as: :file,
+          input_html: { data: { action: "change->image-preview#file"} }
+        %>
+        <% if @partner.image.url  %>
+          <%= image_tag @partner.image.url,  width: '125', class: 'brand_image', data: { image_preview_target: "img"}  %>
+        <% else  %>
+          <%= image_tag "", style: 'display:none;', width: '125', class: 'brand_image', data: { image_preview_target: "img"} %>
+        <% end  %>
       </div>
 
     </div>
@@ -139,7 +142,7 @@
         <%= f.association :tags,
                           label: false,
                           collection: options_for_tags,
-                          input_html: { class: 'form-check select2 multi-select' } %>
+                          input_html: { class: 'form-check', data: { controller: "select2" } } %>
 
         <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
       </div>
@@ -157,7 +160,5 @@
     </div>
     <%# End form tag %>
   <% end %>
-
-  <script src="//maps.google.com/maps/api/js?key=<%= ENV['GOOGLE_API_KEY'] %>"></script>
 </div>
 
