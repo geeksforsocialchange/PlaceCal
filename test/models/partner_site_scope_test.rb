@@ -6,112 +6,140 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
 
   # this verifies that partner#for_site is behaving
 
+  # NOTE: these MUST match up with the geocoder response
+  #   defined in test/support/geocoder.rb
+  POST_CODE = 'M15 5DD'
+  UNIT = 'ward'
+  UNIT_CODE = 'E05011368' # from codes/admin_ward
+  UNIT_NAME = 'Hulme' # from admin_ward
+  UNIT_CODE_KEY = 'WD19CD'
+
+  def site
+    @site ||= create(:site)
+  end
+
+  def geocodable_neighbourhood_one
+    @geocodable_neighbourhood_one ||= create(
+      :bare_neighbourhood,
+      unit: UNIT,
+      unit_name: UNIT_NAME,
+      unit_code_key: UNIT_CODE_KEY,
+      unit_code_value: UNIT_CODE
+    )
+  end
+
+  def address_one
+    @addresss_one ||= create(
+      :bare_address_1,
+      postcode: POST_CODE # IMPORTANT!
+    )
+  end
+
   setup do
-    neighbourhood = neighbourhoods(:one)
+    Neighbourhood.destroy_all
+  end
 
-    @site = create(:site)
-    @site.neighbourhoods << neighbourhood
-
-    assert @site.neighbourhoods.length == 1
-
-    address_partner_1 = build(:partner, address: create(:address, neighbourhood: neighbourhood))
-    address_partner_1.save!
-
-    address_partner_2 = build(:partner, address: create(:address, neighbourhood: neighbourhood))
-    address_partner_2.save!
-
-    service_area_partner_1 = build(:partner, address: nil)
-    service_area_partner_1.service_areas.build(neighbourhood: neighbourhood)
-    service_area_partner_1.save!
-
-    service_area_partner_2 = build(:partner, address: nil)
-    service_area_partner_2.service_areas.build(neighbourhood: neighbourhood)
-    service_area_partner_2.save!
-
-    service_area_partner_3 = build(:partner, address: nil)
-    service_area_partner_3.service_areas.build(neighbourhood: neighbourhood)
-    service_area_partner_3.save!
-
-    # has both, should appear only once though
-    address_and_service_area_partner = build(:partner, address: nil)
-    address_and_service_area_partner.address = create(:address, neighbourhood: neighbourhood)
-    address_and_service_area_partner.service_areas.build(neighbourhood: neighbourhood)
-    address_and_service_area_partner.save!
+  test "empty site returns nothing" do
+    output = Partner.for_site(site)
+    assert output.empty?, 'site should be empty'
   end
 
   test "can find partners in site with address" do
-    output = Partner.for_site(@site)
-    count = output.count
-    assert count == 6 # number of partners with addresses in site
-  end
-
-  test "works with sites that have multiple neighbourhoods" do
-    other_neighbourhood = neighbourhoods(:two)
-    @site.neighbourhoods << other_neighbourhood
-
-    address_partner_3 = build(:partner, address: create(:address, neighbourhood: other_neighbourhood))
-    address_partner_3.save!
-
-    service_area_partner_4 = build(:partner, address: nil)
-    service_area_partner_4.service_areas.build(neighbourhood: other_neighbourhood)
-    service_area_partner_4.save!
-
-    output = Partner.for_site(@site)
-    count = output.count
-    assert count == 8 # number of partners with addresses in site
-  end
-
-  # being very thorough and paranoid about my SQL fu -IK
-  test "it definitely works even when there's a second site" do
-
-    other_site = create(:site)
-    other_neighbourhood = neighbourhoods(:moss_side)
-    other_site.neighbourhoods << other_neighbourhood
-
-    address_partner_4 = build(:partner, address: create(:moss_side_address, neighbourhood: other_neighbourhood))
-    address_partner_4.save!
-
-    service_area_partner_5 = build(:partner, address: nil)
-    service_area_partner_5.service_areas.build(neighbourhood: other_neighbourhood)
-    service_area_partner_5.save!
-
-    output = Partner.for_site(other_site)
-    count = output.count
-    assert count == 2 # only two partners in other site
-  end
-
-  test "it returns distinct partners that don't repeat" do
-    # even if there are multiple paths from site to partner
-
-    site = create(:site)
-
-    neighbourhood = create(:neighbourhood_country, name: 'Alpha')
+    neighbourhood = geocodable_neighbourhood_one
     site.neighbourhoods << neighbourhood
 
-    other_neighbourhood = create(:neighbourhood_country, name: 'Beta')
-    site.neighbourhoods << other_neighbourhood
+    create_list :partner, 5, address: address_one
 
-    # by address
-    partner_address = create(:bare_address_1, neighbourhood: neighbourhood)
-    partner = create(:partner, address: partner_address)
+    output = Partner.for_site(site)
+    assert_equal 5, output.count # number of partners with addresses in site
+  end
 
-    # by service area
-    partner.service_area_neighbourhoods << other_neighbourhood
-    partner.service_area_neighbourhoods << neighbourhood
+  test "can find partners in site with service areas (without duplicates)" do
+    neighbourhood_a = create(:bare_neighbourhood)
+    site.neighbourhoods << neighbourhood_a
 
-    found = Partner.for_site(site)
-    assert_equal 1, found.count, 'Partner should only appear once'
+    neighbourhood_b = create(:bare_neighbourhood)
+    site.neighbourhoods << neighbourhood_b
 
-    first = found.first
-    assert_equal partner.name, first.name
+    # partners with multiple service areas in same site
+    5.times do
+      partner = build(:partner, address: nil)
+      partner.service_area_neighbourhoods << neighbourhood_a
+      partner.service_area_neighbourhoods << neighbourhood_b
+      partner.save!
+    end
+
+    output = Partner.for_site(site)
+    assert_equal 5, output.count
+  end
+
+  test "can find partners by address and service_area" do
+    neighbourhood_a = create(:bare_neighbourhood)
+    site.neighbourhoods << neighbourhood_a
+
+    neighbourhood_b = geocodable_neighbourhood_one
+    site.neighbourhoods << neighbourhood_b
+
+    # partner by service area
+    partner = build(:partner, address: nil)
+    partner.service_area_neighbourhoods << neighbourhood_b
+    partner.save!
+
+    # partner by address
+    create :partner, address: address_one
+
+    output = Partner.for_site(site)
+    assert_equal 2, output.count
+  end
+
+  test "ignores partners on other sites" do
+    neighbourhood_a = create(:bare_neighbourhood)
+    site.neighbourhoods << neighbourhood_a
+
+    neighbourhood_b = create(:bare_neighbourhood)
+    site.neighbourhoods << neighbourhood_b
+
+    neighbourhood_c = create(:bare_neighbourhood)
+
+    # our site
+    3.times do
+      # scope should find these
+      partner = build(:partner, address: nil)
+      partner.service_area_neighbourhoods << neighbourhood_a
+      partner.service_area_neighbourhoods << neighbourhood_b
+      partner.save!
+    end
+
+    # other site
+    other_site = create(:site)
+    other_site.neighbourhoods << neighbourhood_b
+    other_site.neighbourhoods << neighbourhood_c
+
+    7.times do
+      # scope should find these (because of neighbourhood_b)
+      partner = build(:partner, address: nil)
+      partner.service_area_neighbourhoods << neighbourhood_b
+      partner.service_area_neighbourhoods << neighbourhood_c
+      partner.save!
+    end
+
+    2.times do
+      # scope should ignore these
+      partner = build(:partner, address: nil)
+      partner.service_area_neighbourhoods << neighbourhood_c
+      partner.save!
+    end
+
+    # finds set (neighbourhood_a OR neighbourhood_b)
+    output = Partner.for_site(site)
+    assert_equal 10, output.count
   end
 
   test "only finds partners with tags if site has tags" do
-    neighbourhood = create(:neighbourhood_country, name: 'Alpha')
+    neighbourhood = geocodable_neighbourhood_one
     tag = create(:tag)
     other_tag = create(:tag)
 
-    site = create(:site)
     site.neighbourhoods << neighbourhood
     site.tags << tag
     site.tags << other_tag
