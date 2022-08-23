@@ -100,7 +100,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'title', count: 1, text: "Partners in your area | #{@tagged_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: 'Partners in your area'
-    assert_select 'ul.partners li', 1
+    assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
     assert_select '.preview__header', text: @tagged_site_partners.first.name
     assert_select '.preview__details', text: @tagged_site_partners.first.summary
