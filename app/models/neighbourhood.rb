@@ -74,7 +74,7 @@ class Neighbourhood < ApplicationRecord
 
     self['name_abbr'] = value.present? ? value : nil
   end
-                 
+
   def to_s
     "#{fullname} (#{unit})"
   end
