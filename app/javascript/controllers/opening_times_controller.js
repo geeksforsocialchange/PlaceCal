@@ -1,6 +1,14 @@
 import { Controller } from "@hotwired/stimulus";
 
-// stateless helper functions
+const dayOrder = [
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+	"Sunday",
+];
 
 // https://schema.org/OpeningHoursSpecification
 const openingHoursSpec = (day, open, close) => ({
@@ -16,17 +24,8 @@ const openingHoursObj = (openSpec) => ({
 	close: openSpec.closes.slice(0, 5),
 });
 
-const sortedOpeningHours = (openSpecArray) => {
-	const dayOrder = [
-		"Monday",
-		"Tuesday",
-		"Wednesday",
-		"Thursday",
-		"Friday",
-		"Saturday",
-		"Sunday",
-	];
-	const sorted = [...openSpecArray]
+const sortedOpeningHours = (openSpecArray) =>
+	[...openSpecArray]
 		.sort(
 			(a, b) =>
 				parseFloat(openingHoursObj(a).open.replace(":", ".")) -
@@ -37,7 +36,11 @@ const sortedOpeningHours = (openSpecArray) => {
 				dayOrder.indexOf(openingHoursObj(a).day) -
 				dayOrder.indexOf(openingHoursObj(b).day),
 		);
-	return sorted;
+
+const nextDay = (day) => {
+	const index =
+		dayOrder.indexOf(day) + 1 < dayOrder.length ? dayOrder.indexOf(day) + 1 : 0;
+	return dayOrder[index];
 };
 
 const openingHoursEnglish = (openSpec) => {
@@ -71,13 +74,14 @@ export default class extends Controller {
 		this.resetForm();
 	}
 
-	resetForm() {
-		this.dayTarget.value = "Monday";
-		this.allDayTarget.checked = false;
-		this.openTarget.value = "00:00";
-		this.closeTarget.value = "00:00";
-		this.openTarget.disabled = false;
-		this.closeTarget.disabled = false;
+	resetForm(day = "Monday", open = "00:00", close = "00:00") {
+		const allDay = open === "00:00" && close === "23:59";
+		this.dayTarget.value = day;
+		this.allDayTarget.checked = allDay;
+		this.openTarget.value = open;
+		this.closeTarget.value = close;
+		this.openTarget.disabled = allDay;
+		this.closeTarget.disabled = allDay;
 	}
 
 	dataValueChanged() {
@@ -132,7 +136,7 @@ export default class extends Controller {
 		const day = this.dayTarget.value;
 		const open = this.openTarget.value;
 		const close = this.closeTarget.value;
-		this.resetForm();
+		this.resetForm(nextDay(day), open, close);
 		this.dataValue = sortedOpeningHours([
 			...this.dataValue,
 			openingHoursSpec(day, open, close),
