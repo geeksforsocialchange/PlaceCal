@@ -118,7 +118,7 @@
           </ul>
 
           <div class="mt-3 input-group flex-row align-items-center justify-content-sm-between flex-wrap">
-            <label for="day">Day
+            <label class="m-0" for="day">Day
               <select class="ml-1" id="day" data-opening-times-target="day">
                 <option value="Monday">Monday</option>
                 <option value="Tuesday">Tuesday</option>
@@ -129,13 +129,13 @@
                 <option value="Sunday">Sunday</option>
               </select>
             </label>
-            <label for="open">Opening Time
+            <label class="m-0" for="open">Opening Time
               <input class="ml-1" id="open" type="time" name="" value="00:00" data-opening-times-target="open">
             </label>
-            <label for="close">Closing Time
+            <label class="m-0" for="close">Closing Time
               <input class="ml-1" id="close" type="time" name="" value="00:00" data-opening-times-target="close">
             </label>
-            <label for="allDay">All Day
+            <label class="m-0" for="allDay">All Day
               <input class="ml-1" id="allDay" type="checkbox" name="" value="" data-opening-times-target="allDay" data-action="change->opening-times#allDay" >
             </label>
             <button data-action="click->opening-times#addOpeningTime" type="" class="btn btn-primary">Add</button>
