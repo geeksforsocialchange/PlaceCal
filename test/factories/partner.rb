@@ -22,6 +22,10 @@ FactoryBot.define do
 
     address
 
+    factory :bare_partner, class: 'Partner' do
+      address nil
+    end
+
     # after(:build) { |partner| partner.tags = [create(:tag)] }
     # image nil
 

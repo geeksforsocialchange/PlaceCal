@@ -1,7 +1,5 @@
 <h1 class="page-header">Edit User: <%= @user.full_name %></h1>
 
-<div class="behavior-trigger" data-behavior="user.form"></div>
-
 <%- disabled_fields = policy(@user).disabled_attributes_for_update %>
 <%- displayable_fields = policy(@user).permitted_attributes_for_update %>
 

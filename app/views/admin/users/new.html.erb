@@ -2,7 +2,6 @@
 
 <h1 class="page-header">New User</h1>
 
-<div class="behavior-trigger" data-behavior="user.form"></div>
 <%- display_fields = policy(@current_user).permitted_attributes_for_create %>
 
 <%= filtered_form_for([:admin, @user],

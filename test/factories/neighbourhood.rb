@@ -12,6 +12,15 @@ FactoryBot.define do
     unit_name { 'England' }
   end
 
+  factory :bare_neighbourhood, class: 'Neighbourhood' do
+    name { '' }
+    name_abbr { '' }
+    unit { '' }
+    unit_code_key { '' }
+    unit_code_value { '123456789' }
+    unit_name { '' }
+  end
+
   factory :neighbourhood_region, class: 'Neighbourhood' do
     name { 'North West' }
     name_abbr { 'North West' }
