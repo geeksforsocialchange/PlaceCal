@@ -74,6 +74,12 @@ export default class extends Controller {
 		this.resetForm();
 	}
 
+	disconnect() {
+		// clear nodes & eventListeners which don't have stimulus attributes
+		// This might be unnecessary
+		this.listTarget.replaceChildren();
+	}
+
 	resetForm(day = "Monday", open = "00:00", close = "00:00") {
 		const allDay = open === "00:00" && close === "23:59";
 		this.dayTarget.value = day;
