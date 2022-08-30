@@ -90,11 +90,9 @@ export default class extends Controller {
 	}
 
 	updateList() {
-		// clear the list
-		this.listTarget.innerHTML = "";
-		// generate new HTML from data
-		this.dataValue
-			.map((openSpec) => {
+		this.listTarget.replaceChildren(
+			// This function takes separate params so we map and spread the data array.
+			...this.dataValue.map((openSpec) => {
 				const li = element("li", openingHoursEnglish(openSpec), [
 					"list-group-item",
 					"d-flex",
@@ -111,11 +109,8 @@ export default class extends Controller {
 				};
 				li.appendChild(btn);
 				return li;
-			})
-			// insert into DOM
-			.forEach((li) => {
-				this.listTarget.append(li);
-			});
+			}),
+		);
 	}
 
 	allDay(event) {
