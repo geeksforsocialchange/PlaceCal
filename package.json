@@ -22,6 +22,7 @@
     "esbuild-vue": "^1.2.1",
     "jquery": "^3.6.0",
     "leaflet": "^1.6.0",
+    "lodash": "^4.17.21",
     "minimist": "1.2.6",
     "popper.js": "1.16.1",
     "sass": "^1.50.1",

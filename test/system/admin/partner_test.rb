@@ -68,4 +68,27 @@ class AdminPartnerTest < ApplicationSystemTestCase
     preview = find(:css, '.brand_image', wait: 15)
     assert preview['src'].starts_with?(base64), 'The preview image src is not the expected value'
   end
+
+  test 'opening time picker on partner form' do
+    click_sidebar 'partners'
+    await_datatables
+    click_link @partner.name
+    within '[data-controller="opening-times"]' do
+      # Add an allday event
+      select 'Sunday', from: 'day'
+      check('All Day')
+      click_button 'Add'
+      new_time = '{"@type":"OpeningHoursSpecification","dayOfWeek":"http://schema.org/Sunday","opens":"00:00:00","closes":"23:59:00"}'
+      data = find('[data-opening-times-target="textarea"]', visible: :hidden).value
+      # check it's in the list
+      assert all(:css, '.list-group-item')[-1].text.starts_with?('Sunday all day')
+      # check it's added to the text area
+      assert data.include?(new_time)
+      # remove the event
+      all(:css, '.list-group-item')[-1].click_button('Remove')
+      data = find('[data-opening-times-target="textarea"]', visible: :hidden).value
+      # check time is removed from the text area
+      assert !data.include?(new_time)
+    end
+  end
 end

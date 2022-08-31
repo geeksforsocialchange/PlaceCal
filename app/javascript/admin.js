@@ -14,7 +14,6 @@ import "./src/datatable.js"
 // Opening times stuff
 import  Vue from "vue"
 import "vue-turbolinks"
-import "./src/opening-times.js"
 
 // Specific pages
 import "./src/calendar-form.js"

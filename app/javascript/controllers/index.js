@@ -10,5 +10,8 @@ application.register("image-preview", ImagePreviewController)
 import LeafletController from "./leaflet_controller.js"
 application.register("leaflet", LeafletController)
 
+import OpeningTimesController from "./opening_times_controller.js"
+application.register("opening-times", OpeningTimesController)
+
 import Select2Controller from "./select2_controller.js"
 application.register("select2", Select2Controller)
