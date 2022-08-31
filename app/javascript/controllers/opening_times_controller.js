@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import _ from "lodash";
 
 const dayOrder = [
 	"Monday",
@@ -25,17 +26,10 @@ const openingHoursObj = (openSpec) => ({
 });
 
 const sortedOpeningHours = (openSpecArray) =>
-	[...openSpecArray]
-		.sort(
-			(a, b) =>
-				parseFloat(openingHoursObj(a).open.replace(":", ".")) -
-				parseFloat(openingHoursObj(b).open.replace(":", ".")),
-		)
-		.sort(
-			(a, b) =>
-				dayOrder.indexOf(openingHoursObj(a).day) -
-				dayOrder.indexOf(openingHoursObj(b).day),
-		);
+	_.orderBy(openSpecArray, [
+		(el) => dayOrder.indexOf(openingHoursObj(el).day),
+		(el) => parseFloat(openingHoursObj(el).open.replace(":", ".")),
+	]);
 
 const nextDay = (day) => {
 	const index =
@@ -49,11 +43,6 @@ const openingHoursEnglish = (openSpec) => {
 		? `${day} all day`
 		: `${day} from ${open} to ${close}`;
 };
-
-const removeTime = (openSpecArray, openSpec) =>
-	[...openSpecArray].filter(
-		(el) => JSON.stringify(el) !== JSON.stringify(openSpec),
-	);
 
 const element = (type, content = "", classes = []) => {
 	const el = document.createElement(type);
@@ -115,7 +104,10 @@ export default class extends Controller {
 					"btn-sm",
 				]);
 				btn.onclick = () => {
-					this.dataValue = removeTime(this.dataValue, openSpec);
+					// remove opening time
+					this.dataValue = [...this.dataValue].filter(
+						(el) => !_.isEqual(el, openSpec),
+					);
 				};
 				li.appendChild(btn);
 				return li;
