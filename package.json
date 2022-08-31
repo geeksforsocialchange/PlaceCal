@@ -19,7 +19,6 @@
     "datatables.net-bs4": "^1.11.5",
     "esbuild": "^0.14.36",
     "esbuild-rails": "^1.0.3",
-    "esbuild-vue": "^1.2.1",
     "jquery": "^3.6.0",
     "leaflet": "^1.6.0",
     "lodash": "^4.17.21",
@@ -27,10 +26,6 @@
     "popper.js": "1.16.1",
     "sass": "^1.50.1",
     "select2": "^4.0.11",
-    "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.14",
-    "vue-turbolinks": "^2.0.4",
-    "vue2-timepicker": "^1.0.8",
     "yarn": "^1.22.19"
   },
   "peerDependencies": {
