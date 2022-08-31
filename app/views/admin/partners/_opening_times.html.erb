@@ -1,0 +1,33 @@
+<%# We only use the active record helpers on the part of the form that will be submitted %>
+<%# Everything else is written in HTML so that the syntax matches the stimulus docs %>
+
+<div data-controller="opening-times" data-opening-times-data-value='<%= @partner.opening_times %>'>
+  <ul class="list-group" data-opening-times-target="list">
+  </ul>
+
+  <div class="mt-3 input-group flex-row align-items-center justify-content-sm-between flex-wrap">
+    <label class="m-0" for="day">Day
+      <select class="ml-1" id="day" data-opening-times-target="day">
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
+      </select>
+    </label>
+    <label class="m-0" for="open">Opening Time
+      <input class="ml-1" id="open" type="time" name="" value="00:00" data-opening-times-target="open">
+    </label>
+    <label class="m-0" for="close">Closing Time
+      <input class="ml-1" id="close" type="time" name="" value="00:00" data-opening-times-target="close">
+    </label>
+    <label class="m-0" for="allDay">All Day
+      <input class="ml-1" id="allDay" type="checkbox" name="" value="" data-opening-times-target="allDay" data-action="change->opening-times#allDay" >
+    </label>
+    <button data-action="click->opening-times#addOpeningTime" type="" class="btn btn-primary">Add</button>
+  </div>
+
+  <%= f.text_area :opening_times, data: { opening_times_target: "textarea" }, hidden: true %> 
+</div>
