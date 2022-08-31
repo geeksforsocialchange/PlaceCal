@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
+import orderBy from "lodash/orderBy";
 
 const dayOrder = [
 	"Monday",
@@ -26,7 +27,7 @@ const openingHoursObj = (openSpec) => ({
 });
 
 const sortedOpeningHours = (openSpecArray) =>
-	_.orderBy(openSpecArray, [
+	orderBy(openSpecArray, [
 		(el) => dayOrder.indexOf(openingHoursObj(el).day),
 		(el) => parseFloat(openingHoursObj(el).open.replace(":", ".")),
 	]);
@@ -106,7 +107,7 @@ export default class extends Controller {
 				btn.onclick = () => {
 					// remove opening time
 					this.dataValue = [...this.dataValue].filter(
-						(el) => !_.isEqual(el, openSpec),
+						(el) => !isEqual(el, openSpec),
 					);
 				};
 				li.appendChild(btn);
