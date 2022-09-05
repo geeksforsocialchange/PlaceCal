@@ -11,14 +11,6 @@ require("select2")(window, $)
 // Datatables
 import "./src/datatable.js"
 
-// Opening times stuff
-import  Vue from "vue"
-import "vue-turbolinks"
-
-// Specific pages
-import "./src/calendar-form.js"
-import "./src/ward-picker.js"
-
 $(document).on("turbo:load", function () {
   $("[data-toggle='tooltip']").tooltip()
 });
