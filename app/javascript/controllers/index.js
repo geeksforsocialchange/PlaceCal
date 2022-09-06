@@ -2,16 +2,16 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from "./application";
 
-import ImagePreviewController from "./image_preview_controller.js"
-application.register("image-preview", ImagePreviewController)
+import ImagePreviewController from "./image_preview_controller.js";
+application.register("image-preview", ImagePreviewController);
 
-import LeafletController from "./leaflet_controller.js"
-application.register("leaflet", LeafletController)
+import LeafletController from "./leaflet_controller.js";
+application.register("leaflet", LeafletController);
 
-import OpeningTimesController from "./opening_times_controller.js"
-application.register("opening-times", OpeningTimesController)
+import OpeningTimesController from "./opening_times_controller.js";
+application.register("opening-times", OpeningTimesController);
 
-import Select2Controller from "./select2_controller.js"
-application.register("select2", Select2Controller)
+import Select2Controller from "./select2_controller.js";
+application.register("select2", Select2Controller);

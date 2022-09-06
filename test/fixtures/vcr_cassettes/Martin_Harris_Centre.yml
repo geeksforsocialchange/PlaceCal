@@ -1,481 +1,483 @@
 ---
 http_interactions:
-- request:
-    method: get
-    uri: http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - Apache-Coyote/1.1
-      Pragma:
-      - no-cache
-      Expires:
-      - Thu, 01 Jan 1970 00:00:00 GMT
-      Cache-Control:
-      - no-cache
-      - no-store
-      Set-Cookie:
-      - JSESSIONID=C9881A6A3AB5F151EEDC270961DA73F4; Path=/; HttpOnly
-      X-Columba-Date:
-      - '2018-07-04'
-      X-Columba-View:
-      - list
-      X-Columba-Layout-Message:
-      - From Wednesday 4 July 2018
-      X-Columba-Layout-Day-Next:
-      - '2018-07-20'
-      X-Columba-Layout-Day-Previous:
-      - '2018-07-03'
-      X-Columba-Layout-Day-First:
-      - '2018-07-04'
-      X-Columba-Eventcount:
-      - '3'
-      Content-Type:
-      - text/xml;charset=UTF-8
-      Content-Language:
-      - en-GB
-      Transfer-Encoding:
-      - chunked
-      Date:
-      - Wed, 04 Jul 2018 11:13:16 GMT
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--Columba Systems Ltd
-        - CalMl10View - 3.3-M3--><ns:calendar xmlns:ns=\"http://www.columbasystems.com/cpng/xmlviewer/cal/1-0/\"><ns:state><ns:date>2018-07-04</ns:date><ns:view>list</ns:view><ns:userTimezone>Europe/London</ns:userTimezone><ns:searchCode
-        xmlns:tag=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/tag/}martin_harris_centre\">tag:martin_harris_centre</ns:searchCode></ns:state><ns:viewInformation><ns:previous>2018-07-03</ns:previous><ns:next>2018-07-20</ns:next><ns:timezone
-        id=\"Europe__London-D60\"><ns:longName>British Summer Time</ns:longName><ns:shortName>BST</ns:shortName><ns:hourOffset>01:00</ns:hourOffset><ns:millisecondOffset>3600000</ns:millisecondOffset></ns:timezone><ns:timezone
-        id=\"GMT\"><ns:longName>Greenwich Mean Time</ns:longName><ns:shortName>GMT</ns:shortName><ns:hourOffset>00:00</ns:hourOffset><ns:millisecondOffset>0</ns:millisecondOffset></ns:timezone></ns:viewInformation><ns:listView><ns:day
-        date=\"2018-07-04\" weekDay=\"Wed\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
-        query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ia0-jik9p56t-o8r0hr\">even:ia0-jik9p56t-o8r0hr</ns:id><ns:title>Technical
-        tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
-        it opened in 2003, the Centre has contributed to the cultural life of students,
-        staff, alumni and the wider community. It hosts new and emerging artists,
-        as well as more established, internationally renowned figures.\nThe Centre
-        offers a varied programme of arts events, many of which are free, in order
-        to educate, stimulate and engage audiences, as well as provide memorable and
-        inspirational experiences. Events are open to the public and include concerts,
-        theatre productions, literature and spoken word events, seminars and lectures.\nIt
-        incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
-        Hall and the John Thaw Studio Theatre, which can accommodate approximately
-        100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
-        Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>09:00:00</ns:time></ns:start><ns:end
-        tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
-        xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
-        (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
-        booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
-        Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
-        xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
-        xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
-        -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event><ns:event><ns:id
-        xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ra1-jik9ptmt-st6owt\">even:ra1-jik9ptmt-st6owt</ns:id><ns:title>Technical
-        tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
-        it opened in 2003, the Centre has contributed to the cultural life of students,
-        staff, alumni and the wider community. It hosts new and emerging artists,
-        as well as more established, internationally renowned figures.\nThe Centre
-        offers a varied programme of arts events, many of which are free, in order
-        to educate, stimulate and engage audiences, as well as provide memorable and
-        inspirational experiences. Events are open to the public and include concerts,
-        theatre productions, literature and spoken word events, seminars and lectures.\nIt
-        incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
-        Hall and the John Thaw Studio Theatre, which can accommodate approximately
-        100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
-        Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>13:00:00</ns:time></ns:start><ns:end
-        tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
-        xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
-        (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
-        booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
-        Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
-        xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
-        xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
-        -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day><ns:day
-        date=\"2018-07-20\" weekDay=\"Fri\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
-        query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}z7r-jia5z9r6-7mm1e6\">even:z7r-jia5z9r6-7mm1e6</ns:id><ns:title>KIDNAP@20:
-        The Art of Incarceration</ns:title><ns:description>A one-day performance symposium.\n\nIn
-        July 1998, the performance company BLAST THEORY did something a little different.
-        Instead of making a theatre piece about a kidnapping, they actually kidnapped
-        two unsuspecting victims - snatching them out of their daily lives and then
-        imprisoning them, under constant webcam surveillance, for 48 hours. The abductees
-        had made themselves available for kidnap by entering a lottery, which must
-        have seemed like a fun idea at the time...\n\nWidely covered in the press
-        and media, KIDNAP caught the public imagination as an edgy example of what
-        the internet was now making possible. A pivotal event in Blast Theory's evolution
-        as a company, the piece also anticipated all kinds of subsequent developments
-        in the wider culture -- from the round-the-clock surveillance of reality TV
-        shows like Big Brother, to the 21st century vogue for audience participation
-        in live art, and the contemporary ubiquity of 'escape rooms' (getting yourself
-        locked up for kicks).\n\nKIDNAP@20 is a one-day symposium marking the piece's
-        20th anniversary, which will look back at where we were then, and ask where
-        we are now. What has changed in the realms of digital art and technology,
-        participatory performance, and the politics of consent? When, how and why
-        do surveillance, imprisonment, and power games become art or entertainment?
-        \n\nTo sign up for this FREE event, please visit our Eventbrite page: \nhttps://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
-        \ \n \nPARTICIPANTS INCLUDE:\nMatt Adams, Ju Row Farr and Nick Tandavanitj
-        \ (Blast Theory core artists)\nJohn McGrath (Artistic Director, Manchester
-        International Festival; author of Loving Big Brother)\nSaul Hewish (Artistic
-        Director, Rideout: Creative Arts for Rehabilitation)\nAli Matthews and Niki
-        Woods (University of Salford &amp; Blast Theory)\nTamsin Drury (hAb) and Dave
-        Carter (University of Manchester)\nMatt Fenton (Artistic Director, Contact)\nPetra
-        Tauscher (Dramaturg and Producer, HOME Manchester)\nProfessor Stephen Coleman
-        (University of Leeds) \nThe event includes a screening of the film document
-        of KIDNAP (30 mins) and reflections on other relevant work, including Rideout's
-        Cell Project (2016) and Ali Matthews' What the Money Meant (2014).\n \nFor
-        further information please contact the organiser, Stephen Scott-Bottoms: stephen.bottoms@manchester.ac.uk
-        \n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher Education</ns:type><ns:times
-        type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>11:30:00</ns:time></ns:start><ns:end
-        tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>18:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
-        xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">Stephen
-        Scott-Bottoms</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">stephen.bottoms@manchester.ac.uk
-        </gpp:email></uom:contact><uom:eventInfo><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-free\" gpp:name=\"Free\"/></uom:eventInfo><uom:eventType
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:type-symposium\" gpp:name=\"Symposium\"/><uom:image xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/imageid/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:p8o-jieo5rvy-nza0la\" gpp:name=\"20 July Kidnap MHC\"><gpp:imageId>p8o-jieo5rvy-nza0la</gpp:imageId><gpp:title>20
-        July Kidnap MHC</gpp:title><gpp:imageMetaData><gpp:instanceId>u8p-jieo5ry6-e9ksrk</gpp:instanceId><gpp:height>400</gpp:height><gpp:width>800</gpp:width></gpp:imageMetaData></uom:image><uom:links><gpp:link
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:href=\"https://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
-        \ \">Eventbrite</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
-        Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
-        xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
-        xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
-        -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>FREE</uom:price><uom:primaryEventSeries
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:ser-hum-alc-drama\" gpp:name=\"(ALC) Drama\"/><uom:publishingTargets><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-hum-alc\" gpp:name=\"SALC External\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-hum-salcstaffnet\" gpp:name=\"SALC Staffnet\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-main\" gpp:name=\"Public calendar\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-humstaffnet\" gpp:name=\"Humanities Staffnet\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-martinharris\" gpp:name=\"Martin Harris Centre\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:staff\" gpp:name=\"University staff\"/><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:adults\" gpp:name=\"Adults\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:alumni\" gpp:name=\"Alumni\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:students\" gpp:name=\"Current University students\"/><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:generalpublic\" gpp:name=\"General public\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day></ns:listView></ns:calendar>"
-    http_version: 
-  recorded_at: Wed, 04 Jul 2018 11:13:16 GMT
-- request:
-    method: get
-    uri: http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - Apache-Coyote/1.1
-      Pragma:
-      - no-cache
-      Expires:
-      - Thu, 01 Jan 1970 00:00:00 GMT
-      Cache-Control:
-      - no-cache
-      - no-store
-      Set-Cookie:
-      - JSESSIONID=C0F9832B8E887D61E75703C828E78A17; Path=/; HttpOnly
-      X-Columba-Date:
-      - '2018-07-04'
-      X-Columba-View:
-      - list
-      X-Columba-Layout-Message:
-      - From Wednesday 4 July 2018
-      X-Columba-Layout-Day-Next:
-      - '2018-07-20'
-      X-Columba-Layout-Day-Previous:
-      - '2018-07-03'
-      X-Columba-Layout-Day-First:
-      - '2018-07-04'
-      X-Columba-Eventcount:
-      - '3'
-      Content-Type:
-      - text/xml;charset=UTF-8
-      Content-Language:
-      - en-GB
-      Transfer-Encoding:
-      - chunked
-      Date:
-      - Wed, 04 Jul 2018 11:13:16 GMT
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--Columba Systems Ltd
-        - CalMl10View - 3.3-M3--><ns:calendar xmlns:ns=\"http://www.columbasystems.com/cpng/xmlviewer/cal/1-0/\"><ns:state><ns:date>2018-07-04</ns:date><ns:view>list</ns:view><ns:userTimezone>Europe/London</ns:userTimezone><ns:searchCode
-        xmlns:tag=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/tag/}martin_harris_centre\">tag:martin_harris_centre</ns:searchCode></ns:state><ns:viewInformation><ns:previous>2018-07-03</ns:previous><ns:next>2018-07-20</ns:next><ns:timezone
-        id=\"Europe__London-D60\"><ns:longName>British Summer Time</ns:longName><ns:shortName>BST</ns:shortName><ns:hourOffset>01:00</ns:hourOffset><ns:millisecondOffset>3600000</ns:millisecondOffset></ns:timezone><ns:timezone
-        id=\"GMT\"><ns:longName>Greenwich Mean Time</ns:longName><ns:shortName>GMT</ns:shortName><ns:hourOffset>00:00</ns:hourOffset><ns:millisecondOffset>0</ns:millisecondOffset></ns:timezone></ns:viewInformation><ns:listView><ns:day
-        date=\"2018-07-04\" weekDay=\"Wed\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
-        query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ia0-jik9p56t-o8r0hr\">even:ia0-jik9p56t-o8r0hr</ns:id><ns:title>Technical
-        tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
-        it opened in 2003, the Centre has contributed to the cultural life of students,
-        staff, alumni and the wider community. It hosts new and emerging artists,
-        as well as more established, internationally renowned figures.\nThe Centre
-        offers a varied programme of arts events, many of which are free, in order
-        to educate, stimulate and engage audiences, as well as provide memorable and
-        inspirational experiences. Events are open to the public and include concerts,
-        theatre productions, literature and spoken word events, seminars and lectures.\nIt
-        incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
-        Hall and the John Thaw Studio Theatre, which can accommodate approximately
-        100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
-        Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>09:00:00</ns:time></ns:start><ns:end
-        tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
-        xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
-        (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
-        booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
-        Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
-        xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
-        xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
-        -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event><ns:event><ns:id
-        xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ra1-jik9ptmt-st6owt\">even:ra1-jik9ptmt-st6owt</ns:id><ns:title>Technical
-        tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
-        it opened in 2003, the Centre has contributed to the cultural life of students,
-        staff, alumni and the wider community. It hosts new and emerging artists,
-        as well as more established, internationally renowned figures.\nThe Centre
-        offers a varied programme of arts events, many of which are free, in order
-        to educate, stimulate and engage audiences, as well as provide memorable and
-        inspirational experiences. Events are open to the public and include concerts,
-        theatre productions, literature and spoken word events, seminars and lectures.\nIt
-        incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
-        Hall and the John Thaw Studio Theatre, which can accommodate approximately
-        100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
-        Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>13:00:00</ns:time></ns:start><ns:end
-        tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
-        xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
-        (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
-        booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
-        Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
-        xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
-        xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
-        -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day><ns:day
-        date=\"2018-07-20\" weekDay=\"Fri\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
-        query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}z7r-jia5z9r6-7mm1e6\">even:z7r-jia5z9r6-7mm1e6</ns:id><ns:title>KIDNAP@20:
-        The Art of Incarceration</ns:title><ns:description>A one-day performance symposium.\n\nIn
-        July 1998, the performance company BLAST THEORY did something a little different.
-        Instead of making a theatre piece about a kidnapping, they actually kidnapped
-        two unsuspecting victims - snatching them out of their daily lives and then
-        imprisoning them, under constant webcam surveillance, for 48 hours. The abductees
-        had made themselves available for kidnap by entering a lottery, which must
-        have seemed like a fun idea at the time...\n\nWidely covered in the press
-        and media, KIDNAP caught the public imagination as an edgy example of what
-        the internet was now making possible. A pivotal event in Blast Theory's evolution
-        as a company, the piece also anticipated all kinds of subsequent developments
-        in the wider culture -- from the round-the-clock surveillance of reality TV
-        shows like Big Brother, to the 21st century vogue for audience participation
-        in live art, and the contemporary ubiquity of 'escape rooms' (getting yourself
-        locked up for kicks).\n\nKIDNAP@20 is a one-day symposium marking the piece's
-        20th anniversary, which will look back at where we were then, and ask where
-        we are now. What has changed in the realms of digital art and technology,
-        participatory performance, and the politics of consent? When, how and why
-        do surveillance, imprisonment, and power games become art or entertainment?
-        \n\nTo sign up for this FREE event, please visit our Eventbrite page: \nhttps://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
-        \ \n \nPARTICIPANTS INCLUDE:\nMatt Adams, Ju Row Farr and Nick Tandavanitj
-        \ (Blast Theory core artists)\nJohn McGrath (Artistic Director, Manchester
-        International Festival; author of Loving Big Brother)\nSaul Hewish (Artistic
-        Director, Rideout: Creative Arts for Rehabilitation)\nAli Matthews and Niki
-        Woods (University of Salford &amp; Blast Theory)\nTamsin Drury (hAb) and Dave
-        Carter (University of Manchester)\nMatt Fenton (Artistic Director, Contact)\nPetra
-        Tauscher (Dramaturg and Producer, HOME Manchester)\nProfessor Stephen Coleman
-        (University of Leeds) \nThe event includes a screening of the film document
-        of KIDNAP (30 mins) and reflections on other relevant work, including Rideout's
-        Cell Project (2016) and Ali Matthews' What the Money Meant (2014).\n \nFor
-        further information please contact the organiser, Stephen Scott-Bottoms: stephen.bottoms@manchester.ac.uk
-        \n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher Education</ns:type><ns:times
-        type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>11:30:00</ns:time></ns:start><ns:end
-        tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>18:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:times
-        type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
-        tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
-        xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">Stephen
-        Scott-Bottoms</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">stephen.bottoms@manchester.ac.uk
-        </gpp:email></uom:contact><uom:eventInfo><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:info-free\" gpp:name=\"Free\"/></uom:eventInfo><uom:eventType
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:type-symposium\" gpp:name=\"Symposium\"/><uom:image xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/imageid/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:p8o-jieo5rvy-nza0la\" gpp:name=\"20 July Kidnap MHC\"><gpp:imageId>p8o-jieo5rvy-nza0la</gpp:imageId><gpp:title>20
-        July Kidnap MHC</gpp:title><gpp:imageMetaData><gpp:instanceId>u8p-jieo5ry6-e9ksrk</gpp:instanceId><gpp:height>400</gpp:height><gpp:width>800</gpp:width></gpp:imageMetaData></uom:image><uom:links><gpp:link
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:href=\"https://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
-        \ \">Eventbrite</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
-        Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
-        xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
-        xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
-        -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>FREE</uom:price><uom:primaryEventSeries
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:ser-hum-alc-drama\" gpp:name=\"(ALC) Drama\"/><uom:publishingTargets><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-hum-alc\" gpp:name=\"SALC External\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-hum-salcstaffnet\" gpp:name=\"SALC Staffnet\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-main\" gpp:name=\"Public calendar\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-humstaffnet\" gpp:name=\"Humanities Staffnet\"/><uom:publishingTargets
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:pub-martinharris\" gpp:name=\"Martin Harris Centre\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:staff\" gpp:name=\"University staff\"/><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:adults\" gpp:name=\"Adults\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:alumni\" gpp:name=\"Alumni\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
-        xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:students\" gpp:name=\"Current University students\"/><uom:targetAudience
-        xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
-        gpp:code=\"code:generalpublic\" gpp:name=\"General public\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day></ns:listView></ns:calendar>"
-    http_version: 
-  recorded_at: Wed, 04 Jul 2018 11:13:17 GMT
+  - request:
+      method: get
+      uri: http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Server:
+          - Apache-Coyote/1.1
+        Pragma:
+          - no-cache
+        Expires:
+          - Thu, 01 Jan 1970 00:00:00 GMT
+        Cache-Control:
+          - no-cache
+          - no-store
+        Set-Cookie:
+          - JSESSIONID=C9881A6A3AB5F151EEDC270961DA73F4; Path=/; HttpOnly
+        X-Columba-Date:
+          - "2018-07-04"
+        X-Columba-View:
+          - list
+        X-Columba-Layout-Message:
+          - From Wednesday 4 July 2018
+        X-Columba-Layout-Day-Next:
+          - "2018-07-20"
+        X-Columba-Layout-Day-Previous:
+          - "2018-07-03"
+        X-Columba-Layout-Day-First:
+          - "2018-07-04"
+        X-Columba-Eventcount:
+          - "3"
+        Content-Type:
+          - text/xml;charset=UTF-8
+        Content-Language:
+          - en-GB
+        Transfer-Encoding:
+          - chunked
+        Date:
+          - Wed, 04 Jul 2018 11:13:16 GMT
+        Connection:
+          - close
+      body:
+        encoding: UTF-8
+        string:
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--Columba Systems Ltd
+          - CalMl10View - 3.3-M3--><ns:calendar xmlns:ns=\"http://www.columbasystems.com/cpng/xmlviewer/cal/1-0/\"><ns:state><ns:date>2018-07-04</ns:date><ns:view>list</ns:view><ns:userTimezone>Europe/London</ns:userTimezone><ns:searchCode
+          xmlns:tag=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/tag/}martin_harris_centre\">tag:martin_harris_centre</ns:searchCode></ns:state><ns:viewInformation><ns:previous>2018-07-03</ns:previous><ns:next>2018-07-20</ns:next><ns:timezone
+          id=\"Europe__London-D60\"><ns:longName>British Summer Time</ns:longName><ns:shortName>BST</ns:shortName><ns:hourOffset>01:00</ns:hourOffset><ns:millisecondOffset>3600000</ns:millisecondOffset></ns:timezone><ns:timezone
+          id=\"GMT\"><ns:longName>Greenwich Mean Time</ns:longName><ns:shortName>GMT</ns:shortName><ns:hourOffset>00:00</ns:hourOffset><ns:millisecondOffset>0</ns:millisecondOffset></ns:timezone></ns:viewInformation><ns:listView><ns:day
+          date=\"2018-07-04\" weekDay=\"Wed\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
+          query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ia0-jik9p56t-o8r0hr\">even:ia0-jik9p56t-o8r0hr</ns:id><ns:title>Technical
+          tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
+          it opened in 2003, the Centre has contributed to the cultural life of students,
+          staff, alumni and the wider community. It hosts new and emerging artists,
+          as well as more established, internationally renowned figures.\nThe Centre
+          offers a varied programme of arts events, many of which are free, in order
+          to educate, stimulate and engage audiences, as well as provide memorable and
+          inspirational experiences. Events are open to the public and include concerts,
+          theatre productions, literature and spoken word events, seminars and lectures.\nIt
+          incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
+          Hall and the John Thaw Studio Theatre, which can accommodate approximately
+          100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
+          Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>09:00:00</ns:time></ns:start><ns:end
+          tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
+          xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
+          (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
+          booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
+          Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
+          xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
+          xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
+          -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event><ns:event><ns:id
+          xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ra1-jik9ptmt-st6owt\">even:ra1-jik9ptmt-st6owt</ns:id><ns:title>Technical
+          tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
+          it opened in 2003, the Centre has contributed to the cultural life of students,
+          staff, alumni and the wider community. It hosts new and emerging artists,
+          as well as more established, internationally renowned figures.\nThe Centre
+          offers a varied programme of arts events, many of which are free, in order
+          to educate, stimulate and engage audiences, as well as provide memorable and
+          inspirational experiences. Events are open to the public and include concerts,
+          theatre productions, literature and spoken word events, seminars and lectures.\nIt
+          incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
+          Hall and the John Thaw Studio Theatre, which can accommodate approximately
+          100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
+          Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>13:00:00</ns:time></ns:start><ns:end
+          tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
+          xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
+          (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
+          booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
+          Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
+          xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
+          xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
+          -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day><ns:day
+          date=\"2018-07-20\" weekDay=\"Fri\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
+          query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}z7r-jia5z9r6-7mm1e6\">even:z7r-jia5z9r6-7mm1e6</ns:id><ns:title>KIDNAP@20:
+          The Art of Incarceration</ns:title><ns:description>A one-day performance symposium.\n\nIn
+          July 1998, the performance company BLAST THEORY did something a little different.
+          Instead of making a theatre piece about a kidnapping, they actually kidnapped
+          two unsuspecting victims - snatching them out of their daily lives and then
+          imprisoning them, under constant webcam surveillance, for 48 hours. The abductees
+          had made themselves available for kidnap by entering a lottery, which must
+          have seemed like a fun idea at the time...\n\nWidely covered in the press
+          and media, KIDNAP caught the public imagination as an edgy example of what
+          the internet was now making possible. A pivotal event in Blast Theory's evolution
+          as a company, the piece also anticipated all kinds of subsequent developments
+          in the wider culture -- from the round-the-clock surveillance of reality TV
+          shows like Big Brother, to the 21st century vogue for audience participation
+          in live art, and the contemporary ubiquity of 'escape rooms' (getting yourself
+          locked up for kicks).\n\nKIDNAP@20 is a one-day symposium marking the piece's
+          20th anniversary, which will look back at where we were then, and ask where
+          we are now. What has changed in the realms of digital art and technology,
+          participatory performance, and the politics of consent? When, how and why
+          do surveillance, imprisonment, and power games become art or entertainment?
+          \n\nTo sign up for this FREE event, please visit our Eventbrite page: \nhttps://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
+          \ \n \nPARTICIPANTS INCLUDE:\nMatt Adams, Ju Row Farr and Nick Tandavanitj
+          \ (Blast Theory core artists)\nJohn McGrath (Artistic Director, Manchester
+          International Festival; author of Loving Big Brother)\nSaul Hewish (Artistic
+          Director, Rideout: Creative Arts for Rehabilitation)\nAli Matthews and Niki
+          Woods (University of Salford &amp; Blast Theory)\nTamsin Drury (hAb) and Dave
+          Carter (University of Manchester)\nMatt Fenton (Artistic Director, Contact)\nPetra
+          Tauscher (Dramaturg and Producer, HOME Manchester)\nProfessor Stephen Coleman
+          (University of Leeds) \nThe event includes a screening of the film document
+          of KIDNAP (30 mins) and reflections on other relevant work, including Rideout's
+          Cell Project (2016) and Ali Matthews' What the Money Meant (2014).\n \nFor
+          further information please contact the organiser, Stephen Scott-Bottoms: stephen.bottoms@manchester.ac.uk
+          \n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher Education</ns:type><ns:times
+          type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>11:30:00</ns:time></ns:start><ns:end
+          tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>18:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
+          xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">Stephen
+          Scott-Bottoms</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">stephen.bottoms@manchester.ac.uk
+          </gpp:email></uom:contact><uom:eventInfo><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-free\" gpp:name=\"Free\"/></uom:eventInfo><uom:eventType
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:type-symposium\" gpp:name=\"Symposium\"/><uom:image xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/imageid/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:p8o-jieo5rvy-nza0la\" gpp:name=\"20 July Kidnap MHC\"><gpp:imageId>p8o-jieo5rvy-nza0la</gpp:imageId><gpp:title>20
+          July Kidnap MHC</gpp:title><gpp:imageMetaData><gpp:instanceId>u8p-jieo5ry6-e9ksrk</gpp:instanceId><gpp:height>400</gpp:height><gpp:width>800</gpp:width></gpp:imageMetaData></uom:image><uom:links><gpp:link
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:href=\"https://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
+          \ \">Eventbrite</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
+          Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
+          xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
+          xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
+          -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>FREE</uom:price><uom:primaryEventSeries
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:ser-hum-alc-drama\" gpp:name=\"(ALC) Drama\"/><uom:publishingTargets><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-hum-alc\" gpp:name=\"SALC External\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-hum-salcstaffnet\" gpp:name=\"SALC Staffnet\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-main\" gpp:name=\"Public calendar\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-humstaffnet\" gpp:name=\"Humanities Staffnet\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-martinharris\" gpp:name=\"Martin Harris Centre\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:staff\" gpp:name=\"University staff\"/><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:adults\" gpp:name=\"Adults\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:alumni\" gpp:name=\"Alumni\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:students\" gpp:name=\"Current University students\"/><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:generalpublic\" gpp:name=\"General public\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day></ns:listView></ns:calendar>"
+      http_version:
+    recorded_at: Wed, 04 Jul 2018 11:13:16 GMT
+  - request:
+      method: get
+      uri: http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Server:
+          - Apache-Coyote/1.1
+        Pragma:
+          - no-cache
+        Expires:
+          - Thu, 01 Jan 1970 00:00:00 GMT
+        Cache-Control:
+          - no-cache
+          - no-store
+        Set-Cookie:
+          - JSESSIONID=C0F9832B8E887D61E75703C828E78A17; Path=/; HttpOnly
+        X-Columba-Date:
+          - "2018-07-04"
+        X-Columba-View:
+          - list
+        X-Columba-Layout-Message:
+          - From Wednesday 4 July 2018
+        X-Columba-Layout-Day-Next:
+          - "2018-07-20"
+        X-Columba-Layout-Day-Previous:
+          - "2018-07-03"
+        X-Columba-Layout-Day-First:
+          - "2018-07-04"
+        X-Columba-Eventcount:
+          - "3"
+        Content-Type:
+          - text/xml;charset=UTF-8
+        Content-Language:
+          - en-GB
+        Transfer-Encoding:
+          - chunked
+        Date:
+          - Wed, 04 Jul 2018 11:13:16 GMT
+        Connection:
+          - close
+      body:
+        encoding: UTF-8
+        string:
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--Columba Systems Ltd
+          - CalMl10View - 3.3-M3--><ns:calendar xmlns:ns=\"http://www.columbasystems.com/cpng/xmlviewer/cal/1-0/\"><ns:state><ns:date>2018-07-04</ns:date><ns:view>list</ns:view><ns:userTimezone>Europe/London</ns:userTimezone><ns:searchCode
+          xmlns:tag=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/tag/}martin_harris_centre\">tag:martin_harris_centre</ns:searchCode></ns:state><ns:viewInformation><ns:previous>2018-07-03</ns:previous><ns:next>2018-07-20</ns:next><ns:timezone
+          id=\"Europe__London-D60\"><ns:longName>British Summer Time</ns:longName><ns:shortName>BST</ns:shortName><ns:hourOffset>01:00</ns:hourOffset><ns:millisecondOffset>3600000</ns:millisecondOffset></ns:timezone><ns:timezone
+          id=\"GMT\"><ns:longName>Greenwich Mean Time</ns:longName><ns:shortName>GMT</ns:shortName><ns:hourOffset>00:00</ns:hourOffset><ns:millisecondOffset>0</ns:millisecondOffset></ns:timezone></ns:viewInformation><ns:listView><ns:day
+          date=\"2018-07-04\" weekDay=\"Wed\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
+          query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ia0-jik9p56t-o8r0hr\">even:ia0-jik9p56t-o8r0hr</ns:id><ns:title>Technical
+          tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
+          it opened in 2003, the Centre has contributed to the cultural life of students,
+          staff, alumni and the wider community. It hosts new and emerging artists,
+          as well as more established, internationally renowned figures.\nThe Centre
+          offers a varied programme of arts events, many of which are free, in order
+          to educate, stimulate and engage audiences, as well as provide memorable and
+          inspirational experiences. Events are open to the public and include concerts,
+          theatre productions, literature and spoken word events, seminars and lectures.\nIt
+          incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
+          Hall and the John Thaw Studio Theatre, which can accommodate approximately
+          100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
+          Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>09:00:00</ns:time></ns:start><ns:end
+          tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>10:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>11:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
+          xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
+          (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
+          booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
+          Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
+          xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
+          xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
+          -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event><ns:event><ns:id
+          xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\" query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}ra1-jik9ptmt-st6owt\">even:ra1-jik9ptmt-st6owt</ns:id><ns:title>Technical
+          tours of the Martin Harris Centre for Music and Drama</ns:title><ns:description>Since
+          it opened in 2003, the Centre has contributed to the cultural life of students,
+          staff, alumni and the wider community. It hosts new and emerging artists,
+          as well as more established, internationally renowned figures.\nThe Centre
+          offers a varied programme of arts events, many of which are free, in order
+          to educate, stimulate and engage audiences, as well as provide memorable and
+          inspirational experiences. Events are open to the public and include concerts,
+          theatre productions, literature and spoken word events, seminars and lectures.\nIt
+          incorporates two major performance spaces: the 350-seat Cosmo Rodewald Concert
+          Hall and the John Thaw Studio Theatre, which can accommodate approximately
+          100 people, and an electroacoustic music studio.\n\nPlease book on eventbrite:\n\nhttps://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher
+          Education</ns:type><ns:times type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>13:00:00</ns:time></ns:start><ns:end
+          tz=\"GMT\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>14:00:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-04</ns:date><ns:time>15:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
+          xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">TEaM
+          (Technical Excellence at Manchester)</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">technical.excellence@manchester.ac.uk</gpp:email></uom:contact><uom:eventInfo><uom:eventInfo
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-free\" gpp:name=\"Free\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-wheelchair\" gpp:name=\"Wheelchair Accessible\"/></uom:eventInfo><uom:eventType
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:campus_visits\" gpp:name=\"Campus visit/tour\"/><uom:featuredEvent/><uom:links><gpp:link
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:href=\"https://www.eventbrite.co.uk/e/martin-harris-centre-workplace-tour-team-tickets-46709742096\">Eventrbrite
+          booking</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
+          Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
+          xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
+          xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
+          -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>Free</uom:price><uom:publishingTargets><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-staffnet\" gpp:name=\"StaffNet\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:staff\" gpp:name=\"University staff\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day><ns:day
+          date=\"2018-07-20\" weekDay=\"Fri\"><ns:event><ns:id xmlns:even=\"http://www.columbasystems.com/customers/uom/gpp/eventid/\"
+          query=\"{http://www.columbasystems.com/customers/uom/gpp/eventid/}z7r-jia5z9r6-7mm1e6\">even:z7r-jia5z9r6-7mm1e6</ns:id><ns:title>KIDNAP@20:
+          The Art of Incarceration</ns:title><ns:description>A one-day performance symposium.\n\nIn
+          July 1998, the performance company BLAST THEORY did something a little different.
+          Instead of making a theatre piece about a kidnapping, they actually kidnapped
+          two unsuspecting victims - snatching them out of their daily lives and then
+          imprisoning them, under constant webcam surveillance, for 48 hours. The abductees
+          had made themselves available for kidnap by entering a lottery, which must
+          have seemed like a fun idea at the time...\n\nWidely covered in the press
+          and media, KIDNAP caught the public imagination as an edgy example of what
+          the internet was now making possible. A pivotal event in Blast Theory's evolution
+          as a company, the piece also anticipated all kinds of subsequent developments
+          in the wider culture -- from the round-the-clock surveillance of reality TV
+          shows like Big Brother, to the 21st century vogue for audience participation
+          in live art, and the contemporary ubiquity of 'escape rooms' (getting yourself
+          locked up for kicks).\n\nKIDNAP@20 is a one-day symposium marking the piece's
+          20th anniversary, which will look back at where we were then, and ask where
+          we are now. What has changed in the realms of digital art and technology,
+          participatory performance, and the politics of consent? When, how and why
+          do surveillance, imprisonment, and power games become art or entertainment?
+          \n\nTo sign up for this FREE event, please visit our Eventbrite page: \nhttps://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
+          \ \n \nPARTICIPANTS INCLUDE:\nMatt Adams, Ju Row Farr and Nick Tandavanitj
+          \ (Blast Theory core artists)\nJohn McGrath (Artistic Director, Manchester
+          International Festival; author of Loving Big Brother)\nSaul Hewish (Artistic
+          Director, Rideout: Creative Arts for Rehabilitation)\nAli Matthews and Niki
+          Woods (University of Salford &amp; Blast Theory)\nTamsin Drury (hAb) and Dave
+          Carter (University of Manchester)\nMatt Fenton (Artistic Director, Contact)\nPetra
+          Tauscher (Dramaturg and Producer, HOME Manchester)\nProfessor Stephen Coleman
+          (University of Leeds) \nThe event includes a screening of the film document
+          of KIDNAP (30 mins) and reflections on other relevant work, including Rideout's
+          Cell Project (2016) and Ali Matthews' What the Money Meant (2014).\n \nFor
+          further information please contact the organiser, Stephen Scott-Bottoms: stephen.bottoms@manchester.ac.uk
+          \n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher Education</ns:type><ns:times
+          type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>11:30:00</ns:time></ns:start><ns:end
+          tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>18:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"local\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:times
+          type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
+          tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
+          xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">Stephen
+          Scott-Bottoms</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">stephen.bottoms@manchester.ac.uk
+          </gpp:email></uom:contact><uom:eventInfo><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:info-free\" gpp:name=\"Free\"/></uom:eventInfo><uom:eventType
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:type-symposium\" gpp:name=\"Symposium\"/><uom:image xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/imageid/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:p8o-jieo5rvy-nza0la\" gpp:name=\"20 July Kidnap MHC\"><gpp:imageId>p8o-jieo5rvy-nza0la</gpp:imageId><gpp:title>20
+          July Kidnap MHC</gpp:title><gpp:imageMetaData><gpp:instanceId>u8p-jieo5ry6-e9ksrk</gpp:instanceId><gpp:height>400</gpp:height><gpp:width>800</gpp:width></gpp:imageMetaData></uom:image><uom:links><gpp:link
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:href=\"https://www.eventbrite.co.uk/e/kidnap20-the-art-of-incarceration-tickets-45734469028
+          \ \">Eventbrite</gpp:link></uom:links><uom:location xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:name=\"Martin Harris Centre for Music and Drama\" gpp:refloc=\"code:building-42\"><gpp:building>Martin
+          Harris Centre for Music and Drama</gpp:building><gpp:city>Manchester</gpp:city><ns1:country
+          xmlns:ns1=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          ns1:code=\"code:GB\" ns1:name=\"United Kingdom\"><ns1:name>United Kingdom</ns1:name><ns1:iso2>GB</ns1:iso2><ns1:iso3>GBR</ns1:iso3><ns1:columbaCode
+          xmlns:ref=\"http://www.columbasystems.com/xml/cscs/codes/1.0/\">ref:T1265</ns1:columbaCode></ns1:country><gpp:geoLocation><gpp:point>POINT(53.465748
+          -2.235889)</gpp:point><gpp:zoom>15</gpp:zoom></gpp:geoLocation></uom:location><uom:organiser
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:martin_harris_centre\" gpp:name=\"Martin Harris Centre\"/><uom:price>FREE</uom:price><uom:primaryEventSeries
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:ser-hum-alc-drama\" gpp:name=\"(ALC) Drama\"/><uom:publishingTargets><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-hum-alc\" gpp:name=\"SALC External\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-hum-salcstaffnet\" gpp:name=\"SALC Staffnet\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-main\" gpp:name=\"Public calendar\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-humstaffnet\" gpp:name=\"Humanities Staffnet\"/><uom:publishingTargets
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:pub-martinharris\" gpp:name=\"Martin Harris Centre\"/></uom:publishingTargets><uom:targetAudience><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:staff\" gpp:name=\"University staff\"/><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:adults\" gpp:name=\"Adults\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:alumni\" gpp:name=\"Alumni\"/><uom:targetAudience xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:students\" gpp:name=\"Current University students\"/><uom:targetAudience
+          xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\" xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
+          gpp:code=\"code:generalpublic\" gpp:name=\"General public\"/></uom:targetAudience></uom:data></ns:eventData></ns:event></ns:day></ns:listView></ns:calendar>"
+      http_version:
+    recorded_at: Wed, 04 Jul 2018 11:13:17 GMT
 recorded_with: VCR 4.0.0

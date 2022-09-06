@@ -107,12 +107,12 @@ export default class extends Controller {
 				btn.onclick = () => {
 					// remove opening time
 					this.dataValue = [...this.dataValue].filter(
-						(el) => !isEqual(el, openSpec),
+						(el) => !isEqual(el, openSpec)
 					);
 				};
 				li.appendChild(btn);
 				return li;
-			}),
+			})
 		);
 	}
 

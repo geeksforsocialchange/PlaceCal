@@ -66,7 +66,7 @@ allPartners(with_tag: 12, inside_neighbourhood: 12314) {
 			unit
 			unitName
 			unitCodeKey
-			unitCodeValue      
+			unitCodeValue
     ],
 		[],
 		[]
@@ -109,4 +109,3 @@ allEvents(partner_id: id) {
 Pros: Way more flexible for developers, simpler queries
 
 Cons: Harder to keep track of what developers are doing, not visible in the PlaceCal UI for non-technical users
-

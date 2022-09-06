@@ -17,9 +17,9 @@ To run PlaceCal locally you will need:
   - Client
     - you will still need the local developer libraries for postgres
     - these are distribution specific so you need to find out what they are called to install them
-      -  `libpq-dev` (debian)
-      -  `postgresql-libs` (arch)
-      -  `dev-db/postgresql` (gentoo)
+      - `libpq-dev` (debian)
+      - `postgresql-libs` (arch)
+      - `dev-db/postgresql` (gentoo)
 - Ruby 2.7.x. We reccomend using a version manager for this such as `rvm` or `rbenv`. Current version we are using is in `.ruby-version`.
   - [rvm](https://rvm.io/)
   - [rbenv](https://github.com/rbenv/rbenv)
@@ -44,7 +44,7 @@ With that said, here's what you need to get rolling.
 
 Creating a postgres docker image is reasonably quick:
 
-``` sh
+```sh
 docker network create placecal-network
 docker create --name placecal-db --network placecal-network --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 -e 'POSTGRES_DB=placecal_db' -e 'POSTGRES_USER=postgres' -e 'POSTGRES_PASSWORD=foobar' -e 'POSTGRES_PORT=5432' postgres:14.1
 docker start placecal-db
@@ -54,7 +54,7 @@ Make a copy of `.env.example` in `.env` in the root directory of the application
 
 You can now set the following in `.env`:
 
-``` sh
+```sh
 POSTGRES_HOST=localhost
 POSTGRES_USER=postgres
 PGPASSWORD=foobar
@@ -70,10 +70,10 @@ bundle exec rails import:all_events
 ./bin/dev
 ```
 
-* Start the server with `./bin/dev` instead of `bundle exec rails server` due to migration to jsbundling
-* Make sure you use `lvh.me:3000` instead of `localhost` or you **will** have authentication problems.
-* Admin interface is `admin.lvh.me:3000` (You will need to make a new admin user -- see below)
-* Access code docs through your local filesystem, and update with `bundle exec rails yard`
+- Start the server with `./bin/dev` instead of `bundle exec rails server` due to migration to jsbundling
+- Make sure you use `lvh.me:3000` instead of `localhost` or you **will** have authentication problems.
+- Admin interface is `admin.lvh.me:3000` (You will need to make a new admin user -- see below)
+- Access code docs through your local filesystem, and update with `bundle exec rails yard`
 
 To set up your own server, take a look at `INSTALL.md`.
 
@@ -91,13 +91,13 @@ User.create!(email: 'info@placecal.org', password: 'password', password_confirma
 
 PlaceCal tests are written in minitest. Before running the tests please ensure your dev environment has all of the migrations run, and ensure you have loaded the schema into the test database by running:
 
-``` sh
+```sh
 rails db:test:prepare
 ```
 
 The following commands are used for running tests:
 
-``` sh
+```sh
 rails test        # To run all of the unit tests
 rails test:system # To run all of the system tests (Invokes a headless browser)
 rails test:all    # To run both the unit tests and the system tests at once
