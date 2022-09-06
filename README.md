@@ -28,6 +28,7 @@ To run PlaceCal locally you will need:
 - Node.js. Current version we are using is in `.nvmrc`. We suggest using [nvm](https://github.com/nvm-sh/nvm) to manage this.
   - [yarn](https://yarnpkg.com/getting-started/install)
 - ImageMagick for image manipulation
+- [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - Chrome/Chromium for system tests
 
 ## Quickstart
