@@ -31,6 +31,7 @@ To run PlaceCal locally you will need:
 - Yarn 1.x
   - [yarn](https://classic.yarnpkg.com/en/docs/install)
 - ImageMagick for image manipulation
+- [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - Chrome/Chromium for system tests
 
 ## Quickstart
