@@ -25,8 +25,11 @@ To run PlaceCal locally you will need:
   - [rbenv](https://github.com/rbenv/rbenv)
     - [ruby-build](https://github.com/rbenv/ruby-build)
     - [rbenv-gemset](https://github.com/jf/rbenv-gemset) (optional)
-- Node.js. Current version we are using is in `.nvmrc`. We suggest using [nvm](https://github.com/nvm-sh/nvm) to manage this.
-  - [yarn](https://yarnpkg.com/getting-started/install)
+- Node.js 16.x. We recommend using a version manager for this such as `nvm` or `nodenv`. Current version we are using is in `.node-version`.
+  - [nvm](https://github.com/nvm-sh/nvm)
+  - [nodenv](https://github.com/nodenv/nodenv)
+- Yarn 1.x
+  - [yarn](https://classic.yarnpkg.com/en/docs/install)
 - ImageMagick for image manipulation
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - Chrome/Chromium for system tests
