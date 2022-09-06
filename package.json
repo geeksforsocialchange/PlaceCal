@@ -1,41 +1,47 @@
 {
-  "name": "placecal",
-  "version": "2.0.0",
-  "private": true,
-  "engines": {
-    "node": ">= 16.x <17",
-    "yarn": ">= 1.x"
-  },
-  "dependencies": {
-    "@hotwired/stimulus": "^3.0.1",
-    "@hotwired/turbo-rails": "^7.1.1",
-    "@nathanvda/cocoon": "^1.2.14",
-    "@rails/ujs": "^6.0.2",
-    "ansi-regex": "4.1.1",
-    "async": "2.6.4",
-    "axios": "^0.24.0",
-    "bootstrap": "^4.3.1",
-    "cocoon": "^0.1.1",
-    "datatables.net-bs4": "^1.11.5",
-    "esbuild": "^0.14.36",
-    "esbuild-rails": "^1.0.3",
-    "jquery": "^3.6.0",
-    "leaflet": "^1.6.0",
-    "lodash": "^4.17.21",
-    "minimist": "1.2.6",
-    "popper.js": "1.16.1",
-    "sass": "^1.50.1",
-    "select2": "^4.0.11",
-    "yarn": "^1.22.19"
-  },
-  "devDependencies": {
-    "prettier": "^2.7.1"
-  },
-  "peerDependencies": {
-    "postcss": "^8.4.13"
-  },
-  "scripts": {
-    "build": "node esbuild.config.js",
-    "build:css": "sass ./app/assets/stylesheets/application.sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
-  }
+	"name": "placecal",
+	"version": "2.0.0",
+	"private": true,
+	"engines": {
+		"node": ">= 16.x <17",
+		"yarn": ">= 1.x"
+	},
+	"dependencies": {
+		"@hotwired/stimulus": "^3.0.1",
+		"@hotwired/turbo-rails": "^7.1.1",
+		"@nathanvda/cocoon": "^1.2.14",
+		"@rails/ujs": "^6.0.2",
+		"ansi-regex": "4.1.1",
+		"async": "2.6.4",
+		"axios": "^0.24.0",
+		"bootstrap": "^4.3.1",
+		"cocoon": "^0.1.1",
+		"datatables.net-bs4": "^1.11.5",
+		"esbuild": "^0.14.36",
+		"esbuild-rails": "^1.0.3",
+		"jquery": "^3.6.0",
+		"leaflet": "^1.6.0",
+		"lodash": "^4.17.21",
+		"minimist": "1.2.6",
+		"popper.js": "1.16.1",
+		"sass": "^1.50.1",
+		"select2": "^4.0.11",
+		"yarn": "^1.22.19"
+	},
+	"devDependencies": {
+		"husky": ">=6",
+		"lint-staged": ">=10",
+		"prettier": "^2.7.1"
+	},
+	"peerDependencies": {
+		"postcss": "^8.4.13"
+	},
+	"scripts": {
+		"build": "node esbuild.config.js",
+		"build:css": "sass ./app/assets/stylesheets/application.sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+		"prepare": "husky install"
+	},
+	"lint-staged": {
+		"*.{css,html,js,json,md,scss,yml}": "prettier --write"
+	}
 }
