@@ -65,6 +65,10 @@ class PartnerSiteWithTagScopeTest < ActiveSupport::TestCase
       partner.tags << other_tag
     end
 
+    2.times do |n|
+      create :partner, name: "Partner with no tags #{n}", address: address_one
+    end
+
     output = Partner.for_site_with_tag(site, tag)
     assert_equal 4, output.all.length
   end
