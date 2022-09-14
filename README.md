@@ -38,11 +38,13 @@ To run PlaceCal locally you will need:
 
 With that said, here's what you need to get rolling.
 
-### Set up postgresql server (Via docker)
+### Set up Postgresql locally
 
-**Note: Skip this step if you're using a system-installed docker**
+If you don't already have Postgresql installed and running, here's how you can set it up with Docker.
 
-Creating a postgres docker image is reasonably quick:
+**Skip these steps if you already have Postgresql set up.**
+
+Creating a Postgresql Docker image is reasonably quick:
 
 ```sh
 docker network create placecal-network
