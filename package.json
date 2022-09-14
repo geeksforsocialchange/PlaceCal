@@ -39,6 +39,7 @@
 	"scripts": {
 		"build": "node esbuild.config.js",
 		"build:css": "sass ./app/assets/stylesheets/application.sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+		"format": "prettier --write .",
 		"prepare": "husky install"
 	},
 	"lint-staged": {
