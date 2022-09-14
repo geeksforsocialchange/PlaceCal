@@ -67,6 +67,10 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     get 'http://hulme.lvh.me'
 
     assert_select '.help__computer_access'
+
+    url = partner_path(partner)
+    selector = ".help__computer_access a[href='#{url}']"
+    assert_select selector
   end
 
   test 'show public wifi card when partners are tagged for it' do
@@ -80,5 +84,9 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
 
     get 'http://hulme.lvh.me'
     assert_select '.help__free_public_wifi'
+
+    url = partner_path(partner)
+    selector = ".help__free_public_wifi a[href='#{url}']"
+    assert_select selector
   end
 end
