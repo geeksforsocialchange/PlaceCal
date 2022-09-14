@@ -107,6 +107,18 @@ Please note that when running unit tests, system tests are **not** run, this is 
 
 When pushing to a branch on github all tests are run (unit and system). This is configured [here](.github/workflows/test.yml). You are not allowed to merge a branch (onto main or production) without a passing test suite.
 
+## Formatting
+
+We use [Prettier](https://prettier.io/) to format everything it's able to parse. It will run as a pre-commit hook and format your changes as you make commits so you shouldn't have to think about it much.
+
+If you do want to run it manually, you can:
+
+```sh
+yarn run format
+```
+
+Note that we use tabs over spaces because [tabs are more accessible to people using braille displays](https://twitter.com/Rich_Harris/status/1541761871585464323).
+
 ## Contributing
 
 We welcome new contributors but strongly recommend you have a chat with us in [Geeks for Social Change's Discord server](http://discord.gfsc.studio) and say hi before you do. We will be happy to onboard you properly before you get stuck in.
