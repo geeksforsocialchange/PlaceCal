@@ -1,538 +1,543 @@
 ---
 http_interactions:
-- request:
-    method: get
-    uri: https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Type:
-      - text/calendar; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Date:
-      - Tue, 17 May 2022 11:07:01 GMT
-      Server:
-      - nginx
-      Content-Disposition:
-      - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
-      Cache-Control:
-      - max-age=0, must-revalidate, no-store, private
-      X-Content-Type-Options:
-      - nosniff
-      Expires:
-      - Tue, 17 May 2022 11:07:01 GMT
-      X-Cache:
-      - Miss from cloudfront
-      Via:
-      - 1.1 4ae6e5888b43b4133973ba1aadad8194.cloudfront.net (CloudFront)
-      X-Amz-Cf-Pop:
-      - LHR50-P3
-      X-Amz-Cf-Id:
-      - qrruk505kwIuY5RkFAglFdAW2eAnJUi7TmELsHMcgUGq1b7gLUpHmw==
-    body:
-      encoding: UTF-8
-      string: "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
-        Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
-        | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
-        Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
-        Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
-        Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
-        Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
-        Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
-        Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
-        house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
-        house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
-        Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
-        Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
-        Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
-        Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
-        Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
-        Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
-        Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
-        Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
-        Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
-        Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
-        Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-  recorded_at: Tue, 17 May 2022 11:09:33 GMT
-- request:
-    method: get
-    uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Type:
-      - text/calendar; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Date:
-      - Tue, 17 May 2022 11:07:02 GMT
-      Server:
-      - nginx
-      Content-Disposition:
-      - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
-      Cache-Control:
-      - max-age=0, must-revalidate, no-store, private
-      X-Content-Type-Options:
-      - nosniff
-      Expires:
-      - Tue, 17 May 2022 11:07:02 GMT
-      X-Cache:
-      - Miss from cloudfront
-      Via:
-      - 1.1 ad6a59dd9fdc1afb57f7131fcd96bf20.cloudfront.net (CloudFront)
-      X-Amz-Cf-Pop:
-      - LHR50-P3
-      X-Amz-Cf-Id:
-      - "-0dRI4Hkiyj2zPB3b5yj0PdOxBZHHMnWU6okm1g7wx6pTbGw6yBnbg=="
-    body:
-      encoding: UTF-8
-      string: "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
-        Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
-        | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
-        Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
-        Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
-        Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
-        Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
-        Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
-        Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
-        house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
-        house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
-        Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
-        Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
-        Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
-        Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
-        Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
-        Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
-        Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
-        Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
-        Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
-        Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
-        Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-  recorded_at: Tue, 17 May 2022 11:09:33 GMT
-- request:
-    method: get
-    uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Type:
-      - text/calendar; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Date:
-      - Tue, 17 May 2022 11:07:02 GMT
-      Server:
-      - nginx
-      Content-Disposition:
-      - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
-      Cache-Control:
-      - max-age=0, must-revalidate, no-store, private
-      X-Content-Type-Options:
-      - nosniff
-      Expires:
-      - Tue, 17 May 2022 11:07:02 GMT
-      X-Cache:
-      - Miss from cloudfront
-      Via:
-      - 1.1 835f3c9e7c3bc0e7766edf13dac581de.cloudfront.net (CloudFront)
-      X-Amz-Cf-Pop:
-      - LHR50-P3
-      X-Amz-Cf-Id:
-      - "-zJJJ2Nfj1WibYGotZuESaIieE9c2hi1iYN4NAFTXy8-_oMfBivVmw=="
-    body:
-      encoding: UTF-8
-      string: "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
-        Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
-        | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
-        Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
-        Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
-        Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
-        Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
-        Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
-        Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
-        house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
-        house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
-        Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
-        Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
-        Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
-        Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
-        Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
-        Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
-        Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
-        Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
-        Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
-        Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
-        Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-  recorded_at: Tue, 17 May 2022 11:09:34 GMT
-- request:
-    method: get
-    uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Type:
-      - text/calendar; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Date:
-      - Tue, 17 May 2022 11:07:02 GMT
-      Server:
-      - nginx
-      Content-Disposition:
-      - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
-      Cache-Control:
-      - max-age=0, must-revalidate, no-store, private
-      X-Content-Type-Options:
-      - nosniff
-      Expires:
-      - Tue, 17 May 2022 11:07:02 GMT
-      X-Cache:
-      - Miss from cloudfront
-      Via:
-      - 1.1 19d5615c4d307c11803beb015d8f6562.cloudfront.net (CloudFront)
-      X-Amz-Cf-Pop:
-      - LHR50-P3
-      X-Amz-Cf-Id:
-      - "-_BhcLrdCVKLPOlRTl_tlUp4m8NMVRu54PyMRPVgCnKD3TzJVRTtGA=="
-    body:
-      encoding: UTF-8
-      string: "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
-        Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
-        | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
-        Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
-        Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
-        Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
-        Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
-        Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
-        Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
-        house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
-        house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
-        Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
-        Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
-        Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
-        Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
-        Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
-        Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
-        Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
-        Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
-        Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
-        Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
-        Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-  recorded_at: Tue, 17 May 2022 11:09:34 GMT
-- request:
-    method: get
-    uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Type:
-      - text/calendar; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Date:
-      - Tue, 17 May 2022 11:07:03 GMT
-      Server:
-      - nginx
-      Content-Disposition:
-      - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
-      Cache-Control:
-      - max-age=0, must-revalidate, no-store, private
-      X-Content-Type-Options:
-      - nosniff
-      Expires:
-      - Tue, 17 May 2022 11:07:03 GMT
-      X-Cache:
-      - Miss from cloudfront
-      Via:
-      - 1.1 955b5f6b59fedae13d00dcc66f7085f2.cloudfront.net (CloudFront)
-      X-Amz-Cf-Pop:
-      - LHR50-P3
-      X-Amz-Cf-Id:
-      - iGxI8VRazn_0VV_j--EKN6sZprG95mApLXXiRu1x4fm1CaMrpGmXRQ==
-    body:
-      encoding: UTF-8
-      string: "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
-        Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
-        | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
-        Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
-        Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
-        Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
-        Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
-        Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
-        ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
-        Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
-        Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
-        house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
-        house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
-        Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
-        Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
-        Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
-        Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
-        Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
-        Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
-        Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
-        Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
-        Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
-        Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
-        Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
-        Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
-        Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
-        Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
-        Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
-        Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
-        Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
-        Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-  recorded_at: Tue, 17 May 2022 11:09:35 GMT
+  - request:
+      method: get
+      uri: https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Transfer-Encoding:
+          - chunked
+        Connection:
+          - keep-alive
+        Date:
+          - Tue, 17 May 2022 11:07:01 GMT
+        Server:
+          - nginx
+        Content-Disposition:
+          - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
+        Cache-Control:
+          - max-age=0, must-revalidate, no-store, private
+        X-Content-Type-Options:
+          - nosniff
+        Expires:
+          - Tue, 17 May 2022 11:07:01 GMT
+        X-Cache:
+          - Miss from cloudfront
+        Via:
+          - 1.1 4ae6e5888b43b4133973ba1aadad8194.cloudfront.net (CloudFront)
+        X-Amz-Cf-Pop:
+          - LHR50-P3
+        X-Amz-Cf-Id:
+          - qrruk505kwIuY5RkFAglFdAW2eAnJUi7TmELsHMcgUGq1b7gLUpHmw==
+      body:
+        encoding: UTF-8
+        string:
+          "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
+          Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
+          | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
+          Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
+          Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
+          Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
+          Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
+          Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
+          Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
+          house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
+          house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
+          Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
+          Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
+          Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
+          Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
+          Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
+          Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
+          Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
+          Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
+          Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
+          Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
+          Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
+    recorded_at: Tue, 17 May 2022 11:09:33 GMT
+  - request:
+      method: get
+      uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Transfer-Encoding:
+          - chunked
+        Connection:
+          - keep-alive
+        Date:
+          - Tue, 17 May 2022 11:07:02 GMT
+        Server:
+          - nginx
+        Content-Disposition:
+          - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
+        Cache-Control:
+          - max-age=0, must-revalidate, no-store, private
+        X-Content-Type-Options:
+          - nosniff
+        Expires:
+          - Tue, 17 May 2022 11:07:02 GMT
+        X-Cache:
+          - Miss from cloudfront
+        Via:
+          - 1.1 ad6a59dd9fdc1afb57f7131fcd96bf20.cloudfront.net (CloudFront)
+        X-Amz-Cf-Pop:
+          - LHR50-P3
+        X-Amz-Cf-Id:
+          - "-0dRI4Hkiyj2zPB3b5yj0PdOxBZHHMnWU6okm1g7wx6pTbGw6yBnbg=="
+      body:
+        encoding: UTF-8
+        string:
+          "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
+          Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
+          | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
+          Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
+          Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
+          Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
+          Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
+          Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
+          Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
+          house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
+          house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
+          Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
+          Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
+          Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
+          Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
+          Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
+          Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
+          Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
+          Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
+          Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
+          Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
+          Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
+    recorded_at: Tue, 17 May 2022 11:09:33 GMT
+  - request:
+      method: get
+      uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Transfer-Encoding:
+          - chunked
+        Connection:
+          - keep-alive
+        Date:
+          - Tue, 17 May 2022 11:07:02 GMT
+        Server:
+          - nginx
+        Content-Disposition:
+          - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
+        Cache-Control:
+          - max-age=0, must-revalidate, no-store, private
+        X-Content-Type-Options:
+          - nosniff
+        Expires:
+          - Tue, 17 May 2022 11:07:02 GMT
+        X-Cache:
+          - Miss from cloudfront
+        Via:
+          - 1.1 835f3c9e7c3bc0e7766edf13dac581de.cloudfront.net (CloudFront)
+        X-Amz-Cf-Pop:
+          - LHR50-P3
+        X-Amz-Cf-Id:
+          - "-zJJJ2Nfj1WibYGotZuESaIieE9c2hi1iYN4NAFTXy8-_oMfBivVmw=="
+      body:
+        encoding: UTF-8
+        string:
+          "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
+          Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
+          | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
+          Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
+          Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
+          Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
+          Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
+          Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
+          Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
+          house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
+          house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
+          Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
+          Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
+          Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
+          Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
+          Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
+          Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
+          Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
+          Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
+          Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
+          Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
+          Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
+    recorded_at: Tue, 17 May 2022 11:09:34 GMT
+  - request:
+      method: get
+      uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Transfer-Encoding:
+          - chunked
+        Connection:
+          - keep-alive
+        Date:
+          - Tue, 17 May 2022 11:07:02 GMT
+        Server:
+          - nginx
+        Content-Disposition:
+          - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
+        Cache-Control:
+          - max-age=0, must-revalidate, no-store, private
+        X-Content-Type-Options:
+          - nosniff
+        Expires:
+          - Tue, 17 May 2022 11:07:02 GMT
+        X-Cache:
+          - Miss from cloudfront
+        Via:
+          - 1.1 19d5615c4d307c11803beb015d8f6562.cloudfront.net (CloudFront)
+        X-Amz-Cf-Pop:
+          - LHR50-P3
+        X-Amz-Cf-Id:
+          - "-_BhcLrdCVKLPOlRTl_tlUp4m8NMVRu54PyMRPVgCnKD3TzJVRTtGA=="
+      body:
+        encoding: UTF-8
+        string:
+          "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
+          Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
+          | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
+          Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
+          Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
+          Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
+          Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
+          Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
+          Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
+          house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
+          house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
+          Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
+          Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
+          Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
+          Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
+          Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
+          Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
+          Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
+          Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
+          Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
+          Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
+          Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
+    recorded_at: Tue, 17 May 2022 11:09:34 GMT
+  - request:
+      method: get
+      uri: https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Transfer-Encoding:
+          - chunked
+        Connection:
+          - keep-alive
+        Date:
+          - Tue, 17 May 2022 11:07:03 GMT
+        Server:
+          - nginx
+        Content-Disposition:
+          - attachment; filename="feed-ksq8ayp7mw5mhb193x-5941140.ics"
+        Cache-Control:
+          - max-age=0, must-revalidate, no-store, private
+        X-Content-Type-Options:
+          - nosniff
+        Expires:
+          - Tue, 17 May 2022 11:07:03 GMT
+        X-Cache:
+          - Miss from cloudfront
+        Via:
+          - 1.1 955b5f6b59fedae13d00dcc66f7085f2.cloudfront.net (CloudFront)
+        X-Amz-Cf-Pop:
+          - LHR50-P3
+        X-Amz-Cf-Id:
+          - iGxI8VRazn_0VV_j--EKN6sZprG95mApLXXiRu1x4fm1CaMrpGmXRQ==
+      body:
+        encoding: UTF-8
+        string:
+          "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Teamup Solutions AG//Teamup
+          Calendar//EN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:RNLI Mudeford Fundraising Crew
+          | Fundraising Crew Events\r\nX-WR-CALDESC:Administrator-5941140\r\nX-PUBLISHED-TTL:PT15M\r\nBEGIN:VTIMEZONE\r\nTZID:Europe/London\r\nLAST-MODIFIED:20220317T223602Z\r\nTZURL:http://tzurl.org/zoneinfo-outlook/Europe/London\r\nX-LIC-LOCATION:Europe/London\r\nBEGIN:DAYLIGHT\r\nTZNAME:BST\r\nTZOFFSETFROM:+0000\r\nTZOFFSETTO:+0100\r\nDTSTART:19700329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:GMT\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0000\r\nDTSTART:19701025T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\nBEGIN:VEVENT\r\nUID:TU1031987351\r\nDTSTART:20211206T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20211206T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031987351\r\nLOCATION:18a
+          Nea Close\r\nSUMMARY:Coffee and mince pies at Barbara's\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T100234Z\r\nX-TEAMUP-WHERE:18a
+          Nea Close\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1031995386\r\nDTSTART:20220429T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220429T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1031995386\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Fish and Chip Quiz\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20211027T101613Z\r\nLAST-MODIFIED:20220202T200800Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105155572\r\nDTSTART:20220225T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220225T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105155572\r\nLOCATION:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nSUMMARY:Beach Fundraising Event\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195130Z\r\nX-TEAMUP-WHERE:Occasion
+          Hut\\, Noisy Lobster\\, Avon Beach\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105158665\r\nDTSTART:20220325T190000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220325T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105158665\r\nLOCATION:East
+          Christchurch Sports & Social Club\r\nSUMMARY:Skittles\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T195637Z\r\nLAST-MODIFIED:20220202T203248Z\r\nX-TEAMUP-WHERE:East
+          Christchurch Sports & Social Club\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105160209\r\nDTSTART:20220409T083000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105160209\r\nLOCATION:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nSUMMARY:Easter Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T200123Z\r\nLAST-MODIFIED:20220408T122056Z\r\nX-TEAMUP-WHERE:Somerford
+          ARC\\, 20 Southey Road\\, Somerford\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105167103\r\nDTSTART:20220519T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220519T113000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105167103\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee & Cake Morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201110Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105168625\r\nDTSTART:20220522T140000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220522T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105168625\r\nLOCATION:Mudeford
+          Church and Mudeford Quay\r\nSUMMARY:Blessing of the Waters\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201234Z\r\nX-TEAMUP-WHERE:Mudeford
+          Church and Mudeford Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105170930\r\nDTSTART;TZID=Europe/London:20220602T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220602T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220605T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T201851Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105172987\r\nDTSTART:20220611T110000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220611T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105172987\r\nLOCATION:Robins
+          house\\, call 07500 908004 for details\r\nSUMMARY:Garden Railway Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202448Z\r\nX-TEAMUP-WHERE:Robins
+          house\\, call 07500 908004 for details\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105173826\r\nDTSTART:20220715T173000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220715T190000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105173826\r\nLOCATION:The
+          Beach Hut Cafe\\, Friars Cliff\r\nSUMMARY:Beach BBQ\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202633Z\r\nX-TEAMUP-WHERE:The
+          Beach Hut Cafe\\, Friars Cliff\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105175919\r\nDTSTART:20220724T093000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220724T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105175919\r\nLOCATION:Mudeford
+          Quay Green\r\nSUMMARY:Blue Light Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202807Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay Green\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177029\r\nDTSTART:20220807T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220807T160000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105177029\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Fun Day tbc\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew
+          Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T202924Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105177585\r\nDTSTART;TZID=Europe/London:20220827T100000\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND;TZID=Europe/London:20220827T160000\r\nLOCATION:Mudeford
+          Quay\r\nSUMMARY:Quay Weekend\r\nCLASS:PUBLIC\r\nRRULE:FREQ=DAILY;UNTIL=20220829T225959Z\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203029Z\r\nX-TEAMUP-WHERE:Mudeford
+          Quay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105178958\r\nDTSTART:20220921T131500Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220921T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105178958\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Beetle Drive\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203203Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105181808\r\nDTSTART:20221028T180000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221028T210000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105181808\r\nLOCATION:Stanpit
+          Village Hall\r\nSUMMARY:Quiz\\, Fish & Chip supper\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203658Z\r\nX-TEAMUP-WHERE:Stanpit
+          Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105182778\r\nDTSTART:20221203T100000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221203T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105182778\r\nLOCATION:Mudeford
+          Wood Community Centre\r\nSUMMARY:Christmas Fayre\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T203921Z\r\nX-TEAMUP-WHERE:Mudeford
+          Wood Community Centre\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183180\r\nDTSTART:20221207T130000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221207T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183180\r\nLOCATION:TBC\r\nSUMMARY:Guild
+          Xmas Dinner\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204023Z\r\nX-TEAMUP-WHERE:TBC\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1105183523\r\nDTSTART:20221215T103000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20221215T123000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1105183523\r\nLOCATION:Rear
+          Room\\, Stanpit Village Hall\r\nSUMMARY:Coffee\\, Mince Pies & Cake morning\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220202T204140Z\r\nX-TEAMUP-WHERE:Rear
+          Room\\, Stanpit Village Hall\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738396\r\nDTSTART:20220409T080000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T083000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738396\r\nSUMMARY:Easter
+          Fayre Setup\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122129Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1153738538\r\nDTSTART:20220409T113000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220409T120000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1153738538\r\nSUMMARY:Easter
+          Fayre close down\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220408T122152Z\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:TU1173943959\r\nDTSTART:20220910T090000Z\r\nSEQUENCE:0\r\nTRANSP:OPAQUE\r\nDTEND:20220910T150000Z\r\nURL:https://teamup.com/ksq8ayp7mw5mhb193x/events/1173943959\r\nLOCATION:Mudeford
+          Lifeboat Station\r\nSUMMARY:Station Open Day\r\nCLASS:PUBLIC\r\nCATEGORIES:Fundraising
+          Crew Events\r\nDTSTAMP:20220505T135245Z\r\nCREATED:20220505T134504Z\r\nX-TEAMUP-WHERE:Mudeford
+          Lifeboat Station\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
+    recorded_at: Tue, 17 May 2022 11:09:35 GMT
 recorded_with: VCR 6.1.0

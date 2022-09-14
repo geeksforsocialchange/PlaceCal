@@ -23,11 +23,11 @@ en:
   enumerize:
     calendar:
       type:
-        google: 'Google'
-        outlook: 'Outlook'
-        mac_calendar: 'Mac Calendar'
-        facebook: 'Facebook'
-        other: 'Other'
+        google: "Google"
+        outlook: "Outlook"
+        mac_calendar: "Mac Calendar"
+        facebook: "Facebook"
+        other: "Other"
 
   activerecord:
     attributes:
@@ -41,4 +41,4 @@ en:
               blank: "Select at least one Tag"
   date:
     formats:
-      datetime: '%b %-d, %Y %l:%M'
+      datetime: "%b %-d, %Y %l:%M"

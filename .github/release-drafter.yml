@@ -1,35 +1,35 @@
 template: |
-    ## What’s Changed
-    
-    $CHANGES
+  ## What’s Changed
+
+  $CHANGES
 categories:
-    -   title: '🚀 Features'
-        labels:
-            - 'enhancement'
-    -   title: '🐛 Bug Fixes'
-        labels:
-            - 'bug'
-    -   title: '🧰 Maintenance'
-        labels:
-            - 'chore'
-            - 'code-smell'
-            - 'dependencies'
-    -   title: '🌍 Translations'
-        labels:
-            - 'translation'
-    -   title: '📚 Documentation'
-        labels:
-            - 'docs'
+  - title: "🚀 Features"
+    labels:
+      - "enhancement"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "bug"
+  - title: "🧰 Maintenance"
+    labels:
+      - "chore"
+      - "code-smell"
+      - "dependencies"
+  - title: "🌍 Translations"
+    labels:
+      - "translation"
+  - title: "📚 Documentation"
+    labels:
+      - "docs"
 version-resolver:
-    major:
-        labels:
-            - 'major'
-    minor:
-        labels:
-            - 'minor'
-    patch:
-        labels:
-            - 'patch'
-    default: patch
+  major:
+    labels:
+      - "major"
+  minor:
+    labels:
+      - "minor"
+  patch:
+    labels:
+      - "patch"
+  default: patch
 # name-template: '$RESOLVED_VERSION 🌈'
 # tag-template: '$RESOLVED_VERSION'

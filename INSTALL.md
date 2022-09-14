@@ -216,7 +216,6 @@ You can fenerate a key with `rails secret`
 
 `dokku config:set APP_NAME RAILS_ENV=production SECRET_KEY_BASE=RAILS_SECRET RAILS_SERVE_STATIC_FILES=true`
 
-
 ## Nice extras
 
 ### Let's Encrypt
@@ -248,8 +247,7 @@ Create the file `/etc/logrotate.d/docker-container` and add the following lines:
 }
 ```
 
-You can then test the file with `logrotate -fv
-/etc/logrotate.d/docker-container`.
+You can then test the file with `logrotate -fv /etc/logrotate.d/docker-container`.
 
 If the command is successful you should see a file with the suffix
 `[CONTAINER ID]-json.log.1` in the output.
