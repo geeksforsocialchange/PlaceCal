@@ -91,4 +91,17 @@ class AdminPartnerTest < ApplicationSystemTestCase
       assert !data.include?(new_time)
     end
   end
+
+  test 'opening time picker on partner form survives missing value' do
+    @partner.update! opening_times: nil
+
+    click_sidebar 'partners'
+    await_datatables
+    click_link @partner.name
+    await_select2
+
+    # very specific bug here: if opening times has malformed data
+    #   it will crash the partner tags selector
+    assert_selector '.partner_tags ul.select2-selection__rendered'
+  end
 end
