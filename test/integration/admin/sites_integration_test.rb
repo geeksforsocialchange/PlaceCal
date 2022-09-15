@@ -110,4 +110,58 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     tag = tag_options.first
     assert tag.attributes.key?('selected')
   end
+
+  test 'new site image upload problem feedback' do
+    sign_in @root
+
+    new_site_params = {
+      name: 'a new site',
+      domain: 'a-domain',
+      slug: 'a-slug',
+      logo: fixture_file_upload("bad-cat-picture.bmp"),
+      footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
+      hero_image: fixture_file_upload("bad-cat-picture.bmp"),
+    }
+
+    post admin_sites_path, params: { site: new_site_params }
+    assert_not response.successful?
+
+    assert_select "h6", text: "3 errors prohibited this Site from being saved"
+
+    # top of page form error box
+    assert_select '#form-errors li', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select '#form-errors li', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select '#form-errors li', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+
+    assert_select 'form .site_logo .invalid-feedback', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select 'form .site_footer_logo .invalid-feedback', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select 'form .site_hero_image .invalid-feedback', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+  end
+
+  test 'update site image upload problem feedback' do
+    sign_in @root
+
+    site_params = {
+      name: 'a new site',
+      domain: 'a-domain',
+      slug: 'a-slug',
+      logo: fixture_file_upload("bad-cat-picture.bmp"),
+      footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
+      hero_image: fixture_file_upload("bad-cat-picture.bmp"),
+    }
+
+    put admin_site_path(@site), params: { site: site_params }
+    assert_not response.successful?
+
+    assert_select "h6", text: "3 errors prohibited this Site from being saved"
+
+    # top of page form error box
+    assert_select '#form-errors li', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select '#form-errors li', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select '#form-errors li', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+
+    assert_select 'form .site_logo .invalid-feedback', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select 'form .site_footer_logo .invalid-feedback', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select 'form .site_hero_image .invalid-feedback', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+  end
 end

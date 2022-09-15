@@ -76,7 +76,7 @@ module Admin
     private
 
     def set_site
-      @site = Site.friendly.find(params[:id])
+      @site ||= Site.friendly.find(params[:id])
     end
 
     def set_variables_for_sites_neighbourhoods_selection

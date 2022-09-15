@@ -236,4 +236,64 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select "p.has-no-admin-rights-warning"
   end
+
+  test 'new user avatar upload problem feedback' do
+    sign_in @root
+
+    new_user_params = {
+      email: 'user@example.com',
+      role: 'root',
+      avatar: fixture_file_upload("bad-cat-picture.bmp"),
+    }
+
+    post admin_users_path, params: { user: new_user_params }
+    assert_not response.redirect?
+
+    assert_select "h6", text: "1 error prohibited this User from being saved"
+
+    # top of page form error box
+    assert_select '#form-errors li', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+
+    assert_select 'form .user_avatar .invalid-feedback', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+  end
+
+  test 'update user avatar upload problem feedback' do
+    sign_in @root
+
+    user_params = {
+      email: @root.email,
+      role: @root.role,
+      avatar: fixture_file_upload("bad-cat-picture.bmp"),
+    }
+
+    put admin_user_path(@root), params: { user: user_params }
+    assert_not response.redirect?
+
+    assert_select "h6", text: "1 error prohibited this User from being saved"
+
+    # top of page form error box
+    assert_select '#form-errors li', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+
+    assert_select 'form .user_avatar .invalid-feedback', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+  end
+
+  test 'update profile avatar upload problem feedback' do
+    sign_in @root
+
+    user_params = {
+      email: @root.email,
+      avatar: fixture_file_upload("bad-cat-picture.bmp"),
+    }
+
+    patch update_profile_admin_user_path(@root), params: { user: user_params }
+    assert_not response.redirect?
+
+    assert_select "h6", text: "1 error prohibited this User from being saved"
+
+    # top of page form error box
+    assert_select '#form-errors li', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+
+    assert_select 'form .user_avatar .invalid-feedback', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+  end
+
 end
