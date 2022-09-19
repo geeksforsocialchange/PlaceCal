@@ -38,11 +38,13 @@ To run PlaceCal locally you will need:
 
 With that said, here's what you need to get rolling.
 
-### Set up postgresql server (Via docker)
+### Set up Postgresql locally
 
-**Note: Skip this step if you're using a system-installed docker**
+If you don't already have Postgresql installed and running, here's how you can set it up with Docker.
 
-Creating a postgres docker image is reasonably quick:
+**Skip these steps if you already have Postgresql set up.**
+
+Creating a Postgresql Docker image is reasonably quick:
 
 ```sh
 docker network create placecal-network
@@ -60,47 +62,45 @@ POSTGRES_USER=postgres
 PGPASSWORD=foobar
 ```
 
-### Set up the local placecal repository, set up the database, and run it
+### Clone this Git repository
 
-```
+```sh
 git clone https://github.com/geeksforsocialchange/PlaceCal.git
-bundle && yarn
-bundle exec rails db:setup db:migrate seed:migrate
-bundle exec rails import:all_events
-./bin/dev
+cd PlaceCal
 ```
 
-- Start the server with `./bin/dev` instead of `bundle exec rails server` due to migration to jsbundling
-- Make sure you use `lvh.me:3000` instead of `localhost` or you **will** have authentication problems.
-- Admin interface is `admin.lvh.me:3000` (You will need to make a new admin user -- see below)
-- Access code docs through your local filesystem, and update with `bundle exec rails yard`
+### Run the setup script
 
-To set up your own server, take a look at `INSTALL.md`.
-
-### Creating an admin user
-
-To create an admin user, open the console (`bin/rails c`) and run the following:
-
-```
-User.create!(email: 'info@placecal.org', password: 'password', password_confirmation: 'password', role: :root)
+```sh
+bin/setup
 ```
 
-(Note: You should replace 'info@placecal.org' and 'password' with more appropriate values)
+Amongst other things, this will create an admin user for you:
+
+- Username: `admin@placecal.org`
+- Password: `password`
+
+### Run the thing
+
+- Start the server with `bin/dev`
+- Make sure you use `lvh.me:3000` instead of `localhost:3000` or you **will** have authentication problems
+- The admin interface is at `admin.lvh.me:3000`
+- Access code docs through your local filesystem and update them with `bin/rails yard`
 
 ## Testing
 
 PlaceCal tests are written in minitest. Before running the tests please ensure your dev environment has all of the migrations run, and ensure you have loaded the schema into the test database by running:
 
 ```sh
-rails db:test:prepare
+bin/rails db:test:prepare
 ```
 
 The following commands are used for running tests:
 
 ```sh
-rails test        # To run all of the unit tests
-rails test:system # To run all of the system tests (Invokes a headless browser)
-rails test:all    # To run both the unit tests and the system tests at once
+bin/rails test        # To run all of the unit tests
+bin/rails test:system # To run all of the system tests (Invokes a headless browser)
+bin/rails test:all    # To run both the unit tests and the system tests at once
 ```
 
 Please note that when running unit tests, system tests are **not** run, this is because they can take a while to run and are quite resource intensive. To perform more advanced usage like executing only a specific test or test file, see the documentation [here](https://guides.rubyonrails.org/testing.html)
@@ -114,7 +114,7 @@ We use [Prettier](https://prettier.io/) to format everything it's able to parse.
 If you do want to run it manually, you can:
 
 ```sh
-yarn run format
+bin/yarn run format
 ```
 
 Note that we use tabs over spaces because [tabs are more accessible to people using braille displays](https://twitter.com/Rich_Harris/status/1541761871585464323).
