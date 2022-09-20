@@ -81,6 +81,8 @@ jobs:
       - name: Deploy To Staging
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: dokku/github-action@master
+        env:
+          SITE_DOMAIN: placecal-staging.org
         with:
           git_remote_url: "ssh://dokku@placecal-staging.org:666/placecal"
           ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
@@ -89,6 +91,8 @@ jobs:
       - name: Deploy To Production
         if: ${{ github.ref == 'refs/heads/production' }}
         uses: dokku/github-action@master
+        env:
+          SITE_DOMAIN: placecal.org
         with:
           git_remote_url: "ssh://dokku@placecal.org:666/placecal"
           ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
