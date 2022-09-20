@@ -257,7 +257,7 @@ class Partner < ApplicationRecord
   end
 
   def logo_url
-    image_url(image.url, skip_pipeline: true) if image.present?
+    image&.url
   end
 
   # Get a count of all the events this week

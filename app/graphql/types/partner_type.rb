@@ -23,8 +23,7 @@ module Types
           description: 'An accessibility statement written by this partner'
 
     field :logo, String,
-          description: 'The URL of the logo that is served from PlaceCal',
-          method: :logo_url
+          description: 'The URL of the logo that is served from PlaceCal'
 
     field :address, AddressType,
           description: 'The physical address of this partner'
@@ -63,6 +62,15 @@ module Types
 
     def articles
       object.articles.published.by_publish_date
+    end
+
+    def logo
+      return nil unless object.logo_url.present?
+
+      url = URI::HTTP.build(Rails.application.default_url_options)
+      url.path = object.logo_url
+
+      url.to_s
     end
   end
 end
