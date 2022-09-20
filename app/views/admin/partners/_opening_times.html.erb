@@ -1,9 +1,7 @@
 <%# We only use the active record helpers on the part of the form that will be submitted %>
 <%# Everything else is written in HTML so that the syntax matches the stimulus docs %>
 
-<% opening_times_payload = @partner.opening_times.present? ? @partner.opening_times : [] %>
-
-<div data-controller="opening-times" data-opening-times-data-value='<%= opening_times_payload %>'>
+<div data-controller="opening-times" data-opening-times-data-value='<%= @partner.opening_times_data %>'>
   <ul class="list-group" data-opening-times-target="list">
   </ul>
 

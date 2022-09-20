@@ -265,6 +265,16 @@ class Partner < ApplicationRecord
     events.find_by_week(Time.now).count
   end
 
+  def opening_times_data
+    # FIXME: opening_times field is really just a string
+    #  even tho we use jsonb as a field type. this should
+    #  be corrected to just push raw object data into the
+    #  field and let PG deal with it.
+    return '[]' if opening_times.blank?
+
+    opening_times
+  end
+
   def human_readable_opening_times
     return [] if !opening_times || opening_times.length == 0
 

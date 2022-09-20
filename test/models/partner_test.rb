@@ -139,4 +139,23 @@ class PartnerTest < ActiveSupport::TestCase
 
     assert_equal [], partner.human_readable_opening_times
   end
+
+  test 'opening_times can be unset' do
+    p = Partner.new
+    assert_equal '[]', p.opening_times_data
+
+    p = Partner.new opening_times: ''
+    assert_equal '[]', p.opening_times_data
+
+    opening_times_payload = [
+      { opens: '', closes: '' },
+      { opens: '', closes: '' },
+      { opens: '', closes: '' },
+    ].to_json
+
+    p = Partner.new(opening_times: opening_times_payload)
+
+    found = JSON.parse(p.opening_times_data)
+    assert_equal 3, found.length
+  end
 end
