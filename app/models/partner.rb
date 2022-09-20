@@ -259,13 +259,7 @@ class Partner < ApplicationRecord
   # include ActionView::Helpers::AssetUrlHelper
 
   def logo_url
-
-    image.url(Rails.application.default_url_options) if image.present?
-
-    #image.url if image.present?
-
-    #image_url(image.original.url, skip_pipeline: true) if image.present?
-    #image_url(image.url) if image.present?
+    image&.url
   end
 
   # Get a count of all the events this week

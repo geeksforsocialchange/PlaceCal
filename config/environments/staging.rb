@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.configure do
+  routes.default_url_options = {
+    host: ENV.fetch('SITE_DOMAIN', 'placecal-staging.org'),
+    protocol: 'https'
+  }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -60,8 +65,6 @@ Rails.application.configure do
   # config.action_mailer.perform_caching = false
 
   config.action_mailer.raise_delivery_errors = true
-  host = ENV.fetch('SITE_DOMAIN', 'placecal-staging.org')
-  config.action_mailer.default_url_options = { host: host, protocol: 'https' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.mailersend.net',

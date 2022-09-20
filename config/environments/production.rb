@@ -6,6 +6,11 @@ Rails.application.default_url_options = {
 }
 
 Rails.application.configure do
+  routes.default_url_options = {
+    host: ENV.fetch('SITE_DOMAIN', 'placecal.org'),
+    protocol: 'https'
+  }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.

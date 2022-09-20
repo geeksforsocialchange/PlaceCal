@@ -70,10 +70,10 @@ module Types
     def logo
       return nil unless object.logo_url.present?
 
-      object.logo_url
+      url = URI::HTTP.build(Rails.application.default_url_options)
+      url.path = object.logo_url
 
-      #Rails.application.routes.url_helpers
-      #  .url_for(object.logo_url)
+      url.to_s
     end
   end
 end
