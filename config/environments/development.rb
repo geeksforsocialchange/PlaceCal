@@ -1,3 +1,11 @@
+# frozen_string_literal: true
+
+Rails.application.default_url_options = {
+  host: ENV.fetch('SITE_DOMAIN', 'lvh.me'),
+  port: 3000,
+  protocol: 'http'
+}
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -68,9 +76,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.action_mailer.default_url_options = { host: 'http://lvh.me:3000' }
   config.action_mailer.raise_delivery_errors = true
-
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
 end

@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+Rails.application.default_url_options = {
+  host: ENV.fetch('SITE_DOMAIN', 'placecal.org'),
+  protocol: 'https'
+}
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -116,8 +121,8 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
   config.action_mailer.raise_delivery_errors = true
-  host = ENV.fetch('SITE_DOMAIN', 'placecal.org')
-  config.action_mailer.default_url_options = { host: host, protocol: 'https' }
+  #host = ENV.fetch('SITE_DOMAIN', 'placecal.org')
+  #config.action_mailer.default_url_options = { host: host, protocol: 'https' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.mailersend.net',
