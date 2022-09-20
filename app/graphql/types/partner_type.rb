@@ -2,6 +2,8 @@
 
 module Types
   class PartnerType < Types::BaseObject
+    include ActionView::Helpers::AssetUrlHelper
+
     description 'Organisations that run events'
 
     field :id, ID,
@@ -23,8 +25,8 @@ module Types
           description: 'An accessibility statement written by this partner'
 
     field :logo, String,
-          description: 'The URL of the logo that is served from PlaceCal',
-          method: :logo_url
+          description: 'The URL of the logo that is served from PlaceCal' #,
+          # method: :logo_url
 
     field :address, AddressType,
           description: 'The physical address of this partner'
@@ -63,6 +65,15 @@ module Types
 
     def articles
       object.articles.published.by_publish_date
+    end
+
+    def logo
+      return nil unless object.logo_url.present?
+
+      object.logo_url
+
+      #Rails.application.routes.url_helpers
+      #  .url_for(object.logo_url)
     end
   end
 end

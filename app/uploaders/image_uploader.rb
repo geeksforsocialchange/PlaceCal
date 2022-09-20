@@ -5,6 +5,10 @@ class ImageUploader < DefaultUploader
   # Process files as they are uploaded:
   process resize_to_fit: [1200, 1200]
 
+  #def asset_host
+  #  "http://localhost:3030"
+  #end
+
   # def scale(width, height)
   #   # do something
   # end
