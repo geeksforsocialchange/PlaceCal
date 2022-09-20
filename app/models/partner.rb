@@ -256,8 +256,6 @@ class Partner < ApplicationRecord
     "https://twitter.com/#{twitter_handle}" if twitter_handle.present?
   end
 
-  # include ActionView::Helpers::AssetUrlHelper
-
   def logo_url
     image&.url
   end

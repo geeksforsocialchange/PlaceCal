@@ -2,8 +2,6 @@
 
 module Types
   class PartnerType < Types::BaseObject
-    include ActionView::Helpers::AssetUrlHelper
-
     description 'Organisations that run events'
 
     field :id, ID,
@@ -25,8 +23,7 @@ module Types
           description: 'An accessibility statement written by this partner'
 
     field :logo, String,
-          description: 'The URL of the logo that is served from PlaceCal' #,
-          # method: :logo_url
+          description: 'The URL of the logo that is served from PlaceCal'
 
     field :address, AddressType,
           description: 'The physical address of this partner'
