@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.configure do
-  routes.default_url_options = {
-    host: ENV.fetch('SITE_DOMAIN', 'placecal-staging.org'),
-    protocol: 'https'
-  }
+  host = ENV.fetch('SITE_DOMAIN', 'placecal-staging.org')
+  routes.default_url_options = { host: host, protocol: 'https' }
 
   # Settings specified here will take precedence over those in config/application.rb.
 
