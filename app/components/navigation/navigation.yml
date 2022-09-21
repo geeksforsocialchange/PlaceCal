@@ -1,14 +1,10 @@
-:meta: 'Non-interactive header (for now!)'
+:meta: "Non-interactive header (for now!)"
 :stubs:
-  -
-    :id: 1
+  - :id: 1
     :navigation:
-      -
-        - 'Events'
-        - 'event_path'
-      -
-        - 'Places'
-        - 'places_path'
-      -
-        - 'Partners'
-        - 'partners_path'
+      - - "Events"
+        - "event_path"
+      - - "Places"
+        - "places_path"
+      - - "Partners"
+        - "partners_path"

@@ -1,7 +1,7 @@
 # Adding extra neighbourhood information
 
-* Deciders: kimadactl
-* Date: 2020-01-03
+- Deciders: kimadactl
+- Date: 2020-01-03
 
 ## Background
 
@@ -80,7 +80,8 @@ postcodes.io seems to have a little more info.
      "ced": "E99999999",
      "nuts": "UKK21"
  }
- ```
+```
+
 ### BH23 1PA (Christchurch)
 
 ```

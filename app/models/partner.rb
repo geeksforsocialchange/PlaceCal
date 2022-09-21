@@ -145,6 +145,33 @@ class Partner < ApplicationRecord
       .distinct
   }
 
+  scope :for_site_with_tag, lambda { |site, tag|
+    return none if tag.nil?
+
+    query = Partner
+      .select('"partners".*, LOWER("partners"."name") as sortable_name')
+
+    query = query
+      .left_joins(:partner_tags)
+      .where(partner_tags: { tag: tag })
+
+    # now look for addresses and service areas
+    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
+
+    # skip everything if site has no neighbourhoods
+    return none if site_neighbourhood_ids.empty?
+
+    # TODO; move this scope part that is very similar to the `for_site` method above
+    #   into a shared scope (with possible tests)
+    query
+      .left_joins(:address, :service_areas)
+      .where(
+        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        neighbourhood_ids: site_neighbourhood_ids)
+      .distinct
+      .order('sortable_name')
+  }
+
   # Get a list of Partners that have the given tags
   #
   # @param tags [Array<Tag>] A list of tags
@@ -230,12 +257,22 @@ class Partner < ApplicationRecord
   end
 
   def logo_url
-    image_url(image.url, skip_pipeline: true) if image.present?
+    image&.url
   end
 
   # Get a count of all the events this week
   def events_this_week
     events.find_by_week(Time.now).count
+  end
+
+  def opening_times_data
+    # FIXME: opening_times field is really just a string
+    #  even tho we use jsonb as a field type. this should
+    #  be corrected to just push raw object data into the
+    #  field and let PG deal with it.
+    return '[]' if opening_times.blank?
+
+    opening_times
   end
 
   def human_readable_opening_times

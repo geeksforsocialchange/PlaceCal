@@ -115,6 +115,47 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     tag = tag_options.first
     assert tag.attributes.key?('selected')
   end
+
+  test 'Partner create form gives feedback on bad image selection' do
+    new_partner_params = {
+      name: 'A partner',
+      address_attributes: {
+        street_address: @partner.address.street_address,
+        postcode: @partner.address.postcode
+      },
+      image: fixture_file_upload("bad-cat-picture.bmp")
+    }
+
+    sign_in @admin
+    post admin_partners_path, params: { partner: new_partner_params }
+
+    assert_not response.redirect?
+
+    assert_select "h6", text: "1 error prohibited this Partner from being saved"
+    assert_select '#form-errors li', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
+    assert_select 'form .partner_image .invalid-feedback', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
+  end
+
+  test 'Partner update form gives feedback on bad image selection' do
+    partner_params = {
+      name: @partner.name,
+      address_attributes: {
+        street_address: @partner.address.street_address,
+        postcode: @partner.address.postcode
+      },
+      image: fixture_file_upload("bad-cat-picture.bmp")
+    }
+
+    sign_in @admin
+    put admin_partner_path(@partner), params: { partner: partner_params }
+
+    assert_not response.redirect?
+
+    assert_select "h6", text: "1 error prohibited this Partner from being saved"
+    assert_select '#form-errors li', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
+    assert_select 'form .partner_image .invalid-feedback', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
+  end
+
 end
 
 # Capybara feature test that doesn't work and i have no time to fix

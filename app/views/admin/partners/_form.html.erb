@@ -109,33 +109,11 @@
     </div>
     <hr>
     <div class="row">
-      <div class="col-lg-6 col-md-12">
+      <div class="col-lg-8 col-md-12">
         <h2>Opening times</h2>
-        <div id="opening-times" class="opening-times" data="<%= @partner.opening_times.presence || [] %>">
-
-          <div class="added-days">
-            <added-days :list="addedDays"></added-days>
-          </div>
-
-          <div class="d-flex flex-row align-items-center justify-content-sm-between flex-wrap">
-            <select v-model="selectedDay" class="form-control">
-              <option v-for="day in days" v-bind:value="day.value">
-              {{ day.name }}
-              </option>
-            </select>
-
-            <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedOpeningTime"></vue-timepicker>
-
-            <vue-timepicker format="hh:mm a" input-width="8em" v-model="selectedClosingTime"></vue-timepicker>
-
-            <button type="button" class="btn btn-primary btn-sm" @click="addDay">Add these hours</button>
-          </div>
-
-          <%= f.text_area :opening_times, value: '{{ $data.openingHoursSpecifications }}', hidden:true %>
-        </div>
-
+        <%= render 'opening_times', f: f %>
       </div>
-      <div class="col-lg-6 col-md-12 tags">
+      <div class="col-lg-4 col-md-12 tags">
         <h2>Tags</h2>
         <p>Does this Partner provide any of the following things?</p>
 

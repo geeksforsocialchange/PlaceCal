@@ -8,34 +8,36 @@ This is my (Justin's) impression of the current issues with PlaceCal as I unders
 
 The split of a Place and Partner across two pages, when the Place is the location of the Partner and they both have the same name, has great potential for confusion:
 
- - Each page shows different kinds of information that depends on a context that may not be obvious to the viewer.
- - Each page also shows an events list but the lists are generated in different ways and may have different items.
- - Either page could effectively become a defacto landing page via a search engine. Default views may therefore become inconsistent across different organisations.
-    
+- Each page shows different kinds of information that depends on a context that may not be obvious to the viewer.
+- Each page also shows an events list but the lists are generated in different ways and may have different items.
+- Either page could effectively become a defacto landing page via a search engine. Default views may therefore become inconsistent across different organisations.
+
 The distinction between the two contexts (who? and where?) does not have a strong justification at the UI level.
 
 **Proposed solution**:
- - Combine the "who?" and the "where?" into a single view when appropriate. If the admin interface guides admins to add organisational and location data together then we can link these two DB entites behind the scenes. The super-admin interface would still allow us to manually edit this info.
- - Pick a sensible default way of generating the events list for the combined view and allow people to change this manually. (Organised by, Hosted at, logical OR, logical AND.)
-    
+
+- Combine the "who?" and the "where?" into a single view when appropriate. If the admin interface guides admins to add organisational and location data together then we can link these two DB entites behind the scenes. The super-admin interface would still allow us to manually edit this info.
+- Pick a sensible default way of generating the events list for the combined view and allow people to change this manually. (Organised by, Hosted at, logical OR, logical AND.)
+
 ### Relationship visibility
 
 Stakeholders and potential stakeholders currently have no way of seeing the relationships bewteent the various organisational and spatial entities in the system. This is a lack of potentially useful information:
 
- - What venues does has this organisation held events at in the last 6 months?
- - What projects are managed by this organisation?
- - What organisations held events here in the last 6 months?
- - What organisations are co-located here?
- 
+- What venues does has this organisation held events at in the last 6 months?
+- What projects are managed by this organisation?
+- What organisations held events here in the last 6 months?
+- What organisations are co-located here?
+
 **Proposed solutions**:
- - Add a way to record relationships between organisations and show these relationships to site visitors.
- - Use stored events to determine and show organisation-location relationships.
+
+- Add a way to record relationships between organisations and show these relationships to site visitors.
+- Use stored events to determine and show organisation-location relationships.
 
 ### "Placeholder" information appearing on the website
 
 We are keen to maintain the current flexibility with respect to allowing admins to add incomplete information about entities and still have those entities appear on the website, however this does create a quality issue. For instance, we currently display "placeholder" entities if the only information for that entity is a title.
 
-Adding mandatory fields in the admin interface is not an option. We cannot presume in advance to know *what* information will be available.
+Adding mandatory fields in the admin interface is not an option. We cannot presume in advance to know _what_ information will be available.
 
 **Proposed solution**: Automatically determine whether an entity has sufficient information to presented on the website. This could be done at edit-time (stored status) or display-time (calculated just-in-time). Filter views based on sufficiency of information.
 
@@ -44,9 +46,10 @@ Adding mandatory fields in the admin interface is not an option. We cannot presu
 Information on the site about organisations and locations has come from different sources. Stakeholders and potential stakeholders currently recieve no cues about how accurate and up-to-date such information is. It may be useful to provide some cues.
 
 **Proposed solution**: Add a status to entities that describes how the information is obtained, e.g.
- - Supplied by a 3rd party.
- - Obtained in a one-off collaboration with the relevant organisation.
- - Directly managed and updated by the relevant organisation.
+
+- Supplied by a 3rd party.
+- Obtained in a one-off collaboration with the relevant organisation.
+- Directly managed and updated by the relevant organisation.
 
 This should be easy to add to admin workflows. Also, editing by users who are known to be members of given organisations could be recorded without requesting this info from the editor. (Direct edits through the super-admin interface could be supported for technical users.)
 
@@ -69,13 +72,14 @@ At the moment, the admin interface requires admins to understand the difference 
 This need for understanding about DB-level entities can be ameliorated to a large degree by implementing a more task-oriented UI (above). We could do more than this too.
 
 **Proposed solutions**: We discussed solutions for this but I think they could be implemented to different depths.
- 1. Shallow approach: Use language within the admin UI to make the distinction more obvious. This may mean talking about "organisations" and "locations" (rather than partners and places) or there may be other terms that are better suited. We would need to test these on users.
- 
- 2. Deeper approach: Make an explicit progression from
+
+1.  Shallow approach: Use language within the admin UI to make the distinction more obvious. This may mean talking about "organisations" and "locations" (rather than partners and places) or there may be other terms that are better suited. We would need to test these on users.
+
+2.  Deeper approach: Make an explicit progression from
     - organisation to Partner, and
     - address to Place.
-    
- The progression (rather than just the language) and the need to promote entities may link the Partners and Places in a firmer way to more obvious primitives.
+
+The progression (rather than just the language) and the need to promote entities may link the Partners and Places in a firmer way to more obvious primitives.
 
 ### Potential duplication in entering contacts
 

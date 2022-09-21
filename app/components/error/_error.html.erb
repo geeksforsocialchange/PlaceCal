@@ -1,14 +1,14 @@
 <% if properties[:object].errors.any? %>
-	<div class="card text-white bg-danger mb-3" >
-  <div class="card-header"><h6><%= pluralize(properties[:object].errors.count, "error") %> prohibited this <%= properties[:object].class.name %> from being saved</h6></div>
-  <div class="card-body">
-    <div class="card-text">
-			<ul class="list-unstyle mb-0">
-				<% properties[:object].errors.full_messages.each do |message| %>
-					<li><%= message %></li>
-				<% end %>
-			</ul>
+  <div id='form-errors' class="card text-white bg-danger mb-3" >
+    <div class="card-header"><h6><%= pluralize(properties[:object].errors.count, "error") %> prohibited this <%= properties[:object].class.name %> from being saved</h6></div>
+    <div class="card-body">
+      <div class="card-text">
+        <ul class="list-unstyle mb-0">
+          <% properties[:object].errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
 <% end %>

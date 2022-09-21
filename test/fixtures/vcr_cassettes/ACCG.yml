@@ -1,153 +1,155 @@
 ---
 http_interactions:
-- request:
-    method: get
-    uri: https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - private
-      Content-Length:
-      - '243'
-      Content-Type:
-      - text/calendar; charset=utf-8
-      Vary:
-      - Accept-Encoding
-      Set-Cookie:
-      - ClientId=67CC1190A8464DC9BA25018B8951E51C; expires=Fri, 29-Jan-2021 11:56:00
-        GMT; path=/;SameSite=None; secure; HttpOnly
-      - OutlookSession=984802cde507483c8ed38f927f1fbdcc; path=/; secure; HttpOnly
-      Request-Id:
-      - 6d0ce12d-ccb5-4793-b1c3-b4e40ea02d90
-      X-Calculatedfetarget:
-      - CWLP123CU002.internal.outlook.com
-      X-Backendhttpstatus:
-      - '200'
-      - '200'
-      X-Feproxyinfo:
-      - CWLP123CA0037.GBRP123.PROD.OUTLOOK.COM
-      X-Calculatedbetarget:
-      - CWXP265MB1080.GBRP265.PROD.OUTLOOK.COM
-      X-Rum-Validated:
-      - '1'
-      X-Mailboxguid:
-      - 00037ffe-295e-f18e-0000-000000000000
-      X-Content-Type-Options:
-      - nosniff
-      Datasource:
-      - Exo
-      X-Diaginfo:
-      - CWXP265MB1080
-      X-Beserver:
-      - CWXP265MB1080
-      X-Ua-Compatible:
-      - IE=EmulateIE7
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      - max-age=31536000; includeSubDomains
-      X-Proxy-Routingcorrectness:
-      - '1'
-      X-Proxy-Backendserverstatus:
-      - '200'
-      X-Feserver:
-      - CWLP123CA0037
-      - LNXP265CA0030
-      X-Msedge-Ref:
-      - 'Ref A: 91D46F88051C4AAB87C01C5E2849762D Ref B: LON21EDGE0808 Ref C: 2020-01-29T11:56:00Z'
-      Date:
-      - Wed, 29 Jan 2020 11:56:00 GMT
-    body:
-      encoding: ASCII-8BIT
-      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
-        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:ACCG Public Events\r\nEND:VCALENDAR\r\n"
-    http_version: 
-  recorded_at: Wed, 29 Jan 2020 11:56:00 GMT
-- request:
-    method: get
-    uri: https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - private
-      Content-Length:
-      - '243'
-      Content-Type:
-      - text/calendar; charset=utf-8
-      Vary:
-      - Accept-Encoding
-      Set-Cookie:
-      - ClientId=14FE37CC7A4541EF8D0BC5E4848568CC; expires=Fri, 29-Jan-2021 11:56:00
-        GMT; path=/;SameSite=None; secure; HttpOnly
-      - OutlookSession=88d64002bfa24520bbe0cd9d73f2e64b; path=/; secure; HttpOnly
-      Request-Id:
-      - 016aa8db-6af8-45c7-b438-200704d74fe0
-      X-Calculatedfetarget:
-      - CWLP123CU002.internal.outlook.com
-      X-Backendhttpstatus:
-      - '200'
-      - '200'
-      X-Feproxyinfo:
-      - CWLP123CA0041.GBRP123.PROD.OUTLOOK.COM
-      X-Calculatedbetarget:
-      - CWXP265MB1080.GBRP265.PROD.OUTLOOK.COM
-      X-Rum-Validated:
-      - '1'
-      X-Mailboxguid:
-      - 00037ffe-295e-f18e-0000-000000000000
-      X-Content-Type-Options:
-      - nosniff
-      Datasource:
-      - Exo
-      X-Diaginfo:
-      - CWXP265MB1080
-      X-Beserver:
-      - CWXP265MB1080
-      X-Ua-Compatible:
-      - IE=EmulateIE7
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      - max-age=31536000; includeSubDomains
-      X-Proxy-Routingcorrectness:
-      - '1'
-      X-Proxy-Backendserverstatus:
-      - '200'
-      X-Feserver:
-      - CWLP123CA0041
-      - LO2P265CA0445
-      X-Msedge-Ref:
-      - 'Ref A: 9C929391689D49DB93088C446188AD4B Ref B: LON21EDGE0418 Ref C: 2020-01-29T11:56:00Z'
-      Date:
-      - Wed, 29 Jan 2020 11:56:00 GMT
-    body:
-      encoding: ASCII-8BIT
-      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
-        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:ACCG Public Events\r\nEND:VCALENDAR\r\n"
-    http_version: 
-  recorded_at: Wed, 29 Jan 2020 11:56:00 GMT
+  - request:
+      method: get
+      uri: https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Cache-Control:
+          - private
+        Content-Length:
+          - "243"
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Vary:
+          - Accept-Encoding
+        Set-Cookie:
+          - ClientId=67CC1190A8464DC9BA25018B8951E51C; expires=Fri, 29-Jan-2021 11:56:00
+            GMT; path=/;SameSite=None; secure; HttpOnly
+          - OutlookSession=984802cde507483c8ed38f927f1fbdcc; path=/; secure; HttpOnly
+        Request-Id:
+          - 6d0ce12d-ccb5-4793-b1c3-b4e40ea02d90
+        X-Calculatedfetarget:
+          - CWLP123CU002.internal.outlook.com
+        X-Backendhttpstatus:
+          - "200"
+          - "200"
+        X-Feproxyinfo:
+          - CWLP123CA0037.GBRP123.PROD.OUTLOOK.COM
+        X-Calculatedbetarget:
+          - CWXP265MB1080.GBRP265.PROD.OUTLOOK.COM
+        X-Rum-Validated:
+          - "1"
+        X-Mailboxguid:
+          - 00037ffe-295e-f18e-0000-000000000000
+        X-Content-Type-Options:
+          - nosniff
+        Datasource:
+          - Exo
+        X-Diaginfo:
+          - CWXP265MB1080
+        X-Beserver:
+          - CWXP265MB1080
+        X-Ua-Compatible:
+          - IE=EmulateIE7
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains
+          - max-age=31536000; includeSubDomains
+        X-Proxy-Routingcorrectness:
+          - "1"
+        X-Proxy-Backendserverstatus:
+          - "200"
+        X-Feserver:
+          - CWLP123CA0037
+          - LNXP265CA0030
+        X-Msedge-Ref:
+          - "Ref A: 91D46F88051C4AAB87C01C5E2849762D Ref B: LON21EDGE0808 Ref C: 2020-01-29T11:56:00Z"
+        Date:
+          - Wed, 29 Jan 2020 11:56:00 GMT
+      body:
+        encoding: ASCII-8BIT
+        string:
+          "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+          2010\r\nVERSION:2.0\r\nX-WR-CALNAME:ACCG Public Events\r\nEND:VCALENDAR\r\n"
+      http_version:
+    recorded_at: Wed, 29 Jan 2020 11:56:00 GMT
+  - request:
+      method: get
+      uri: https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Cache-Control:
+          - private
+        Content-Length:
+          - "243"
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Vary:
+          - Accept-Encoding
+        Set-Cookie:
+          - ClientId=14FE37CC7A4541EF8D0BC5E4848568CC; expires=Fri, 29-Jan-2021 11:56:00
+            GMT; path=/;SameSite=None; secure; HttpOnly
+          - OutlookSession=88d64002bfa24520bbe0cd9d73f2e64b; path=/; secure; HttpOnly
+        Request-Id:
+          - 016aa8db-6af8-45c7-b438-200704d74fe0
+        X-Calculatedfetarget:
+          - CWLP123CU002.internal.outlook.com
+        X-Backendhttpstatus:
+          - "200"
+          - "200"
+        X-Feproxyinfo:
+          - CWLP123CA0041.GBRP123.PROD.OUTLOOK.COM
+        X-Calculatedbetarget:
+          - CWXP265MB1080.GBRP265.PROD.OUTLOOK.COM
+        X-Rum-Validated:
+          - "1"
+        X-Mailboxguid:
+          - 00037ffe-295e-f18e-0000-000000000000
+        X-Content-Type-Options:
+          - nosniff
+        Datasource:
+          - Exo
+        X-Diaginfo:
+          - CWXP265MB1080
+        X-Beserver:
+          - CWXP265MB1080
+        X-Ua-Compatible:
+          - IE=EmulateIE7
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains
+          - max-age=31536000; includeSubDomains
+        X-Proxy-Routingcorrectness:
+          - "1"
+        X-Proxy-Backendserverstatus:
+          - "200"
+        X-Feserver:
+          - CWLP123CA0041
+          - LO2P265CA0445
+        X-Msedge-Ref:
+          - "Ref A: 9C929391689D49DB93088C446188AD4B Ref B: LON21EDGE0418 Ref C: 2020-01-29T11:56:00Z"
+        Date:
+          - Wed, 29 Jan 2020 11:56:00 GMT
+      body:
+        encoding: ASCII-8BIT
+        string:
+          "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+          2010\r\nVERSION:2.0\r\nX-WR-CALNAME:ACCG Public Events\r\nEND:VCALENDAR\r\n"
+      http_version:
+    recorded_at: Wed, 29 Jan 2020 11:56:00 GMT
 recorded_with: VCR 5.0.0

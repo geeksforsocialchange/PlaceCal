@@ -1,19 +1,16 @@
 {
-  "name": "PlaceCal",
-  "description": "The Community Calendar",
-  "keywords": [
-    "dokku",
-    "rails"
-  ],
-  "scripts": {
-    "dokku": {
-      "postdeploy": "bundle exec rails db:migrate"
-    }
-  },
-  "cron": [
-    {
-      "command": "bundle exec rails import:scan_for_calendars_needing_import",
-      "schedule": "*/10 * * * *"
-    }
-  ]
+	"name": "PlaceCal",
+	"description": "The Community Calendar",
+	"keywords": ["dokku", "rails"],
+	"scripts": {
+		"dokku": {
+			"postdeploy": "bundle exec rails db:migrate"
+		}
+	},
+	"cron": [
+		{
+			"command": "bundle exec rails import:scan_for_calendars_needing_import",
+			"schedule": "*/10 * * * *"
+		}
+	]
 }

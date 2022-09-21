@@ -1,7 +1,7 @@
 # Create secretary permissions
 
-* Deciders: kimadactl
-* Date: 2019-12-09
+- Deciders: kimadactl
+- Date: 2019-12-09
 
 ## Background
 
@@ -27,29 +27,29 @@ Lock out the "main neighbourhood" field. Can add other neighbourhoods in their p
 
 Is there any way we can programatically find all surrounding wards and create these at inception?
 
- * Create - no
- * Read - their own sites
- * Update - their own sites, secondary neighbourhoods limited by admin
- * Delete - no
+- Create - no
+- Read - their own sites
+- Update - their own sites, secondary neighbourhoods limited by admin
+- Delete - no
 
 ### Partners
 
 Partners all have a primary ward and can be edited if that ward is in the user's patch.
 
-* CRUD - partners in their area
-* Create - ideally would be asking for name, postcode first - pass off as duplicate checker?
+- CRUD - partners in their area
+- Create - ideally would be asking for name, postcode first - pass off as duplicate checker?
 
 ### Calendars - importing
 
 This is a tough one: options? Risk of malicious events being added from out of area.
 
- 1. Strict: Check each event is within the region specified by the site, if it's not in it reject and list an error
- 2. Permissive: Let people import what they want, this is a low security risk for now
+1.  Strict: Check each event is within the region specified by the site, if it's not in it reject and list an error
+2.  Permissive: Let people import what they want, this is a low security risk for now
 
 Will go with route 1 as otherwise too much risk for mess.
 
- * If address matches partner in the area, list it, if it matches a partner in another area, don't and flag error
- * Ditto for place
+- If address matches partner in the area, list it, if it matches a partner in another area, don't and flag error
+- Ditto for place
 
 ### Calendars - CRUDing
 
@@ -58,20 +58,19 @@ We currently have no connection between calendars and wards directly. Ideas
 1. Every calendar needs a partner, place or both. This then gives something to latch on to.
 2. Calendars are listed as in wards? This might solve another problem we have in terms of listing events that don't have an address.
 
-* CRUD - must have a partner or place or both in the secretary's patch that will show up in the dropdowns
+- CRUD - must have a partner or place or both in the secretary's patch that will show up in the dropdowns
 
 ### Users
 
- * CRU - accounts that edit partners in their area
- * Note that this means that all secretaries have permission to create user accounts in general
- * D - no
+- CRU - accounts that edit partners in their area
+- Note that this means that all secretaries have permission to create user accounts in general
+- D - no
 
 ### Key difficulties
 
- * Finding adjacent wards to the primary site
- * Events and calendars outside the target area
- * Who really owns calendars?
-
+- Finding adjacent wards to the primary site
+- Events and calendars outside the target area
+- Who really owns calendars?
 
 ## Option 2 - larger areas
 

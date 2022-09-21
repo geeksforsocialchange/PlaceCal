@@ -50,7 +50,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
-          cache-version: 3    # Invalidate originally used corrupted cache
+          cache-version: 3 # Invalidate originally used corrupted cache
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -82,7 +82,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku@placecal-staging.org:666/placecal'
+          git_remote_url: "ssh://dokku@placecal-staging.org:666/placecal"
           ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
           branch: main
           ci_branch_name: main
@@ -90,7 +90,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/production' }}
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku@placecal.org:666/placecal'
+          git_remote_url: "ssh://dokku@placecal.org:666/placecal"
           ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
           branch: main
           ci_branch_name: production

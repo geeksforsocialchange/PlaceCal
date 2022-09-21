@@ -1,26 +1,42 @@
 // Thanks to David Gilbertson
 // https://gist.github.com/davidgilbertson/ad24b42b0eddde2dc6b1b51f9460af11#file-css-breakpoint-mixins-scss
 @mixin for-phone-only {
-  @media (max-width: 599px) { @content; }
+	@media (max-width: 599px) {
+		@content;
+	}
 }
 @mixin for-tablet-only {
-  @media (min-width: 600px) and (max-width: 1200px) { @content; }
+	@media (min-width: 600px) and (max-width: 1200px) {
+		@content;
+	}
 }
 @mixin for-tablet-portrait-up {
-  @media (min-width: 600px) { @content; }
+	@media (min-width: 600px) {
+		@content;
+	}
 }
 @mixin for-tablet-landscape-up {
-  @media (min-width: 900px) { @content; }
+	@media (min-width: 900px) {
+		@content;
+	}
 }
 @mixin for-desktop-up {
-  @media (min-width: 1200px) { @content; }
+	@media (min-width: 1200px) {
+		@content;
+	}
 }
 @mixin for-big-desktop-up {
-  @media (min-width: 1800px) { @content; }
+	@media (min-width: 1800px) {
+		@content;
+	}
 }
 @mixin for-print {
-  @media print { @content; }
+	@media print {
+		@content;
+	}
 }
 @mixin for-retina {
-  @media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) { @content; }
+	@media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+		@content;
+	}
 }

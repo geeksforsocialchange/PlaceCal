@@ -1,146 +1,113 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "title": "PlaceCal event based on schema.org definition",
-  "definitions": {
-    "time": {
-      "type": "string",
-      "title": "ISO 8601 formatted time string with timezone",
-      "pattern": "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2})\\:(\\d{2})\\:(\\d{2})[+-](\\d{2})\\:(\\d{2})"
-    }
-  },
-  "required": [
-    "@context",
-    "@type",
-    "name",
-    "startDate",
-    "location",
-    "url"
-  ],
-  "properties": {
-    "@context": {
-      "type": "string",
-      "pattern": "https://schema.org"
-    },
-    "@type": {
-      "type": "string",
-      "pattern": "Event"
-    },
-    "name": {
-      "type": "string",
-      "title": "Event name",
-      "examples": [
-        "Credit Union drop in"
-      ]
-    },
-    "startDate": {
-      "ref": "#/definitions/time"
-    },
-    "endDate": {
-      "ref": "#/definitions/time"
-    },
-    "duration": {
-      "type": "string",
-      "title": "Duration in ISO 8601 format",
-      "pattern": "^(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$"
-    },
-    "description": {
-      "type": "string",
-      "title": "Information about the event",
-      "examples": [
-        "open advice session from Credit Union"
-      ]
-    },
-    "organizer": {
-      "type": "object",
-      "title": "Partner who organised this event",
-      "required": [
-        "@type",
-        "name",
-        "url"
-      ],
-      "properties": {
-        "@type": {
-          "type": "string",
-          "pattern": "Organization"
-        },
-        "name": {
-          "type": "string",
-          "title": "Organisation's name",
-          "examples": [
-            "One Manchester"
-          ]
-        },
-        "url": {
-          "type": "string",
-          "title": "PlaceCal URL",
-          "pattern": "https://placecal.org/partners/(\\d+)",
-          "examples": [
-            "https://placecal.org/partners/8"
-          ]
-        }
-      }
-    },
-    "location": {
-      "type": "object",
-      "title": "Location this event is at",
-      "required": [
-        "@type",
-        "address"
-      ],
-      "properties": {
-        "@type": {
-          "type": "string",
-          "pattern": "Place"
-        },
-        "address": {
-          "type": "object",
-          "title": "Address",
-          "required": [
-            "@type",
-            "streetAddress",
-            "addressRegion",
-            "postalCode"
-          ],
-          "properties": {
-            "@type": {
-              "type": "string",
-              "pattern": "PostalAddress"
-            },
-            "url": {
-              "type": "string",
-              "pattern": "https://placecal.org/events/(\\d+)"
-            },
-            "streetAddress": {
-              "type": "string",
-              "pattern": "^(.*)$",
-              "examples": [
-                "The Place at Platt Lane, Platt Lane, Manchester"
-              ]
-            },
-            "addressRegion": {
-              "type": "string",
-              "title": "City",
-              "pattern": "^(.*)$",
-              "examples": [
-                "Manchester"
-              ]
-            },
-            "postalCode": {
-              "type": "string",
-              "pattern": "^(.*)$",
-              "examples": [
-                "M14 7FZ"
-              ]
-            }
-          }
-        }
-      }
-    },
-    "url": {
-      "type": "string",
-      "title": "Event URL on PlaceCal",
-      "pattern": "https://placecal.org/events/(\\d+)"
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"title": "PlaceCal event based on schema.org definition",
+	"definitions": {
+		"time": {
+			"type": "string",
+			"title": "ISO 8601 formatted time string with timezone",
+			"pattern": "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2})\\:(\\d{2})\\:(\\d{2})[+-](\\d{2})\\:(\\d{2})"
+		}
+	},
+	"required": ["@context", "@type", "name", "startDate", "location", "url"],
+	"properties": {
+		"@context": {
+			"type": "string",
+			"pattern": "https://schema.org"
+		},
+		"@type": {
+			"type": "string",
+			"pattern": "Event"
+		},
+		"name": {
+			"type": "string",
+			"title": "Event name",
+			"examples": ["Credit Union drop in"]
+		},
+		"startDate": {
+			"ref": "#/definitions/time"
+		},
+		"endDate": {
+			"ref": "#/definitions/time"
+		},
+		"duration": {
+			"type": "string",
+			"title": "Duration in ISO 8601 format",
+			"pattern": "^(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$"
+		},
+		"description": {
+			"type": "string",
+			"title": "Information about the event",
+			"examples": ["open advice session from Credit Union"]
+		},
+		"organizer": {
+			"type": "object",
+			"title": "Partner who organised this event",
+			"required": ["@type", "name", "url"],
+			"properties": {
+				"@type": {
+					"type": "string",
+					"pattern": "Organization"
+				},
+				"name": {
+					"type": "string",
+					"title": "Organisation's name",
+					"examples": ["One Manchester"]
+				},
+				"url": {
+					"type": "string",
+					"title": "PlaceCal URL",
+					"pattern": "https://placecal.org/partners/(\\d+)",
+					"examples": ["https://placecal.org/partners/8"]
+				}
+			}
+		},
+		"location": {
+			"type": "object",
+			"title": "Location this event is at",
+			"required": ["@type", "address"],
+			"properties": {
+				"@type": {
+					"type": "string",
+					"pattern": "Place"
+				},
+				"address": {
+					"type": "object",
+					"title": "Address",
+					"required": ["@type", "streetAddress", "addressRegion", "postalCode"],
+					"properties": {
+						"@type": {
+							"type": "string",
+							"pattern": "PostalAddress"
+						},
+						"url": {
+							"type": "string",
+							"pattern": "https://placecal.org/events/(\\d+)"
+						},
+						"streetAddress": {
+							"type": "string",
+							"pattern": "^(.*)$",
+							"examples": ["The Place at Platt Lane, Platt Lane, Manchester"]
+						},
+						"addressRegion": {
+							"type": "string",
+							"title": "City",
+							"pattern": "^(.*)$",
+							"examples": ["Manchester"]
+						},
+						"postalCode": {
+							"type": "string",
+							"pattern": "^(.*)$",
+							"examples": ["M14 7FZ"]
+						}
+					}
+				}
+			}
+		},
+		"url": {
+			"type": "string",
+			"title": "Event URL on PlaceCal",
+			"pattern": "https://placecal.org/events/(\\d+)"
+		}
+	}
 }

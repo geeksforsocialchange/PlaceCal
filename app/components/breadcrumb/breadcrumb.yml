@@ -1,9 +1,7 @@
-:meta: 'Breadcrumb trail'
+:meta: "Breadcrumb trail"
 :stubs:
-  -
-    :trail:
-      - [ Partners, '/partners' ]
-  -
-    :trail:
-      - [ Partners, '/partners' ]
-      - [ Big Life Centres, '/partners/1']
+  - :trail:
+      - [Partners, "/partners"]
+  - :trail:
+      - [Partners, "/partners"]
+      - [Big Life Centres, "/partners/1"]

@@ -1,26 +1,26 @@
 # This is sufficient for like 90% of the application. We don't actually ever use region/whatever at the moment
 # We can't use the factorybot stuff because it requires the unit_code_value to be exactly right
 one:
-  name: 'Hulme'
-  name_abbr: ''
-  unit: 'ward'
-  unit_code_key: 'WD19CD'
-  unit_code_value: 'E05011368'
-  unit_name: 'Hulme'
+  name: "Hulme"
+  name_abbr: ""
+  unit: "ward"
+  unit_code_key: "WD19CD"
+  unit_code_value: "E05011368"
+  unit_name: "Hulme"
 
 two:
-  name: 'Ashton Hurst'
-  name_abbr: ''
-  unit: 'ward'
-  unit_code_key: 'WD19CD'
-  unit_code_value: 'E05000800'
-  unit_name: 'Ashton Hurst'
+  name: "Ashton Hurst"
+  name_abbr: ""
+  unit: "ward"
+  unit_code_key: "WD19CD"
+  unit_code_value: "E05000800"
+  unit_name: "Ashton Hurst"
 
 # this must match up with the geocode stub API data in test_helper.rb
 moss_side:
-  name: 'Moss Side'
-  name_abbr: ''
-  unit: 'ward'
-  unit_code_key: 'WD19CD'
-  unit_code_value: 'E05011372'
-  unit_name: 'Moss Side'
+  name: "Moss Side"
+  name_abbr: ""
+  unit: "ward"
+  unit_code_key: "WD19CD"
+  unit_code_value: "E05011372"
+  unit_name: "Moss Side"

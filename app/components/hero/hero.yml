@@ -1,14 +1,10 @@
-:meta: 'Fancy page titles' 
+:meta: "Fancy page titles"
 :stubs:
-  -
-    :title: Main Title
+  - :title: Main Title
     :subtitle: Secondary Title
-  -
-    :title: Titles break at 30 characters!
+  - :title: Titles break at 30 characters!
     :subtitle: 30 Characters
-  -
-    :title: Titles break at 30 characterss!
-    :subtitle: 31 Characters    
-  -
-    :title: Really really long title that is extra long and just goes on for ages
+  - :title: Titles break at 30 characterss!
+    :subtitle: 31 Characters
+  - :title: Really really long title that is extra long and just goes on for ages
     :subtitle: 69 Characters - truncate at some point?

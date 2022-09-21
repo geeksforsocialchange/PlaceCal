@@ -1,11 +1,11 @@
-:meta: 'A bus route for the PlaceBus' 
-:stubs: 
-  -
-    :time: '10:30am out'
-    :time_alt: '(12:30pm Sun)'
-    :stops: [
-              ['New Hope Fellowship Church', 'Tatton St'],
-              ['Moss Side Leisure Centre & Asda', 'Hulme High St'],
-              ['Powerhouse Library', 'Raby St'],
-              ['Hough End Leisure Centre', 'Princess Rd']
-            ] 
+:meta: "A bus route for the PlaceBus"
+:stubs:
+  - :time: "10:30am out"
+    :time_alt: "(12:30pm Sun)"
+    :stops:
+      [
+        ["New Hope Fellowship Church", "Tatton St"],
+        ["Moss Side Leisure Centre & Asda", "Hulme High St"],
+        ["Powerhouse Library", "Raby St"],
+        ["Hough End Leisure Centre", "Princess Rd"],
+      ]
