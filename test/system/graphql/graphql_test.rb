@@ -89,10 +89,17 @@ module PlaceCalApi
 end
 
 
-class GraphQLPartnerTest < ApplicationSystemTestCase
+class GraphQLTest < ApplicationSystemTestCase
+  # This tests a number of small (critical) bits of the GraphQL
+  # system so its name is bit generic
+  # TODO: maybe more tests covering the API?
+
   include ActionDispatch::TestProcess::FixtureFile
 
   setup do
+    # test that we are sending back the correct protocol as well
+    Rails.application.default_url_options[:protocol] = 'https'
+
     create_default_site
 
     @server = Capybara.current_session.server
@@ -121,7 +128,7 @@ class GraphQLPartnerTest < ApplicationSystemTestCase
     assert article, 'article node not found'
 
     url = article['image']
-    assert url =~ %r{\Ahttp://#{@server.host}:#{@server.port}/}, 'article image is not full URL'
+    assert url =~ %r{\Ahttps://#{@server.host}:#{@server.port}/}, 'article image is not full URL'
   end
 
   test 'partners by tag has correct logo url' do
@@ -135,7 +142,7 @@ class GraphQLPartnerTest < ApplicationSystemTestCase
     assert partner
 
     url = partner['logo']
-    assert url =~ %r{\Ahttp://#{@server.host}:#{@server.port}/}, 'partner logo is not full URL'
+    assert url =~ %r{\Ahttps://#{@server.host}:#{@server.port}/}, 'partner logo is not full URL'
   end
 end
 
