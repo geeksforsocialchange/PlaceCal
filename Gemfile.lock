@@ -204,6 +204,9 @@ GEM
       railties
       sprockets-rails
     graphql (2.0.9)
+    graphql-client (0.18.0)
+      activesupport (>= 3.0)
+      graphql
     groupdate (6.1.0)
       activesupport (>= 5.2)
     guard (2.18.0)
@@ -555,6 +558,7 @@ DEPENDENCIES
   geocoder (~> 1.6.0)
   graphiql-rails
   graphql
+  graphql-client
   groupdate
   guard
   guard-livereload (~> 2.5)

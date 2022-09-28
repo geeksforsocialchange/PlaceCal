@@ -68,6 +68,7 @@ module Types
       return nil unless object.logo_url.present?
 
       url = URI::HTTP.build(Rails.application.default_url_options)
+      url.scheme = Rails.application.default_url_options[:protocol]
       url.path = object.logo_url
 
       url.to_s
