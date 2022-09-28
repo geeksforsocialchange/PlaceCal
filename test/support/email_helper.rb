@@ -1,5 +1,4 @@
 module EmailHelper
-
   # get the last email sent by ActionMailer
   #
   # Returns
@@ -19,7 +18,7 @@ module EmailHelper
     body_text = email.body.raw_source
 
     if body_text.empty?
-      html_body = email.parts.find { |p| p.mime_type == 'text/html' }
+      html_body = email.parts.find { |p| p.mime_type == "text/html" }
       return if html_body.nil?
 
       body_text = html_body.decoded

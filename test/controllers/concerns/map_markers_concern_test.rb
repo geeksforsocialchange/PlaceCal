@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class ActiveSupport::TestCase
-
   def self.context(description)
     yield
   end
@@ -68,9 +67,6 @@ class MapMarkersConcernTest < ActiveSupport::TestCase
       events = create_list(:event, 10)
       output = controller.get_map_markers(events)
       assert_equal 10, output.length
-
     end
-
   end
-
 end

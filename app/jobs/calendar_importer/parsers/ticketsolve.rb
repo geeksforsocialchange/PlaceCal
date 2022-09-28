@@ -4,8 +4,8 @@
 
 module CalendarImporter::Parsers
   class Ticketsolve < Xml
-    NAME = 'Ticket Solve'
-    KEY = 'ticket-solve'
+    NAME = "Ticket Solve"
+    KEY = "ticket-solve"
     DOMAINS = %w[*.ticketsolve.com]
 
     def self.whitelist_pattern
@@ -15,12 +15,13 @@ module CalendarImporter::Parsers
     def import_events_from(data)
       @events = []
 
-      data.css('show').each do |show|
-        @events << CalendarImporter::Events::TicketsolveEvent.new(show)
-      end
+      data
+        .css("show")
+        .each do |show|
+          @events << CalendarImporter::Events::TicketsolveEvent.new(show)
+        end
 
       @events
     end
-
   end
 end

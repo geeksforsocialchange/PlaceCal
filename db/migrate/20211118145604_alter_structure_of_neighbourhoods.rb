@@ -3,7 +3,7 @@ class AlterStructureOfNeighbourhoods < ActiveRecord::Migration[6.0]
     errors = []
     Neighbourhood.find_each do |ward|
       begin
-        next if ward.unit != 'ward'
+        next if ward.unit != "ward"
 
         puts "Processing ward #{ward.id}, #{ward.name}"
 
@@ -19,37 +19,46 @@ class AlterStructureOfNeighbourhoods < ActiveRecord::Migration[6.0]
         ward.unit_name = ward.name
 
         # Find/Create district and county neighbourhoods
-        district_node = Neighbourhood.find_or_create_by!(
-          { name: district_name,
-            unit: 'district',
-            unit_code_key: 'LAD19CD',
-            unit_code_value: ward.LAD19CD,
-            unit_name: district_name }
-        )
-        county_node = Neighbourhood.find_or_create_by!(
-          { name: county_name,
-            unit: 'county',
-            unit_code_key: 'CTY19CD',
-            unit_code_value: ward.CTY19CD,
-            unit_name: county_name }
-        )
-        region_node = Neighbourhood.find_or_create_by!(
-          { name: region_name,
-            unit: 'region',
-            unit_code_key: 'RGN19CD',
-            unit_code_value: ward.RGN19CD,
-            unit_name: region_name }
-        )
+        district_node =
+          Neighbourhood.find_or_create_by!(
+            {
+              name: district_name,
+              unit: "district",
+              unit_code_key: "LAD19CD",
+              unit_code_value: ward.LAD19CD,
+              unit_name: district_name
+            }
+          )
+        county_node =
+          Neighbourhood.find_or_create_by!(
+            {
+              name: county_name,
+              unit: "county",
+              unit_code_key: "CTY19CD",
+              unit_code_value: ward.CTY19CD,
+              unit_name: county_name
+            }
+          )
+        region_node =
+          Neighbourhood.find_or_create_by!(
+            {
+              name: region_name,
+              unit: "region",
+              unit_code_key: "RGN19CD",
+              unit_code_value: ward.RGN19CD,
+              unit_name: region_name
+            }
+          )
 
         # Make the ward a child of the district
         ward.parent = district_node
 
         # Make the district a child of the county, if it isn't already
-        district_node.parent = county_node unless
-          county_node.children.include? district_node
+        district_node.parent =
+          county_node unless county_node.children.include? district_node
 
-        county_node.parent = region_node unless
-          region_node.children.include? county_node
+        county_node.parent =
+          region_node unless region_node.children.include? county_node
 
         # Save save save!!!
         ward.save!
@@ -57,43 +66,48 @@ class AlterStructureOfNeighbourhoods < ActiveRecord::Migration[6.0]
         county_node.save!
         region_node.save!
       rescue => e
-        errors << { error: e.message,
-                    trace: e.backtrace_locations,
-                    id: ward.id,
-                    name: ward.name }
+        errors << {
+          error: e.message,
+          trace: e.backtrace_locations,
+          id: ward.id,
+          name: ward.name
+        }
         next
       end
     end
 
     return unless errors.any?
 
-    File.open('20211118145604_alter_structure_of_neighbourhoods.errors.txt', 'w') do |f|
-      f.write errors
-    end
+    File.open(
+      "20211118145604_alter_structure_of_neighbourhoods.errors.txt",
+      "w"
+    ) { |f| f.write errors }
   end
 
   def down
-    puts 'WARNING: Downgrade path has NOT been verified and should be manually verified first.'
+    puts "WARNING: Downgrade path has NOT been verified and should be manually verified first."
     errors = []
     Neighbourhood.find_each do |ward|
       begin
-        next if ward.unit == 'ward'
+        next if ward.unit == "ward"
 
         puts "Destroying non-ward item of type #{ward.unit} with name #{ward.name}"
         ward.destroy!
       rescue => e
-        errors << { error: e.message,
-                    trace: e.backtrace_locations,
-                    id: ward.id,
-                    name: ward.name }
+        errors << {
+          error: e.message,
+          trace: e.backtrace_locations,
+          id: ward.id,
+          name: ward.name
+        }
       end
-
     end
 
     return unless errors.any?
 
-    File.open('20211118145604_alter_structure_of_neighbourhoods.errors.txt', 'w') do |f|
-      f.write errors
-    end
+    File.open(
+      "20211118145604_alter_structure_of_neighbourhoods.errors.txt",
+      "w"
+    ) { |f| f.write errors }
   end
 end

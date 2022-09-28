@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -9,7 +9,7 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
     @neighbourhood = @neighbourhood_admin.neighbourhoods.first
     @citizen = create(:user)
 
-    host! 'admin.lvh.me'
+    host! "admin.lvh.me"
   end
 
   # Neighbourhood Index
@@ -59,14 +59,18 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
 
   it_allows_access_to_update_for(%i[root neighbourhood_admin]) do
     patch admin_neighbourhood_url(@neighbourhood),
-          params: { neighbourhood: attributes_for(:neighbourhood) }
+          params: {
+            neighbourhood: attributes_for(:neighbourhood)
+          }
     # Redirect to main partner screen
     assert_redirected_to admin_neighbourhoods_url
   end
 
   it_denies_access_to_update_for(%i[citizen]) do
     patch admin_neighbourhood_url(@neighbourhood),
-          params: { neighbourhood: attributes_for(:neighbourhood) }
+          params: {
+            neighbourhood: attributes_for(:neighbourhood)
+          }
     # Redirect to main partner screen
     assert_redirected_to admin_root_url
   end
@@ -77,7 +81,7 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_destroy_for(%i[root]) do
-    assert_difference('Neighbourhood.count', -1) do
+    assert_difference("Neighbourhood.count", -1) do
       delete admin_neighbourhood_url(@neighbourhood)
     end
 
@@ -85,7 +89,7 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_denies_access_to_destroy_for(%i[neighbourhood_admin citizen]) do
-    assert_no_difference('Neighbourhood.count') do
+    assert_no_difference("Neighbourhood.count") do
       delete admin_neighbourhood_url(@neighbourhood)
     end
 

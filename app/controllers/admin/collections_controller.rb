@@ -10,7 +10,8 @@ module Admin
       authorize current_user
     end
 
-    def show; end
+    def show
+    end
 
     def new
       @collection = Collection.new
@@ -25,22 +26,22 @@ module Admin
       @collection = Collection.new(collection_params)
       authorize @collection
       if @collection.save
-        flash[:success] = 'Collection has been saved'
+        flash[:success] = "Collection has been saved"
         redirect_to admin_collections_path
       else
-        flash.now[:danger] = 'Collection did not save'
-        render 'new', status: :unprocessable_entity
+        flash.now[:danger] = "Collection did not save"
+        render "new", status: :unprocessable_entity
       end
     end
 
     def update
       authorize @collection
       if @collection.update(collection_params)
-        flash.now[:success] = 'Collection has been saved'
-        render 'edit'
+        flash.now[:success] = "Collection has been saved"
+        render "edit"
       else
-        flash.now[:danger] = 'Collection did not save'
-        render 'edit', status: :unprocessable_entity
+        flash.now[:danger] = "Collection did not save"
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -49,7 +50,7 @@ module Admin
       @collection.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Collection was deleted successfully'
+          flash[:success] = "Collection was deleted successfully"
           redirect_to admin_collections_url
         end
 

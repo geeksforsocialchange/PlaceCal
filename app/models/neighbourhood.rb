@@ -10,14 +10,12 @@ class Neighbourhood < ApplicationRecord
 
   has_many :service_areas, dependent: :destroy
   has_many :service_area_partners,
-    through: :service_areas,
-    source: :partner,
-    class_name: 'Partner'
+           through: :service_areas,
+           source: :partner,
+           class_name: "Partner"
 
   # validates :name, presence: true
-  validates :unit_code_value,
-            length: { is: 9 },
-            allow_blank: true
+  validates :unit_code_value, length: { is: 9 }, allow_blank: true
 
   before_update :inject_parent_name_field
 
@@ -45,7 +43,7 @@ class Neighbourhood < ApplicationRecord
     elsif name_abbr.present?
       name_abbr
     else
-      '[not set]'
+      "[not set]"
     end
   end
 
@@ -72,7 +70,7 @@ class Neighbourhood < ApplicationRecord
   def name_abbr=(value)
     value = value.to_s.strip
 
-    self['name_abbr'] = value.present? ? value : nil
+    self["name_abbr"] = value.present? ? value : nil
   end
 
   def to_s
@@ -80,27 +78,29 @@ class Neighbourhood < ApplicationRecord
   end
 
   def district
-    ancestors.where(unit: 'district').first
+    ancestors.where(unit: "district").first
   end
 
   def county
-    ancestors.where(unit: 'county').first
+    ancestors.where(unit: "county").first
   end
 
   def region
-    ancestors.where(unit: 'region').first
+    ancestors.where(unit: "region").first
   end
 
   def country
-    ancestors.where(unit: 'country').first
+    ancestors.where(unit: "country").first
   end
 
   class << self
     def find_from_postcodesio_response(res)
-      Neighbourhood.find_by!(unit: 'ward',
-                             unit_code_key: 'WD19CD',
-                             unit_code_value: res['codes']['admin_ward'],
-                             unit_name: res['admin_ward'])
+      Neighbourhood.find_by!(
+        unit: "ward",
+        unit_code_key: "WD19CD",
+        unit_code_value: res["codes"]["admin_ward"],
+        unit_name: res["admin_ward"]
+      )
     end
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Admin::SupporterControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -8,7 +8,7 @@ class Admin::SupporterControllerTest < ActionDispatch::IntegrationTest
     @root = create(:root)
     @citizen = create(:user)
 
-    host! 'admin.lvh.me'
+    host! "admin.lvh.me"
   end
 
   # Supporter Index
@@ -37,9 +37,11 @@ class Admin::SupporterControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_create_for(%i[root]) do
-    assert_difference('Supporter.count') do
+    assert_difference("Supporter.count") do
       post admin_supporters_url,
-           params: { supporter: attributes_for(:supporter) }
+           params: {
+             supporter: attributes_for(:supporter)
+           }
     end
   end
 
@@ -55,7 +57,9 @@ class Admin::SupporterControllerTest < ActionDispatch::IntegrationTest
 
   it_allows_access_to_update_for(%i[root]) do
     patch admin_supporter_url(@supporter),
-          params: { supporter: attributes_for(:supporter) }
+          params: {
+            supporter: attributes_for(:supporter)
+          }
     # Redirect to main partner screen
     assert_redirected_to admin_supporters_url
   end
@@ -66,7 +70,7 @@ class Admin::SupporterControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_destroy_for(%i[root]) do
-    assert_difference('Supporter.count', -1) do
+    assert_difference("Supporter.count", -1) do
       delete admin_supporter_url(@supporter)
     end
 
@@ -74,7 +78,7 @@ class Admin::SupporterControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_denies_access_to_destroy_for(%i[citizen]) do
-    assert_no_difference('Supporter.count') do
+    assert_no_difference("Supporter.count") do
       delete admin_supporter_url(@supporter)
     end
 

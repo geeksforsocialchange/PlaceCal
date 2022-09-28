@@ -19,7 +19,9 @@ class CalendarPolicy < ApplicationPolicy
 
   def update?
     return true if user.root?
-    return true if user.partner_admin? && user.partner_ids.include?(record.partner_id)
+    if user.partner_admin? && user.partner_ids.include?(record.partner_id)
+      return true
+    end
     # return true if user.neighbourhood_admin? && user.neighbourhoods.include?(record.address.neighbourhood)
     index?
   end
@@ -41,11 +43,16 @@ class CalendarPolicy < ApplicationPolicy
       return scope.all if user.root?
       return scope.none if !user.partner_admin? && !user.neighbourhood_admin?
 
-      Calendar.left_outer_joins(partner: :address, place: :address)
-              .where(addresses: { neighbourhood_id: user.owned_neighbourhood_ids })
-              .or(Calendar.left_outer_joins(partner: :address, place: :address)
-              .where("partner_id IN (:partner_id) OR place_id IN (:partner_id)", partner_id: user.partner_ids))
-              .distinct
+      Calendar
+        .left_outer_joins(partner: :address, place: :address)
+        .where(addresses: { neighbourhood_id: user.owned_neighbourhood_ids })
+        .or(
+          Calendar.left_outer_joins(partner: :address, place: :address).where(
+            "partner_id IN (:partner_id) OR place_id IN (:partner_id)",
+            partner_id: user.partner_ids
+          )
+        )
+        .distinct
     end
   end
 end

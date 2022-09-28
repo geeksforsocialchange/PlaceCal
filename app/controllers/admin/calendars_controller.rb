@@ -11,13 +11,14 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json {
-          render json: CalendarDatatable.new(
-            params,
-            view_context: view_context,
-            calendars: @calendars
-          )
-        }
+        format.json do
+          render json:
+                   CalendarDatatable.new(
+                     params,
+                     view_context: view_context,
+                     calendars: @calendars
+                   )
+        end
       end
     end
 
@@ -45,21 +46,21 @@ module Admin
       authorize @calendar
 
       if @calendar.save
-        flash[:success] = 'Successfully created new calendar'
+        flash[:success] = "Successfully created new calendar"
         redirect_to edit_admin_calendar_path(@calendar)
       else
-        flash.now[:danger] = 'Calendar did not save'
-        render 'new', status: :unprocessable_entity
+        flash.now[:danger] = "Calendar did not save"
+        render "new", status: :unprocessable_entity
       end
     end
 
     def update
       if @calendar.update(calendar_params)
-        flash[:success] = 'Calendar successfully updated'
+        flash[:success] = "Calendar successfully updated"
         redirect_to edit_admin_calendar_path(@calendar)
       else
-        flash.now[:danger] = 'Calendar did not save'
-        render 'edit', status: :unprocessable_entity
+        flash.now[:danger] = "Calendar did not save"
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -68,7 +69,7 @@ module Admin
       @calendar.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Calendar was successfully deleted.'
+          flash[:success] = "Calendar was successfully deleted."
           redirect_to admin_calendars_url
         end
 
@@ -82,7 +83,7 @@ module Admin
       # CalendarImporterJob.perform_now @calendar.id, date, force_import
       @calendar.queue_for_import! force_import, date
 
-      flash[:success] = 'Calendar added to the import queue'
+      flash[:success] = "Calendar added to the import queue"
       redirect_to edit_admin_calendar_path(@calendar)
     end
 

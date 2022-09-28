@@ -3,7 +3,8 @@
 module Admin
   class SitesController < Admin::ApplicationController
     before_action :set_site, only: %i[update destroy]
-    before_action :set_variables_for_sites_neighbourhoods_selection, only: %i[new edit]
+    before_action :set_variables_for_sites_neighbourhoods_selection,
+                  only: %i[new edit]
 
     def index
       @sites = policy_scope(Site).order({ updated_at: :desc }, :name)
@@ -12,16 +13,18 @@ module Admin
       respond_to do |format|
         format.html
         format.json do
-          render json: SiteDatatable.new(
-            params,
-            view_context: view_context,
-            sites: @sites
-          )
+          render json:
+                   SiteDatatable.new(
+                     params,
+                     view_context: view_context,
+                     sites: @sites
+                   )
         end
       end
     end
 
-    def show; end
+    def show
+    end
 
     def new
       @site = Site.new
@@ -37,26 +40,24 @@ module Admin
       @site = Site.new(permitted_attributes(Site))
       authorize @site
       if @site.save
-        flash[:success] = 'Site has been created'
+        flash[:success] = "Site has been created"
         redirect_to admin_sites_path
-
       else
-        flash.now[:danger] = 'Site was not created'
+        flash.now[:danger] = "Site was not created"
         set_variables_for_sites_neighbourhoods_selection
-        render 'new', status: :unprocessable_entity
+        render "new", status: :unprocessable_entity
       end
     end
 
     def update
       authorize @site
       if @site.update(permitted_attributes(@site))
-        flash[:success] = 'Site was saved successfully'
+        flash[:success] = "Site was saved successfully"
         redirect_to admin_sites_path
-
       else
-        flash.now[:danger] = 'Site was not saved'
+        flash.now[:danger] = "Site was not saved"
         set_variables_for_sites_neighbourhoods_selection
-        render 'edit', status: :unprocessable_entity
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -65,7 +66,7 @@ module Admin
       @site.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Site was deleted'
+          flash[:success] = "Site was deleted"
           redirect_to admin_sites_url
         end
 
@@ -93,8 +94,10 @@ module Admin
 
         # Make a dictionary of { neighbourhood_id => sites_neighbourhood_id }
         @sites_neighbourhoods_ids =
-          @site.sites_neighbourhoods.map { |sn| { sn.neighbourhood_id => sn.id } }
-               .reduce({}, :merge)
+          @site
+            .sites_neighbourhoods
+            .map { |sn| { sn.neighbourhood_id => sn.id } }
+            .reduce({}, :merge)
       end
     end
   end

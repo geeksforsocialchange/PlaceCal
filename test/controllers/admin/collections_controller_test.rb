@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -8,7 +8,7 @@ class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
     @root = create(:root)
     @citizen = create(:user)
 
-    host! 'admin.lvh.me'
+    host! "admin.lvh.me"
   end
 
   # Collection Index
@@ -37,9 +37,11 @@ class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_create_for(%i[root]) do
-    assert_difference('Collection.count') do
+    assert_difference("Collection.count") do
       post admin_collections_url,
-           params: { collection: attributes_for(:collection) }
+           params: {
+             collection: attributes_for(:collection)
+           }
     end
   end
 
@@ -55,7 +57,9 @@ class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
 
   it_allows_access_to_update_for(%i[root]) do
     patch admin_collection_url(@collection),
-          params: { collection: attributes_for(:collection) }
+          params: {
+            collection: attributes_for(:collection)
+          }
     # Redirect to main partner screen
     assert_response :success
   end
@@ -66,7 +70,7 @@ class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_destroy_for(%i[root]) do
-    assert_difference('Collection.count', -1) do
+    assert_difference("Collection.count", -1) do
       delete admin_collection_url(@collection)
     end
 
@@ -74,7 +78,7 @@ class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_denies_access_to_destroy_for(%i[citizen]) do
-    assert_no_difference('Calendar.count') do
+    assert_no_difference("Calendar.count") do
       delete admin_collection_url(@collection)
     end
 

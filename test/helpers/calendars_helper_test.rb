@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class CalendarsHelperTest < ActionView::TestCase
   include Devise::Test::IntegrationHelpers
@@ -30,5 +30,4 @@ class CalendarsHelperTest < ActionView::TestCase
 
     # assert_equal 4, locations.length, "Should see 4 options"
   end
-
 end

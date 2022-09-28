@@ -5,22 +5,23 @@
 module CalendarImporter::Parsers
   class ManchesterUni < Xml
     PUBLIC = false
-    NAME = 'Manchester University'
+    NAME = "Manchester University"
     DOMAINS = %w[events.manchester.ac.uk]
 
     def self.whitelist_pattern
-      /^http(s)?:\/\/events.manchester.ac.uk\/f3vf\/calendar\/.*/
+      %r{^http(s)?://events.manchester.ac.uk/f3vf/calendar/.*}
     end
 
     def import_events_from(data)
       events = []
 
-      data.xpath('//ns:event').each do |event|
-        events << CalendarImporter::Events::ManchesterUniEvent.new(event)
-      end
+      data
+        .xpath("//ns:event")
+        .each do |event|
+          events << CalendarImporter::Events::ManchesterUniEvent.new(event)
+        end
 
       events
     end
-
   end
 end

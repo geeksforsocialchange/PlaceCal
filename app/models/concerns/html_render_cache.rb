@@ -1,4 +1,3 @@
-
 module HtmlRenderCache
   extend ActiveSupport::Concern
 

@@ -3,13 +3,28 @@ class TagDatatable < Datatable
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format
     @view_columns ||= {
-      id: { source: 'Tag.id', cond: :eq },
-      name: { source: 'Tag.name' },
-      slug: { source: 'Tag.slug' },
-      description: { source: 'Tag.description' },
-      edit_permission: { source: 'Tag.edit_permission' },
-      system_tag: { source: 'Tag.system_tag' },
-      updated_at: { source: 'Tag.updated_at' }
+      id: {
+        source: "Tag.id",
+        cond: :eq
+      },
+      name: {
+        source: "Tag.name"
+      },
+      slug: {
+        source: "Tag.slug"
+      },
+      description: {
+        source: "Tag.description"
+      },
+      edit_permission: {
+        source: "Tag.edit_permission"
+      },
+      system_tag: {
+        source: "Tag.system_tag"
+      },
+      updated_at: {
+        source: "Tag.updated_at"
+      }
     }
   end
 

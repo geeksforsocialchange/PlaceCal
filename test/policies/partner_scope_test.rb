@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnerScopeTest < ActiveSupport::TestCase
   setup do
@@ -22,7 +22,7 @@ class PartnerScopeTest < ActiveSupport::TestCase
     owned_partner_3 = create(:partner, address: not_user_address)
 
     # let the user own these partners
-    @basic_partner.users  << @normal_user
+    @basic_partner.users << @normal_user
     owned_partner_2.users << @normal_user
     owned_partner_3.users << @normal_user
 
@@ -32,7 +32,6 @@ class PartnerScopeTest < ActiveSupport::TestCase
   end
 
   test "scope on address" do # test_scope_for_address
-
     # give the user a neighbourhood to admin
     neighbourhood = neighbourhoods(:one)
     @normal_user.neighbourhoods << neighbourhood
@@ -70,4 +69,3 @@ class PartnerScopeTest < ActiveSupport::TestCase
     assert found_partners.count == 5
   end
 end
-

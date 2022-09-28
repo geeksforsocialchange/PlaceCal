@@ -19,7 +19,8 @@ class AddSummaryDescriptionToPartners < ActiveRecord::Migration[6.1]
     add_column :partners, :short_description, :text
 
     Partner.find_each do |partner|
-      partner.short_description = "#{partner.summary}\r\n\r\n#{partner.description}"
+      partner.short_description =
+        "#{partner.summary}\r\n\r\n#{partner.description}"
       partner.save
     end
 

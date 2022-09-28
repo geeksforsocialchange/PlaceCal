@@ -8,7 +8,7 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
       t.string :street_address3
       t.string :city
       t.string :postcode
-      t.string :country_code, default: 'UK'
+      t.string :country_code, default: "UK"
 
       # for geocoder
       t.float :latitude

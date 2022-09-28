@@ -23,9 +23,9 @@ class Partner < ApplicationRecord
 
   has_many :service_areas, dependent: :destroy
   has_many :service_area_neighbourhoods,
-    through: :service_areas,
-    source: :neighbourhood,
-    class_name: 'Neighbourhood'
+           through: :service_areas,
+           source: :neighbourhood,
+           class_name: "Neighbourhood"
 
   validates_associated :service_areas
 
@@ -33,55 +33,78 @@ class Partner < ApplicationRecord
   has_many :articles, through: :article_partners
 
   has_and_belongs_to_many :objects,
-                          class_name: 'Partner',
+                          class_name: "Partner",
                           join_table: :organisation_relationships,
-                          foreign_key: 'subject_id',
-                          association_foreign_key: 'object_id'
+                          foreign_key: "subject_id",
+                          association_foreign_key: "object_id"
 
   has_and_belongs_to_many :subjects,
-                          class_name: 'Partner',
+                          class_name: "Partner",
                           join_table: :organisation_relationships,
-                          foreign_key: 'object_id',
-                          association_foreign_key: 'subject_id'
+                          foreign_key: "object_id",
+                          association_foreign_key: "subject_id"
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
-  accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
+  accepts_nested_attributes_for :address,
+                                reject_if: ->(c) {
+                                  c[:postcode].blank? &&
+                                    c[:street_address].blank?
+                                }
 
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
   # Validations
   validates :name,
             presence: true,
-            uniqueness: { case_sensitive: false },
+            uniqueness: {
+              case_sensitive: false
+            },
             length: {
               minimum: 5,
-              too_short: 'must be at least 5 characters long'
+              too_short: "must be at least 5 characters long"
             }
   validates :summary,
             length: {
               maximum: 200,
-              too_long: 'maxmimum length is 200 characters'
+              too_long: "maxmimum length is 200 characters"
             }
   validates :summary,
             presence: {
               if: ->(p) { !p.description.blank? },
-              message: 'cannot have a description without a summary'
+              message: "cannot have a description without a summary"
             }
   validates :url,
-            format: { with: URL_REGEX, message: 'is invalid' },
+            format: {
+              with: URL_REGEX,
+              message: "is invalid"
+            },
             allow_blank: true
   validates :twitter_handle,
-            format: { with: TWITTER_REGEX, message: 'invalid account name' },
+            format: {
+              with: TWITTER_REGEX,
+              message: "invalid account name"
+            },
             allow_blank: true
   validates :facebook_link,
-            format: { with: FACEBOOK_REGEX, message: 'invalid page name' },
+            format: {
+              with: FACEBOOK_REGEX,
+              message: "invalid page name"
+            },
             allow_blank: true
-  validates :public_phone, :partner_phone,
-            format: { with: UK_NUMBER_REGEX, message: 'invalid phone number' },
+  validates :public_phone,
+            :partner_phone,
+            format: {
+              with: UK_NUMBER_REGEX,
+              message: "invalid phone number"
+            },
             allow_blank: true
-  validates :public_email, :partner_email,
-            format: { with: EMAIL_REGEX, message: 'invalid email address' },
+  validates :public_email,
+            :partner_email,
+            format: {
+              with: EMAIL_REGEX,
+              message: "invalid email address"
+            },
             allow_blank: true
 
   validates_associated :address
@@ -102,11 +125,14 @@ class Partner < ApplicationRecord
   #
   # @param ids [Array<Int>] A list of neighbourhood ids
   # @return [ActiveRecord::Relation<Partner>]
-  scope :from_neighbourhoods_and_service_areas, lambda { |ids|
-    left_joins(:address, :service_areas)
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
-             ids, ids)
-  }
+  scope :from_neighbourhoods_and_service_areas,
+        lambda { |ids|
+          left_joins(:address, :service_areas).where(
+            "(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))",
+            ids,
+            ids
+          )
+        }
 
   # Takes in a Site and fetches all Partners for that site
   #   In its basic mode (without tags) it looks for partners by address
@@ -120,71 +146,76 @@ class Partner < ApplicationRecord
   #
   # @param site [Site] The site we want partners for.
   # @return [ActiveRecord::Relation<Partner>]
-  scope :for_site, lambda { |site|
-    query = Partner
+  scope :for_site,
+        lambda { |site|
+          query = Partner
 
-    # if site has tags show only partners WITH those tags
-    site_tag_ids = site.tags.map(&:id)
-    if site_tag_ids.any?
-      query = query
-        .left_joins(:partner_tags)
-        .where("partner_tags.tag_id in (?)", site_tag_ids)
-    end
+          # if site has tags show only partners WITH those tags
+          site_tag_ids = site.tags.map(&:id)
+          if site_tag_ids.any?
+            query =
+              query.left_joins(:partner_tags).where(
+                "partner_tags.tag_id in (?)",
+                site_tag_ids
+              )
+          end
 
-    # now look for addresses and service areas
-    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
+          # now look for addresses and service areas
+          site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
 
-    # skip everything if site has no neighbourhoods
-    return none if site_neighbourhood_ids.empty?
+          # skip everything if site has no neighbourhoods
+          return none if site_neighbourhood_ids.empty?
 
-    query
-      .left_joins(:address, :service_areas)
-      .where(
-        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-        neighbourhood_ids: site_neighbourhood_ids)
-      .distinct
-  }
+          query
+            .left_joins(:address, :service_areas)
+            .where(
+              "(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))",
+              neighbourhood_ids: site_neighbourhood_ids
+            )
+            .distinct
+        }
 
-  scope :for_site_with_tag, lambda { |site, tag|
-    return none if tag.nil?
+  scope :for_site_with_tag,
+        lambda { |site, tag|
+          return none if tag.nil?
 
-    query = Partner
-      .select('"partners".*, LOWER("partners"."name") as sortable_name')
+          query =
+            Partner.select(
+              '"partners".*, LOWER("partners"."name") as sortable_name'
+            )
 
-    query = query
-      .left_joins(:partner_tags)
-      .where(partner_tags: { tag: tag })
+          query =
+            query.left_joins(:partner_tags).where(partner_tags: { tag: tag })
 
-    # now look for addresses and service areas
-    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
+          # now look for addresses and service areas
+          site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
 
-    # skip everything if site has no neighbourhoods
-    return none if site_neighbourhood_ids.empty?
+          # skip everything if site has no neighbourhoods
+          return none if site_neighbourhood_ids.empty?
 
-    # TODO; move this scope part that is very similar to the `for_site` method above
-    #   into a shared scope (with possible tests)
-    query
-      .left_joins(:address, :service_areas)
-      .where(
-        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-        neighbourhood_ids: site_neighbourhood_ids)
-      .distinct
-      .order('sortable_name')
-  }
+          # TODO; move this scope part that is very similar to the `for_site` method above
+          #   into a shared scope (with possible tests)
+          query
+            .left_joins(:address, :service_areas)
+            .where(
+              "(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))",
+              neighbourhood_ids: site_neighbourhood_ids
+            )
+            .distinct
+            .order("sortable_name")
+        }
 
   # Get a list of Partners that have the given tags
   #
   # @param tags [Array<Tag>] A list of tags
   # @return [ActiveRecord::Relation<Partner>]
-  scope :with_tags, ->(tag_ids) {
-    left_joins(:partner_tags)
-      .where("partner_tags.tag_id in (?)", tag_ids)
-  }
+  scope :with_tags,
+        ->(tag_ids) {
+          left_joins(:partner_tags).where("partner_tags.tag_id in (?)", tag_ids)
+        }
 
   # only select partners that have addresses
-  scope :with_address, -> do
-    where('address_id is not null')
-  end
+  scope :with_address, -> { where("address_id is not null") }
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
@@ -192,28 +223,37 @@ class Partner < ApplicationRecord
   # TODO? This might be an incredibly inefficient query. If so, add a column
   # to the Partner table, e.g. place_latest_dtstart, which can be updated on
   # import.
-  scope :event_hosts, -> do
-    joins('JOIN events ON events.place_id = partners.id')
-      .where('events.dtstart > ?', Date.today - 30).distinct
-  end
+  scope :event_hosts,
+        -> {
+          joins("JOIN events ON events.place_id = partners.id").where(
+            "events.dtstart > ?",
+            Date.today - 30
+          ).distinct
+        }
 
   # Get all Partners that manage at least one other Partner.
-  scope :managers, -> do
-    joins('JOIN organisation_relationships o_r on o_r.subject_id = partners.id')
-      .where(o_r: { verb: :manages }).distinct
-  end
+  scope :managers,
+        -> {
+          joins(
+            "JOIN organisation_relationships o_r on o_r.subject_id = partners.id"
+          ).where(o_r: { verb: :manages }).distinct
+        }
 
   delegate :neighbourhood_id, to: :address, allow_nil: true
 
   def twitter_handle=(handle)
-    super(handle&.gsub('@', ''))
+    super(handle&.gsub("@", ""))
   end
 
   def address_attributes=(value)
-    addr = Address
-      .where('lower(street_address) = ?', value[:street_address]&.downcase&.strip)
-      .where(postcode: value[:postcode]&.upcase&.strip)
-      .first
+    addr =
+      Address
+        .where(
+          "lower(street_address) = ?",
+          value[:street_address]&.downcase&.strip
+        )
+        .where(postcode: value[:postcode]&.upcase&.strip)
+        .first
 
     if addr.present?
       self.address = addr
@@ -270,7 +310,7 @@ class Partner < ApplicationRecord
     #  even tho we use jsonb as a field type. this should
     #  be corrected to just push raw object data into the
     #  field and let PG deal with it.
-    return '[]' if opening_times.blank?
+    return "[]" if opening_times.blank?
 
     opening_times
   end
@@ -278,31 +318,36 @@ class Partner < ApplicationRecord
   def human_readable_opening_times
     return [] if !opening_times || opening_times.length == 0
 
-    JSON.parse(opening_times).map do |s|
-      d = s['dayOfWeek'].split('/').last
-      o = Time.parse(s['opens']).strftime('%-l:%M%P')
-      c = Time.parse(s['closes']).strftime('%-l:%M%P')
-      %( <span class='opening_times--day'>#{d}</span>
+    JSON
+      .parse(opening_times)
+      .map do |s|
+        d = s["dayOfWeek"].split("/").last
+        o = Time.parse(s["opens"]).strftime("%-l:%M%P")
+        c = Time.parse(s["closes"]).strftime("%-l:%M%P")
+        %( <span class='opening_times--day'>#{d}</span>
          <span class='opening_times--time'>#{o} &ndash; #{c}</span>
       ).html_safe
-    end
-
+      end
   rescue JSON::ParserError
     []
   end
 
   def valid_public_phone?
-    self.class.validators_on(:public_phone).each do |validator|
-      validator.validate_each(self, :public_phone, public_phone)
-    end
+    self
+      .class
+      .validators_on(:public_phone)
+      .each do |validator|
+        validator.validate_each(self, :public_phone, public_phone)
+      end
 
     errors.blank?
   end
 
   def valid_name?
-    self.class.validators_on(:name).each do |validator|
-      validator.validate_each(self, :name, name)
-    end
+    self
+      .class
+      .validators_on(:name)
+      .each { |validator| validator.validate_each(self, :name, name) }
 
     errors.blank?
   end
@@ -316,7 +361,7 @@ class Partner < ApplicationRecord
   end
 
   def self.fuzzy_find_by_location(components)
-    Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
+    Partner.find_by("lower(name) IN (?)", components.map(&:downcase))
   end
 
   private
@@ -326,7 +371,7 @@ class Partner < ApplicationRecord
     return unless address.present?
 
     unless accessed_by_user.assigned_to_postcode?(address&.postcode)
-      errors.add :base, 'Partners cannot have an address outside of your ward.'
+      errors.add :base, "Partners cannot have an address outside of your ward."
     end
   end
 
@@ -342,14 +387,16 @@ class Partner < ApplicationRecord
     user_neighbourhoods_set = Set.new(user_neighbourhoods)
 
     unless user_neighbourhoods_set.superset?(partner_neighbourhoods_set)
-      errors.add :base, 'Partners cannot have a service area outside of your ward.'
+      errors.add :base,
+                 "Partners cannot have a service area outside of your ward."
     end
   end
 
   def must_have_address_or_service_area
     return if service_areas.any? || address.present?
 
-    errors.add :base, 'Partners must have at least one of service area or address'
+    errors.add :base,
+               "Partners must have at least one of service area or address"
   end
 
   def unix_updated_at

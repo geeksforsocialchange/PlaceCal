@@ -3,19 +3,17 @@ module Types
 
   module PartnerQueries
     def self.included(klass)
-
-      klass.field :partner, PartnerType  do
-        description 'Retrieve one Partner based on specific ID'
+      klass.field :partner, PartnerType do
+        description "Retrieve one Partner based on specific ID"
         argument :id, ID
       end
 
       klass.field :partner_connection, Types::PartnerType.connection_type do
-        description \
-          'Get partners in chunks'
+        description "Get partners in chunks"
       end
 
       klass.field :partners_by_tag, [PartnerType] do
-        description 'Retrieve list of partners that have been given a certain tag'
+        description "Retrieve list of partners that have been given a certain tag"
         argument :tag_id, ID
       end
     end
@@ -40,17 +38,16 @@ module Types
       #end
 
       klass.field :article_connection, Types::ArticleType.connection_type do
-        description \
-          'Get articles in chunks'
+        description "Get articles in chunks"
       end
 
       klass.field :articles_by_tag, [Types::ArticleType] do
-        description 'Find all news articles that have a given tag attached'
+        description "Find all news articles that have a given tag attached"
         argument :tag_id, ID
       end
 
       klass.field :articles_by_partner_tag, [Types::ArticleType] do
-        description 'Find news articles were written by partner that had a given tag'
+        description "Find news articles were written by partner that had a given tag"
         argument :tag_id, ID
       end
     end
@@ -71,13 +68,12 @@ module Types
   module SiteQueries
     def self.included(klass)
       klass.field :site, SiteType do
-        description 'Retrieve one Site based on specific ID'
+        description "Retrieve one Site based on specific ID"
         argument :id, ID
       end
 
       klass.field :site_connection, Types::SiteType.connection_type do
-        description \
-          'Get sites in chunks'
+        description "Get sites in chunks"
       end
     end
 
@@ -92,9 +88,11 @@ module Types
 
   module MiscQueries
     def self.included(klass)
-      klass.field :ping, String,
-        null: false,
-        description: "Ping server, returns a happy message and a timestamp"
+      klass.field :ping,
+                  String,
+                  null: false,
+                  description:
+                    "Ping server, returns a happy message and a timestamp"
     end
 
     def ping
@@ -103,7 +101,6 @@ module Types
   end
 
   class QueryType < Types::BaseObject
-
     description "The base query schema for all of PlaceCal's GraphQL queries"
 
     # Add `node(id: ID!) and `nodes(ids: [ID!]!)`

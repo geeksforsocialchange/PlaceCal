@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnerServiceAreaTest < ActiveSupport::TestCase
   setup do
@@ -10,15 +10,15 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner = build(:partner, address: nil, accessed_by_user: @user)
   end
 
-  test 'is valid when empty' do
+  test "is valid when empty" do
     # give partner an address the user administrates
     @partner.address = create(:address, neighbourhood: @neighbourhood)
     @partner.save!
 
-    assert @partner.valid?, 'Partner (without service_area) is not valid'
+    assert @partner.valid?, "Partner (without service_area) is not valid"
   end
 
-  test 'is valid when set, can be accessed' do
+  test "is valid when set, can be accessed" do
     model = build(:ashton_service_area_partner)
     model.save!
     assert model.valid?
@@ -27,29 +27,29 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     assert_equal 1, service_areas.count
   end
 
-  test 'can be assigned' do
+  test "can be assigned" do
     @partner.accessed_by_user = @user
     @partner.service_area_neighbourhoods << @neighbourhood
     @partner.save!
 
-    assert @partner.valid?, 'Partner (with service_area) is not valid'
+    assert @partner.valid?, "Partner (with service_area) is not valid"
 
     neighbourhood_count = @partner.service_area_neighbourhoods.count
-    assert_equal 1, neighbourhood_count, 'count neighbourhoods'
+    assert_equal 1, neighbourhood_count, "count neighbourhoods"
   end
 
-  test 'must be unique' do
+  test "must be unique" do
     @partner.address = create(:address, neighbourhood: @neighbourhood)
     @partner.save!
 
-    assert_raises ActiveRecord::RecordInvalid do 
+    assert_raises ActiveRecord::RecordInvalid do
       @partner.service_areas.create!(neighbourhood: @neighbourhood)
       @partner.service_areas.create!(neighbourhood: @neighbourhood)
     end
     # need to also test this with regards to model creation from the web front-end
   end
 
-  test 'can be read when present' do
+  test "can be read when present" do
     @partner.address = create(:address, neighbourhood: @neighbourhood)
     @partner.save!
 
@@ -57,24 +57,25 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.service_areas.create! neighbourhood: @neighbourhood
     @partner.service_areas.create! neighbourhood: other_neighbourhood
 
-    neighbourhoods = @partner.service_area_neighbourhoods.order('neighbourhoods.name').all
-    assert neighbourhoods.count == 2, 'Failed to count neighbourhoods'
+    neighbourhoods =
+      @partner.service_area_neighbourhoods.order("neighbourhoods.name").all
+    assert neighbourhoods.count == 2, "Failed to count neighbourhoods"
 
     n1 = neighbourhoods[0]
-    assert_equal 'Ashton Hurst', n1.name
+    assert_equal "Ashton Hurst", n1.name
 
     n2 = neighbourhoods[1]
-    assert_equal 'Hulme', n2.name
+    assert_equal "Hulme", n2.name
   end
 
-  test 'must be within users neighbourhoods' do
+  test "must be within users neighbourhoods" do
     @partner.service_areas.build neighbourhood: create(:moss_side_neighbourhood)
     @partner.validate
 
-    assert @partner.valid? == false, 'Partner should not be valid'
+    assert @partner.valid? == false, "Partner should not be valid"
   end
 
-  test 'can be set by root users' do
+  test "can be set by root users" do
     root_user = create(:root)
     other_neighbourhood = create(:moss_side_neighbourhood)
 
@@ -82,9 +83,9 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.service_area_neighbourhoods << other_neighbourhood
     @partner.save!
 
-    assert @partner.valid?, 'Partner (with service_area) should be valid'
+    assert @partner.valid?, "Partner (with service_area) should be valid"
 
     neighbourhood_count = @partner.service_area_neighbourhoods.count
-    assert_equal 1, neighbourhood_count, 'count neighbourhoods'
+    assert_equal 1, neighbourhood_count, "count neighbourhoods"
   end
 end

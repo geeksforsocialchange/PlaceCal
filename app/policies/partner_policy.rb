@@ -42,15 +42,43 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    attrs = [ :name, :image, :summary, :description, :accessibility_info,
-              :public_name, :public_email, :public_phone,
-              :partner_name, :partner_email, :partner_phone,
-              :address_id, :url, :facebook_link, :twitter_handle,
-              :opening_times,
-              calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
-              address_attributes: %i[id street_address street_address2 street_address3 city postcode],
-              service_areas_attributes: %i[id neighbourhood_id _destroy],
-              tag_ids: [] ]
+    attrs = [
+      :name,
+      :image,
+      :summary,
+      :description,
+      :accessibility_info,
+      :public_name,
+      :public_email,
+      :public_phone,
+      :partner_name,
+      :partner_email,
+      :partner_phone,
+      :address_id,
+      :url,
+      :facebook_link,
+      :twitter_handle,
+      :opening_times,
+      calendars_attributes: %i[
+        id
+        name
+        source
+        strategy
+        place_id
+        partner_id
+        _destroy
+      ],
+      address_attributes: %i[
+        id
+        street_address
+        street_address2
+        street_address3
+        city
+        postcode
+      ],
+      service_areas_attributes: %i[id neighbourhood_id _destroy],
+      tag_ids: []
+    ]
 
     attrs << :slug if user.root?
     attrs
@@ -60,7 +88,6 @@ class PartnerPolicy < ApplicationPolicy
     def resolve
       if user.root?
         scope.all
-
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
 
@@ -72,7 +99,12 @@ class PartnerPolicy < ApplicationPolicy
 
         scope
           .left_outer_joins(:users, :address, :service_areas)
-          .where(clause, user.id, user_neighbourhood_ids, user_neighbourhood_ids)
+          .where(
+            clause,
+            user.id,
+            user_neighbourhood_ids,
+            user_neighbourhood_ids
+          )
           .distinct
       end
     end

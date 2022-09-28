@@ -3,7 +3,9 @@
 FactoryBot.define do
   factory(:event) do
     sequence(:summary) { |n| "N.A. (Narcotics Anonymous) - Meetup #{n}" }
-    raw_location_from_source { 'Unformatted Address, Ungeolocated Lane, Manchester' }
+    raw_location_from_source do
+      "Unformatted Address, Ungeolocated Lane, Manchester"
+    end
     dtstart { DateTime.now + 1.day }
     dtend { DateTime.now + 1.day + 2.hours }
     is_active { true }
@@ -18,8 +20,6 @@ FactoryBot.define do
       association :partner
     end
 
-    after(:build) do |event|
-      event.partner = create(:partner)
-    end
+    after(:build) { |event| event.partner = create(:partner) }
   end
 end

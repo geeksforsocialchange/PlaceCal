@@ -10,7 +10,6 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Base.transaction do
-end
+ActiveRecord::Base.transaction {}
 
-SeedMigration::Migrator.bootstrap(20180625172033)
+SeedMigration::Migrator.bootstrap(20_180_625_172_033)

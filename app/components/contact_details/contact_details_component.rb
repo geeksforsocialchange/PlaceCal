@@ -22,9 +22,10 @@ class ContactDetailsComponent < MountainView::Presenter
   end
 
   def strip_url(target_url)
-    target_url.gsub('http://', '')
-              .gsub('https://', '')
-              .gsub('www.', '')
-              .gsub(/\/$/, '')
+    target_url
+      .gsub("http://", "")
+      .gsub("https://", "")
+      .gsub("www.", "")
+      .gsub(%r{/$}, "")
   end
 end

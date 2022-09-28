@@ -6,6 +6,6 @@ class SitesTag < ApplicationRecord
   validates :tag_id,
             uniqueness: {
               scope: :site_id,
-              message: 'Site cannot be assigned more than once to a tag'
+              message: "Site cannot be assigned more than once to a tag"
             }
 end

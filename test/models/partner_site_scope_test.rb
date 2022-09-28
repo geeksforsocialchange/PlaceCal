@@ -1,47 +1,46 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnerSiteScopeTest < ActiveSupport::TestCase
-
   # this verifies that partner#for_site is behaving
 
   # NOTE: these MUST match up with the geocoder response
   #   defined in test/support/geocoder.rb
-  POST_CODE = 'M15 5DD'
-  UNIT = 'ward'
-  UNIT_CODE = 'E05011368' # from codes/admin_ward
-  UNIT_NAME = 'Hulme' # from admin_ward
-  UNIT_CODE_KEY = 'WD19CD'
+  POST_CODE = "M15 5DD"
+  UNIT = "ward"
+  UNIT_CODE = "E05011368" # from codes/admin_ward
+  UNIT_NAME = "Hulme" # from admin_ward
+  UNIT_CODE_KEY = "WD19CD"
 
   def site
     @site ||= create(:site)
   end
 
   def geocodable_neighbourhood_one
-    @geocodable_neighbourhood_one ||= create(
-      :bare_neighbourhood,
-      unit: UNIT,
-      unit_name: UNIT_NAME,
-      unit_code_key: UNIT_CODE_KEY,
-      unit_code_value: UNIT_CODE
-    )
+    @geocodable_neighbourhood_one ||=
+      create(
+        :bare_neighbourhood,
+        unit: UNIT,
+        unit_name: UNIT_NAME,
+        unit_code_key: UNIT_CODE_KEY,
+        unit_code_value: UNIT_CODE
+      )
   end
 
   def address_one
-    @addresss_one ||= create(
-      :bare_address_1,
-      postcode: POST_CODE # IMPORTANT!
-    )
+    @addresss_one ||=
+      create(
+        :bare_address_1,
+        postcode: POST_CODE # IMPORTANT!
+      )
   end
 
-  setup do
-    Neighbourhood.destroy_all
-  end
+  setup { Neighbourhood.destroy_all }
 
   test "empty site returns nothing" do
     output = Partner.for_site(site)
-    assert output.empty?, 'site should be empty'
+    assert output.empty?, "site should be empty"
   end
 
   test "can find partners in site with address" do
@@ -160,7 +159,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     partner_d = create_partner_with_tags(neighbourhood)
 
     found = Partner.for_site(site)
-    assert_equal 3, found.count, 'Partner should only appear once'
+    assert_equal 3, found.count, "Partner should only appear once"
 
     found_ids = found.map(&:id)
     should_be_ids = [partner_a.id, partner_b.id, partner_c.id]
@@ -171,9 +170,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
   def create_partner_with_tags(neighbourhood, *tags)
     partner = build(:partner, address: nil)
     partner.service_area_neighbourhoods << neighbourhood
-    tags.each do |tag|
-      partner.tags << tag
-    end
+    tags.each { |tag| partner.tags << tag }
     partner.save!
 
     partner

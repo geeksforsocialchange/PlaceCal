@@ -17,11 +17,11 @@
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
-guard :minitest, spring: 'bin/rails test', env: { 'NO_COVERAGE': 'true' } do
+guard :minitest, spring: "bin/rails test", env: { NO_COVERAGE: "true" } do
   # with Minitest::Unit
   watch(%r{^test/(.*)\/?(.*)\_test.rb$})
-  watch(%r{^lib/(.*/)?([^/]+)\.rb$})     { |m| "test/#{m[1]}test_#{m[2]}.rb" }
-  watch(%r{^test/test_helper\.rb$})      { 'test' }
+  watch(%r{^lib/(.*/)?([^/]+)\.rb$}) { |m| "test/#{m[1]}test_#{m[2]}.rb" }
+  watch(%r{^test/test_helper\.rb$}) { "test" }
 
   # with Minitest::Spec
   # watch(%r{^spec/(.*)_spec\.rb$})
@@ -29,8 +29,7 @@ guard :minitest, spring: 'bin/rails test', env: { 'NO_COVERAGE': 'true' } do
   # watch(%r{^spec/spec_helper\.rb$}) { 'spec' }
 end
 
-guard 'livereload', grace_period: 1 do
-
+guard "livereload", grace_period: 1 do
   extensions = {
     css: :css,
     scss: :css,
@@ -46,22 +45,24 @@ guard 'livereload', grace_period: 1 do
 
   # file types LiveReload may optimize refresh for
   compiled_exts = extensions.values.uniq
-  watch(%r{public/.+\.(#{compiled_exts * '|'})})
+  watch(%r{public/.+\.(#{compiled_exts * "|"})})
 
   extensions.each do |ext, type|
-    watch(%r{
+    watch(
+      %r{
           (?:app|vendor)
           (?:/assets/\w+/(?<path>[^.]+) # path+base without extension
            (?<ext>\.#{ext})) # matching extension (must be first encountered)
           (?:\.\w+|$) # other extensions
-          }x) do |m|
+          }x
+    ) do |m|
       path = m[1]
       "/assets/#{path}.#{type}"
     end
   end
 
   # file needing a full reload of the page anyway
-  watch(%r{app/views/.+\.(#{rails_view_exts * '|'})$})
+  watch(%r{app/views/.+\.(#{rails_view_exts * "|"})$})
   watch(%r{app/helpers/.+\.rb})
   watch(%r{app/components/.+\.(erb|rb|sass|yml|js)})
   watch(%r{config/locales/.+\.yml})

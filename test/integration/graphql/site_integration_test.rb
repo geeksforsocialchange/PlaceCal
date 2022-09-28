@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class GraphQLSitesTest < ActionDispatch::IntegrationTest
-  test 'can show sites' do
-    5.times do |n|
-      FactoryBot.create(:site, name: "Site #{n}")
-    end
+  test "can show sites" do
+    5.times { |n| FactoryBot.create(:site, name: "Site #{n}") }
 
     query_string = <<-GRAPHQL
       query {
@@ -22,18 +20,19 @@ class GraphQLSitesTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    data = result['data']
+    data = result["data"]
 
-    assert data.has_key?('siteConnection'), 'result is missing key `siteConnection`'
-    connection = data['siteConnection']
+    assert data.has_key?("siteConnection"),
+           "result is missing key `siteConnection`"
+    connection = data["siteConnection"]
 
-    assert connection.has_key?('edges')
-    edges = connection['edges']
+    assert connection.has_key?("edges")
+    edges = connection["edges"]
 
     assert edges.length == 5
   end
 
-  test 'can show specific site' do
+  test "can show specific site" do
     site = FactoryBot.create(:site)
 
     query_string = <<-GRAPHQL
@@ -47,11 +46,10 @@ class GraphQLSitesTest < ActionDispatch::IntegrationTest
 
     result = PlaceCalSchema.execute(query_string)
 
-    data = result['data']
-    assert data.has_key?('site')
+    data = result["data"]
+    assert data.has_key?("site")
 
-    data_site = data['site']
-    assert data_site['name'] == site.name
-
+    data_site = data["site"]
+    assert data_site["name"] == site.name
   end
 end

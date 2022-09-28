@@ -29,6 +29,6 @@ class SupporterLogoUploader < DefaultUploader
   private
 
   def is_raster?(new_file)
-    File.extname(new_file.file) != '.svg'
+    File.extname(new_file.file) != ".svg"
   end
 end

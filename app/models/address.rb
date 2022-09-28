@@ -2,11 +2,11 @@
 
 # app/models/address.rb
 class Address < ApplicationRecord
-
-  POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
+  POSTCODE_REGEX =
+    /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
 
   validates :street_address, :postcode, :country_code, presence: true
-  validates :postcode, format: { with: POSTCODE_REGEX, message: 'is invalid' }
+  validates :postcode, format: { with: POSTCODE_REGEX, message: "is invalid" }
 
   # Geocoding with postcodes.io
   # Only postcode changes will change the result that postodes.io returns.
@@ -23,9 +23,10 @@ class Address < ApplicationRecord
 
   belongs_to :neighbourhood, optional: true
 
-  scope :find_by_street_or_postcode, lambda { |street, postcode|
-    where(street_address: street).or(where(postcode: postcode))
-  }
+  scope :find_by_street_or_postcode,
+        lambda { |street, postcode|
+          where(street_address: street).or(where(postcode: postcode))
+        }
 
   def prepend_room_number(room_number_string)
     street_address3 = street_address2
@@ -40,27 +41,19 @@ class Address < ApplicationRecord
 
   # Needed for schema.org outputs as streetAddress
   def full_street_address
-    [ street_address,
-      street_address2,
-      street_address3
-    ].reject(&:blank?).join(', ')
+    [street_address, street_address2, street_address3].reject(&:blank?).join(
+      ", "
+    )
   end
 
   def other_address_lines
-    [ street_address2,
-      street_address3,
-      city,
-      postcode
-    ].reject(&:blank?)
+    [street_address2, street_address3, city, postcode].reject(&:blank?)
   end
 
   def all_address_lines
-    [ street_address,
-      street_address2,
-      street_address3,
-      city,
-      postcode
-    ].reject(&:blank?)
+    [street_address, street_address2, street_address3, city, postcode].reject(
+      &:blank?
+    )
   end
 
   def last_line_of_address
@@ -68,7 +61,7 @@ class Address < ApplicationRecord
   end
 
   def to_s
-    all_address_lines.join(', ')
+    all_address_lines.join(", ")
   end
 
   # Set the (lat,lon) and neighbourhood from address data.
@@ -91,8 +84,8 @@ class Address < ApplicationRecord
 
     # Standardise the lat and lng for each postcode
     # Makes it easier to catch dupes
-    self.longitude = res['longitude']
-    self.latitude = res['latitude']
+    self.longitude = res["longitude"]
+    self.latitude = res["latitude"]
   end
 
   def standardise_postcode
@@ -106,13 +99,17 @@ class Address < ApplicationRecord
       return nil if components.empty?
 
       # try by street name string match
-      address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
+      address =
+        Address.find_by(
+          "lower(street_address) IN (?)",
+          components.map(&:downcase)
+        )
       return address if address
 
       # try by postcode
       postcode = standardised_postcode(postcode)
 
-      if postcode && postcode.length >= 'A1 1AA'.length
+      if postcode && postcode.length >= "A1 1AA".length
         address = Address.find_by(postcode: postcode)
         return address if address
       end
@@ -124,12 +121,13 @@ class Address < ApplicationRecord
     def build_from_components(components, postcode)
       return if components.blank?
 
-      address = Address.new(
-        street_address:  components[0]&.strip,
-        street_address2: components[1]&.strip,
-        street_address3: components[2]&.strip,
-        postcode:        postcode
-      )
+      address =
+        Address.new(
+          street_address: components[0]&.strip,
+          street_address2: components[1]&.strip,
+          street_address3: components[2]&.strip,
+          postcode: postcode
+        )
       address if address.save
     end
 
@@ -139,7 +137,7 @@ class Address < ApplicationRecord
     # before the final three characters.
     def standardised_postcode(pc)
       return unless pc
-      pc.gsub(/\s+/, '').strip.upcase.insert(-4, ' ')
+      pc.gsub(/\s+/, "").strip.upcase.insert(-4, " ")
     end
   end
 end

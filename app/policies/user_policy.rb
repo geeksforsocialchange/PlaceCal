@@ -49,11 +49,7 @@ class UserPolicy < ApplicationPolicy
       :avatar,
       { partner_ids: [] }
     ]
-    root_attrs = [
-      :role,
-      { tag_ids: [],
-        neighbourhood_ids: [] }
-    ]
+    root_attrs = [:role, { tag_ids: [], neighbourhood_ids: [] }]
 
     user.root? ? attrs + root_attrs : attrs
   end
@@ -75,23 +71,13 @@ class UserPolicy < ApplicationPolicy
       :avatar,
       { partner_ids: [] }
     ]
-    root_attrs = [
-      :role,
-      { tag_ids: [],
-        neighbourhood_ids: [] }
-    ]
+    root_attrs = [:role, { tag_ids: [], neighbourhood_ids: [] }]
 
     user.root? ? attrs + root_attrs : attrs
   end
 
   def disabled_attributes_for_update
-    attrs = %i[
-      first_name
-      last_name
-      email
-      phone
-      avatar
-    ]
+    attrs = %i[first_name last_name email phone avatar]
 
     return [] if user.root?
 

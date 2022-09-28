@@ -8,7 +8,7 @@ module CalendarImporter::Parsers
   class Xml < Base
     def download_calendar
       xml = HTTParty.get(@url, follow_redirects: true).body
-      Nokogiri::XML(xml)
+      Nokogiri.XML(xml)
     end
   end
 end

@@ -10,10 +10,7 @@ module CalendarImporter::Events
       @event = event
     end
 
-    attr_accessor :place_id,
-                  :address_id,
-                  :partner_id,
-                  :online_address_id
+    attr_accessor :place_id, :address_id, :partner_id, :online_address_id
 
     def rrule
       nil
@@ -21,7 +18,7 @@ module CalendarImporter::Events
 
     def sanitize_invalid_char(input)
       # input = I18n.transliterate(input)
-      input.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
+      input.encode("utf-8", invalid: :replace, undef: :replace, replace: "")
     end
 
     # Convert h1 and h2 to h3
@@ -29,14 +26,14 @@ module CalendarImporter::Events
     # Convert all html to markdown
     def html_sanitize(input)
       input = input.to_s.strip
-      return '' if input.blank?
+      return "" if input.blank?
 
       clean_text = sanitize_invalid_char(input)
-      input_mode = 'markdown'
+      input_mode = "markdown"
 
       doc = Nokogiri::HTML.fragment(clean_text)
-      if doc.css('*').length > 0
-        input_mode = 'html'
+      if doc.css("*").length > 0
+        input_mode = "html"
         # looks like HTML to us
 
         #if doc.errors.any? # this could be useful?
@@ -45,37 +42,41 @@ module CalendarImporter::Events
         #  return ''
         #end
 
-        doc.css('h1', 'h2').each { |header| header.name = 'h3' }
+        doc.css("h1", "h2").each { |header| header.name = "h3" }
 
         if footer.present?
-          doc << '<br/><br/>'
+          doc << "<br/><br/>"
           doc << footer
         end
 
         body_text = doc.serialize
-        clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
+        clean_text =
+          ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
       end
 
       Kramdown::Document.new(clean_text, input: input_mode).to_kramdown.strip
     end
 
     def attributes
-      { uid:                      uid&.strip,
-        summary:                  sanitize_invalid_char(summary),
-        description:              html_sanitize(description),
+      {
+        uid: uid&.strip,
+        summary: sanitize_invalid_char(summary),
+        description: html_sanitize(description),
         raw_location_from_source: location&.strip,
-        rrule:                    rrule,
-        place_id:                 place_id,
-        address_id:               address_id,
-        partner_id:               partner_id,
-        publisher_url:            publisher_url,
-        online_address_id:        online_address_id
+        rrule: rrule,
+        place_id: place_id,
+        address_id: address_id,
+        partner_id: partner_id,
+        publisher_url: publisher_url,
+        online_address_id: online_address_id
       }
     end
 
-    def footer; end
+    def footer
+    end
 
-    def publisher_url; end
+    def publisher_url
+    end
 
     def has_location?
       !location.blank?
@@ -87,7 +88,11 @@ module CalendarImporter::Events
 
     def postcode
       postal = location.match(Address::POSTCODE_REGEX).try(:[], 0)
-      postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0) if postal.blank? # check for instances of M14 or M15 4 or whatever madness they've come up with
+      postal =
+        /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(
+          :[],
+          0
+        ) if postal.blank? # check for instances of M14 or M15 4 or whatever madness they've come up with
 
       # TODO? Remove? This will currently do nothing because postcodes.io only
       # works on postcodes and we have established that a postcode does not
@@ -110,7 +115,8 @@ module CalendarImporter::Events
     end
 
     def private?
-      ip_class&.casecmp('private')&.zero? || (description&.include?('#placecal-ignore'))
+      ip_class&.casecmp("private")&.zero? ||
+        (description&.include?("#placecal-ignore"))
     end
 
     def online_event?

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnerPolicyTest < ActiveSupport::TestCase
   setup do
     # Make some user accounts
     # -----------------------
     @citizen = create(:citizen)
-  
+
     @correct_partner_admin = create(:partner_admin)
     @wrong_partner_admin = create(:partner_admin)
 
@@ -24,10 +24,13 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
     ## Set up partner we want to test for and make sure it's in the right regions
     # ---------------------------------------------------------------------------
-    
+
     @partner = @correct_partner_admin.partners.first
     @correct_ward_admin.neighbourhoods << @partner.address.neighbourhood
-    @correct_district_admin.neighbourhoods << @partner.address.neighbourhood.district
+    @correct_district_admin.neighbourhoods << @partner
+      .address
+      .neighbourhood
+      .district
 
     # parent = @partner.address.neighbourhood.parent
     # puts "A: Partner address ward parental ID: #{parent.id}; Child ID: #{@partner.address.neighbourhood.id}"
@@ -38,7 +41,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     # puts "B: Partner address ward parental ID: #{parent.id}; Child ID: #{@partner.address.neighbourhood.id}"
     # is_childed = parent.children.map(&:subtree).flatten.include?(@partner.address.neighbourhood)
     # puts "B: Partner address ward parent contains ward: #{is_childed}"
-    
+
     # @multi_admin = create(:neighbourhood_admin)
     # @multi_admin.neighbourhoods << @partner.address.neighbourhood
 
@@ -47,7 +50,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
   end
 
   #  Everyone except guess can view list
-  def test_index    
+  def test_index
     assert denies_access(@citizen, Partner, :index)
 
     assert allows_access(@root, Partner, :index)
@@ -137,10 +140,9 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
     # denies user with no partners
     assert denies_access(user, partner, :update)
-    
+
     # can update partners user has access to
     user.partners << partner
     assert allows_access(user, partner, :update)
   end
 end
-

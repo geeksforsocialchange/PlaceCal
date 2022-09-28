@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class CalendarImporter::CalendarImporterTask
-  attr_reader :calendar,
-              :from_date,
-              :force_import
+  attr_reader :calendar, :from_date, :force_import
 
   def initialize(calendar, from_date, force_import)
     @calendar = calendar
@@ -20,16 +18,15 @@ class CalendarImporter::CalendarImporterTask
       #   calendar.events.destroy_all
       # end
 
-      parsed_events.each do |parsed_event|
-        process_event parsed_event
-      end
+      parsed_events.each { |parsed_event| process_event parsed_event }
 
       purge_stale_events_from_calendar
     end
 
-    calendar.flag_complete_import_job! notices, calendar_source.checksum, parser::KEY
+    calendar.flag_complete_import_job! notices,
+                                       calendar_source.checksum,
+                                       parser::KEY
   end
-
 
   private
 
@@ -46,18 +43,26 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def calendar_source
-    @calendar_source ||= parser.new(
-      calendar,
-      from: from_date,
-      force_import: force_import
-    ).calendar_to_events
+    @calendar_source ||=
+      parser.new(
+        calendar,
+        from: from_date,
+        force_import: force_import
+      ).calendar_to_events
   end
 
   def event_data_from_parser
-    return [] if !force_import && calendar.last_checksum == calendar_source.checksum
+    if !force_import && calendar.last_checksum == calendar_source.checksum
+      return []
+    end
 
     calendar_source.events.map do |event_data|
-      CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
+      CalendarImporter::EventResolver.new(
+        event_data,
+        calendar,
+        notices,
+        from_date
+      )
     end
   end
 
@@ -73,7 +78,6 @@ class CalendarImporter::CalendarImporterTask
     active_event_uids << parsed_event.uid
 
     parsed_event.save_all_occurences
-
   rescue CalendarImporter::EventResolver::Problem => e
     notices << e.message
   end

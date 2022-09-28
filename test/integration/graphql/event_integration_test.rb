@@ -1,29 +1,34 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class GraphQLEventTest < ActionDispatch::IntegrationTest
   setup do
-    partner_address = create(:bare_address_1, neighbourhood: neighbourhoods(:one))
+    partner_address =
+      create(:bare_address_1, neighbourhood: neighbourhoods(:one))
     @partner = create(:partner, address: partner_address)
 
     @address = @partner.address
-    assert @address, 'Failed to create Address from partner'
+    assert @address, "Failed to create Address from partner"
 
-    @calendar = create(
-      :calendar,
-      partner: @partner,
-      name: 'Partner Calendar',
-      source: 'http://example.com'
-    )
-    assert @calendar, 'Failed to create calendar from partner'
+    @calendar =
+      create(
+        :calendar,
+        partner: @partner,
+        name: "Partner Calendar",
+        source: "http://example.com"
+      )
+    assert @calendar, "Failed to create calendar from partner"
   end
 
-  test 'can show partners (with pagination)' do
-    create_list(:event, 5,
-                partner: @partner,
-                dtstart: Time.now,
-                address: @address)
+  test "can show partners (with pagination)" do
+    create_list(
+      :event,
+      5,
+      partner: @partner,
+      dtstart: Time.now,
+      address: @address
+    )
 
     query_string = <<-GRAPHQL
       query {
@@ -40,23 +45,24 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
+    refute_field result, "errors"
 
-    data = assert_field result, 'data'
-    connection = assert_field data, 'eventConnection'
-    edges = assert_field connection, 'edges'
+    data = assert_field result, "data"
+    connection = assert_field data, "eventConnection"
+    edges = assert_field connection, "edges"
 
     assert_equal edges.length, 5
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
-  test 'can show specific event' do
-    event = @partner.events.create!(
-      dtstart: Time.now,
-      summary: "An event summary",
-      description: 'Longer text covering the event in more detail',
-      address: @address
-    )
+  test "can show specific event" do
+    event =
+      @partner.events.create!(
+        dtstart: Time.now,
+        summary: "An event summary",
+        description: "Longer text covering the event in more detail",
+        address: @address
+      )
 
     query_string = <<-GRAPHQL
       query {
@@ -82,22 +88,23 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
+    refute_field result, "errors"
 
-    data = result['data']
-    assert_field data, 'event', 'Data structure does not contain event key'
+    data = result["data"]
+    assert_field data, "event", "Data structure does not contain event key"
 
-    data_event = data['event']
+    data_event = data["event"]
 
-    assert_field_equals data_event, 'summary', value: event.summary
-    assert_field_equals data_event, 'name', value: event.summary
+    assert_field_equals data_event, "summary", value: event.summary
+    assert_field_equals data_event, "name", value: event.summary
 
-    assert_field data_event, 'startDate', 'missing startDate'
-    assert data_event['startDate'] =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, 'startDate is not in ISO format'
+    assert_field data_event, "startDate", "missing startDate"
+    assert data_event["startDate"] =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/,
+           "startDate is not in ISO format"
 
-    assert_field data_event, 'endDate', 'missing endDate'
-    assert_field data_event, 'address', 'missing address'
-    assert_field data_event, 'organizer', 'missing organizer'
+    assert_field data_event, "endDate", "missing endDate"
+    assert_field data_event, "address", "missing address"
+    assert_field data_event, "organizer", "missing organizer"
   end
 
   # the filter tests
@@ -108,8 +115,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     5.times do
       @partner.events.create!(
         dtstart: time,
-        summary: 'past: An event summary',
-        description: 'Longer text covering the event in more detail',
+        summary: "past: An event summary",
+        description: "Longer text covering the event in more detail",
         address: @address
       )
       time += 1.days
@@ -120,8 +127,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     5.times do
       @partner.events.create!(
         dtstart: time,
-        summary: 'present: An event summary',
-        description: 'Longer text covering the event in more detail',
+        summary: "present: An event summary",
+        description: "Longer text covering the event in more detail",
         address: @address
       )
       time += 1.days
@@ -133,14 +140,14 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       @partner.events.create!(
         dtstart: time,
         summary: "future: An event summary",
-        description: 'Longer text covering the event in more detail',
+        description: "Longer text covering the event in more detail",
         address: @address
       )
       time += 1.days
     end
   end
 
-  test 'returns events from today' do
+  test "returns events from today" do
     now_time = DateTime.new(1990, 1, 1, 0, 0, 0)
     build_time_events now_time
 
@@ -156,18 +163,19 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       GRAPHQL
 
       result = PlaceCalSchema.execute(query_string)
-      refute_field result, 'errors'
+      refute_field result, "errors"
 
-      data = result['data']
-      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      data = result["data"]
+      assert data.has_key?("eventsByFilter"),
+             "Data structure does not contain event key"
 
-      events = data['eventsByFilter']
-      assert_equal events.length, 10, 'was expecting only events in the future'
+      events = data["eventsByFilter"]
+      assert_equal events.length, 10, "was expecting only events in the future"
       # TODO: Actually test that the events we are getting back are the ones we want
     end
   end
 
-  test 'returns events from a given point in time' do
+  test "returns events from a given point in time" do
     now_time = DateTime.new(1990, 1, 1, 0, 0, 0)
     build_time_events now_time
 
@@ -183,18 +191,19 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       GRAPHQL
 
       result = PlaceCalSchema.execute(query_string)
-      refute_field result, 'errors'
+      refute_field result, "errors"
 
-      data = result['data']
-      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      data = result["data"]
+      assert data.has_key?("eventsByFilter"),
+             "Data structure does not contain event key"
 
-      events = data['eventsByFilter']
-      assert_equal events.length, 15, 'was expecting to see all events'
+      events = data["eventsByFilter"]
+      assert_equal events.length, 15, "was expecting to see all events"
       # TODO: Actually test that the events we are getting back are the ones we want
     end
   end
 
-  test 'returns events in a given range when blocked out' do
+  test "returns events in a given range when blocked out" do
     now_time = DateTime.new(1990, 1, 1, 0, 0, 0)
     build_time_events now_time
 
@@ -210,25 +219,28 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       GRAPHQL
 
       result = PlaceCalSchema.execute(query_string)
-      refute_field result, 'errors'
+      refute_field result, "errors"
 
-      data = result['data']
-      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      data = result["data"]
+      assert data.has_key?("eventsByFilter"),
+             "Data structure does not contain event key"
 
-      events = data['eventsByFilter']
-      assert_equal events.length, 5, 'was expecting to see only some future events'
+      events = data["eventsByFilter"]
+      assert_equal events.length,
+                   5,
+                   "was expecting to see only some future events"
       # TODO: Actually test that the events we are getting back are the ones we want
     end
   end
 
   # this should mainly be tested elsewhere
   #   (the same place service area scoping is tested)
-  test 'can scope to neighbourhood (via partner address)' do
+  test "can scope to neighbourhood (via partner address)" do
     3.times do
       @partner.events.create!(
         dtstart: DateTime.now + 1.hours,
         summary: "partner 1: An event summary",
-        description: 'Longer text covering the event in more detail',
+        description: "Longer text covering the event in more detail",
         address: @address
       )
     end
@@ -240,7 +252,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       other_partner.events.create!(
         dtstart: DateTime.now + 1.hours,
         summary: "partner 2: An event summary",
-        description: 'Longer text covering the event in more detail',
+        description: "Longer text covering the event in more detail",
         address: other_address
       )
     end
@@ -255,19 +267,22 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
+    refute_field result, "errors"
 
-    data = result['data']
-    assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+    data = result["data"]
+    assert data.has_key?("eventsByFilter"),
+           "Data structure does not contain event key"
 
-    events = data['eventsByFilter']
-    assert_equal events.length, 5, 'was expecting to see only events from other_partner'
+    events = data["eventsByFilter"]
+    assert_equal events.length,
+                 5,
+                 "was expecting to see only events from other_partner"
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
-  test 'can scope to neighbourhood (via partner service area)' do
+  test "can scope to neighbourhood (via partner service area)" do
     neighbourhood_good = neighbourhoods(:one)
-    neighbourhood_bad  = neighbourhoods(:two)
+    neighbourhood_bad = neighbourhoods(:two)
 
     @partner.service_areas.create! neighbourhood: neighbourhood_good
     @partner.update! address: nil
@@ -276,7 +291,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       @partner.events.create!(
         dtstart: DateTime.now + 1.hours,
         summary: "partner in good neighbourhood: An event summary",
-        description: 'Longer text covering the event in more detail',
+        description: "Longer text covering the event in more detail",
         address: @address
       )
     end
@@ -289,7 +304,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       other_partner.events.create!(
         dtstart: DateTime.now + 1.hours,
         summary: "partner in bad neighbourhood: An event summary",
-        description: 'Longer text covering the event in more detail',
+        description: "Longer text covering the event in more detail",
         address: create(:bare_address_2)
       )
     end
@@ -304,30 +319,33 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
+    refute_field result, "errors"
 
-    data = result['data']
-    assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+    data = result["data"]
+    assert data.has_key?("eventsByFilter"),
+           "Data structure does not contain event key"
 
-    events = data['eventsByFilter']
-    assert_equal events.length, 5, 'was expecting to see only events within neighbourhood_good service area'
+    events = data["eventsByFilter"]
+    assert_equal events.length,
+                 5,
+                 "was expecting to see only events within neighbourhood_good service area"
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
   # in cases where we have eventConnection { edges { node { ... } } }
   def map_edges_to_ids(edges)
     # [{ 'node': { 'id': 23, etc } }, ...] => { '23': { 'id': 23, etc }, ... }
-    edges.map { |edge| [edge['node']['id'].to_i, edge['node']] }.to_h
+    edges.map { |edge| [edge["node"]["id"].to_i, edge["node"]] }.to_h
   end
 
   # in cases where we have eventsByFilter { ... }
   def map_results_to_ids(events)
     # [{ 'id': 23, etc }, ...] => { '23': { 'id': 23, etc }, ... }
-    events.map { |event| [event['id'].to_i, event] }.to_h
+    events.map { |event| [event["id"].to_i, event] }.to_h
   end
 
   # this should mainly be tested elsewhere
-  test 'can scope to tag (via partner tags)' do
+  test "can scope to tag (via partner tags)" do
     blue_tag = create(:tag)
     red_tag = create(:tag)
 
@@ -338,10 +356,13 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     # Blue events should show up in the results
     blue_address = create(:bare_address_2, neighbourhood: neighbourhoods(:two))
     blue_events = create_list(:event, 6, address: blue_address)
-    _blue_partner = create(:moss_side_partner,
-                           address: blue_address,
-                           events: blue_events,
-                           tags: [blue_tag])
+    _blue_partner =
+      create(
+        :moss_side_partner,
+        address: blue_address,
+        events: blue_events,
+        tags: [blue_tag]
+      )
 
     query_string = <<-GRAPHQL
     query {
@@ -353,25 +374,28 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
+    refute_field result, "errors"
 
-    data = assert_field result, 'data'
-    event_data = assert_field data, 'eventsByFilter'
-    assert_equal event_data.length, blue_events.length, 'was expecting to see only events from blue_tag'
+    data = assert_field result, "data"
+    event_data = assert_field data, "eventsByFilter"
+    assert_equal event_data.length,
+                 blue_events.length,
+                 "was expecting to see only events from blue_tag"
 
     events = map_results_to_ids event_data
 
     blue_events.each do |blue_event|
       event = events[blue_event.id]
-      assert_field_equals event, 'name', value: blue_event.summary
+      assert_field_equals event, "name", value: blue_event.summary
     end
   end
 
-  test 'test that we have geo location' do
-    event = create(:event,
-                   address: create(:address,
-                                   latitude: 69.420666,
-                                   longitude: -2.666666))
+  test "test that we have geo location" do
+    event =
+      create(
+        :event,
+        address: create(:address, latitude: 69.420666, longitude: -2.666666)
+      )
 
     query_string = <<-GRAPHQL
       query {
@@ -392,33 +416,53 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
+    refute_field result, "errors"
 
-    data = assert_field result, 'data'
-    connection = assert_field data, 'eventConnection'
-    edges = assert_field connection, 'edges'
+    data = assert_field result, "data"
+    connection = assert_field data, "eventConnection"
+    edges = assert_field connection, "edges"
 
     assert_equal edges.length, 1
-    data_event = assert_field edges.first, 'node'
+    data_event = assert_field edges.first, "node"
 
-    assert_field_equals data_event, 'id', value: event.id.to_s
-    address = assert_field data_event, 'address'
-    geo = assert_field address, 'geo'
-    assert_field_equals geo, 'longitude', value: event.address.longitude.to_s
-    assert_field_equals geo, 'latitude', value: event.address.latitude.to_s
+    assert_field_equals data_event, "id", value: event.id.to_s
+    address = assert_field data_event, "address"
+    geo = assert_field address, "geo"
+    assert_field_equals geo, "longitude", value: event.address.longitude.to_s
+    assert_field_equals geo, "latitude", value: event.address.latitude.to_s
   end
 
-  test 'has correct details for online event' do
+  test "has correct details for online event" do
     online_addresses = [
-      create(:online_address, url: 'https://zoom.us/j/sdflgkjshfgls', link_type: 'direct'),
-      create(:online_address, url: 'https://eventbrite.com/blahblahblah', link_type: 'indirect'),
+      create(
+        :online_address,
+        url: "https://zoom.us/j/sdflgkjshfgls",
+        link_type: "direct"
+      ),
+      create(
+        :online_address,
+        url: "https://eventbrite.com/blahblahblah",
+        link_type: "indirect"
+      ),
       nil
     ]
-    events = build_list(:event, 3, partner: @partner, dtstart: Time.now, address: @address)
+    events =
+      build_list(
+        :event,
+        3,
+        partner: @partner,
+        dtstart: Time.now,
+        address: @address
+      )
 
     # splice the lists so we get a reasonable number of events, this also replaces? the `events` list :)
     # stuff off rubocop this is perfectly fine
-    events.zip(online_addresses).each { |event, oa| event.online_address = oa; event.save! }
+    events
+      .zip(online_addresses)
+      .each do |event, oa|
+        event.online_address = oa
+        event.save!
+      end
 
     query_string = <<-GRAPHQL
       query {
@@ -435,11 +479,11 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute_field result, 'errors'
+    refute_field result, "errors"
 
-    data = assert_field result, 'data'
-    connection = assert_field data, 'eventConnection'
-    edges = assert_field connection, 'edges'
+    data = assert_field result, "data"
+    connection = assert_field data, "eventConnection"
+    edges = assert_field connection, "edges"
 
     assert_equal edges.length, events.length
 
@@ -447,8 +491,12 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
     events.each do |event|
       node = nodes[event.id]
-      assert_field_equals node, 'onlineEventUrl', value: event.online_address&.url
-      assert_field_equals node, 'onlineEventUrlType', value: event.online_address&.link_type
+      assert_field_equals node,
+                          "onlineEventUrl",
+                          value: event.online_address&.url
+      assert_field_equals node,
+                          "onlineEventUrlType",
+                          value: event.online_address&.link_type
     end
   end
 end

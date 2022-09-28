@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 namespace :data do
-
-  desc 'Fix fields that need to be rendered to HTML'
-  task :render_html_fields => :environment do
-
+  desc "Fix fields that need to be rendered to HTML"
+  task render_html_fields: :environment do
     PaperTrail.enabled = false
 
     @bad_count = 0
@@ -16,11 +14,14 @@ namespace :data do
     fix_model Site
     fix_model Partner
 
-
     fix_model Event do |event|
       next if event.description_html.to_s.length > 0
 
-      description_text = Kramdown::Document.new(event.description.to_s, input: 'html').to_kramdown.strip
+      description_text =
+        Kramdown::Document
+          .new(event.description.to_s, input: "html")
+          .to_kramdown
+          .strip
       event.description = description_text
 
       event.partner.present?
@@ -41,7 +42,6 @@ namespace :data do
         saved = false
         if block_given?
           saved = record.save if yield(record)
-
         else
           saved = record.save
         end
@@ -50,6 +50,4 @@ namespace :data do
       end
     end
   end
-
 end
-

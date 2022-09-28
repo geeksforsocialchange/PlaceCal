@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
   setup do
@@ -14,48 +14,48 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     @tag = create(:tag)
 
-    host! 'admin.lvh.me'
+    host! "admin.lvh.me"
   end
 
-  test 'Site admin index has appropriate title' do
+  test "Site admin index has appropriate title" do
     sign_in(@root)
     get admin_sites_path
     assert_response :success
 
-    assert_select 'title', text: 'Sites | PlaceCal Admin'
-    assert_select 'h1', text: 'Sites'
+    assert_select "title", text: "Sites | PlaceCal Admin"
+    assert_select "h1", text: "Sites"
   end
 
-  test 'root : can get new site' do
+  test "root : can get new site" do
     sign_in @root
 
     get new_admin_site_path
 
-    assert_select 'title', text: 'New Site | PlaceCal Admin'
+    assert_select "title", text: "New Site | PlaceCal Admin"
   end
 
-  test 'create a site through the admin page' do
+  test "create a site through the admin page" do
     # TODO: add capybara so we can get this junk working
   end
 
-  test 'root users see appropriate fields' do
+  test "root users see appropriate fields" do
     sign_in(@root)
     get edit_admin_site_path(@site)
 
     # See every field
-    assert_select 'label', 'Name *'
-    assert_select 'label', 'Place name'
-    assert_select 'label', 'Tagline'
-    assert_select 'label', 'Domain *'
-    assert_select 'label', 'Slug *'
-    assert_select 'label', 'Description'
-    assert_select 'label', 'Site admin'
+    assert_select "label", "Name *"
+    assert_select "label", "Place name"
+    assert_select "label", "Tagline"
+    assert_select "label", "Domain *"
+    assert_select "label", "Slug *"
+    assert_select "label", "Description"
+    assert_select "label", "Site admin"
 
-    assert_select 'label', 'Theme'
-    assert_select 'label', 'Logo'
-    assert_select 'label', 'Footer logo'
-    assert_select 'label', 'Hero image'
-    assert_select 'label', 'Hero image credit'
+    assert_select "label", "Theme"
+    assert_select "label", "Logo"
+    assert_select "label", "Footer logo"
+    assert_select "label", "Hero image"
+    assert_select "label", "Hero image credit"
 
     # See just neighbourhoods they admin
     # In short:
@@ -65,39 +65,41 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     #
     # Please replace this with Capybara in the future lol
 
-    cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
+    cocoon_select_template =
+      assert_select(".add_fields").first["data-association-insertion-template"]
     neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
     assert neighbourhoods_shown == @number_of_neighbourhoods
   end
 
-  test 'site admin users see appropriate fields' do
+  test "site admin users see appropriate fields" do
     sign_in(@site_admin)
     @site_admin.neighbourhoods << @neighbourhoods.first
     @site_admin.neighbourhoods << @neighbourhoods.second
     get edit_admin_site_path(@site)
 
     # See just appropriate fields
-    assert_select 'label', 'Name *'
-    assert_select 'label', 'Place name'
-    assert_select 'label', 'Tagline'
-    assert_select 'label', text: 'Domain *', count: 0
-    assert_select 'label', text: 'Slug *', count: 0
-    assert_select 'label', 'Description'
-    assert_select 'label', text: 'Site admin', count: 0
+    assert_select "label", "Name *"
+    assert_select "label", "Place name"
+    assert_select "label", "Tagline"
+    assert_select "label", text: "Domain *", count: 0
+    assert_select "label", text: "Slug *", count: 0
+    assert_select "label", "Description"
+    assert_select "label", text: "Site admin", count: 0
 
-    assert_select 'label', text: 'Theme', count: 0
-    assert_select 'label', text: 'Logo', count: 0
-    assert_select 'label', text: 'Footer logo', count: 0
-    assert_select 'label', 'Hero image'
-    assert_select 'label', 'Hero image credit'
+    assert_select "label", text: "Theme", count: 0
+    assert_select "label", text: "Logo", count: 0
+    assert_select "label", text: "Footer logo", count: 0
+    assert_select "label", "Hero image"
+    assert_select "label", "Hero image credit"
 
     # See just neighbourhoods they admin
-    cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
+    cocoon_select_template =
+      assert_select(".add_fields").first["data-association-insertion-template"]
     neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
     assert neighbourhoods_shown == 2
   end
 
-  test 'site tags show up' do
+  test "site tags show up" do
     @site.tags << @tag
     @site_admin.tags << @tag
 
@@ -105,22 +107,23 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     get edit_admin_site_path(@site)
     assert_response :success
 
-    tag_options = assert_select 'div.site_tags option', count: 1, text: @tag.name
+    tag_options =
+      assert_select "div.site_tags option", count: 1, text: @tag.name
 
     tag = tag_options.first
-    assert tag.attributes.key?('selected')
+    assert tag.attributes.key?("selected")
   end
 
-  test 'new site image upload problem feedback' do
+  test "new site image upload problem feedback" do
     sign_in @root
 
     new_site_params = {
-      name: 'a new site',
-      domain: 'a-domain',
-      slug: 'a-slug',
+      name: "a new site",
+      domain: "a-domain",
+      slug: "a-slug",
       logo: fixture_file_upload("bad-cat-picture.bmp"),
       footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
-      hero_image: fixture_file_upload("bad-cat-picture.bmp"),
+      hero_image: fixture_file_upload("bad-cat-picture.bmp")
     }
 
     post admin_sites_path, params: { site: new_site_params }
@@ -129,25 +132,37 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "h6", text: "3 errors prohibited this Site from being saved"
 
     # top of page form error box
-    assert_select '#form-errors li', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
 
-    assert_select 'form .site_logo .invalid-feedback', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_footer_logo .invalid-feedback', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_hero_image .invalid-feedback', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "form .site_logo .invalid-feedback",
+                  text:
+                    "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "form .site_footer_logo .invalid-feedback",
+                  text:
+                    "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "form .site_hero_image .invalid-feedback",
+                  text:
+                    "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
   end
 
-  test 'update site image upload problem feedback' do
+  test "update site image upload problem feedback" do
     sign_in @root
 
     site_params = {
-      name: 'a new site',
-      domain: 'a-domain',
-      slug: 'a-slug',
+      name: "a new site",
+      domain: "a-domain",
+      slug: "a-slug",
       logo: fixture_file_upload("bad-cat-picture.bmp"),
       footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
-      hero_image: fixture_file_upload("bad-cat-picture.bmp"),
+      hero_image: fixture_file_upload("bad-cat-picture.bmp")
     }
 
     put admin_site_path(@site), params: { site: site_params }
@@ -156,12 +171,24 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "h6", text: "3 errors prohibited this Site from being saved"
 
     # top of page form error box
-    assert_select '#form-errors li', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
 
-    assert_select 'form .site_logo .invalid-feedback', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_footer_logo .invalid-feedback', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_hero_image .invalid-feedback', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "form .site_logo .invalid-feedback",
+                  text:
+                    "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "form .site_footer_logo .invalid-feedback",
+                  text:
+                    "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
+    assert_select "form .site_hero_image .invalid-feedback",
+                  text:
+                    "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
   end
 end

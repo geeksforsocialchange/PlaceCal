@@ -8,10 +8,10 @@ class SitesController < ApplicationController
   before_action :set_places_with_free_wifi, only: [:index]
 
   def index
-    if current_site.slug == 'mossley'
+    if current_site.slug == "mossley"
       render template: "sites/#{current_site.slug}.html.erb"
     else
-      render template: 'sites/default'
+      render template: "sites/default"
     end
   end
 
@@ -23,13 +23,14 @@ class SitesController < ApplicationController
   private
 
   def set_places_to_get_computer_access
-    tag = Tag.find_by(slug: 'computers')
+    tag = Tag.find_by(slug: "computers")
 
-    @places_to_get_computer_access = Partner.for_site_with_tag(current_site, tag)
+    @places_to_get_computer_access =
+      Partner.for_site_with_tag(current_site, tag)
   end
 
   def set_places_with_free_wifi
-    tag = Tag.find_by(slug: 'wifi')
+    tag = Tag.find_by(slug: "wifi")
 
     @places_with_free_wifi = Partner.for_site_with_tag(current_site, tag)
   end

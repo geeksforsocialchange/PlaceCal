@@ -5,6 +5,6 @@ class ArticleTag < ApplicationRecord
   validates :tag_id,
             uniqueness: {
               scope: :article_id,
-              message: 'Article cannot be assigned more than once to a Tag'
+              message: "Article cannot be assigned more than once to a Tag"
             }
 end

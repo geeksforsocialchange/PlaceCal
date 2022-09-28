@@ -4,7 +4,12 @@ class HeroComponent < MountainView::Presenter
   def title
     s = properties[:title]
     if s.respond_to?(:length) && s.length > 32
-      s.split.in_groups(2, false).map { |g| g.join(' ') }.join('<br> ').html_safe
+      s
+        .split
+        .in_groups(2, false)
+        .map { |g| g.join(" ") }
+        .join("<br> ")
+        .html_safe
     else
       s
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -11,7 +11,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     @partner_admin = create(:partner_admin)
     @partner = @partner_admin.partners.first
 
-    host! 'admin.lvh.me'
+    host! "admin.lvh.me"
   end
 
   # Profile
@@ -41,22 +41,30 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in @root
 
     patch update_profile_admin_user_path(@root),
-          params: { user: { first_name: 'Bob' }}
+          params: {
+            user: {
+              first_name: "Bob"
+            }
+          }
 
     assert_redirected_to admin_profile_url
-    assert_equal 'Bob', @root.reload.first_name
+    assert_equal "Bob", @root.reload.first_name
   end
 
   test "user cannot update other's profile" do
-    user = create(:user, first_name: 'Test')
+    user = create(:user, first_name: "Test")
 
     sign_in @root
 
     patch update_profile_admin_user_path(user),
-          params: { user: { first_name: 'Name' }}
+          params: {
+            user: {
+              first_name: "Name"
+            }
+          }
 
     assert_redirected_to admin_profile_url
-    assert_equal 'Test', user.reload.first_name
+    assert_equal "Test", user.reload.first_name
   end
 
   # User Index
@@ -95,22 +103,23 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_create_for(%i[neighbourhood_admin]) do
     @partner = create(:partner)
     @user = attributes_for(:citizen, partner_ids: [@partner.id.to_s])
-    assert_difference('User.count', 1) do
-      post admin_users_url,
-           params: { user: @user }
+    assert_difference("User.count", 1) do
+      post admin_users_url, params: { user: @user }
     end
     assert_equal 1, User.last.partners.length
   end
 
   it_allows_access_to_create_for(%i[root]) do
-    @user = attributes_for(:citizen,
-                           partner_ids: [create(:partner).id.to_s],
-                           neighbourhood_ids: [create(:neighbourhood).id.to_s],
-                           tag_ids: [create(:tag).id.to_s])
+    @user =
+      attributes_for(
+        :citizen,
+        partner_ids: [create(:partner).id.to_s],
+        neighbourhood_ids: [create(:neighbourhood).id.to_s],
+        tag_ids: [create(:tag).id.to_s]
+      )
 
-    assert_difference('User.count', 1) do
-      post admin_users_url,
-           params: { user: @user }
+    assert_difference("User.count", 1) do
+      post admin_users_url, params: { user: @user }
     end
 
     # We are just checking that the user has been created with the relations
@@ -141,35 +150,37 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_update_for(%i[root neighbourhood_admin]) do
-    patch admin_user_url(@citizen),
-          params: { user: attributes_for(:user) }
+    patch admin_user_url(@citizen), params: { user: attributes_for(:user) }
     # Redirect to users screen
     assert_redirected_to admin_users_url
   end
 
   it_denies_access_to_update_for(%i[citizen]) do
-    patch admin_user_url(@citizen),
-          params: { user: attributes_for(:user) }
+    patch admin_user_url(@citizen), params: { user: attributes_for(:user) }
     # Redirect to main partner screen
     assert_redirected_to admin_root_url
   end
 
-  test 'neighbourhood_admin : can only update partner_ids' do
+  test "neighbourhood_admin : can only update partner_ids" do
     sign_in @neighbourhood_admin
     new_neighbourhood = create(:neighbourhood)
 
     patch admin_user_url(@citizen),
-          params: { user: { first_name: 'Bob',
-                            last_name: 'Smith',
-                            partner_ids: [@partner.id],
-                            neighbourhood_ids: [new_neighbourhood.id] } }
+          params: {
+            user: {
+              first_name: "Bob",
+              last_name: "Smith",
+              partner_ids: [@partner.id],
+              neighbourhood_ids: [new_neighbourhood.id]
+            }
+          }
 
     assert_redirected_to admin_users_url
 
     @citizen.reload # Ensure updated record is fetched
 
-    assert_not_equal 'Bob', @citizen.first_name
-    assert_not_equal 'Smith', @citizen.last_name
+    assert_not_equal "Bob", @citizen.first_name
+    assert_not_equal "Smith", @citizen.last_name
     assert_equal [@partner.id], @citizen.partner_ids
     assert_equal [], @citizen.neighbourhood_ids
   end
@@ -180,17 +191,15 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_destroy_for(%i[root]) do
-    assert_difference('User.count', -1) do
-      delete admin_user_url(@citizen)
-    end
+    assert_difference("User.count", -1) { delete admin_user_url(@citizen) }
 
     assert_redirected_to admin_users_url
   end
 
-  it_denies_access_to_destroy_for(%i[partner_admin neighbourhood_admin citizen]) do
-    assert_no_difference('User.count') do
-      delete admin_user_url(@citizen)
-    end
+  it_denies_access_to_destroy_for(
+    %i[partner_admin neighbourhood_admin citizen]
+  ) do
+    assert_no_difference("User.count") { delete admin_user_url(@citizen) }
 
     assert_redirected_to admin_root_url
   end

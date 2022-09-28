@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnersControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -10,23 +10,28 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     neighbourhoods = create_list(:neighbourhood, 2)
 
     # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
-    addresses = neighbourhoods.map do |n|
-      a = create(:address)
-      a.neighbourhood = n
-      a.save
-      a
-    end
+    addresses =
+      neighbourhoods.map do |n|
+        a = create(:address)
+        a.neighbourhood = n
+        a.save
+        a
+      end
     # NOTE: Uhhh? What? Is this a factorybot thing? Why does create(:address, neighbourhood: n) not work here?
 
-    @partners = addresses.map do |a|
-      create_list(:partner, 3, address: a)
-    end
+    @partners = addresses.map { |a| create_list(:partner, 3, address: a) }
 
     # NOTE: Uhhh, what does this do? - Alexandria, 2022-05-31
     @partners.each do |for_nbd|
       o_r = OrganisationRelationship.new
-      o_r.subject = for_nbd[0]; o_r.verb = :manages; o_r.object = for_nbd[1]; o_r.save
-      e = build(:event); e.dtstart = Date.today; e.place = for_nbd[2]; e.save
+      o_r.subject = for_nbd[0]
+      o_r.verb = :manages
+      o_r.object = for_nbd[1]
+      o_r.save
+      e = build(:event)
+      e.dtstart = Date.today
+      e.place = for_nbd[2]
+      e.save
       for_nbd
     end
 
@@ -41,7 +46,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     @site.save
   end
 
-  test 'should get index without subdomain' do
+  test "should get index without subdomain" do
     get url_for controller: "partners", subdomain: false
     assert_response :redirect
   end
@@ -52,7 +57,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   #   assert_select "ul.places li", 2
   # end
 
-  test 'should get index with configured subdomain' do
+  test "should get index with configured subdomain" do
     get from_site_slug(@site, partners_path)
 
     assert_response :success
@@ -65,7 +70,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   #   assert_select "ul.places li", 1
   # end
 
-  test 'should redirect from index with unknown subdomain' do
+  test "should redirect from index with unknown subdomain" do
     get url_for controller: "partners", subdomain: "notaknownsubdomain"
     assert_response :redirect
   end
@@ -75,13 +80,13 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :redirect
   # end
 
-  test 'should show partner' do
+  test "should show partner" do
     # Choose a manager to show. That will exercise more of the markup.
     get from_site_slug(@site, partner_path(@partners.first.first))
     assert_response :success
   end
 
-  test 'should show partner without address' do
+  test "should show partner without address" do
     partner = create(:partner)
     partner.service_areas.create(neighbourhood: create(:neighbourhood))
     partner.address_id = nil
@@ -92,11 +97,12 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should show events with no place or address' do
-    calendar = create(:calendar, strategy: 'no_location')
+  test "should show events with no place or address" do
+    calendar = create(:calendar, strategy: "no_location")
     partner = create(:partner)
 
-    partner.events += create_list(:event, 3, calendar: calendar, dtstart: Time.now)
+    partner.events +=
+      create_list(:event, 3, calendar: calendar, dtstart: Time.now)
 
     get from_site_slug(@site, partner_path(partner))
 

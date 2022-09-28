@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -10,7 +10,7 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
     @site_admin = @site.site_admin
     @citizen = create(:user)
     @neighbourhood = create(:neighbourhood)
-    host! 'admin.lvh.me'
+    host! "admin.lvh.me"
   end
 
   # Site Index
@@ -23,14 +23,14 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
     get admin_sites_url
     assert_response :success
     # Will see both sites
-    assert_select 'tbody tr', count: 2
+    assert_select "tbody tr", count: 2
   end
 
   it_allows_access_to_index_for(%i[site_admin]) do
     get admin_sites_url
     assert_response :success
     # Will just see their site
-    assert_select 'tbody tr', count: 1
+    assert_select "tbody tr", count: 1
   end
 
   it_denies_access_to_index_for(%i[citizen]) do
@@ -54,16 +54,14 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_create_for(%i[root]) do
-    assert_difference('Site.count') do
-      post admin_sites_url,
-           params: { site: attributes_for(:site) }
+    assert_difference("Site.count") do
+      post admin_sites_url, params: { site: attributes_for(:site) }
     end
   end
 
   it_denies_access_to_create_for(%i[site_admin citizen]) do
-    assert_no_difference('Site.count') do
-      post admin_sites_url,
-           params: { site: attributes_for(:site) }
+    assert_no_difference("Site.count") do
+      post admin_sites_url, params: { site: attributes_for(:site) }
     end
   end
 
@@ -80,8 +78,7 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
 
   # Can only assign neighbourhoods that you are an admin of
   it_allows_access_to_update_for(%i[root site_admin]) do
-    patch admin_site_url(@site),
-          params: { site: attributes_for(:site) }
+    patch admin_site_url(@site), params: { site: attributes_for(:site) }
     assert_redirected_to admin_sites_url
   end
 
@@ -91,17 +88,13 @@ class Admin::SitesControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_destroy_for(%i[root]) do
-    assert_difference('Site.count', -1) do
-      delete admin_site_url(@site)
-    end
+    assert_difference("Site.count", -1) { delete admin_site_url(@site) }
 
     assert_redirected_to admin_sites_url
   end
 
   it_denies_access_to_destroy_for(%i[site_admin citizen]) do
-    assert_no_difference('Site.count') do
-      delete admin_site_url(@site)
-    end
+    assert_no_difference("Site.count") { delete admin_site_url(@site) }
 
     assert_redirected_to admin_root_url
   end

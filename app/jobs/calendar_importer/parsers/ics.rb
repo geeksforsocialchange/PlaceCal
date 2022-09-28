@@ -7,8 +7,8 @@
 module CalendarImporter::Parsers
   class Ics < Base
     # These constants are only used for the frontend interface
-    NAME = 'Generic iCal / .ics'
-    KEY = 'ical'
+    NAME = "Generic iCal / .ics"
+    KEY = "ical"
     DOMAINS = %w[
       calendar.google.com
       outlook.office365.com
@@ -32,7 +32,7 @@ module CalendarImporter::Parsers
 
     def download_calendar
       # Why are we doing this?
-      url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
+      url = @url.gsub(%r{webcal://}, "https://") # Remove the webcal:// and just use the part after it
       HTTParty.get(url, follow_redirects: true)
     end
 
@@ -43,10 +43,15 @@ module CalendarImporter::Parsers
       parse_remote_calendars(data).each do |calendar|
         calendar.events.each do |event|
           # Date can't be parsed with calling `value_ical` first
-          @start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
+          @start_time =
+            DateTime.parse(event.dtstart.value_ical) if event.dtstart
           @end_time = DateTime.parse(event.dtend.value_ical) if event.dtend
 
-          @events << CalendarImporter::Events::IcsEvent.new(event, @start_time, @end_time)
+          @events << CalendarImporter::Events::IcsEvent.new(
+            event,
+            @start_time,
+            @end_time
+          )
         end
       end
 
@@ -60,7 +65,6 @@ module CalendarImporter::Parsers
 
     def parse_remote_calendars(data)
       Icalendar::Calendar.parse data
-
     rescue StandardError => e
       # FIXME this should set an error flag that is checked by the importer and
       #   logged to the calendar

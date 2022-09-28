@@ -6,16 +6,16 @@
 
 module CalendarImporter::Parsers
   class Meetup < Base
-    NAME = 'Meetup'
-    KEY = 'meetup'
+    NAME = "Meetup"
+    KEY = "meetup"
     DOMAINS = %w[www.meetup.com]
 
     def self.whitelist_pattern
-      /^https:\/\/www\.meetup\.com\/[^\/]*\/?$/
+      %r{^https://www\.meetup\.com/[^/]*/?$}
     end
 
     def download_calendar
-      user_name = (@url =~ /^https:\/\/www\.meetup\.com\/([^\/]*)\/?$/) && $1
+      user_name = (@url =~ %r{^https://www\.meetup\.com/([^/]*)/?$}) && $1
       return [] unless user_name.present?
 
       api_url = "https://api.meetup.com/#{user_name}/events"

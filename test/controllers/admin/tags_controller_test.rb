@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -13,7 +13,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     @unassigned_root_tag = create(:tag)
     @assigned_root_tag = @tag_admin.tags.first
 
-    host! 'admin.lvh.me'
+    host! "admin.lvh.me"
   end
 
   # Tag Index
@@ -47,16 +47,14 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_create_for(%i[root]) do
-    assert_difference('Tag.count') do
-      post admin_tags_url,
-           params: { tag: attributes_for(:tag) }
+    assert_difference("Tag.count") do
+      post admin_tags_url, params: { tag: attributes_for(:tag) }
     end
   end
 
   it_denies_access_to_create_for(%i[tag_admin partner_admin citizen]) do
-    assert_no_difference('Tag.count') do
-      post admin_tags_url,
-           params: { tag: attributes_for(:tag) }
+    assert_no_difference("Tag.count") do
+      post admin_tags_url, params: { tag: attributes_for(:tag) }
     end
   end
 
@@ -116,7 +114,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_root_url
 
   it_allows_access_to_destroy_for(%i[root]) do
-    assert_difference('Tag.count', -1) do
+    assert_difference("Tag.count", -1) do
       delete admin_tag_url(@unassigned_root_tag)
     end
 
@@ -124,7 +122,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_denies_access_to_destroy_for(%i[tag_admin partner_admin citizen]) do
-    assert_no_difference('Tag.count') do
+    assert_no_difference("Tag.count") do
       delete admin_tag_url(@unassigned_root_tag)
     end
 
@@ -138,14 +136,22 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, gets public tags only
 
   def test_scope
-    @all_tags = [@public_tag, @assigned_root_tag, @unassigned_root_tag].sort_by(&:id)
+    @all_tags = [@public_tag, @assigned_root_tag, @unassigned_root_tag].sort_by(
+      &:id
+    )
     @tag_admin_tags = [@public_tag, @assigned_root_tag].sort_by(&:id)
     @partner_admin_tags = [@public_tag]
     @citizen_tags = [@public_tag]
 
     assert_equal(permitted_records(@root, Tag).sort_by(&:id), @all_tags)
-    assert_equal(permitted_records(@tag_admin, Tag).sort_by(&:id), @tag_admin_tags)
-    assert_equal(permitted_records(@partner_admin, Tag).sort_by(&:id), @partner_admin_tags)
+    assert_equal(
+      permitted_records(@tag_admin, Tag).sort_by(&:id),
+      @tag_admin_tags
+    )
+    assert_equal(
+      permitted_records(@partner_admin, Tag).sort_by(&:id),
+      @partner_admin_tags
+    )
     assert_equal(permitted_records(@citizen, Tag).sort_by(&:id), @citizen_tags)
   end
 end

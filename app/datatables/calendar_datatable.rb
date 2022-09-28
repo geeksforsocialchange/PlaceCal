@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Don't worry, this code will soon be purged from existence :)
-require 'action_view'
-require 'action_view/helpers'
+require "action_view"
+require "action_view/helpers"
 
 class CalendarDatatable < Datatable
   include ActionView::Helpers::DateHelper
@@ -11,14 +11,43 @@ class CalendarDatatable < Datatable
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format
     @view_columns ||= {
-      id: { source: 'Calendar.id', cond: :eq },
-      name: { source: 'Calendar.name' },
-      partner: { source: 'Calendar.partner', searchable: false, orderable: false },
-      notice_count: { source: 'Calendar.notice_count', searchable: false, orderable: false },
-      events: { source: 'Calendar.events', searchable: false, orderable: false },
-      state: { source: 'Calendar.calendar_state', searchable: false, orderable: false },
-      last_import_at: { source: 'Calendar.last_import_at', searchable: false, orderable: false },
-      updated_at: { source: 'Calendar.updated_at', searchable: false, orderable: false }
+      id: {
+        source: "Calendar.id",
+        cond: :eq
+      },
+      name: {
+        source: "Calendar.name"
+      },
+      partner: {
+        source: "Calendar.partner",
+        searchable: false,
+        orderable: false
+      },
+      notice_count: {
+        source: "Calendar.notice_count",
+        searchable: false,
+        orderable: false
+      },
+      events: {
+        source: "Calendar.events",
+        searchable: false,
+        orderable: false
+      },
+      state: {
+        source: "Calendar.calendar_state",
+        searchable: false,
+        orderable: false
+      },
+      last_import_at: {
+        source: "Calendar.last_import_at",
+        searchable: false,
+        orderable: false
+      },
+      updated_at: {
+        source: "Calendar.updated_at",
+        searchable: false,
+        orderable: false
+      }
     }
   end
 
@@ -48,7 +77,7 @@ class CalendarDatatable < Datatable
   def json_datetime(datetime)
     {
       unixtime: datetime.to_i,
-      strtime: datetime ? "#{time_ago_in_words(datetime)} ago" : 'never'
+      strtime: datetime ? "#{time_ago_in_words(datetime)} ago" : "never"
     }.to_json
   end
 end

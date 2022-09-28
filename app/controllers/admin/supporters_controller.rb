@@ -10,7 +10,8 @@ module Admin
       authorize current_user
     end
 
-    def show; end
+    def show
+    end
 
     def new
       @supporter = Supporter.new
@@ -25,24 +26,22 @@ module Admin
       @supporter = Supporter.new(supporter_params)
       authorize @supporter
       if @supporter.save
-        flash[:success] = 'Supporter has been created'
+        flash[:success] = "Supporter has been created"
         redirect_to admin_supporters_path
-
       else
-        flash.now[:danger] = 'Supporter not created'
-        render 'new', status: :unprocessable_entity
+        flash.now[:danger] = "Supporter not created"
+        render "new", status: :unprocessable_entity
       end
     end
 
     def update
       authorize @supporter
       if @supporter.update(supporter_params)
-        flash[:success] = 'Supporter has been updated'
+        flash[:success] = "Supporter has been updated"
         redirect_to admin_supporters_path
-
       else
-        flash.now[:danger] = 'Supporter was not updated'
-        render 'edit', status: :unprocessable_entity
+        flash.now[:danger] = "Supporter was not updated"
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -51,7 +50,7 @@ module Admin
       @supporter.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Supporter has been deleted'
+          flash[:success] = "Supporter has been deleted"
           redirect_to admin_supporters_url
         end
 

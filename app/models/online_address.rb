@@ -5,7 +5,5 @@ class OnlineAddress < ApplicationRecord
 
   has_many :events
 
-  enumerize :link_type,
-            in: %i[direct indirect],
-            default: :indirect
+  enumerize :link_type, in: %i[direct indirect], default: :indirect
 end

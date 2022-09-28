@@ -5,9 +5,13 @@ module Admin
     before_action :must_have_root_user
 
     def index
-      @job_count = ActiveRecord::Base
-        .connection.execute("select count(*) from delayed_jobs")
-        .first["count"]
+      @job_count =
+        ActiveRecord::Base
+          .connection
+          .execute("select count(*) from delayed_jobs")
+          .first[
+          "count"
+        ]
 
       @calendar_counts = Calendar.group(:calendar_state).count
     end

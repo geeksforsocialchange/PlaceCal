@@ -11,7 +11,9 @@ class ArticlePolicy < ApplicationPolicy
     return true if user.partner_admin? && user.partners.count.positive?
 
     # True if neighbourhood admin oversees any partners
-    return true if user.neighbourhood_admin? && owned_neighbourhoods_have_partners?
+    if user.neighbourhood_admin? && owned_neighbourhoods_have_partners?
+      return true
+    end
   end
 
   def show?
@@ -48,8 +50,16 @@ class ArticlePolicy < ApplicationPolicy
   #
   # @returns [Array<String>] A list of URL Parameters
   def permitted_attributes
-    [:title, :author_id, :body, :published_at, :is_draft, :article_image,
-     { partner_ids: [] }, { tag_ids: [] }]
+    [
+      :title,
+      :author_id,
+      :body,
+      :published_at,
+      :is_draft,
+      :article_image,
+      { partner_ids: [] },
+      { tag_ids: [] }
+    ]
   end
 
   # Form fields that the user can not interact with
@@ -79,10 +89,13 @@ class ArticlePolicy < ApplicationPolicy
       return scope.none unless user.neighbourhood_admin? || user.partner_admin?
 
       neighbourhood_ids = user.owned_neighbourhood_ids
-      neighbourhood_partners = Partner.from_neighbourhoods_and_service_areas(neighbourhood_ids)
+      neighbourhood_partners =
+        Partner.from_neighbourhoods_and_service_areas(neighbourhood_ids)
       partner_ids = user.partners + neighbourhood_partners.map(&:id)
 
-      Article.joins(:article_partners).where('article_partners.partner_id' => partner_ids)
+      Article.joins(:article_partners).where(
+        "article_partners.partner_id" => partner_ids
+      )
     end
   end
 
@@ -92,6 +105,9 @@ class ArticlePolicy < ApplicationPolicy
   # @return [ActiveRecord::Relation<Article>] A list of Partners
   def owned_neighbourhoods_have_partners?
     # We can make this less shallow, but it's not important since scoping rules have the deeper stuff anyway
-    Partner.from_neighbourhoods_and_service_areas(user.owned_neighbourhood_ids).count.positive?
+    Partner
+      .from_neighbourhoods_and_service_areas(user.owned_neighbourhood_ids)
+      .count
+      .positive?
   end
 end

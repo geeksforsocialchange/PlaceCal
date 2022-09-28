@@ -18,25 +18,25 @@ class RemoveOldNeighbourhoodProperties < ActiveRecord::Migration[6.0]
 
   def down
     errors = []
-    puts 'WARNING: Downgrade path has NOT been verified and should be manually verified first.'
+    puts "WARNING: Downgrade path has NOT been verified and should be manually verified first."
     change_table :neighbourhoods, bulk: true do |t|
-      t.column :ward,     :string, default: ''
-      t.column :district, :string, default: ''
-      t.column :county,   :string, default: ''
-      t.column :region,   :string, default: ''
-      t.column :WD19CD,   :string, default: ''
-      t.column :WD19NM,   :string, default: ''
-      t.column :LAD19CD,  :string, default: ''
-      t.column :LAD19NM,  :string, default: ''
-      t.column :CTY19CD,  :string, default: ''
-      t.column :CTY19NM,  :string, default: ''
-      t.column :RGN19CD,  :string, default: ''
-      t.column :RGN19NM,  :string, default: ''
+      t.column :ward, :string, default: ""
+      t.column :district, :string, default: ""
+      t.column :county, :string, default: ""
+      t.column :region, :string, default: ""
+      t.column :WD19CD, :string, default: ""
+      t.column :WD19NM, :string, default: ""
+      t.column :LAD19CD, :string, default: ""
+      t.column :LAD19NM, :string, default: ""
+      t.column :CTY19CD, :string, default: ""
+      t.column :CTY19NM, :string, default: ""
+      t.column :RGN19CD, :string, default: ""
+      t.column :RGN19NM, :string, default: ""
     end
 
     Neighbourhood.find_each do |ward|
       begin
-        next if ward.unit != 'ward'
+        next if ward.unit != "ward"
 
         puts "Filling ward #{ward.name} with parental information"
 
@@ -54,22 +54,28 @@ class RemoveOldNeighbourhoodProperties < ActiveRecord::Migration[6.0]
           ward.CTY19NM = ward.parent.parent.name
         end
         if ward.parent.parent.parent
-          ward.region = ward.parent.parent.parent.name if ward.parent.parent.parent
+          ward.region = ward.parent.parent.parent.name if ward
+            .parent
+            .parent
+            .parent
           ward.RGN19CD = ward.parent.parent.parent.unit_code_value
           ward.RGN19NM = ward.parent.parent.parent.name
         end
       rescue => e
-        errors << { error: e.message,
-                    trace: e.backtrace_locations,
-                    id: ward.id,
-                    name: ward.name }
+        errors << {
+          error: e.message,
+          trace: e.backtrace_locations,
+          id: ward.id,
+          name: ward.name
+        }
       end
     end
 
     return unless errors.any?
 
-    File.open('20211118162518_remove_old_neighbourhood_properties.errors.txt', 'w') do |f|
-      f.write errors
-    end
+    File.open(
+      "20211118162518_remove_old_neighbourhood_properties.errors.txt",
+      "w"
+    ) { |f| f.write errors }
   end
 end

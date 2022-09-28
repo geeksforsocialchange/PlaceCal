@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 namespace :import do
-  desc 'scan for calendars to send to the importer worker'
-  task :scan_for_calendars_needing_import, %i[force_import from] => [:environment] do |_t, args|
-
+  desc "scan for calendars to send to the importer worker"
+  task :scan_for_calendars_needing_import,
+       %i[force_import from] => [:environment] do |_t, args|
     force_import = to_boolean(args[:force_import])
     from = to_date(args[:from])
 
@@ -33,8 +33,11 @@ namespace :import do
   #   will import all events from 1st january 2000 and database problems will be logged to
   #     stdout but the task will keep running
   #
-  desc 'import events from the CLI process'
-  task :all_events, %i[force_import from silence_db_exceptions] => [:environment] do |_t, args|
+  desc "import events from the CLI process"
+  task :all_events,
+       %i[force_import from silence_db_exceptions] => [
+         :environment
+       ] do |_t, args|
     force_import = to_boolean(args[:force_import])
     from = to_date(args[:from])
     silence_db_exceptions = to_boolean(args[:silence_db_exceptions])
@@ -44,13 +47,16 @@ namespace :import do
 
     Calendar.find_each do |calendar|
       calendar.update calendar_state: :in_queue
-      CalendarImporterJob.perform_now calendar.id, from, force_import, silence_db_exceptions
+      CalendarImporterJob.perform_now calendar.id,
+                                      from,
+                                      force_import,
+                                      silence_db_exceptions
 
-    #rescue StandardError => e
-    #  puts "\n"
-    #  puts "#{e.class}: bad thing: #{e}"
-    #  puts e.backtrace
-    #  puts '-' * 20
+      #rescue StandardError => e
+      #  puts "\n"
+      #  puts "#{e.class}: bad thing: #{e}"
+      #  puts e.backtrace
+      #  puts '-' * 20
     end
   end
 
@@ -69,14 +75,15 @@ namespace :import do
       puts "\n"
       puts "#{e.class}: bad thing: #{e}"
       puts backtrace
-      puts '-' * 20
+      puts "-" * 20
     end
   end
 
   # calendar_id - object id of calendar to be imported.
   # from - import events starting from this date. Must use format 'yyyy-mm-dd'.
   #   e.g. rails import:past_events_from_source[123,'1950-01-01',true]
-  task :past_events_from_source, %i[calendar_id from force_import] => [:environment] do |_t, args|
+  task :past_events_from_source,
+       %i[calendar_id from force_import] => [:environment] do |_t, args|
     from = to_date(args[:from])
     calendar_id = args[:calendar_id]
     force_import = to_boolean(args[:force_import])
@@ -84,14 +91,19 @@ namespace :import do
     CalendarImporterJob.perform_now calendar_id, from, force_import
   end
 
-  desc 'empty the papertrail table for calendars'
+  desc "empty the papertrail table for calendars"
   task purge_papertrail: :environment do
     PaperTrail::Version.all.delete_all
   end
 
   task refresh_online_addresses: :environment do
     # Clean out all OnlineAddress entities
-    Event.where.not(online_address_id: nil).map { |e| e.online_address_id = nil; e.save! }
+    Event
+      .where.not(online_address_id: nil)
+      .map do |e|
+        e.online_address_id = nil
+        e.save!
+      end
     OnlineAddress.delete_all
 
     # TODO: For all ICS calendars, check their events and refresh their online event data

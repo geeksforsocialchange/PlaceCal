@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :collection do
-    name { 'A Collection Of Events' }
-    description { 'Information here about the events' }
-    route { 'named-route' }
+    name { "A Collection Of Events" }
+    description { "Information here about the events" }
+    route { "named-route" }
 
     after :create do |collection|
       collection.events = create_list(:event, 5)

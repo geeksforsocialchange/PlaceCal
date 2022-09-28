@@ -9,20 +9,33 @@ module Admin
     before_action :set_service_area_map_ids, only: %i[new edit]
 
     def index
-      @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
+      @partners =
+        policy_scope(Partner).order({ updated_at: :desc }, :name).includes(
+          :address
+        )
 
       respond_to do |format|
         format.html
-        format.json {
-          render json: PartnerDatatable.new(params,
-                                            view_context: view_context,
-                                            partners: @partners)
-        }
+        format.json do
+          render json:
+                   PartnerDatatable.new(
+                     params,
+                     view_context: view_context,
+                     partners: @partners
+                   )
+        end
       end
     end
 
     def new
-      @partner = params[:partner] ? Partner.new(permitted_attributes(Partner)) : Partner.new
+      @partner =
+        (
+          if params[:partner]
+            Partner.new(permitted_attributes(Partner))
+          else
+            Partner.new
+          end
+        )
       @partner.tags = current_user.tags
 
       authorize @partner
@@ -42,19 +55,21 @@ module Admin
       respond_to do |format|
         if @partner.save
           format.html do
-            flash[:success] = 'Partner was successfully created.'
+            flash[:success] = "Partner was successfully created."
             redirect_to admin_partners_path
           end
 
           format.json { render :show, status: :created, location: @partner }
         else
           format.html do
-            flash.now[:danger] = 'Partner was not saved.'
+            flash.now[:danger] = "Partner was not saved."
             set_neighbourhoods
             set_service_area_map_ids
             render :new, status: :unprocessable_entity
           end
-          format.json { render json: @partner.errors, status: :unprocessable_entity }
+          format.json do
+            render json: @partner.errors, status: :unprocessable_entity
+          end
         end
       end
     end
@@ -70,11 +85,10 @@ module Admin
       @partner.accessed_by_user = current_user
 
       if @partner.update(permitted_attributes(@partner))
-        flash[:success] = 'Partner was successfully updated.'
+        flash[:success] = "Partner was successfully updated."
         redirect_to edit_admin_partner_path(@partner)
-
       else
-        flash.now[:danger] = 'Partner was not saved.'
+        flash.now[:danger] = "Partner was not saved."
         set_neighbourhoods
         set_service_area_map_ids
         render :edit, status: :unprocessable_entity
@@ -86,7 +100,7 @@ module Admin
       @partner.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Partner was successfully destroyed.'
+          flash[:success] = "Partner was successfully destroyed."
           redirect_to admin_partners_url
         end
         format.json { head :no_content }
@@ -105,7 +119,7 @@ module Admin
       if @partner.valid?
         redirect_to new_admin_partner_url(partner: setup_params)
       else
-        render 'setup', status: :unprocessable_entity
+        render "setup", status: :unprocessable_entity
       end
     end
 
@@ -114,10 +128,12 @@ module Admin
     def set_service_area_map_ids
       # maps neighbourhood ID to service_area ID
       if @partner
-        @service_area_id_map = @partner
-                               .service_areas.select(:id, :neighbourhood_id)
-                               .map { |sa| { sa.neighbourhood_id => sa.id } }
-                               .reduce({}, :merge)
+        @service_area_id_map =
+          @partner
+            .service_areas
+            .select(:id, :neighbourhood_id)
+            .map { |sa| { sa.neighbourhood_id => sa.id } }
+            .reduce({}, :merge)
       else
         @service_area_id_map = {}
       end
@@ -128,12 +144,15 @@ module Admin
     end
 
     def user_not_authorized
-      flash[:alert] = 'Unable to access'
+      flash[:alert] = "Unable to access"
       redirect_to admin_partners_url
     end
 
     def setup_params
-      params.require(:partner).permit(:name, address_attributes: %i[street_address postcode])
+      params.require(:partner).permit(
+        :name,
+        address_attributes: %i[street_address postcode]
+      )
     end
   end
 end

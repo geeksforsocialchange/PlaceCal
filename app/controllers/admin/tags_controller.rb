@@ -10,13 +10,14 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json {
-          render json: TagDatatable.new(
-            params,
-            view_context: view_context,
-            tags: @tags
-          )
-        }
+        format.json do
+          render json:
+                   TagDatatable.new(
+                     params,
+                     view_context: view_context,
+                     tags: @tags
+                   )
+        end
       end
     end
 
@@ -36,18 +37,20 @@ module Admin
       respond_to do |format|
         if @tag.save
           format.html do
-            flash[:success] = 'Tag has been created'
+            flash[:success] = "Tag has been created"
             redirect_to admin_tags_path
           end
 
           format.json { render :show, status: :created, location: @tag }
         else
           format.html do
-            flash.now[:danger] = 'Tag was not created'
+            flash.now[:danger] = "Tag was not created"
             render :new, status: :unprocessable_entity
           end
 
-          format.json { render json: @tag.errors, status: :unprocessable_entity }
+          format.json do
+            render json: @tag.errors, status: :unprocessable_entity
+          end
         end
       end
     end
@@ -57,12 +60,11 @@ module Admin
     def update
       authorize @tag
       if @tag.update(permitted_attributes(@tag))
-        flash[:success] = 'Tag was saved successfully'
+        flash[:success] = "Tag was saved successfully"
         redirect_to admin_tags_path
-
       else
-        flash.now[:danger] = 'Tag was not saved'
-        render 'edit', status: :unprocessable_entity
+        flash.now[:danger] = "Tag was not saved"
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -71,7 +73,7 @@ module Admin
       @tag.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Tag was deleted'
+          flash[:success] = "Tag was deleted"
           redirect_to admin_tags_url
         end
 

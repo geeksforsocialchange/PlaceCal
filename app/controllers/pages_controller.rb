@@ -4,13 +4,16 @@ class PagesController < ApplicationController
   before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
 
-  def home; end
+  def home
+  end
 
   def find_placecal
-    @grouped_sites = Site.where(is_published: true)
-                         .joins(:primary_neighbourhood)
-                         .merge(Neighbourhood.order(ancestry: :asc))
-                         .group_by { |s| s.primary_neighbourhood.district.name }
+    @grouped_sites =
+      Site
+        .where(is_published: true)
+        .joins(:primary_neighbourhood)
+        .merge(Neighbourhood.order(ancestry: :asc))
+        .group_by { |s| s.primary_neighbourhood.district.name }
   end
 
   def robots

@@ -13,27 +13,28 @@ module Admin
 
       if update_user_profile
         bypass_sign_in(current_user)
-        flash[:success] = 'User profile has been updated'
+        flash[:success] = "User profile has been updated"
         redirect_to admin_profile_path
-
       else
-        flash.now[:danger] = 'User profile was not updated'
-        render 'profile', status: :unprocessable_entity
+        flash.now[:danger] = "User profile was not updated"
+        render "profile", status: :unprocessable_entity
       end
     end
 
     def index
-      @users = policy_scope(User).order({ updated_at: :desc }, :last_name, :first_name)
+      @users =
+        policy_scope(User).order({ updated_at: :desc }, :last_name, :first_name)
       authorize current_user
 
       respond_to do |format|
         format.html
         format.json do
-          render json: UserDatatable.new(
-            params,
-            view_context: view_context,
-            users: @users.includes(:neighbourhoods, :tags, :partners)
-          )
+          render json:
+                   UserDatatable.new(
+                     params,
+                     view_context: view_context,
+                     users: @users.includes(:neighbourhoods, :tags, :partners)
+                   )
         end
       end
     end
@@ -55,12 +56,11 @@ module Admin
       authorize @user
 
       if @user.update(permitted_attributes(@user))
-        flash[:success] = 'User has been saved'
+        flash[:success] = "User has been saved"
         redirect_to admin_users_path
-
       else
-        flash.now[:danger] = 'User was not saved'
-        render 'edit', status: :unprocessable_entity
+        flash.now[:danger] = "User was not saved"
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -73,12 +73,12 @@ module Admin
 
       if @user.valid?
         @user.invite!
-        flash[:success] = 'User has been created! An invite has been sent'
+        flash[:success] = "User has been created! An invite has been sent"
         redirect_to admin_users_path
       else
         Rails.logger.debug @user.errors.full_messages
-        flash.now[:danger] = 'User was not created'
-        render 'new', status: :unprocessable_entity
+        flash.now[:danger] = "User was not created"
+        render "new", status: :unprocessable_entity
       end
     end
 
@@ -87,7 +87,7 @@ module Admin
       @user.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'User has been deleted successfully'
+          flash[:success] = "User has been deleted successfully"
           redirect_to admin_users_url
         end
 
@@ -98,27 +98,30 @@ module Admin
     private
 
     def collect_partners
-      return policy_scope(Partner).where(id: params[:partner_id])&.map(&:id) if params[:partner_id]
+      if params[:partner_id]
+        return policy_scope(Partner).where(id: params[:partner_id])&.map(&:id)
+      end
 
       @user&.partners&.map(&:id)
     end
 
     def profile_params
-      params.require(:user).permit(:first_name,
-                                   :last_name,
-                                   :email,
-                                   :password,
-                                   :password_confirmation,
-                                   :current_password,
-                                   :phone,
-                                   :avatar)
+      params.require(:user).permit(
+        :first_name,
+        :last_name,
+        :email,
+        :password,
+        :password_confirmation,
+        :current_password,
+        :phone,
+        :avatar
+      )
     end
 
     def update_user_profile
       if profile_params[:current_password].present? ||
-         profile_params[:password].present? ||
-         profile_params[:password_confirmation].present?
-
+           profile_params[:password].present? ||
+           profile_params[:password_confirmation].present?
         current_user.update_with_password(profile_params)
       else
         current_user.update_without_password(profile_params)

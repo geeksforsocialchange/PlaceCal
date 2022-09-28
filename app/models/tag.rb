@@ -6,7 +6,7 @@ class Tag < ApplicationRecord
 
   friendly_id :name, use: :slugged
 
-  self.table_name = 'tags' # Maybe we can remove this? Tag should automagically railsify to tags right?
+  self.table_name = "tags" # Maybe we can remove this? Tag should automagically railsify to tags right?
 
   has_many :tags_users, dependent: :destroy
   has_many :users, through: :tags_users
@@ -25,27 +25,27 @@ class Tag < ApplicationRecord
   validates :description,
             length: {
               maximum: 200,
-              too_long: 'maximum length is 200 characters'
+              too_long: "maximum length is 200 characters"
             }
   validates :edit_permission, presence: true
   validate :check_editable_fields
 
-  enumerize :edit_permission,
-            in: %i[root all],
-            default: :root
+  enumerize :edit_permission, in: %i[root all], default: :root
 
-  scope :users_tags, lambda { |user|
-    tag_ids = user.tags.map(&:id) + Tag.all.where(edit_permission: :all).map(&:id)
+  scope :users_tags,
+        lambda { |user|
+          tag_ids =
+            user.tags.map(&:id) + Tag.all.where(edit_permission: :all).map(&:id)
 
-    where(id: tag_ids.uniq)
-  }
+          where(id: tag_ids.uniq)
+        }
 
   private
 
   def check_editable_fields
     return if new_record? || !system_tag
 
-    errors.add :name, 'Cannot be changed on a system_tag' if name_changed?
-    errors.add :slug, 'Cannot be changed on a system_tag' if slug_changed?
+    errors.add :name, "Cannot be changed on a system_tag" if name_changed?
+    errors.add :slug, "Cannot be changed on a system_tag" if slug_changed?
   end
 end

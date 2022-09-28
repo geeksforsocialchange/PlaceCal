@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   setup do
@@ -15,7 +15,9 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     # Create one set of partners for the default site
     @default_site_partners = create_list(:partner, 5)
     @default_site_partners.each do |partner|
-      next if @default_site.neighbourhoods.include? partner.address.neighbourhood
+      if @default_site.neighbourhoods.include? partner.address.neighbourhood
+        next
+      end
 
       @default_site.neighbourhoods << partner.address.neighbourhood
     end
@@ -47,73 +49,84 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     @tag = create(:tag)
     @tagged_site.tags << @tag
 
-    @tagged_site_partners.each do |partner|
-      partner.tags << @tag
-    end
+    @tagged_site_partners.each { |partner| partner.tags << @tag }
   end
 
-  test 'no slug redirects to find my placecal' do
+  test "no slug redirects to find my placecal" do
     get partners_url
     assert_response :redirect
   end
 
-  test 'placecal partners page shows all partners and relevant local info' do
+  test "placecal partners page shows all partners and relevant local info" do
     get from_site_slug(@default_site, partners_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Partners in your area | #{@default_site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
-    assert_select 'div.hero h1', text: 'Partners in your area'
-    assert_select 'ul.partners li', 5
+    assert_select "title",
+                  count: 1,
+                  text: "Partners in your area | #{@default_site.name}"
+    assert_select "div.hero h4", text: "The Community Calendar"
+    assert_select "div.hero h1", text: "Partners in your area"
+    assert_select "ul.partners li", 5
     # Ensure title/summary description is displayed
-    assert_select '.preview__header', text: @default_site_partners.first.name
-    assert_select '.preview__details', text: @default_site_partners.first.summary
+    assert_select ".preview__header", text: @default_site_partners.first.name
+    assert_select ".preview__details",
+                  text: @default_site_partners.first.summary
   end
 
-  test 'neighbourhood site page shows all partners and relevant local info' do
+  test "neighbourhood site page shows all partners and relevant local info" do
     get from_site_slug(@neighbourhood_site, partners_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Partners in your area | #{@neighbourhood_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: 'Partners in your area'
-    assert_select 'ul.partners li', 5
+    assert_select "title",
+                  count: 1,
+                  text: "Partners in your area | #{@neighbourhood_site.name}"
+    assert_select "div.hero h4", text: "Neighbourhood's Community Calendar"
+    assert_select "div.hero h1", text: "Partners in your area"
+    assert_select "ul.partners li", 5
     # Ensure title/summary description is displayed
-    assert_select '.preview__header', text: @neighbourhood_site_partners.first.name
-    assert_select '.preview__details', text: @neighbourhood_site_partners.first.summary
+    assert_select ".preview__header",
+                  text: @neighbourhood_site_partners.first.name
+    assert_select ".preview__details",
+                  text: @neighbourhood_site_partners.first.summary
   end
 
-  test 'region site page shows descendent partners' do
+  test "region site page shows descendent partners" do
     get from_site_slug(@region_site, partners_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Partners in your area | #{@region_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: 'Partners in your area'
-    assert_select 'ul.partners li', 5
+    assert_select "title",
+                  count: 1,
+                  text: "Partners in your area | #{@region_site.name}"
+    assert_select "div.hero h4", text: "Neighbourhood's Community Calendar"
+    assert_select "div.hero h1", text: "Partners in your area"
+    assert_select "ul.partners li", 5
     # Ensure title/summary description is displayed (select the h3 tag to avoid badge selection)
-    assert_select 'div.preview__header h3', text: @region_site_partners.first.name
-    assert_select 'div.preview__details', text: @region_site_partners.first.summary
+    assert_select "div.preview__header h3",
+                  text: @region_site_partners.first.name
+    assert_select "div.preview__details",
+                  text: @region_site_partners.first.summary
   end
 
-  test 'tagged site page shows only tagged partners' do
+  test "tagged site page shows only tagged partners" do
     get from_site_slug(@tagged_site, partners_path)
     assert_response :success
 
-    assert_select 'title', count: 1, text: "Partners in your area | #{@tagged_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: 'Partners in your area'
-    assert_select 'ul.partners li', 5
+    assert_select "title",
+                  count: 1,
+                  text: "Partners in your area | #{@tagged_site.name}"
+    assert_select "div.hero h4", text: "Neighbourhood's Community Calendar"
+    assert_select "div.hero h1", text: "Partners in your area"
+    assert_select "ul.partners li", 5
     # Ensure title/summary description is displayed
-    assert_select '.preview__header', text: @tagged_site_partners.first.name
-    assert_select '.preview__details', text: @tagged_site_partners.first.summary
+    assert_select ".preview__header", text: @tagged_site_partners.first.name
+    assert_select ".preview__details", text: @tagged_site_partners.first.summary
   end
 
-  test 'partner shows service area if available' do
+  test "partner shows service area if available" do
     partner = @default_site_partners.first
     partner.service_areas.create! neighbourhood: @neighbourhood3
 
     get from_site_slug(@default_site, partners_path)
     assert_response :success
 
-    assert_select '.service-area span', text: @neighbourhood3.shortname
+    assert_select ".service-area span", text: @neighbourhood3.shortname
   end
 
   test 'partner shows "various areas" if more than one service area present' do
@@ -124,6 +137,6 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@default_site, partners_path)
     assert_response :success
 
-    assert_select '.service-area span', text: 'various'
+    assert_select ".service-area span", text: "various"
   end
 end

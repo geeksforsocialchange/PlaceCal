@@ -3,8 +3,8 @@
 class PartnersController < ApplicationController
   include MapMarkers
 
-  before_action :set_partner, only: [:show, :embed]
-  before_action :set_day, only: [:show, :embed]
+  before_action :set_partner, only: %i[show embed]
+  before_action :set_day, only: %i[show embed]
   before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
   before_action :set_title, only: %i[index show]
@@ -42,14 +42,14 @@ class PartnersController < ApplicationController
       @no_event_message = no_upcoming_events_reason(@partner)
     elsif upcoming_events.length < PAGINATION_THRESHOLD
       # If only a few, show them all with no pagination
-      @events = sort_events(upcoming_events, 'time')
+      @events = sort_events(upcoming_events, "time")
       @paginator = false
     else
       # If a lot, show a paginator by week
-      @period = params[:period] || 'week'
+      @period = params[:period] || "week"
       @events = filter_events(@period, partner_or_place: @partner)
       # Sort criteria
-      @sort = params[:sort].to_s || 'time'
+      @sort = params[:sort].to_s || "time"
       @events = sort_events(@events, @sort)
       @paginator = true
     end
@@ -62,7 +62,11 @@ class PartnersController < ApplicationController
     respond_to do |format|
       format.html
       format.ics do
-        cal = create_calendar(Event.by_partner(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
+        cal =
+          create_calendar(
+            Event.by_partner(@partner).ical_feed,
+            "#{@partner} - Powered by PlaceCal"
+          )
         cal.publish
         render plain: cal.to_ical
       end
@@ -70,11 +74,11 @@ class PartnersController < ApplicationController
   end
 
   def embed
-    period = params[:period] || 'week'
-    limit = params[:limit] || '10'
+    period = params[:period] || "week"
+    limit = params[:limit] || "10"
     @events = filter_events(period, place: @partner, limit: limit)
-    @events = sort_events(@events, 'time')
-    response.headers.except! 'X-Frame-Options'
+    @events = sort_events(@events, "time")
+    response.headers.except! "X-Frame-Options"
     render layout: false
   end
 
@@ -93,7 +97,7 @@ class PartnersController < ApplicationController
       if current_site&.primary_neighbourhood
         "Partners #{current_site.join_word} #{current_site.primary_neighbourhood.name}"
       else
-        'All Partners'
+        "All Partners"
       end
   end
   # This controller doesn't allow CRUD

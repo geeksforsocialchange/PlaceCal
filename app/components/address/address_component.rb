@@ -7,6 +7,6 @@ class AddressComponent < MountainView::Presenter
   def formatted_address
     return if address.blank?
 
-    address.all_address_lines.map(&:strip).join(', <br>').html_safe
+    address.all_address_lines.map(&:strip).join(", <br>").html_safe
   end
 end

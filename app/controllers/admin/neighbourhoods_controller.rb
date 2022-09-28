@@ -10,11 +10,12 @@ module Admin
       respond_to do |format|
         format.html
         format.json do
-          render json: NeighbourhoodDatatable.new(
-            params,
-            view_context: view_context,
-            neighbourhoods: @neighbourhoods
-          )
+          render json:
+                   NeighbourhoodDatatable.new(
+                     params,
+                     view_context: view_context,
+                     neighbourhoods: @neighbourhoods
+                   )
         end
       end
     end
@@ -33,23 +34,22 @@ module Admin
       @neighbourhood = Neighbourhood.new(permitted_attributes(Neighbourhood))
       authorize @neighbourhood
       if @neighbourhood.save
-        flash[:success] = 'Neighbourhood saved'
+        flash[:success] = "Neighbourhood saved"
         redirect_to admin_neighbourhoods_path
       else
-        flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'new', status: :unprocessable_entity
+        flash.now[:danger] = "Neighbourhood was not saved"
+        render "new", status: :unprocessable_entity
       end
     end
 
     def update
       authorize @neighbourhood
       if @neighbourhood.update(permitted_attributes(@neighbourhood))
-        flash[:success] = 'Neighbourhood was saved'
+        flash[:success] = "Neighbourhood was saved"
         redirect_to admin_neighbourhoods_path
-
       else
-        flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'edit', status: :unprocessable_entity
+        flash.now[:danger] = "Neighbourhood was not saved"
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -58,7 +58,7 @@ module Admin
       @neighbourhood.destroy
       respond_to do |format|
         format.html do
-          flash[:success] = 'Neighbourhood was deleted'
+          flash[:success] = "Neighbourhood was deleted"
           redirect_to admin_neighbourhoods_url
         end
         format.json { head :no_content }

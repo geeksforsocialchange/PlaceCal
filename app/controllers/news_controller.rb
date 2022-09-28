@@ -12,17 +12,15 @@ class NewsController < ApplicationController
     @offset = 0 if @offset < 0
     @next_offset = @offset + ARTICLES_PER_PAGE
 
-    @article_count = Article
-      .for_site(@site)
-      .published
-      .count
+    @article_count = Article.for_site(@site).published.count
 
-    @articles = Article
-      .for_site(@site)
-      .published
-      .by_publish_date
-      .offset(@offset)
-      .limit(ARTICLES_PER_PAGE)
+    @articles =
+      Article
+        .for_site(@site)
+        .published
+        .by_publish_date
+        .offset(@offset)
+        .limit(ARTICLES_PER_PAGE)
   end
 
   def show

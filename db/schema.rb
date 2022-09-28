@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2022_07_20_151156) do
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,7 +32,9 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.bigint "partner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["article_id", "partner_id"], name: "index_article_partners_on_article_id_and_partner_id", unique: true
+    t.index %w[article_id partner_id],
+            name: "index_article_partners_on_article_id_and_partner_id",
+            unique: true
     t.index ["article_id"], name: "index_article_partners_on_article_id"
     t.index ["partner_id"], name: "index_article_partners_on_partner_id"
   end
@@ -100,8 +101,10 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
   create_table "collections_events", id: false, force: :cascade do |t|
     t.bigint "collection_id", null: false
     t.bigint "event_id", null: false
-    t.index ["collection_id", "event_id"], name: "index_collections_events_on_collection_id_and_event_id"
-    t.index ["event_id", "collection_id"], name: "index_collections_events_on_event_id_and_collection_id"
+    t.index %w[collection_id event_id],
+            name: "index_collections_events_on_collection_id_and_event_id"
+    t.index %w[event_id collection_id],
+            name: "index_collections_events_on_event_id_and_collection_id"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -116,7 +119,7 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.string "queue"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+    t.index %w[priority run_at], name: "delayed_jobs_priority"
   end
 
   create_table "events", id: :serial, force: :cascade do |t|
@@ -152,10 +155,15 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.string "sluggable_type", limit: 50
     t.string "scope"
     t.datetime "created_at"
-    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
-    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index %w[slug sluggable_type scope],
+            name:
+              "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope",
+            unique: true
+    t.index %w[slug sluggable_type],
+            name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
-    t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+    t.index ["sluggable_type"],
+            name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
   create_table "neighbourhoods", force: :cascade do |t|
@@ -175,7 +183,8 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["neighbourhood_id"], name: "index_neighbourhoods_users_on_neighbourhood_id"
+    t.index ["neighbourhood_id"],
+            name: "index_neighbourhoods_users_on_neighbourhood_id"
     t.index ["user_id"], name: "index_neighbourhoods_users_on_user_id"
   end
 
@@ -191,15 +200,20 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.string "verb", null: false
     t.bigint "object_id", null: false
     t.index ["object_id"], name: "index_organisation_relationships_on_object_id"
-    t.index ["subject_id", "verb", "object_id"], name: "unique_organisation_relationship_row", unique: true
-    t.index ["subject_id"], name: "index_organisation_relationships_on_subject_id"
+    t.index %w[subject_id verb object_id],
+            name: "unique_organisation_relationship_row",
+            unique: true
+    t.index ["subject_id"],
+            name: "index_organisation_relationships_on_subject_id"
   end
 
   create_table "partner_tags", force: :cascade do |t|
     t.bigint "partner_id", null: false
     t.bigint "tag_id", null: false
-    t.index ["partner_id", "tag_id"], name: "index_partner_tags_on_partner_id_and_tag_id"
-    t.index ["tag_id", "partner_id"], name: "index_partner_tags_on_tag_id_and_partner_id"
+    t.index %w[partner_id tag_id],
+            name: "index_partner_tags_on_partner_id_and_tag_id"
+    t.index %w[tag_id partner_id],
+            name: "index_partner_tags_on_tag_id_and_partner_id"
   end
 
   create_table "partners", id: :serial, force: :cascade do |t|
@@ -269,7 +283,9 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.index ["slug"], name: "index_places_on_slug", unique: true
   end
 
-  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
+  create_table "seed_migration_data_migrations",
+               id: :serial,
+               force: :cascade do |t|
     t.string "version"
     t.integer "runtime"
     t.datetime "migrated_on"
@@ -280,8 +296,11 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.bigint "partner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["neighbourhood_id", "partner_id"], name: "index_service_areas_on_neighbourhood_id_and_partner_id", unique: true
-    t.index ["neighbourhood_id"], name: "index_service_areas_on_neighbourhood_id"
+    t.index %w[neighbourhood_id partner_id],
+            name: "index_service_areas_on_neighbourhood_id_and_partner_id",
+            unique: true
+    t.index ["neighbourhood_id"],
+            name: "index_service_areas_on_neighbourhood_id"
     t.index ["partner_id"], name: "index_service_areas_on_partner_id"
   end
 
@@ -317,8 +336,10 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
   create_table "sites_supporters", id: false, force: :cascade do |t|
     t.bigint "site_id", null: false
     t.bigint "supporter_id", null: false
-    t.index ["site_id", "supporter_id"], name: "index_sites_supporters_on_site_id_and_supporter_id"
-    t.index ["supporter_id", "site_id"], name: "index_sites_supporters_on_supporter_id_and_site_id"
+    t.index %w[site_id supporter_id],
+            name: "index_sites_supporters_on_site_id_and_supporter_id"
+    t.index %w[supporter_id site_id],
+            name: "index_sites_supporters_on_supporter_id_and_site_id"
   end
 
   create_table "sites_tags", force: :cascade do |t|
@@ -326,7 +347,9 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.bigint "tag_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["site_id", "tag_id"], name: "index_sites_tags_on_site_id_and_tag_id", unique: true
+    t.index %w[site_id tag_id],
+            name: "index_sites_tags_on_site_id_and_tag_id",
+            unique: true
     t.index ["site_id"], name: "index_sites_tags_on_site_id"
     t.index ["tag_id"], name: "index_sites_tags_on_tag_id"
   end
@@ -355,8 +378,8 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
   create_table "tags_users", force: :cascade do |t|
     t.bigint "tag_id", null: false
     t.bigint "user_id", null: false
-    t.index ["tag_id", "user_id"], name: "index_tags_users_on_tag_id_and_user_id"
-    t.index ["user_id", "tag_id"], name: "index_tags_users_on_user_id_and_tag_id"
+    t.index %w[tag_id user_id], name: "index_tags_users_on_tag_id_and_user_id"
+    t.index %w[user_id tag_id], name: "index_tags_users_on_user_id_and_tag_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -387,8 +410,12 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.string "invited_by_type"
     t.string "avatar"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["invitation_token"],
+            name: "index_users_on_invitation_token",
+            unique: true
+    t.index ["reset_password_token"],
+            name: "index_users_on_reset_password_token",
+            unique: true
   end
 
   create_table "versions", force: :cascade do |t|
@@ -399,7 +426,8 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.jsonb "object"
     t.jsonb "object_changes"
     t.datetime "created_at"
-    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+    t.index %w[item_type item_id],
+            name: "index_versions_on_item_type_and_item_id"
   end
 
   add_foreign_key "addresses", "neighbourhoods"

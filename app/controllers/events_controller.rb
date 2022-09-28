@@ -15,8 +15,8 @@ class EventsController < ApplicationController
   # GET /events.json
   def index
     # Duration to view - default to day view
-    @period = params[:period].to_s || 'day'
-    @repeating = params[:repeating] || 'on'
+    @period = params[:period].to_s || "day"
+    @repeating = params[:repeating] || "on"
     @events = filter_events(@period, repeating: @repeating, site: current_site)
     # Sort criteria
     @events = sort_events(@events, @sort)
@@ -41,7 +41,8 @@ class EventsController < ApplicationController
     end
   end
 
-  def ical; end
+  def ical
+  end
 
   # GET /events/1
   # GET /events/1.json
@@ -67,7 +68,8 @@ class EventsController < ApplicationController
   end
 
   # GET /events/1/edit
-  def edit; end
+  def edit
+  end
 
   # POST /events
   # POST /events.json
@@ -76,11 +78,15 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.save
-        format.html { redirect_to @event, notice: 'Event was successfully created.' }
+        format.html do
+          redirect_to @event, notice: "Event was successfully created."
+        end
         format.json { render :show, status: :created, location: @event }
       else
         format.html { render :new }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+        format.json do
+          render json: @event.errors, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -96,7 +102,9 @@ class EventsController < ApplicationController
   def destroy
     @event.destroy
     respond_to do |format|
-      format.html { redirect_to events_url, notice: 'Event was successfully destroyed.' }
+      format.html do
+        redirect_to events_url, notice: "Event was successfully destroyed."
+      end
       format.json { head :no_content }
     end
   end

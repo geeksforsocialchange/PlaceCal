@@ -6,6 +6,6 @@ class PartnerTag < ApplicationRecord
   validates :tag_id,
             uniqueness: {
               scope: :partner_id,
-              message: 'User cannot be assigned more than once to a tag'
+              message: "User cannot be assigned more than once to a tag"
             }
 end

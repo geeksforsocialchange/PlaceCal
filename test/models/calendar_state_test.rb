@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class CalendarStateTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
-  SOURCE_URL = 'https://calendar.google.com/calendar/ical/mgemn0rmm44un8ucifb287coto%40group.calendar.google.com/public/basic.ics'
+  SOURCE_URL =
+    "https://calendar.google.com/calendar/ical/mgemn0rmm44un8ucifb287coto%40group.calendar.google.com/public/basic.ics"
 
   # idle
-  test 'is idle by default' do
+  test "is idle by default" do
     assert Calendar.new.calendar_state.idle?
   end
 
   # queueing
-  test 'can be pushed into queue' do
+  test "can be pushed into queue" do
     assert_enqueued_jobs 0
     calendar = create(:calendar)
     calendar.queue_for_import! false, Date.new(2000, 1, 1)
@@ -21,7 +22,7 @@ class CalendarStateTest < ActiveSupport::TestCase
     assert_enqueued_jobs 1
   end
 
-  test 'cannot be queued if not idle' do
+  test "cannot be queued if not idle" do
     assert_enqueued_jobs 0
     calendar = create(:calendar, calendar_state: :in_queue)
     calendar.queue_for_import! false, Date.new(2000, 1, 1)
@@ -35,7 +36,8 @@ class CalendarStateTest < ActiveSupport::TestCase
 
   test "can move into working state" do
     VCR.use_cassette(:import_test_calendar) do
-      calendar = create(:calendar, calendar_state: :in_queue, source: SOURCE_URL)
+      calendar =
+        create(:calendar, calendar_state: :in_queue, source: SOURCE_URL)
       calendar.flag_start_import_job!
       assert calendar.calendar_state.in_worker?
     end
@@ -44,8 +46,9 @@ class CalendarStateTest < ActiveSupport::TestCase
   # in worker
   test "can move into idle state" do
     VCR.use_cassette(:import_test_calendar) do
-      calendar = create(:calendar, calendar_state: :in_worker, source: SOURCE_URL)
-      calendar.flag_complete_import_job! [], 0, 'ical'
+      calendar =
+        create(:calendar, calendar_state: :in_worker, source: SOURCE_URL)
+      calendar.flag_complete_import_job! [], 0, "ical"
       assert calendar.calendar_state.idle?
       # are we close enough?
       # deal with weird database encoding serialisations
@@ -55,24 +58,31 @@ class CalendarStateTest < ActiveSupport::TestCase
 
   test "can move into error state" do
     VCR.use_cassette(:import_test_calendar) do
-      bad_message = 'A description of the error'
-      calendar = create(:calendar, calendar_state: :in_worker, source: SOURCE_URL)
+      bad_message = "A description of the error"
+      calendar =
+        create(:calendar, calendar_state: :in_worker, source: SOURCE_URL)
       calendar.flag_error_import_job! bad_message
       assert calendar.calendar_state.error?
       assert_equal bad_message, calendar.critical_error
     end
   end
 
-  test 'can move into error state even if calendar is invalid' do
+  test "can move into error state even if calendar is invalid" do
     VCR.use_cassette(:import_test_calendar) do
-      bad_message = 'A description of the error'
-      name = 'Calendar name'
-      calendar = create(:calendar, calendar_state: :in_worker, source: SOURCE_URL, name: name)
+      bad_message = "A description of the error"
+      name = "Calendar name"
+      calendar =
+        create(
+          :calendar,
+          calendar_state: :in_worker,
+          source: SOURCE_URL,
+          name: name
+        )
 
       # build some duplicate events
       event_args = {
         dtstart: Date.new,
-        summary: 'This is a summary',
+        summary: "This is a summary",
         calendar_id: calendar.id
       }
       calendar.events.build event_args
@@ -80,14 +90,14 @@ class CalendarStateTest < ActiveSupport::TestCase
 
       # set some invalid state
       calendar.name = nil
-      assert (calendar.valid? == false), 'Calendar should be invalid'
+      assert (calendar.valid? == false), "Calendar should be invalid"
 
       # flag bad thing
       calendar.flag_error_import_job! bad_message
 
       # check the calendar is back to how it was
       assert_equal name, calendar.name
-      assert calendar.valid?, 'Calendar should be valid now'
+      assert calendar.valid?, "Calendar should be valid now"
 
       # check the error was saved to calendar
       assert calendar.calendar_state.error?
@@ -100,5 +110,4 @@ class CalendarStateTest < ActiveSupport::TestCase
     calendar = create(:calendar, calendar_state: :error)
     assert calendar.calendar_state.error?
   end
-
 end

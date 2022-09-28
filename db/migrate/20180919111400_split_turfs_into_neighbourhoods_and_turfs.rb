@@ -4,7 +4,9 @@ class SplitTurfsIntoNeighbourhoodsAndTurfs < ActiveRecord::Migration[5.1]
     create_table :neighbourhoods do |t|
       t.string :name
     end
-    execute("insert into neighbourhoods ( id, name ) select id, name from turfs where turfs.turf_type = 'neighbourhood';")
+    execute(
+      "insert into neighbourhoods ( id, name ) select id, name from turfs where turfs.turf_type = 'neighbourhood';"
+    )
 
     #2 Change addresses to point at neighbourhoods rather than turfs
     remove_foreign_key :addresses, column: :neighbourhood_turf_id
@@ -25,7 +27,9 @@ class SplitTurfsIntoNeighbourhoodsAndTurfs < ActiveRecord::Migration[5.1]
     add_column :turfs, :turf_type, :string
     execute("update turfs set turf_type = 'interest';")
     # Note: Does not create slugs for neighbourhood turfs!
-    execute("insert into turfs ( id, name, turf_type, created_at, updated_at ) select id, name, 'neighbourhood', now(), now() from neighbourhoods;")
+    execute(
+      "insert into turfs ( id, name, turf_type, created_at, updated_at ) select id, name, 'neighbourhood', now(), now() from neighbourhoods;"
+    )
 
     #3
     rename_table :sites_neighbourhoods, :sites_turfs

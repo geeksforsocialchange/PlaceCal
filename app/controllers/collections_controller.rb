@@ -17,7 +17,7 @@ class CollectionsController < ApplicationController
   def show
     @events = @collection.sorted_events
     @map = get_map_markers(@events) if @events
-    @events = sort_events(@events, 'time')
+    @events = sort_events(@events, "time")
 
     respond_to do |format|
       format.html

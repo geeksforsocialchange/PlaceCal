@@ -3,10 +3,19 @@ class SiteDatatable < Datatable
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format
     @view_columns ||= {
-      id: { source: 'Site.id', cond: :eq },
-      name: { source: 'Site.name' },
-      slug: { source: 'Site.slug' },
-      updated_at: { source: 'Site.updated_at' }
+      id: {
+        source: "Site.id",
+        cond: :eq
+      },
+      name: {
+        source: "Site.name"
+      },
+      slug: {
+        source: "Site.slug"
+      },
+      updated_at: {
+        source: "Site.updated_at"
+      }
     }
   end
 

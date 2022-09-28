@@ -26,9 +26,7 @@ class ApplicationController < ActionController::Base
     day = params[:day] || 1
     @current_day =
       if params[:year] && params[:month] && day
-        Date.new(params[:year].to_i,
-                 params[:month].to_i,
-                 params[:day].to_i)
+        Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
       else
         @today
       end
@@ -39,11 +37,11 @@ class ApplicationController < ActionController::Base
   end
 
   def filter_events(period, **args)
-    site             = args[:site]             || false
-    place            = args[:place]            || false
-    partner          = args[:partner]          || false
+    site = args[:site] || false
+    place = args[:place] || false
+    partner = args[:partner] || false
     partner_or_place = args[:partner_or_place] || false
-    repeating        = args[:repeating]        || 'on'
+    repeating = args[:repeating] || "on"
 
     events = Event.all
 
@@ -55,10 +53,10 @@ class ApplicationController < ActionController::Base
     events = events.in_place(place) if place
     events = events.by_partner(partner) if partner
     events = events.by_partner_or_place(partner_or_place) if partner_or_place
-    events = events.one_off_events_only if repeating == 'off'
-    events = events.one_off_events_first if repeating == 'last'
+    events = events.one_off_events_only if repeating == "off"
+    events = events.one_off_events_first if repeating == "last"
     events =
-      if period == 'week'
+      if period == "week"
         events.find_by_week(@current_day).includes(:place)
       else
         events.find_by_day(@current_day).includes(:place)
@@ -68,7 +66,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sort_events(events, sort)
-    if sort == 'summary'
+    if sort == "summary"
       [[Time.now, events.sort_by_summary]]
     else
       events.sort_by_time.group_by_day(&:dtstart)
@@ -91,7 +89,7 @@ class ApplicationController < ActionController::Base
     @current_site = Site.find_by_request(request)
 
     if @current_site.nil? && !response.redirect?
-      redirect_to( root_url( :subdomain => false ) )
+      redirect_to(root_url(subdomain: false))
     end
 
     @current_site
@@ -101,11 +99,10 @@ class ApplicationController < ActionController::Base
     @primary_neighbourhood = current_site&.primary_neighbourhood
   end
 
-
   # Create a calendar from array of events
   def create_calendar(events, title = false)
     cal = Icalendar::Calendar.new
-    cal.x_wr_calname = title || 'PlaceCal'
+    cal.x_wr_calname = title || "PlaceCal"
     events.each do |e|
       ical = create_ical_event(e)
       cal.add_event(ical)
@@ -120,7 +117,8 @@ class ApplicationController < ActionController::Base
     event.dtstart = e.dtstart
     event.dtend = e.dtend
     event.summary = e.summary
-    event.description = "#{e.description}\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
+    event.description =
+      "#{e.description}\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
     event.location = e.location
     event
   end
@@ -128,7 +126,9 @@ class ApplicationController < ActionController::Base
   def default_update(obj, obj_params)
     respond_to do |format|
       if obj.update(obj_params)
-        format.html { redirect_to obj, notice: "#{obj.class} was successfully updated." }
+        format.html do
+          redirect_to obj, notice: "#{obj.class} was successfully updated."
+        end
         format.json { render :show, status: :ok, location: obj }
       else
         format.html { render :edit }
@@ -139,11 +139,11 @@ class ApplicationController < ActionController::Base
 
   def authenticate_by_ip
     # Is whitelist mode enabled?
-    return unless ENV['WHITELIST_MODE']
+    return unless ENV["WHITELIST_MODE"]
     # Whitelisted ips are stored as comma separated values in the dokku config
-    whitelist = ENV['WHITELISTED_IPS'].split(',')
+    whitelist = ENV["WHITELISTED_IPS"].split(",")
     return if whitelist.include?(request.remote_ip)
-    redirect_to 'https://google.com'
+    redirect_to "https://google.com"
   end
 
   def set_supporters
@@ -169,31 +169,40 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_from_default_site
-    redirect_to '/find-placecal' if default_site?
+    redirect_to "/find-placecal" if default_site?
   end
 
   def set_navigation
     return @navigation if @navigation
     return if self.class == MountainView::StyleguideController
 
-    @navigation = if default_site?
-                    default_site_navigation
-                  else
-                    sub_site_navigation
-                  end
+    @navigation =
+      (default_site? ? default_site_navigation : sub_site_navigation)
   end
-
 
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name email password password_confirmation])
-    devise_parameter_sanitizer.permit(:account_update, keys: %i[first_name last_name email password password_confirmation current_password])
+    devise_parameter_sanitizer.permit(
+      :sign_up,
+      keys: %i[first_name last_name email password password_confirmation]
+    )
+    devise_parameter_sanitizer.permit(
+      :account_update,
+      keys: %i[
+        first_name
+        last_name
+        email
+        password
+        password_confirmation
+        current_password
+      ]
+    )
   end
 
-
   def storable_location?
-    (request.subdomain == Site::ADMIN_SUBDOMAIN) && request.get? && is_navigational_format? && !devise_controller? && !request.xhr?
+    (request.subdomain == Site::ADMIN_SUBDOMAIN) && request.get? &&
+      is_navigational_format? && !devise_controller? && !request.xhr?
   end
 
   def store_user_location!
@@ -201,7 +210,8 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource_or_scope)
-    stored_location_for(resource_or_scope) || admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
+    stored_location_for(resource_or_scope) ||
+      admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
   end
 
   def default_site?
@@ -210,9 +220,9 @@ class ApplicationController < ActionController::Base
 
   def default_site_navigation
     [
-      ['Our story', our_story_path],
-      ['Find your PlaceCal', find_placecal_path],
-      ['Join us', join_path]
+      ["Our story", our_story_path],
+      ["Find your PlaceCal", find_placecal_path],
+      ["Join us", join_path]
     ]
   end
 
@@ -220,11 +230,11 @@ class ApplicationController < ActionController::Base
     article_count = current_site&.news_article_count || 0
 
     items = [
-      ['Events', events_path],
+      ["Events", events_path],
       # ['Places', places_path],
-      ['Partners', partners_path]
+      ["Partners", partners_path]
     ]
-    items << ['News', news_index_path] if article_count > 0
+    items << ["News", news_index_path] if article_count > 0
     items
   end
 end

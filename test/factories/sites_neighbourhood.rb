@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :sites_neighbourhood do
-    relation_type { 'Primary' }
+    relation_type { "Primary" }
 
     neighbourhood
 

@@ -10,19 +10,28 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json {
-          render json: ArticleDatatable.new(
-            params,
-            view_context: view_context,
-            articles: @articles
-          )
-        }
+        format.json do
+          render json:
+                   ArticleDatatable.new(
+                     params,
+                     view_context: view_context,
+                     articles: @articles
+                   )
+        end
       end
     end
 
     def new
-      @article = params[:article] ? Article.new(permitted_attributes(Article)) : Article.new
-      @article.partners = current_user.partners if current_user.partners.count == 1
+      @article =
+        (
+          if params[:article]
+            Article.new(permitted_attributes(Article))
+          else
+            Article.new
+          end
+        )
+      @article.partners =
+        current_user.partners if current_user.partners.count == 1
       @article.author = current_user unless current_user.root?
       authorize @article
     end
@@ -37,10 +46,10 @@ module Admin
       authorize @article
 
       if @article.save
-        flash[:success] = 'Article has been created'
+        flash[:success] = "Article has been created"
         redirect_to admin_articles_path
       else
-        flash.now[:danger] = 'Article has not been created'
+        flash.now[:danger] = "Article has not been created"
         render :new, status: :unprocessable_entity
       end
     end
@@ -49,10 +58,10 @@ module Admin
       authorize @article
 
       if @article.update(permitted_attributes(@article))
-        flash[:success] = 'Article was saved successfully'
+        flash[:success] = "Article was saved successfully"
         redirect_to admin_articles_path
       else
-        flash.now[:danger] = 'Article was not saved'
+        flash.now[:danger] = "Article was not saved"
         render :edit, status: :unprocessable_entity
       end
     end
@@ -60,7 +69,7 @@ module Admin
     def destroy
       authorize @article
       @article.destroy
-      flash[:success] = 'Article was deleted'
+      flash[:success] = "Article was deleted"
       redirect_to admin_articles_url
     end
 

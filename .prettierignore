@@ -1,3 +1,7 @@
 /app/assets/builds/
+/db/schema.rb
+/doc/**/*.html
+/doc/**/*.css
+/doc/**/*.js
 /tmp/
 /vendor/bundle/

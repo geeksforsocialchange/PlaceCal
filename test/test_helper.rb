@@ -1,32 +1,30 @@
 # frozen_string_literal: true
 
 # require 'simplecov'
-require 'vcr'
+require "vcr"
 # SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
-require 'webmock/minitest'
+require "webmock/minitest"
 # require 'minitest-rails'
 WebMock.disable_net_connect!(allow_localhost: true)
 
-ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../config/environment', __dir__)
-require 'rails/test_help'
-require 'minitest/reporters'
+ENV["RAILS_ENV"] ||= "test"
+require File.expand_path("../config/environment", __dir__)
+require "rails/test_help"
+require "minitest/reporters"
 Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 
-require 'minitest/autorun'
+require "minitest/autorun"
 
 # JSON matcher stuff for API
-require 'json_matchers/minitest/assertions'
-JsonMatchers.schema_root = 'test/support/api/schemas'
+require "json_matchers/minitest/assertions"
+JsonMatchers.schema_root = "test/support/api/schemas"
 include JsonMatchers::Minitest::Assertions
 
 require "capybara/rails"
 require "capybara/minitest"
 
-Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')) do |path|
-  require path
-end
+Dir.glob(File.join(Rails.root, "test/support/**/*.rb")) { |path| require path }
 
 module ActiveSupport
   class TestCase
@@ -42,7 +40,9 @@ module ActiveSupport
     # end
 
     %i[index show new edit create update destroy].each do |action|
-      define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
+      define_singleton_method(
+        :"it_allows_access_to_#{action}_for"
+      ) do |users, &block|
         users.each do |user|
           test "#{user}: can #{action}" do
             variable = instance_variable_get("@#{user}")
@@ -54,7 +54,9 @@ module ActiveSupport
         end
       end
 
-      define_singleton_method(:"it_denies_access_to_#{action}_for") do |users, &block|
+      define_singleton_method(
+        :"it_denies_access_to_#{action}_for"
+      ) do |users, &block|
         users.each do |user|
           test "#{user} : cannot #{action}" do
             variable = instance_variable_get("@#{user}")
@@ -76,7 +78,7 @@ module ActiveSupport
     # permitted_records(@partner_admin, Partner)
 
     def allows_access(user, object, action)
-      klass  = object.is_a?(Class) ? object : object.class
+      klass = object.is_a?(Class) ? object : object.class
       policy = "#{klass}Policy".constantize
 
       policy.new(user, object).send("#{action}?")
@@ -100,7 +102,7 @@ module ActionDispatch
 end
 
 VCR.configure do |c|
-  c.cassette_library_dir = 'test/fixtures/vcr_cassettes'
+  c.cassette_library_dir = "test/fixtures/vcr_cassettes"
   c.hook_into :webmock
 end
 
@@ -111,43 +113,42 @@ end
 # Returns:
 #   The default site just created.
 def create_default_site
-  create(:site, slug: 'default-site')
+  create(:site, slug: "default-site")
 end
-
 
 # Some helpers for working with JS and Capybara
 
 def click_sidebar(href)
   # I think the icons are interfering with click_link
-  within '.sidebar-sticky' do
+  within ".sidebar-sticky" do
     link = page.find(:css, "a[href*='#{href}']")
-    visit link['href']
+    visit link["href"]
   end
 end
 
 def await_datatables(time = 15)
-  page.find(:css, '#datatable_info', wait: time)
+  page.find(:css, "#datatable_info", wait: time)
 end
 
 def await_select2(time = 30)
-  page.all(:css, '.select2-container', wait: time)
+  page.all(:css, ".select2-container", wait: time)
 end
 
 def select2_node(stable_identifier)
   within ".#{stable_identifier}" do
-    find(:css, '.select2-container')
+    find(:css, ".select2-container")
   end
 end
 
 def all_cocoon_select2_nodes(css_class)
   within ".#{css_class}" do
-    all(:css, '.select2-container')
+    all(:css, ".select2-container")
   end
 end
 
 def assert_select2_single(option, node)
   within :xpath, node.path do
-    assert_selector '.select2-selection__rendered', text: option
+    assert_selector ".select2-selection__rendered", text: option
   end
 end
 
@@ -158,12 +159,18 @@ def assert_select2_multiple(options_array, node)
   # instead copy the data, then pull out the options and joining characters
   # If we are left with nothing then the options and stored data match
   within :xpath, node.path do
-    assert_selector '.select2-selection__choice', count: options_array.length
-    rendered = find(:css, '.select2-selection__rendered').text.gsub('×', '').gsub("\n", '')
-    options_array.each do |opt|
-      rendered = rendered.gsub(opt, '')
-    end
-    assert_equal('', rendered, "'#{rendered}' is in the selected data but not in the options passed to this test")
+    assert_selector ".select2-selection__choice", count: options_array.length
+    rendered =
+      find(:css, ".select2-selection__rendered")
+        .text
+        .gsub("×", "")
+        .gsub("\n", "")
+    options_array.each { |opt| rendered = rendered.gsub(opt, "") }
+    assert_equal(
+      "",
+      rendered,
+      "'#{rendered}' is in the selected data but not in the options passed to this test"
+    )
   end
 end
 
@@ -172,7 +179,8 @@ end
 def assert_field_equals(obj, key, value: nil)
   assert obj.key?(key), "field '#{key}' is missing"
 
-  error_msg = "Field '#{key}' has incorrect value: wanted '#{value}', but got '#{obj[key]}'"
+  error_msg =
+    "Field '#{key}' has incorrect value: wanted '#{value}', but got '#{obj[key]}'"
 
   # This is super awkward and horrible. Basically if both parameters ending up at assert_equal are nil,
   # it throws a deprecation warning:
@@ -209,7 +217,7 @@ end
 
 def suppress_stdout
   stdout = $stdout
-  $stdout = File.open(File::NULL, 'w')
+  $stdout = File.open(File::NULL, "w")
   yield
   $stdout = stdout
 end

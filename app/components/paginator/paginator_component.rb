@@ -12,50 +12,52 @@ class PaginatorComponent < MountainView::Presenter
   def paginator # rubocop:disable Metrics/AbcSize
     pages = []
     # Create backward arrow link
-    pages << { text: back_arrow,
-               link: create_event_url(pointer - period),
-               css: 'paginator__arrow paginator__arrow--back js-back' }
+    pages << {
+      text: back_arrow,
+      link: create_event_url(pointer - period),
+      css: "paginator__arrow paginator__arrow--back js-back"
+    }
     # Create in-between links according to steps requested
     (0..steps).each do |i|
       day = pointer + period * i
-      css = active?(day) ? 'active js-button' : 'js-button'
-      pages << { text: format_date(day),
-                 link: create_event_url(day),
-                 css: css }
+      css = active?(day) ? "active js-button" : "js-button"
+      pages << { text: format_date(day), link: create_event_url(day), css: css }
     end
     # Create forwards arrow link
-    pages << { text: forward_arrow,
-               link: create_event_url(pointer + period),
-               css: 'paginator__arrow paginator__arrow--forwards js-forwards' }
+    pages << {
+      text: forward_arrow,
+      link: create_event_url(pointer + period),
+      css: "paginator__arrow paginator__arrow--forwards js-forwards"
+    }
   end
 
   # Paginator title
   def title
     if period <= 1.day
       # Thursday 14 September, 2017
-      pointer.strftime('%A %e %B, %Y')
+      pointer.strftime("%A %e %B, %Y")
     else
       # Thursday 14 September - 21 September 2017
-      t = pointer.strftime('%A %e %B')
-      t += ' - '
+      t = pointer.strftime("%A %e %B")
+      t += " - "
       # FIXME: 1.day needs sorting when we add in month views
-      t + (pointer + period - 1.day).strftime('%A %e %B %Y')
+      t + (pointer + period - 1.day).strftime("%A %e %B %Y")
     end
   end
 
   # What field are we using to sort?
   def sort
-    properties[:sort] || 'time'
+    properties[:sort] || "time"
   end
 
   # How far does each step take us?
   def period
-    properties[:period] == 'week' ? 1.week : 1.day
+    properties[:period] == "week" ? 1.week : 1.day
   end
 
   # Base URL
   def path
-    properties[:path] || 'events'
+    properties[:path] || "events"
   end
 
   # Number of steps for the paginator to have
@@ -77,22 +79,18 @@ class PaginatorComponent < MountainView::Presenter
 
   # Format date according to context
   def format_date(date)
-    if period <= 1.day
-      todayify(date)
-    else
-      weekify(date)
-    end
+    period <= 1.day ? todayify(date) : weekify(date)
   end
 
   # Format the button for a day or less of events
   def todayify(date)
     today = Date.today
-    date_fmt = date.strftime('%a %e %b')
+    date_fmt = date.strftime("%a %e %b")
     # Show day name e.g. "Fri 15th Sep"
     if date == today
-      'Today'
+      "Today"
     elsif date == today + 1.day
-      'Tomorrow'
+      "Tomorrow"
     else
       date_fmt
     end
@@ -102,18 +100,15 @@ class PaginatorComponent < MountainView::Presenter
   def weekify(date) # rubocop:disable Metrics/MethodLength
     today = Date.today
     end_date = date + period - 1.day
-    date_fmt = if date.month == end_date.month
-                 "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
-               else
-                 # Show date range e.g. "15 Sep - 22 Sep"
-                 "#{date.strftime('%e %b')} – #{end_date.strftime('%e %b')}"
-               end
+    date_fmt =
+      if date.month == end_date.month
+        "#{date.strftime("%e")} - #{end_date.strftime("%e %b")}"
+      else
+        # Show date range e.g. "15 Sep - 22 Sep"
+        "#{date.strftime("%e %b")} – #{end_date.strftime("%e %b")}"
+      end
     # Add in note if it's the current week
-    if date == today.beginning_of_week
-      'This week'
-    else
-      date_fmt
-    end
+    date == today.beginning_of_week ? "This week" : date_fmt
   end
 
   # Create URLs
@@ -124,10 +119,10 @@ class PaginatorComponent < MountainView::Presenter
   # URL params to add back in
   def url_suffix
     str = []
-    str << 'period=week' if period == 1.week
+    str << "period=week" if period == 1.week
     str << "sort=#{sort}" if sort
     str << "repeating=#{repeating}" if repeating
-    '?' + str.join('&') if str.any?
+    "?" + str.join("&") if str.any?
   end
 
   # Icon for back arrow

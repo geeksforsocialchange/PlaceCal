@@ -6,7 +6,7 @@ class ArticlePartnerTest < ActiveSupport::TestCase
     @article = create(:article)
   end
 
-  test 'create article for partner' do
+  test "create article for partner" do
     @partner.articles << @article
     assert_equal @partner.articles.count, 1
   end

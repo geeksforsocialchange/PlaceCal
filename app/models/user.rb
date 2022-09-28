@@ -8,14 +8,16 @@ class User < ApplicationRecord
   attr_accessor :skip_password_validation, :current_password
 
   # Site-wide roles
-  enumerize :role,
-            in: %i[root editor citizen],
-            default: :citizen
+  enumerize :role, in: %i[root editor citizen], default: :citizen
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable
-  devise :database_authenticatable, :recoverable, :rememberable, :trackable,
-         :validatable, :invitable
+  devise :database_authenticatable,
+         :recoverable,
+         :rememberable,
+         :trackable,
+         :validatable,
+         :invitable
 
   # TODO: set up join models properly
   # has_many :partners_users, dependent: :destroy
@@ -33,19 +35,22 @@ class User < ApplicationRecord
   validates :email,
             presence: true,
             uniqueness: true,
-            format: { with: EMAIL_REGEX, message: 'invalid email address' }
+            format: {
+              with: EMAIL_REGEX,
+              message: "invalid email address"
+            }
   validates :role, presence: true
 
   mount_uploader :avatar, AvatarUploader
 
   # General use throughout the site
   def full_name
-    [first_name, last_name].reject(&:blank?).join(' ')
+    [first_name, last_name].reject(&:blank?).join(" ")
   end
 
   # Shows in admin interfaces
   def admin_name
-    name = [last_name&.upcase, first_name].reject(&:blank?).join(', ')
+    name = [last_name&.upcase, first_name].reject(&:blank?).join(", ")
 
     "#{name} <#{email}>".strip
   end
@@ -96,13 +101,13 @@ class User < ApplicationRecord
   def admin_roles
     types = []
 
-    types << 'root' if root?
-    types << 'editor' if editor?
-    types << 'neighbourhood_admin' if neighbourhood_admin?
-    types << 'partner_admin' if partner_admin?
-    types << 'tag_admin' if tag_admin?
+    types << "root" if root?
+    types << "editor" if editor?
+    types << "neighbourhood_admin" if neighbourhood_admin?
+    types << "partner_admin" if partner_admin?
+    types << "tag_admin" if tag_admin?
 
-    types.join(', ')
+    types.join(", ")
   end
 
   def site_admin?
@@ -116,9 +121,12 @@ class User < ApplicationRecord
 
     return false unless res
 
-    neighbourhood = Neighbourhood.find_by(unit: 'ward',
-                                          unit_code_key: 'WD19CD',
-                                          unit_code_value: res.dig('codes', 'admin_ward'))
+    neighbourhood =
+      Neighbourhood.find_by(
+        unit: "ward",
+        unit_code_key: "WD19CD",
+        unit_code_value: res.dig("codes", "admin_ward")
+      )
 
     owned_neighbourhood_ids.include?(neighbourhood&.id)
   end

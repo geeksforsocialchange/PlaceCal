@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class SitesSupporterTest < ActiveSupport::TestCase
   setup do
@@ -8,7 +8,7 @@ class SitesSupporterTest < ActiveSupport::TestCase
     @site = create(:site)
   end
 
-  test 'can only make one association for each pair' do
+  test "can only make one association for each pair" do
     ss = SitesSupporter.new(supporter: @supporter, site: @site)
     ss2 = ss.dup
     assert ss.save

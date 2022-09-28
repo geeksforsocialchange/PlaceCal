@@ -5,6 +5,6 @@ class ArticlePartner < ApplicationRecord
   validates :partner_id,
             uniqueness: {
               scope: :article_id,
-              message: 'Article cannot be assigned more than once to a partner'
+              message: "Article cannot be assigned more than once to a partner"
             }
 end

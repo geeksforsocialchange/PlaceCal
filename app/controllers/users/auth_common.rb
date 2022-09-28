@@ -2,7 +2,6 @@
 
 module Users
   module AuthCommon
-
     def self.included(klass)
       klass.before_action :devise_check_on_root_site
       klass.after_action :patch_flash
@@ -55,10 +54,7 @@ module Users
     # == Returns
     #   URL of admin site with correct path and subdomain
     def after_sign_in_path_for(resource_or_scope)
-      route_for(
-        :root,
-        subdomain: Site::ADMIN_SUBDOMAIN
-      )
+      route_for(:root, subdomain: Site::ADMIN_SUBDOMAIN)
     end
 
     # used by password set/reset
@@ -69,10 +65,7 @@ module Users
     # == Returns
     #   full url with domain to take user to
     def after_accept_path_for(resource_or_scope)
-      route_for(
-        :root,
-        subdomain: Site::ADMIN_SUBDOMAIN
-      )
+      route_for(:root, subdomain: Site::ADMIN_SUBDOMAIN)
     end
 
     # the path to redirect to the user to when sign out happens
@@ -83,11 +76,7 @@ module Users
     # == Returns
     #   full url with domain to take user to
     def after_sign_out_path_for(resource_or_scope)
-      route_for(
-        :root,
-        subdomain: nil
-      )
+      route_for(:root, subdomain: nil)
     end
   end
-
 end

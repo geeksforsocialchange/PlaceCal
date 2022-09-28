@@ -11,7 +11,8 @@ class CalendarsController < ApplicationController
 
   # GET /calendars/1
   # GET /calendars/1.json
-  def show; end
+  def show
+  end
 
   # GET /calendars/new
   def new
@@ -19,7 +20,8 @@ class CalendarsController < ApplicationController
   end
 
   # GET /calendars/1/edit
-  def edit; end
+  def edit
+  end
 
   # POST /calendars
   # POST /calendars.json
@@ -28,11 +30,15 @@ class CalendarsController < ApplicationController
 
     respond_to do |format|
       if @calendar.save
-        format.html { redirect_to @calendar, notice: 'Calendar was successfully created.' }
+        format.html do
+          redirect_to @calendar, notice: "Calendar was successfully created."
+        end
         format.json { render :show, status: :created, location: @calendar }
       else
         format.html { render :new }
-        format.json { render json: @calendar.errors, status: :unprocessable_entity }
+        format.json do
+          render json: @calendar.errors, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -48,7 +54,10 @@ class CalendarsController < ApplicationController
   def destroy
     @calendar.destroy
     respond_to do |format|
-      format.html { redirect_to calendars_url, notice: 'Calendar was successfully destroyed.' }
+      format.html do
+        redirect_to calendars_url,
+                    notice: "Calendar was successfully destroyed."
+      end
       format.json { head :no_content }
     end
   end

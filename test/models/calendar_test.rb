@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class CalendarTest < ActiveSupport::TestCase
-  setup do
-    @calendar = Calendar.new
-  end
+  setup { @calendar = Calendar.new }
 
-  test 'has required fields' do
+  test "has required fields" do
     # Must have a name and source URL
 
     refute @calendar.valid?
@@ -24,56 +22,51 @@ class CalendarTest < ActiveSupport::TestCase
     @existing_calendar = create(:calendar)
     @existing_calendar.update(source: "https://my-calendar.com")
     refute @existing_calendar.valid?
-    assert_equal ["calendar source already in use"], @existing_calendar.errors[:source]
+    assert_equal ["calendar source already in use"],
+                 @existing_calendar.errors[:source]
   end
 
-  test 'gets a contact for each calendar' do
+  test "gets a contact for each calendar" do
     @calendar = create(:calendar)
     assert @calendar.valid?
     # If calendar contact listed, show that
-    assert_equal [ @calendar.public_contact_email,
+    assert_equal [
+                   @calendar.public_contact_email,
                    @calendar.public_contact_name
-                 ], @calendar.contact_information
+                 ],
+                 @calendar.contact_information
     # Otherwise, show the partner public contact if possible
     @calendar.update(public_contact_email: nil)
-    assert_equal [ @calendar.partner.public_email,
+    assert_equal [
+                   @calendar.partner.public_email,
                    @calendar.partner.public_name
-                 ], @calendar.contact_information
+                 ],
+                 @calendar.contact_information
     # Otherwise, show the default location contact if possible
     @calendar.partner.update(public_email: nil)
-    assert_equal [ @calendar.place.public_email,
-                   @calendar.place.public_name
-                 ], @calendar.contact_information
+    assert_equal [@calendar.place.public_email, @calendar.place.public_name],
+                 @calendar.contact_information
     # Otherwise, return false
     @calendar.place.update(public_email: nil)
     assert_equal false, @calendar.contact_information
   end
 
   test "notices get counted when saved" do
-    messages = [
-      "alpha",
-      "beta",
-      "cappa"
-    ]
+    messages = %w[alpha beta cappa]
 
     calendar = build(:calendar)
     calendar.notices = messages
     calendar.save!
 
     assert_equal 3, calendar.notice_count
-
   end
 
   test "notices are not counted if notices have not changed value" do
-    messages = [
-      "alpha",
-      "beta",
-      "cappa"
-    ]
+    messages = %w[alpha beta cappa]
 
     calendar = create(:calendar, notices: messages)
 
-    calendar.name = 'A new name'
+    calendar.name = "A new name"
     calendar.save!
 
     assert_equal 3, calendar.notice_count

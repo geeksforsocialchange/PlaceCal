@@ -4,10 +4,12 @@ module Types
   class GeoCoordinatesType < Types::BaseObject
     description "The geo coordinates of the partner's address."
 
-    field :latitude, String,
+    field :latitude,
+          String,
           description: "The latitude of the partner's address"
 
-    field :longitude, String,
+    field :longitude,
+          String,
           description: "The longitude of the partner's address"
 
     def latitude

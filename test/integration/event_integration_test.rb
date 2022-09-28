@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class EventIntegrationTest < ActionDispatch::IntegrationTest
   setup do
@@ -13,29 +13,36 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     @event = create(:event)
   end
 
-  test 'redirects to find my placecal for a slugless site' do
+  test "redirects to find my placecal for a slugless site" do
     get event_url(@event)
     assert_response :redirect
   end
 
-  test 'event show pages have event and local info' do
+  test "event show pages have event and local info" do
     get from_site_slug(@default_site, event_path(@event))
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@event.summary}, #{@event.date}, #{@event.time} | #{@default_site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
-    assert_select 'div.hero h1', text: @event.summary
-    assert_select 'div.event__detail', count: 4
+    assert_select "title",
+                  count: 1,
+                  text:
+                    "#{@event.summary}, #{@event.date}, #{@event.time} | #{@default_site.name}"
+    assert_select "div.hero h4", text: "The Community Calendar"
+    assert_select "div.hero h1", text: @event.summary
+    assert_select "div.event__detail", count: 4
     assert_select '[data-controller="leaflet"]', 1
-    assert_select 'div.contact_information', text: 'Problem with this listing? Let us know.'
+    assert_select "div.contact_information",
+                  text: "Problem with this listing? Let us know."
     assert_select "div.contact_information a:match('href', ?)", /mailto/
 
     get from_site_slug(@neighbourhood_site, event_path(@event))
     get "http://#{@neighbourhood_site.slug}.lvh.me/events/#{@event.id}"
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@event.summary}, #{@event.date}, #{@event.time} | #{@neighbourhood_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: @event.summary
-    assert_select 'div.event__detail', count: 4
+    assert_select "title",
+                  count: 1,
+                  text:
+                    "#{@event.summary}, #{@event.date}, #{@event.time} | #{@neighbourhood_site.name}"
+    assert_select "div.hero h4", text: "Neighbourhood's Community Calendar"
+    assert_select "div.hero h1", text: @event.summary
+    assert_select "div.event__detail", count: 4
     assert_select '[data-controller="leaflet"]', 1
   end
 end

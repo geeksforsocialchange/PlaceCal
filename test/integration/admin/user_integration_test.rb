@@ -2,7 +2,7 @@
 
 # rubocop:disable Style/StringLiterals
 
-require 'test_helper'
+require "test_helper"
 
 class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
@@ -31,17 +31,16 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get admin_users_path
     assert_response :success
 
-    assert_select 'title', text: "Users | PlaceCal Admin"
-    assert_select 'h1', text: "Users"
+    assert_select "title", text: "Users | PlaceCal Admin"
+    assert_select "h1", text: "Users"
   end
-
 
   test "root : can get new user" do
     sign_in @root
 
     get new_admin_user_path
 
-    assert_select 'title', text: "New User | PlaceCal Admin"
+    assert_select "title", text: "New User | PlaceCal Admin"
   end
 
   test "Profile form has correct fields for root" do
@@ -49,28 +48,28 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get admin_profile_path
     assert_response :success
 
-    assert_select 'h1', text: "Edit Profile"
+    assert_select "h1", text: "Edit Profile"
 
-    assert_select 'h2', text: 'Basic information'
-    assert_select 'label', text: 'First name'
-    assert_select 'label', text: 'Last name'
-    assert_select 'label', text: 'Email *'
-    assert_select 'label', text: 'Phone'
-    assert_select 'label', text: 'Avatar'
+    assert_select "h2", text: "Basic information"
+    assert_select "label", text: "First name"
+    assert_select "label", text: "Last name"
+    assert_select "label", text: "Email *"
+    assert_select "label", text: "Phone"
+    assert_select "label", text: "Avatar"
 
-    assert_select 'h2', text: 'Password'
-    assert_select 'label', text: 'Password'
-    assert_select 'label', text: 'Password confirmation'
-    assert_select 'label', text: 'Current password'
+    assert_select "h2", text: "Password"
+    assert_select "label", text: "Password"
+    assert_select "label", text: "Password confirmation"
+    assert_select "label", text: "Current password"
 
-    assert_select 'h2', text: 'Admin rights'
-    assert_select 'div.profile__is-root'
-    assert_select 'h3', text: 'Your partners'
-    assert_select 'a[href=?]',
+    assert_select "h2", text: "Admin rights"
+    assert_select "div.profile__is-root"
+    assert_select "h3", text: "Your partners"
+    assert_select "a[href=?]",
                   edit_admin_partner_path(@partner),
                   text: @partner.name
-    assert_select 'h3', text: 'Your neighbourhoods'
-    assert_select 'a[href=?]',
+    assert_select "h3", text: "Your neighbourhoods"
+    assert_select "a[href=?]",
                   edit_admin_neighbourhood_path(@neighbourhood),
                   text: @neighbourhood.contextual_name
   end
@@ -80,8 +79,8 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get admin_profile_path
     assert_response :success
 
-    assert_select 'h3', text: 'Your neighbourhoods', count: 1
-    assert_select 'h3', text: 'Your partners', count: 0
+    assert_select "h3", text: "Your neighbourhoods", count: 1
+    assert_select "h3", text: "Your partners", count: 0
   end
 
   test "Profile form has correct fields for partner admin" do
@@ -89,8 +88,8 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get admin_profile_path
     assert_response :success
 
-    assert_select 'h3', text: 'Your neighbourhoods', count: 0
-    assert_select 'h3', text: 'Your partners', count: 1
+    assert_select "h3", text: "Your neighbourhoods", count: 0
+    assert_select "h3", text: "Your partners", count: 1
   end
 
   test "Create form has correct fields for root" do
@@ -98,16 +97,16 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get new_admin_user_path(@citizen)
     assert_response :success
 
-    assert_select 'h1', 'New User'
-    assert_select 'label', 'First name'
-    assert_select 'label', 'Last name'
-    assert_select 'label', 'Email *'
-    assert_select 'label', 'Phone'
-    assert_select 'label', 'Avatar'
-    assert_select 'h3', 'Partners'
-    assert_select 'h3', 'Neighbourhoods'
-    assert_select 'h3', 'Allowed Tags'
-    assert_select 'h3', 'Role'
+    assert_select "h1", "New User"
+    assert_select "label", "First name"
+    assert_select "label", "Last name"
+    assert_select "label", "Email *"
+    assert_select "label", "Phone"
+    assert_select "label", "Avatar"
+    assert_select "h3", "Partners"
+    assert_select "h3", "Neighbourhoods"
+    assert_select "h3", "Allowed Tags"
+    assert_select "h3", "Role"
   end
 
   test "Create form has correct fields for neighbourhood admin" do
@@ -116,18 +115,17 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'input[type="hidden"][name="_method"][value="put"]', count: 0
-    assert_select 'h1', 'New User'
-    assert_select 'label', 'First name'
-    assert_select 'label', 'Last name'
-    assert_select 'label', 'Email *'
-    assert_select 'label', 'Phone'
-    assert_select 'label', 'Avatar'
-    assert_select 'h3', 'Partners'
-    assert_select 'h3', 'Allowed Tags'
-    assert_select 'h3', 'Neighbourhoods', count: 0
-    assert_select 'h3', 'Role', count: 0
+    assert_select "h1", "New User"
+    assert_select "label", "First name"
+    assert_select "label", "Last name"
+    assert_select "label", "Email *"
+    assert_select "label", "Phone"
+    assert_select "label", "Avatar"
+    assert_select "h3", "Partners"
+    assert_select "h3", "Allowed Tags"
+    assert_select "h3", "Neighbourhoods", count: 0
+    assert_select "h3", "Role", count: 0
   end
-
 
   test "Edit form has correct fields for root" do
     sign_in @root
@@ -135,16 +133,16 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'input[type="hidden"][name="_method"][value="put"]', count: 1
-    assert_select 'h1', "Edit User: #{@citizen.full_name}"
-    assert_select 'label', 'First name'
-    assert_select 'label', 'Last name'
-    assert_select 'label', 'Email *'
-    assert_select 'label', 'Phone'
-    assert_select 'label', 'Avatar'
-    assert_select 'h3', 'Partners'
-    assert_select 'h3', 'Neighbourhoods'
-    assert_select 'h3', 'Allowed Tags'
-    assert_select 'h3', 'Role'
+    assert_select "h1", "Edit User: #{@citizen.full_name}"
+    assert_select "label", "First name"
+    assert_select "label", "Last name"
+    assert_select "label", "Email *"
+    assert_select "label", "Phone"
+    assert_select "label", "Avatar"
+    assert_select "h3", "Partners"
+    assert_select "h3", "Neighbourhoods"
+    assert_select "h3", "Allowed Tags"
+    assert_select "h3", "Role"
   end
 
   test "Edit form has correct fields for neighbourhood admin" do
@@ -152,41 +150,38 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     get edit_admin_user_path(@citizen)
     assert_response :success
 
-    assert_select 'h1', "Edit User: #{@citizen.full_name}"
-    assert_select 'label', 'First name'
-    assert_select 'label', 'Last name'
-    assert_select 'label', 'Email *'
-    assert_select 'label', 'Phone'
-    assert_select 'label', 'Avatar'
-    assert_select 'h3', 'Partners'
-    assert_select 'h3', 'Neighbourhoods', count: 0
-    assert_select 'h3', 'Allowed Tags'
-    assert_select 'h3', 'Role', count: 0
+    assert_select "h1", "Edit User: #{@citizen.full_name}"
+    assert_select "label", "First name"
+    assert_select "label", "Last name"
+    assert_select "label", "Email *"
+    assert_select "label", "Phone"
+    assert_select "label", "Avatar"
+    assert_select "h3", "Partners"
+    assert_select "h3", "Neighbourhoods", count: 0
+    assert_select "h3", "Allowed Tags"
+    assert_select "h3", "Role", count: 0
   end
 
   test "shows partner select list" do
     sign_in @root
 
-    5.times do |i|
-      FactoryBot.create(:partner, users: [@root])
-    end
+    5.times { |i| FactoryBot.create(:partner, users: [@root]) }
 
     get new_admin_user_path
     assert_response :success
 
-    assert_select 'select#user_partner_ids option', count: 6
+    assert_select "select#user_partner_ids option", count: 6
   end
 
   test "new user has preselected partner when ID provided" do
     sign_in @root
-    5.times do |i|
-      FactoryBot.create(:partner, users: [@root])
-    end
+    5.times { |i| FactoryBot.create(:partner, users: [@root]) }
 
     get new_admin_user_path(partner_id: @partner.id)
     assert_response :success
 
-    assert_select 'select#user_partner_ids option[selected="selected"]', @partner.name
+    assert_select 'select#user_partner_ids option[selected="selected"]',
+                  @partner.name
   end
 
   test "root users can edit neighbourhoods" do
@@ -201,7 +196,8 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     # selector box with two pre-selected values
-    assert_select "select#user_neighbourhood_ids option[@selected='selected']", count: 2
+    assert_select "select#user_neighbourhood_ids option[@selected='selected']",
+                  count: 2
 
     # cannot see the neighbourhood list
     assert_select "ul.neighbourhood-list", count: 0
@@ -237,13 +233,13 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "p.has-no-admin-rights-warning"
   end
 
-  test 'new user avatar upload problem feedback' do
+  test "new user avatar upload problem feedback" do
     sign_in @root
 
     new_user_params = {
-      email: 'user@example.com',
-      role: 'root',
-      avatar: fixture_file_upload("bad-cat-picture.bmp"),
+      email: "user@example.com",
+      role: "root",
+      avatar: fixture_file_upload("bad-cat-picture.bmp")
     }
 
     post admin_users_path, params: { user: new_user_params }
@@ -252,18 +248,22 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "h6", text: "1 error prohibited this User from being saved"
 
     # top of page form error box
-    assert_select '#form-errors li', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
 
-    assert_select 'form .user_avatar .invalid-feedback', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "form .user_avatar .invalid-feedback",
+                  text:
+                    "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
   end
 
-  test 'update user avatar upload problem feedback' do
+  test "update user avatar upload problem feedback" do
     sign_in @root
 
     user_params = {
       email: @root.email,
       role: @root.role,
-      avatar: fixture_file_upload("bad-cat-picture.bmp"),
+      avatar: fixture_file_upload("bad-cat-picture.bmp")
     }
 
     put admin_user_path(@root), params: { user: user_params }
@@ -272,17 +272,21 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "h6", text: "1 error prohibited this User from being saved"
 
     # top of page form error box
-    assert_select '#form-errors li', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
 
-    assert_select 'form .user_avatar .invalid-feedback', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "form .user_avatar .invalid-feedback",
+                  text:
+                    "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
   end
 
-  test 'update profile avatar upload problem feedback' do
+  test "update profile avatar upload problem feedback" do
     sign_in @root
 
     user_params = {
       email: @root.email,
-      avatar: fixture_file_upload("bad-cat-picture.bmp"),
+      avatar: fixture_file_upload("bad-cat-picture.bmp")
     }
 
     patch update_profile_admin_user_path(@root), params: { user: user_params }
@@ -291,9 +295,12 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "h6", text: "1 error prohibited this User from being saved"
 
     # top of page form error box
-    assert_select '#form-errors li', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "#form-errors li",
+                  text:
+                    "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
 
-    assert_select 'form .user_avatar .invalid-feedback', text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select "form .user_avatar .invalid-feedback",
+                  text:
+                    "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
   end
-
 end

@@ -2,29 +2,21 @@
 
 FactoryBot.define do
   factory(:user) do
-    first_name { 'Place' }
-    last_name { 'Cal' }
-    password { 'password' }
-    password_confirmation { 'password' }
+    first_name { "Place" }
+    last_name { "Cal" }
+    password { "password" }
+    password_confirmation { "password" }
     sequence :email do |n|
       "test+#{n}@placecal.org"
     end
 
-    factory(:root) do
-      role { 'root' }
-    end
+    factory(:root) { role { "root" } }
 
-    factory(:citizen) do
-      role { 'citizen' }
-    end
+    factory(:citizen) { role { "citizen" } }
 
-    factory(:editor) do
-      role { 'editor' }
-    end
+    factory(:editor) { role { "editor" } }
 
-    factory(:tag_admin) do
-      after(:create) { |user| user.tags = [create(:tag)] }
-    end
+    factory(:tag_admin) { after(:create) { |user| user.tags = [create(:tag)] } }
 
     factory(:neighbourhood_admin) do
       after(:create) { |user| user.neighbourhoods = [create(:neighbourhood)] }

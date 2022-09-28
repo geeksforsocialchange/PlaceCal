@@ -2,11 +2,9 @@
 
 FactoryBot.define do
   factory :site do
-    sequence(:name) do |n|
-      "Hulme #{n}"
-    end
-    tagline { 'The Community Calendar' }
-    hero_image_credit { 'Place Cal' }
+    sequence(:name) { |n| "Hulme #{n}" }
+    tagline { "The Community Calendar" }
+    hero_image_credit { "Place Cal" }
     domain { name.parameterize }
     slug { name.parameterize }
     theme { :pink }

@@ -29,6 +29,7 @@
 		"yarn": "^1.22.19"
 	},
 	"devDependencies": {
+		"@prettier/plugin-ruby": "^3.2.2",
 		"husky": ">=6",
 		"lint-staged": ">=10",
 		"prettier": "^2.7.1"
@@ -43,6 +44,7 @@
 		"prepare": "husky install"
 	},
 	"lint-staged": {
-		"*.{css,html,js,json,md,scss,yml}": "prettier --write"
+		"*.{css,html,js,json,md,rake,rb,ru,scss,yml}": "prettier --write",
+		"{Gem,Guard,Rake}file": "prettier --write"
 	}
 }

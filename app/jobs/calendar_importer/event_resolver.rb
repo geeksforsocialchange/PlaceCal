@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 
 class CalendarImporter::EventResolver
-  WARNING1_MSG = 'Could not determine where this event is. Add an address to the location field of the source ' \
-                 'calendar, or choose another import strategy with a default location'
-  WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set '  \
-                 'to ignore this. Add an address to the location field of the source calendar, or choose '      \
-                 'another import strategy with a default location.'
-  INFO1_MSG = 'This location was not recognised by PlaceCal, woulfd you like to add it?'
+  WARNING1_MSG =
+    "Could not determine where this event is. Add an address to the location field of the source " \
+      "calendar, or choose another import strategy with a default location"
+  WARNING2_MSG =
+    "Could not determine where this event is. A default location is set but the importer is set " \
+      "to ignore this. Add an address to the location field of the source calendar, or choose " \
+      "another import strategy with a default location."
+  INFO1_MSG =
+    "This location was not recognised by PlaceCal, woulfd you like to add it?"
 
   attr_reader :data, :uid, :notices, :calendar
 
-  class Problem < StandardError; end
+  class Problem < StandardError
+  end
 
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
@@ -49,12 +53,12 @@ class CalendarImporter::EventResolver
     #           How does the Calendar importer detect Places and Addresses?
 
     strategies = {
-      'event' => :event_strategy,
-      'event_override' => :event_override_strategy,
-      'place' => :place_strategy,
-      'room_number' => :room_number_strategy,
-      'no_location' => :no_location_strategy,
-      'online_only' => :online_only_strategy
+      "event" => :event_strategy,
+      "event_override" => :event_override_strategy,
+      "place" => :place_strategy,
+      "room_number" => :room_number_strategy,
+      "no_location" => :no_location_strategy,
+      "online_only" => :online_only_strategy
     }
 
     if strategies.keys.include?(calendar.strategy)
@@ -85,7 +89,8 @@ class CalendarImporter::EventResolver
 
       # if no place, try to find an address
       # (This only executes if there is no place given)
-      address ||= Address.search(data.location, event_location_components, data.postcode)
+      address ||=
+        Address.search(data.location, event_location_components, data.postcode)
 
       # if we have an address, try to use the place that address points to
       # (Only runs if the fuzzy find and calendar.place are both nil)
@@ -96,7 +101,6 @@ class CalendarImporter::EventResolver
       # NOTE: Address.search can also return Nil if there are no event_location_components, or
       #       if the address failed to save
       # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
-
     else # no location
       raise Problem, WARNING2_MSG if place.present?
       # No longer an error if place is not present -- see #1198
@@ -112,7 +116,8 @@ class CalendarImporter::EventResolver
       # address = 'calendar.place.address || location'
       place = Partner.fuzzy_find_by_location(event_location_components)
       address = place&.address
-      address ||= Address.search(data.location, event_location_components, data.postcode)
+      address ||=
+        Address.search(data.location, event_location_components, data.postcode)
 
       raise Problem, INFO1_MSG if place.nil? && address.nil?
 
@@ -126,7 +131,6 @@ class CalendarImporter::EventResolver
         # address = 'calendar.place.address'
         # place = calendar.place
         address = place.address
-
       else # no place, no location
         raise Problem, WARNING1_MSG
       end
@@ -164,20 +168,17 @@ class CalendarImporter::EventResolver
         new_address = place.address.dup
         address = new_address.prepend_room_number(data.location)
         address.save
-
       else # no place, yes location
-        raise Problem, 'N/A'
+        raise Problem, "N/A"
       end
-
     else # no location
       if place.present?
         # place = 'calendar.place'
         # address = 'calendar.place.address'
         # xx place = calendar.place.address
         address = place.address
-
       else # no place, no location
-        raise Problem, 'N/A'
+        raise Problem, "N/A"
       end
     end
 
@@ -197,8 +198,11 @@ class CalendarImporter::EventResolver
 
     # If any dates of this event don't match the imported start times or end times, delete them
     if data.recurring_event?
-      events_with_invalid_dates = calendar_events.without_matching_times(occurences.map(&:start_time),
-                                                                         occurences.map(&:end_time))
+      events_with_invalid_dates =
+        calendar_events.without_matching_times(
+          occurences.map(&:start_time),
+          occurences.map(&:end_time)
+        )
       events_with_invalid_dates.destroy_all
     end
 
@@ -207,24 +211,32 @@ class CalendarImporter::EventResolver
       event = nil
 
       if calendar_events.present?
-        event = if data.recurring_event?
-                  calendar_events.find_by(event_time)
-                else
-                  calendar_events.first
-                end
+        event =
+          if data.recurring_event?
+            calendar_events.find_by(event_time)
+          else
+            calendar_events.first
+          end
       end
 
       event ||= calendar.events.new
 
-      event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
+      event_time[
+        :are_spaces_available
+      ] = occurence.status if occurence.respond_to?(:status)
 
       unless event.update(data.attributes.merge(event_time))
         notices << { event: event, errors: event.errors.full_messages }
       end
 
-      if event.address_id.blank? && calendar.strategy == 'event'
-        notices << { event: event, errors: ['No place or address could be created or found for '\
-                                            " the event location: #{event.raw_location_from_source}"] }
+      if event.address_id.blank? && calendar.strategy == "event"
+        notices << {
+          event: event,
+          errors: [
+            "No place or address could be created or found for " \
+              " the event location: #{event.raw_location_from_source}"
+          ]
+        }
       end
     end
   end
@@ -232,14 +244,15 @@ class CalendarImporter::EventResolver
   def event_location_components
     return @event_location_components if @event_location_components
 
-    regex_string = 'UK|United Kingdom'
+    regex_string = "UK|United Kingdom"
     regex_string += "|#{data.postcode.strip}" if data.postcode.present?
 
     regexp = Regexp.new(regex_string, Regexp::IGNORECASE)
 
-    @event_location_components = (data.location || '')
-      .split(', ')
-      .map { |component| component.gsub(regexp, '').strip }
-      .reject(&:blank?)
+    @event_location_components =
+      (data.location || "")
+        .split(", ")
+        .map { |component| component.gsub(regexp, "").strip }
+        .reject(&:blank?)
   end
 end

@@ -10,10 +10,16 @@ class Site < ApplicationRecord
   friendly_id :name, use: :slugged
 
   has_one :sites_neighbourhood, dependent: :destroy
-  has_one :primary_neighbourhood, -> { where(sites_neighbourhoods: { relation_type: 'Primary' }) }, source: :neighbourhood, through: :sites_neighbourhood
+  has_one :primary_neighbourhood,
+          -> { where(sites_neighbourhoods: { relation_type: "Primary" }) },
+          source: :neighbourhood,
+          through: :sites_neighbourhood
 
   has_many :sites_neighbourhoods, dependent: :destroy
-  has_many :secondary_neighbourhoods, -> { where(sites_neighbourhoods: { relation_type: 'Secondary' }) }, source: :neighbourhood, through: :sites_neighbourhoods
+  has_many :secondary_neighbourhoods,
+           -> { where(sites_neighbourhoods: { relation_type: "Secondary" }) },
+           source: :neighbourhood,
+           through: :sites_neighbourhoods
 
   has_many :neighbourhoods, through: :sites_neighbourhoods
 
@@ -22,10 +28,14 @@ class Site < ApplicationRecord
 
   has_and_belongs_to_many :supporters
 
-  belongs_to :site_admin, class_name: 'User', optional: true
+  belongs_to :site_admin, class_name: "User", optional: true
 
   accepts_nested_attributes_for :sites_neighbourhood
-  accepts_nested_attributes_for :sites_neighbourhoods, reject_if: ->(c) { c[:neighbourhood_id].blank? }, allow_destroy: true
+  accepts_nested_attributes_for :sites_neighbourhoods,
+                                reject_if: ->(c) {
+                                  c[:neighbourhood_id].blank?
+                                },
+                                allow_destroy: true
 
   validates :name, :slug, :domain, presence: true
   validates :place_name unless :default_site?
@@ -35,13 +45,9 @@ class Site < ApplicationRecord
   mount_uploader :hero_image, HeroImageUploader
 
   # Theme picker
-  enumerize :theme,
-            in: %i[pink orange green blue custom],
-            default: :pink
+  enumerize :theme, in: %i[pink orange green blue custom], default: :pink
 
-  enumerize :badge_zoom_level,
-            in: %i[ward district],
-            default: :ward
+  enumerize :badge_zoom_level, in: %i[ward district], default: :ward
 
   def to_s
     "#{id}: #{name}"
@@ -53,17 +59,14 @@ class Site < ApplicationRecord
 
   # ASSUMPTION: There is no row in the sites table for the admin site, hence
   # defining the admin subdomain string here.
-  ADMIN_SUBDOMAIN = 'admin'
+  ADMIN_SUBDOMAIN = "admin"
 
   def news_article_count
-    Article
-      .for_site(self)
-      .published
-      .count
+    Article.for_site(self).published.count
   end
 
   def default_site?
-    slug == 'default-site'
+    slug == "default-site"
   end
 
   # ASSUMPTION: All valid sites, other than the default site, are local sites.
@@ -81,11 +84,7 @@ class Site < ApplicationRecord
   end
 
   def join_word
-    if owned_neighbourhoods.count > 1
-      'near'
-    else
-      'in'
-    end
+    owned_neighbourhoods.count > 1 ? "near" : "in"
   end
 
   # Get a count of all the events this week
@@ -99,13 +98,9 @@ class Site < ApplicationRecord
   end
 
   def stylesheet_link
-    return 'home' if default_site?
+    return "home" if default_site?
 
-    if theme == :custom
-      "themes/custom/#{slug}"
-    else
-      "themes/#{theme}"
-    end
+    theme == :custom ? "themes/custom/#{slug}" : "themes/#{theme}"
   end
 
   class << self
@@ -120,19 +115,21 @@ class Site < ApplicationRecord
 
       # Is it Marvellous Mossley?
       # TODO: Fix this horrible temporary fix
-      return Site.find_by(slug: 'mossley') if request.domain == 'marvellousmossley.org'
+      if request.domain == "marvellousmossley.org"
+        return Site.find_by(slug: "mossley")
+      end
 
       # Fall back to using the subdomain.
       # Typically this will be for non-production sites.
       site_slug =
-        if request.subdomain == 'www'
+        if request.subdomain == "www"
           request.subdomains.second if request&.subdomains&.second
         elsif request.subdomain.present?
           request.subdomain
         end
 
       # No subdomain? Fall back to the default site.
-      site_slug ||= 'default-site'
+      site_slug ||= "default-site"
 
       Site.find_by(slug: site_slug)
     end
@@ -146,10 +143,14 @@ class Site < ApplicationRecord
       neighbourhood_ids = partner.owned_neighbourhood_ids
       tag_ids = partner.partner_tags.pluck(:tag_id)
 
-      Site.left_outer_joins(:sites_tag, :sites_neighbourhoods)
-          .group(:id)
-          .where('neighbourhood_id in (?) or tag_id in (?)',
-                 neighbourhood_ids, tag_ids)
+      Site
+        .left_outer_joins(:sites_tag, :sites_neighbourhoods)
+        .group(:id)
+        .where(
+          "neighbourhood_id in (?) or tag_id in (?)",
+          neighbourhood_ids,
+          tag_ids
+        )
     end
   end
 end

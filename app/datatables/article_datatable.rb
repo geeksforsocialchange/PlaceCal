@@ -1,16 +1,33 @@
 class ArticleDatatable < Datatable
-
   def view_columns
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format
     @view_columns ||= {
-      id: { source: 'Article.id', cond: :eq },
-      title: { source: 'Article.title' },
-      author: { source: 'Article.author' },
-      partners: { source: 'Article.partners', orderable: false, searchable: false, cond: :null_value },
-      published_at: { source: 'Article.published_at' },
-      is_draft: { source: 'Article.is_draft' },
-      updated_at: { source: 'Article.updated_at' }
+      id: {
+        source: "Article.id",
+        cond: :eq
+      },
+      title: {
+        source: "Article.title"
+      },
+      author: {
+        source: "Article.author"
+      },
+      partners: {
+        source: "Article.partners",
+        orderable: false,
+        searchable: false,
+        cond: :null_value
+      },
+      published_at: {
+        source: "Article.published_at"
+      },
+      is_draft: {
+        source: "Article.is_draft"
+      },
+      updated_at: {
+        source: "Article.updated_at"
+      }
     }
   end
 

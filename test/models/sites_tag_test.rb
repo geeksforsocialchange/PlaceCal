@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class SitesNeighbourhoodTest < ActiveSupport::TestCase
   setup do
@@ -8,7 +8,7 @@ class SitesNeighbourhoodTest < ActiveSupport::TestCase
     @neighbourhood = create(:neighbourhood)
   end
 
-  test 'can only make one association for each pair' do
+  test "can only make one association for each pair" do
     sn = SitesNeighbourhood.new(site: @site, neighbourhood: @neighbourhood)
     sn2 = sn.dup
     assert sn.save

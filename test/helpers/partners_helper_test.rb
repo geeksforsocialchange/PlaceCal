@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnersHelperTest < ActionView::TestCase
   setup do
     @partner = FactoryBot.create(:partner)
     @hoods = [
-      FactoryBot.create(:neighbourhood, name: 'alpha'),
-      FactoryBot.create(:neighbourhood, name: 'beta'),
-      FactoryBot.create(:neighbourhood, name: 'cappa')
+      FactoryBot.create(:neighbourhood, name: "alpha"),
+      FactoryBot.create(:neighbourhood, name: "beta"),
+      FactoryBot.create(:neighbourhood, name: "cappa")
     ]
   end
 
@@ -19,7 +19,7 @@ class PartnersHelperTest < ActionView::TestCase
 
     output = partner_service_area_text(@partner)
 
-    assert output == 'alpha'
+    assert output == "alpha"
   end
 
   test "shows two texts correctly" do
@@ -28,7 +28,7 @@ class PartnersHelperTest < ActionView::TestCase
 
     output = partner_service_area_text(@partner)
 
-    assert output == 'alpha and beta'
+    assert output == "alpha and beta"
   end
 
   test "shows N texts correctly" do
@@ -38,6 +38,6 @@ class PartnersHelperTest < ActionView::TestCase
 
     output = partner_service_area_text(@partner)
 
-    assert output == 'alpha, beta and cappa'
+    assert output == "alpha, beta and cappa"
   end
 end

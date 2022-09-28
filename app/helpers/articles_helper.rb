@@ -7,12 +7,14 @@ module ArticlesHelper
   end
 
   def article_partner_links(article)
-    article.partners.map { |partner|
-      link_to(partner.name, partner_path(partner))
-    }.join(' | ').html_safe
+    article
+      .partners
+      .map { |partner| link_to(partner.name, partner_path(partner)) }
+      .join(" | ")
+      .html_safe
   end
 
   def article_summary_text(article)
-    truncate article.body.to_s.strip, length: 200, separator: ' '
+    truncate article.body.to_s.strip, length: 200, separator: " "
   end
 end

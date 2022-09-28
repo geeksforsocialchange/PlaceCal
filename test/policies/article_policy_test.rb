@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class ArticlePolicyTest < ActiveSupport::TestCase
   def setup
@@ -9,28 +9,33 @@ class ArticlePolicyTest < ActiveSupport::TestCase
 
     @neighbourhood_admin = create(:neighbourhood_region_admin)
 
-    @partner = create(:partner) do |partner|
-      # Give the Neighbourhood admin a partner in one of their districts :)
-      neighbourhood = @neighbourhood_admin.neighbourhoods.first.children.first # TODO: Ewwwwww
-      partner.address.neighbourhood = neighbourhood
-      partner.address.save!
-    end
+    @partner =
+      create(:partner) do |partner|
+        # Give the Neighbourhood admin a partner in one of their districts :)
+        neighbourhood = @neighbourhood_admin.neighbourhoods.first.children.first # TODO: Ewwwwww
+        partner.address.neighbourhood = neighbourhood
+        partner.address.save!
+      end
     # Double check that it's been looped together properly
-    assert @neighbourhood_admin.owned_neighbourhood_ids.include?(@partner.address.neighbourhood.id)
+    assert @neighbourhood_admin.owned_neighbourhood_ids.include?(
+             @partner.address.neighbourhood.id
+           )
 
-    @partner_admin = create(:partner_admin) do |user|
-      user.partners << @partner
-      user.save!
-    end
+    @partner_admin =
+      create(:partner_admin) do |user|
+        user.partners << @partner
+        user.save!
+      end
 
     @partnerless_neighbourhood_admin = create(:neighbourhood_region_admin)
     @citizen = create(:citizen)
 
     @unpartnered_article = create(:article)
-    @article = create(:article) do |article|
-      article.partners << @partner
-      article.save!
-    end
+    @article =
+      create(:article) do |article|
+        article.partners << @partner
+        article.save!
+      end
   end
 
   def test_show
@@ -84,7 +89,8 @@ class ArticlePolicyTest < ActiveSupport::TestCase
     assert_equal permitted_records(@partner_admin, Article), else_scope
     assert_equal permitted_records(@neighbourhood_admin, Article), else_scope
 
-    assert_equal permitted_records(@partnerless_neighbourhood_admin, Article), none_scope
+    assert_equal permitted_records(@partnerless_neighbourhood_admin, Article),
+                 none_scope
     assert_equal permitted_records(@citizen, Article), none_scope
   end
 end

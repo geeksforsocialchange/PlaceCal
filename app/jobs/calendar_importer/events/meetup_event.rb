@@ -7,49 +7,49 @@ module CalendarImporter::Events
     end
 
     def uid
-      @event['id']
+      @event["id"]
     end
 
     def summary
-      @event['name']
+      @event["name"]
     end
 
     def description
-      @event['description'] || ''
+      @event["description"] || ""
     end
 
     def place
-      '' # N/A
+      "" # N/A
     end
 
     def publisher_url
-      @event['link']
+      @event["link"]
     end
 
     def location
       return nil # TODO: ??? Why are we ignoring the venue for meetup events
 
-      venue = @event['venue']
+      venue = @event["venue"]
       if venue
         [
-          venue['address_1'],
-          venue['city'],
-          venue['localized_country_name'],
-          venue['name'] # postcode?
-        ].map(&:to_s).map(&:strip).reject(&:blank?).join(', ')
+          venue["address_1"],
+          venue["city"],
+          venue["localized_country_name"],
+          venue["name"] # postcode?
+        ].map(&:to_s).map(&:strip).reject(&:blank?).join(", ")
       end
     end
 
     def dtstart
-      ticks = @event['time'] + @event['utc_offset']
+      ticks = @event["time"] + @event["utc_offset"]
       Time.at(ticks / 1000)
     end
 
     def dtend
-      if @event['duration'].nil?
+      if @event["duration"].nil?
         dtstart + 1.hour
       else
-        dtstart + (@event['duration'] / 1000)
+        dtstart + (@event["duration"] / 1000)
       end
     end
 
@@ -58,9 +58,13 @@ module CalendarImporter::Events
     end
 
     def online_event?
-      return unless @event['is_online_event']
+      return unless @event["is_online_event"]
 
-      online_address = OnlineAddress.find_or_create_by(url: @event['link'], link_type: 'indirect')
+      online_address =
+        OnlineAddress.find_or_create_by(
+          url: @event["link"],
+          link_type: "indirect"
+        )
       online_address.id
     end
   end

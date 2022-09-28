@@ -6,6 +6,7 @@ class NeighbourhoodsUser < ApplicationRecord
   validates :neighbourhood_id,
             uniqueness: {
               scope: :user_id,
-              message: 'User cannot be assigned more than once to a neighbourhood'
+              message:
+                "User cannot be assigned more than once to a neighbourhood"
             }
 end

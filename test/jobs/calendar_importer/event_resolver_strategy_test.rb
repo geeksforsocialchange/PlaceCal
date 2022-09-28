@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 =begin
 
@@ -33,45 +33,61 @@ event locations can either
 =end
 
 class EventResolverStrategyTest < ActiveSupport::TestCase
-  FakeEvent = Struct.new(
-    :uid,
-    :summary,
-    :description,
-    :location,
-    :rrule,
-    :last_modified,
-    :ocurrences_between,
-    :has_location?,
-    :postcode,
-    keyword_init: true
-  )
+  FakeEvent =
+    Struct.new(
+      :uid,
+      :summary,
+      :description,
+      :location,
+      :rrule,
+      :last_modified,
+      :ocurrences_between,
+      :has_location?,
+      :postcode,
+      keyword_init: true
+    )
 
   def setup
-    @neighbourhood = create(:neighbourhood, unit_code_value: 'E05011368')
-    @other_neighbourhood = create(:neighbourhood, unit_code_value: 'E05000800')
+    @neighbourhood = create(:neighbourhood, unit_code_value: "E05011368")
+    @other_neighbourhood = create(:neighbourhood, unit_code_value: "E05000800")
 
     @start_date = Date.new(1990, 1, 1)
     @end_date = Date.new(1990, 1, 2)
 
-    @address = create(:address, street_address: '123 alpha', neighbourhood: @neighbourhood, postcode: 'M15 5DD')
-    @other_address = create(:address, street_address: '456 beta', neighbourhood: @other_neighbourhood, postcode: 'OL6 8BH')
+    @address =
+      create(
+        :address,
+        street_address: "123 alpha",
+        neighbourhood: @neighbourhood,
+        postcode: "M15 5DD"
+      )
+    @other_address =
+      create(
+        :address,
+        street_address: "456 beta",
+        neighbourhood: @other_neighbourhood,
+        postcode: "OL6 8BH"
+      )
 
-    @address_partner = create(:partner, name: 'Address Partner', address: @address)
-    @other_address_partner = create(:partner, name: 'Other Address Partner', address: @other_address)
+    @address_partner =
+      create(:partner, name: "Address Partner", address: @address)
+    @other_address_partner =
+      create(:partner, name: "Other Address Partner", address: @other_address)
 
     @notices = []
     @from_date = Date.new(1990, 1, 1)
 
-    @event_data = FakeEvent.new(
-      uid: 123,
-      summary: 'A summary',
-      description: 'A description',
-      rrule: '',
-      last_modified: '',
-      ocurrences_between: [[@start_date, @end_date]],
-      has_location?: true,
-      postcode: ''
-    )
+    @event_data =
+      FakeEvent.new(
+        uid: 123,
+        summary: "A summary",
+        description: "A description",
+        rrule: "",
+        last_modified: "",
+        ocurrences_between: [[@start_date, @end_date]],
+        has_location?: true,
+        postcode: ""
+      )
   end
 
   def test_event_strategy_with_data_location_with_place_uses_partner_place
@@ -85,9 +101,16 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #       (not from calendar)
 
     @event_data.location = @address_partner.name
-    calendar = create(:calendar, strategy: 'event', place: @other_address_partner)
+    calendar =
+      create(:calendar, strategy: "event", place: @other_address_partner)
 
-    resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
+    resolver =
+      CalendarImporter::EventResolver.new(
+        @event_data,
+        calendar,
+        @notices,
+        @from_date
+      )
     place, address = resolver.event_strategy(calendar.place)
 
     # these come from the event data
@@ -107,9 +130,20 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #       (not from calendar)
 
     @event_data.location = @address_partner.name
-    calendar = create(:calendar, strategy: 'event_override', place: @other_address_partner) # <--- different strategy
+    calendar =
+      create(
+        :calendar,
+        strategy: "event_override",
+        place: @other_address_partner
+      ) # <--- different strategy
 
-    resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
+    resolver =
+      CalendarImporter::EventResolver.new(
+        @event_data,
+        calendar,
+        @notices,
+        @from_date
+      )
     place, address = resolver.event_override_strategy(calendar.place)
 
     # these come from the event data
@@ -127,9 +161,16 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #     event place = calendar place
 
     @event_data.location = @address_partner.name
-    calendar = create(:calendar, strategy: 'place', place: @other_address_partner)
+    calendar =
+      create(:calendar, strategy: "place", place: @other_address_partner)
 
-    resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
+    resolver =
+      CalendarImporter::EventResolver.new(
+        @event_data,
+        calendar,
+        @notices,
+        @from_date
+      )
 
     place, address = resolver.place_strategy(calendar.place)
 
@@ -150,9 +191,16 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #     event place = calendar place
     #     event address = calendar place address
 
-    calendar = create(:calendar, strategy: 'event_override', place: @address_partner)
+    calendar =
+      create(:calendar, strategy: "event_override", place: @address_partner)
 
-    resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
+    resolver =
+      CalendarImporter::EventResolver.new(
+        @event_data,
+        calendar,
+        @notices,
+        @from_date
+      )
 
     assert_raises(CalendarImporter::EventResolver::Problem) do
       place, address = resolver.event_override_strategy(calendar.place)
@@ -168,4 +216,3 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #assert_equal address, @address_partner.address
   end
 end
-

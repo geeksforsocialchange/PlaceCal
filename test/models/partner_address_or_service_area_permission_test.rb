@@ -1,19 +1,15 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PartnerAddressOrServiceAreaPermissionsTest < ActiveSupport::TestCase
   setup do
     @user = create(:user)
-    @user_neighbourhood =  neighbourhoods(:one)
-    
+    @user_neighbourhood = neighbourhoods(:one)
+
     @user.neighbourhoods << @user_neighbourhood
 
-    @new_partner = build(
-      :partner, 
-      address: nil,
-      accessed_by_user: @user
-    )
+    @new_partner = build(:partner, address: nil, accessed_by_user: @user)
   end
 
   test "valid if address is in user ward" do
@@ -48,6 +44,7 @@ class PartnerAddressOrServiceAreaPermissionsTest < ActiveSupport::TestCase
     @new_partner.service_area_neighbourhoods << @user_neighbourhood
     @new_partner.service_area_neighbourhoods << other_neighbourhood
 
-    assert @new_partner.valid? == false, 'Users cannot create service areas outside of their neighbourhoods'
+    assert @new_partner.valid? == false,
+           "Users cannot create service areas outside of their neighbourhoods"
   end
 end

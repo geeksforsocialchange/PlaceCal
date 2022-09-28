@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class AdminHomeIntegrationTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
@@ -21,7 +21,7 @@ class AdminHomeIntegrationTest < ActionDispatch::IntegrationTest
     get "http://admin.lvh.me"
     assert_response :success
 
-    assert_select 'title', text: "Dashboard | PlaceCal Admin"
+    assert_select "title", text: "Dashboard | PlaceCal Admin"
   end
 
   test "Blank citizen gets a 'no content' warning" do
@@ -29,8 +29,7 @@ class AdminHomeIntegrationTest < ActionDispatch::IntegrationTest
     get "http://admin.lvh.me"
     assert_response :success
 
-    assert_select 'title', text: "Dashboard | PlaceCal Admin"
-    assert_select 'h1', text: "Missing Permissions"
+    assert_select "title", text: "Dashboard | PlaceCal Admin"
+    assert_select "h1", text: "Missing Permissions"
   end
-
 end

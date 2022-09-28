@@ -1,8 +1,15 @@
 class Join
   include ActiveModel::Model
 
-  attr_accessor :name, :email, :phone, :job_title, :job_org, :area,
-                :ringback, :more_info, :why
+  attr_accessor :name,
+                :email,
+                :phone,
+                :job_title,
+                :job_org,
+                :area,
+                :ringback,
+                :more_info,
+                :why
 
   validates :name, :email, :why, presence: true
 
@@ -15,4 +22,3 @@ class Join
     end
   end
 end
-

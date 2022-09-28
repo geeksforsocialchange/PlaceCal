@@ -6,24 +6,29 @@
 
 module CalendarImporter::Parsers
   class Eventbrite < Base
-    NAME = 'Eventbrite'
-    KEY = 'eventbrite'
+    NAME = "Eventbrite"
+    KEY = "eventbrite"
     DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk]
 
     def self.whitelist_pattern
-      /^https:\/\/www.eventbrite\.(com|co.uk)\/o\/[A-Za-z0-9-]+/
+      %r{^https://www.eventbrite\.(com|co.uk)/o/[A-Za-z0-9-]+}
     end
 
     def organizer_id
       path = URI.parse(@url).path
-      path.split('/').last.split('-').last
+      path.split("/").last.split("-").last
     end
 
     def download_calendar
-      EventbriteSDK.token = ENV['EVENTBRITE_TOKEN']
+      EventbriteSDK.token = ENV["EVENTBRITE_TOKEN"]
 
       @events = []
-      results = EventbriteSDK::Organizer.retrieve(id: organizer_id).events.with_expansion(:venue).page(1)
+      results =
+        EventbriteSDK::Organizer
+          .retrieve(id: organizer_id)
+          .events
+          .with_expansion(:venue)
+          .page(1)
 
       loop do
         @events += results

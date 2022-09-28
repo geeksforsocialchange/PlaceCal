@@ -2,7 +2,11 @@
 
 # app/components/event/event_component.rb
 class EventComponent < MountainView::Presenter
-  properties :context, :event, :primary_neighbourhood, :show_neighbourhoods, :badge_zoom_level
+  properties :context,
+             :event,
+             :primary_neighbourhood,
+             :show_neighbourhoods,
+             :badge_zoom_level
 
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::DateHelper
@@ -17,7 +21,7 @@ class EventComponent < MountainView::Presenter
 
   def time
     if event.dtend
-      fmt_time(event.dtstart) + ' – ' + fmt_time(event.dtend)
+      fmt_time(event.dtstart) + " – " + fmt_time(event.dtend)
     else
       fmt_time(event.dtstart)
     end
@@ -30,9 +34,9 @@ class EventComponent < MountainView::Presenter
     hours = mins / 60 # Ruby presumes ints not floats, and rounds down
 
     if hours < 25
-      mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
-      hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
-      [hours_str, mins_str].reject(&:empty?).join(' ')
+      mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ""
+      hours_str = hours.positive? ? pluralize(hours, "hour") : ""
+      [hours_str, mins_str].reject(&:empty?).join(" ")
     else
       distance_of_time_in_words event.dtend - event.dtstart
     end
@@ -40,9 +44,9 @@ class EventComponent < MountainView::Presenter
 
   def formatted_date(date)
     if date.year == Time.now.year
-      date.strftime('%e %b')
+      date.strftime("%e %b")
     else
-      date.strftime('%e %b %Y')
+      date.strftime("%e %b %Y")
     end
   end
 
@@ -75,11 +79,13 @@ class EventComponent < MountainView::Presenter
   end
 
   def repeats
-    event.rrule.present? ? event.rrule[0]['table']['frequency'].titleize : false
+    event.rrule.present? ? event.rrule[0]["table"]["frequency"].titleize : false
   end
 
   def neighbourhood_name(badge_zoom_level)
-    return event.neighbourhood&.district&.shortname if badge_zoom_level == 'district'
+    if badge_zoom_level == "district"
+      return event.neighbourhood&.district&.shortname
+    end
 
     event.neighbourhood&.shortname
   end
@@ -88,7 +94,8 @@ class EventComponent < MountainView::Presenter
     # Show everything as primary if primary is not set
     return true unless primary_neighbourhood
 
-    event.neighbourhood == primary_neighbourhood || primary_neighbourhood.children.include?(event.neighbourhood)
+    event.neighbourhood == primary_neighbourhood ||
+      primary_neighbourhood.children.include?(event.neighbourhood)
   end
 
   def online?
@@ -98,10 +105,10 @@ class EventComponent < MountainView::Presenter
   private
 
   def fmt_time(time)
-    if time.strftime('%M') == '00'
-      time.strftime('%l%P')
+    if time.strftime("%M") == "00"
+      time.strftime("%l%P")
     else
-      time.strftime('%l:%M%P')
+      time.strftime("%l:%M%P")
     end
   end
 
