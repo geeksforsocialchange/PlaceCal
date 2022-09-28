@@ -29,7 +29,7 @@ module Types
           method: :body
 
     field :image, String,
-          description: 'The image of the article (a URL)' #,
+          description: 'The image of the article (a URL)'
 
     field :date_published, GraphQL::Types::ISO8601DateTime,
           description: 'Date that the article was published on PlaceCal',
