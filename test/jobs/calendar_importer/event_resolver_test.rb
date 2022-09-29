@@ -57,18 +57,18 @@ class EventsResolverTest < ActiveSupport::TestCase
 
     @fake_eventbrite_event = FakeEventbriteEvent.new(
       id: '111111111111',
-      name: { 'text': 'A summary' },
-      description: { 'text': 'A description' },
+      name: { text: 'A summary' },
+      description: { text: 'A description' },
       venue: nil,
-      start: { 'local': @start_date.iso8601 },
-      'end': { 'local': @end_date.iso8601 },
+      start: { local: @start_date.iso8601 },
+      end: { local: @end_date.iso8601 },
       online_event: true
     )
 
     @fake_meetup_event = FakeMeetupEvent.new(
       id: '111111111',
-      name: { 'text': 'A summary' },
-      description: { 'text': '<p>This is a meetup description!</p>' },
+      name: { text: 'A summary' },
+      description: { text: '<p>This is a meetup description!</p>' },
       venue: nil,
       time: @start_date.to_i,
       utc_offset: (@end_date.to_i - @start_date.to_i),
@@ -120,7 +120,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
 
-    assert resolver.data.online_address_id.present?
+    assert_predicate resolver.data.online_address_id, :present?
 
     online_address = OnlineAddress.find(resolver.data.online_address_id)
     assert_equal online_address.url, @fake_ics_event['custom_properties']['x_google_conference'].first
@@ -136,7 +136,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
 
-    assert resolver.data.online_address_id.present?
+    assert_predicate resolver.data.online_address_id, :present?
 
     online_address = OnlineAddress.find(resolver.data.online_address_id)
     assert_equal online_address.url, jitsi_link
@@ -152,7 +152,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
 
-    assert resolver.data.online_address_id.present?
+    assert_predicate resolver.data.online_address_id, :present?
 
     online_address = OnlineAddress.find(resolver.data.online_address_id)
     assert_equal online_address.url, meet_link
@@ -168,7 +168,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
 
-    assert resolver.data.online_address_id.present?
+    assert_predicate resolver.data.online_address_id, :present?
 
     online_address = OnlineAddress.find(resolver.data.online_address_id)
     assert_equal online_address.url, zoom_link
@@ -184,7 +184,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(event_data, calendar, [], @start_date)
     resolver.determine_online_location
 
-    assert resolver.data.online_address_id.present?
+    assert_predicate resolver.data.online_address_id, :present?
 
     online_address = OnlineAddress.find(resolver.data.online_address_id)
     assert_equal online_address.url, eventbrite_link
@@ -200,7 +200,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(event_data, calendar, [], @start_date)
     resolver.determine_online_location
 
-    assert resolver.data.online_address_id.present?
+    assert_predicate resolver.data.online_address_id, :present?
 
     online_address = OnlineAddress.find(resolver.data.online_address_id)
     assert_equal online_address.url, meetup_link

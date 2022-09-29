@@ -46,14 +46,14 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     connection = assert_field data, 'eventConnection'
     edges = assert_field connection, 'edges'
 
-    assert_equal edges.length, 5
+    assert_equal(5, edges.length)
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
   test 'can show specific event' do
     event = @partner.events.create!(
       dtstart: Time.now,
-      summary: "An event summary",
+      summary: 'An event summary',
       description: 'Longer text covering the event in more detail',
       address: @address
     )
@@ -112,11 +112,11 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
         description: 'Longer text covering the event in more detail',
         address: @address
       )
-      time += 1.days
+      time += 1.day
     end
 
     # events in the near future
-    time = now_time + 1.days
+    time = now_time + 1.day
     5.times do
       @partner.events.create!(
         dtstart: time,
@@ -124,7 +124,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
         description: 'Longer text covering the event in more detail',
         address: @address
       )
-      time += 1.days
+      time += 1.day
     end
 
     # events in the far future
@@ -132,11 +132,11 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     5.times do
       @partner.events.create!(
         dtstart: time,
-        summary: "future: An event summary",
+        summary: 'future: An event summary',
         description: 'Longer text covering the event in more detail',
         address: @address
       )
-      time += 1.days
+      time += 1.day
     end
   end
 
@@ -162,7 +162,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert_equal events.length, 10, 'was expecting only events in the future'
+      assert_equal(10, events.length, 'was expecting only events in the future')
       # TODO: Actually test that the events we are getting back are the ones we want
     end
   end
@@ -189,7 +189,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert_equal events.length, 15, 'was expecting to see all events'
+      assert_equal(15, events.length, 'was expecting to see all events')
       # TODO: Actually test that the events we are getting back are the ones we want
     end
   end
@@ -216,7 +216,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
-      assert_equal events.length, 5, 'was expecting to see only some future events'
+      assert_equal(5, events.length, 'was expecting to see only some future events')
       # TODO: Actually test that the events we are getting back are the ones we want
     end
   end
@@ -226,8 +226,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
   test 'can scope to neighbourhood (via partner address)' do
     3.times do
       @partner.events.create!(
-        dtstart: DateTime.now + 1.hours,
-        summary: "partner 1: An event summary",
+        dtstart: DateTime.now + 1.hour,
+        summary: 'partner 1: An event summary',
         description: 'Longer text covering the event in more detail',
         address: @address
       )
@@ -238,8 +238,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
     5.times do
       other_partner.events.create!(
-        dtstart: DateTime.now + 1.hours,
-        summary: "partner 2: An event summary",
+        dtstart: DateTime.now + 1.hour,
+        summary: 'partner 2: An event summary',
         description: 'Longer text covering the event in more detail',
         address: other_address
       )
@@ -261,7 +261,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
     events = data['eventsByFilter']
-    assert_equal events.length, 5, 'was expecting to see only events from other_partner'
+    assert_equal(5, events.length, 'was expecting to see only events from other_partner')
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
@@ -274,8 +274,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
     5.times do
       @partner.events.create!(
-        dtstart: DateTime.now + 1.hours,
-        summary: "partner in good neighbourhood: An event summary",
+        dtstart: DateTime.now + 1.hour,
+        summary: 'partner in good neighbourhood: An event summary',
         description: 'Longer text covering the event in more detail',
         address: @address
       )
@@ -287,8 +287,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
     3.times do
       other_partner.events.create!(
-        dtstart: DateTime.now + 1.hours,
-        summary: "partner in bad neighbourhood: An event summary",
+        dtstart: DateTime.now + 1.hour,
+        summary: 'partner in bad neighbourhood: An event summary',
         description: 'Longer text covering the event in more detail',
         address: create(:bare_address_2)
       )
@@ -310,7 +310,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
 
     events = data['eventsByFilter']
-    assert_equal events.length, 5, 'was expecting to see only events within neighbourhood_good service area'
+    assert_equal(5, events.length, 'was expecting to see only events within neighbourhood_good service area')
     # TODO: Actually test that the events we are getting back are the ones we want
   end
 
@@ -323,7 +323,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
   # in cases where we have eventsByFilter { ... }
   def map_results_to_ids(events)
     # [{ 'id': 23, etc }, ...] => { '23': { 'id': 23, etc }, ... }
-    events.map { |event| [event['id'].to_i, event] }.to_h
+    events.index_by { |event| event['id'].to_i }
   end
 
   # this should mainly be tested elsewhere
@@ -398,7 +398,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     connection = assert_field data, 'eventConnection'
     edges = assert_field connection, 'edges'
 
-    assert_equal edges.length, 1
+    assert_equal(1, edges.length)
     data_event = assert_field edges.first, 'node'
 
     assert_field_equals data_event, 'id', value: event.id.to_s
@@ -418,7 +418,10 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
     # splice the lists so we get a reasonable number of events, this also replaces? the `events` list :)
     # stuff off rubocop this is perfectly fine
-    events.zip(online_addresses).each { |event, oa| event.online_address = oa; event.save! }
+    events.zip(online_addresses).each do |event, oa|
+      event.online_address = oa
+      event.save!
+    end
 
     query_string = <<-GRAPHQL
       query {

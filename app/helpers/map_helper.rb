@@ -1,6 +1,4 @@
-
 module MapHelper
-
   def args_for_map(map_points, site, style_mode, compact_mode)
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
       {}.tap do |pin|
@@ -25,14 +23,14 @@ module MapHelper
 
   def map_style_class(points, style_mode, compact_mode)
     out = []
-    case style_mode
-    when :single
-      out << 'map--single'
-    when :multi
-      out << 'map--multiple'
-    else
-      out << ((points.length > 1) ? 'map--multiple' : 'map--single')
-    end
+    out << case style_mode
+           when :single
+             'map--single'
+           when :multi
+             'map--multiple'
+           else
+             (points.length > 1 ? 'map--multiple' : 'map--single')
+           end
     out << 'map--compact' if compact_mode
     out
   end
@@ -50,7 +48,7 @@ module MapHelper
   def api_token
     return '' if Rails.env.test?
 
-    token = ENV['MAPBOX_TOKEN']
+    token = ENV.fetch('MAPBOX_TOKEN', nil)
     return token if token
 
     raise 'MAPBOX_TOKEN is missing from ENV, please see .env.example'
@@ -69,4 +67,3 @@ module MapHelper
     "https://api.mapbox.com/styles/v1/placecal/#{tileset}/tiles/256/{z}/{x}/{y}@2x?access_token=#{api_token}"
   end
 end
-

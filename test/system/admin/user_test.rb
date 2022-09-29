@@ -17,9 +17,9 @@ class AdminUserTest < ApplicationSystemTestCase
 
     @tag = create :tag
     @tag_pub = create :tag_public
-    
-    @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
-    @neighbourhood_two = neighbourhoods[2].to_s.gsub('w', 'W')
+
+    @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
+    @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
 
     # logging in as root user
     visit '/users/sign_in'

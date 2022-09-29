@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class PartnerSiteScopeTest < ActiveSupport::TestCase
-
   # this verifies that partner#for_site is behaving
 
   # NOTE: these MUST match up with the geocoder response
@@ -39,12 +38,12 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     Neighbourhood.destroy_all
   end
 
-  test "empty site returns nothing" do
+  test 'empty site returns nothing' do
     output = Partner.for_site(site)
-    assert output.empty?, 'site should be empty'
+    assert_empty output, 'site should be empty'
   end
 
-  test "can find partners in site with address" do
+  test 'can find partners in site with address' do
     neighbourhood = geocodable_neighbourhood_one
     site.neighbourhoods << neighbourhood
 
@@ -54,7 +53,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     assert_equal 5, output.count # number of partners with addresses in site
   end
 
-  test "can find partners in site with service areas (without duplicates)" do
+  test 'can find partners in site with service areas (without duplicates)' do
     neighbourhood_a = create(:bare_neighbourhood)
     site.neighbourhoods << neighbourhood_a
 
@@ -73,7 +72,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     assert_equal 5, output.count
   end
 
-  test "can find partners by address and service_area" do
+  test 'can find partners by address and service_area' do
     neighbourhood_a = create(:bare_neighbourhood)
     site.neighbourhoods << neighbourhood_a
 
@@ -92,7 +91,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     assert_equal 2, output.count
   end
 
-  test "ignores partners on other sites" do
+  test 'ignores partners on other sites' do
     neighbourhood_a = create(:bare_neighbourhood)
     site.neighbourhoods << neighbourhood_a
 
@@ -135,7 +134,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     assert_equal 10, output.count
   end
 
-  test "only finds partners with tags if site has tags" do
+  test 'only finds partners with tags if site has tags' do
     neighbourhood = geocodable_neighbourhood_one
     tag = create(:tag)
     other_tag = create(:tag)

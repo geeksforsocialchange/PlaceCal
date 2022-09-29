@@ -2,7 +2,6 @@
 
 module Users
   module AuthCommon
-
     def self.included(klass)
       klass.before_action :devise_check_on_root_site
       klass.after_action :patch_flash
@@ -18,7 +17,7 @@ module Users
     #
     def devise_check_on_root_site
       return if current_user.present?
-      return if not request.subdomain.present?
+      return unless request.subdomain.present?
 
       redirect_to url_for(subdomain: nil)
     end
@@ -54,7 +53,7 @@ module Users
     #
     # == Returns
     #   URL of admin site with correct path and subdomain
-    def after_sign_in_path_for(resource_or_scope)
+    def after_sign_in_path_for(_resource_or_scope)
       route_for(
         :root,
         subdomain: Site::ADMIN_SUBDOMAIN
@@ -68,7 +67,7 @@ module Users
     #
     # == Returns
     #   full url with domain to take user to
-    def after_accept_path_for(resource_or_scope)
+    def after_accept_path_for(_resource_or_scope)
       route_for(
         :root,
         subdomain: Site::ADMIN_SUBDOMAIN
@@ -82,12 +81,11 @@ module Users
     #
     # == Returns
     #   full url with domain to take user to
-    def after_sign_out_path_for(resource_or_scope)
+    def after_sign_out_path_for(_resource_or_scope)
       route_for(
         :root,
         subdomain: nil
       )
     end
   end
-
 end

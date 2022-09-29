@@ -10,13 +10,13 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json {
+        format.json do
           render json: TagDatatable.new(
             params,
             view_context: view_context,
             tags: @tags
           )
-        }
+        end
       end
     end
 

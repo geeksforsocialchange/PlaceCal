@@ -96,7 +96,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   def test_update_tag_admin
     # Tag admins
     # can only edit tags that are public, or they have had assigned to them
-    assert @tag_admin.tags.include?(@assigned_root_tag) # For prosperity
+    assert_includes @tag_admin.tags, @assigned_root_tag # For prosperity
     assert allows_access(@tag_admin, @public_tag, :update)
     assert allows_access(@tag_admin, @assigned_root_tag, :update)
     # They may not edit unassigned tags >:(

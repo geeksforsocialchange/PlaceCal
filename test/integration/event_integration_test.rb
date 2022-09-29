@@ -32,7 +32,8 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@neighbourhood_site, event_path(@event))
     get "http://#{@neighbourhood_site.slug}.lvh.me/events/#{@event.id}"
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@event.summary}, #{@event.date}, #{@event.time} | #{@neighbourhood_site.name}"
+    assert_select 'title', count: 1,
+                           text: "#{@event.summary}, #{@event.date}, #{@event.time} | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: @event.summary
     assert_select 'div.event__detail', count: 4

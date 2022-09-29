@@ -34,16 +34,16 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
     event = EventBase.new(nil)
     output = event.html_sanitize(input)
 
-    expected_output = <<-MARKDOWN
-### A title!
+    expected_output = <<~MARKDOWN
+      ### A title!
 
-This is input
+      This is input
 
-Another Paragraph
+      Another Paragraph
 
-* One
-* Two
-* Three
+      * One
+      * Two
+      * Three
     MARKDOWN
 
     assert_equal expected_output.strip, output
@@ -72,23 +72,23 @@ Another Paragraph
       '',
       'Another Paragraph',
       '',
-      'Things',
+      'Things'
     ].join("\n")
 
     assert_equal expected_output.strip, output
   end
 
   test 'given markdown input nothing is changed on output' do
-    input = <<-MARKDOWN
-### A title!
+    input = <<~MARKDOWN
+      ### A title!
 
-This is input
+      This is input
 
-Another Paragraph
+      Another Paragraph
 
-* One
-* Two
-* Three
+      * One
+      * Two
+      * Three
     MARKDOWN
 
     input.strip!
@@ -99,18 +99,15 @@ Another Paragraph
     assert_equal input, output
   end
 
-
-#  test 'cleans out non utf-8 input' do
-#    # pulled from https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
-#    input = '��This is a �����bad string�����'
-#
-#    event = EventBase.new(nil)
-#    output = event.html_sanitize(input)
-#
-#    expected_output = 'This is a bad string'
-#
-#    assert_equal expected_output, output
-#  end
-
+  #  test 'cleans out non utf-8 input' do
+  #    # pulled from https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
+  #    input = '��This is a �����bad string�����'
+  #
+  #    event = EventBase.new(nil)
+  #    output = event.html_sanitize(input)
+  #
+  #    expected_output = 'This is a bad string'
+  #
+  #    assert_equal expected_output, output
+  #  end
 end
-

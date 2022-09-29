@@ -5,7 +5,7 @@ class CreateArticles < ActiveRecord::Migration[6.1]
       t.text :body
       t.date :published_at
       t.boolean :is_draft, default: true
-      
+
       t.timestamps
     end
   end

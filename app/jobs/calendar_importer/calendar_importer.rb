@@ -41,7 +41,7 @@ class CalendarImporter::CalendarImporter
   def url_accessible?
     response = HTTParty.get(@calendar.source, follow_redirects: true)
     response.code == 200
-  rescue
+  rescue StandardError
     false
   end
 end

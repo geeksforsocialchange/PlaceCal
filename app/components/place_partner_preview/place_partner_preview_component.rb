@@ -5,9 +5,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   properties :primary_neighbourhood, :previewee, :show_neighbourhoods,
              :badge_zoom_level, :service_areas
 
-  def name
-    previewee.name
-  end
+  delegate :name, to: :previewee
 
   def link
     previewee

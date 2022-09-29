@@ -16,7 +16,7 @@ class ArticlePolicyTest < ActiveSupport::TestCase
       partner.address.save!
     end
     # Double check that it's been looped together properly
-    assert @neighbourhood_admin.owned_neighbourhood_ids.include?(@partner.address.neighbourhood.id)
+    assert_includes @neighbourhood_admin.owned_neighbourhood_ids, @partner.address.neighbourhood.id
 
     @partner_admin = create(:partner_admin) do |user|
       user.partners << @partner

@@ -3,15 +3,13 @@
 require 'test_helper'
 
 class PartnerUpdatePostcodeTest < ActionDispatch::IntegrationTest
-
   setup do
     Neighbourhood.destroy_all
-    
+
     @neighbourhood_admin = create(:user)
   end
 
   test 'can change postcode of partner' do
-
     neighbourhood_1 = Neighbourhood.create!( # 'M15 5DD'
       name: 'Neighbourhood 1',
       name_abbr: '',
@@ -30,11 +28,9 @@ class PartnerUpdatePostcodeTest < ActionDispatch::IntegrationTest
       unit_name: 'Ashton Hurst'
     )
 
-
     @neighbourhood_admin.neighbourhoods << neighbourhood_1
     @neighbourhood_admin.neighbourhoods << neighbourhood_2
 
-    
     @partner = Partner.new(name: 'A new partner')
     @partner.address = Address.create!(
       street_address: '123 Street',
@@ -46,19 +42,19 @@ class PartnerUpdatePostcodeTest < ActionDispatch::IntegrationTest
     sign_in @neighbourhood_admin
 
     update_args = {
-      partner: { 
+      partner: {
         name: @partner.name,
         address_attributes: {
           street_address: @partner.address.street_address,
           postcode: 'OL6 8BH'
-        } 
-      } 
+        }
+      }
     }
 
     patch admin_partner_url(@partner), params: update_args
     assert_redirected_to edit_admin_partner_url(@partner)
 
     @partner.reload
-    assert @partner.address.postcode == 'OL6 8BH'
+    assert_equal('OL6 8BH', @partner.address.postcode)
   end
 end

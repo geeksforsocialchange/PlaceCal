@@ -1,5 +1,4 @@
 module EmailHelper
-
   # get the last email sent by ActionMailer
   #
   # Returns
@@ -25,6 +24,6 @@ module EmailHelper
       body_text = html_body.decoded
     end
 
-    body_text =~ %r{<a href="(https?://[^"]*)"} && $1
+    body_text =~ %r{<a href="(https?://[^"]*)"} && Regexp.last_match(1)
   end
 end

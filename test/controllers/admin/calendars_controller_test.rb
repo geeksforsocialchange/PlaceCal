@@ -48,9 +48,9 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
     partner = create(:partner)
     assert_difference('Calendar.count') do
       post admin_calendars_url,
-        params: { calendar: attributes_for(:calendar,
-                                           place_id: place.id,
-                                           partner_id: partner.id) }
+           params: { calendar: attributes_for(:calendar,
+                                              place_id: place.id,
+                                              partner_id: partner.id) }
     end
     assert_redirected_to edit_admin_calendar_path(assigns[:calendar])
     assert_not flash.empty?

@@ -3,17 +3,17 @@ module Types
     description 'A period of time that this partner is open for'
 
     field :day_of_week, String,
-      description: 'Monday, Tuesday, Wednesday etc'
+          description: 'Monday, Tuesday, Wednesday etc'
 
     field :opens, String,
-      description: 'Hour at which business commences'
+          description: 'Hour at which business commences'
 
     field :closes, String,
-      description: 'Hour at which business ceaces'
+          description: 'Hour at which business ceaces'
 
     def day_of_week
-      object['dayOfWeek'].scan(/\/([^\/]*)$/)
-      $1
+      object['dayOfWeek'].scan(%r{/([^/]*)$})
+      Regexp.last_match(1)
     end
   end
 end

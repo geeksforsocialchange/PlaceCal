@@ -30,7 +30,7 @@ class GraphQLSitesTest < ActionDispatch::IntegrationTest
     assert connection.has_key?('edges')
     edges = connection['edges']
 
-    assert edges.length == 5
+    assert_equal(5, edges.length)
   end
 
   test 'can show specific site' do
@@ -51,7 +51,6 @@ class GraphQLSitesTest < ActionDispatch::IntegrationTest
     assert data.has_key?('site')
 
     data_site = data['site']
-    assert data_site['name'] == site.name
-
+    assert_equal data_site['name'], site.name
   end
 end

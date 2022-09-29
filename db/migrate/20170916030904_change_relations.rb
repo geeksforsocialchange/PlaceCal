@@ -7,9 +7,12 @@ class ChangeRelations < ActiveRecord::Migration[5.1]
       t.references :partner, foreign_key: true
     end
 
-    add_column :events, :partner_id, :integer, index: true
-    add_column :calendars, :address_id, :integer, index: true
-    add_column :events, :address_id, :integer, index: true
+    add_column :events, :partner_id, :integer
+    add_index :events, :partner_id
+    add_column :calendars, :address_id, :integer
+    add_index :calendars, :address_id
+    add_column :events, :address_id, :integer
+    add_index :events, :address_id
 
     add_foreign_key :events, :partners
     add_foreign_key :calendars, :addresses

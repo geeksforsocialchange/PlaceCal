@@ -11,7 +11,7 @@ module CalendarImporter::Parsers
     DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk]
 
     def self.whitelist_pattern
-      /^https:\/\/www.eventbrite\.(com|co.uk)\/o\/[A-Za-z0-9-]+/
+      %r{^https://www.eventbrite\.(com|co.uk)/o/[A-Za-z0-9-]+}
     end
 
     def organizer_id
@@ -20,7 +20,7 @@ module CalendarImporter::Parsers
     end
 
     def download_calendar
-      EventbriteSDK.token = ENV['EVENTBRITE_TOKEN']
+      EventbriteSDK.token = ENV.fetch('EVENTBRITE_TOKEN', nil)
 
       @events = []
       results = EventbriteSDK::Organizer.retrieve(id: organizer_id).events.with_expansion(:venue).page(1)

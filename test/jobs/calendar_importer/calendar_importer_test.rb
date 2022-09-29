@@ -15,9 +15,9 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       first_event = events.first
       last_event = events.last
 
-      assert_equal events.count, 2
-      assert_equal first_event.summary, 'Age Friendly Community Soup'
-      assert_equal last_event.summary, 'YellowBird Age Friendly Drop-in'
+      assert_equal(2, events.count)
+      assert_equal('Age Friendly Community Soup', first_event.summary)
+      assert_equal('YellowBird Age Friendly Drop-in', last_event.summary)
     end
   end
 
@@ -88,9 +88,9 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       first_event = events.first
       last_event = events.last
 
-      assert_equal events.count, 3
-      assert_equal first_event.summary, 'Technical tours of the Martin Harris Centre for Music and Drama'
-      assert_equal last_event.summary, 'KIDNAP@20: The Art of Incarceration'
+      assert_equal(3, events.count)
+      assert_equal('Technical tours of the Martin Harris Centre for Music and Drama', first_event.summary)
+      assert_equal('KIDNAP@20: The Art of Incarceration', last_event.summary)
     end
   end
 
@@ -106,9 +106,9 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       first_event = events.first
       last_event = events.last
 
-      assert_equal events.count, 38
-      assert_equal first_event.summary, 'Inuk'
-      assert_equal last_event.summary, 'ZYP: Unusual Theatre in Unusual Spaces'
+      assert_equal(38, events.count)
+      assert_equal('Inuk', first_event.summary)
+      assert_equal('ZYP: Unusual Theatre in Unusual Spaces', last_event.summary)
     end
   end
 
@@ -151,7 +151,6 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   test 'does not import if checksum is the same' do
     url = 'https://z-arts.ticketsolve.com/shows.xml'
     checksum = 'd1a94a9869af91d0548a1faf0ded91d7'
-
 
     VCR.use_cassette('Z-Arts Calendar', allow_playback_repeats: true) do
       calendar = create(:calendar, name: 'Z-Arts', last_checksum: checksum, source: url)

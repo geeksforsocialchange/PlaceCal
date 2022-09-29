@@ -21,6 +21,5 @@ module CalendarImporter::Parsers
 
       @events
     end
-
   end
 end

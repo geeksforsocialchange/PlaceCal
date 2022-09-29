@@ -28,7 +28,6 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     end
     @neighbourhood_site.neighbourhoods << @neighbourhood2
 
-
     # Make a ward, add events to that ward
     @ward = create(:neighbourhood)
     @regional_ward_events = create_list :event, 5, dtstart: date + 1.hour

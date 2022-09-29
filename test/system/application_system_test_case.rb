@@ -6,4 +6,3 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   Capybara.server = :puma, { Silent: true }
   Selenium::WebDriver.logger.ignore(:browser_options)
 end
-

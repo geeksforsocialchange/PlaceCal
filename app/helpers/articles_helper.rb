@@ -7,9 +7,9 @@ module ArticlesHelper
   end
 
   def article_partner_links(article)
-    article.partners.map { |partner|
+    article.partners.map do |partner|
       link_to(partner.name, partner_path(partner))
-    }.join(' | ').html_safe
+    end.join(' | ').html_safe
   end
 
   def article_summary_text(article)

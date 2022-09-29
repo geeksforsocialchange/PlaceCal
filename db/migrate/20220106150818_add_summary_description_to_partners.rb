@@ -4,9 +4,9 @@ class AddSummaryDescriptionToPartners < ActiveRecord::Migration[6.1]
     add_column :partners, :description, :text
 
     Partner.find_each do |partner|
-      next unless !partner.short_description.nil?
+      next if partner.short_description.nil?
 
-      summary, *description = partner.short_description.split(/\r\n\r\n/)
+      summary, *description = partner.short_description.split("\r\n\r\n")
       partner.summary = summary
       partner.description = description.join("\r\n\r\n")
       partner.save(validate: false)

@@ -26,7 +26,6 @@ class TagPolicy < ApplicationPolicy
     # If the user is a tag admin and has been assigned this tag
     return true if user.tag_admin? && user.tags.include?(@record)
 
-
     # NB: We literally can't filter by partners added because otherwise itll wipe existing partners
     #
     # If the user is a partner admin and the tag is generally available for use

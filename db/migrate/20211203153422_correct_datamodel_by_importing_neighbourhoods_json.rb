@@ -58,7 +58,7 @@ class CorrectDatamodelByImportingNeighbourhoodsJson < ActiveRecord::Migration[6.
         puts "Processing country #{country['properties']['name']}..."
         create_unit(country, nil, nil)
       end
-    rescue => e
+    rescue StandardError => e
       errors << { error: e.message,
                   trace: e.backtrace_locations }
     end
@@ -66,8 +66,6 @@ class CorrectDatamodelByImportingNeighbourhoodsJson < ActiveRecord::Migration[6.
     # Recover from Errors
     return unless errors.any?
 
-    File.open('20211118145604_alter_structure_of_neighbourhoods.errors.txt', 'w') do |f|
-      f.write errors
-    end
+    File.write('20211118145604_alter_structure_of_neighbourhoods.errors.txt', errors)
   end
 end

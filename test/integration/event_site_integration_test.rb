@@ -29,23 +29,23 @@ class EventForSiteScopeTest < ActiveSupport::TestCase
     )
   end
 
-  test "returns a regular set of events" do
+  test 'returns a regular set of events' do
     found = Event.for_site(@site)
     count = found.count
-    assert count == 2
+    assert_equal(2, count)
   end
 
-  test "does not return events outside of address or service area" do
+  test 'does not return events outside of address or service area' do
     other_site_neighbourhood = neighbourhoods(:two)
     other_site = create(:site)
     other_site.neighbourhoods << other_site_neighbourhood
 
     found = Event.for_site(other_site)
     count = found.count
-    assert count == 0
+    assert_equal(0, count)
   end
 
-  test "also returns events with partners that have service areas in the site scope" do
+  test 'also returns events with partners that have service areas in the site scope' do
     other_site_neighbourhood = neighbourhoods(:two)
     other_site = create(:site)
     other_site.neighbourhoods << other_site_neighbourhood
@@ -54,13 +54,11 @@ class EventForSiteScopeTest < ActiveSupport::TestCase
 
     found = Event.for_site(other_site)
     count = found.count
-    assert count == 2
+    assert_equal(2, count)
   end
-
 end
 
-class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
-
+class EventsBySiteTagTest < ActionDispatch::IntegrationTest
   test 'filtering events by partner tag' do
     Neighbourhood.destroy_all
 
@@ -76,7 +74,7 @@ class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
     tag = Tag.create!(
       name: 'Tag',
       slug: 'tag',
-      description: 'A tag about a thing',
+      description: 'A tag about a thing'
     )
 
     tag_site = Site.create!(
@@ -93,7 +91,7 @@ class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
       street_address: '123 Street',
       postcode: 'M15 5DD'
     )
-    assert address.neighbourhood == neighbourhood
+    assert_equal address.neighbourhood, neighbourhood
 
     partner_with_tag = Partner.create!(
       name: 'Partner with tag',
@@ -113,7 +111,7 @@ class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
       Event.create!(
         partner: partner_with_tag,
         summary: "Event with tagged partner #{n}",
-        dtstart: DateTime.now + 1.hours,
+        dtstart: DateTime.now + 1.hour,
         dtend: DateTime.now + 2.hours,
         address: address
       )
@@ -124,7 +122,7 @@ class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
       Event.create!(
         partner: partner_without_tag,
         summary: "Event without tagged partner #{n}",
-        dtstart: DateTime.now + 1.hours,
+        dtstart: DateTime.now + 1.hour,
         dtend: DateTime.now + 2.hours,
         address: address
       )
@@ -136,4 +134,3 @@ class EventsBySiteTagTest  < ActionDispatch::IntegrationTest
     assert_select 'ol.events li .event', count: 2
   end
 end
-

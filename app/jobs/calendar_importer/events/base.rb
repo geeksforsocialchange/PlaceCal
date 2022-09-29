@@ -21,7 +21,7 @@ module CalendarImporter::Events
 
     def sanitize_invalid_char(input)
       # input = I18n.transliterate(input)
-      input.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
+      input.encode('utf-8', invalid: :replace, undef: :replace, replace: '')
     end
 
     # Convert h1 and h2 to h3
@@ -39,11 +39,11 @@ module CalendarImporter::Events
         input_mode = 'html'
         # looks like HTML to us
 
-        #if doc.errors.any? # this could be useful?
+        # if doc.errors.any? # this could be useful?
         #  puts 'errors found:'
         #  puts doc.errors
         #  return ''
-        #end
+        # end
 
         doc.css('h1', 'h2').each { |header| header.name = 'h3' }
 
@@ -60,17 +60,16 @@ module CalendarImporter::Events
     end
 
     def attributes
-      { uid:                      uid&.strip,
-        summary:                  sanitize_invalid_char(summary),
-        description:              html_sanitize(description),
+      { uid: uid&.strip,
+        summary: sanitize_invalid_char(summary),
+        description: html_sanitize(description),
         raw_location_from_source: location&.strip,
-        rrule:                    rrule,
-        place_id:                 place_id,
-        address_id:               address_id,
-        partner_id:               partner_id,
-        publisher_url:            publisher_url,
-        online_address_id:        online_address_id
-      }
+        rrule: rrule,
+        place_id: place_id,
+        address_id: address_id,
+        partner_id: partner_id,
+        publisher_url: publisher_url,
+        online_address_id: online_address_id }
     end
 
     def footer; end
@@ -78,7 +77,7 @@ module CalendarImporter::Events
     def publisher_url; end
 
     def has_location?
-      !location.blank?
+      location.present?
     end
 
     def recurring_event?
@@ -87,7 +86,9 @@ module CalendarImporter::Events
 
     def postcode
       postal = location.match(Address::POSTCODE_REGEX).try(:[], 0)
-      postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0) if postal.blank? # check for instances of M14 or M15 4 or whatever madness they've come up with
+      if postal.blank?
+        postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0)
+      end # check for instances of M14 or M15 4 or whatever madness they've come up with
 
       # TODO? Remove? This will currently do nothing because postcodes.io only
       # works on postcodes and we have established that a postcode does not
@@ -110,12 +111,12 @@ module CalendarImporter::Events
     end
 
     def private?
-      ip_class&.casecmp('private')&.zero? || (description&.include?('#placecal-ignore'))
+      ip_class&.casecmp('private')&.zero? || description&.include?('#placecal-ignore')
     end
 
     def online_event?
       # TODO: Put in default here
-      return nil
+      nil
     end
   end
 end

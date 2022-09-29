@@ -10,9 +10,9 @@ class Neighbourhood < ApplicationRecord
 
   has_many :service_areas, dependent: :destroy
   has_many :service_area_partners,
-    through: :service_areas,
-    source: :partner,
-    class_name: 'Partner'
+           through: :service_areas,
+           source: :partner,
+           class_name: 'Partner'
 
   # validates :name, presence: true
   validates :unit_code_value,
@@ -27,7 +27,7 @@ class Neighbourhood < ApplicationRecord
     elsif name.present?
       name
     else
-      "[not set]"
+      '[not set]'
     end
   end
 
@@ -57,7 +57,7 @@ class Neighbourhood < ApplicationRecord
   # == Returns
   #   A string of the name
   def abbreviated_name
-    name_abbr.present? ? name_abbr : name
+    name_abbr.presence || name
   end
 
   # normalize abbreviated names (usually coming from calendar
@@ -72,7 +72,7 @@ class Neighbourhood < ApplicationRecord
   def name_abbr=(value)
     value = value.to_s.strip
 
-    self['name_abbr'] = value.present? ? value : nil
+    self['name_abbr'] = value.presence
   end
 
   def to_s

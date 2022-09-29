@@ -9,10 +9,9 @@ class Join
   def submit
     if valid?
       JoinMailer.join_us(self).deliver
-      return true
+      true
     else
-      return false
+      false
     end
   end
 end
-

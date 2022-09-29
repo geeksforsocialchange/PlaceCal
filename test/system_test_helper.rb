@@ -14,10 +14,10 @@ Capybara.register_driver :headless_chrome do |app|
   )
 
   Capybara::Selenium::Driver.new app,
-    browser: :chrome,
-    desired_capabilities: capabilities
+                                 browser: :chrome,
+                                 desired_capabilities: capabilities
 end
 
-#Dir.glob(File.join(Rails.root, 'test/system/**/*.rb')) do |path|
+# Dir.glob(File.join(Rails.root, 'test/system/**/*.rb')) do |path|
 #  require path
-#end
+# end

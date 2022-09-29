@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class DeviseRedirectTest < ActionDispatch::IntegrationTest
-
   include Capybara::DSL
   include Capybara::Minitest::Assertions
   include EmailHelper
@@ -30,8 +29,9 @@ class DeviseRedirectTest < ActionDispatch::IntegrationTest
     click_button 'Send me reset password instructions'
 
     # has redirected to log in page with flash
-    assert_selector '.alert-success', text: 'You will receive an email with instructions on how to reset your password in a few minutes.'
-    assert_equal  'http://lvh.me/users/sign_in', current_url
+    assert_selector '.alert-success',
+                    text: 'You will receive an email with instructions on how to reset your password in a few minutes.'
+    assert_equal 'http://lvh.me/users/sign_in', current_url
 
     # now pick up the reset email and extract the link
     email = last_email_delivered
@@ -48,7 +48,7 @@ class DeviseRedirectTest < ActionDispatch::IntegrationTest
 
     # we are now logged in
     assert_selector '.alert-success', text: 'Your password has been changed successfully. You are now signed in.'
-    assert_equal  'http://admin.lvh.me:3000/', current_url
+    assert_equal 'http://admin.lvh.me:3000/', current_url
   end
 
   test 'invitation to set password' do
@@ -90,8 +90,7 @@ class DeviseRedirectTest < ActionDispatch::IntegrationTest
     click_button 'Set password'
 
     # user should be logged in
-    assert_equal  'http://admin.lvh.me:3000/', current_url
+    assert_equal 'http://admin.lvh.me:3000/', current_url
     assert_selector '.alert-success', text: 'Your password was set successfully. You are now signed in'
   end
 end
-

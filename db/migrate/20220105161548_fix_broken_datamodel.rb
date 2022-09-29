@@ -38,6 +38,7 @@ class FixBrokenDatamodel < ActiveRecord::Migration[6.1]
       # Remove all wards that have ancestry data or are a country (countries lack ancestry data)
       Neighbourhood.find_each do |ward|
         next unless !ward.ancestry.nil? || ward.unit == 'country'
+
         ward.destroy!
       end
 
@@ -50,7 +51,7 @@ class FixBrokenDatamodel < ActiveRecord::Migration[6.1]
       json_data.each_value do |country|
         create_unit(country, nil, nil)
       end
-    rescue => e
+    rescue StandardError => e
       errors << { error: e.message,
                   trace: e.backtrace_locations }
     end
@@ -58,8 +59,6 @@ class FixBrokenDatamodel < ActiveRecord::Migration[6.1]
     # Recover from Errors
     return unless errors.any?
 
-    File.open('20220105161548_fix_broken_datamodel.errors', 'w') do |f|
-      f.write errors
-    end
+    File.write('20220105161548_fix_broken_datamodel.errors', errors)
   end
 end

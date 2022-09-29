@@ -10,19 +10,19 @@ class UserTest < ActiveSupport::TestCase
 
   test 'owned neighbourhoods returns all descendants' do
     # Does the admin only own one region neighbourhood?
-    assert @neighbourhood_region_admin.neighbourhoods.length == 1
-    assert @neighbourhood_region_admin.neighbourhoods.first.unit == 'region'
+    assert_equal(1, @neighbourhood_region_admin.neighbourhoods.length)
+    assert_equal('region', @neighbourhood_region_admin.neighbourhoods.first.unit)
 
     # Does it return the region, the districts, and the wards?
     # We have five counties with one district each, all parenting one ward, plus the region
     # (See: factories/user.rb - neighbourhood_region_admin)
     owned_length = 1 + (5 * 3)
-    assert @neighbourhood_region_admin.owned_neighbourhoods.to_a.length == owned_length
+    assert_equal @neighbourhood_region_admin.owned_neighbourhoods.to_a.length, owned_length
 
     # does it actually return both the districts and the wards?
-    assert @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'county' }.length   == 5
-    assert @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'district' }.length == 5
-    assert @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.length     == 5
+    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'county' }.length)
+    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'district' }.length)
+    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.length)
   end
 
   test 'can edit neighourhoods' do
@@ -35,7 +35,7 @@ class UserTest < ActiveSupport::TestCase
     ward     = owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.first
 
     # We do not have permissions to edit the country!
-    assert (@neighbourhood_region_admin.can_alter_neighbourhood_by_id? region.parent.id) == false
+    assert_not((@neighbourhood_region_admin.can_alter_neighbourhood_by_id? region.parent.id))
 
     # We should have permissions to edit a county, district, or ward neighbourhood
     assert @neighbourhood_region_admin.can_alter_neighbourhood_by_id?(county.id)
@@ -55,16 +55,16 @@ class UserTest < ActiveSupport::TestCase
     # Does this person manage at least one partner?
     @user.partners << create(:partner)
     @user.save
-    assert @user.partner_admin?
+    assert_predicate @user, :partner_admin?
 
     # Does this person manage at least one tag?
     @user.tags << create(:tag)
     @user.save
-    assert @user.tag_admin?
+    assert_predicate @user, :tag_admin?
 
     # Is this person a root? If they are, they're also a secretary
     @user.update(role: :root)
-    assert @user.root?
+    assert_predicate @user, :root?
   end
 
   test 'full name method gives sensible responses' do
@@ -87,13 +87,12 @@ class UserTest < ActiveSupport::TestCase
 
   test 'without skip_password_validation' do
     user = User.new(email: 'test@test.com', role: 'citizen')
-    assert_equal false, user.valid?
+    assert_not_predicate user, :valid?
   end
 
   test 'with skip_password_valiation' do
     user = User.new(email: 'test@test.com', role: 'citizen')
     user.skip_password_validation = true
-    assert_equal true, user.valid?
-
+    assert_predicate user, :valid?
   end
 end

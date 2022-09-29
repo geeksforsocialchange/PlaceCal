@@ -14,30 +14,30 @@ class PartnersHelperTest < ActionView::TestCase
 
   # testing partner_service_area_text
 
-  test "shows only one text correctly" do
+  test 'shows only one text correctly' do
     @partner.service_areas.create neighbourhood: @hoods[0]
 
     output = partner_service_area_text(@partner)
 
-    assert output == 'alpha'
+    assert_equal('alpha', output)
   end
 
-  test "shows two texts correctly" do
+  test 'shows two texts correctly' do
     @partner.service_areas.create neighbourhood: @hoods[0]
     @partner.service_areas.create neighbourhood: @hoods[1]
 
     output = partner_service_area_text(@partner)
 
-    assert output == 'alpha and beta'
+    assert_equal('alpha and beta', output)
   end
 
-  test "shows N texts correctly" do
+  test 'shows N texts correctly' do
     @partner.service_areas.create neighbourhood: @hoods[0]
     @partner.service_areas.create neighbourhood: @hoods[1]
     @partner.service_areas.create neighbourhood: @hoods[2]
 
     output = partner_service_area_text(@partner)
 
-    assert output == 'alpha, beta and cappa'
+    assert_equal('alpha, beta and cappa', output)
   end
 end

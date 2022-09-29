@@ -9,7 +9,7 @@ module CalendarImporter::Parsers
     DOMAINS = %w[events.manchester.ac.uk]
 
     def self.whitelist_pattern
-      /^http(s)?:\/\/events.manchester.ac.uk\/f3vf\/calendar\/.*/
+      %r{^http(s)?://events.manchester.ac.uk/f3vf/calendar/.*}
     end
 
     def import_events_from(data)
@@ -21,6 +21,5 @@ module CalendarImporter::Parsers
 
       events
     end
-
   end
 end

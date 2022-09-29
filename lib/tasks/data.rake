@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 namespace :data do
-
   desc 'Fix fields that need to be rendered to HTML'
-  task :render_html_fields => :environment do
-
+  task render_html_fields: :environment do
     PaperTrail.enabled = false
 
     @bad_count = 0
@@ -15,7 +13,6 @@ namespace :data do
 
     fix_model Site
     fix_model Partner
-
 
     fix_model Event do |event|
       next if event.description_html.to_s.length > 0
@@ -46,10 +43,8 @@ namespace :data do
           saved = record.save
         end
 
-        @bad_count += 1 if !saved
+        @bad_count += 1 unless saved
       end
     end
   end
-
 end
-

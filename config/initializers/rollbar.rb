@@ -4,7 +4,7 @@ Rollbar.configure do |config|
   # Without configuration, Rollbar is enabled in all environments.
   # To disable in specific environments, set config.enabled=false.
 
-  config.access_token = ENV['ROLLBAR_ACCESS_TOKEN']
+  config.access_token = ENV.fetch('ROLLBAR_ACCESS_TOKEN', nil)
 
   # Here we'll disable in 'test':
   config.enabled = false if Rails.env.development? || Rails.env.test?
@@ -58,7 +58,7 @@ Rollbar.configure do |config|
   config.exception_level_filters.merge!('ActionController::RoutingError' => lambda do |error|
     error.message =~ %r{No route matches \[[A-Z]+\] "/(.+)"}
     case Regexp.last_match(1).split('/').first.to_s.downcase
-    when *%w[old gate.php wp-includes mifs vendor epa]
+    when 'old', 'gate.php', 'wp-includes', 'mifs', 'vendor', 'epa'
       'ignore'
     else
       'warning'

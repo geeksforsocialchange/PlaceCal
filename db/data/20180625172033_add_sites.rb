@@ -31,7 +31,8 @@ class AddSites < SeedMigration::Migration
         footer_logo: 'hulme-footer.svg',
         hero_image: 'hulme-hero.jpg',
         hero_image_credit: 'Jane Samuels',
-        supporters: Supporter.where(name: ['Age Friendly Hulme and Moss Side', 'Buzz', 'People First Wellbeing Service'])
+        supporters: Supporter.where(name: ['Age Friendly Hulme and Moss Side', 'Buzz',
+                                           'People First Wellbeing Service'])
       },
       {
         name: 'Moss Side',
@@ -43,7 +44,8 @@ class AddSites < SeedMigration::Migration
         footer_logo: 'hulme-footer.svg',
         hero_image: 'moss-side-hero.jpg',
         hero_image_credit: 'Jane Samuels',
-        supporters: Supporter.where(name: ['Age Friendly Hulme and Moss Side', 'Buzz', 'People First Wellbeing Service'])
+        supporters: Supporter.where(name: ['Age Friendly Hulme and Moss Side', 'Buzz',
+                                           'People First Wellbeing Service'])
       },
       {
         name: 'Rusholme',
