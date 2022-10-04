@@ -637,14 +637,6 @@ Rails/OutputSafety:
     - "app/helpers/users_helper.rb"
     - "app/models/partner.rb"
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Include.
-# Include: **/Rakefile, **/*.rake
-Rails/RakeEnvironment:
-  Exclude:
-    - "lib/tasks/yard.rake"
-
 # Offense count: 8
 # Configuration parameters: Include.
 # Include: db/**/*.rb
