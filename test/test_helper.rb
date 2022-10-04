@@ -24,7 +24,7 @@ include JsonMatchers::Minitest::Assertions
 require 'capybara/rails'
 require 'capybara/minitest'
 
-Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')) do |path|
+Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')).sort.each do |path|
   require path
 end
 

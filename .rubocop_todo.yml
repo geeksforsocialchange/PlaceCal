@@ -71,12 +71,6 @@ Lint/MissingSuper:
     - "app/policies/user_policy.rb"
 
 # Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/NonDeterministicRequireOrder:
-  Exclude:
-    - "test/test_helper.rb"
-
-# Offense count: 1
 Lint/ShadowingOuterLocalVariable:
   Exclude:
     - "app/jobs/calendar_importer/events/ics_event.rb"
