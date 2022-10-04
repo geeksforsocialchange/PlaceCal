@@ -811,22 +811,6 @@ Style/MixinUsage:
   Exclude:
     - "test/test_helper.rb"
 
-# Offense count: 10
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle, IgnoredMethods.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - "app/components/place_partner_preview/place_partner_preview_component.rb"
-    - "app/controllers/application_controller.rb"
-    - "app/controllers/concerns/map_markers.rb"
-    - "app/controllers/news_controller.rb"
-    - "app/jobs/calendar_importer/events/base.rb"
-    - "app/models/partner.rb"
-    - "lib/tasks/data.rake"
-    - "test/models/partner_address_or_service_area_presence_test.rb"
-    - "test/models/tag_test.rb"
-
 # Offense count: 4
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: respond_to_missing?

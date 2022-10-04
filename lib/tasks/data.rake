@@ -15,7 +15,7 @@ namespace :data do
     fix_model Partner
 
     fix_model Event do |event|
-      next if event.description_html.to_s.length > 0
+      next if event.description_html.to_s.length.positive?
 
       description_text = Kramdown::Document.new(event.description.to_s, input: 'html').to_kramdown.strip
       event.description = description_text

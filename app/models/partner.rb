@@ -247,7 +247,7 @@ class Partner < ApplicationRecord
   end
 
   def has_service_areas?
-    service_areas.count > 0
+    service_areas.count.positive?
   end
 
   def permalink
@@ -278,7 +278,7 @@ class Partner < ApplicationRecord
   end
 
   def human_readable_opening_times
-    return [] if !opening_times || opening_times.length == 0
+    return [] if !opening_times || opening_times.length.zero?
 
     JSON.parse(opening_times).map do |s|
       d = s['dayOfWeek'].split('/').last

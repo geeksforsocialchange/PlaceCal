@@ -19,7 +19,7 @@ class TagTest < ActiveSupport::TestCase
     @tag.partners << @partner
     @tag.save
 
-    assert @tag.partners.length > 0
+    assert_predicate @tag.partners.length, :positive?
   end
 
   test 'system_tags cannot modify name or slug' do

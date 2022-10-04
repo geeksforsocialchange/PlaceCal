@@ -223,7 +223,7 @@ class ApplicationController < ActionController::Base
       # ['Places', places_path],
       ['Partners', partners_path]
     ]
-    items << ['News', news_index_path] if article_count > 0
+    items << ['News', news_index_path] if article_count.positive?
     items
   end
 end

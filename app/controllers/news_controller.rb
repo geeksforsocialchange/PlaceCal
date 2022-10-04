@@ -9,7 +9,7 @@ class NewsController < ApplicationController
 
   def index
     @offset = params[:offset].to_i
-    @offset = 0 if @offset < 0
+    @offset = 0 if @offset.negative?
     @next_offset = @offset + ARTICLES_PER_PAGE
 
     @article_count = Article

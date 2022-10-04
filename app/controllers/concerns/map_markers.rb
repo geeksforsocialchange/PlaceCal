@@ -29,7 +29,7 @@ module MapMarkers
       # reject partner with no resolvable address
       next if loc.address.nil? || loc.address.latitude.blank?
 
-      if addresses_only && (loc.service_areas.count > 0)
+      if addresses_only && loc.service_areas.count.positive?
         # reject partner if they have any service areas?
         next
       end

@@ -35,7 +35,7 @@ module CalendarImporter::Events
       input_mode = 'markdown'
 
       doc = Nokogiri::HTML.fragment(clean_text)
-      if doc.css('*').length > 0
+      if doc.css('*').length.positive?
         input_mode = 'html'
         # looks like HTML to us
 

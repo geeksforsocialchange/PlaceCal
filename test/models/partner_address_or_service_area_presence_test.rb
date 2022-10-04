@@ -21,7 +21,7 @@ class PartnerAddressOrServiceAreaPresenceTest < ActiveSupport::TestCase
     assert_not_predicate(@new_partner, :valid?, 'Partner should be invalid')
 
     base_errors = @new_partner.errors[:base]
-    assert base_errors.length > 0
+    assert_predicate base_errors.length, :positive?
   end
 
   test 'is valid with service_area set' do
