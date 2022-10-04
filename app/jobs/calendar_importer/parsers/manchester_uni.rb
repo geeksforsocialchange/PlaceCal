@@ -8,7 +8,7 @@ module CalendarImporter::Parsers
   class ManchesterUni < Xml
     PUBLIC = false
     NAME = 'Manchester University'
-    DOMAINS = %w[events.manchester.ac.uk]
+    DOMAINS = %w[events.manchester.ac.uk].freeze
 
     def self.whitelist_pattern
       %r{^http(s)?://events.manchester.ac.uk/f3vf/calendar/.*}

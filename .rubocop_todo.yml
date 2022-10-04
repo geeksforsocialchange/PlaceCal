@@ -811,24 +811,6 @@ Style/MixinUsage:
   Exclude:
     - "test/test_helper.rb"
 
-# Offense count: 22
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: literals, strict
-Style/MutableConstant:
-  Exclude:
-    - "app/jobs/calendar_importer/events/base.rb"
-    - "app/jobs/calendar_importer/parsers/eventbrite.rb"
-    - "app/jobs/calendar_importer/parsers/ics.rb"
-    - "app/jobs/calendar_importer/parsers/manchester_uni.rb"
-    - "app/jobs/calendar_importer/parsers/meetup.rb"
-    - "app/jobs/calendar_importer/parsers/ticketsolve.rb"
-    - "app/models/address.rb"
-    - "app/models/calendar.rb"
-    - "app/models/concerns/validation.rb"
-    - "lib/tasks/db.rake"
-    - "test/system/graphql/graphql_test.rb"
-
 # Offense count: 10
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, IgnoredMethods.

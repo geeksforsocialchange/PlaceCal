@@ -2,7 +2,7 @@
 
 module CalendarImporter::Events
   class Base
-    ALLOWED_TAGS = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br]
+    ALLOWED_TAGS = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br].freeze
 
     Dates = Struct.new(:start_time, :end_time, :status)
 

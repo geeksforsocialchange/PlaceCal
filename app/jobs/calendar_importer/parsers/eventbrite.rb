@@ -8,7 +8,7 @@ module CalendarImporter::Parsers
   class Eventbrite < Base
     NAME = 'Eventbrite'
     KEY = 'eventbrite'
-    DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk]
+    DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk].freeze
 
     def self.whitelist_pattern
       %r{^https://www.eventbrite\.(com|co.uk)/o/[A-Za-z0-9-]+}

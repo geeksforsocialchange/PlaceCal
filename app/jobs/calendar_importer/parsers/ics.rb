@@ -15,7 +15,7 @@ module CalendarImporter::Parsers
       outlook.live.com
       ics.teamup.com
       webcal://
-    ]
+    ].freeze
 
     def self.whitelist_pattern
       whitelists = {

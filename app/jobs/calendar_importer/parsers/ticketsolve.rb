@@ -8,7 +8,7 @@ module CalendarImporter::Parsers
   class Ticketsolve < Xml
     NAME = 'Ticket Solve'
     KEY = 'ticket-solve'
-    DOMAINS = %w[*.ticketsolve.com]
+    DOMAINS = %w[*.ticketsolve.com].freeze
 
     def self.whitelist_pattern
       %r{^https?://([^.]*).ticketsolve.com/?}
