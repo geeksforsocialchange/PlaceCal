@@ -445,35 +445,10 @@ Performance/CollectionLiteralInLoop:
   Exclude:
     - "db/migrate/20191201002011_fix_invalid_partners.rb"
 
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/Count:
-  Exclude:
-    - "test/models/user_test.rb"
-
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/Detect:
-  Exclude:
-    - "test/models/user_test.rb"
-
 # Offense count: 1
 Performance/FixedSize:
   Exclude:
     - "app/models/address.rb"
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/InefficientHashSearch:
-  Exclude:
-    - "app/jobs/calendar_importer/event_resolver.rb"
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: OnlySumOrWithInitialValue.
-Performance/Sum:
-  Exclude:
-    - "app/helpers/map_helper.rb"
 
 # Offense count: 7
 # This cop supports unsafe autocorrection (--autocorrect-all).

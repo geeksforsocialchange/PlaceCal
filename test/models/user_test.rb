@@ -20,9 +20,9 @@ class UserTest < ActiveSupport::TestCase
     assert_equal @neighbourhood_region_admin.owned_neighbourhoods.to_a.length, owned_length
 
     # does it actually return both the districts and the wards?
-    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'county' }.length)
-    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'district' }.length)
-    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.length)
+    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.count { |u| u.unit == 'county' })
+    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.count { |u| u.unit == 'district' })
+    assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.count { |u| u.unit == 'ward' })
   end
 
   test 'can edit neighourhoods' do
@@ -30,9 +30,9 @@ class UserTest < ActiveSupport::TestCase
 
     owned_neighbourhoods = @neighbourhood_region_admin.owned_neighbourhoods
 
-    county   = owned_neighbourhoods.find_all { |u| u.unit == 'county' }.first
-    district = owned_neighbourhoods.find_all { |u| u.unit == 'district' }.first
-    ward     = owned_neighbourhoods.find_all { |u| u.unit == 'ward' }.first
+    county   = owned_neighbourhoods.find { |u| u.unit == 'county' }
+    district = owned_neighbourhoods.find { |u| u.unit == 'district' }
+    ward     = owned_neighbourhoods.find { |u| u.unit == 'ward' }
 
     # We do not have permissions to edit the country!
     assert_not((@neighbourhood_region_admin.can_alter_neighbourhood_by_id? region.parent.id))

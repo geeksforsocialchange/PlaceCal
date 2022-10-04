@@ -42,8 +42,8 @@ module MapHelper
     return marker_data.first[:position] if marker_data.length == 1
 
     [
-      marker_data.map { |p| p[:position][0] }.sum / marker_data.length,
-      marker_data.map { |p| p[:position][1] }.sum / marker_data.length
+      marker_data.sum { |p| p[:position][0] } / marker_data.length,
+      marker_data.sum { |p| p[:position][1] } / marker_data.length
     ]
   end
 

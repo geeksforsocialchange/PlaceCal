@@ -57,7 +57,7 @@ class CalendarImporter::EventResolver
       'online_only' => :online_only_strategy
     }
 
-    if strategies.keys.include?(calendar.strategy)
+    if strategies.key?(calendar.strategy)
       strategy = strategies[calendar.strategy]
       place, address = method(strategy).call(calendar.place)
     else
