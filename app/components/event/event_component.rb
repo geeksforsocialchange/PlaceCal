@@ -13,7 +13,7 @@ class EventComponent < MountainView::Presenter
 
   def time
     if event.dtend
-      fmt_time(event.dtstart) + ' – ' + fmt_time(event.dtend)
+      "#{fmt_time(event.dtstart)} – #{fmt_time(event.dtend)}"
     else
       fmt_time(event.dtstart)
     end

@@ -317,7 +317,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
   # in cases where we have eventConnection { edges { node { ... } } }
   def map_edges_to_ids(edges)
     # [{ 'node': { 'id': 23, etc } }, ...] => { '23': { 'id': 23, etc }, ... }
-    edges.map { |edge| [edge['node']['id'].to_i, edge['node']] }.to_h
+    edges.to_h { |edge| [edge['node']['id'].to_i, edge['node']] }
   end
 
   # in cases where we have eventsByFilter { ... }

@@ -127,7 +127,7 @@ class PaginatorComponent < MountainView::Presenter
     str << 'period=week' if period == 1.week
     str << "sort=#{sort}" if sort
     str << "repeating=#{repeating}" if repeating
-    '?' + str.join('&') if str.any?
+    "?#{str.join('&')}" if str.any?
   end
 
   # Icon for back arrow

@@ -752,12 +752,6 @@ Style/ClassAndModuleChildren:
     - "test/jobs/calendar_importer/calendar_importer_test.rb"
 
 # Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/CollectionCompact:
-  Exclude:
-    - "app/helpers/map_helper.rb"
-
-# Offense count: 1
 Style/CombinableLoops:
   Exclude:
     - "db/migrate/20211203153422_correct_datamodel_by_importing_neighbourhoods_json.rb"
@@ -774,13 +768,6 @@ Style/CommentedKeyword:
 # SupportedStyles: annotated, template, unannotated
 Style/FormatStringToken:
   EnforcedStyle: unannotated
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/GlobalStdStream:
-  Exclude:
-    - "config/environments/production.rb"
-    - "config/environments/staging.rb"
 
 # Offense count: 10
 # Configuration parameters: MinBodyLength, AllowConsecutiveConditionals.
@@ -801,12 +788,6 @@ Style/HashLikeCase:
     - "lib/tasks/db.rake"
 
 # Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/MapToHash:
-  Exclude:
-    - "test/integration/graphql/event_integration_test.rb"
-
-# Offense count: 1
 Style/MixinUsage:
   Exclude:
     - "test/test_helper.rb"
@@ -820,58 +801,6 @@ Style/OptionalBooleanParameter:
     - "app/controllers/concerns/map_markers.rb"
     - "app/helpers/application_helper.rb"
     - "app/jobs/calendar_importer_job.rb"
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: SafeForConstants.
-Style/RedundantFetchBlock:
-  Exclude:
-    - "config/puma.rb"
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/RedundantInterpolation:
-  Exclude:
-    - "lib/tasks/db.rake"
-    - "test/integration/home_integration_test.rb"
-
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: ConvertCodeThatCanStartToReturnNil, AllowedMethods, MaxChainLength.
-# AllowedMethods: present?, blank?, presence, try, try!
-Style/SafeNavigation:
-  Exclude:
-    - "app/components/dashboard_card/dashboard_card_component.rb"
-    - "app/helpers/application_helper.rb"
-    - "db/migrate/20200107165257_update_site_themes.rb"
-
-# Offense count: 4
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: RequireEnglish.
-# SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
-Style/SpecialGlobalVars:
-  EnforcedStyle: use_perl_names
-
-# Offense count: 6
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Mode.
-Style/StringConcatenation:
-  Exclude:
-    - "app/components/event/event_component.rb"
-    - "app/components/paginator/paginator_component.rb"
-    - "app/models/event.rb"
-    - "db/migrate/20191201002011_fix_invalid_partners.rb"
-    - "lib/tasks/db.rake"
-
-# Offense count: 5
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/ZeroLengthPredicate:
-  Exclude:
-    - "app/jobs/calendar_importer/events/base.rb"
-    - "app/models/partner.rb"
-    - "lib/tasks/data.rake"
-    - "test/models/partner_address_or_service_area_presence_test.rb"
-    - "test/models/tag_test.rb"
 
 # Offense count: 43
 # This cop supports safe autocorrection (--autocorrect).

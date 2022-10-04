@@ -31,6 +31,7 @@
 #
 # Original source: https://gist.github.com/hopsoft/56ba6f55fe48ad7f8b90
 # Merged with: https://gist.github.com/kofronpi/37130f5ed670465b1fe2d170f754f8c6
+require 'English'
 namespace :db do
   desc 'Dumps the database to backups'
   task dump: :environment do
@@ -83,7 +84,7 @@ namespace :db do
   desc 'Show the existing database backups'
   task dumps: :environment do
     backup_dir = backup_directory
-    puts "#{backup_dir}"
+    puts backup_dir.to_s
     system "/bin/ls -ltR #{backup_dir}"
   end
 
@@ -116,7 +117,7 @@ namespace :db do
           end
         else
           puts "Too many files match the pattern '#{pattern}':"
-          puts ' ' + files.join("\n ")
+          puts " #{files.join("\n ")}"
           puts ''
           puts 'Try a more specific pattern'
           puts ''
@@ -153,7 +154,7 @@ namespace :db do
     puts `ssh #{ssh_url} dokku postgres:export placecal-db > $(date -Im)_placecal-staging.sql`
     $stdout.puts 'Replicating production db to staging db (May take a while.) ...'
     puts `ssh #{prod_ssh_url} dokku postgres:export placecal-db2 | ssh #{ssh_url} dokku postgres:import placecal-db`
-    if $?.success?
+    if $CHILD_STATUS.success?
       $stdout.puts 'Replicated production to staging (you might have to run rails db:migrate in dokku?)'
     else
       warn 'Failed to replicate production to staging!'
@@ -168,7 +169,7 @@ namespace :db do
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
     puts `ssh #{ssh_url} dokku postgres:export placecal-db2 > #{filename}`
-    if $?.success?
+    if $CHILD_STATUS.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename
     else
@@ -183,7 +184,7 @@ namespace :db do
 
     $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
     puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev #{filename}`
-    if $?.success?
+    if $CHILD_STATUS.success?
       $stdout.puts '... done.'
     else
       warn 'Failed to restore DB dump to local dev DB!'
@@ -200,7 +201,7 @@ namespace :db do
 
     $stdout.puts "Restoring DB dump file #{filename} to staging server DB. (May take a while.) ..."
     puts `< #{filename} ssh #{ssh_url} dokku postgres:import placecal-staging-db`
-    if $?.success?
+    if $CHILD_STATUS.success?
       $stdout.puts '... done.'
     else
       warn 'Failed to restore DB dump to staging server DB!'

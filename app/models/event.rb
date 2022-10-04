@@ -110,7 +110,7 @@ class Event < ApplicationRecord
 
   def time
     if dtend
-      dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+      "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
     else
       dtstart.strftime('%H:%M')
     end

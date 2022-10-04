@@ -18,9 +18,9 @@ class FixInvalidPartners < ActiveRecord::Migration[6.0]
           partner.facebook_link = facebook_link.flatten[0]&.strip
         elsif field == :url
           partner.url = if partner.url.starts_with?('www')
-                          ('https://' + partner.url)&.strip
+                          "https://#{partner.url}"&.strip
                         else
-                          ('https://www.' + partner.url)&.strip
+                          "https://www.#{partner.url}"&.strip
                         end
         end
       end

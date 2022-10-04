@@ -5,7 +5,7 @@ class StrongParametersFormBuilder < SimpleForm::FormBuilder
     disabled = self.options[:disabled]
     display_filter = self.options[:display_only]&.collect { |attr| attr.is_a?(Hash) ? attr.keys : attr }&.flatten
 
-    if disabled && disabled.include?(attribute_name)
+    if disabled&.include?(attribute_name)
       options[:disabled] = true
       super
     elsif display_filter
