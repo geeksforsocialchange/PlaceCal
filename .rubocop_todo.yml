@@ -22,12 +22,6 @@ GraphQL/ExtractType:
     - "app/graphql/types/event_type.rb"
     - "app/graphql/types/neighbourhood_type.rb"
 
-# Offense count: 5
-# This cop supports unsafe autocorrection (--autocorrect-all).
-GraphQL/FieldName:
-  Exclude:
-    - "app/graphql/types/event_type.rb"
-
 # Offense count: 3
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: enums

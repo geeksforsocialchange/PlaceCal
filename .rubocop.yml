@@ -10,6 +10,9 @@ require:
 AllCops:
   NewCops: enable
 
+GraphQL/FieldName:
+  Enabled: false
+
 GraphQL/ObjectDescription:
   Enabled: false
 
