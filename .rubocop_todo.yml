@@ -500,21 +500,6 @@ Rails/Date:
     - "test/jobs/calendar_importer/calendar_importer_task_test.rb"
     - "test/models/events_test.rb"
 
-# Offense count: 11
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Whitelist, AllowedMethods, AllowedReceivers.
-# Whitelist: find_by_sql
-# AllowedMethods: find_by_sql
-# AllowedReceivers: Gem::Specification
-Rails/DynamicFindBy:
-  Exclude:
-    - "app/constraints/sites.rb"
-    - "app/controllers/application_controller.rb"
-    - "app/models/calendar.rb"
-    - "app/models/partner.rb"
-    - "app/models/site.rb"
-    - "test/models/events_test.rb"
-
 # Offense count: 7
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: slashes, arguments
