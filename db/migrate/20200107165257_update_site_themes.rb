@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateSiteThemes < ActiveRecord::Migration[6.0]
   def change
     set_theme 'hulme', :pink

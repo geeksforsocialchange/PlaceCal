@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JoinsController < ApplicationController
   before_action :set_site
 

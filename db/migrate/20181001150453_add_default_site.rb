@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddDefaultSite < ActiveRecord::Migration[5.1]
   def up
     execute(

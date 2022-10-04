@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class SiteType < Types::BaseObject
     description 'Sites represent a collection of neighbourhoods or service areas'

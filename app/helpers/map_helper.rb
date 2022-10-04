@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MapHelper
   def args_for_map(map_points, site, style_mode, compact_mode)
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|

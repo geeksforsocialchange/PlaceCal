@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddHtmlFieldsToModels < ActiveRecord::Migration[6.1]
   def change
     add_column :articles, :body_html, :string

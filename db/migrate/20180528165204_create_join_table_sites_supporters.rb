@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateJoinTableSitesSupporters < ActiveRecord::Migration[5.1]
   def change
     create_join_table :sites, :supporters do |t|

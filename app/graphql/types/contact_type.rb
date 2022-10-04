@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class ContactType < Types::BaseObject
     description 'Contact information for a person or venue'

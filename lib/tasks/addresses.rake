@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :addresses do
   # TODO: Refactor these two tasks to use a lower level task
   desc 'Geocode all addresses in order to identify neighbourhood tags'

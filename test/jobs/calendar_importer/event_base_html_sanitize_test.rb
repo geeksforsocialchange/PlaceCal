@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
@@ -79,7 +81,7 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
   end
 
   test 'given markdown input nothing is changed on output' do
-    input = <<~MARKDOWN
+    input = <<~MARKDOWN.strip
       ### A title!
 
       This is input
@@ -90,8 +92,6 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
       * Two
       * Three
     MARKDOWN
-
-    input.strip!
 
     event = EventBase.new(nil)
     output = event.html_sanitize(input)

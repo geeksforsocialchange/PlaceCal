@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddManchesterUniFeeds < SeedMigration::Migration
   def up
     partner = Partner.create!(name: 'Manchester University')

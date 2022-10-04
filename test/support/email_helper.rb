@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EmailHelper
   # get the last email sent by ActionMailer
   #

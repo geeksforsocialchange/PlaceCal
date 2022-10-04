@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Geocoder.configure(lookup: :test, ip_lookup: :test)
 
 # Geocoder returns hash with string keys, not symbols

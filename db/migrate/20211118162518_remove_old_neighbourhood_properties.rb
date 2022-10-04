@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveOldNeighbourhoodProperties < ActiveRecord::Migration[6.0]
   def up
     change_table :neighbourhoods, bulk: true do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSummaryDescriptionToPartners < ActiveRecord::Migration[6.1]
   def up
     add_column :partners, :summary, :string

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class NeighbourhoodType < Types::BaseObject
     description 'A political divison, for example as established by the UK Boundary Authority. Can be on a number of scales from local to national'

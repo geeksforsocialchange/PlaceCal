@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :recreate_images do
   desc 'Recreate Site hero image'
   task site: :environment do

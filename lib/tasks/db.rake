@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Original source: https://gist.github.com/hopsoft/56ba6f55fe48ad7f8b90
 # Merged with: https://gist.github.com/kofronpi/37130f5ed670465b1fe2d170f754f8c6
 #

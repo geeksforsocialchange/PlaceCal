@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddOrganisationRelationshipsTable < ActiveRecord::Migration[5.1]
   def change
     create_table :organisation_relationships

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SplitTurfsIntoNeighbourhoodsAndTurfs < ActiveRecord::Migration[5.1]
   def up
     # 1 Create and populate neighbourhoods table

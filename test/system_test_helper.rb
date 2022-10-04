@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 Capybara.app_host = 'http://lvh.me'

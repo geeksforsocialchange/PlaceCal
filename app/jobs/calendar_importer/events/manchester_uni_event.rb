@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CalendarImporter::Events
   class ManchesterUniEvent < Base
     def initialize(event)

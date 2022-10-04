@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 # TODO: Assertations are wrong way around - should be (expected, actual)

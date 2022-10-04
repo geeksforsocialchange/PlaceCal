@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPlacesPartners < SeedMigration::Migration
   def up
     # Hulme Garden Centre

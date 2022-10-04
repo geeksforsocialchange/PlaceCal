@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CorrectDatamodelByImportingNeighbourhoodsJson < ActiveRecord::Migration[6.1]
   # This code is hecking UGLY
   def create_unit(json_unit, parent_neighbourhood, parent_unit)

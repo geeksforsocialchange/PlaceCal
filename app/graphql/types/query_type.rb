@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   ID = GraphQL::Types::ID
 

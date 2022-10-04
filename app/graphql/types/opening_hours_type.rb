@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class OpeningHoursType < Types::BaseObject
     description 'A period of time that this partner is open for'

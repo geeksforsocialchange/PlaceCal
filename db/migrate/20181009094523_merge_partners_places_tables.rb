@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergePartnersPlacesTables < ActiveRecord::Migration[5.1]
   # NOTE: No data deletion happens in this migration. The only destructive edits
   # are dropping of indexes in order to make other changes possible.

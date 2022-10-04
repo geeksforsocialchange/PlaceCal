@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateNeighbourhoodsUsers < ActiveRecord::Migration[6.0]
   def change
     create_table :neighbourhoods_users do |t|
