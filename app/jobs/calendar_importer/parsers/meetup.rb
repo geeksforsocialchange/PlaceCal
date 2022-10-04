@@ -16,7 +16,7 @@ module CalendarImporter::Parsers
 
     def download_calendar
       user_name = (@url =~ %r{^https://www\.meetup\.com/([^/]*)/?$}) && Regexp.last_match(1)
-      return [] unless user_name.present?
+      return [] if user_name.blank?
 
       api_url = "https://api.meetup.com/#{user_name}/events"
       response = HTTParty.get(api_url).body

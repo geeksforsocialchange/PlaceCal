@@ -51,7 +51,7 @@ module Types
     # author: person, from user
 
     def image
-      return nil unless object.article_image_url.present?
+      return nil if object.article_image_url.blank?
 
       url = URI::HTTP.build(Rails.application.default_url_options)
       url.scheme = Rails.application.default_url_options[:protocol]

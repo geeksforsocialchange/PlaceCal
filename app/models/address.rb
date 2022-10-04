@@ -41,14 +41,14 @@ class Address < ApplicationRecord
   def full_street_address
     [street_address,
      street_address2,
-     street_address3].reject(&:blank?).join(', ')
+     street_address3].compact_blank.join(', ')
   end
 
   def other_address_lines
     [street_address2,
      street_address3,
      city,
-     postcode].reject(&:blank?)
+     postcode].compact_blank
   end
 
   def all_address_lines
@@ -56,7 +56,7 @@ class Address < ApplicationRecord
      street_address2,
      street_address3,
      city,
-     postcode].reject(&:blank?)
+     postcode].compact_blank
   end
 
   def last_line_of_address

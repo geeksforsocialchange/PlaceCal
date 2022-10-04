@@ -11,7 +11,7 @@ class HeroImageComponent < MountainView::Presenter
   end
 
   def image_credit
-    return false unless properties[:image_credit].present?
+    return false if properties[:image_credit].blank?
 
     "Image credit: #{properties[:image_credit]}"
   end

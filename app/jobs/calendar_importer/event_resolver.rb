@@ -236,6 +236,6 @@ class CalendarImporter::EventResolver
     @event_location_components = (data.location || '')
                                  .split(', ')
                                  .map { |component| component.gsub(regexp, '').strip }
-                                 .reject(&:blank?)
+                                 .compact_blank
   end
 end

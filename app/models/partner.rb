@@ -324,7 +324,7 @@ class Partner < ApplicationRecord
 
   def check_ward_access
     return if accessed_by_user.nil? || accessed_by_user.root?
-    return unless address.present?
+    return if address.blank?
 
     unless accessed_by_user.assigned_to_postcode?(address&.postcode)
       errors.add :base, 'Partners cannot have an address outside of your ward.'

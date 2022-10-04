@@ -35,7 +35,7 @@ class CalendarImporter::CalendarImporter
   # This ensures that self.parser is set during calendar_importer_task
   def validate_feed!
     raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless url_accessible?
-    raise UnsupportedFeed, 'The provided URL is not supported' unless parser.present?
+    raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?
   end
 
   def url_accessible?

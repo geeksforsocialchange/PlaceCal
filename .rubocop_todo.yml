@@ -450,19 +450,6 @@ Performance/FixedSize:
   Exclude:
     - "app/models/address.rb"
 
-# Offense count: 7
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
-Rails/Blank:
-  Exclude:
-    - "app/components/hero_image/hero_image_component.rb"
-    - "app/controllers/users/auth_common.rb"
-    - "app/graphql/types/article_type.rb"
-    - "app/graphql/types/partner_type.rb"
-    - "app/jobs/calendar_importer/calendar_importer.rb"
-    - "app/jobs/calendar_importer/parsers/meetup.rb"
-    - "app/models/partner.rb"
-
 # Offense count: 21
 # Configuration parameters: Database, Include.
 # SupportedDatabases: mysql, postgresql
@@ -487,16 +474,6 @@ Rails/BulkChangeTable:
     - "db/migrate/20220611154511_add_html_fields_to_models.rb"
     - "db/migrate/20220711161804_remove_facebook_fields.rb"
     - "db/migrate/20220720151156_remove_calendar_contact_info_fields.rb"
-
-# Offense count: 8
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/CompactBlank:
-  Exclude:
-    - "app/jobs/calendar_importer/event_resolver.rb"
-    - "app/jobs/calendar_importer/events/eventbrite_event.rb"
-    - "app/jobs/calendar_importer/events/meetup_event.rb"
-    - "app/models/address.rb"
-    - "app/models/user.rb"
 
 # Offense count: 7
 # Configuration parameters: Include.

@@ -17,7 +17,7 @@ module Users
     #
     def devise_check_on_root_site
       return if current_user.present?
-      return unless request.subdomain.present?
+      return if request.subdomain.blank?
 
       redirect_to url_for(subdomain: nil)
     end
