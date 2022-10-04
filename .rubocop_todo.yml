@@ -710,14 +710,6 @@ Rake/MethodDefinitionInTask:
     - "lib/tasks/db.rake"
     - "lib/tasks/events.rake"
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, conditionals
-Style/AndOr:
-  Exclude:
-    - "lib/tasks/db.rake"
-
 # Offense count: 34
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.

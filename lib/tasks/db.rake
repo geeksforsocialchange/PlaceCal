@@ -259,7 +259,7 @@ namespace :db do
   def backup_directory(suffix = nil, create: false)
     backup_dir = File.join(*[Rails.root, 'db/backups', suffix].compact)
 
-    if create and !Dir.exist?(backup_dir)
+    if create && !Dir.exist?(backup_dir)
       puts "Creating #{backup_dir} .."
       FileUtils.mkdir_p(backup_dir)
     end
