@@ -13,6 +13,8 @@ def process_argv(option)
     puts "Run the tests."
     puts "  -u, --unit    Run unit tests"
     puts "  -s, --system  Run system tests"
+    puts "  --no-lint     Disable linters and formatters"
+    puts "  --no-fix      Lint and format without autocorrection"
     exit
   when "-u"
   when "--unit"
@@ -20,6 +22,10 @@ def process_argv(option)
   when "-s"
   when "--system"
     @options[:system_only] = true
+  when "--no-lint"
+    @options[:without_lint] = true
+  when "--no-fix"
+    @options[:without_fix] = true
   end
 end
 
@@ -50,7 +56,15 @@ FileUtils.chdir APP_ROOT do
     system! 'bin/rails test:all'
   end
 
-  puts "\n== Running formatters and linters (in autocorrect mode) =="
-  system! 'bin/yarn run format'
-  system! 'bin/bundle exec rubocop --autocorrect'
+  unless @options[:without_lint]
+    if @options[:without_fix]
+      puts "\n== Running formatters and linters =="
+      system! 'bin/yarn run format:check'
+      system! 'bin/bundle exec rubocop'
+    else
+      puts "\n== Running formatters and linters (in autocorrect mode) =="
+      system! 'bin/yarn run format'
+      system! 'bin/bundle exec rubocop --autocorrect'
+    end
+  end
 end

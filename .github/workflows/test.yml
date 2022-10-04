@@ -63,12 +63,17 @@ jobs:
           yarn install --immutable
         env:
           NODE_ENV: test
-      - name: Do Tests
+      - name: Run unit tests
         run: |
-          yarn build
-          bundle exec rails test
-          bundle exec rails test:system
-
+          bin/test --unit --no-fix
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          PGPASSWORD: foobar
+      - name: Run system tests
+        run: |
+          bin/test --system --no-lint
         env:
           POSTGRES_USER: postgres
           POSTGRES_HOST: localhost
