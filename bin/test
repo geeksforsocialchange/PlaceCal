@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+
+# path to your application root.
+APP_ROOT = File.expand_path('..', __dir__)
+
+@options = {}
+
+def process_argv(option)
+  case option
+  when "-h"
+  when "--help"
+    puts "Run the tests."
+    puts "  -u, --unit    Run unit tests"
+    puts "  -s, --system  Run system tests"
+    exit
+  when "-u"
+  when "--unit"
+    @options[:unit_only] = true
+  when "-s"
+  when "--system"
+    @options[:system_only] = true
+  end
+end
+
+ARGV.each { |option| process_argv(option) }
+
+def system!(*args)
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+FileUtils.chdir APP_ROOT do
+  # This script is a way to run the tests and linters.
+  # Add necessary test steps to this file.
+
+  puts "\n== Preparing database =="
+  system! 'bin/rails db:test:prepare'
+
+  puts "\n== Building assets =="
+  system! 'bin/yarn run build'
+
+  if @options[:unit_only]
+    puts "\n== Running unit tests =="
+    system! 'bin/rails test'
+  elsif @options[:system_only]
+    puts "\n== Running system tests =="
+    system! 'bin/rails test:system'
+  else
+    puts "\n== Running all tests =="
+    system! 'bin/rails test:all'
+  end
+
+  puts "\n== Running formatters and linters (in autocorrect mode) =="
+  system! 'bin/yarn run format'
+  system! 'bin/bundle exec rubocop --autocorrect'
+end

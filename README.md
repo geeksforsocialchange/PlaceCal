@@ -89,23 +89,21 @@ Amongst other things, this will create an admin user for you:
 
 ## Testing
 
-PlaceCal tests are written in minitest. Before running the tests please ensure your dev environment has all of the migrations run, and ensure you have loaded the schema into the test database by running:
+PlaceCal tests are written in minitest.
+
+Before running the tests please make sure your development environment is up to date (you can run `bin/update` to quickly do that).
+
+You can run the tests with:
 
 ```sh
-bin/rails db:test:prepare
+bin/test          # To run all tests
+bin/test --unit   # To only run unit tests
+bin/test --system # To only run system tests
 ```
 
-The following commands are used for running tests:
+Note that the system tests can take a while to run and are quite resource-intensive. To perform more advanced usage like executing only a specific test or test file, see the [Rails documentation on testing](https://guides.rubyonrails.org/testing.html).
 
-```sh
-bin/rails test        # To run all of the unit tests
-bin/rails test:system # To run all of the system tests (Invokes a headless browser)
-bin/rails test:all    # To run both the unit tests and the system tests at once
-```
-
-Please note that when running unit tests, system tests are **not** run, this is because they can take a while to run and are quite resource intensive. To perform more advanced usage like executing only a specific test or test file, see the documentation [here](https://guides.rubyonrails.org/testing.html)
-
-When pushing to a branch on github all tests are run (unit and system). This is configured [here](.github/workflows/test.yml). You are not allowed to merge a branch (onto main or production) without a passing test suite.
+Note also that the test suite will also run all formatters and linters for you in autocorrect mode.
 
 ## Formatting
 
@@ -117,7 +115,19 @@ If you do want to run it manually, you can:
 bin/yarn run format
 ```
 
+It's also run for you by the test runner.
+
 Note that we use tabs over spaces because [tabs are more accessible to people using braille displays](https://twitter.com/Rich_Harris/status/1541761871585464323).
+
+## Linting
+
+We use Rubocop to lint our Ruby code. Because of the time it can take to run, this is a manual step:
+
+```sh
+bin/bundle exec rubocop --autocorrect
+```
+
+It's also run for you by the test runner.
 
 ## Contributing
 
