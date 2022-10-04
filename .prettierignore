@@ -1,3 +1,4 @@
 /app/assets/builds/
 /tmp/
 /vendor/bundle/
+/.rubocop_todo.yml
