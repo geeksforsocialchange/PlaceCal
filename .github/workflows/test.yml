@@ -1,6 +1,7 @@
 name: Build, Test and Optionally Deploy
-
-on: [push, pull_request, workflow_dispatch]
+on:
+  - push
+  - workflow_dispatch
 
 # According to: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
 # Both Node and Yarn should be installed already
