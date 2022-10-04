@@ -64,7 +64,7 @@ class PartnerPolicy < ApplicationPolicy
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
 
-        clause = <<-SQL
+        clause = <<-SQL.squish
           partners_users.user_id = ?
             OR addresses.neighbourhood_id IN (?)
             OR service_areas.neighbourhood_id IN (?)

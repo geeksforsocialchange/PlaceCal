@@ -653,12 +653,6 @@ Rails/SkipsModelValidations:
   Exclude:
     - "lib/tasks/fixes/users.rake"
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/SquishedSQLHeredocs:
-  Exclude:
-    - "app/policies/partner_policy.rb"
-
 # Offense count: 22
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
