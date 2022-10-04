@@ -28,13 +28,6 @@ GraphQL/FieldName:
   Exclude:
     - "app/graphql/types/event_type.rb"
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: RequireParenthesesForMethodChains.
-Lint/AmbiguousRange:
-  Exclude:
-    - "app/uploaders/default_uploader.rb"
-
 # Offense count: 3
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: enums

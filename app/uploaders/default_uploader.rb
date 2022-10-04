@@ -11,6 +11,6 @@ class DefaultUploader < CarrierWave::Uploader::Base
 
   # remember to change this in nginx.conf.d/increase_upload_size.conf
   def size_range
-    1.byte..10.megabytes
+    (1.byte)..(10.megabytes)
   end
 end
