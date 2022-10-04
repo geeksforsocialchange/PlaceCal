@@ -159,7 +159,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       refute_field result, 'errors'
 
       data = result['data']
-      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      assert data.key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
       assert_equal(10, events.length, 'was expecting only events in the future')
@@ -186,7 +186,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       refute_field result, 'errors'
 
       data = result['data']
-      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      assert data.key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
       assert_equal(15, events.length, 'was expecting to see all events')
@@ -213,7 +213,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       refute_field result, 'errors'
 
       data = result['data']
-      assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+      assert data.key?('eventsByFilter'), 'Data structure does not contain event key'
 
       events = data['eventsByFilter']
       assert_equal(5, events.length, 'was expecting to see only some future events')
@@ -258,7 +258,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     refute_field result, 'errors'
 
     data = result['data']
-    assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+    assert data.key?('eventsByFilter'), 'Data structure does not contain event key'
 
     events = data['eventsByFilter']
     assert_equal(5, events.length, 'was expecting to see only events from other_partner')
@@ -307,7 +307,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     refute_field result, 'errors'
 
     data = result['data']
-    assert data.has_key?('eventsByFilter'), 'Data structure does not contain event key'
+    assert data.key?('eventsByFilter'), 'Data structure does not contain event key'
 
     events = data['eventsByFilter']
     assert_equal(5, events.length, 'was expecting to see only events within neighbourhood_good service area')

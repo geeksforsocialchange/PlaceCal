@@ -29,7 +29,7 @@ class TagTest < ActiveSupport::TestCase
 
     assert_not @tag.validate
 
-    assert @tag.errors.has_key?(:name)
-    assert @tag.errors.has_key?(:slug)
+    assert @tag.errors.key?(:name)
+    assert @tag.errors.key?(:slug)
   end
 end

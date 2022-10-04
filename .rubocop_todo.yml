@@ -821,17 +821,6 @@ Style/OptionalBooleanParameter:
     - "app/helpers/application_helper.rb"
     - "app/jobs/calendar_importer_job.rb"
 
-# Offense count: 11
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: short, verbose
-Style/PreferredHashMethods:
-  Exclude:
-    - "test/integration/graphql/event_integration_test.rb"
-    - "test/integration/graphql/ping_integration_test.rb"
-    - "test/integration/graphql/site_integration_test.rb"
-    - "test/models/tag_test.rb"
-
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: SafeForConstants.
