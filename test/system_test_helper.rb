@@ -1,6 +1,6 @@
 require 'test_helper'
 
-Capybara.app_host = 'http://lvh.me'
+Capybara.app_host = 'https://lvh.me'
 
 VCR.configure do |c|
   c.ignore_localhost = true
