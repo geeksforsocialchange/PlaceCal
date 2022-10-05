@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# require 'simplecov'
+require 'simplecov'
 require 'vcr'
-# SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
 require 'webmock/minitest'
 # require 'minitest-rails'

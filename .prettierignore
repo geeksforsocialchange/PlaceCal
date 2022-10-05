@@ -1,3 +1,4 @@
 /app/assets/builds/
+/coverage/
 /tmp/
 /vendor/bundle/
