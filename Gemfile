@@ -74,9 +74,6 @@ gem 'delayed_job_active_record'
 gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 
-# Seeds and data
-gem 'seed_migration'
-
 # Utilities
 gem 'active_link_to'
 gem 'bootsnap', require: false

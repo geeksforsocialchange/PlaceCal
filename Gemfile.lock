@@ -452,7 +452,6 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    seed_migration (1.2.3)
     select2-rails (4.0.13)
     selenium-webdriver (4.2.1)
       childprocess (>= 0.5, < 5.0)
@@ -596,7 +595,6 @@ DEPENDENCIES
   rollbar
   rubocop-rails
   sass-rails (~> 6.0)
-  seed_migration
   select2-rails
   selenium-webdriver
   sendgrid-actionmailer

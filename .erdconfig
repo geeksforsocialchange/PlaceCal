@@ -14,7 +14,7 @@ polymorphism: false
 sort: true
 warn: true
 title: PlaceCal Database Model
-exclude: ActiveRecord::InternalMetadata, ActiveRecord::SchemaMigration, SeedMigration::DataMigration, Delayed::Backend::ActiveRecord::Job
+exclude: ActiveRecord::InternalMetadata, ActiveRecord::SchemaMigration, Delayed::Backend::ActiveRecord::Job
 only: null
 only_recursion_depth: null
 prepend_primary: false
