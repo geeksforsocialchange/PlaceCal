@@ -6,7 +6,8 @@
 Rails.application.configure do
   routes.default_url_options = {
     host: ENV.fetch('SITE_DOMAIN', 'lvh.me'),
-    port: 3000
+    port: 3000,
+    protocol: 'http'
   }
 
   # Settings specified here will take precedence over those in config/application.rb.

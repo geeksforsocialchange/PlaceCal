@@ -4,8 +4,12 @@ class CreateAdminUsersTest < ApplicationSystemTestCase
   setup do
     server = Capybara.current_session.server
     app_routes = Rails.application.routes
+
+    # Use configuration from Capybara session so URLs are generated pointing at
+    # the correct test server
     app_routes.default_url_options[:host] = server.host
     app_routes.default_url_options[:port] = server.port
+    app_routes.default_url_options[:protocol] = 'http'
   end
 
   test "visiting the index" do
