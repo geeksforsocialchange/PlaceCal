@@ -13,8 +13,8 @@ class AdminSiteTest < ApplicationSystemTestCase
     @tag_pub = create :tag_public
     @site = create :site
 
-    @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
-    @neighbourhood_two = neighbourhoods[2].to_s.gsub('w', 'W')
+    @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
+    @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
 
     @sites_neighbourhood = create(:sites_neighbourhood,
                                   site: @site,
@@ -80,7 +80,7 @@ class AdminSiteTest < ApplicationSystemTestCase
     click_link @site.name
     await_select2
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
-    msg = '@site should only have a primary neighbourhood, if this fails either this is now rendering where it should\'t or another neighborhood has been added at setup and the test should be adjusted' 
-    assert service_areas.length.zero?, msg
+    msg = '@site should only have a primary neighbourhood, if this fails either this is now rendering where it should\'t or another neighborhood has been added at setup and the test should be adjusted'
+    assert_predicate service_areas.length, :zero?, msg
   end
 end

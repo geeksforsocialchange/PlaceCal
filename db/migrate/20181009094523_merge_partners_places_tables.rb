@@ -1,9 +1,9 @@
-class MergePartnersPlacesTables < ActiveRecord::Migration[5.1]
+# frozen_string_literal: true
 
+class MergePartnersPlacesTables < ActiveRecord::Migration[5.1]
   # NOTE: No data deletion happens in this migration. The only destructive edits
   # are dropping of indexes in order to make other changes possible.
   def up
-
     # 1) add relevant places columns to partners and rename other where appropriate
     change_table :partners do |t|
       t.jsonb :opening_times
@@ -59,17 +59,15 @@ class MergePartnersPlacesTables < ActiveRecord::Migration[5.1]
     add_foreign_key :events, :partners, column: :place_id
   end
 
-
   def down
-
-    #4)
-    execute("UPDATE events SET place_id = null;")
+    # 4)
+    execute('UPDATE events SET place_id = null;')
 
     remove_foreign_key :events, column: :place_id
     add_foreign_key :events, :places
 
-    #3)
-    execute("UPDATE calendars SET place_id = null;")
+    # 3)
+    execute('UPDATE calendars SET place_id = null;')
 
     remove_foreign_key :calendars, column: :place_id
     add_foreign_key :calendars, :places

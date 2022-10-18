@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddIdToPartnersTagsAndPlacesTags < ActiveRecord::Migration[6.1]
   def change
     rename_table :partners_tags, :partner_tags

@@ -40,12 +40,12 @@ class User < ApplicationRecord
 
   # General use throughout the site
   def full_name
-    [first_name, last_name].reject(&:blank?).join(' ')
+    [first_name, last_name].compact_blank.join(' ')
   end
 
   # Shows in admin interfaces
   def admin_name
-    name = [last_name&.upcase, first_name].reject(&:blank?).join(', ')
+    name = [last_name&.upcase, first_name].compact_blank.join(', ')
 
     "#{name} <#{email}>".strip
   end

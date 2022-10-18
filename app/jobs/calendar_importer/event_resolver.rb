@@ -57,7 +57,7 @@ class CalendarImporter::EventResolver
       'online_only' => :online_only_strategy
     }
 
-    if strategies.keys.include?(calendar.strategy)
+    if strategies.key?(calendar.strategy)
       strategy = strategies[calendar.strategy]
       place, address = method(strategy).call(calendar.place)
     else
@@ -97,13 +97,13 @@ class CalendarImporter::EventResolver
       #       if the address failed to save
       # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
 
-    else # no location
-      raise Problem, WARNING2_MSG if place.present?
-      # No longer an error if place is not present -- see #1198
-      # Passthrough here
-    end
+    elsif place.present?
+      raise Problem, WARNING2_MSG
+    end # no location
+    # No longer an error if place is not present -- see #1198
+    # Passthrough here
 
-    return place, address
+    [place, address]
   end
 
   def event_override_strategy(place, address: nil)
@@ -120,19 +120,17 @@ class CalendarImporter::EventResolver
       # NOTE: place is possibly unset here - fuzzy_find_by_location can be nil
       # NOTE: address is possibly unset here - place might be nil or Address.search can return nil
       #       In either case we will just drop this event on the floor
-    else # no location
-      if place.present?
-        # place = 'calendar.place'
-        # address = 'calendar.place.address'
-        # place = calendar.place
-        address = place.address
+    elsif place.present? # no location
+      address = place.address
+    # place = 'calendar.place'
+    # address = 'calendar.place.address'
+    # place = calendar.place
 
-      else # no place, no location
-        raise Problem, WARNING1_MSG
-      end
+    else # no place, no location
+      raise Problem, WARNING1_MSG
     end
 
-    return place, address
+    [place, address]
   end
 
   def place_strategy(_place, _address: nil)
@@ -148,7 +146,7 @@ class CalendarImporter::EventResolver
 
     raise Problem, message if calendar.place.nil?
 
-    return calendar.place, calendar.place.address
+    [calendar.place, calendar.place.address]
 
     # NOTE: calendar.place can be nil, in which case this event will be dropped on the floor
     #       (Likely what is happening with Velociposse?)
@@ -169,27 +167,25 @@ class CalendarImporter::EventResolver
         raise Problem, 'N/A'
       end
 
-    else # no location
-      if place.present?
-        # place = 'calendar.place'
-        # address = 'calendar.place.address'
-        # xx place = calendar.place.address
-        address = place.address
+    elsif place.present? # no location
+      address = place.address
+    # place = 'calendar.place'
+    # address = 'calendar.place.address'
+    # xx place = calendar.place.address
 
-      else # no place, no location
-        raise Problem, 'N/A'
-      end
+    else # no place, no location
+      raise Problem, 'N/A'
     end
 
-    return place, address
+    [place, address]
   end
 
   def no_location_strategy(_place, _address: nil)
-    return nil, nil
+    [nil, nil]
   end
 
   def online_only_strategy(_place, _address: nil)
-    return nil, nil
+    [nil, nil]
   end
 
   def save_all_occurences
@@ -238,8 +234,8 @@ class CalendarImporter::EventResolver
     regexp = Regexp.new(regex_string, Regexp::IGNORECASE)
 
     @event_location_components = (data.location || '')
-      .split(', ')
-      .map { |component| component.gsub(regexp, '').strip }
-      .reject(&:blank?)
+                                 .split(', ')
+                                 .map { |component| component.gsub(regexp, '').strip }
+                                 .compact_blank
   end
 end

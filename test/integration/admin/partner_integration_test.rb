@@ -123,7 +123,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
         street_address: @partner.address.street_address,
         postcode: @partner.address.postcode
       },
-      image: fixture_file_upload("bad-cat-picture.bmp")
+      image: fixture_file_upload('bad-cat-picture.bmp')
     }
 
     sign_in @admin
@@ -131,9 +131,11 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_not response.redirect?
 
-    assert_select "h6", text: "1 error prohibited this Partner from being saved"
-    assert_select '#form-errors li', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
-    assert_select 'form .partner_image .invalid-feedback', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
+    assert_select 'h6', text: '1 error prohibited this Partner from being saved'
+    assert_select '#form-errors li',
+                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
+    assert_select 'form .partner_image .invalid-feedback',
+                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
   end
 
   test 'Partner update form gives feedback on bad image selection' do
@@ -143,7 +145,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
         street_address: @partner.address.street_address,
         postcode: @partner.address.postcode
       },
-      image: fixture_file_upload("bad-cat-picture.bmp")
+      image: fixture_file_upload('bad-cat-picture.bmp')
     }
 
     sign_in @admin
@@ -151,53 +153,52 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_not response.redirect?
 
-    assert_select "h6", text: "1 error prohibited this Partner from being saved"
-    assert_select '#form-errors li', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
-    assert_select 'form .partner_image .invalid-feedback', text: "Image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, gif, png"
+    assert_select 'h6', text: '1 error prohibited this Partner from being saved'
+    assert_select '#form-errors li',
+                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
+    assert_select 'form .partner_image .invalid-feedback',
+                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
   end
-
 end
 
 # Capybara feature test that doesn't work and i have no time to fix
-=begin
-class PartnerAddressUpdatesTest < ActionDispatch::IntegrationTest # Capybara::Rails::TestCase
-
-  include Devise::Test::IntegrationHelpers
-  include Capybara::DSL
-  include Capybara::Minitest::Assertions
-
-  setup do
-    @admin = create(:root)
-    @site = FactoryBot.create(:site, slug: 'default-site')
-    @partner = create(:partner)
-    # @admin = create(:root)
-    host! 'admin.lvh.me'
-  end
-
-  test 'can change postcode of partner' do
-    sign_in @admin
-
-    visit '/'
-
-    click_link 'Partners'
-    click_link @partner.title
-
-    fill_in 'Postcode', with: 'OL6 8BH'
-
-
-    #update_args = @partner_two.as_json
-    #update_args['partner']['address']['postcode'] =
-    #patch admin_partner_url(@partner_two), params: update_args
-    click_button 'Update'
-    assert_redirected_to admin_partners_url
-
-    click @partner.title
-
-    puts 'is this runing?'
-    assert_have_selector 'input[name="partner_postcode"]'
-
-    #@partner_two.reload
-    #assert @partner_two.address.postcode == 'OL6 8BH'
-  end
-end
-=end
+# class PartnerAddressUpdatesTest < ActionDispatch::IntegrationTest # Capybara::Rails::TestCase
+#
+#   include Devise::Test::IntegrationHelpers
+#   include Capybara::DSL
+#   include Capybara::Minitest::Assertions
+#
+#   setup do
+#     @admin = create(:root)
+#     @site = FactoryBot.create(:site, slug: 'default-site')
+#     @partner = create(:partner)
+#     # @admin = create(:root)
+#     host! 'admin.lvh.me'
+#   end
+#
+#   test 'can change postcode of partner' do
+#     sign_in @admin
+#
+#     visit '/'
+#
+#     click_link 'Partners'
+#     click_link @partner.title
+#
+#     fill_in 'Postcode', with: 'OL6 8BH'
+#
+#
+#     #update_args = @partner_two.as_json
+#     #update_args['partner']['address']['postcode'] =
+#     #patch admin_partner_url(@partner_two), params: update_args
+#     click_button 'Update'
+#     assert_redirected_to admin_partners_url
+#
+#     click @partner.title
+#
+#     puts 'is this runing?'
+#     assert_have_selector 'input[name="partner_postcode"]'
+#
+#     #@partner_two.reload
+#     #assert @partner_two.address.postcode == 'OL6 8BH'
+#   end
+# end

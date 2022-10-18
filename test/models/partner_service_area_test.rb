@@ -15,13 +15,13 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.address = create(:address, neighbourhood: @neighbourhood)
     @partner.save!
 
-    assert @partner.valid?, 'Partner (without service_area) is not valid'
+    assert_predicate @partner, :valid?, 'Partner (without service_area) is not valid'
   end
 
   test 'is valid when set, can be accessed' do
     model = build(:ashton_service_area_partner)
     model.save!
-    assert model.valid?
+    assert_predicate model, :valid?
 
     service_areas = model.service_areas
     assert_equal 1, service_areas.count
@@ -32,7 +32,7 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.service_area_neighbourhoods << @neighbourhood
     @partner.save!
 
-    assert @partner.valid?, 'Partner (with service_area) is not valid'
+    assert_predicate @partner, :valid?, 'Partner (with service_area) is not valid'
 
     neighbourhood_count = @partner.service_area_neighbourhoods.count
     assert_equal 1, neighbourhood_count, 'count neighbourhoods'
@@ -42,7 +42,7 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.address = create(:address, neighbourhood: @neighbourhood)
     @partner.save!
 
-    assert_raises ActiveRecord::RecordInvalid do 
+    assert_raises ActiveRecord::RecordInvalid do
       @partner.service_areas.create!(neighbourhood: @neighbourhood)
       @partner.service_areas.create!(neighbourhood: @neighbourhood)
     end
@@ -58,7 +58,7 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.service_areas.create! neighbourhood: other_neighbourhood
 
     neighbourhoods = @partner.service_area_neighbourhoods.order('neighbourhoods.name').all
-    assert neighbourhoods.count == 2, 'Failed to count neighbourhoods'
+    assert_equal(2, neighbourhoods.count, 'Failed to count neighbourhoods')
 
     n1 = neighbourhoods[0]
     assert_equal 'Ashton Hurst', n1.name
@@ -71,7 +71,7 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.service_areas.build neighbourhood: create(:moss_side_neighbourhood)
     @partner.validate
 
-    assert @partner.valid? == false, 'Partner should not be valid'
+    assert_not_predicate(@partner, :valid?, 'Partner should not be valid')
   end
 
   test 'can be set by root users' do
@@ -82,7 +82,7 @@ class PartnerServiceAreaTest < ActiveSupport::TestCase
     @partner.service_area_neighbourhoods << other_neighbourhood
     @partner.save!
 
-    assert @partner.valid?, 'Partner (with service_area) should be valid'
+    assert_predicate @partner, :valid?, 'Partner (with service_area) should be valid'
 
     neighbourhood_count = @partner.service_area_neighbourhoods.count
     assert_equal 1, neighbourhood_count, 'count neighbourhoods'

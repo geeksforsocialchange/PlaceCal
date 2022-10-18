@@ -7,17 +7,13 @@ class EventComponent < MountainView::Presenter
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::DateHelper
 
-  def id
-    event.id
-  end
+  delegate :id, to: :event
 
-  def place
-    event.place
-  end
+  delegate :place, to: :event
 
   def time
     if event.dtend
-      fmt_time(event.dtstart) + ' – ' + fmt_time(event.dtend)
+      "#{fmt_time(event.dtstart)} – #{fmt_time(event.dtend)}"
     else
       fmt_time(event.dtstart)
     end
@@ -54,13 +50,9 @@ class EventComponent < MountainView::Presenter
     end
   end
 
-  def summary
-    event.summary
-  end
+  delegate :summary, to: :event
 
-  def description
-    event.description
-  end
+  delegate :description, to: :event
 
   def page?
     context == :page

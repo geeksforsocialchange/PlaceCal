@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
 # your test database is "scratch space" for the test suite and is wiped
@@ -6,7 +8,8 @@
 Rails.application.configure do
   routes.default_url_options = {
     host: ENV.fetch('SITE_DOMAIN', 'lvh.me'),
-    port: 3000
+    port: 3000,
+    protocol: 'http'
   }
 
   # Settings specified here will take precedence over those in config/application.rb.
@@ -44,6 +47,7 @@ Rails.application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = routes.default_url_options
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr

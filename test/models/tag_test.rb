@@ -12,14 +12,14 @@ class TagTest < ActiveSupport::TestCase
   test 'updates user roles when saved' do
     @tag.users << @user
     @tag.save
-    assert @user.tag_admin?
+    assert_predicate @user, :tag_admin?
   end
 
   test 'updates partners tags when saved' do
     @tag.partners << @partner
     @tag.save
 
-    assert @tag.partners.length > 0
+    assert_predicate @tag.partners.length, :positive?
   end
 
   test 'system_tags cannot modify name or slug' do
@@ -27,9 +27,9 @@ class TagTest < ActiveSupport::TestCase
     @tag.name = 'This is a new name'
     @tag.slug = 'a-new-tag-slug'
 
-    refute @tag.validate
+    assert_not @tag.validate
 
-    assert @tag.errors.has_key?(:name)
-    assert @tag.errors.has_key?(:slug)
+    assert @tag.errors.key?(:name)
+    assert @tag.errors.key?(:slug)
   end
 end

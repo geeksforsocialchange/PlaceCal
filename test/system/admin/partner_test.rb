@@ -12,8 +12,8 @@ class AdminPartnerTest < ApplicationSystemTestCase
     @partner = create :ashton_partner
     @tag = create :tag
     @tag_pub = create :tag_public
-    @neighbourhood_one = neighbourhoods[1].to_s.gsub('w', 'W')
-    @neighbourhood_two = neighbourhoods[2].to_s.gsub('w', 'W')
+    @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
+    @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
 
     # logging in as root user
     visit '/users/sign_in'
@@ -83,12 +83,12 @@ class AdminPartnerTest < ApplicationSystemTestCase
       # check it's in the list
       assert all(:css, '.list-group-item')[-1].text.starts_with?('Sunday all day')
       # check it's added to the text area
-      assert data.include?(new_time)
+      assert_includes data, new_time
       # remove the event
       all(:css, '.list-group-item')[-1].click_button('Remove')
       data = find('[data-opening-times-target="textarea"]', visible: :hidden).value
       # check time is removed from the text area
-      assert !data.include?(new_time)
+      assert_not_includes data, new_time
     end
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This rake task creates the database migration needed to add ward info
 # Data: https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2018-lookup-in-united-kingdom-
 

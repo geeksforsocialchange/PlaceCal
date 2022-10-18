@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUnitColumnsToTables < ActiveRecord::Migration[6.0]
   def change
     change_table(:neighbourhoods, bulk: true) do |n|

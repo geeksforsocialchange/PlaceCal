@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddImporterModeToCalendar < ActiveRecord::Migration[6.1]
   def change
     add_column :calendars, :importer_mode, :string, default: 'auto'

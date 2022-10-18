@@ -47,39 +47,39 @@ FactoryBot.define do
       end
     end
 
-    opening_times {
+    opening_times do
       '[ { "@type": "OpeningHoursSpecification",'\
-      '    "closes": "20:00:00",'\
-      '    "dayOfWeek": "http://schema.org/Monday",'\
-      '    "opens": "09:00:00"'\
-      '  },'\
-      '  { "@type": "OpeningHoursSpecification",'\
-      '    "closes": "17:00:00",'\
-      '    "dayOfWeek": "http://schema.org/Tuesday",'\
-      '    "opens": "09:00:00"'\
-      '  },'\
-      '  { "@type": "OpeningHoursSpecification",'\
-      '    "closes": "17:00:00",'\
-      '    "dayOfWeek": "http://schema.org/Wednesday",'\
-      '    "opens": "09:00:00"'\
-      '  },'\
-      '  { "@type": "OpeningHoursSpecification",'\
-      '    "closes": "17:00:00",'\
-      '    "dayOfWeek": "http://schema.org/Thursday",'\
-      '    "opens": "09:00:00"'\
-      '  },'\
-      '  { "@type": "OpeningHoursSpecification",'\
-      '    "closes": "17:00:00",'\
-      '    "dayOfWeek": "http://schema.org/Friday",'\
-      '    "opens": "09:00:00"'\
-      '  },'\
-      '  { "@type": "OpeningHoursSpecification",'\
-      '    "closes": "13:00:00",'\
-      '    "dayOfWeek": "http://schema.org/Saturday",'\
-      '    "opens": "09:00:00"'\
-      '  }'\
-      ']'
-    }
+        '    "closes": "20:00:00",'\
+        '    "dayOfWeek": "http://schema.org/Monday",'\
+        '    "opens": "09:00:00"'\
+        '  },'\
+        '  { "@type": "OpeningHoursSpecification",'\
+        '    "closes": "17:00:00",'\
+        '    "dayOfWeek": "http://schema.org/Tuesday",'\
+        '    "opens": "09:00:00"'\
+        '  },'\
+        '  { "@type": "OpeningHoursSpecification",'\
+        '    "closes": "17:00:00",'\
+        '    "dayOfWeek": "http://schema.org/Wednesday",'\
+        '    "opens": "09:00:00"'\
+        '  },'\
+        '  { "@type": "OpeningHoursSpecification",'\
+        '    "closes": "17:00:00",'\
+        '    "dayOfWeek": "http://schema.org/Thursday",'\
+        '    "opens": "09:00:00"'\
+        '  },'\
+        '  { "@type": "OpeningHoursSpecification",'\
+        '    "closes": "17:00:00",'\
+        '    "dayOfWeek": "http://schema.org/Friday",'\
+        '    "opens": "09:00:00"'\
+        '  },'\
+        '  { "@type": "OpeningHoursSpecification",'\
+        '    "closes": "13:00:00",'\
+        '    "dayOfWeek": "http://schema.org/Saturday",'\
+        '    "opens": "09:00:00"'\
+        '  }'\
+        ']'
+    end
 
     factory :place do
       sequence(:name) do |n|
@@ -90,5 +90,4 @@ FactoryBot.define do
       public_email { 'contact@venue.org' }
     end
   end
-
 end

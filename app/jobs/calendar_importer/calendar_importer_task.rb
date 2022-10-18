@@ -30,7 +30,6 @@ class CalendarImporter::CalendarImporterTask
     calendar.flag_complete_import_job! notices, calendar_source.checksum, parser::KEY
   end
 
-
   private
 
   def notices
@@ -73,7 +72,6 @@ class CalendarImporter::CalendarImporterTask
     active_event_uids << parsed_event.uid
 
     parsed_event.save_all_occurences
-
   rescue CalendarImporter::EventResolver::Problem => e
     notices << e.message
   end

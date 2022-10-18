@@ -1,36 +1,36 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
-=begin
-
-- If event location is set and calendar strategy is 'event' or 'override', that location should be used instead of the partner's place
-- if event strategy is place, then it continues to work correctly
-- if event strategy is override and location is not set, it continues to work correctly
-
-1.
-  event strategy
-  overide strategy
-  event source location is present
-  address = source.location
-
-2.
-  place strategy
-  address = source.location
-
-3.
-  override strategy
-  address = partner.location
-
-note:
-
-event locations can either
-  be addresses like '123 Street, place, city, postcode'
-  or places like 'The Science Museum'
-  or hybrids like 'Goldsmiths university, 123 street, place, etc'
-  or rooms like 'Room 250, Goldsmiths university, 123 street, place, etc'
-  (or URLs like 'https://zoom.com/igfjgjybviutkhy')
-  or missing
-
-=end
+#
+# - If event location is set and calendar strategy is 'event' or 'override', that location should be used instead of the partner's place
+# - if event strategy is place, then it continues to work correctly
+# - if event strategy is override and location is not set, it continues to work correctly
+#
+# 1.
+#   event strategy
+#   overide strategy
+#   event source location is present
+#   address = source.location
+#
+# 2.
+#   place strategy
+#   address = source.location
+#
+# 3.
+#   override strategy
+#   address = partner.location
+#
+# note:
+#
+# event locations can either
+#   be addresses like '123 Street, place, city, postcode'
+#   or places like 'The Science Museum'
+#   or hybrids like 'Goldsmiths university, 123 street, place, etc'
+#   or rooms like 'Room 250, Goldsmiths university, 123 street, place, etc'
+#   (or URLs like 'https://zoom.com/igfjgjybviutkhy')
+#   or missing
+#
 
 class EventResolverStrategyTest < ActiveSupport::TestCase
   FakeEvent = Struct.new(
@@ -54,7 +54,8 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     @end_date = Date.new(1990, 1, 2)
 
     @address = create(:address, street_address: '123 alpha', neighbourhood: @neighbourhood, postcode: 'M15 5DD')
-    @other_address = create(:address, street_address: '456 beta', neighbourhood: @other_neighbourhood, postcode: 'OL6 8BH')
+    @other_address = create(:address, street_address: '456 beta', neighbourhood: @other_neighbourhood,
+                                      postcode: 'OL6 8BH')
 
     @address_partner = create(:partner, name: 'Address Partner', address: @address)
     @other_address_partner = create(:partner, name: 'Other Address Partner', address: @other_address)
@@ -158,14 +159,13 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
       place, address = resolver.event_override_strategy(calendar.place)
     end
 
-    #puts "address_partner=#{@address_partner.to_json}"
-    #puts "place=#{place.to_json}"
-    #puts "address=#{address.to_json}"
+    # puts "address_partner=#{@address_partner.to_json}"
+    # puts "place=#{place.to_json}"
+    # puts "address=#{address.to_json}"
 
     # FIXME
     # these come from the calendar
-    #assert_equal place, @address_partner
-    #assert_equal address, @address_partner.address
+    # assert_equal place, @address_partner
+    # assert_equal address, @address_partner.address
   end
 end
-

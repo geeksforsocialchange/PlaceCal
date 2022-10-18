@@ -39,7 +39,7 @@ module CalendarImporter::Events
           address['city'],
           address['region'],
           address['postal_code']
-        ].reject(&:blank?).join(', ')
+        ].compact_blank.join(', ')
       else
         place['name']
       end

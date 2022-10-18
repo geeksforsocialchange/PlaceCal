@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JoinMailer < ApplicationMailer
   def join_us(join)
     @join = join

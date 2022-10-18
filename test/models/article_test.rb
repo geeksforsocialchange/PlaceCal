@@ -10,21 +10,21 @@ class ArticleTest < ActiveSupport::TestCase
   end
 
   test 'article should be valid' do
-    assert @article.valid?
+    assert_predicate @article, :valid?
   end
 
   test 'title should be present' do
     @article.title = ''
-    refute @article.valid?
+    assert_not_predicate @article, :valid?
   end
 
   test 'body should be present' do
     @article.body = ''
-    refute @article.valid?
+    assert_not_predicate @article, :valid?
   end
 
   test 'published_at updates correctly when is_draft is set' do
-    assert @article_draft.published_at.nil?
+    assert_nil @article_draft.published_at
 
     @article_draft.is_draft = false
     assert @article_draft.save!
@@ -40,7 +40,7 @@ class ArticleTest < ActiveSupport::TestCase
     4.times do |n|
       Article.create!(
         title: "Article title no. #{n}",
-        body: "lorem ipsum ...",
+        body: 'lorem ipsum ...',
         author: user
       )
     end
@@ -49,7 +49,7 @@ class ArticleTest < ActiveSupport::TestCase
     2.times do |n|
       article = Article.create!(
         title: "Article title no. #{n}",
-        body: "lorem ipsum ...",
+        body: 'lorem ipsum ...',
         author: user
       )
       article.tags << tag
@@ -69,7 +69,7 @@ class ArticleTest < ActiveSupport::TestCase
     3.times do |n|
       Article.create!(
         title: "Article title no. #{n}",
-        body: "lorem ipsum ...",
+        body: 'lorem ipsum ...',
         author: user
       )
     end
@@ -78,7 +78,7 @@ class ArticleTest < ActiveSupport::TestCase
     5.times do |n|
       article = Article.create!(
         title: "Article title no. #{n}",
-        body: "lorem ipsum ...",
+        body: 'lorem ipsum ...',
         author: user
       )
       article.partners << partner
@@ -203,6 +203,6 @@ class ArticleTest < ActiveSupport::TestCase
     art = create(:article)
     art.body = 'A body of text about something'
     art.save!
-    assert art.body_html.present?
+    assert_predicate art.body_html, :present?
   end
 end

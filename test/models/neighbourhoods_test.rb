@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
@@ -13,35 +15,34 @@ class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
     assert @neighbourhood.district
     assert @neighbourhood.country
 
-    assert @ashton_neighbourhood.district.name == 'Tameside'
-    assert @ashton_neighbourhood.district.unit == 'district'
+    assert_equal('Tameside', @ashton_neighbourhood.district.name)
+    assert_equal('district', @ashton_neighbourhood.district.unit)
 
-    assert @ashton_neighbourhood.county.name == 'Greater Manchester'
-    assert @ashton_neighbourhood.county.unit == 'county'
+    assert_equal('Greater Manchester', @ashton_neighbourhood.county.name)
+    assert_equal('county', @ashton_neighbourhood.county.unit)
 
-    assert @ashton_neighbourhood.region.name == 'North West'
-    assert @ashton_neighbourhood.region.unit == 'region'
+    assert_equal('North West', @ashton_neighbourhood.region.name)
+    assert_equal('region', @ashton_neighbourhood.region.unit)
 
-    assert @ashton_neighbourhood.country.name == 'England'
-    assert @ashton_neighbourhood.country.unit == 'country'
+    assert_equal('England', @ashton_neighbourhood.country.name)
+    assert_equal('country', @ashton_neighbourhood.country.unit)
   end
 
   test 'uses name if name_abbr is missing' do
     # missing altogether
     hood = Neighbourhood.new(name: 'neighbourhood')
-    assert hood.abbreviated_name == 'neighbourhood'
+    assert_equal('neighbourhood', hood.abbreviated_name)
 
     # is empty string
     hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: '')
-    assert hood.abbreviated_name == 'neighbourhood'
+    assert_equal('neighbourhood', hood.abbreviated_name)
 
     # is a blank string
     hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: '   ')
-    assert hood.abbreviated_name == 'neighbourhood'
+    assert_equal('neighbourhood', hood.abbreviated_name)
 
     # is fine with a value
     hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: 'hood')
-    assert hood.abbreviated_name == 'hood'
+    assert_equal('hood', hood.abbreviated_name)
   end
-
 end

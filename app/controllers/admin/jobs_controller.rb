@@ -6,8 +6,8 @@ module Admin
 
     def index
       @job_count = ActiveRecord::Base
-        .connection.execute("select count(*) from delayed_jobs")
-        .first["count"]
+                   .connection.execute('select count(*) from delayed_jobs')
+                   .first['count']
 
       @calendar_counts = Calendar.group(:calendar_state).count
     end

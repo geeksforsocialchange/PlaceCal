@@ -5,9 +5,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   properties :primary_neighbourhood, :previewee, :show_neighbourhoods,
              :badge_zoom_level, :service_areas
 
-  def name
-    previewee.name
-  end
+  delegate :name, to: :previewee
 
   def link
     previewee
@@ -35,7 +33,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   end
 
   def show_service_area?
-    service_areas.count > 0
+    service_areas.count.positive?
   end
 
   def service_area_name

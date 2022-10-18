@@ -1,15 +1,20 @@
-require_relative "./application_system_test_case"
+# frozen_string_literal: true
+
+require_relative './application_system_test_case'
 
 class CreateAdminUsersTest < ApplicationSystemTestCase
   setup do
     server = Capybara.current_session.server
     app_routes = Rails.application.routes
+
+    # Use configuration from Capybara session so URLs are generated pointing at
+    # the correct test server
     app_routes.default_url_options[:host] = server.host
     app_routes.default_url_options[:port] = server.port
+    app_routes.default_url_options[:protocol] = 'http'
   end
 
-  test "visiting the index" do
-
+  test 'visiting the index' do
     # set up
     given_a_root_user_exists
     given_the_default_site_exists
@@ -75,6 +80,6 @@ class CreateAdminUsersTest < ApplicationSystemTestCase
   def extract_invitation_link_from(email)
     body = email.body.parts.first.body.raw_source
 
-    body =~ /^(https?:\/\/.*)$/ && $1
+    body =~ %r{^(https?://.*)$} && Regexp.last_match(1)
   end
 end

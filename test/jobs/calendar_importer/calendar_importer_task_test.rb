@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class CalendarImporterTaskTest < ActiveSupport::TestCase
@@ -21,14 +23,13 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
   end
 
   test 'rejects unknown sources by default' do
-
     VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
       # set up the calendar with faulty data that we know will trip up
       #   the validations. we are testing the importer, not the model
       calendar = create(
         :calendar,
         name: 'Unknown source calendar',
-        source: 'https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics',
+        source: 'https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics'
       )
 
       calendar.update calendar_state: 'in_worker'
@@ -63,5 +64,4 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'ical', calendar.importer_used
     end
   end
-
 end

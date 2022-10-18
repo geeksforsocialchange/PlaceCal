@@ -58,7 +58,6 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
   test 'root users can make a tag a system tag' do
     log_in_with @root.email
 
-
     # toggle on
     visit edit_admin_tag_url(@tag)
     check 'System tag'
@@ -85,7 +84,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
     assert_css ".flashes .alert-#{type}", text: message
   end
 
-  def log_in_with(email, password='password')
+  def log_in_with(email, password = 'password')
     # NOTE: make sure you have a default site set up in DB
     visit 'http://lvh.me/users/sign_in'
     fill_in 'Email', with: email

@@ -63,20 +63,20 @@ class Admin::ArticlesTest < ActionDispatch::IntegrationTest
       title: 'a new article',
       body: 'alpha beta cappa delta epsilon foxtrot etc',
       author_id: @root.id,
-      article_image: fixture_file_upload("bad-cat-picture.bmp")
+      article_image: fixture_file_upload('bad-cat-picture.bmp')
     }
 
     post admin_articles_path, params: { article: new_article_params }
     assert_not response.redirect?
 
-    assert_select "h6", text: "1 error prohibited this Article from being saved"
+    assert_select 'h6', text: '1 error prohibited this Article from being saved'
 
     # top of page form error box
     assert_select '#form-errors li',
-      text: "Article image You are not allowed to upload \"bmp\" files, allowed types: svg, jpg, jpeg, png"
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
 
     assert_select 'form .article_article_image .invalid-feedback',
-      text: "Article image You are not allowed to upload \"bmp\" files, allowed types: svg, jpg, jpeg, png"
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
   end
 
   test 'update article image upload problem feedback' do
@@ -88,20 +88,19 @@ class Admin::ArticlesTest < ActionDispatch::IntegrationTest
       title: article.title,
       body: article.body,
       author_id: article.author_id,
-      article_image: fixture_file_upload("bad-cat-picture.bmp")
+      article_image: fixture_file_upload('bad-cat-picture.bmp')
     }
 
     put admin_article_path(article), params: { article: article_params }
     assert_not response.successful?
 
-    assert_select "h6", text: "1 error prohibited this Article from being saved"
+    assert_select 'h6', text: '1 error prohibited this Article from being saved'
 
     # top of page form error box
     assert_select '#form-errors li',
-      text: "Article image You are not allowed to upload \"bmp\" files, allowed types: svg, jpg, jpeg, png"
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
 
     assert_select 'form .article_article_image .invalid-feedback',
-      text: "Article image You are not allowed to upload \"bmp\" files, allowed types: svg, jpg, jpeg, png"
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
   end
-
 end

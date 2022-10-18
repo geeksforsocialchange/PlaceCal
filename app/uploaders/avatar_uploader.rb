@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AvatarUploader < DefaultUploader
   # Process files as they are uploaded:
   process resize_to_fit: [1200, 1200]

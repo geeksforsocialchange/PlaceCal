@@ -11,13 +11,13 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json {
+        format.json do
           render json: CalendarDatatable.new(
             params,
             view_context: view_context,
             calendars: @calendars
           )
-        }
+        end
       end
     end
 

@@ -45,7 +45,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'has accessibility text' do
-    @partner.accessibility_info = "This is some accessibility informtation"
+    @partner.accessibility_info = 'This is some accessibility informtation'
     @partner.save!
 
     get from_site_slug(@default_site, partner_path(@partner))

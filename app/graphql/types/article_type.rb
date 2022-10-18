@@ -29,8 +29,7 @@ module Types
           method: :body
 
     field :image, String,
-          description: 'The image of the article (a URL)',
-          method: :highres_image
+          description: 'The image of the article (a URL)'
 
     field :date_published, GraphQL::Types::ISO8601DateTime,
           description: 'Date that the article was published on PlaceCal',
@@ -50,5 +49,15 @@ module Types
 
     # creativeWorkStatus: string, from is_draft
     # author: person, from user
+
+    def image
+      return nil if object.article_image_url.blank?
+
+      url = URI::HTTP.build(Rails.application.default_url_options)
+      url.scheme = Rails.application.default_url_options[:protocol]
+      url.path = object.article_image_url
+
+      url.to_s
+    end
   end
 end

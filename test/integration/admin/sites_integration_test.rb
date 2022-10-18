@@ -67,7 +67,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
     neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
-    assert neighbourhoods_shown == @number_of_neighbourhoods
+    assert_equal neighbourhoods_shown, @number_of_neighbourhoods
   end
 
   test 'site admin users see appropriate fields' do
@@ -94,7 +94,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     # See just neighbourhoods they admin
     cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
     neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
-    assert neighbourhoods_shown == 2
+    assert_equal(2, neighbourhoods_shown)
   end
 
   test 'site tags show up' do
@@ -118,24 +118,29 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
       name: 'a new site',
       domain: 'a-domain',
       slug: 'a-slug',
-      logo: fixture_file_upload("bad-cat-picture.bmp"),
-      footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
-      hero_image: fixture_file_upload("bad-cat-picture.bmp"),
+      logo: fixture_file_upload('bad-cat-picture.bmp'),
+      footer_logo: fixture_file_upload('bad-cat-picture.bmp'),
+      hero_image: fixture_file_upload('bad-cat-picture.bmp')
     }
 
     post admin_sites_path, params: { site: new_site_params }
     assert_not response.successful?
 
-    assert_select "h6", text: "3 errors prohibited this Site from being saved"
+    assert_select 'h6', text: '3 errors prohibited this Site from being saved'
 
     # top of page form error box
-    assert_select '#form-errors li', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select '#form-errors li', text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select '#form-errors li',
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select '#form-errors li',
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
 
-    assert_select 'form .site_logo .invalid-feedback', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_footer_logo .invalid-feedback', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_hero_image .invalid-feedback', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select 'form .site_logo .invalid-feedback',
+                  text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select 'form .site_footer_logo .invalid-feedback',
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select 'form .site_hero_image .invalid-feedback',
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
   end
 
   test 'update site image upload problem feedback' do
@@ -145,23 +150,28 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
       name: 'a new site',
       domain: 'a-domain',
       slug: 'a-slug',
-      logo: fixture_file_upload("bad-cat-picture.bmp"),
-      footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
-      hero_image: fixture_file_upload("bad-cat-picture.bmp"),
+      logo: fixture_file_upload('bad-cat-picture.bmp'),
+      footer_logo: fixture_file_upload('bad-cat-picture.bmp'),
+      hero_image: fixture_file_upload('bad-cat-picture.bmp')
     }
 
     put admin_site_path(@site), params: { site: site_params }
     assert_not response.successful?
 
-    assert_select "h6", text: "3 errors prohibited this Site from being saved"
+    assert_select 'h6', text: '3 errors prohibited this Site from being saved'
 
     # top of page form error box
-    assert_select '#form-errors li', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select '#form-errors li', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select '#form-errors li', text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select '#form-errors li',
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select '#form-errors li',
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
 
-    assert_select 'form .site_logo .invalid-feedback', text: "Logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_footer_logo .invalid-feedback', text: "Footer logo You are not allowed to upload \"bmp\" files, allowed types: svg, png"
-    assert_select 'form .site_hero_image .invalid-feedback', text: "Hero image You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+    assert_select 'form .site_logo .invalid-feedback',
+                  text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select 'form .site_footer_logo .invalid-feedback',
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select 'form .site_hero_image .invalid-feedback',
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
   end
 end

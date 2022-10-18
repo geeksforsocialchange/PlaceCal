@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSocialMediaColumnsToPartners < ActiveRecord::Migration[5.1]
   def change
     add_column :partners, :twitter_handle, :string

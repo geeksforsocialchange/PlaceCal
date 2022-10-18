@@ -1,17 +1,20 @@
+# frozen_string_literal: true
+
 class CalendarImporterJob < ApplicationJob
   queue_as :default
 
   rescue_from CalendarImporter::CalendarImporter::UnsupportedFeed do |exception|
-    report_error exception, "Calendar URL is not supported"
+    report_error exception, 'Calendar URL is not supported'
   end
 
   rescue_from CalendarImporter::CalendarImporter::InaccessibleFeed do |exception|
-    report_error exception, "Calendar URL is not accessible"
+    report_error exception, 'Calendar URL is not accessible'
   end
 
   rescue_from ActiveRecord::ActiveRecordError do |exception|
-    raise exception if Rails.env != 'production' && @silence_db_exceptions == false
-    report_error exception, "Internal database error"
+    raise exception if !Rails.env.production? && @silence_db_exceptions == false
+
+    report_error exception, 'Internal database error'
   end
 
   def calendar
@@ -21,8 +24,7 @@ class CalendarImporterJob < ApplicationJob
   # Imports all events from a given calendar
   # @param calendar_id [int] The ID of the Calendar object to import from
   # @param from_date [Date] The Date from which to import from
-  def perform(calendar_id, from_date, force_import, silence_db_exceptions=false)
-
+  def perform(calendar_id, from_date, force_import, silence_db_exceptions = false)
     Calendar.record_timestamps = false
 
     @silence_db_exceptions = silence_db_exceptions
@@ -32,7 +34,7 @@ class CalendarImporterJob < ApplicationJob
 
     print "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
     print " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place
-    print " is forced" if force_import
+    print ' is forced' if force_import
     print "\n"
 
     # calendar.import_events(from)
