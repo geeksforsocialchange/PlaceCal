@@ -20,6 +20,7 @@ class CalendarPolicy < ApplicationPolicy
   def update?
     return true if user.root?
     return true if user.partner_admin? && user.partner_ids.include?(record.partner_id)
+
     # return true if user.neighbourhood_admin? && user.neighbourhoods.include?(record.address.neighbourhood)
     index?
   end
@@ -44,7 +45,7 @@ class CalendarPolicy < ApplicationPolicy
       Calendar.left_outer_joins(partner: :address, place: :address)
               .where(addresses: { neighbourhood_id: user.owned_neighbourhood_ids })
               .or(Calendar.left_outer_joins(partner: :address, place: :address)
-              .where("partner_id IN (:partner_id) OR place_id IN (:partner_id)", partner_id: user.partner_ids))
+              .where('partner_id IN (:partner_id) OR place_id IN (:partner_id)', partner_id: user.partner_ids))
               .distinct
     end
   end

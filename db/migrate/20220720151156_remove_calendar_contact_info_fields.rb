@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveCalendarContactInfoFields < ActiveRecord::Migration[6.1]
   def change
     remove_column :calendars, :partnership_contact_name, :string

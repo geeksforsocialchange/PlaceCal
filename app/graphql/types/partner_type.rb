@@ -65,7 +65,7 @@ module Types
     end
 
     def logo
-      return nil unless object.logo_url.present?
+      return nil if object.logo_url.blank?
 
       url = URI::HTTP.build(Rails.application.default_url_options)
       url.scheme = Rails.application.default_url_options[:protocol]

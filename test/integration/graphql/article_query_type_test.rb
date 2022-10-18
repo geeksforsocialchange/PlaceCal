@@ -17,7 +17,7 @@ class ArticleIndexTest < ActionDispatch::IntegrationTest
         author: @user,
         is_draft: false,
         published_at: DateTime.now,
-        partners: @partners,
+        partners: @partners
       )
     end
 
@@ -55,7 +55,7 @@ class ArticleIndexTest < ActionDispatch::IntegrationTest
     assert data.key?('articleConnection'), 'result is missing key `allArticles`'
 
     edges = data['articleConnection']['edges']
-    assert_equal edges.length, 5
+    assert_equal(5, edges.length)
 
     # Strip the 'node' object container off so we don't have to deal with that
     nodes = edges.map { |edge| edge['node'] }
@@ -63,7 +63,7 @@ class ArticleIndexTest < ActionDispatch::IntegrationTest
     nodes.each do |gql_article|
       assert_field gql_article, 'name', 'Article title is nil?'
 
-      refute_nil article = Article.find_by(title: gql_article['name']), 'Returned article that doesn\'t exist?'
+      assert_not_nil article = Article.find_by(title: gql_article['name']), 'Returned article that doesn\'t exist?'
 
       assert_field_equals gql_article, 'headline', value: article.title
       assert_field_equals gql_article, 'author', value: article.author_name

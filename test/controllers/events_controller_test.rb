@@ -49,11 +49,11 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     get from_site_slug(@site, events_path)
 
     assert_response :success
-    assert_select "ol.events li", 2
+    assert_select 'ol.events li', 2
   end
 
   test 'should get index with invalid subdomain' do
-    get url_for controller: :events, subdomain: "notaknownsubdomain"
+    get url_for controller: :events, subdomain: 'notaknownsubdomain'
     assert_response :redirect
   end
 
@@ -87,6 +87,6 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     events = assigns(:events).values.first
-    assert events.length == 5
+    assert_equal(5, events.length)
   end
 end

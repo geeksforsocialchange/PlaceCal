@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class EventType < Types::BaseObject
     description 'An event represents a date in time that a partner operates their service, meetup, workout or class etc'

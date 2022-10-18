@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CalendarImporter::Events
   class TicketsolveEvent < Base
     def uid

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # In order for a parser to be recognized, it must be added
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
@@ -6,7 +8,7 @@ module CalendarImporter::Parsers
   class Ticketsolve < Xml
     NAME = 'Ticket Solve'
     KEY = 'ticket-solve'
-    DOMAINS = %w[*.ticketsolve.com]
+    DOMAINS = %w[*.ticketsolve.com].freeze
 
     def self.whitelist_pattern
       %r{^https?://([^.]*).ticketsolve.com/?}
@@ -21,6 +23,5 @@ module CalendarImporter::Parsers
 
       @events
     end
-
   end
 end

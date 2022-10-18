@@ -15,21 +15,21 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Profile
-  test "root: can access profile" do
+  test 'root: can access profile' do
     sign_in @root
 
     get admin_profile_path
     assert_response :success
   end
 
-  test "neighbourhood_admin: can access profile" do
+  test 'neighbourhood_admin: can access profile' do
     sign_in @neighbourhood_admin
 
     get admin_profile_path
     assert_response :success
   end
 
-  test "citizen: can access profile" do
+  test 'citizen: can access profile' do
     sign_in @citizen
 
     get admin_profile_path
@@ -37,11 +37,11 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Update Profile
-  test "user can update their profile" do
+  test 'user can update their profile' do
     sign_in @root
 
     patch update_profile_admin_user_path(@root),
-          params: { user: { first_name: 'Bob' }}
+          params: { user: { first_name: 'Bob' } }
 
     assert_redirected_to admin_profile_url
     assert_equal 'Bob', @root.reload.first_name
@@ -53,7 +53,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in @root
 
     patch update_profile_admin_user_path(user),
-          params: { user: { first_name: 'Name' }}
+          params: { user: { first_name: 'Name' } }
 
     assert_redirected_to admin_profile_url
     assert_equal 'Test', user.reload.first_name
@@ -171,7 +171,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal 'Bob', @citizen.first_name
     assert_not_equal 'Smith', @citizen.last_name
     assert_equal [@partner.id], @citizen.partner_ids
-    assert_equal [], @citizen.neighbourhood_ids
+    assert_empty @citizen.neighbourhood_ids
   end
 
   # Delete User

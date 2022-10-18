@@ -2,8 +2,7 @@
 
 # app/models/address.rb
 class Address < ApplicationRecord
-
-  POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i
+  POSTCODE_REGEX = /\s*((GIR\s*0AA)|((([A-PR-UWYZ][0-9]{1,2})|(([A-PR-UWYZ][A-HK-Y][0-9]{1,2})|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))\s*[0-9][ABD-HJLNP-UW-Z]{2}))\s*/i.freeze
 
   validates :street_address, :postcode, :country_code, presence: true
   validates :postcode, format: { with: POSTCODE_REGEX, message: 'is invalid' }
@@ -40,27 +39,24 @@ class Address < ApplicationRecord
 
   # Needed for schema.org outputs as streetAddress
   def full_street_address
-    [ street_address,
-      street_address2,
-      street_address3
-    ].reject(&:blank?).join(', ')
+    [street_address,
+     street_address2,
+     street_address3].compact_blank.join(', ')
   end
 
   def other_address_lines
-    [ street_address2,
-      street_address3,
-      city,
-      postcode
-    ].reject(&:blank?)
+    [street_address2,
+     street_address3,
+     city,
+     postcode].compact_blank
   end
 
   def all_address_lines
-    [ street_address,
-      street_address2,
-      street_address3,
-      city,
-      postcode
-    ].reject(&:blank?)
+    [street_address,
+     street_address2,
+     street_address3,
+     city,
+     postcode].compact_blank
   end
 
   def last_line_of_address
@@ -125,10 +121,10 @@ class Address < ApplicationRecord
       return if components.blank?
 
       address = Address.new(
-        street_address:  components[0]&.strip,
+        street_address: components[0]&.strip,
         street_address2: components[1]&.strip,
         street_address3: components[2]&.strip,
-        postcode:        postcode
+        postcode: postcode
       )
       address if address.save
     end
@@ -139,6 +135,7 @@ class Address < ApplicationRecord
     # before the final three characters.
     def standardised_postcode(pc)
       return unless pc
+
       pc.gsub(/\s+/, '').strip.upcase.insert(-4, ' ')
     end
   end

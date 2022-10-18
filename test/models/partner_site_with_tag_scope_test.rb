@@ -1,10 +1,8 @@
-
 # frozen_string_literal: true
 
 require 'test_helper'
 
 class PartnerSiteWithTagScopeTest < ActiveSupport::TestCase
-
   # this verifies that partner#for_site is behaving
 
   # NOTE: these MUST match up with the geocoder response
@@ -40,13 +38,13 @@ class PartnerSiteWithTagScopeTest < ActiveSupport::TestCase
     Neighbourhood.destroy_all
   end
 
-  test "empty site/tag returns nothing" do
+  test 'empty site/tag returns nothing' do
     tag = nil
     output = Partner.for_site_with_tag(site, tag)
-    assert output.empty?, 'site should be empty'
+    assert_empty output, 'site should be empty'
   end
 
-  test "finds partners with tag" do
+  test 'finds partners with tag' do
     tag = create(:tag)
     other_tag = create(:tag)
 
@@ -72,5 +70,4 @@ class PartnerSiteWithTagScopeTest < ActiveSupport::TestCase
     output = Partner.for_site_with_tag(site, tag)
     assert_equal 4, output.all.length
   end
-
 end

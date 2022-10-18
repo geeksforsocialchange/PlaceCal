@@ -15,7 +15,7 @@ module CalendarImporter::Parsers
       outlook.live.com
       ics.teamup.com
       webcal://
-    ]
+    ].freeze
 
     def self.whitelist_pattern
       whitelists = {
@@ -60,9 +60,8 @@ module CalendarImporter::Parsers
 
     def parse_remote_calendars(data)
       Icalendar::Calendar.parse data
-
     rescue StandardError => e
-      # FIXME this should set an error flag that is checked by the importer and
+      # FIXME: this should set an error flag that is checked by the importer and
       #   logged to the calendar
       []
     end

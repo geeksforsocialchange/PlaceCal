@@ -9,8 +9,6 @@ class DashboardCardComponent < MountainView::Presenter
   property :last_updated, default: false
 
   def description
-    if properties[:description]
-      properties[:description].truncate(200)
-    end
+    properties[:description]&.truncate(200)
   end
 end

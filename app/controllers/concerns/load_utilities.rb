@@ -6,10 +6,10 @@ module LoadUtilities
   included do
     def set_tags
       @tags = if current_user&.role&.root?
-                 Tag.all
-               else
-                 current_user&.tags
-               end
+                Tag.all
+              else
+                current_user&.tags
+              end
     end
   end
 end

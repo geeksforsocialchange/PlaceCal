@@ -12,7 +12,7 @@ class PartnerTest < ActiveSupport::TestCase
   test 'updates user roles when saved' do
     @new_partner.users << @user
     @new_partner.save
-    assert @user.partner_admin?
+    assert_predicate @user, :partner_admin?
   end
 
   test 'can change postcode of partner' do
@@ -21,15 +21,15 @@ class PartnerTest < ActiveSupport::TestCase
     new_postcode = 'OL6 8BH'
     new_params = {
       address_attributes: {
-        'street_address': @new_address.street_address,
-        'postcode': new_postcode
+        street_address: @new_address.street_address,
+        postcode: new_postcode
       }
     }
 
     @new_partner.update! new_params
     @new_partner.reload
 
-    assert @new_partner.address.postcode == new_postcode
+    assert_equal @new_partner.address.postcode, new_postcode
   end
 
   test 'it recycles addresses if it can' do
@@ -38,14 +38,14 @@ class PartnerTest < ActiveSupport::TestCase
     other_partner = build(:partner, address: nil, accessed_by_user: @user)
     other_params = {
       address_attributes: {
-        'street_address': @new_address.street_address,
-        'postcode': @new_address.postcode
+        street_address: @new_address.street_address,
+        postcode: @new_address.postcode
       }
     }
     other_partner.update! other_params
     other_partner.reload
 
-    assert @new_partner.address_id == other_partner.address_id, 'should have same address ID'
+    assert_equal @new_partner.address_id, other_partner.address_id, 'should have same address ID'
   end
 
   test 'validate name length' do
@@ -66,12 +66,12 @@ class PartnerTest < ActiveSupport::TestCase
 
   test 'validate no summary or description' do
     @new_partner.update(name: 'Test Partner', summary: '', description: '')
-    assert @new_partner.errors.empty?
+    assert_empty @new_partner.errors
   end
 
   test 'validate summary without description' do
     @new_partner.update(name: 'Test Partner', summary: 'This is a test partner used for testing :)', description: '')
-    assert @new_partner.errors.empty?, 'Should be able to submit a summary'
+    assert_empty @new_partner.errors, 'Should be able to submit a summary'
   end
 
   test 'validate description without summary' do
@@ -86,17 +86,16 @@ class PartnerTest < ActiveSupport::TestCase
   end
 
   test 'validate description and summary' do
-
     @new_partner.update(name: 'Test Partner',
-                   summary: 'This is a test summary wheee :)',
-                   description: 'This is a test new_partner used for testing :)')
-    assert @new_partner.errors.empty?, 'Should be able to submit a summary and description'
+                        summary: 'This is a test summary wheee :)',
+                        description: 'This is a test new_partner used for testing :)')
+    assert_empty @new_partner.errors, 'Should be able to submit a summary and description'
   end
 
   test 'validate summary length' do
     # We can submit a 200 character summary
     @new_partner.update(name: 'Test Partner', summary: ''.ljust(200, 'a'))
-    assert @new_partner.errors.empty?, '200 character summary should be valid'
+    assert_empty @new_partner.errors, '200 character summary should be valid'
 
     # But not a 201 character summary
     @new_partner.update(name: 'Test Partner', summary: ''.ljust(201, 'a'))
@@ -108,15 +107,15 @@ class PartnerTest < ActiveSupport::TestCase
     @new_partner.update(url: 'htp://bad-domain.co')
     assert_equal ['is invalid'], @new_partner.errors[:url], 'Partner must have a valid url'
     @new_partner.update(url: 'https://good-domain.com')
-    refute @new_partner.errors.key?(:url), 'Valid URL not saved'
+    assert_not @new_partner.errors.key?(:url), 'Valid URL not saved'
   end
 
   test 'validate twitter' do
     # Twitter must be valid
     @new_partner.update(twitter_handle: '@asdf')
-    refute @new_partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
+    assert_not @new_partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
     @new_partner.update(twitter_handle: 'asdf')
-    refute @new_partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
+    assert_not @new_partner.errors.key?(:twitter_handle), 'Valid twitter not saved'
     @new_partner.update(twitter_handle: 'https://twitter.com/asdf')
     assert @new_partner.errors.key?(:twitter_handle), 'Should be account name not full URL'
     @new_partner.update(twitter_handle: 'asd£$%dsa')
@@ -130,14 +129,14 @@ class PartnerTest < ActiveSupport::TestCase
     @new_partner.update(facebook_link: 'Group-Name')
     assert @new_partner.errors.key?(:facebook_link), 'invalid Facebook page name saved'
     @new_partner.update(facebook_link: 'GroupName')
-    refute @new_partner.errors.key?(:facebook_link), 'Valid page name not saved'
+    assert_not @new_partner.errors.key?(:facebook_link), 'Valid page name not saved'
   end
 
   test 'deals with badly formatted opening times' do
     partner = build(:partner)
     partner.opening_times = '{{ $data.openingHoursSpecifications }}'
 
-    assert_equal [], partner.human_readable_opening_times
+    assert_empty partner.human_readable_opening_times
   end
 
   test 'opening_times can be unset' do
@@ -150,7 +149,7 @@ class PartnerTest < ActiveSupport::TestCase
     opening_times_payload = [
       { opens: '', closes: '' },
       { opens: '', closes: '' },
-      { opens: '', closes: '' },
+      { opens: '', closes: '' }
     ].to_json
 
     p = Partner.new(opening_times: opening_times_payload)

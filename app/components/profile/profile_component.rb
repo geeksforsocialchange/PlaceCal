@@ -10,10 +10,9 @@ class ProfileComponent < MountainView::Presenter
   def phone
     # Bloody empty string strikes again
     return false unless user.phone&.length&.positive?
+
     user.phone
   end
 
-  def email
-    user.email
-  end
+  delegate :email, to: :user
 end

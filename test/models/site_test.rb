@@ -7,7 +7,7 @@ class SiteTest < ActiveSupport::TestCase
     @site = create(:site)
   end
 
-  test "gets correct stylesheet link" do
+  test 'gets correct stylesheet link' do
     assert_equal 'themes/pink', @site.stylesheet_link
     @site.theme = :custom
     @site.slug = 'my-town'
@@ -18,7 +18,6 @@ class SiteTest < ActiveSupport::TestCase
 end
 
 class SitePartnerTest < ActiveSupport::TestCase
-
   test 'can find sites by partner' do
     address_neighbourhood = FactoryBot.create(:neighbourhood)
     service_area_neighbourhood = FactoryBot.create(:rusholme_neighbourhood)
@@ -44,7 +43,6 @@ class SitePartnerTest < ActiveSupport::TestCase
 
     found = Site.sites_that_contain_partner(partner).order(:id)
 
-    assert found == [address_site, service_area_site, tag_site]
+    assert_equal found, [address_site, service_area_site, tag_site]
   end
 end
-

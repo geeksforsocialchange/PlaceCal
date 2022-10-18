@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 class StrongParametersFormBuilder < SimpleForm::FormBuilder
   def input(attribute_name, options = {}, &block)
     disabled = self.options[:disabled]
     display_filter = self.options[:display_only]&.collect { |attr| attr.is_a?(Hash) ? attr.keys : attr }&.flatten
 
-    if disabled && disabled.include?(attribute_name)
+    if disabled&.include?(attribute_name)
       options[:disabled] = true
       super
     elsif display_filter
@@ -32,7 +33,7 @@ module ApplicationHelper
   end
 
   def filtered_form_for(object, options = {}, &block)
-    simple_form_for(object, options.merge(:builder => StrongParametersFormBuilder), &block)
+    simple_form_for(object, options.merge(builder: StrongParametersFormBuilder), &block)
   end
 
   def has_any_global_admin_links?
@@ -44,8 +45,8 @@ module ApplicationHelper
   def image_uploader_hint(uploader_field)
     return if uploader_field.nil?
 
-    sprintf(
-      "Supported file formats: %s. Max file size: %s",
+    format(
+      'Supported file formats: %s. Max file size: %s',
       uploader_field.extension_allowlist.to_sentence,
       number_to_human_size(uploader_field.size_range.max)
     )

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeCalendarContactDetailsToTypeString < ActiveRecord::Migration[5.1]
   def change
     change_column :calendars, :partnership_contact_name, :string

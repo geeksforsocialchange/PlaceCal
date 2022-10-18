@@ -11,7 +11,7 @@ class NeighbourhoodPolicyTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    assert_equal(permitted_records(@citizen, Neighbourhood), [])
+    assert_empty(permitted_records(@citizen, Neighbourhood))
     assert_equal(permitted_records(@neighbourhood_admin, Neighbourhood), @neighbourhood_admin.neighbourhoods)
     # Enforcing ordering is annoying, just compare the length, let the user test ensure that owned_neighbourhoods works
     assert_equal(permitted_records(@neighbourhood_region_admin, Neighbourhood).length,

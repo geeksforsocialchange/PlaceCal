@@ -13,11 +13,11 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.json {
+        format.json do
           render json: PartnerDatatable.new(params,
                                             view_context: view_context,
                                             partners: @partners)
-        }
+        end
       end
     end
 
@@ -113,14 +113,14 @@ module Admin
 
     def set_service_area_map_ids
       # maps neighbourhood ID to service_area ID
-      if @partner
-        @service_area_id_map = @partner
-                               .service_areas.select(:id, :neighbourhood_id)
-                               .map { |sa| { sa.neighbourhood_id => sa.id } }
-                               .reduce({}, :merge)
-      else
-        @service_area_id_map = {}
-      end
+      @service_area_id_map = if @partner
+                               @partner
+                                 .service_areas.select(:id, :neighbourhood_id)
+                                 .map { |sa| { sa.neighbourhood_id => sa.id } }
+                                 .reduce({}, :merge)
+                             else
+                               {}
+                             end
     end
 
     def set_neighbourhoods

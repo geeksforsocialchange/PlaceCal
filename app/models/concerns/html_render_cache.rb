@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module HtmlRenderCache
   extend ActiveSupport::Concern
@@ -27,17 +28,17 @@ module HtmlRenderCache
       if changed.include?(field_name.to_s)
         value = changes[field_name.to_s][1]
         html = Kramdown::Document.new(value).to_html
-        write_attribute cache_name, html
+        self[cache_name] = html
         next
       end
 
       # puts attributes.to_json
 
-      if @force_html_generation
-        value = attributes[field_name.to_s].to_s
-        html = Kramdown::Document.new(value).to_html
-        write_attribute cache_name, html
-      end
+      next unless @force_html_generation
+
+      value = attributes[field_name.to_s].to_s
+      html = Kramdown::Document.new(value).to_html
+      self[cache_name] = html
     end
   end
 end

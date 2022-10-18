@@ -3,8 +3,7 @@
 require 'test_helper'
 
 class ActiveSupport::TestCase
-
-  def self.context(description)
+  def self.context(_description)
     yield
   end
 end
@@ -18,13 +17,13 @@ class MapMarkersConcernTest < ActiveSupport::TestCase
     @controller ||= FakeController.new
   end
 
-  context "get_map_markers" do
-    test "returns empty array if empty input" do
+  context 'get_map_markers' do
+    test 'returns empty array if empty input' do
       markers = controller.get_map_markers([])
       assert_empty markers
     end
 
-    test "returns payload for partners" do
+    test 'returns payload for partners' do
       partners = create_list(:partner, 10)
       output = controller.get_map_markers(partners)
       assert_equal 10, output.length
@@ -36,7 +35,7 @@ class MapMarkersConcernTest < ActiveSupport::TestCase
       assert_field entry, :id
     end
 
-    test "returns payload for addresses" do
+    test 'returns payload for addresses' do
       addresses = create_list(:address, 10)
       output = controller.get_map_markers(addresses)
       assert_equal 10, output.length
@@ -46,7 +45,7 @@ class MapMarkersConcernTest < ActiveSupport::TestCase
       assert_field entry, :lon
     end
 
-    test "skips partners with no service areas when flagged" do
+    test 'skips partners with no service areas when flagged' do
       neighbourhood = neighbourhoods(:one)
 
       # no service areas
@@ -64,13 +63,10 @@ class MapMarkersConcernTest < ActiveSupport::TestCase
       assert_equal 5, output.length
     end
 
-    test "cam turn events into markers" do
+    test 'cam turn events into markers' do
       events = create_list(:event, 10)
       output = controller.get_map_markers(events)
       assert_equal 10, output.length
-
     end
-
   end
-
 end

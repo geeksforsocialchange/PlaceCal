@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # In order for a parser to be recognized, it must be added
 # to the PARSERS constant list in app/models/calendar_parser.rb.
 # Parent parser classes should not be added.
@@ -6,10 +8,10 @@ module CalendarImporter::Parsers
   class ManchesterUni < Xml
     PUBLIC = false
     NAME = 'Manchester University'
-    DOMAINS = %w[events.manchester.ac.uk]
+    DOMAINS = %w[events.manchester.ac.uk].freeze
 
     def self.whitelist_pattern
-      /^http(s)?:\/\/events.manchester.ac.uk\/f3vf\/calendar\/.*/
+      %r{^http(s)?://events.manchester.ac.uk/f3vf/calendar/.*}
     end
 
     def import_events_from(data)
@@ -21,6 +23,5 @@ module CalendarImporter::Parsers
 
       events
     end
-
   end
 end

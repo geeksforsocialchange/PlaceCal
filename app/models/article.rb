@@ -29,8 +29,8 @@ class Article < ApplicationRecord
 
   scope :with_partner_tag, lambda { |tag_id|
     joins('left outer join article_partners on articles.id=article_partners.article_id')
-    .joins('left outer join partner_tags on article_partners.partner_id = partner_tags.partner_id')
-    .where('partner_tags.tag_id = ?', tag_id)
+      .joins('left outer join partner_tags on article_partners.partner_id = partner_tags.partner_id')
+      .where('partner_tags.tag_id = ?', tag_id)
   }
 
   scope :with_tags, lambda { |tag_ids|
@@ -38,7 +38,6 @@ class Article < ApplicationRecord
   }
 
   scope :for_site, lambda { |site|
-
     # this is a bit complicated but necessary
     # the main problem to overcome is that we want articles by tag OR location
     # (emphasis on OR).
@@ -75,9 +74,9 @@ class Article < ApplicationRecord
     if site_neighbourhood_ids.any?
       # TODO: service areas?
       scope = scope
-        .joins('LEFT OUTER JOIN article_partners ON articles.id=article_partners.article_id')
-        .joins('LEFT OUTER JOIN partners ON article_partners.partner_id = partners.id')
-        .joins('LEFT OUTER JOIN addresses ON partners.address_id = addresses.id')
+              .joins('LEFT OUTER JOIN article_partners ON articles.id=article_partners.article_id')
+              .joins('LEFT OUTER JOIN partners ON article_partners.partner_id = partners.id')
+              .joins('LEFT OUTER JOIN addresses ON partners.address_id = addresses.id')
       where_fragments << 'addresses.neighbourhood_id IN (?)'
       where_params << site_neighbourhood_ids
     end
@@ -85,20 +84,20 @@ class Article < ApplicationRecord
     # articles by tag
     if site_tag_ids.any?
       scope = scope
-        .joins(' LEFT OUTER JOIN article_tags ON articles.id=article_tags.article_id')
+              .joins(' LEFT OUTER JOIN article_tags ON articles.id=article_tags.article_id')
       where_fragments << 'article_tags.tag_id IN (?)'
       where_params << site_tag_ids
     end
 
     # combine conditions with params to extend the scope
     scope = scope
-      .where("(#{where_fragments.join(' OR ')})", *where_params)
+            .where("(#{where_fragments.join(' OR ')})", *where_params)
 
     scope.distinct('articles.id')
   }
 
   def update_published_at
-    self.published_at = self.is_draft ? nil : DateTime.now
+    self.published_at = is_draft ? nil : DateTime.now
   end
 
   # This retrieves the author's name for use in the GQL output
@@ -114,6 +113,6 @@ class Article < ApplicationRecord
   end
 
   def slug_candidates
-   [ %i[title id] ]
+    [%i[title id]]
   end
 end

@@ -7,7 +7,7 @@ class ArticlesByPartnerTagTest < ActionDispatch::IntegrationTest
     user = create(:user)
 
     not_published_article = Article.create!(
-      title: "Not published article",
+      title: 'Not published article',
       body: 'article body text',
       author: user
     )
@@ -15,7 +15,7 @@ class ArticlesByPartnerTagTest < ActionDispatch::IntegrationTest
     epoch = DateTime.now.beginning_of_day
 
     not_tagged_article = Article.create!(
-      title: "Not tagged article",
+      title: 'Not tagged article',
       body: 'article body text',
       author: user,
       is_draft: false,
@@ -32,7 +32,6 @@ class ArticlesByPartnerTagTest < ActionDispatch::IntegrationTest
         body: 'article body text',
         author: user,
         is_draft: false
-        
       )
       article.update! published_at: epoch + (n + 1).days
 
@@ -51,7 +50,7 @@ class ArticlesByPartnerTagTest < ActionDispatch::IntegrationTest
     GRAPHQL
 
     result = PlaceCalSchema.execute(query_string)
-    refute result.key?('errors'), 'errors are present'
+    assert_not result.key?('errors'), 'errors are present'
 
     data = result['data']
     assert data.key?('articlesByPartnerTag')
@@ -60,7 +59,7 @@ class ArticlesByPartnerTagTest < ActionDispatch::IntegrationTest
     assert_equal 5, articles.length, 'expected to only find articles that are published and tagged correctly'
 
     # newest to oldest
-    expected_titles = [ 4, 3, 2, 1, 0 ].map { |index| live_tagged_articles[index].title }
+    expected_titles = [4, 3, 2, 1, 0].map { |index| live_tagged_articles[index].title }
     found_titles = articles.map { |article| article['name'] }
     assert_equal expected_titles, found_titles
   end

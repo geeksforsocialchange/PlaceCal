@@ -1,29 +1,28 @@
-require_relative "../application_system_test_case"
+# frozen_string_literal: true
 
-=begin
+require_relative '../application_system_test_case'
 
-This is basically a stand alone script that pokes the GraphQL endpoint
-running on the server through a network connection (just as how users
-will use the endpoint on staging/production). It does not use any
-internal code like /test/integration/graphql/*
-
-We could be being overly paranoid here but it may become useful for
-catching the kind of bugs that only show up on a real network
-connection.
-
-NOTE: we are mainly interested in testing the endpoints that
-the Trans Dimension elm app uses.
-=end
+#
+# This is basically a stand alone script that pokes the GraphQL endpoint
+# running on the server through a network connection (just as how users
+# will use the endpoint on staging/production). It does not use any
+# internal code like /test/integration/graphql/*
+#
+# We could be being overly paranoid here but it may become useful for
+# catching the kind of bugs that only show up on a real network
+# connection.
+#
+# NOTE: we are mainly interested in testing the endpoints that
+# the Trans Dimension elm app uses.
 
 require 'graphql/client'
 require 'graphql/client/http'
-
 
 module PlaceCalApi
   extend self
 
   PING_QUERY_STRING =
-    "query { ping }"
+    'query { ping }'
 
   ARTICLE_CONNECTION_QUERY_STRING = <<-QUERY
     query { articleConnection { edges {
@@ -51,9 +50,8 @@ module PlaceCalApi
     } }
   QUERY
 
-
   def configure(default_url_options)
-    @url = URI::HTTP::build(default_url_options)
+    @url = URI::HTTP.build(default_url_options)
     @url.path = '/api/v1/graphql'
 
     @http   = GraphQL::Client::HTTP.new(@url.to_s)
@@ -77,17 +75,17 @@ module PlaceCalApi
   end
 
   def do_partners_by_tag_query(tag_id)
-    @client.query PartnersByTagQuery, variables: { 'tagId': tag_id }
+    @client.query PartnersByTagQuery, variables: { tagId: tag_id }
   end
 
   private
 
   def define_constant(name, value)
     return if const_defined?(name)
+
     const_set name, value
   end
 end
-
 
 class GraphQLTest < ApplicationSystemTestCase
   # This tests a number of small (critical) bits of the GraphQL
@@ -111,11 +109,11 @@ class GraphQLTest < ApplicationSystemTestCase
     PlaceCalApi.configure app_routes.default_url_options
   end
 
-  test "ping works" do
+  test 'ping works' do
     result = PlaceCalApi.do_ping_query
-    assert result.errors.empty?
+    assert_empty result.errors
     assert result.data.ping =~ /^Hello World! The time is \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/,
-      'missing PING data response'
+           'missing PING data response'
   end
 
   test 'news article connection with image url' do
@@ -145,4 +143,3 @@ class GraphQLTest < ApplicationSystemTestCase
     assert url =~ %r{\Ahttps://#{@server.host}:#{@server.port}/}, 'partner logo is not full URL'
   end
 end
-

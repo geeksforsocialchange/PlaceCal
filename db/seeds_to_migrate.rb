@@ -62,7 +62,6 @@ Calendar.create(name: 'Old Abbey Taphouse',
 # Hulme & Moss Side Age Friendly Events
 hulme_moss = Partner.create(name: 'Hulme & Moss Side Age Friendly Events')
 
-
 Turf.where(name: 'Hulme',
            slug: 'hulme',
            turf_type: 'neighbourhood',

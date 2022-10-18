@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSupporterData < ActiveRecord::Migration[5.1]
   def up
     records.each do |r|

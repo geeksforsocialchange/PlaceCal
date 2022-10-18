@@ -25,7 +25,7 @@ module CalendarImporter::Events
       text = @event.description
       text = text.join(' ') if text.is_a?(Icalendar::Values::Array)
 
-      text.to_s #.gsub(/\A(\n)+\z/, '').strip
+      text.to_s # .gsub(/\A(\n)+\z/, '').strip
     end
 
     def location
@@ -69,7 +69,7 @@ module CalendarImporter::Events
     def have_direct_url_to_stream?(link)
       # Oh my god why is ruby's iteration stuff so annoying
       # also TODO: find a different name than "value"
-      domain = event_link_types.keys.find(proc { nil }) { |domain| link.include?(domain) }
+      domain = event_link_types.keys.find(proc {}) { |domain| link.include?(domain) }
 
       return event_link_types[domain][:type] if domain
 
@@ -79,18 +79,18 @@ module CalendarImporter::Events
     end
 
     def find_event_link
-      link_regexes = event_link_types.values.map { |v| v[:regex] }
+      link_regexes = event_link_types.values.pluck(:regex)
       regex = Regexp.union link_regexes
 
       regex.match description
     end
 
     def event_link_types
-      http = %r{(http(s)?://)?}        # - https:// or http:// or nothing
-      alphanum = %r{[A-Za-z0-9]+}      # - alphanumeric strings
-      subdomain = %r{(#{alphanum}\.)?} # - matches the www. or us04web in the zoom link
-      suffix = %r{[^\s<"]+}            # - matches until we see a whitespace character,
-                                       #   an angle bracket, or a quote (thanks html)
+      http = %r{(http(s)?://)?} # - https:// or http:// or nothing
+      alphanum = /[A-Za-z0-9]+/      # - alphanumeric strings
+      subdomain = /(#{alphanum}\.)?/ # - matches the www. or us04web in the zoom link
+      suffix = /[^\s<"]+/            # - matches until we see a whitespace character,
+      #   an angle bracket, or a quote (thanks html)
 
       # We deal with the following strings:
       #   meet.jit.si/foobarbaz
@@ -102,10 +102,10 @@ module CalendarImporter::Events
       #   <p>(event url)</p>
 
       {
-        'meet.jit.si' =>     { regex: %r{#{http}#{subdomain}meet.jit.si/#{suffix}}, type: 'direct' },
+        'meet.jit.si' => { regex: %r{#{http}#{subdomain}meet.jit.si/#{suffix}}, type: 'direct' },
         'meet.google.com' => { regex: %r{#{http}#{subdomain}meet.google.com/#{suffix}}, type: 'direct' },
-        'zoom.us' =>         { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' },
-        'facebook.com' =>    { regex: %r{#{http}#{subdomain}facebook.com/events/#{suffix}}, type: 'indirect' }
+        'zoom.us' => { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' },
+        'facebook.com' => { regex: %r{#{http}#{subdomain}facebook.com/events/#{suffix}}, type: 'indirect' }
       }
     end
   end

@@ -25,7 +25,7 @@ class EventTest < ActiveSupport::TestCase
                    **@event_data }
 
     assert Event.new(event_hash).save
-    refute Event.new(event_hash).valid?
+    assert_not_predicate Event.new(event_hash), :valid?
 
     assert_raises ActiveRecord::RecordInvalid do
       Event.new(event_hash).save!
@@ -38,7 +38,7 @@ class EventTest < ActiveSupport::TestCase
     assert a.save
 
     b = Event.new(summary: 'foonlys get together :,)', **event_hash)
-    assert b.valid?
+    assert_predicate b, :valid?
   end
 
   test 'can create two events with the same summary and calendar but diff start' do
@@ -46,8 +46,8 @@ class EventTest < ActiveSupport::TestCase
     a = Event.new(dtstart: DateTime.now - 1.hour, **event_hash)
     assert a.save
 
-    b = Event.new(dtstart: DateTime.now - 3.hour, **event_hash)
-    assert b.valid?
+    b = Event.new(dtstart: DateTime.now - 3.hours, **event_hash)
+    assert_predicate b, :valid?
   end
 
   test 'can create two events with the same summary and dtstart but diff calendar' do
@@ -56,7 +56,7 @@ class EventTest < ActiveSupport::TestCase
     assert a.save
 
     b = Event.new(calendar: create(:calendar), **event_hash)
-    assert b.valid?
+    assert_predicate b, :valid?
   end
 
   test 'has blank location with no addresses at all' do
@@ -105,7 +105,7 @@ class EventTest < ActiveSupport::TestCase
 
     events = Event.all.find_by_day(Date.today)
 
-    assert_equal events.length, 1
+    assert_equal(1, events.length)
     assert_equal events.first.dtstart, todays_event.dtstart
   end
 
@@ -123,7 +123,7 @@ class EventTest < ActiveSupport::TestCase
 
     events = Event.all.find_by_day(Date.today)
 
-    assert_equal events.length, 1
+    assert_equal(1, events.length)
     assert_equal events.first.dtstart, todays_event.dtstart
   end
 
@@ -140,7 +140,7 @@ class EventTest < ActiveSupport::TestCase
 
     events = Event.all.find_by_day(Date.today)
 
-    assert_equal events.length, 1
+    assert_equal(1, events.length)
     assert_equal events.first.dtstart, tomorrows_event.dtstart
   end
 end

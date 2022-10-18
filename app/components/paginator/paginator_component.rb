@@ -17,7 +17,7 @@ class PaginatorComponent < MountainView::Presenter
                css: 'paginator__arrow paginator__arrow--back js-back' }
     # Create in-between links according to steps requested
     (0..steps).each do |i|
-      day = pointer + period * i
+      day = pointer + (period * i)
       css = active?(day) ? 'active js-button' : 'js-button'
       pages << { text: format_date(day),
                  link: create_event_url(day),
@@ -99,7 +99,7 @@ class PaginatorComponent < MountainView::Presenter
   end
 
   # Format the button for a week of events
-  def weekify(date) # rubocop:disable Metrics/MethodLength
+  def weekify(date)
     today = Date.today
     end_date = date + period - 1.day
     date_fmt = if date.month == end_date.month
@@ -127,7 +127,7 @@ class PaginatorComponent < MountainView::Presenter
     str << 'period=week' if period == 1.week
     str << "sort=#{sort}" if sort
     str << "repeating=#{repeating}" if repeating
-    '?' + str.join('&') if str.any?
+    "?#{str.join('&')}" if str.any?
   end
 
   # Icon for back arrow

@@ -2,7 +2,6 @@
 
 # app/components/navigation/navigation_component.rb
 class NavigationComponent < MountainView::Presenter
-
   property :navigation
 
   # property :site
@@ -14,5 +13,4 @@ class NavigationComponent < MountainView::Presenter
   # def site_logo
   #   site.logo
   # end
-
 end

@@ -1,6 +1,7 @@
 name: Build, Test and Optionally Deploy
-
-on: [push, pull_request, workflow_dispatch]
+on:
+  - push
+  - workflow_dispatch
 
 # According to: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
 # Both Node and Yarn should be installed already
@@ -63,12 +64,17 @@ jobs:
           yarn install --immutable
         env:
           NODE_ENV: test
-      - name: Do Tests
+      - name: Run unit tests
         run: |
-          yarn build
-          bundle exec rails test
-          bundle exec rails test:system
-
+          bin/test --unit --no-fix
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          PGPASSWORD: foobar
+      - name: Run system tests
+        run: |
+          bin/test --system --no-lint
         env:
           POSTGRES_USER: postgres
           POSTGRES_HOST: localhost

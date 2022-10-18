@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   module EventQueries
     def self.included(klass)
@@ -47,12 +49,12 @@ module Types
       if args[:from_date].present?
         if args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
           from_date = DateTime.new(
-            $1.to_i, # year
-            $2.to_i, # month
-            $3.to_i, # day
-            $4.to_i, # hour
-            $5.to_i, # minute
-            0,       # seconds
+            Regexp.last_match(1).to_i, # year
+            Regexp.last_match(2).to_i, # month
+            Regexp.last_match(3).to_i, # day
+            Regexp.last_match(4).to_i, # hour
+            Regexp.last_match(5).to_i, # minute
+            0 # seconds
           )
         else
           raise GraphQL::ExecutionError, "fromDate not in 'YYYY-MM-DD HH:MM' format"
@@ -64,12 +66,12 @@ module Types
       if args[:to_date].present?
         if args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
           to_date = DateTime.new(
-            $1.to_i, # year
-            $2.to_i, # month
-            $3.to_i, # day
-            $4.to_i, # hour
-            $5.to_i, # minute
-            0,       # seconds
+            Regexp.last_match(1).to_i, # year
+            Regexp.last_match(2).to_i, # month
+            Regexp.last_match(3).to_i, # day
+            Regexp.last_match(4).to_i, # hour
+            Regexp.last_match(5).to_i, # minute
+            0       # seconds
           )
 
           raise GraphQL::ExecutionError, 'toDate is before fromDate' if to_date <= from_date

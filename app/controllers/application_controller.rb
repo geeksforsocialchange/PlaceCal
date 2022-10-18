@@ -90,9 +90,7 @@ class ApplicationController < ActionController::Base
 
     @current_site = Site.find_by_request(request)
 
-    if @current_site.nil? && !response.redirect?
-      redirect_to( root_url( :subdomain => false ) )
-    end
+    redirect_to(root_url(subdomain: false)) if @current_site.nil? && !response.redirect?
 
     @current_site
   end
@@ -100,7 +98,6 @@ class ApplicationController < ActionController::Base
   def set_primary_neighbourhood
     @primary_neighbourhood = current_site&.primary_neighbourhood
   end
-
 
   # Create a calendar from array of events
   def create_calendar(events, title = false)
@@ -140,9 +137,11 @@ class ApplicationController < ActionController::Base
   def authenticate_by_ip
     # Is whitelist mode enabled?
     return unless ENV['WHITELIST_MODE']
+
     # Whitelisted ips are stored as comma separated values in the dokku config
     whitelist = ENV['WHITELISTED_IPS'].split(',')
     return if whitelist.include?(request.remote_ip)
+
     redirect_to 'https://google.com'
   end
 
@@ -174,7 +173,7 @@ class ApplicationController < ActionController::Base
 
   def set_navigation
     return @navigation if @navigation
-    return if self.class == MountainView::StyleguideController
+    return if instance_of?(MountainView::StyleguideController)
 
     @navigation = if default_site?
                     default_site_navigation
@@ -183,14 +182,14 @@ class ApplicationController < ActionController::Base
                   end
   end
 
-
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name email password password_confirmation])
-    devise_parameter_sanitizer.permit(:account_update, keys: %i[first_name last_name email password password_confirmation current_password])
+    devise_parameter_sanitizer.permit(:account_update,
+                                      keys: %i[first_name last_name email password password_confirmation
+                                               current_password])
   end
-
 
   def storable_location?
     (request.subdomain == Site::ADMIN_SUBDOMAIN) && request.get? && is_navigational_format? && !devise_controller? && !request.xhr?
@@ -224,7 +223,7 @@ class ApplicationController < ActionController::Base
       # ['Places', places_path],
       ['Partners', partners_path]
     ]
-    items << ['News', news_index_path] if article_count > 0
+    items << ['News', news_index_path] if article_count.positive?
     items
   end
 end

@@ -30,9 +30,7 @@ module CalendarImporter::Parsers
       data = download_calendar
       checksum = digest(data)
 
-      if !@force_import && (@calendar.last_checksum == checksum)
-        return Output.new([], checksum)
-      end
+      return Output.new([], checksum) if !@force_import && (@calendar.last_checksum == checksum)
 
       Output.new(import_events_from(data), checksum)
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MapMarkers
   extend ActiveSupport::Concern
 
@@ -12,8 +14,7 @@ module MapMarkers
   # returns:
   #   Array of Hashes to be consumed by the JS map front end
   #
-  def get_map_markers(locations, addresses_only=false)
-
+  def get_map_markers(locations, addresses_only = false)
     # Events
     locations = locations.map do |loc|
       next loc unless loc.is_a?(Event)
@@ -28,9 +29,9 @@ module MapMarkers
       # reject partner with no resolvable address
       next if loc.address.nil? || loc.address.latitude.blank?
 
-      if addresses_only
+      if addresses_only && loc.service_areas.count.positive?
         # reject partner if they have any service areas?
-        next if loc.service_areas.count > 0
+        next
       end
 
       {
@@ -44,6 +45,7 @@ module MapMarkers
     # Addresses
     locations = locations.map do |loc|
       next loc unless loc.is_a?(Address)
+
       {
         lat: loc.latitude,
         lon: loc.longitude
@@ -52,5 +54,4 @@ module MapMarkers
 
     locations.keep_if { |loc| loc.is_a?(Hash) }
   end
-
 end
