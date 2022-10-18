@@ -85,25 +85,17 @@ module CalendarImporter::Events
     end
 
     def postcode
-      postal = location.match(Address::POSTCODE_REGEX).try(:[], 0)
-      if postal.blank?
-        postal = /M[1-9]{2}(?:\s)?(?:[1-9])?/.match(location).try(:[], 0)
-      end # check for instances of M14 or M15 4 or whatever madness they've come up with
+      location_parts = location.split(/[\s,]+/)
 
-      # TODO? Remove? This will currently do nothing because postcodes.io only
-      # works on postcodes and we have established that a postcode does not
-      # exist in the current address.
-      # if postal.blank?
-      #   # See if Google returns a more informative address
-      #   results = Geocoder.search(location)
-      #   if results.first
-      #     formatted_address = results.first.data['formatted_address']
-      #
-      #     postal = Address::POSTCODE_REGEX.match(formatted_address).try(:[], 0)
-      #   end
-      # end
+      location_parts.each_cons(2) do |location_part_pair|
+        ukpc = UKPostcode.parse(location_part_pair.join(' '))
 
-      postal
+        return ukpc.to_s if ukpc.full_valid?
+      end
+
+      location_parts.map { |location_part| UKPostcode.parse(location_part) }
+                    .find(&:full_valid?)
+                    &.to_s
     end
 
     def ip_class
