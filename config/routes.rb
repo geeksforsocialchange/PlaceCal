@@ -35,7 +35,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :neighbourhoods
     resources :partners do
       collection do
-        match :setup, via: [:get, :post]
+        match :setup, via: %i[get post]
       end
     end
     resources :tags
@@ -58,9 +58,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   root 'pages#home'
 
-  ymd = { year:  /\d{4}/,
+  ymd = { year: /\d{4}/,
           month: /\d{1,2}/,
-          day:   /\d{1,2}/ }
+          day: /\d{1,2}/ }
 
   # Events
   resources :events, only: %i[index show]
@@ -99,7 +99,5 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
   post '/api/v1/graphql', to: 'graphql#execute'
 
-  if Rails.env.development?
-    mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: "/api/v1/graphql"
-  end
+  mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?
 end

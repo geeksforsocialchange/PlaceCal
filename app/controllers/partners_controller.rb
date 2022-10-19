@@ -3,8 +3,8 @@
 class PartnersController < ApplicationController
   include MapMarkers
 
-  before_action :set_partner, only: [:show, :embed]
-  before_action :set_day, only: [:show, :embed]
+  before_action :set_partner, only: %i[show embed]
+  before_action :set_day, only: %i[show embed]
   before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
   before_action :set_title, only: %i[index show]
@@ -82,9 +82,9 @@ class PartnersController < ApplicationController
 
   def no_upcoming_events_reason(partner)
     if partner.calendars.none?
-      "This partner does not list events on PlaceCal."
+      'This partner does not list events on PlaceCal.'
     else
-      "This partner has no upcoming events."
+      'This partner has no upcoming events.'
     end
   end
 

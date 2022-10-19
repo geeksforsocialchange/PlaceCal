@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCalendarContactColumns < ActiveRecord::Migration[5.1]
   def change
     # NOTE: Not copying any data over from partners. Staging server had no
@@ -11,5 +13,4 @@ class AddCalendarContactColumns < ActiveRecord::Migration[5.1]
       t.text :public_contact_phone
     end
   end
-
 end

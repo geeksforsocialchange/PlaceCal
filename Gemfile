@@ -9,10 +9,10 @@ git_source(:github) do |repo_name|
 end
 
 # Core
+gem 'minitest-rails'
 gem 'pg'
 gem 'puma', '~> 5'
 gem 'rails', '~> 6.1.6.1'
-gem 'minitest-rails'
 
 # Frontend
 gem 'coffee-rails', '~> 5.0'
@@ -21,8 +21,8 @@ gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'jsbundling-rails'
 gem 'sass-rails', '~> 6.0'
-gem 'turbo-rails'
 gem 'stimulus-rails'
+gem 'turbo-rails'
 
 # Backend
 gem 'ancestry'
@@ -31,10 +31,10 @@ gem 'ancestry'
 gem 'ajax-datatables-rails'
 
 # Calendar
+gem 'eventbrite_sdk'
 gem 'httparty'
 gem 'icalendar'
 gem 'icalendar-recurrence'
-gem 'eventbrite_sdk'
 
 # Uploads
 gem 'carrierwave'
@@ -102,21 +102,26 @@ group :development do
   gem 'awesome_print'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'graphiql-rails'
   gem 'guard'
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-minitest'
   gem 'letter_opener'
   gem 'rails-erd'
-  gem 'rubocop-rails'
+  gem 'rubocop-graphql', require: false
+  gem 'rubocop-minitest', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rake', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
   gem 'yard'
-  gem 'graphiql-rails'
 end
 
 group :test do
   gem 'capybara-select-2', '~> 0.5.1'
+  gem 'graphql-client'
   gem 'json_matchers'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
@@ -125,7 +130,6 @@ group :test do
   gem 'simplecov', require: false
   gem 'vcr'
   gem 'webmock'
-  gem 'graphql-client'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -3,7 +3,6 @@
 namespace :import do
   desc 'scan for calendars to send to the importer worker'
   task :scan_for_calendars_needing_import, %i[force_import from] => [:environment] do |_t, args|
-
     force_import = to_boolean(args[:force_import])
     from = to_date(args[:from])
 
@@ -46,11 +45,11 @@ namespace :import do
       calendar.update calendar_state: :in_queue
       CalendarImporterJob.perform_now calendar.id, from, force_import, silence_db_exceptions
 
-    #rescue StandardError => e
-    #  puts "\n"
-    #  puts "#{e.class}: bad thing: #{e}"
-    #  puts e.backtrace
-    #  puts '-' * 20
+      # rescue StandardError => e
+      #  puts "\n"
+      #  puts "#{e.class}: bad thing: #{e}"
+      #  puts e.backtrace
+      #  puts '-' * 20
     end
   end
 
@@ -91,7 +90,10 @@ namespace :import do
 
   task refresh_online_addresses: :environment do
     # Clean out all OnlineAddress entities
-    Event.where.not(online_address_id: nil).map { |e| e.online_address_id = nil; e.save! }
+    Event.where.not(online_address_id: nil).map do |e|
+      e.online_address_id = nil
+      e.save!
+    end
     OnlineAddress.delete_all
 
     # TODO: For all ICS calendars, check their events and refresh their online event data
@@ -106,6 +108,7 @@ namespace :import do
 
   def to_date(value)
     return Date.current.beginning_of_day if value.blank?
+
     Date.parse value
   end
 end

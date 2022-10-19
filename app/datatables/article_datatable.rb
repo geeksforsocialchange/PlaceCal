@@ -1,5 +1,6 @@
-class ArticleDatatable < Datatable
+# frozen_string_literal: true
 
+class ArticleDatatable < Datatable
   def view_columns
     # Declare strings in this format: ModelName.column_name
     # or in aliased_join_table.column_name format

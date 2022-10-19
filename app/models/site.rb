@@ -10,10 +10,14 @@ class Site < ApplicationRecord
   friendly_id :name, use: :slugged
 
   has_one :sites_neighbourhood, dependent: :destroy
-  has_one :primary_neighbourhood, -> { where(sites_neighbourhoods: { relation_type: 'Primary' }) }, source: :neighbourhood, through: :sites_neighbourhood
+  has_one :primary_neighbourhood, lambda {
+                                    where(sites_neighbourhoods: { relation_type: 'Primary' })
+                                  }, source: :neighbourhood, through: :sites_neighbourhood
 
   has_many :sites_neighbourhoods, dependent: :destroy
-  has_many :secondary_neighbourhoods, -> { where(sites_neighbourhoods: { relation_type: 'Secondary' }) }, source: :neighbourhood, through: :sites_neighbourhoods
+  has_many :secondary_neighbourhoods, lambda {
+                                        where(sites_neighbourhoods: { relation_type: 'Secondary' })
+                                      }, source: :neighbourhood, through: :sites_neighbourhoods
 
   has_many :neighbourhoods, through: :sites_neighbourhoods
 
@@ -25,7 +29,9 @@ class Site < ApplicationRecord
   belongs_to :site_admin, class_name: 'User', optional: true
 
   accepts_nested_attributes_for :sites_neighbourhood
-  accepts_nested_attributes_for :sites_neighbourhoods, reject_if: ->(c) { c[:neighbourhood_id].blank? }, allow_destroy: true
+  accepts_nested_attributes_for :sites_neighbourhoods, reject_if: lambda { |c|
+                                                                    c[:neighbourhood_id].blank?
+                                                                  }, allow_destroy: true
 
   validates :name, :slug, :domain, presence: true
   validates :place_name unless :default_site?
@@ -68,7 +74,7 @@ class Site < ApplicationRecord
 
   # ASSUMPTION: All valid sites, other than the default site, are local sites.
   def local_site?
-    not default_site?
+    !default_site?
   end
 
   # Should we show the neighbourhood lozenge out on this site?

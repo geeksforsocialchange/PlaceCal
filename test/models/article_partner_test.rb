@@ -1,4 +1,6 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class ArticlePartnerTest < ActiveSupport::TestCase
   setup do
@@ -8,6 +10,6 @@ class ArticlePartnerTest < ActiveSupport::TestCase
 
   test 'create article for partner' do
     @partner.articles << @article
-    assert_equal @partner.articles.count, 1
+    assert_equal(1, @partner.articles.count)
   end
 end

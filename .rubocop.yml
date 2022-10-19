@@ -1,0 +1,27 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-graphql
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rake
+
+AllCops:
+  NewCops: enable
+
+GraphQL/FieldName:
+  Enabled: false
+
+GraphQL/ObjectDescription:
+  Enabled: false
+
+Rails/DynamicFindBy:
+  AllowedMethods:
+    - find_by_day
+    - find_by_request
+    - find_by_sql
+    - find_by_week
+
+Style/Documentation:
+  Enabled: false

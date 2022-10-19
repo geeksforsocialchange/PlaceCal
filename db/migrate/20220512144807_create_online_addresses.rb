@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateOnlineAddresses < ActiveRecord::Migration[6.1]
   def change
     create_table :online_addresses do |t|

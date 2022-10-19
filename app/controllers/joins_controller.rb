@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class JoinsController < ApplicationController
   before_action :set_site
 
   def new
-    @join = Join.new 
+    @join = Join.new
   end
 
   def create
@@ -11,9 +13,9 @@ class JoinsController < ApplicationController
     if @join.submit
       redirect_to join_path, notice: "Thank you for your interest in PlaceCal. We'll  be in touch with you shortly."
     else
-      flash[:error] = "Please fill out the required fields below"
-      render :new 
-    end 
+      flash[:error] = 'Please fill out the required fields below'
+      render :new
+    end
   end
 
   private

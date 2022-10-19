@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CalendarImporter::Events
   class ManchesterUniEvent < Base
     def initialize(event)
@@ -23,7 +25,7 @@ module CalendarImporter::Events
       time = @event.at_xpath('./ns:times[@type="local"] //ns:start //ns:time')
       DateTime.parse([date, time].join(', '))
     rescue StandardError
-        nil
+      nil
     end
 
     def dtend
@@ -31,7 +33,7 @@ module CalendarImporter::Events
       time = @event.at_xpath('./ns:times[@type="local"] //ns:end //ns:time')
       DateTime.parse([date, time].join(', '))
     rescue StandardError
-        nil
+      nil
     end
 
     def recurring_event?

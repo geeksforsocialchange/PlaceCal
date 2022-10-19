@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 Geocoder.configure(lookup: :test, ip_lookup: :test)
 
@@ -7,7 +8,7 @@ Geocoder::Lookup::Test.add_stub(
     { 'postcode' => 'M15 5DD',
       'quality' => 1,
       'eastings' => 383_417,
-      'northings' =>  395_997,
+      'northings' => 395_997,
       'country' => 'England',
       'nhs_ha' => 'North West',
       'longitude' => -2.251226,
@@ -86,8 +87,8 @@ Geocoder::Lookup::Test.add_stub(
     {
       'postcode' => 'M16 7BA',
       'quality' => 1,
-      'eastings' => 383321,
-      'northings' => 395843,
+      'eastings' => 383_321,
+      'northings' => 395_843,
       'country' => 'England',
       'nhs_ha' => 'North West',
       'longitude' => -2.252664,

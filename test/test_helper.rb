@@ -20,10 +20,10 @@ require 'json_matchers/minitest/assertions'
 JsonMatchers.schema_root = 'test/support/api/schemas'
 include JsonMatchers::Minitest::Assertions
 
-require "capybara/rails"
-require "capybara/minitest"
+require 'capybara/rails'
+require 'capybara/minitest'
 
-Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')) do |path|
+Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')).sort.each do |path|
   require path
 end
 
@@ -113,7 +113,6 @@ def create_default_site
   create(:site, slug: 'default-site')
 end
 
-
 # Some helpers for working with JS and Capybara
 
 def click_sidebar(href)
@@ -158,7 +157,7 @@ def assert_select2_multiple(options_array, node)
   # If we are left with nothing then the options and stored data match
   within :xpath, node.path do
     assert_selector '.select2-selection__choice', count: options_array.length
-    rendered = find(:css, '.select2-selection__rendered').text.gsub('×', '').gsub("\n", '')
+    rendered = find(:css, '.select2-selection__rendered').text.delete('×').delete("\n")
     options_array.each do |opt|
       rendered = rendered.gsub(opt, '')
     end
@@ -201,7 +200,7 @@ end
 
 def refute_field(obj, key, message = nil)
   message ||= "Field '#{key}' exists in: #{obj}"
-  refute obj.key?(key), message # obj.key? returns false if an item is nil, ergo...
+  assert_not obj.key?(key), message # obj.key? returns false if an item is nil, ergo...
 
   obj[key]
 end

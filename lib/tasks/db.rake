@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Original source: https://gist.github.com/hopsoft/56ba6f55fe48ad7f8b90
 # Merged with: https://gist.github.com/kofronpi/37130f5ed670465b1fe2d170f754f8c6
 #
@@ -29,16 +31,17 @@
 #
 # Original source: https://gist.github.com/hopsoft/56ba6f55fe48ad7f8b90
 # Merged with: https://gist.github.com/kofronpi/37130f5ed670465b1fe2d170f754f8c6
+require 'English'
 namespace :db do
   desc 'Dumps the database to backups'
   task dump: :environment do
-    dump_fmt   = ensure_format(ENV['format'])
+    dump_fmt   = ensure_format(ENV.fetch('format', nil))
     dump_sfx   = suffix_for_format(dump_fmt)
     backup_dir = backup_directory(Rails.env, create: true)
     full_path  = nil
     cmd        = nil
 
-    with_config do |app, host, db, user|
+    with_config do |_app, host, db, user|
       full_path = "#{backup_dir}/#{Time.now.strftime('%Y%m%d%H%M%S')}_#{db}.#{dump_sfx}"
       cmd       = "pg_dump -F #{dump_fmt} -v -O -o -U '#{user}' -h '#{host}' -d '#{db}' -f '#{full_path}'"
     end
@@ -53,16 +56,16 @@ namespace :db do
   namespace :dump do
     desc 'Dumps a specific table to backups'
     task table: :environment do
-      table_name = ENV['table']
+      table_name = ENV.fetch('table', nil)
 
       if table_name.present?
-        dump_fmt   = ensure_format(ENV['format'])
+        dump_fmt   = ensure_format(ENV.fetch('format', nil))
         dump_sfx   = suffix_for_format(dump_fmt)
         backup_dir = backup_directory(Rails.env, create: true)
         full_path  = nil
         cmd        = nil
 
-        with_config do |app, host, db, user|
+        with_config do |_app, host, db, user|
           full_path = "#{backup_dir}/#{Time.now.strftime('%Y%m%d%H%M%S')}_#{db}.#{table_name.parameterize.underscore}.#{dump_sfx}"
           cmd       = "pg_dump -F #{dump_fmt} -v -O -o -U '#{user}' -h '#{host}' -d '#{db}' -t '#{table_name}' -f '#{full_path}'"
         end
@@ -81,19 +84,19 @@ namespace :db do
   desc 'Show the existing database backups'
   task dumps: :environment do
     backup_dir = backup_directory
-    puts "#{backup_dir}"
+    puts backup_dir.to_s
     system "/bin/ls -ltR #{backup_dir}"
   end
 
   desc 'Restores the database from a backup using PATTERN'
   task restore: :environment do
-    pattern = ENV['pattern']
+    pattern = ENV.fetch('pattern', nil)
 
     if pattern.present?
       file = nil
       cmd  = nil
 
-      with_config do |app, host, db, user|
+      with_config do |_app, host, db, user|
         backup_dir = backup_directory
         files      = Dir.glob("#{backup_dir}/**/*#{pattern}*")
 
@@ -114,15 +117,15 @@ namespace :db do
           end
         else
           puts "Too many files match the pattern '#{pattern}':"
-          puts ' ' + files.join("\n ")
+          puts " #{files.join("\n ")}"
           puts ''
-          puts "Try a more specific pattern"
+          puts 'Try a more specific pattern'
           puts ''
         end
       end
       unless cmd.nil?
-        Rake::Task["db:drop"].invoke
-        Rake::Task["db:create"].invoke
+        Rake::Task['db:drop'].invoke
+        Rake::Task['db:create'].invoke
         puts cmd
         system cmd
         puts ''
@@ -141,95 +144,73 @@ namespace :db do
   DB_DUMP_SSH_URL = 'DB_DUMP_SSH_URL'
   DB_DUMP_STAGING_SSH_URL = 'DB_DUMP_STAGING_SSH_URL'
 
-  desc "Synchronize staging with the production database in one fell swoop"
+  desc 'Synchronize staging with the production database in one fell swoop'
   task sync_prod_staging: :environment do
+    prod_ssh_url = ENV.fetch(DB_DUMP_SSH_URL, 'root@placecal.org -p 666')
 
-    prod_ssh_url = if ENV[DB_DUMP_SSH_URL]
-        ENV[DB_DUMP_SSH_URL]
-      else
-        'root@placecal.org -p 666'
-      end
+    ssh_url = ENV.fetch(DB_DUMP_STAGING_SSH_URL, 'root@placecal-staging.org -p 666')
 
-    ssh_url = if ENV[DB_DUMP_STAGING_SSH_URL]
-        ENV[DB_DUMP_STAGING_SSH_URL]
-      else
-        'root@placecal-staging.org -p 666'
-      end
-
-    $stdout.puts "Backing up staging db (May take a while.) ..."
+    $stdout.puts 'Backing up staging db (May take a while.) ...'
     puts `ssh #{ssh_url} dokku postgres:export placecal-db > $(date -Im)_placecal-staging.sql`
-    $stdout.puts "Replicating production db to staging db (May take a while.) ..."
+    $stdout.puts 'Replicating production db to staging db (May take a while.) ...'
     puts `ssh #{prod_ssh_url} dokku postgres:export placecal-db2 | ssh #{ssh_url} dokku postgres:import placecal-db`
-    if $?.success?
-      $stdout.puts "Replicated production to staging (you might have to run rails db:migrate in dokku?)"
+    if $CHILD_STATUS.success?
+      $stdout.puts 'Replicated production to staging (you might have to run rails db:migrate in dokku?)'
     else
-      $stderr.puts "Failed to replicate production to staging!"
+      warn 'Failed to replicate production to staging!'
     end
   end
 
-  desc "Download production DB dump"
+  desc 'Download production DB dump'
   task dump_production: :environment do
+    filename = ENV.fetch(DB_DUMP_ENV_KEY) { "#{Rails.root}/dump/production_#{Time.now.to_i}.sql" }
 
-    filename = if ENV[DB_DUMP_ENV_KEY]
-      ENV[DB_DUMP_ENV_KEY]
-    else
-      "#{Rails.root}/dump/production_#{Time.now.to_i}.sql"
-    end
-
-    ssh_url = if ENV[DB_DUMP_SSH_URL]
-      ENV[DB_DUMP_SSH_URL]
-    else
-      "root@placecal.org -p 666"
-    end
+    ssh_url = ENV.fetch(DB_DUMP_SSH_URL, 'root@placecal.org -p 666')
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
     puts `ssh #{ssh_url} dokku postgres:export placecal-db2 > #{filename}`
-    if $?.success?
+    if $CHILD_STATUS.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename
     else
-      $stderr.puts "Failed to download DB dump!"
+      warn 'Failed to download DB dump!'
     end
   end
 
   desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to local dev DB"
   task restore_local: :environment do
-    filename = ENV[DB_DUMP_ENV_KEY]
-    raise "Could not find #{filename} file!" if ! File.exist? filename
+    filename = ENV.fetch(DB_DUMP_ENV_KEY, nil)
+    raise "Could not find #{filename} file!" unless File.exist? filename
 
     $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
     puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev #{filename}`
-    if $?.success?
-      $stdout.puts "... done."
+    if $CHILD_STATUS.success?
+      $stdout.puts '... done.'
     else
-      $stderr.puts "Failed to restore DB dump to local dev DB!"
-      $stderr.puts "Please manually check to see whether local DB dev still exists."
+      warn 'Failed to restore DB dump to local dev DB!'
+      warn 'Please manually check to see whether local DB dev still exists.'
       exit
     end
   end
 
   desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to staging server DB"
   task restore_staging: :environment do
-    filename = ENV[DB_DUMP_ENV_KEY]
-    ssh_url = if ENV[DB_DUMP_STAGING_SSH_URL]
-      ENV[DB_DUMP_STAGING_SSH_URL]
-    else
-      "root@placecal-staging.org -p 666"
-    end
-    raise "Could not find #{filename} file!" if ! File.exist? filename
+    filename = ENV.fetch(DB_DUMP_ENV_KEY, nil)
+    ssh_url = ENV.fetch(DB_DUMP_STAGING_SSH_URL, 'root@placecal-staging.org -p 666')
+    raise "Could not find #{filename} file!" unless File.exist? filename
 
     $stdout.puts "Restoring DB dump file #{filename} to staging server DB. (May take a while.) ..."
     puts `< #{filename} ssh #{ssh_url} dokku postgres:import placecal-staging-db`
-    if $?.success?
-      $stdout.puts "... done."
+    if $CHILD_STATUS.success?
+      $stdout.puts '... done.'
     else
-      $stderr.puts "Failed to restore DB dump to staging server DB!"
-      $stderr.puts "Please manually check to see whether staging server DB still exists."
+      warn 'Failed to restore DB dump to staging server DB!'
+      warn 'Please manually check to see whether staging server DB still exists.'
       exit
     end
   end
 
-  desc "Download production DB dump and optionally use it to restore_on_local=1 and/or restore_on_staging=1"
+  desc 'Download production DB dump and optionally use it to restore_on_local=1 and/or restore_on_staging=1'
   task dump_production_and_restore_other: :dump_production do
     $stdout.puts "restore_on_local = #{ENV['restore_on_local']}" if ENV['restore_on_local']
     $stdout.puts "restore_on_staging = #{ENV['restore_on_staging']}" if ENV['restore_on_staging']
@@ -237,11 +218,11 @@ namespace :db do
     Rake::Task['db:restore_staging'].execute if ENV['restore_on_staging']
   end
 
-  desc "SCP uploads from production to local server"
+  desc 'SCP uploads from production to local server'
   task get_files: :environment do
-    $stdout.puts "Getting files..."
+    $stdout.puts 'Getting files...'
     `scp -r root@placecal.org:/var/lib/dokku/data/storage/placecal/public/ ./`
-    $stdout.puts "... done."
+    $stdout.puts '... done.'
   end
 
   private
@@ -264,7 +245,6 @@ namespace :db do
     when 'p' then 'sql'
     when 't' then 'tar'
     when 'd' then 'dir'
-    else nil
     end
   end
 
@@ -274,14 +254,13 @@ namespace :db do
     when /\.sql$/  then 'p'
     when /\.dir$/  then 'd'
     when /\.tar$/  then 't'
-    else nil
     end
   end
 
   def backup_directory(suffix = nil, create: false)
     backup_dir = File.join(*[Rails.root, 'db/backups', suffix].compact)
 
-    if create and not Dir.exists?(backup_dir)
+    if create && !Dir.exist?(backup_dir)
       puts "Creating #{backup_dir} .."
       FileUtils.mkdir_p(backup_dir)
     end

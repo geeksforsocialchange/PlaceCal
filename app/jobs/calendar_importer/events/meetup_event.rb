@@ -36,7 +36,7 @@ module CalendarImporter::Events
           venue['city'],
           venue['localized_country_name'],
           venue['name'] # postcode?
-        ].map(&:to_s).map(&:strip).reject(&:blank?).join(', ')
+        ].map(&:to_s).map(&:strip).compact_blank.join(', ')
       end
     end
 

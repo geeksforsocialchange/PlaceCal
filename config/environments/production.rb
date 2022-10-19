@@ -87,7 +87,7 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
@@ -124,8 +124,8 @@ Rails.application.configure do
     address: 'smtp.mailersend.net',
     port: 587,
     domain: host,
-    user_name: ENV['MAILERSEND_USERNAME'],
-    password: ENV['MAILERSEND_PASSWORD'],
+    user_name: ENV.fetch('MAILERSEND_USERNAME', nil),
+    password: ENV.fetch('MAILERSEND_PASSWORD', nil),
     authentication: :login,
     enable_starttls_auto: true
   }

@@ -1,4 +1,8 @@
 /app/assets/builds/
 /coverage/
+/doc/**/*.html
+/doc/**/*.css
+/doc/**/*.js
 /tmp/
 /vendor/bundle/
+/.rubocop_todo.yml

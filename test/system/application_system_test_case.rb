@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'system_test_helper'
 
 # For system tests so we can test our JS frontend is working
@@ -6,4 +8,3 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   Capybara.server = :puma, { Silent: true }
   Selenium::WebDriver.logger.ignore(:browser_options)
 end
-

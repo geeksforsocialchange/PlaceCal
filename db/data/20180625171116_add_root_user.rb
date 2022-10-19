@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddRootUser < SeedMigration::Migration
   def up
     User.create(

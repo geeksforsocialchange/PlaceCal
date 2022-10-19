@@ -1,10 +1,8 @@
-
 # frozen_string_literal: true
 
 require 'test_helper'
 
 class UsersLoginOnSiteTest < ActionDispatch::IntegrationTest
-
   setup do
     create_default_site
   end

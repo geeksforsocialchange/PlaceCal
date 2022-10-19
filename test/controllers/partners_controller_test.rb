@@ -25,8 +25,14 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     # NOTE: Uhhh, what does this do? - Alexandria, 2022-05-31
     @partners.each do |for_nbd|
       o_r = OrganisationRelationship.new
-      o_r.subject = for_nbd[0]; o_r.verb = :manages; o_r.object = for_nbd[1]; o_r.save
-      e = build(:event); e.dtstart = Date.today; e.place = for_nbd[2]; e.save
+      o_r.subject = for_nbd[0]
+      o_r.verb = :manages
+      o_r.object = for_nbd[1]
+      o_r.save
+      e = build(:event)
+      e.dtstart = Date.today
+      e.place = for_nbd[2]
+      e.save
       for_nbd
     end
 
@@ -42,7 +48,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get index without subdomain' do
-    get url_for controller: "partners", subdomain: false
+    get url_for controller: 'partners', subdomain: false
     assert_response :redirect
   end
 
@@ -56,7 +62,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     get from_site_slug(@site, partners_path)
 
     assert_response :success
-    assert_select "ul.partners li", 3
+    assert_select 'ul.partners li', 3
   end
 
   # test 'should get places_index with configured subdomain' do
@@ -66,7 +72,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test 'should redirect from index with unknown subdomain' do
-    get url_for controller: "partners", subdomain: "notaknownsubdomain"
+    get url_for controller: 'partners', subdomain: 'notaknownsubdomain'
     assert_response :redirect
   end
 
@@ -101,6 +107,6 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     get from_site_slug(@site, partner_path(partner))
 
     events = assigns(:events).values.first
-    assert events.length == 3
+    assert_equal(3, events.length)
   end
 end

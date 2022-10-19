@@ -23,9 +23,9 @@ class Partner < ApplicationRecord
 
   has_many :service_areas, dependent: :destroy
   has_many :service_area_neighbourhoods,
-    through: :service_areas,
-    source: :neighbourhood,
-    class_name: 'Neighbourhood'
+           through: :service_areas,
+           source: :neighbourhood,
+           class_name: 'Neighbourhood'
 
   validates_associated :service_areas
 
@@ -65,7 +65,7 @@ class Partner < ApplicationRecord
             }
   validates :summary,
             presence: {
-              if: ->(p) { !p.description.blank? },
+              if: ->(p) { p.description.present? },
               message: 'cannot have a description without a summary'
             }
   validates :url,
@@ -127,8 +127,8 @@ class Partner < ApplicationRecord
     site_tag_ids = site.tags.map(&:id)
     if site_tag_ids.any?
       query = query
-        .left_joins(:partner_tags)
-        .where("partner_tags.tag_id in (?)", site_tag_ids)
+              .left_joins(:partner_tags)
+              .where('partner_tags.tag_id in (?)', site_tag_ids)
     end
 
     # now look for addresses and service areas
@@ -141,7 +141,8 @@ class Partner < ApplicationRecord
       .left_joins(:address, :service_areas)
       .where(
         '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-        neighbourhood_ids: site_neighbourhood_ids)
+        neighbourhood_ids: site_neighbourhood_ids
+      )
       .distinct
   }
 
@@ -149,11 +150,11 @@ class Partner < ApplicationRecord
     return none if tag.nil?
 
     query = Partner
-      .select('"partners".*, LOWER("partners"."name") as sortable_name')
+            .select('"partners".*, LOWER("partners"."name") as sortable_name')
 
     query = query
-      .left_joins(:partner_tags)
-      .where(partner_tags: { tag: tag })
+            .left_joins(:partner_tags)
+            .where(partner_tags: { tag: tag })
 
     # now look for addresses and service areas
     site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
@@ -167,7 +168,8 @@ class Partner < ApplicationRecord
       .left_joins(:address, :service_areas)
       .where(
         '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-        neighbourhood_ids: site_neighbourhood_ids)
+        neighbourhood_ids: site_neighbourhood_ids
+      )
       .distinct
       .order('sortable_name')
   }
@@ -176,15 +178,15 @@ class Partner < ApplicationRecord
   #
   # @param tags [Array<Tag>] A list of tags
   # @return [ActiveRecord::Relation<Partner>]
-  scope :with_tags, ->(tag_ids) {
+  scope :with_tags, lambda { |tag_ids|
     left_joins(:partner_tags)
-      .where("partner_tags.tag_id in (?)", tag_ids)
+      .where('partner_tags.tag_id in (?)', tag_ids)
   }
 
   # only select partners that have addresses
-  scope :with_address, -> do
-    where('address_id is not null')
-  end
+  scope :with_address, lambda {
+    where.not(address_id: nil)
+  }
 
   # Get all Partners that have hosted an event in the last month or will host
   # an event in the future
@@ -192,16 +194,16 @@ class Partner < ApplicationRecord
   # TODO? This might be an incredibly inefficient query. If so, add a column
   # to the Partner table, e.g. place_latest_dtstart, which can be updated on
   # import.
-  scope :event_hosts, -> do
+  scope :event_hosts, lambda {
     joins('JOIN events ON events.place_id = partners.id')
       .where('events.dtstart > ?', Date.today - 30).distinct
-  end
+  }
 
   # Get all Partners that manage at least one other Partner.
-  scope :managers, -> do
+  scope :managers, lambda {
     joins('JOIN organisation_relationships o_r on o_r.subject_id = partners.id')
       .where(o_r: { verb: :manages }).distinct
-  end
+  }
 
   delegate :neighbourhood_id, to: :address, allow_nil: true
 
@@ -211,9 +213,9 @@ class Partner < ApplicationRecord
 
   def address_attributes=(value)
     addr = Address
-      .where('lower(street_address) = ?', value[:street_address]&.downcase&.strip)
-      .where(postcode: value[:postcode]&.upcase&.strip)
-      .first
+           .where('lower(street_address) = ?', value[:street_address]&.downcase&.strip)
+           .where(postcode: value[:postcode]&.upcase&.strip)
+           .first
 
     if addr.present?
       self.address = addr
@@ -245,7 +247,7 @@ class Partner < ApplicationRecord
   end
 
   def has_service_areas?
-    service_areas.count > 0
+    service_areas.count.positive?
   end
 
   def permalink
@@ -276,7 +278,7 @@ class Partner < ApplicationRecord
   end
 
   def human_readable_opening_times
-    return [] if !opening_times || opening_times.length == 0
+    return [] if !opening_times || opening_times.length.zero?
 
     JSON.parse(opening_times).map do |s|
       d = s['dayOfWeek'].split('/').last
@@ -286,7 +288,6 @@ class Partner < ApplicationRecord
          <span class='opening_times--time'>#{o} &ndash; #{c}</span>
       ).html_safe
     end
-
   rescue JSON::ParserError
     []
   end
@@ -323,7 +324,7 @@ class Partner < ApplicationRecord
 
   def check_ward_access
     return if accessed_by_user.nil? || accessed_by_user.root?
-    return unless address.present?
+    return if address.blank?
 
     unless accessed_by_user.assigned_to_postcode?(address&.postcode)
       errors.add :base, 'Partners cannot have an address outside of your ward.'

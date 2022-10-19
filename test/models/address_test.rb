@@ -21,7 +21,7 @@ class AddressTest < ActiveSupport::TestCase
         )
         address.save!
 
-        assert address.postcode == expected_output
+        assert_equal address.postcode, expected_output
       end
     end
   end

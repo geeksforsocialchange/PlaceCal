@@ -28,7 +28,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     connection = assert_field data, 'partnerConnection'
     edges = assert_field connection, 'edges'
 
-    assert_equal edges.length, 5
+    assert_equal(5, edges.length)
 
     # Validate that we are in-fact returning the partner's data, too
     edges.lazy.zip(partner_list).each do |edge, partner|
@@ -92,7 +92,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     expected_day = opening_hours.first
 
     assert_kind_of Array, data, 'openingHours should be an array'
-    assert data.length == 6 # from factory
+    assert_equal(6, data.length) # from factory
     first_day = data.first
 
     expected_day_of_week = expected_day['dayOfWeek'] =~ %r{/([^/]*)$} && Regexp.last_match(1)
@@ -104,7 +104,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
   def check_areas_served(data, service_areas)
     assert_kind_of Array, data, 'areasServed should be an array'
-    assert data.length == service_areas.count
+    assert_equal data.length, service_areas.count
 
     wanted_area = service_areas.first
     service_area = data.first
@@ -253,7 +253,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     partner_data = data['partner']
     article_data = partner_data['articles']
 
-    assert article_data.length == 1, 'Should only see the one article published by this partenr'
+    assert_equal(1, article_data.length, 'Should only see the one article published by this partenr')
   end
 
   test 'finding partners by tag' do
@@ -275,7 +275,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     data = result['data']
     partner_data = data['partnersByTag']
-    assert partner_data.length == 1, 'expecting to see a tag on this partner'
+    assert_equal(1, partner_data.length, 'expecting to see a tag on this partner')
   end
 
   test 'returns null properly if openning times are missing' do
@@ -333,7 +333,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     connection = assert_field data, 'partnerConnection'
     edges = assert_field connection, 'edges'
 
-    assert_equal edges.length, 1
+    assert_equal(1, edges.length)
     data_partner = assert_field edges.first, 'node'
 
     assert_field_equals data_partner, 'id', value: partner.id.to_s

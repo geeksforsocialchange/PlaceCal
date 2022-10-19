@@ -19,26 +19,26 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     @number_of_neighbourhoods = 15
 
     @neighbourhoods << @neighbourhood
-    get "http://admin.lvh.me"
+    get 'http://admin.lvh.me'
   end
 
-  test "Index shows correct neighbourhoods for root" do
+  test 'Index shows correct neighbourhoods for root' do
     sign_in(@root)
     get admin_neighbourhoods_path
     # See all neighbourhoods
 
-    assert_select 'title', text: "Neighbourhoods | PlaceCal Admin"
+    assert_select 'title', text: 'Neighbourhoods | PlaceCal Admin'
     assert_select 'tbody tr', count: @number_of_neighbourhoods
   end
 
-  test "Index shows correct neighbourhoods for neighbourhood admin" do
+  test 'Index shows correct neighbourhoods for neighbourhood admin' do
     sign_in(@neighbourhood_admin)
     get admin_neighbourhoods_path
     # See just the neighbourhood they admin
     assert_select 'tbody tr', count: 1
   end
 
-  test "Edit form has correct fields for root" do
+  test 'Edit form has correct fields for root' do
     sign_in @root
     get edit_admin_neighbourhood_path(@neighbourhood)
     assert_response :success
@@ -55,7 +55,7 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'a', 'Destroy'
   end
 
-  test "Edit form has correct fields for neighbourhood admin" do
+  test 'Edit form has correct fields for neighbourhood admin' do
     sign_in @neighbourhood_admin
     get edit_admin_neighbourhood_path(@neighbourhood)
     assert_response :success

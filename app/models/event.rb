@@ -86,7 +86,7 @@ class Event < ApplicationRecord
   scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
   scope :sort_by_time, -> { order(dtstart: :asc).order(summary: :asc) }
 
-  scope :without_matching_times, ->(start_times, end_times) {
+  scope :without_matching_times, lambda { |start_times, end_times|
     where.not(dtstart: start_times).or(where.not(dtend: end_times))
   }
 
@@ -110,7 +110,7 @@ class Event < ApplicationRecord
 
   def time
     if dtend
-      dtstart.strftime('%H:%M') + ' – ' + dtend.strftime('%H:%M')
+      "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
     else
       dtstart.strftime('%H:%M')
     end
@@ -166,10 +166,10 @@ class Event < ApplicationRecord
     return if %w[event no_location online_only].include?(calendar&.strategy)
 
     # If we have an online address we don't need a physical one
-    return if self.online_address_id.present?
+    return if online_address_id.present?
 
     # If the address exists then the error doesn't apply
-    return unless self.address_id.blank?
+    return if address_id.present?
 
     errors.add(:base, 'No place or address could be created or found for ' \
                       "the event location: #{raw_location_from_source}")

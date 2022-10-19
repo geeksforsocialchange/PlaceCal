@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 # app/models/calendar.rb
 class Calendar < ApplicationRecord
   include ActionView::Helpers::DateHelper
   include Validation
   extend Enumerize
 
-  CALENDAR_REGEX = /\A(?:(?:(https?|webcal)):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?\z/i
+  CALENDAR_REGEX = %r{\A(?:(?:(https?|webcal))://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/[^\s]*)?\z}i.freeze
 
   self.inheritance_column = nil
 
@@ -45,7 +46,6 @@ class Calendar < ApplicationRecord
   scope :where_idle, -> { where(calendar_state: :idle) }
   scope :where_errored, -> { where(calendar_state: :error) }
 
-
   # We need a default location for some strategies
   def requires_default_location?
     %i[place room_number event_override].include? strategy.to_sym
@@ -55,10 +55,10 @@ class Calendar < ApplicationRecord
   # This uses PaperTrail to get historical records of the Event models, including deletes
   # It does this to show a "event added" / "event removed" thing
   def recent_activity
-    versions = PaperTrail::Version.with_item_keys('Event', self.event_ids).where('created_at >= ?', 2.weeks.ago)
+    versions = PaperTrail::Version.with_item_keys('Event', event_ids).where('created_at >= ?', 2.weeks.ago)
     versions = versions.or(PaperTrail::Version.destroys
                                               .where("item_type = 'Event' AND object @> ? AND created_at >= ?",
-                                                     { calendar_id: self.id }.to_json, 2.weeks.ago))
+                                                     { calendar_id: id }.to_json, 2.weeks.ago))
 
     versions = versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
   end
@@ -71,11 +71,11 @@ class Calendar < ApplicationRecord
   # Who should be contacted about this calendar?
   def contact_information
     if public_contact_email
-      [ public_contact_email, public_contact_name ]
+      [public_contact_email, public_contact_name]
     elsif partner&.public_email
-      [ partner.public_email, partner.public_name ]
+      [partner.public_email, partner.public_name]
     elsif place&.public_email
-      [ place.public_email, place.public_name ]
+      [place.public_email, place.public_name]
     else
       false
     end
@@ -99,7 +99,6 @@ class Calendar < ApplicationRecord
     # The calendar importer will raise an exception if the source
     #   URL has a problem
     CalendarImporter::CalendarImporter.new(self)
-
   rescue CalendarImporter::CalendarImporter::InaccessibleFeed, CalendarImporter::CalendarImporter::UnsupportedFeed => e
     flag_error_import_job! e.to_s
   end
@@ -122,7 +121,7 @@ class Calendar < ApplicationRecord
 
       update! calendar_state: :in_queue
 
-      CalendarImporterJob.perform_later self.id, from_date, force_import
+      CalendarImporterJob.perform_later id, from_date, force_import
     end
   end
 
@@ -132,6 +131,7 @@ class Calendar < ApplicationRecord
   def flag_start_import_job!
     transaction do
       return unless calendar_state.in_queue?
+
       update! calendar_state: :in_worker
     end
   end

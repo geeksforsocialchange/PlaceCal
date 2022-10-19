@@ -17,7 +17,7 @@ class NewsIntegrationTest < ActionDispatch::IntegrationTest
     partner = create(:partner, address: @address)
 
     article = Article.create!(
-      title: "Article from Partner",
+      title: 'Article from Partner',
       is_draft: false,
       body: 'lorem ipsum dorem ditsum',
       author: @author
@@ -91,4 +91,3 @@ class NewsIntegrationTest < ActionDispatch::IntegrationTest
     assert_select '.article__author', count: 0
   end
 end
-

@@ -3,11 +3,11 @@
 module CalendarsHelper
   def options_for_organiser
     org_opts = policy_scope(Partner)
-      .order(:name)
-      .collect { |opt| [ opt.name, opt.id ] }
+               .order(:name)
+               .collect { |opt| [opt.name, opt.id] }
 
-    #[{ name: '', id: ''}] + org_opts
-    [[ '(No Partner)', '', { disabled: true }]] + org_opts
+    # [{ name: '', id: ''}] + org_opts
+    [['(No Partner)', '', { disabled: true }]] + org_opts
   end
 
   def options_for_location
@@ -20,8 +20,8 @@ module CalendarsHelper
     CalendarImporter::CalendarImporter::PARSERS
       .dup
       .keep_if { |parser| parser::PUBLIC }
-      .map { |parser| [ parser::NAME, parser::KEY ] }
-      .prepend([ '(Auto detect)', 'auto' ])
+      .map { |parser| [parser::NAME, parser::KEY] }
+      .prepend(['(Auto detect)', 'auto'])
   end
 
   def summarize_dates(dates)

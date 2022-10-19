@@ -17,6 +17,5 @@ FactoryBot.define do
     factory :system_tag do
       system_tag { true }
     end
-
   end
 end
