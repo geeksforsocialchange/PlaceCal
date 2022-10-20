@@ -35,6 +35,7 @@ module CalendarImporter::Parsers
       url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
       response = HTTParty.get(url, follow_redirects: true)
       return '' unless response.success?
+
       response.body
     end
 
