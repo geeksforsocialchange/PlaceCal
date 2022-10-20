@@ -39,4 +39,12 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.event__detail', count: 4
     assert_select '[data-controller="leaflet"]', 1
   end
+
+  test 'event show with bad ID is user friendly' do
+    get event_url(99999)
+    assert_response :not_found
+    assert_select 'h1', text: 'Not found'
+    assert_select 'p', text: 'The page you were looking for does not exist'
+  end
+
 end
