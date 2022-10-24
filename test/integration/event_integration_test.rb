@@ -41,10 +41,9 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'event show with bad ID is user friendly' do
-    get event_url(99999)
+    get event_url(99_999)
     assert_response :not_found
     assert_select 'h1', text: 'Not found'
     assert_select 'p', text: 'The page you were looking for does not exist'
   end
-
 end

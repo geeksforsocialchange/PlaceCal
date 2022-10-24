@@ -102,10 +102,6 @@ class Neighbourhood < ApplicationRecord
                              unit_code_value: res['codes']['admin_ward'],
                              unit_name: res['admin_ward'])
     end
-
-    def expand_name_abbreviations(input_name)
-
-    end
   end
 
   private
