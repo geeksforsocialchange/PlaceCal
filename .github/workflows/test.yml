@@ -80,6 +80,13 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           PGPASSWORD: foobar
+      - name: Upload test screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-screenshots
+          path: tmp/screenshots/
+          if-no-files-found: ignore
       # Why was this run as the after-success step in travis?
       # - name: Precompile Assets
       #   run: |
