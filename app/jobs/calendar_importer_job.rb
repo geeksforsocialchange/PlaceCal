@@ -11,6 +11,10 @@ class CalendarImporterJob < ApplicationJob
     report_error exception, 'Calendar URL is not accessible'
   end
 
+  rescue_from CalendarImporter::Parsers::BadFeedResponse do |exception|
+    report_error exception, 'Calendar URL returned un-parsable data'
+  end
+
   rescue_from ActiveRecord::ActiveRecordError do |exception|
     raise exception if !Rails.env.production? && @silence_db_exceptions == false
 

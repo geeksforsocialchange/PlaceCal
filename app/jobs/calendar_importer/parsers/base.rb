@@ -5,6 +5,8 @@
 # Parent parser classes should not be added.
 
 module CalendarImporter::Parsers
+  class BadFeedResponse < StandardError; end
+  
   class Base
     PUBLIC = true
     NAME = ''
