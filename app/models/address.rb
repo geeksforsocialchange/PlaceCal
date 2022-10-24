@@ -116,14 +116,12 @@ class Address < ApplicationRecord
       begin
         # now just create one
         Address.build_from_components(components, postcode)
-
-      rescue ActiveRecord::RecordNotFound => e
+      rescue ActiveRecord::RecordNotFound
         # This 'solution' makes it so if an address is provided to us that
         # does not map cleanly on to our neighbourhood table then we simply
         # consider that a failed look up. In practice we should do more to
         # normalize data both coming from Postcodes.io and our UK government
         # ward dataset
-        
       end
     end
 
