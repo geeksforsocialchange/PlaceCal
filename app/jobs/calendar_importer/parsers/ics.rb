@@ -59,9 +59,7 @@ module CalendarImporter::Parsers
     def parse_remote_calendars(data)
       Icalendar::Calendar.parse data
     rescue StandardError => e
-      # FIXME: this should set an error flag that is checked by the importer and
-      #   logged to the calendar
-      []
+      raise BadFeedResponse
     end
   end
 end
