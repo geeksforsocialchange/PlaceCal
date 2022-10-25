@@ -1,0 +1,57 @@
+---
+http_interactions:
+  - request:
+      method: get
+      uri: https://api.meetup.com/haeKohtheuwae7uY6sie/events
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 504
+        message: Bad Gateway
+      headers:
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "101"
+        Content-Type:
+          - application/html; charset=utf-8
+        X-Oauth-Scopes:
+          - basic
+        X-Accepted-Oauth-Scopes:
+          - basic
+        X-Ratelimit-Limit:
+          - "30"
+        X-Ratelimit-Remaining:
+          - "29"
+        X-Ratelimit-Reset:
+          - "10"
+        Etag:
+          - '"81974ed1f846f7bb66a198e756391d5a-gzip"'
+        Accept-Ranges:
+          - bytes
+        Date:
+          - Thu, 20 Oct 2022 09:41:10 GMT
+        Vary:
+          - Accept-Encoding,User-Agent,Accept-Language
+        X-Geo-Service-Region:
+          - east
+      body:
+        encoding: ASCII-8BIT
+        string: |
+          <html>
+          <head><title>504 Gateway Time-out</title></head>
+          <body>
+          <center><h1>504 Gateway Time-out</h1></center>
+          </body>
+          </html>
+    recorded_at: Thu, 20 Oct 2022 09:41:09 GMT
+recorded_with: VCR 6.1.0
