@@ -10,7 +10,8 @@ class AddressTest < ActiveSupport::TestCase
         ['ng12 4fz  ', 'NG12 4FZ'],
         ['  ha8  8ha ', 'HA8 8HA'],
         ['W1W5AA', 'W1W 5AA'],
-        ['W1W      5AA', 'W1W 5AA']
+        ['W1W      5AA', 'W1W 5AA'],
+        ['EC1M 6HA', 'EC1M 6HA']
       ]
 
       table.each do |try_data, expected_output|

@@ -504,6 +504,7 @@ GEM
     turbolinks-source (5.2.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
+    uk_postcode (2.1.8)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
@@ -619,6 +620,7 @@ DEPENDENCIES
   stimulus-rails
   timecop
   turbo-rails
+  uk_postcode
   vcr
   virtus
   web-console (>= 3.3.0)

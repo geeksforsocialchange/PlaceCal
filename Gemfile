@@ -88,6 +88,7 @@ gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
 gem 'sendgrid-actionmailer'
+gem 'uk_postcode'
 gem 'virtus'
 gem 'whenever', require: false
 
