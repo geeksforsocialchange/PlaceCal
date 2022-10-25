@@ -50,5 +50,11 @@ module CalendarImporter::Parsers
     def digest(data)
       Digest::MD5.hexdigest(data.to_s)
     end
+
+    def safely_parse_json(string, default = nil)
+      JSON.parse string
+    rescue JSON::JSONError
+      default
+    end
   end
 end

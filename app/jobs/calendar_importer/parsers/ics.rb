@@ -33,9 +33,10 @@ module CalendarImporter::Parsers
     def download_calendar
       # Why are we doing this?
       url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
-      output = HTTParty.get(url, follow_redirects: true)
-      return '' unless output.success?
-      output
+      response = HTTParty.get(url, follow_redirects: true)
+      return '' unless response.success?
+
+      response.body
     end
 
     def import_events_from(data)
@@ -55,13 +56,8 @@ module CalendarImporter::Parsers
       @events
     end
 
-    def digest(data)
-      # read file to get contents before creating digest
-      Digest::MD5.hexdigest(data)
-    end
-
     def parse_remote_calendars(data)
-      Icalendar::Calendar.parse data.to_s
+      Icalendar::Calendar.parse data
 
     rescue StandardError => e
       raise BadFeedResponse
