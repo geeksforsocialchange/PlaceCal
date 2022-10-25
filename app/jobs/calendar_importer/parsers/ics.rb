@@ -58,7 +58,6 @@ module CalendarImporter::Parsers
 
     def parse_remote_calendars(data)
       Icalendar::Calendar.parse data
-
     rescue StandardError => e
       raise BadFeedResponse
     end
