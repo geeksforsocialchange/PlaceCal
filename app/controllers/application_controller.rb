@@ -13,11 +13,16 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
 
   private
 
   def user_not_authorized
     redirect_to admin_root_path
+  end
+
+  def resource_not_found
+    render 'pages/resource_not_found', status: :not_found
   end
 
   # Set the day either using the URL or by today's date
