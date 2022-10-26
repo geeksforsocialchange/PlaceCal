@@ -156,7 +156,6 @@ Metrics/AbcSize:
 # IgnoredMethods: refine
 Metrics/BlockLength:
   Exclude:
-    - 'Guardfile'
     - 'config/environments/development.rb'
     - 'config/environments/production.rb'
     - 'config/environments/staging.rb'
