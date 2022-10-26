@@ -8,6 +8,16 @@
 			"automerge": true
 		},
 		{
+			"matchDatasources": ["bundler", "npm"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"automerge": true
+		},
+		{
+			"matchDatasources": ["nodenv"],
+			"matchUpdateTypes": ["patch"],
+			"automerge": true
+		},
+		{
 			"matchDatasources": ["docker"],
 			"matchPackageNames": ["postgres"],
 			"matchCurrentVersion": "13.4",
