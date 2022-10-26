@@ -32,22 +32,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-          chrome-version: stable
-
-      - name: Download Chrome driver
-        uses: nanasess/setup-chromedriver@master
-
-      - name: Unzip and install chrome driver
-        run: |
-          export DISPLAY=:99
-          sudo Xvfb -ac ${DISPLAY} -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-          chromedriver --url-base=/wd/hub &
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
           cache-version: 3 # Invalidate originally used corrupted cache
