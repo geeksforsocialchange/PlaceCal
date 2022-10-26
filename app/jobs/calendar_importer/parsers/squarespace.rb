@@ -21,12 +21,11 @@ module CalendarImporter::Parsers
       return [] unless response.success?
 
       json = safely_parse_json response.body, []
-      json['upcoming']
     end
 
     def import_events_from(data)
-      data.map { |d| 
-        d['url'] = @url
+      data['upcoming'].map { |d| 
+        d['url'] = data['website']['baseUrl'] + data['collection']['fullUrl']
         d
       }
       .map { |d| CalendarImporter::Events::SquarespaceEvent.new(d) }
