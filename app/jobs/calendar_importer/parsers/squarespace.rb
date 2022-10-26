@@ -24,6 +24,11 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
+      unless data['upcoming']
+        puts "If you are seeing this it is likely that you are using the wrong URL"
+        puts "or squarespace have changed their API"
+        return [] 
+      end
       data['upcoming'].map { |d| 
         d['url'] = data['website']['baseUrl'] + data['collection']['fullUrl']
         d
