@@ -67,7 +67,7 @@ module CalendarImporter::Events
     end
 
     def occurrences_between(*)
-      [Dates.new(dtstart, dtend]]
+      [Dates.new(dtstart, dtend)]
     end
 
     def online_event?

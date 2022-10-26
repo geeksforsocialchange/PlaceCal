@@ -11,7 +11,7 @@ module CalendarImporter::Parsers
     DOMAINS = %w[www.outsavvy.com].freeze
 
     def self.whitelist_pattern
-      %r{^https://www\.outsavvy\.com/organiser/.*}
+      %r{^https://(www\.)?outsavvy\.com/organiser/.*}
     end
 
     def download_calendar
@@ -43,9 +43,9 @@ module CalendarImporter::Parsers
 
     def import_events_from(data)
       JSON::LD::API
-        .expand(event_data)
-        .keep_if { |event_hash| OutSavvyEvent.is_event_data?(event_hash) }
-        .map { |event_hash| OutSavvyEvent.new(event_hash) }
+        .expand(data)
+        .keep_if { |event_hash| CalendarImporter::Events::OutSavvyEvent.is_event_data?(event_hash) }
+        .map { |event_hash| CalendarImporter::Events::OutSavvyEvent.new(event_hash) }
     end
   end
 end
