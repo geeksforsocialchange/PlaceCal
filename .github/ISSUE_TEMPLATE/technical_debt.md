@@ -2,7 +2,7 @@
 name: Technical debt
 about: Log some technical debt to be paid back
 labels:
-  - tech debt
+  - chore
   - needs triage
 ---
 
