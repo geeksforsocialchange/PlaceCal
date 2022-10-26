@@ -11,22 +11,40 @@ module CalendarImporter::Parsers
     DOMAINS = %w[www.outsavvy.com].freeze
 
     def self.whitelist_pattern
-      %r{^https://www\.meetup\.com/[^/]*/?$}
+      %r{^https://www\.outsavvy\.com/organiser/.*}
     end
 
     def download_calendar
-      user_name = (@url =~ %r{^https://www\.meetup\.com/([^/]*)/?$}) && Regexp.last_match(1)
-      return [] if user_name.blank?
-
-      api_url = "https://api.meetup.com/#{user_name}/events"
-      response = HTTParty.get(api_url)
+      response = HTTParty.get(@url)
       return [] unless response.success?
 
-      safely_parse_json response.body, []
+      doc = Nokogiri::HTML(file)      
+      data_nodes = doc.xpath('//script[@type="application/ld+json"]')
+      return [] if data_nodes.empty?
+
+      raw_event_data = []
+
+      data_nodes.each do |node|
+        data = safeley_parse_json(node.inner_html)
+    
+        if data.is_a?(Hash)
+          raw_event_data << data
+    
+        elsif data.is_a?(Array)
+          raw_event_data.concat data
+    
+        else
+          puts "Unrecognised RDF type '#{data.class.name}'"
+        end
+      end
+
+      raw_event_data
     end
 
     def import_events_from(data)
-      data.map { |d| CalendarImporter::Events::MeetupEvent.new(d) }
+      data
+        .map { |data| CalendarImporter::Events::OutSavvyEvent.new(data) }
+        .keep_if &:is_valid_event?
     end
   end
 end
