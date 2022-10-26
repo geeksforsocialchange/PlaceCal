@@ -36,18 +36,17 @@ jobs:
         with: # ruby version specified in .ruby-version
           bundler-cache: true # Automagically runs bundle install
           cache-version: 3 # Invalidate originally used corrupted cache
-      - name: Setup Node
-        uses: actions/setup-node@v3
+
+      - uses: nodenv/actions/setup-nodenv@v2
+      - uses: nodenv/actions/node-version@v2
+        id: nodenv
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16.14.2
-          # cache: yarn
-        env:
-          NODE_ENV: test
-      - name: Setup Yarn Dependencies
-        run: |
-          yarn install --immutable
-        env:
-          NODE_ENV: test
+          node-version: ${{ steps.nodenv.outputs.node-version }}
+          cache: yarn
+      - name: Install JS dependencies
+        run: yarn install --immutable
+
       - name: Run unit tests
         run: |
           bin/test --unit --no-fix
