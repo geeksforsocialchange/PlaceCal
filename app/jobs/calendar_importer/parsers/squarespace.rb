@@ -7,7 +7,7 @@
 module CalendarImporter::Parsers
   class Squarespace  < Base
     # These constants are only used for the frontend interface
-    NAME = 'Squarepace'
+    NAME = 'Squarspace'
     KEY = 'squarespace'
     DOMAINS = %w[squarespace.com].freeze
 
