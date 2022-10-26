@@ -4,6 +4,10 @@
 	"rangeStrategy": "pin",
 	"packageRules": [
 		{
+			"matchUpdateTypes": ["pin", "digest"],
+			"automerge": true
+		},
+		{
 			"matchDatasources": ["docker"],
 			"matchPackageNames": ["postgres"],
 			"matchCurrentVersion": "13.4",
