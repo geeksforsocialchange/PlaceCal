@@ -168,7 +168,6 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
     end
   end
 
-
   test 'does not import if checksum is the same' do
     url = 'https://z-arts.ticketsolve.com/shows.xml'
     checksum = 'd1a94a9869af91d0548a1faf0ded91d7'
