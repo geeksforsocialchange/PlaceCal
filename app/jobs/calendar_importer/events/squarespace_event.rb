@@ -20,7 +20,7 @@ module CalendarImporter::Events
 
     def publisher_url
       # This gives the end part of url after "wewewe.squarespace.com/EVENTS/"
-      @event['urlId']
+      @event['url'] + '/' + @event['urlId']
     end
 
     def dtstart

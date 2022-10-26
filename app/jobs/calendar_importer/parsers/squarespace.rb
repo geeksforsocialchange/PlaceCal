@@ -25,7 +25,11 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      data.map { |d| CalendarImporter::Events::SquarespaceEvent.new(d) }
+      data.map { |d| 
+        d['url'] = @url
+        d
+      }
+      .map { |d| CalendarImporter::Events::SquarespaceEvent.new(d) }
     end
   end
 end
