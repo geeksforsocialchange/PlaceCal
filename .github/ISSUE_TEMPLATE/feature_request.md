@@ -1,7 +1,9 @@
 ---
 name: Feature
 about: Create a feature request
-labels: enhancement
+labels:
+  - enhancement
+  - needs triage
 ---
 
 ## User story
