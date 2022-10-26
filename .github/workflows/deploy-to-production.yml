@@ -1,0 +1,20 @@
+on:
+  workflow_run:
+    branches:
+      - production
+    workflows:
+      - test
+    types:
+      - completed
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - if: ${{ github.ref == 'refs/heads/production' }}
+        uses: dokku/github-action@v1.3.0
+        with:
+          git_remote_url: "ssh://dokku@placecal.org:666/placecal"
+          ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
+          branch: main
+          ci_branch_name: production
