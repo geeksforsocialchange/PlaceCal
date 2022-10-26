@@ -10,23 +10,28 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      NODE_ENV: test
     services:
       postgres:
         image: postgres:13.4 # Same version as on the server
         env:
+          POSTGRES_PORT: 5432
           POSTGRES_DB: placecal_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: foobar
-          POSTGRES_PORT: 5432
         ports:
           - 5432:5432
-        options: >- # Health options to wait until postgres has started
+        options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      PGPASSWORD: foobar
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -49,21 +54,9 @@ jobs:
         run: yarn install --immutable
 
       - name: Run unit tests
-        run: |
-          bin/test --unit --no-fix
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          PGPASSWORD: foobar
+        run: bin/test --unit --no-fix
       - name: Run system tests
-        run: |
-          bin/test --system --no-lint
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          PGPASSWORD: foobar
+        run: bin/test --system --no-lint
       - name: Upload test screenshots
         uses: actions/upload-artifact@v3
         if: failure()
