@@ -22,6 +22,9 @@ module CalendarImporter::Events
       @event['url'] + '/' + @event['urlId']
     end
 
+    # The dates provided are in UTC time which is milliseconds since January 1, 1970, 00:00:00 UTC.
+    # Time.at accepts Unix time which is seconds since January 1, 1970, 00:00:00 UTC.
+    # to account for this we just devide by 1000.
     def dtstart
       Time.at(@event['startDate'] / 1000)
     end
