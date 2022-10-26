@@ -7,7 +7,7 @@
 module CalendarImporter::Parsers
   class OutSavvy < Base
     NAME = 'OutSavvy'
-    KEY = 'outsavvy'
+    KEY = 'out-savvy'
     DOMAINS = %w[www.outsavvy.com].freeze
 
     def self.whitelist_pattern
@@ -18,14 +18,14 @@ module CalendarImporter::Parsers
       response = HTTParty.get(@url)
       return [] unless response.success?
 
-      doc = Nokogiri::HTML(file)      
+      doc = Nokogiri::HTML(response.body)   
       data_nodes = doc.xpath('//script[@type="application/ld+json"]')
       return [] if data_nodes.empty?
 
       raw_event_data = []
 
       data_nodes.each do |node|
-        data = safeley_parse_json(node.inner_html)
+        data = safely_parse_json(node.inner_html, {})
     
         if data.is_a?(Hash)
           raw_event_data << data
@@ -42,9 +42,10 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      data
-        .map { |data| CalendarImporter::Events::OutSavvyEvent.new(data) }
-        .keep_if &:is_valid_event?
+      JSON::LD::API
+        .expand(event_data)
+        .keep_if { |event_hash| OutSavvyEvent.is_event_data?(event_hash) }
+        .map { |event_hash| OutSavvyEvent.new(event_hash) }
     end
   end
 end

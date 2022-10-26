@@ -20,6 +20,7 @@ require 'nokogiri'
 #puts output
 
 class OutSavvyEvent
+  attr_reader :context
   attr_reader :full_type
 
   attr_reader :name
@@ -30,6 +31,12 @@ class OutSavvyEvent
   attr_reader :summary
   attr_reader :description
   attr_reader :location
+
+  def self.is_event_data?(data)
+    return unless data.present?
+    return unless data['@context'].to_s == 'http://schema.org'
+    data['@type'] == 'Event' || data['@type'] == 'VisualArtsEvent'
+  end
 
   def initialize(event_hash)
     event_hash.each do |key, value|
@@ -97,14 +104,9 @@ File.open('outsavvy-sapho-events.html') do |file|
     events.concat new_events
   end
   
-  event_data = event_data.keep_if do |event|
-    return unless event.present?
-    return unless event['@context'].to_s == 'http://schema.org'
-    event['@type'] == 'Event' || event['@type'] == 'VisualArtsEvent'
-  end
-
   events = JSON::LD::API
     .expand(event_data)
+    .keep_if { |event_hash| OutSavvyEvent.is_event_data?(event_hash) }
     .map { |event_hash| OutSavvyEvent.new(event_hash) }
   
   events.each do |event|
