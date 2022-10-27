@@ -15,7 +15,7 @@ class AddSupporterData < ActiveRecord::Migration[5.1]
     records.each { |r| Supporter.where(name: r[:name]).destroy_all }
   end
 
-  def records # rubocop:disable Metrics/MethodLength
+  def records
     [
       {
         name: 'Geeks for Social Change',

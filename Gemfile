@@ -35,6 +35,7 @@ gem 'eventbrite_sdk'
 gem 'httparty'
 gem 'icalendar'
 gem 'icalendar-recurrence'
+gem 'json-ld'
 
 # Uploads
 gem 'carrierwave'

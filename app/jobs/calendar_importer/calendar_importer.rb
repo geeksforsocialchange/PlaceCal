@@ -11,7 +11,8 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::Ics,
     CalendarImporter::Parsers::Eventbrite,
     CalendarImporter::Parsers::Meetup,
-    CalendarImporter::Parsers::Squarespace
+    CalendarImporter::Parsers::Squarespace,
+    CalendarImporter::Parsers::OutSavvy
   ].freeze
 
   def initialize(calendar)

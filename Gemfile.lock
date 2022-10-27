@@ -206,6 +206,7 @@ GEM
       activesupport (>= 5.2)
     hashdiff (1.0.1)
     hashie (5.0.0)
+    htmlentities (4.3.4)
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
@@ -239,6 +240,14 @@ GEM
       turbolinks
     jsbundling-rails (1.0.2)
       railties (>= 6.0.0)
+    json-canonicalization (0.3.0)
+    json-ld (3.2.3)
+      htmlentities (~> 4.3)
+      json-canonicalization (~> 0.3)
+      link_header (~> 0.0, >= 0.0.8)
+      multi_json (~> 1.15)
+      rack (~> 2.2)
+      rdf (~> 3.2, >= 3.2.9)
     json_matchers (0.11.1)
       json_schema
     json_schema (0.21.0)
@@ -251,6 +260,7 @@ GEM
       rails (>= 4.2.0)
     letter_opener (1.8.1)
       launchy (>= 2.2, < 3)
+    link_header (0.0.8)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -373,6 +383,8 @@ GEM
     rb-fsevent (0.11.1)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rdf (3.2.9)
+      link_header (~> 0.0, >= 0.0.8)
     redis (4.6.0)
     regexp_parser (2.5.0)
     request_store (1.5.1)
@@ -546,6 +558,7 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   jsbundling-rails
+  json-ld
   json_matchers
   kramdown
   leaflet-rails

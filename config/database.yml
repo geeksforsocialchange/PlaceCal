@@ -11,7 +11,7 @@ default: &default
 
 development:
   <<: *default
-  database: placecal_dev
+  database: <%= ENV['POSTGRES_DB'] || 'placecal_dev' %>
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['PGPASSWORD'] %>
   host: <%= ENV['POSTGRES_HOST'] %>
