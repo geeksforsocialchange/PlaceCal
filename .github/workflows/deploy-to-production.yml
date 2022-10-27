@@ -1,14 +1,17 @@
+name: Deploy to production
+
 on:
   workflow_run:
     branches:
       - production
     workflows:
-      - test
+      - Test
     types:
       - completed
 
 jobs:
   test:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - if: ${{ github.ref == 'refs/heads/production' }}

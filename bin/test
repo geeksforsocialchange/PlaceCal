@@ -13,6 +13,7 @@ def process_argv(option)
     puts "Run the tests."
     puts "  -u, --unit    Run unit tests"
     puts "  -s, --system  Run system tests"
+    puts "  -l, --lint    Run linters and formatters"
     puts "  --no-lint     Disable linters and formatters"
     puts "  --no-fix      Lint and format without autocorrection"
     exit
@@ -22,6 +23,9 @@ def process_argv(option)
   when "-s"
   when "--system"
     @options[:system_only] = true
+  when "-l"
+  when "--lint"
+    @options[:lint_only] = true
   when "--no-lint"
     @options[:without_lint] = true
   when "--no-fix"
@@ -51,6 +55,7 @@ FileUtils.chdir APP_ROOT do
   elsif @options[:system_only]
     puts "\n== Running system tests =="
     system! 'bin/rails test:system'
+  elsif @options[:lint_only]
   else
     puts "\n== Running all tests =="
     system! 'bin/rails test:all'
