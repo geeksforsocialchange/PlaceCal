@@ -21,26 +21,8 @@ class PartnersController < ApplicationController
     # Get all partners based in the neighbourhoods associated with this site.
     @partners = Partner.for_site(current_site).order(:name)
 
-    respond_to do |format|
-      format.html do
-        # show only partners with no service_areas
-        @map = get_map_markers(@partners, true) if @partners.detect(&:address)
-
-        render :index
-      end
-      format.json do
-        render json: @partners.to_json
-      end
-
-      format.text
-      format.ics do
-        # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
-        ics_listing = Event.ical_feed
-        cal = create_calendar(ics_listing)
-        cal.publish
-        render plain: cal.to_ical
-      end
-    end
+    # show only partners with no service_areas
+    @map = get_map_markers(@partners, true) if @partners.detect(&:address)
   end
 
   # # GET /places
