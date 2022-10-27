@@ -48,8 +48,9 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
 
-      - run: bin/test --unit --no-fix
+      - run: bin/test --unit --no-lint
       - run: bin/test --system --no-lint
+      - run: bin/test --lint --no-fix
       - if: failure()
         name: Upload test screenshots
         uses: actions/upload-artifact@v3
