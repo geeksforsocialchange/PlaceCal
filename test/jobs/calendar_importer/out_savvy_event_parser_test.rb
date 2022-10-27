@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class OutSavvyParserTest < ActiveSupport::TestCase
-  test 'extracts events from OpenSavvy calendars' do
+  test 'extracts events from OutSavvy calendars' do
     os_event_url = 'https://www.outsavvy.com/organiser/sappho-events'
 
     calendar = create(
