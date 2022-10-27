@@ -1,9 +1,11 @@
+name: Deploy to staging
+
 on:
   workflow_run:
     branches:
       - main
     workflows:
-      - test
+      - Test
     types:
       - completed
 

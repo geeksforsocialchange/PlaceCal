@@ -1,9 +1,11 @@
+name: Deploy to production
+
 on:
   workflow_run:
     branches:
       - production
     workflows:
-      - test
+      - Test
     types:
       - completed
 
