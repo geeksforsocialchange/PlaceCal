@@ -67,13 +67,10 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
   test 'can import OutSavvy (ld+json) events when manually selected' do
     VCR.use_cassette(:out_savvy_events, allow_playback_repeats: true) do
-      # set up the calendar with faulty data that we know will trip up
-      #   the validations. we are testing the importer, not the model
       calendar = create(
         :calendar,
         name: 'OutSavvy calendar',
-        source: 'https://www.outsavvy.com/organiser/sappho-events',
-        importer_mode: 'out-savvy'
+        source: 'https://www.outsavvy.com/organiser/sappho-events'
       )
 
       calendar.update calendar_state: 'in_worker'
@@ -83,6 +80,9 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
       assert_equal 'idle', calendar.calendar_state
       assert_equal 'out-savvy', calendar.importer_used
+
+      created_events = calendar.events
+      assert_equal 4, created_events.count
     end
   end
 end

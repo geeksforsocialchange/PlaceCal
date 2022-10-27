@@ -17,8 +17,10 @@ class OutSavvyParserTest < ActiveSupport::TestCase
     VCR.use_cassette(:out_savvy_events) do
       parser = CalendarImporter::Parsers::OutSavvy.new(calendar, url: os_event_url)
 
-      events = parser.download_calendar
-      assert events.is_a?(Array)
+      # we are only checking for RDF records extracted from response
+      records = parser.download_calendar
+      assert records.is_a?(Array)
+      assert_equal 6, records.count
     end
   end
 end

@@ -22,30 +22,28 @@ module CalendarImporter::Parsers
       data_nodes = doc.xpath('//script[@type="application/ld+json"]')
       return [] if data_nodes.empty?
 
-      raw_event_data = []
-
-      data_nodes.each do |node|
-        data = safely_parse_json(node.inner_html, {})
-    
-        if data.is_a?(Hash)
-          raw_event_data << data
-    
-        elsif data.is_a?(Array)
-          raw_event_data.concat data
-    
-        else
-          puts "Unrecognised RDF type '#{data.class.name}'"
+      [].tap do |raw_event_data|
+        data_nodes.each do |node|
+          data = safely_parse_json(node.inner_html, {})
+      
+          if data.is_a?(Hash)
+            raw_event_data << data
+      
+          elsif data.is_a?(Array)
+            raw_event_data.concat data
+      
+          else
+            puts "Unrecognised RDF type '#{data.class.name}'"
+          end
         end
       end
-
-      raw_event_data
     end
 
     def import_events_from(data)
       JSON::LD::API
         .expand(data)
-        .keep_if { |event_hash| CalendarImporter::Events::OutSavvyEvent.is_event_data?(event_hash) }
         .map { |event_hash| CalendarImporter::Events::OutSavvyEvent.new(event_hash) }
+        .keep_if &:is_event_record?
     end
   end
 end

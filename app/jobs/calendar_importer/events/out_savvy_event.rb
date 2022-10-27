@@ -11,11 +11,12 @@ module CalendarImporter::Events
       :dtend,
       :location
 
-    def self.is_event_data?(data)
-      return unless data.present?
-      return unless data['@context'].to_s == 'http://schema.org'
-      data['@type'] == 'Event' || data['@type'] == 'VisualArtsEvent'
-    end
+    # def self.is_event_data?(data)
+    #  return unless data.present?
+      # return unless data['@context'].to_s == 'http://schema.org'
+      # data['@type'] == 'Event' || data['@type'] == 'VisualArtsEvent'
+    #  true
+    #end
 
     def self.extract_location(value)
       location = value.first
@@ -53,13 +54,17 @@ module CalendarImporter::Events
           @uid = @url
 
         when 'http://schema.org/location'
-          @location = extract_location(value)
+          @location = OutSavvyEvent.extract_location(value)
         end
       end
     end
 
     def type
-      @full_type.split('/').last
+      @type ||= @full_type.split('/').last
+    end
+
+    def is_event_record?
+      type == 'Event' || type == 'VisualArtsEvent'
     end
 
     def place
@@ -68,10 +73,6 @@ module CalendarImporter::Events
 
     def occurrences_between(*)
       [Dates.new(dtstart, dtend)]
-    end
-
-    def online_event?
-      false
     end
   end
 end
