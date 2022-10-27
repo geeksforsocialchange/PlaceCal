@@ -19,7 +19,7 @@ class AddSites < SeedMigration::Migration
     Pathname.new(full_path).open
   end
 
-  def records # rubocop:disable Metrics/MethodLength
+  def records
     [
       {
         name: 'Hulme',

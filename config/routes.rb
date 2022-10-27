@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # config/routes.rb
-Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
+Rails.application.routes.draw do
   # User login stuff
   devise_for :users,
              controllers: {
