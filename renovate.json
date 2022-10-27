@@ -3,6 +3,9 @@
 	"extends": ["config:base", "helpers:pinGitHubActionDigests"],
 	"rangeStrategy": "pin",
 	"automergeStrategy": "squash",
+	"major": {
+		"dependencyDashboardApproval": true
+	},
 	"packageRules": [
 		{
 			"matchUpdateTypes": ["pin", "digest"],
