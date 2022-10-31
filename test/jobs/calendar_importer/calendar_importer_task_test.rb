@@ -85,4 +85,25 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 4, created_events.count
     end
   end
+
+  test 'can import DiceFM (ld+json) events when manually selected' do
+    VCR.use_cassette(:dice_fm_events, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'DiceFM calendar',
+        source: 'https://dice.fm/venue/folklore-2or7'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+
+      assert_equal 'idle', calendar.calendar_state
+      assert_equal 'dice-fm', calendar.importer_used
+
+      created_events = calendar.events
+      assert_equal 17, created_events.count
+    end
+  end
 end
