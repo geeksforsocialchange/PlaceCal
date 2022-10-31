@@ -12,7 +12,8 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::Eventbrite,
     CalendarImporter::Parsers::Meetup,
     CalendarImporter::Parsers::Squarespace,
-    CalendarImporter::Parsers::OutSavvy
+    CalendarImporter::Parsers::OutSavvy,
+    CalendarImporter::Parsers::DiceFm
   ].freeze
 
   def initialize(calendar)
