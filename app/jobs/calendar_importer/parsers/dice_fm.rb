@@ -42,10 +42,10 @@ module CalendarImporter::Parsers
 
     def import_events_from(data)
       records = JSON::LD::API
-        .expand(data)
+                .expand(data)
 
       place_record = records.find { |record| record['@type'].first == 'http://schema.org/Place' }
-      return [] unless place_record.present?
+      return [] if place_record.blank?
 
       events = place_record['http://schema.org/event']
 

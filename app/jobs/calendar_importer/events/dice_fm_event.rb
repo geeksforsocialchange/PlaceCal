@@ -9,6 +9,8 @@ module CalendarImporter::Events
     end
 
     def initialize(event_hash)
+      super event_hash
+
       event_hash.each do |key, value|
         case key
         when '@type'
@@ -32,10 +34,10 @@ module CalendarImporter::Events
 
         when 'http://schema.org/location'
           location = value.first
-          next unless location.present?
+          next if location.blank?
 
           address = location['http://schema.org/address']&.first
-          next unless address.present?
+          next if address.blank?
 
           @location = address['@value']
         end
