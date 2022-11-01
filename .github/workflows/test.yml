@@ -1,102 +1,60 @@
-name: Build, Test and Optionally Deploy
+name: Test
+
 on:
   - push
-  - workflow_dispatch
-
-# According to: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-# Both Node and Yarn should be installed already
-# This would ideally be split up into dependent jobs maybe, but this is a direct conversion of the travis script for now
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
-    env:
-      NODE_ENV: test
+    runs-on: ubuntu-latest
+
     services:
       postgres:
         image: postgres:13.4 # Same version as on the server
         env:
+          POSTGRES_PORT: 5432
           POSTGRES_DB: placecal_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: foobar
-          POSTGRES_PORT: 5432
         ports:
           - 5432:5432
-        options: >- # Health options to wait until postgres has started
+        options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      PGPASSWORD: foobar
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@latest
+      - uses: ruby/setup-ruby@v1
         with:
-          chrome-version: stable
+          bundler-cache: true
+          cache-version: 3
 
-      - name: Download Chrome driver
-        uses: nanasess/setup-chromedriver@master
+      - uses: nodenv/actions/setup-nodenv@v2
+      - uses: nodenv/actions/node-version@v2
+        id: nodenv
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.nodenv.outputs.node-version }}
+          cache: yarn
+      - run: yarn install --immutable
 
-      - name: Unzip and install chrome driver
-        run: |
-          export DISPLAY=:99
-          sudo Xvfb -ac ${DISPLAY} -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-          chromedriver --url-base=/wd/hub &
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with: # ruby version specified in .ruby-version
-          bundler-cache: true # Automagically runs bundle install
-          cache-version: 3 # Invalidate originally used corrupted cache
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - run: bin/test --unit --no-lint
+      - run: bin/test --system --no-lint
+      - run: bin/test --lint --no-fix
+      - if: failure()
+        name: Upload test screenshots
+        uses: actions/upload-artifact@v3
         with:
-          node-version: 16.14.2
-          # cache: yarn
-        env:
-          NODE_ENV: test
-      - name: Setup Yarn Dependencies
-        run: |
-          yarn install --immutable
-        env:
-          NODE_ENV: test
-      - name: Run unit tests
-        run: |
-          bin/test --unit --no-fix
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          PGPASSWORD: foobar
-      - name: Run system tests
-        run: |
-          bin/test --system --no-lint
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          PGPASSWORD: foobar
-      # Why was this run as the after-success step in travis?
-      # - name: Precompile Assets
-      #   run: |
-      #     bundle exec rails assets:precompile
-      - name: Deploy To Staging
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: dokku/github-action@master
-        with:
-          git_remote_url: "ssh://dokku@placecal-staging.org:666/placecal"
-          ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
-          branch: main
-          ci_branch_name: main
-      - name: Deploy To Production
-        if: ${{ github.ref == 'refs/heads/production' }}
-        uses: dokku/github-action@master
-        with:
-          git_remote_url: "ssh://dokku@placecal.org:666/placecal"
-          ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
-          branch: main
-          ci_branch_name: production
+          name: test-screenshots
+          path: tmp/screenshots/
+          if-no-files-found: ignore

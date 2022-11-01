@@ -6,11 +6,14 @@ class CalendarImporter::CalendarImporter
   class InaccessibleFeed < StandardError; end
 
   PARSERS = [
-    CalendarImporter::Parsers::ManchesterUni,
-    CalendarImporter::Parsers::Ticketsolve,
-    CalendarImporter::Parsers::Ics,
+    CalendarImporter::Parsers::DiceFm,
     CalendarImporter::Parsers::Eventbrite,
-    CalendarImporter::Parsers::Meetup
+    CalendarImporter::Parsers::Ics,
+    CalendarImporter::Parsers::ManchesterUni,
+    CalendarImporter::Parsers::Meetup,
+    CalendarImporter::Parsers::OutSavvy,
+    CalendarImporter::Parsers::Squarespace,
+    CalendarImporter::Parsers::Ticketsolve
   ].freeze
 
   def initialize(calendar)

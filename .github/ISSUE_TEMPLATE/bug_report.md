@@ -2,7 +2,9 @@
 name: Bug
 about: Create a bug report
 title: "[Bug]: "
-labels: bug
+labels:
+  - bug
+  - needs triage
 ---
 
 ## Description

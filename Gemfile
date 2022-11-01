@@ -35,6 +35,7 @@ gem 'eventbrite_sdk'
 gem 'httparty'
 gem 'icalendar'
 gem 'icalendar-recurrence'
+gem 'json-ld'
 
 # Uploads
 gem 'carrierwave'
@@ -88,6 +89,7 @@ gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
 gem 'sendgrid-actionmailer'
+gem 'uk_postcode'
 gem 'virtus'
 gem 'whenever', require: false
 
@@ -103,9 +105,6 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'graphiql-rails'
-  gem 'guard'
-  gem 'guard-livereload', '~> 2.5', require: false
-  gem 'guard-minitest'
   gem 'letter_opener'
   gem 'rails-erd'
   gem 'rubocop-graphql', require: false

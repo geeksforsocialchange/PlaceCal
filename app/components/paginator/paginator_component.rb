@@ -9,7 +9,7 @@ class PaginatorComponent < MountainView::Presenter
   DEFAULT_STEPS = 7
 
   # Link array
-  def paginator # rubocop:disable Metrics/AbcSize
+  def paginator
     pages = []
     # Create backward arrow link
     pages << { text: back_arrow,
