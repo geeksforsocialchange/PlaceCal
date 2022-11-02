@@ -2,9 +2,12 @@ name: Deploy to staging
 
 on:
   workflow_run:
-    branches: [main]
-    workflows: [Test]
-    types: [completed]
+    branches:
+      - main
+    workflows:
+      - Test
+    types:
+      - completed
 
 jobs:
   deploy:
