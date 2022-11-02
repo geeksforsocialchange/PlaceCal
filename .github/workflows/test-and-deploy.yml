@@ -4,7 +4,7 @@ on:
   - push
 
 jobs:
-  test:
+  test-and-deploy:
     runs-on: ubuntu-latest
 
     services:
@@ -60,6 +60,7 @@ jobs:
           if-no-files-found: ignore
 
       - if: github.ref == 'refs/heads/main'
+        name: Deploy to placecal-staging.org
         uses: dokku/github-action@v1.3.0
         with:
           branch: main
@@ -68,6 +69,7 @@ jobs:
           ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
 
       - if: github.ref == 'refs/heads/production'
+        name: Deploy to placecal.org
         uses: dokku/github-action@v1.3.0
         with:
           branch: main
