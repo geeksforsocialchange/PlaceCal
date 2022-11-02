@@ -1,4 +1,4 @@
-name: Test
+name: Test and maybe deploy
 
 on:
   - push
@@ -31,6 +31,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -56,3 +58,19 @@ jobs:
           name: test-screenshots
           path: tmp/screenshots/
           if-no-files-found: ignore
+
+      - if: github.ref == 'refs/heads/main'
+        uses: dokku/github-action@v1.3.0
+        with:
+          branch: main
+          ci_branch_name: main
+          git_remote_url: "ssh://dokku@placecal-staging.org:666/placecal"
+          ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
+
+      - if: github.ref == 'refs/heads/production'
+        uses: dokku/github-action@v1.3.0
+        with:
+          branch: main
+          ci_branch_name: production
+          git_remote_url: "ssh://dokku@placecal.org:666/placecal"
+          ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
