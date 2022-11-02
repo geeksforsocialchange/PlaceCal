@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: production
+          fetch-depth: 0
       - uses: dokku/github-action@v1.3.0
         with:
           git_remote_url: "ssh://dokku@placecal.org:666/placecal"
