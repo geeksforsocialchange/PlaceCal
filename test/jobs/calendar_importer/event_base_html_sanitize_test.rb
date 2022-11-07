@@ -23,9 +23,12 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
 
   test 'returns content if HTML is input' do
     input = <<-HTML
-      <h1>A title!</h1>
+      <h1 id="title">A title!</h1>
       <p>This is input</p>
-      <p>Another Paragraph</p>
+      <p class="content">
+        Another Paragraph. <a href="http://example.com/thing">A link</a>
+      </p>
+
       <ul>
         <li>One</li>
         <li>Two</li>
@@ -41,11 +44,15 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
 
       This is input
 
-      Another Paragraph
+      Another Paragraph. [A link][1]
 
       * One
       * Two
       * Three
+
+
+
+      [1]: http://example.com/thing
     MARKDOWN
 
     assert_equal expected_output.strip, output
