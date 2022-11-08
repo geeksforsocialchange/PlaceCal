@@ -27,7 +27,7 @@ module CalendarImporter::Events
     # Convert h1 and h2 to h3
     # Strip out all shady tags
     # Convert all html to markdown
-    def html_sanitize(input)
+    def html_sanitize(input, just_as_text: false)
       input = input.to_s.strip
       return '' if input.blank?
 
@@ -37,37 +37,44 @@ module CalendarImporter::Events
 
       # do we have HTML? yeah let's get rid of that
       doc = Nokogiri::HTML.fragment(clean_text)
-      if doc.css('*').length.positive?
-        input_mode = 'html'
-        # looks like HTML to us
+      if just_as_text
+        clean_text = doc.text
 
-        # if doc.errors.any? # this could be useful?
-        #  puts 'errors found:'
-        #  puts doc.errors
-        #  return ''
-        # end
+      else
+        tags = doc.css('*')
 
-        doc.css('h1', 'h2').each { |header| header.name = 'h3' }
+        if tags.present?
+          input_mode = 'html'
+          # looks like HTML to us
 
-        # if we get HTML then remove all the attributes from all of
-        # the tags so it doesn't interfere with the kramdown step
-        doc.css('*').each do |tag|
-          # rubocop:disable Style/HashEachMethods
-          tag.keys.each do |attribute_name|
-            next if tag.name == 'a' && attribute_name == 'href'
+          # if doc.errors.any? # this could be useful?
+          #  puts 'errors found:'
+          #  puts doc.errors
+          #  return ''
+          # end
 
-            tag.remove_attribute attribute_name
+          doc.css('h1', 'h2').each { |header| header.name = 'h3' }
+
+          # if we get HTML then remove all the attributes from all of
+          # the tags so it doesn't interfere with the kramdown step
+          doc.css('*').each do |tag|
+            # rubocop:disable Style/HashEachMethods
+            tag.keys.each do |attribute_name|
+              next if tag.name == 'a' && attribute_name == 'href'
+
+              tag.remove_attribute attribute_name
+            end
+            # rubocop:enable Style/HashEachMethods
           end
-          # rubocop:enable Style/HashEachMethods
-        end
 
-        if footer.present?
-          doc << '<br/><br/>'
-          doc << footer
-        end
+          if footer.present?
+            doc << '<br/><br/>'
+            doc << footer
+          end
 
-        body_text = doc.serialize
-        clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
+          body_text = doc.serialize
+          clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
+        end
       end
 
       # convert HTML tags into markdown kramdown
@@ -76,7 +83,8 @@ module CalendarImporter::Events
 
     def attributes
       { uid: uid&.strip,
-        summary: sanitize_invalid_char(summary),
+        summary: html_sanitize(summary,
+                               just_as_text: true),
         description: html_sanitize(description),
         raw_location_from_source: location&.strip,
         rrule: rrule,
