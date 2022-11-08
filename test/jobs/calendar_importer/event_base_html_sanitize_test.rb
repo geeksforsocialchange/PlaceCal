@@ -106,6 +106,16 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
     assert_equal input, output
   end
 
+  test 'it can filter out &amp; type HTML entities' do
+    event = EventBase.new(nil)
+
+    bad_text = '<p>VFD PRESENTS: Queer Comedy Nights // Britney &amp; Sarah Kendall</p>'
+    output = event.html_sanitize(bad_text, just_as_text: true)
+
+    clean_text = 'VFD PRESENTS: Queer Comedy Nights // Britney & Sarah Kendall'
+    assert_equal clean_text, output
+  end
+
   #  test 'cleans out non utf-8 input' do
   #    # pulled from https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
   #    input = '��This is a �����bad string�����'
