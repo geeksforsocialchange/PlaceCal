@@ -2,7 +2,30 @@
 
 module CalendarImporter::Events
   class OutSavvyEvent < Base
-    ALLOWED_EVENT_TYPES = %w[Event VisualArtsEvent SocialEvent DanceEvent].freeze
+    ALLOWED_EVENT_TYPES = %w[
+      Event
+      BusinessEvent
+      ChildrensEvent
+      ComedyEvent
+      CourseInstance
+      DanceEvent
+      DeliveryEvent
+      EducationEvent
+      EventSeries
+      ExhibitionEvent
+      Festival
+      FoodEvent
+      Hackathon
+      LiteraryEvent
+      MusicEvent
+      PublicationEvent
+      SaleEvent
+      ScreeningEvent
+      SocialEvent
+      SportsEvent
+      TheaterEvent
+      VisualArtsEvent
+    ].freeze
 
     attr_reader :full_type, :uid, :summary, :description, :dtstart, :dtend, :location
 
