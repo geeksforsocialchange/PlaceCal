@@ -110,7 +110,7 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
     event = EventBase.new(nil)
 
     bad_text = '<p>VFD PRESENTS: Queer Comedy Nights // Britney &amp; Sarah Kendall</p>'
-    output = event.html_sanitize(bad_text, just_as_text: true)
+    output = event.html_sanitize(bad_text, as_plaintext: true)
 
     clean_text = 'VFD PRESENTS: Queer Comedy Nights // Britney & Sarah Kendall'
     assert_equal clean_text, output

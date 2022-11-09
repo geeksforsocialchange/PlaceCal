@@ -27,7 +27,7 @@ module CalendarImporter::Events
     # Convert h1 and h2 to h3
     # Strip out all shady tags
     # Convert all html to markdown
-    def html_sanitize(input, just_as_text: false)
+    def html_sanitize(input, as_plaintext: false)
       input = input.to_s.strip
       return '' if input.blank?
 
@@ -37,7 +37,7 @@ module CalendarImporter::Events
 
       # do we have HTML? yeah let's get rid of that
       doc = Nokogiri::HTML.fragment(clean_text)
-      if just_as_text
+      if as_plaintext
         clean_text = doc.text
 
       else
@@ -84,7 +84,7 @@ module CalendarImporter::Events
     def attributes
       { uid: uid&.strip,
         summary: html_sanitize(summary,
-                               just_as_text: true),
+                               as_plaintext: true),
         description: html_sanitize(description),
         raw_location_from_source: location&.strip,
         rrule: rrule,
