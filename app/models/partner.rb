@@ -132,7 +132,7 @@ class Partner < ApplicationRecord
     end
 
     # now look for addresses and service areas
-    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
+    site_neighbourhood_ids = site.owned_neighbourhood_ids
 
     # skip everything if site has no neighbourhoods
     return none if site_neighbourhood_ids.empty?
@@ -157,7 +157,7 @@ class Partner < ApplicationRecord
             .where(partner_tags: { tag: tag })
 
     # now look for addresses and service areas
-    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
+    site_neighbourhood_ids = site.owned_neighbourhood_ids
 
     # skip everything if site has no neighbourhoods
     return none if site_neighbourhood_ids.empty?
