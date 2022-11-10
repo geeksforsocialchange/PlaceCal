@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'fileutils'
 
 # path to your application root.
@@ -8,27 +10,23 @@ APP_ROOT = File.expand_path('..', __dir__)
 
 def process_argv(option)
   case option
-  when "-h"
-  when "--help"
-    puts "Run the tests."
-    puts "  -u, --unit    Run unit tests"
-    puts "  -s, --system  Run system tests"
-    puts "  -l, --lint    Run linters and formatters"
-    puts "  --no-lint     Disable linters and formatters"
-    puts "  --no-fix      Lint and format without autocorrection"
+  when '-h', '--help'
+    puts 'Run the tests.'
+    puts '  -u, --unit    Run unit tests'
+    puts '  -s, --system  Run system tests'
+    puts '  -l, --lint    Run linters and formatters'
+    puts '  --no-lint     Disable linters and formatters'
+    puts '  --no-fix      Lint and format without autocorrection'
     exit
-  when "-u"
-  when "--unit"
+  when '-u', '--unit'
     @options[:unit_only] = true
-  when "-s"
-  when "--system"
+  when '-s', '--system'
     @options[:system_only] = true
-  when "-l"
-  when "--lint"
+  when '-l', '--lint'
     @options[:lint_only] = true
-  when "--no-lint"
+  when '--no-lint'
     @options[:without_lint] = true
-  when "--no-fix"
+  when '--no-fix'
     @options[:without_fix] = true
   end
 end
@@ -56,6 +54,7 @@ FileUtils.chdir APP_ROOT do
     puts "\n== Running system tests =="
     system! 'bin/rails test:system'
   elsif @options[:lint_only]
+    # Do nothing
   else
     puts "\n== Running all tests =="
     system! 'bin/rails test:all'
