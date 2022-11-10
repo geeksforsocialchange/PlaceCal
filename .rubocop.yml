@@ -9,6 +9,11 @@ require:
 
 AllCops:
   NewCops: enable
+  Exclude:
+    - "node_modules/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
+    - ".git/**/*"
 
 GraphQL/FieldName:
   Enabled: false
