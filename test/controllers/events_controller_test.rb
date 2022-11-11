@@ -89,4 +89,36 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     events = assigns(:events).values.first
     assert_equal(5, events.length)
   end
+
+  test 'events meta descriptions contain no markup' do
+    description_markdown = <<~MD
+      ### Test Event heading
+
+      Paragrpahy with [link](www.placecal.org)
+
+      **Strong text with class**{: class=""}
+    MD
+
+    description_plain = <<~PLAIN
+      Test Event heading
+
+      Paragrpahy with link
+
+      Strong text with class
+    PLAIN
+
+    @events[0].description = description_markdown
+    @events[0].save
+
+    get from_site_slug(@default_site, event_path(@events[0]))
+    assert_response :success
+
+    assert_select 'meta[property="og:description"]' do |element|
+      assert_equal description_plain, element.attr('content').to_s
+    end
+
+    assert_select 'meta[name="twitter:description"]' do |element|
+      assert_equal description_plain, element.attr('content').to_s
+    end
+  end
 end

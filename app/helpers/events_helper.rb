@@ -31,4 +31,8 @@ module EventsHelper
               class: 'btn btn-primary').html_safe
     end
   end
+
+  def html_to_plaintext(input)
+    Nokogiri::HTML.fragment(input).text
+  end
 end
