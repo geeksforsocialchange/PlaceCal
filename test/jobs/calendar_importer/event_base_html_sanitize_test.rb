@@ -23,9 +23,12 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
 
   test 'returns content if HTML is input' do
     input = <<-HTML
-      <h1>A title!</h1>
+      <h1 id="title">A title!</h1>
       <p>This is input</p>
-      <p>Another Paragraph</p>
+      <p class="content">
+        Another Paragraph. <a href="http://example.com/thing">A link</a>
+      </p>
+
       <ul>
         <li>One</li>
         <li>Two</li>
@@ -41,11 +44,15 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
 
       This is input
 
-      Another Paragraph
+      Another Paragraph. [A link][1]
 
       * One
       * Two
       * Three
+
+
+
+      [1]: http://example.com/thing
     MARKDOWN
 
     assert_equal expected_output.strip, output
@@ -97,6 +104,16 @@ class EventBaseHtmlSanitizeTest < ActiveSupport::TestCase
     output = event.html_sanitize(input)
 
     assert_equal input, output
+  end
+
+  test 'it can filter out &amp; type HTML entities' do
+    event = EventBase.new(nil)
+
+    bad_text = '<p>VFD PRESENTS: Queer Comedy Nights // Britney &amp; Sarah Kendall</p>'
+    output = event.html_sanitize(bad_text, as_plaintext: true)
+
+    clean_text = 'VFD PRESENTS: Queer Comedy Nights // Britney & Sarah Kendall'
+    assert_equal clean_text, output
   end
 
   #  test 'cleans out non utf-8 input' do

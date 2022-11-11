@@ -2,6 +2,31 @@
 
 module CalendarImporter::Events
   class OutSavvyEvent < Base
+    ALLOWED_EVENT_TYPES = %w[
+      Event
+      BusinessEvent
+      ChildrensEvent
+      ComedyEvent
+      CourseInstance
+      DanceEvent
+      DeliveryEvent
+      EducationEvent
+      EventSeries
+      ExhibitionEvent
+      Festival
+      FoodEvent
+      Hackathon
+      LiteraryEvent
+      MusicEvent
+      PublicationEvent
+      SaleEvent
+      ScreeningEvent
+      SocialEvent
+      SportsEvent
+      TheaterEvent
+      VisualArtsEvent
+    ].freeze
+
     attr_reader :full_type, :uid, :summary, :description, :dtstart, :dtend, :location
 
     def self.extract_location(value)
@@ -46,7 +71,7 @@ module CalendarImporter::Events
     end
 
     def event_record?
-      type == 'Event' || type == 'VisualArtsEvent'
+      ALLOWED_EVENT_TYPES.include? type
     end
 
     def place
