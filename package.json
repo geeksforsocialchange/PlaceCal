@@ -10,7 +10,7 @@
 		"@hotwired/stimulus": "^3.0.1",
 		"@hotwired/turbo-rails": "^7.1.1",
 		"@nathanvda/cocoon": "^1.2.14",
-		"@rails/ujs": "^6.0.2",
+		"@rails/ujs": "6.1.7",
 		"ansi-regex": "4.1.1",
 		"async": "2.6.4",
 		"axios": "^0.24.0",
