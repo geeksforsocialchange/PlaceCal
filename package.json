@@ -18,7 +18,7 @@
 		"jquery": "3.6.1",
 		"leaflet": "1.8.0",
 		"lodash": "4.17.21",
-		"minimist": "1.2.6",
+		"minimist": "1.2.7",
 		"popper.js": "1.16.1",
 		"sass": "1.51.0",
 		"select2": "4.0.13",
