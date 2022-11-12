@@ -42,7 +42,7 @@ gem 'carrierwave'
 gem 'image_processing'
 
 # Admin
-gem 'bootstrap', '~> 4.4.1'
+gem 'bootstrap', '4.6.2'
 gem 'cocoon'
 gem 'font-awesome-rails'
 gem 'select2-rails'
