@@ -155,7 +155,7 @@ GEM
       railties (>= 3.2)
     enumerize (2.5.0)
       activesupport (>= 3.2)
-    erubi (1.10.0)
+    erubi (1.11.0)
     eventbrite_sdk (3.6.0)
       rest-client (~> 2.0)
     execjs (2.8.1)
@@ -264,7 +264,7 @@ GEM
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.18.0)
+    loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -278,7 +278,7 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.16.2)
+    minitest (5.16.3)
     minitest-rails (6.1.0)
       minitest (~> 5.10)
       railties (~> 6.1.0)
@@ -515,7 +515,7 @@ GEM
       nokogiri (~> 1.8)
     yard (0.9.28)
       webrick (~> 1.7.0)
-    zeitwerk (2.6.0)
+    zeitwerk (2.6.6)
 
 PLATFORMS
   ruby
@@ -575,7 +575,7 @@ DEPENDENCIES
   puma (~> 5)
   pundit
   rack-cors
-  rails (~> 6.1.6.1)
+  rails (= 6.1.6.1)
   rails-controller-testing
   rails-erd
   rails_autolink
