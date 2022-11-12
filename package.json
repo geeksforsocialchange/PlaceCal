@@ -2,10 +2,6 @@
 	"name": "placecal",
 	"version": "2.0.0",
 	"private": true,
-	"engines": {
-		"node": ">= 16.x <17",
-		"yarn": ">= 1.x"
-	},
 	"dependencies": {
 		"@hotwired/stimulus": "^3.0.1",
 		"@hotwired/turbo-rails": "^7.1.1",

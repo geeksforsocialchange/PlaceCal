@@ -3,6 +3,7 @@
 	"extends": ["config:base", "helpers:pinGitHubActionDigests"],
 	"rangeStrategy": "pin",
 	"automergeStrategy": "squash",
+	"platformAutomerge": true,
 	"major": {
 		"dependencyDashboardApproval": true
 	},
@@ -14,6 +15,7 @@
 		{
 			"matchDatasources": ["bundler", "npm"],
 			"matchUpdateTypes": ["minor", "patch"],
+			"matchCurrentVersion": "!/^0/",
 			"automerge": true
 		},
 		{
