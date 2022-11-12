@@ -380,7 +380,7 @@ GEM
       thor (~> 1.0)
     rainbow (3.1.1)
     rake (13.0.6)
-    rb-fsevent (0.11.1)
+    rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rdf (3.2.9)
@@ -531,10 +531,10 @@ DEPENDENCIES
   bootsnap
   bootstrap (= 4.6.2)
   byebug
-  capybara-select-2 (~> 0.5.1)
+  capybara-select-2 (= 0.5.1)
   carrierwave
   cocoon
-  coffee-rails (~> 5.0)
+  coffee-rails (= 5.0.0)
   delayed_job_active_record
   devise
   devise_invitable
@@ -543,8 +543,8 @@ DEPENDENCIES
   eventbrite_sdk
   factory_bot_rails
   font-awesome-rails
-  friendly_id (~> 5.3.0)
-  geocoder (~> 1.6.0)
+  friendly_id (= 5.3.0)
+  geocoder (= 1.6.7)
   graphiql-rails
   graphql
   graphql-client
@@ -554,7 +554,7 @@ DEPENDENCIES
   icalendar-recurrence
   image_processing
   importmap-rails
-  jbuilder (~> 2.5)
+  jbuilder (= 2.11.5)
   jquery-rails
   jquery-turbolinks
   jsbundling-rails
@@ -563,7 +563,7 @@ DEPENDENCIES
   kramdown
   leaflet-rails
   letter_opener
-  listen (~> 3.2.0)
+  listen (= 3.2.1)
   minitest-rails
   minitest-rails-capybara
   minitest-reporters
@@ -572,35 +572,35 @@ DEPENDENCIES
   omniauth-facebook
   paper_trail
   pg
-  puma (~> 5)
+  puma (= 5.6.4)
   pundit
   rack-cors
   rails (= 6.1.6.1)
   rails-controller-testing
   rails-erd
   rails_autolink
-  redis (~> 4.0)
+  redis (= 4.6.0)
   rollbar
   rubocop-graphql
   rubocop-minitest
   rubocop-performance
   rubocop-rails
   rubocop-rake
-  sass-rails (~> 6.0)
+  sass-rails (= 6.0.0)
   seed_migration
   select2-rails
   selenium-webdriver
   sendgrid-actionmailer
   simple_form
   spring
-  spring-watcher-listen (~> 2.0.0)
+  spring-watcher-listen (= 2.0.1)
   stimulus-rails
   timecop
   turbo-rails
   uk_postcode
   vcr
   virtus
-  web-console (>= 3.3.0)
+  web-console (= 4.2.0)
   webmock
   whenever
   yard
