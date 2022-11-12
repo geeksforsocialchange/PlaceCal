@@ -3,6 +3,7 @@
 	"extends": ["config:base", "helpers:pinGitHubActionDigests"],
 	"rangeStrategy": "pin",
 	"automergeStrategy": "squash",
+	"platformAutomerge": true,
 	"major": {
 		"dependencyDashboardApproval": true
 	},
