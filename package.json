@@ -19,7 +19,7 @@
 		"datatables.net-bs4": "^1.11.5",
 		"esbuild": "^0.14.36",
 		"esbuild-rails": "^1.0.3",
-		"jquery": "^3.6.0",
+		"jquery": "3.6.1",
 		"leaflet": "^1.6.0",
 		"lodash": "^4.17.21",
 		"minimist": "1.2.6",
