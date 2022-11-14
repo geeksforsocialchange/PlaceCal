@@ -113,7 +113,7 @@ group :development do
   gem 'rubocop-rails', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
-  gem 'spring-watcher-listen', '2.0.1'
+  gem 'spring-watcher-listen', '2.1.0'
   gem 'web-console', '4.2.0'
   gem 'yard'
 end
