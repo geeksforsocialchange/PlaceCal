@@ -1,12 +1,20 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:base", "helpers:pinGitHubActionDigests"],
+	"extends": [
+		"config:base",
+		"helpers:pinGitHubActionDigests",
+		"schedule:nonOfficeHours"
+	],
 	"automergeStrategy": "squash",
 	"labels": ["dependencies"],
+	"lockFileMaintenance": {
+		"enabled": true
+	},
 	"major": {
 		"dependencyDashboardApproval": true
 	},
 	"rangeStrategy": "pin",
+	"timezone": "Europe/London",
 	"vulnerabilityAlerts": {
 		"labels": ["security"]
 	},
@@ -16,13 +24,13 @@
 			"automerge": true
 		},
 		{
-			"matchDatasources": ["bundler", "npm"],
+			"matchManagers": ["bundler", "npm"],
 			"matchUpdateTypes": ["minor", "patch"],
 			"matchCurrentVersion": ">=1.0.0",
 			"automerge": true
 		},
 		{
-			"matchDatasources": ["nodenv"],
+			"matchManagers": ["nodenv"],
 			"matchUpdateTypes": ["patch"],
 			"automerge": true
 		},
