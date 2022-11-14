@@ -3,6 +3,9 @@
 	"extends": ["config:base", "helpers:pinGitHubActionDigests"],
 	"automergeStrategy": "squash",
 	"labels": ["dependencies"],
+	"lockFileMaintenance": {
+		"enabled": true
+	},
 	"major": {
 		"dependencyDashboardApproval": true
 	},
