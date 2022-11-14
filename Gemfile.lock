@@ -529,12 +529,12 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootsnap
-  bootstrap (= 4.6.2)
+  bootstrap
   byebug
-  capybara-select-2 (= 0.5.1)
+  capybara-select-2
   carrierwave
   cocoon
-  coffee-rails (= 5.0.0)
+  coffee-rails
   delayed_job_active_record
   devise
   devise_invitable
@@ -543,8 +543,8 @@ DEPENDENCIES
   eventbrite_sdk
   factory_bot_rails
   font-awesome-rails
-  friendly_id (= 5.3.0)
-  geocoder (= 1.6.7)
+  friendly_id
+  geocoder
   graphiql-rails
   graphql
   graphql-client
@@ -554,7 +554,7 @@ DEPENDENCIES
   icalendar-recurrence
   image_processing
   importmap-rails
-  jbuilder (= 2.11.5)
+  jbuilder
   jquery-rails
   jquery-turbolinks
   jsbundling-rails
@@ -563,7 +563,7 @@ DEPENDENCIES
   kramdown
   leaflet-rails
   letter_opener
-  listen (= 3.2.1)
+  listen
   minitest-rails
   minitest-rails-capybara
   minitest-reporters
@@ -572,14 +572,14 @@ DEPENDENCIES
   omniauth-facebook
   paper_trail
   pg
-  puma (= 5.6.5)
+  puma
   pundit
   rack-cors
-  rails (= 6.1.7)
+  rails
   rails-controller-testing
   rails-erd
   rails_autolink
-  redis (= 4.6.0)
+  redis
   rollbar
   rubocop-graphql
   rubocop-minitest
@@ -593,14 +593,14 @@ DEPENDENCIES
   sendgrid-actionmailer
   simple_form
   spring
-  spring-watcher-listen (= 2.0.1)
+  spring-watcher-listen
   stimulus-rails
   timecop
   turbo-rails
   uk_postcode
   vcr
   virtus
-  web-console (= 4.2.0)
+  web-console
   webmock
   whenever
   yard
