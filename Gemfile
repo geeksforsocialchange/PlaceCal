@@ -84,7 +84,7 @@ gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id', '5.3.0'
 gem 'jbuilder', '2.11.5'
-gem 'listen', '3.2.1'
+gem 'listen', '3.7.1'
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
