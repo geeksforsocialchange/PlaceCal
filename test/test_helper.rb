@@ -30,6 +30,14 @@ end
 
 module ActiveSupport
   class TestCase
+    setup do
+      Timecop.freeze(Time.zone.local(2022, 11, 8))
+    end
+
+    teardown do
+      Timecop.return
+    end
+
     include FactoryBot::Syntax::Methods
 
     # parallelize(workers: :number_of_processors)

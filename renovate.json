@@ -1,11 +1,14 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:base", "helpers:pinGitHubActionDigests"],
-	"rangeStrategy": "pin",
 	"automergeStrategy": "squash",
-	"platformAutomerge": true,
+	"labels": ["dependencies"],
 	"major": {
 		"dependencyDashboardApproval": true
+	},
+	"rangeStrategy": "pin",
+	"vulnerabilityAlerts": {
+		"labels": ["security"]
 	},
 	"packageRules": [
 		{
@@ -15,7 +18,7 @@
 		{
 			"matchDatasources": ["bundler", "npm"],
 			"matchUpdateTypes": ["minor", "patch"],
-			"matchCurrentVersion": "!/^0/",
+			"matchCurrentVersion": ">=1.0.0",
 			"automerge": true
 		},
 		{

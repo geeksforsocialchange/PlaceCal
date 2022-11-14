@@ -224,9 +224,9 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
   # this should mainly be tested elsewhere
   #   (the same place service area scoping is tested)
   test 'can scope to neighbourhood (via partner address)' do
-    3.times do
+    3.times do |n|
       @partner.events.create!(
-        dtstart: DateTime.now + 1.hour,
+        dtstart: DateTime.now + (n + 1).hour,
         summary: 'partner 1: An event summary',
         description: 'Longer text covering the event in more detail',
         address: @address
@@ -236,9 +236,9 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     other_address = create(:bare_address_2, neighbourhood: neighbourhoods(:two))
     other_partner = create(:moss_side_partner, address: other_address)
 
-    5.times do
+    5.times do |n|
       other_partner.events.create!(
-        dtstart: DateTime.now + 1.hour,
+        dtstart: DateTime.now + (n + 1).hour,
         summary: 'partner 2: An event summary',
         description: 'Longer text covering the event in more detail',
         address: other_address
@@ -272,9 +272,9 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     @partner.service_areas.create! neighbourhood: neighbourhood_good
     @partner.update! address: nil
 
-    5.times do
+    5.times do |n|
       @partner.events.create!(
-        dtstart: DateTime.now + 1.hour,
+        dtstart: DateTime.now + (n + 1).hour,
         summary: 'partner in good neighbourhood: An event summary',
         description: 'Longer text covering the event in more detail',
         address: @address
@@ -285,9 +285,9 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     other_partner.service_areas.build neighbourhood: neighbourhood_bad
     other_partner.save!
 
-    3.times do
+    3.times do |n|
       other_partner.events.create!(
-        dtstart: DateTime.now + 1.hour,
+        dtstart: DateTime.now + (n + 1).hour,
         summary: 'partner in bad neighbourhood: An event summary',
         description: 'Longer text covering the event in more detail',
         address: create(:bare_address_2)
