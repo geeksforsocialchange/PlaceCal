@@ -7,30 +7,21 @@
 		"@hotwired/turbo-rails": "7.2.4",
 		"@nathanvda/cocoon": "1.2.14",
 		"@rails/ujs": "6.1.7",
-		"ansi-regex": "4.1.1",
-		"async": "2.6.4",
-		"axios": "0.27.2",
 		"bootstrap": "4.6.2",
-		"cocoon": "0.1.1",
 		"datatables.net-bs4": "1.13.1",
 		"esbuild": "0.15.13",
 		"esbuild-rails": "1.0.3",
 		"jquery": "3.6.1",
 		"leaflet": "1.9.2",
 		"lodash": "4.17.21",
-		"minimist": "1.2.7",
 		"popper.js": "1.16.1",
 		"sass": "1.51.0",
-		"select2": "4.0.13",
-		"yarn": "1.22.19"
+		"select2": "4.0.13"
 	},
 	"devDependencies": {
 		"husky": "8.0.2",
 		"lint-staged": "13.0.3",
 		"prettier": "2.7.1"
-	},
-	"peerDependencies": {
-		"postcss": "8.4.19"
 	},
 	"scripts": {
 		"build": "node esbuild.config.js",
