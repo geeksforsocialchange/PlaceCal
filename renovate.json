@@ -8,6 +8,9 @@
 	"major": {
 		"dependencyDashboardApproval": true
 	},
+	"vulnerabilityAlerts": {
+		"labels": ["security"]
+	},
 	"packageRules": [
 		{
 			"matchUpdateTypes": ["pin", "digest"],
