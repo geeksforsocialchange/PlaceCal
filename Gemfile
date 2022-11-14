@@ -82,7 +82,7 @@ gem 'seed_migration'
 gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'enumerize'
-gem 'friendly_id', '5.3.0'
+gem 'friendly_id', '5.4.2'
 gem 'jbuilder', '2.11.5'
 gem 'listen', '3.2.1'
 gem 'oj'
