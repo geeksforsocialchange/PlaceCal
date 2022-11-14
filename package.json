@@ -9,7 +9,7 @@
 		"@rails/ujs": "6.1.7",
 		"ansi-regex": "4.1.1",
 		"async": "2.6.4",
-		"axios": "0.24.0",
+		"axios": "0.27.2",
 		"bootstrap": "4.6.2",
 		"cocoon": "0.1.1",
 		"datatables.net-bs4": "1.11.5",
