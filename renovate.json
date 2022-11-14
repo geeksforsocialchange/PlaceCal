@@ -6,7 +6,6 @@
 	"major": {
 		"dependencyDashboardApproval": true
 	},
-	"platformAutomerge": true,
 	"rangeStrategy": "pin",
 	"vulnerabilityAlerts": {
 		"labels": ["security"]
