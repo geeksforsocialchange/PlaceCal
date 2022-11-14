@@ -1,0 +1,33 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:base", "helpers:pinGitHubActionDigests"],
+	"rangeStrategy": "pin",
+	"automergeStrategy": "squash",
+	"platformAutomerge": true,
+	"major": {
+		"dependencyDashboardApproval": true
+	},
+	"packageRules": [
+		{
+			"matchUpdateTypes": ["pin", "digest"],
+			"automerge": true
+		},
+		{
+			"matchDatasources": ["bundler", "npm"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"matchCurrentVersion": "!/^0/",
+			"automerge": true
+		},
+		{
+			"matchDatasources": ["nodenv"],
+			"matchUpdateTypes": ["patch"],
+			"automerge": true
+		},
+		{
+			"matchDatasources": ["docker"],
+			"matchPackageNames": ["postgres"],
+			"matchCurrentVersion": "13.4",
+			"allowedVersions": "13.4"
+		}
+	]
+}
