@@ -98,7 +98,7 @@ class Address < ApplicationRecord
       address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
       return address if address
 
-      ukpc = UKPostcode.parse(postcode)
+      ukpc = UKPostcode.parse(postcode.to_s)
 
       if ukpc.full_valid?
         address = Address.find_by(postcode: ukpc.to_s)

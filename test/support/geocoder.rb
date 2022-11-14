@@ -125,3 +125,45 @@ Geocoder::Lookup::Test.add_stub(
     }
   ]
 )
+
+Geocoder::Lookup::Test.add_stub(
+  'W1J 7NF', [
+    { 'postcode' => 'W1J 7NF',
+      'quality' => 1,
+      'eastings' => 528_846,
+      'northings' => 180_187,
+      'country' => 'England',
+      'nhs_ha' => 'London',
+      'longitude' => -0.144903,
+      'latitude' => 51.505935,
+      'european_electoral_region' => 'London',
+      'primary_care_trust' => 'Westminster',
+      'region' => 'London',
+      'lsoa' => 'Westminster 018D',
+      'msoa' => 'Westminster 018',
+      'incode' => '7NF',
+      'outcode' => 'W1J',
+      'parliamentary_constituency' => 'Cities of London and Westminster',
+      'admin_district' => 'Westminster',
+      'parish' => 'Westminster, unparished area',
+      'admin_county' => nil,
+      'admin_ward' => 'West End',
+      'ced' => nil,
+      'ccg' => 'NHS North West London',
+      'nuts' => 'Westminster',
+      'codes' => {
+        'admin_district' => 'E09000033',
+        'admin_county' => 'E99999999',
+        'admin_ward' => 'E05013808',
+        'parish' => 'E43000236',
+        'parliamentary_constituency' => 'E14000639',
+        'ccg' => 'E38000256',
+        'ccg_id' => 'W2U3Z',
+        'ced' => 'E99999999',
+        'nuts' => 'TLI32',
+        'lsoa' => 'E01004761',
+        'msoa' => 'E02000977',
+        'lau2' => 'E09000033'
+      } }
+  ]
+)
