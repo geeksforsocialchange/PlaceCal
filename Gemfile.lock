@@ -385,7 +385,7 @@ GEM
       ffi (~> 1.0)
     rdf (3.2.9)
       link_header (~> 0.0, >= 0.0.8)
-    redis (4.6.0)
+    redis (4.8.0)
     regexp_parser (2.5.0)
     request_store (1.5.1)
       rack (>= 1.4)
@@ -579,7 +579,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   rails_autolink
-  redis (= 4.6.0)
+  redis (= 4.8.0)
   rollbar
   rubocop-graphql
   rubocop-minitest
