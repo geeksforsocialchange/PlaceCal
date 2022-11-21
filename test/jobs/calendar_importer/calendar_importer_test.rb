@@ -168,6 +168,25 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
     end
   end
 
+  #  test 'imports DiceFM events from ld+json source' do
+  #    url = 'https://robin-cunningham-dh7d.squarespace.com/our-events/'
+  #
+  #    VCR.use_cassette('Squarespace calendar', allow_playback_repeats: true) do
+  #      calendar = create(:calendar, name: 'VFD - squarespace', source: url)
+  #
+  #      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+  #      output = parser_class.new(calendar).calendar_to_events
+  #      events = output.events
+  #      first_event = events.first
+  #      last_event = events.last
+  #
+  #      assert_equal 16, events.count
+  #      assert_equal 'crazinsT artisT: Before Dawn', first_event.summary
+  #      assert_equal 'The Matrix: Dance Dance Revolutions', last_event.summary
+  #    end
+  #
+  #  end
+
   test 'does not import if checksum is the same' do
     url = 'https://z-arts.ticketsolve.com/shows.xml'
     checksum = 'd1a94a9869af91d0548a1faf0ded91d7'
