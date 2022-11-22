@@ -5,7 +5,7 @@ class CalendarImporter::CalendarImporter
   class UnsupportedFeed < StandardError; end
   class InaccessibleFeed < StandardError; end
 
-  PARSERS = [
+  DETECTABLE_PARSERS = [
     CalendarImporter::Parsers::DiceFm,
     CalendarImporter::Parsers::Eventbrite,
     CalendarImporter::Parsers::Ics,
@@ -16,6 +16,11 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::Ticketsolve
   ].freeze
 
+  MANUAL_PARSERS = (DETECTABLE_PARSERS.dup.concat [
+    CalendarImporter::Parsers::LdJson
+    # CalendarImporter::Parsers::RssFeed
+  ]).freeze
+
   def initialize(calendar)
     @calendar = calendar
 
@@ -23,12 +28,22 @@ class CalendarImporter::CalendarImporter
   end
 
   def parser
-    @parser ||=
-      if @calendar.importer_mode == 'auto'
-        PARSERS.find { |parser| parser.handles_url?(@calendar.source) }
-      else
-        PARSERS.find { |parser| parser::KEY == @calendar.importer_mode }
+    return @parser if @parser
+
+    if @calendar.importer_mode == 'auto'
+      @parser = DETECTABLE_PARSERS.find { |parser| parser.handles_url?(@calendar.source) }
+
+      if @parser.blank?
+        # TODO: now try to detect ld+json
+        try_parser = CalendarImporter::Parsers::LdJson.new(@calendar)
+        nodes = try_parser.download_calendar
+        @parser = CalendarImporter::Parsers::LdJson if nodes.present?
       end
+
+      return @parser
+    end
+
+    @parser = MANUAL_PARSERS.find { |parser| parser::KEY == @calendar.importer_mode }
   end
 
   private

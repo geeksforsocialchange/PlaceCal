@@ -128,4 +128,26 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 3, created_events.count
     end
   end
+
+  test 'can import from generic ld+json source' do
+    VCR.use_cassette(:heart_of_torbay, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Generic LD+JSON Calendar',
+        source: 'https://www.heartoftorbaycic.com/events',
+        strategy: 'event'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+
+      assert_equal 'idle', calendar.calendar_state
+      assert_equal 'ld-json', calendar.importer_used
+
+      created_events = calendar.events
+      assert_equal 1, created_events.count
+    end
+  end
 end

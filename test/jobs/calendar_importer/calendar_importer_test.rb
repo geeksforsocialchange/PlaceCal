@@ -205,4 +205,27 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       assert_empty output.events
     end
   end
+
+  test 'auto detection can pick up ld+json source' do
+    url = 'https://www.heartoftorbaycic.com/events'
+
+    VCR.use_cassette(:heart_of_torbay) do
+      calendar = create(:calendar, name: 'Heart of Torbau', source: url, importer_mode: 'auto')
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      assert_equal 'ld-json', parser_class::KEY
+    end
+  end
+
+  test 'auto detection can cope with unhandled calendar sources' do
+    url = 'https://gfsc.studio' # no calendars here
+
+    VCR.use_cassette(:gfsc_studio) do
+      calendar = create(:calendar, name: 'GFSC Studio', source: url, importer_mode: 'auto')
+
+      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
+        CalendarImporter::CalendarImporter.new(calendar).parser
+      end
+    end
+  end
 end
