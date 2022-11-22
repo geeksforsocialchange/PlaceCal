@@ -13,5 +13,18 @@ module CalendarImporter::Parsers
     def self.whitelist_pattern
       %r{^https://dice\.fm/venue/*}
     end
+
+    def initialize(calendar, options)
+      Rails.logger.debug 'DiceFm#initialize'
+      options[:consumer_helper] = EventConsumer
+      super calendar, options
+    end
+
+    module EventConsumer
+      def consume_place(data)
+        Rails.logger.debug 'consume_place'
+        consume data['event']
+      end
+    end
   end
 end

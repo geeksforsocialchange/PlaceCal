@@ -19,8 +19,9 @@ class OutSavvyParserTest < ActiveSupport::TestCase
 
       # we are only checking for RDF records extracted from response
       records = parser.download_calendar
+
       assert records.is_a?(Array)
-      assert_equal 6, records.count
+      assert_equal 3, records.count
     end
   end
 end

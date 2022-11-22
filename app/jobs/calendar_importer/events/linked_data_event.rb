@@ -33,6 +33,7 @@ module CalendarImporter::Events
       return if loc.blank?
 
       @location = loc['address']
+      @location = @location['street_address'] if @location.is_a?(Hash)
       return if @location.blank?
 
       @uid = @url
