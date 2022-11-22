@@ -145,7 +145,6 @@ module CalendarImporter::Parsers
         if data.is_a?(Hash) # rubocop:disable Style/GuardClause
           graph = data['@graph']
           if graph.present?
-            Rails.logger.debug '@graph'
             graph.each do |graph_node|
               consume graph_node
             end
@@ -173,7 +172,7 @@ module CalendarImporter::Parsers
       end
 
       def validate_events
-        events.select!(&:valid?)
+        events.select! { |ev| ev.valid? && ev.in_future? }
       end
 
       def events
@@ -184,7 +183,6 @@ module CalendarImporter::Parsers
     def initialize(calendar, options = {})
       super calendar, options
       @consumer_helper = options[:consumer_helper]
-      Rails.logger.debug { "consumer_helper=#{@consumer_helper}" }
     end
 
     def download_calendar

@@ -11,6 +11,12 @@ module CalendarImporter::Events
       field_data['@value']
     end
 
+    def parse_timestamp(value)
+      DateTime.parse value.to_s
+    rescue Date::Error
+      nil
+    end
+
     def initialize(data)
       super data
 
@@ -20,10 +26,10 @@ module CalendarImporter::Events
       @description = data['description']
       return if @description.blank?
 
-      @start_time = read_value_of(data, 'start_date')
+      @start_time = parse_timestamp(read_value_of(data, 'start_date'))
       return if @start_time.blank?
 
-      @end_time = read_value_of(data, 'end_date')
+      @end_time = parse_timestamp(read_value_of(data, 'end_date'))
       return if @end_time.blank?
 
       @summary = data['name']
@@ -41,11 +47,15 @@ module CalendarImporter::Events
     end
 
     def attributes
-      valid? && super
+      valid? && in_future? && super
     end
 
     def valid?
       @is_valid
+    end
+
+    def in_future?
+      @start_time.present? && (@start_time > DateTime.now)
     end
 
     def occurrences_between(*)

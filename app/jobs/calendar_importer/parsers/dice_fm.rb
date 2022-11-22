@@ -14,8 +14,7 @@ module CalendarImporter::Parsers
       %r{^https://dice\.fm/venue/*}
     end
 
-    def initialize(calendar, options)
-      Rails.logger.debug 'DiceFm#initialize'
+    def initialize(calendar, options = {})
       options[:consumer_helper] = EventConsumer
       super calendar, options
     end
