@@ -10,7 +10,7 @@ module CalendarImporter::Parsers
     KEY = 'eventbrite'
     DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk].freeze
 
-    def self.whitelist_pattern
+    def self.allowlist_pattern
       %r{^https://www.eventbrite\.(com|co.uk)/o/[A-Za-z0-9-]+}
     end
 

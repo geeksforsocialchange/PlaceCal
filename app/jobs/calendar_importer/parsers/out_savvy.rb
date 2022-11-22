@@ -10,7 +10,7 @@ module CalendarImporter::Parsers
     KEY = 'out-savvy'
     DOMAINS = %w[www.outsavvy.com].freeze
 
-    def self.whitelist_pattern
+    def self.allowlist_pattern
       %r{^https://(www\.)?outsavvy\.com/organiser/.*}
     end
   end

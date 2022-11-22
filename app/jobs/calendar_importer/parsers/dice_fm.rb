@@ -10,7 +10,7 @@ module CalendarImporter::Parsers
     KEY = 'dice-fm'
     DOMAINS = %w[dice.fm].freeze
 
-    def self.whitelist_pattern
+    def self.allowlist_pattern
       %r{^https://dice\.fm/venue/*}
     end
 

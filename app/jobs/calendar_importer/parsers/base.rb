@@ -14,7 +14,7 @@ module CalendarImporter::Parsers
     Output = Struct.new(:events, :checksum)
 
     def self.handles_url?(url)
-      url =~ whitelist_pattern
+      url =~ allowlist_pattern
     end
 
     def initialize(calendar, options = {})
