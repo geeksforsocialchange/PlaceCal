@@ -6,7 +6,7 @@
 
 module CalendarImporter::Parsers
   class DiceFm < LdJson
-    NAME = 'Dice FM'
+    NAME = 'Dice FM (LD+JSON)'
     KEY = 'dice-fm'
     DOMAINS = %w[dice.fm].freeze
 
