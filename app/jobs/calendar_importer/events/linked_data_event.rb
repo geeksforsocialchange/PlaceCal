@@ -17,6 +17,15 @@ module CalendarImporter::Events
       nil
     end
 
+    def extract_location(data)
+      loc = data['location']
+      return if loc.blank?
+
+      address = loc['address']
+      address = address['street_address'] if address.is_a?(Hash)
+      address
+    end
+
     def initialize(data)
       super data
 
@@ -24,7 +33,7 @@ module CalendarImporter::Events
       return if @url.blank?
 
       @description = data['description']
-      return if @description.blank?
+      # return if @description.blank?
 
       @start_time = parse_timestamp(read_value_of(data, 'start_date'))
       return if @start_time.blank?
@@ -35,12 +44,8 @@ module CalendarImporter::Events
       @summary = data['name']
       return if @summary.blank?
 
-      loc = data['location']
-      return if loc.blank?
-
-      @location = loc['address']
-      @location = @location['street_address'] if @location.is_a?(Hash)
-      return if @location.blank?
+      @location = extract_location(data)
+      # return if @location.blank?
 
       @uid = @url
       @is_valid = true
