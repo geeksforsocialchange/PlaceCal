@@ -34,7 +34,6 @@ class CalendarImporter::CalendarImporter
       @parser = DETECTABLE_PARSERS.find { |parser| parser.handles_url?(@calendar.source) }
 
       if @parser.blank?
-        # TODO: now try to detect ld+json
         try_parser = CalendarImporter::Parsers::LdJson.new(@calendar)
         nodes = try_parser.download_calendar
         @parser = CalendarImporter::Parsers::LdJson if nodes.present?

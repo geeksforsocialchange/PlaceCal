@@ -21,7 +21,6 @@ module CalendarImporter::Parsers
 
     module EventConsumer
       def consume_place(data)
-        Rails.logger.debug 'consume_place'
         consume data['event']
       end
     end

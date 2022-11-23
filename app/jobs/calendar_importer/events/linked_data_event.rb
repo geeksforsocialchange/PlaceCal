@@ -30,25 +30,13 @@ module CalendarImporter::Events
       super data
 
       @url = data['url']
-      return if @url.blank?
-
       @description = data['description']
-      # return if @description.blank?
-
       @start_time = parse_timestamp(read_value_of(data, 'start_date'))
-      return if @start_time.blank?
-
       @end_time = parse_timestamp(read_value_of(data, 'end_date'))
-      return if @end_time.blank?
-
       @summary = data['name']
-      return if @summary.blank?
-
       @location = extract_location(data)
-      # return if @location.blank?
 
       @uid = @url
-      @is_valid = true
     end
 
     def attributes
@@ -56,7 +44,10 @@ module CalendarImporter::Events
     end
 
     def valid?
-      @is_valid
+      @url.present? &&
+        @start_time.present? &&
+        # @end_time.present &&
+        @summary.present?
     end
 
     def in_future?
