@@ -4,6 +4,9 @@ module CalendarImporter::Parsers
   class LdJson < Base
     NAME = 'LD+JSON'
     KEY = 'ld-json'
+
+    DOMAINS = ['various'].freeze
+
     CONTEXT = {
       'geo' => 'http://schema.org/geo',
       'location' => 'http://schema.org/location',
@@ -16,11 +19,11 @@ module CalendarImporter::Parsers
       'organiser' => 'http://schema.org/organizer',
       'event' => 'http://schema.org/event',
       'name' => 'http://schema.org/name',
+      'street_address' => 'http://schema.org/streetAddress',
 
       'logo_url' => { '@id' => 'http://schema.org/logo', '@type' => '@id' },
       'image_url' => { '@id' => 'http://schema.org/image', '@type' => '@id' },
-      'url' => { '@id' => 'http://schema.org/url', '@type' => '@id' },
-      'street_address' => 'http://schema.org/streetAddress'
+      'url' => { '@id' => 'http://schema.org/url', '@type' => '@id' }
     }.freeze
 
     class EventConsumer
@@ -125,7 +128,10 @@ module CalendarImporter::Parsers
       def consume_festival(data); end
       def consume_hackathon(data); end
 
-      def consume_place(data); end
+      def consume_place(data)
+        consume data['event']
+      end
+
       def consume_brand(data); end
       def consume_website(data); end
 
@@ -180,9 +186,18 @@ module CalendarImporter::Parsers
       end
     end
 
+    # the LD-JSON importer part
+
+    def self.handles_url?(calendar)
+      try_parser = new(calendar)
+      data = try_parser.download_calendar
+      events = try_parser.import_events_from(data)
+
+      events.present?
+    end
+
     def initialize(calendar, options = {})
       super calendar, options
-      @consumer_helper = options[:consumer_helper]
     end
 
     def download_calendar
@@ -202,7 +217,6 @@ module CalendarImporter::Parsers
 
     def import_events_from(data)
       consumer = EventConsumer.new
-      consumer.extend @consumer_helper if @consumer_helper.present?
       consumer.consume data
       consumer.validate_events
       consumer.events

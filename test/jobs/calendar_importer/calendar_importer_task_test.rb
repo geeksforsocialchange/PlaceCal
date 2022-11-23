@@ -44,7 +44,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
     end
   end
 
-  test 'manual selection workds' do
+  test 'manual selection works' do
     VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
       # set up the calendar with faulty data that we know will trip up
       #   the validations. we are testing the importer, not the model
@@ -62,48 +62,6 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
       assert_equal 'idle', calendar.calendar_state
       assert_equal 'ical', calendar.importer_used
-    end
-  end
-
-  test 'can import OutSavvy (ld+json) events when manually selected' do
-    VCR.use_cassette(:out_savvy_events, allow_playback_repeats: true) do
-      calendar = create(
-        :calendar,
-        name: 'OutSavvy calendar',
-        source: 'https://www.outsavvy.com/organiser/sappho-events'
-      )
-
-      calendar.update calendar_state: 'in_worker'
-
-      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
-      importer_task.run
-
-      assert_equal 'idle', calendar.calendar_state
-      assert_equal 'out-savvy', calendar.importer_used
-
-      created_events = calendar.events
-      assert_equal 4, created_events.count
-    end
-  end
-
-  test 'can import DiceFM (ld+json) events when manually selected' do
-    VCR.use_cassette(:dice_fm_events, allow_playback_repeats: true) do
-      calendar = create(
-        :calendar,
-        name: 'DiceFM calendar',
-        source: 'https://dice.fm/venue/folklore-2or7'
-      )
-
-      calendar.update calendar_state: 'in_worker'
-
-      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
-      importer_task.run
-
-      assert_equal 'idle', calendar.calendar_state
-      assert_equal 'dice-fm', calendar.importer_used
-
-      created_events = calendar.events
-      assert_equal 15, created_events.count
     end
   end
 
@@ -126,6 +84,48 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
       created_events = calendar.events
       assert_equal 3, created_events.count
+    end
+  end
+
+  test 'can import OutSavvy (ld+json) events when manually selected' do
+    VCR.use_cassette(:out_savvy_events, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'OutSavvy calendar',
+        source: 'https://www.outsavvy.com/organiser/sappho-events'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+
+      assert_equal 'idle', calendar.calendar_state
+      assert_equal 'ld-json', calendar.importer_used
+
+      created_events = calendar.events
+      assert_equal 4, created_events.count
+    end
+  end
+
+  test 'can import DiceFM (ld+json) events when manually selected' do
+    VCR.use_cassette(:dice_fm_events, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'DiceFM calendar',
+        source: 'https://dice.fm/venue/folklore-2or7'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+
+      assert_equal 'idle', calendar.calendar_state
+      assert_equal 'ld-json', calendar.importer_used
+
+      created_events = calendar.events
+      assert_equal 15, created_events.count
     end
   end
 

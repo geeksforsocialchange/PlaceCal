@@ -17,7 +17,7 @@ module CalendarsHelper
   end
 
   def options_for_importer
-    CalendarImporter::CalendarImporter::DETECTABLE_PARSERS
+    CalendarImporter::CalendarImporter::PARSERS
       .dup
       .keep_if { |parser| parser::PUBLIC }
       .map { |parser| [parser::NAME, parser::KEY] }
@@ -72,7 +72,7 @@ module CalendarsHelper
   end
 
   def calendar_import_sources
-    parsers = CalendarImporter::CalendarImporter::DETECTABLE_PARSERS
+    parsers = CalendarImporter::CalendarImporter::PARSERS
               .dup
               .keep_if { |parser| parser::PUBLIC }
               .sort { |a, b| a::NAME <=> b::NAME }
