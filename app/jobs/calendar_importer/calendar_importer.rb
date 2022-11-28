@@ -30,7 +30,8 @@ class CalendarImporter::CalendarImporter
         PARSERS.find { |parser| parser.handles_url?(@calendar) }
 
       else
-        PARSERS.find { |parser| parser::KEY == @calendar.importer_mode }
+        importer_mode = patch_legacy_modes(@calendar)
+        PARSERS.find { |parser| parser::KEY == importer_mode }
       end
   end
 
@@ -49,5 +50,19 @@ class CalendarImporter::CalendarImporter
     response.code == 200
   rescue StandardError
     false
+  end
+
+  def patch_legacy_modes(calendar)
+    # older calendars use specific modes to parse ld-json
+    # which we will want to migrate over at some point.
+    # But as that will be a one-way migration we should verify
+    # that there is no problem with the new code before
+    # irreversibly altering calendar records
+    mode = calendar.importer_mode
+    if %w[out-savvy dice-fm].include?(mode)
+      'ld-json'
+    else
+      mode
+    end
   end
 end
