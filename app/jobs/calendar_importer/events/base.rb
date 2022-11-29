@@ -118,7 +118,7 @@ module CalendarImporter::Events
 
       location_parts.map { |location_part| UKPostcode.parse(location_part) }
                     .find(&:full_valid?)
-                    &.to_s
+                    .to_s
     end
 
     def ip_class

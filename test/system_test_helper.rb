@@ -3,6 +3,7 @@
 require 'test_helper'
 
 Capybara.app_host = 'http://lvh.me'
+Capybara.default_max_wait_time = 60
 
 VCR.configure do |c|
   c.ignore_localhost = true

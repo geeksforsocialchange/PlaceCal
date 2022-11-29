@@ -11,16 +11,16 @@ end
 # Core
 gem 'minitest-rails'
 gem 'pg'
-gem 'puma', '~> 5'
-gem 'rails', '~> 6.1.6.1'
+gem 'puma'
+gem 'rails'
 
 # Frontend
-gem 'coffee-rails', '~> 5.0'
+gem 'coffee-rails'
 gem 'importmap-rails'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'jsbundling-rails'
-gem 'sass-rails', '~> 6.0'
+gem 'sass-rails', '6.0.0'
 gem 'stimulus-rails'
 gem 'turbo-rails'
 
@@ -42,7 +42,7 @@ gem 'carrierwave'
 gem 'image_processing'
 
 # Admin
-gem 'bootstrap', '~> 4.4.1'
+gem 'bootstrap'
 gem 'cocoon'
 gem 'font-awesome-rails'
 gem 'select2-rails'
@@ -55,7 +55,7 @@ gem 'omniauth-facebook'
 gem 'pundit'
 
 # Maps and geolocation
-gem 'geocoder', '~> 1.6.0'
+gem 'geocoder'
 gem 'leaflet-rails'
 
 # Styleguide
@@ -82,9 +82,9 @@ gem 'seed_migration'
 gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'enumerize'
-gem 'friendly_id', '~> 5.3.0'
-gem 'jbuilder', '~> 2.5'
-gem 'listen', '~> 3.2.0'
+gem 'friendly_id'
+gem 'jbuilder'
+gem 'listen'
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
@@ -113,13 +113,13 @@ group :development do
   gem 'rubocop-rails', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'web-console', '>= 3.3.0'
+  gem 'spring-watcher-listen'
+  gem 'web-console'
   gem 'yard'
 end
 
 group :test do
-  gem 'capybara-select-2', '~> 0.5.1'
+  gem 'capybara-select-2'
   gem 'graphql-client'
   gem 'json_matchers'
   gem 'minitest-rails-capybara'
@@ -135,4 +135,4 @@ end
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Use Redis for Action Cable
-gem 'redis', '~> 4.0'
+gem 'redis'

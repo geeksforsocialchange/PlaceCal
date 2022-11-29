@@ -106,4 +106,26 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 17, created_events.count
     end
   end
+
+  test 'can import Eventbrite' do
+    VCR.use_cassette(:eventbrite_events, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Eventbrite calendar',
+        source: 'https://www.eventbrite.co.uk/o/ftm-london-32888898939',
+        strategy: 'event'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+
+      assert_equal 'idle', calendar.calendar_state
+      assert_equal 'eventbrite', calendar.importer_used
+
+      created_events = calendar.events
+      assert_equal 3, created_events.count
+    end
+  end
 end
