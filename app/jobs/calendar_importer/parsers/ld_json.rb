@@ -136,7 +136,6 @@ module CalendarImporter::Parsers
       def consume_website(data); end
 
       def consume_event(data)
-        # puts 'Event'
         events << ::CalendarImporter::Events::LinkedDataEvent.new(data)
       end
 
@@ -158,16 +157,12 @@ module CalendarImporter::Parsers
           end
 
           type = data['@type']
-          # puts type
           return unless type
 
           short_type = (type =~ %r{^http://schema.org/(\w+)$}) && Regexp.last_match(1)
           return unless short_type
 
-          # puts short_type
-
           dispatch_to = TYPE_DISPATCH[short_type]
-          # puts dispatch_to
           if dispatch_to
             send dispatch_to, data
           else
