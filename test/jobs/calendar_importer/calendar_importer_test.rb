@@ -168,6 +168,30 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
     end
   end
 
+  test 'imports DiceFM events from ld+json source' do
+    url = 'https://dice.fm/venue/folklore-2or7'
+
+    VCR.use_cassette(:dice_fm_events, allow_playback_repeats: true) do
+      calendar = create(:calendar, name: 'VFD - squarespace', source: url)
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      output = parser_class.new(calendar).calendar_to_events
+      events = output.events
+
+      # puts DateTime.now
+      # events.each do |event|
+      #   puts "#{event.start_time} '#{event.summary}' #{event.in_future?}"
+      # end
+
+      first_event = events.first
+      last_event = events.last
+
+      assert_equal 15, events.count
+      assert_equal 'Kai Bosch', first_event.summary
+      assert_equal 'Molly Payton', last_event.summary
+    end
+  end
+
   test 'does not import if checksum is the same' do
     url = 'https://z-arts.ticketsolve.com/shows.xml'
     checksum = 'd1a94a9869af91d0548a1faf0ded91d7'
@@ -179,6 +203,29 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       output = parser_class.new(calendar).calendar_to_events
 
       assert_empty output.events
+    end
+  end
+
+  test 'auto detection can pick up ld+json source' do
+    url = 'https://www.heartoftorbaycic.com/events'
+
+    VCR.use_cassette(:heart_of_torbay) do
+      calendar = create(:calendar, name: 'Heart of Torbau', source: url, importer_mode: 'auto')
+
+      parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
+      assert_equal 'ld-json', parser_class::KEY
+    end
+  end
+
+  test 'auto detection can cope with unhandled calendar sources' do
+    url = 'https://gfsc.studio' # no calendars here
+
+    VCR.use_cassette(:gfsc_studio) do
+      calendar = create(:calendar, name: 'GFSC Studio', source: url, importer_mode: 'auto')
+
+      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
+        CalendarImporter::CalendarImporter.new(calendar).parser
+      end
     end
   end
 end

@@ -167,3 +167,46 @@ Geocoder::Lookup::Test.add_stub(
       } }
   ]
 )
+
+Geocoder::Lookup::Test.add_stub(
+  'TQ3 2NJ', [
+    { 'postcode' => 'TQ3 2NJ',
+      'quality' => 1,
+      'eastings' => 289_380,
+      'northings' => 61_302,
+      'country' => 'England',
+      'nhs_ha' => 'South West',
+      'longitude' => -3.559171,
+      'latitude' => 50.441107,
+      'european_electoral_region' => 'South West',
+      'primary_care_trust' => 'Torbay',
+      'region' => 'South West',
+      'lsoa' => 'Torbay 014A',
+      'msoa' => 'Torbay 014',
+      'incode' => '2NJ',
+      'outcode' => 'TQ3',
+      'parliamentary_constituency' => 'Torbay',
+      'admin_district' => 'Torbay',
+      'parish' => 'Torbay, unparished area',
+      'admin_county' => nil,
+      'admin_ward' => 'Preston',
+      'ced' => nil,
+      'ccg' => 'NHS Devon',
+      'nuts' => 'Torbay',
+      'codes' => {
+        'admin_district' => 'E06000027',
+        'admin_county' => 'E99999999',
+        'admin_ward' => 'E05012263',
+        'parish' => 'E43000022',
+        'parliamentary_constituency' => 'E14000999',
+        'ccg' => 'E38000230',
+        'ccg_id' => '15N',
+        'ced' => 'E99999999',
+        'nuts' => 'TLK42',
+        'lsoa' => 'E01015229',
+        'msoa' => 'E02003167',
+        'lau2' => 'E06000027'
+      } }
+
+  ]
+)

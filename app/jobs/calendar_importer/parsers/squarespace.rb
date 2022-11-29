@@ -12,7 +12,7 @@ module CalendarImporter
       KEY = 'squarespace'
       DOMAINS = %w[squarespace.com].freeze
 
-      def self.whitelist_pattern
+      def self.allowlist_pattern
         %r{^https://.*\.squarespace\.com/[^/]*/?$}
       end
 
