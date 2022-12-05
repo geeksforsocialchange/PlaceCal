@@ -5,6 +5,7 @@ require_relative '../application_system_test_case'
 class AdminUserTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
+  include Select2Helpers
 
   setup do
     create_default_site
