@@ -40,7 +40,7 @@ module ActiveSupport
 
     include FactoryBot::Syntax::Methods
 
-    # parallelize(workers: :number_of_processors)
+    parallelize(workers: :number_of_processors)
 
     fixtures :neighbourhoods
 
@@ -133,11 +133,11 @@ def click_sidebar(href)
 end
 
 def await_datatables(time = 15)
-  page.find(:css, '#datatable_info', wait: time)
+  # page.find(:css, '#datatable_info', wait: time)
 end
 
 def await_select2(time = 30)
-  page.all(:css, '.select2-container', wait: time)
+  # page.all(:css, '.select2-container', wait: time)
 end
 
 def select2_node(stable_identifier)
@@ -147,8 +147,8 @@ def select2_node(stable_identifier)
 end
 
 def all_cocoon_select2_nodes(css_class)
-  within ".#{css_class}" do
-    all(:css, '.select2-container')
+  within ".#{css_class}", wait: 10 do
+    all(:css, '.select2-container', wait: 10)
   end
 end
 
