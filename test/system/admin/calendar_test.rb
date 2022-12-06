@@ -21,12 +21,12 @@ class AdminCalendarTest < ApplicationSystemTestCase
   end
 
   test 'select2 inputs on calendars form' do
-    click_sidebar 'calendars'
-
     # create a new Calendar
+    click_link 'Calendars'
+    await_datatables
+
     click_link 'Add New Calendar'
 
-    await_select2
     partner_orginiser = select2_node 'calendar_partner'
     select2 @partner.name, xpath: partner_orginiser.path
     assert_select2_single @partner.name, partner_orginiser
@@ -40,10 +40,10 @@ class AdminCalendarTest < ApplicationSystemTestCase
     click_button 'Create Calendar'
 
     # check that select2 has rendered and is displaying correct data
-    click_sidebar 'calendars'
+    click_link 'Calendars'
     await_datatables
+
     click_link 'test cal'
-    await_select2
 
     partner_orginiser = select2_node 'calendar_partner'
     assert_select2_single @partner.name, partner_orginiser

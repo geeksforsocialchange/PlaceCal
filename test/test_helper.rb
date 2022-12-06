@@ -40,6 +40,8 @@ module ActiveSupport
 
     include FactoryBot::Syntax::Methods
 
+    # if you enable parallelized tests you cannot do a timing sweep
+    # with `rails test -v` (which is useful for finding slow tests)
     parallelize(workers: :number_of_processors)
 
     fixtures :neighbourhoods
@@ -133,7 +135,7 @@ def click_sidebar(href)
 end
 
 def await_datatables(time = 15)
-  # page.find(:css, '#datatable_info', wait: time)
+  page.find(:css, '#datatable_info', wait: time)
 end
 
 # GraphQL helpers
