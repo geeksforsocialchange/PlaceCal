@@ -12,7 +12,7 @@ class LdJsonParserTest < ActiveSupport::TestCase
     )
     assert_predicate calendar, :valid?
 
-    VCR.use_cassette(cassette, record: :new_episodes) do
+    VCR.use_cassette(cassette) do
       parser = CalendarImporter::Parsers::LdJson.new(calendar, url: url)
 
       # we are only checking for RDF records extracted from response
