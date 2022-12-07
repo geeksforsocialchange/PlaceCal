@@ -5,6 +5,7 @@ require_relative '../application_system_test_case'
 class AdminArticleTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
+  include Select2Helpers
 
   setup do
     create_default_site
@@ -27,10 +28,10 @@ class AdminArticleTest < ApplicationSystemTestCase
 
   test 'select2 inputs on article form' do
     # Edit an article
-    click_sidebar 'articles'
+    click_link 'Articles'
     await_datatables
+
     click_link @article.title
-    await_select2
 
     author = select2_node 'article_author'
     select2 @root_user.to_s, xpath: author.path
@@ -47,10 +48,10 @@ class AdminArticleTest < ApplicationSystemTestCase
     click_button 'Save Article'
 
     # Check that the changes persist
-    click_sidebar 'articles'
+    click_link 'Articles'
     await_datatables
+
     click_link @article.title
-    await_select2
 
     author = select2_node 'article_author'
     assert_select2_single @root_user.to_s, author

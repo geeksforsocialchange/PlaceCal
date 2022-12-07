@@ -5,6 +5,7 @@ require_relative '../application_system_test_case'
 class AdminSiteTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
+  include Select2Helpers
 
   setup do
     create_default_site
@@ -28,10 +29,8 @@ class AdminSiteTest < ApplicationSystemTestCase
   end
 
   test 'select2 inputs on site form' do
-    click_sidebar 'sites'
-    await_datatables
+    click_link 'Sites'
     click_link 'Add New Site'
-    await_select2
 
     site_admin = select2_node 'site_site_admin'
     select2 @root_user.to_s, xpath: site_admin.path
@@ -59,10 +58,8 @@ class AdminSiteTest < ApplicationSystemTestCase
     fill_in 'Slug', with: 'eeew'
     click_button 'Create Site'
 
-    click_sidebar 'sites'
-    await_datatables
+    click_link 'Sites'
     click_link new_site_name
-    await_select2
 
     # check that data persists
     site_admin = select2_node 'site_site_admin'
@@ -75,12 +72,23 @@ class AdminSiteTest < ApplicationSystemTestCase
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
   end
   test 'primary neighbourhood not rendering on other neighbourhoods section' do
-    click_sidebar 'sites'
+    click_link 'Sites'
     await_datatables
+
     click_link @site.name
-    await_select2
-    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
-    msg = '@site should only have a primary neighbourhood, if this fails either this is now rendering where it should\'t or another neighborhood has been added at setup and the test should be adjusted'
+
+    # wait for some bit of the page to load first
+    find :xpath, '//input[@value="Update Site"]', wait: 100
+
+    # now try to grab these
+    service_areas = all(:css, '.sites_neighbourhoods .select2-container', wait: 1)
+
+    msg = \
+      '@site should only have a primary neighbourhood, '\
+      'if this fails either this is now rendering where '\
+      'it should\'t or another neighborhood has been added '\
+      'at setup and the test should be adjusted'
+
     assert_predicate service_areas.length, :zero?, msg
   end
 end

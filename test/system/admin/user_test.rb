@@ -5,6 +5,7 @@ require_relative '../application_system_test_case'
 class AdminUserTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
+  include Select2Helpers
 
   setup do
     create_default_site
@@ -29,15 +30,13 @@ class AdminUserTest < ApplicationSystemTestCase
   end
 
   test 'select2 inputs on users form' do
-    click_sidebar 'users'
-    await_datatables
+    click_link 'Users'
 
     # edit a root user because they have access to all potential select2 inputs
     datatable_1st_row = page.all(:css, '.odd')[0]
     within datatable_1st_row do
       click_link 'Place'
     end
-    await_select2
 
     partners = select2_node 'user_partners'
     select2 @partner.name, @partner_two.name, xpath: partners.path
@@ -52,15 +51,13 @@ class AdminUserTest < ApplicationSystemTestCase
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
     click_button 'Update'
 
-    click_sidebar 'users'
-    await_datatables
+    click_link 'Users'
 
     # return to user to check data is intact
     datatable_1st_row = page.all(:css, '.odd')[0]
     within datatable_1st_row do
       click_link 'Place'
     end
-    await_select2
 
     partners = select2_node 'user_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
