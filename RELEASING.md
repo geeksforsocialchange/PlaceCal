@@ -10,6 +10,8 @@ Go through each one and test any related tickets are truly fixed on the staging 
 
 If everything looks good to publish, open a pull request from `main` into `production` and give it a title reflecting the new version we're releasing.
 
+Github will invite you to update the branch because `production` has aditional merge commits that don't exist in `main`, you don't need to do this.
+
 ## 3. Edit the release
 
 Edit the draft release to reflect the reality of what we're releasing after reviewing for any unresolved issues. The main aim here is to avoid misleading our future selves with "Fixed X" items when we actually didn't. **Importantly, don't remove any PR links.** Even if the thing they related to didn't work, we want the reference there to know what's included.
