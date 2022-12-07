@@ -67,3 +67,4 @@ doc/**/*.js
 .yardoc
 tags
 Makefile
+doc/rdoc
