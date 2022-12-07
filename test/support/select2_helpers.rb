@@ -2,22 +2,26 @@
 
 module Select2Helpers
   def await_select2(time = 30)
-    # page.all(:css, '.select2-container', wait: time)
+    page.all :css, '.select2-container', wait: time
+    assert_selector '.select2-selection'
   end
 
   def select2_node(stable_identifier)
+    await_select2 10
     within ".#{stable_identifier}" do
-      find(:css, '.select2-container')
+      find :css, '.select2-container'
     end
   end
 
   def all_cocoon_select2_nodes(css_class)
+    await_select2 10
     within ".#{css_class}", wait: 10 do
-      all(:css, '.select2-container', wait: 10)
+      all :css, '.select2-container', wait: 10
     end
   end
 
   def assert_select2_single(option, node)
+    await_select2 10
     within :xpath, node.path do
       assert_selector '.select2-selection__rendered', text: option
     end
