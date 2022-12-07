@@ -10,7 +10,7 @@ module CalendarImporter::Parsers
     KEY = 'meetup'
     DOMAINS = %w[www.meetup.com].freeze
 
-    def self.whitelist_pattern
+    def self.allowlist_pattern
       %r{^https://www\.meetup\.com/[^/]*/?$}
     end
 

@@ -17,8 +17,8 @@ module CalendarImporter::Parsers
       webcal://
     ].freeze
 
-    def self.whitelist_pattern
-      whitelists = {
+    def self.allowlist_pattern
+      allowlists = {
         gcal: %r{http(s)?://calendar.google.com\.*},
         outlook: %r{http(s)?://outlook.(office365|live).com/owa/calendar/.*},
         webcal: %r{webcal://},
@@ -27,7 +27,7 @@ module CalendarImporter::Parsers
         teamup: %r{http(s)?://ics.teamup.com/feed/.*},
         consortium: %r{https://www.consortium.lgbt/events/.*}
       }
-      Regexp.union(whitelists.values)
+      Regexp.union(allowlists.values)
     end
 
     def download_calendar

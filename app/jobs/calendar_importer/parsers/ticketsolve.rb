@@ -10,7 +10,7 @@ module CalendarImporter::Parsers
     KEY = 'ticket-solve'
     DOMAINS = %w[*.ticketsolve.com].freeze
 
-    def self.whitelist_pattern
+    def self.allowlist_pattern
       %r{^https?://([^.]*).ticketsolve.com/?}
     end
 

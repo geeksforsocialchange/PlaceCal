@@ -5,6 +5,7 @@ require_relative '../application_system_test_case'
 class AdminPartnerTest < ApplicationSystemTestCase
   include CapybaraSelect2
   include CapybaraSelect2::Helpers
+  include Select2Helpers
 
   setup do
     create_default_site
@@ -23,10 +24,10 @@ class AdminPartnerTest < ApplicationSystemTestCase
   end
 
   test 'select2 inputs on partner form' do
-    click_sidebar 'partners'
+    click_link 'Partners'
     await_datatables
+
     click_link @partner.name
-    await_select2
 
     # because of the nested forms we get an array of node
     # the link adds a select2_node to the end of the array
@@ -45,10 +46,10 @@ class AdminPartnerTest < ApplicationSystemTestCase
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
     click_button 'Save Partner'
 
-    click_sidebar 'partners'
+    click_link 'Partners'
     await_datatables
+
     click_link @partner.name
-    await_select2
 
     tags = select2_node 'partner_tags'
     assert_select2_multiple [@tag.name, @tag_pub.name], tags
@@ -59,20 +60,25 @@ class AdminPartnerTest < ApplicationSystemTestCase
   end
 
   test 'image preview on partner form' do
-    click_sidebar 'partners'
+    click_link 'Partners'
     await_datatables
     click_link @partner.name
-    find(:css, '#partner_image', wait: 15)
-    attach_file('partner_image', File.absolute_path('./test/system/admin/damir-omerovic-UMaGtammiSI-unsplash.jpg'))
+    find :css, '#partner_image', wait: 100
+
+    image_path = File.join(fixture_path, 'files/damir-omerovic-UMaGtammiSI-unsplash.jpg')
+    attach_file 'partner_image', image_path
+
     base64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gIcSUNDX1BST0ZJTEUAAQEAAAIMbGNtcwIQAABtbnRyUkdCIFhZWi'
     preview = find(:css, '.brand_image', wait: 15)
     assert preview['src'].starts_with?(base64), 'The preview image src is not the expected value'
   end
 
   test 'opening time picker on partner form' do
-    click_sidebar 'partners'
+    click_link 'Partners'
     await_datatables
+
     click_link @partner.name
+
     within '[data-controller="opening-times"]' do
       # Add an allday event
       select 'Sunday', from: 'day'
@@ -95,10 +101,11 @@ class AdminPartnerTest < ApplicationSystemTestCase
   test 'opening time picker on partner form survives missing value' do
     @partner.update! opening_times: nil
 
-    click_sidebar 'partners'
+    click_link 'Partners'
     await_datatables
+
     click_link @partner.name
-    await_select2
+    find :css, '.partner_tags', wait: 100
 
     # very specific bug in the view template here: if opening times has malformed data
     #   it will cause problems for the javascript that runs the partner tags selector

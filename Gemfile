@@ -107,6 +107,7 @@ group :development do
   gem 'graphiql-rails'
   gem 'letter_opener'
   gem 'rails-erd'
+  gem 'rdoc'
   gem 'rubocop-graphql', require: false
   gem 'rubocop-minitest', require: false
   gem 'rubocop-performance', require: false
