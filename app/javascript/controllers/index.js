@@ -4,6 +4,9 @@
 
 import { application } from "./application";
 
+import AddressToggleController from "./address_toggle_controller.js";
+application.register("address-toggle", AddressToggleController);
+
 import ImagePreviewController from "./image_preview_controller.js";
 application.register("image-preview", ImagePreviewController);
 
