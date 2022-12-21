@@ -113,4 +113,32 @@ class AdminPartnerTest < ApplicationSystemTestCase
     #   correctly done its thing to the tag selector
     assert_selector '.partner_tags ul.select2-selection__rendered'
   end
+
+  test 'possible to update a partner address without effecting other partners at same address' do
+    address = create :ashton_address
+    partners = create_list(:partner, 2, address: address)
+    partners.each { |p| puts "#{p.name} #{p.address_id} #{p.address}" }
+    assert_equal partners[0].address_id, partners[1].address_id, 'Partners with the same address should have the same address_id'
+    click_link 'Partners'
+    await_datatables
+    click_link partners[0].name
+    find(:css, '#partner_address_attributes_street_address').fill_in with: 'new street address'
+    click_button 'Save Partner'
+    find(:css, '.alert-success')
+    assert_not_equal Partner.find(partners[0].id).address, Partner.find(partners[1].id).address, 'updateing one address should not influence the other'
+  end
+
+  test 'possible to update a address of all partners that share that address' do
+    address = create :ashton_address
+    partners = create_list(:partner, 2, address: address)
+    assert_equal partners[0].address_id, partners[1].address_id, 'Partners with the same address should have the same address_id'
+    click_link 'Partners'
+    await_datatables
+    click_link partners[0].name
+    check 'Update address for all partners at this location'
+    find(:css, '#partner_address_attributes_street_address').fill_in with: 'new street address'
+    click_button 'Save Partner'
+    find(:css, '.alert-success')
+    assert_equal Partner.find(partners[0].id).address, Partner.find(partners[1].id).address, 'addesses should remain in sync'
+  end
 end
