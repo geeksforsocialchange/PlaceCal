@@ -117,7 +117,6 @@ class AdminPartnerTest < ApplicationSystemTestCase
   test 'possible to update a partner address without effecting other partners at same address' do
     address = create :ashton_address
     partners = create_list(:partner, 2, address: address)
-    partners.each { |p| puts "#{p.name} #{p.address_id} #{p.address}" }
     assert_equal partners[0].address_id, partners[1].address_id, 'Partners with the same address should have the same address_id'
     click_link 'Partners'
     await_datatables
