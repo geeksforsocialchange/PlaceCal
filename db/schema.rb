@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_20_151156) do
+ActiveRecord::Schema.define(version: 2023_01_03_155804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,7 +80,6 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.string "public_contact_email"
     t.string "public_contact_phone"
     t.integer "notice_count"
-    t.string "source_type", default: ""
     t.string "calendar_state", default: "idle"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
@@ -226,9 +225,9 @@ ActiveRecord::Schema.define(version: 2022_07_20_151156) do
     t.text "booking_info"
     t.text "accessibility_info"
     t.string "twitter_handle"
+    t.string "facebook_link"
     t.string "summary"
     t.text "description"
-    t.string "facebook_link"
     t.string "description_html"
     t.string "summary_html"
     t.string "accessibility_info_html"
