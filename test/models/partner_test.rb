@@ -32,7 +32,7 @@ class PartnerTest < ActiveSupport::TestCase
     assert_equal @new_partner.address.postcode, new_postcode
   end
 
-  test 'it recycles addresses if it can' do
+  test 'it creates a new address even if the address matches an existing address' do
     @new_partner.save!
 
     other_partner = build(:partner, address: nil, accessed_by_user: @user)
@@ -45,7 +45,7 @@ class PartnerTest < ActiveSupport::TestCase
     other_partner.update! other_params
     other_partner.reload
 
-    assert_equal @new_partner.address_id, other_partner.address_id, 'should have same address ID'
+    assert_not_equal @new_partner.address_id, other_partner.address_id, 'should have different address IDs'
   end
 
   test 'validate name length' do
