@@ -32,7 +32,7 @@ class User < ApplicationRecord
 
   validates :email,
             presence: true,
-            # uniqueness: true,
+            uniqueness: true,
             format: { with: EMAIL_REGEX, message: 'invalid email address' }
   validates :role, presence: true
 
