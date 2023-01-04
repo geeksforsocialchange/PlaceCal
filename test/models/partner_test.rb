@@ -48,6 +48,23 @@ class PartnerTest < ActiveSupport::TestCase
     assert_not_equal @new_partner.address_id, other_partner.address_id, 'should have different address IDs'
   end
 
+  test 'does not create an address object when address fields are blank' do
+    root = create(:root)
+    partner = build(:partner, address: nil, accessed_by_user: root)
+
+    other_params = {
+      address_attributes: {
+        street_address: '',
+        postcode: ''
+      }
+    }
+    partner.service_areas.build neighbourhood: create(:bare_neighbourhood)
+    partner.save! other_params
+    partner.reload
+
+    assert_predicate partner.address, :blank?
+  end
+
   test 'validate name length' do
     @new_partner.update(name: '1234')
 

@@ -84,7 +84,7 @@ class Partner < ApplicationRecord
             format: { with: EMAIL_REGEX, message: 'invalid email address' },
             allow_blank: true
 
-  validates_associated :address
+  validates_associated :address, if: ->(p) { p.address.present? }
 
   validate :check_ward_access, on: :create
   validate :check_service_area_access, on: :create
@@ -209,11 +209,6 @@ class Partner < ApplicationRecord
 
   def twitter_handle=(handle)
     super(handle&.gsub('@', ''))
-  end
-
-  def address_attributes=(value)
-    self.address ||= Address.new
-    super
   end
 
   # Get all Partners that manage this Partner.
