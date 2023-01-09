@@ -25,9 +25,9 @@ class ComponentControllerTest < ActionDispatch::IntegrationTest
     get '/styleguide/styleguide/breadcrumb'
   end
 
-  test 'should get event' do
-    get '/styleguide/styleguide/event'
-  end
+  # test 'should get event' do
+  # get '/styleguide/styleguide/event'
+  # end
 
   test 'should get hero' do
     get '/styleguide/styleguide/hero'

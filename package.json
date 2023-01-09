@@ -3,25 +3,25 @@
 	"version": "2.0.0",
 	"private": true,
 	"dependencies": {
-		"@hotwired/stimulus": "3.2.0",
+		"@hotwired/stimulus": "3.2.1",
 		"@hotwired/turbo-rails": "7.2.4",
 		"@nathanvda/cocoon": "1.2.14",
 		"@rails/ujs": "6.1.7",
 		"bootstrap": "4.6.2",
 		"datatables.net-bs4": "1.13.1",
-		"esbuild": "0.15.15",
+		"esbuild": "0.16.13",
 		"esbuild-rails": "1.0.3",
-		"jquery": "3.6.1",
+		"jquery": "3.6.3",
 		"leaflet": "1.9.3",
 		"lodash": "4.17.21",
 		"popper.js": "1.16.1",
-		"sass": "1.56.1",
+		"sass": "1.57.1",
 		"select2": "4.0.13"
 	},
 	"devDependencies": {
-		"husky": "8.0.2",
-		"lint-staged": "13.0.4",
-		"prettier": "2.8.0"
+		"husky": "8.0.3",
+		"lint-staged": "13.1.0",
+		"prettier": "2.8.1"
 	},
 	"scripts": {
 		"build": "node esbuild.config.js",
