@@ -59,7 +59,7 @@ class PartnerTest < ActiveSupport::TestCase
       }
     }
     partner.service_areas.build neighbourhood: create(:bare_neighbourhood)
-    partner.save! other_params
+    partner.save!(**other_params)
     partner.reload
 
     assert_predicate partner.address, :blank?
