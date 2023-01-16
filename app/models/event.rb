@@ -178,7 +178,8 @@ class Event < ApplicationRecord
   # Ensures that the event added is unique
   # Checks for a duplicate event with the properties dtstart, summary, and calendar_id
   def unique_event
-    return unless Event.where(dtstart: dtstart,
+    return unless Event.where(uid: uid,
+                              dtstart: dtstart,
                               summary: summary,
                               calendar_id: calendar_id)
                        .count
