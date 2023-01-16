@@ -17,7 +17,9 @@ module CalendarImporter
       end
 
       def download_calendar
-        json_url = "#{@url}?format=json"
+        json_url = @url
+        json_url += '?format=json' unless json_url.ends_with?('?format=json')
+
         response = HTTParty.get(json_url)
         return [] unless response.success?
 
@@ -25,7 +27,7 @@ module CalendarImporter
       end
 
       def import_events_from(data)
-        unless data['upcoming']
+        unless data.is_a?(Hash) && data['upcoming']
           Rails.logger.debug 'If you are seeing this it is likely that you are using the wrong URL'
           Rails.logger.debug 'or squarespace have changed their API'
           return []
