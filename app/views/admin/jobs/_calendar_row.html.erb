@@ -1,0 +1,44 @@
+<table class="table table-bordered table-hover table-sm">
+  <tr>
+    <th>ID</th>
+    <td><%= cal.id -%></td>
+  </tr>
+  <tr>
+    <th>partner</th>
+    <td>(<%= cal.partner_id -%>) <%= link_to cal.partner.name, admin_partner_path(cal) -%></td>
+  </tr>
+  <tr>
+    <th>events</th>
+    <td><%= cal.events.count -%></td>
+  </tr>
+  
+  <tr>
+    <th>source</th>
+    <td><%= link_to cal.source, cal.source -%></td>
+  </tr>
+  <tr>
+    <th>strategy</th>
+    <td>"<%= cal.strategy -%>"</td>
+  </tr>
+  <tr>
+    <th>importer_mode</th>
+    <td>"<%= cal.importer_mode -%>"</td>
+  </tr>
+
+  <tr>
+    <th>calendar_state</th>
+    <td>"<%= cal.calendar_state -%>"</td>
+  </tr>
+  <tr>
+    <th>importer_used</th>
+    <td>"<%= cal.importer_used -%>"</td>
+  </tr>
+  <tr>	   
+    <th>last_import_at</th>
+    <td>"<%= cal.last_import_at -%>"</td>
+  </tr>
+  <tr>
+    <th>critical_error</th>
+    <td>"<%= cal.critical_error -%>"</td>
+  </tr>
+</table>

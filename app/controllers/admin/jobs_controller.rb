@@ -10,6 +10,9 @@ module Admin
                    .first['count']
 
       @calendar_counts = Calendar.group(:calendar_state).count
+
+      @error_calendars = Calendar.where(calendar_state: 'error')
+      @busy_calendars = Calendar.where(calendar_state: 'in_worker')
     end
 
     private
