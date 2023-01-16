@@ -27,7 +27,9 @@ module CalendarImporter
       end
 
       def import_events_from(data)
-        unless data.is_a?(Hash) && data['upcoming']
+        return [] unless data.is_a?(Hash)
+
+        unless data['upcoming']
           Rails.logger.debug 'If you are seeing this it is likely that you are using the wrong URL'
           Rails.logger.debug 'or squarespace have changed their API'
           return []
