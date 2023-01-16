@@ -21,6 +21,24 @@
   </tbody>
 </table>
 
+<% if @error_calendars.count > 0 -%>
+<h2><%= @error_calendars.count %> Error Calendars</h2>
+<% @error_calendars.order(:name).each do |cal| -%>
+  <h3><%= link_to cal.name, admin_calendar_path(cal) -%></h3>
+  <%= render 'calendar_row', cal: cal %>
+  <br>
+<% end -%>
+<% end -%>
+
+<% if @busy_calendars.count > 0 -%>
+<h2><%= @busy_calendars.count %> Busy Calendars</h2>
+<% @busy_calendars.order(:name).each do |cal| -%>
+  <h3><%= link_to cal.name, admin_calendar_path(cal) -%></h3>
+  <%= render 'calendar_row', cal: cal %>
+<br>
+<% end -%>
+<% end -%>
+
 <!-- pre>
 <% #= JSON.pretty_generate(@calendar_counts) %>
 </pre -->
