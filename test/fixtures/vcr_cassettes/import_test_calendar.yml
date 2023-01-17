@@ -63,7 +63,6 @@ http_interactions:
           Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:3\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20181126\r\nDTEND;VALUE=DATE:20181127\r\nDTSTAMP:20181205T150752Z\r\nUID:53lt6m62dn1caakfuc86oejit9@google.com\r\nCREATED:20181122T155847Z\r\nDESCRIPTION:\r\nLAST-MODIFIED:20181122T155847Z\r\nLOCATION:The
           Old Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\\, UK\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:2\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20181125\r\nDTEND;VALUE=DATE:20181126\r\nDTSTAMP:20181205T150752Z\r\nUID:04m08n2c4a1k5s26g64f3n37i2@google.com\r\nCREATED:20181122T155828Z\r\nDESCRIPTION:\r\nLAST-MODIFIED:20181122T155828Z\r\nLOCATION:The
           Old Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:1\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-      http_version:
     recorded_at: Wed, 05 Dec 2018 15:07:52 GMT
   - request:
       method: get
@@ -128,7 +127,6 @@ http_interactions:
           Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:3\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20181126\r\nDTEND;VALUE=DATE:20181127\r\nDTSTAMP:20181205T150752Z\r\nUID:53lt6m62dn1caakfuc86oejit9@google.com\r\nCREATED:20181122T155847Z\r\nDESCRIPTION:\r\nLAST-MODIFIED:20181122T155847Z\r\nLOCATION:The
           Old Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\\, UK\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:2\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20181125\r\nDTEND;VALUE=DATE:20181126\r\nDTSTAMP:20181205T150752Z\r\nUID:04m08n2c4a1k5s26g64f3n37i2@google.com\r\nCREATED:20181122T155828Z\r\nDESCRIPTION:\r\nLAST-MODIFIED:20181122T155828Z\r\nLOCATION:The
           Old Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:1\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-      http_version:
     recorded_at: Wed, 05 Dec 2018 15:07:52 GMT
   - request:
       method: get
@@ -173,7 +171,6 @@ http_interactions:
           019B","msoa":"Manchester 019","incode":"6FH","outcode":"M15","parliamentary_constituency":"Manchester
           Central","admin_district":"Manchester","parish":"Manchester, unparished area","admin_county":null,"admin_ward":"Hulme","ccg":"NHS
           Manchester","nuts":"Manchester","codes":{"admin_district":"E08000003","admin_county":"E99999999","admin_ward":"E05011368","parish":"E43000157","parliamentary_constituency":"E14000807","ccg":"E38000217","nuts":"UKD33"}}}'
-      http_version:
     recorded_at: Wed, 05 Dec 2018 15:07:52 GMT
   - request:
       method: get
@@ -218,7 +215,6 @@ http_interactions:
           019B","msoa":"Manchester 019","incode":"6SY","outcode":"M15","parliamentary_constituency":"Manchester
           Central","admin_district":"Manchester","parish":"Manchester, unparished area","admin_county":null,"admin_ward":"Hulme","ccg":"NHS
           Manchester","nuts":"Manchester","codes":{"admin_district":"E08000003","admin_county":"E99999999","admin_ward":"E05011368","parish":"E43000157","parliamentary_constituency":"E14000807","ccg":"E38000217","nuts":"UKD33"}}}'
-      http_version:
     recorded_at: Wed, 05 Dec 2018 15:07:53 GMT
   - request:
       method: get
@@ -283,6 +279,175 @@ http_interactions:
           Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:3\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20181126\r\nDTEND;VALUE=DATE:20181127\r\nDTSTAMP:20181205T150753Z\r\nUID:53lt6m62dn1caakfuc86oejit9@google.com\r\nCREATED:20181122T155847Z\r\nDESCRIPTION:\r\nLAST-MODIFIED:20181122T155847Z\r\nLOCATION:The
           Old Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\\, UK\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:2\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20181125\r\nDTEND;VALUE=DATE:20181126\r\nDTSTAMP:20181205T150753Z\r\nUID:04m08n2c4a1k5s26g64f3n37i2@google.com\r\nCREATED:20181122T155828Z\r\nDESCRIPTION:\r\nLAST-MODIFIED:20181122T155828Z\r\nLOCATION:The
           Old Abbey Taphouse\\, Guildhall Cl\\, Manchester M16 7BA\r\nSEQUENCE:0\r\nSTATUS:CONFIRMED\r\nSUMMARY:1\r\nTRANSP:TRANSPARENT\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
-      http_version:
     recorded_at: Wed, 05 Dec 2018 15:07:53 GMT
-recorded_with: VCR 4.0.0
+  - request:
+      method: get
+      uri: https://outlook.office365.com/owa/calendar/1/calendar.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 400
+        message: ""
+      headers:
+        Cache-Control:
+          - no-cache, no-store
+        Pragma:
+          - no-cache
+        Transfer-Encoding:
+          - chunked
+        Content-Type:
+          - text/html
+        Expires:
+          - "-1"
+        Server:
+          - Microsoft-IIS/10.0
+        Request-Id:
+          - 78aa5c3c-ebeb-02c6-d44f-473efccd3341
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains; preload
+        Alt-Svc:
+          - h3=":443",h3-29=":443"
+        X-Calculatedfetarget:
+          - CWLP265CU018.internal.outlook.com
+        X-Backendhttpstatus:
+          - "400"
+          - "400"
+        Set-Cookie:
+          - ClientId=11DF2A93C83A4FD4B2392E68E3B493FB; expires=Wed, 17-Jan-2024 15:02:24
+            GMT; path=/;SameSite=None; secure
+          - ClientId=11DF2A93C83A4FD4B2392E68E3B493FB; expires=Wed, 17-Jan-2024 15:02:24
+            GMT; path=/;SameSite=None; secure
+          - OIDC=1; expires=Mon, 17-Jul-2023 15:02:24 GMT; path=/;SameSite=None; secure;
+            HttpOnly
+          - OutlookSession=0091a9da0c924eef816e9254eec6fe9f; path=/; secure; HttpOnly;
+            SameSite=None
+        X-Calculatedbetarget:
+          - CWXP123MB2438.GBRP123.PROD.OUTLOOK.COM
+        X-Rum-Validated:
+          - "1"
+        X-Rum-Notupdatequeriedpath:
+          - "1"
+        X-Content-Type-Options:
+          - nosniff
+        X-Diaginfo:
+          - CWXP123MB2438
+        X-Beserver:
+          - CWXP123MB2438
+        X-Ua-Compatible:
+          - IE=EmulateIE7
+        X-Proxy-Routingcorrectness:
+          - "1"
+        X-Ms-Forwardingcorrelationid:
+          - 06c423df-1a8f-4406-b39b-a2300b926b83
+        X-Proxy-Backendserverstatus:
+          - "400"
+        X-Feproxyinfo:
+          - LO4P123CA0639.GBRP123.PROD.OUTLOOK.COM
+        X-Feefzinfo:
+          - LHR
+        X-Feserver:
+          - CWLP265CA0405
+          - LO4P123CA0639
+        X-Firsthopcafeefz:
+          - LHR
+        Date:
+          - Tue, 17 Jan 2023 15:02:24 GMT
+      body:
+        encoding: UTF-8
+        string: Bad Request
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: https://outlook.office365.com/owa/calendar/2/calendar.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 400
+        message: ""
+      headers:
+        Cache-Control:
+          - no-cache, no-store
+        Pragma:
+          - no-cache
+        Transfer-Encoding:
+          - chunked
+        Content-Type:
+          - text/html
+        Expires:
+          - "-1"
+        Server:
+          - Microsoft-IIS/10.0
+        Request-Id:
+          - 79ae97f0-2066-a55b-4927-cc4843adb248
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains; preload
+        Alt-Svc:
+          - h3=":443",h3-29=":443"
+        X-Calculatedfetarget:
+          - CWLP123CU003.internal.outlook.com
+        X-Backendhttpstatus:
+          - "400"
+          - "400"
+        Set-Cookie:
+          - ClientId=4106C54D65A940638A707F750BF5826C; expires=Wed, 17-Jan-2024 15:13:34
+            GMT; path=/;SameSite=None; secure
+          - ClientId=4106C54D65A940638A707F750BF5826C; expires=Wed, 17-Jan-2024 15:13:34
+            GMT; path=/;SameSite=None; secure
+          - OIDC=1; expires=Mon, 17-Jul-2023 15:13:34 GMT; path=/;SameSite=None; secure;
+            HttpOnly
+          - OutlookSession=f2b4f84eeffa42b19f39486699abf9e8; path=/; secure; HttpOnly;
+            SameSite=None
+        X-Calculatedbetarget:
+          - CWLP123MB2338.GBRP123.PROD.OUTLOOK.COM
+        X-Rum-Validated:
+          - "1"
+        X-Rum-Notupdatequeriedpath:
+          - "1"
+        X-Content-Type-Options:
+          - nosniff
+        X-Diaginfo:
+          - CWLP123MB2338
+        X-Beserver:
+          - CWLP123MB2338
+        X-Ua-Compatible:
+          - IE=EmulateIE7
+        X-Proxy-Routingcorrectness:
+          - "1"
+        X-Ms-Forwardingcorrelationid:
+          - 58be12c6-ee4f-48f3-b952-2db09c7fd7d5
+        X-Proxy-Backendserverstatus:
+          - "400"
+        X-Feproxyinfo:
+          - LO6P123CA0043.GBRP123.PROD.OUTLOOK.COM
+        X-Feefzinfo:
+          - LHR
+        X-Feserver:
+          - CWLP123CA0063
+          - LO6P123CA0043
+        X-Firsthopcafeefz:
+          - LHR
+        Date:
+          - Tue, 17 Jan 2023 15:13:34 GMT
+      body:
+        encoding: UTF-8
+        string: Bad Request
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.1.0

@@ -41,16 +41,25 @@ class CalendarImporter::CalendarImporter
   # As a side effect, it runs CalendarImporter#parser, which sets self.parser to one of the values above
   # This ensures that self.parser is set during calendar_importer_task
   def validate_feed!
-    raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless url_accessible?
+    # raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless url_accessible?
+
+    begin
+      response = HTTParty.get(@calendar.source, follow_redirects: true)
+      raise InaccessibleFeed, "The source URL could not be read (code=#{response.code})" unless response.success?
+    rescue HTTParty::ResponseError => e
+      raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
+    end
+
     raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?
   end
 
-  def url_accessible?
-    response = HTTParty.get(@calendar.source, follow_redirects: true)
-    response.code == 200
-  rescue StandardError
-    false
-  end
+  #  def source_response_code
+  #    response = HTTParty.get(@calendar.source, follow_redirects: true)
+  #    [ response.code, '' ]
+
+  #  rescue StandardError => e
+  #    [ -1, e.message ]
+  #  end
 
   def patch_legacy_modes(calendar)
     # older calendars use specific modes to parse ld-json

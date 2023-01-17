@@ -99,7 +99,9 @@ class Calendar < ApplicationRecord
     # The calendar importer will raise an exception if the source
     #   URL has a problem
     CalendarImporter::CalendarImporter.new(self)
-  rescue CalendarImporter::CalendarImporter::InaccessibleFeed, CalendarImporter::CalendarImporter::UnsupportedFeed => e
+  rescue CalendarImporter::CalendarImporter::InaccessibleFeed => e
+    flag_bad_source! e.to_s
+  rescue CalendarImporter::CalendarImporter::UnsupportedFeed => e
     flag_error_import_job! e.to_s
   end
 
@@ -162,6 +164,20 @@ class Calendar < ApplicationRecord
 
     ensure
       Calendar.record_timestamps = true
+    end
+  end
+
+  def flag_bad_source!(problem)
+    transaction do
+      return unless calendar_state.in_worker?
+
+      # we need the state to be valid so we discard everything
+      # before saving error
+      reload
+
+      self.calendar_state = :bad_source
+      self.critical_error = problem
+      save validate: false
     end
   end
 

@@ -34,9 +34,10 @@ module CalendarImporter::Parsers
       # Why are we doing this?
       url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
       response = HTTParty.get(url, follow_redirects: true)
-      return '' unless response.success?
+      return response.body if response.success?
 
-      response.body
+      raise InaccessibleFeed, "HTTP request failed, response code #{response.code} (#{response.message})"
+      # response.body
     end
 
     def import_events_from(data)

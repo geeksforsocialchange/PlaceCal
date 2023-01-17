@@ -7,15 +7,15 @@ class MeetupParserTest < ActiveSupport::TestCase
     # non existant user
     bad_user_url = 'https://www.meetup.com/haeKohtheuwae7uY6sie'
 
-    calendar = create(
-      :calendar,
-      strategy: :event,
-      name: :import_test_calendar,
-      source: bad_user_url
-    )
-    assert_predicate calendar, :valid?
+    VCR.use_cassette(:bad_meetup_gateway, record: :new_episodes) do
+      calendar = create(
+        :calendar,
+        strategy: :event,
+        name: :import_test_calendar,
+        source: bad_user_url
+      )
+      assert_predicate calendar, :valid?
 
-    VCR.use_cassette(:bad_meetup_gateway) do
       parser = CalendarImporter::Parsers::Meetup.new(calendar, url: bad_user_url)
 
       events = parser.download_calendar
