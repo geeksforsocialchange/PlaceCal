@@ -4,7 +4,9 @@ require 'test_helper'
 
 class CollectionTest < ActiveSupport::TestCase
   setup do
-    @collection = create(:collection)
+    VCR.use_cassette(:bad_meetup_gateway, record: :new_episodes) do
+      @collection = create(:collection)
+    end
   end
 
   test 'return named route if there' do

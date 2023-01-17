@@ -13,22 +13,35 @@ class CalendarTest < ActiveSupport::TestCase
     assert_not_predicate @calendar, :valid?
     @calendar.name = 'A name for the calendar'
     assert_not_predicate @calendar, :valid?
-    @calendar.source = 'https://my-calendar.com'
+    @calendar.source = 'https://example.com' # my-calendar.com'
     assert_not_predicate @calendar, :valid?
     @calendar.partner = create(:partner)
     assert_not_predicate @calendar, :valid?
     @calendar.place = create(:partner)
     assert_predicate @calendar, :valid?
-    @calendar.save
+
+    VCR.use_cassette(:calendar_bad_source_url) do
+      @calendar.save
+    end
+
     # Sources must be unique
-    @existing_calendar = create(:calendar)
-    @existing_calendar.update(source: 'https://my-calendar.com')
+    VCR.use_cassette(:import_test_calendar) do
+      @existing_calendar = create(:calendar)
+    end
+
+    VCR.use_cassette(:calendar_bad_source_url) do
+      @existing_calendar.update(source: 'https://example.com') # my-calendar.com')
+    end
+
     assert_not_predicate @existing_calendar, :valid?
     assert_equal ['calendar source already in use'], @existing_calendar.errors[:source]
   end
 
   test 'gets a contact for each calendar' do
-    @calendar = create(:calendar)
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(:calendar)
+    end
+
     assert_predicate @calendar, :valid?
     # If calendar contact listed, show that
     assert_equal [@calendar.public_contact_email,
@@ -47,31 +60,35 @@ class CalendarTest < ActiveSupport::TestCase
   end
 
   test 'notices get counted when saved' do
-    messages = %w[
-      alpha
-      beta
-      cappa
-    ]
+    VCR.use_cassette(:import_test_calendar) do
+      messages = %w[
+        alpha
+        beta
+        cappa
+      ]
 
-    calendar = build(:calendar)
-    calendar.notices = messages
-    calendar.save!
+      calendar = build(:calendar)
+      calendar.notices = messages
+      calendar.save!
 
-    assert_equal 3, calendar.notice_count
+      assert_equal 3, calendar.notice_count
+    end
   end
 
   test 'notices are not counted if notices have not changed value' do
-    messages = %w[
-      alpha
-      beta
-      cappa
-    ]
+    VCR.use_cassette(:import_test_calendar) do
+      messages = %w[
+        alpha
+        beta
+        cappa
+      ]
 
-    calendar = create(:calendar, notices: messages)
+      calendar = create(:calendar, notices: messages)
 
-    calendar.name = 'A new name'
-    calendar.save!
+      calendar.name = 'A new name'
+      calendar.save!
 
-    assert_equal 3, calendar.notice_count
+      assert_equal 3, calendar.notice_count
+    end
   end
 end

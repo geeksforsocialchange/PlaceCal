@@ -450,4 +450,168 @@ http_interactions:
         encoding: UTF-8
         string: Bad Request
     recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: https://outlook.office365.com/owa/calendar/1/calendar.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 400
+        message: ""
+      headers:
+        Cache-Control:
+          - no-cache, no-store
+        Pragma:
+          - no-cache
+        Transfer-Encoding:
+          - chunked
+        Content-Type:
+          - text/html
+        Expires:
+          - "-1"
+        Server:
+          - Microsoft-IIS/10.0
+        Request-Id:
+          - ea1a74c3-71dd-6dd0-a361-432e3e94b8d1
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains; preload
+        Alt-Svc:
+          - h3=":443",h3-29=":443"
+        X-Calculatedbetarget:
+          - LOYP265MB2336.GBRP265.PROD.OUTLOOK.COM
+        X-Backendhttpstatus:
+          - "400"
+        Set-Cookie:
+          - ClientId=06C3C1F3F5964D768B16823BD313915C; expires=Wed, 17-Jan-2024 15:30:29
+            GMT; path=/;SameSite=None; secure
+          - ClientId=06C3C1F3F5964D768B16823BD313915C; expires=Wed, 17-Jan-2024 15:30:29
+            GMT; path=/;SameSite=None; secure
+          - OIDC=1; expires=Mon, 17-Jul-2023 15:30:29 GMT; path=/;SameSite=None; secure;
+            HttpOnly
+          - OutlookSession=a6ecfcac302b4833b7ede312a81e9058; path=/; secure; HttpOnly;
+            SameSite=None
+        X-Rum-Validated:
+          - "1"
+        X-Rum-Notupdatequeriedpath:
+          - "1"
+        X-Content-Type-Options:
+          - nosniff
+        X-Diaginfo:
+          - LOYP265MB2336
+        X-Beserver:
+          - LOYP265MB2336
+        X-Ua-Compatible:
+          - IE=EmulateIE7
+        X-Proxy-Routingcorrectness:
+          - "1"
+        X-Proxy-Backendserverstatus:
+          - "400"
+        X-Firsthopcafeefz:
+          - LHR
+        X-Feproxyinfo:
+          - LO4P265CA0151.GBRP265.PROD.OUTLOOK.COM
+        X-Feefzinfo:
+          - LHR
+        X-Feserver:
+          - LO4P265CA0151
+        Date:
+          - Tue, 17 Jan 2023 15:30:29 GMT
+      body:
+        encoding: UTF-8
+        string: Bad Request
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: https://outlook.office365.com/owa/calendar/4/calendar.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 400
+        message: ""
+      headers:
+        Cache-Control:
+          - no-cache, no-store
+        Pragma:
+          - no-cache
+        Transfer-Encoding:
+          - chunked
+        Content-Type:
+          - text/html
+        Expires:
+          - "-1"
+        Server:
+          - Microsoft-IIS/10.0
+        Request-Id:
+          - f428fece-27b8-3fb6-2268-71c3a910b488
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains; preload
+        Alt-Svc:
+          - h3=":443",h3-29=":443"
+        X-Calculatedfetarget:
+          - CWLP265CU016.internal.outlook.com
+        X-Backendhttpstatus:
+          - "400"
+          - "400"
+        Set-Cookie:
+          - ClientId=9F028897FD4947D3B860525E2C863595; expires=Wed, 17-Jan-2024 16:58:14
+            GMT; path=/;SameSite=None; secure
+          - ClientId=9F028897FD4947D3B860525E2C863595; expires=Wed, 17-Jan-2024 16:58:14
+            GMT; path=/;SameSite=None; secure
+          - OIDC=1; expires=Mon, 17-Jul-2023 16:58:14 GMT; path=/;SameSite=None; secure;
+            HttpOnly
+          - OutlookSession=6fed149e7d9e4ccda5970601272da8ac; path=/; secure; HttpOnly;
+            SameSite=None
+        X-Calculatedbetarget:
+          - CWLP123MB1844.GBRP123.PROD.OUTLOOK.COM
+        X-Rum-Validated:
+          - "1"
+        X-Rum-Notupdatequeriedpath:
+          - "1"
+        X-Content-Type-Options:
+          - nosniff
+        X-Diaginfo:
+          - CWLP123MB1844
+        X-Beserver:
+          - CWLP123MB1844
+        X-Ua-Compatible:
+          - IE=EmulateIE7
+        X-Proxy-Routingcorrectness:
+          - "1"
+        X-Ms-Forwardingcorrelationid:
+          - c76d65a8-3328-4d68-a730-9a2a475f89dc
+        X-Proxy-Backendserverstatus:
+          - "400"
+        X-Feproxyinfo:
+          - LO4P123CA0179.GBRP123.PROD.OUTLOOK.COM
+        X-Feefzinfo:
+          - LHR
+        X-Feserver:
+          - CWLP265CA0384
+          - LO4P123CA0179
+        X-Firsthopcafeefz:
+          - LHR
+        Date:
+          - Tue, 17 Jan 2023 16:58:14 GMT
+      body:
+        encoding: UTF-8
+        string: Bad Request
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
 recorded_with: VCR 6.1.0

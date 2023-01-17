@@ -96,6 +96,8 @@ class Calendar < ApplicationRecord
 
   # called before save
   def source_supported
+    return unless source_changed?
+
     # The calendar importer will raise an exception if the source
     #   URL has a problem
     CalendarImporter::CalendarImporter.new(self)
