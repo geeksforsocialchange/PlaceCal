@@ -4,7 +4,10 @@ require 'test_helper'
 
 class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @collection = create(:collection)
+    VCR.use_cassette(:collections_controller_test, record: :new_episodes, allow_playback_repeats: true) do
+      @collection = create(:collection)
+    end
+
     @root = create(:root)
     @citizen = create(:user)
 

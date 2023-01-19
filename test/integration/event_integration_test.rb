@@ -10,7 +10,10 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     @default_site = create(:site)
     @neighbourhood_site = create(:site_local)
 
-    @event = create(:event)
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(:calendar)
+      @event = create(:event, calendar: @calendar)
+    end
   end
 
   test 'redirects to find my placecal for a slugless site' do

@@ -2,28 +2,31 @@
 
 require 'test_helper'
 
+# rubocop:disable Metrics/ClassLength
 class GraphQLEventTest < ActionDispatch::IntegrationTest
   setup do
     partner_address = create(:bare_address_1, neighbourhood: neighbourhoods(:one))
     @partner = create(:partner, address: partner_address)
-
     @address = @partner.address
     assert @address, 'Failed to create Address from partner'
 
-    @calendar = create(
-      :calendar,
-      partner: @partner,
-      name: 'Partner Calendar',
-      source: 'http://example.com'
-    )
-    assert @calendar, 'Failed to create calendar from partner'
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(
+        :calendar,
+        partner: @partner,
+        name: 'Partner Calendar' # ,
+        # source: 'http://example.com'
+      )
+      assert @calendar, 'Failed to create calendar from partner'
+    end
   end
 
   test 'can show partners (with pagination)' do
     create_list(:event, 5,
                 partner: @partner,
                 dtstart: Time.now,
-                address: @address)
+                address: @address,
+                calendar: @calendar)
 
     query_string = <<-GRAPHQL
       query {
@@ -88,7 +91,6 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     assert_field data, 'event', 'Data structure does not contain event key'
 
     data_event = data['event']
-
     assert_field_equals data_event, 'summary', value: event.summary
     assert_field_equals data_event, 'name', value: event.summary
 
@@ -333,11 +335,11 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
 
     # Red Events should not show up in the results
     @partner.tags << red_tag
-    _red_events = create_list(:event, 2, address: @address, partner: @partner)
+    _red_events = create_list(:event, 2, address: @address, partner: @partner, calendar: @calendar)
 
     # Blue events should show up in the results
     blue_address = create(:bare_address_2, neighbourhood: neighbourhoods(:two))
-    blue_events = create_list(:event, 6, address: blue_address)
+    blue_events = create_list(:event, 6, address: blue_address, calendar: @calendar)
     _blue_partner = create(:moss_side_partner,
                            address: blue_address,
                            events: blue_events,
@@ -360,7 +362,6 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     assert_equal event_data.length, blue_events.length, 'was expecting to see only events from blue_tag'
 
     events = map_results_to_ids event_data
-
     blue_events.each do |blue_event|
       event = events[blue_event.id]
       assert_field_equals event, 'name', value: blue_event.summary
@@ -371,7 +372,8 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     event = create(:event,
                    address: create(:address,
                                    latitude: 69.420666,
-                                   longitude: -2.666666))
+                                   longitude: -2.666666),
+                   calendar: @calendar)
 
     query_string = <<-GRAPHQL
       query {
@@ -443,11 +445,9 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     data = assert_field result, 'data'
     connection = assert_field data, 'eventConnection'
     edges = assert_field connection, 'edges'
-
     assert_equal edges.length, events.length
 
     nodes = map_edges_to_ids edges
-
     events.each do |event|
       node = nodes[event.id]
       assert_field_equals node, 'onlineEventUrl', value: event.online_address&.url
@@ -455,3 +455,5 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
     end
   end
 end
+
+# rubocop:enable Metrics/ClassLength

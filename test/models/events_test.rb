@@ -57,8 +57,8 @@ class EventTest < ActiveSupport::TestCase
     a = Event.new(calendar: @calendar, **event_hash)
     assert a.save
 
-    VCR.use_cassette(:calendar_events_test, allow_playback_repeats: true) do
-      b = Event.new(calendar: create(:calendar), **event_hash)
+    VCR.use_cassette(:eventbrite_events) do # , allow_playback_repeats: true) do
+      b = Event.new(calendar: create(:calendar_for_eventbrite), **event_hash)
       assert_predicate b, :valid?
     end
   end
@@ -104,10 +104,10 @@ class EventTest < ActiveSupport::TestCase
     end_date = start_date + 1.hour
 
     VCR.use_cassette(:calendar_events_test, allow_playback_repeats: true) do
-      create_list(:event, 5, partner: partner, dtstart: yesterday + 12.hours, dtend: yesterday + 13.hours)
-      create_list(:event, 5, partner: partner, dtstart: tomorrow + 12.hours, dtend: tomorrow + 13.hours)
+      create_list(:event, 5, partner: partner, dtstart: yesterday + 12.hours, dtend: yesterday + 13.hours, calendar: @calendar)
+      create_list(:event, 5, partner: partner, dtstart: tomorrow + 12.hours, dtend: tomorrow + 13.hours, calendar: @calendar)
 
-      todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+      todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date, calendar: @calendar)
 
       events = Event.all.find_by_day(Date.today)
 
@@ -126,8 +126,8 @@ class EventTest < ActiveSupport::TestCase
     end_date = today + 12.hours
 
     VCR.use_cassette(:calendar_events_test, allow_playback_repeats: true) do
-      create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour)
-      todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+      create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour, calendar: @calendar)
+      todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date, calendar: @calendar)
 
       events = Event.all.find_by_day(Date.today)
 
@@ -145,8 +145,8 @@ class EventTest < ActiveSupport::TestCase
     end_date = tomorrow + 12.hours
 
     VCR.use_cassette(:calendar_events_test, allow_playback_repeats: true) do
-      create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour)
-      tomorrows_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+      create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour, calendar: @calendar)
+      tomorrows_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date, calendar: @calendar)
 
       events = Event.all.find_by_day(Date.today)
 

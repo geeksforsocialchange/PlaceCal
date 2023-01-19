@@ -13,7 +13,10 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
     @neighbourhood = @partner.address.neighbourhood
     @neighbourhood_admin.neighbourhoods << @neighbourhood
 
-    @calendar = create(:calendar, partner: @partner, place: @partner)
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(:calendar, partner: @partner, place: @partner)
+    end
+
     host! 'admin.lvh.me'
   end
 

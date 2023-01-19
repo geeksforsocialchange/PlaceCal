@@ -21,34 +21,37 @@ class AdminCalendarTest < ApplicationSystemTestCase
   end
 
   test 'select2 inputs on calendars form' do
-    # create a new Calendar
-    click_link 'Calendars'
-    await_datatables
+    VCR.use_cassette(:eventbrite_events) do
+      # create a new Calendar
+      click_link 'Calendars'
+      await_datatables
 
-    click_link 'Add New Calendar'
+      click_link 'Add New Calendar'
 
-    partner_orginiser = select2_node 'calendar_partner'
-    select2 @partner.name, xpath: partner_orginiser.path
-    assert_select2_single @partner.name, partner_orginiser
+      partner_orginiser = select2_node 'calendar_partner'
+      select2 @partner.name, xpath: partner_orginiser.path
+      assert_select2_single @partner.name, partner_orginiser
 
-    default_location = select2_node 'calendar_place'
-    select2 @partner_two.name, xpath: default_location.path
-    assert_select2_single @partner_two.name, default_location
+      default_location = select2_node 'calendar_place'
+      select2 @partner_two.name, xpath: default_location.path
+      assert_select2_single @partner_two.name, default_location
 
-    fill_in 'Name', with: 'test cal'
-    fill_in 'URL', with: 'http://test.com/events.ics'
-    click_button 'Create Calendar'
+      fill_in 'Name', with: 'test cal'
+      fill_in 'URL', with: 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
 
-    # check that select2 has rendered and is displaying correct data
-    click_link 'Calendars'
-    await_datatables
+      click_button 'Create Calendar'
 
-    click_link 'test cal'
+      # check that select2 has rendered and is displaying correct data
+      click_link 'Calendars'
+      await_datatables
 
-    partner_orginiser = select2_node 'calendar_partner'
-    assert_select2_single @partner.name, partner_orginiser
+      click_link 'test cal'
 
-    default_location = select2_node 'calendar_place'
-    assert_select2_single @partner_two.name, default_location
+      partner_orginiser = select2_node 'calendar_partner'
+      assert_select2_single @partner.name, partner_orginiser
+
+      default_location = select2_node 'calendar_place'
+      assert_select2_single @partner_two.name, default_location
+    end
   end
 end

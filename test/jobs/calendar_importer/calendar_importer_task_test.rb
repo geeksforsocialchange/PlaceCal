@@ -22,27 +22,30 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
     end
   end
 
-  test 'rejects unknown sources by default' do
-    VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
-      # set up the calendar with faulty data that we know will trip up
-      #   the validations. we are testing the importer, not the model
-      calendar = create(
-        :calendar,
-        name: 'Unknown source calendar',
-        source: 'https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics'
-      )
-
-      calendar.update calendar_state: 'in_worker'
-
-      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
-        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
-        importer_task.run
-      end
-
-      # assert_equal 'ical', calendar.importer_used
-      assert_equal 'error', calendar.calendar_state
-    end
-  end
+  #  test 'rejects unknown sources by default' do
+  #  calendars are invalid with bad URLs as they are checked on save
+  #  but we do need to test that calendars that have URLs that have since become
+  #  invalid are handled properly (marked as 'bad_source' state.
+  #    VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
+  #      # set up the calendar with faulty data that we know will trip up
+  #      #   the validations. we are testing the importer, not the model
+  #      calendar = create(
+  #        :calendar,
+  #        name: 'Unknown source calendar',
+  #        source: 'https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics'
+  #      )
+  #
+  #      calendar.update calendar_state: 'in_worker'
+  #
+  #      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
+  #        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+  #        importer_task.run
+  #      end
+  #
+  #      # assert_equal 'ical', calendar.importer_used
+  #      assert_equal 'error', calendar.calendar_state
+  #    end
+  #  end
 
   test 'manual selection works' do
     VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
