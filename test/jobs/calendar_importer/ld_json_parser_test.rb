@@ -4,7 +4,7 @@ require 'test_helper'
 
 class LdJsonParserTest < ActiveSupport::TestCase
   def check_source_has_events(url, cassette, expected_node_count, expected_event_count)
-    VCR.use_cassette(cassette) do
+    VCR.use_cassette(cassette, allow_playback_repeats: true) do
       calendar = create(
         :calendar,
         strategy: :event,
@@ -37,6 +37,6 @@ class LdJsonParserTest < ActiveSupport::TestCase
     # maybe look into why PXSSY PALACE isn't being picked up
     # check_source_has_events 'https://www.pxssypalace.com/schedule', :pxspalace_events, 3, 1
 
-    check_source_has_events 'https://www.heartoftorbaycic.com/events/', :heart_of_torbay_events, 1, 0
+    check_source_has_events 'https://www.heartoftorbaycic.com/events/', :heart_of_torbay_events, 2, 1
   end
 end
