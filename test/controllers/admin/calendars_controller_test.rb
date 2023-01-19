@@ -4,7 +4,7 @@ require 'test_helper'
 
 class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   setup do
-    VCR.use_cassette(:calendars_controller_test, record: :new_episodes, allow_playback_repeats: true) do
+    VCR.use_cassette(:import_test_calendar) do
       @root = create(:root)
       @neighbourhood_admin = create(:neighbourhood_admin)
       @partner_admin = create(:partner_admin)
@@ -53,7 +53,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
     partner = create(:partner)
 
     assert_difference('Calendar.count') do
-      VCR.use_cassette(:eventbrite_events) do # , record: :new_episodes, allow_playback_repeats: true) do
+      VCR.use_cassette(:eventbrite_events) do
         post admin_calendars_url,
              params: { calendar: attributes_for(:calendar_for_eventbrite,
                                                 place_id: place.id,
@@ -76,7 +76,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   end
 
   it_allows_access_to_update_for(%i[root neighbourhood_admin partner_admin]) do
-    VCR.use_cassette(:calendars_controller_test, record: :new_episodes, allow_playback_repeats: true) do
+    VCR.use_cassette(:import_test_calendar) do
       patch admin_calendar_url(@calendar),
             params: { calendar: attributes_for(:calendar) }
       # Redirect to main partner screen
@@ -107,7 +107,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'import runs importer' do
-    calendar = VCR.use_cassette(:calendars_controller_test, record: :new_episodes, allow_playback_repeats: true) do
+    calendar = VCR.use_cassette(:calendar_for_outlook) do
       create(:calendar,
              source: 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics',
              partner: @partner,

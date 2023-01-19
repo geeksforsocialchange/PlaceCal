@@ -99,7 +99,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show events with no place or address' do
-    VCR.use_cassette(:partners_controller_test, record: :new_episodes, allow_playback_repeats: true) do
+    VCR.use_cassette(:import_test_calendar) do
       calendar = create(:calendar, strategy: 'no_location')
       partner = create(:partner)
 

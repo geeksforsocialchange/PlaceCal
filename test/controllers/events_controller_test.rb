@@ -4,7 +4,7 @@ require 'test_helper'
 
 class EventsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do # , record: :new_episodes, allow_playback_repeats: true) do
+    VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do
       neighbourhoods = create_list(:neighbourhood, 3)
       date = DateTime.now.beginning_of_day
 
@@ -67,7 +67,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'events with no location show up on index' do
-    VCR.use_cassette(:events_controller_test, record: :new_episodes, allow_playback_repeats: true) do
+    VCR.use_cassette(:eventbrite_events) do
       neighbourhood = create(:neighbourhood)
       partner = build(:partner, address: nil)
       partner.service_area_neighbourhoods << neighbourhood

@@ -81,7 +81,7 @@ class EventsResolverTest < ActiveSupport::TestCase
   end
 
   def make_calendar_for_strategy(strategy)
-    VCR.use_cassette(:event_resolve_strategy_calendar, record: :new_episodes) do
+    VCR.use_cassette(:import_test_calendar) do
       create :calendar, strategy: strategy
     end
   end

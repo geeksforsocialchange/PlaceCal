@@ -24,7 +24,7 @@ class CalendarStateTest < ActiveSupport::TestCase
   end
 
   test 'cannot be queued if not idle' do
-    VCR.use_cassette(:import_test_calendar, record: :new_episodes) do
+    VCR.use_cassette(:import_test_calendar) do
       assert_enqueued_jobs 0
       calendar = create(:calendar, calendar_state: :in_queue)
       calendar.queue_for_import! false, Date.new(2000, 1, 1)
@@ -102,7 +102,7 @@ class CalendarStateTest < ActiveSupport::TestCase
 
   # error'd
   test 'can be tested for' do
-    VCR.use_cassette(:import_test_calendar, record: :new_episodes) do
+    VCR.use_cassette(:import_test_calendar) do
       calendar = create(:calendar, calendar_state: :error)
       assert_predicate calendar.calendar_state, :error?
     end

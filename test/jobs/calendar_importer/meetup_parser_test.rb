@@ -7,7 +7,7 @@ class MeetupParserTest < ActiveSupport::TestCase
     # non existant user
     bad_user_url = 'https://www.meetup.com/haeKohtheuwae7uY6sie'
 
-    VCR.use_cassette(:bad_meetup_gateway, record: :new_episodes) do
+    VCR.use_cassette(:bad_meetup_gateway) do
       calendar = create(
         :calendar,
         strategy: :event,
