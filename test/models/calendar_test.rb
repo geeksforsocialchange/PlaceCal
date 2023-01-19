@@ -10,31 +10,60 @@ class CalendarTest < ActiveSupport::TestCase
   test 'has required fields' do
     # Must have a name and source URL
 
-    assert_not_predicate @calendar, :valid?
-    @calendar.name = 'A name for the calendar'
-    assert_not_predicate @calendar, :valid?
-    @calendar.source = 'https://example.com' # my-calendar.com'
-    assert_not_predicate @calendar, :valid?
-    @calendar.partner = create(:partner)
-    assert_not_predicate @calendar, :valid?
-    @calendar.place = create(:partner)
-    assert_predicate @calendar, :valid?
+    assert_not_predicate(@calendar, :valid?)
 
-    VCR.use_cassette(:calendar_bad_source_url) do
-      @calendar.save
-    end
+    errors = @calendar.errors
+    assert_predicate errors[:name], :present?
+    assert_equal("can't be blank", errors[:name].first)
 
-    # Sources must be unique
+    assert_predicate errors[:source], :present?
+    assert_equal(["can't be blank", 'not a valid URL'], errors[:source])
+
+    assert_predicate errors[:partner], :present?
+    assert_equal("can't be blank", errors[:partner].first)
+
+    assert_predicate errors[:place], :present?
+    assert_equal("can't be blank with this strategy", errors[:place].first)
+
+    # make valid
+    partner = create(:partner)
+    @calendar.name = 'Calendar Name'
+    @calendar.partner = partner
+    @calendar.place = partner
+    @calendar.source = 'https://calendar.google.com/calendar/ical/mgemn0rmm44un8ucifb287coto%40group.calendar.google.com/public/basic.ics'
+
     VCR.use_cassette(:import_test_calendar) do
-      @existing_calendar = create(:calendar)
+      assert_predicate @calendar, :valid?
+    end
+  end
+
+  test 'source must be unique' do
+    VCR.use_cassette(:import_test_calendar) do
+      first_calendar = create(:calendar)
+      assert_predicate first_calendar, :valid?
+
+      second_calendar = build(:calendar)
+      assert_not_predicate(second_calendar, :valid?)
+
+      message = second_calendar.errors[:source]&.first
+      assert_equal('calendar source already in use', message)
+    end
+  end
+
+  test 'source only validated if it has changed' do
+    calendar = VCR.use_cassette(:import_test_calendar) do
+      create :calendar
     end
 
-    VCR.use_cassette(:calendar_bad_source_url) do
-      @existing_calendar.update(source: 'https://example.com') # my-calendar.com')
-    end
+    assert_predicate calendar, :valid? # this is a noop in this context
 
-    assert_not_predicate @existing_calendar, :valid?
-    assert_equal ['calendar source already in use'], @existing_calendar.errors[:source]
+    calendar.name = 'A different name'
+    assert_predicate calendar, :valid? # does not need VCR cassette
+
+    VCR.use_cassette(:eventbrite_events) do
+      calendar.source = 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
+      assert_predicate calendar, :valid? # source changed, will validate URL reachable
+    end
   end
 
   test 'gets a contact for each calendar' do

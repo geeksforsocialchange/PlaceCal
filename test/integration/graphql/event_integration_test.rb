@@ -416,7 +416,7 @@ class GraphQLEventTest < ActionDispatch::IntegrationTest
       create(:online_address, url: 'https://eventbrite.com/blahblahblah', link_type: 'indirect'),
       nil
     ]
-    events = build_list(:event, 3, partner: @partner, dtstart: Time.now, address: @address)
+    events = build_list(:event, 3, partner: @partner, dtstart: Time.now, address: @address, calendar: @calendar)
 
     # splice the lists so we get a reasonable number of events, this also replaces? the `events` list :)
     # stuff off rubocop this is perfectly fine

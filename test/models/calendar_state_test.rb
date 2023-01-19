@@ -107,4 +107,15 @@ class CalendarStateTest < ActiveSupport::TestCase
       assert_predicate calendar.calendar_state, :error?
     end
   end
+
+  test 'can move from in_worker to bad_source' do
+    VCR.use_cassette(:import_test_calendar) do
+      calendar = create(:calendar, calendar_state: :in_worker)
+      calendar.flag_bad_source! 'Failed to read from source URL'
+
+      calendar.reload
+      assert_equal 'bad_source', calendar.calendar_state
+      assert_equal 'Failed to read from source URL', calendar.critical_error
+    end
+  end
 end
