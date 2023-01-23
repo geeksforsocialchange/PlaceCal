@@ -19,10 +19,12 @@ module CalendarImporter::Parsers
       return [] if user_name.blank?
 
       api_url = "https://api.meetup.com/#{user_name}/events"
-      response = HTTParty.get(api_url)
-      return [] unless response.success?
+      response_body = Base.read_http_source(api_url)
 
-      safely_parse_json response.body, []
+      # response = HTTParty.get(api_url)
+      # return [] unless response.success?
+
+      safely_parse_json response_body, []
     end
 
     def import_events_from(data)

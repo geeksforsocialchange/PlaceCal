@@ -56,5 +56,21 @@ module CalendarImporter::Parsers
     rescue JSON::JSONError
       default
     end
+
+    # Perform a HTTP GET on the remote URL and return the response body
+    #  if successful. If the URL is invalid or the response from the URL
+    #  is not 200 (even following redirects) then raise the correct
+    #  exception with an appropriate message
+    def self.read_http_source(url, follow_redirects: true)
+      response = HTTParty.get(url, follow_redirects: follow_redirects)
+      return response.body if response.success?
+
+      msg = "The source URL could not be read (code=#{response.code})"
+      raise CalendarImporter::CalendarImporter::InaccessibleFeed, msg
+    rescue HTTParty::ResponseError => e
+      raise CalendarImporter::CalendarImporter::InaccessibleFeed, "The source URL could not be resolved (#{e})"
+    rescue SocketError => e
+      raise CalendarImporter::CalendarImporter::InaccessibleFeed, "There was a socket error (#{e})"
+    end
   end
 end

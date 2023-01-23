@@ -33,10 +33,12 @@ module CalendarImporter::Parsers
     def download_calendar
       # Why are we doing this?
       url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
-      response = HTTParty.get(url, follow_redirects: true)
-      return response.body if response.success?
+      Base.read_http_source url
 
-      raise InaccessibleFeed, "HTTP request failed, response code #{response.code} (#{response.message})"
+      # response = HTTParty.get(url, follow_redirects: true)
+      # return response.body if response.success?
+
+      # raise InaccessibleFeed, "HTTP request failed, response code #{response.code} (#{response.message})"
       # response.body
     end
 

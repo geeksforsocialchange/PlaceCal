@@ -23,4 +23,33 @@ class ParserBaseTest < ActiveSupport::TestCase
     out = @parser.safely_parse_json('{ "data"', [])
     assert_empty out
   end
+
+  test 'read_http_source reads remote URL with valid input' do
+    VCR.use_cassette(:example_dot_com) do
+      response = CalendarImporter::Parsers::Base.read_http_source('https://example.com')
+      assert response.is_a?(String), 'response should be a string'
+    end
+  end
+
+  test 'read_http_source raises correct exception with invalid URL' do
+    VCR.use_cassette(:invalid_url) do
+      error = assert_raises(CalendarImporter::CalendarImporter::InaccessibleFeed) do
+        CalendarImporter::Parsers::Base.read_http_source('https://dandilion.gfsc.studio')
+      end
+
+      # FIXME: more user friendly description maybe?
+      assert_equal('There was a socket error (Failed to open TCP connection to dandilion.gfsc.studio:443 (getaddrinfo: Name or service not known))', error.message)
+    end
+  end
+
+  test 'read_http_source raises correct exception when URL gives invalid response' do
+    # NOTE: this cassette has been hand modified to respond with a 401 code
+    VCR.use_cassette(:example_dot_com_bad_response) do
+      error = assert_raises(CalendarImporter::CalendarImporter::InaccessibleFeed) do
+        CalendarImporter::Parsers::Base.read_http_source('https://example.com')
+      end
+
+      assert_equal('The source URL could not be read (code=401)', error.message)
+    end
+  end
 end

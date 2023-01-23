@@ -196,10 +196,12 @@ module CalendarImporter::Parsers
     end
 
     def download_calendar
-      response = HTTParty.get(@url)
-      return [] unless response.success?
+      # response = HTTParty.get(@url)
+      # return [] unless response.success?
 
-      doc = Nokogiri::HTML(response.body)
+      response_body = Base.read_http_source(@url)
+
+      doc = Nokogiri::HTML(response_body)
       data_nodes = doc.xpath('//script[@type="application/ld+json"]')
 
       data_nodes.reduce([]) do |out, node|

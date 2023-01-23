@@ -43,12 +43,14 @@ class CalendarImporter::CalendarImporter
   def validate_feed!
     # raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless url_accessible?
 
-    begin
-      response = HTTParty.get(@calendar.source, follow_redirects: true)
-      raise InaccessibleFeed, "The source URL could not be read (code=#{response.code})" unless response.success?
-    rescue HTTParty::ResponseError => e
-      raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
-    end
+    CalendarImporter::Parsers::Base.read_http_source @calendar.source
+
+    #    begin
+    #      response = HTTParty.get(@calendar.source, follow_redirects: true)
+    #      raise InaccessibleFeed, "The source URL could not be read (code=#{response.code})" unless response.success?
+    #    rescue HTTParty::ResponseError => e
+    #      raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
+    #    end
 
     raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?
   end

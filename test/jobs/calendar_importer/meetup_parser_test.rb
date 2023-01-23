@@ -22,8 +22,9 @@ class MeetupParserTest < ActiveSupport::TestCase
 
       parser = CalendarImporter::Parsers::Meetup.new(calendar, url: bad_user_url)
 
-      events = parser.download_calendar
-      assert_empty(events, 'expected empty array')
+      error = assert_raises(CalendarImporter::CalendarImporter::InaccessibleFeed) do
+        parser.download_calendar # raises InaccessibleFeed
+      end
     end
   end
 end
