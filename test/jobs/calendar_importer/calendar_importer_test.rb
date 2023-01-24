@@ -227,7 +227,7 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
     VCR.use_cassette(:gfsc_studio) do
       calendar = build(:calendar, name: 'GFSC Studio', source: url, importer_mode: 'auto')
 
-      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
+      assert_raises CalendarImporter::Exceptions::UnsupportedFeed do
         CalendarImporter::CalendarImporter.new(calendar).parser
       end
     end

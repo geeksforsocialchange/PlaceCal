@@ -2,8 +2,7 @@
 
 # CalendarImporter - detect calendar url and use appropriate adapter
 class CalendarImporter::CalendarImporter
-  class UnsupportedFeed < StandardError; end
-  class InaccessibleFeed < StandardError; end
+  include CalendarImporter::Exceptions
 
   PARSERS = [
     CalendarImporter::Parsers::Eventbrite,

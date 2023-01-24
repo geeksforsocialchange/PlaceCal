@@ -5,9 +5,9 @@
 # Parent parser classes should not be added.
 
 module CalendarImporter::Parsers
-  class BadFeedResponse < StandardError; end
-
   class Base
+    include CalendarImporter::Exceptions
+
     PUBLIC = true
     NAME = ''
     KEY = ''
@@ -51,10 +51,12 @@ module CalendarImporter::Parsers
       Digest::MD5.hexdigest(data.to_s)
     end
 
-    def safely_parse_json(string, default = nil)
-      JSON.parse string
-    rescue JSON::JSONError
-      default
+    def safely_parse_json(string, _default = nil)
+      raise BadFeedResponse, 'Source responded with missing JSON' if string.blank?
+
+      JSON.parse string.to_s
+    rescue JSON::JSONError => e
+      raise BadFeedResponse, "Source responded with invalid JSON (#{e})"
     end
 
     # Perform a HTTP GET on the remote URL and return the response body
@@ -66,11 +68,11 @@ module CalendarImporter::Parsers
       return response.body if response.success?
 
       msg = "The source URL could not be read (code=#{response.code})"
-      raise CalendarImporter::CalendarImporter::InaccessibleFeed, msg
+      raise InaccessibleFeed, msg
     rescue HTTParty::ResponseError => e
-      raise CalendarImporter::CalendarImporter::InaccessibleFeed, "The source URL could not be resolved (#{e})"
+      raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
     rescue SocketError => e
-      raise CalendarImporter::CalendarImporter::InaccessibleFeed, "There was a socket error (#{e})"
+      raise InaccessibleFeed, "There was a socket error (#{e})"
     end
   end
 end

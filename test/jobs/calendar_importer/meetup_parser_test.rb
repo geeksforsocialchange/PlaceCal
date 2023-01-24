@@ -22,7 +22,7 @@ class MeetupParserTest < ActiveSupport::TestCase
 
       parser = CalendarImporter::Parsers::Meetup.new(calendar, url: bad_user_url)
 
-      error = assert_raises(CalendarImporter::CalendarImporter::InaccessibleFeed) do
+      error = assert_raises(CalendarImporter::Exceptions::InaccessibleFeed) do
         parser.download_calendar # raises InaccessibleFeed
       end
     end

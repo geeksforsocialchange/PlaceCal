@@ -1,17 +1,20 @@
 # frozen_string_literal: true
 
 class CalendarImporterJob < ApplicationJob
+  include CalendarImporter::Exceptions
+
   queue_as :default
 
-  rescue_from CalendarImporter::CalendarImporter::UnsupportedFeed do |exception|
+  rescue_from UnsupportedFeed do |exception|
     report_error exception, 'Calendar URL is not supported'
   end
 
-  rescue_from CalendarImporter::CalendarImporter::InaccessibleFeed do |exception|
-    report_error exception, 'Calendar URL is not accessible'
+  rescue_from InaccessibleFeed do |exception|
+    # report_error exception, 'Calendar URL is not accessible'
+    report_bad_source_error exception.message
   end
 
-  rescue_from CalendarImporter::Parsers::BadFeedResponse do |exception|
+  rescue_from BadFeedResponse do |exception|
     report_error exception, 'Calendar URL returned un-parsable data'
   end
 
@@ -59,5 +62,10 @@ class CalendarImporterJob < ApplicationJob
     calendar.flag_error_import_job! full_message
     # puts full_message, backtrace if Rails.env.development?
     # Rollbar.error full_message, { exception_type: e.class.name, backtrace: backtrace }
+  end
+
+  def report_bad_source_error(e)
+    # problems with HTTP URLs that don't respond with status==200
+    calendar.flag_bad_source! e
   end
 end

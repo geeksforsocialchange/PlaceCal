@@ -6,6 +6,8 @@
 
 module CalendarImporter::Parsers
   class Ics < Base
+    include CalendarImporter::Exceptions
+
     # These constants are only used for the frontend interface
     NAME = 'Generic iCal / .ics'
     KEY = 'ical'
@@ -60,9 +62,12 @@ module CalendarImporter::Parsers
     end
 
     def parse_remote_calendars(data)
+      raise BadFeedResponse, 'Source returned empty ICS data' if data.blank?
+
       Icalendar::Calendar.parse data
-    rescue StandardError => e
-      raise BadFeedResponse
+    rescue RuntimeError => e
+      # I hope this isn't swallowing up any important exceptions
+      raise BadFeedResponse, "Could not parse ICS response (#{e})"
     end
   end
 end

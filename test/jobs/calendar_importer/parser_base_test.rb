@@ -9,19 +9,25 @@ class ParserBaseTest < ActiveSupport::TestCase
   end
 
   test 'safely_parse_json parses valid JSON' do
-    out = @parser.safely_parse_json('{ "data": "nice" }', [])
+    out = @parser.safely_parse_json('{ "data": "nice" }')
     assert out.key?('data')
     assert_equal 'nice', out['data']
   end
 
   test 'safely_parse_json parses missing JSON' do
-    out = @parser.safely_parse_json('', [])
-    assert_empty out
+    error = assert_raises(CalendarImporter::Exceptions::BadFeedResponse) do
+      @parser.safely_parse_json('')
+    end
+
+    assert_equal 'Source responded with missing JSON', error.message
   end
 
   test 'safely_parse_json parses badly formed JSON' do
-    out = @parser.safely_parse_json('{ "data"', [])
-    assert_empty out
+    error = assert_raises(CalendarImporter::Exceptions::BadFeedResponse) do
+      @parser.safely_parse_json('{ "data"', [])
+    end
+
+    assert_equal "Source responded with invalid JSON (783: unexpected token at '{ \"data\"')", error.message
   end
 
   test 'read_http_source reads remote URL with valid input' do
@@ -33,7 +39,7 @@ class ParserBaseTest < ActiveSupport::TestCase
 
   test 'read_http_source raises correct exception with invalid URL' do
     VCR.use_cassette(:invalid_url) do
-      error = assert_raises(CalendarImporter::CalendarImporter::InaccessibleFeed) do
+      error = assert_raises(CalendarImporter::Exceptions::InaccessibleFeed) do
         CalendarImporter::Parsers::Base.read_http_source('https://dandilion.gfsc.studio')
       end
 
@@ -45,7 +51,7 @@ class ParserBaseTest < ActiveSupport::TestCase
   test 'read_http_source raises correct exception when URL gives invalid response' do
     # NOTE: this cassette has been hand modified to respond with a 401 code
     VCR.use_cassette(:example_dot_com_bad_response) do
-      error = assert_raises(CalendarImporter::CalendarImporter::InaccessibleFeed) do
+      error = assert_raises(CalendarImporter::Exceptions::InaccessibleFeed) do
         CalendarImporter::Parsers::Base.read_http_source('https://example.com')
       end
 

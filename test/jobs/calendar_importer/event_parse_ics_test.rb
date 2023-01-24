@@ -15,7 +15,7 @@ class EventParseIcsTest < ActiveSupport::TestCase
 
       parser = CalendarImporter::Parsers::Ics.new(calendar, args)
 
-      assert_raises CalendarImporter::Parsers::BadFeedResponse do
+      assert_raises CalendarImporter::Exceptions::BadFeedResponse do
         parser.calendar_to_events
       end
     end
