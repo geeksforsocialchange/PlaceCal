@@ -21,10 +21,7 @@ module CalendarImporter
         json_url += '?format=json' unless json_url.ends_with?('?format=json')
 
         response_body = Base.read_http_source(json_url)
-        # response = HTTParty.get(json_url)
-        # return [] unless response.success?
-
-        safely_parse_json response_body, []
+        Base.safely_parse_json response_body
       end
 
       def import_events_from(data)

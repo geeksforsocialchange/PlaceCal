@@ -223,9 +223,9 @@ class Calendar < ApplicationRecord
     # The calendar importer will raise an exception if the source
     #   URL has a problem
     CalendarImporter::CalendarImporter.new(self)
-  rescue CalendarImporter::CalendarImporter::InaccessibleFeed => e
+  rescue CalendarImporter::Exceptions::InaccessibleFeed => e
     errors.add :source, "The source URL returned an invalid code (#{e})"
-  rescue CalendarImporter::CalendarImporter::UnsupportedFeed => e
+  rescue CalendarImporter::Exceptions::UnsupportedFeed => e
     errors.add :source, "URL could not be parsed (#{e})"
   end
 end

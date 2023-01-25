@@ -51,7 +51,7 @@ module CalendarImporter::Parsers
       Digest::MD5.hexdigest(data.to_s)
     end
 
-    def safely_parse_json(string, _default = nil)
+    def self.safely_parse_json(string)
       raise BadFeedResponse, 'Source responded with missing JSON' if string.blank?
 
       JSON.parse string.to_s
