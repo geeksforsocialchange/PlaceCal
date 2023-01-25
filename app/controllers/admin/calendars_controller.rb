@@ -44,7 +44,7 @@ module Admin
       @calendar = Calendar.new(calendar_params)
       authorize @calendar
 
-      if @calendar.save!
+      if @calendar.save
         flash[:success] = 'Successfully created new calendar'
         redirect_to edit_admin_calendar_path(@calendar)
       else
