@@ -167,7 +167,7 @@ class Calendar < ApplicationRecord
 
       self.calendar_state = :bad_source
       self.critical_error = problem
-      save validate: false
+      save!
     end
   end
 

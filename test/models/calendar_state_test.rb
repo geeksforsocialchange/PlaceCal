@@ -111,6 +111,8 @@ class CalendarStateTest < ActiveSupport::TestCase
   test 'can move from in_worker to bad_source' do
     VCR.use_cassette(:import_test_calendar) do
       calendar = create(:calendar, calendar_state: :in_worker)
+      calendar.events << Event.new(dtstart: 'today') # is invalid
+
       calendar.flag_bad_source! 'Failed to read from source URL'
 
       calendar.reload

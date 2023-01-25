@@ -10,20 +10,30 @@ class CalendarTest < ActiveSupport::TestCase
   test 'has required fields' do
     # Must have a name and source URL
 
-    assert_not_predicate(@calendar, :valid?)
+    VCR.use_cassette(:example_dot_com_bad_response, allow_playback_repeats: true) do
+      assert_not_predicate(@calendar, :valid?)
 
-    errors = @calendar.errors
-    assert_predicate errors[:name], :present?
-    assert_equal("can't be blank", errors[:name].first)
+      errors = @calendar.errors
+      assert_predicate errors[:name], :present?
+      assert_equal("can't be blank", errors[:name].first)
 
-    assert_predicate errors[:source], :present?
-    assert_equal(["can't be blank", 'not a valid URL'], errors[:source])
+      # testing for presence
+      assert_predicate errors[:source], :present?
+      assert_equal(["can't be blank", 'not a valid URL'], errors[:source])
 
-    assert_predicate errors[:partner], :present?
-    assert_equal("can't be blank", errors[:partner].first)
+      assert_predicate errors[:partner], :present?
+      assert_equal("can't be blank", errors[:partner].first)
 
-    assert_predicate errors[:place], :present?
-    assert_equal("can't be blank with this strategy", errors[:place].first)
+      assert_predicate errors[:place], :present?
+      assert_equal("can't be blank with this strategy", errors[:place].first)
+
+      @calendar.source = 'https://example.com/'
+      assert_not_predicate(@calendar, :valid?)
+
+      # testing for bad source
+      assert_predicate errors[:source], :present?
+      assert_equal('The source URL returned an invalid code (The source URL could not be read (code=401))', errors[:source].first)
+    end
 
     # make valid
     partner = create(:partner)

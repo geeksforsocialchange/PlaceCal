@@ -153,4 +153,40 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 1, created_events.count
     end
   end
+
+  test 'will throw innaccessible_feed exception for invalid source URLs' do
+    VCR.use_cassette(:example_dot_com_bad_response) do
+      calendar = build(
+        :calendar,
+        name: 'Generic LD+JSON Calendar',
+        source: 'https://example.com/',
+        strategy: 'event',
+        calendar_state: 'in_worker'
+      )
+
+      assert_raises(CalendarImporter::Exceptions::InaccessibleFeed) do
+        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+        importer_task.run
+      end
+    end
+  end
+
+  test 'will throw bad_feed_response exception for invalid responses' do
+    VCR.use_cassette(:squarespace_bad_json, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Squarespace with bad JSON',
+        source: 'https://robin-cunningham-dh7d.squarespace.com/our-events',
+        strategy: 'event',
+        calendar_state: 'in_worker'
+      )
+
+      error = assert_raises(CalendarImporter::Exceptions::BadFeedResponse) do
+        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+        importer_task.run
+      end
+
+      assert_equal "Source responded with invalid JSON (783: unexpected token at '{ \"key\": \"va')", error.message
+    end
+  end
 end
