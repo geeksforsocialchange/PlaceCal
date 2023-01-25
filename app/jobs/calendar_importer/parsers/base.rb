@@ -52,11 +52,11 @@ module CalendarImporter::Parsers
     end
 
     def self.safely_parse_json(string)
-      raise BadFeedResponse, 'Source responded with missing JSON' if string.blank?
+      raise InvalidResponse, 'Source responded with missing JSON' if string.blank?
 
       JSON.parse string.to_s
     rescue JSON::JSONError => e
-      raise BadFeedResponse, "Source responded with invalid JSON (#{e})"
+      raise InvalidResponse, "Source responded with invalid JSON (#{e})"
     end
 
     # Perform a HTTP GET on the remote URL and return the response body

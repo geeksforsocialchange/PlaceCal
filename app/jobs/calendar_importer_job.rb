@@ -14,7 +14,7 @@ class CalendarImporterJob < ApplicationJob
     report_bad_source_error exception.message
   end
 
-  rescue_from BadFeedResponse do |exception|
+  rescue_from InvalidResponse do |exception|
     report_error exception, 'Calendar URL returned un-parsable data'
   end
 

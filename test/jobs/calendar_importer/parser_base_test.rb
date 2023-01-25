@@ -12,7 +12,7 @@ class ParserBaseTest < ActiveSupport::TestCase
   end
 
   test 'safely_parse_json parses missing JSON' do
-    error = assert_raises(CalendarImporter::Exceptions::BadFeedResponse) do
+    error = assert_raises(CalendarImporter::Exceptions::InvalidResponse) do
       Base.safely_parse_json('')
     end
 
@@ -20,7 +20,7 @@ class ParserBaseTest < ActiveSupport::TestCase
   end
 
   test 'safely_parse_json parses badly formed JSON' do
-    error = assert_raises(CalendarImporter::Exceptions::BadFeedResponse) do
+    error = assert_raises(CalendarImporter::Exceptions::InvalidResponse) do
       Base.safely_parse_json('{ "data"')
     end
 

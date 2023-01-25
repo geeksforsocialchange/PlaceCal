@@ -11,6 +11,6 @@ module CalendarImporter
     class InaccessibleFeed < StandardError; end
 
     # The response was not valid XML, JSON, ICAL, etc.
-    class BadFeedResponse < StandardError; end
+    class InvalidResponse < StandardError; end
   end
 end

@@ -56,12 +56,12 @@ module CalendarImporter::Parsers
     end
 
     def parse_remote_calendars(data)
-      raise BadFeedResponse, 'Source returned empty ICS data' if data.blank?
+      raise InvalidResponse, 'Source returned empty ICS data' if data.blank?
 
       Icalendar::Calendar.parse data
     rescue RuntimeError => e
       # I hope this isn't swallowing up any important exceptions
-      raise BadFeedResponse, "Could not parse ICS response (#{e})"
+      raise InvalidResponse, "Could not parse ICS response (#{e})"
     end
   end
 end

@@ -181,7 +181,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
         calendar_state: 'in_worker'
       )
 
-      error = assert_raises(CalendarImporter::Exceptions::BadFeedResponse) do
+      error = assert_raises(CalendarImporter::Exceptions::InvalidResponse) do
         importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
         importer_task.run
       end
