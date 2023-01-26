@@ -90,4 +90,11 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     selector = ".help__free_public_wifi a[href='#{url}']"
     assert_select selector
   end
+
+  test 'mossley page works' do
+    mossley = create(:site, slug: 'mossley')
+    get 'http://mossley.lvh.me'
+    assert_response :success
+    assert_includes response.body, 'Marvellous Mossley'
+  end
 end

@@ -9,7 +9,7 @@ class SitesController < ApplicationController
 
   def index
     if current_site.slug == 'mossley'
-      render template: "sites/#{current_site.slug}.html.erb"
+      render template: "sites/#{current_site.slug}"
     else
       render template: 'sites/default'
     end
