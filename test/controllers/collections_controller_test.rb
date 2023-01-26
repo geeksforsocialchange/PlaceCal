@@ -9,7 +9,6 @@ class CollectionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show collection' do
-    skip 'New neighbourhood code stopped this working but Collections not used currently'
     get collection_url(@collection)
     assert_response :success
   end
