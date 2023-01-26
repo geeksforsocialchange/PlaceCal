@@ -60,7 +60,17 @@ module CalendarImporter::Parsers
 
       Icalendar::Calendar.parse data
     rescue RuntimeError => e
-      # I hope this isn't swallowing up any important exceptions
+      # I hope this isn't swallowing up any important exceptions.
+
+      # From the PR comment describing this:
+      #   The icalendar gem appears to lack a distinct exception class.
+      #   As for investigating- i think you'd have to trace the code path
+      #   manually and see how the ICS parser tests for errors. so if
+      #   there is a problem it will likely be in that code (or our input
+      #   into it, which is tested on the line above). at least it is not
+      #   catching StandardError.
+      #   - IK
+
       raise InvalidResponse, "Could not parse ICS response (#{e})"
     end
   end
