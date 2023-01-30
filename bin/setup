@@ -23,8 +23,8 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp '.env.example', '.env'
   end
 
-  puts "\n== Dropping database =="
-  system! 'bin/rails db:drop'
+  # puts "\n== Dropping database =="
+  # system! 'bin/rails db:drop'
 
   puts "\n== Preparing database =="
   system! 'bin/rails db:prepare'
