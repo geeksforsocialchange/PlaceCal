@@ -244,6 +244,42 @@ namespace :db do
     $stdout.puts "... done."
   end
 
+  desc 'Prints out a list of tables and their counts'
+  task info: :environment do
+    IGNORE_TABLES = %w[ar_internal_metadata delayed_jobs schema_migrations seed_migration_data_migrations]
+    
+    puts "Database Info:"
+    puts "  Rails.env=#{Rails.env}"
+
+    db_config = Rails.configuration.database_configuration[Rails.env]
+    puts "  database='#{db_config['database']}'"
+    puts "  host='#{db_config['host']}'"
+    puts "  user='#{db_config['username']}'"
+    puts "  password=[#{'*' * db_config['password'].length}]"
+    puts ''
+
+    max_len = 0
+    table_info = []
+    
+    ActiveRecord::Base.connection.tables.sort.each do |table|
+      next if IGNORE_TABLES.include?(table)
+
+      sql = "select count(*) from #{table}"
+      result = ActiveRecord::Base.connection.execute(sql)
+      count = result.first['count']
+
+      max_len = table.length if table.length > max_len
+      table_info << [ table, count ]
+    end
+
+    table_info.each do |name, count|
+      count_s = count > 0 ? count : '.'
+      puts "  #{name.rjust(max_len)}  #{count_s}"
+    end
+
+    puts ''
+  end
+  
   private
 
   def ensure_format(format)
