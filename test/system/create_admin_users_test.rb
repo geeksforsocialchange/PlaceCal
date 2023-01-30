@@ -75,6 +75,7 @@ class CreateAdminUsersTest < ApplicationSystemTestCase
   def extract_invitation_link_from(email)
     body = email.body.parts.first.body.raw_source
 
-    body =~ /^(https?:\/\/.*)$/ && $1
+    url = body =~ /^(https?:\/\/.*)$/ && $1
+    url.sub 'https:', 'http:'
   end
 end
