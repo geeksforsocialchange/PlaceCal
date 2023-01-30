@@ -29,9 +29,6 @@ FileUtils.chdir APP_ROOT do
   puts "\n== Importing events =="
   system! 'bin/rails import:all_events'
 
-  puts "\n== Creating admin user =="
-  system! 'bin/rails runner \'User.where(email: "admin@placecal.org").exists? || User.create!(email: "admin@placecal.org", password: "password", password_confirmation: "password", role: :root)\''
-
   puts "\n== Removing old logs and tempfiles =="
   system! 'bin/rails log:clear tmp:clear'
 
