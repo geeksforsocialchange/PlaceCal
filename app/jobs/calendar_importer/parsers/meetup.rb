@@ -21,7 +21,7 @@ module CalendarImporter::Parsers
       api_url = "https://api.meetup.com/#{user_name}/events"
       response_body = Base.read_http_source(api_url)
 
-      safely_parse_json response_body
+      Base.safely_parse_json response_body
     end
 
     def import_events_from(data)
