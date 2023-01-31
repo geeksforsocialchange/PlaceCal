@@ -13,6 +13,7 @@ module Admin
 
       @error_calendars = Calendar.where(calendar_state: 'error')
       @busy_calendars = Calendar.where(calendar_state: 'in_worker')
+      # @bad_source_calendars = Calendar.where(calendar_state: 'bad_source')
     end
 
     private

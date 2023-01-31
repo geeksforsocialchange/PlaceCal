@@ -2,7 +2,7 @@
 
 <p>Currently have <%= @job_count %> jobs</p>
 
-<% states = %w[idle in_queue in_worker error] -%>
+<% states = Calendar::ALLOWED_STATES -%>
 
 <table class="table table-striped">
   <thead>

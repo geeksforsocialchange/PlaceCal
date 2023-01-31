@@ -36,10 +36,11 @@ class Calendar < ApplicationRecord
     scope: true
   )
 
+  ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
   # State machine values
   enumerize(
     :calendar_state,
-    in: %i[idle in_queue in_worker error bad_source],
+    in: ALLOWED_STATES,
     default: :idle
   )
 
