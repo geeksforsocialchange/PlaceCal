@@ -77,7 +77,7 @@ bin/setup
 
 Amongst other things, this will create an admin user for you:
 
-- Username: `admin@placecal.org`
+- Username: `admin@lvh.me`
 - Password: `password`
 
 ### Run the thing
