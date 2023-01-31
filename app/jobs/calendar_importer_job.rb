@@ -10,7 +10,6 @@ class CalendarImporterJob < ApplicationJob
   end
 
   rescue_from InaccessibleFeed do |exception|
-    # report_error exception, 'Calendar URL is not accessible'
     report_bad_source_error exception.message
   end
 
