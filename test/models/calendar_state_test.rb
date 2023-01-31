@@ -14,23 +14,27 @@ class CalendarStateTest < ActiveSupport::TestCase
 
   # queueing
   test 'can be pushed into queue' do
-    assert_enqueued_jobs 0
-    calendar = create(:calendar)
-    calendar.queue_for_import! false, Date.new(2000, 1, 1)
-    assert_predicate calendar.calendar_state, :in_queue?
-    assert_enqueued_jobs 1
+    VCR.use_cassette(:import_test_calendar) do
+      assert_enqueued_jobs 0
+      calendar = create(:calendar)
+      calendar.queue_for_import! false, Date.new(2000, 1, 1)
+      assert_predicate calendar.calendar_state, :in_queue?
+      assert_enqueued_jobs 1
+    end
   end
 
   test 'cannot be queued if not idle' do
-    assert_enqueued_jobs 0
-    calendar = create(:calendar, calendar_state: :in_queue)
-    calendar.queue_for_import! false, Date.new(2000, 1, 1)
+    VCR.use_cassette(:import_test_calendar) do
+      assert_enqueued_jobs 0
+      calendar = create(:calendar, calendar_state: :in_queue)
+      calendar.queue_for_import! false, Date.new(2000, 1, 1)
 
-    # this has not changed
-    assert_predicate calendar.calendar_state, :in_queue?
+      # this has not changed
+      assert_predicate calendar.calendar_state, :in_queue?
 
-    # not in queue
-    assert_enqueued_jobs 0
+      # not in queue
+      assert_enqueued_jobs 0
+    end
   end
 
   test 'can move into working state' do
@@ -98,7 +102,22 @@ class CalendarStateTest < ActiveSupport::TestCase
 
   # error'd
   test 'can be tested for' do
-    calendar = create(:calendar, calendar_state: :error)
-    assert_predicate calendar.calendar_state, :error?
+    VCR.use_cassette(:import_test_calendar) do
+      calendar = create(:calendar, calendar_state: :error)
+      assert_predicate calendar.calendar_state, :error?
+    end
+  end
+
+  test 'can move from in_worker to bad_source' do
+    VCR.use_cassette(:import_test_calendar) do
+      calendar = create(:calendar, calendar_state: :in_worker)
+      calendar.events << Event.new(dtstart: 'today') # is invalid
+
+      calendar.flag_bad_source! 'Failed to read from source URL'
+
+      calendar.reload
+      assert_equal 'bad_source', calendar.calendar_state
+      assert_equal 'Failed to read from source URL', calendar.critical_error
+    end
   end
 end

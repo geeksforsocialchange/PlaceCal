@@ -5,6 +5,7 @@ require 'test_helper'
 class Admin::CollectionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @collection = create(:collection)
+
     @root = create(:root)
     @citizen = create(:user)
 

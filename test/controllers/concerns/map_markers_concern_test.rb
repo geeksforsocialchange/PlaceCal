@@ -64,9 +64,12 @@ class MapMarkersConcernTest < ActiveSupport::TestCase
     end
 
     test 'cam turn events into markers' do
-      events = create_list(:event, 10)
-      output = controller.get_map_markers(events)
-      assert_equal 10, output.length
+      VCR.use_cassette(:import_test_calendar) do
+        calendar = create(:calendar)
+        events = create_list(:event, 10, calendar: calendar)
+        output = controller.get_map_markers(events)
+        assert_equal 10, output.length
+      end
     end
   end
 end

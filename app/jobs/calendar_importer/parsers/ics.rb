@@ -6,6 +6,8 @@
 
 module CalendarImporter::Parsers
   class Ics < Base
+    include CalendarImporter::Exceptions
+
     # These constants are only used for the frontend interface
     NAME = 'Generic iCal / .ics'
     KEY = 'ical'
@@ -33,10 +35,7 @@ module CalendarImporter::Parsers
     def download_calendar
       # Why are we doing this?
       url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
-      response = HTTParty.get(url, follow_redirects: true)
-      return '' unless response.success?
-
-      response.body
+      Base.read_http_source url
     end
 
     def import_events_from(data)
@@ -57,9 +56,22 @@ module CalendarImporter::Parsers
     end
 
     def parse_remote_calendars(data)
+      raise InvalidResponse, 'Source returned empty ICS data' if data.blank?
+
       Icalendar::Calendar.parse data
-    rescue StandardError => e
-      raise BadFeedResponse
+    rescue RuntimeError => e
+      # I hope this isn't swallowing up any important exceptions.
+
+      # From the PR comment describing this:
+      #   The icalendar gem appears to lack a distinct exception class.
+      #   As for investigating- i think you'd have to trace the code path
+      #   manually and see how the ICS parser tests for errors. so if
+      #   there is a problem it will likely be in that code (or our input
+      #   into it, which is tested on the line above). at least it is not
+      #   catching StandardError.
+      #   - IK
+
+      raise InvalidResponse, "Could not parse ICS response (#{e})"
     end
   end
 end

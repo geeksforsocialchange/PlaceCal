@@ -80,8 +80,14 @@ class EventsResolverTest < ActiveSupport::TestCase
     @ics_event_data = CalendarImporter::Events::IcsEvent.new(@fake_ics_event, @start_date, @end_date)
   end
 
+  def make_calendar_for_strategy(strategy)
+    VCR.use_cassette(:import_test_calendar) do
+      create :calendar, strategy: strategy
+    end
+  end
+
   test 'online only strategy' do
-    calendar = create(:calendar, strategy: 'online_only')
+    calendar = make_calendar_for_strategy('online_only')
     notices = []
     from_date = @start_date
 
@@ -97,7 +103,7 @@ class EventsResolverTest < ActiveSupport::TestCase
   end
 
   test 'no location strategy' do
-    calendar = create(:calendar, strategy: 'no_location')
+    calendar = make_calendar_for_strategy('no_location')
     notices = []
     from_date = @start_date
 
@@ -117,7 +123,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     @fake_ics_event[:custom_properties] = { 'x_google_conference' => [meet_link] }
     ics_event_data = CalendarImporter::Events::IcsEvent.new(@fake_ics_event, @start_date, @end_date)
 
-    calendar = create(:calendar, strategy: 'event') # strategy doesn't matter TBH
+    calendar = make_calendar_for_strategy('event')
 
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
@@ -133,7 +139,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     @fake_ics_event[:description] = "Join us on jitsi: #{jitsi_link} words words words"
     ics_event_data = CalendarImporter::Events::IcsEvent.new(@fake_ics_event, @start_date, @end_date)
 
-    calendar = create(:calendar, strategy: 'event')
+    calendar = make_calendar_for_strategy('event')
 
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
@@ -149,7 +155,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     @fake_ics_event[:description] = "Join us on meets: #{meet_link} words words words"
     ics_event_data = CalendarImporter::Events::IcsEvent.new(@fake_ics_event, @start_date, @end_date)
 
-    calendar = create(:calendar, strategy: 'event')
+    calendar = make_calendar_for_strategy('event')
 
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
@@ -165,7 +171,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     @fake_ics_event[:description] = "join us on zoom: <p>#{zoom_link}<p> words words words"
     ics_event_data = CalendarImporter::Events::IcsEvent.new(@fake_ics_event, @start_date, @end_date)
 
-    calendar = create(:calendar, strategy: 'event')
+    calendar = make_calendar_for_strategy('event')
 
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
@@ -181,7 +187,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     @fake_eventbrite_event[:url] = eventbrite_link
     event_data = CalendarImporter::Events::EventbriteEvent.new(@fake_eventbrite_event)
 
-    calendar = create(:calendar, strategy: 'event')
+    calendar = make_calendar_for_strategy('event')
 
     resolver = CalendarImporter::EventResolver.new(event_data, calendar, [], @start_date)
     resolver.determine_online_location
@@ -197,7 +203,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     @fake_meetup_event[:link] = meetup_link
     event_data = CalendarImporter::Events::MeetupEvent.new(@fake_meetup_event)
 
-    calendar = create(:calendar, strategy: 'event')
+    calendar = make_calendar_for_strategy('event')
 
     resolver = CalendarImporter::EventResolver.new(event_data, calendar, [], @start_date)
     resolver.determine_online_location

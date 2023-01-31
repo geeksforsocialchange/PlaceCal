@@ -22,27 +22,30 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
     end
   end
 
-  test 'rejects unknown sources by default' do
-    VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
-      # set up the calendar with faulty data that we know will trip up
-      #   the validations. we are testing the importer, not the model
-      calendar = create(
-        :calendar,
-        name: 'Unknown source calendar',
-        source: 'https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics'
-      )
-
-      calendar.update calendar_state: 'in_worker'
-
-      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
-        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
-        importer_task.run
-      end
-
-      # assert_equal 'ical', calendar.importer_used
-      assert_equal 'error', calendar.calendar_state
-    end
-  end
+  #  test 'rejects unknown sources by default' do
+  #  calendars are invalid with bad URLs as they are checked on save
+  #  but we do need to test that calendars that have URLs that have since become
+  #  invalid are handled properly (marked as 'bad_source' state.
+  #    VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
+  #      # set up the calendar with faulty data that we know will trip up
+  #      #   the validations. we are testing the importer, not the model
+  #      calendar = create(
+  #        :calendar,
+  #        name: 'Unknown source calendar',
+  #        source: 'https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics'
+  #      )
+  #
+  #      calendar.update calendar_state: 'in_worker'
+  #
+  #      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
+  #        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+  #        importer_task.run
+  #      end
+  #
+  #      # assert_equal 'ical', calendar.importer_used
+  #      assert_equal 'error', calendar.calendar_state
+  #    end
+  #  end
 
   test 'manual selection works' do
     VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
@@ -148,6 +151,42 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
       created_events = calendar.events
       assert_equal 1, created_events.count
+    end
+  end
+
+  test 'will throw innaccessible_feed exception for invalid source URLs' do
+    VCR.use_cassette(:example_dot_com_bad_response) do
+      calendar = build(
+        :calendar,
+        name: 'Generic LD+JSON Calendar',
+        source: 'https://example.com/',
+        strategy: 'event',
+        calendar_state: 'in_worker'
+      )
+
+      assert_raises(CalendarImporter::Exceptions::InaccessibleFeed) do
+        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+        importer_task.run
+      end
+    end
+  end
+
+  test 'will throw bad_feed_response exception for invalid responses' do
+    VCR.use_cassette(:squarespace_bad_json, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Squarespace with bad JSON',
+        source: 'https://robin-cunningham-dh7d.squarespace.com/our-events',
+        strategy: 'event',
+        calendar_state: 'in_worker'
+      )
+
+      error = assert_raises(CalendarImporter::Exceptions::InvalidResponse) do
+        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+        importer_task.run
+      end
+
+      assert_equal "Source responded with invalid JSON (783: unexpected token at '{ \"key\": \"va')", error.message
     end
   end
 end

@@ -1,0 +1,99 @@
+---
+http_interactions:
+  - request:
+      method: get
+      uri: https://robin-cunningham-dh7d.squarespace.com/our-events?format=json
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Accept-Ranges:
+          - bytes
+        Age:
+          - "0"
+        Content-Length:
+          - "32102"
+        Content-Type:
+          - text/html;charset=utf-8
+        Date:
+          - Wed, 26 Oct 2022 14:14:55 GMT
+        Etag:
+          - W/"e071f14e56e0539687ee86886c5e6489"
+        Expires:
+          - Thu, 01 Jan 1970 00:00:00 GMT
+        Server:
+          - Squarespace
+        Set-Cookie:
+          - crumb=BfC+6+YJqXc2YWU4YmMzMzU1NjIzYzlhYTU3NDMxNTBmOTZlYTE2;Path=/
+        Strict-Transport-Security:
+          - max-age=0
+        Vary:
+          - Accept-Encoding
+        X-Content-Type-Options:
+          - nosniff
+        X-Contextid:
+          - VLVonRmH/4Gr5IEMV
+      body:
+        encoding: ASCII-8BIT
+        string: '{ "key": "va'
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: https://robin-cunningham-dh7d.squarespace.com/our-events
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Accept-Ranges:
+          - bytes
+        Age:
+          - "0"
+        Content-Length:
+          - "32102"
+        Content-Type:
+          - text/html;charset=utf-8
+        Date:
+          - Wed, 26 Oct 2022 14:14:55 GMT
+        Etag:
+          - W/"e071f14e56e0539687ee86886c5e6489"
+        Expires:
+          - Thu, 01 Jan 1970 00:00:00 GMT
+        Server:
+          - Squarespace
+        Set-Cookie:
+          - crumb=BfC+6+YJqXc2YWU4YmMzMzU1NjIzYzlhYTU3NDMxNTBmOTZlYTE2;Path=/
+        Strict-Transport-Security:
+          - max-age=0
+        Vary:
+          - Accept-Encoding
+        X-Content-Type-Options:
+          - nosniff
+        X-Contextid:
+          - VLVonRmH/4Gr5IEMV
+      body:
+        encoding: ASCII-8BIT
+        string: ""
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.1.0

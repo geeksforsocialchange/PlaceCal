@@ -220,10 +220,14 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   test 'auto detection can cope with unhandled calendar sources' do
     url = 'https://gfsc.studio' # no calendars here
 
-    VCR.use_cassette(:gfsc_studio) do
-      calendar = create(:calendar, name: 'GFSC Studio', source: url, importer_mode: 'auto')
+    # FIXME: we need to test when a calendar has been given a valid URL
+    #   (at creation) and then the URL subsequently responds with an invalid cod
+    #   (like a calendar going offline)
 
-      assert_raises CalendarImporter::CalendarImporter::UnsupportedFeed do
+    VCR.use_cassette(:gfsc_studio) do
+      calendar = build(:calendar, name: 'GFSC Studio', source: url, importer_mode: 'auto')
+
+      assert_raises CalendarImporter::Exceptions::UnsupportedFeed do
         CalendarImporter::CalendarImporter.new(calendar).parser
       end
     end
