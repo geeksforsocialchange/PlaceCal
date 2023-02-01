@@ -4,33 +4,37 @@ require 'test_helper'
 
 class EventsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    neighbourhoods = create_list(:neighbourhood, 3)
-    date = DateTime.now.beginning_of_day
+    VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do
+      neighbourhoods = create_list(:neighbourhood, 3)
+      date = DateTime.now.beginning_of_day
 
-    # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
-    addresses = neighbourhoods.map do |n|
-      a = create(:address)
-      a.neighbourhood = n
-      a.save
-      a
+      # Deliberately saving address twice. (create + save) Second time overwrites neighbourhood.
+      addresses = neighbourhoods.map do |n|
+        a = create(:address)
+        a.neighbourhood = n
+        a.save
+        a
+      end
+
+      @calendar = create(:calendar)
+
+      @events = addresses.map do |a|
+        e = build(:event, address: a, dtstart: date, dtend: date + 1.hour, calendar: @calendar)
+        e.save
+        e
+      end
+
+      @slugless_site = create_default_site
+
+      @default_site = create(:site)
+      @default_site.neighbourhoods << neighbourhoods
+      @default_site.save
+
+      @site = build(:site)
+      @site.neighbourhoods.append(neighbourhoods.first)
+      @site.neighbourhoods.append(neighbourhoods.second)
+      @site.save
     end
-
-    @events = addresses.map do |a|
-      e = build(:event, address: a, dtstart: date, dtend: date + 1.hour)
-      e.save
-      e
-    end
-
-    @slugless_site = create_default_site
-
-    @default_site = create(:site)
-    @default_site.neighbourhoods << neighbourhoods
-    @default_site.save
-
-    @site = build(:site)
-    @site.neighbourhoods.append(neighbourhoods.first)
-    @site.neighbourhoods.append(neighbourhoods.second)
-    @site.save
   end
 
   test 'slugless site redirects to find my placecal' do
@@ -63,31 +67,33 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'events with no location show up on index' do
-    neighbourhood = create(:neighbourhood)
-    partner = build(:partner, address: nil)
-    partner.service_area_neighbourhoods << neighbourhood
-    partner.save!
+    VCR.use_cassette(:eventbrite_events) do
+      neighbourhood = create(:neighbourhood)
+      partner = build(:partner, address: nil)
+      partner.service_area_neighbourhoods << neighbourhood
+      partner.save!
 
-    calendar = create(:calendar, partner: partner, strategy: 'no_location')
+      calendar = create(:calendar_for_eventbrite, partner: partner, strategy: 'no_location')
 
-    @site.neighbourhoods.destroy_all
-    @site.neighbourhoods << neighbourhood
+      @site.neighbourhoods.destroy_all
+      @site.neighbourhoods << neighbourhood
 
-    5.times do |n|
-      partner.events.create!(
-        calendar: calendar,
-        summary: "Event #{n}",
-        description: 'A description',
-        dtstart: Time.now,
-        dtend: Time.now + 1.hour
-      )
+      5.times do |n|
+        partner.events.create!(
+          calendar: calendar,
+          summary: "Event #{n}",
+          description: 'A description',
+          dtstart: Time.now,
+          dtend: Time.now + 1.hour
+        )
+      end
+
+      get from_site_slug(@site, events_path)
+      assert_response :success
+
+      events = assigns(:events).values.first
+      assert_equal(5, events.length)
     end
-
-    get from_site_slug(@site, events_path)
-    assert_response :success
-
-    events = assigns(:events).values.first
-    assert_equal(5, events.length)
   end
 
   test 'events meta descriptions contain no markup' do

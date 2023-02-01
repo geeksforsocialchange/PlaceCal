@@ -2,12 +2,15 @@
 
 FactoryBot.define do
   factory :collection do
-    name { 'A Collection Of Events' }
-    description { 'Information here about the events' }
+    name { 'An Eventless Collection' }
+    description { 'A collection with no events defined' }
     route { 'named-route' }
 
-    after :create do |collection|
-      collection.events = create_list(:event, 5)
+    factory :collection_with_events, class: 'Collection' do
+      name { 'A Collection Of Events' }
+      after :create do |collection|
+        collection.events = create_list(:event, 5)
+      end
     end
   end
 end

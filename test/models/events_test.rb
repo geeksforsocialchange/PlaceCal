@@ -4,7 +4,9 @@ require 'test_helper'
 
 class EventTest < ActiveSupport::TestCase
   setup do
-    @calendar = create(:calendar)
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(:calendar)
+    end
 
     @event_data = {
       dtend: DateTime.now + 1.day,
@@ -55,8 +57,10 @@ class EventTest < ActiveSupport::TestCase
     a = Event.new(calendar: @calendar, **event_hash)
     assert a.save
 
-    b = Event.new(calendar: create(:calendar), **event_hash)
-    assert_predicate b, :valid?
+    VCR.use_cassette(:eventbrite_events) do # , allow_playback_repeats: true) do
+      b = Event.new(calendar: create(:calendar_for_eventbrite), **event_hash)
+      assert_predicate b, :valid?
+    end
   end
 
   test 'has blank location with no addresses at all' do
@@ -99,14 +103,17 @@ class EventTest < ActiveSupport::TestCase
     start_date = today + 12.hours
     end_date = start_date + 1.hour
 
-    create_list(:event, 5, partner: partner, dtstart: yesterday + 12.hours, dtend: yesterday + 13.hours)
-    create_list(:event, 5, partner: partner, dtstart: tomorrow + 12.hours, dtend: tomorrow + 13.hours)
-    todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+    VCR.use_cassette(:calendar_events_test, allow_playback_repeats: true) do
+      create_list(:event, 5, partner: partner, dtstart: yesterday + 12.hours, dtend: yesterday + 13.hours, calendar: @calendar)
+      create_list(:event, 5, partner: partner, dtstart: tomorrow + 12.hours, dtend: tomorrow + 13.hours, calendar: @calendar)
 
-    events = Event.all.find_by_day(Date.today)
+      todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date, calendar: @calendar)
 
-    assert_equal(1, events.length)
-    assert_equal events.first.dtstart, todays_event.dtstart
+      events = Event.all.find_by_day(Date.today)
+
+      assert_equal(1, events.length)
+      assert_equal events.first.dtstart, todays_event.dtstart
+    end
   end
 
   test 'ensure find_by_day returns items from two-day events' do
@@ -118,13 +125,15 @@ class EventTest < ActiveSupport::TestCase
     start_date = yesterday + 12.hours
     end_date = today + 12.hours
 
-    create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour)
-    todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+    VCR.use_cassette(:calendar_events_test, allow_playback_repeats: true) do
+      create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour, calendar: @calendar)
+      todays_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date, calendar: @calendar)
 
-    events = Event.all.find_by_day(Date.today)
+      events = Event.all.find_by_day(Date.today)
 
-    assert_equal(1, events.length)
-    assert_equal events.first.dtstart, todays_event.dtstart
+      assert_equal(1, events.length)
+      assert_equal events.first.dtstart, todays_event.dtstart
+    end
   end
 
   test 'ensure find_by_day returns items from multi-day events' do
@@ -135,12 +144,14 @@ class EventTest < ActiveSupport::TestCase
     start_date = yesterday + 12.hours
     end_date = tomorrow + 12.hours
 
-    create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour)
-    tomorrows_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date)
+    VCR.use_cassette(:calendar_events_test, allow_playback_repeats: true) do
+      create_list(:event, 5, partner: partner, dtstart: yesterday, dtend: yesterday + 1.hour, calendar: @calendar)
+      tomorrows_event = create(:event, partner: partner, dtstart: start_date, dtend: end_date, calendar: @calendar)
 
-    events = Event.all.find_by_day(Date.today)
+      events = Event.all.find_by_day(Date.today)
 
-    assert_equal(1, events.length)
-    assert_equal events.first.dtstart, tomorrows_event.dtstart
+      assert_equal(1, events.length)
+      assert_equal events.first.dtstart, tomorrows_event.dtstart
+    end
   end
 end

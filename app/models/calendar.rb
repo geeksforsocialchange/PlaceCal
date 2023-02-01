@@ -20,7 +20,8 @@ class Calendar < ApplicationRecord
   validates :source, uniqueness: { message: 'calendar source already in use' },
                      format: { with: CALENDAR_REGEX, message: 'not a valid URL' }
 
-  before_save :source_supported
+  validate :check_source_reachable
+
   before_save :update_notice_count
 
   # Output the calendar's name when it's requested as a string
@@ -35,10 +36,11 @@ class Calendar < ApplicationRecord
     scope: true
   )
 
+  ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
   # State machine values
   enumerize(
     :calendar_state,
-    in: %i[idle in_queue in_worker error],
+    in: ALLOWED_STATES,
     default: :idle
   )
 
@@ -92,15 +94,6 @@ class Calendar < ApplicationRecord
   # internal model function
   def update_notice_count
     self.notice_count = (notices || []).count if notices_changed?
-  end
-
-  # called before save
-  def source_supported
-    # The calendar importer will raise an exception if the source
-    #   URL has a problem
-    CalendarImporter::CalendarImporter.new(self)
-  rescue CalendarImporter::CalendarImporter::InaccessibleFeed, CalendarImporter::CalendarImporter::UnsupportedFeed => e
-    flag_error_import_job! e.to_s
   end
 
   #
@@ -165,6 +158,20 @@ class Calendar < ApplicationRecord
     end
   end
 
+  def flag_bad_source!(problem)
+    transaction do
+      return unless calendar_state.in_worker?
+
+      # we need the state to be valid so we discard everything
+      # before saving error
+      reload
+
+      self.calendar_state = :bad_source
+      self.critical_error = problem
+      save!
+    end
+  end
+
   # Flag calendar record a problem has occurred and that all
   # future processing will cease until the user resets this calendar
   # elsewhere
@@ -206,5 +213,20 @@ class Calendar < ApplicationRecord
   # is calendar being worked on by our backend?
   def is_busy?
     calendar_state.in_queue? || calendar_state.in_worker?
+  end
+
+  private
+
+  # called for validation
+  def check_source_reachable
+    return unless source_changed?
+
+    # The calendar importer will raise an exception if the source
+    #   URL has a problem
+    CalendarImporter::CalendarImporter.new(self)
+  rescue CalendarImporter::Exceptions::InaccessibleFeed => e
+    errors.add :source, "The source URL returned an invalid code (#{e})"
+  rescue CalendarImporter::Exceptions::UnsupportedFeed => e
+    errors.add :source, "URL could not be parsed (#{e})"
   end
 end

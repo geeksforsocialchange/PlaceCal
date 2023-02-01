@@ -11,9 +11,13 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood_site = create(:site_local)
     @regional_neighbourhood_site = create(:site_local)
 
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(:calendar)
+    end
+
     # Create one set of events for the default site
     date = DateTime.now.beginning_of_day
-    @default_site_events = create_list :event, 5, dtstart: date + 1.hour
+    @default_site_events = create_list(:event, 5, dtstart: date + 1.hour, calendar: @calendar)
     @default_site_events.each do |event|
       next if @default_site.neighbourhoods.include? event.neighbourhood
 
@@ -21,7 +25,7 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     end
 
     # Create another set for the neighbourhood site
-    @neighbourhood_site_events = create_list :event, 5, dtstart: date + 1.hour
+    @neighbourhood_site_events = create_list(:event, 5, dtstart: date + 1.hour, calendar: @calendar)
     @neighbourhood2 = create(:neighbourhood)
     @neighbourhood_site_events.each do |event|
       event.address.update(neighbourhood: @neighbourhood2)
@@ -30,7 +34,7 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
 
     # Make a ward, add events to that ward
     @ward = create(:neighbourhood)
-    @regional_ward_events = create_list :event, 5, dtstart: date + 1.hour
+    @regional_ward_events = create_list(:event, 5, dtstart: date + 1.hour, calendar: @calendar)
     @regional_ward_events.each { |event| event.address.update(neighbourhood: @ward) }
 
     # Assign the regional site to have, a region containing the ward, as a neighbourhood

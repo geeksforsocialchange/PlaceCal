@@ -2,8 +2,7 @@
 
 # CalendarImporter - detect calendar url and use appropriate adapter
 class CalendarImporter::CalendarImporter
-  class UnsupportedFeed < StandardError; end
-  class InaccessibleFeed < StandardError; end
+  include CalendarImporter::Exceptions
 
   PARSERS = [
     CalendarImporter::Parsers::Eventbrite,
@@ -41,15 +40,9 @@ class CalendarImporter::CalendarImporter
   # As a side effect, it runs CalendarImporter#parser, which sets self.parser to one of the values above
   # This ensures that self.parser is set during calendar_importer_task
   def validate_feed!
-    raise InaccessibleFeed, "The URL could not be reached for calendar #{@calendar.name}" unless url_accessible?
-    raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?
-  end
+    CalendarImporter::Parsers::Base.read_http_source @calendar.source
 
-  def url_accessible?
-    response = HTTParty.get(@calendar.source, follow_redirects: true)
-    response.code == 200
-  rescue StandardError
-    false
+    raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?
   end
 
   def patch_legacy_modes(calendar)

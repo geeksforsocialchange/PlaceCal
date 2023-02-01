@@ -99,14 +99,16 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show events with no place or address' do
-    calendar = create(:calendar, strategy: 'no_location')
-    partner = create(:partner)
+    VCR.use_cassette(:import_test_calendar) do
+      calendar = create(:calendar, strategy: 'no_location')
+      partner = create(:partner)
 
-    partner.events += create_list(:event, 3, calendar: calendar, dtstart: Time.now)
+      partner.events += create_list(:event, 3, calendar: calendar, dtstart: Time.now)
 
-    get from_site_slug(@site, partner_path(partner))
+      get from_site_slug(@site, partner_path(partner))
 
-    events = assigns(:events).values.first
-    assert_equal(3, events.length)
+      events = assigns(:events).values.first
+      assert_equal(3, events.length)
+    end
   end
 end

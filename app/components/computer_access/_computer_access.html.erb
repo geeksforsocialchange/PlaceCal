@@ -17,7 +17,7 @@
 
   <h3 class="h2--alt"><span>Computer access</span></h3>
   <p>Places with computers you can use</p>
-  <% if places.any? %>
+  <% if places&.any? %>
     <ul>
       <% places.each do |location| %>
         <li><%= link_to location.name, partner_path(location) %></li>

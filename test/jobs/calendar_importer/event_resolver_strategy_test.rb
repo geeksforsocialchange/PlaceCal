@@ -75,6 +75,12 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     )
   end
 
+  def create_calendar_with(args = {})
+    VCR.use_cassette(:import_test_calendar) do
+      create :calendar, **args
+    end
+  end
+
   def test_event_strategy_with_data_location_with_place_uses_partner_place
     # theory of test:
     #   given
@@ -84,9 +90,8 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #   then
     #     use location from data
     #       (not from calendar)
-
     @event_data.location = @address_partner.name
-    calendar = create(:calendar, strategy: 'event', place: @other_address_partner)
+    calendar = create_calendar_with(strategy: 'event', place: @other_address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
     place, address = resolver.event_strategy(calendar.place)
@@ -108,7 +113,7 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #       (not from calendar)
 
     @event_data.location = @address_partner.name
-    calendar = create(:calendar, strategy: 'event_override', place: @other_address_partner) # <--- different strategy
+    calendar = create_calendar_with(strategy: 'event_override', place: @other_address_partner) # <--- different strategy
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
     place, address = resolver.event_override_strategy(calendar.place)
@@ -128,7 +133,7 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #     event place = calendar place
 
     @event_data.location = @address_partner.name
-    calendar = create(:calendar, strategy: 'place', place: @other_address_partner)
+    calendar = create_calendar_with(strategy: 'place', place: @other_address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
 
@@ -151,7 +156,7 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #     event place = calendar place
     #     event address = calendar place address
 
-    calendar = create(:calendar, strategy: 'event_override', place: @address_partner)
+    calendar = create_calendar_with(strategy: 'event_override', place: @address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
 

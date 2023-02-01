@@ -59,30 +59,40 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'tells you if no events are connected' do
-    calendar = create(:calendar)
-    partner = calendar.partner
+    VCR.use_cassette(:import_test_calendar) do
+      calendar = create(:calendar)
+      partner = calendar.partner
 
-    get from_site_slug(@default_site, partner_path(partner))
-    assert_select 'em', 'This partner has no upcoming events.'
+      get from_site_slug(@default_site, partner_path(partner))
+      assert_select 'em', 'This partner has no upcoming events.'
+    end
   end
 
   test 'if theres a few events show them' do
-    @partner.events << create(:event)
-    @partner.save
+    VCR.use_cassette(:import_test_calendar) do
+      calendar = create(:calendar)
 
-    get from_site_slug(@default_site, partner_path(@partner))
-    assert_select 'div.event', count: 1
-    # Paginator should not show up
-    assert_select 'div#paginator', count: 0
+      @partner.events << create(:event, calendar: calendar)
+      @partner.save
+
+      get from_site_slug(@default_site, partner_path(@partner))
+      assert_select 'div.event', count: 1
+      # Paginator should not show up
+      assert_select 'div#paginator', count: 0
+    end
   end
 
   test 'if theres a lot of events show them with a paginator' do
-    @partner.events << create_list(:event, 30)
-    @partner.save
+    VCR.use_cassette(:import_test_calendar) do
+      calendar = create(:calendar)
 
-    get from_site_slug(@default_site, partner_path(@partner))
-    assert_select 'div.event', minimum: 5
-    # Paginator should show up
-    assert_select 'div#paginator', count: 1
+      @partner.events << create_list(:event, 30, calendar: calendar)
+      @partner.save
+
+      get from_site_slug(@default_site, partner_path(@partner))
+      assert_select 'div.event', minimum: 5
+      # Paginator should show up
+      assert_select 'div#paginator', count: 1
+    end
   end
 end
