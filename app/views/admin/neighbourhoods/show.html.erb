@@ -1,0 +1,21 @@
+<ol class="breadcrumb">
+  <% @neighbourhood.ancestors.each do |parent| %>
+  <li class="breadcrumb-item"><%= link_to(safe_neighbourhood_name(parent), admin_neighbourhood_path(parent)) %></li>
+  <% end %>
+  <li class="breadcrumb-item active"><%= safe_neighbourhood_name(@neighbourhood) %></li>
+</ol>
+
+<h1><%= safe_neighbourhood_name(@neighbourhood) %></h1>
+
+<p><%= link_to 'Edit', edit_admin_neighbourhood_path(@neighbourhood), class: 'btn btn-primary mb-3' %></p>
+
+<% if @neighbourhood.children.present? %>
+<% @neighbourhood.children.order(:name).each do |child| %>
+<p>
+  <%= link_to(safe_neighbourhood_name(child), admin_neighbourhood_path(child)) %>
+  <% if child.descendants.present? %><span title="descendants">(<%= child.descendants.count %>)</span><% end %>
+<p>
+<% end %>
+<% else %>
+<p>This neighbourhood does not contain anything.</p>
+<% end %>
