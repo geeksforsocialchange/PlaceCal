@@ -19,3 +19,28 @@
 <% else %>
 <p>This neighbourhood does not contain anything.</p>
 <% end %>
+
+<hr>
+<h2>Address Partners</h2>
+<p>Found <%= @neighbourhood.address_partners.count %>.</p>
+<% @neighbourhood.address_partners.order(:name).each do |partner| %>
+<p><%= link_to partner.name, edit_admin_partner_path(partner) %></p>
+<% end %>
+
+<hr>
+<h2>Service Area Partners</h2>
+<p>Found <%= @neighbourhood.service_area_partners.count %>.</p>
+<% @neighbourhood.service_area_partners.order(:name).each do |partner| %>
+<p><%= link_to partner.name, edit_admin_partner_path(partner) %></p>
+<% end %>
+
+<hr>
+<h2>Sites</h2>
+<p>Found <%= @neighbourhood.sites.count %>.</p>
+<% @neighbourhood.sites.order(:name).each do |site| %>
+<p><%= link_to site.name, edit_admin_site_path(site) %></p>
+<% end %>
+
+<hr>
+<h2>Admin Users</h2>
+<p>Found X.</p>
