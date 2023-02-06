@@ -174,4 +174,17 @@ class PartnerTest < ActiveSupport::TestCase
     found = JSON.parse(p.opening_times_data)
     assert_equal 3, found.length
   end
+
+  test 'catches when a partner has their service areas and address removed' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+
+    partner.service_areas.destroy_all
+    partner.address = nil
+
+    assert_not partner.valid?
+
+    problems = partner.errors[:base]
+    assert_equal 'Partners must have at least one of service area or address', problems.first
+  end
 end
