@@ -32,6 +32,8 @@ module CalendarImporter::Parsers
       end
 
       @events
+    rescue RestClient::BadGateway => e
+      []
     end
 
     def import_events_from(data)
