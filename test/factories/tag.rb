@@ -9,7 +9,7 @@ FactoryBot.define do
     description { 'I am a tag' }
     edit_permission { 'root' }
 
-    type { 'FacilityTag' }
+    # type { 'FacilityTag' }
 
     factory :tag_public, class: :tag do
       description { 'I am a tag everyone can edit' }

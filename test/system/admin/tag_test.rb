@@ -28,11 +28,11 @@ class AdminTagTest < ApplicationSystemTestCase
     click_link 'Tags'
     click_link @tag.name
 
-    partners = select2_node 'facility_tag_partners'
+    partners = select2_node 'tag_partners'
     select2 @partner.name, @partner_two.name, xpath: partners.path
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    users = select2_node 'facility_tag_users'
+    users = select2_node 'tag_users'
     select2 @root_user.to_s, @partner_admin.to_s, xpath: users.path
     assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
 
@@ -40,10 +40,10 @@ class AdminTagTest < ApplicationSystemTestCase
     click_link 'Tags'
     click_link @tag.name
 
-    partners = select2_node 'facility_tag_partners'
+    partners = select2_node 'tag_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    users = select2_node 'facility_tag_users'
+    users = select2_node 'tag_users'
     assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
   end
 end

@@ -349,7 +349,7 @@ ActiveRecord::Schema.define(version: 2023_02_08_150325) do
     t.datetime "updated_at", null: false
     t.string "edit_permission"
     t.boolean "system_tag", default: false
-    t.string "type", default: "FacilityTag"
+    t.string "type"
   end
 
   create_table "tags_users", force: :cascade do |t|
