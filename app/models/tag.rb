@@ -20,8 +20,9 @@ class Tag < ApplicationRecord
   has_many :article_tags, dependent: :destroy
   has_many :articles, through: :article_tags
 
+  validates :type, presence: { message: 'Tags must be of type Category, Facility or Partnership' }
   validates :name, :slug, presence: true
-  validates :name, :slug, uniqueness: true
+  validates :name, :slug, uniqueness: { scope: :type }
   validates :description,
             length: {
               maximum: 200,

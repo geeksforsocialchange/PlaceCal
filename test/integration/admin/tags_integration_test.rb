@@ -21,7 +21,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
     log_in_with @root.email
     visit edit_admin_tag_url(@tag)
 
-    assert_selector 'input#tag_system_tag'
+    assert_selector 'input#facility_tag_system_tag'
   end
 
   test 'citizen user editing a tag cannot see system_tag option' do
@@ -66,7 +66,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
 
     # check is toggled
     visit edit_admin_tag_url(@tag)
-    assert_selector :xpath, '//input[@name="tag[system_tag]"][@checked="checked"]'
+    assert_selector :xpath, '//input[@name="facility_tag[system_tag]"][@checked="checked"]'
 
     # now toggle off
     uncheck 'System tag'
@@ -75,7 +75,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
 
     # check is NOT toggled
     visit edit_admin_tag_url(@tag)
-    assert_selector :xpath, '//input[@name="tag[system_tag]"][@checked="checked"]', count: 0
+    assert_selector :xpath, '//input[@name="facility_tag[system_tag]"][@checked="checked"]', count: 0
   end
 
   private

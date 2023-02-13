@@ -21,6 +21,10 @@ class Partner < ApplicationRecord
   has_many :partner_tags, dependent: :destroy
   has_many :tags, through: :partner_tags
 
+  # has_many :category_tags, through: :partner_tags, source: :tags, class: 'CategoryTag'
+  # has_many :facility_tags, through: :partner_tags, source: :tags, class: 'CategoryTag'
+  # has_many :partnership_tags, through: :partner_tags, source: :tags, class: 'CategoryTag'
+
   has_many :service_areas, dependent: :destroy
   has_many :service_area_neighbourhoods,
            through: :service_areas,

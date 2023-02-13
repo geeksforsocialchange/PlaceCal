@@ -15,7 +15,7 @@ class AdminTagTest < ApplicationSystemTestCase
 
     @partner = @partner_admin.partners.first
     @partner_two = create :ashton_partner
-    @tag = create :tag
+    @tag = create(:tag, name: 'Hulme 1 Tag')
 
     # logging in as root user
     visit '/users/sign_in'
@@ -26,29 +26,24 @@ class AdminTagTest < ApplicationSystemTestCase
 
   test 'select2 inputs on tag form' do
     click_link 'Tags'
-    await_datatables
-
     click_link @tag.name
 
-    partners = select2_node 'tag_partners'
+    partners = select2_node 'facility_tag_partners'
     select2 @partner.name, @partner_two.name, xpath: partners.path
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    users = select2_node 'tag_users'
+    users = select2_node 'facility_tag_users'
     select2 @root_user.to_s, @partner_admin.to_s, xpath: users.path
     assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
 
     click_button 'Save'
-
     click_link 'Tags'
-    await_datatables
-
     click_link @tag.name
 
-    partners = select2_node 'tag_partners'
+    partners = select2_node 'facility_tag_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    users = select2_node 'tag_users'
+    users = select2_node 'facility_tag_users'
     assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
   end
 end

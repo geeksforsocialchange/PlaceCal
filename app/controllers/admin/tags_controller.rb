@@ -5,11 +5,15 @@ module Admin
     before_action :set_tag, only: %i[show edit update destroy]
 
     def index
-      @tags = policy_scope(Tag).order({ updated_at: :desc }, :name)
+      @tags = policy_scope(Tag).order(:name)
       authorize @tags
 
       respond_to do |format|
-        format.html
+        format.html do
+          @filter = TagsHelper::TagFilter.new(params)
+          render :index
+        end
+
         format.json do
           render json: TagDatatable.new(
             params,

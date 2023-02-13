@@ -9,6 +9,8 @@ FactoryBot.define do
     description { 'I am a tag' }
     edit_permission { 'root' }
 
+    type { 'FacilityTag' }
+
     factory :tag_public, class: :tag do
       description { 'I am a tag everyone can edit' }
       edit_permission { 'all' }
@@ -16,6 +18,18 @@ FactoryBot.define do
 
     factory :system_tag do
       system_tag { true }
+    end
+
+    factory :facility_tag do # property tag
+      type { 'FacilityTag' }
+    end
+
+    factory :partnership_tag do # site tag
+      type { 'PartnershipTag' }
+    end
+
+    factory :category_tag do
+      type { 'CategoryTag' }
     end
   end
 end
