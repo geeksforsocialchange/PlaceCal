@@ -89,7 +89,7 @@ class Partner < ApplicationRecord
   validate :check_ward_access, on: :create
   validate :check_service_area_access, on: :create
 
-  validate :must_have_address_or_service_area, on: :create
+  validate :must_have_address_or_service_area
 
   attr_accessor :accessed_by_user
 
