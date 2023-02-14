@@ -15,7 +15,7 @@ class AdminTagTest < ApplicationSystemTestCase
 
     @partner = @partner_admin.partners.first
     @partner_two = create :ashton_partner
-    @tag = create(:tag, name: 'Hulme 1 Tag')
+    @tag = create(:tag, name: 'Arts and Crafts')
 
     # logging in as root user
     visit '/users/sign_in'
