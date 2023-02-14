@@ -16,7 +16,7 @@ namespace :db do
         'Health & Wellbeing',
         'Outdoors',
         'Sports & Fitness',
-        'Places of worship',
+        'Places of Worship',
         'Community Hubs',
         'Housing',
         'Legal Advice',
