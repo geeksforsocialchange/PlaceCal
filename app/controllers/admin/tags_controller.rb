@@ -56,7 +56,11 @@ module Admin
     #       We should either have it here, or remove the json format on create, surely
     def update
       authorize @tag
-      if @tag.update(permitted_attributes(@tag))
+      attributes = permitted_attributes(Tag.new)
+
+      # puts JSON.pretty_generate(attributes.as_json)
+
+      if @tag.update(attributes)
         flash[:success] = 'Tag was saved successfully'
         redirect_to admin_tags_path
 

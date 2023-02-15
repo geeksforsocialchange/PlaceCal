@@ -21,4 +21,14 @@ module TagsHelper
       value
     end
   end
+
+  TAG_TO_NAME = {
+    'CategoryTag' => 'Category',
+    'PartnershipTag' => 'Partnership',
+    'FacilityTag' => 'Facility'
+  }.freeze
+
+  def human_tag_type(tag)
+    TAG_TO_NAME[tag] || '[null]'
+  end
 end
