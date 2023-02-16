@@ -5,7 +5,7 @@ module Admin
     before_action :set_tag, only: %i[show edit update destroy]
 
     def index
-      @tags = policy_scope(Tag).order({ updated_at: :desc }, :name)
+      @tags = policy_scope(Tag).order(:name)
       authorize @tags
 
       respond_to do |format|
@@ -31,7 +31,7 @@ module Admin
     end
 
     def create
-      @tag = Tag.new(permitted_attributes(Tag))
+      @tag = Tag.new(permitted_attributes(Tag.new))
       authorize @tag
       respond_to do |format|
         if @tag.save
@@ -56,7 +56,8 @@ module Admin
     #       We should either have it here, or remove the json format on create, surely
     def update
       authorize @tag
-      if @tag.update(permitted_attributes(@tag))
+      attributes = permitted_attributes(Tag.new)
+      if @tag.update(attributes)
         flash[:success] = 'Tag was saved successfully'
         redirect_to admin_tags_path
 

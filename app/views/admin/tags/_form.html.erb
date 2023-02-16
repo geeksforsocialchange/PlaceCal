@@ -1,5 +1,9 @@
 <%- disabled_fields = policy(@tag).disabled_fields %>
 
+<% if !@tag.new_record? %>
+<p>A tag of type <em><%= @tag.class %></em>.</p>
+<% end %>
+
 <% if @tag.system_tag %>
   <div class="card text-black bg-warning mb-3">
     <div class="card-header">
@@ -8,7 +12,10 @@
   </div>
 <% end %>
 
-<%= simple_form_for @tag, url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
+<%= simple_form_for @tag,
+    as: :tag,
+    url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
+
   <%= render_component "error", object: @tag %>
 
   <%= f.input :name, class: 'form-control',
@@ -26,6 +33,20 @@
       hint: 'This tag is read only and should not be edited' %>
   <% end -%>
 
+  <% if @tag.type.blank? || @tag.type == 'Tag' %>
+  <%= f.input :type,
+      collection: {
+      'None': '',
+      # 'Category': 'Category',
+      # 'Partnership': 'Partnership',
+      'Facility': 'Facility' },
+      default: 'None',
+      class: 'form-control' %>
+  <p><em>Be careful!</em> Once set this cannot be changed.</p>
+  <br>
+  <% end %>
+
+  
   <%= f.input :edit_permission,
               as: :radio_buttons,
               label_method: ->(val){ edit_permission_label(val) },

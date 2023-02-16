@@ -1,24 +1,28 @@
-<%# TODO: Only show Edit link for root users %>
+<h1>Tags</h1>
 
-<script>
-var columns = [
-    {"data": "id"},
-    {"data": "name"},
-    {"data": "slug"},
-    {"data": "edit_permission"},
-    {"data": "system_tag"},
-    {"data": "description"},
-    {"data": "updated_at"}
-  ]
-</script>
+<% if current_user.role.root? %>
+<%= link_to "Add New Tag", new_admin_tag_path, class: "btn btn-primary mb-3" %>
+<% end %>
 
-<%= render partial: "layouts/admin/datatable", locals: {
-    title: "Tags",
-    model: :tags,
-    column_titles: ['ID', 'Name', 'Slug', 'Access', 'System tag', 'Description', 'Last updated'],
-    columns: %i[id name slug edit_permission system_tag description updated_at],
-    data: @tags,
-    source: admin_tags_path(format: :json),
-    new_link: new_admin_tag_path
-  }
-%>
+<br>
+
+<p><%= @tags.count %> tags found</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th class="text-right">ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tags.each do |tag| %>
+    <tr>
+      <td><%= link_to tag.name, edit_admin_tag_path(tag) %></td>
+      <td><%= tag.class %></td>
+      <td class="text-right"><%= tag.id %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
