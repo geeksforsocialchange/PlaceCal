@@ -42,8 +42,8 @@ class TagPolicy < ApplicationPolicy
 
   def permitted_attributes
     if user.root?
-      fields = %i[name slug description edit_permission system_tag type]
-      fields << :type if @record == Tag
+      fields = %i[name slug description edit_permission system_tag]
+      fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [], user_ids: [])
 
     elsif user.tag_admin? && user.tags.include?(@record)

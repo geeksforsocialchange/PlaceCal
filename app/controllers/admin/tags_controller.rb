@@ -31,7 +31,7 @@ module Admin
     end
 
     def create
-      @tag = Tag.new(permitted_attributes(Tag))
+      @tag = Tag.new(permitted_attributes(Tag.new))
       authorize @tag
       respond_to do |format|
         if @tag.save

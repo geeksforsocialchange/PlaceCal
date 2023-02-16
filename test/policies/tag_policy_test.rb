@@ -20,4 +20,18 @@ class TagPolicyTest < ActiveSupport::TestCase
     assert allows_access(@root, @system_tag, :update)
     assert denies_access(@non_root, @system_tag, :update)
   end
+
+  test 'permitted_attributes have `type` when record is a Tag' do
+    # as a basic tag
+    policy = TagPolicy.new(@root, Tag.new)
+    fields = policy.permitted_attributes
+
+    assert_includes fields, :type, 'Expecting type field for basic tag'
+
+    # as a sub-model type tag
+    policy = TagPolicy.new(@root, Facility.new)
+    fields = policy.permitted_attributes
+
+    assert_not fields.include?(:type), 'Expecting type field to NOT be allowed for sub-model'
+  end
 end
