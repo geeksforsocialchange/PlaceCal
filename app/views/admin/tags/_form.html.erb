@@ -1,7 +1,7 @@
 <%- disabled_fields = policy(@tag).disabled_fields %>
 
 <% if !@tag.new_record? %>
-<p>A tag of type <em><%= human_tag_type @tag %></em>.</p>
+<p>A tag of type <em><%= @tag.class %></em>.</p>
 <% end %>
 
 <% if @tag.system_tag %>
@@ -33,14 +33,19 @@
       hint: 'This tag is read only and should not be edited' %>
   <% end -%>
 
-  <% if @tag.new_record? %>
+  <% if @tag.type.blank? || @tag.type == 'Tag' %>
   <%= f.input :type,
       collection: {
       'None': '',
-      'Category': 'CategoryTag',
-      'Facility': 'FacilityTag',
-      'Partnership': 'PartnershipTag' }, default: 'None', class: 'form-control' %>
+      # 'Category': 'Category',
+      # 'Partnership': 'Partnership',
+      'Facility': 'Facility' },
+      default: 'None',
+      class: 'form-control' %>
+  <p><em>Be careful!</em> Once set this cannot be changed.</p>
+  <br>
   <% end %>
+
   
   <%= f.input :edit_permission,
               as: :radio_buttons,

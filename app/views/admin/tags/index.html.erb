@@ -20,7 +20,7 @@
     <% @tags.each do |tag| %>
     <tr>
       <td><%= link_to tag.name, edit_admin_tag_path(tag) %></td>
-      <td><%= human_tag_type(tag) %></td>
+      <td><%= tag.class %></td>
       <td class="text-right"><%= tag.id %></td>
     </tr>
     <% end %>
