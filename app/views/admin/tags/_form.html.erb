@@ -1,7 +1,7 @@
 <%- disabled_fields = policy(@tag).disabled_fields %>
 
 <% if !@tag.new_record? %>
-<p>A tag of type <em><%= human_tag_type @tag.type %></em>.</p>
+<p>A tag of type <em><%= human_tag_type @tag %></em>.</p>
 <% end %>
 
 <% if @tag.system_tag %>

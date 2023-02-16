@@ -5,7 +5,7 @@ module Admin
     before_action :set_tag, only: %i[show edit update destroy]
 
     def index
-      @tags = policy_scope(Tag).order({ updated_at: :desc }, :name)
+      @tags = policy_scope(Tag).order(:name)
       authorize @tags
 
       respond_to do |format|
@@ -57,9 +57,6 @@ module Admin
     def update
       authorize @tag
       attributes = permitted_attributes(Tag.new)
-
-      # puts JSON.pretty_generate(attributes.as_json)
-
       if @tag.update(attributes)
         flash[:success] = 'Tag was saved successfully'
         redirect_to admin_tags_path

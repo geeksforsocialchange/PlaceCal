@@ -26,8 +26,6 @@ class AdminTagTest < ApplicationSystemTestCase
 
   test 'select2 inputs on tag form' do
     click_link 'Tags'
-    await_datatables
-
     click_link @tag.name
 
     partners = select2_node 'tag_partners'
@@ -41,8 +39,6 @@ class AdminTagTest < ApplicationSystemTestCase
     click_button 'Save'
 
     click_link 'Tags'
-    await_datatables
-
     click_link @tag.name
 
     partners = select2_node 'tag_partners'

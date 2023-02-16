@@ -29,6 +29,6 @@ module TagsHelper
   }.freeze
 
   def human_tag_type(tag)
-    TAG_TO_NAME[tag] || '[null]'
+    TAG_TO_NAME[tag.type] || 'Tag'
   end
 end
