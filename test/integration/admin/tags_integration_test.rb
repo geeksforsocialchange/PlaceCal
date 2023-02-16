@@ -97,10 +97,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
     click_button 'Save'
     assert_has_flash :success, 'Tag has been created'
 
-    # puts JSON.pretty_generate(Tag.last.as_json)
-    # FIXME: we have to jump straight to the tag page as the tag index navigation
-    #    is done via JS which does not run in integration tests.
-    visit edit_admin_tag_url(Tag.last)
+    click_link Tag.last.name
 
     # should not be able to choose type on update
     assert_selector :xpath, '//select[@name="tag[type]"]', count: 0
@@ -117,10 +114,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
     assert_has_flash :success, 'Tag was saved successfully'
 
     # Tag should save okay
-
-    # FIXME: we have to jump straight to the tag page as the tag index navigation
-    #    is done via JS which does not run in integration tests.
-    visit edit_admin_tag_url(Tag.last)
+    click_link Tag.last.name
 
     assert_selector :xpath, '//input[@name="tag[name]"][@value="AlphaFacility 2"]'
     assert_selector :xpath, '//input[@name="tag[slug]"][@value="alpha-facility-2"]'
