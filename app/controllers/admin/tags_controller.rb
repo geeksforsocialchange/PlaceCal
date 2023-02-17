@@ -9,7 +9,11 @@ module Admin
       authorize @tags
 
       respond_to do |format|
-        format.html
+        format.html do
+          @filter = TagFilter.new(params)
+          render :index
+        end
+
         format.json do
           render json: TagDatatable.new(
             params,
