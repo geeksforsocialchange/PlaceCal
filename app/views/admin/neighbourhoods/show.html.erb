@@ -10,12 +10,17 @@
 <p><%= link_to 'Edit', edit_admin_neighbourhood_path(@neighbourhood), class: 'btn btn-primary mb-3' %></p>
 
 <% if @neighbourhood.children.present? %>
-<% @neighbourhood.children.order(:name).each do |child| %>
-<p>
-  <%= link_to(safe_neighbourhood_name(child), admin_neighbourhood_path(child)) %>
-  <% if child.descendants.present? %><span title="descendants">(<%= child.descendants.count %>)</span><% end %>
-<p>
-<% end %>
+<ul class="list-group">
+  <% @neighbourhood.children.order(:name).each do |child| %>
+  <li class="list-group-item d-flex justify-content-between ">
+    <%= link_to(safe_neighbourhood_name(child), admin_neighbourhood_path(child)) %>
+    <% if child.descendants.present? %>
+    <span title="descendants" class="badge badge-primary badge-pill"><%= child.descendants.count %></span>
+    <% end %>
+  </li>
+  <% end %>
+</ul>
+
 <% else %>
 <p>This neighbourhood does not contain anything.</p>
 <% end %>
@@ -23,22 +28,34 @@
 <hr>
 <h2>Address Partners</h2>
 <p>Found <%= @neighbourhood.address_partners.count %>.</p>
-<% @neighbourhood.address_partners.order(:name).each do |partner| %>
-<p><%= link_to partner.name, edit_admin_partner_path(partner) %></p>
+<% if @neighbourhood.address_partners.present? %>
+<ul class="list-group">
+  <% @neighbourhood.address_partners.order(:name).each do |partner| %>
+  <li class="list-group-item"><%= link_to partner.name, edit_admin_partner_path(partner) %></li>
+  <% end %>
+</ul>
 <% end %>
 
 <hr>
 <h2>Service Area Partners</h2>
 <p>Found <%= @neighbourhood.service_area_partners.count %>.</p>
-<% @neighbourhood.service_area_partners.order(:name).each do |partner| %>
-<p><%= link_to partner.name, edit_admin_partner_path(partner) %></p>
+<% if @neighbourhood.service_area_partners.present? %>
+<ul class="list-group">
+  <% @neighbourhood.service_area_partners.order(:name).each do |partner| %>
+  <li class="list-group-item"><%= link_to partner.name, edit_admin_partner_path(partner) %></li>
+  <% end %>
+</ul>
 <% end %>
 
 <hr>
 <h2>Sites</h2>
 <p>Found <%= @neighbourhood.sites.count %>.</p>
-<% @neighbourhood.sites.order(:name).each do |site| %>
-<p><%= link_to site.name, edit_admin_site_path(site) %></p>
+<% if @neighbourhood.sites.present? %>
+<ul class="list-group">
+  <% @neighbourhood.sites.order(:name).each do |site| %>
+  <li class="list-group-item"><%= link_to site.name, edit_admin_site_path(site) %></li>
+  <% end %>
+</ul>
 <% end %>
 
 <hr>
