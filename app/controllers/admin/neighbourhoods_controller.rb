@@ -24,6 +24,8 @@ module Admin
       authorize @neighbourhood
     end
 
+    def show; end
+
     def edit
       authorize @neighbourhood
       @users = @neighbourhood.users
