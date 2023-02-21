@@ -163,7 +163,7 @@ class TagFilterTest < ActiveSupport::TestCase
     output = filter.next_page_link(FakeView.new, scope)
     assert output.is_a?(String)
 
-    expected_html = 'No more results available'
+    expected_html = "<span class='btn btn-outline-secondary disabled'>Next &raquo;</span>"
     assert_equal output, expected_html
 
     # now with tags
@@ -176,7 +176,7 @@ class TagFilterTest < ActiveSupport::TestCase
     output = filter.next_page_link(FakeView.new, scope)
     assert output.is_a?(String)
 
-    expected_html = '<a class="btn btn-link" href="/tags?page_num=2">Next ...</a>'
+    expected_html = '<a class="btn btn-secondary" href="/tags?page_num=2">Next &raquo;</a>'
     assert_equal output, expected_html
 
     # second page
@@ -187,7 +187,7 @@ class TagFilterTest < ActiveSupport::TestCase
     output = filter.next_page_link(FakeView.new, scope)
     assert output.is_a?(String)
 
-    expected_html = '<a class="btn btn-link" href="/tags?page_num=3">Next ...</a>'
+    expected_html = '<a class="btn btn-secondary" href="/tags?page_num=3">Next &raquo;</a>'
     assert_equal output, expected_html
 
     # last page
@@ -198,7 +198,7 @@ class TagFilterTest < ActiveSupport::TestCase
     output = filter.next_page_link(FakeView.new, scope)
     assert output.is_a?(String)
 
-    expected_html = 'No more results available'
+    expected_html = "<span class='btn btn-outline-secondary disabled'>Next &raquo;</span>"
     assert_equal output, expected_html
 
     # carries through parameters from rest of filter
@@ -213,7 +213,7 @@ class TagFilterTest < ActiveSupport::TestCase
     output = filter.next_page_link(FakeView.new, Tag.all)
     assert output.is_a?(String)
 
-    expected_html = '<a class="btn btn-link" href="/tags?name=alpha&page_num=3&per_page=20&type=facility">Next ...</a>'
+    expected_html = '<a class="btn btn-secondary" href="/tags?name=alpha&amp;page_num=3&amp;per_page=20&amp;type=facility">Next &raquo;</a>'
     assert_equal output, expected_html
   end
 end

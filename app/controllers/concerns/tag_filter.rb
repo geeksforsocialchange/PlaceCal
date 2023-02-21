@@ -82,19 +82,42 @@ class TagFilter
   end
 
   def next_page_link(page, model)
+    text = 'Next &raquo;'.html_safe
     per_page_value = @per_page || 10
-    return 'No more results available' if model.count < per_page_value
 
-    options = {}
-    options[:type] = @type if @type.present?
-    options[:per_page] = @per_page if @per_page.present?
-    options[:page_num] = (@page_num || 1) + 1
-    options[:name] = @name if @name.present?
+    return tag_link_to(page, text, false) if model.count < per_page_value
 
-    path = page
-           .admin_tags_path(options)
-           .html_safe # rubocop:disable Rails/OutputSafety
-
-    page.link_to 'Next ...', path, class: 'btn btn-link'
+    page_num = (@page_num || 1) + 1
+    tag_link_to page, text, true, page_num: page_num
   end
+
+  def prev_page_link(page, _model)
+    text = '&laquo; Prev'
+    page_num = (@page_num || 1) - 1
+
+    return tag_link_to(page, text, false) if page_num < 1
+
+    tag_link_to page, text, true, page_num: page_num
+  end
+
+  # rubocop:disable Rails/OutputSafety
+  def tag_link_to(page, text, enabled, options = {})
+    text = text.html_safe
+
+    unless enabled
+      html = "<span class='btn btn-outline-secondary disabled'>#{text}</span>"
+      return html.html_safe
+    end
+
+    options[:type]     ||= @type if @type.present?
+    options[:per_page] ||= @per_page if @per_page.present?
+    options[:page_num] ||= @page_num if @page_num.present?
+    options[:name]     ||= @name if @name.present?
+
+    path = page.admin_tags_path(options)
+
+    page.link_to text, path, class: 'btn btn-secondary'
+  end
+
+  # rubocop:enable Rails/OutputSafety
 end
