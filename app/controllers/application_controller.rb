@@ -221,14 +221,9 @@ class ApplicationController < ActionController::Base
   end
 
   def sub_site_navigation
-    article_count = current_site&.news_article_count || 0
-
-    items = [
+    [
       ['Events', events_path],
-      # ['Places', places_path],
       ['Partners', partners_path]
     ]
-    items << ['News', news_index_path] if article_count.positive?
-    items
   end
 end
