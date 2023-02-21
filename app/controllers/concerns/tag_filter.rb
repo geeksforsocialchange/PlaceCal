@@ -114,7 +114,7 @@ class TagFilter
     options[:page_num] ||= @page_num if @page_num.present?
     options[:name]     ||= @name if @name.present?
 
-    path = page.admin_tags_path(options)
+    path = page.admin_tags_path(options).html_safe
 
     page.link_to text, path, class: 'btn btn-secondary'
   end

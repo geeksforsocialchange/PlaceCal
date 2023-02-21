@@ -213,7 +213,7 @@ class TagFilterTest < ActiveSupport::TestCase
     output = filter.next_page_link(FakeView.new, Tag.all)
     assert output.is_a?(String)
 
-    expected_html = '<a class="btn btn-secondary" href="/tags?name=alpha&amp;page_num=3&amp;per_page=20&amp;type=facility">Next &raquo;</a>'
+    expected_html = '<a class="btn btn-secondary" href="/tags?name=alpha&page_num=3&per_page=20&type=facility">Next &raquo;</a>'
     assert_equal output, expected_html
   end
 end
