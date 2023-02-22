@@ -42,7 +42,7 @@ class Tag < ApplicationRecord
 
   def name_with_type
     s_type = type || 'Tag'
-    "#{s_type}:#{name}"
+    "#{s_type}: #{name}"
   end
 
   private
