@@ -119,7 +119,7 @@
 
         <%= f.association :tags,
                           label: false,
-                          collection: options_for_tags,
+                          collection: options_for_partner_tags,
                           input_html: { class: 'form-check', data: { controller: "select2" } } %>
 
         <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
