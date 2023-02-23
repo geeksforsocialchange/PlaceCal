@@ -86,6 +86,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'eventbrite', calendar.importer_used
 
       created_events = calendar.events
+
       assert_equal 3, created_events.count
     end
   end
@@ -107,6 +108,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'ld-json', calendar.importer_used
 
       created_events = calendar.events
+
       assert_equal 4, created_events.count
     end
   end
@@ -128,6 +130,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'ld-json', calendar.importer_used
 
       created_events = calendar.events
+
       assert_equal 15, created_events.count
     end
   end
@@ -150,6 +153,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'ld-json', calendar.importer_used
 
       created_events = calendar.events
+
       assert_equal 1, created_events.count
     end
   end
@@ -186,7 +190,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
         importer_task.run
       end
 
-      assert_equal "Source responded with invalid JSON (783: unexpected token at '{ \"key\": \"va')", error.message
+      assert_equal "Source responded with invalid JSON (unexpected token at '{ \"key\": \"va')", error.message
     end
   end
 end
