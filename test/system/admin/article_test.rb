@@ -15,7 +15,6 @@ class AdminArticleTest < ApplicationSystemTestCase
     @partner_two = create :ashton_partner
 
     @tag = create :tag
-    # @tag_pub = create :tag_public
 
     @article = create :article
 
@@ -41,9 +40,9 @@ class AdminArticleTest < ApplicationSystemTestCase
     select2 @partner.name, @partner_two.name, xpath: partners.path
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    # tags = select2_node 'article_tags'
-    # select2 @tag.name, @tag_pub.name, xpath: tags.path
-    # assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    tags = select2_node 'article_tags'
+    select2 @tag.name, xpath: tags.path
+    assert_select2_multiple [@tag.name], tags
 
     click_button 'Save Article'
 
@@ -59,7 +58,7 @@ class AdminArticleTest < ApplicationSystemTestCase
     partners = select2_node 'article_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
-    # tags = select2_node 'article_tags'
-    # assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    tags = select2_node 'article_tags'
+    assert_select2_multiple [@tag.name], tags
   end
 end
