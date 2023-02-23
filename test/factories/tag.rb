@@ -8,10 +8,6 @@ FactoryBot.define do
     slug { name.parameterize }
     description { 'I am a tag' }
 
-    factory :tag_public, class: :tag do
-      description { 'I am a tag everyone can edit' }
-    end
-
     factory :system_tag do
       system_tag { true }
     end
