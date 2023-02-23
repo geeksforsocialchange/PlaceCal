@@ -110,7 +110,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     get new_admin_partner_path(@partner)
     assert_response :success
 
-    tag_options = assert_select 'div.partner_tags option', count: 1, text: @tag.name
+    tag_options = assert_select 'div.partner_tags option', count: 1, text: @tag.name_with_type
 
     tag = tag_options.first
     assert tag.attributes.key?('selected')

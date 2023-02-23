@@ -40,6 +40,11 @@ class Tag < ApplicationRecord
     where(id: tag_ids.uniq)
   }
 
+  def name_with_type
+    s_type = type || 'Tag'
+    "#{s_type}: #{name}"
+  end
+
   private
 
   def check_editable_fields

@@ -43,7 +43,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
 
     tags = select2_node 'partner_tags'
     select2 @tag.name, @tag_pub.name, xpath: tags.path
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    assert_select2_multiple [@tag.name_with_type, @tag_pub.name_with_type], tags
     click_button 'Save Partner'
 
     click_link 'Partners'
@@ -52,7 +52,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
 
     tags = select2_node 'partner_tags'
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    assert_select2_multiple [@tag.name_with_type, @tag_pub.name_with_type], tags
 
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     assert_select2_single @neighbourhood_one, service_areas[0]
