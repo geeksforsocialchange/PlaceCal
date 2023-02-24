@@ -27,6 +27,7 @@ class AdminTagTest < ApplicationSystemTestCase
   test 'select2 inputs on tag form' do
     click_link 'Tags'
     click_link @tag.name
+    await_select2
 
     partners = select2_node 'tag_partners'
     select2 @partner.name, @partner_two.name, xpath: partners.path
@@ -40,6 +41,7 @@ class AdminTagTest < ApplicationSystemTestCase
 
     click_link 'Tags'
     click_link @tag.name
+    await_select2
 
     partners = select2_node 'tag_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
