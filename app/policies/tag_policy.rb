@@ -31,7 +31,7 @@ class TagPolicy < ApplicationPolicy
     # If the user is a partner admin and the tag is generally available for use
     # Functionally, anyone who is a tag admin will be a partner admin, HOWEVER, testing code requi-
     # Also, it probably doesn't hurt to be strict.
-    return true if (user.partner_admin? || user.tag_admin?) && @record.edit_permission == :all
+    return true if user.partner_admin? || user.tag_admin?
 
     false
   end
@@ -42,13 +42,11 @@ class TagPolicy < ApplicationPolicy
 
   def permitted_attributes
     if user.root?
-      fields = %i[name slug description edit_permission system_tag]
+      fields = %i[name slug description system_tag]
       fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [], user_ids: [])
 
     elsif user.tag_admin? && user.tags.include?(@record)
-      %i[].push(partner_ids: [])
-    elsif @record.edit_permission == :all
       %i[].push(partner_ids: [])
     else
       %i[]
@@ -58,10 +56,10 @@ class TagPolicy < ApplicationPolicy
   def disabled_fields
     if user.root?
       %i[]
-    elsif user.tag_admin? || @record.edit_permission == :all
-      %i[name slug description users edit_permission user_ids system_tag]
+    elsif user.tag_admin?
+      %i[name slug description users user_ids system_tag]
     else # Should never be hit, but it's useful as a guard
-      %i[name slug description users edit_permission partner_ids user_ids system_tag]
+      %i[name slug description users partner_ids user_ids system_tag]
     end
   end
 

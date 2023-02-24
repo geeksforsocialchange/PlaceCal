@@ -17,7 +17,6 @@ class AdminUserTest < ApplicationSystemTestCase
     @partner_two = create :ashton_partner
 
     @tag = create :tag
-    @tag_pub = create :tag_public
 
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
@@ -47,8 +46,8 @@ class AdminUserTest < ApplicationSystemTestCase
     assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
     tags = select2_node 'user_tags'
-    select2 @tag.name, @tag_pub.name, xpath: tags.path
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    select2 @tag.name, xpath: tags.path
+    assert_select2_multiple [@tag.name], tags
     click_button 'Update'
 
     click_link 'Users'
@@ -66,6 +65,6 @@ class AdminUserTest < ApplicationSystemTestCase
     assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
     tags = select2_node 'user_tags'
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    assert_select2_multiple [@tag.name], tags
   end
 end

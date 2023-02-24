@@ -12,7 +12,6 @@ class AdminPartnerTest < ApplicationSystemTestCase
     @root_user = create :root, email: 'root@lvh.me'
     @partner = create :ashton_partner
     @tag = create :tag
-    @tag_pub = create :tag_public
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
 
@@ -42,8 +41,8 @@ class AdminPartnerTest < ApplicationSystemTestCase
     assert_select2_single @neighbourhood_two, service_areas[1]
 
     tags = select2_node 'partner_tags'
-    select2 @tag.name, @tag_pub.name, xpath: tags.path
-    assert_select2_multiple [@tag.name_with_type, @tag_pub.name_with_type], tags
+    select2 @tag.name, xpath: tags.path
+    assert_select2_multiple [@tag.name_with_type], tags
     click_button 'Save Partner'
 
     click_link 'Partners'
@@ -52,7 +51,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
 
     tags = select2_node 'partner_tags'
-    assert_select2_multiple [@tag.name_with_type, @tag_pub.name_with_type], tags
+    assert_select2_multiple [@tag.name_with_type], tags
 
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     assert_select2_single @neighbourhood_one, service_areas[0]
