@@ -4,7 +4,7 @@
 
 <% if current_user.root? -%>
   <%# Show the Neighbourhood the partner is related to via Address %>
-  <% if @partner.address -%>
+  <% if @partner.address&.neighbourhood&.present? -%>
     <p>In neighbourhood <%= link_to @partner.address.neighbourhood.name, edit_admin_neighbourhood_path(@partner.address.neighbourhood) %>.</p>
   <% end -%>
 
