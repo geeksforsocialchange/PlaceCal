@@ -57,15 +57,19 @@
         input_html: { class: 'form-control', data: { controller: "select2" } } %>
   <% end %>
 
-  <h2>Assigned Users</h2>
-  <p>Grant permission to assign this tag</p>
-  <% if disabled_fields.include?(:user_ids) %>
-    <%# # Create a dummy field, because f.assoc disappears %>
-    <%= f.association :users,
+<p><%= f.object.class %></p>
+
+  <% if show_assigned_user_field_for(f) %>
+    <h2>Assigned Users</h2>
+    <p>Grant permission to assign this tag</p>
+    <% if disabled_fields.include?(:user_ids) %>
+      <%# # Create a dummy field, because f.assoc disappears %>
+      <%= f.association :users,
         input_html: { class: 'form-control', data: { controller: "select2" } }, disabled: true %>
-  <% else %>
-    <%= f.association :users, collection: options_for_users,
+    <% else %>
+      <%= f.association :users, collection: options_for_users,
         input_html: { class: 'form-control', data: { controller: "select2" } } %>
+    <% end %>
   <% end %>
 
   <span>
