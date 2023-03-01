@@ -15,7 +15,7 @@ class TagPolicyTest < ActiveSupport::TestCase
     @non_root.tags << @normal_tag
 
     assert allows_access(@root, @normal_tag, :update)
-    assert allows_access(@non_root, @normal_tag, :update)
+    assert denies_access(@non_root, @normal_tag, :update)
 
     assert allows_access(@root, @system_tag, :update)
     assert denies_access(@non_root, @system_tag, :update)

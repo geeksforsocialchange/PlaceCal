@@ -56,7 +56,13 @@
   <tbody>
     <% window_tags.each do |tag| %>
     <tr>
-      <td><%= link_to tag.name, edit_admin_tag_path(tag) %></td>
+      <td>
+	<% if policy(tag).edit? %>
+	<%= link_to tag.name, edit_admin_tag_path(tag) %>
+	<% else %>
+	<%= tag.name %>
+	<% end %>
+      </td>
       <td><%= tag.class %></td>
       <td class="text-right"><%= tag.id %></td>
     </tr>
