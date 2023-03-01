@@ -11,7 +11,6 @@ class AdminSiteTest < ApplicationSystemTestCase
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
     @tag = create :tag
-    @tag_pub = create :tag_public
     @site = create :site
 
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
@@ -49,8 +48,8 @@ class AdminSiteTest < ApplicationSystemTestCase
     assert_select2_single @neighbourhood_two, service_areas[0]
 
     tags = select2_node 'site_tags'
-    select2 @tag.name, @tag_pub.name, xpath: tags.path
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    select2 @tag.name, xpath: tags.path
+    assert_select2_multiple [@tag.name], tags
 
     new_site_name = 'TEST_NAME_123'
     fill_in 'Name', with: new_site_name
@@ -69,7 +68,7 @@ class AdminSiteTest < ApplicationSystemTestCase
     assert_select2_single @neighbourhood_two, service_areas[0]
 
     tags = select2_node 'site_tags'
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    assert_select2_multiple [@tag.name], tags
   end
   test 'primary neighbourhood not rendering on other neighbourhoods section' do
     click_link 'Sites'

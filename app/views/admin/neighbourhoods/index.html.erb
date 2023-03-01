@@ -17,3 +17,10 @@ var columns = [
     source: admin_neighbourhoods_path(format: :json)
   }
 %>
+
+<h2>Neighbourhood Roots</h2>
+
+<% Neighbourhood.roots.order(:name).each do |root| %>
+<p><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root) %></p>
+<% end %>
+

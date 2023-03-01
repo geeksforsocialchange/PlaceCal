@@ -1,5 +1,9 @@
 <%- disabled_fields = policy(@tag).disabled_fields %>
 
+<% if !@tag.new_record? %>
+<p>A tag of type <em><%= @tag.class %></em>.</p>
+<% end %>
+
 <% if @tag.system_tag %>
   <div class="card text-black bg-warning mb-3">
     <div class="card-header">
@@ -8,7 +12,10 @@
   </div>
 <% end %>
 
-<%= simple_form_for @tag, url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
+<%= simple_form_for @tag,
+    as: :tag,
+    url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
+
   <%= render_component "error", object: @tag %>
 
   <%= f.input :name, class: 'form-control',
@@ -26,12 +33,18 @@
       hint: 'This tag is read only and should not be edited' %>
   <% end -%>
 
-  <%= f.input :edit_permission,
-              as: :radio_buttons,
-              label_method: ->(val){ edit_permission_label(val) },
-              hint: 'Users with this role will be granted access to assign this tag',
-              disabled: disabled_fields.include?(:edit_permission) %>
-
+  <% if @tag.type.blank? || @tag.type == 'Tag' %>
+  <%= f.input :type,
+      collection: {
+      'None': '',
+      'Category': 'Category',
+      'Facility': 'Facility',
+      'Partnership': 'Partnership' },
+      default: 'None',
+      class: 'form-control' %>
+  <p><em>Be careful!</em> Once set this cannot be changed.</p>
+  <br>
+  <% end %>
 
   <h2>Tagged Partners</h2>
   <p>Apply this tag to the given partners</p>
@@ -44,15 +57,17 @@
         input_html: { class: 'form-control', data: { controller: "select2" } } %>
   <% end %>
 
-  <h2>Assigned Users</h2>
-  <p>Grant permission to assign this tag</p>
-  <% if disabled_fields.include?(:user_ids) %>
-    <%# # Create a dummy field, because f.assoc disappears %>
-    <%= f.association :users,
+  <% if show_assigned_user_field_for(f) %>
+    <h2>Assigned Users</h2>
+    <p>Grant permission to assign this tag</p>
+    <% if disabled_fields.include?(:user_ids) %>
+      <%# # Create a dummy field, because f.assoc disappears %>
+      <%= f.association :users,
         input_html: { class: 'form-control', data: { controller: "select2" } }, disabled: true %>
-  <% else %>
-    <%= f.association :users, collection: options_for_users,
+    <% else %>
+      <%= f.association :users, collection: options_for_users,
         input_html: { class: 'form-control', data: { controller: "select2" } } %>
+    <% end %>
   <% end %>
 
   <span>

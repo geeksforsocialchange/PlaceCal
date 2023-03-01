@@ -21,24 +21,22 @@ class Tag < ApplicationRecord
   has_many :articles, through: :article_tags
 
   validates :name, :slug, presence: true
-  validates :name, :slug, uniqueness: true
+  validates :name, :slug, uniqueness: { scope: :type }
   validates :description,
             length: {
               maximum: 200,
               too_long: 'maximum length is 200 characters'
             }
-  validates :edit_permission, presence: true
   validate :check_editable_fields
 
-  enumerize :edit_permission,
-            in: %i[root all],
-            default: :root
-
   scope :users_tags, lambda { |user|
-    tag_ids = user.tags.map(&:id) + Tag.all.where(edit_permission: :all).map(&:id)
-
-    where(id: tag_ids.uniq)
+    where id: user.tags_users.distinct.pluck(:tag_id)
   }
+
+  def name_with_type
+    s_type = type || 'Tag'
+    "#{s_type}: #{name}"
+  end
 
   private
 

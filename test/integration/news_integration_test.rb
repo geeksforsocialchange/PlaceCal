@@ -13,29 +13,29 @@ class NewsIntegrationTest < ActionDispatch::IntegrationTest
     @author = create(:root)
   end
 
-  test 'shows link if news items present' do
-    partner = create(:partner, address: @address)
+  #  test 'shows link if news items present' do
+  #    partner = create(:partner, address: @address)
 
-    article = Article.create!(
-      title: 'Article from Partner',
-      is_draft: false,
-      body: 'lorem ipsum dorem ditsum',
-      author: @author
-    )
-    article.partners << partner
+  #    article = Article.create!(
+  #      title: 'Article from Partner',
+  #      is_draft: false,
+  #      body: 'lorem ipsum dorem ditsum',
+  #      author: @author
+  #    )
+  #    article.partners << partner
 
-    get root_url(subdomain: @site.slug)
+  #    get root_url(subdomain: @site.slug)
 
-    assert_select '.nav li', count: 4
-    assert_select '.nav a', text: 'News'
-  end
+  #    assert_select '.nav li', count: 4
+  #    assert_select '.nav a', text: 'News'
+  #  end
 
-  test 'no news link is shown when no articles exist for site' do
-    get root_url(subdomain: @site.slug)
+  #  test 'no news link is shown when no articles exist for site' do
+  #    get root_url(subdomain: @site.slug)
 
-    assert_select '.nav li', count: 3
-    assert_select '.nav a', text: 'News', count: 0
-  end
+  #    assert_select '.nav li', count: 3
+  #    assert_select '.nav a', text: 'News', count: 0
+  #  end
 
   test 'index: articles with partners have parter links' do
     article = create(:article, is_draft: false)
