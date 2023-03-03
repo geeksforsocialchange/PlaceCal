@@ -30,7 +30,8 @@
       <h3 class="h4 udl">Event address</h3>
       <div class="small">
         <%= render_component "address",
-          address: @event.address
+            address: @event.address,
+	    raw_location: @event.raw_location_from_source
         %>
       </div>
     </div>
