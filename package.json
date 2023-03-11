@@ -8,7 +8,7 @@
 		"@nathanvda/cocoon": "1.2.14",
 		"@rails/ujs": "6.1.7",
 		"bootstrap": "4.6.2",
-		"datatables.net-bs4": "1.13.3",
+		"datatables.net-bs4": "1.13.4",
 		"esbuild": "0.16.13",
 		"esbuild-rails": "1.0.3",
 		"jquery": "3.6.4",

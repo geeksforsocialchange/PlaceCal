@@ -306,10 +306,10 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-datatables.net-bs4@1.13.3:
-  version "1.13.3"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.3.tgz#888f002b343c1e0f9874aa697485bd7abfc702a8"
-  integrity sha512-LtySVYRv8I8FE4+Y8t3IQZYoIQOoKygWvhcUX0qZtdqaEr55MnUTcHzeXVUVNEiycsG62lrCPf/Uurl7Rw6kKA==
+datatables.net-bs4@1.13.4:
+  version "1.13.4"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.4.tgz#8a95035ec00b8b91a7e521bc73fa0e5d403e4606"
+  integrity sha512-xRImAzF0Ra+JYc1oUeZtFv/XzUATk3CUyVSIDr2OYh0FwSTEU48S94bUBiTUJFvzwPFreqcTZb0IyMFWQvI1GA==
   dependencies:
     datatables.net ">=1.12.1"
     jquery ">=1.7"
