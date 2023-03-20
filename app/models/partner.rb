@@ -91,6 +91,8 @@ class Partner < ApplicationRecord
 
   validate :must_have_address_or_service_area
 
+  validate :opening_times_is_json_or_nil
+
   attr_accessor :accessed_by_user
 
   mount_uploader :image, ImageUploader
@@ -260,6 +262,7 @@ class Partner < ApplicationRecord
     #  be corrected to just push raw object data into the
     #  field and let PG deal with it.
     return '[]' if opening_times.blank?
+    return '[]' unless valid_json? opening_times
 
     opening_times
   end
@@ -342,5 +345,19 @@ class Partner < ApplicationRecord
 
   def unix_updated_at
     updated_at.to_time.to_i
+  end
+
+  def valid_json?(json)
+    JSON.parse(json)
+    true
+  rescue JSON::ParserError, TypeError => e
+    false
+  end
+
+  def opening_times_is_json_or_nil
+    return if valid_json? opening_times
+    return if opening_times.nil?
+
+    errors.add :base, 'Partner.opening_times must be valid json'
   end
 end
