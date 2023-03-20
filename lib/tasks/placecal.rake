@@ -30,7 +30,7 @@ namespace :placecal do
     end
   end
 
-  desc 'Saves a snapshot of the neighbourhood table (as neighbourhood.json)'
+  desc 'Saves a snapshot of the neighbourhood table (as dump/neighbourhood.json)'
   task save_neighbourhoods: :environment do
     # this is defined in app/models/concerns/save_neighbourhoods.rb
     NeighbourhoodSaver.run

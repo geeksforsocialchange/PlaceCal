@@ -28,7 +28,7 @@ class NeighbourhoodSaver
 
     output = Neighbourhood.roots.map { |nh| extract_neighbourhood_children nh }
 
-    File.write('neighbourhoods.json', output)
+    File.write('dump/neighbourhoods.json', output)
 
     # Rails.logger.debug "\ndone!"
   end
