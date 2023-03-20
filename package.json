@@ -10,7 +10,7 @@
 		"bootstrap": "4.6.2",
 		"datatables.net-bs4": "1.13.4",
 		"esbuild": "0.16.13",
-		"esbuild-rails": "1.0.3",
+		"esbuild-rails": "1.0.4",
 		"jquery": "3.6.4",
 		"leaflet": "1.9.3",
 		"lodash": "4.17.21",
