@@ -68,3 +68,4 @@ doc/**/*.js
 ./tags
 Makefile
 doc/rdoc
+neighbourhoods.json

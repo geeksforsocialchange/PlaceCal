@@ -29,4 +29,10 @@ namespace :placecal do
       Category.find_or_create_by!(name: category)
     end
   end
+
+  desc 'Saves a snapshot of the neighbourhood table (as neighbourhood.json)'
+  task save_neighbourhoods: :environment do
+    # this is defined in app/models/concerns/save_neighbourhoods.rb
+    NeighbourhoodSaver.run
+  end
 end
