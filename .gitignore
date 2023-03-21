@@ -68,3 +68,4 @@ doc/**/*.js
 ./tags
 Makefile
 doc/rdoc
+scripts/neighbourhood-importing/output.json
