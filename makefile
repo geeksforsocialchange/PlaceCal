@@ -1,9 +1,9 @@
 #REQUIREMENTS BEFORE RUNNING MAKE ALL: ruby, yarn, docker, graphviz, imagemagick, nvm, postgres
-.PHONY: test
+.PHONY: test setup
 
-all: install_dependencies docker setup_env setup_db seed_db create_user run
+all: update test
 
-test_all: update test
+setup: install_dependencies docker setup_env setup_db seed_GFSC_prod_copy_db create_user run
 
 docker: setup_docker_network setup_docker_container setup_env
 
@@ -40,10 +40,10 @@ setup_env:
 	echo PGUSER=postgres >> .env
 
 setup_db:
-	bundle exec rails db:setup db:migrate db:seed
+	bundle exec rails db:setup db:migrate
 	bundle exec rails import:all_events
 
-seed_db:
+seed_GFSC_prod_copy_db:
 	rails db:dump_production_and_restore_other restore_on_local=1
 
 create_user:
