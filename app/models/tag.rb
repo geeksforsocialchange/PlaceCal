@@ -30,6 +30,8 @@ class Tag < ApplicationRecord
   validate :check_editable_fields
 
   scope :users_tags, lambda { |user|
+                       return Tag.all if user.role == 'root'
+
                        partnership_tags = Tag.where(type: 'Partnership', id: user.tags_users.distinct.pluck(:tag_id)).pluck(:id)
                        other_tags = Tag.where("type != 'Partnership'").pluck(:id)
 
