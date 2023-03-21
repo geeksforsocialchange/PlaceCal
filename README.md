@@ -34,40 +34,25 @@ To run PlaceCal locally you will need:
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - Chrome/Chromium for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 
-## Quickstart
+## Quickstart with docker for GFSC devs
 
-With that said, here's what you need to get rolling.
+Make sure all of the above dependencies are installed and ask someone to add your public ssh key to the server.
 
-### Set up Postgresql locally
-
-If you don't already have Postgresql installed and running, here's how you can set it up with Docker.
-
-**Skip these steps if you already have Postgresql set up.**
-
-Creating a Postgresql Docker image is reasonably quick:
+Then make sure the docker daemon is running, and run
 
 ```sh
-docker network create placecal-network
-docker create --name placecal-db --network placecal-network --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 -e 'POSTGRES_DB=placecal_db' -e 'POSTGRES_USER=postgres' -e 'POSTGRES_PASSWORD=foobar' -e 'POSTGRES_PORT=5432' postgres:14.1
-docker start placecal-db
+make all
 ```
 
-Make a copy of `.env.example` in `.env` in the root directory of the application. These will be loaded in as environment variables when you start the development server.
+Local site is now running at `lvh.me:3000`
 
-You can now set the following in `.env`:
+Some other useful commands for developing can be found in the makefile.
 
-```sh
-POSTGRES_HOST=localhost
-POSTGRES_USER=postgres
-PGPASSWORD=foobar
-```
+## Quickstart for everyone else
 
-### Clone this Git repository
+### Set up Postgresql locally with docker
 
-```sh
-git clone https://github.com/geeksforsocialchange/PlaceCal.git
-cd PlaceCal
-```
+If you don't already have Postgresql installed and running, you can set it up with docker, just run `make docker`. To tear down the docker setup, run `make clean`.
 
 ### Run the setup script
 
