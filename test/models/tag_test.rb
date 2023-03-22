@@ -9,7 +9,6 @@ class TagTest < ActiveSupport::TestCase
     @partnership_tag = Tag.where(type: 'Partnership').first
     @user = create(:user)
     @partner = create(:partner)
-    # puts @partnership_tag.as_json
   end
 
   test 'updates user roles when saved' do
