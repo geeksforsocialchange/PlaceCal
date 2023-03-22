@@ -12,7 +12,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhoods = create_list(:neighbourhood, 5)
     @number_of_neighbourhoods = Neighbourhood.all.length
 
-    @tag = create(:tag)
+    @tag = create(:tag, type: 'Category')
 
     host! 'admin.lvh.me'
   end

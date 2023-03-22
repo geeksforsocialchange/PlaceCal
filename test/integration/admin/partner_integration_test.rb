@@ -12,7 +12,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
 
-    @tag = create(:tag)
+    @tag = create(:tag, type: 'Category')
 
     host! 'admin.lvh.me'
   end
