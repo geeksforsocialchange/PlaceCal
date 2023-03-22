@@ -41,10 +41,10 @@ class SitePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if user.root?
-        scope.all
-      elsif user.site_admin?
+      if user.site_admin?
         scope.where(site_admin: user)
+      elsif user.root?
+        scope.all
       else
         scope.none
       end
