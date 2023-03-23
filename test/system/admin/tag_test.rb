@@ -18,7 +18,6 @@ class AdminTagTest < ApplicationSystemTestCase
 
     @tag = create(:tag, name: 'TransDim', type: 'Partnership')
 
-
     # logging in as root user
     visit '/users/sign_in'
     fill_in 'Email', with: 'root@lvh.me'
