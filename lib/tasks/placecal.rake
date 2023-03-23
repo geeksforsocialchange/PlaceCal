@@ -35,4 +35,10 @@ namespace :placecal do
     # this is defined in app/models/concerns/save_neighbourhoods.rb
     NeighbourhoodSaver.run
   end
+
+  desc 'Import neighbourhood data'
+  task :import_neighbourhoods, %i[payload_path] => :environment do |_, args|
+    NeighbourhoodImporter.new(args[:payload_path]).run
+  end
+  
 end
