@@ -66,5 +66,4 @@ doc/**/*.css
 doc/**/*.js
 .yardoc
 ./tags
-Makefile
 doc/rdoc
