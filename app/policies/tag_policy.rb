@@ -23,9 +23,6 @@ class TagPolicy < ApplicationPolicy
     # system tags can only be edited by root
     return false if @record.system_tag
 
-    # If the user is a tag admin and has been assigned this tag
-    return true if user.tag_admin? && user.tags.include?(@record)
-
     # NB: We literally can't filter by partners added because otherwise itll wipe existing partners
     #
     # If the user is a partner admin and the tag is generally available for use
@@ -46,7 +43,7 @@ class TagPolicy < ApplicationPolicy
       fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [], user_ids: [])
 
-    elsif user.tag_admin? && user.tags.include?(@record)
+    elsif (user.tag_admin? && user.tags.include?(@record)) || user.partner_admin?
       %i[].push(partner_ids: [])
     else
       %i[]
@@ -56,7 +53,7 @@ class TagPolicy < ApplicationPolicy
   def disabled_fields
     if user.root?
       %i[]
-    elsif user.tag_admin?
+    elsif user.tag_admin? || user.partner_admin?
       %i[name slug description users user_ids system_tag]
     else # Should never be hit, but it's useful as a guard
       %i[name slug description users partner_ids user_ids system_tag]
