@@ -189,3 +189,10 @@ def from_site_slug(site, path)
   host = Rails.application.routes.default_url_options[:host]
   "http://#{site.slug}.#{host}/#{path}"
 end
+
+def create_typed_tags
+  create(:tag, name: 'free wifi', type: 'Facility')
+  create(:tag, name: 'housing', type: 'Category')
+  create(:tag, name: 'trans dimension', type: 'Partnership')
+  create(:tag, name: 'system changers', type: 'Partnership')
+end
