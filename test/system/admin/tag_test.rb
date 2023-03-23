@@ -15,6 +15,7 @@ class AdminTagTest < ApplicationSystemTestCase
 
     @partner = @partner_admin.partners.first
     @partner_two = create :ashton_partner
+
     @tag = create(:tag, name: 'TransDim', type: 'Partnership')
 
     # logging in as root user
