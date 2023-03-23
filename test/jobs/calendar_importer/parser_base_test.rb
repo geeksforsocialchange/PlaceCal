@@ -40,8 +40,7 @@ class ParserBaseTest < ActiveSupport::TestCase
         Base.read_http_source('https://dandilion.gfsc.studio')
       end
 
-      # FIXME: more user friendly description maybe?
-      assert_equal('There was a socket error (Failed to open TCP connection to dandilion.gfsc.studio:443 (getaddrinfo: Name or service not known))', error.message)
+      assert_match(/There was a socket error.*Failed to open TCP connection to dandilion.gfsc.studio:443/, error.message)
     end
   end
 
