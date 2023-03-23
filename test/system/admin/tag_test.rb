@@ -15,8 +15,9 @@ class AdminTagTest < ApplicationSystemTestCase
 
     @partner = @partner_admin.partners.first
     @partner_two = create :ashton_partner
-    @tag = create(:tag, name: 'Arts & Crafts')
-    create_typed_tags
+
+    @tag = create(:tag, name: 'TransDim', type: 'Partnership')
+
 
     # logging in as root user
     visit '/users/sign_in'
@@ -47,6 +48,7 @@ class AdminTagTest < ApplicationSystemTestCase
     partners = select2_node 'tag_partners'
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
+    # for Partnership tags
     users = select2_node 'tag_users'
     assert_select2_multiple [@root_user.to_s, @partner_admin.to_s], users
   end
