@@ -74,7 +74,8 @@ class EventsBySiteTagTest < ActionDispatch::IntegrationTest
     tag = Tag.create!(
       name: 'Tag',
       slug: 'tag',
-      description: 'A tag about a thing'
+      description: 'A tag about a thing',
+      type: 'Facility'
     )
 
     tag_site = Site.create!(
