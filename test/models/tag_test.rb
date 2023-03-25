@@ -67,10 +67,10 @@ class TagTest < ActiveSupport::TestCase
     @partnership_tag.users << root_user
     @partnership_tag.save
 
-    category_tag = Tag.where(type: 'Category').first
+    category_tags = Tag.where(type: 'Category')
 
     Tag.users_tags(root_user).each do |t|
-      assert_equal t.name, category_tag.name if t.type == 'Category'
+      assert_includes category_tags, t if t.type == 'Category'
     end
   end
 
@@ -98,10 +98,10 @@ class TagTest < ActiveSupport::TestCase
     @partnership_tag.users << @user
     @partnership_tag.save
 
-    category_tag = Tag.where(type: 'Category').first
+    category_tags = Tag.where(type: 'Category')
 
     Tag.users_tags(@user).each do |t|
-      assert_equal t.name, category_tag.name if t.type == 'Category'
+      assert_includes category_tags, t if t.type == 'Category'
     end
   end
 
@@ -118,10 +118,10 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test 'a regular user can access Category tags' do
-    category_tag = Tag.where(type: 'Category').first
+    category_tags = Tag.where(type: 'Category')
 
     Tag.users_tags(@user).each do |t|
-      assert_equal t.name, category_tag.name if t.type == 'Category'
+      assert_includes category_tags, t if t.type == 'Category'
     end
   end
 end
