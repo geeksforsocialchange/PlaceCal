@@ -101,13 +101,13 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
           params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
 
     assert_redirected_to admin_tags_url
-    assert_equal [@partner.id, @unassigned_partner.id], @category_tag.reload.partner_ids
+    assert_equal [@partner.id, @unassigned_partner.id].sort, @category_tag.reload.partner_ids.sort
 
     patch admin_tag_url(@category_tag),
           params:  { tag: { partner_ids: [] }, id: 'activism' }
 
     assert_redirected_to admin_tags_url
-    assert_equal [@unassigned_partner.id], @category_tag.reload.partner_ids
+    assert_equal [@unassigned_partner.id].sort, @category_tag.reload.partner_ids.sort
   end
 
   # partner admins cannot update partners they do not admin for
