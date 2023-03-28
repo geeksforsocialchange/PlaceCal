@@ -13,4 +13,13 @@ module TagsHelper
   def show_assigned_user_field_for(form)
     [Tag, Partnership].include?(form.object.class)
   end
+
+  # prevent invisible partner ids from being overwritten when updating a tag
+  def all_partners_for(tag, attributes)
+    editable_partners = current_user.partners.pluck(:id)
+    uneditable_partners = tag.partner_ids - editable_partners
+    updated_partners = editable_partners & attributes[:partner_ids].reject(&:empty?).map(&:to_i)
+
+    uneditable_partners + updated_partners
+  end
 end

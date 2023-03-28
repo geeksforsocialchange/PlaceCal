@@ -5,12 +5,22 @@ require 'test_helper'
 class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
-    @tag_admin = create(:tag_admin)
-    @partner_admin = create(:partner_admin)
     @citizen = create(:user)
 
+    @partner = create(:partner)
+    @unassigned_partner = create(:partner)
     @unassigned_root_tag = create(:tag)
-    @assigned_root_tag = @tag_admin.tags.first
+    @category_tag = create(:tag, type: 'Category', name: 'Activism', partner_ids: [@unassigned_partner.id])
+
+    @tag_admin = create(:tag_admin)
+    @partner_admin_with_no_partners = create(:partner_admin) do |user|
+      user.partners = []
+      user.save!
+    end
+    @partner_admin = create(:partner_admin) do |user|
+      user.partners = [@partner]
+      user.save!
+    end
 
     host! 'admin.lvh.me'
   end
@@ -74,6 +84,45 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
 
   it_denies_access_to_edit_for(%i[citizen]) do
     get edit_admin_tag_url(@unassigned_root_tag)
+    assert_redirected_to admin_root_url
+  end
+
+  it_allows_access_to_update_for(%i[root]) do
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
+
+    assert_redirected_to admin_tags_url
+    assert_equal [@partner.id], @category_tag.reload.partner_ids
+  end
+
+  # partner admins can add and remove partners they admin for without removing those they don't
+  it_allows_access_to_update_for(%i[partner_admin]) do
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
+
+    assert_redirected_to admin_tags_url
+    assert_equal [@partner.id, @unassigned_partner.id], @category_tag.reload.partner_ids
+
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [] }, id: 'activism' }
+
+    assert_redirected_to admin_tags_url
+    assert_equal [@unassigned_partner.id], @category_tag.reload.partner_ids
+  end
+
+  # partner admins cannot update partners they do not admin for
+  it_allows_access_to_update_for(%i[partner_admin_with_no_partners]) do
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
+
+    assert_redirected_to admin_root_url
+    assert_equal [@unassigned_partner.id], @category_tag.reload.partner_ids
+  end
+
+  it_denies_access_to_update_for(%i[citizen]) do
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
+
     assert_redirected_to admin_root_url
   end
 
