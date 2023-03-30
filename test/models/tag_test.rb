@@ -40,6 +40,40 @@ class TagTest < ActiveSupport::TestCase
     assert_equal Tag.users_tags(root_user), Tag.all
   end
 
+  test 'a root user who is a tag_admin can access their own Partnership tag but not others' do
+    root_user = create :root
+    @partnership_tag.users << root_user
+    @partnership_tag.save
+
+    Tag.users_tags(root_user).each do |t|
+      assert_equal t.name, @partnership_tag.name if t.type == 'Partnership'
+    end
+  end
+
+  test 'a root user who is a tag_admin can access Facility tags' do
+    root_user = create :root
+    @partnership_tag.users << root_user
+    @partnership_tag.save
+
+    facility_tag = Tag.where(type: 'Facility').first
+
+    Tag.users_tags(root_user).each do |t|
+      assert_equal t.name, facility_tag.name if t.type == 'Facility'
+    end
+  end
+
+  test 'a root user who is a tag_admin can access Category tags' do
+    root_user = create :root
+    @partnership_tag.users << root_user
+    @partnership_tag.save
+
+    category_tag = Tag.where(type: 'Category').first
+
+    Tag.users_tags(root_user).each do |t|
+      assert_equal t.name, category_tag.name if t.type == 'Category'
+    end
+  end
+
   test 'a tag_admin can access their own Partnership tag but not others' do
     @partnership_tag.users << @user
     @partnership_tag.save

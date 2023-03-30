@@ -62,11 +62,7 @@ class TagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if user.root?
-        scope.all
-      else
-        Tag.users_tags(user)
-      end
+      Tag.users_tags(user)
     end
   end
 end
