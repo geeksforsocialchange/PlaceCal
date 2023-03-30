@@ -8,6 +8,7 @@ FactoryBot.define do
 
     slug { name.parameterize }
     description { 'I am a tag' }
+    type { 'Facility' }
 
     factory :system_tag do
       system_tag { true }

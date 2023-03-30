@@ -66,5 +66,7 @@ doc/**/*.css
 doc/**/*.js
 .yardoc
 ./tags
-Makefile
 doc/rdoc
+
+# Ignore IDE config files
+.vscode

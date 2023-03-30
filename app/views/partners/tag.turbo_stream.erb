@@ -1,0 +1,15 @@
+<%= turbo_stream.update "partners" do %>
+  <% @partners.each do |partner| %>
+    <%= render_component("place_partner_preview",
+                         previewee: partner,
+                         primary_neighbourhood: @primary_neighbourhood,
+                         service_areas: partner.service_areas,
+                         show_neighbourhoods: @current_site.show_neighbourhoods?,
+                         badge_zoom_level: @current_site.badge_zoom_level) %>
+  <% end %>
+<% end %>
+
+
+<%= turbo_stream.update "map" do %>
+  <%= render 'shared/map', points: @map, site: @current_site.slug %>
+<% end %>

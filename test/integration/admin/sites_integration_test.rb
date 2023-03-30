@@ -5,14 +5,17 @@ require 'test_helper'
 class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
+    @another_root = create(:root)
 
     @site = create(:site)
+    @another_site = create(:site, name: 'another', site_admin: @another_root)
+
     @site_admin = @site.site_admin
 
     @neighbourhoods = create_list(:neighbourhood, 5)
     @number_of_neighbourhoods = Neighbourhood.all.length
 
-    @tag = create(:tag)
+    @tag = create(:tag, type: 'Category')
 
     host! 'admin.lvh.me'
   end
@@ -24,6 +27,24 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select 'title', text: 'Sites | PlaceCal Admin'
     assert_select 'h1', text: 'Sites'
+  end
+
+  test 'Admin site index shows only sites assigned to signed in admin if any are assigned' do
+    sign_in(@another_root)
+    get admin_sites_path
+    assert_response :success
+
+    assert_select 'td', text: @another_site.name
+    assert_select 'td', text: @site.name, count: 0
+  end
+
+  test 'Admin site index shows all sites to signed in admin if none are assigned' do
+    sign_in(@root)
+    get admin_sites_path
+    assert_response :success
+
+    assert_select 'td', text: @another_site.name
+    assert_select 'td', text: @site.name
   end
 
   test 'root : can get new site' do
