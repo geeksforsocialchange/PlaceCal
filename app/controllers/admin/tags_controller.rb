@@ -61,6 +61,12 @@ module Admin
     def update
       authorize @tag
       attributes = permitted_attributes(Tag.new)
+
+      if current_user.partner_admin?
+        attributes[:partner_ids] =
+          helpers.all_partners_for(@tag, attributes)
+      end
+
       if @tag.update(attributes)
         flash[:success] = 'Tag was saved successfully'
         redirect_to admin_tags_path
