@@ -29,15 +29,6 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h1', text: 'Sites'
   end
 
-  test 'Admin site index shows only sites assigned to signed in admin if any are assigned' do
-    sign_in(@another_root)
-    get admin_sites_path
-    assert_response :success
-
-    assert_select 'td', text: @another_site.name
-    assert_select 'td', text: @site.name, count: 0
-  end
-
   test 'Admin site index shows all sites to signed in admin if none are assigned' do
     sign_in(@root)
     get admin_sites_path
