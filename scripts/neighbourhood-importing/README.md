@@ -8,6 +8,12 @@ Importing neighbourhood data is nontrivial and involves a fair amount of customi
 
 3. Run rake task to import neighbourhood payload
 
+
+## Backup neighbourhood table
+
+Backup the neighbourhood table with `rails placecal:backup_neighbourhood_table`.
+
+
 ## Download data
 
 Visit here and find latest dataset https://geoportal.statistics.gov.uk/search?collection=Dataset

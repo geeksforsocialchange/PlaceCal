@@ -1,0 +1,94 @@
+{"code":"E92000001","name":"England","name_abbr":null,"sites":[17],"users":[],"service_areas":[21,32]}
+{"code":"E12000007","name":"London","name_abbr":null,"sites":[14],"users":[61],"service_areas":[1,5,6,8,9,10,14,15,4,16,17,18,22,29,30]}
+{"code":"E13000002","name":"Outer London","name_abbr":null,"sites":[14],"users":[],"service_areas":[]}
+{"code":"E05010626","name":"Buxton Central","name_abbr":"Buxton Central","sites":[],"users":[],"service_areas":[]}
+{"code":"E05000341","name":"Uxbridge South","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000342","name":"West Drayton","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000326","name":"Brunel","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05010640","name":"New Mills West","name_abbr":"New Mills West","sites":[],"users":[],"service_areas":[]}
+{"code":"E09000029","name":"Sutton","name_abbr":null,"sites":[],"users":[],"service_areas":[12]}
+{"code":"E05000531","name":"Twickenham Riverside","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05003345","name":"Bradwell","name_abbr":"Bradwell","sites":[],"users":[],"service_areas":[]}
+{"code":"E05000419","name":"Clapham Town","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000423","name":"Herne Hill","name_abbr":null,"sites":[],"users":[],"service_areas":[7]}
+{"code":"E05011095","name":"Borough \u0026 Bankside","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000374","name":"Hillrise","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000375","name":"Holloway","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000644","name":"St James's","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05010516","name":"Beeston Central","name_abbr":"Beeston C","sites":[8],"users":[29],"service_areas":[]}
+{"code":"E05008621","name":"Crewe East","name_abbr":"Crewe East","sites":[],"users":[],"service_areas":[]}
+{"code":"E05008631","name":"High Legh","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000726","name":"Failsworth West","name_abbr":"Failsworth W","sites":[],"users":[],"service_areas":[]}
+{"code":"E11000001","name":"Greater Manchester","name_abbr":null,"sites":[16],"users":[],"service_areas":[]}
+{"code":"E05000735","name":"St Mary's","name_abbr":"St Mary's","sites":[12,13],"users":[46],"service_areas":[]}
+{"code":"E05000723","name":"Coldhurst","name_abbr":"Coldhurst","sites":[12,13],"users":[46],"service_areas":[]}
+{"code":"E05000725","name":"Failsworth East","name_abbr":"Failsworth E","sites":[],"users":[],"service_areas":[]}
+{"code":"E05000770","name":"Ordsall","name_abbr":"Ordsall","sites":[],"users":[],"service_areas":[]}
+{"code":"E05000819","name":"Altrincham","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000825","name":"Clifford","name_abbr":null,"sites":[5],"users":[],"service_areas":[]}
+{"code":"E05000782","name":"Bredbury Green and Romiley","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000783","name":"Brinnington and Central","name_abbr":"Brinnington and Central","sites":[],"users":[],"service_areas":[]}
+{"code":"E05000791","name":"Heatons North","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05011358","name":"Chorlton Park","name_abbr":"Chorlton Pk","sites":[],"users":[],"service_areas":[]}
+{"code":"E08000003","name":"Manchester","name_abbr":null,"sites":[],"users":[],"service_areas":[26]}
+{"code":"E05011359","name":"Clayton \u0026 Openshaw","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05011368","name":"Hulme","name_abbr":null,"sites":[2,3,5],"users":[9,48],"service_areas":[]}
+{"code":"E05011351","name":"Ardwick","name_abbr":null,"sites":[5,11],"users":[25,24,48],"service_areas":[]}
+{"code":"E05011361","name":"Deansgate","name_abbr":null,"sites":[2,5,11],"users":[],"service_areas":[]}
+{"code":"E05011364","name":"Fallowfield","name_abbr":null,"sites":[3,5,4],"users":[],"service_areas":[]}
+{"code":"E05011366","name":"Harpurhey","name_abbr":null,"sites":[5],"users":[25,24],"service_areas":[]}
+{"code":"E05011356","name":"Cheetham","name_abbr":null,"sites":[5],"users":[],"service_areas":[]}
+{"code":"E05011355","name":"Charlestown","name_abbr":null,"sites":[6],"users":[25,24],"service_areas":[]}
+{"code":"E05011360","name":"Crumpsall","name_abbr":null,"sites":[6],"users":[],"service_areas":[]}
+{"code":"E05011379","name":"Whalley Range","name_abbr":"Whalley Rng","sites":[2,3,5,4],"users":[],"service_areas":[]}
+{"code":"E05011372","name":"Moss Side","name_abbr":null,"sites":[2,3,5,4],"users":[48],"service_areas":[]}
+{"code":"E05011376","name":"Piccadilly","name_abbr":null,"sites":[5],"users":[],"service_areas":[]}
+{"code":"E05011373","name":"Moston","name_abbr":null,"sites":[6],"users":[25,24],"service_areas":[]}
+{"code":"E05000847","name":"Douglas","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000852","name":"Leigh East","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000800","name":"Ashton Hurst","name_abbr":null,"sites":[],"users":[15],"service_areas":[]}
+{"code":"E05000817","name":"Stalybridge North","name_abbr":"Stalybridge N","sites":[1],"users":[15],"service_areas":[]}
+{"code":"E05000811","name":"Hyde Godley","name_abbr":null,"sites":[],"users":[],"service_areas":[28]}
+{"code":"E05000815","name":"Mossley","name_abbr":null,"sites":[1],"users":[15],"service_areas":[13]}
+{"code":"E05008727","name":"Etruria and Hanley","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05011417","name":"Clayton","name_abbr":null,"sites":[],"users":[],"service_areas":[27]}
+{"code":"E08000031","name":"Wolverhampton","name_abbr":null,"sites":[],"users":[],"service_areas":[19]}
+{"code":"E05012263","name":"Preston","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05012658","name":"Christchurch Town","name_abbr":"Christchurch","sites":[9],"users":[33,34,37,31],"service_areas":[]}
+{"code":"E05012651","name":"Boscombe East \u0026 Pokesdown","name_abbr":"Boscombe East","sites":[9],"users":[31],"service_areas":[]}
+{"code":"E05012652","name":"Boscombe West","name_abbr":"Boscombe West","sites":[9],"users":[31],"service_areas":[]}
+{"code":"E05012655","name":"Burton \u0026 Grange","name_abbr":"Burton \u0026 Grange","sites":[9],"users":[38,31],"service_areas":[]}
+{"code":"E05012668","name":"Mudeford, Stanpit \u0026 West Highcliffe","name_abbr":"Mudeford","sites":[9],"users":[31],"service_areas":[]}
+{"code":"E05012662","name":"East Southbourne \u0026 Tuckton","name_abbr":"East Southbourne \u0026 Tuckton","sites":[9],"users":[31],"service_areas":[]}
+{"code":"E05012661","name":"East Cliff \u0026 Springbourne","name_abbr":"East Cliff","sites":[9],"users":[31],"service_areas":[]}
+{"code":"E05012664","name":"Highcliffe \u0026 Walkford","name_abbr":"Highcliffe \u0026 Walkford","sites":[9],"users":[31],"service_areas":[]}
+{"code":"E05012679","name":"West Southbourne","name_abbr":"W Southbourne","sites":[9],"users":[31],"service_areas":[]}
+{"code":"E05011012","name":"Duryard and St James","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E07000061","name":"Eastbourne","name_abbr":null,"sites":[],"users":[],"service_areas":[11]}
+{"code":"E05007323","name":"Leatherhead North","name_abbr":null,"sites":[],"users":[],"service_areas":[20]}
+{"code":"E05000192","name":"Walpole","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000408","name":"Grove","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000571","name":"Wandle Valley","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000564","name":"Sutton Central","name_abbr":"Sutton C.","sites":[],"users":[],"service_areas":[3]}
+{"code":"E05000457","name":"Colliers Wood","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000458","name":"Cricket Green","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000462","name":"Hillside","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E09000007","name":"Camden","name_abbr":null,"sites":[],"users":[],"service_areas":[2]}
+{"code":"E05000128","name":"Belsize","name_abbr":null,"sites":[],"users":[90],"service_areas":[]}
+{"code":"E05009394","name":"Dalgarno","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E09000020","name":"Kensington and Chelsea","name_abbr":"Kens. \u0026 Chel.","sites":[],"users":[],"service_areas":[]}
+{"code":"E05009317","name":"Bethnal Green","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05011100","name":"Dulwich Village","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E09000019","name":"Islington","name_abbr":null,"sites":[],"users":[],"service_areas":[23]}
+{"code":"E05000366","name":"Barnsbury","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000367","name":"Bunhill","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000368","name":"Caledonian","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000370","name":"Clerkenwell","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"E05000649","name":"West End","name_abbr":null,"sites":[],"users":[],"service_areas":[]}
+{"code":"N92000002","name":"Northern Ireland","name_abbr":null,"sites":[17],"users":[],"service_areas":[]}
+{"code":"S92000003","name":"Scotland","name_abbr":null,"sites":[17],"users":[],"service_areas":[]}
+{"code":"S13002767","name":"East Berwickshire","name_abbr":"E Berwickshire","sites":[10],"users":[32],"service_areas":[]}
+{"code":"S13002766","name":"Mid Berwickshire","name_abbr":"Mid Berwickshire","sites":[],"users":[],"service_areas":[]}
+{"code":"S13002764","name":"Selkirkshire","name_abbr":"Selkirkshire","sites":[],"users":[],"service_areas":[]}
+{"code":"S13002769","name":"Jedburgh and District","name_abbr":"Jedburgh and District","sites":[],"users":[],"service_areas":[]}
+{"code":"W92000004","name":"Wales","name_abbr":null,"sites":[17],"users":[],"service_areas":[]}

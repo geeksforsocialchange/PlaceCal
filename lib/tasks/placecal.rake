@@ -33,7 +33,13 @@ namespace :placecal do
   desc 'Saves a snapshot of the neighbourhood table (as dump/neighbourhood.json)'
   task save_neighbourhoods: :environment do
     # this is defined in app/models/concerns/save_neighbourhoods.rb
-    NeighbourhoodSaver.run
+    NeighbourhoodWrangler.new.save_neighbourhoods
+  end
+  
+  desc 'Restores a snapshot of the neighbourhood table (as dump/neighbourhood.json)'
+  task restore_neighbourhoods: :environment do
+    # this is defined in app/models/concerns/save_neighbourhoods.rb
+    NeighbourhoodWrangler.new.restore_neighbourhoods
   end
 
   desc 'Import neighbourhood data'
