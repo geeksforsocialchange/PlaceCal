@@ -101,6 +101,7 @@ class User < ApplicationRecord
     types << 'neighbourhood_admin' if neighbourhood_admin?
     types << 'partner_admin' if partner_admin?
     types << 'tag_admin' if tag_admin?
+    types << 'site_admin' if site_admin?
 
     types.join(', ')
   end
