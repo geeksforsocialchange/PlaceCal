@@ -93,6 +93,8 @@ class Partner < ApplicationRecord
 
   validate :opening_times_is_json_or_nil
 
+  validate :three_or_less_category_tags
+
   attr_accessor :accessed_by_user
 
   mount_uploader :image, ImageUploader
@@ -359,5 +361,12 @@ class Partner < ApplicationRecord
     return if opening_times.nil?
 
     errors.add :base, 'Partner.opening_times must be valid json'
+  end
+
+  def three_or_less_category_tags
+    number_of_category_tags = tags.count { |t| t.type == 'Category' }
+    return if number_of_category_tags < 4
+
+    errors.add :base, 'Partner.tags can contain a maximum of 3 Category tags'
   end
 end
