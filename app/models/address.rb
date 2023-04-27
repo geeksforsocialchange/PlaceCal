@@ -85,7 +85,7 @@ class Address < ApplicationRecord
     # There shouldn't be any wards that are outside our system, if there are we just fail.
     neighbourhood = Neighbourhood.find_from_postcodesio_response(res)
     if neighbourhood.nil?
-      errors.add :postcode, 'could not be mapped to a neighbourhood'
+      errors.add :postcode, 'has been found but could not be mapped to a neighbourhood at this time'
       return
     end
 
