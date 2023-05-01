@@ -54,4 +54,11 @@ module PartnersHelper
           .join(', ')
           .html_safe
   end
+
+  def partner_has_unmappable_postcode?(partner)
+    problems = partner.errors['address.postcode']
+    return if problems.empty?
+
+    problems.include? 'has been found but could not be mapped to a neighbourhood at this time'
+  end
 end
