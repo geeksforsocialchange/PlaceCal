@@ -5,9 +5,9 @@ require 'test_helper'
 class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
   setup do
     Neighbourhood.destroy_all
-    
+
     @neighbourhood = create(:neighbourhood, unit_code_value: 'E05011368')
-    
+
     @site = create(:site)
     @site.neighbourhoods << @neighbourhood
 
@@ -19,9 +19,9 @@ class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
   end
 
   test 'is hidden when no categories exist' do
-    get from_site_slug(@site, partners_path)    
+    get from_site_slug(@site, partners_path)
     assert_response :success
-    
+
     assert_select 'button', text: 'Filter', count: 0
     assert_select 'ul#partners li', count: 3
   end
@@ -29,9 +29,9 @@ class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
   # include mode
   test 'can be selected to filter only selected category' do
     given_some_tagged_partners_exist
-        
+
     get from_site_slug(@site, partners_path(category: @tag.id))
-    
+
     assert_select 'button', text: 'Filter', count: 1
     assert_select 'ul#partners li', count: 7
   end
@@ -39,9 +39,9 @@ class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
   # exclude mode
   test 'can be selected to filter out selected category' do
     given_some_tagged_partners_exist
-    
+
     get from_site_slug(@site, partners_path(category: @tag.id, mode: 'exclude'))
-    
+
     assert_select 'button', text: 'Filter', count: 1
     assert_select 'ul#partners li', count: 3
   end
