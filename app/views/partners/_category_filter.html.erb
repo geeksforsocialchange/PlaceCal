@@ -7,7 +7,7 @@
   </div>
   
   <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
-    <%= form_tag partners_path, method: :get, class: 'filters__form' do %>
+    <%= form_tag partners_path, method: :get, class: 'filters__form', data: { turbo: false } do %>
     <div class="filters__group" >
       <% filter.categories.each do |category| %>
       <div class="filters__option">
@@ -33,9 +33,9 @@
     <hr>
 
     <% if filter.active? %>
-    <a href="/partners" class="btn">Reset</a>
+    <a href="/partners" class="btn size-patch" role="button">Reset</a>
     <% end %>
-    <%= button_tag 'Filter', name: nil, class: 'btn' %>
+    <%= button_tag 'Filter', name: nil, class: 'btn size-patch' %>
     <% end %>
   </div>
 </div>

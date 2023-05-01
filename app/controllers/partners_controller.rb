@@ -24,11 +24,11 @@ class PartnersController < ApplicationController
                 .includes(:service_areas, :address)
                 .order(:name)
 
-    # show only partners with no service_areas
-    @map = get_map_markers(@partners, true) if @partners.detect(&:address)
-
     @category_filter = PartnerCategoryFilter.new(params)
     @partners = @category_filter.apply_to(@partners)
+    
+    # show only partners with no service_areas
+    @map = get_map_markers(@partners, true) if @partners.detect(&:address)
   end
 
   # # GET /places
