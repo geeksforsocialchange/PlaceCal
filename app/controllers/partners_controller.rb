@@ -26,7 +26,7 @@ class PartnersController < ApplicationController
 
     @category_filter = PartnerCategoryFilter.new(params)
     @partners = @category_filter.apply_to(@partners)
-    
+
     # show only partners with no service_areas
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)
   end
