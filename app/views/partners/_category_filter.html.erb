@@ -1,0 +1,41 @@
+<% # this is the front end component of app/controllers/concerns/partner_category_filter.rb
+   %>
+
+<div class="breadcrumb__filters filters">
+  <div class="js-filters-toggle filters__toggle">
+    <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Category</span></a>
+  </div>
+  
+  <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
+    <%= form_tag partners_path, method: :get, class: 'filters__form' do %>
+    <div class="filters__group" >
+      <% filter.categories.each do |category| %>
+      <div class="filters__option">
+        <%= radio_button_tag 'category', category.id, filter.current_category?(category), class: "tag__button" %>
+        <%= label_tag 'category', category.name, class: "tag__label" %>
+      </div>
+      <% end %>
+    </div>
+    
+    <hr>
+    
+    <div class="filters__group">
+      <div class="filters__option">
+        <%= radio_button_tag 'mode', 'include', filter.include_mode?, class: "include__button" %>
+        <%= label_tag 'mode', 'Include', class: "include__label" %>
+      </div>
+      <div class="filters__option">
+        <%= radio_button_tag 'mode', 'exclude', filter.exclude_mode?, class: "include__button" %>
+        <%= label_tag 'mode', 'Exclude', class: "include__label" %>
+      </div>
+    </div>
+    
+    <hr>
+
+    <% if filter.is_active? %>
+    <a href="/partners" class="btn">Reset</a>
+    <% end %>
+    <%= button_tag 'Filter', name: nil, class: 'btn' %>
+    <% end %>
+  </div>
+</div>
