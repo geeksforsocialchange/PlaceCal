@@ -31,6 +31,8 @@ class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
   end
 
   test '#apply_to' do
+    Partner.destroy_all
+    
     partner_1 = create(:partner)
     partner_2 = create(:partner)
     partner_3 = create(:partner)
