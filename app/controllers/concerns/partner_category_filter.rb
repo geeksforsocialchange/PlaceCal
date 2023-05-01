@@ -39,8 +39,6 @@ class PartnerCategoryFilter
   end
 
   def current_category?(category)
-    # puts "current_category=#{@current_category}"
-    # puts "category=#{category}"
     @current_category.present? && (@current_category.id == category.id)
   end
 
@@ -56,79 +54,3 @@ class PartnerCategoryFilter
     @include_mode == 'exclude'
   end
 end
-
-# <% # this is the front end component of app/controllers/concerns/partner_category_filter.rb
-#    %>
-#
-# <div class="breadcrumb__filters filters">
-#   <div class="js-filters-toggle filters__toggle">
-#     <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Category</span></a>
-#   </div>
-#
-#   <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
-#     <%= form_tag partners_path, method: :get, class: 'filters__form' do %>
-#     <div class="filters__group" >
-#       <% categories.each do |category| %>
-#       <div class="filters__option">
-#         <%= radio_button_tag 'category', category.id, filter.current_category?(category), class: "tag__button" %>
-#         <%= label_tag 'category', category.name, class: "tag__label" %>
-#       </div>
-#       <% end %>
-#     </div>
-#
-#     <hr>
-#
-#     <div class="filters__group">
-#       <div class="filters__option">
-#         <%= radio_button_tag 'mode', 'include', false, class: "include__button" %>
-#         <%= label_tag 'mode', 'Include', class: "include__label" %>
-#       </div>
-#       <div class="filters__option">
-#         <%= radio_button_tag 'mode', 'exclude', false, class: "include__button" %>
-#         <%= label_tag 'mode', 'Exclude', class: "include__label" %>
-#       </div>
-#     </div>
-#
-#     <hr>
-#
-#     <a href="/partners" class="btn">Reset</a>
-#     <%= button_tag 'Filter', name: nil, class: 'btn' %>
-#     <% end %>
-#   </div>
-# </div>
-#
-#
-#
-#
-#
-#
-#
-#   def tag
-#     @current_tag = params[:opts][:id]
-#     @include = params[:opts][:include] == '1'
-#     site_partners = Partner
-#                     .for_site(current_site)
-#
-#     tag_partners = Tag.find(@current_tag).partners.pluck(:id)
-#
-#     @partners = if @current_tag
-#                   if @include
-#                     Partner.where(id: site_partners.pluck(:id) & tag_partners)
-#                            .includes(:service_areas, :address)
-#                            .order(:name)
-#                   else
-#                     Partner.where(id: site_partners.pluck(:id) - tag_partners)
-#                            .includes(:service_areas, :address)
-#                            .order(:name)
-#                   end
-#                 else
-#                   site_partners.order(:name)
-#                 end
-#
-#     # show only partners with no service_areas
-#     @map = get_map_markers(@partners, true) if @partners.detect(&:address)
-#     # cat_tags = Tag.where(type: 'Category').order(:name)
-#     # @categories = cat_tags.filter { |t| (@partners & t.partners).length.positive? }
-#     # render 'index'
-#     # render 'tag'
-#   end
