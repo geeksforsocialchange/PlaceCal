@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
     if sort == 'summary'
       [[Time.now, events.sort_by_summary]]
     else
-      events.sort_by_time.group_by_day(&:dtstart)
+      events.distinct.sort_by_time.group_by_day(&:dtstart)
     end
   end
 
