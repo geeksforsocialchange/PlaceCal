@@ -124,6 +124,12 @@ module Admin
     end
 
     def set_neighbourhoods
+      # if user owns partner let them set any neighbourhood
+      if current_user.can_alter_partner_by_id?(@partner)
+        @all_neighbourhoods = Neighbourhood.all.order(:name)
+        return
+      end
+
       @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
     end
 
