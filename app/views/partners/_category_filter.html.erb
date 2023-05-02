@@ -6,8 +6,8 @@
     <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Category</span></a>
   </div>
   
+  <%= form_tag partners_path, method: :get, class: 'filters__form', data: { turbo: false } do %>
   <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
-    <%= form_tag partners_path, method: :get, class: 'filters__form', data: { turbo: false } do %>
     <div class="filters__group" >
       <% filter.categories.each do |category| %>
       <div class="filters__option">
@@ -36,6 +36,6 @@
     <a href="/partners" class="btn size-patch" role="button">Reset</a>
     <% end %>
     <%= button_tag 'Filter', name: nil, class: 'btn size-patch' %>
-    <% end %>
   </div>
+  <% end %>
 </div>
