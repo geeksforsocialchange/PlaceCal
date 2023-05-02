@@ -44,10 +44,6 @@ class Calendar < ApplicationRecord
     default: :idle
   )
 
-  scope :where_busy, -> { where(calendar_state: %i[in_queue in_worker]) }
-  scope :where_idle, -> { where(calendar_state: :idle) }
-  scope :where_errored, -> { where(calendar_state: :error) }
-
   # We need a default location for some strategies
   def requires_default_location?
     %i[place room_number event_override].include? strategy.to_sym
@@ -110,7 +106,7 @@ class Calendar < ApplicationRecord
   # @return nothing
   def queue_for_import!(force_import, from_date)
     transaction do
-      return unless calendar_state.idle? || calendar_state.error?
+      return unless calendar_state.idle? || calendar_state.error? || calendar_state.bad_source?
 
       update! calendar_state: :in_queue
 
