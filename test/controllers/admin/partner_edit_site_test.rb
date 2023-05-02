@@ -30,13 +30,7 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
 
   # root can see all neighbourhoods
   test 'user who is not partner admin' do
-    Neighbourhood.all.each do |hood|
-      puts hood
-    end
-
     get edit_admin_partner_url(@partner)
-    # puts response.body
-
     assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 12
   end
 
@@ -50,13 +44,9 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
     end
 
     other_user.neighbourhoods << @partner.address.neighbourhood
-
     assert_predicate other_user, :neighbourhood_admin?
 
-    # sign_out @root_user
-
     sign_in other_user
-
     get edit_admin_partner_url(@partner)
 
     # this is numbered 8 as we get all the subtree nodes of the neighbourhoods
@@ -66,17 +56,14 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
   # if owns partner can see all neighbourhoods
   test 'partner admins can select all neighbourhoods' do
     other_user = create(:user)
-
     assert_not other_user.neighbourhood_admin?
 
     other_user.partners << @partner # owns this
 
     sign_in other_user
-
     get edit_admin_partner_url(@partner)
-    puts flash.to_json
-    puts response.body
 
-    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 8
+    # has same number as root
+    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 12
   end
 end

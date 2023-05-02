@@ -125,8 +125,8 @@ module Admin
 
     def set_neighbourhoods
       # if user owns partner let them set any neighbourhood
-      if current_user.can_alter_partner_by_id?(@partner)
-        @all_neighbourhoods = Neighbourhood.all.order(:name)
+      if @partner.present? && current_user.can_alter_partner_by_id?(@partner.id)
+        @all_neighbourhoods = Neighbourhood.order(:name)
         return
       end
 
