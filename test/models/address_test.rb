@@ -45,7 +45,7 @@ class AddressTest < ActiveSupport::TestCase
     address.postcode = 'X11 Y00'
     assert_not address.valid?
     postcode_error = address.errors[:postcode]&.first
-    assert_equal 'could not be mapped to a neighbourhood', postcode_error
+    assert_equal 'has been found but could not be mapped to a neighbourhood at this time', postcode_error
   end
 
   test 'resolves postcode on save (validation)' do
