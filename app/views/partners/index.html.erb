@@ -3,37 +3,9 @@
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
-    <% if  @categories.length > 0 %>
-      <div class="breadcrumb__filters filters">
-          <div class="js-filters-toggle filters__toggle">
-              <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Category</span></a>
-          </div>
-          <%= simple_form_for(:opts, url:partners_tag_path, html: { class: 'filters__form'}) do |f| %>
-            <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
-              <div class="filters__group" >
-                <%= f.collection_radio_buttons(:id, @categories, :id, :name, { checked: @categories.first.id }) do |b| %>
-                  <div class="filters__option">
-                    <%= b.radio_button(class: "tag__button") %>
-                    <%= b.label(class: "tag__label") %>
-                  </div>
-                <% end %>
-              </div>
-              <hr>
-              <div class="filters__group">
-                <%= f.collection_radio_buttons :include,  [[1, "Include"],[0, "Exclude"]], :first, :second, { checked: 1 } do |b| %>
-                  <div class="filters__option">
-                    <%= b.radio_button(class: "include__button") %>
-                    <%= b.label(class: "include__label") %>
-                  </div>
-                <% end %>
-              </div>
-              <hr>
-                  <a href="/partners" class="btn">Reset</a>
-                  <%= f.button :submit , 'Filter' %>
-            </div>
-          <% end %>
-      </div>
-    <% end %>
+  <% if @category_filter.show_filter? %>
+  <%= @category_filter.render_filter(self) %>
+  <% end %>
   <% end %>
 
   <hr>
