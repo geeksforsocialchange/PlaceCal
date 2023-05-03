@@ -1,7 +1,7 @@
 <div class="footer_home">
 
     <div class="footer_home__head">
-      <%= image_tag 'home/icons/logo.svg', class: "footer_home__logo" %>
+      <%= image_tag 'home/icons/logo.svg', class: "footer_home__logo" , alt: "PlaceCal logo" %>
       <nav>
         <ul class="footer_home__nav">
           <li><%= link_to "Log in", new_user_session_path, class: "footer_home__nav__link" %></li>
@@ -19,14 +19,14 @@
       <ul class="footer_home__body__logos">
         <li>
           <%= link_to "https://gfsc.studio" do %>
-            <%= image_tag "home/logos/gfsc.svg" %>
+            <%= image_tag "home/logos/gfsc.svg" , alt: "Geeks For Social Change" %>
           <% end %>
         </li>
         <li aria-hidden="true" >
-          <%= image_tag "home/icons/plus.svg" %>
+          <%= image_tag "home/icons/plus.svg" , alt: "" %>
         </li>
         <li>
-          <%= image_tag "home/logos/phase.svg" %>
+          <%= image_tag "home/logos/phase.svg" , alt: "PHASE: place, health, architecture, space, enviroment" %>
         </li>
       </ul>
 
@@ -34,13 +34,13 @@
        
       <ul class="footer_home__body__logos">
         <li>
-          <%= image_tag "home/logos/cityverve.svg" %>
+          <%= image_tag "home/logos/cityverve.svg" , alt: "Cityverve" %>
         </li>
         <li>
-          <%= image_tag "home/logos/nesta.svg" %>
+          <%= image_tag "home/logos/nesta.svg" , alt: "Nesta" %>
         </li>
         <li>
-          <%= image_tag "home/logos/aal.svg" %>
+          <%= image_tag "home/logos/aal.svg" , alt: "Active Assisted Living" %>
         </li>
       </ul>
     </div>
