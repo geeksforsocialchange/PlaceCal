@@ -1,72 +1,142 @@
 @import "variables_mixins"
 
 .footer_home
-  padding-top: 3rem
-  padding-bottom: 3rem
   color: $base-background
-  hr
-    border-width: 3px 0 0 0
-    border-color: $base-tertiary
-    margin: 1rem -0.75rem
-    +for-tablet-portrait-up
-      margin: 1rem -1.5rem
-  h5
-    color: $base-tertiary
-    margin-bottom: 0.75rem
-    margin-top: 1rem
-    font-family: $serif
-    +fontstyle((20 30 300))
-  a
-    color: $base-background
-    text-decoration: none
-  ul a
-    +fontstyle((16 30), (), (18 34))
-  &__logo
-    width: 148px
-    height: 43.65px
-    +for-tablet-portrait-up
-      width: 191px
-      height: 56.22px
-  // Grid to align the logo, hr and navs
-  &__top
-    display: grid
-    grid-template-columns: 1fr
-    grid-auto-rows: auto
-    grid-template-areas: "logo" "hr" "navs"
-    +for-tablet-landscape-up
-      grid-template-columns: 191px 1fr
-      grid-gap: 4rem
-      grid-template-areas: "hr hr" "logo navs"
-  &__logo
-    grid-area: logo
-  &__hr
-    grid-area: hr
-  &__navs
-    grid-area: navs
-  // Same spacing for impressum
-  &__impressum
-    +for-tablet-landscape-up
-      // To match grid above
-      margin-left: 191px
-      padding-left: 4rem
-  // Grid to align the three nav menus
-  &__navs
-    +for-tablet-portrait-up
-      display: grid
-      grid-template-columns: repeat(3, 1fr)
-      grid-gap: 1rem
-  // Grid to align the logos
-  &__logos
-    display: inline-grid
-    grid-template-columns: repeat(2, 1fr)
-    grid-gap: 1rem
-    &--plus
-      background-image: image-url('home/icons/plus.svg')
-      background-position: 49.5%
-      background-repeat: no-repeat
-    +for-tablet-portrait-up
-      grid-template-columns: repeat(3, 1fr)
-      background-position-x: 32.5%
-    +for-desktop-up
-      grid-template-columns: repeat(3, max-content)
-      background-position-x: 194px
+  padding: 3rem 2rem
+  
+.footer_home__head
+  display: flex
+  flex-direction: column
+  align-items: center
+  +for-tablet-portrait-up
+    flex-direction: row
+    justify-content: space-between
+    flex-wrap: wrap
+
+.footer_home__logo
+  max-width: 10rem
+
+.footer_home__hr
+  border-width: 3px 0 0 0
+  border-color: $base-tertiary
+  margin: 1rem 0rem
+  +for-tablet-portrait-up
+    margin: 1rem rem
+
+.footer_home__nav
+  display: flex
+  flex-direction: column-reverse
+  align-items: center
+  padding: 0
+  list-style: none
+  +for-tablet-portrait-up
+    flex-direction: row
+    display: flex
+    gap: 2.5rem
+    flex-wrap: wrap
+
+.footer_home__nav__link
+  text-decoration: none
+  font-weight: 600
+  color: $base-background
+  width: max-content
+
+.footer_home__body
+  display: flex
+  flex-direction: column
+  align-items: center
+
+
+.footer_home__body__title
+  color: $base-secondary
+  margin-bottom: 0.75rem
+  margin-top: 1rem
+  font-family: $serif
+  +fontstyle((20 30 300))
+
+.footer_home__body__logos
+  display: flex
+  flex-wrap: wrap
+  padding: 0
+  list-style: none
+  justify-content: center
+  align-items: center
+
+
+
+.footer_home__foot
+  display: flex
+  flex-direction: column
+  align-items: center
+  font-size: 0.66rem
+
+.footer_home__foot__address
+  text-align: center
+
+.footer_home__foot__link
+  color: $base-background
+  text-decoration-color: $base-background
+// .footer_home
+//   padding-top: 3rem
+//   padding-bottom: 3rem
+//   color: $base-background
+//   h5
+//     color: $base-tertiary
+//     margin-bottom: 0.75rem
+//     margin-top: 1rem
+//     font-family: $serif
+//     +fontstyle((20 30 300))
+//   a
+//     color: $base-background
+//     text-decoration: none
+//   ul a
+//     +fontstyle((16 30), (), (18 34))
+//   &__logo
+//     width: 148px
+//     height: 43.65px
+//     +for-tablet-portrait-up
+//       width: 191px
+//       height: 56.22px
+//   // Grid to align the logo, hr and navs
+//   &__top
+//     display: grid
+//     grid-template-columns: 1fr
+//     grid-auto-rows: auto
+//     grid-template-areas: "logo" "hr" "navs"
+//     +for-tablet-landscape-up
+//       grid-template-columns: 191px 1fr
+//       grid-gap: 4rem
+//       grid-template-areas: "hr hr" "logo navs"
+//   &__logo
+//     grid-area: logo
+//   &__hr
+//     grid-area: hr
+//   &__navs
+//     grid-area: navs
+//   // Same spacing for impressum
+//   &__impressum
+//     +for-tablet-landscape-up
+//       // To match grid above
+//       margin-left: 191px
+//       padding-left: 4rem
+//   // Grid to align the three nav menus
+//   &__navs
+//     +for-tablet-portrait-up
+//       display: grid
+//       grid-template-columns: repeat(3, 1fr)
+//       grid-gap: 1rem
+//   // Grid to align the logos
+//   &__logos
+//     display: inline-grid
+//     grid-template-columns: repeat(2, 1fr)
+//     grid-gap: 1rem
+//     &--plus
+//       background-image: image-url('home/icons/plus.svg')
+//       background-position: 49.5%
+//       background-repeat: no-repeat
+//     +for-tablet-portrait-up
+//       grid-template-columns: repeat(3, 1fr)
+//       background-position-x: 32.5%
+//     +for-desktop-up
+//       grid-template-columns: repeat(3, max-content)
+//       background-position-x: 194px
