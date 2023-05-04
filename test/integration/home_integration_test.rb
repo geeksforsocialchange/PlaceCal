@@ -8,7 +8,8 @@ class HomeIntegrationTest < ActionDispatch::IntegrationTest
     get 'http://lvh.me'
     assert_response :success
     assert_select 'title', count: 1, text: 'PlaceCal | The Community Calendar'
-    assert_select 'h1', count: 1, text: 'The Community Calendar'
+    # [fFf] reinstate test when new content is added to homepage
+    # assert_select 'h1', count: 1, text: 'The Community Calendar'
   end
 
   test 'home page for neighbourhood site has correct title' do

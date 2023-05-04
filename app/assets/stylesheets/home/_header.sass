@@ -1,8 +1,7 @@
 body
-  background-image: image-url('home/bg.svg'), image-url('home/bg.svg')
-  background-size: 380px 720px
-  background-position: calc(50% - 870px) 0, calc(50% + 870px) 0
-  background-repeat: repeat-y
+  background-image:  image-url('patterns/PlaceCal_Backing.svg')
+  background-color: $base-text
+  background-repeat: repeat
 .background
   background-color: $base-text
   border: 0
@@ -44,11 +43,13 @@ body
         text-transform: none
         letter-spacing: 0
     +for-tablet-portrait-up
-      display: none
+      &.is-hidden
+        display: none
       ul
         padding-top: 0.5rem
     +for-tablet-landscape-up
-      display: block
+      &.is-hidden
+        display: block
       ul
         margin-right: 1.5rem
       li
