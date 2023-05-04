@@ -18,7 +18,7 @@
         <% end %>
 
         <%= simple_form_for @join, url: join_path, html: { class: 'form' } do |f| %>
-          <div class="form__person">
+          <div class="form__person form__full-width">
             <div class="form__field">
               <%= f.input :name, label: 'Name:' %>
             </div>
@@ -39,28 +39,24 @@
             </div>
           </div>
 
-          <div class="form__request">
-            <div class="form__contact">
-              <p><strong>I'd like:</strong></p>
-
-              <div class="form__checkbox">
-                <%= f.check_box :ringback %>
-                <%= f.label :ringback, 'A ring back' %>
-              </div>
-
-              <div class="form__checkbox">
-                <%= f.check_box :more_info %>
-                <%= f.label :more_info, 'More information' %>
-              </div>
+          <div class="form__contact form__mid-width">
+            <p><strong>I'd like:</strong></p>
+            <div class="form__checkbox">
+              <%= f.check_box :ringback %>
+              <%= f.label :ringback, 'A ring back' %>
             </div>
-
-            <div class="form__info">
-              <%= f.input :why, as: :text, label:  'Why I want PlaceCal:', placeholder: "Enter information about why you'd like to join PlaceCal here" %>
+            <div class="form__checkbox">
+              <%= f.check_box :more_info %>
+              <%= f.label :more_info, 'More information' %>
             </div>
-
-            <%= f.submit "Submit", class: 'btn form__submit' %>
-
           </div>
+
+          <div class="form__info form__full-width">
+            <%= f.input :why, as: :text, label:  'Why I want PlaceCal:', placeholder: "Enter information about why you'd like to join PlaceCal here" %>
+          </div>
+
+          <%= f.submit "Submit", class: 'btn form__submit' %>
+
         <% end %>
       </div>
       <p class="regular-links">
