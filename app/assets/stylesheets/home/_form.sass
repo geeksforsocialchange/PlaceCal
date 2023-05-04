@@ -34,12 +34,12 @@
     &:checked
       background-color: $base-primary
 
-
   input.form__submit
-    border-color: $base-text
     background-color: $base-text
-    color: $home-background
+    border-color: $base-text
     box-shadow: inset 0 0 0 3px $home-pink-soft
+    color: $home-background
+    max-width: 32.4%
     padding: 0.75rem 1rem
     &:hover
       border-color: $home-background
@@ -47,9 +47,11 @@
       color: $base-text
 
   textarea
-    min-height: 10rem
+    min-height: 8rem
     margin-top: 0.5rem
+    resize: none
     +placeholder
+      padding: 2rem
       text-align: center
 
   abbr
@@ -57,8 +59,6 @@
 
   &__field
     text-align: left
-    label::after
-      content: ":"
 
   &__checkbox
     label, input
@@ -72,7 +72,6 @@
     label
       display: inline-block
       font-weight: normal
-      // Background width + 1rem
       padding-right: 48px
       line-height: 30px
       background: image-url('icons/forms/unselected.svg')
@@ -85,17 +84,19 @@
       background-position: 100% 0%
       background-size: 30px 30px
       background-repeat: no-repeat
+    +for-tablet-portrait-up
+      padding-bottom: 0px
+      margin: 0 1rem
 
-  // label.hide
-  //   // For accessibility - hides visually but screenreader will read
-  //   border: 0
-  //   clip: rect(0 0 0 0)
-  //   height: 1px
-  //   margin: -1px
-  //   overflow: hidden
-  //   padding: 0
-  //   position: absolute
-  //   width: 1px
+  &__info
+    +for-tablet-portrait-up
+      .join_why
+        display: grid
+        grid-template-columns: 1fr 1fr 1fr
+        grid-gap: 1rem
+      .form-control-label
+        margin-top: 1rem
+        text-align: right
 
   &__person
     +for-tablet-portrait-up
@@ -108,10 +109,14 @@
       input, textarea
         margin-bottom: 0
 
-  &__request
+  &__contact
     +for-tablet-portrait-up
-      width: 60%
+      display: flex
+      flex-direction: row
       margin: 0 auto
+      width: 50%
+      p
+        margin: 0 1rem
 
   &--login
     input
