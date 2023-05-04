@@ -3,7 +3,7 @@
 
 <%= render 'status' %>
 
-<% if @calendar.calendar_state.idle? || @calendar.calendar_state.bad_source? %>
+<% if @calendar.can_be_requeued? %>
   <% if @calendar.calendar_state.bad_source? %>
     <p class="bigger"> We're unable to read this calendar - the URL may be broken or there may be some invalid data in it.<br/>Please check the calendar is set up correctly and try again.<br/>
     </p>

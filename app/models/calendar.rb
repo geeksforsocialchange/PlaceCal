@@ -106,7 +106,7 @@ class Calendar < ApplicationRecord
   # @return nothing
   def queue_for_import!(force_import, from_date)
     transaction do
-      return unless calendar_state.idle? || calendar_state.error? || calendar_state.bad_source?
+      return if is_busy?
 
       update! calendar_state: :in_queue
 
@@ -209,6 +209,11 @@ class Calendar < ApplicationRecord
   # is calendar being worked on by our backend?
   def is_busy?
     calendar_state.in_queue? || calendar_state.in_worker?
+  end
+
+  # is a user allowed to requeue a calendar for import?
+  def can_be_requeued?
+    calendar_state.idle? || calendar_state.bad_source?
   end
 
   private
