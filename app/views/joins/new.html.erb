@@ -18,7 +18,7 @@
         <% end %>
 
         <%= simple_form_for @join, url: join_path, html: { class: 'form' } do |f| %>
-          <div class="form__person form__full-width">
+          <div class="form__person form__mid-width">
             <div class="form__field">
               <%= f.input :name, label: 'Name:' %>
             </div>
@@ -39,15 +39,19 @@
             </div>
           </div>
 
-          <div class="form__contact form__mid-width">
-            <p><strong>I'd like:</strong></p>
-            <div class="form__checkbox">
-              <%= f.check_box :ringback %>
-              <%= f.label :ringback, 'A ring back' %>
+          <div class="form__contact form__small-width">
+            <div class="form__contact-child">
+              <p><strong>I'd like:</strong></p>
             </div>
-            <div class="form__checkbox">
-              <%= f.check_box :more_info %>
-              <%= f.label :more_info, 'More information' %>
+            <div class="form__contact-child">
+              <div class="form__checkbox">
+                <%= f.check_box :ringback %>
+                <%= f.label :ringback, 'A ring back' %>
+              </div>
+              <div class="form__checkbox">
+                <%= f.check_box :more_info %>
+                <%= f.label :more_info, 'More information' %>
+              </div>
             </div>
           </div>
 
