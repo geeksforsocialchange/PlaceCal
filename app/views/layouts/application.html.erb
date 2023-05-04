@@ -44,7 +44,7 @@
       </main>
       <footer>
         <% if @site&.default_site? %>
-          <%= render_component "footer_home" %>
+          <%= render(HomeFooterComponent.new()) %>
         <% else %>
           <%= render_component "footer" %>
         <% end %>
