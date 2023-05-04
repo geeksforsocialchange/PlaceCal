@@ -20,6 +20,9 @@ clean:
 	docker container rm placecal-db || true
 	docker network rm placecal-network
 
+component:
+	rails generate component $(NAME) $(ARGS)
+
 install_dependencies:
 	nvm use
 	yarn
