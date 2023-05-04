@@ -13,5 +13,10 @@ FactoryBot.define do
     factory :system_tag do
       system_tag { true }
     end
+
+    factory :category do
+      sequence(:name) { |n| "Category Tag #{n}" }
+      type { 'Category' }
+    end
   end
 end

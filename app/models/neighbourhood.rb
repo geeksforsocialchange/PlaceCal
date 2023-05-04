@@ -42,7 +42,7 @@ class Neighbourhood < ApplicationRecord
     return "#{shortname}, #{parent_name} (#{unit.titleize})" if parent_name
 
     # "Wardname (Region)"
-    "#{shortname} (#{unit.titleize})"
+    "#{shortname} (#{unit&.titleize})"
   end
 
   def fullname

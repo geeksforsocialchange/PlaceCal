@@ -41,6 +41,12 @@
         <%= f.fields_for :address, @partner.address || Address.new do |a| %>
         <%= render 'address_fields', f: a %>
         <% end %>
+
+	<% if partner_has_unmappable_postcode?(@partner) %>
+	<p>
+	  The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
+	</p>
+	<% end %>
       </div>
       <div class="col-md-6">
         <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
@@ -118,6 +124,7 @@
   <h2>Tags</h2>
   
   <p>What partnerships, categories and facilities does this partner have or belong to?</p>
+  <p>Partners may have up to 3 category tags.</p>
 
   <%= f.association :tags,
       label: false,
