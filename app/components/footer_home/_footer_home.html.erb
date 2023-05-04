@@ -4,9 +4,9 @@
       <%= image_tag 'home/icons/logo.svg', class: "footer_home__logo" , alt: "PlaceCal logo" %>
       <nav>
         <ul class="footer_home__nav">
-          <li><%= link_to "Log in", new_user_session_path, class: "footer_home__nav__link" %></li>
-          <li><%= mail_to "kim@placecal.org", "Email us", class: "footer_home__nav__link" %></li>
+          <li><%= link_to "Admin log in", new_user_session_path, class: "footer_home__nav__link" %></li>
           <li><%= link_to "Get PlaceCal", join_path , class: "footer_home__nav__link"%></li>
+          <li><%= mail_to "kim@placecal.org", "Email us", class: "footer_home__nav__link" %></li>
         </ul>
       </nav>
     </div>
