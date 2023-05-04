@@ -21,7 +21,6 @@ clean:
 	docker network rm placecal-network
 
 install_dependencies:
-	nvm use
 	yarn
 	bundle install
 
@@ -51,7 +50,7 @@ create_user:
 	bundle exec rails runner "User.create!(email: 'info@placecal.org', password: 'password', password_confirmation: 'password', role: :root)"
 
 test:
-	nvm use && time sh -c "rails test --pride && rails test:system && rubocop"
+	time sh -c "rails test --pride && rails test:system && rubocop"
 
 tags:
 	find app/ lib/ test/ -iname '*.rb' | xargs etags
