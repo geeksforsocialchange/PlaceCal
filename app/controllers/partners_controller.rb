@@ -24,40 +24,11 @@ class PartnersController < ApplicationController
                 .includes(:service_areas, :address)
                 .order(:name)
 
-    # show only partners with no service_areas
-    @map = get_map_markers(@partners, true) if @partners.detect(&:address)
-    cat_tags = Tag.where(type: 'Category').order(:name)
-    @categories = cat_tags.filter { |t| (@partners & t.partners).length.positive? }
-  end
-
-  def tag
-    @current_tag = params[:opts][:id]
-    @include = params[:opts][:include] == '1'
-    site_partners = Partner
-                    .for_site(current_site)
-
-    tag_partners = Tag.find(@current_tag).partners.pluck(:id)
-
-    @partners = if @current_tag
-                  if @include
-                    Partner.where(id: site_partners.pluck(:id) & tag_partners)
-                           .includes(:service_areas, :address)
-                           .order(:name)
-                  else
-                    Partner.where(id: site_partners.pluck(:id) - tag_partners)
-                           .includes(:service_areas, :address)
-                           .order(:name)
-                  end
-                else
-                  site_partners.order(:name)
-                end
+    @category_filter = PartnerCategoryFilter.new(params)
+    @partners = @category_filter.apply_to(@partners)
 
     # show only partners with no service_areas
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)
-    cat_tags = Tag.where(type: 'Category').order(:name)
-    @categories = cat_tags.filter { |t| (@partners & t.partners).length.positive? }
-    # render 'index'
-    # render 'tag'
   end
 
   # # GET /places

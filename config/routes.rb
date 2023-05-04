@@ -72,7 +72,6 @@ Rails.application.routes.draw do
   get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places' => 'partners#index' # Removing separate Places view for now.
   get '/partners/:id/embed' => 'places#embed'
-  post '/partners/tag' => 'partners#tag'
 
   # news
   resources :news, only: %i[index show]

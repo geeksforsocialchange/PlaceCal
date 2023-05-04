@@ -1,6 +1,7 @@
 $(document).on("turbo:load", function () {
 	// Toggle the sort criteria
-	$(".js-filters-toggle").click(function () {
+	$(".js-filters-toggle").on("click", function (event) {
+		event.preventDefault();
 		$(".js-filters-dropdown").toggle();
 	});
 

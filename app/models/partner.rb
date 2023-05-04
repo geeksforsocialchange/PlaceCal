@@ -20,6 +20,9 @@ class Partner < ApplicationRecord
 
   has_many :partner_tags, dependent: :destroy
   has_many :tags, through: :partner_tags
+  has_many :categories, through: :partner_tags, source: :tag, class_name: 'Category'
+  has_many :facilities, through: :partner_tags, source: :tag, class_name: 'Facility'
+  has_many :partnerships, through: :partner_tags, source: :tag, class_name: 'Partnership'
 
   has_many :service_areas, dependent: :destroy
   has_many :service_area_neighbourhoods,
@@ -92,6 +95,8 @@ class Partner < ApplicationRecord
   validate :must_have_address_or_service_area
 
   validate :opening_times_is_json_or_nil
+
+  validate :three_or_less_category_tags
 
   attr_accessor :accessed_by_user
 
@@ -359,5 +364,11 @@ class Partner < ApplicationRecord
     return if opening_times.nil?
 
     errors.add :base, 'Partner.opening_times must be valid json'
+  end
+
+  def three_or_less_category_tags
+    return if categories.count < 4
+
+    errors.add :base, 'Partner.tags can contain a maximum of 3 Category tags'
   end
 end

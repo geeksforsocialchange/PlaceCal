@@ -187,4 +187,54 @@ class PartnerTest < ActiveSupport::TestCase
     problems = partner.errors[:base]
     assert_equal 'Partners must have at least one of service area or address', problems.first
   end
+
+  test 'partner can have up to 3 "Category" tags' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 2')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 3')
+    partner.save
+
+    assert_predicate partner, :valid?
+  end
+
+  test 'partner cannot have more than 3 "Category" tags' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 2')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 3')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 4')
+    partner.save
+
+    problems = partner.errors[:base]
+    assert_equal 'Partner.tags can contain a maximum of 3 Category tags', problems.first
+  end
+
+  test 'partner has "Category" single table inheritance' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
+    partner.save
+    assert_equal 1, partner.categories.count
+  end
+
+  test 'partner has "Facility" single table inheritance' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+    partner.tags << create(:tag, type: 'Facility', name: 'Facility Tag 1')
+    partner.save
+    assert_equal 1, partner.facilities.count
+  end
+
+  test 'partner has "Partnership" single table inheritance' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+    partner.tags << create(:tag, type: 'Partnership', name: 'Partnership Tag 1')
+    partner.save
+    assert_equal 1, partner.partnerships.count
+  end
 end
