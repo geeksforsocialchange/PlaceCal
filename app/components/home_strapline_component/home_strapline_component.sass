@@ -1,0 +1,25 @@
+@import "variables_mixins"
+
+.home__strapline
+  background-color: $base-primary
+  border-radius: $default-radius
+  color: $base-text
+  font-family: $serif
+  margin: 1.5rem
+  // url("/assets/home/site_title/desktop_left-664b9ff8ce38392cab5a53fb0db616592c35b0e0221fdb1e9f96a232b1696b9b.svg"), url("/assets/home/site_title/desktop_right-913cef8b7584cd9d9a03ed4ecbe484b09f989daa36e86920cc3a40d138429f6b.svg");
+  background-image: image-url('home/site_title/desktop_left.svg'), image-url('home/site_title/desktop_right.svg')
+  background-repeat: no-repeat
+  background-position: 0 50%, 100% 50%
+  background-size: auto 100%
+  
+  &-quote
+    font-size: $h3-size
+    width: 50%
+    margin: 0 auto
+    padding: 4rem 0
+    line-height: 2em
+    text-align: center
+
+  .btn
+    font-family: $sans-serif
+    margin-top: 4rem
