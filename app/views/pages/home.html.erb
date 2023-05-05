@@ -1,5 +1,14 @@
 <article class="home">
-  <div class="margin">
+  <div class="margin home__flow">
+      <%= render(FullWidthActionComponent.new(title: "Find events in your area", link_text: "See events", link_url: find_placecal_path)) do %>
+        checkout different placecal instances and see if there is a placecal related to your place / interest.
+      <% end %>
+      <%= render(FullWidthActionComponent.new(title: "Create a placecal for your community", link_text: "Start organising", link_url: join_path)) do %>
+        Work on the ground with like minded groups to create communities
+      <% end %>
+      <%= render(FullWidthActionComponent.new(title: "How does placecal work", link_text: "find out more", link_url: our_story_path)) do %>
+        learn about our history and process for community organising
+      <% end %>
     <div class="pullquote">
       <blockquote>
         <p class="alt-title-small">People are saying they’re bored and there’s nothing to do – with this much on that’s mad isn’t it!</p>
