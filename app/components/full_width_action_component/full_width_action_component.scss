@@ -6,6 +6,22 @@
 	padding: 3rem 1rem;
 }
 
+.full_width_action--blue {
+	background-color: $home-blue;
+}
+
+.full_width_action--cream {
+	background-color: $home-background-3;
+}
+
+.full_width_action--green {
+	background-color: $home-green;
+}
+
+.full_width_action--red {
+	background-color: $base-secondary;
+}
+
 .full_width_action__title {
 	font-size: 1.8rem;
 	font-weight: 400;
