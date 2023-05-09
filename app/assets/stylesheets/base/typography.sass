@@ -51,8 +51,6 @@ h3, .h3
 h4, .h4
   +h4
 
-
-
 .allcaps
   text-transform: uppercase
   font-weight: $extra-bold
@@ -94,14 +92,13 @@ h2.serif
     display: block
 
 a
-  // text-decoration: none
   text-decoration-color: $base-primary
   text-decoration-color: var(--base-primary)
+  text-underline-offset: 3px
+  text-decoration-skip-ink: none
+  text-decoration-thickness: 2px
   color: $base-text
   color: var(--base-text)
-  // border-width: 0 0 2px 0
-  // border-style: solid
-  // border-color: $base-primary
 
 hr
   border-color: $base-rules
@@ -152,7 +149,6 @@ h2.place__title
   +for-desktop-up
     display: block
 
-
 .fc-primary
   color: $base-primary !important
 
@@ -177,4 +173,3 @@ br.half
 input
   font-family: $sans-serif
   font-size: inherit
-
