@@ -1,0 +1,25 @@
+@import "variables_mixins";
+
+.container-with-header {
+	background-color: $home-background;
+}
+
+.container-with-header__head {
+	background-color: $home-background;
+}
+
+.container-with-header__body {
+	background-color: $home-background;
+}
+
+.container-with-header__body--blue {
+	background-color: $home-blue;
+}
+
+.container-with-header__body--green {
+	background-color: $home-green;
+}
+
+.container-with-header__body--red {
+	background-color: $base-secondary;
+}

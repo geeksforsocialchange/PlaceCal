@@ -1,5 +1,8 @@
 <article class="home">
   <div class="margin home__flow">
+      <%= render(ContainerWithHeaderComponent.new(title: "LOLOL LOLO LOLOL",  color: "green")) do %>
+        This is the content!!!!
+      <% end %>
       <%= render(FullWidthActionComponent.new(title: "Find events in your area", link_text: "See events", link_url: find_placecal_path, color: "red")) do %>
         checkout different PlaceCal instances and see if there is a PlaceCal related to your place / interest.
       <% end %>
