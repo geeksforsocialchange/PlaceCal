@@ -1,7 +1,16 @@
 <%= render(HomeStraplineComponent.new) %>
 
 <article class="home">
-  <div class="margin">
+  <div class="margin home__flow">
+      <%= render(FullWidthActionComponent.new(title: "Find events in your area", link_text: "See events", link_url: find_placecal_path, color: "red")) do %>
+        checkout different PlaceCal instances and see if there is a PlaceCal related to your place / interest.
+      <% end %>
+      <%= render(FullWidthActionComponent.new(title: "Create a PlaceCal for your community", link_text: "Start organising", link_url: join_path, color: "green")) do %>
+        Work on the ground with like minded groups to create communities
+      <% end %>
+      <%= render(FullWidthActionComponent.new(title: "How does PlaceCal work", link_text: "Find out more", link_url: our_story_path, color: "cream")) do %>
+        learn about our history and process for community organising
+      <% end %>
     <div class="pullquote">
       <blockquote>
         <p class="alt-title-small">People are saying they’re bored and there’s nothing to do – with this much on that’s mad isn’t it!</p>
