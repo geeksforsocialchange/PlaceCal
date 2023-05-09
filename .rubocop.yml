@@ -31,3 +31,6 @@ Rails/DynamicFindBy:
 
 Style/Documentation:
   Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
