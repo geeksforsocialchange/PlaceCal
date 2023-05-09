@@ -43,7 +43,7 @@ class NeighbourhoodPolicy < ApplicationPolicy
       if user.root?
         scope.all
       elsif user.neighbourhood_admin?
-        scope.where(id: user.owned_neighbourhood_ids)
+        scope.where(id: user.owned_neighbourhood_ids).distinct
       else
         scope.none
       end
