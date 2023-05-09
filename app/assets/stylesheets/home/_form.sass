@@ -34,33 +34,40 @@
     &:checked
       background-color: $base-primary
 
-
   input.form__submit
-    border-color: $base-text
     background-color: $base-text
-    color: $home-background
+    border-color: $base-text
     box-shadow: inset 0 0 0 3px $home-pink-soft
+    color: $home-background
     padding: 0.75rem 1rem
+    width: 100%
+    +for-tablet-portrait-up
+      width: 23rem
     &:hover
       border-color: $home-background
       background-color: $home-background
       color: $base-text
 
   textarea
-    min-height: 10rem
-    margin-top: 0.5rem
+    min-height: 8rem
+    margin: 0.5rem auto 0 auto
+    resize: none
+    +for-tablet-portrait-up
+      width: 23rem
     +placeholder
+      padding: 2rem 1rem 1rem
       text-align: center
+      +for-tablet-portrait-up
+        padding: 2rem
 
   abbr
     text-decoration: none
 
   &__field
     text-align: left
-    label::after
-      content: ":"
 
   &__checkbox
+    margin: 0.25rem
     label, input
       width: auto
     input
@@ -72,7 +79,6 @@
     label
       display: inline-block
       font-weight: normal
-      // Background width + 1rem
       padding-right: 48px
       line-height: 30px
       background: image-url('icons/forms/unselected.svg')
@@ -85,33 +91,80 @@
       background-position: 100% 0%
       background-size: 30px 30px
       background-repeat: no-repeat
+    +for-tablet-portrait-up
+      padding-bottom: 0px
+      margin: 0 1rem
 
-  // label.hide
-  //   // For accessibility - hides visually but screenreader will read
-  //   border: 0
-  //   clip: rect(0 0 0 0)
-  //   height: 1px
-  //   margin: -1px
-  //   overflow: hidden
-  //   padding: 0
-  //   position: absolute
-  //   width: 1px
+  &__info
+    .form-control-label
+      white-space: nowrap
+      +for-tablet-landscape-up
+        margin-top: 1rem
+        text-align: right
+    .join_why
+      display: grid
+      grid-template-columns: 1fr
+      +for-tablet-landscape-up
+        grid-template-columns: 1fr 1fr 1fr
+        grid-gap: 1rem
 
   &__person
     +for-tablet-portrait-up
-      width: 85%
-      max-width: 860px
-      margin: 2rem auto
       display: grid
       grid-template-columns: 1fr 1fr
       grid-gap: 1rem
       input, textarea
         margin-bottom: 0
 
-  &__request
+  &__full-width
+    margin: 1rem auto
     +for-tablet-portrait-up
-      width: 60%
+      margin: 2rem auto
+      width: 100%
+
+  &__mid-width
+    margin: 1rem auto
+    max-width: 860px
+    width: 100%
+    +for-tablet-portrait-up
+      margin: 2rem auto
+      width: 95%
+    +for-tablet-landscape-up
+      width: 85%
+
+  &__small-width
+    margin: 0rem auto
+    max-width: 860px
+    width: 100%
+    +for-tablet-portrait-up
+      margin: 1rem auto
+      width: 85%
+    +for-tablet-landscape-up
+      width: 70%
+    +for-desktop-up
+      width: 50%
+
+  &__contact
+    align-items: center
+    display: flex
+    flex-direction: column
+    +for-tablet-landscape-up
+      align-items: flex-start
+      flex-direction: row
       margin: 0 auto
+
+  &__contact-child
+    display: flex
+    flex-direction: column
+    +for-tablet-portrait-up
+      flex-direction: row
+      margin: 0
+    p
+      margin: 0.25rem
+      +for-tablet-portrait-up
+        margin: 0 1rem 1.3rem
+      +for-tablet-landscape-up
+        margin: 0 1rem
 
   &--login
     input
