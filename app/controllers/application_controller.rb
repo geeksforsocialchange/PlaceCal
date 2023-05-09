@@ -216,7 +216,7 @@ class ApplicationController < ActionController::Base
     [
       ['Our story', our_story_path],
       ['Find your PlaceCal', find_placecal_path],
-      ['Join us', join_path]
+      ['Start a PlaceCal', join_path]
     ]
   end
 
