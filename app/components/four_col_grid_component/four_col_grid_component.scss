@@ -1,0 +1,16 @@
+.four_col_grid {
+	padding: 0;
+	margin: 0;
+	display: grid;
+	grid-template-columns: repeat(
+		auto-fit,
+		minmax(clamp(15rem, 25%, 16rem), 1fr)
+	);
+	gap: 1rem;
+
+	* {
+		background-color: plum;
+		color: black;
+		margin: 0;
+	}
+}
