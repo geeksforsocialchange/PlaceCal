@@ -2,16 +2,16 @@
 
 .container-with-header {
 	display: grid;
-	grid-template-rows: auto 1.5rem auto;
+	grid-template-rows: auto 2rem auto;
 	grid-template-columns: 1fr;
 }
 
 .container-with-header__head {
 	grid-row: 1/3;
 	grid-column: 1/2;
-	border-radius: 1.11rem;
+	border-radius: 1.11rem 1.11rem 0 0;
 	background-color: $home-green;
-	padding: 3rem 1rem 5rem 1rem;
+	padding: 1.5rem 1rem 3.5rem 1rem;
 }
 
 .container-with-header__head--blue {
@@ -42,4 +42,5 @@
 	grid-column: 1/2;
 	border-radius: 1.11rem;
 	background-color: $home-background;
+	padding: 3rem 1rem;
 }
