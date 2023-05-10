@@ -2,15 +2,15 @@
 
 .container-with-header {
 	display: grid;
-	grid-template-rows: auto 2rem auto;
 	grid-template-columns: 1fr;
+	grid-template-rows: auto 2rem auto;
 }
 
 .container-with-header__head {
-	grid-row: 1/3;
-	grid-column: 1/2;
-	border-radius: 1.11rem 1.11rem 0 0;
 	background-color: $home-green;
+	border-radius: 1.11rem 1.11rem 0 0;
+	grid-column: 1/2;
+	grid-row: 1/3;
 	padding: 1.5rem 1rem 3.5rem 1rem;
 }
 
@@ -38,9 +38,9 @@
 }
 
 .container-with-header__body {
-	grid-row: 2/4;
-	grid-column: 1/2;
-	border-radius: 1.11rem;
 	background-color: $home-background;
+	border-radius: 1.11rem;
+	grid-column: 1/2;
+	grid-row: 2/4;
 	padding: 3rem 1rem;
 }
