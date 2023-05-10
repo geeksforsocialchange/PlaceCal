@@ -4,7 +4,9 @@ class PagesController < ApplicationController
   before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
 
-  def home; end
+  def home
+    @sites = Site.all
+  end
 
   def find_placecal
     @grouped_sites = Site.where(is_published: true)

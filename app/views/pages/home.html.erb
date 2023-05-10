@@ -2,10 +2,9 @@
   <div class="margin home__flow">
       <%= render(ContainerWithHeaderComponent.new(title: "Check out a neighbourhood",  color: "green")) do %>
         <%= render(FourColGridComponent.new()) do %>
-          <p>Lorem ipsum dolor sit amet.</p>
-          <p>Dolore cumque nam ea laboriosam.</p>
-          <p>Officia sit facere labore omnis?</p>
-          <p>Temporibus quaerat ipsa repellendus iusto?</p>
+          <% @sites.each do |site| %>
+            <%= render(NeighbourhoodHomeCardComponent.new(site: site)) %>
+          <% end %>
         <% end %>
       <% end %>
       <%= render(FullWidthActionComponent.new(title: "Find events in your area", link_text: "See events", link_url: find_placecal_path, color: "red")) do %>
