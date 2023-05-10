@@ -118,15 +118,15 @@ group :development do
 end
 
 group :test do
+  # gem 'simplecov', require: false
   gem 'capybara-select-2'
+  gem 'database_cleaner-active_record'
   gem 'graphql-client'
   gem 'json_matchers'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
-  # gem 'simplecov', require: false
-  gem 'database_cleaner-active_record'
   gem 'vcr'
   gem 'webmock'
 end
