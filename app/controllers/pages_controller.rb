@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    @sites = Site.all
+    @sites = Site.where(id: [9, 14, 19, 21]).reverse
   end
 
   def find_placecal
