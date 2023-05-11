@@ -24,6 +24,9 @@ include JsonMatchers::Minitest::Assertions
 require 'capybara/rails'
 require 'capybara/minitest'
 
+require 'database_cleaner/active_record'
+DatabaseCleaner.strategy = :truncation
+
 Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')).sort.each do |path|
   require path
 end
@@ -106,6 +109,16 @@ end
 module ActionDispatch
   class IntegrationTest
     include Devise::Test::IntegrationHelpers
+  end
+end
+
+class Minitest::Spec
+  before :each do
+    DatabaseCleaner.start
+  end
+
+  after :each do
+    DatabaseCleaner.clean
   end
 end
 
