@@ -1,0 +1,19 @@
+@import "variables_mixins";
+
+// featured_partnerships
+
+.featured_partnerships {
+}
+
+.featured_partnerships--title {
+	color: #fff;
+	text-align: center;
+}
+
+.featured_partnerships--container {
+	display: flex;
+	gap: 1rem;
+}
+
+.featured_partnerships--item {
+}

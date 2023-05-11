@@ -1,15 +1,7 @@
 
 <article class="home">
   <div class="margin">
-    <div>
-      <%= render(
-          PartnershipCardComponent.new(
-	  title: 'Trans Dimension',
-          logo_url: asset_path('/assets/partnerships/trans-dimension.png'),
-	  link_url: 'https://trans-dimension.co.uk',
-	  summary: 'A summary of the Trans Dimension partnership in text')
-	  ) %>
-    </div>
+    <%= render(FeaturedPartnershipsComponent.new) %>
 
     <div class="card card--first center">
       <h1 class="section">Find your PlaceCal</h1>
