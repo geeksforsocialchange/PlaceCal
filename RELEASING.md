@@ -6,6 +6,8 @@ Every pull request gets added to the latest draft release automatically by robot
 
 Go through each one and test any related tickets are truly fixed on the staging site and the new behaviour works as described. If there are any issues, make a call as to whether they need resolving before the release can happen or not. If they're not blocking issues, reopen the tickets or open new tickets for them instead and continue with the release.
 
+Ensure that the node version specified in `package.json` matches the version specified in `.node-version`.
+
 ## 2. Open a pull request
 
 If everything looks good to publish, open a pull request from `main` into `production` and give it a title reflecting the new version we're releasing.
