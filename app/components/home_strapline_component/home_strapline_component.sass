@@ -1,0 +1,27 @@
+@import "variables_mixins"
+
+.home__strapline
+  background-color: $base-primary
+  border-radius: $default-radius
+  color: $base-text
+  font-family: $serif
+  margin: 1.5rem
+  
+  &-quote
+    font-size: $h3-size
+    margin: 0 auto
+    text-align: center
+    padding: 1rem 1rem
+
+    +for-tablet-portrait-up
+      width: 50%
+      line-height: 1.6em
+      font-size: 1.66rem
+      padding: 4rem 0
+
+  .btn
+    font-family: $sans-serif
+    margin-top: 2rem
+
+    +for-tablet-portrait-up
+      margin-top: 4rem
