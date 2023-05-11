@@ -1,0 +1,35 @@
+
+<section class="case_study__section--outer">
+  <section class="case_study__section--inner case_study__round-border--top">
+    <img class="case_study__img" src="<%= @image_src %>" alt="<%= @image_alt %>"/>
+    <div class="case_study__section-top">
+      <%= render(PullQuoteComponent.new(source: "", context: "", options: { light_mode: true })) do %>
+        <%= @pull_quote %>
+      <% end %>
+    </div>
+  </section>
+  <section class="case_study__section--inner case_study__round-border--bottom">
+    <div class="case_study__row">
+      <div class="case_study__logo_column">
+        <a href="<%= @partner_url %>" class="case_study__anchor">
+          <%= image_tag @logo_src, alt: "#{@partner} logo", class: "case_study__img--logo" %>
+        </a>
+        <div class="case_study__column case_study__buttons_column">
+          <%= render(LinkBtnLrgGreenComponent.new( link_url: @partner_url)) do %>
+            Find out more
+          <% end %>
+          <%= render(LinkBtnLrgGreenComponent.new( link_url: @link_url)) do %>
+            Start a PlaceCal
+          <% end %>
+        </div>
+      </div>
+      <div class="case_study__description_column">
+        <%- @description.each do |d|  %>
+          <p>
+            <%= d %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </section>
+</section>
