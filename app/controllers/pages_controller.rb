@@ -5,11 +5,11 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    @sites = Site.where(id: [9, 14, 19, 21]).reverse
+    @sites = Site.where(is_published: true)
   end
 
   def find_placecal
-    @sites = Site.where(id: [9, 14, 19, 21]).reverse
+    @sites = Site.where(is_published: true)
   end
 
   def robots
