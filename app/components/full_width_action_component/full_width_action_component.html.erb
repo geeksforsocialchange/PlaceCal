@@ -8,11 +8,11 @@
 
   <div class="full_width_action__btn">
     <% if @color == "cream" %>
-      <%= render(LinkBtnLrgGreenComponent.new( link_url: @link_url)) do %>
+      <%= render(LinkBtnLrgComponent.new( link_url: @link_url, color: "green")) do %>
         <%= @link_text %>
       <% end %>
     <% else %>
-      <%= render(LinkBtnLrgLightComponent.new( link_url: @link_url)) do %>
+      <%= render(LinkBtnLrgComponent.new( link_url: @link_url, color: "")) do %>
         <%= @link_text %>
       <% end %>
     <% end %>

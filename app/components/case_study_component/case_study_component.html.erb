@@ -15,10 +15,10 @@
           <%= image_tag @logo_src, alt: "#{@partner} logo", class: "case_study__img--logo" %>
         </a>
         <div class="case_study__column case_study__buttons_column">
-          <%= render(LinkBtnLrgGreenComponent.new( link_url: @partner_url)) do %>
+          <%= render(LinkBtnLrgComponent.new( link_url: @partner_url, color: "pink")) do %>
             Find out more
           <% end %>
-          <%= render(LinkBtnLrgGreenComponent.new( link_url: @link_url)) do %>
+          <%= render(LinkBtnLrgComponent.new( link_url: @link_url, color: "pink")) do %>
             Start a PlaceCal
           <% end %>
         </div>

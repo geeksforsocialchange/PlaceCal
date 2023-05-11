@@ -1,11 +1,9 @@
 <article class="home">
   <div class="margin home__flow">
-      <%= render(CaseStudyComponent.new(partner: "transDim" )) do %>
-        learn about our history and process for community organising
-      <% end %>
       <%= render(FullWidthActionComponent.new(title: "Find events in your area", link_text: "See events", link_url: find_placecal_path, color: "red")) do %>
         checkout different PlaceCal instances and see if there is a PlaceCal related to your place / interest.
       <% end %>
+      <%= render(CaseStudyComponent.new(partner: "transDim" )) %>
       <%= render(FullWidthActionComponent.new(title: "Create a PlaceCal for your community", link_text: "Start organising", link_url: join_path, color: "green")) do %>
         Work on the ground with like minded groups to create communities
       <% end %>
