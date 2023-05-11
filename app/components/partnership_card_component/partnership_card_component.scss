@@ -7,18 +7,22 @@
 .partnership_card--logo {
 	background-color: $home-green;
 	border-radius: 1.11rem;
-	padding: 3rem 1rem;
+	padding: 1rem;
+}
+
+.partnership_card--image {
+	width: 10rem;
 }
 
 .partnership_card--link {
-	display: inline-block;
 	background-color: $home-background-3;
 	border-radius: 3rem;
+	display: inline-block;
 	font-weight: bold;
+	margin: 0.5rem;
 	padding: 0.5rem 3.5rem;
 	text-decoration: none;
 	transition: 0.3s;
-	margin: 0.5rem;
 }
 
 .partnership_card--link:hover {
