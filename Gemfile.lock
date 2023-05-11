@@ -130,6 +130,10 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    database_cleaner-active_record (2.1.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     debug_inspector (1.1.0)
     delayed_job (4.1.10)
       activesupport (>= 3.0, < 8.0)
@@ -543,6 +547,7 @@ DEPENDENCIES
   carrierwave
   cocoon
   coffee-rails
+  database_cleaner-active_record
   delayed_job_active_record
   devise
   devise_invitable
