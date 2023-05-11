@@ -14,6 +14,7 @@ class CaseStudyComponent < ViewComponent::Base
     @image_src = partner_info['image_src']
     @image_alt = partner_info['image_alt']
     @partner_url = partner_info['partner_url']
+    @link_url = partner_info['link_url']
     @description = partner_info['description']
     @pull_quote = partner_info['pull_quote']
   end

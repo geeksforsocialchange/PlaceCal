@@ -29,9 +29,9 @@
 }
 
 .case_study__img--logo {
-	@include for-phone-only {
-		min-width: 160px;
-	}
+	max-width: 350px;
+	min-width: 200px;
+	width: 100%;
 }
 
 .case_study__section-top {
@@ -60,14 +60,14 @@
 .case_study__row {
 	align-items: center;
 	display: flex;
-	flex-direction: row;
-	gap: 2rem;
+	flex-direction: column;
+	gap: 0;
 	margin: auto;
 	max-width: 860px;
 	padding: 1rem 2rem;
-	@include for-phone-only {
-		flex-direction: column;
-		gap: 0;
+	@include for-tablet-landscape-up {
+		flex-direction: row;
+		gap: 2rem;
 	}
 	@include for-desktop-up {
 		padding: 1rem 1rem 2rem;
@@ -81,20 +81,24 @@
 }
 
 .case_study__logo_column {
-	align-items: flex-start;
+	align-items: center;
 	display: flex;
-	flex: 1;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
 	gap: 1rem 2rem;
-	justify-content: flex-start;
+	justify-content: space-between;
 	margin: 1em 0;
+	width: 100%;
 
-	@include for-phone-only {
-		align-items: center;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		width: 100%;
+	@include for-tablet-portrait-up {
+		flex-wrap: nowrap;
+	}
+
+	@include for-tablet-landscape-up {
+		align-items: flex-start;
+		flex: 1;
+		flex-direction: column;
+		justify-content: flex-start;
 	}
 }
 
