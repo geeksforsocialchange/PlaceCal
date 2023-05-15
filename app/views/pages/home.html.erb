@@ -1,7 +1,13 @@
-<%= render(HomeStraplineComponent.new) %>
-
 <article class="home">
   <div class="margin home__flow">
+    <%= render(HomeStraplineComponent.new) %>
+    <%= render(ContainerWithHeaderComponent.new(title: "Check out a neighbourhood",  color: "green")) do %>
+      <%= render(FourColGridComponent.new()) do %>
+        <% @sites.each do |site| %>
+          <%= render(NeighbourhoodHomeCardComponent.new(site: site)) %>
+        <% end %>
+      <% end %>
+    <% end %>
       <%= render(FullWidthActionComponent.new(title: "Find events in your area", link_text: "See events", link_url: find_placecal_path, color: "red")) do %>
         checkout different PlaceCal instances and see if there is a PlaceCal related to your place / interest.
       <% end %>
