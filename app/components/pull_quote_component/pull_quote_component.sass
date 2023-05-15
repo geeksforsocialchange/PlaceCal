@@ -1,8 +1,7 @@
 @import "variables_mixins"
 
 .pullquote
-  margin: 0 auto
-  max-width: 1000px
+  margin: 0 2rem
   text-align: center
   blockquote
     background-image: image-url('home/icons/ldquo.svg'), image-url('home/icons/rdquo.svg')
@@ -16,6 +15,7 @@
       background-position: 0 50%, 100% 50%
       padding: 1rem 4rem 0rem
     +for-desktop-up
+      background-position: 2.5% 50%, 97.5% 50%
       margin-left: 2rem
       margin-right: 2rem
   .blockquote--dark
