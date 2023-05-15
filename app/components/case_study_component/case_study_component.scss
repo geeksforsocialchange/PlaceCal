@@ -31,6 +31,7 @@
 .case_study__img--logo {
 	max-width: 350px;
 	min-width: 200px;
+	padding: 0.5rem;
 	width: 100%;
 }
 
@@ -114,6 +115,7 @@
 
 .case_study__buttons_column {
 	flex: 1;
+	gap: 28px;
 	justify-content: flex-start;
 	width: 100%;
 }
