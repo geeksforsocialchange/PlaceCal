@@ -1,0 +1,9 @@
+<li class="neighbourhood_home_card">
+  <img aria-hidden="true" class="neighbourhood_home_card__image" src="<%= @site.hero_image.url %>" alt="">
+  <h4 class="neighbourhood_home_card__name">
+    <%= @site.place_name %>
+  </h4>
+  <hr class="neighbourhood_home_card__rule">
+  <%# <p class="neighbourhood_home_card__text" >Lorem ipsum dolor sit amet.</p> %>
+  <%= link_to "[cCc]View site", root_url(subdomain: @site.slug)  , class: 'neighbourhood_home_card__link' %>
+</li>

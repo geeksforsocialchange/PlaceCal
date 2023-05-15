@@ -63,7 +63,7 @@
 
       <p>
         <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'main' %>
-        Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
+        Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" , class: "footer_home__foot__link" %></tt>
       </p>
 
       <% if Rails.env.development? %>

@@ -5,27 +5,12 @@
       <p class="alt-title-small">Pick your community to check out what’s on in your area.</p>
     </div>
 
-    <% @grouped_sites.each do |group, sites| %>
-      <div class="card rounded find-region center">
-        <div class="find-region__info">
-          <h2 class="find-region__title h3-small"><%= group %></h2>
-          <div class="find-region__county tinytitle">
-            <%= sites[0].primary_neighbourhood.county.name || sites[0].primary_neighbourhood.region.name %>
-          </div>
-        </div>
-        <div class="find-wards">
-          <% sites.each do |site| %>
-
-              <%= link_to root_url(subdomain: site.slug), class: 'find-ward' do %>
-                <h3 class="btn-size find-ward__title">
-                  <%= site.place_name || site.name %>
-                </h3>
-                <%= image_tag site.hero_image.site_preview.url, class: 'round find-ward__img' if site.hero_image.site_preview.path %>
-              <% end %>
-
-          <% end %>
-        </div>
-      </div>
+    <%= render(ContainerWithHeaderComponent.new(title: "[cCc]Check out a neighbourhood",  color: "green")) do %>
+      <%= render(FourColGridComponent.new()) do %>
+        <% @sites.each do |site| %>
+          <%= render(NeighbourhoodHomeCardComponent.new(site: site)) %>
+        <% end %>
+      <% end %>
     <% end %>
 
     <%= render 'get_in_touch' %>
