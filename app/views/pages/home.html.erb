@@ -8,26 +8,18 @@
         <% end %>
       <% end %>
     <% end %>
-      <%= render(FullWidthActionComponent.new(title: "[cCc]Find events in your area", link_text: "[cCc]See events", link_url: find_placecal_path, color: "red")) do %>
-        [cCc]checkout different PlaceCal instances and see if there is a PlaceCal related to your place / interest.
-      <% end %>
-      <%= render(FullWidthActionComponent.new(title: "[cCc]Create a PlaceCal for your community", link_text: "[cCc]Start organising", link_url: join_path, color: "green")) do %>
-        [cCc]Work on the ground with like minded groups to create communities
-      <% end %>
-      <%= render(FullWidthActionComponent.new(title: "[cCc]How does PlaceCal work", link_text: "[cCc]Find out more", link_url: our_story_path, color: "cream")) do %>
-        [cCc]learn about our history and process for community organising
-      <% end %>
-
-    <div class="pullquote">
-      <blockquote>
-        <%= render(MaxWidthComponent.new()) do %>
-          <p class="alt-title-small">People are saying they’re bored and there’s nothing to do – with this much on that’s mad isn’t it!</p>
-        <% end %>
-      </blockquote>
-      <cite>
-        <strong class="h3-small">Catherine</strong>
-        <span class="small">Participant at a supported IT session for older residents</cite>
-      </cite>
-    </div>
+    <%= render(FullWidthActionComponent.new(title: "Find events in your area", link_text: "See events", link_url: find_placecal_path, color: "red")) do %>
+      checkout different PlaceCal instances and see if there is a PlaceCal related to your place / interest.
+    <% end %>
+    <%= render(CaseStudyComponent.new(partner: "transDim" )) %>
+    <%= render(FullWidthActionComponent.new(title: "Create a PlaceCal for your community", link_text: "Start organising", link_url: join_path, color: "green")) do %>
+      Work on the ground with like minded groups to create communities
+    <% end %>
+    <%= render(FullWidthActionComponent.new(title: "How does PlaceCal work", link_text: "Find out more", link_url: our_story_path, color: "cream")) do %>
+      learn about our history and process for community organising
+    <% end %>
+    <%= render(PullQuoteComponent.new(source: "Catherine", context: "Participant at a supported IT session for older residents", options: {})) do %>
+      People are saying they're bored and there's nothing to do - with this much on that's mad isn't it!
+    <% end %>
   </div>
 </article>
