@@ -20,7 +20,9 @@
 
     <div class="pullquote">
       <blockquote>
-        <p class="alt-title-small">People are saying they’re bored and there’s nothing to do – with this much on that’s mad isn’t it!</p>
+        <%= render(MaxWidthComponent.new()) do %>
+          <p class="alt-title-small">People are saying they’re bored and there’s nothing to do – with this much on that’s mad isn’t it!</p>
+        <% end %>
       </blockquote>
       <cite>
         <strong class="h3-small">Catherine</strong>

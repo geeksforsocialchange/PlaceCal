@@ -27,7 +27,6 @@
 	font-weight: 400;
 	margin: 0 auto 0 auto;
 	margin-bottom: 1em;
-	max-width: 25ch;
 	text-align: center;
 	@include for-tablet-portrait-up {
 		font-size: 2.2rem;
@@ -38,7 +37,6 @@
 	font-size: 1rem;
 	margin: 0 auto 0 auto;
 	margin-bottom: 3rem;
-	max-width: 75ch;
 	text-align: center;
 }
 
