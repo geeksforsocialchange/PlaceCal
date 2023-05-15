@@ -5,7 +5,7 @@
       <p class="alt-title-small">Pick your community to check out what’s on in your area.</p>
     </div>
 
-    <%= render(ContainerWithHeaderComponent.new(title: "Check out a neighbourhood",  color: "green")) do %>
+    <%= render(ContainerWithHeaderComponent.new(title: "[cCc]Check out a neighbourhood",  color: "green")) do %>
       <%= render(FourColGridComponent.new()) do %>
         <% @sites.each do |site| %>
           <%= render(NeighbourhoodHomeCardComponent.new(site: site)) %>
