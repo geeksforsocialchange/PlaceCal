@@ -21,6 +21,7 @@
 
 .case_study__img {
 	aspect-ratio: 2/1;
+	background-color: #040f39;
 	border-radius: 1.11rem 1.11rem 0 0;
 	object-fit: cover;
 	@include for-tablet-landscape-up {
