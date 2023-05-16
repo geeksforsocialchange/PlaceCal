@@ -1,7 +1,7 @@
 
 <section class="case_study__section--outer">
   <section class="case_study__section--inner case_study__round-border--top">
-    <img class="case_study__img" src="<%= @image_src %>" alt="<%= @image_alt %>"/>
+    <%= image_tag @image_src, alt: @image_alt, class: "case_study__img" %>
     <div class="case_study__section-top">
       <%= render(PullQuoteComponent.new(source: "", context: "", options: { light_mode: true })) do %>
         <%= @pull_quote %>
@@ -16,10 +16,10 @@
         </a>
         <div class="case_study__column case_study__buttons_column">
           <%= render(LinkBtnLrgComponent.new( link_url: @partner_url, color: "pink")) do %>
-            [cCc] Find out more
+            Find out more
           <% end %>
           <%= render(LinkBtnLrgComponent.new( link_url: @link_url, color: "pink")) do %>
-            [cCc] Start a PlaceCal
+            Find your placecal
           <% end %>
         </div>
       </div>
