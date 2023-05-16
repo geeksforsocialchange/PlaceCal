@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 class PartnershipCardComponent < ViewComponent::Base
-  def initialize(title:, logo_url:, link_url:, summary:)
+  def initialize(site:)
     super
-    @title = title
-    @logo_url = logo_url
-    @link_url = link_url
-    @summary = summary
+    @site = site
   end
 end
