@@ -1,7 +1,16 @@
 @import "variables_mixins";
 
 .partnership_card {
+	max-width: 20rem;
 	text-align: center;
+
+	@include for-tablet-portrait-up {
+		width: 40%;
+	}
+
+	@include for-tablet-landscape-up {
+		width: auto;
+	}
 }
 
 .partnership_card--logo {
