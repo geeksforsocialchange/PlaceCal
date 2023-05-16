@@ -8,15 +8,15 @@
         <% end %>
       <% end %>
     <% end %>
-    <%= render(FullWidthActionComponent.new(title: "[cCc] Find events in your area", link_text: "[cCc] See events", link_url: find_placecal_path, color: "red")) do %>
-      [cCc] checkout different PlaceCal instances and see if there is a PlaceCal related to your place / interest.
+    <%= render(FullWidthActionComponent.new(title: "Find your PlaceCal", link_text: "See calendars", link_url: find_placecal_path, color: "red")) do %>
+      Ready to get started with PlaceCal? Here you can see a list of all current PlaceCal instances, organised by interest and location.
     <% end %>
     <%= render(CaseStudyComponent.new(partner: "transDim" )) %>
-    <%= render(FullWidthActionComponent.new(title: "[cCc] Create a PlaceCal for your community", link_text: "[cCc] Start organising", link_url: join_path, color: "green")) do %>
-      [cCc] Work on the ground with like minded groups to create communities
+    <%= render(FullWidthActionComponent.new(title: "Want to create a PlaceCal for your community?", link_text: "Get in touch", link_url: join_path, color: "green")) do %>
+      Work with us to set up a PlaceCal for your community, built through on-the-ground connections with venues, organisers, and community members.
     <% end %>
-    <%= render(FullWidthActionComponent.new(title: "[cCc] How does PlaceCal work", link_text: "[cCc] Find out more", link_url: our_story_path, color: "cream")) do %>
-      [cCc] learn about our history and process for community organising
+    <%= render(FullWidthActionComponent.new(title: "How did PlaceCal start?", link_text: "Learn more", link_url: our_story_path, color: "cream")) do %>
+      We wanted to examine the causes of social isolation and loneliness within communities in order to figure out how to combat them.
     <% end %>
     <%= render(PullQuoteComponent.new(source: "Catherine", context: "Participant at a supported IT session for older residents", options: {})) do %>
       People are saying they're bored and there's nothing to do - with this much on that's mad isn't it!
