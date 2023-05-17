@@ -3,14 +3,7 @@
 .partnership_card {
 	max-width: 20rem;
 	text-align: center;
-
-	@include for-tablet-portrait-up {
-		width: 40%;
-	}
-
-	@include for-tablet-landscape-up {
-		width: auto;
-	}
+	width: 100%;
 }
 
 .partnership_card--logo {
@@ -29,7 +22,6 @@
 	border-radius: 3rem;
 	display: inline-block;
 	font-weight: bold;
-	margin: 0.5rem;
 	padding: 0.5rem 2rem;
 	text-decoration: none;
 	transition: 0.3s;
@@ -44,6 +36,6 @@
 
 .partnership_card--summary {
 	color: $home-background-3;
-	height: 3rem;
+	min-height: 5rem;
 	padding: 0 2rem;
 }

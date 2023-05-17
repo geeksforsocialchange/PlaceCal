@@ -1,5 +1,20 @@
 @import "variables_mixins";
 
+.case_study__title {
+	color: $home-background-3;
+	font-family: $sans-serif;
+	font-size: 1.8rem;
+	font-weight: 400;
+	margin: 2rem auto;
+	max-width: 25ch;
+	padding: 2rem 0 0;
+	text-align: center;
+
+	@include for-tablet-portrait-up {
+		font-size: 2.2rem;
+	}
+}
+
 .case_study__section--outer {
 	border-radius: 1.11rem;
 }
@@ -12,7 +27,7 @@
 
 .case_study__round-border--top {
 	border-radius: 1.11rem 1.11rem 0 0;
-	background-color: $base-background;
+	background-color: $home-background-3;
 }
 
 .case_study__round-border--bottom {
