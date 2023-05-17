@@ -1,15 +1,15 @@
 <article class="home">
   <div class="margin home__flow">
     <%= render(HomeStraplineComponent.new) %>
-    <%= render(ContainerWithHeaderComponent.new(title: "[cCc]Check out a neighbourhood",  color: "green")) do %>
+    <%= render(FullWidthActionComponent.new(title: "Find your PlaceCal", link_text: "See calendars", link_url: find_placecal_path, color: "red")) do %>
+      Ready to get started with PlaceCal? Here you can see a list of all current PlaceCal instances, organised by interest and location.
+    <% end %>
+    <%= render(ContainerWithHeaderComponent.new(title: "Place-based calendars",  color: "green")) do %>
       <%= render(FourColGridComponent.new()) do %>
         <% @sites.each do |site| %>
           <%= render(NeighbourhoodHomeCardComponent.new(site: site)) %>
         <% end %>
       <% end %>
-    <% end %>
-    <%= render(FullWidthActionComponent.new(title: "Find your PlaceCal", link_text: "See calendars", link_url: find_placecal_path, color: "red")) do %>
-      Ready to get started with PlaceCal? Here you can see a list of all current PlaceCal instances, organised by interest and location.
     <% end %>
     <%= render(CaseStudyComponent.new(partner: "transDim" )) %>
     <%= render(FullWidthActionComponent.new(title: "Want to create a PlaceCal for your community?", link_text: "Get in touch", link_url: get_in_touch_path, color: "green")) do %>
