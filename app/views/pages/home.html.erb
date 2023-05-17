@@ -12,7 +12,7 @@
       Ready to get started with PlaceCal? Here you can see a list of all current PlaceCal instances, organised by interest and location.
     <% end %>
     <%= render(CaseStudyComponent.new(partner: "transDim" )) %>
-    <%= render(FullWidthActionComponent.new(title: "Want to create a PlaceCal for your community?", link_text: "Get in touch", link_url: join_path, color: "green")) do %>
+    <%= render(FullWidthActionComponent.new(title: "Want to create a PlaceCal for your community?", link_text: "Get in touch", link_url: get_in_touch_path, color: "green")) do %>
       Work with us to set up a PlaceCal for your community, built through on-the-ground connections with venues, organisers, and community members.
     <% end %>
     <%= render(FullWidthActionComponent.new(title: "How did PlaceCal start?", link_text: "Learn more", link_url: our_story_path, color: "cream")) do %>

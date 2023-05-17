@@ -42,8 +42,8 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should get join page' do
-    get join_url
+  test 'should get get in touch page' do
+    get get_in_touch_url
     assert_response :success
   end
 
