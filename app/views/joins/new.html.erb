@@ -2,9 +2,9 @@
   <div class="margin">
     <div class="card card--alt card--split center">
       <div class="card__title">
-        <h1 class="section">Join us</h1>
-        <p class="alt-title-small">Want PlaceCal for your community, group or area?</p>
-        <p>Get in touch and let's discuss how you can<br class="tablet-up"> join our not-for-profit social enterprise.</p>
+        <h1 class="section">Get in touch</h1>
+        <p class="alt-title-small">Want to run PlaceCal in your community, group, or area?</p>
+        <p>Contact us to discuss how you can<br class="tablet-up"> join our not-for-profit social enterprise.</p>
       </div>
 
       <div class="card__body">
@@ -17,7 +17,7 @@
           </div>
         <% end %>
 
-        <%= simple_form_for @join, url: join_path, html: { class: 'form' } do |f| %>
+        <%= simple_form_for @join, url: get_in_touch_path, html: { class: 'form' } do |f| %>
           <div class="form__person form__mid-width">
             <div class="form__field">
               <%= f.input :name, label: 'Name:' %>
