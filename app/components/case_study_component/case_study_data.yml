@@ -1,11 +1,11 @@
 transDim:
   partner: "The Trans Dimension"
-  link_url: "/get-in-touch"
+  link_url: "/find-placecal"
   logo_src: "home/logos/tdd_logo.svg"
-  image_alt: "[cCc] trans dimension image"
-  image_src: "https://placecal.org/uploads/article/article_image/5/GenInt_069.jpg"
-  partner_url: "[cCc] https://transdimension.uk/"
-  pull_quote: "[cCc] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eget arcu fringilla, aliquet dui fringilla, dictum est. Donec ligula lorem."
+  image_alt: "trans dimension illustration"
+  image_src: "home/case-studies/trans-dimension-illustration.png"
+  partner_url: "https://transdimension.uk/"
+  pull_quote: "We see and experience the barriers in place for trans, non-binary, and gender diverse people trying to meet, connect, and socialise and know that for disabled trans people the challenge is even harder."
   description:
-    - "[cCc] Etiam blandit elit non turpis volutpat, eu lobortis orci tristique. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut bibendum ex, pellentesque sollicitudin purus."
-    - "[cCc] Proin vulputate odio eu libero congue lacinia. Aliquam vehicula vitae ex non sagittis. Nam maximus nisl ut turpis viverra interdum. Mauris posuere arcu a mi laoreet, et eleifend quam pellentesque. Nunc luctus felis a neque molestie, consectetur tristique ante luctus. Ut nec turpis ex. Pellentesque quis aliquet elit, condimentum scelerisque urna."
+    - "The Trans Dimension is an online community hub connecting trans communities in London. It collates news, events and services by and for trans people, and is build using PlaceCal."
+    - "The Trans Dimension is run by Geeks for Social Change in partnership with Gendered Intelligence with support from the Comic Relief Tech for Good programme. At this stage, the Trans Dimension is focussed on London-based events listings only, however we do plan to expand to cover more areas across the UK."

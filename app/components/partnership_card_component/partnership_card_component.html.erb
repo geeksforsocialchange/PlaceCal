@@ -1,9 +1,9 @@
 <div class="partnership_card">
   <div class="partnership_card--logo">
-    <img class="partnership_card--image" src="<%= @logo_url %>" atl="<%= @title %>"/>
+    <img class="partnership_card--image" src="<%= @site.domain %>/<%= @site.logo %>" alt="<%= @site.name %> logo"/>
   </div>
   <p class="partnership_card--summary">
-    <%= @summary %>
+    <%= @site.tagline %>
   </p>
-  <a href="<%= @link_url %>" class="partnership_card--link">Link</a>
+  <%= link_to "#{@site.name} calendar", "#{@site.domain}/events"  , class: 'partnership_card--link' %>
 </div>
