@@ -11,7 +11,7 @@ class PagesController < ApplicationController
   def find_placecal
     @sites = Site.published
     @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Neighbourhood' }
+      site.tags.none? { |tag| tag.type == 'Partnership' }
     end
     @partnerships = Site.published.select do |site|
       site.tags.any? { |tag| tag.type == 'Partnership' }
