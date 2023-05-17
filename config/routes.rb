@@ -11,8 +11,8 @@ Rails.application.routes.draw do
              }
 
   # Static pages
-  get 'join', to: 'joins#new'
-  post 'join', to: 'joins#create'
+  get 'get-in-touch', to: 'joins#new'
+  post 'get-in-touch', to: 'joins#create'
   get 'privacy', to: 'pages#privacy'
   get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
