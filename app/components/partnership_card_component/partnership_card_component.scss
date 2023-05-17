@@ -16,6 +16,7 @@
 .partnership_card--logo {
 	background-color: $home-green;
 	border-radius: 1.11rem;
+	height: 6rem;
 	padding: 1rem;
 }
 
@@ -29,9 +30,10 @@
 	display: inline-block;
 	font-weight: bold;
 	margin: 0.5rem;
-	padding: 0.5rem 3.5rem;
+	padding: 0.5rem 2rem;
 	text-decoration: none;
 	transition: 0.3s;
+	width: 100%;
 }
 
 .partnership_card--link:hover {
@@ -42,4 +44,6 @@
 
 .partnership_card--summary {
 	color: $home-background-3;
+	height: 3rem;
+	padding: 0 2rem;
 }
