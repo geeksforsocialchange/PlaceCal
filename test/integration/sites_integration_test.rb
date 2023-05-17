@@ -46,7 +46,7 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select '.neighbourhood_home_card__name', @site.place_name
 
     url = assert_select('.neighbourhood_home_card__link')[1]['href']
-    assert_equal url, "http://#{@site.slug}.lvh.me:3000/"
+    assert_equal "http://#{@site.slug}.lvh.me:3000/events", url
   end
 
   test 'tag cards are hidden by default' do

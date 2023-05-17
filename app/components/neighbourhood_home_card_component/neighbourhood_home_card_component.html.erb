@@ -4,5 +4,5 @@
     <%= @site.place_name %>
   </h4>
   <hr class="neighbourhood_home_card__rule">
-  <%= link_to "#{@site.place_name} calendar", "#{root_url(subdomain: @site.slug)}/events"  , class: 'neighbourhood_home_card__link' %>
+  <%= link_to "#{@site.place_name} calendar", "#{root_url(subdomain: @site.slug)}events"  , class: 'neighbourhood_home_card__link' %>
 </li>
