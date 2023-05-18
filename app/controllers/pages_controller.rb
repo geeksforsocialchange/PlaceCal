@@ -5,11 +5,12 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    @sites = Site.published
+    @neighbourhoods = Site.published.select do |site|
+      site.tags.none? { |tag| tag.type == 'Partnership' }
+    end
   end
 
   def find_placecal
-    @sites = Site.published
     @neighbourhoods = Site.published.select do |site|
       site.tags.none? { |tag| tag.type == 'Partnership' }
     end
