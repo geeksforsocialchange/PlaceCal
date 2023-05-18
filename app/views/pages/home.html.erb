@@ -4,7 +4,7 @@
     <%= render(CaseStudyComponent.new(partner: "transDim" )) %>
     <%= render(ContainerWithHeaderComponent.new(title: "Place-based calendars",  color: "green")) do %>
       <%= render(FourColGridComponent.new()) do %>
-        <% @neighbourhoods.take(4).each do |site| %>
+        <% @sites.take(4).each do |site| %>
           <%= render(NeighbourhoodHomeCardComponent.new(site: site)) %>
         <% end %>
       <% end %>

@@ -1,6 +1,6 @@
 @import "variables_mixins";
 
-.strapline {
+.home__strapline {
 	background-color: $base-primary;
 	border-radius: $default-radius;
 	color: $base-text;
@@ -26,8 +26,8 @@
 	}
 }
 
-.strapline__title {
-	font-size: $h3-size;
+.home__strapline-quote {
+	font-size: $h3-5-size;
 	line-height: unset;
 	padding: 5rem 0.5rem 6rem;
 	text-align: center;
@@ -44,7 +44,7 @@
 	}
 
 	@include for-tablet-portrait-up {
-		font-size: 2rem;
+		font-size: $h3-size;
 	}
 
 	@include for-tablet-landscape-up {
@@ -52,7 +52,7 @@
 	}
 
 	@include for-desktop-up {
-		font-size: 2.2rem;
+		font-size: 1.66rem;
 		line-height: 1.6em;
 	}
 }
