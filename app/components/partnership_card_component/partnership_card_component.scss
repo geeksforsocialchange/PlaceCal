@@ -1,7 +1,6 @@
 @import "variables_mixins";
 
 .partnership_card {
-	max-width: 20rem;
 	text-align: center;
 	width: 100%;
 }
@@ -18,14 +17,21 @@
 }
 
 .partnership_card--link {
+	align-items: center;
 	background-color: $home-background-3;
 	border-radius: 3rem;
-	display: inline-block;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	font-weight: bold;
-	padding: 0.5rem 2rem;
+	padding: 0.5rem;
 	text-decoration: none;
 	transition: 0.3s;
 	width: 100%;
+	@include for-tablet-portrait-up {
+		height: 4.5rem;
+		padding: 1rem;
+	}
 }
 
 .partnership_card--link:hover {
@@ -36,6 +42,8 @@
 
 .partnership_card--summary {
 	color: $home-background-3;
-	min-height: 5rem;
 	padding: 0 2rem;
+	@include for-tablet-portrait-up {
+		min-height: 5rem;
+	}
 }
