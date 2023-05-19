@@ -12,7 +12,7 @@
 		"esbuild": "0.16.13",
 		"esbuild-rails": "1.0.4",
 		"jquery": "3.7.0",
-		"leaflet": "1.9.3",
+		"leaflet": "1.9.4",
 		"lodash": "4.17.21",
 		"popper.js": "1.16.1",
 		"sass": "1.62.1",
