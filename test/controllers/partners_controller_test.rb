@@ -16,6 +16,9 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
       a.save
       a
     end
+
+    @site = create(:site)
+
     # NOTE: Uhhh? What? Is this a factorybot thing? Why does create(:address, neighbourhood: n) not work here?
 
     @partners = addresses.map do |a|
