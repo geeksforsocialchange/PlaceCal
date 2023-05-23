@@ -42,6 +42,7 @@ class PartnerCategoryFilter
                     )
                     .group('tags.id')
                     .having('count(partner_tags.tag_id) > 0')
+                    .having('(count(addresses.id) > 0 OR count(service_areas.id) > 0)')
                     .order(:name)
   end
 
