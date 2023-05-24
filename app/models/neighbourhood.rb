@@ -20,6 +20,8 @@ class Neighbourhood < ApplicationRecord
            source: :partners,
            class_name: 'Partner'
 
+  # validates :unit_code_value, presence: true, uniqueness: true
+
   # validates :name, presence: true
   validates :unit_code_value,
             length: { is: 9 },
