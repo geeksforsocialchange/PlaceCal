@@ -2,15 +2,50 @@
 
 require 'test_helper'
 
-class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
+class PartnerCategoryFilterTest < ActiveSupport::TestCase
   setup do
+    Neighbourhood.destroy_all
+
     @category = create(:category)
     @categories = create_list(:category, 4)
     @categories << @category
 
-    @neighbourhood = create(:neighbourhood)
+    @neighbourhood1 = create(
+      :bare_neighbourhood, # M15 5DD
+      name: 'Hulme Longname',
+      name_abbr: 'Hulme',
+      unit: 'ward',
+      unit_code_key: 'WD19CD',
+      unit_code_value: 'E05011368',
+      unit_name: 'Hulme'
+    )
+    assert_predicate @neighbourhood1, :valid?
+
+    @neighbourhood2 = create(
+      :bare_neighbourhood, # OL6 8BH
+      name: 'Ashton Hurst',
+      name_abbr: 'Ashton Hurst',
+      unit: 'ward',
+      unit_code_key: 'WD19CD',
+      unit_code_value: 'E05000800',
+      unit_name: 'Ashton Hurst'
+    )
+    assert_predicate @neighbourhood2, :valid?
+
+    @other_neighbourhood = create(
+      :bare_neighbourhood, # M16 7BA
+      name: 'Moss Side',
+      name_abbr: 'Moss Side',
+      unit: 'ward',
+      unit_code_key: 'WD19CD',
+      unit_code_value: 'E05011372',
+      unit_name: 'Moss Side'
+    )
+    assert_predicate @other_neighbourhood, :valid?
+
     @site = create(:site)
-    @site.neighbourhoods << @neighbourhood
+    @site.neighbourhoods << @neighbourhood1
+    @site.neighbourhoods << @neighbourhood2
   end
 
   test '#active?' do
@@ -21,21 +56,91 @@ class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
     assert_predicate filter, :active?, 'should be active'
   end
 
-  test '#categories' do
-    # doesn't find categories that lack partners
+  test '#categories - no partners or tags' do
+    # no partners or tags
+    #   -> empty set
     filter = PartnerCategoryFilter.new(@site, {})
     found = filter.categories
     assert_predicate found.length, :zero?
+  end
 
-    # does find categories assigned to partners
-    #   (and those partners have addresses/service areas in the given site)
-    given_some_partnered_categories_exist
+  test '#categories - partners exist on the site but are untagged' do
+    # partners exist on the site but are untagged
+    #   -> empty set
+    partner = build(:partner, address: nil)
+    partner.address = build(:address, postcode: 'M15 5DD')
+    partner.service_areas.build(neighbourhood: @neighbourhood2)
+    partner.save!
 
     filter = PartnerCategoryFilter.new(@site, {})
     found = filter.categories
-    assert_equal(5, found.length)
+    assert_predicate found.length, :zero?
+  end
 
-    # only shows categories that have partners who exist in this sites neighbourhoods
+  test '#categories - tagged partner with address in site' do
+    # tagged partner with address in site
+    #   -> tag of that partner
+
+    # is found
+    partner1 = build(:partner, address: nil)
+    partner1.address = build(:address, postcode: 'M15 5DD')
+    partner1.tags << @categories[0]
+    partner1.save!
+
+    # is not found
+    partner2 = build(:partner, address: nil)
+    partner2.address = build(:address, postcode: 'M16 7BA')
+    partner2.tags << @categories[1]
+    partner2.save!
+
+    filter = PartnerCategoryFilter.new(@site, {})
+    found = filter.categories
+    assert_equal(1, found.length)
+    assert_equal found.first.id, @categories[0].id
+  end
+
+  test '#categories - tagged partner with service area in site' do
+    # tagged partner with service area in site
+    #   -> tag of that partner
+    # is found
+    partner1 = build(:partner, address: nil)
+    partner1.service_area_neighbourhoods << @neighbourhood1
+    partner1.tags << @categories[0]
+    partner1.save!
+
+    # is not found
+    partner2 = build(:partner, address: nil)
+    partner2.service_area_neighbourhoods << @other_neighbourhood
+    partner2.tags << @categories[1]
+    partner2.save!
+
+    filter = PartnerCategoryFilter.new(@site, {})
+    found = filter.categories
+    assert_equal(1, found.length)
+    assert_equal found.first.id, @categories[0].id
+  end
+
+  test '#categories - tagged partners with both service areas and addresses' do
+    # tagged partners with both service areas and addresses
+    #   -> all the tags
+
+    partner1 = build(:partner, address: nil)
+    # partner1.service_area_neighbourhoods << @neighbourhood1
+    partner1.service_areas.build(neighbourhood: @neighbourhood1)
+    partner1.tags << @categories[0]
+    partner1.save!
+
+    # is also not found
+    partner2 = build(:partner, address: nil)
+    partner2.address = build(:address, postcode: 'OL6 8BH')
+    partner2.tags << @categories[1]
+    partner2.save!
+
+    filter = PartnerCategoryFilter.new(@site, {})
+    found = filter.categories
+    assert_equal(2, found.length)
+
+    assert_equal found.first.id, @categories[0].id
   end
 
   test '#apply_to' do

@@ -2,8 +2,8 @@
 
 require 'test_helper'
 
-class PartnerCategoryFilterTest < ActionDispatch::IntegrationTest
-  setup do
+class PartnerCategoryFilterIntegrationTest < ActionDispatch::IntegrationTest
+  def setup
     Neighbourhood.destroy_all
 
     @neighbourhood = create(:neighbourhood, unit_code_value: 'E05011368')
