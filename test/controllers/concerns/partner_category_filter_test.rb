@@ -143,6 +143,32 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     assert_equal found.first.id, @categories[0].id
   end
 
+  test '#categories - neighbourhood scope is hierarchical' do
+    # if a partner is in a neighbourhood that is contained
+    #   in another neighbourhood that the site owns,
+    #   then the child neighbourhood partner should also
+    #   be included in the search
+
+    neighbourhood = create(:neighbourhood)
+    parent = neighbourhood.parent
+
+    new_site = create(:site)
+    new_site.neighbourhoods << parent
+    assert_predicate new_site, :valid?
+
+    # has child neighbourhood
+    partner = build(:partner, address: nil)
+    partner.service_area_neighbourhoods << neighbourhood
+    partner.tags << @categories[0]
+    partner.save!
+
+    filter = PartnerCategoryFilter.new(new_site, {})
+    found = filter.categories
+
+    # found tag from partner in child neighbourhood
+    assert_equal(1, found.length)
+  end
+
   test '#apply_to' do
     Partner.destroy_all
 
