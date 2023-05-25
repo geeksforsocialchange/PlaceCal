@@ -24,7 +24,7 @@ class PartnersController < ApplicationController
                 .includes(:service_areas, :address)
                 .order(:name)
 
-    @category_filter = PartnerCategoryFilter.new(params)
+    @category_filter = PartnerCategoryFilter.new(current_site, params)
     @partners = @category_filter.apply_to(@partners)
 
     # show only partners with no service_areas
