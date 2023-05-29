@@ -36,6 +36,8 @@ class Site < ApplicationRecord
   validates :name, :slug, :domain, presence: true
   validates :place_name unless :default_site?
 
+  scope :published, -> { where(is_published: true) }
+
   mount_uploader :logo, SiteLogoUploader
   mount_uploader :footer_logo, SiteLogoUploader
   mount_uploader :hero_image, HeroImageUploader

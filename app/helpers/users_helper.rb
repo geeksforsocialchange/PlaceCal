@@ -38,7 +38,10 @@ module UsersHelper
   end
 
   def options_for_tags
-    policy_scope(Tag).order(:name).pluck(:name, :id)
+    policy_scope(Tag)
+      .select(:name, :type, :id)
+      .order(:name)
+      .map { |r| [r.name_with_type, r.id] }
   end
 
   def role_label(value)

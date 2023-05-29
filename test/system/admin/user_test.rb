@@ -47,7 +47,7 @@ class AdminUserTest < ApplicationSystemTestCase
 
     tags = select2_node 'user_tags'
     select2 @tag.name, xpath: tags.path
-    assert_select2_multiple [@tag.name], tags
+    assert_select2_multiple [@tag.name_with_type], tags
     click_button 'Update'
 
     click_link 'Users'
@@ -65,6 +65,6 @@ class AdminUserTest < ApplicationSystemTestCase
     assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
     tags = select2_node 'user_tags'
-    assert_select2_multiple [@tag.name], tags
+    assert_select2_multiple [@tag.name_with_type], tags
   end
 end

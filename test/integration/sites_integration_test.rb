@@ -43,10 +43,10 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'find placecal page shows sites with primary neighbourhood' do
     get find_placecal_url
-    assert_select '.find-ward__title', @site.name
+    assert_select '.neighbourhood_home_card__name', @site.place_name
 
-    url = assert_select('.find-ward').first['href']
-    assert_equal url, "http://#{@site.slug}.lvh.me:3000/"
+    url = assert_select('.neighbourhood_home_card__link')[1]['href']
+    assert_equal "http://#{@site.slug}.lvh.me:3000/events", url
   end
 
   test 'tag cards are hidden by default' do

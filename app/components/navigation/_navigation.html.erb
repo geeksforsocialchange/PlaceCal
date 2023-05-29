@@ -8,7 +8,11 @@
   <% end %>
     <%= link_to root_path do %>
       <% if @site&.default_site? %>
-        <h2>PlaceCal</h2>
+        <% if request.path == '/' %>
+          <h1>PlaceCal</h1>
+        <% else %>
+          <h2>PlaceCal</h2>
+        <% end %>
       <% else %>
         <h2><%= @site&.name %></h2>
         <p>The Community Calendar</p>

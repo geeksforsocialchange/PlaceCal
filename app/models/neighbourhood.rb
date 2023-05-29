@@ -20,6 +20,8 @@ class Neighbourhood < ApplicationRecord
            source: :partners,
            class_name: 'Partner'
 
+  # validates :unit_code_value, presence: true, uniqueness: true
+
   # validates :name, presence: true
   validates :unit_code_value,
             length: { is: 9 },
@@ -42,7 +44,7 @@ class Neighbourhood < ApplicationRecord
     return "#{shortname}, #{parent_name} (#{unit.titleize})" if parent_name
 
     # "Wardname (Region)"
-    "#{shortname} (#{unit.titleize})"
+    "#{shortname} (#{unit&.titleize})"
   end
 
   def fullname

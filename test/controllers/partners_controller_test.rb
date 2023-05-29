@@ -16,6 +16,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
       a.save
       a
     end
+
     # NOTE: Uhhh? What? Is this a factorybot thing? Why does create(:address, neighbourhood: n) not work here?
 
     @partners = addresses.map do |a|
@@ -115,21 +116,5 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
       events = assigns(:events).values.first
       assert_equal(3, events.length)
     end
-  end
-
-  test 'partners#tag should only return partners with category tag' do
-    post from_site_slug(@site, partners_tag_path(format: :turbo_stream)), params: { opts: { id: @cat_tag.id, include: 1 } }
-    assert_select '.preview__header h3 a', 1, text: @partner_with_tag.name
-  end
-
-  test 'partners#tag should only return partners without category tag' do
-    post from_site_slug(@site, partners_tag_path(format: :turbo_stream)), params: { opts: { id: @cat_tag.id, include: 0 } }
-    assert_select '.preview__header h3 a', 2, text: !@partner_with_tag.name
-  end
-
-  test 'filter ui should only present categories with partners assigned' do
-    # todo
-    get from_site_slug(@site, partners_path)
-    assert_select '.tag__label', 1, text: @cat_tag.name
   end
 end

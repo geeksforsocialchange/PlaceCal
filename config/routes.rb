@@ -11,8 +11,8 @@ Rails.application.routes.draw do
              }
 
   # Static pages
-  get 'join', to: 'joins#new'
-  post 'join', to: 'joins#create'
+  get 'get-in-touch', to: 'joins#new'
+  post 'get-in-touch', to: 'joins#create'
   get 'privacy', to: 'pages#privacy'
   get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
@@ -72,7 +72,6 @@ Rails.application.routes.draw do
   get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places' => 'partners#index' # Removing separate Places view for now.
   get '/partners/:id/embed' => 'places#embed'
-  post '/partners/tag' => 'partners#tag'
 
   # news
   resources :news, only: %i[index show]

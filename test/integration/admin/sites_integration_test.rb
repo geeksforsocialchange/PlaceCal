@@ -109,7 +109,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_equal(2, neighbourhoods_shown)
   end
 
-  test 'site tags show up' do
+  test 'site tags show up and display their type' do
     @site.tags << @tag
     @site_admin.tags << @tag
 
@@ -117,7 +117,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     get edit_admin_site_path(@site)
     assert_response :success
 
-    tag_options = assert_select 'div.site_tags option', count: 1, text: @tag.name
+    tag_options = assert_select 'div.site_tags option', count: 1, text: @tag.name_with_type
 
     tag = tag_options.first
     assert tag.attributes.key?('selected')

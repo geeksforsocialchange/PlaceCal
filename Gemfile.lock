@@ -130,6 +130,10 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    database_cleaner-active_record (2.1.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     debug_inspector (1.1.0)
     delayed_job (4.1.10)
       activesupport (>= 3.0, < 8.0)
@@ -493,6 +497,10 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (2.1.0)
     vcr (6.1.0)
+    view_component (3.0.0)
+      activesupport (>= 5.2.0, < 8.0)
+      concurrent-ruby (~> 1.0)
+      method_source (~> 1.0)
     virtus (2.0.0)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -539,6 +547,7 @@ DEPENDENCIES
   carrierwave
   cocoon
   coffee-rails
+  database_cleaner-active_record
   delayed_job_active_record
   devise
   devise_invitable
@@ -603,6 +612,7 @@ DEPENDENCIES
   turbo-rails
   uk_postcode
   vcr
+  view_component
   virtus
   web-console
   webmock

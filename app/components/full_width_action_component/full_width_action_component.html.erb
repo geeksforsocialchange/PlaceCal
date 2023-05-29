@@ -1,0 +1,21 @@
+<section class="full_width_action <%= @color_class[@color] %>">
+  <%= render(MaxWidthComponent.new()) do %>
+    <h3 class="full_width_action__title">
+      <%= @title %>
+    </h3>
+    <p class="full_width_action__content">
+      <%= content %>
+    </p>
+    <div class="full_width_action__btn">
+      <% if @color == "cream" %>
+        <%= render(LinkBtnLrgComponent.new( link_url: @link_url, color: 'green')) do %>
+          <%= @link_text %>
+        <% end %>
+      <% else %>
+        <%= render(LinkBtnLrgComponent.new( link_url: @link_url, color: '')) do %>
+          <%= @link_text %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</section>

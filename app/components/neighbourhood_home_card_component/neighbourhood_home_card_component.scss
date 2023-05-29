@@ -1,0 +1,43 @@
+@import "variables_mixins";
+
+.neighbourhood_home_card {
+	align-items: center;
+	color: $base-text;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 0 2rem 1rem 2rem;
+}
+
+.neighbourhood_home_card__image {
+	aspect-ratio: 1.25;
+	border-radius: 1.11rem;
+	object-fit: cover;
+	width: 100%;
+}
+
+.neighbourhood_home_card__name {
+	margin: 0;
+}
+.neighbourhood_home_card__text {
+	margin: 0;
+}
+
+.neighbourhood_home_card__rule {
+	border-width: 2px;
+	margin: 0.5rem 0;
+	width: 100%;
+}
+
+.neighbourhood_home_card__link {
+	background-color: $home-green;
+	border-radius: 1.11rem;
+	font-size: 0.8rem;
+	font-weight: bold;
+	margin: 0;
+	padding: 0.2rem 0rem 0.4rem;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	width: 100%;
+}

@@ -1,0 +1,8 @@
+<div class="featured_partnerships">
+  <h3 class="featured_partnerships--title">Curated Calendars</h3>
+	<%= render(FourColGridComponent.new({partnershipCards: true})) do %>
+		<% @sites.each do |site| %>
+        <%= render(PartnershipCardComponent.new(site: site)) %>
+		<% end %>
+	<% end %>
+</div>

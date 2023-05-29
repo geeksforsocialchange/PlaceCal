@@ -42,7 +42,7 @@ class AdminArticleTest < ApplicationSystemTestCase
 
     tags = select2_node 'article_tags'
     select2 @tag.name, xpath: tags.path
-    assert_select2_multiple [@tag.name], tags
+    assert_select2_multiple [@tag.name_with_type], tags
 
     click_button 'Save Article'
 
@@ -59,6 +59,6 @@ class AdminArticleTest < ApplicationSystemTestCase
     assert_select2_multiple [@partner.name, @partner_two.name], partners
 
     tags = select2_node 'article_tags'
-    assert_select2_multiple [@tag.name], tags
+    assert_select2_multiple [@tag.name_with_type], tags
   end
 end

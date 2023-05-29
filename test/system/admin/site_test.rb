@@ -49,7 +49,7 @@ class AdminSiteTest < ApplicationSystemTestCase
 
     tags = select2_node 'site_tags'
     select2 @tag.name, xpath: tags.path
-    assert_select2_multiple [@tag.name], tags
+    assert_select2_multiple [@tag.name_with_type], tags
 
     new_site_name = 'TEST_NAME_123'
     fill_in 'Name', with: new_site_name
@@ -68,7 +68,7 @@ class AdminSiteTest < ApplicationSystemTestCase
     assert_select2_single @neighbourhood_two, service_areas[0]
 
     tags = select2_node 'site_tags'
-    assert_select2_multiple [@tag.name], tags
+    assert_select2_multiple [@tag.name_with_type], tags
   end
   test 'primary neighbourhood not rendering on other neighbourhoods section' do
     click_link 'Sites'
@@ -83,9 +83,9 @@ class AdminSiteTest < ApplicationSystemTestCase
     service_areas = all(:css, '.sites_neighbourhoods .select2-container', wait: 1)
 
     msg = \
-      '@site should only have a primary neighbourhood, '\
-      'if this fails either this is now rendering where '\
-      'it should\'t or another neighborhood has been added '\
+      '@site should only have a primary neighbourhood, ' \
+      'if this fails either this is now rendering where ' \
+      'it should\'t or another neighborhood has been added ' \
       'at setup and the test should be adjusted'
 
     assert_predicate service_areas.length, :zero?, msg
