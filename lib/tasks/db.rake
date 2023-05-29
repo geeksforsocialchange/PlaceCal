@@ -152,8 +152,10 @@ namespace :db do
 
     $stdout.puts 'Backing up staging db (May take a while.) ...'
     puts `ssh #{ssh_url} dokku postgres:export placecal-db > $(date -Im)_placecal-staging.sql`
+
     $stdout.puts 'Replicating production db to staging db (May take a while.) ...'
-    puts `ssh #{prod_ssh_url} dokku postgres:export placecal-db2 | ssh #{ssh_url} dokku postgres:import placecal-db`
+    puts `ssh #{prod_ssh_url} dokku postgres:export placecal-db | ssh #{ssh_url} dokku postgres:import placecal-db`
+
     if $CHILD_STATUS.success?
       $stdout.puts 'Replicated production to staging (you might have to run rails db:migrate in dokku?)'
     else
