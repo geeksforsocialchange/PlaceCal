@@ -6,7 +6,7 @@ class PartnerCategoryFilter
     @current_category = Category.where(id: @current_category_id).first if @current_category_id.present?
 
     @include_mode = params[:mode] # include/exclude
-    @site_neighbourhood_ids = site.neighbourhood_ids
+    @site_neighbourhood_ids = site.owned_neighbourhood_ids
   end
 
   def active?
