@@ -17,6 +17,10 @@ class SitePolicy < ApplicationPolicy
     user.root? || user.site_admin?
   end
 
+  def show?
+    user.root?
+  end
+
   def update?
     user.root? || user.site_admin?
   end

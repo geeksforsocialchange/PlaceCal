@@ -2,7 +2,7 @@
 
 module Admin
   class SitesController < Admin::ApplicationController
-    before_action :set_site, only: %i[update destroy]
+    before_action :set_site, only: %i[update destroy show]
     before_action :set_variables_for_sites_neighbourhoods_selection, only: %i[new edit]
 
     def index
@@ -21,7 +21,12 @@ module Admin
       end
     end
 
-    def show; end
+    def show
+      authorize @site
+
+      @current_user = current_user
+      @calendars = Calendar.that_appear_on_site(@site).order(:name)
+    end
 
     def new
       @site = Site.new

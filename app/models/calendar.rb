@@ -44,6 +44,21 @@ class Calendar < ApplicationRecord
     default: :idle
   )
 
+  scope :that_appear_on_site, lambda { |site|
+    site_neighbourhoods = site.owned_neighbourhoods.map(&:id)
+
+    Calendar
+      .joins('JOIN events ON events.calendar_id = calendars.id')
+      .joins('JOIN partners ON events.partner_id = partners.id')
+      .joins('LEFT JOIN addresses ON partners.address_id = addresses.id')
+      .joins('LEFT JOIN service_areas ON service_areas.partner_id = partners.id')
+      .where(
+        '(addresses.neighbourhood_id IN (:site_neighbourhoods)) OR (service_areas.neighbourhood_id IN (:site_neighbourhoods))',
+        site_neighbourhoods: site_neighbourhoods
+      )
+      .distinct('calendars.id')
+  }
+
   # We need a default location for some strategies
   def requires_default_location?
     %i[place room_number event_override].include? strategy.to_sym
