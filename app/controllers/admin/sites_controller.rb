@@ -23,8 +23,6 @@ module Admin
 
     def show
       authorize @site
-
-      @current_user = current_user
       @calendars = Calendar.that_appear_on_site(@site).order(:name)
     end
 
