@@ -2,6 +2,50 @@
 
 class CreateInitialTables < ActiveRecord::Migration[5.0]
   def change
+    create_table 'neighbourhoods', force: :cascade do |t|
+      t.string 'name'
+      t.string 'name_abbr'
+      t.string 'ancestry'
+      t.string 'unit', default: 'ward'
+      t.string 'unit_code_key', default: 'WD19CD'
+      t.string 'unit_code_value'
+      t.string 'unit_name'
+      t.string 'parent_name'
+      t.index ['ancestry'], name: 'index_neighbourhoods_on_ancestry'
+    end
+
+    create_table 'sites_neighbourhoods', force: :cascade do |t|
+      t.integer 'neighbourhood_id'
+      t.integer 'site_id'
+      t.string 'relation_type'
+      t.datetime 'created_at', null: false
+      t.datetime 'updated_at', null: false
+    end
+
+    create_table 'tags', force: :cascade do |t|
+      t.string 'name'
+      t.string 'slug'
+      t.text 'description'
+      t.datetime 'created_at', null: false
+      t.datetime 'updated_at', null: false
+      t.boolean 'system_tag', default: false
+      t.string 'type'
+    end
+
+    create_table 'tags_users', force: :cascade do |t|
+      t.bigint 'tag_id', null: false
+      t.bigint 'user_id', null: false
+      t.index %w[tag_id user_id], name: 'index_tags_users_on_tag_id_and_user_id'
+      t.index %w[user_id tag_id], name: 'index_tags_users_on_user_id_and_tag_id'
+    end
+
+    create_table 'partner_tags', force: :cascade do |t|
+      t.bigint 'partner_id', null: false
+      t.bigint 'tag_id', null: false
+      t.index %w[partner_id tag_id], name: 'index_partner_tags_on_partner_id_and_tag_id'
+      t.index %w[tag_id partner_id], name: 'index_partner_tags_on_tag_id_and_partner_id'
+    end
+
     create_table :addresses do |t|
       t.string :street_address
       t.string :street_address2
@@ -13,6 +57,9 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
       # for geocoder
       t.float :latitude
       t.float :longitude
+
+      t.bigint 'neighbourhood_id'
+      t.index ['neighbourhood_id'], name: 'index_addresses_on_neighbourhood_id'
     end
 
     create_table :partners do |t|
