@@ -87,21 +87,20 @@ class ApplicationController < ActionController::Base
   #   If the requested site is invalid then redirect to the home page of the
   #   default site.
   def current_site
-    if Site.count.zero?
-      @current_site = Site.new
-      render('admin/sites/no_site', layout: nil)
-      return
-    end
-
     return @current_site if @current_site
 
-    # Do not return a site for the admin subdomain.
-    # The admin subdomain gives a global view of data.
-    return if request.subdomain == Site::ADMIN_SUBDOMAIN
+    if Site.count.positive?
+      # Do not return a site for the admin subdomain.
+      # The admin subdomain gives a global view of data.
+      return if request.subdomain == Site::ADMIN_SUBDOMAIN
 
-    @current_site = Site.find_by_request(request)
+      @current_site = Site.find_by_request(request)
 
-    redirect_to(root_url(subdomain: false)) if @current_site.nil? && !response.redirect?
+      redirect_to(root_url(subdomain: false)) if @current_site.nil? && !response.redirect?
+    else
+      flash.now[:warning] = 'You have no site in your database, have you run `rails db:seed`?'
+      @current_site = Site.new
+    end
 
     @current_site
   end
