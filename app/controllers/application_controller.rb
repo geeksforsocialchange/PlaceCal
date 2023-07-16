@@ -87,6 +87,12 @@ class ApplicationController < ActionController::Base
   #   If the requested site is invalid then redirect to the home page of the
   #   default site.
   def current_site
+    if Site.count.zero?
+      @current_site = Site.new
+      render('admin/sites/no_site', layout: nil)
+      return
+    end
+
     return @current_site if @current_site
 
     # Do not return a site for the admin subdomain.
