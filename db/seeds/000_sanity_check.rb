@@ -8,16 +8,20 @@ module SeedSanityCheck
     Calendar,
     User,
     Partner,
-    Event
+    Event,
+    Site,
+    Article,
+    Tag
   ].freeze
 
   def self.run
     $stdout.puts 'Sanity test'
 
     MODELS.each do |model|
-      next if model.count.zero?
+      count = model.count
+      next if count.zero?
 
-      warn '  you have data in your DB!'
+      warn "  you have data in your DB! (#{model.name}=#{count})"
       exit FAIL_CODE
     end
 
