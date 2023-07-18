@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength
+
 class CreateInitialTables < ActiveRecord::Migration[5.0]
   def change
     create_table 'neighbourhoods', force: :cascade do |t|
@@ -135,3 +138,6 @@ class CreateInitialTables < ActiveRecord::Migration[5.0]
     end
   end
 end
+
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/MethodLength
