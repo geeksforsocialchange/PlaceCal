@@ -214,13 +214,13 @@ class CalendarImporter::EventResolver
 
       event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
-      unless event.update(data.attributes.merge(event_time))
-        notices << { event: event, errors: event.errors.full_messages }
+      attributes = data.attributes.merge(event_time)
+      unless event.update(attributes)
+        notices << event.errors.full_messages.join(', ')
       end
 
       if event.address_id.blank? && calendar.strategy == 'event'
-        notices << { event: event, errors: ['No place or address could be created or found for '\
-                                            " the event location: #{event.raw_location_from_source}"] }
+        notices << "No place or address could be created or found for the event location: #{event.raw_location_from_source}"
       end
     end
   end

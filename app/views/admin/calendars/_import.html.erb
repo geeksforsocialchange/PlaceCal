@@ -28,8 +28,8 @@
       <% if @calendar.notices.present? %>
         <p>The following events could not be imported due to invalid data: </p>
         <ul>
-          <% @calendar.notices.each do |notice| %>
-            <li><em><%= notice["event"]["summary"] %></em>  <%= notice["errors"].join(", ")%></li>
+          <% @calendar.notices.each do |text| %>
+            <li><%= text %></li>
           <% end %>
         </ul>
       <% else %>
