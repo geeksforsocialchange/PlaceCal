@@ -27,7 +27,7 @@
       <h3>Important Notices</h3>
       <% if @calendar.notices.present? %>
         <p>The following events could not be imported due to invalid data: </p>
-        <ul>
+        <ul id="calendar-notices">
           <% @calendar.notices.each do |text| %>
             <li><%= text %></li>
           <% end %>
