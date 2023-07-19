@@ -10,7 +10,6 @@ class EventsResolverTest < ActiveSupport::TestCase
     :location,
     :rrule,
     :last_modified,
-    # :occurrences_between,
     :custom_properties,
     # Fixes bug where entire argument to .new ended up under the uid value lmao
     # Who knew our importer was *that* robust?!
@@ -62,7 +61,6 @@ class EventsResolverTest < ActiveSupport::TestCase
       location: 'A location',
       rrule: '',
       last_modified: '',
-      # occurrences_between: [Dates.new(@start_date, @end_date)],
       custom_properties: {}
     }
 
