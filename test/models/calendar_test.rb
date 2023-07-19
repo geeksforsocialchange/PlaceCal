@@ -130,4 +130,36 @@ class CalendarTest < ActiveSupport::TestCase
       assert_equal 3, calendar.notice_count
     end
   end
+
+  test 'updating calendar state does not touch updated_at' do
+    VCR.use_cassette(:import_test_calendar) do
+      today = Date.new(1990, 1, 1)
+      calendar = create(:calendar, updated_at: today)
+      assert_equal today, calendar.updated_at
+
+      # queue_for_import
+      calendar.queue_for_import! false, today
+      assert_equal today, calendar.updated_at
+
+      # flag_start_import_job
+      calendar.calendar_state = :in_queue
+      calendar.flag_start_import_job!
+      assert_equal today, calendar.updated_at
+
+      # flag_complete_import_job
+      calendar.calendar_state = :in_worker
+      calendar.flag_complete_import_job! [], 123_456, 'null'
+      assert_equal today, calendar.updated_at
+
+      # flag_bad_source
+      calendar.calendar_state = :in_worker
+      calendar.flag_bad_source! 'problem with source'
+      assert_equal today, calendar.updated_at
+
+      # flag_error_import_job
+      calendar.calendar_state = :in_worker
+      calendar.flag_error_import_job! 'a problem with the import job'
+      assert_equal today, calendar.updated_at
+    end
+  end
 end
