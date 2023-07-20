@@ -32,7 +32,7 @@
 	},
 	"lint-staged": {
 		"*.{css,html,js,json,md,scss,yml}": "prettier --write",
-		"{*.{rb,jbuilder,rake,ru},.simplecov,Gemfile,Rakefile}": "bundle exec rubocop --autocorrect"
+		"{*.{rb,jbuilder,rake,ru},.simplecov,Gemfile,Rakefile}": "bundle exec rubocop --force-exclusion --autocorrect"
 	},
 	"engines": {
 		"node": "16.13.1"
