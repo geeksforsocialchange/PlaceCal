@@ -137,6 +137,36 @@ FactoryBot.define do
     unit_code_key { 'WD19CD' }
     unit_code_value { 'E05000800' }
     unit_name { 'Ashton Hurst' }
+    release_date { DateTime.new(2019, 7) }
+
+    after :create do |ward|
+      ward.parent = create(:ashton_neighbourhood_district)
+      ward.save
+    end
+  end
+
+  factory :ashton_neighbourhood_district_2023, class: 'Neighbourhood' do
+    name { 'Tameside' }
+    name_abbr { 'Tameside' }
+    unit { 'district' }
+    unit_code_key { 'LAD23CD' }
+    unit_code_value { 'E11000001' }
+    unit_name { 'Tameside' }
+    release_date { DateTime.new(2023, 7) }
+
+    after :create do |district|
+      district.parent = create(:neighbourhood_county)
+      district.save
+    end
+  end
+
+  factory :ashton_neighbourhood_2023, class: 'Neighbourhood' do
+    name { 'Ashton Hurst' }
+    name_abbr { 'Ashton Hurst' }
+    unit { 'ward' }
+    unit_code_key { 'WD23CD' }
+    unit_code_value { 'E05000800' }
+    unit_name { 'Ashton Hurst' }
     release_date { DateTime.new(2023, 7) }
 
     after :create do |ward|
