@@ -108,9 +108,13 @@ class Calendar < ApplicationRecord
     transaction do
       return if is_busy?
 
+      Calendar.record_timestamps = false
       update! calendar_state: :in_queue
 
       CalendarImporterJob.perform_later id, from_date, force_import
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
@@ -121,7 +125,11 @@ class Calendar < ApplicationRecord
     transaction do
       return unless calendar_state.in_queue?
 
+      Calendar.record_timestamps = false
       update! calendar_state: :in_worker
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
@@ -162,9 +170,13 @@ class Calendar < ApplicationRecord
       # before saving error
       reload
 
+      Calendar.record_timestamps = false
       self.calendar_state = :bad_source
       self.critical_error = problem
       save!
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
@@ -187,9 +199,13 @@ class Calendar < ApplicationRecord
       # before saving error
       reload
 
+      Calendar.record_timestamps = false
       self.calendar_state = :error
       self.critical_error = problem
       save validate: false
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
