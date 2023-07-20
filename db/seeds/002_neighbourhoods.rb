@@ -1,61 +1,60 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 module SeedNeighbourhoods
+  NEIGHBOURHOOD_HIERARCHY = [
+    { prefix: 'CTRY', unit: 'country' },
+    { prefix: 'RGN', unit: 'region'  },
+    { prefix: 'CTY', unit: 'county'  },
+    { prefix: 'LAD', unit: 'district' },
+    { prefix: 'WD', unit: 'ward' }
+  ].freeze
+
+  FILE_DATA = [
+    {
+      file: 'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(December_2019)_Lookup_in_United_Kingdom.csv',
+      release_date: DateTime.new(2019, 12),
+      lines: 8887,
+      year_prefix: 19
+    },
+    {
+      file: 'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(May_2023)_Lookup_in_United_Kingdom.csv',
+      release_date: DateTime.new(2023, 5),
+      lines: 8441,
+      year_prefix: 23
+    }
+  ].freeze
+
   def self.run
     $stdout.puts 'Neighbourhoods'
 
-    country = Neighbourhood.create!(
-      name: 'England',
-      name_abbr: '',
-      unit: 'country',
-      unit_code_key: 'CTRY19CD',
-      unit_code_value: 'E92000001',
-      unit_name: 'England'
-    )
+    FILE_DATA.each_with_index do |file_data, file_index|
+      CSV.foreach(Rails.root.join("lib/data/#{file_data[:file]}"), headers: true).with_index(1) do |row, index|
+        parent = nil
+        NEIGHBOURHOOD_HIERARCHY.each do |metadata|
+          unit_code_key = "#{metadata[:prefix]}#{file_data[:year_prefix]}CD"
+          unit_name_key = "#{metadata[:prefix]}#{file_data[:year_prefix]}NM"
+          unit = metadata[:unit]
 
-    region = Neighbourhood.create!(
-      name: 'North West',
-      name_abbr: 'North West',
-      unit: 'region',
-      unit_code_key: 'RGN19CD',
-      unit_code_value: 'E12000002',
-      unit_name: 'North West',
+          next unless row[unit_code_key]
 
-      parent: country
-    )
+          neighbourhood = Neighbourhood.find_or_create_by!({
+                                                             name: row[unit_name_key],
+                                                             unit: unit,
+                                                             unit_code_key: unit_code_key,
+                                                             unit_code_value: row[unit_code_key],
+                                                             unit_name: row[unit_name_key]
+                                                             # release_date: file_data[:release_date]
+                                                           })
 
-    county = Neighbourhood.create!(
-      name: 'Greater Manchester',
-      name_abbr: 'Greater Manchester',
-      unit: 'county',
-      unit_code_key: 'CTY19CD',
-      unit_code_value: 'E11000001',
-      unit_name: 'Greater Manchester',
-
-      parent: region
-    )
-
-    district = Neighbourhood.create!(
-      name: 'Manchester',
-      name_abbr: 'Manchester',
-      unit: 'district',
-      unit_code_key: 'LAD19CD',
-      unit_code_value: 'E08000003',
-      unit_name: 'Manchester',
-
-      parent: county
-    )
-
-    ward = Neighbourhood.create!(
-      name: 'Hulme Longname',
-      name_abbr: 'Hulme',
-      unit: 'ward',
-      unit_code_key: 'WD19CD',
-      unit_code_value: 'E05011368',
-      unit_name: 'Hulme',
-
-      parent: district
-    )
+          neighbourhood.parent = parent
+          neighbourhood.save!
+          parent = neighbourhood
+        end
+        $stdout.print "\r#{index}/#{file_data[:lines]} wards loaded from #{file_index + 1}/#{FILE_DATA.length} files"
+      end
+    end
   end
 end
 
