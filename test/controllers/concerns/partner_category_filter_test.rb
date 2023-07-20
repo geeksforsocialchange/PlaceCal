@@ -17,7 +17,8 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
       unit: 'ward',
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05011368',
-      unit_name: 'Hulme'
+      unit_name: 'Hulme',
+      release_date: DateTime.new(2023, 7)
     )
     assert_predicate @neighbourhood1, :valid?
 
@@ -28,7 +29,8 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
       unit: 'ward',
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05000800',
-      unit_name: 'Ashton Hurst'
+      unit_name: 'Ashton Hurst',
+      release_date: DateTime.new(2023, 7)
     )
     assert_predicate @neighbourhood2, :valid?
 
@@ -39,7 +41,8 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
       unit: 'ward',
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05011372',
-      unit_name: 'Moss Side'
+      unit_name: 'Moss Side',
+      release_date: DateTime.new(2023, 7)
     )
     assert_predicate @other_neighbourhood, :valid?
 
