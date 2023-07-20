@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
 class AddNeighbourhoodTurfToAddress < ActiveRecord::Migration[5.1]
-  def change
-    add_reference :addresses, :neighbourhood_turf, foreign_key: { to_table: :turfs }
-  end
+  def change; end
 end
