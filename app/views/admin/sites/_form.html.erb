@@ -1,5 +1,5 @@
 <% if !@site.new_record? && policy(@site).show? %>
-<p><%= link_to 'Show Site information', admin_site_path(@site) %></p>
+<p><%= link_to 'Show all site calendars', admin_site_path(@site) %></p>
 <% end %>
 
 <%= simple_form_for [:admin, @site] do |f| %>
