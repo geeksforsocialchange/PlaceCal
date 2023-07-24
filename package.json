@@ -15,7 +15,7 @@
 		"leaflet": "1.9.4",
 		"lodash": "4.17.21",
 		"popper.js": "1.16.1",
-		"sass": "1.63.6",
+		"sass": "1.64.1",
 		"select2": "4.0.13"
 	},
 	"devDependencies": {
@@ -32,7 +32,7 @@
 	},
 	"lint-staged": {
 		"*.{css,html,js,json,md,scss,yml}": "prettier --write",
-		"{*.{rb,jbuilder,rake,ru},.simplecov,Gemfile,Rakefile}": "bundle exec rubocop --autocorrect"
+		"{*.{rb,jbuilder,rake,ru},.simplecov,Gemfile,Rakefile}": "bundle exec rubocop --force-exclusion --autocorrect"
 	},
 	"engines": {
 		"node": "16.13.1"

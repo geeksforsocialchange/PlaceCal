@@ -1,0 +1,24 @@
+<h1>Calendars displayed on <%= @site.name %></h1>
+
+<p><%= @calendars.count %> calendars found</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>State</th>
+      <th>Last imported at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @calendars.all.each do |calendar| %>
+    <tr>
+      <td><%= calendar.id %></td>
+      <td><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></td>
+      <td><%= calendar.calendar_state %></td>
+      <td><span title="<%= calendar.last_import_at %>"><%= calendar_last_imported(calendar) %></span></td>
+    </tr>
+    <% end %>
+  <tbody>
+</table>
