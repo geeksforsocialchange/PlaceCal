@@ -35,6 +35,7 @@ class Site < ApplicationRecord
 
   validates :name, :slug, :domain, presence: true
   validates :place_name unless :default_site?
+  validates :hero_text, length: { maximum: 120 }
 
   scope :published, -> { where(is_published: true) }
 
