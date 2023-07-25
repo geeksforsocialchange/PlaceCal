@@ -27,3 +27,4 @@ labels:
 - [ ] person_name is set as neighbourhood admin for region_name
 - [ ] If it's an partership-based site, person_name is set as partnership admin for partnership_name
 - [ ] The [handbook](https://gfsc.notion.site/Creating-a-new-PlaceCal-Site-bd90494c88e74bfe94c306f714ede8dc) is accurate (make edits if not clear)
+- [ ] person_name is informed their site has been created
