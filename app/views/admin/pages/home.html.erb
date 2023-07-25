@@ -8,7 +8,7 @@
 <% [ Partner, Calendar, User].each do |model| %>
   <%- if policy(model).create? %>
     <%= link_to "Add New #{model}",
-                url_for(controller: model.table_name),
+                url_for(controller: model.table_name, action: :new),
                 data: { turbo: false },
                 class: "btn btn-primary mb-3 mr-2" %>
   <% end %>
