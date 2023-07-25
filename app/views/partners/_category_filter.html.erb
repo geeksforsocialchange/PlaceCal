@@ -2,12 +2,12 @@
    %>
 
 <div class="breadcrumb__filters filters">
-  <div class="js-filters-toggle filters__toggle">
-    <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Category</span></a>
+  <div class="js-<%=title.downcase%>-filters-toggle filters__toggle">
+    <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link"><%= title %></span></a>
   </div>
   
   <%= form_tag partners_path, method: :get, class: 'filters__form', data: { turbo: false } do %>
-  <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
+  <div class="filters__dropdown filters__dropdown--hidden js-<%=title.downcase%>-filters">
     <div class="filters__group" >
       <% filter.categories.each do |category| %>
       <div class="filters__option">

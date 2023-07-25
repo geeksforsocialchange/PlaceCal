@@ -20,7 +20,10 @@ class EventsController < ApplicationController
     @events = filter_events(@period, repeating: @repeating, site: current_site)
     # Sort criteria
     @events = sort_events(@events, @sort)
+    # @ward_filter.apply_to(@events)
     @multiple_days = true
+
+    @ward_filter = WardFilter.new(current_site, params)
 
     respond_to do |format|
       format.html do

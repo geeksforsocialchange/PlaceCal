@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PartnerCategoryFilter
+class WardFilter
   def initialize(site, params)
     @current_category_id = params[:category]
     @current_category = Category.where(id: @current_category_id).first if @current_category_id.present?
@@ -55,7 +55,7 @@ class PartnerCategoryFilter
   end
 
   def render_filter(view)
-    view.render partial: 'partners/category_filter', locals: { filter: self, title: 'Category' }
+    view.render partial: 'partners/category_filter', locals: { filter: self, title: 'Ward' }
   end
 
   def include_mode?
