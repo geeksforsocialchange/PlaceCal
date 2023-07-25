@@ -13,6 +13,7 @@ labels:
 - Name of person: person_name
 - Region covered: region_name
 - Site name: site_name
+- Desired colour scheme (pick one): orange blue green pink custom
 - [Optional] Interest covered: partnership_name
 - Domain: site_name_slug.placecal.org
 
