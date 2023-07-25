@@ -19,7 +19,7 @@ labels:
 
 ## Acceptance criteria
 
-- [ ] site_name_slug.placecal.org exists! 
+- [ ] site_name_slug.placecal.org exists!
 - [ ] site_name_slug.placecal.org is not set to public
 - [ ] site_name_slug.placecal.org has an SSL certificate added (see [handbook](https://gfsc.notion.site/Creating-a-new-PlaceCal-Site-bd90494c88e74bfe94c306f714ede8dc))
 - [ ] Header and footer logos are created (preferably as svg), with transparent background
