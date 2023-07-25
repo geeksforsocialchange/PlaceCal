@@ -5,10 +5,10 @@
   <p class='has-no-admin-rights-warning'>You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!</p>
 <% end -%>
 
-<% ['Partner', 'Calendar', 'User'].each do |model_name| %>
-  <%- if policy(model_name.constantize).create? %>
-    <%= link_to "Add New #{model_name}",
-                eval("new_admin_#{model_name.downcase}_path"),
+<% [ Partner, Calendar, User].each do |model| %>
+  <%- if policy(model).create? %>
+    <%= link_to "Add New #{model}",
+                url_for(controller: model.table_name, action: :new),
                 data: { turbo: false },
                 class: "btn btn-primary mb-3 mr-2" %>
   <% end %>
@@ -21,7 +21,7 @@
     <% @sites.each do |site| %>
       <%= render_component 'dashboard_card',
         title: site.name,
-        subtitle: "#{pluralize(site.events_this_week, 'event')} this week (#{sprintf('%+d', site.events_this_week - site.events_last_week)})",
+        subtitle: "", # "#{pluralize(site.events_this_week, 'event')} this week (#{sprintf('%+d', site.events_this_week - site.events_last_week)})",
         link: edit_admin_site_path(site),
         last_updated: site.updated_at %>
     <% end %>
