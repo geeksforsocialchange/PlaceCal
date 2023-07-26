@@ -1,6 +1,5 @@
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
   <%= link_to 'PlaceCal', admin_root_path, class: "navbar-brand col-sm-3 col-md-2 mr-0" %>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
   <ul class="navbar-nav flex-row px-3">
     <li class="nav-item text-nowrap mr-4">
       <%= link_to "<i class='fa fa-user'></i> #{@current_user&.email} #{"👑" if @current_user&.role == :root}".html_safe, admin_profile_path, class: 'nav-link'  %>
