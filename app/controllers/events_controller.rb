@@ -17,13 +17,18 @@ class EventsController < ApplicationController
     # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
-    @events = filter_events(@period, repeating: @repeating, site: current_site)
     # Sort criteria
-    @events = sort_events(@events, @sort)
-    # @ward_filter.apply_to(@events)
+    events = sort_events(
+      filter_events(
+        @period, repeating: @repeating, site: current_site
+      ), @sort
+    )
+    all_site_events = filter_events(site: current_site)
     @multiple_days = true
 
-    @ward_filter = WardFilter.new(current_site, params)
+    @neighbourhood_filter = NeighbourhoodFilter.new(all_site_events, params)
+    @events = @neighbourhood_filter.apply_to(events)
+    @neighbourhood_params = neighbourhood_params
 
     respond_to do |format|
       format.html do
@@ -114,5 +119,9 @@ class EventsController < ApplicationController
   # Never trust parameters from the scary internet
   def event_params
     params.fetch(:event, {})
+  end
+
+  def neighbourhood_params
+    "neighbourhood=#{params.fetch(:neighbourhood, '')}" if params.fetch(:neighbourhood, '').to_s.present?
   end
 end

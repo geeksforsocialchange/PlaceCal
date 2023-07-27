@@ -5,6 +5,7 @@
 
 <div class="c c--lg-space-after">
   <%= render_component "event_list",
+    param_string: @neighbourhood_params,
     events: @events,
     pointer: @current_day,
     period: @period,

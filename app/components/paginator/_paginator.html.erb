@@ -3,10 +3,12 @@
     <% if properties[:show_breadcrumb] %>
       <%= render_component "breadcrumb", trail: [['Events', events_path]], site_name: @site.name do %>
         <div class="breadcrumb__filters filters">
-          <% if @ward_filter.show_filter? %>
-            <%= @ward_filter.render_filter(self) %>
-          <% end %>
+          <%= @neighbourhood_filter.render_filter(self) %>
           <%= form_tag('', method: :get, class: 'filters__form js-filters-form', enforce_utf8: false) do %>
+
+            <% if params[:neighbourhood] %>
+              <input type="hidden" id="neighbourhood" name="neighbourhood" value=<%= params[:neighbourhood] %> />
+            <% end%>
             <div class="js-filters-toggle filters__toggle">
                 <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></a>
             </div>

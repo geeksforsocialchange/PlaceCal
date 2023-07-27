@@ -114,6 +114,7 @@
     <% if @events.any? %>
       <%= render_component "event_list",
         events: @events,
+        param_string: nil,
         pointer: @current_day,
         period: @period,
         sort: @sort,

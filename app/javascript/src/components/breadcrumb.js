@@ -15,8 +15,8 @@ $(document).on("turbo:load", function () {
 		$(".js-category-filters").toggle();
 	});
 
-	$(".js-ward-filters-toggle").on("click", function (event) {
+	$(".js-neighbourhood-filters-toggle").on("click", function (event) {
 		event.preventDefault();
-		$(".js-ward-filters").toggle();
+		$(".js-neighbourhood-filters").toggle();
 	});
 });
