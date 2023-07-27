@@ -11,6 +11,8 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 To run PlaceCal locally you will need:
 
 - A Mac or a Linux machine (we don't support Windows at present)
+- GNU Compiler Collection (gcc) (for compiling ruby and gems)
+- Docker (optional) (for isolating and automating postgres management)
 - Postgres relational database. We are currently using v14.
   - Server
     - either installed for your distribution or as a docker image (with the correct open port -- see below)
@@ -36,6 +38,8 @@ To run PlaceCal locally you will need:
 
 ## Quickstart with docker for GFSC devs
 
+First you need to append `lvh.me *.lvh.me` to your `/etc/hosts` file as a DNS alias for `127.0.0.1`.
+
 Make sure all of the above dependencies are installed and ask someone to add your public ssh key to the server.
 
 Then make sure the docker daemon is running, and run
@@ -48,12 +52,6 @@ Local site is now running at `lvh.me:3000`
 
 Some other useful commands for developing can be found in the makefile.
 
-## Quickstart for everyone else
-
-### Set up Postgresql locally with docker
-
-If you don't already have Postgresql installed and running, you can set it up with docker, just run `make docker`. To tear down the docker setup, run `make clean`.
-
 ### Run the setup script
 
 ```sh
@@ -62,7 +60,7 @@ bin/setup
 
 Amongst other things, this will create an admin user for you:
 
-- Username: `admin@lvh.me`
+- Username: `root@placecal.org`
 - Password: `password`
 
 ### Run the thing
