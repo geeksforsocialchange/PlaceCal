@@ -10,7 +10,8 @@ module SeedNeighbourhoods
       unit: 'country',
       unit_code_key: 'CTRY19CD',
       unit_code_value: 'E92000001',
-      unit_name: 'England'
+      unit_name: 'England',
+      release_date: DateTime.now
     )
 
     region = Neighbourhood.create!(
@@ -20,6 +21,7 @@ module SeedNeighbourhoods
       unit_code_key: 'RGN19CD',
       unit_code_value: 'E12000002',
       unit_name: 'North West',
+      release_date: DateTime.now,
 
       parent: country
     )
@@ -31,6 +33,7 @@ module SeedNeighbourhoods
       unit_code_key: 'CTY19CD',
       unit_code_value: 'E11000001',
       unit_name: 'Greater Manchester',
+      release_date: DateTime.now,
 
       parent: region
     )
@@ -42,6 +45,7 @@ module SeedNeighbourhoods
       unit_code_key: 'LAD19CD',
       unit_code_value: 'E08000003',
       unit_name: 'Manchester',
+      release_date: DateTime.now,
 
       parent: county
     )
@@ -53,6 +57,7 @@ module SeedNeighbourhoods
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05011368',
       unit_name: 'Hulme',
+      release_date: DateTime.now,
 
       parent: district
     )

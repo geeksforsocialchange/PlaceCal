@@ -79,6 +79,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert_field_equals hood, 'unitName', value: neighbourhood.unit_name
     assert_field_equals hood, 'unitCodeKey', value: neighbourhood.unit_code_key
     assert_field_equals hood, 'unitCodeValue', value: neighbourhood.unit_code_value
+    assert_field_equals hood, 'releaseDate', value: neighbourhood.release_date
   end
 
   def check_contact(data, contact)
@@ -115,6 +116,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
     assert_field_equals service_area, 'unitName', value: wanted_area.unit_name
     assert_field_equals service_area, 'unitCodeKey', value: wanted_area.unit_code_key
     assert_field_equals service_area, 'unitCodeValue', value: wanted_area.unit_code_value
+    assert_field_equals service_area, 'releaseDate', value: wanted_area.release_date
   end
 
   def check_basic_fields(data, partner)
@@ -166,6 +168,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
               unitName
               unitCodeKey
               unitCodeValue
+              releaseDate
               }
           }
 
@@ -186,6 +189,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
             unitName
             unitCodeKey
             unitCodeValue
+            releaseDate
           }
         }
       }

@@ -103,7 +103,8 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
         unit_code_key: 'key',
         unit_code_value: '123456789',
         unit_name: 'name',
-        name: "Neighbourhood #{i}"
+        name: "Neighbourhood #{i}",
+        release_date: DateTime.new(2023, 7)
       )
       assert_predicate hood, :valid?
       other_user.neighbourhoods << hood
@@ -127,7 +128,8 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
         unit_code_key: 'key',
         unit_code_value: '123456789',
         unit_name: 'name',
-        name: "Neighbourhood #{i}"
+        name: "Neighbourhood #{i}",
+        release_date: DateTime.new(2023, 7)
       )
     end
   end

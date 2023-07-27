@@ -32,7 +32,7 @@ class NeighbourhoodPolicy < ApplicationPolicy
 
   def permitted_attributes
     if user.root?
-      %i[name name_abbr unit unit_code_key unit_code_value unit_name].push(user_ids: [])
+      %i[name name_abbr unit unit_code_key unit_code_value unit_name release_date].push(user_ids: [])
     else
       %i[name name_abbr]
     end
