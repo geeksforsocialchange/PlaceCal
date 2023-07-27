@@ -38,8 +38,6 @@ To run PlaceCal locally you will need:
 
 ## Quickstart with docker for GFSC devs
 
-First you need to append `lvh.me *.lvh.me` to your `/etc/hosts` file as a DNS alias for `127.0.0.1`.
-
 Make sure all of the above dependencies are installed (and ask someone to add your public ssh key to the servers if you are staff).
 
 Then make sure the docker daemon is running, and run
@@ -51,6 +49,12 @@ make setup_with_docker
 Local site is now running at `lvh.me:3000`
 
 Some other useful commands for developing can be found in the makefile.
+
+## Quickstart for everyone else
+
+### Set up Postgresql locally with docker
+
+If you don't already have Postgresql installed and running, you can set it up with docker, just run `make docker`. To tear down the docker setup, run `make clean`.
 
 ### Run the setup script
 
