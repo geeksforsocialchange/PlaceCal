@@ -79,14 +79,12 @@ Before running the tests please make sure your development environment is up to 
 You can run the tests with:
 
 ```sh
-bin/test          # To run all tests
-bin/test --unit   # To only run unit tests
-bin/test --system # To only run system tests
+make              # will run all unit and system tests then lint check all code
+rails test        # will run all unit tests
+rails test:system # will run system tests
 ```
 
 Note that the system tests can take a while to run and are quite resource-intensive. To perform more advanced usage like executing only a specific test or test file, see the [Rails documentation on testing](https://guides.rubyonrails.org/testing.html).
-
-Note also that the test suite will also run all formatters and linters for you in autocorrect mode.
 
 ## Documentation for Developers
 
