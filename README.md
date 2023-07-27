@@ -40,7 +40,7 @@ To run PlaceCal locally you will need:
 
 First you need to append `lvh.me *.lvh.me` to your `/etc/hosts` file as a DNS alias for `127.0.0.1`.
 
-Make sure all of the above dependencies are installed and ask someone to add your public ssh key to the server.
+Make sure all of the above dependencies are installed (and ask someone to add your public ssh key to the servers if you are staff).
 
 Then make sure the docker daemon is running, and run
 
