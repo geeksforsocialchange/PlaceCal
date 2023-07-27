@@ -37,7 +37,10 @@ namespace :neighbourhoods do
           unit_name_key = "#{metadata[:prefix]}#{file_data[:year_prefix]}NM"
           unit = metadata[:unit]
 
+          next unless row[unit_code_key]
+
           unless all_stored_neighbourhoods.include?([row[unit_code_key], file_data[:release_date]])
+
             neighbourhood = Neighbourhood.create!(
               {
                 name: row[unit_name_key],
@@ -58,6 +61,7 @@ namespace :neighbourhoods do
               )
             end
             neighbourhood.save!
+            all_stored_neighbourhoods.push([row[unit_code_key], file_data[:release_date]])
           end
           parent_data = [row[unit_code_key], unit_code_key]
         end
