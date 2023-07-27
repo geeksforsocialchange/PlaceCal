@@ -40,7 +40,7 @@ setup_env:
 	echo PGUSER=postgres >> .env
 
 setup_db:
-	bundle exec rails db:setup db:migrate
+	bundle exec rails db:create db:schema:load
 	bundle exec rails import:all_events
 
 seed_GFSC_prod_copy_db:

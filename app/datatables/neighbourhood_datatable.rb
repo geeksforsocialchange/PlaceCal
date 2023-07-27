@@ -10,7 +10,8 @@ class NeighbourhoodDatatable < Datatable
       unit_name: { source: 'Neighbourhood.unit_name' },
       unit_code_key: { source: 'Neighbourhood.unit_code_key' },
       unit_code_value: { source: 'Neighbourhood.unit_code_value' },
-      parent_name: { source: 'Neighbourhood.parent_name' }
+      parent_name: { source: 'Neighbourhood.parent_name' },
+      release_date: { source: 'Neighbourhood.release_date' }
     }
   end
 
@@ -22,7 +23,8 @@ class NeighbourhoodDatatable < Datatable
         unit_name: record.unit_name,
         unit_code_key: record.unit_code_key,
         unit_code_value: record.unit_code_value,
-        parent_name: record.parent_name
+        parent_name: record.parent_name,
+        release_date: record.release_date
       }
     end
   end
