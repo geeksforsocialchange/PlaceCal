@@ -2,7 +2,7 @@
 
 # app/components/paginator/paginator_component.rb
 class PaginatorComponent < MountainView::Presenter
-  properties :param_string, :pointer, :period, :steps, :path, :sort, :repeating
+  properties :neighbourhood_id, :pointer, :period, :steps, :path, :sort, :repeating
   # FIXME: find a more elegant way of handling this
   property :show_breadcrumb, default: true
 
@@ -127,7 +127,7 @@ class PaginatorComponent < MountainView::Presenter
     str << 'period=week' if period == 1.week
     str << "sort=#{sort}" if sort
     str << "repeating=#{repeating}" if repeating
-    str << param_string if param_string.present?
+    str << "neighbourhood=#{neighbourhood_id}" if neighbourhood_id.present?
     "?#{str.join('&')}" if str.any?
   end
 

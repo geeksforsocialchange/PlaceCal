@@ -26,7 +26,7 @@
     </div>
     <hr>
     <% if filter.active? %>
-    <a href=<%= request.original_url %> class="btn size-patch" role="button">Reset</a>
+    <a href=<%= filter.reset(request.original_url) %> class="btn size-patch" role="button">Reset</a>
     <% end %>
     <%= button_tag 'Filter', name: nil, class: 'btn size-patch' %>
   </div>

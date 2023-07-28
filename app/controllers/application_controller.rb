@@ -49,6 +49,7 @@ class ApplicationController < ActionController::Base
     partner          = args[:partner]          || false
     partner_or_place = args[:partner_or_place] || false
     repeating        = args[:repeating]        || 'on'
+    neighbourhood_id = args[:neighbourhood_id] || false
 
     events = Event.all
 
@@ -58,6 +59,7 @@ class ApplicationController < ActionController::Base
     end
 
     events = events.in_place(place) if place
+    events = events.in_neighbourhood(neighbourhood_id) if neighbourhood_id
     events = events.by_partner(partner) if partner
     events = events.by_partner_or_place(partner_or_place) if partner_or_place
     events = events.one_off_events_only if repeating == 'off'

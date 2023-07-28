@@ -17,18 +17,22 @@ class EventsController < ApplicationController
     # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
-    # Sort criteria
-    events = sort_events(
+    @neighbourhood_id = current_neighbourhood
+
+    all_site_events = filter_events(site: current_site)
+    @neighbourhood_filter = NeighbourhoodFilter.new(
+      neighbourhoods_from(all_site_events),
+      params
+    )
+
+    @events = sort_events(
       filter_events(
-        @period, repeating: @repeating, site: current_site
+        @period,
+        repeating: @repeating,
+        site: current_site,
+        neighbourhood_id: @neighbourhood_id
       ), @sort
     )
-    all_site_events = filter_events(site: current_site)
-    @multiple_days = true
-
-    @neighbourhood_filter = NeighbourhoodFilter.new(all_site_events, params)
-    @events = @neighbourhood_filter.apply_to(events)
-    @neighbourhood_params = neighbourhood_params
 
     respond_to do |format|
       format.html do
@@ -121,7 +125,15 @@ class EventsController < ApplicationController
     params.fetch(:event, {})
   end
 
-  def neighbourhood_params
-    "neighbourhood=#{params.fetch(:neighbourhood, '')}" if params.fetch(:neighbourhood, '').to_s.present?
+  def current_neighbourhood
+    params.fetch(:neighbourhood, '').presence
+  end
+
+  def neighbourhoods_from(events)
+    all_event_neighbourhoods =
+      events.each_with_object(Set[]) do |event, neighbourhoods|
+        neighbourhoods << event.neighbourhood if event.neighbourhood
+      end
+    all_event_neighbourhoods.to_a.sort_by(&:name)
   end
 end
