@@ -31,9 +31,13 @@
     +for-phone-only
       margin-bottom: 0.5rem
     &--last
+      display: flex
+      flex-direction: row
+      justify-content: flex-end
       +flex(1 1 auto)
       +for-tablet-portrait-up
         text-align: right
+
   &__filters
     display: flex
     flex-direction: row

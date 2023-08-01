@@ -5,14 +5,11 @@
   
   <%= form_tag request.original_url, method: :get, class: 'filters__form', data: { turbo: false } do %>
 
-  <% if params[:sort] %>
-    <input type="hidden" id="sort" name="sort" value=<%= params[:sort] %> />
+  <% if params[:category] %>
+    <input type="hidden" id="category" name="category" value=<%= params[:category] %> />
   <% end%>
-  <% if params[:period] %>
-    <input type="hidden" id="period" name="period" value=<%= params[:period] %> />
-  <% end%>
-  <% if params[:repeating] %>
-    <input type="hidden" id="repeating" name="repeating" value=<%= params[:repeating] %> />
+  <% if params['category_mode'] %>
+    <input type="hidden" id="category_mode" name="category_mode" value=<%= params['category_mode'] %> />
   <% end%>
   
   <div class="filters__dropdown filters__dropdown--hidden js-neighbourhood-filters">

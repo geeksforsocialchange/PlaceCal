@@ -3,9 +3,10 @@
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
-  <% if @category_filter.show_filter? %>
-  <%= @category_filter.render_filter(self) %>
-  <% end %>
+    <% if @category_filter.show_filter? %>
+      <%= @category_filter.render_filter(self) %>
+    <% end %>
+    <%= @neighbourhood_filter.render_filter(self) %>
   <% end %>
 
   <hr>

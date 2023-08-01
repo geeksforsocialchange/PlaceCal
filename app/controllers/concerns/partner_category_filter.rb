@@ -5,7 +5,7 @@ class PartnerCategoryFilter
     @current_category_id = params[:category]
     @current_category = Category.where(id: @current_category_id).first if @current_category_id.present?
 
-    @include_mode = params[:mode] # include/exclude
+    @include_mode = params['category_mode'] # include/exclude
     @site_neighbourhood_ids = site.owned_neighbourhood_ids
   end
 
@@ -64,5 +64,9 @@ class PartnerCategoryFilter
 
   def exclude_mode?
     @include_mode == 'exclude'
+  end
+
+  def reset(url)
+    url.sub(/(&|)category=\d*/, '').sub(/(&|)category_mode=(include|exclude)/, '')
   end
 end

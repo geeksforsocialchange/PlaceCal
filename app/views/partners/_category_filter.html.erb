@@ -7,33 +7,36 @@
   </div>
   
   <%= form_tag partners_path, method: :get, class: 'filters__form', data: { turbo: false } do %>
-  <div class="filters__dropdown filters__dropdown--hidden js-<%=title.downcase%>-filters">
-    <div class="filters__group" >
-      <% filter.categories.each do |category| %>
-      <div class="filters__option">
-        <%= radio_button_tag 'category', category.id, filter.current_category?(category), class: "tag__button" %>
-        <%= label_tag 'category', category.name, class: "tag__label" %>
+    <% if params[:neighbourhood] %>
+      <input type="hidden" id="neighbourhood" name="neighbourhood" value=<%= params[:neighbourhood] %> />
+    <% end%>
+    <div class="filters__dropdown filters__dropdown--hidden js-<%=title.downcase%>-filters">
+      <div class="filters__group" >
+        <% filter.categories.each do |category| %>
+        <div class="filters__option">
+          <%= radio_button_tag 'category', category.id, filter.current_category?(category), class: "tag__button" %>
+          <%= label_tag 'category', category.name, class: "tag__label" %>
+        </div>
+        <% end %>
       </div>
-      <% end %>
-    </div>
-    
-    <hr>
-    
-    <div class="filters__group">
-      <div class="filters__option">
-        <%= radio_button_tag 'mode', 'include', filter.include_mode?, class: "include__button" %>
-        <%= label_tag 'mode', 'Include', class: "include__label" %>
+      
+      <hr>
+      
+      <div class="filters__group">
+        <div class="filters__option">
+          <%= radio_button_tag 'category_mode', 'include', filter.include_mode?, class: "include__button" %>
+          <%= label_tag 'category_mode', 'Include', class: "include__label" %>
+        </div>
+        <div class="filters__option">
+          <%= radio_button_tag 'category_mode', 'exclude', filter.exclude_mode?, class: "include__button" %>
+          <%= label_tag 'category_mode', 'Exclude', class: "include__label" %>
+        </div>
       </div>
-      <div class="filters__option">
-        <%= radio_button_tag 'mode', 'exclude', filter.exclude_mode?, class: "include__button" %>
-        <%= label_tag 'mode', 'Exclude', class: "include__label" %>
-      </div>
-    </div>
-    
-    <hr>
+      
+      <hr>
 
     <% if filter.active? %>
-    <a href="/partners" class="btn size-patch" role="button">Reset</a>
+      <a href=<%= filter.reset(request.original_url) %> class="btn size-patch" role="button">Reset</a>
     <% end %>
     <%= button_tag 'Filter', name: nil, class: 'btn size-patch' %>
   </div>

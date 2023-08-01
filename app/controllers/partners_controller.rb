@@ -15,31 +15,26 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    # Get all Partners that manage at least one other partner
-    # @partners = Partner.managers.for_site(current_site).order(:name)
-
     # Get all partners based in the neighbourhoods associated with this site.
-    @partners = Partner
-                .for_site(current_site)
-                .includes(:service_areas, :address)
-                .order(:name)
+    partners = Partner
+               .for_site(current_site)
+               .includes(:service_areas, :address)
+               .order(:name)
 
     @category_filter = PartnerCategoryFilter.new(current_site, params)
-    @partners = @category_filter.apply_to(@partners)
+    @neighbourhood_filter = NeighbourhoodFilter.new(
+      current_site,
+      neighbourhoods_from(partners, current_site.badge_zoom_level),
+      params
+    )
+
+    category_filtered_partners = @category_filter.apply_to(partners)
+    @partners = @neighbourhood_filter.apply_to_partner(category_filtered_partners)
 
     # show only partners with no service_areas
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)
   end
 
-  # # GET /places
-  # # GET /places.json
-  # def places_index
-  #   @places = Partner.event_hosts.for_site(current_site).order(:name)
-  #   @map = get_map_markers(@places) if @places.detect(&:address)
-  # end
-
-  # GET /partners/1
-  # GET /partners/1.json
   def show
     upcoming_events = Event.by_partner(@partner).upcoming
     if upcoming_events.none?
@@ -101,6 +96,19 @@ class PartnersController < ApplicationController
       else
         'All Partners'
       end
+  end
+
+  def neighbourhoods_from(partners, badge_zoom_level)
+    all_partner_neighbourhoods =
+      partners.each_with_object(Set[]) do |partner, addresses|
+        neighbourhood = partner.address&.neighbourhood
+        neighbourhood = neighbourhood.district if neighbourhood && badge_zoom_level == 'district'
+        neighbourhood = partner.service_areas.first&.neighbourhood if partner.service_areas.count.positive?
+        next unless neighbourhood
+
+        addresses << neighbourhood
+      end
+    all_partner_neighbourhoods.to_a.sort_by(&:name)
   end
   # This controller doesn't allow CRUD
   # def partner_params

@@ -76,12 +76,6 @@ class Event < ApplicationRecord
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
 
-  # Filter by Neighbourhood
-  scope :in_neighbourhood, lambda { |neighbourhood_id|
-    joins('left join addresses on events.address_id = addresses.id')
-      .where('(addresses.neighbourhood_id = (?))', neighbourhood_id)
-  }
-
   # Filter by Partner
   scope :by_partner, ->(partner) { where(partner: partner) }
 

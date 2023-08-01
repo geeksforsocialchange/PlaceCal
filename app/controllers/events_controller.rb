@@ -17,22 +17,10 @@ class EventsController < ApplicationController
     # Duration to view - default to day view
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
-    @neighbourhood_id = current_neighbourhood
-
-    all_site_events = filter_events(site: current_site)
-    @neighbourhood_filter = NeighbourhoodFilter.new(
-      neighbourhoods_from(all_site_events),
-      params
-    )
-
-    @events = sort_events(
-      filter_events(
-        @period,
-        repeating: @repeating,
-        site: current_site,
-        neighbourhood_id: @neighbourhood_id
-      ), @sort
-    )
+    @events = filter_events(@period, repeating: @repeating, site: current_site)
+    # Sort criteria
+    @events = sort_events(@events, @sort)
+    @multiple_days = true
 
     respond_to do |format|
       format.html do
@@ -129,10 +117,14 @@ class EventsController < ApplicationController
     params.fetch(:neighbourhood, '').presence
   end
 
-  def neighbourhoods_from(events)
+  def neighbourhoods_from(events, badge_zoom_level)
     all_event_neighbourhoods =
-      events.each_with_object(Set[]) do |event, neighbourhoods|
-        neighbourhoods << event.neighbourhood if event.neighbourhood
+      events.each_with_object(Set[]) do |event, addresses|
+        neighbourhood = event.neighbourhood
+        neighbourhood = neighbourhood.district if neighbourhood && badge_zoom_level == 'district'
+        next unless neighbourhood
+
+        addresses << neighbourhood
       end
     all_event_neighbourhoods.to_a.sort_by(&:name)
   end
