@@ -33,7 +33,7 @@ class NeighbourhoodFilter
   end
 
   def render_filter(view)
-    view.render partial: 'events/neighbourhood_filter', locals: { filter: self }
+    view.render partial: 'partners/neighbourhood_filter', locals: { filter: self }
   end
 
   def reset(url)
