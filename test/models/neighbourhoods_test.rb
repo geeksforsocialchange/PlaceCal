@@ -46,3 +46,24 @@ class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
     assert_equal('hood', hood.abbreviated_name)
   end
 end
+
+class NeighbourhoodAssignmentTest < ActiveSupport::TestCase
+  setup do
+    @ashton_neighbourhood_2019 = create(:ashton_neighbourhood)
+    @ashton_neighbourhood_district_2019 = create(:ashton_neighbourhood_district)
+    @ashton_neighbourhood = create(:ashton_neighbourhood_2023)
+    @ashton_neighbourhood_district = create(:ashton_neighbourhood_district_2023)
+
+    @minimal_geocoder_response = {
+      'admin_ward' => 'Ashton Hurst',
+      'codes' => { 'admin_ward' => 'E05000800' }
+    }
+  end
+
+  test 'find_from_postcodesio_response_returns_matching_ward' do
+    result = Neighbourhood.find_from_postcodesio_response(@minimal_geocoder_response)
+
+    assert_equal(@ashton_neighbourhood.unit_code_value, result.unit_code_value)
+    assert_equal(@ashton_neighbourhood.release_date, result.release_date)
+  end
+end

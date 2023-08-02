@@ -12,6 +12,7 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
   UNIT_CODE = 'E05011368' # from codes/admin_ward
   UNIT_NAME = 'Hulme' # from admin_ward
   UNIT_CODE_KEY = 'WD19CD'
+  RELEASE_DATE = DateTime.new(2023, 7)
 
   def site
     @site ||= create(:site)
@@ -23,7 +24,8 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
       unit: UNIT,
       unit_name: UNIT_NAME,
       unit_code_key: UNIT_CODE_KEY,
-      unit_code_value: UNIT_CODE
+      unit_code_value: UNIT_CODE,
+      release_date: RELEASE_DATE
     )
   end
 
