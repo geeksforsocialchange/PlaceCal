@@ -112,20 +112,4 @@ class EventsController < ApplicationController
   def event_params
     params.fetch(:event, {})
   end
-
-  def current_neighbourhood
-    params.fetch(:neighbourhood, '').presence
-  end
-
-  def neighbourhoods_from(events, badge_zoom_level)
-    all_event_neighbourhoods =
-      events.each_with_object(Set[]) do |event, addresses|
-        neighbourhood = event.neighbourhood
-        neighbourhood = neighbourhood.district if neighbourhood && badge_zoom_level == 'district'
-        next unless neighbourhood
-
-        addresses << neighbourhood
-      end
-    all_event_neighbourhoods.to_a.sort_by(&:name)
-  end
 end
