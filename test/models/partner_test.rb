@@ -237,4 +237,28 @@ class PartnerTest < ActiveSupport::TestCase
     partner.save
     assert_equal 1, partner.partnerships.count
   end
+
+  test '#neighbourhood_for_partners_filter returns assigned neighbourhood' do
+    partner = create(:partner)
+    neighbourhood = partner.neighbourhood_for_partners_filter(partner, 'ward')
+
+    assert_equal(neighbourhood.id, partner.neighbourhood_id)
+  end
+
+  test '#neighbourhood_for_partners_filter returns district if badge zoom level is district' do
+    address = create(:address)
+    partner = create(:partner, address: address)
+    neighbourhood = partner.neighbourhood_for_partners_filter(partner, 'district')
+
+    assert_equal(neighbourhood.id, address.neighbourhood.district.id)
+  end
+
+  test '#neighbourhood_for_partners_filter returns service area neighbourhoods' do
+    partner = create(:partner, address: create(:moss_side_address))
+    service_area_address = create(:ashton_address)
+    partner.service_area_neighbourhoods << service_area_address.neighbourhood
+    neighbourhood = partner.neighbourhood_for_partners_filter(partner, 'ward')
+
+    assert_equal(neighbourhood.id, service_area_address.neighbourhood.id)
+  end
 end

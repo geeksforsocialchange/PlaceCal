@@ -101,9 +101,7 @@ class PartnersController < ApplicationController
   def neighbourhoods_from(partners, badge_zoom_level)
     all_partner_neighbourhoods =
       partners.each_with_object(Set[]) do |partner, addresses|
-        neighbourhood = partner.address&.neighbourhood
-        neighbourhood = neighbourhood.district if neighbourhood && badge_zoom_level == 'district'
-        neighbourhood = partner.service_areas.first&.neighbourhood if partner.service_areas.count.positive?
+        neighbourhood = partner.neighbourhood_for_partners_filter(partner, badge_zoom_level)
         next unless neighbourhood
 
         addresses << neighbourhood
