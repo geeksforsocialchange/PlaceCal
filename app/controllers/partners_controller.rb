@@ -101,15 +101,9 @@ class PartnersController < ApplicationController
   def neighbourhoods_from(partners, badge_zoom_level)
     all_partner_neighbourhoods =
       partners.each_with_object(Set[]) do |partner, addresses|
-        neighbourhood = partner.neighbourhood_for_partners_filter(partner, badge_zoom_level)
-        next unless neighbourhood
-
-        addresses << neighbourhood
+        neighbourhoods = partner.neighbourhoods_for_partners_filter(partner, badge_zoom_level)
+        addresses.merge(neighbourhoods)
       end
     all_partner_neighbourhoods.to_a.sort_by(&:name)
   end
-  # This controller doesn't allow CRUD
-  # def partner_params
-  #   params.fetch(:partner, {})
-  # end
 end

@@ -315,11 +315,16 @@ class Partner < ApplicationRecord
     Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
   end
 
-  def neighbourhood_for_partners_filter(partner, badge_zoom_level)
-    neighbourhood = partner.address&.neighbourhood
-    neighbourhood = neighbourhood.district if neighbourhood && badge_zoom_level == 'district'
-    neighbourhood = partner.service_areas.first&.neighbourhood if partner.service_areas.count.positive?
-    neighbourhood
+  def neighbourhoods_for_partners_filter(partner, badge_zoom_level)
+    if partner.service_areas.count.positive?
+      partner.service_areas.map(&:neighbourhood)
+    elsif partner.address&.neighbourhood && badge_zoom_level == 'district'
+      [partner.address.neighbourhood.district]
+    elsif partner.address&.neighbourhood
+      [partner.address&.neighbourhood]
+    else
+      []
+    end
   end
 
   private
