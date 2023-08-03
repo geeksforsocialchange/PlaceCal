@@ -55,7 +55,7 @@ class PartnerCategoryFilter
   end
 
   def render_filter(view)
-    view.render partial: 'partners/category_filter', locals: { filter: self, title: 'Category' }
+    view.render partial: 'partners/category_filter', locals: { filter: self }
   end
 
   def include_mode?
