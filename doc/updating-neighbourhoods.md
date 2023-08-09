@@ -25,88 +25,10 @@ With the correct name and Date (!!THIS IS VERY IMPORTANT!!). Just put it after t
 
 ## Perform the update
 
-Run these scripts
+Once done there is only one command to run
 
 ```bash
-
-# saving what is in the database
-rails neighbourhoods:bulk_lookup_address_postcodes
-rails neighbourhoods:capture_site_relations
-
-# loading new neighbourhoods in
 rails neighbourhoods:import
-
-# now perform the verification
-```
-
-## Verifying address postcodes
-
-This script tries to resolve postcodes that were looked up earlier against our addresses table as if the address was being validated from the front end.
-
-```
-rails neighbourhoods:verify_address_postcodes
-```
-
-Has the following output
-
-```
-Address Postcode verifier
-  loading from /.../place-cal/tmp/address-postcodes-lookup.json
-  read 269 postcodes
-  'WN74ND' -> 2019
-  'M403SL.' not found in postcodes.io response
-  'OL59RR' -> 2019
-  'M80PF' -> 2023
-  'M15' not found in postcodes.io response
-  'M114SG' -> 2023
-  'M34FP' -> 2023
-  'OL59AY' -> 2019
-  'WC2N6HH' not found in neighbourhood
-
-```
-
-Where each postcode is matched to a neighbourhood printing its version year. In this output 2019 are matching to obsolete neighbourhoods. This is not a problem as they are still part of the neighbourhood hierarchy. Problems may be reported: "not found in postcodes.io response" means that it is no longer an active postcode (the response was an error) and "not found in neighbourhood" means the postcode is missing from our dataset or it is an invalid postcode.
-
-## Verifying site neighbourhoods
-
-This script uses the previously captured site data to determine if something has gone wrong with the update. Currently it performs a sanity test on direct site neighbourhood relations where each site has a link to a neighbourhood. These should never change (as we are only adding neighbourhoods). It then does a deeper check for all the neighbourhoods and their children. Again neighbourhoods should never be removed and it will warn you if that happens. It will also show how many new neighbourhoods exist for this site.
-
-Example output:
-
-```
-Site relation verifier
-  loading from /.../place-cal/tmp/site-relations.json
-  read 23 sites
-  C2 Connecting Communities
-    all_neighbourhoods_added.count=3319
-  Conscious Collective Manchester
-  Flourish Together
-    all_neighbourhoods_added.count=2557
-  GM Systems Changers
-    all_neighbourhoods_added.count=2557
-  Marvellous Mossley
-  Norwich
-  OL1 Oldham
-  PlaceCal
-  PlaceCal Ardwick
-  PlaceCal Beeston
-  PlaceCal Christchurch
-  PlaceCal East Berwickshire
-  PlaceCal Hulme
-  PlaceCal London
-    all_neighbourhoods_added.count=530
-  PlaceCal Manchester
-  PlaceCal Moss Side
-  PlaceCal Moston
-  PlaceCal Oldham
-    all_neighbourhoods_added.count=20
-  PlaceCal Rusholme
-  PlaceCal Torbay
-  PlaceCal West Vale
-  Test Site
-  The Trans Dimension
-    all_neighbourhoods_added.count=3341
-
 ```
 
 ## Fin
