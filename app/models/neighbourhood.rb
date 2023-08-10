@@ -105,13 +105,8 @@ class Neighbourhood < ApplicationRecord
 
   class << self
     def find_from_postcodesio_response(res)
-      results = Neighbourhood.where(
-        unit: 'ward',
-        unit_code_value: res['codes']['admin_ward'],
-        unit_name: res['admin_ward']
-      ).order(
-        release_date: :desc
-      ).first
+      ons_id = res['codes']['admin_ward']
+      Neighbourhood.where(unit_code_value: ons_id).first
     end
   end
 
