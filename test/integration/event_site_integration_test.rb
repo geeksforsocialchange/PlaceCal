@@ -68,7 +68,8 @@ class EventsBySiteTagTest < ActionDispatch::IntegrationTest
       unit: 'ward',
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05011368',
-      unit_name: 'Hulme'
+      unit_name: 'Hulme',
+      release_date: DateTime.new(2023, 7)
     )
 
     tag = Tag.create!(

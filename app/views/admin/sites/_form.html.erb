@@ -1,3 +1,7 @@
+<% if !@site.new_record? && policy(@site).show? %>
+<p><%= link_to 'Show all site calendars', admin_site_path(@site) %></p>
+<% end %>
+
 <%= simple_form_for [:admin, @site] do |f| %>
   <%= render_component "error", object: @site %>
   <%= f.input :name %>
@@ -11,6 +15,7 @@
       <%= f.input :slug if policy(@site).permitted_attributes.include? :slug %>
     </div>
   </div>
+  <%= f.input :hero_text, hint: 'Large text for the banner with image on the homepage, up to 120 characters', input_html: { rows: 5 } %>
   <%= f.input :description, input_html: { rows: 5 } %>
 
   <%= f.input :is_published, label: 'Published', hint: 'Advertise this site on the PlaceCal homepage?', as: :boolean %>

@@ -11,6 +11,8 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 To run PlaceCal locally you will need:
 
 - A Mac or a Linux machine (we don't support Windows at present)
+- GNU Compiler Collection (gcc) (for compiling ruby and gems)
+- Docker (optional) (for isolating and automating postgres management)
 - Postgres relational database. We are currently using v14.
   - Server
     - either installed for your distribution or as a docker image (with the correct open port -- see below)
@@ -36,7 +38,7 @@ To run PlaceCal locally you will need:
 
 ## Quickstart with docker for GFSC devs
 
-Make sure all of the above dependencies are installed and ask someone to add your public ssh key to the server.
+Make sure all of the above dependencies are installed (and ask someone to add your public ssh key to the servers if you are staff).
 
 Then make sure the docker daemon is running, and run
 
@@ -62,7 +64,7 @@ bin/setup
 
 Amongst other things, this will create an admin user for you:
 
-- Username: `admin@lvh.me`
+- Username: `root@placecal.org`
 - Password: `password`
 
 ### Run the thing
@@ -81,14 +83,12 @@ Before running the tests please make sure your development environment is up to 
 You can run the tests with:
 
 ```sh
-bin/test          # To run all tests
-bin/test --unit   # To only run unit tests
-bin/test --system # To only run system tests
+make              # will run all unit and system tests then lint check all code
+rails test        # will run all unit tests
+rails test:system # will run system tests
 ```
 
 Note that the system tests can take a while to run and are quite resource-intensive. To perform more advanced usage like executing only a specific test or test file, see the [Rails documentation on testing](https://guides.rubyonrails.org/testing.html).
-
-Note also that the test suite will also run all formatters and linters for you in autocorrect mode.
 
 ## Documentation for Developers
 

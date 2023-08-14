@@ -17,6 +17,10 @@ class SitePolicy < ApplicationPolicy
     user.root? || user.site_admin?
   end
 
+  def show?
+    user.root?
+  end
+
   def update?
     user.root? || user.site_admin?
   end
@@ -27,7 +31,7 @@ class SitePolicy < ApplicationPolicy
 
   def permitted_attributes
     attrs = %i[id name place_name is_published tagline description
-               badge_zoom_level hero_image hero_image_credit]
+               badge_zoom_level hero_image hero_image_credit hero_text]
             .push(sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
                   sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type],
                   tag_ids: [])

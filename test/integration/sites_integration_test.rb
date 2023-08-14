@@ -97,4 +97,11 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, 'Marvellous Mossley'
   end
+
+  test 'custom hero text' do
+    custom_text = 'this is the custom text'
+    site_with_hero_text = create(:site, hero_text: custom_text, slug: 'hero', site_admin: @site_admin)
+    get 'http://hero.lvh.me'
+    assert_select 'h1', custom_text
+  end
 end

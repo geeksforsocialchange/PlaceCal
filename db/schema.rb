@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_23_154845) do
+ActiveRecord::Schema.define(version: 2023_07_27_111308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 2023_02_23_154845) do
     t.string "unit_code_value"
     t.string "unit_name"
     t.string "parent_name"
+    t.datetime "release_date"
     t.index ["ancestry"], name: "index_neighbourhoods_on_ancestry"
   end
 
@@ -302,6 +303,7 @@ ActiveRecord::Schema.define(version: 2023_02_23_154845) do
     t.boolean "is_published", default: false
     t.string "badge_zoom_level"
     t.string "description_html"
+    t.string "hero_text"
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 

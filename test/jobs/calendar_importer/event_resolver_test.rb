@@ -10,7 +10,6 @@ class EventsResolverTest < ActiveSupport::TestCase
     :location,
     :rrule,
     :last_modified,
-    :ocurrences_between,
     :custom_properties,
     # Fixes bug where entire argument to .new ended up under the uid value lmao
     # Who knew our importer was *that* robust?!
@@ -42,20 +41,31 @@ class EventsResolverTest < ActiveSupport::TestCase
     keyword_init: true
   )
 
+  def patch_ics_dates(event, from_date, to_date)
+    patch = Module.new
+    patch.define_method(:occurrences_between) do |_from, _to|
+      [CalendarImporter::Events::Base::Dates.new(from_date, to_date)]
+    end
+
+    event.extend patch
+  end
+
   setup do
     @start_date = DateTime.new(1990, 1, 1, 10, 30)
     @end_date = DateTime.new(1990, 1, 2, 11, 40)
 
-    @fake_ics_event = FakeICSEvent.new(
+    fake_event_values = {
       uid: 123,
       summary: 'A summary',
       description: 'A description',
       location: 'A location',
       rrule: '',
       last_modified: '',
-      ocurrences_between: [[@start_date, @end_date]],
       custom_properties: {}
-    )
+    }
+
+    @fake_ics_event = FakeICSEvent.new(fake_event_values)
+    @fake_ics_event = patch_ics_dates(@fake_ics_event, @start_date, @end_date)
 
     @fake_eventbrite_event = FakeEventbriteEvent.new(
       id: '111111111111',
@@ -212,5 +222,50 @@ class EventsResolverTest < ActiveSupport::TestCase
 
     online_address = OnlineAddress.find(resolver.data.online_address_id)
     assert_equal online_address.url, meetup_link
+  end
+
+  # notices
+
+  test 'notices are empty when no problems occur' do
+    calendar = make_calendar_for_strategy('no_location')
+    notices = []
+    from_date = @start_date
+
+    resolver = CalendarImporter::EventResolver.new(@ics_event_data, calendar, notices, from_date)
+    resolver.determine_location_for_strategy
+
+    resolver.save_all_occurences
+    assert_empty(notices)
+  end
+
+  test 'generate notices when Event fails validations' do
+    calendar = make_calendar_for_strategy('no_location')
+    notices = []
+    from_date = @start_date
+
+    event = @ics_event_data.instance_variable_get(:@event)
+    event.summary = ''
+
+    resolver = CalendarImporter::EventResolver.new(@ics_event_data, calendar, notices, from_date)
+    resolver.determine_location_for_strategy
+
+    resolver.save_all_occurences
+
+    assert_equal(["Summary can't be blank"], notices)
+  end
+
+  test 'generate notices when missing address' do
+    calendar = make_calendar_for_strategy('no_location')
+    calendar.strategy = 'event'
+
+    notices = []
+    from_date = @start_date
+
+    resolver = CalendarImporter::EventResolver.new(@ics_event_data, calendar, notices, from_date)
+    resolver.determine_location_for_strategy
+
+    resolver.save_all_occurences
+
+    assert_equal(['No place or address could be created or found for the event location: A location'], notices)
   end
 end
