@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Neighbourhood < ApplicationRecord
+  # WARNING: this must be updated for every new ONS dataset
+  #    see /lib/tasks/neighbourhoods.rake
+  LATEST_RELEASE_DATE = DateTime.new(2023, 5).freeze
+
   has_ancestry
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :sites, through: :sites_neighbourhoods
@@ -28,6 +32,8 @@ class Neighbourhood < ApplicationRecord
             allow_blank: true
 
   before_update :inject_parent_name_field
+
+  scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
 
   def shortname
     if name_abbr.present?

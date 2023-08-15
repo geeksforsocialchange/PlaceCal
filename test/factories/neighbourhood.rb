@@ -10,7 +10,7 @@ FactoryBot.define do
     unit_code_key { 'CTRY19CD' }
     unit_code_value { 'E92000001' }
     unit_name { 'England' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
   end
 
   factory :bare_neighbourhood, class: 'Neighbourhood' do
@@ -30,7 +30,7 @@ FactoryBot.define do
     unit_code_key { 'RGN19CD' }
     unit_code_value { 'E12000002' }
     unit_name { 'North West' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |region|
       region.parent = create(:neighbourhood_country)
@@ -45,7 +45,7 @@ FactoryBot.define do
     unit_code_key { 'CTY19CD' }
     unit_code_value { 'E11000001' }
     unit_name { 'Greater Manchester' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |county|
       county.parent = create(:neighbourhood_region)
@@ -60,7 +60,7 @@ FactoryBot.define do
     unit_code_key { 'LAD19CD' }
     unit_code_value { 'E08000003' }
     unit_name { 'Manchester' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |district|
       district.parent = create(:neighbourhood_county)
@@ -77,7 +77,7 @@ FactoryBot.define do
       "E0#{5_011_368 + n}"
     end
     unit_name { 'Hulme' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |ward|
       ward.parent = create(:neighbourhood_district)
@@ -92,7 +92,7 @@ FactoryBot.define do
     unit_code_key { 'WD19CD' }
     unit_code_value { 'E05011377' }
     unit_name { 'Rusholme' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |ward|
       ward.parent = create(:neighbourhood_district)
@@ -107,7 +107,7 @@ FactoryBot.define do
     unit_code_key { 'WD19CD' }
     unit_code_value { 'E05011372' }
     unit_name { 'Moss Side' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |ward|
       ward.parent = create(:neighbourhood_district)
@@ -122,7 +122,7 @@ FactoryBot.define do
     unit_code_key { 'LAD19CD' }
     unit_code_value { 'E11000001' }
     unit_name { 'Tameside' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |district|
       district.parent = create(:neighbourhood_county)
@@ -137,7 +137,7 @@ FactoryBot.define do
     unit_code_key { 'WD19CD' }
     unit_code_value { 'E05000800' }
     unit_name { 'Ashton Hurst' }
-    release_date { DateTime.new(2019, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |ward|
       ward.parent = create(:ashton_neighbourhood_district)
@@ -152,7 +152,7 @@ FactoryBot.define do
     unit_code_key { 'LAD23CD' }
     unit_code_value { 'E11000001' }
     unit_name { 'Tameside' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |district|
       district.parent = create(:neighbourhood_county)
@@ -167,7 +167,7 @@ FactoryBot.define do
     unit_code_key { 'WD23CD' }
     unit_code_value { 'E05000800' }
     unit_name { 'Ashton Hurst' }
-    release_date { DateTime.new(2023, 7) }
+    release_date { Neighbourhood::LATEST_RELEASE_DATE }
 
     after :create do |ward|
       ward.parent = create(:ashton_neighbourhood_district)

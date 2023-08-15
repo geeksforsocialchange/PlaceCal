@@ -45,4 +45,20 @@ class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
     hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: 'hood')
     assert_equal('hood', hood.abbreviated_name)
   end
+
+  test 'latest_release_date scope limits neighbourhoods to the latest version only' do
+    Neighbourhood.delete_all
+
+    3.times do |n|
+      # neighbourhoods with current release date
+      create :neighbourhood_country, name: "Country X#{n}"
+    end
+
+    5.times do |n|
+      create :neighbourhood_country, name: "Country Y#{n}", release_date: DateTime.new(1990, 1)
+    end
+
+    found = Neighbourhood.latest_release.count
+    assert_equal 3, found
+  end
 end

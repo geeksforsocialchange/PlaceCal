@@ -3,7 +3,8 @@
 module PartnersHelper
   def options_for_service_area_neighbourhoods
     # Remove the primary neighbourhood from the list
-    @all_neighbourhoods.filter { |e| e.name != '' }
+    @all_neighbourhoods.latest_release
+                       .filter { |e| e.name != '' }
                        .collect { |e| { name: e.contextual_name, id: e.id } }
   end
 
