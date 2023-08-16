@@ -264,7 +264,245 @@ namespace :placecal do
     SiteRelationVerifier.run
   end
 
+  desc 'Look for obsolete neighbourhoods still referencing partners, users or sites'
+  task find_obsolete_neighbourhoods: :environment do
+    NeighbourhoodSweeper.run
+  end
+
+  desc 'Look for addresses with missing partners or neighbourhoods'
+  task find_broken_addresses: :environment do
+    partner_count = 0
+    neighbourhood_count = 0
+
+    puts 'Looking for broken addresses'
+    Address.includes(:partners, :neighbourhood).all.each do |addr|
+      partner_count += 1 if addr.partners.count.zero?
+      neighbourhood_count += 1 if addr.neighbourhood.blank?
+    end
+
+    puts "  partner_count=#{partner_count}"
+    puts "  neighbourhood_count=#{neighbourhood_count}"
+  end
+
   # we could have a task that scans for neighbourhoods that don't sit in the
   # latest version and lists which partners/sites are still linking through
   # them and/or prune unused obsolete neighbourhoods
+end
+
+module NeighbourhoodSweeper # rubocop:disable Metrics/ModuleLength
+  module_function
+
+  def run
+    found = Neighbourhood.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
+
+    find_obsolete_addresses found
+
+    find_obsolete_sites found
+
+    find_obsolete_users found
+
+    find_obsolete_service_areas found
+  end
+
+  def neighbourhood_hierarchy(hood)
+    parents = neighbourhood_hierarchy(hood.parent) if hood.parent
+
+    me = "#{hood.unit_name} (#{hood.id} #{hood.unit})"
+
+    if parents
+      "#{parents} -> #{me}"
+    else
+      me
+    end
+  end
+
+  def find_replacement_neighbourhood(old_neighbourhood)
+    Neighbourhood
+      .where(unit_name: old_neighbourhood.unit_name)
+      .latest_release
+      .first
+  end
+
+  def find_obsolete_addresses(neighbourhoods)
+    replacement_neighbourhood_count = 0
+    reparented_neighbourhood_count = 0
+    obsolete_neighbourhood_count = 0
+
+    puts ''
+    puts '=== Addresses ==='
+
+    neighbourhoods.each do |hood|
+      addresses = hood.addresses
+      next if addresses.empty?
+
+      partners = addresses.reduce([]) { |found, address| found += address.partners }
+      next if partners.empty?
+
+      puts "#{hood.unit_name} (#{hood.unit}) [#{neighbourhood_hierarchy(hood)}]"
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          partners.each do |partner|
+            puts "  partner neighbourhood replacement: #{partner.name} (#{partner.id})"
+          end
+
+          replacement_neighbourhood_count += 1
+          next
+        end
+        partners.each do |partner|
+          puts "  partner neighbourhood reparenting: #{partner.name} (#{partner.id})"
+        end
+        puts "    [#{neighbourhood_hierarchy(replacement)}]"
+        reparented_neighbourhood_count += 1
+        next
+      end
+
+      partners.each do |partner|
+        puts "  partner neighbourhood obsolete: #{partner.name} (#{partner.id})"
+      end
+      obsolete_neighbourhood_count += 1
+    end
+
+    puts ''
+    puts 'By Address:'
+    puts "  replacement_neighbourhood_count=#{replacement_neighbourhood_count}"
+    puts "  reparented_neighbourhood_count=#{reparented_neighbourhood_count}"
+    puts "  obsolete_neighbourhood_count=#{obsolete_neighbourhood_count}"
+  end
+
+  def find_obsolete_sites(neighbourhoods)
+    replacement_neighbourhood_count = 0
+    reparented_neighbourhood_count = 0
+    obsolete_neighbourhood_count = 0
+
+    puts ''
+    puts '=== Sites ==='
+
+    neighbourhoods.each do |hood|
+      sites = hood.sites
+      next if sites.empty?
+
+      puts "#{hood.unit_name} (#{hood.unit}) [#{neighbourhood_hierarchy(hood)}]"
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          sites.each do |site|
+            puts "  site neighbourhood replacement: #{site.name} (#{site.id})"
+          end
+          replacement_neighbourhood_count += 1
+          next
+        end
+
+        sites.each do |site|
+          puts "  site neighbourhood reparenting: #{site.name} (#{site.id})"
+        end
+        puts "    [#{neighbourhood_hierarchy(replacement)}]"
+        reparented_neighbourhood_count += 1
+        next
+      end
+
+      sites.each do |site|
+        puts "  site neighbourhood obsolete: #{site.name} (#{site.id})"
+      end
+
+      obsolete_neighbourhood_count += 1
+    end
+
+    puts 'By Site:'
+    puts "  replacement_neighbourhood_count=#{replacement_neighbourhood_count}"
+    puts "  reparented_neighbourhood_count=#{reparented_neighbourhood_count}"
+    puts "  obsolete_neighbourhood_count=#{obsolete_neighbourhood_count}"
+  end
+
+  def find_obsolete_users(neighbourhoods)
+    replacement_neighbourhood_count = 0
+    reparented_neighbourhood_count = 0
+    obsolete_neighbourhood_count = 0
+
+    puts ''
+    puts '=== Users ==='
+
+    neighbourhoods.each do |hood|
+      users = hood.users
+      next if users.empty?
+
+      puts "#{hood.unit_name} (#{hood.unit}) [#{neighbourhood_hierarchy(hood)}]"
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          users.each do |user|
+            puts "  user neighbourhood replacement: #{user.email} (#{user.id})"
+          end
+          replacement_neighbourhood_count += 1
+          next
+        end
+        users.each do |user|
+          puts "  user neighbourhood reparenting: #{user.email} (#{user.id})"
+        end
+        puts "    [#{neighbourhood_hierarchy(replacement)}]"
+
+        reparented_neighbourhood_count += 1
+        next
+      end
+
+      users.each do |user|
+        puts "  user neighbourhood obsolete: #{user.email} (#{user.id})"
+      end
+
+      obsolete_neighbourhood_count += 1
+    end
+
+    puts 'By User:'
+    puts "  replacement_neighbourhood_count=#{replacement_neighbourhood_count}"
+    puts "  reparented_neighbourhood_count=#{reparented_neighbourhood_count}"
+    puts "  obsolete_neighbourhood_count=#{obsolete_neighbourhood_count}"
+  end
+
+  def find_obsolete_service_areas(neighbourhoods)
+    replacement_neighbourhood_count = 0
+    reparented_neighbourhood_count = 0
+    obsolete_neighbourhood_count = 0
+
+    puts ''
+    puts '=== Service Areas ==='
+
+    neighbourhoods.each do |hood|
+      service_areas = hood.service_areas
+      next if service_areas.empty?
+
+      puts "#{hood.unit_name} (#{hood.unit}) [#{neighbourhood_hierarchy(hood)}]"
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          service_areas.each do |service_area|
+            puts "  service_areas neighbourhood replacement: #{service_area.partner.name} (#{service_area.partner.id})"
+          end
+          replacement_neighbourhood_count += 1
+          next
+        end
+        service_areas.each do |service_area|
+          puts "  service_areas neighbourhood reparenting: #{service_area.partner.name} (#{service_area.partner.id})"
+        end
+        puts "    [#{neighbourhood_hierarchy(replacement)}]"
+
+        reparented_neighbourhood_count += 1
+        next
+      end
+
+      service_areas.each do |service_area|
+        puts "  service_areas neighbourhood obsolete: #{service_area.partner.name} (#{service_area.partner.id})"
+      end
+
+      obsolete_neighbourhood_count += 1
+    end
+
+    puts 'By Service Area:'
+    puts "  replacement_neighbourhood_count=#{replacement_neighbourhood_count}"
+    puts "  reparented_neighbourhood_count=#{reparented_neighbourhood_count}"
+    puts "  obsolete_neighbourhood_count=#{obsolete_neighbourhood_count}"
+  end
 end
