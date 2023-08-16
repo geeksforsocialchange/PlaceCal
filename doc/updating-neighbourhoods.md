@@ -1,5 +1,7 @@
 # Updating neighbourhoods
 
+_PLEASE READ CAREFULLY._
+
 Placecal depends upon data from ONS (Office of National Statistics) and postcodes.io to map postcodes to neighbourhoods.
 
 These are how Sites find their Partners or Events through Addresses or Service Areas.
@@ -21,7 +23,7 @@ load_csv(
 )
 ```
 
-With the correct name and Date (!!THIS IS VERY IMPORTANT!!). Just put it after the rest. You can now run the rest of the procedure. The new dataset file and modified script must be commited to the repo and merged on to main when it comes to updating staging or production.
+With the correct name and Date (!!THIS IS VERY IMPORTANT!!) - just year and month will suffice.
 
 ## Perform the update
 
@@ -30,6 +32,35 @@ Once done there is only one command to run
 ```bash
 rails neighbourhoods:import
 ```
+
+You may wish to check this by openning a rails console and running `Neighbourhood.group(:release_date).count` and seeing how many neighbourhoods by release data are present.
+
+Example:
+
+```
+irb(main):002:0> Neighbourhood.group(:release_date).count
+   (6.3ms)  SELECT COUNT(*) AS count_all, "neighbourhoods"."release_date" AS neighbourhoods_release_date FROM "neighbourhoods" GROUP BY "neighbourhoods"."release_date"
+=> {Mon, 01 May 2023 01:00:00.000000000 BST +01:00=>8844, Sun, 01 Dec 2019 00:00:00.000000000 GMT +00:00=>3827}
+```
+
+## Adjust the neighbourhood model
+
+If you are adding a new ONS dataset (currently May 2023) you _MUST_ change the value in `/app/models/neighbourhood.rb`! Which looks something like
+
+```ruby
+# frozen_string_literal: true
+
+class Neighbourhood < ApplicationRecord
+  # WARNING: this must be updated for every new ONS dataset
+  #    see /lib/tasks/neighbourhoods.rake
+  LATEST_RELEASE_DATE = DateTime.new(2023, 5).freeze  <----
+
+  ...
+```
+
+## Deploying
+
+The new dataset file and modified script/model must be commited to the repo and merged on to main when it comes to updating staging or production. Warning: between the time that your new code has been deployed to staging/production and the time the new import script has been run nobody will be able to select any neighbourhoods (as your updates will be filtering for the latest neighbourhoods which you have not inserted yet).
 
 ## Fin
 
