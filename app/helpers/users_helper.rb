@@ -29,8 +29,9 @@ module UsersHelper
     policy_scope(Partner).all.order(:name).pluck(:name, :id)
   end
 
-  def options_for_neighbourhoods
+  def options_for_user_neighbourhoods
     policy_scope(Neighbourhood)
+      .latest_release
       .where('name is not null and name != \'\'')
       .order(:name)
       .all
