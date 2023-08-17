@@ -69,7 +69,7 @@
           <%= sn.hidden_field :neighbourhood_id, value: @primary_neighbourhood_id %>
         <% else %>
           <%= sn.hidden_field :relation_type, value: "Primary" %>
-          <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
+          <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
               value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
               input_html: { class: 'form-control col-6', data: { controller: "select2" } },
               label: '', label_html: { hidden: true } %>

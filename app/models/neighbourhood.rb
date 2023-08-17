@@ -35,6 +35,10 @@ class Neighbourhood < ApplicationRecord
 
   scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
 
+  def legacy_neighbourhood?
+    release_date < Neighbourhood::LATEST_RELEASE_DATE
+  end
+
   def shortname
     if name_abbr.present?
       name_abbr
@@ -113,6 +117,15 @@ class Neighbourhood < ApplicationRecord
     def find_from_postcodesio_response(res)
       ons_id = res['codes']['admin_ward']
       Neighbourhood.where(unit_code_value: ons_id).first
+    end
+
+    def find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(scope, legacy_neighbourhoods)
+      scope = scope
+              .where('name is not null and name != \'\'')
+              .latest_release
+
+      scope = scope.or(where(id: legacy_neighbourhoods.pluck(:id))) if legacy_neighbourhoods.any?
+      scope
     end
   end
 
