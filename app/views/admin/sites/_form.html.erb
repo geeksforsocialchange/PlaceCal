@@ -65,7 +65,14 @@
       <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
         <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
         <% if primary_neighbourhood.present? %>
-          <h3><span class="badge badge-secondary"><%= primary_neighbourhood.contextual_name %></span></h3>
+          <h3>
+            <span class="badge badge-secondary">
+              <%= primary_neighbourhood.contextual_name %>
+              <% if primary_neighbourhood.legacy_neighbourhood? %>
+                (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>)
+              <% end %>
+            </span>
+          </h3>
           <%= sn.hidden_field :relation_type, value: "Primary" %>
           <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
           <% if primary_neighbourhood.legacy_neighbourhood? %>
