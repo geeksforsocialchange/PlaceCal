@@ -13,7 +13,8 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05011368',
       unit_name: 'Hulme',
-      name: 'Hulme'
+      name: 'Hulme',
+      release_date: Neighbourhood::LATEST_RELEASE_DATE
     )
     assert_predicate @neighbourhood, :valid?
 
@@ -104,7 +105,7 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
         unit_code_value: '123456789',
         unit_name: 'name',
         name: "Neighbourhood #{i}",
-        release_date: DateTime.new(2023, 7)
+        release_date: Neighbourhood::LATEST_RELEASE_DATE
       )
       assert_predicate hood, :valid?
       other_user.neighbourhoods << hood
@@ -129,7 +130,7 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
         unit_code_value: '123456789',
         unit_name: 'name',
         name: "Neighbourhood #{i}",
-        release_date: DateTime.new(2023, 7)
+        release_date: Neighbourhood::LATEST_RELEASE_DATE
       )
     end
   end

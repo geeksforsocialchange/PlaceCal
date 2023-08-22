@@ -1,10 +1,20 @@
 # frozen_string_literal: true
 
 module PartnersHelper
-  def options_for_service_area_neighbourhoods
-    # Remove the primary neighbourhood from the list
-    @all_neighbourhoods.filter { |e| e.name != '' }
-                       .collect { |e| { name: e.contextual_name, id: e.id } }
+  def options_for_service_area_neighbourhoods(for_partner)
+    legacy_neighbourhoods = for_partner.service_area_neighbourhoods.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
+
+    scope = Neighbourhood.find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(@all_neighbourhoods, legacy_neighbourhoods)
+
+    scope
+      .order(:name)
+      .all
+      .collect do |ward|
+        name = ward.contextual_name
+        name += " - #{ward.release_date.year}/#{ward.release_date.month}" if ward.legacy_neighbourhood?
+
+        { name: name, id: ward.id }
+      end
   end
 
   def options_for_partner_tags
@@ -37,7 +47,7 @@ module PartnersHelper
   def service_area_links(partner)
     partner.service_area_neighbourhoods
            .order(:name)
-           .map { |hood| link_to hood.name, edit_admin_neighbourhood_path(hood) }
+           .map { |hood| link_to_neighbourhood(hood) }
            .join(', ')
            .html_safe
   end

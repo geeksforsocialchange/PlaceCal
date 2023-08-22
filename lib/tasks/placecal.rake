@@ -264,7 +264,302 @@ namespace :placecal do
     SiteRelationVerifier.run
   end
 
+  desc 'Look for obsolete neighbourhoods still referencing partners, users or sites'
+  task find_obsolete_neighbourhoods: :environment do
+    NeighbourhoodSweeper.run
+  end
+
+  desc 'Look for addresses with missing partners or neighbourhoods'
+  task find_broken_addresses: :environment do
+    partner_count = 0
+    neighbourhood_count = 0
+
+    puts 'Looking for broken addresses'
+    Address.includes(:partners, :neighbourhood).all.each do |addr|
+      partner_count += 1 if addr.partners.count.zero?
+      neighbourhood_count += 1 if addr.neighbourhood.blank?
+    end
+
+    puts "  partner_count=#{partner_count}"
+    puts "  neighbourhood_count=#{neighbourhood_count}"
+  end
+
   # we could have a task that scans for neighbourhoods that don't sit in the
   # latest version and lists which partners/sites are still linking through
   # them and/or prune unused obsolete neighbourhoods
+end
+
+module NeighbourhoodSweeper # rubocop:disable Metrics/ModuleLength
+  module_function
+
+  def run
+    @bad_users = {}
+    @bad_sites = {}
+    @bad_partners = {}
+
+    puts 'Sweeping obsolete neighbourhoods'
+
+    found = Neighbourhood.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
+
+    find_obsolete_addresses found
+
+    find_obsolete_sites found
+
+    find_obsolete_users found
+
+    find_obsolete_service_areas found
+
+    report
+  end
+
+  def describe_bad_neighbourhood(outcome)
+    type = 'deleted'
+    type = 'replaced' if outcome[:replacement].present?
+    type = 'reparented' if outcome[:reparent].present?
+
+    hood = outcome[:neighbourhood]
+    url = url_for(subdomain: 'admin', controller: 'admin/neighbourhoods', action: :show, id: hood.id)
+    "**[#{hood.unit_name}](#{url})** (*#{type}*)"
+  end
+
+  def maybe_print_reparenting_info(outcome, indent)
+    return if outcome[:reparent].blank?
+
+    old_neighbourhood = outcome[:neighbourhood]
+    new_neighbourhood = outcome[:reparent]
+    puts "#{indent}- was: #{neighbourhood_hierarchy(old_neighbourhood)}"
+    puts "#{indent}-  is: #{neighbourhood_hierarchy(new_neighbourhood)}"
+  end
+
+  def report
+    puts '# Report'
+    puts ''
+
+    puts "## Users (#{@bad_users.count})"
+    @bad_users.values.sort { |a, b| a[:user].email <=> b[:user].email }.each do |user|
+      url = url_for(subdomain: 'admin', controller: 'admin/users', action: :edit, id: user[:user].id)
+      puts "- [#{user[:user].email}](#{url})"
+
+      user[:neighbourhoods].each do |outcome|
+        puts "  - #{describe_bad_neighbourhood(outcome)}"
+        maybe_print_reparenting_info outcome, '    '
+      end
+    end
+
+    puts ''
+    puts "## Sites (#{@bad_sites.count})"
+    @bad_sites.values.sort { |a, b| a[:site].name <=> b[:site].name }.each do |site|
+      url = url_for(subdomain: 'admin', controller: 'admin/sites', action: :edit, id: site[:site].id)
+      puts "- [#{site[:site].name}](#{url})"
+
+      site[:neighbourhoods].each do |outcome|
+        puts "  - #{describe_bad_neighbourhood(outcome)}"
+        maybe_print_reparenting_info outcome, '    '
+      end
+    end
+
+    puts ''
+    puts "## Partners (#{@bad_partners.count})"
+    @bad_partners.values.sort { |a, b| a[:partner].name <=> b[:partner].name }.each do |partner|
+      url = url_for(subdomain: 'admin', controller: 'admin/partners', action: :edit, id: partner[:partner].id)
+      puts "- [#{partner[:partner].name}](#{url})"
+
+      if partner[:address].present?
+        puts '  - Address'
+        partner[:address].each do |outcome|
+          puts "    - #{describe_bad_neighbourhood(outcome)}"
+          maybe_print_reparenting_info outcome, '      '
+        end
+      end
+
+      next if partner[:service_areas].blank?
+
+      puts '  - Service Areas'
+      partner[:service_areas].each do |outcome|
+        puts "    - #{describe_bad_neighbourhood(outcome)}"
+        maybe_print_reparenting_info outcome, '      '
+      end
+    end
+  end
+
+  def found_bad_user_ref(user, old_neighbourhood, outcome = {})
+    @bad_users[user.id] ||= {
+      user: user,
+      neighbourhoods: []
+    }
+
+    outcome[:neighbourhood] = old_neighbourhood
+    @bad_users[user.id][:neighbourhoods] << outcome
+  end
+
+  def found_bad_site_ref(site, old_neighbourhood, outcome = {})
+    @bad_sites[site.id] ||= {
+      site: site,
+      neighbourhoods: []
+    }
+
+    outcome[:neighbourhood] = old_neighbourhood
+    @bad_sites[site.id][:neighbourhoods] << outcome
+  end
+
+  def found_bad_address_ref(partner, old_neighbourhood, outcome = {})
+    @bad_partners[partner.id] ||= {
+      partner: partner,
+      address: [],
+      service_areas: []
+    }
+
+    outcome[:neighbourhood] = old_neighbourhood
+    @bad_partners[partner.id][:address] << outcome
+  end
+
+  def found_bad_service_area_ref(partner, old_neighbourhood, outcome = {})
+    @bad_partners[partner.id] ||= {
+      partner: partner,
+      address: [],
+      service_areas: []
+    }
+
+    outcome[:neighbourhood] = old_neighbourhood
+    @bad_partners[partner.id][:service_areas] << outcome
+  end
+
+  def neighbourhood_hierarchy(hood)
+    parents = neighbourhood_hierarchy(hood.parent) if hood.parent
+
+    url = url_for(subdomain: 'admin', controller: 'admin/neighbourhoods', action: :show, id: hood.id)
+    me = "**[#{hood.unit_name}](#{url})** (#{hood.unit})"
+
+    if parents
+      "#{parents} -> #{me}"
+    else
+      me
+    end
+  end
+
+  def find_replacement_neighbourhood(old_neighbourhood)
+    Neighbourhood
+      .where(unit_name: old_neighbourhood.unit_name)
+      .latest_release
+      .first
+  end
+
+  def find_obsolete_addresses(neighbourhoods)
+    puts '  Scanning addresses'
+
+    neighbourhoods.each do |hood|
+      addresses = hood.addresses
+      next if addresses.empty?
+
+      partners = addresses.reduce([]) { |found, address| found += address.partners }
+      next if partners.empty?
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          partners.each do |partner|
+            found_bad_address_ref partner, hood, replacement: replacement
+          end
+          next
+        end
+
+        partners.each do |partner|
+          found_bad_address_ref partner, hood, reparent: replacement
+        end
+        next
+      end
+
+      partners.each do |partner|
+        found_bad_address_ref partner, hood, obsolete: true
+      end
+    end
+  end
+
+  def find_obsolete_sites(neighbourhoods)
+    puts '  Scanning sites'
+
+    neighbourhoods.each do |hood|
+      sites = hood.sites
+      next if sites.empty?
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          sites.each do |site|
+            found_bad_site_ref site, hood, replacement: replacement
+          end
+          next
+        end
+
+        sites.each do |site|
+          found_bad_site_ref site, hood, reparent: replacement
+        end
+        next
+      end
+
+      sites.each do |site|
+        found_bad_site_ref site, hood, obsolete: true
+      end
+    end
+  end
+
+  def find_obsolete_users(neighbourhoods)
+    puts '  Scanning users'
+
+    neighbourhoods.each do |hood|
+      users = hood.users
+      next if users.empty?
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          users.each do |user|
+            found_bad_user_ref user, hood, replacement: replacement
+          end
+          next
+        end
+
+        users.each do |user|
+          found_bad_user_ref user, hood, reparent: replacement
+        end
+        next
+      end
+
+      users.each do |user|
+        found_bad_user_ref user, hood, obsolete: true
+      end
+    end
+  end
+
+  def find_obsolete_service_areas(neighbourhoods)
+    puts '  Scanning service areas'
+
+    neighbourhoods.each do |hood|
+      service_areas = hood.service_areas
+      next if service_areas.empty?
+
+      replacement = find_replacement_neighbourhood(hood)
+      if replacement.present?
+        if replacement.parent == hood.parent
+          service_areas.each do |service_area|
+            found_bad_service_area_ref service_area.partner, hood, replacement: replacement
+          end
+          next
+        end
+
+        service_areas.each do |service_area|
+          found_bad_service_area_ref service_area.partner, hood, reparent: replacement
+        end
+        next
+      end
+
+      service_areas.each do |service_area|
+        found_bad_service_area_ref service_area.partner, hood, obsolete: true
+      end
+    end
+  end
+
+  def url_for(*args)
+    Rails.application.routes.url_helpers.url_for(*args)
+  end
 end

@@ -29,12 +29,21 @@ module UsersHelper
     policy_scope(Partner).all.order(:name).pluck(:name, :id)
   end
 
-  def options_for_neighbourhoods
-    policy_scope(Neighbourhood)
-      .where('name is not null and name != \'\'')
+  def options_for_user_neighbourhoods(for_user)
+    legacy_neighbourhoods = for_user.neighbourhoods.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
+
+    scope = Neighbourhood.find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(policy_scope(Neighbourhood), legacy_neighbourhoods)
+
+    scope
       .order(:name)
       .all
-      .collect { |ward| [ward.contextual_name, ward.id] }
+      .collect do |ward|
+        if ward.legacy_neighbourhood?
+          ["#{ward.contextual_name} - #{ward.release_date.year}/#{ward.release_date.month}", ward.id]
+        else
+          [ward.contextual_name, ward.id]
+        end
+      end
   end
 
   def options_for_tags
