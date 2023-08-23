@@ -63,13 +63,28 @@
       <p class="font-weight-light">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
 
       <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
-        <% if @primary_neighbourhood_id %>
-          <h3><span class="badge badge-secondary"><%= @all_neighbourhoods.find(@primary_neighbourhood_id).contextual_name %></span></h3>
+        <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
+        <% if primary_neighbourhood.present? %>
+          <h3>
+            <span class="badge badge-secondary">
+              <%= primary_neighbourhood.contextual_name %>
+              <% if primary_neighbourhood.legacy_neighbourhood? %>
+                (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>)
+              <% end %>
+            </span>
+          </h3>
           <%= sn.hidden_field :relation_type, value: "Primary" %>
-          <%= sn.hidden_field :neighbourhood_id, value: @primary_neighbourhood_id %>
+          <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
+          <% if primary_neighbourhood.legacy_neighbourhood? %>
+          <p>
+            Warning: This neighbourhood not from the current release
+            (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>).
+            Please contact a PlaceCal admin.
+          </p>
+          <% end %>
         <% else %>
           <%= sn.hidden_field :relation_type, value: "Primary" %>
-          <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods, include_blank: false,
+          <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
               value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
               input_html: { class: 'form-control col-6', data: { controller: "select2" } },
               label: '', label_html: { hidden: true } %>

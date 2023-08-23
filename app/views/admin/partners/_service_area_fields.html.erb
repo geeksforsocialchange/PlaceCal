@@ -2,7 +2,7 @@
     <%# The style width setting here is applied to dynamically created elements, we do not know why. %>
     <%# TODO: Fix the dynamic styling so that width does not get applied, so we can remove this smell %>
     <%= f.input :neighbourhood_id,
-                collection: options_for_service_area_neighbourhoods,
+                collection: options_for_service_area_neighbourhoods(@partner),
                 include_blank: false,
                 value_method: ->(obj) { obj[:id] },
                 label_method: ->(obj) { obj[:name] },

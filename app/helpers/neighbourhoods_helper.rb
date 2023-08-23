@@ -10,4 +10,12 @@ module NeighbourhoodsHelper
 
     "[untitled #{neighbourhood.id}]"
   end
+
+  def link_to_neighbourhood(neighbourhood)
+    text = neighbourhood.name
+    text += " - (#{neighbourhood.release_date.year}/#{neighbourhood.release_date.month})" if neighbourhood.legacy_neighbourhood?
+
+    html = link_to(text, edit_admin_neighbourhood_path(neighbourhood))
+    html.html_safe # rubocop:disable Rails/OutputSafety
+  end
 end

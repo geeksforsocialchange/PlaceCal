@@ -45,4 +45,48 @@ class NeighbourhoodsAncestryTest < ActiveSupport::TestCase
     hood = Neighbourhood.new(name: 'neighbourhood', name_abbr: 'hood')
     assert_equal('hood', hood.abbreviated_name)
   end
+
+  test 'latest_release_date scope limits neighbourhoods to the latest version only' do
+    Neighbourhood.delete_all
+
+    3.times do |n|
+      # neighbourhoods with current release date
+      create :neighbourhood_country, name: "Country X#{n}"
+    end
+
+    5.times do |n|
+      create :neighbourhood_country, name: "Country Y#{n}", release_date: DateTime.new(1990, 1)
+    end
+
+    found = Neighbourhood.latest_release.count
+    assert_equal 3, found
+  end
+
+  test '::find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods' do
+    Neighbourhood.delete_all
+
+    latest_neighbourhoods =
+      Array.new(5) do |n|
+        # neighbourhoods with current release date
+        create :neighbourhood_country, name: "Country X#{n}"
+      end
+
+    obsolete_neighbourhoods =
+      Array.new(9) do |n|
+        create :neighbourhood_country, name: "Country Y#{n}", release_date: DateTime.new(1990, 1)
+      end
+
+    # finds only latest neighbourhoods
+    found = Neighbourhood.find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(Neighbourhood, [])
+    assert_equal 5, found.count
+
+    # but can include legacy neighbourhoods that are directly referenced
+    legacy_neighbourhoods = [
+      obsolete_neighbourhoods[0],
+      obsolete_neighbourhoods[2]
+    ]
+
+    found = Neighbourhood.find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(Neighbourhood, legacy_neighbourhoods)
+    assert_equal 7, found.count
+  end
 end

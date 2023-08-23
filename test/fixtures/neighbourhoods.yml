@@ -7,7 +7,7 @@ one:
   unit_code_key: "WD19CD"
   unit_code_value: "E05011368"
   unit_name: "Hulme"
-  release_date: "2023-07-01 00:00:00.000000000 +0000"
+  release_date: <%= Neighbourhood::LATEST_RELEASE_DATE %>
 
 two:
   name: "Ashton Hurst"
@@ -16,7 +16,7 @@ two:
   unit_code_key: "WD19CD"
   unit_code_value: "E05000800"
   unit_name: "Ashton Hurst"
-  release_date: "2023-07-01 00:00:00.000000000 +0000"
+  release_date: <%= Neighbourhood::LATEST_RELEASE_DATE %>
 
 # this must match up with the geocode stub API data in test_helper.rb
 moss_side:
@@ -26,4 +26,4 @@ moss_side:
   unit_code_key: "WD19CD"
   unit_code_value: "E05011372"
   unit_name: "Moss Side"
-  release_date: "2023-07-01 00:00:00.000000000 +0000"
+  release_date: <%= Neighbourhood::LATEST_RELEASE_DATE %>

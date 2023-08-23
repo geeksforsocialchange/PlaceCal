@@ -42,6 +42,13 @@
         <%= render 'address_fields', f: a %>
         <% end %>
 
+  <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
+  <p>
+    The address for this partner is assigned to an out of date neighbourhood.
+    You do not need to take any action but if you wish to reassign this to an
+    up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
+  </p>
+  <% end %>
 	<% if partner_has_unmappable_postcode?(@partner) %>
 	<p>
 	  The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
@@ -120,9 +127,9 @@
       <%= render 'opening_times', f: f %>
     </div>
   </div>
-  <hr>  
+  <hr>
   <h2>Tags</h2>
-  
+
   <p>What partnerships, categories and facilities does this partner have or belong to?</p>
   <p>Partners may have up to 3 category tags.</p>
 
@@ -147,4 +154,4 @@
 </div>
 
 <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
- 
+
