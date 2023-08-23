@@ -44,7 +44,9 @@
 
   <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
   <p>
-    <em>WARNING</em>: The address for this partner is out of date. It will keep working but you may want to update it to your latest address.
+    The address for this partner is assigned to an out of date neighbourhood.
+    You do not need to take any action but if you wish to reassign this to an
+    up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
   </p>
   <% end %>
 	<% if partner_has_unmappable_postcode?(@partner) %>
