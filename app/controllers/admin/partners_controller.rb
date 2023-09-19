@@ -39,6 +39,9 @@ module Admin
 
       authorize @partner
 
+      # prevent someone trying to add the same service_area twice by mistake and causing a crash
+      @partner.service_areas = @partner.service_areas.uniq { |service_area| service_area.neighbourhood_id }
+
       respond_to do |format|
         if @partner.save
           format.html do
