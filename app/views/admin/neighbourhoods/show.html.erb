@@ -31,7 +31,13 @@
 <% if @neighbourhood.address_partners.present? %>
 <ul class="list-group">
   <% @neighbourhood.address_partners.order(:name).each do |partner| %>
-  <li class="list-group-item"><%= link_to partner.name, edit_admin_partner_path(partner) %></li>
+  <li class="list-group-item">
+    <% if current_user.partner_admin? -%>
+      <%= link_to partner.name, edit_admin_partner_path(partner) %>
+    <% else %>
+      <%= partner.name %>
+    <% end %>
+  </li>
   <% end %>
 </ul>
 <% end %>
@@ -42,22 +48,34 @@
 <% if @neighbourhood.service_area_partners.present? %>
 <ul class="list-group">
   <% @neighbourhood.service_area_partners.order(:name).each do |partner| %>
-  <li class="list-group-item"><%= link_to partner.name, edit_admin_partner_path(partner) %></li>
+    <li class="list-group-item">
+      <% if current_user.partner_admin? -%>
+        <%= link_to partner.name, edit_admin_partner_path(partner) %>
+      <% else %>
+        <%= partner.name %>
+      <% end %>
+    </li>
   <% end %>
 </ul>
 <% end %>
 
-<hr>
-<h2>Sites</h2>
-<p>Found <%= @neighbourhood.sites.count %>.</p>
-<% if @neighbourhood.sites.present? %>
-<ul class="list-group">
-  <% @neighbourhood.sites.order(:name).each do |site| %>
-  <li class="list-group-item"><%= link_to site.name, edit_admin_site_path(site) %></li>
+
+<% if current_user.site_admin? %>
+  <hr>
+  <h2>Sites</h2>
+  <p>Found <%= @neighbourhood.sites.count %>.</p>
+  <% if @neighbourhood.sites.present? %>
+  <ul class="list-group">
+    <% @neighbourhood.sites.order(:name).each do |site| %>
+    <li class="list-group-item"><%= link_to site.name, edit_admin_site_path(site) %></li>
+    <% end %>
+  </ul>
   <% end %>
-</ul>
 <% end %>
 
+<% if false %>
+<!-- this would be easy to do but probably something we don't want to do. -->
 <hr>
 <h2>Admin Users</h2>
 <p>Found X.</p>
+<% end %>
