@@ -189,4 +189,26 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal "Source responded with invalid JSON (783: unexpected token at '{ \"key\": \"va')", error.message
     end
   end
+
+  test 'can import from generic iCal feed' do
+    VCR.use_cassette(:generic_ical_feed, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Generic iCal Calendar',
+        source: 'https://www.birchcommunitycentre.co.uk/events.ics',
+        strategy: 'event'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+
+      assert_equal 'idle', calendar.calendar_state
+      assert_equal 'ical', calendar.importer_used
+
+      created_events = calendar.events
+      assert_equal 29, created_events.count # (at time of recording)
+    end
+  end
 end

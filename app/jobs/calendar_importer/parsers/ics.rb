@@ -27,7 +27,8 @@ module CalendarImporter::Parsers
         mossley: %r{http(s)?://mossleycommunitycentre.org.uk},
         theproudtrust: %r{http(s)?://www.theproudtrust.org},
         teamup: %r{http(s)?://ics.teamup.com/feed/.*},
-        consortium: %r{https://www.consortium.lgbt/events/.*}
+        consortium: %r{https://www.consortium.lgbt/events/.*},
+        generic: %r{^https://.*\.ics$}
       }
       Regexp.union(allowlists.values)
     end
