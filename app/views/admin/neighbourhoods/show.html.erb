@@ -32,7 +32,7 @@
 <ul class="list-group">
   <% @neighbourhood.address_partners.order(:name).each do |partner| %>
   <li class="list-group-item">
-    <% if current_user.partner_admin? -%>
+    <% if policy(partner).update? -%>
       <%= link_to partner.name, edit_admin_partner_path(partner) %>
     <% else %>
       <%= partner.name %>
@@ -49,7 +49,7 @@
 <ul class="list-group">
   <% @neighbourhood.service_area_partners.order(:name).each do |partner| %>
     <li class="list-group-item">
-      <% if current_user.partner_admin? -%>
+      <% if policy(partner).update? -%>
         <%= link_to partner.name, edit_admin_partner_path(partner) %>
       <% else %>
         <%= partner.name %>
@@ -60,7 +60,7 @@
 <% end %>
 
 
-<% if current_user.site_admin? %>
+<% if policy(Site).update? || policy(Neighbourhood).update? %>
   <hr>
   <h2>Sites</h2>
   <p>Found <%= @neighbourhood.sites.count %>.</p>
