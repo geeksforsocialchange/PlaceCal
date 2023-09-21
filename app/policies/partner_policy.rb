@@ -19,9 +19,8 @@ class PartnerPolicy < ApplicationPolicy
 
   def update?
     return true if user.root?
-
-    return true if user.can_alter_neighbourhood_by_id?(record.neighbourhood_id)
     return true if user.can_alter_partner_by_id?(record.id)
+    return true if user.owned_neighbourhood_ids.include?(record.neighbourhood_id)
 
     false
   end

@@ -27,7 +27,10 @@ FactoryBot.define do
     end
 
     factory(:neighbourhood_admin) do
-      after(:create) { |user| user.neighbourhoods = [create(:neighbourhood)] }
+      after(:create) do |user|
+        user.neighbourhoods = [create(:neighbourhood)]
+        user.role = :citizen
+      end
     end
 
     factory(:neighbourhood_region_admin) do
