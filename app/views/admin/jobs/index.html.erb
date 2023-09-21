@@ -15,7 +15,7 @@
     <% states.each do |state_name| -%>
       <tr>
         <td><%= state_name %></td>
-        <td><%= @calendar_counts[state_name] || 0 %></td>
+        <td><%= @calendar_counts[state_name.to_s] || 0 %></td>
       </tr>
     <% end -%>
   </tbody>
