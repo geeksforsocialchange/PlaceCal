@@ -21,14 +21,14 @@ module CalendarImporter::Parsers
 
     def self.allowlist_pattern
       allowlists = {
-        gcal: %r{http(s)?://calendar.google.com\.*},
-        outlook: %r{http(s)?://outlook.(office365|live).com/owa/calendar/.*},
-        webcal: %r{webcal://},
-        mossley: %r{http(s)?://mossleycommunitycentre.org.uk},
-        theproudtrust: %r{http(s)?://www.theproudtrust.org},
-        teamup: %r{http(s)?://ics.teamup.com/feed/.*},
-        consortium: %r{https://www.consortium.lgbt/events/.*},
-        generic: %r{^https://.*\.ics$}
+        gcal: %r{^https?://calendar\.google\.com.*},
+        outlook: %r{^https?://outlook\.(office365|live)\.com/owa/calendar/.*},
+        webcal: %r{^webcal://},
+        mossley: %r{^https?://mossleycommunitycentre\.org\.uk},
+        theproudtrust: %r{^https?://www\.theproudtrust\.org},
+        teamup: %r{^https?://ics\.teamup\.com/feed/.*},
+        consortium: %r{^https://www\.consortium\.lgbt/events/.*},
+        generic: %r{^https?://.*\.ics$}
       }
       Regexp.union(allowlists.values)
     end
