@@ -14,7 +14,7 @@ class AdminArticleTest < ApplicationSystemTestCase
     @partner = create :partner
     @partner_two = create :ashton_partner
 
-    @tag = create :tag
+    @tag = create(:tag, type: 'Partnership')
 
     @article = create :article
 

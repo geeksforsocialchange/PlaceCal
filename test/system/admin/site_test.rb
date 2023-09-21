@@ -10,7 +10,7 @@ class AdminSiteTest < ApplicationSystemTestCase
   setup do
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
-    @tag = create :tag
+    @tag = create(:tag, type: 'Partnership')
     @site = create :site
 
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')

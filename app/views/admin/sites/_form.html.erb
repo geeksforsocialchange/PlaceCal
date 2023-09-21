@@ -121,7 +121,7 @@
       <p class="font-weight-light">Only show partners with these tags</p>
       <%= f.association :tags,
                         label: false,
-                        collection: options_for_tags,
+                        collection: options_for_tags, # this might be calling the method from users_helpers.rb 
                         input_html: { class: 'form-check', data: { controller: "select2" } } %>
     </div>
   </div>

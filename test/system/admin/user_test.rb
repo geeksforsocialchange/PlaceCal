@@ -16,7 +16,7 @@ class AdminUserTest < ApplicationSystemTestCase
     @partner = @partner_admin.partners.first
     @partner_two = create :ashton_partner
 
-    @tag = create :tag
+    @tag = create(:tag, type: 'Partnership')
 
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
