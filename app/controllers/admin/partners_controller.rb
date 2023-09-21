@@ -70,9 +70,18 @@ module Admin
     def update
       authorize @partner
 
+      mutated_params = permitted_attributes(@partner)
+
       @partner.accessed_by_user = current_user
 
-      if @partner.update(permitted_attributes(@partner))
+      uniq_service_areas = mutated_params[:service_areas_attributes]
+                           .to_h
+                           .map { |_, val| val }
+                           .uniq { |service_area| service_area[:neighbourhood_id] }
+
+      mutated_params[:service_areas_attributes] = uniq_service_areas
+
+      if @partner.update(mutated_params)
         flash[:success] = 'Partner was successfully updated.'
         redirect_to edit_admin_partner_path(@partner)
 
