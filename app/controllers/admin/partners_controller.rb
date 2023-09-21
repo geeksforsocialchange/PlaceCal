@@ -40,7 +40,7 @@ module Admin
       authorize @partner
 
       # prevent someone trying to add the same service_area twice by mistake and causing a crash
-      @partner.service_areas = @partner.service_areas.uniq { |service_area| service_area.neighbourhood_id }
+      @partner.service_areas = @partner.service_areas.uniq(&:neighbourhood_id)
 
       respond_to do |format|
         if @partner.save
@@ -74,6 +74,7 @@ module Admin
 
       @partner.accessed_by_user = current_user
 
+      # prevent someone trying to add the same service_area twice by mistake and causing a crash
       uniq_service_areas = mutated_params[:service_areas_attributes]
                            .to_h
                            .map { |_, val| val }
