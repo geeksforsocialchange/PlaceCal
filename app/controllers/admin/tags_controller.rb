@@ -60,12 +60,27 @@ module Admin
     #       We should either have it here, or remove the json format on create, surely
     def update
       authorize @tag
-      attributes = permitted_attributes(Tag.new)
+      # this returns an array which is breaking @tag.update. not sure why the original didn't?
+      # needs to be ActionController::Parameters
+      attributes = policy(@tag).permitted_attributes
+
+      # this method call breaks with @tag
+      # attributes = permitted_attributes(@tag)
+
+      # original method call
+      # attributes = permitted_attributes(Tag.new)
+      puts '~'*34
+      puts "what sort of class????"
+      puts attributes.class
 
       if current_user.partner_admin?
         attributes[:partner_ids] =
           helpers.all_partners_for(@tag, attributes)
       end
+      puts '#'*60
+      puts 'these are the attributes'
+      puts attributes
+      puts '#'*60
 
       if @tag.update(attributes)
         flash[:success] = 'Tag was saved successfully'
