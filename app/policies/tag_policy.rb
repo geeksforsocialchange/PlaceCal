@@ -42,9 +42,11 @@ class TagPolicy < ApplicationPolicy
       fields = %i[name slug description system_tag]
       fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [], user_ids: [])
-    elsif user.tags.include?(@record) 
+    elsif user.tags.include?(@record)
       # I expect record to be the value passed to this method but if I pass anything but Tag.new it falls over
+      # in fact I think this is a dead logic branch because all our tests pass when it's commented out
       fields = %i[name slug description]
+      fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [])
     elsif user.partner_admin?
       %i[].push(partner_ids: [])
@@ -56,7 +58,7 @@ class TagPolicy < ApplicationPolicy
   def disabled_fields
     if user.root?
       %i[]
-    elsif (user.tag_admin? && user.tags.include?(@record)) 
+    elsif user.tag_admin? && user.tags.include?(@record)
       %i[system_tag users user_ids]
     elsif user.tag_admin? || user.partner_admin?
       %i[name slug description users user_ids system_tag]
