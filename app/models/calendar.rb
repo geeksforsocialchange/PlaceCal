@@ -259,6 +259,6 @@ class Calendar < ApplicationRecord
   rescue CalendarImporter::Exceptions::InaccessibleFeed => e
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed => e
-    errors.add :source, "URL could not be parsed (#{e})"
+    errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
   end
 end
