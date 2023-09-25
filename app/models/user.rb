@@ -36,6 +36,8 @@ class User < ApplicationRecord
             format: { with: EMAIL_REGEX, message: 'invalid email address' }
   validates :role, presence: true
 
+  validate :partnership_tag?
+
   mount_uploader :avatar, AvatarUploader
 
   # General use throughout the site
@@ -119,6 +121,12 @@ class User < ApplicationRecord
 
     neighbourhood = Neighbourhood.find_from_postcodesio_response(res)
     owned_neighbourhood_ids.include?(neighbourhood&.id)
+  end
+
+  def partnership_tag?
+    return true if tags.all? { |tag| tag.type == 'Partnership' }
+
+    errors.add(:tags, 'Can only be of type Partnership')
   end
 
   protected

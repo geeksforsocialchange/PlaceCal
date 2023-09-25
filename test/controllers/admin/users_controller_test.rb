@@ -106,7 +106,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     @user = attributes_for(:citizen,
                            partner_ids: [create(:partner).id.to_s],
                            neighbourhood_ids: [create(:neighbourhood).id.to_s],
-                           tag_ids: [create(:tag).id.to_s])
+                           tag_ids: [create(:tag, name: 'trans dimension', type: 'Partnership').id.to_s])
 
     assert_difference('User.count', 1) do
       post admin_users_url,
