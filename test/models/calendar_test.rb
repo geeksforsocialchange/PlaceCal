@@ -162,4 +162,15 @@ class CalendarTest < ActiveSupport::TestCase
       assert_equal today, calendar.updated_at
     end
   end
+
+  test 'it shows helpful message if source URL not recognised' do
+    VCR.use_cassette(:unsupported_url, allow_playback_repeats: true) do
+      calendar = Calendar.new
+      calendar.source = 'https://raw.githubusercontent.com/geeksforsocialchange/PlaceCal/main/config/database.yml'
+
+      # this will only work when calendar is in 'auto' mode
+      assert_not calendar.valid?
+      assert_equal ['Unable to autodetect calendar format, please pick an option from the list below'], calendar.errors[:source]
+    end
+  end
 end
