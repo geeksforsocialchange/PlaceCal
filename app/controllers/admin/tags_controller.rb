@@ -60,17 +60,12 @@ module Admin
     #       We should either have it here, or remove the json format on create, surely
     def update
       authorize @tag
-      attributes = permitted_attributes(Tag.new)
+      # permitted_attributes(@tag) causes a crash for some reason
+      attributes = params.require(:tag).permit(policy(@tag).permitted_attributes)
 
       if current_user.partner_admin?
         attributes[:partner_ids] =
           helpers.all_partners_for(@tag, attributes)
-      end
-
-      if current_user.tags.include?(@tag)
-        attributes[:name] = params[:tag][:name]
-        attributes[:slug] = params[:tag][:slug]
-        attributes[:description] = params[:tag][:description]
       end
 
       if @tag.update(attributes)
