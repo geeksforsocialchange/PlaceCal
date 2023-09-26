@@ -44,7 +44,6 @@ class TagPolicy < ApplicationPolicy
       fields.push(partner_ids: [], user_ids: [])
     elsif user.tags.include?(@record)
       fields = %i[name slug description]
-      fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [])
     elsif user.partner_admin?
       %i[].push(partner_ids: [])
