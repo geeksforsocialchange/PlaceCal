@@ -19,13 +19,22 @@ class PartnersController < ApplicationController
     # @partners = Partner.managers.for_site(current_site).order(:name)
 
     # Get all partners based in the neighbourhoods associated with this site.
-    @partners = Partner
-                .for_site(current_site)
-                .includes(:service_areas, :address)
-                .order(:name)
+    partners = Partner
+               .for_site(current_site)
+               .includes(:service_areas, :address)
+               .order(:name)
+
+    neighbourhood_names = Partner.neighbourhood_names_for_site(current_site, current_site.badge_zoom_level)
 
     @category_filter = PartnerCategoryFilter.new(current_site, params)
-    @partners = @category_filter.apply_to(@partners)
+    @neighbourhood_filter = PartnerNeighbourhoodFilter.new(
+      current_site,
+      neighbourhood_names,
+      params
+    )
+
+    category_filtered_partners = @category_filter.apply_to(partners)
+    @partners = @neighbourhood_filter.apply_to(category_filtered_partners)
 
     # show only partners with no service_areas
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)

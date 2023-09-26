@@ -113,6 +113,12 @@ class Neighbourhood < ApplicationRecord
     ancestors.where(unit: 'country').first
   end
 
+  def name_from_badge_zoom(badge_zoom_level)
+    return district&.shortname if badge_zoom_level == 'district'
+
+    shortname
+  end
+
   class << self
     def find_from_postcodesio_response(res)
       ons_id = res['codes']['admin_ward']
