@@ -22,7 +22,7 @@ class PartnerCategoryFilterIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@site, partners_path)
     assert_response :success
 
-    assert_select 'button', text: 'Filter', count: 0
+    assert_select '.filters__link', text: 'Category', count: 0
     assert_select 'ul#partners li', count: 3
   end
 
@@ -32,7 +32,7 @@ class PartnerCategoryFilterIntegrationTest < ActionDispatch::IntegrationTest
 
     get from_site_slug(@site, partners_path(category: @tag.id))
 
-    assert_select 'button', text: 'Filter', count: 1
+    assert_select '.filters__link', text: 'Category', count: 1
     assert_select 'ul#partners li', count: 7
   end
 
@@ -40,9 +40,9 @@ class PartnerCategoryFilterIntegrationTest < ActionDispatch::IntegrationTest
   test 'can be selected to filter out selected category' do
     given_some_tagged_partners_exist
 
-    get from_site_slug(@site, partners_path(category: @tag.id, mode: 'exclude'))
+    get from_site_slug(@site, partners_path(category: @tag.id, category_mode: 'exclude'))
 
-    assert_select 'button', text: 'Filter', count: 1
+    assert_select '.filters__link', text: 'Category', count: 1
     assert_select 'ul#partners li', count: 3
   end
 

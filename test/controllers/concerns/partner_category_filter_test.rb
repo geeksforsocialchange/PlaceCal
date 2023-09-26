@@ -193,7 +193,7 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     assert_equal(1, query.count)
 
     # returns only partners NOT assigned category (in exclude mode)
-    filter = PartnerCategoryFilter.new(@site, category: @category.id, mode: 'exclude')
+    filter = PartnerCategoryFilter.new(@site, category: @category.id, category_mode: 'exclude')
     query = filter.apply_to(Partner)
     assert_equal(3, query.count)
   end
@@ -227,12 +227,12 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     assert_not filter.exclude_mode?
 
     # is include mode when set
-    filter = PartnerCategoryFilter.new(@site, mode: 'include')
+    filter = PartnerCategoryFilter.new(@site, category_mode: 'include')
     assert_predicate filter, :include_mode?
     assert_not filter.exclude_mode?
 
     # is exclude mode when set
-    filter = PartnerCategoryFilter.new(@site, mode: 'exclude')
+    filter = PartnerCategoryFilter.new(@site, category_mode: 'exclude')
     assert_predicate filter, :exclude_mode?
     assert_not filter.include_mode?
   end

@@ -237,4 +237,92 @@ class PartnerTest < ActiveSupport::TestCase
     partner.save
     assert_equal 1, partner.partnerships.count
   end
+
+  test '#neighbourhood_name_for_site returns ward level neighbourhood name' do
+    partner = create(:ashton_partner)
+    name = partner.neighbourhood_name_for_site('ward')
+
+    assert_equal('Ashton Hurst', name)
+  end
+
+  test '#neighbourhood_name_for_site returns district level neighbourhood name' do
+    partner = create(:ashton_partner)
+    partner.address.neighbourhood.parent = create(:neighbourhood_district)
+    name = partner.neighbourhood_name_for_site('district')
+
+    assert_equal('Manchester', name)
+  end
+
+  test '#neighbourhood_name_for_site returns service area name' do
+    partner = create(:ashton_service_area_partner)
+    name = partner.neighbourhood_name_for_site('ward')
+
+    assert_equal('Ashton Hurst', name)
+  end
+
+  test '#self.neighbourhood_names_for_site returns names of partners for site' do
+    site = create(:site)
+    partner = create(:ashton_partner)
+    site.neighbourhoods << partner.address.neighbourhood
+
+    site_names = Partner.neighbourhood_names_for_site(site, 'ward')
+
+    assert_equal(['Ashton Hurst'], site_names)
+  end
+
+  test '#self.neighbourhood_names_for_site returns district level names of partners for site' do
+    site = create(:site)
+    partner = create(:ashton_partner)
+    partner.address.neighbourhood.parent = create(:neighbourhood_district)
+    site.neighbourhoods << partner.address.neighbourhood
+
+    site_names = Partner.neighbourhood_names_for_site(site, 'district')
+
+    assert_equal(['Manchester'], site_names)
+  end
+
+  test '#self.neighbourhood_names_for_site returns names of partners service areas for site' do
+    site = create(:site)
+    partner = create(:ashton_service_area_partner)
+    site.neighbourhoods << partner.address.neighbourhood
+
+    site_names = Partner.neighbourhood_names_for_site(site, 'ward')
+
+    assert_equal(['Ashton Hurst'], site_names)
+  end
+
+  test '#self.for_neighbourhood_name_filter returns partners restricted by site name' do
+    partner_with_selected_neighbourhood = create(:ashton_partner)
+    partner_with_selected_service_area = create(:ashton_service_area_partner)
+    unselected_partner = create(:moss_side_partner)
+
+    partners = Partner.for_neighbourhood_name_filter(Partner.all, 'ward', 'Ashton Hurst')
+
+    assert_includes partners, partner_with_selected_neighbourhood
+    assert_includes partners, partner_with_selected_service_area
+    assert_not_includes partners, unselected_partner
+  end
+
+  test '#self.for_neighbourhood_name_filter returns partners restricted by site name at district level' do
+    district = create(:neighbourhood_district)
+
+    partner_with_selected_neighbourhood = create(:ashton_partner)
+    partner_with_selected_service_area = create(:moss_side_partner)
+    unselected_partner = create(:moss_side_partner)
+
+    partner_with_selected_neighbourhood.address.neighbourhood.parent = district
+    partner_with_selected_service_area.service_area_neighbourhoods = [district]
+
+    all_partners = [
+      partner_with_selected_neighbourhood,
+      partner_with_selected_service_area,
+      unselected_partner
+    ]
+
+    partners = Partner.for_neighbourhood_name_filter(all_partners, 'district', 'Manchester')
+
+    assert_includes partners, partner_with_selected_neighbourhood
+    assert_includes partners, partner_with_selected_service_area
+    assert_not_includes partners, unselected_partner
+  end
 end
