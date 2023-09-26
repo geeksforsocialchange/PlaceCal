@@ -124,7 +124,7 @@ class User < ApplicationRecord
   end
 
   def validate_tags_are_partnerships
-    return true if tags.all? { |tag| tag.type == 'Partnership' }
+    return true if tags.all?(Partnership)
 
     errors.add(:tags, 'Can only be of type Partnership')
   end
