@@ -29,4 +29,7 @@
 
 <p class="small text-info ml-3">
 <i class="fa fa-bug"></i> <%= link_to "Report a bug", "https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md" %>
+
+<% tag = `git describe --tags --abbrev=0` %>
+<br><i class="fa fa-git"></i> Version: <tt><%= link_to tag, "https://github.com/geeksforsocialchange/PlaceCal/releases/latest" %></tt>
 </p>
