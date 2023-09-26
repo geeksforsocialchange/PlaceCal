@@ -36,7 +36,7 @@ class User < ApplicationRecord
             format: { with: EMAIL_REGEX, message: 'invalid email address' }
   validates :role, presence: true
 
-  validate :partnership_tag?
+  validate :validate_tags_are_partnerships
 
   mount_uploader :avatar, AvatarUploader
 
@@ -123,7 +123,7 @@ class User < ApplicationRecord
     owned_neighbourhood_ids.include?(neighbourhood&.id)
   end
 
-  def partnership_tag?
+  def validate_tags_are_partnerships
     return true if tags.all? { |tag| tag.type == 'Partnership' }
 
     errors.add(:tags, 'Can only be of type Partnership')
