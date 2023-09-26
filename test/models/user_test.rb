@@ -104,20 +104,16 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'Category tag cannot be assigned to User' do
-    error_message = 'Validation failed: Tags Can only be of type Partnership'
-    @user.tags << Tag.where(type: 'Category').first
-
-    assert_raises ActiveRecord::RecordInvalid, error_message do
-      @user.save!
-    end
+    error_message = 'Can only be of type Partnership'
+    @user.tags << Category.first
+    assert_not @user.valid? # runs validations in the background
+    assert_equal [error_message], @user.errors[:tags]
   end
 
   test 'Faciltiy tag cannot be assigned to User' do
-    error_message = 'Validation failed: Tags Can only be of type Partnership'
-    @user.tags << Tag.where(type: 'Facility').first
-
-    assert_raises ActiveRecord::RecordInvalid, error_message do
-      @user.save!
-    end
+    error_message = 'Can only be of type Partnership'
+    @user.tags << Facility.first
+    assert_not @user.valid? # runs validations in the background
+    assert_equal [error_message], @user.errors[:tags]
   end
 end
