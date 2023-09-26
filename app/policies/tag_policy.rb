@@ -43,8 +43,6 @@ class TagPolicy < ApplicationPolicy
       fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [], user_ids: [])
     elsif user.tags.include?(@record)
-      # I expect record to be the value passed to this method but if I pass anything but Tag.new it falls over
-      # in fact I think this is a dead logic branch because all our tests pass when it's commented out
       fields = %i[name slug description]
       fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [])
