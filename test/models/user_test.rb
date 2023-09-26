@@ -98,7 +98,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'Partnership tag can be assigned to User' do
-    @user.tags << Tag.where(type: 'Partnership').first
+    @user.tags << Partnership.first
     @user.save!
     assert_equal(1, @user.tags.length)
   end

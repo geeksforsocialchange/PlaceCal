@@ -6,7 +6,7 @@ class TagTest < ActiveSupport::TestCase
   setup do
     create_typed_tags
     @tag = Tag.first
-    @partnership_tag = Tag.where(type: 'Partnership').first
+    @partnership_tag = Partnership.first
     @user = create(:user)
     @partner = create(:partner)
   end
