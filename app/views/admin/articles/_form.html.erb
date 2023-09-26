@@ -41,7 +41,7 @@
       <h4>Partnerships</h4>
       <% if disabled_fields.include?(:tag_ids) %>
         <%# # Create a dummy field, because f.assoc disappears %>
-        <%= f.input :tags, collection: options_for_tags, # this might be calling the method from users_helpers.rb 
+        <%= f.input :tags, collection: options_for_tags,
             input_html: { class: 'form-control', data: { controller: "select2"} }, disabled: true %>
       <% else %>
         <%= f.association :tags, collection: options_for_tags,
