@@ -42,7 +42,7 @@ class UserTest < ActiveSupport::TestCase
     partner = create(:partner)
     user.partners << partner
 
-    assert user.can_alter_partner_by_id?(partner.id)
+    assert user.admin_for_partner?(partner.id)
   end
 
   test 'updates user role on save' do

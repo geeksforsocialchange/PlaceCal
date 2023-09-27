@@ -73,7 +73,7 @@ class User < ApplicationRecord
     owned_neighbourhoods.collect(&:id)
   end
 
-  def can_alter_partner_by_id?(partner_id)
+  def admin_for_partner?(partner_id)
     partners.pluck(:id).include? partner_id
   end
 
