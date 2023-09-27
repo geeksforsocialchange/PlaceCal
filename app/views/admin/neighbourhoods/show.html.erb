@@ -19,7 +19,7 @@
     <% if child.descendants.present? || current_user.can_view_neighbourhood_by_id?(child.id) %>
       <%= link_to(safe_neighbourhood_name(child), admin_neighbourhood_path(child)) %>
     <% else %>
-     <%= child %>
+     <%= safe_neighbourhood_name(child) %>
     <% end %>
     <% if child.descendants.present? %>
     <span title="descendants" class="badge badge-primary badge-pill"><%= child.descendants.count %></span>
