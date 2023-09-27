@@ -26,15 +26,8 @@ class PartnersController < ApplicationController
 
     neighbourhood_names = Partner.neighbourhood_names_for_site(current_site, current_site.badge_zoom_level)
 
-    @category_filter = PartnerCategoryFilter.new(current_site, params)
-    @neighbourhood_filter = PartnerNeighbourhoodFilter.new(
-      current_site,
-      neighbourhood_names,
-      params
-    )
-
-    category_filtered_partners = @category_filter.apply_to(partners)
-    @partners = @neighbourhood_filter.apply_to(category_filtered_partners)
+    @filters = PartnerFilters.new(current_site, neighbourhood_names, params)
+    @partners = @filters.apply_to(partners)
 
     # show only partners with no service_areas
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)

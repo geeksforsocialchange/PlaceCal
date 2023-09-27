@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class PartnerCategoryFilterTest < ActiveSupport::TestCase
+class PartnerFiltersTest < ActiveSupport::TestCase
   setup do
     Neighbourhood.destroy_all
 
@@ -49,21 +49,20 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     @site = create(:site)
     @site.neighbourhoods << @neighbourhood1
     @site.neighbourhoods << @neighbourhood2
+    @filters = PartnerFilters.new(@site, [], {})
   end
 
   test '#active?' do
     # is false by default
-    filter = PartnerCategoryFilter.new(@site, {})
-    assert_not_predicate(filter, :active?, 'is_active? should be false with no input')
-    filter = PartnerCategoryFilter.new(@site, category: @category.id)
-    assert_predicate filter, :active?, 'should be active'
+    assert_not_predicate(@filters, :category_active?, 'is_active? should be false with no input')
+    filters = PartnerFilters.new(@site, [], category: @category.id)
+    assert_predicate filters, :category_active?, 'should be active'
   end
 
   test '#categories - no partners or tags' do
     # no partners or tags
     #   -> empty set
-    filter = PartnerCategoryFilter.new(@site, {})
-    found = filter.categories
+    found = @filters.categories
     assert_predicate found.length, :zero?
   end
 
@@ -75,8 +74,7 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     partner.service_areas.build(neighbourhood: @neighbourhood2)
     partner.save!
 
-    filter = PartnerCategoryFilter.new(@site, {})
-    found = filter.categories
+    found = @filters.categories
     assert_predicate found.length, :zero?
   end
 
@@ -96,8 +94,7 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     partner2.tags << @categories[1]
     partner2.save!
 
-    filter = PartnerCategoryFilter.new(@site, {})
-    found = filter.categories
+    found = @filters.categories
     assert_equal(1, found.length)
     assert_equal found.first.id, @categories[0].id
   end
@@ -117,8 +114,7 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     partner2.tags << @categories[1]
     partner2.save!
 
-    filter = PartnerCategoryFilter.new(@site, {})
-    found = filter.categories
+    found = @filters.categories
     assert_equal(1, found.length)
     assert_equal found.first.id, @categories[0].id
   end
@@ -139,8 +135,7 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     partner2.tags << @categories[1]
     partner2.save!
 
-    filter = PartnerCategoryFilter.new(@site, {})
-    found = filter.categories
+    found = @filters.categories
     assert_equal(2, found.length)
 
     assert_equal found.first.id, @categories[0].id
@@ -165,14 +160,14 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     partner.tags << @categories[0]
     partner.save!
 
-    filter = PartnerCategoryFilter.new(new_site, {})
-    found = filter.categories
+    filters = PartnerFilters.new(new_site, [], {})
+    found = filters.categories
 
     # found tag from partner in child neighbourhood
     assert_equal(1, found.length)
   end
 
-  test '#apply_to' do
+  test '#apply_to categories' do
     Partner.destroy_all
 
     partner1 = create(:partner)
@@ -181,60 +176,97 @@ class PartnerCategoryFilterTest < ActiveSupport::TestCase
     partner4 = create(:partner)
 
     # returns every partner if no filter category set
-    filter = PartnerCategoryFilter.new(@site, {})
-    query = filter.apply_to(Partner)
+    query = @filters.apply_to(Partner)
     assert_equal(4, query.count)
 
     # returns only partners assigned category (in include mode)
     partner1.tags << @category
 
-    filter = PartnerCategoryFilter.new(@site, category: @category.id)
-    query = filter.apply_to(Partner)
+    filters = PartnerFilters.new(@site, [], category: @category.id)
+    query = filters.apply_to(Partner)
     assert_equal(1, query.count)
 
     # returns only partners NOT assigned category (in exclude mode)
-    filter = PartnerCategoryFilter.new(@site, category: @category.id, category_mode: 'exclude')
-    query = filter.apply_to(Partner)
+    filters = PartnerFilters.new(@site, [], category: @category.id, category_mode: 'exclude')
+    query = filters.apply_to(Partner)
     assert_equal(3, query.count)
   end
 
-  test '#show_filter?' do
+  test '#apply_to neighbourhoods' do
+    Partner.destroy_all
+
+    partner1 = create(:moss_side_partner)
+    partner2 = create(:ashton_partner)
+
+    # returns every partner if no filter neighbourhood set
+    neighbourhood_filters = PartnerFilters.new(@site, [], {})
+    query = neighbourhood_filters.apply_to(Partner)
+    assert_equal(2, query.count)
+
+    # # returns only partners assigned neighbourhood name
+    filters = PartnerFilters.new(@site, [], neighbourhood_name: 'Ashton Hurst')
+    query = filters.apply_to(Partner.all)
+    assert_equal(1, query.count)
+  end
+
+  test '#apply_to neighbourhoods and categories' do
+    Partner.destroy_all
+
+    partner1 = create(:moss_side_partner)
+    partner2 = create(:ashton_partner)
+    partner2.tags << @category
+
+    # returns every partner if no filters set
+    filters = PartnerFilters.new(@site, [], {})
+    query = filters.apply_to(Partner)
+    assert_equal(2, query.count)
+
+    # returns only partners assigned neighbourhood name and category
+    filters = PartnerFilters.new(@site, [], neighbourhood_name: 'Ashton Hurst', category: @category.id)
+    query = filters.apply_to(Partner)
+    assert_equal(1, query.count)
+
+    # returns only partners matching both filters
+    category_b = create(:category)
+    filters = PartnerFilters.new(@site, [], neighbourhood_name: 'Ashton Hurst', category: category_b.id)
+    query = filters.apply_to(Partner)
+    assert_equal(0, query.count)
+  end
+
+  test '#show_category_filter?' do
     # is false if no partnered categories found
-    filter = PartnerCategoryFilter.new(@site, {})
-    assert_not_predicate(filter, :show_filter?)
+    assert_not_predicate(@filters, :show_category_filter?)
 
     # is true when partnered categories found
     given_some_partnered_categories_exist
 
-    filter = PartnerCategoryFilter.new(@site, {})
-    assert_predicate filter, :show_filter?
+    filters = PartnerFilters.new(@site, [], {})
+    assert_predicate filters, :show_category_filter?
   end
 
   test '#current_category?' do
     # is false when no current category set
-    filter = PartnerCategoryFilter.new(@site, {})
-    assert_not(filter.current_category?(@category))
+    assert_not(@filters.current_category?(@category))
 
     # is true when current category matches incoming category
-    filter = PartnerCategoryFilter.new(@site, category: @category.id)
-    assert(filter.current_category?(@category))
+    filters = PartnerFilters.new(@site, [], category: @category.id)
+    assert(filters.current_category?(@category))
   end
 
   test 'modes' do
     # default to include mode
-    filter = PartnerCategoryFilter.new(@site, {})
-    assert_predicate filter, :include_mode?
-    assert_not filter.exclude_mode?
+    assert_predicate @filters, :include_mode?
+    assert_not @filters.exclude_mode?
 
     # is include mode when set
-    filter = PartnerCategoryFilter.new(@site, category_mode: 'include')
-    assert_predicate filter, :include_mode?
-    assert_not filter.exclude_mode?
+    filters = PartnerFilters.new(@site, [], category_mode: 'include')
+    assert_predicate filters, :include_mode?
+    assert_not filters.exclude_mode?
 
     # is exclude mode when set
-    filter = PartnerCategoryFilter.new(@site, category_mode: 'exclude')
-    assert_predicate filter, :exclude_mode?
-    assert_not filter.include_mode?
+    filters = PartnerFilters.new(@site, [], category_mode: 'exclude')
+    assert_predicate filters, :exclude_mode?
+    assert_not filters.include_mode?
   end
 
   # helpers
