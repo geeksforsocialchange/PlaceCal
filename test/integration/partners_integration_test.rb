@@ -124,6 +124,6 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@default_site, partners_path)
     assert_response :success
 
-    assert_select '.neighbourhood span', text: 'various'
+    assert_select '.neighbourhood span', text: 'Various'
   end
 end
