@@ -241,7 +241,7 @@ class Partner < ApplicationRecord
   end
 
   def has_service_areas?
-    service_areas.count.positive?
+    service_areas.any?
   end
 
   def permalink
@@ -312,9 +312,9 @@ class Partner < ApplicationRecord
   end
 
   def neighbourhood_name_for_site(badge_zoom_level)
-    if service_areas.count.positive?
+    if service_areas.any?
       if service_areas.count > 1
-        'various'
+        'Various'
       else
         service_areas.first&.neighbourhood&.shortname
       end

@@ -12,7 +12,7 @@ class PlacePartnerPreviewComponent < MountainView::Presenter
   end
 
   def show_service_area?
-    service_areas.count.positive?
+    service_areas.any?
   end
 
   def show_neighbourhood?

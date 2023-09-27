@@ -114,9 +114,7 @@ class Neighbourhood < ApplicationRecord
   end
 
   def name_from_badge_zoom(badge_zoom_level)
-    return district&.shortname if badge_zoom_level == 'district'
-
-    shortname
+    badge_zoom_level == 'district' ? district&.shortname : shortname
   end
 
   class << self
