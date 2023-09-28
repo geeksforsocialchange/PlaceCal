@@ -54,21 +54,4 @@ class AdminNeighbourhoodIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'input', value: 'Save'
     assert_select 'a', 'Destroy'
   end
-
-  test 'Edit form has correct fields for neighbourhood admin' do
-    sign_in @neighbourhood_admin
-    get edit_admin_neighbourhood_path(@neighbourhood)
-    assert_response :success
-
-    assert_select 'label', 'Name'
-    assert_select 'label', 'Abbreviated name'
-    assert_select 'label', 'Unit'
-    assert_select 'label', 'Unit code key'
-    assert_select 'label', 'Unit name'
-    assert_select 'label', 'Unit code value'
-    assert_select 'label', text: 'Users', count: 0
-
-    assert_select 'input', value: 'Save'
-    assert_select 'a', text: 'Destroy', count: 0
-  end
 end

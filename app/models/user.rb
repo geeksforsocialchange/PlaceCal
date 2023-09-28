@@ -73,12 +73,15 @@ class User < ApplicationRecord
     owned_neighbourhoods.collect(&:id)
   end
 
-  def can_alter_neighbourhood_by_id?(neighbourhood_id)
-    owned_neighbourhood_ids.include? neighbourhood_id
+  def admin_for_partner?(partner_id)
+    partners.pluck(:id).include? partner_id
   end
 
-  def can_alter_partner_by_id?(partner_id)
-    partners.pluck(:id).include? partner_id
+  def can_view_neighbourhood_by_id?(neighbourhood_id)
+    root? || (
+      neighbourhood_admin? &&
+      owned_neighbourhood_ids.include?(neighbourhood_id)
+    )
   end
 
   def neighbourhood_admin?
