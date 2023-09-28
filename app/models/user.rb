@@ -123,13 +123,13 @@ class User < ApplicationRecord
     owned_neighbourhood_ids.include?(neighbourhood&.id)
   end
 
+  protected
+
   def validate_tags_are_partnerships
     return true if tags.all?(Partnership)
 
     errors.add(:tags, 'Can only be of type Partnership')
   end
-
-  protected
 
   def password_required?
     return false if skip_password_validation
