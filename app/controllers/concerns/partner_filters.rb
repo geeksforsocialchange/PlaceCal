@@ -7,6 +7,7 @@ class PartnerFilters
     @current_neighbourhood_name = params[:neighbourhood_name]
     @current_category_id = params[:category]
     @include_mode = params[:category_mode] # include/exclude
+    @params = params.dup
     @current_category = Category.where(id: @current_category_id).first if @current_category_id.present?
 
     @neighbourhood_names = neighbourhood_names
@@ -69,6 +70,17 @@ class PartnerFilters
     @include_mode == 'exclude'
   end
 
+  def reset_category_params
+    @params.delete :category
+    @params.delete :category_mode
+    @params
+  end
+
+  def reset_neighbourhood_params
+    @params.delete :neighbourhood_name
+    @params
+  end
+
   def reset_categories(url)
     url.sub(/(&|)category=\d*/, '').sub(/(&|)category_mode=(include|exclude)/, '')
   end
@@ -96,6 +108,6 @@ class PartnerFilters
   def apply_neighbourhood_filter(query = Partner)
     return query unless neighbourhood_active?
 
-    query.for_neighbourhood_name_filter(query, @badge_zoom_level, @current_neighbourhood_name)
+    query.for_neighbourhood_name_filter(query.all, @badge_zoom_level, @current_neighbourhood_name)
   end
 end

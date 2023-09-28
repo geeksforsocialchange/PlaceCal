@@ -15,9 +15,6 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    # Get all Partners that manage at least one other partner
-    # @partners = Partner.managers.for_site(current_site).order(:name)
-
     # Get all partners based in the neighbourhoods associated with this site.
     partners = Partner
                .for_site(current_site)
