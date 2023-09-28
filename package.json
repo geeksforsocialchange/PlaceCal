@@ -15,7 +15,7 @@
 		"leaflet": "1.9.4",
 		"lodash": "4.17.21",
 		"popper.js": "1.16.1",
-		"sass": "1.67.0",
+		"sass": "1.68.0",
 		"select2": "4.0.13"
 	},
 	"devDependencies": {
@@ -35,6 +35,6 @@
 		"{*.{rb,jbuilder,rake,ru},.simplecov,Gemfile,Rakefile}": "bundle exec rubocop --force-exclusion --autocorrect"
 	},
 	"engines": {
-		"node": "16.20.1"
+		"node": "16.20.2"
 	}
 }

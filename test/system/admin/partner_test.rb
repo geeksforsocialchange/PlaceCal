@@ -112,4 +112,43 @@ class AdminPartnerTest < ApplicationSystemTestCase
     #   correctly done its thing to the tag selector
     assert_selector '.partner_tags ul.select2-selection__rendered'
   end
+
+  test 'adding dupplicate service_areas to an existing partner does not crash' do
+    click_link 'Partners'
+    await_datatables
+
+    click_link @partner.name
+
+    # because of the nested forms we get an array of node
+    # the link adds a select2_node to the end of the array
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    select2 @neighbourhood_one, xpath: service_areas[-1].path
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    select2 @neighbourhood_one, xpath: service_areas[-1].path
+
+    click_button 'Save Partner'
+    assert_selector '.alert-success'
+  end
+
+  test 'adding dupplicate service_areas to a new partner does not crash' do
+    click_link 'Partners'
+    await_datatables
+
+    click_link 'Add New Partner'
+    fill_in 'Name', with: 'Hulme Library'
+
+    # because of the nested forms we get an array of node
+    # the link adds a select2_node to the end of the array
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    select2 @neighbourhood_one, xpath: service_areas[-1].path
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    select2 @neighbourhood_one, xpath: service_areas[-1].path
+
+    click_button 'Save Partner'
+    assert_selector '.alert-success'
+  end
 end

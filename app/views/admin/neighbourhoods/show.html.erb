@@ -12,59 +12,67 @@
 <% end %>
 
 <% if @neighbourhood.children.present? %>
-<ul class="list-group">
-  <% @neighbourhood.children.order(:name).each do |child| %>
-  <li class="list-group-item d-flex justify-content-between ">
-
-    <% if child.descendants.present? || current_user.can_view_neighbourhood_by_id?(child.id) %>
-      <%= link_to(safe_neighbourhood_name(child), admin_neighbourhood_path(child)) %>
-    <% else %>
-     <%= safe_neighbourhood_name(child) %>
+  <ul class="list-group">
+    <% @neighbourhood.children.order(:name).each do |child| %>
+      <li class="list-group-item d-flex justify-content-between ">
+        <% if child.descendants.present? || current_user.can_view_neighbourhood_by_id?(child.id) %>
+          <%= link_to(safe_neighbourhood_name(child), admin_neighbourhood_path(child)) %>
+        <% else %>
+          <%= safe_neighbourhood_name(child) %>
+        <% end %>
+        <% if child.descendants.present? %>
+          <span title="descendants" class="badge badge-primary badge-pill"><%= child.descendants.count %></span>
+        <% end %>
+      </li>
     <% end %>
-    <% if child.descendants.present? %>
-    <span title="descendants" class="badge badge-primary badge-pill"><%= child.descendants.count %></span>
-    <% end %>
-  </li>
-  <% end %>
-</ul>
-
+  </ul>
 <% else %>
   <p>This neighbourhood does not contain any other neighbourhoods.</p>
 <% end %>
 
-<% if current_user.can_view_neighbourhood_by_id?(@neighbourhood.id) %>
-
-  <hr>
-  <h2>Address Partners</h2>
-  <p>Found <%= @neighbourhood.address_partners.count %>.</p>
-  <% if @neighbourhood.address_partners.present? %>
+<hr>
+<h2>Address Partners</h2>
+<p>Found <%= @neighbourhood.address_partners.count %>.</p>
+<% if @neighbourhood.address_partners.present? %>
   <ul class="list-group">
     <% @neighbourhood.address_partners.order(:name).each do |partner| %>
-    <li class="list-group-item"><%= link_to partner.name, edit_admin_partner_path(partner) %></li>
+      <li class="list-group-item">
+        <% if policy(partner).update? -%>
+          <%= link_to partner.name, edit_admin_partner_path(partner) %>
+        <% else %>
+          <%= partner.name %>
+        <% end %>
+      </li>
     <% end %>
   </ul>
-  <% end %>
+<% end %>
 
-  <hr>
-  <h2>Service Area Partners</h2>
-  <p>Found <%= @neighbourhood.service_area_partners.count %>.</p>
-  <% if @neighbourhood.service_area_partners.present? %>
+<hr>
+<h2>Service Area Partners</h2>
+<p>Found <%= @neighbourhood.service_area_partners.count %>.</p>
+<% if @neighbourhood.service_area_partners.present? %>
   <ul class="list-group">
     <% @neighbourhood.service_area_partners.order(:name).each do |partner| %>
-    <li class="list-group-item"><%= link_to partner.name, edit_admin_partner_path(partner) %></li>
+      <li class="list-group-item">
+        <% if policy(partner).update? -%>
+          <%= link_to partner.name, edit_admin_partner_path(partner) %>
+        <% else %>
+          <%= partner.name %>
+        <% end %>
+      </li>
     <% end %>
   </ul>
-  <% end %>
+<% end %>
 
+<% if policy(Site).update? || policy(Neighbourhood).update? %>
   <hr>
   <h2>Sites</h2>
   <p>Found <%= @neighbourhood.sites.count %>.</p>
   <% if @neighbourhood.sites.present? %>
-  <ul class="list-group">
-    <% @neighbourhood.sites.order(:name).each do |site| %>
-    <li class="list-group-item"><%= link_to site.name, edit_admin_site_path(site) %></li>
-    <% end %>
-  </ul>
+    <ul class="list-group">
+      <% @neighbourhood.sites.order(:name).each do |site| %>
+      <li class="list-group-item"><%= link_to site.name, edit_admin_site_path(site) %></li>
+      <% end %>
+    </ul>
   <% end %>
-
 <% end %>
