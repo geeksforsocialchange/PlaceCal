@@ -16,7 +16,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     @number_of_neighbourhoods = Neighbourhood.all.length
 
     @tag = create(:tag, type: 'Category')
-    @partnership_tag = create(:tag, type: 'Partnership')
+    @partnership_tag = create(:partnership)
 
     host! 'admin.lvh.me'
   end

@@ -18,5 +18,10 @@ FactoryBot.define do
       sequence(:name) { |n| "Category Tag #{n}" }
       type { 'Category' }
     end
+
+    factory :partnership do
+      sequence(:name) { |n| "Partnership Tag #{n}" }
+      type { 'Partnership' }
+    end
   end
 end
