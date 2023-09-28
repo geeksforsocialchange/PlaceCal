@@ -28,6 +28,7 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
     end
 
     # check that slect2 is working
+    click_link 'Edit'
     users = select2_node 'neighbourhood_users'
     select2 @root_user.to_s, @neighbourhood_admin.to_s, xpath: users.path
     assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
@@ -39,7 +40,8 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
       click_link
     end
 
-    # check that changes persists
+    # # check that changes persists
+    click_link 'Edit'
     users = select2_node 'neighbourhood_users'
     assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
   end

@@ -3,6 +3,7 @@
 <h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
 
 <% if current_user.root? -%>
+  <p>ID: <%= @partner.id %></p>
   <%# Show the Neighbourhood the partner is related to via Address %>
   <% if @partner.address&.neighbourhood&.present? -%>
     <p>Address in neighbourhood <%= link_to_neighbourhood(@partner.address.neighbourhood) %>.</p>
@@ -59,14 +60,21 @@
 
     <ul>
       <% @partner.users.each do |p_user| -%>
-        <li><%= link_to p_user.email, edit_admin_user_path(p_user) %></li>
+        <li>
+        <% if policy(User).update? %>
+          <%= link_to p_user.email, edit_admin_user_path(p_user) %></li>
+        <% else %>
+          <%= p_user.email %></li>
+        <% end %>
       <% end -%>
     </ul>
 
-    <p><%= link_to 'Add new partner admin',
-                    new_admin_user_path(partner_id: @partner.id),
-                    class: "btn btn-primary mb-3 mr-2 btn-sm" %>
-    </p>
+    <% if policy(User).update? %>
+      <p><%= link_to 'Add new partner admin',
+                      new_admin_user_path(partner_id: @partner.id),
+                      class: "btn btn-primary mb-3 mr-2 btn-sm" %>
+      </p>
+    <% end %>
   </div>
 </div>
 

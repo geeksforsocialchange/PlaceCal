@@ -13,7 +13,8 @@ module Admin
           render json: NeighbourhoodDatatable.new(
             params,
             view_context: view_context,
-            neighbourhoods: @neighbourhoods
+            neighbourhoods: @neighbourhoods,
+            current_user: @current_user
           )
         end
       end
@@ -24,7 +25,9 @@ module Admin
       authorize @neighbourhood
     end
 
-    def show; end
+    def show
+      authorize @neighbourhood
+    end
 
     def edit
       authorize @neighbourhood
