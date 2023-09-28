@@ -131,7 +131,7 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
   test 'shows assigned user field on Edit of Partnership tag' do
     log_in_with @root.email
 
-    partnership_tag = create(:tag, type: 'Partnership')
+    partnership_tag = create(:partnership)
     visit edit_admin_tag_url(partnership_tag)
 
     assert_css 'h2', text: 'Assigned Users'

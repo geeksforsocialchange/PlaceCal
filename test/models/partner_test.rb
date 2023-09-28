@@ -233,7 +233,7 @@ class PartnerTest < ActiveSupport::TestCase
   test 'partner has "Partnership" single table inheritance' do
     partner = create(:partner)
     assert_predicate partner, :valid?
-    partner.tags << create(:tag, type: 'Partnership', name: 'Partnership Tag 1')
+    partner.tags << create(:partnership)
     partner.save
     assert_equal 1, partner.partnerships.count
   end

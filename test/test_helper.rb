@@ -207,6 +207,6 @@ def create_typed_tags
   create(:tag, name: 'free wifi', type: 'Facility')
   create(:tag, name: 'fruit ecosystem', type: 'Category')
   create(:tag, name: 'housing', type: 'Category')
-  create(:tag, name: 'trans dimension', type: 'Partnership')
-  create(:tag, name: 'system changers', type: 'Partnership')
+  create(:partnership)
+  create(:partnership)
 end

@@ -14,6 +14,14 @@ module TagsHelper
     [Tag, Partnership].include?(form.object.class)
   end
 
+  def options_for_tags
+    policy_scope(Tag)
+      .select(:name, :type, :id)
+      .where(type: 'Partnership')
+      .order(:name)
+      .map { |r| [r.name_with_type, r.id] }
+  end
+
   # prevent invisible partner ids from being overwritten when updating a tag
   def all_partners_for(tag, attributes)
     editable_partners = current_user.partners.pluck(:id)
