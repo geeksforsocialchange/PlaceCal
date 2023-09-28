@@ -4,6 +4,7 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   setup do
+    create_typed_tags
     @user = create(:user)
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
   end
@@ -88,5 +89,25 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(email: 'test@test.com', role: 'citizen')
     user.skip_password_validation = true
     assert_predicate user, :valid?
+  end
+
+  test 'Partnership tag can be assigned to User' do
+    @user.tags << Partnership.first
+    @user.save!
+    assert_equal(1, @user.tags.length)
+  end
+
+  test 'Category tag cannot be assigned to User' do
+    error_message = 'Can only be of type Partnership'
+    @user.tags << Category.first
+    assert_not @user.valid? # runs validations in the background
+    assert_equal [error_message], @user.errors[:tags]
+  end
+
+  test 'Faciltiy tag cannot be assigned to User' do
+    error_message = 'Can only be of type Partnership'
+    @user.tags << Facility.first
+    assert_not @user.valid? # runs validations in the background
+    assert_equal [error_message], @user.errors[:tags]
   end
 end

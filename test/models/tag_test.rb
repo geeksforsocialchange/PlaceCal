@@ -6,14 +6,15 @@ class TagTest < ActiveSupport::TestCase
   setup do
     create_typed_tags
     @tag = Tag.first
-    @partnership_tag = Tag.where(type: 'Partnership').first
+    @partnership_tag = Partnership.first
     @user = create(:user)
     @partner = create(:partner)
   end
 
   test 'updates user roles when saved' do
-    @tag.users << @user
-    @tag.save
+    @partnership_tag.users << @user
+    @partnership_tag.save!
+    @user.reload
     assert_predicate @user, :tag_admin?
   end
 
@@ -43,7 +44,8 @@ class TagTest < ActiveSupport::TestCase
   test 'a root user who is a tag_admin can access their own Partnership tag but not others' do
     root_user = create :root
     @partnership_tag.users << root_user
-    @partnership_tag.save
+    @partnership_tag.save!
+    root_user.reload
 
     Tag.users_tags(root_user).each do |t|
       assert_equal t.name, @partnership_tag.name if t.type == 'Partnership'

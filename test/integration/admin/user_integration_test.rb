@@ -105,7 +105,7 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Avatar'
     assert_select 'h3', 'Partners'
     assert_select 'h3', 'Neighbourhoods'
-    assert_select 'h3', 'Allowed Tags'
+    assert_select 'h3', 'Partnerships'
     assert_select 'h3', 'Role'
   end
 
@@ -122,7 +122,7 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Phone'
     assert_select 'label', 'Avatar'
     assert_select 'h3', 'Partners'
-    assert_select 'h3', 'Allowed Tags'
+    assert_select 'h3', 'Partnerships'
     assert_select 'h3', 'Neighbourhoods', count: 0
     assert_select 'h3', 'Role', count: 0
   end
@@ -141,7 +141,7 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Avatar'
     assert_select 'h3', 'Partners'
     assert_select 'h3', 'Neighbourhoods'
-    assert_select 'h3', 'Allowed Tags'
+    assert_select 'h3', 'Partnerships'
     assert_select 'h3', 'Role'
   end
 
@@ -158,7 +158,7 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Avatar'
     assert_select 'h3', 'Partners'
     assert_select 'h3', 'Neighbourhoods', count: 0
-    assert_select 'h3', 'Allowed Tags'
+    assert_select 'h3', 'Partnerships'
     assert_select 'h3', 'Role', count: 0
   end
 

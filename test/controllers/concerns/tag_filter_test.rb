@@ -25,9 +25,9 @@ class TagFilterTest < ActiveSupport::TestCase
   test '#with_scope by type' do
     create :tag, type: 'Facility', name: 'Facility Tag 1'
     create :tag, type: 'Facility', name: 'Facility Tag 2'
-    create :tag, type: 'Partnership', name: 'Partnership Tag 1'
-    create :tag, type: 'Partnership', name: 'Partnership Tag 2'
-    create :tag, type: 'Partnership', name: 'Partnership Tag 3'
+    create :partnership
+    create :partnership
+    create :partnership
 
     # find by type
     params = {
@@ -41,7 +41,7 @@ class TagFilterTest < ActiveSupport::TestCase
 
   test '#with_scope ignores invalid types' do
     create :tag, type: 'Facility', name: 'Facility Tag'
-    create :tag, type: 'Partnership', name: 'Partnership Tag'
+    create :partnership
 
     # find by type
     params = {
