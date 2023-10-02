@@ -16,7 +16,7 @@ var columns = [
     column_titles: ['ID', 'Our name', 'Official name', 'Official key', 'Official value', 'Release date'],
     columns: %i[id name unit_name unit_code_key unit_code_value release_date],
     data: @neighbourhoods.limit(15),
-    source: admin_neighbourhoods_path(format: :json)
+    source: admin_neighbourhoods_path(current_user: @current_user, format: :json)
   }
 %>
 

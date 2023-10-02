@@ -241,7 +241,7 @@ class Partner < ApplicationRecord
   end
 
   def has_service_areas?
-    service_areas.count.positive?
+    service_areas.any?
   end
 
   def permalink
@@ -311,8 +311,39 @@ class Partner < ApplicationRecord
     neighbourhood_ids
   end
 
+  def neighbourhood_name_for_site(badge_zoom_level)
+    if service_areas.any?
+      if service_areas.count > 1
+        'Various'
+      else
+        service_areas.first&.neighbourhood&.shortname
+      end
+    else
+      address&.neighbourhood&.name_from_badge_zoom(badge_zoom_level)
+    end
+  end
+
   def self.fuzzy_find_by_location(components)
     Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
+  end
+
+  def self.neighbourhood_names_for_site(current_site, badge_zoom_level)
+    partners = Partner.for_site(current_site)
+                      .includes(:service_areas, :address)
+    partner_names = []
+    partners.each do |partner|
+      name = partner.neighbourhood_name_for_site(badge_zoom_level)
+      partner_names << name if name.present?
+    end
+    partner_names.uniq.sort
+  end
+
+  def self.for_neighbourhood_name_filter(partners, badge_zoom_level, neighbourhood_name)
+    partners_with_name = []
+    partners.each do |partner|
+      partners_with_name << partner if partner.neighbourhood_name_for_site(badge_zoom_level) == neighbourhood_name
+    end
+    partners_with_name.sort_by(&:name)
   end
 
   private

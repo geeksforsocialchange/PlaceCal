@@ -4,6 +4,7 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   setup do
+    create_typed_tags
     @user = create(:user)
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
   end
@@ -25,22 +26,16 @@ class UserTest < ActiveSupport::TestCase
     assert_equal(5, @neighbourhood_region_admin.owned_neighbourhoods.count { |u| u.unit == 'ward' })
   end
 
-  test 'can edit neighourhoods' do
-    region = @neighbourhood_region_admin.neighbourhoods.first
-
+  test 'can view neighourhoods assigned to them' do
     owned_neighbourhoods = @neighbourhood_region_admin.owned_neighbourhoods
+    region = @neighbourhood_region_admin.neighbourhoods.first
+    county = owned_neighbourhoods.find { |u| u.unit == 'county' }
+    unowned_neighbourhood = create(:neighbourhood)
 
-    county   = owned_neighbourhoods.find { |u| u.unit == 'county' }
-    district = owned_neighbourhoods.find { |u| u.unit == 'district' }
-    ward     = owned_neighbourhoods.find { |u| u.unit == 'ward' }
+    assert_not @neighbourhood_region_admin.can_view_neighbourhood_by_id? region.parent.id
+    assert_not @neighbourhood_region_admin.can_view_neighbourhood_by_id? unowned_neighbourhood.id
 
-    # We do not have permissions to edit the country!
-    assert_not((@neighbourhood_region_admin.can_alter_neighbourhood_by_id? region.parent.id))
-
-    # We should have permissions to edit a county, district, or ward neighbourhood
-    assert @neighbourhood_region_admin.can_alter_neighbourhood_by_id?(county.id)
-    assert @neighbourhood_region_admin.can_alter_neighbourhood_by_id?(district.id)
-    assert @neighbourhood_region_admin.can_alter_neighbourhood_by_id?(ward.id)
+    assert @neighbourhood_region_admin.can_view_neighbourhood_by_id? county.id
   end
 
   test 'can edit partners' do
@@ -48,7 +43,7 @@ class UserTest < ActiveSupport::TestCase
     partner = create(:partner)
     user.partners << partner
 
-    assert user.can_alter_partner_by_id?(partner.id)
+    assert user.admin_for_partner?(partner.id)
   end
 
   test 'updates user role on save' do
@@ -94,5 +89,25 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(email: 'test@test.com', role: 'citizen')
     user.skip_password_validation = true
     assert_predicate user, :valid?
+  end
+
+  test 'Partnership tag can be assigned to User' do
+    @user.tags << Partnership.first
+    @user.save!
+    assert_equal(1, @user.tags.length)
+  end
+
+  test 'Category tag cannot be assigned to User' do
+    error_message = 'Can only be of type Partnership'
+    @user.tags << Category.first
+    assert_not @user.valid? # runs validations in the background
+    assert_equal [error_message], @user.errors[:tags]
+  end
+
+  test 'Faciltiy tag cannot be assigned to User' do
+    error_message = 'Can only be of type Partnership'
+    @user.tags << Facility.first
+    assert_not @user.valid? # runs validations in the background
+    assert_equal [error_message], @user.errors[:tags]
   end
 end

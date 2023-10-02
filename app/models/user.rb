@@ -36,6 +36,8 @@ class User < ApplicationRecord
             format: { with: EMAIL_REGEX, message: 'invalid email address' }
   validates :role, presence: true
 
+  validate :validate_tags_are_partnerships
+
   mount_uploader :avatar, AvatarUploader
 
   # General use throughout the site
@@ -73,12 +75,15 @@ class User < ApplicationRecord
     owned_neighbourhoods.collect(&:id)
   end
 
-  def can_alter_neighbourhood_by_id?(neighbourhood_id)
-    owned_neighbourhood_ids.include? neighbourhood_id
+  def admin_for_partner?(partner_id)
+    partners.pluck(:id).include? partner_id
   end
 
-  def can_alter_partner_by_id?(partner_id)
-    partners.pluck(:id).include? partner_id
+  def can_view_neighbourhood_by_id?(neighbourhood_id)
+    root? || (
+      neighbourhood_admin? &&
+      owned_neighbourhood_ids.include?(neighbourhood_id)
+    )
   end
 
   def neighbourhood_admin?
@@ -100,7 +105,7 @@ class User < ApplicationRecord
     types << 'editor' if editor?
     types << 'neighbourhood_admin' if neighbourhood_admin?
     types << 'partner_admin' if partner_admin?
-    types << 'tag_admin' if tag_admin?
+    types << 'partnership_admin' if tag_admin?
     types << 'site_admin' if site_admin?
 
     types.join(', ')
@@ -122,6 +127,12 @@ class User < ApplicationRecord
   end
 
   protected
+
+  def validate_tags_are_partnerships
+    return true if tags.all?(Partnership)
+
+    errors.add(:tags, 'Can only be of type Partnership')
+  end
 
   def password_required?
     return false if skip_password_validation

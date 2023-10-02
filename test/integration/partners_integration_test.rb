@@ -113,7 +113,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@default_site, partners_path)
     assert_response :success
 
-    assert_select '.service-area span', text: @neighbourhood3.shortname
+    assert_select '.neighbourhood span', text: @neighbourhood3.shortname
   end
 
   test 'partner shows "various areas" if more than one service area present' do
@@ -124,6 +124,6 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@default_site, partners_path)
     assert_response :success
 
-    assert_select '.service-area span', text: 'various'
+    assert_select '.neighbourhood span', text: 'Various'
   end
 end

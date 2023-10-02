@@ -16,6 +16,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     @number_of_neighbourhoods = Neighbourhood.all.length
 
     @tag = create(:tag, type: 'Category')
+    @partnership_tag = create(:partnership)
 
     host! 'admin.lvh.me'
   end
@@ -110,14 +111,14 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'site tags show up and display their type' do
-    @site.tags << @tag
-    @site_admin.tags << @tag
+    @site.tags << @partnership_tag
+    @site_admin.tags << @partnership_tag
 
     sign_in(@site_admin)
     get edit_admin_site_path(@site)
     assert_response :success
 
-    tag_options = assert_select 'div.site_tags option', count: 1, text: @tag.name_with_type
+    tag_options = assert_select 'div.site_tags option', count: 1, text: @partnership_tag.name_with_type
 
     tag = tag_options.first
     assert tag.attributes.key?('selected')

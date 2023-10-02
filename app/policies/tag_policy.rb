@@ -42,8 +42,10 @@ class TagPolicy < ApplicationPolicy
       fields = %i[name slug description system_tag]
       fields << :type if @record.instance_of?(Tag)
       fields.push(partner_ids: [], user_ids: [])
-
-    elsif (user.tag_admin? && user.tags.include?(@record)) || user.partner_admin?
+    elsif user.tags.include?(@record)
+      fields = %i[name slug description]
+      fields.push(partner_ids: [])
+    elsif user.partner_admin?
       %i[].push(partner_ids: [])
     else
       %i[]
@@ -53,6 +55,8 @@ class TagPolicy < ApplicationPolicy
   def disabled_fields
     if user.root?
       %i[]
+    elsif user.tag_admin? && user.tags.include?(@record)
+      %i[system_tag users user_ids]
     elsif user.tag_admin? || user.partner_admin?
       %i[name slug description users user_ids system_tag]
     else # Should never be hit, but it's useful as a guard

@@ -17,8 +17,14 @@ class NeighbourhoodDatatable < Datatable
 
   def data
     records.map do |record|
+      id = if options[:current_user].can_view_neighbourhood_by_id?(record.id)
+             link_to(record.id, admin_neighbourhood_path(record))
+           else
+             record.id
+           end
+
       {
-        id: link_to(record.id, edit_admin_neighbourhood_path(record)),
+        id: id,
         name: record.name,
         unit_name: record.unit_name,
         unit_code_key: record.unit_code_key,

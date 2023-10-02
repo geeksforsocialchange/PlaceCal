@@ -3,9 +3,7 @@
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
-  <% if @category_filter.show_filter? %>
-  <%= @category_filter.render_filter(self) %>
-  <% end %>
+    <%= @filters.render_filters(self) %>
   <% end %>
 
   <hr>
@@ -16,7 +14,8 @@
                            primary_neighbourhood: @primary_neighbourhood,
                            service_areas: partner.service_areas,
                            show_neighbourhoods: @current_site.show_neighbourhoods?,
-                           badge_zoom_level: @current_site.badge_zoom_level) %>
+                           neighbourhood_name: partner.neighbourhood_name_for_site(@current_site.badge_zoom_level)
+                           ) %>
     <% end %>
   </ul>
 </div>
