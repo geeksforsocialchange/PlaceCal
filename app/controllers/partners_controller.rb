@@ -101,8 +101,4 @@ class PartnersController < ApplicationController
         'All Partners'
       end
   end
-  # This controller doesn't allow CRUD
-  # def partner_params
-  #   params.fetch(:partner, {})
-  # end
 end
