@@ -45,6 +45,13 @@ class User < ApplicationRecord
     [first_name, last_name].compact_blank.join(' ')
   end
 
+  # used by the (devise) mailers
+  def name_for_email
+    return full_name if full_name.present?
+
+    email
+  end
+
   # Shows in admin interfaces
   def admin_name
     name = [last_name&.upcase, first_name].compact_blank.join(', ')
