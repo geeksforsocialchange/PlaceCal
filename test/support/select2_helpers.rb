@@ -22,7 +22,7 @@ module Select2Helpers
 
   def assert_select2_single(option, node)
     await_select2 10
-    within :xpath, node.path do
+    within :xpath, node.path, wait: 10 do
       assert_selector '.select2-selection__rendered', text: option
     end
   end
