@@ -116,11 +116,11 @@
 
   <h2>Tags</h2>
 
-    <h2>Tags</h2>
+    <h2>Partnerships</h2>
 
     <div class="row">
       <div class="col-md-6">
-        <p class="font-weight-light">Only show partners with these tags</p>
+        <p class="font-weight-light">Only show partners which are members of these Partnerships</p>
         <% if policy(@site).permitted_attributes.include? :tags %>
           <%= f.association :tags,
                             label: false,
