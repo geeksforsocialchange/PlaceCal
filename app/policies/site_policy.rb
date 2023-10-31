@@ -30,12 +30,12 @@ class SitePolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    attrs = %i[id name place_name is_published tagline description
-               badge_zoom_level hero_image hero_image_credit hero_text]
+    attrs = %i[id name place_name logo footer_logo is_published tagline description
+               badge_zoom_level hero_image hero_image_credit hero_text theme ]
             .push(sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
                   sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type])
 
-    root_attrs = %i[slug domain logo footer_logo theme site_admin_id tags sites_neighbourhoods]
+    root_attrs = %i[slug domain site_admin_id tags sites_neighbourhoods]
                  .push(tag_ids: [])
 
     return root_attrs + attrs if user.root?
