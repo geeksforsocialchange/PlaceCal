@@ -43,9 +43,9 @@
         <div style="background-color: #5b4e46; padding: 1rem">
           <%= image_tag f.object.footer_logo.url, class: 'card-img-top' if f.object.footer_logo.url %>
         </div>
-      <% end %>
       </div>
     </div>
+  <% end %>
 
   <%= f.input :hero_image, hint: image_uploader_hint(@site.hero_image) %>
   <p><em>Header images should be 2260x700</em></p>
