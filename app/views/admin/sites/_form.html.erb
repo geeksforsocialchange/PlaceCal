@@ -26,6 +26,8 @@
 
   <% if policy(@site).permitted_attributes.include? :site_admin_id %>
     <%= f.association(:site_admin, label_method: :admin_name, input_html: { data: { controller:  'select2' } }) %>
+  <% else %>
+    <p><strong>Admin</strong>: <%= @site.site_admin %></p>
   <% end %>
 
 
