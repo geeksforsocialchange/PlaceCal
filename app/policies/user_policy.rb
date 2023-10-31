@@ -97,4 +97,25 @@ class UserPolicy < ApplicationPolicy
 
     attrs
   end
+
+  class Scope < Scope
+    def resolve
+      if user.root?
+        scope.all
+
+      else
+        user_neighbourhood_ids = user.owned_neighbourhood_ids
+
+        scope
+          .left_joins(partners: %i[address service_areas])
+          .where(
+            'addresses.neighbourhood_id IN (:ids) OR
+            service_areas.neighbourhood_id IN (:ids)',
+            ids: user_neighbourhood_ids
+          ).distinct
+      end
+    end
+  end
 end
+
+# 17482
