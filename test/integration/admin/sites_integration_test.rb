@@ -98,9 +98,9 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Description'
     assert_select 'label', text: 'Site admin', count: 0
 
-    assert_select 'label', text: 'Theme', count: 0
-    assert_select 'label', text: 'Logo', count: 0
-    assert_select 'label', text: 'Footer logo', count: 0
+    assert_select 'label', text: 'Theme', count: 1
+    assert_select 'label', text: 'Logo', count: 1
+    assert_select 'label', text: 'Footer logo', count: 1
     assert_select 'label', 'Hero image'
     assert_select 'label', 'Hero image credit'
   end
