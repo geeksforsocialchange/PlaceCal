@@ -115,15 +115,28 @@
   <h3>Other neighbourhoods to include</h3>
   <p class="font-weight-light">Information from these neighbourhoods will also be displayed on this site</p>
 
-  <div class="sites_neighbourhoods">
-    <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
-      <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
-    <% end %>
-    <div class="links">
-      <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
+  <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
+    <div class="sites_neighbourhoods">
+      <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
+        <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
+      <% end %>
+      <div class="links">
+        <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
+      </div>
+      <br></br>
     </div>
-    <br></br>
-  </div>
+  <% else %>
+    <div class="sites_neighbourhoods">
+      <ul>
+        <% @site.sites_neighbourhoods.each do |neighbourhood| %>
+          <% if neighbourhood.relation_type != 'Primary'  %>
+            <li><%= neighbourhood.name %></li>
+          <% end %>
+        <% end %>
+      </ul>
+      <br></br>
+    </div>
+  <% end %>
 
   <h2>Tags</h2>
 
