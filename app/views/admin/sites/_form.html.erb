@@ -12,14 +12,14 @@
       <% if policy(@site).permitted_attributes.include? :domain  %>
         <%= f.input :domain %>
       <% else %>
-        <p><strong>Domain</strong>: <a href="<%= @site.domain %>"><%= @site.domain %></a></p>
+        <%= f.input :domain, disabled: true  %>
       <% end %>
     </div>
     <div class="col-md-6">
       <% if policy(@site).permitted_attributes.include? :slug  %>
-        <%= f.input :slug %>
+        <%= f.input :slug, disabled: true  %>
       <% else %>
-        <p><strong>slug</strong>: <%= @site.slug %></p>
+        <%= f.input :slug, disabled: true  %>
       <% end %>
     </div>
   </div>
@@ -131,18 +131,18 @@
 
     <div class="row">
       <div class="col-md-6">
-        <p class="font-weight-light">Only show partners which are members of these Partnerships</p>
+        <p class="font-weight-light">(If selected) Only show partners which are members of these Partnerships</p>
         <% if policy(@site).permitted_attributes.include? :tags %>
           <%= f.association :tags,
                             label: false,
                             collection: options_for_tags,
                             input_html: { class: 'form-check', data: { controller: "select2" } } %>
         <% else %>
-          <ul>
-            <% @site.tags.each do |t| %>
-              <li><%= t.name %></li>
-            <% end %>
-          </ul>
+          <%= f.association :tags,
+                            disabled: true,
+                            label: false,
+                            collection: options_for_tags,
+                            input_html: { class: 'form-check', data: { controller: "select2" } } %>
         <% end %>
       </div>
     </div>
