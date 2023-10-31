@@ -38,7 +38,7 @@ class UserTest < ActiveSupport::TestCase
     assert @neighbourhood_region_admin.can_view_neighbourhood_by_id? county.id
   end
 
-  test 'is admin for partner when neighbourhood admin for partners neighbourhood or service area' do
+  test 'is neighbourhood admin for partner when neighbourhood admin for partners neighbourhood or service area' do
     partner_in_neighbourhood = create(:partner)
     partner_with_service_area_in_neighbourhood = create(:partner)
     partner_outside_neighbourhood = create(:moss_side_partner)
@@ -50,9 +50,9 @@ class UserTest < ActiveSupport::TestCase
       neighbourhood: @neighbourhood_region_admin.neighbourhoods.first
     )
 
-    assert @neighbourhood_region_admin.admin_for_partner?(partner_in_neighbourhood.id)
-    assert @neighbourhood_region_admin.admin_for_partner?(partner_with_service_area_in_neighbourhood.id)
-    assert_not @neighbourhood_region_admin.admin_for_partner?(partner_outside_neighbourhood.id)
+    assert @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_in_neighbourhood.id)
+    assert @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_with_service_area_in_neighbourhood.id)
+    assert_not @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_outside_neighbourhood.id)
   end
 
   test 'can edit partners' do

@@ -77,6 +77,9 @@ class User < ApplicationRecord
 
   def admin_for_partner?(partner_id)
     return true if partners.pluck(:id).include? partner_id
+  end
+
+  def neighbourhood_admin_for_partner?(partner_id)
     return true if
       neighbourhood_admin? &&
       (
