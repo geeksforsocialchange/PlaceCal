@@ -93,7 +93,8 @@
   </div>
     <div class="col-md-6">
       <h3>Neighbourhood information display</h3>
-      <p class="font-weight-light">What level of geographical zoom should PlaceCal display on partners and events?</p>
+      <p class="font-weight-light">What level of geographical zoom should PlaceCal display in the small badge next to partners and events? eg. Hulme / Manchester</p>
+      
       <%= f.input :badge_zoom_level,
         as: :radio_buttons,
         label_method: ->(val){ Site.badge_zoom_level_label(val) } %>
