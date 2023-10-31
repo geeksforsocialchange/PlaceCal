@@ -9,7 +9,11 @@
   <%= f.input :tagline %>
   <div class="row">
     <div class="col-md-6">
-      <%= f.input :domain if policy(@site).permitted_attributes.include? :domain %>
+      <% if policy(@site).permitted_attributes.include? :domain  %>
+        <%= f.input :domain %>
+      <% else %>
+        <p><strong>Domain</strong>: <a href="<%= @site.domain %>"><%= @site.domain %></a></p>
+      <% end %>
     </div>
     <div class="col-md-6">
       <%= f.input :slug if policy(@site).permitted_attributes.include? :slug %>
