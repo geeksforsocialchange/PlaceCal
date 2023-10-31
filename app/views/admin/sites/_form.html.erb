@@ -16,7 +16,11 @@
       <% end %>
     </div>
     <div class="col-md-6">
-      <%= f.input :slug if policy(@site).permitted_attributes.include? :slug %>
+      <% if policy(@site).permitted_attributes.include? :slug  %>
+        <%= f.input :slug %>
+      <% else %>
+        <p><strong>slug</strong>: <%= @site.slug %></p>
+      <% end %>
     </div>
   </div>
   <%= f.input :hero_text, hint: 'Large text for the banner with image on the homepage, up to 120 characters', input_html: { rows: 5 } %>
