@@ -35,7 +35,7 @@ class SitePolicy < ApplicationPolicy
             .push(sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
                   sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type])
 
-    root_attrs = %i[slug domain logo footer_logo theme site_admin_id tags]
+    root_attrs = %i[slug domain logo footer_logo theme site_admin_id tags sites_neighbourhoods]
                  .push(tag_ids: [])
 
     return root_attrs + attrs if user.root?
