@@ -116,17 +116,27 @@
 
   <h2>Tags</h2>
 
-  <div class="row">
-    <div class="col-md-6">
-      <p class="font-weight-light">Only show partners with these tags</p>
-      <%= f.association :tags,
-                        label: false,
-                        collection: options_for_tags,
-                        input_html: { class: 'form-check', data: { controller: "select2" } } %>
+    <h2>Tags</h2>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p class="font-weight-light">Only show partners with these tags</p>
+        <% if policy(@site).permitted_attributes.include? :tags %>
+          <%= f.association :tags,
+                            label: false,
+                            collection: options_for_tags,
+                            input_html: { class: 'form-check', data: { controller: "select2" } } %>
+        <% else %>
+          <ul>
+            <% @site.tags.each do |t| %>
+              <li><%= t.name %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
     </div>
-  </div>
-  <br>
-  <br>
+    <br>
+    <br>
 
 
   <%= f.button :submit, class: "btn btn-primary btn-lg" %>
