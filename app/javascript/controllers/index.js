@@ -15,3 +15,6 @@ application.register("opening-times", OpeningTimesController);
 
 import Select2Controller from "./select2_controller.js";
 application.register("select2", Select2Controller);
+
+import UserPartnersController from "./user_partners_controller.js";
+application.register("user-partners", UserPartnersController);

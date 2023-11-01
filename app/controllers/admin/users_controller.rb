@@ -47,6 +47,12 @@ module Admin
 
     def edit
       @partners = collect_partners
+      @user_partners_controller =
+        if current_user.root?
+          'select2'
+        else
+          'user-partners'
+        end
 
       authorize @user
     end

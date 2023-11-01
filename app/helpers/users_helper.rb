@@ -25,8 +25,15 @@ module UsersHelper
     true # they have no rights
   end
 
-  def options_for_partners
-    policy_scope(Partner).all.order(:name).pluck(:name, :id)
+  def options_for_partners(user = nil)
+    options = policy_scope(Partner).all.order(:name).pluck(:name, :id)
+    return options unless user
+
+    (options + user&.partners&.pluck(:name, :id)).uniq
+  end
+
+  def permitted_options_for_partners
+    policy_scope(Partner).all.pluck(:id)
   end
 
   def options_for_user_neighbourhoods(for_user)

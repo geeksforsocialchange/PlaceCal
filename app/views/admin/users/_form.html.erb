@@ -12,10 +12,17 @@
       <p>Partners this user can edit, as well as their associated calendars</p>
       <%= f.association :partners,
                         label: false,
-                        collection: options_for_partners,
+                        collection: options_for_partners(User.find(params[:id])),
                         selected: @partners,
-                        input_html: { class: 'form-control', data: { controller: "select2" } } %>
+                        input_html: { 
+                          class: 'form-control',
+                          data: { 
+                            controller: @user_partners_controller, 
+                            "user-partners-permitted-partners-value": permitted_options_for_partners
+                          } 
+                        } %>
     </div>
+    <%= console %>
 
     <div class="col-md-6">
       <h3>Neighbourhoods</h3>
