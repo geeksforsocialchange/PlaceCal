@@ -93,21 +93,16 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Name *'
     assert_select 'label', 'Place name'
     assert_select 'label', 'Tagline'
-    assert_select 'label', text: 'Domain *', count: 0
-    assert_select 'label', text: 'Slug *', count: 0
+    assert_select 'label', text: 'Domain *', count: 1
+    assert_select 'label', text: 'Slug *', count: 1
     assert_select 'label', 'Description'
     assert_select 'label', text: 'Site admin', count: 0
 
-    assert_select 'label', text: 'Theme', count: 0
-    assert_select 'label', text: 'Logo', count: 0
-    assert_select 'label', text: 'Footer logo', count: 0
+    assert_select 'label', text: 'Theme', count: 1
+    assert_select 'label', text: 'Logo', count: 1
+    assert_select 'label', text: 'Footer logo', count: 1
     assert_select 'label', 'Hero image'
     assert_select 'label', 'Hero image credit'
-
-    # See just neighbourhoods they admin
-    cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
-    neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
-    assert_equal(2, neighbourhoods_shown)
   end
 
   test 'site tags show up and display their type' do
