@@ -3,6 +3,7 @@
 module Admin
   class UsersController < Admin::ApplicationController
     before_action :set_user, only: %i[edit update destroy]
+    before_action :set_user_partners_controller, only: %i[new edit]
 
     def profile
       authorize current_user, :profile?
@@ -47,12 +48,6 @@ module Admin
 
     def edit
       @partners = collect_partners
-      @user_partners_controller =
-        if current_user.root?
-          'select2'
-        else
-          'user-partners'
-        end
 
       authorize @user
     end
@@ -102,6 +97,15 @@ module Admin
     end
 
     private
+
+    def set_user_partners_controller
+      @user_partners_controller =
+        if current_user.root?
+          'select2'
+        else
+          'user-partners'
+        end
+    end
 
     def collect_partners
       return policy_scope(Partner).where(id: params[:partner_id])&.map(&:id) if params[:partner_id]

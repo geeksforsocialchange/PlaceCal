@@ -12,7 +12,7 @@
       <p>Partners this user can edit, as well as their associated calendars</p>
       <%= f.association :partners,
                         label: false,
-                        collection: options_for_partners(User.find(params[:id])),
+                        collection: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
                         selected: @partners,
                         input_html: { 
                           class: 'form-control',
