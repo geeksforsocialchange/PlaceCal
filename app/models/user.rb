@@ -76,17 +76,16 @@ class User < ApplicationRecord
   end
 
   def admin_for_partner?(partner_id)
-    return true if partners.pluck(:id).include? partner_id
+    partners.pluck(:id).include? partner_id
   end
 
   def neighbourhood_admin_for_partner?(partner_id)
-    return true if
-      neighbourhood_admin? &&
+    neighbourhood_admin? &&
       (
-      owned_neighbourhood_ids & (
-        Partner.find_by(id: partner_id).owned_neighbourhood_ids
-      )
-    ).any?
+        owned_neighbourhood_ids & (
+          Partner.find_by(id: partner_id).owned_neighbourhood_ids
+        )
+      ).any?
   end
 
   def can_view_neighbourhood_by_id?(neighbourhood_id)
