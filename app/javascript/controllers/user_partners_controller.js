@@ -28,7 +28,7 @@ export default class extends Controller {
 			) {
 				if (
 					!confirm(
-						"Removing this partner will remove this user from your neighbourhood.\n\n Are you sure you want to remove it?"
+						"Removing this partner will remove this user from your neighbourhood.\n\n Are you sure you want to remove it? \n\n  If you want to keep the user in the neighbourhood but still remove this partner from them, you'll need to make them an admin for another partner in your neighbourhood."
 					)
 				) {
 					event.preventDefault();
