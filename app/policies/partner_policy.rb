@@ -18,9 +18,9 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def update?
-    user.root? ||
-      user.admin_for_partner?(record.id) ||
-      user.neighbourhood_admin_for_partner?(record.id)
+    return true if user.root?
+    return true if user.admin_for_partner?(record.id)
+    return true if user.owned_neighbourhood_ids.include?(record.neighbourhood_id)
 
     false
   end
