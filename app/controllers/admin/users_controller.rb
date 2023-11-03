@@ -3,6 +3,7 @@
 module Admin
   class UsersController < Admin::ApplicationController
     before_action :set_user, only: %i[edit update destroy]
+    before_action :validate_neighbourhood_relation, only: %i[create]
 
     def profile
       authorize current_user, :profile?
@@ -123,6 +124,16 @@ module Admin
       else
         current_user.update_without_password(profile_params)
       end
+    end
+
+    def validate_neighbourhood_relation
+      # sorry this is a monstrosity, it's what robocop made me do
+      return unless current_user.neighbourhood_admin? && !current_user.root? && params[:user][:partner_ids].reject { |id| id == '' }.empty?
+
+      # we're about to refresh the page so save the users input
+      @user = User.new(permitted_attributes(User))
+      flash.now[:danger] = 'User was not created: You must assign a Partner to the User or you will not be able to access it after creation'
+      render 'new', status: :unprocessable_entity
     end
   end
 end
