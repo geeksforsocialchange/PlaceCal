@@ -127,7 +127,6 @@ module Admin
     end
 
     def validate_neighbourhood_relation
-      # sorry this is a monstrosity, it's what robocop made me do it
       # we only allow the neighbourhood_admin to assign Partners from their own Neighbourhood so any ids here are proof of a relationship
       return if current_user.root?
       return unless current_user.neighbourhood_admin? && params[:user][:partner_ids].reject { |id| id == '' }.empty?
