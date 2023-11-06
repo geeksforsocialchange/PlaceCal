@@ -9,10 +9,18 @@
   <%= f.input :tagline %>
   <div class="row">
     <div class="col-md-6">
-      <%= f.input :domain if policy(@site).permitted_attributes.include? :domain %>
+      <% if policy(@site).permitted_attributes.include? :domain  %>
+        <%= f.input :domain %>
+      <% else %>
+        <%= f.input :domain, disabled: true  %>
+      <% end %>
     </div>
     <div class="col-md-6">
-      <%= f.input :slug if policy(@site).permitted_attributes.include? :slug %>
+      <% if policy(@site).permitted_attributes.include? :slug  %>
+        <%= f.input :slug %>
+      <% else %>
+        <%= f.input :slug, disabled: true  %>
+      <% end %>
     </div>
   </div>
   <%= f.input :hero_text, hint: 'Large text for the banner with image on the homepage, up to 120 characters', input_html: { rows: 5 } %>
@@ -22,6 +30,8 @@
 
   <% if policy(@site).permitted_attributes.include? :site_admin_id %>
     <%= f.association(:site_admin, label_method: :admin_name, input_html: { data: { controller:  'select2' } }) %>
+  <% else %>
+    <p><strong>Admin</strong>: <%= @site.site_admin %></p>
   <% end %>
 
 
@@ -43,9 +53,9 @@
         <div style="background-color: #5b4e46; padding: 1rem">
           <%= image_tag f.object.footer_logo.url, class: 'card-img-top' if f.object.footer_logo.url %>
         </div>
-      <% end %>
       </div>
     </div>
+  <% end %>
 
   <%= f.input :hero_image, hint: image_uploader_hint(@site.hero_image) %>
   <p><em>Header images should be 2260x700</em></p>
@@ -93,7 +103,8 @@
   </div>
     <div class="col-md-6">
       <h3>Neighbourhood information display</h3>
-      <p class="font-weight-light">What level of geographical zoom should PlaceCal display on partners and events?</p>
+      <p class="font-weight-light">What level of geographical zoom should PlaceCal display in the small badge next to partners and events? eg. Hulme / Manchester</p>
+      
       <%= f.input :badge_zoom_level,
         as: :radio_buttons,
         label_method: ->(val){ Site.badge_zoom_level_label(val) } %>
@@ -104,29 +115,50 @@
   <h3>Other neighbourhoods to include</h3>
   <p class="font-weight-light">Information from these neighbourhoods will also be displayed on this site</p>
 
-  <div class="sites_neighbourhoods">
-    <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
-      <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
-    <% end %>
-    <div class="links">
-      <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
+  <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
+    <div class="sites_neighbourhoods">
+      <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
+        <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
+      <% end %>
+      <div class="links">
+        <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
+      </div>
+      <br></br>
     </div>
-    <br></br>
-  </div>
-
-  <h2>Tags</h2>
-
-  <div class="row">
-    <div class="col-md-6">
-      <p class="font-weight-light">Only show partners with these tags</p>
-      <%= f.association :tags,
-                        label: false,
-                        collection: options_for_tags,
-                        input_html: { class: 'form-check', data: { controller: "select2" } } %>
+  <% else %>
+    <div class="sites_neighbourhoods">
+      <ul>
+        <% @site.sites_neighbourhoods.each do |neighbourhood| %>
+          <% if neighbourhood.relation_type != 'Primary'  %>
+            <li><%= neighbourhood.name %></li>
+          <% end %>
+        <% end %>
+      </ul>
+      <br></br>
     </div>
-  </div>
-  <br>
-  <br>
+  <% end %>
+
+    <h2>Partnerships</h2>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p class="font-weight-light">(If selected) Only show partners which are members of these Partnerships</p>
+        <% if policy(@site).permitted_attributes.include? :tags %>
+          <%= f.association :tags,
+                            label: false,
+                            collection: options_for_tags,
+                            input_html: { class: 'form-check', data: { controller: "select2" } } %>
+        <% else %>
+          <%= f.association :tags,
+                            disabled: true,
+                            label: false,
+                            collection: options_for_tags,
+                            input_html: { class: 'form-check', data: { controller: "select2" } } %>
+        <% end %>
+      </div>
+    </div>
+    <br>
+    <br>
 
 
   <%= f.button :submit, class: "btn btn-primary btn-lg" %>

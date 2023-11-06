@@ -132,18 +132,6 @@ class ApplicationController < ActionController::Base
     event
   end
 
-  def default_update(obj, obj_params)
-    respond_to do |format|
-      if obj.update(obj_params)
-        format.html { redirect_to obj, notice: "#{obj.class} was successfully updated." }
-        format.json { render :show, status: :ok, location: obj }
-      else
-        format.html { render :edit }
-        format.json { render json: obj.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   def authenticate_by_ip
     # Is whitelist mode enabled?
     return unless ENV['WHITELIST_MODE']
