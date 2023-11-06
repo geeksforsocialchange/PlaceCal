@@ -1,4 +1,8 @@
-<p>Hello <%=  @resource.email %></p>
+<div>
+  <%= image_tag(image_url("logo.png"), height: '75') %>
+</div>
+
+<p><%= greeting_text(@resource) %>,</p>
 
 <p>
   You've been invited to join PlaceCal! You can accept this invite by clicking the link below.
@@ -19,3 +23,5 @@
 <p>
   - The PlaceCal Team
 </p>
+
+

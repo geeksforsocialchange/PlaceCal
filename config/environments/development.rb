@@ -44,6 +44,12 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = routes.default_url_options
 
+  asset_url = routes.default_url_options[:protocol]
+  asset_url += "://#{routes.default_url_options[:host]}"
+  asset_url += ":#{routes.default_url_options[:port]}" if routes.default_url_options[:port].present?
+
+  config.action_mailer.asset_host = asset_url
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
