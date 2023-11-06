@@ -82,9 +82,6 @@ Rails.application.routes.draw do
   get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places/:id/embed' => 'places#embed'
 
-  # Calendars
-  resources :calendars, only: %i[index show]
-
   # Collections
   resources :collections, only: %i[show]
 
