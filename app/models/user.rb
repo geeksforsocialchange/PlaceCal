@@ -79,6 +79,15 @@ class User < ApplicationRecord
     partners.pluck(:id).include? partner_id
   end
 
+  def neighbourhood_admin_for_partner?(partner_id)
+    neighbourhood_admin? &&
+      (
+        owned_neighbourhood_ids & (
+          Partner.find_by(id: partner_id).owned_neighbourhood_ids
+        )
+      ).any?
+  end
+
   def can_view_neighbourhood_by_id?(neighbourhood_id)
     root? || (
       neighbourhood_admin? &&

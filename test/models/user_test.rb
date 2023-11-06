@@ -38,6 +38,23 @@ class UserTest < ActiveSupport::TestCase
     assert @neighbourhood_region_admin.can_view_neighbourhood_by_id? county.id
   end
 
+  test 'is neighbourhood admin for partner when neighbourhood admin for partners neighbourhood or service area' do
+    partner_in_neighbourhood = create(:partner)
+    partner_with_service_area_in_neighbourhood = create(:partner)
+    partner_outside_neighbourhood = create(:moss_side_partner)
+
+    partner_in_neighbourhood.address.neighbourhood = @neighbourhood_region_admin.neighbourhoods.first
+    partner_in_neighbourhood.save!
+
+    partner_with_service_area_in_neighbourhood.service_areas.create(
+      neighbourhood: @neighbourhood_region_admin.neighbourhoods.first
+    )
+
+    assert @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_in_neighbourhood.id)
+    assert @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_with_service_area_in_neighbourhood.id)
+    assert_not @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_outside_neighbourhood.id)
+  end
+
   test 'can edit partners' do
     user = create(:user)
     partner = create(:partner)
@@ -63,6 +80,8 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'full name method gives sensible responses' do
+    @user.update(first_name: '', last_name: '')
+    assert_equal '', @user.full_name
     @user.update(first_name: 'Joan', last_name: '')
     assert_equal 'Joan', @user.full_name
     @user.update(first_name: '', last_name: 'Jones')

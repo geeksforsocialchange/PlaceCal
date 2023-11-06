@@ -129,4 +129,10 @@ Rails.application.configure do
     authentication: :login,
     enable_starttls_auto: true
   }
+
+  asset_url = routes.default_url_options[:protocol]
+  asset_url += "://#{routes.default_url_options[:host]}"
+  asset_url += ":#{routes.default_url_options[:port]}" if routes.default_url_options[:port].present?
+
+  config.action_mailer.asset_host = asset_url
 end
