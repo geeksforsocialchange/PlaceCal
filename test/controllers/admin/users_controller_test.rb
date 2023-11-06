@@ -8,8 +8,11 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     @neighbourhood_admin = create(:neighbourhood_admin)
     @citizen = create(:user)
 
-    @partner_admin = create(:partner_admin)
+    @partner_admin = create(:partner_admin, first_name: 'Partner Admin')
     @partner = @partner_admin.partners.first
+
+    @partner.address.neighbourhood = @neighbourhood_admin.neighbourhoods.first
+    @partner.save!
 
     host! 'admin.lvh.me'
   end
@@ -65,14 +68,25 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   #   Show users in the appropriate neighbourhood for secretaries
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root neighbourhood_admin]) do
+  it_allows_access_to_index_for(%i[root]) do
     get admin_users_url
     assert_response :success
+
+    assert_select 'td', text: @partner_admin.first_name
+    assert_select 'td', text: @citizen.first_name
   end
 
   it_denies_access_to_index_for(%i[citizen]) do
     get admin_users_url
     assert_redirected_to admin_root_url
+  end
+
+  it_allows_access_to_index_for(%i[neighbourhood_admin]) do
+    get admin_users_url
+    assert_response :success
+
+    assert_select 'td', text: @partner_admin.first_name
+    assert_select 'td', { count: 0, text: @citizen.first_name }
   end
 
   # Admins and secretaries can create users
@@ -182,6 +196,14 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   it_allows_access_to_destroy_for(%i[root]) do
     assert_difference('User.count', -1) do
       delete admin_user_url(@citizen)
+    end
+
+    assert_redirected_to admin_users_url
+  end
+
+  it_allows_access_to_destroy_for(%i[neighbourhood_admin]) do
+    assert_difference('User.count', -1) do
+      delete admin_user_url(@partner_admin)
     end
 
     assert_redirected_to admin_users_url

@@ -37,7 +37,13 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.root?
+    user.root? ||
+      (user.neighbourhood_admin? &&
+      !record.root? &&
+      !record.neighbourhood_admin? &&
+      !record.tag_admin? &&
+      record.partner_admin? &&
+      all_user_partners_in_admin_neighbourhood?(record, user))
   end
 
   def permitted_attributes
@@ -56,6 +62,15 @@ class UserPolicy < ApplicationPolicy
     ]
 
     user.root? ? attrs + root_attrs : attrs
+  end
+
+  def all_user_partners_in_admin_neighbourhood?(user, admin)
+    (
+      (
+        user.partners.map { |p| p.address&.neighbourhood_id } +
+        user.partners.flat_map { |p| p.service_area_neighbourhoods.pluck(:id) }
+      ).uniq - admin.owned_neighbourhood_ids
+    ).empty?
   end
 
   def permitted_attributes_for_update
@@ -97,4 +112,25 @@ class UserPolicy < ApplicationPolicy
 
     attrs
   end
+
+  class Scope < Scope
+    def resolve
+      if user.root?
+        scope.all
+
+      else
+        user_neighbourhood_ids = user.owned_neighbourhood_ids
+
+        scope
+          .left_joins(partners: %i[address service_areas])
+          .where(
+            'addresses.neighbourhood_id IN (:ids) OR
+            service_areas.neighbourhood_id IN (:ids)',
+            ids: user_neighbourhood_ids
+          ).distinct
+      end
+    end
+  end
 end
+
+# 17482
