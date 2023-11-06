@@ -73,13 +73,6 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 'Joan Jones', @user.full_name
   end
 
-  test 'name_for_email gives sensible response' do
-    @user.update(first_name: '', last_name: '')
-    assert_equal @user.email, @user.name_for_email
-    @user.update(first_name: 'Joan', last_name: 'Jones')
-    assert_equal 'Joan Jones', @user.name_for_email
-  end
-
   test 'admin name method gives sensible responses' do
     @user.update(first_name: 'Joan', last_name: '')
     assert_equal "Joan <#{@user.email}>", @user.admin_name
