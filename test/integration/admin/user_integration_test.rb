@@ -299,4 +299,39 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'form .user_avatar .invalid-feedback',
                   text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
   end
+
+  test 'a neighbourhood_admin can create a user with a partner' do
+    sign_in @neighbourhood_admin
+    puts "this si the partner id ~ #{@partner.id}"
+
+    new_user_params = {
+      email: 'user@example.com',
+      partner_ids: [@partner.id]
+    }
+
+    post admin_users_path, params: { user: new_user_params }
+    assert_predicate response, :redirect?
+  end
+
+  test 'a neighbourhood_admin cannot create a user without a partner' do
+    sign_in @neighbourhood_admin
+    new_user_params = {
+      email: 'user@example.com',
+      partner_ids: ['']
+    }
+
+    post admin_users_path, params: { user: new_user_params }
+    assert_not response.redirect?
+  end
+
+  test 'a Root user can create a user without a partner' do
+    sign_in @root
+    new_user_params = {
+      email: 'user@example.com',
+      partner_ids: ['']
+    }
+
+    post admin_users_path, params: { user: new_user_params }
+    assert_predicate response, :redirect?
+  end
 end
