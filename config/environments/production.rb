@@ -134,6 +134,5 @@ Rails.application.configure do
   asset_url += "://#{routes.default_url_options[:host]}"
   asset_url += ":#{routes.default_url_options[:port]}" if routes.default_url_options[:port].present?
 
-  Rails.logger.debug { "action_mailer.asset_host=#{asset_url}" }
   config.action_mailer.asset_host = asset_url
 end
