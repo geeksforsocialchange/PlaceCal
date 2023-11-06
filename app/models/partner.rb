@@ -89,8 +89,7 @@ class Partner < ApplicationRecord
 
   validates_associated :address, if: ->(p) { p.address.present? }
 
-  validate :check_ward_access, on: :create
-  validate :check_service_area_access, on: :create
+  validate :check_neighbourhood_access
 
   validate :must_have_address_or_service_area
 
@@ -348,28 +347,23 @@ class Partner < ApplicationRecord
 
   private
 
-  def check_ward_access
+  def check_neighbourhood_access
     return if accessed_by_user.nil? || accessed_by_user.root?
-    return if address.blank?
+    return if accessed_by_user.admin_for_partner?(id)
 
-    unless accessed_by_user.assigned_to_postcode?(address&.postcode)
-      errors.add :base, 'Partners cannot have an address outside of your ward.'
-    end
-  end
-
-  def check_service_area_access
-    return if accessed_by_user.nil? || accessed_by_user.root?
-
-    my_neighbourhoods = service_areas.map(&:neighbourhood_id)
-    return if my_neighbourhoods.empty?
-
+    partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
     user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
 
-    partner_neighbourhoods_set = Set.new(my_neighbourhoods)
-    user_neighbourhoods_set = Set.new(user_neighbourhoods)
+    in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
+    services_user_neighbourhood =
+      Set.new(user_neighbourhoods).superset?(Set.new(partner_service_areas)) &&
+      partner_service_areas.any?
 
-    unless user_neighbourhoods_set.superset?(partner_neighbourhoods_set)
-      errors.add :base, 'Partners cannot have a service area outside of your ward.'
+    return if partner_service_areas.empty? && in_user_neighbourhood
+    return if address.blank? && services_user_neighbourhood
+
+    unless in_user_neighbourhood || services_user_neighbourhood
+      errors.add :base, 'Partners must have an address or a service area inside your neighbourhood'
     end
   end
 
