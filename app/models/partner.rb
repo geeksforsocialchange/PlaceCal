@@ -24,7 +24,7 @@ class Partner < ApplicationRecord
   has_many :facilities, through: :partner_tags, source: :tag, class_name: 'Facility'
   has_many :partnerships, through: :partner_tags, source: :tag, class_name: 'Partnership'
 
-  has_many :service_areas, dependent: :destroy
+  has_many :service_areas, dependent: :destroy, before_remove: :check_remove_service_area
   has_many :service_area_neighbourhoods,
            through: :service_areas,
            source: :neighbourhood,
@@ -364,6 +364,26 @@ class Partner < ApplicationRecord
 
     unless in_user_neighbourhood || services_user_neighbourhood
       errors.add :base, 'Partners must have an address or a service area inside your neighbourhood'
+    end
+  end
+
+  def check_remove_service_area(service_area_to_remove)
+    return if accessed_by_user.nil? || accessed_by_user.root?
+    return if accessed_by_user.admin_for_partner?(id)
+
+    partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
+    new_service_areas = partner_service_areas.reject { |e| e == service_area_to_remove.neighbourhood_id }
+    user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
+
+    in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
+    services_user_neighbourhood = new_service_areas.present?
+
+    return if new_service_areas.empty? && in_user_neighbourhood
+    return if address.blank? && services_user_neighbourhood
+
+    unless in_user_neighbourhood || services_user_neighbourhood
+      errors.add :service_areas, 'Partners must have an address or a service area inside your neighbourhood'
+      throw :abort
     end
   end
 
