@@ -91,6 +91,8 @@ class Partner < ApplicationRecord
 
   validate :check_neighbourhood_access
 
+  validate :neighbourhood_admin_address_access, on: %i[create update]
+
   validate :must_have_address_or_service_area
 
   validate :opening_times_is_json_or_nil
@@ -346,6 +348,25 @@ class Partner < ApplicationRecord
   end
 
   private
+
+  def neighbourhood_admin_address_access
+    # we trust that the user who last updated the address has been vetted
+    return unless address&.changed?
+    # user has priveleged access
+    return if accessed_by_user.nil? || accessed_by_user.root?
+    # access granted based on partner relation not place relation == more trust
+    return if accessed_by_user.admin_for_partner?(id)
+
+    if persisted? # It's an update
+      unless accessed_by_user.assigned_to_postcode?(address&.postcode)
+        errors.add :base, 'Partners cannot have an address outside of your ward.'
+      end
+    else # It's an create
+      unless address.blank? || accessed_by_user.assigned_to_postcode?(address&.postcode)
+        errors.add :base, 'Partners cannot have an address outside of your ward.'
+      end
+    end
+  end
 
   def check_neighbourhood_access
     return if accessed_by_user.nil? || accessed_by_user.root?
