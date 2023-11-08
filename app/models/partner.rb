@@ -375,13 +375,10 @@ class Partner < ApplicationRecord
     in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
     services_user_neighbourhood = new_service_areas.present?
 
-    return if new_service_areas.empty? && in_user_neighbourhood
-    return if address.blank? && services_user_neighbourhood
+    return if in_user_neighbourhood || services_user_neighbourhood
 
-    unless in_user_neighbourhood || services_user_neighbourhood
-      errors.add :service_areas, 'Partners must have an address or a service area inside your neighbourhood'
-      throw :abort
-    end
+    errors.add :service_areas, 'Partners must have an address or a service area inside your neighbourhood'
+    throw :abort
   end
 
   def must_have_address_or_service_area
