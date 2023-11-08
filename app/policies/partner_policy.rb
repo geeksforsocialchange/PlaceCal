@@ -31,9 +31,8 @@ class PartnerPolicy < ApplicationPolicy
 
   def destroy?
     return true if user.root?
-    return false unless user.neighbourhood_admin?
-
-    user.owned_neighbourhood_ids.include?(record.neighbourhood_id)
+    return true if user.admin_for_partner?(record.id)
+    return true if user.only_neighbourhood_admin_for_partner?(record.id)
   end
 
   def setup?

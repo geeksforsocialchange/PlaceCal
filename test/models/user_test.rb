@@ -55,6 +55,40 @@ class UserTest < ActiveSupport::TestCase
     assert_not @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_outside_neighbourhood.id)
   end
 
+  test 'is the only possible neighbourhood admin for a partner when admin for partners neighbourhood or service area and partner has no other neighbourhoods' do
+    partner_in_neighbourhood = create(:partner)
+    partner_outside_neighbourhood = create(:moss_side_partner)
+
+    partner_in_neighbourhood.address.neighbourhood = @neighbourhood_region_admin.neighbourhoods.first
+    partner_in_neighbourhood.save!
+
+    partner_in_neighbourhood.service_areas.create(
+      neighbourhood: @neighbourhood_region_admin.neighbourhoods.first
+    )
+
+    assert @neighbourhood_region_admin.only_neighbourhood_admin_for_partner?(partner_in_neighbourhood.id)
+    assert_not @neighbourhood_region_admin.only_neighbourhood_admin_for_partner?(partner_outside_neighbourhood.id)
+  end
+
+  test 'is not the only possible neighbourhood admin for partner when admin for partners neighbourhood or service area and partner has other neighbourhoods' do
+    partner_address_outside_neighbourhood = create(:moss_side_partner)
+    partner_servicing_outside_neighbourhood = create(:moss_side_partner)
+
+    partner_servicing_outside_neighbourhood.address.neighbourhood = @neighbourhood_region_admin.neighbourhoods.first
+    partner_servicing_outside_neighbourhood.save!
+
+    partner_servicing_outside_neighbourhood.service_areas.create(
+      neighbourhood: partner_address_outside_neighbourhood.address.neighbourhood
+    )
+
+    partner_address_outside_neighbourhood.service_areas.create(
+      neighbourhood: @neighbourhood_region_admin.neighbourhoods.first
+    )
+
+    assert_not @neighbourhood_region_admin.only_neighbourhood_admin_for_partner?(partner_address_outside_neighbourhood.id)
+    assert_not @neighbourhood_region_admin.only_neighbourhood_admin_for_partner?(partner_servicing_outside_neighbourhood.id)
+  end
+
   test 'can edit partners' do
     user = create(:user)
     partner = create(:partner)

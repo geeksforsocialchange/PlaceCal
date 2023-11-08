@@ -88,6 +88,15 @@ class User < ApplicationRecord
       ).any?
   end
 
+  def only_neighbourhood_admin_for_partner?(partner_id)
+    neighbourhood_admin? &&
+      Set.new(owned_neighbourhood_ids).superset?(
+        Set.new(
+          Partner.find_by(id: partner_id).owned_neighbourhood_ids
+        )
+      )
+  end
+
   def can_view_neighbourhood_by_id?(neighbourhood_id)
     root? || (
       neighbourhood_admin? &&
