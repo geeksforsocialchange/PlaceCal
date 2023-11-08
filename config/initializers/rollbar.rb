@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require Rails.root.join('lib/rollbar_exception_filter')
+
 Rollbar.configure do |config|
   # Without configuration, Rollbar is enabled in all environments.
   # To disable in specific environments, set config.enabled=false.
@@ -55,13 +57,9 @@ Rollbar.configure do |config|
   # https://devcenter.heroku.com/articles/deploying-to-a-custom-rails-environment
   config.environment = ENV['ROLLBAR_ENV'].presence || Rails.env
 
-  config.exception_level_filters.merge!('ActionController::RoutingError' => lambda do |error|
-    error.message =~ %r{No route matches \[[A-Z]+\] "/(.+)"}
-    case Regexp.last_match(1).split('/').first.to_s.downcase
-    when 'old', 'gate.php', 'wp-includes', 'mifs', 'vendor', 'epa'
-      'ignore'
-    else
-      'warning'
-    end
-  end)
+  config.exception_level_filters.merge!(
+    'ActionController::RoutingError' => lambda { |error|
+                                          RollbarExceptionFilter.muffle_routing_error(error)
+                                        }
+  )
 end
