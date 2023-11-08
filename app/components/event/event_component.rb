@@ -43,6 +43,8 @@ class EventComponent < MountainView::Presenter
   end
 
   def date
+    return formatted_date(event.dtstart) if event.dtend.blank?
+
     if event.dtstart.to_date == event.dtend.to_date
       formatted_date(event.dtstart)
     else
