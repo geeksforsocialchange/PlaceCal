@@ -359,12 +359,9 @@ class Partner < ApplicationRecord
       Set.new(user_neighbourhoods).superset?(Set.new(partner_service_areas)) &&
       partner_service_areas.any?
 
-    return if partner_service_areas.empty? && in_user_neighbourhood
-    return if address.blank? && services_user_neighbourhood
+    return if in_user_neighbourhood || services_user_neighbourhood
 
-    unless in_user_neighbourhood || services_user_neighbourhood
-      errors.add :base, 'Partners must have an address or a service area inside your neighbourhood'
-    end
+    errors.add :base, 'Partners must have an address or a service area inside your neighbourhood'
   end
 
   def check_remove_service_area(service_area_to_remove)
