@@ -325,4 +325,68 @@ class PartnerTest < ActiveSupport::TestCase
     assert_includes partners, partner_with_selected_service_area
     assert_not_includes partners, unselected_partner
   end
+
+  #
+  # testing how a user can assign an address (neighbourhood) to a partner
+  #
+
+  test 'bla1' do
+    puts 'TEST BEGINS'
+    Neighbourhood.destroy_all
+    a_neighbourhood = create(:bare_neighbourhood, name: 'alpha')
+
+    citizen_neighbourhood = create(:bare_neighbourhood, name: 'citizen alpha')
+    citizen = create(:citizen)
+    citizen.neighbourhoods << citizen_neighbourhood
+    assert citizen.valid?
+    assert citizen.assigned_to_postcode?(nil)
+
+    partner = build(:bare_partner, address: nil)
+    partner.service_area_neighbourhoods << a_neighbourhood
+    assert partner.address.blank?
+    partner.save!
+    # assert partner.valid?
+
+
+    # non-neighbourhood admin can update fields on partner okay
+    partner.accessed_by_user = citizen
+    partner.name = 'A different name'
+    partner.save!
+
+    VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do
+      # but cannot change the address to something they don't own
+      b_neighbourhood = create(:bare_neighbourhood, name: 'beta', unit_code_value: 'E05011368')
+      partner.accessed_by_user = citizen
+      partner.address = build(:address, neighbourhood: b_neighbourhood)
+      partner.save!
+    end
+
+
+  end
+
+
+  test 'users can only change partner addresses to addresses they have neighbourhoods for' do
+    # given a partner with an address not in the users' set
+    # user can update other fields fine, but not change address.
+
+    # given a user has a neighbourhood and let the user assign that neighbourhood to a new partner
+    # this should be allowed (creating partners in their neighbourhoods)
+
+    # given a user with a neighbourhood and a partner with an address NOT in that neighbourhood
+    # then that user should be able to assign their neighbourhood to that partners address
+
+    Neighbourhood.destroy_all
+
+    neighbourhood1 = create(:neighbourhood)
+    neighbourhood2 = create(:neighbourhood)
+
+    address = create(:address, neighbourhood: neighbourhood1)
+    partner = create(:partner, address: address)
+
+    user = create(:citizen)
+    user.neighbourhoods << neighbourhood1
+
+    partner.accessed_by_user = user
+    partner.update! name: 'A new partner name'
+  end
 end

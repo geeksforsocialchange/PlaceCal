@@ -125,6 +125,8 @@ class User < ApplicationRecord
   end
 
   def assigned_to_postcode?(postcode)
+    return true if root?
+
     return true unless neighbourhood_admin?
 
     res = Geocoder.search(postcode).first&.data

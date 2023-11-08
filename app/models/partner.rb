@@ -350,18 +350,27 @@ class Partner < ApplicationRecord
   private
 
   def neighbourhood_admin_address_access
+    puts 'neighbourhood_admin_address_access'
     # we trust that the user who last updated the address has been vetted
     return unless address&.changed?
+    puts '  1'
+
     # user has priveleged access
     return if accessed_by_user.nil? || accessed_by_user.root?
+    puts '  2'
+    
     # access granted based on partner relation not place relation == more trust
     return if accessed_by_user.admin_for_partner?(id)
+    puts '  3'
 
     if persisted? # It's an update
+      puts '  4'
       unless accessed_by_user.assigned_to_postcode?(address&.postcode)
         errors.add :base, 'Partners cannot have an address outside of your ward.'
       end
+
     else # It's an create
+      puts '  5'
       unless address.blank? || accessed_by_user.assigned_to_postcode?(address&.postcode)
         errors.add :base, 'Partners cannot have an address outside of your ward.'
       end

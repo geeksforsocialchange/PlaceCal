@@ -76,6 +76,9 @@ class Address < ApplicationRecord
   # details. We currently require the geocoding result to contain the key
   # 'admin_ward' from postcodes.io
   def geocode_with_ward
+    puts ">>>>"
+    puts "postcode=#{postcode}"
+
     res = Geocoder.search(postcode).first&.data
     if res.nil?
       errors.add :postcode, 'was not found'
