@@ -9,13 +9,15 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
 
     @address = create(:address)
     @neighbourhood = @address.neighbourhood
+    @other_partner_neighbourhood = create(:moss_side_neighbourhood)
+    @other_neighbourhood_admin_neighbourhood = create(:ashton_neighbourhood)
 
     @neighbourhood_admin = create(:user)
     @neighbourhood_admin.neighbourhoods << @neighbourhood
+    @neighbourhood_admin.neighbourhoods << @other_neighbourhood_admin_neighbourhood
 
     @partner = create(:partner, address_id: @address.id)
-    @partner.service_areas = [create(:moss_side_neighbourhood)]
-    @partner.save!
+    @partner.service_areas.build neighbourhood: @other_partner_neighbourhood
 
     @partner_admin = create(:user)
     @partner_admin.partners << @partner
@@ -214,10 +216,13 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
 
   test 'neighbourhood_admin : can see all of a partners service areas' do
     sign_in @neighbourhood_admin
+    get edit_admin_partner_url(@partner)
+    all_neighbourhoods = [
+      @neighbourhood,
+      @other_partner_neighbourhood,
+      @other_neighbourhood_admin_neighbourhood
+    ]
 
-    get edit_admin_partners_url(@partner)
-    assert_response :success
-    # assert_select 'a', 'Edit'
-    assert_select '#select2-partner_service_areas_attributes_0_neighbourhood_id-container', 'Govan'
+    assert_equal all_neighbourhoods.sort, @controller.view_assigns['all_neighbourhoods'].sort
   end
 end
