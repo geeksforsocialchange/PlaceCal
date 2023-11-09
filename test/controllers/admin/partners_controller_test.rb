@@ -14,6 +14,8 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     @neighbourhood_admin.neighbourhoods << @neighbourhood
 
     @partner = create(:partner, address_id: @address.id)
+    @partner.service_areas = [create(:moss_side_neighbourhood)]
+    @partner.save!
 
     @partner_admin = create(:user)
     @partner_admin.partners << @partner
@@ -208,5 +210,14 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     post setup_admin_partners_url, params: params
 
     assert_template :setup
+  end
+
+  test 'neighbourhood_admin : can see all of a partners service areas' do
+    sign_in @neighbourhood_admin
+
+    get edit_admin_partners_url(@partner)
+    assert_response :success
+    # assert_select 'a', 'Edit'
+    assert_select '#select2-partner_service_areas_attributes_0_neighbourhood_id-container', 'Govan'
   end
 end

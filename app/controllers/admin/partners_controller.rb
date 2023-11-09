@@ -137,13 +137,13 @@ module Admin
     end
 
     def set_neighbourhoods
-      # if user owns partner let them set any neighbourhood
-      if @partner.present? && current_user.admin_for_partner?(@partner.id)
+      if @partner.present? && current_user.neighbourhood_admin_for_partner?(@partner.id)
+        ids = @partner.owned_neighbourhood_ids | current_user.owned_neighbourhood_ids
+        @all_neighbourhoods = Neighbourhood.where(id: ids)
+      elsif current_user.admin_for_partner?(@partner.id) || current_user.root?
+        # if user can see partner because they own them or are root let them set any neighbourhood
         @all_neighbourhoods = Neighbourhood.order(:name)
-        return
       end
-
-      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
     end
 
     def user_not_authorized
