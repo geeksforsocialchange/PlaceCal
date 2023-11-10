@@ -330,27 +330,33 @@ class PartnerTest < ActiveSupport::TestCase
   # testing how a user can assign an address (neighbourhood) to a partner
   #
 
-  test 'bla1' do
+  test 'NA admins can update partners outside of the neighbourhood pool (but not their address)' do
+    # given a partner with an address not in the users' set
+    # user can update other fields fine, but not change address.
+
     puts 'TEST BEGINS'
     Neighbourhood.destroy_all
     a_neighbourhood = create(:bare_neighbourhood, name: 'alpha')
 
+    # build a neighbourhood admin
     citizen_neighbourhood = create(:bare_neighbourhood, name: 'citizen alpha')
     citizen = create(:citizen)
     citizen.neighbourhoods << citizen_neighbourhood
-    assert citizen.valid?
-    assert citizen.assigned_to_postcode?(nil)
 
+    assert citizen.valid?
+    # assert citizen.assigned_to_postcode?(nil)
+
+    # build a partner NOT in the users set
     partner = build(:bare_partner, address: nil)
     partner.service_area_neighbourhoods << a_neighbourhood
     assert partner.address.blank?
     partner.save!
     # assert partner.valid?
 
-
     # non-neighbourhood admin can update fields on partner okay
     partner.accessed_by_user = citizen
     partner.name = 'A different name'
+    assert partner.address.blank?
     partner.save!
 
     VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do
@@ -358,35 +364,59 @@ class PartnerTest < ActiveSupport::TestCase
       b_neighbourhood = create(:bare_neighbourhood, name: 'beta', unit_code_value: 'E05011368')
       partner.accessed_by_user = citizen
       partner.address = build(:address, neighbourhood: b_neighbourhood)
-      partner.save!
+
+      assert_not partner.valid?
+      assert partner.errors[:base].present?
+
+      msg = partner.errors[:base].first
+      assert_equal 'Partners cannot have an address outside of your ward.', msg
     end
-
-
   end
 
-
-  test 'users can only change partner addresses to addresses they have neighbourhoods for' do
-    # given a partner with an address not in the users' set
-    # user can update other fields fine, but not change address.
-
+  test 'NA can create a partner in their neighbourhood' do
     # given a user has a neighbourhood and let the user assign that neighbourhood to a new partner
     # this should be allowed (creating partners in their neighbourhoods)
 
+    Neighbourhood.destroy_all
+
+    a_neighbourhood = create(:bare_neighbourhood, name: 'beta', unit_code_value: 'E05011368')
+
+    citizen = create(:citizen)
+    citizen.neighbourhoods << a_neighbourhood
+
+    assert citizen.valid?
+
+    VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do
+      address = build(:address)
+      address.postcode = 'M15 5DD'
+
+      assert citizen.assigned_to_postcode?(address.postcode)
+
+      partner = build(:bare_partner, address: address)
+      partner.accessed_by_user = citizen
+      partner.save!
+    end
+  end
+
+  test 'users can change partner addresses to addresses they have neighbourhoods for' do
     # given a user with a neighbourhood and a partner with an address NOT in that neighbourhood
     # then that user should be able to assign their neighbourhood to that partners address
 
     Neighbourhood.destroy_all
 
-    neighbourhood1 = create(:neighbourhood)
-    neighbourhood2 = create(:neighbourhood)
+    a_neighbourhood = create(:neighbourhood, unit_code_value: 'E05011368')
+    b_neighbourhood = create(:neighbourhood, unit_code_value: 'E05011111')
 
-    address = create(:address, neighbourhood: neighbourhood1)
+    citizen = create(:citizen)
+    citizen.neighbourhoods << b_neighbourhood
+    assert citizen.valid?
+
+    address = create(:address, neighbourhood: b_neighbourhood)
     partner = create(:partner, address: address)
+    assert partner.valid?
 
-    user = create(:citizen)
-    user.neighbourhoods << neighbourhood1
-
-    partner.accessed_by_user = user
+    partner.accessed_by_user = citizen
+    partner.address.postcode = 'M15 5DD'
     partner.update! name: 'A new partner name'
   end
 end

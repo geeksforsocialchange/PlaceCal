@@ -165,18 +165,22 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'neighbourhood_admin cannot update an address outside of their neighbourhood' do
+    neighbourhood = create(:neighbourhood, unit_code_value: 'E05013808')
+
     partner_params = {
       name: @partner.name,
       address_attributes: {
         street_address: @partner.address.street_address,
-        postcode: 'SE1 1RB'
+        postcode: 'W1J 7NF' # (from /test/support/geocoder.rb)
       }
     }
 
     sign_in @neighbourhood_admin
     put admin_partner_path(@partner), params: { partner: partner_params }
 
-    assert_select '#form-errors', text: 'Partners cannot have an address outside of your ward.'
+    puts response.body
+
+    assert_select '#form-errors li', text: 'Partners cannot have an address outside of your ward.'
   end
 end
 
