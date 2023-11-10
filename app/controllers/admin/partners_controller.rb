@@ -6,7 +6,6 @@ module Admin
     before_action :set_partner, only: %i[show edit update destroy]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
-    before_action :set_service_area_map_ids, only: %i[new edit]
 
     def index
       @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
@@ -54,7 +53,6 @@ module Admin
           format.html do
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
-            set_service_area_map_ids
             render :new, status: :unprocessable_entity
           end
           format.json { render json: @partner.errors, status: :unprocessable_entity }
@@ -89,7 +87,6 @@ module Admin
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
-        set_service_area_map_ids
         render :edit, status: :unprocessable_entity
       end
     end
@@ -124,25 +121,15 @@ module Admin
 
     private
 
-    def set_service_area_map_ids
-      # maps neighbourhood ID to service_area ID
-      @service_area_id_map = if @partner
-                               @partner
-                                 .service_areas.select(:id, :neighbourhood_id)
-                                 .map { |sa| { sa.neighbourhood_id => sa.id } }
-                                 .reduce({}, :merge)
-                             else
-                               {}
-                             end
-    end
-
     def set_neighbourhoods
-      if @partner.present? && current_user.neighbourhood_admin_for_partner?(@partner.id)
+      if current_user.root?
+        @all_neighbourhoods = Neighbourhood.order(:name)
+      elsif @partner.present? && current_user.neighbourhood_admin_for_partner?(@partner.id)
         ids = @partner.owned_neighbourhood_ids | current_user.owned_neighbourhood_ids
         @all_neighbourhoods = Neighbourhood.where(id: ids)
-      elsif current_user.admin_for_partner?(@partner.id) || current_user.root?
-        # if user can see partner because they own them or are root let them set any neighbourhood
-        @all_neighbourhoods = Neighbourhood.order(:name)
+      else
+        ids = current_user.owned_neighbourhood_ids
+        @all_neighbourhoods = Neighbourhood.where(id: ids)
       end
     end
 

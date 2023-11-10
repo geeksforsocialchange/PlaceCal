@@ -80,7 +80,8 @@ class User < ApplicationRecord
   end
 
   def neighbourhood_admin_for_partner?(partner_id)
-    neighbourhood_admin? &&
+    partner_id.present? &&
+      neighbourhood_admin? &&
       (
         owned_neighbourhood_ids & (
           Partner.find_by(id: partner_id).owned_neighbourhood_ids
@@ -92,6 +93,16 @@ class User < ApplicationRecord
     root? || (
       neighbourhood_admin? &&
       owned_neighbourhood_ids.include?(neighbourhood_id)
+    )
+  end
+
+  def can_edit_partners_neighbourhood_by_id?(neighbourhood_id, partner_id = nil)
+    root? || (
+      neighbourhood_admin? &&
+      owned_neighbourhood_ids.include?(neighbourhood_id)
+    ) || (
+      partner_admin? &&
+      partners.pluck(:id).include?(partner_id)
     )
   end
 
