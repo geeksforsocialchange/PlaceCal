@@ -302,7 +302,6 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'a neighbourhood_admin can create a user with a partner' do
     sign_in @neighbourhood_admin
-    puts "this si the partner id ~ #{@partner.id}"
 
     new_user_params = {
       email: 'user@example.com',

@@ -100,10 +100,7 @@ class User < ApplicationRecord
     root? || (
       neighbourhood_admin? &&
       owned_neighbourhood_ids.include?(neighbourhood_id)
-    ) || (
-      partner_admin? &&
-      partners.pluck(:id).include?(partner_id)
-    )
+    ) || admin_for_partner?(partner_id)
   end
 
   def neighbourhood_admin?

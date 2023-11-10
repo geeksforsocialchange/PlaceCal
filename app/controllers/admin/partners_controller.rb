@@ -122,7 +122,7 @@ module Admin
     private
 
     def set_neighbourhoods
-      if current_user.root?
+      if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
         @all_neighbourhoods = Neighbourhood.order(:name)
       elsif @partner.present? && current_user.neighbourhood_admin_for_partner?(@partner.id)
         ids = @partner.owned_neighbourhood_ids | current_user.owned_neighbourhood_ids

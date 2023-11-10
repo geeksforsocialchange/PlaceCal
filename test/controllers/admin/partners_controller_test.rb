@@ -8,16 +8,17 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     @citizen = create(:user)
 
     @address = create(:address)
-    @neighbourhood = @address.neighbourhood
-    @other_partner_neighbourhood = create(:moss_side_neighbourhood)
+    @neighbourhood_admin_neighbourhood = @address.neighbourhood
+    @partner_neighbourhood = create(:moss_side_neighbourhood)
     @other_neighbourhood_admin_neighbourhood = create(:ashton_neighbourhood)
 
     @neighbourhood_admin = create(:user)
-    @neighbourhood_admin.neighbourhoods << @neighbourhood
+    @neighbourhood_admin.neighbourhoods << @neighbourhood_admin_neighbourhood
     @neighbourhood_admin.neighbourhoods << @other_neighbourhood_admin_neighbourhood
 
     @partner = create(:partner, address_id: @address.id)
-    @partner.service_areas.build neighbourhood: @other_partner_neighbourhood
+    @partner.service_areas.build(neighbourhood: @partner_neighbourhood)
+    @partner.save!
 
     @partner_admin = create(:user)
     @partner_admin.partners << @partner
@@ -113,7 +114,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_partners_url
 
   it_allows_access_to_edit_for(%i[root neighbourhood_admin partner_admin]) do
-    assert_equal @partner.address.neighbourhood_id, @neighbourhood_admin.neighbourhood_ids.last
     get edit_admin_partner_url(@partner)
     assert_response :success
   end
@@ -218,8 +218,8 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     sign_in @neighbourhood_admin
     get edit_admin_partner_url(@partner)
     all_neighbourhoods = [
-      @neighbourhood,
-      @other_partner_neighbourhood,
+      @partner_neighbourhood,
+      @neighbourhood_admin_neighbourhood,
       @other_neighbourhood_admin_neighbourhood
     ]
 
