@@ -178,8 +178,6 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     sign_in @neighbourhood_admin
     put admin_partner_path(@partner), params: { partner: partner_params }
 
-    puts response.body
-
     assert_select '#form-errors li', text: 'Partners cannot have an address outside of your ward.'
   end
 end

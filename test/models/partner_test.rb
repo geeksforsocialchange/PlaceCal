@@ -334,7 +334,6 @@ class PartnerTest < ActiveSupport::TestCase
     # given a partner with an address not in the users' set
     # user can update other fields fine, but not change address.
 
-    puts 'TEST BEGINS'
     Neighbourhood.destroy_all
     a_neighbourhood = create(:bare_neighbourhood, name: 'alpha')
 
@@ -342,35 +341,28 @@ class PartnerTest < ActiveSupport::TestCase
     citizen_neighbourhood = create(:bare_neighbourhood, name: 'citizen alpha')
     citizen = create(:citizen)
     citizen.neighbourhoods << citizen_neighbourhood
-
-    assert citizen.valid?
-    # assert citizen.assigned_to_postcode?(nil)
+    assert_predicate citizen, :valid?
 
     # build a partner NOT in the users set
     partner = build(:bare_partner, address: nil)
     partner.service_area_neighbourhoods << a_neighbourhood
-    assert partner.address.blank?
     partner.save!
-    # assert partner.valid?
 
     # non-neighbourhood admin can update fields on partner okay
     partner.accessed_by_user = citizen
     partner.name = 'A different name'
-    assert partner.address.blank?
     partner.save!
 
-    VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do
-      # but cannot change the address to something they don't own
-      b_neighbourhood = create(:bare_neighbourhood, name: 'beta', unit_code_value: 'E05011368')
-      partner.accessed_by_user = citizen
-      partner.address = build(:address, neighbourhood: b_neighbourhood)
+    # but cannot change the address to something they don't own
+    b_neighbourhood = create(:bare_neighbourhood, name: 'beta', unit_code_value: 'E05011368')
+    partner.accessed_by_user = citizen
+    partner.address = build(:address, neighbourhood: b_neighbourhood)
 
-      assert_not partner.valid?
-      assert partner.errors[:base].present?
+    assert_not partner.valid?
+    assert_predicate partner.errors[:base], :present?
 
-      msg = partner.errors[:base].first
-      assert_equal 'Partners cannot have an address outside of your ward.', msg
-    end
+    msg = partner.errors[:base].first
+    assert_equal 'Partners cannot have an address outside of your ward.', msg
   end
 
   test 'NA can create a partner in their neighbourhood' do
@@ -384,18 +376,16 @@ class PartnerTest < ActiveSupport::TestCase
     citizen = create(:citizen)
     citizen.neighbourhoods << a_neighbourhood
 
-    assert citizen.valid?
+    assert_predicate citizen, :valid?
 
-    VCR.use_cassette(:import_test_calendar, allow_playback_repeats: true) do
-      address = build(:address)
-      address.postcode = 'M15 5DD'
+    address = build(:address)
+    address.postcode = 'M15 5DD'
 
-      assert citizen.assigned_to_postcode?(address.postcode)
+    assert citizen.assigned_to_postcode?(address.postcode)
 
-      partner = build(:bare_partner, address: address)
-      partner.accessed_by_user = citizen
-      partner.save!
-    end
+    partner = build(:bare_partner, address: address)
+    partner.accessed_by_user = citizen
+    partner.save!
   end
 
   test 'users can change partner addresses to addresses they have neighbourhoods for' do
@@ -409,11 +399,12 @@ class PartnerTest < ActiveSupport::TestCase
 
     citizen = create(:citizen)
     citizen.neighbourhoods << b_neighbourhood
-    assert citizen.valid?
+    assert_predicate citizen, :valid?
 
+    # partners address NOT in citizens neighbourhood pool
     address = create(:address, neighbourhood: b_neighbourhood)
     partner = create(:partner, address: address)
-    assert partner.valid?
+    assert_predicate partner, :valid?
 
     partner.accessed_by_user = citizen
     partner.address.postcode = 'M15 5DD'

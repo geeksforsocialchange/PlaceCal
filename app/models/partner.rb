@@ -349,42 +349,37 @@ class Partner < ApplicationRecord
 
   private
 
-  def neighbourhood_admin_address_access
-    #puts 'neighbourhood_admin_address_access'
+  # rubocop:disable Metrics/CyclomaticComplexity
 
+  def neighbourhood_admin_address_access
     # we trust that the user who last updated the address has been vetted
     return if address.nil? || (address.present? && !address.changed?)
-    #puts '  1'
 
     # user has priveleged access
     return if accessed_by_user.nil? || accessed_by_user.root?
-    #puts '  2'
-    
+
     # access granted based on partner relation not place relation == more trust
     return if accessed_by_user.admin_for_partner?(id)
-    #puts '  3'
 
     if persisted? # It's an update
-      #puts '  4'
-      #puts "  address=#{address.to_json}"
       unless accessed_by_user.assigned_to_postcode?(address&.postcode)
         errors.add :base, 'Partners cannot have an address outside of your ward.'
       end
 
     else # It's an create
-      #puts '  5'
       unless address.blank? || accessed_by_user.assigned_to_postcode?(address&.postcode)
         errors.add :base, 'Partners cannot have an address outside of your ward.'
       end
     end
   end
 
+  # rubocop:disable Metrics/PerceivedComplexity
   def check_neighbourhood_access
     # skip this test if address has not changed
     return if address.present? && !address.changed?
 
     # skip this test if service areas have not changed
-    return if !service_areas.any?(&:changed?)
+    return if service_areas.none?(&:changed?)
 
     return if accessed_by_user.nil? || accessed_by_user.root?
     return if accessed_by_user.admin_for_partner?(id)
@@ -404,6 +399,9 @@ class Partner < ApplicationRecord
       errors.add :base, 'Partners must have an address or a service area inside your neighbourhood'
     end
   end
+
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def must_have_address_or_service_area
     return if service_areas.any? || address.present?
