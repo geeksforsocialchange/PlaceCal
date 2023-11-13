@@ -14,6 +14,8 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     @correct_ward_admin = create(:citizen)
     @wrong_ward_admin = create(:citizen)
 
+    @correct_service_area_admin = create(:neighbourhood_admin)
+
     @correct_district_admin = create(:citizen)
     @wrong_district_admin = create(:citizen)
 
@@ -26,6 +28,8 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     # ---------------------------------------------------------------------------
 
     @partner = @correct_partner_admin.partners.first
+    @partner.service_areas.create! neighbourhood: @correct_service_area_admin.neighbourhoods.first
+
     @correct_ward_admin.neighbourhoods << @partner.address.neighbourhood
     @correct_district_admin.neighbourhoods << @partner.address.neighbourhood.district
 
@@ -53,6 +57,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     assert allows_access(@root, Partner, :index)
     assert allows_access(@correct_partner_admin, Partner, :index)
     assert allows_access(@correct_ward_admin, Partner, :index)
+    assert allows_access(@correct_service_area_admin, Partner, :index)
     assert allows_access(@correct_district_admin, Partner, :index)
 
     # assert allows_access(@multi_admin, Partner, :index)
