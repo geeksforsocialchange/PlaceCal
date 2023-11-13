@@ -64,26 +64,26 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
 
     get edit_admin_partner_url(@partner)
 
-    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 10
+    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 11
   end
 
-  # partner owner can see all neighbourhoods
-  test 'partner owner can see all neighbourhoods' do
+  # partner admin can see all neighbourhoods
+  test 'partner admin can see all neighbourhoods' do
     @partner.service_area_neighbourhoods << @neighbourhood
     @partner.save!
 
     given_lots_of_neighbourhoods_exist
 
-    other_user = create(:user)
-    assert_not other_user.neighbourhood_admin?
+    partner_admin = create(:user)
+    assert_not partner_admin.neighbourhood_admin?
 
-    other_user.partners << @partner # owns this
+    partner_admin.partners << @partner # owns this
 
-    sign_in other_user
+    sign_in partner_admin
     get edit_admin_partner_url(@partner)
 
     # has same number as root
-    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 10
+    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 11
   end
 
   # user can only see neighbourhoods they admin
@@ -118,7 +118,7 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
     get edit_admin_partner_url(@partner)
 
     # can only see the neighbourhoods the user owns
-    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 5
+    assert_select '#partner_service_areas_attributes_0_neighbourhood_id option', count: 6
   end
 
   def given_lots_of_neighbourhoods_exist

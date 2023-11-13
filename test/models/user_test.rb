@@ -123,6 +123,33 @@ class UserTest < ActiveSupport::TestCase
     assert_equal [error_message], @user.errors[:tags]
   end
 
+  test 'can_edit_partners_neighbourhood_by_id?' do
+    root = create(:root)
+    ashton_neighbourhood = create(:ashton_neighbourhood)
+    other_neighbourhood = create(:moss_side_neighbourhood)
+    neighbourhood_admin = create(:neighbourhood_admin)
+    neighbourhood_admin.neighbourhoods << ashton_neighbourhood
+    partner_admin = create(:partner_admin)
+    partner = partner_admin.partners.first
+
+    # root can attach/remove any neighbourhood
+    assert(root.can_edit_partners_neighbourhood_by_id?(1))
+    assert(root.can_edit_partners_neighbourhood_by_id?(ashton_neighbourhood.id, partner.id))
+
+    # partner admin can attach/remove any neighbourhood
+    assert(partner_admin.can_edit_partners_neighbourhood_by_id?(other_neighbourhood.id, partner.id))
+
+    # neighbourhood admin can attach/remove neighbourhood it owns
+    assert(neighbourhood_admin.can_edit_partners_neighbourhood_by_id?(ashton_neighbourhood.id, partner.id))
+
+    # neighbourhood admin can't attach/remove neighbourhood it doesn't own
+    assert_not(neighbourhood_admin.can_edit_partners_neighbourhood_by_id?(other_neighbourhood.id, partner.id))
+
+    # neighbourhood & partner admin can attach/remove any neighbourhood
+    neighbourhood_admin.partners << partner
+    assert(neighbourhood_admin.can_edit_partners_neighbourhood_by_id?(other_neighbourhood.id, partner.id))
+  end
+
   test 'Faciltiy tag cannot be assigned to User' do
     error_message = 'Can only be of type Partnership'
     @user.tags << Facility.first
