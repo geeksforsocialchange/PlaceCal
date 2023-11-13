@@ -349,13 +349,11 @@ class Partner < ApplicationRecord
 
   private
 
-  # rubocop:disable Metrics/CyclomaticComplexity
-
   def neighbourhood_admin_address_access
     # we trust that the user who last updated the address has been vetted
     return if address.nil? || (address.present? && !address.changed?)
 
-    # user has priveleged access
+    # user has privileged access
     return if accessed_by_user.nil? || accessed_by_user.root?
 
     # access granted based on partner relation not place relation == more trust
@@ -373,7 +371,6 @@ class Partner < ApplicationRecord
     end
   end
 
-  # rubocop:disable Metrics/PerceivedComplexity
   def check_neighbourhood_access
     # skip this test if address has not changed
     return if address.present? && !address.changed?
@@ -413,9 +410,6 @@ class Partner < ApplicationRecord
     errors.add :service_areas, 'Partners must have an address or a service area inside your neighbourhood'
     throw :abort
   end
-
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   def must_have_address_or_service_area
     return if service_areas.any? || address.present?
