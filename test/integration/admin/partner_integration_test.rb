@@ -12,6 +12,10 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
 
+    # using a factory to create the neighbourhood_admin will not result in a shared neighbourhood
+    @neighbourhood_admin = create(:citizen)
+    @neighbourhood_admin.neighbourhoods = [@partner.address.neighbourhood]
+
     @tag = create(:tag, type: 'Category')
 
     host! 'admin.lvh.me'
@@ -158,6 +162,23 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
                   text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
     assert_select 'form .partner_image .invalid-feedback',
                   text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
+  end
+
+  test 'neighbourhood_admin cannot update an address outside of their neighbourhood' do
+    neighbourhood = create(:neighbourhood, unit_code_value: 'E05013808')
+
+    partner_params = {
+      name: @partner.name,
+      address_attributes: {
+        street_address: @partner.address.street_address,
+        postcode: 'W1J 7NF' # (from /test/support/geocoder.rb)
+      }
+    }
+
+    sign_in @neighbourhood_admin
+    put admin_partner_path(@partner), params: { partner: partner_params }
+
+    assert_select '#form-errors li', text: 'Partners cannot have an address outside of your ward.'
   end
 end
 
