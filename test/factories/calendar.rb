@@ -22,7 +22,7 @@ FactoryBot.define do
     end
 
     factory :calendar_for_outlook, class: 'Calendar' do
-      name { 'Outlook Calendar 1' }
+      name { 'Eventbrite Calendar 1' }
       # VCR.use_cassette(:outlook_events) do
       source { 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics' }
     end
