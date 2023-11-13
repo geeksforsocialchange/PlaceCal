@@ -225,4 +225,33 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal all_neighbourhoods.sort, @controller.view_assigns['all_neighbourhoods'].sort
   end
+
+  test 'neighbourhood_admin: cannot remove service area from partner with no address' do
+    sign_in @neighbourhood_admin
+
+    partner_with_no_address = create(:bare_partner, name: 'test partner')
+    partner_with_no_address.service_areas.create(
+      neighbourhood: @neighbourhood_admin_neighbourhood
+    )
+    partner_with_no_address.address = nil
+    partner_with_no_address.save!
+
+    edit_params = {
+      partner: {
+        service_areas_attributes: {
+          '0':
+          {
+            id: partner_with_no_address.service_areas[0].id,
+            neighbourhood_id: @neighbourhood_admin_neighbourhood.id,
+            _destroy: '1'
+          }
+        }
+      }
+    }
+
+    patch admin_partner_url(partner_with_no_address), params: edit_params
+
+    assert_response :redirect
+    assert_equal 'Partners must have an address or a service area inside your neighbourhood', flash[:danger]
+  end
 end
