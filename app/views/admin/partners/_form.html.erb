@@ -1,116 +1,128 @@
 <div class="form">
   <%= simple_form_for @partner do |f| %>
-
-  <%= render_component "error", object: @partner %>
-
-  <h2>Basic Information</h2>
-
-  <%= f.input :name, class: "form-control" %>
-  <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
-
-  <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>
-
-  <%= f.input :description, class: "form-control", label: 'Description', input_html: { rows: 7 } %>
-
-  <%= f.input :accessibility_info, class: "form-control", label: 'Accessibility Information', input_html: { rows: 7 } %>
-
-  <div class="row">
-    <div class="col-md-6" data-controller="image-preview">
-      <%= f.input :image,
-          hint: image_uploader_hint(@partner.image),
-          as: :file,
-          input_html: { data: { action: "change->image-preview#file"} }
-          %>
-      <% if @partner.image.url  %>
-      <%= image_tag @partner.image.url,  width: '125', class: 'brand_image', data: { image_preview_target: "img"}  %>
-      <% else  %>
-      <%= image_tag "", style: 'display:none;', width: '125', class: 'brand_image', data: { image_preview_target: "img"} %>
-      <% end  %>
+    <%= render_component "error", object: @partner %>
+    <h2>Basic Information</h2>
+    <%= f.input :name, class: "form-control" %>
+    <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
+    <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>
+    <%= f.input :description, class: "form-control", label: 'Description', input_html: { rows: 7 } %>
+    <%= f.input :accessibility_info, class: "form-control", label: 'Accessibility Information', input_html: { rows: 7 } %>
+    <div class="row">
+      <div class="col-md-6" data-controller="image-preview">
+        <%= f.input :image,
+            hint: image_uploader_hint(@partner.image),
+            as: :file,
+            input_html: { data: { action: "change->image-preview#file"} }
+            %>
+        <% if @partner.image.url  %>
+        <%= image_tag @partner.image.url,  width: '125', class: 'brand_image', data: { image_preview_target: "img"}  %>
+        <% else  %>
+        <%= image_tag "", style: 'display:none;', width: '125', class: 'brand_image', data: { image_preview_target: "img"} %>
+        <% end  %>
+      </div>
     </div>
-
-  </div>
-
-  <br>
-  <hr>
-
-  <h2>Address</h2>
-
-  <div id='address'>
+    <br>
+    <hr>
+    <h2>Address</h2>
+    <div id='address'>
+      <div class="row">
+        <div class="col-md-6">
+          <%= f.fields_for :address, @partner.address || Address.new do |a| %>
+            <%= render 'address_fields', f: a %>
+          <% end %>
+          <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
+            <p>
+              The address for this partner is assigned to an out of date neighbourhood.
+              You do not need to take any action but if you wish to reassign this to an
+              up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
+            </p>
+          <% end %>
+          <% if partner_has_unmappable_postcode?(@partner) %>
+            <p>
+              The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
+            </p>
+          <% end %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
+          <div class="form-group url optional facebook_link form-group-invalid">
+            <%= f.label :facebook_link %>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">https://facebook.com/</div>
+              </div>
+              <%= f.input_field :facebook_link, class: "form-control", placeholder: 'FacebookPageName' %>
+              <%= f.error :facebook_link, class: 'invalid-feedback' %>
+            </div>
+          </div>
+          <div class="form-group url optional twitter_handle form-group-invalid">
+            <%= f.label :twitter_handle %>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">@</div>
+              </div>
+              <%= f.input_field :twitter_handle, class: "form-control", placeholder: 'TwitterAccount' %>
+              <%= f.error :twitter_handle, class: 'invalid-feedback' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <h2>Service Areas</h2>
+    <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
+    <div class="sites_neighbourhoods">
+      <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+        <%= render 'service_area_fields', :f => neighbourhood %>
+      <% end %>
+      <div class="links">
+        <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+      </div>
+      <br>
+    </div>
+    <br>
+    <hr>
+    <h2>Contact Information</h2>
     <div class="row">
       <div class="col-md-6">
-        <%= f.fields_for :address, @partner.address || Address.new do |a| %>
-        <%= render 'address_fields', f: a %>
-        <% end %>
-
-  <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
-  <p>
-    The address for this partner is assigned to an out of date neighbourhood.
-    You do not need to take any action but if you wish to reassign this to an
-    up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
-  </p>
-  <% end %>
-	<% if partner_has_unmappable_postcode?(@partner) %>
-	<p>
-	  The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
-	</p>
-	<% end %>
+        <h3>Public Contact</h3>
+        <p>This is the information that will be shown to the public.</p>
+        <%= f.input :public_name, class: "form-control" %>
+        <%= f.input :public_email, class: "form-control" %>
+        <%= f.input :public_phone, class: "form-control" %>
       </div>
       <div class="col-md-6">
-        <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
-
-        <div class="form-group url optional facebook_link form-group-invalid">
-          <%= f.label :facebook_link %>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text">https://facebook.com/</div>
-            </div>
-            <%= f.input_field :facebook_link, class: "form-control", placeholder: 'FacebookPageName' %>
-            <%= f.error :facebook_link, class: 'invalid-feedback' %>
-          </div>
-        </div>
-
-        <div class="form-group url optional twitter_handle form-group-invalid">
-          <%= f.label :twitter_handle %>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text">@</div>
-            </div>
-            <%= f.input_field :twitter_handle, class: "form-control", placeholder: 'TwitterAccount' %>
-            <%= f.error :twitter_handle, class: 'invalid-feedback' %>
-          </div>
-        </div>
+        <h3>Partnership Contact</h3>
+        <p><em>If different from public contact:</em> The contact person for PlaceCal.</p>
+        <%= f.input :partner_name, class: "form-control" %>
+        <%= f.input :partner_email, class: "form-control" %>
+        <%= f.input :partner_phone, class: "form-control" %>
       </div>
     </div>
-  </div>
-
-  <hr>
-
-  <h2>Service Areas</h2>
-
-  <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
-
-  <div class="sites_neighbourhoods">
-    <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-    <%= render 'service_area_fields', :f => neighbourhood %>
-    <% end %>
-    <div class="links">
-      <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+    <hr>
+    <div class="row">
+      <div class="col-lg-8 col-md-12">
+        <h2>Opening times</h2>
+        <%= render 'opening_times', f: f %>
+      </div>
     </div>
-    <br></br>
-  </div>
-
-  <br>
-
-  <hr>
-  <h2>Contact Information</h2>
-
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Public Contact</h3>
-      <p>This is the information that will be shown to the public.</p>
-      <%= f.input :public_name, class: "form-control" %>
-      <%= f.input :public_email, class: "form-control" %>
-      <%= f.input :public_phone, class: "form-control" %>
+    <hr>
+    <h2>Tags</h2>
+    <p>What partnerships, categories and facilities does this partner have or belong to?</p>
+    <p>Partners may have up to 3 category tags.</p>
+    <%= f.association :tags,
+        label: false,
+        collection: options_for_partner_tags,
+        input_html: { class: 'form-check', data: { controller: "select2" } } %>
+    <hr>
+    <br>
+    <div class="row">
+      <div class="col-sm-12">
+        <%= f.submit "Save Partner", class: "btn btn-primary btn-lg" %><br><br><br>
+        <% if policy(@partner).destroy? && !@partner.new_record? %>
+          <%= link_to "Delete Partner", @partner, method: :delete, class: "btn btn-danger btn-sm", id: 'destroy-partner'  %>
+        <% end %>
+      </div>
     </div>
     <div class="col-md-6">
       <h3>Partnership Contact</h3>
@@ -152,6 +164,4 @@
   </div>
   <% end %>
 </div>
-
 <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>
-

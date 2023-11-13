@@ -8,12 +8,17 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     @citizen = create(:user)
 
     @address = create(:address)
-    @neighbourhood = @address.neighbourhood
+    @neighbourhood_admin_neighbourhood = @address.neighbourhood
+    @partner_neighbourhood = create(:moss_side_neighbourhood)
+    @other_neighbourhood_admin_neighbourhood = create(:ashton_neighbourhood)
 
     @neighbourhood_admin = create(:user)
-    @neighbourhood_admin.neighbourhoods << @neighbourhood
+    @neighbourhood_admin.neighbourhoods << @neighbourhood_admin_neighbourhood
+    @neighbourhood_admin.neighbourhoods << @other_neighbourhood_admin_neighbourhood
 
     @partner = create(:partner, address_id: @address.id)
+    @partner.service_areas.build(neighbourhood: @partner_neighbourhood)
+    @partner.save!
 
     @partner_admin = create(:user)
     @partner_admin.partners << @partner
@@ -109,7 +114,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Everyone else, redirect to admin_partners_url
 
   it_allows_access_to_edit_for(%i[root neighbourhood_admin partner_admin]) do
-    assert_equal @partner.address.neighbourhood_id, @neighbourhood_admin.neighbourhood_ids.last
     get edit_admin_partner_url(@partner)
     assert_response :success
   end
@@ -208,5 +212,46 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     post setup_admin_partners_url, params: params
 
     assert_template :setup
+  end
+
+  test 'neighbourhood_admin : can see all of a partners service areas' do
+    sign_in @neighbourhood_admin
+    get edit_admin_partner_url(@partner)
+    all_neighbourhoods = [
+      @partner_neighbourhood,
+      @neighbourhood_admin_neighbourhood,
+      @other_neighbourhood_admin_neighbourhood
+    ]
+
+    assert_equal all_neighbourhoods.sort, @controller.view_assigns['all_neighbourhoods'].sort
+  end
+
+  test 'neighbourhood_admin: cannot remove service area from partner with no address' do
+    sign_in @neighbourhood_admin
+
+    partner_with_no_address = create(:bare_partner, name: 'test partner')
+    partner_with_no_address.service_areas.create(
+      neighbourhood: @neighbourhood_admin_neighbourhood
+    )
+    partner_with_no_address.address = nil
+    partner_with_no_address.save!
+
+    edit_params = {
+      partner: {
+        service_areas_attributes: {
+          '0':
+          {
+            id: partner_with_no_address.service_areas[0].id,
+            neighbourhood_id: @neighbourhood_admin_neighbourhood.id,
+            _destroy: '1'
+          }
+        }
+      }
+    }
+
+    patch admin_partner_url(partner_with_no_address), params: edit_params
+
+    assert_response :redirect
+    assert_equal 'Partners must have an address or a service area inside your neighbourhood', flash[:danger]
   end
 end
