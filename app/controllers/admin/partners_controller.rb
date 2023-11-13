@@ -83,9 +83,13 @@ module Admin
       mutated_params[:service_areas_attributes] = uniq_service_areas
 
       if @partner.update(mutated_params)
-        flash[:success] = 'Partner was successfully updated.'
+        # have to redirect on associated service area errors or form breaks
+        if @partner.errors[:service_areas].any?
+          flash[:danger] = @partner.errors[:service_areas][0]
+        else
+          flash[:success] = 'Partner was successfully updated.'
+        end
         redirect_to edit_admin_partner_path(@partner)
-
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
