@@ -93,7 +93,7 @@ class User < ApplicationRecord
     neighbourhood_admin? &&
       Set.new(owned_neighbourhood_ids).superset?(
         Set.new(
-          Partner.find_by(id: partner_id).owned_neighbourhood_ids
+          Partner.find_by(id: partner_id)&.owned_neighbourhood_ids
         )
       )
   end

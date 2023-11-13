@@ -156,7 +156,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to delete all Partners
   #   Everyone else redirect to admin_partners_url
 
-  it_allows_access_to_destroy_for(%i[root neighbourhood_admin]) do
+  it_allows_access_to_destroy_for(%i[root partner_admin]) do
     assert_difference('Partner.count', -1) do
       delete admin_partner_url(@partner)
     end
@@ -164,7 +164,18 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_partners_url
   end
 
-  it_denies_access_to_destroy_for(%i[partner_admin citizen]) do
+  # neighbourhood admins can only destroy if partner is only in their neighbourhoods
+  it_allows_access_to_destroy_for(%i[neighbourhood_admin]) do
+    @partner.service_areas = []
+    assert_difference('Partner.count', -1) do
+      delete admin_partner_url(@partner)
+    end
+
+    assert_redirected_to admin_partners_url
+  end
+
+  # neighbourhood admins can only destroy if partner is only in their neighbourhoods
+  it_denies_access_to_destroy_for(%i[citizen neighbourhood_admin]) do
     assert_difference('Partner.count', 0) do
       delete admin_partner_url(@partner)
     end

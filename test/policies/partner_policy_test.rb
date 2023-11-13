@@ -91,11 +91,11 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
   def test_destroy
     assert denies_access(@citizen, @partner, :destroy)
-    assert denies_access(@correct_partner_admin, @partner, :destroy)
     # assert denies_access(@multi_admin, @ashton_partner, :destroy)
 
     assert allows_access(@root, @partner, :destroy)
     assert allows_access(@correct_ward_admin, @partner, :destroy)
+    assert allows_access(@correct_partner_admin, @partner, :destroy)
     # assert allows_access(@correct_district_admin, @partner, :destroy)
 
     # assert allows_access(@multi_admin, @partner, :destroy)
