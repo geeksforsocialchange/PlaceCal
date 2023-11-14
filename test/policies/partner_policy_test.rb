@@ -19,13 +19,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     @correct_district_admin = create(:citizen)
     @wrong_district_admin = create(:citizen)
 
-    # @correct_region_admin = create(:neighbourhood_region_admin)
-    # @wrong_region_admin = create(:neighbourhood_region_admin)
-
     @root = create(:root)
-
-    ## Set up partner we want to test for and make sure it's in the right regions
-    # ---------------------------------------------------------------------------
 
     @partner = @correct_partner_admin.partners.first
     @partner.service_areas.create! neighbourhood: @correct_service_area_admin.neighbourhoods.first
@@ -33,21 +27,9 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     @correct_ward_admin.neighbourhoods << @partner.address.neighbourhood
     @correct_district_admin.neighbourhoods << @partner.address.neighbourhood.district
 
-    # parent = @partner.address.neighbourhood.parent
-    # puts "A: Partner address ward parental ID: #{parent.id}; Child ID: #{@partner.address.neighbourhood.id}"
-    # is_childed = parent.children.map(&:subtree).flatten.include?(@partner.address.neighbourhood)
-    # puts "A: Partner address ward parent contains ward: #{is_childed}"
-
-    # parent = @partner.address.neighbourhood.parent
-    # puts "B: Partner address ward parental ID: #{parent.id}; Child ID: #{@partner.address.neighbourhood.id}"
-    # is_childed = parent.children.map(&:subtree).flatten.include?(@partner.address.neighbourhood)
-    # puts "B: Partner address ward parent contains ward: #{is_childed}"
-
-    # @multi_admin = create(:neighbourhood_admin)
-    # @multi_admin.neighbourhoods << @partner.address.neighbourhood
-
-    # @ashton_partner = create(:ashton_partner)
-    # @multi_admin.partners << @ashton_partner
+    @only_ward_admin = create(:citizen)
+    @only_ward_admin_partner = create(:partner)
+    @only_ward_admin.neighbourhoods << @partner.address.neighbourhood
   end
 
   #  Everyone except guess can view list
@@ -96,15 +78,10 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
   def test_destroy
     assert denies_access(@citizen, @partner, :destroy)
-    # assert denies_access(@multi_admin, @ashton_partner, :destroy)
-
     assert allows_access(@root, @partner, :destroy)
-    assert allows_access(@correct_ward_admin, @partner, :destroy)
+    assert denies_access(@correct_ward_admin, @partner, :destroy)
+    assert allows_access(@only_ward_admin, @only_ward_admin_partner, :destroy)
     assert allows_access(@correct_partner_admin, @partner, :destroy)
-    # assert allows_access(@correct_district_admin, @partner, :destroy)
-
-    # assert allows_access(@multi_admin, @partner, :destroy)
-    # assert allows_access(@multi_admin, @partner_two, :destroy)
   end
 
   def test_scope
