@@ -24,7 +24,7 @@ class Partner < ApplicationRecord
   has_many :facilities, through: :partner_tags, source: :tag, class_name: 'Facility'
   has_many :partnerships, through: :partner_tags, source: :tag, class_name: 'Partnership'
 
-  has_many :service_areas, dependent: :destroy
+  has_many :service_areas, dependent: :destroy, before_remove: :check_remove_service_area
   has_many :service_area_neighbourhoods,
            through: :service_areas,
            source: :neighbourhood,
@@ -89,8 +89,9 @@ class Partner < ApplicationRecord
 
   validates_associated :address, if: ->(p) { p.address.present? }
 
-  validate :check_ward_access, on: :create
-  validate :check_service_area_access, on: :create
+  validate :check_neighbourhood_access
+
+  validate :neighbourhood_admin_address_access, on: %i[create update]
 
   validate :must_have_address_or_service_area
 
@@ -348,29 +349,66 @@ class Partner < ApplicationRecord
 
   private
 
-  def check_ward_access
-    return if accessed_by_user.nil? || accessed_by_user.root?
-    return if address.blank?
+  def neighbourhood_admin_address_access
+    # we trust that the user who last updated the address has been vetted
+    return if address.nil? || (address.present? && !address.changed?)
 
-    unless accessed_by_user.assigned_to_postcode?(address&.postcode)
-      errors.add :base, 'Partners cannot have an address outside of your ward.'
+    # user has privileged access
+    return if accessed_by_user.nil? || accessed_by_user.root?
+
+    # access granted based on partner relation not place relation == more trust
+    return if accessed_by_user.admin_for_partner?(id)
+
+    if persisted? # It's an update
+      unless accessed_by_user.assigned_to_postcode?(address&.postcode)
+        errors.add :base, 'Partners cannot have an address outside of your ward.'
+      end
+
+    else # It's an create
+      unless address.blank? || accessed_by_user.assigned_to_postcode?(address&.postcode)
+        errors.add :base, 'Partners cannot have an address outside of your ward.'
+      end
     end
   end
 
-  def check_service_area_access
+  def check_neighbourhood_access
+    # skip this test if address has not changed
+    return if address.present? && !address.changed?
+
+    # skip this test if service areas have not changed
+    return if service_areas.none?(&:changed?)
+
     return if accessed_by_user.nil? || accessed_by_user.root?
+    return if accessed_by_user.admin_for_partner?(id)
 
-    my_neighbourhoods = service_areas.map(&:neighbourhood_id)
-    return if my_neighbourhoods.empty?
-
+    partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
     user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
 
-    partner_neighbourhoods_set = Set.new(my_neighbourhoods)
-    user_neighbourhoods_set = Set.new(user_neighbourhoods)
+    in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
+    services_user_neighbourhood =
+      Set.new(user_neighbourhoods).superset?(Set.new(partner_service_areas)) &&
+      partner_service_areas.any?
 
-    unless user_neighbourhoods_set.superset?(partner_neighbourhoods_set)
-      errors.add :base, 'Partners cannot have a service area outside of your ward.'
-    end
+    return if in_user_neighbourhood || services_user_neighbourhood
+
+    errors.add :base, 'Partners must have an address or a service area inside your neighbourhood'
+  end
+
+  def check_remove_service_area(service_area_to_remove)
+    return if accessed_by_user.nil? || accessed_by_user.root?
+    return if accessed_by_user.admin_for_partner?(id)
+
+    partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
+    new_service_areas = partner_service_areas.reject { |e| e == service_area_to_remove.neighbourhood_id }
+    user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
+
+    in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
+    services_user_neighbourhood = new_service_areas.present?
+
+    return if in_user_neighbourhood || services_user_neighbourhood
+
+    errors.add :service_areas, 'Partners must have an address or a service area inside your neighbourhood'
+    throw :abort
   end
 
   def must_have_address_or_service_area

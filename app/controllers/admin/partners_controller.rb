@@ -6,7 +6,6 @@ module Admin
     before_action :set_partner, only: %i[show edit update destroy]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
-    before_action :set_service_area_map_ids, only: %i[new edit]
 
     def index
       @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
@@ -54,7 +53,6 @@ module Admin
           format.html do
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
-            set_service_area_map_ids
             render :new, status: :unprocessable_entity
           end
           format.json { render json: @partner.errors, status: :unprocessable_entity }
@@ -83,13 +81,16 @@ module Admin
       mutated_params[:service_areas_attributes] = uniq_service_areas
 
       if @partner.update(mutated_params)
-        flash[:success] = 'Partner was successfully updated.'
+        # have to redirect on associated service area errors or form breaks
+        if @partner.errors[:service_areas].any?
+          flash[:danger] = @partner.errors[:service_areas][0]
+        else
+          flash[:success] = 'Partner was successfully updated.'
+        end
         redirect_to edit_admin_partner_path(@partner)
-
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
-        set_service_area_map_ids
         render :edit, status: :unprocessable_entity
       end
     end
@@ -124,26 +125,16 @@ module Admin
 
     private
 
-    def set_service_area_map_ids
-      # maps neighbourhood ID to service_area ID
-      @service_area_id_map = if @partner
-                               @partner
-                                 .service_areas.select(:id, :neighbourhood_id)
-                                 .map { |sa| { sa.neighbourhood_id => sa.id } }
-                                 .reduce({}, :merge)
-                             else
-                               {}
-                             end
-    end
-
     def set_neighbourhoods
-      # if user owns partner let them set any neighbourhood
-      if @partner.present? && current_user.admin_for_partner?(@partner.id)
+      if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
         @all_neighbourhoods = Neighbourhood.order(:name)
-        return
+      elsif @partner.present? && current_user.neighbourhood_admin_for_partner?(@partner.id)
+        ids = @partner.owned_neighbourhood_ids | current_user.owned_neighbourhood_ids
+        @all_neighbourhoods = Neighbourhood.where(id: ids)
+      else
+        ids = current_user.owned_neighbourhood_ids
+        @all_neighbourhoods = Neighbourhood.where(id: ids)
       end
-
-      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
     end
 
     def user_not_authorized

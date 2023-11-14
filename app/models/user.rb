@@ -79,11 +79,37 @@ class User < ApplicationRecord
     partners.pluck(:id).include? partner_id
   end
 
+  def neighbourhood_admin_for_partner?(partner_id)
+    partner_id.present? &&
+      neighbourhood_admin? &&
+      (
+        owned_neighbourhood_ids & (
+          Partner.find_by(id: partner_id).owned_neighbourhood_ids
+        )
+      ).any?
+  end
+
+  def only_neighbourhood_admin_for_partner?(partner_id)
+    neighbourhood_admin? &&
+      Set.new(owned_neighbourhood_ids).superset?(
+        Set.new(
+          Partner.find_by(id: partner_id)&.owned_neighbourhood_ids
+        )
+      )
+  end
+
   def can_view_neighbourhood_by_id?(neighbourhood_id)
     root? || (
       neighbourhood_admin? &&
       owned_neighbourhood_ids.include?(neighbourhood_id)
     )
+  end
+
+  def can_edit_partners_neighbourhood_by_id?(neighbourhood_id, partner_id = nil)
+    root? || (
+      neighbourhood_admin? &&
+      owned_neighbourhood_ids.include?(neighbourhood_id)
+    ) || admin_for_partner?(partner_id)
   end
 
   def neighbourhood_admin?
@@ -116,10 +142,11 @@ class User < ApplicationRecord
   end
 
   def assigned_to_postcode?(postcode)
+    return true if root?
+
     return true unless neighbourhood_admin?
 
     res = Geocoder.search(postcode).first&.data
-
     return false unless res
 
     neighbourhood = Neighbourhood.find_from_postcodesio_response(res)
