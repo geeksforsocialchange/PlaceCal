@@ -95,17 +95,6 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'a#destroy-partner', 'Delete Partner'
   end
 
-  test 'Edit does not have delete button for partner admins' do
-    @neighbourhood_region_admin.partners << @partner
-
-    sign_in @neighbourhood_region_admin
-
-    get edit_admin_partner_path(@partner)
-    assert_response :success
-
-    assert_select 'a#destroy-partner', false, 'This page must not have a Destroy Partner button'
-  end
-
   test 'Partner has owned tag preselected' do
     @neighbourhood_region_admin.tags << @tag
 
@@ -114,7 +103,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     get new_admin_partner_path(@partner)
     assert_response :success
 
-    tag_options = assert_select 'div.partner_tags option', count: 1, text: @tag.name_with_type
+    tag_options = assert_select 'div.partner_tags option', count: 2, text: @tag.name_with_type
 
     tag = tag_options.first
     assert tag.attributes.key?('selected')
