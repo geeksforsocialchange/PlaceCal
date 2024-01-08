@@ -186,7 +186,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
         importer_task.run
       end
 
-      assert_equal "Source responded with invalid JSON (859: unexpected token at '{ \"key\": \"va')", error.message
+      assert_equal "Source responded with invalid JSON (unexpected token at '{ \"key\": \"va')", error.message
     end
   end
 
