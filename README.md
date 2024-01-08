@@ -22,7 +22,7 @@ To run PlaceCal locally you will need:
       - `libpq-dev` (debian)
       - `postgresql-libs` (arch)
       - `dev-db/postgresql` (gentoo)
-- Ruby 2.7.x. We reccomend using a version manager for this such as `rvm` or `rbenv`. Current version we are using is in `.ruby-version`.
+- Ruby 3.1.2 - We recommend using a version manager for this such as `rvm` or `rbenv`. Current version we are using is in `.ruby-version`.
   - [rvm](https://rvm.io/)
   - [rbenv](https://github.com/rbenv/rbenv)
     - [ruby-build](https://github.com/rbenv/ruby-build)
