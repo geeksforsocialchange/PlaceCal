@@ -5,3 +5,7 @@
 /tmp/
 /vendor/bundle/
 /.rubocop_todo.yml
+/.rubocop.yml
+/dump/
+/public/assets/
+/coverage/

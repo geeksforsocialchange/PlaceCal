@@ -15,6 +15,7 @@ AllCops:
     - "vendor/**/*"
     - ".git/**/*"
     - "db/schema.rb"
+  SuggestExtensions: false
 
 GraphQL/FieldName:
   Enabled: false
@@ -100,3 +101,18 @@ Rails/Pluck:
   Enabled: false
 Style/RedundantCurrentDirectoryInPath:
   Enabled: false
+Layout/ExtraSpacing:
+  Enabled: false
+Style/SuperWithArgsParentheses:
+  Enabled: false
+Lint/SymbolConversion:
+  Enabled: false
+Style/HashEachMethods:
+  Enabled: false
+Style/RedundantLineContinuation:
+  Enabled: false
+Lint/SelfAssignment:
+  Enabled: false
+Lint/RedundantCopDisableDirective:
+  Enabled: false
+
