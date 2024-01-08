@@ -114,6 +114,7 @@ group :development do
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
+  gem 'foreman'
   gem 'web-console'
   gem 'yard'
 end
