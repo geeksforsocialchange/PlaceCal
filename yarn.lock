@@ -264,18 +264,18 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-datatables.net-bs4@1.13.4:
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.4.tgz#8a95035ec00b8b91a7e521bc73fa0e5d403e4606"
-  integrity sha512-xRImAzF0Ra+JYc1oUeZtFv/XzUATk3CUyVSIDr2OYh0FwSTEU48S94bUBiTUJFvzwPFreqcTZb0IyMFWQvI1GA==
+datatables.net-bs4@1.13.8:
+  version "1.13.8"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.8.tgz#7a28023437bd86c85070f373f96c87cf54e7012c"
+  integrity sha512-9LQ4UMb28balB2xK9MhxbsDjUzAUjc0bNjxvtkysdMbb9FhNOTDkmt1I4ZzfiJiDMN8CH1vzZsgCh835LkX7SQ==
   dependencies:
-    datatables.net ">=1.12.1"
+    datatables.net "1.13.8"
     jquery ">=1.7"
 
-datatables.net@>=1.12.1:
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.4.tgz#9a809cee82eca0a884e10b4d47a3a3d6e65e9fe7"
-  integrity sha512-yzhArTOB6tPO2QFKm1z3hA4vabtt2hRvgw8XLsT1xqEirinfGYqWDiWXlkTPTaJv2e7gG+Kf985sXkzBFlGrGQ==
+datatables.net@1.13.8:
+  version "1.13.8"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.8.tgz#05a2fb5a036b0b65b66d1bb1eae0ba018aaea8a3"
+  integrity sha512-2pDamr+GUwPTby2OgriVB9dR9ftFKD2AQyiuCXzZIiG4d9KkKFQ7gqPfNmG7uj9Tc5kDf+rGj86do4LAb/V71g==
   dependencies:
     jquery ">=1.7"
 
