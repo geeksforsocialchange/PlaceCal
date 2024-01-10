@@ -15,10 +15,7 @@ gem 'puma'
 gem 'rails'
 
 # Frontend
-gem 'coffee-rails'
-gem 'importmap-rails'
 gem 'jquery-rails'
-gem 'jquery-turbolinks'
 gem 'jsbundling-rails'
 gem 'sass-rails', '6.0.0'
 gem 'stimulus-rails'
@@ -51,7 +48,6 @@ gem 'simple_form'
 # Users, login, permissions
 gem 'devise'
 gem 'devise_invitable'
-gem 'omniauth-facebook'
 gem 'pundit'
 
 # Maps and geolocation
