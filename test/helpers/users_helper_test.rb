@@ -24,7 +24,7 @@ class UsersHelperTest < ActionView::TestCase
       Pundit.policy_scope!(@root, Partner)
     end
 
-    expected = Partner.all.pluck(:name, :id)
+    expected = Partner.order(:name).pluck(:name, :id)
 
     assert_equal(expected, options_for_partners)
   end
@@ -34,7 +34,7 @@ class UsersHelperTest < ActionView::TestCase
       Pundit.policy_scope!(@root, Partner)
     end
 
-    expected = Partner.all.pluck(:name, :id)
+    expected = Partner.order(:name).pluck(:name, :id)
 
     assert_equal(expected, options_for_partners(@neighbourhood_admin))
   end
