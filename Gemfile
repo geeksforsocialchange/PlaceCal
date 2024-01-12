@@ -83,7 +83,6 @@ gem 'sendgrid-actionmailer'
 gem 'uk_postcode'
 
 group :development, :test do
-  # gem 'byebug', platform: :mri # is very old, probably EOL
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'timecop'
@@ -91,6 +90,7 @@ end
 
 group :development do
   gem 'better_errors'
+  gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
   gem 'rails-erd'
@@ -122,5 +122,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-# Use Redis for Action Cable
