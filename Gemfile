@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '2.7.6'
+ruby '3.1.2'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -82,7 +82,8 @@ gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id'
 gem 'jbuilder'
-gem 'listen'
+# gem 'listen' # needed?
+gem 'net-smtp' # added for bootsnap
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
@@ -106,13 +107,15 @@ group :development do
   gem 'letter_opener'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop-graphql', require: false
-  gem 'rubocop-minitest', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rails', require: false
+  gem 'rubocop', '1.59.0', require: false
+  gem 'rubocop-graphql', '1.4.0', require: false
+  gem 'rubocop-minitest', '0.32.2', require: false
+  gem 'rubocop-performance', '1.19.1', require: false
+  gem 'rubocop-rails', '2.21.1', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
-  gem 'spring-watcher-listen'
+  # gem 'spring-watcher-listen'
+  gem 'foreman'
   gem 'web-console'
   gem 'yard'
 end
