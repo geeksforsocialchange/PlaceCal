@@ -25,7 +25,7 @@ class ParserIcsTest < ActiveSupport::TestCase
   end
 
   test 'parse_remote_calendars handles badly formed ICAL data' do
-    bad_ics_path = File.join(fixture_path, 'files/family-action-org-uk-bad.ics')
+    bad_ics_path = File.join(fixture_paths, 'files/family-action-org-uk-bad.ics')
     bad_ics_data = File.read(bad_ics_path)
 
     error = assert_raises(CalendarImporter::Exceptions::InvalidResponse) do
