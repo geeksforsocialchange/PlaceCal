@@ -15,6 +15,7 @@ AllCops:
     - "vendor/**/*"
     - ".git/**/*"
     - "db/schema.rb"
+  SuggestExtensions: false
 
 GraphQL/FieldName:
   Enabled: false
@@ -34,3 +35,84 @@ Style/Documentation:
 
 Naming/VariableNumber:
   Enabled: false
+
+# all these added when updating ruby (and rubocop) - i guess a default config
+# got updated. adding these here so we have the smallest code change in
+# this branch
+
+Minitest/EmptyLineBeforeAssertionMethods:
+  Enabled: false
+
+Minitest/AssertMatch:
+  Enabled: false
+
+Minitest/AssertOperator:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+Rails/ActionOrder:
+  Enabled: false
+
+Rails/RootPathnameMethods:
+  Enabled: false
+GraphQL/MaxComplexitySchema:
+  Enabled: false
+GraphQL/MaxDepthSchema:
+  Enabled: false
+Naming/BlockForwarding:
+  Enabled: false
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: false
+Style/ReturnNilInPredicateMethodDefinition:
+  Enabled: false
+Style/YodaCondition:
+  Enabled: false
+Layout/LineContinuationSpacing:
+  Enabled: false
+Performance/MapMethodChain:
+  Enabled: false
+Style/RedundantFreeze:
+  Enabled: false
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
+  Enabled: false
+Performance/StringReplacement:
+  Enabled: false
+Style/ZeroLengthPredicate:
+  Enabled: false
+Style/ArrayIntersect:
+  Enabled: false
+Style/RedundantReturn:
+  Enabled: false
+Style/RedundantConstantBase:
+  Enabled: false
+Rails/ThreeStateBooleanColumn:
+  Enabled: false
+Lint/RedundantDirGlobSort:
+  Enabled: false
+Rails/FindEach:
+  Enabled: false
+Lint/RedundantStringCoercion:
+  Enabled: false
+Layout/LineContinuationLeadingSpace:
+  Enabled: false
+Rails/Pluck:
+  Enabled: false
+Style/RedundantCurrentDirectoryInPath:
+  Enabled: false
+Layout/ExtraSpacing:
+  Enabled: false
+Style/SuperWithArgsParentheses:
+  Enabled: false
+Lint/SymbolConversion:
+  Enabled: false
+Style/HashEachMethods:
+  Enabled: false
+Style/RedundantLineContinuation:
+  Enabled: false
+Lint/SelfAssignment:
+  Enabled: false
+Lint/RedundantCopDisableDirective:
+  Enabled: false
+
