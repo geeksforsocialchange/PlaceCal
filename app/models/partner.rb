@@ -38,14 +38,14 @@ class Partner < ApplicationRecord
   has_and_belongs_to_many :objects,
                           class_name: 'Partner',
                           join_table: :organisation_relationships,
-                          foreign_key: 'subject_id',
-                          association_foreign_key: 'object_id'
+                          foreign_key: 'partner_subject_id',
+                          association_foreign_key: 'partner_object_id'
 
   has_and_belongs_to_many :subjects,
                           class_name: 'Partner',
                           join_table: :organisation_relationships,
-                          foreign_key: 'object_id',
-                          association_foreign_key: 'subject_id'
+                          foreign_key: 'partner_object_id',
+                          association_foreign_key: 'partner_subject_id'
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
@@ -209,7 +209,7 @@ class Partner < ApplicationRecord
 
   # Get all Partners that manage at least one other Partner.
   scope :managers, lambda {
-    joins('JOIN organisation_relationships o_r on o_r.subject_id = partners.id')
+    joins('JOIN organisation_relationships o_r on o_r.partner_subject_id = partners.id')
       .where(o_r: { verb: :manages }).distinct
   }
 

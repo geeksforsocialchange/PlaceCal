@@ -78,6 +78,7 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
     ajax-datatables-rails (1.3.1)
@@ -580,16 +581,12 @@ DEPENDENCIES
   active_link_to
   ajax-datatables-rails
   ancestry
-  awesome_print
   better_errors
-  binding_of_caller
   bootsnap
   bootstrap
-  byebug
   capybara-select-2
   carrierwave
   cocoon
-  coffee-rails
   database_cleaner-active_record
   delayed_job_active_record
   devise
@@ -610,23 +607,19 @@ DEPENDENCIES
   icalendar
   icalendar-recurrence
   image_processing
-  importmap-rails
-  jbuilder
   jquery-rails
-  jquery-turbolinks
   jsbundling-rails
   json-ld
   json_matchers
   kramdown
   leaflet-rails
   letter_opener
+  listen
   minitest-rails
   minitest-rails-capybara
   minitest-reporters
   mountain_view
   net-smtp
-  oj
-  omniauth-facebook
   paper_trail
   pg
   puma
@@ -635,12 +628,10 @@ DEPENDENCIES
   rails (= 7.1.2)
   rails-controller-testing
   rails-erd
-  rails_autolink
   rdoc
-  redis
   rollbar
   rubocop (= 1.59.0)
-  rubocop-graphql (= 1.4.0)
+  rubocop-graphql (= 1.5.0)
   rubocop-minitest (= 0.32.2)
   rubocop-performance (= 1.19.1)
   rubocop-rails (= 2.21.1)
@@ -657,10 +648,8 @@ DEPENDENCIES
   uk_postcode
   vcr
   view_component
-  virtus
   web-console
   webmock
-  whenever
   yard
 
 RUBY VERSION
