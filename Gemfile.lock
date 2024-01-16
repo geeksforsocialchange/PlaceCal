@@ -246,6 +246,10 @@ GEM
     msgpack (1.5.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
+    net-protocol (0.2.2)
+      timeout
+    net-smtp (0.4.0.1)
+      net-protocol
     netrc (0.11.0)
     nio4r (2.5.9)
     nokogiri (1.13.10)
@@ -258,8 +262,9 @@ GEM
       activerecord (>= 5.2)
       request_store (~> 1.1)
     parallel (1.24.0)
-    parser (3.3.0.2)
+    parser (3.3.0.4)
       ast (~> 2.4.1)
+      racc
     pg (1.4.3)
     popper_js (1.16.1)
     psych (4.0.6)
@@ -404,6 +409,7 @@ GEM
     thor (1.2.1)
     tilt (2.0.11)
     timecop (0.9.5)
+    timeout (0.4.1)
     turbo-rails (1.1.1)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
@@ -488,6 +494,7 @@ DEPENDENCIES
   minitest-rails-capybara
   minitest-reporters
   mountain_view
+  net-smtp
   paper_trail
   pg
   puma

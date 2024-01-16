@@ -48,6 +48,7 @@ gem 'simple_form'
 # Users, login, permissions
 gem 'devise'
 gem 'devise_invitable'
+gem 'net-smtp'
 gem 'pundit'
 
 # Maps and geolocation
@@ -124,4 +125,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
