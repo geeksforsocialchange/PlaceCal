@@ -15,7 +15,10 @@ gem 'puma'
 gem 'rails'
 
 # Frontend
+gem 'coffee-rails'
+gem 'importmap-rails'
 gem 'jquery-rails'
+gem 'jquery-turbolinks'
 gem 'jsbundling-rails'
 gem 'sass-rails', '6.0.0'
 gem 'stimulus-rails'
@@ -48,7 +51,7 @@ gem 'simple_form'
 # Users, login, permissions
 gem 'devise'
 gem 'devise_invitable'
-gem 'net-smtp'
+gem 'omniauth-facebook'
 gem 'pundit'
 
 # Maps and geolocation
@@ -64,6 +67,7 @@ gem 'groupdate'
 
 # Markdown
 gem 'kramdown'
+gem 'rails_autolink'
 
 # Jobs
 gem 'delayed_job_active_record'
@@ -77,21 +81,28 @@ gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id'
-gem 'listen'
+gem 'jbuilder'
+# gem 'listen' # needed?
+gem 'net-smtp' # added for bootsnap
+gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'
 gem 'sendgrid-actionmailer'
 gem 'uk_postcode'
+gem 'virtus'
+gem 'whenever', require: false
 
 group :development, :test do
+  gem 'byebug', platform: :mri
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'timecop'
 end
 
 group :development do
+  gem 'awesome_print'
   gem 'better_errors'
-  gem 'foreman'
+  gem 'binding_of_caller'
   gem 'graphiql-rails'
   gem 'letter_opener'
   gem 'rails-erd'
@@ -104,7 +115,7 @@ group :development do
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
-
+  gem 'foreman'
   gem 'web-console'
   gem 'yard'
 end
@@ -120,8 +131,11 @@ group :test do
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   gem 'vcr'
-  gem 'webmock' # used by VCR
+  gem 'webmock'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# Use Redis for Action Cable
+gem 'redis'

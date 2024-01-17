@@ -4,6 +4,10 @@
 require 'vcr'
 # SimpleCov.start 'rails' unless ENV['NO_COVERAGE']
 
+require 'webmock/minitest'
+# require 'minitest-rails'
+WebMock.disable_net_connect!(allow_localhost: true)
+
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
