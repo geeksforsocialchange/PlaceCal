@@ -83,7 +83,10 @@ gem 'enumerize'
 gem 'friendly_id'
 gem 'jbuilder'
 # gem 'listen' # needed?
-gem 'net-smtp' # added for bootsnap
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
+
 gem 'oj'
 gem 'paper_trail'
 gem 'rollbar'

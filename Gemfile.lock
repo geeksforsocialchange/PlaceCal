@@ -134,6 +134,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
+    date (3.3.4)
     debug_inspector (1.1.0)
     delayed_job (4.1.10)
       activesupport (>= 3.0, < 8.0)
@@ -300,6 +301,11 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.2.0)
+    net-imap (0.4.9.1)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
     net-protocol (0.2.2)
       timeout
     net-smtp (0.4.0.1)
@@ -583,6 +589,8 @@ DEPENDENCIES
   minitest-rails-capybara
   minitest-reporters
   mountain_view
+  net-imap
+  net-pop
   net-smtp
   oj
   omniauth-facebook
