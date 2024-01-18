@@ -108,6 +108,13 @@ GEM
     choice (0.2.0)
     cocoon (1.2.15)
     coderay (1.1.3)
+    coffee-rails (5.0.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 5.2.0)
+    coffee-script (2.4.1)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.12.2)
     concurrent-ruby (1.2.2)
     crack (0.4.5)
       rexml
@@ -462,6 +469,7 @@ DEPENDENCIES
   capybara-select-2
   carrierwave
   cocoon
+  coffee-rails
   database_cleaner-active_record
   delayed_job_active_record
   devise
