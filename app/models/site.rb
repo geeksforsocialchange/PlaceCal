@@ -159,13 +159,14 @@ class Site < ApplicationRecord
     # @param [Partner]
     # @return [ActiveRecord::Relation<Site>]
     def sites_that_contain_partner(partner)
-      neighbourhood_ids = partner.owned_neighbourhood_ids
-      tag_ids = partner.partner_tags.pluck(:tag_id)
-
-      Site.left_outer_joins(:sites_tag, :sites_neighbourhoods)
-          .group(:id)
-          .where('neighbourhood_id in (?) or tag_id in (?)',
-                 neighbourhood_ids, tag_ids)
+      sites = Site.all.order(:name)
+      site_partners = []
+      sites.each do |site|
+        partner_ids = Partner.for_site(site).pluck(:id)
+        site_partners.push({ site: site, partner_ids: partner_ids })
+      end
+      site_partners.select { |sp| sp[:partner_ids].include? partner.id }
+                   .map { |sp| sp[:site] }
     end
   end
 end

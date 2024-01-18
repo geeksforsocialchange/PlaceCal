@@ -59,10 +59,10 @@ module PartnersHelper
   def site_links
     return unless @sites
 
-    @sites.order(:name)
-          .map { |site| link_to site.name, site.domain }
-          .join(', ')
-          .html_safe
+    @sites
+      .map { |site| link_to site.name, site.domain }
+      .join(', ')
+      .html_safe
   end
 
   def partner_has_unmappable_postcode?(partner)
