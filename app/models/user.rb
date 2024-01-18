@@ -120,8 +120,8 @@ class User < ApplicationRecord
     partners.any?
   end
 
-  def tag_admin?
-    tags.any?
+  def partnership_admin?
+    tags.any? { |tag| tag[:type] == 'Partnership' }
   end
 
   def admin_roles
@@ -131,7 +131,7 @@ class User < ApplicationRecord
     types << 'editor' if editor?
     types << 'neighbourhood_admin' if neighbourhood_admin?
     types << 'partner_admin' if partner_admin?
-    types << 'partnership_admin' if tag_admin?
+    types << 'partnership_admin' if partnership_admin?
     types << 'site_admin' if site_admin?
 
     types.join(', ')

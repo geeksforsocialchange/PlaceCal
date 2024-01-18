@@ -104,9 +104,9 @@ class UserTest < ActiveSupport::TestCase
     assert_predicate @user, :partner_admin?
 
     # Does this person manage at least one tag?
-    @user.tags << create(:tag)
+    @user.tags << create(:partnership)
     @user.save
-    assert_predicate @user, :tag_admin?
+    assert_predicate @user, :partnership_admin?
 
     # Is this person a root? If they are, they're also a secretary
     @user.update(role: :root)
