@@ -33,18 +33,6 @@ class TagPolicy < ApplicationPolicy
     fields.push(partner_ids: [], user_ids: [])
   end
 
-  def disabled_fields
-    if user.root?
-      %i[]
-    elsif user.tag_admin? && user.tags.include?(@record)
-      %i[system_tag users user_ids]
-    elsif user.tag_admin? || user.partner_admin?
-      %i[name slug description users user_ids system_tag]
-    else # Should never be hit, but it's useful as a guard
-      %i[name slug description users partner_ids user_ids system_tag]
-    end
-  end
-
   class Scope < Scope
     def resolve
       Tag.users_tags(user)
