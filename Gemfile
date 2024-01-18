@@ -15,7 +15,7 @@ gem 'puma'
 gem 'rails'
 
 # Frontend
-# gem 'coffee-rails'
+gem 'coffee-rails'
 gem 'jquery-rails'
 gem 'jsbundling-rails'
 gem 'sass-rails', '6.0.0'
