@@ -7,6 +7,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     # Make some user accounts
     # -----------------------
     @citizen = create(:citizen)
+    @other_partner = create(:partner)
 
     @correct_partner_admin = create(:partner_admin)
     @wrong_partner_admin = create(:partner_admin)
@@ -21,7 +22,15 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
     @root = create(:root)
 
+    partnership_tag = create(:partnership)
+
+    @wrong_partner = @wrong_partner_admin.partners.first
     @partner = @correct_partner_admin.partners.first
+
+    @wrong_partner.address = create(:moss_side_address)
+    @wrong_partner.save
+
+    @partner.tags << partnership_tag
     @partner.service_areas.create! neighbourhood: @correct_service_area_admin.neighbourhoods.first
 
     @correct_ward_admin.neighbourhoods << @partner.address.neighbourhood
@@ -30,6 +39,10 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     @only_ward_admin = create(:citizen)
     @only_ward_admin_partner = create(:partner)
     @only_ward_admin.neighbourhoods << @partner.address.neighbourhood
+
+    @partnership_admin = create(:citizen)
+    @partnership_admin.neighbourhoods << @partner.address.neighbourhood
+    @partnership_admin.tags << partnership_tag
   end
 
   #  Everyone except guess can view list
@@ -41,6 +54,8 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     assert allows_access(@correct_ward_admin, Partner, :index)
     assert allows_access(@correct_service_area_admin, Partner, :index)
     assert allows_access(@correct_district_admin, Partner, :index)
+    assert allows_access(@correct_district_admin, Partner, :index)
+    assert allows_access(@partnership_admin, Partner, :index)
 
     # assert allows_access(@multi_admin, Partner, :index)
   end
@@ -67,6 +82,7 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     assert allows_access(@root, @partner, :update)
     assert allows_access(@correct_partner_admin, @partner, :update)
     assert allows_access(@correct_ward_admin, @partner, :update)
+    assert allows_access(@partnership_admin, @partner, :update)
     # assert allows_access(@correct_district_admin, @partner, :update)
 
     # assert allows_access(@multi_admin, @partner, :update)
@@ -86,18 +102,18 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
   def test_scope
     # We sort these because for some reason permitted records sometimes returns results back in a different order here
-    # assert_equal(permitted_records(@root, Partner).sort_by(&:id),
-    #              [@partner, @partner_two, @ashton_partner])
-    # assert_equal(permitted_records(@correct_partner_admin, Partner).sort_by(&:id),
-    #              [@partner])
-    # assert_equal(permitted_records(@wrong_partner_admin, Partner).sort_by(&:id),
-    #              [@partner_two])
-    # assert_equal(permitted_records(@correct_ward_admin, Partner).sort_by(&:id),
-    #              [@partner, @partner_two])
+    assert_equal(permitted_records(@root, Partner).sort_by(&:id),
+                 [@partner, @only_ward_admin_partner, @other_partner, @wrong_partner].sort_by(&:id))
+    assert_equal(permitted_records(@correct_partner_admin, Partner).sort_by(&:id),
+                 [@partner])
+    assert_equal(permitted_records(@wrong_partner_admin, Partner).sort_by(&:id),
+                 [@wrong_partner])
+    assert_equal(permitted_records(@correct_ward_admin, Partner).sort_by(&:id),
+                 [@partner, @only_ward_admin_partner, @other_partner].sort_by(&:id))
     # assert_equal(permitted_records(@correct_district_admin, Partner).sort_by(&:id),
-    #              [@partner, @partner_two])
-    # assert_equal(permitted_records(@multi_admin, Partner).sort_by(&:id),
-    #              [@partner, @partner_two, @ashton_partner])
+    #              [@partner, @only_ward_admin_partner, @other_partner].sort_by(&:id))
+    assert_equal(permitted_records(@partnership_admin, Partner).sort_by(&:id),
+                 [@partner])
   end
 
   def test_create_with_partner_permissions
@@ -115,13 +131,12 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
   def test_update_with_partner_permissions
     user = create(:user)
-    partner = create(:partner)
 
     # denies user with no partners
-    assert denies_access(user, partner, :update)
+    assert denies_access(user, @other_partner, :update)
 
     # can update partners user has access to
-    user.partners << partner
-    assert allows_access(user, partner, :update)
+    user.partners << @other_partner
+    assert allows_access(user, @other_partner, :update)
   end
 end

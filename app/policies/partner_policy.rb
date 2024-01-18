@@ -20,6 +20,7 @@ class PartnerPolicy < ApplicationPolicy
   def update?
     return true if user.root?
     return true if user.admin_for_partner?(record.id)
+    return true if user.partnership_admin_for_partner?(record.id)
     return true if user.neighbourhood_admin_for_partner?(record.id)
 
     false
@@ -59,9 +60,38 @@ class PartnerPolicy < ApplicationPolicy
       if user.root?
         scope.all
 
+      elsif user.partnership_admin?
+        user_neighbourhood_ids = user.owned_neighbourhood_ids
+        user_partnership_tag_ids = user.tags.map(&:id)
+
+        # If the user is a partner admin,
+        # or if they manage their partnership tag AND they neighbourhood admin for them
+        clause = <<-SQL.squish
+        partners_users.user_id = ? OR
+          (
+          partner_tags.tag_id IN (?) AND
+            (
+              addresses.neighbourhood_id IN (?)
+              OR service_areas.neighbourhood_id IN (?)
+            )
+          )
+        SQL
+
+        scope
+          .left_outer_joins(:users, :tags, :address, :service_areas)
+          .where(
+            clause,
+            user.id,
+            user_partnership_tag_ids,
+            user_neighbourhood_ids,
+            user_neighbourhood_ids
+          ).distinct
+
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
 
+        # If the user is a partner admin,
+        # or if they neighbourhood admin for them
         clause = <<-SQL.squish
           partners_users.user_id = ?
             OR addresses.neighbourhood_id IN (?)
