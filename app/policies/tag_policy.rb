@@ -2,7 +2,7 @@
 
 class TagPolicy < ApplicationPolicy
   def index?
-    user.root? || user.partner_admin? || user.tag_admin?
+    user.root?
   end
 
   def new?
@@ -14,23 +14,11 @@ class TagPolicy < ApplicationPolicy
   end
 
   def edit?
-    user.root? || user.partner_admin? || user.tag_admin?
+    user.root?
   end
 
   def update?
-    return true if user.root?
-
-    # system tags can only be edited by root
-    return false if @record.system_tag
-
-    # NB: We literally can't filter by partners added because otherwise itll wipe existing partners
-    #
-    # If the user is a partner admin and the tag is generally available for use
-    # Functionally, anyone who is a tag admin will be a partner admin, HOWEVER, testing code requi-
-    # Also, it probably doesn't hurt to be strict.
-    return true if user.partner_admin? || user.tag_admin?
-
-    false
+    user.root?
   end
 
   def destroy?
@@ -38,18 +26,11 @@ class TagPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    if user.root?
-      fields = %i[name slug description system_tag]
-      fields << :type if @record.instance_of?(Tag)
-      fields.push(partner_ids: [], user_ids: [])
-    elsif user.tags.include?(@record)
-      fields = %i[name slug description]
-      fields.push(partner_ids: [])
-    elsif user.partner_admin?
-      %i[].push(partner_ids: [])
-    else
-      %i[]
-    end
+    return unless user.root?
+
+    fields = %i[name slug description system_tag]
+    fields << :type if @record.instance_of?(Tag)
+    fields.push(partner_ids: [], user_ids: [])
   end
 
   def disabled_fields
