@@ -7,7 +7,7 @@ FactoryBot.define do
     end
     tagline { 'The Community Calendar' }
     hero_image_credit { 'Place Cal' }
-    domain { name.parameterize }
+    domain { "https://#{name.parameterize}.placecal.org" }
     slug { name.parameterize }
     theme { :pink }
     is_published { true }

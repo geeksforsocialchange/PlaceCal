@@ -83,7 +83,7 @@ class EventsBySiteTagTest < ActionDispatch::IntegrationTest
       name: 'A site',
       slug: 'a-site',
       description: 'A site about things',
-      domain: 'a-site.lvh.me',
+      domain: 'https://a-site.lvh.me',
       is_published: true
     )
     tag_site.tags << tag

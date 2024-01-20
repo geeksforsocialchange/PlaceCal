@@ -124,7 +124,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     new_site_params = {
       name: 'a new site',
-      domain: 'a-domain',
+      domain: 'https://a-domain.placecal.org',
       slug: 'a-slug',
       logo: fixture_file_upload('bad-cat-picture.bmp'),
       footer_logo: fixture_file_upload('bad-cat-picture.bmp'),
@@ -156,7 +156,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     site_params = {
       name: 'a new site',
-      domain: 'a-domain',
+      domain: 'https://a-domain.placecal.org',
       slug: 'a-slug',
       logo: fixture_file_upload('bad-cat-picture.bmp'),
       footer_logo: fixture_file_upload('bad-cat-picture.bmp'),
