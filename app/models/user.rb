@@ -79,14 +79,16 @@ class User < ApplicationRecord
     partners.pluck(:id).include? partner_id
   end
 
+  def partnership_admin_for_partner?(partner_id)
+    partner_id.present? &&
+      partner_in_neighbourhood_scope?(partner_id) &&
+      partner_in_partnership_scope?(partner_id)
+  end
+
   def neighbourhood_admin_for_partner?(partner_id)
     partner_id.present? &&
-      neighbourhood_admin? &&
-      (
-        owned_neighbourhood_ids & (
-          Partner.find_by(id: partner_id).owned_neighbourhood_ids
-        )
-      ).any?
+      !partnership_admin? &&
+      partner_in_neighbourhood_scope?(partner_id)
   end
 
   def only_neighbourhood_admin_for_partner?(partner_id)
@@ -120,8 +122,8 @@ class User < ApplicationRecord
     partners.any?
   end
 
-  def tag_admin?
-    tags.any?
+  def partnership_admin?
+    tags.any? { |tag| tag[:type] == 'Partnership' }
   end
 
   def admin_roles
@@ -131,7 +133,7 @@ class User < ApplicationRecord
     types << 'editor' if editor?
     types << 'neighbourhood_admin' if neighbourhood_admin?
     types << 'partner_admin' if partner_admin?
-    types << 'partnership_admin' if tag_admin?
+    types << 'partnership_admin' if partnership_admin?
     types << 'site_admin' if site_admin?
 
     types.join(', ')
@@ -154,6 +156,23 @@ class User < ApplicationRecord
   end
 
   protected
+
+  def partner_in_neighbourhood_scope?(partner_id)
+    neighbourhood_admin? &&
+      (
+        owned_neighbourhood_ids & (
+          Partner.find_by(id: partner_id).owned_neighbourhood_ids
+        )
+      ).any?
+  end
+
+  def partner_in_partnership_scope?(partner_id)
+    partnership_admin? &&
+      (
+        tags.map(&:id) &
+        Partner.find_by(id: partner_id).partnerships.map(&:id)
+      ).any?
+  end
 
   def validate_tags_are_partnerships
     return true if tags.all?(Partnership)

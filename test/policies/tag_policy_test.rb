@@ -8,25 +8,20 @@ class TagPolicyTest < ActiveSupport::TestCase
     @non_root = create(:editor)
 
     @partner_admin = create(:partner_admin)
-    @tag_admin = create(:tag_admin)
+    @partnership_admin = create(:partnership_admin)
 
     @normal_tag = create(:tag)
     @system_tag = create(:tag, system_tag: true)
   end
 
   def test_update
-    @non_root.tags << @normal_tag
-
     assert allows_access(@root, @normal_tag, :update)
-    assert denies_access(@non_root, @normal_tag, :update)
+    assert allows_access(@root, @system_tag, :update)
 
     assert denies_access(@partner_admin, @normal_tag, :update)
     assert denies_access(@partner_admin, @system_tag, :update)
-
-    assert denies_access(@tag_admin, @normal_tag, :update)
-    assert denies_access(@tag_admin, @system_tag, :update)
-
-    assert allows_access(@root, @system_tag, :update)
+    assert denies_access(@partnership_admin, @normal_tag, :update)
+    assert denies_access(@partnership_admin, @system_tag, :update)
     assert denies_access(@non_root, @system_tag, :update)
   end
 

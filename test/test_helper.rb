@@ -49,11 +49,6 @@ module ActiveSupport
 
     fixtures :neighbourhoods
 
-    # Usage:
-    #
-    # it_allows_access_to_action_for(%i[root tag_admin partner_admin place_admin citizen guest]) do
-    # end
-
     %i[index show new edit create update destroy].each do |action|
       define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
         users.each do |user|
