@@ -36,6 +36,7 @@ class Site < ApplicationRecord
   validates :name, :slug, :domain, presence: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
+  validates :domain, format: { with: %r{\Ahttps://[^\s,]+\z}, message: 'A domain must start with "https://"' }
 
   scope :published, -> { where(is_published: true) }
 
