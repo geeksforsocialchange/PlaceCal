@@ -61,16 +61,18 @@
       </div>
     </div>
 
-    <h3 class="mt-5">Contact Information</h3>
+    <h3 class="mt-5">Public Contact Information</h3>
     <div class="row">
       <div class="col-md-6">
-        <p>The contact info for the email account that manages this calendar</p>
-        <label>Name</label>
-        <%= f.text_field :public_contact_name, class: "form-control" %>
-        <label>Email</label>
-        <%= f.email_field :public_contact_email, class: "form-control" %>
-        <label>Phone Number</label>
-        <%= f.text_field :public_contact_phone, class: "form-control" %>
+	<p>
+	  This information is used on the <em>public</em>
+	  event listing pages in the "Problem with this listing? Let us know."
+	  contact link at the bottom of the show event page.
+	</p>
+
+	<%= f.input :public_contact_name %>
+	<%= f.input :public_contact_email %>
+	<%= f.input :public_contact_phone %>
       </div>
     </div>
 
