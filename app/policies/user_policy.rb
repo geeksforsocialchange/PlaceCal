@@ -41,7 +41,7 @@ class UserPolicy < ApplicationPolicy
       (user.neighbourhood_admin? &&
       !record.root? &&
       !record.neighbourhood_admin? &&
-      !record.tag_admin? &&
+      !record.partnership_admin? &&
       record.partner_admin? &&
       all_user_partners_in_admin_neighbourhood?(record, user))
   end

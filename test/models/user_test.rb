@@ -7,6 +7,12 @@ class UserTest < ActiveSupport::TestCase
     create_typed_tags
     @user = create(:user)
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
+
+    @partnership_tag = create(:partnership)
+    @partnership_admin = create(:neighbourhood_region_admin)
+
+    @partnership_admin.tags << @partnership_tag
+    @partnership_admin.save
   end
 
   test 'owned neighbourhoods returns all descendants' do
@@ -53,6 +59,34 @@ class UserTest < ActiveSupport::TestCase
     assert @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_in_neighbourhood.id)
     assert @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_with_service_area_in_neighbourhood.id)
     assert_not @neighbourhood_region_admin.neighbourhood_admin_for_partner?(partner_outside_neighbourhood.id)
+  end
+
+  test 'is partnership admin for partner when neighbourhood admin for partners neighbourhood or service area and partnership admin for partners tag' do
+    partner_in_neighbourhood_and_partnership = create(:partner)
+    partner_in_partnership_with_service_area_in_neighbourhood = create(:partner)
+    partner_in_neighbourhood_but_not_partnership = create(:partner)
+    partner_outside_neighbourhood_but_in_partnership = create(:moss_side_partner)
+
+    partner_in_neighbourhood_and_partnership.address.neighbourhood = @partnership_admin.neighbourhoods.first
+    partner_in_neighbourhood_and_partnership.tags << @partnership_tag
+    partner_in_neighbourhood_and_partnership.save!
+
+    partner_in_partnership_with_service_area_in_neighbourhood.service_areas.create(
+      neighbourhood: @partnership_admin.neighbourhoods.first
+    )
+    partner_in_partnership_with_service_area_in_neighbourhood.tags << @partnership_tag
+    partner_in_partnership_with_service_area_in_neighbourhood.save!
+
+    partner_outside_neighbourhood_but_in_partnership.tags << @partnership_tag
+    partner_outside_neighbourhood_but_in_partnership.save!
+
+    partner_in_neighbourhood_but_not_partnership.address.neighbourhood = @partnership_admin.neighbourhoods.first
+    partner_in_neighbourhood_but_not_partnership.save!
+
+    assert @partnership_admin.partnership_admin_for_partner?(partner_in_neighbourhood_and_partnership.id)
+    assert @partnership_admin.partnership_admin_for_partner?(partner_in_partnership_with_service_area_in_neighbourhood.id)
+    assert_not @partnership_admin.partnership_admin_for_partner?(partner_in_neighbourhood_but_not_partnership.id)
+    assert_not @partnership_admin.partnership_admin_for_partner?(partner_outside_neighbourhood_but_in_partnership.id)
   end
 
   test 'is the only possible neighbourhood admin for a partner when admin for partners neighbourhood or service area and partner has no other neighbourhoods' do
@@ -104,9 +138,9 @@ class UserTest < ActiveSupport::TestCase
     assert_predicate @user, :partner_admin?
 
     # Does this person manage at least one tag?
-    @user.tags << create(:tag)
+    @user.tags << create(:partnership)
     @user.save
-    assert_predicate @user, :tag_admin?
+    assert_predicate @user, :partnership_admin?
 
     # Is this person a root? If they are, they're also a secretary
     @user.update(role: :root)
