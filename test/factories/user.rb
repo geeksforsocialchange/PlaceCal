@@ -22,8 +22,8 @@ FactoryBot.define do
       role { 'editor' }
     end
 
-    factory(:tag_admin) do
-      after(:create) { |user| user.tags = [create(:tag)] }
+    factory(:partnership_admin) do
+      after(:create) { |user| user.tags = [create(:tag, type: 'Partnership')] }
     end
 
     factory(:neighbourhood_admin) do

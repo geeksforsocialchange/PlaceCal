@@ -37,13 +37,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.root? ||
-      (user.neighbourhood_admin? &&
-      !record.root? &&
-      !record.neighbourhood_admin? &&
-      !record.tag_admin? &&
-      record.partner_admin? &&
-      all_user_partners_in_admin_neighbourhood?(record, user))
+    user.root?
   end
 
   def permitted_attributes

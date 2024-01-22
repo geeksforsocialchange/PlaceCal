@@ -201,14 +201,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_users_url
   end
 
-  it_allows_access_to_destroy_for(%i[neighbourhood_admin]) do
-    assert_difference('User.count', -1) do
-      delete admin_user_url(@partner_admin)
-    end
-
-    assert_redirected_to admin_users_url
-  end
-
   it_denies_access_to_destroy_for(%i[partner_admin neighbourhood_admin citizen]) do
     assert_no_difference('User.count') do
       delete admin_user_url(@citizen)
