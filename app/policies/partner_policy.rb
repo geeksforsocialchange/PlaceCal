@@ -34,6 +34,8 @@ class PartnerPolicy < ApplicationPolicy
     return true if user.root?
     return true if user.admin_for_partner?(record.id)
     return true if user.only_neighbourhood_admin_for_partner?(record.id)
+
+    return true if user.partnership_admin_for_partner?(record.id)
   end
 
   def setup?
