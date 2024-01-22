@@ -29,7 +29,7 @@ export default class extends Controller {
 			) {
 				if (
 					!confirm(
-						"Removing this tag will remove this user from your partnership and you will no longer be able to access them.\n\n Are you sure you want to remove it?"
+						"Removing this tag will remove this partner from your partnership and you will no longer be able to access them, or any users that are partner admins for this partner, if they are not partner admins for anyone else in your partnership.\n\n Are you sure you want to remove it?"
 					)
 				) {
 					event.preventDefault();
@@ -38,7 +38,7 @@ export default class extends Controller {
 
 			if (!permittedValues.includes(Number(event.params.args.data.id))) {
 				alert(
-					"You can only remove partnership tags for partnerships you manage from a user."
+					"You can only remove partnership tags for partnerships that you manage."
 				);
 				event.preventDefault();
 			}
