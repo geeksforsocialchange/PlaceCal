@@ -131,16 +131,6 @@ class Site < ApplicationRecord
     # @param request The request must expose the methods: host, subdomain, subdomains
     # @return [Site]
     def find_by_request(request)
-      # First try to find the correct site by the full host name.
-      site = Site.find_by(domain: request.host)
-      return site if site
-
-      # Is it Marvellous Mossley?
-      # TODO: Fix this horrible temporary fix
-      return Site.find_by(slug: 'mossley') if request.domain == 'marvellousmossley.org'
-
-      # Fall back to using the subdomain.
-      # Typically this will be for non-production sites.
       site_slug =
         if request.subdomain == 'www'
           request.subdomains.second if request&.subdomains&.second
