@@ -6,6 +6,7 @@ module Admin
     before_action :set_partner, only: %i[show edit update destroy]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
+    before_action :set_partner_tags_controller, only: %i[new edit]
 
     def index
       @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
@@ -124,6 +125,15 @@ module Admin
     end
 
     private
+
+    def set_partner_tags_controller
+      @partner_tags_controller =
+        if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
+          'select2'
+        else
+          'partner-tags'
+        end
+    end
 
     def set_neighbourhoods
       if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
