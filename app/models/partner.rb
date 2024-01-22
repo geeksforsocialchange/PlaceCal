@@ -444,6 +444,7 @@ class Partner < ApplicationRecord
   end
 
   def partnership_admins_must_add_tag
+    return if accessed_by_user.nil? # HACK: to stop factory breaking tests
     return unless accessed_by_user.partnership_admin?
 
     if tags.any?
