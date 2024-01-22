@@ -410,4 +410,67 @@ class PartnerTest < ActiveSupport::TestCase
     partner.address.postcode = 'M15 5DD'
     partner.update! name: 'A new partner name'
   end
+
+  test '#owned_exclusively_by with no intersection' do
+    user = create(:user)
+    partner = create(:partner)
+
+    # returns false by default
+    assert_not partner.owned_exclusively_by?(user)
+  end
+
+  test '#owned_exclusively_by by neighbourhood' do
+    user = create(:user)
+    user_neighbourhood_1 = user.neighbourhoods.create
+    user_neighbourhood_2 = user.neighbourhoods.create
+    user_neighbourhood_3 = user.neighbourhoods.create
+
+    other_neighbourhood = create(:neighbourhood)
+
+    # match on address
+    partner_1 = create(:partner)
+    partner_1.address.update! neighbourhood: user_neighbourhood_1
+
+    assert partner_1.owned_exclusively_by?(user)
+
+    # matches on service areas
+    partner_1.service_area_neighbourhoods << user_neighbourhood_2
+    partner_1.service_area_neighbourhoods << user_neighbourhood_3
+    assert partner_1.owned_exclusively_by?(user)
+
+    # bad match on address
+    partner_1.address.update! neighbourhood: other_neighbourhood
+    assert_not partner_1.owned_exclusively_by?(user)
+
+    # put this back
+    partner_1.address.update! neighbourhood: user_neighbourhood_1
+    assert partner_1.owned_exclusively_by?(user)
+
+    # bad service area
+    partner_1.service_area_neighbourhoods << other_neighbourhood
+    assert_not partner_1.owned_exclusively_by?(user)
+  end
+
+  test '#owned_exclusively_by by tag' do
+    partner = create(:partner)
+    user = create(:user)
+
+    # set up location
+    user_neighbourhood_1 = user.neighbourhoods.create
+    partner.address.update! neighbourhood: user_neighbourhood_1
+
+    # yes
+    tag = user.tags.create!(name: 'user tag', type: 'Partnership')
+    partner.tags << tag
+
+    assert partner.owned_exclusively_by?(user)
+
+    # other_tag = Partnership.create!(:partnership, type: 'Partnership')
+    other_tag = Partnership.create!(name: 'Partnership tag')
+    partner.tags << other_tag
+
+    # no
+    partner.reload
+    assert_not partner.owned_exclusively_by?(user)
+  end
 end

@@ -312,6 +312,28 @@ class Partner < ApplicationRecord
     neighbourhood_ids
   end
 
+  # returns true if all
+  #  - address in user neighbourhood set
+  #  - service areas in user neighbourhood set
+  #  - tags in users partnership tag set
+  def owned_exclusively_by?(user)
+    user_neighbourhoods = user.owned_neighbourhood_ids
+    user_tags = user.tags.pluck(:id)
+
+    a = Set.new(user_neighbourhoods)
+    b = Set.new(owned_neighbourhood_ids)
+
+    return false unless a.superset?(b)
+
+    if user_tags.present? && partnerships.present?
+      a = Set.new(user_tags)
+      b = Set.new(partnerships.pluck(:id))
+      return false unless a.superset?(b)
+    end
+
+    true
+  end
+
   def neighbourhood_name_for_site(badge_zoom_level)
     if service_areas.any?
       if service_areas.count > 1
