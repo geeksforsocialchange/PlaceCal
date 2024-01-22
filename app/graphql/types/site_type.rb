@@ -16,7 +16,7 @@ module Types
           null: false,
           description: 'Short unique URL friendly version of name'
 
-    field :domain, String,
+    field :url, String,
           description: 'The public URL that this site can be found on PlaceCal'
 
     field :description, String,

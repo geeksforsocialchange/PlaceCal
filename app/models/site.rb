@@ -33,10 +33,10 @@ class Site < ApplicationRecord
                                                                     c[:neighbourhood_id].blank?
                                                                   }, allow_destroy: true
 
-  validates :name, :slug, :domain, presence: true
+  validates :name, :slug, :url, presence: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
-  validates :domain, format: { with: %r{\Ahttps://[^\s,]+\z}, message: 'A domain must start with "https://"' }
+  validates :url, format: { with: %r{\Ahttps://[^\s,]+\z}, message: 'A url must start with "https://"' }
 
   scope :published, -> { where(is_published: true) }
 

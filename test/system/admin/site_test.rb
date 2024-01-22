@@ -53,7 +53,7 @@ class AdminSiteTest < ApplicationSystemTestCase
 
     new_site_name = 'TEST_NAME_123'
     fill_in 'Name', with: new_site_name
-    fill_in 'Domain', with: 'https://test.com'
+    fill_in 'Url', with: 'https://test.com'
     fill_in 'Slug', with: 'eeew'
     click_button 'Create Site'
 

@@ -59,7 +59,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Name *'
     assert_select 'label', 'Place name'
     assert_select 'label', 'Tagline'
-    assert_select 'label', 'Domain *'
+    assert_select 'label', 'Url *'
     assert_select 'label', 'Slug *'
     assert_select 'label', 'Description'
     assert_select 'label', 'Site admin'
@@ -93,7 +93,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Name *'
     assert_select 'label', 'Place name'
     assert_select 'label', 'Tagline'
-    assert_select 'label', text: 'Domain *', count: 1
+    assert_select 'label', text: 'Url *', count: 1
     assert_select 'label', text: 'Slug *', count: 1
     assert_select 'label', 'Description'
     assert_select 'label', text: 'Site admin', count: 0
@@ -124,7 +124,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     new_site_params = {
       name: 'a new site',
-      domain: 'https://a-domain.placecal.org',
+      url: 'https://a-domain.placecal.org',
       slug: 'a-slug',
       logo: fixture_file_upload('bad-cat-picture.bmp'),
       footer_logo: fixture_file_upload('bad-cat-picture.bmp'),
@@ -156,7 +156,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     site_params = {
       name: 'a new site',
-      domain: 'https://a-domain.placecal.org',
+      url: 'https://a-domain.placecal.org',
       slug: 'a-slug',
       logo: fixture_file_upload('bad-cat-picture.bmp'),
       footer_logo: fixture_file_upload('bad-cat-picture.bmp'),
