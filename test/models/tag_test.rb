@@ -15,7 +15,7 @@ class TagTest < ActiveSupport::TestCase
     @partnership_tag.users << @user
     @partnership_tag.save!
     @user.reload
-    assert_predicate @user, :tag_admin?
+    assert_predicate @user, :partnership_admin?
   end
 
   test 'updates partners tags when saved' do
@@ -41,7 +41,7 @@ class TagTest < ActiveSupport::TestCase
     assert_equal Tag.users_tags(root_user), Tag.all
   end
 
-  test 'a root user who is a tag_admin can access their own Partnership tag but not others' do
+  test 'a root user who is a partnership_admin can access their own Partnership tag but not others' do
     root_user = create :root
     @partnership_tag.users << root_user
     @partnership_tag.save!
@@ -52,7 +52,7 @@ class TagTest < ActiveSupport::TestCase
     end
   end
 
-  test 'a root user who is a tag_admin can access Facility tags' do
+  test 'a root user who is a partnership_admin can access Facility tags' do
     root_user = create :root
     @partnership_tag.users << root_user
     @partnership_tag.save
@@ -64,7 +64,7 @@ class TagTest < ActiveSupport::TestCase
     end
   end
 
-  test 'a root user who is a tag_admin can access Category tags' do
+  test 'a root user who is a partnership_admin can access Category tags' do
     root_user = create :root
     @partnership_tag.users << root_user
     @partnership_tag.save
@@ -76,7 +76,7 @@ class TagTest < ActiveSupport::TestCase
     end
   end
 
-  test 'a tag_admin can access their own Partnership tag but not others' do
+  test 'a partnership_admin can access their own Partnership tag but not others' do
     @partnership_tag.users << @user
     @partnership_tag.save
 
@@ -85,7 +85,7 @@ class TagTest < ActiveSupport::TestCase
     end
   end
 
-  test 'a tag_admin can access Facility tags' do
+  test 'a partnership_admin can access Facility tags' do
     @partnership_tag.users << @user
     @partnership_tag.save
 
@@ -96,7 +96,7 @@ class TagTest < ActiveSupport::TestCase
     end
   end
 
-  test 'a tag_admin can access Category tags' do
+  test 'a partnership_admin can access Category tags' do
     @partnership_tag.users << @user
     @partnership_tag.save
 
@@ -107,7 +107,7 @@ class TagTest < ActiveSupport::TestCase
     end
   end
 
-  test 'a non tag_admin cannot access any Partnership tags' do
+  test 'a non partnership_admin cannot access any Partnership tags' do
     assert_equal(0, Tag.users_tags(@user).where(type: 'Partnership').count)
   end
 
