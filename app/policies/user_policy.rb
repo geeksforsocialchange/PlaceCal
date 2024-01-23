@@ -130,6 +130,7 @@ class UserPolicy < ApplicationPolicy
 
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
+
         scope
           .left_joins(partners: %i[address service_areas])
           .where(
