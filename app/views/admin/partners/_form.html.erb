@@ -113,8 +113,11 @@
     <p>Partners may have up to 3 category tags.</p>
     <%= f.association :tags,
         label: false,
-        collection: options_for_partner_tags,
-        input_html: { class: 'form-check', data: { controller: "select2" } } %>
+        collection: options_for_partner_tags(@partner),
+        input_html: { class: 'form-check', data: { 
+          controller: @partner_tags_controller,
+          "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
+        } } %>
     <hr>
     <br>
     <div class="row">

@@ -411,6 +411,19 @@ class PartnerTest < ActiveSupport::TestCase
     partner.update! name: 'A new partner name'
   end
 
+  test 'partnership_admin cannot create a partner that is not part of their partnership' do
+    pa = create(:partnership_admin)
+    assert_raises(ActiveRecord::RecordInvalid, 'This partner must be a part of your partnership') do
+      create(:partner, :accessed_by_user => pa)
+    end
+  end
+
+  test 'partnership_admin can create a partner that is part of their partnership' do
+    pa = create(:partnership_admin)
+    partner = create(:partner, :accessed_by_user => pa, :tags => [pa.tags.first])
+    assert_predicate partner, :valid?
+  end
+
   test '#owned_exclusively_by with no intersection' do
     user = create(:user)
     partner = create(:partner)

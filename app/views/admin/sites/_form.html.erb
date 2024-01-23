@@ -9,10 +9,10 @@
   <%= f.input :tagline %>
   <div class="row">
     <div class="col-md-6">
-      <% if policy(@site).permitted_attributes.include? :domain  %>
-        <%= f.input :domain %>
+      <% if policy(@site).permitted_attributes.include? :url  %>
+        <%= f.input :url %>
       <% else %>
-        <%= f.input :domain, disabled: true  %>
+        <%= f.input :url, disabled: true  %>
       <% end %>
     </div>
     <div class="col-md-6">
