@@ -17,7 +17,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.root? || user.neighbourhood_admin?
+    user.root? || user.neighbourhood_admin? || user.partnership_admin?
   end
 
   def create?
@@ -112,6 +112,22 @@ class UserPolicy < ApplicationPolicy
       if user.root?
         scope.all
 
+      elsif user.partnership_admin?
+        user_neighbourhood_ids = user.owned_neighbourhood_ids
+        user_partnership_tag_ids = user.tags.map(&:id)
+
+        scope
+          .left_joins(partners: %i[address service_areas partner_tags])
+          .where(
+            'partner_tags.tag_id IN (:tags) AND
+              (
+                addresses.neighbourhood_id IN (:ids) OR
+                service_areas.neighbourhood_id IN (:ids)
+              )',
+            ids: user_neighbourhood_ids,
+            tags: user_partnership_tag_ids
+          ).distinct
+
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
 
@@ -126,5 +142,3 @@ class UserPolicy < ApplicationPolicy
     end
   end
 end
-
-# 17482
