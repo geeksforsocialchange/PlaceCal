@@ -114,29 +114,35 @@ class UserPolicy < ApplicationPolicy
 
       elsif user.partnership_admin?
         user_neighbourhood_ids = user.owned_neighbourhood_ids
+        user_partner_ids = user.partners.map(&:id)
         user_partnership_tag_ids = user.tags.map(&:id)
 
         scope
           .left_joins(partners: %i[address service_areas partner_tags])
           .where(
-            'partner_tags.tag_id IN (:tags) AND
+            '(partner_tags.tag_id IN (:tags) AND
               (
                 addresses.neighbourhood_id IN (:ids) OR
                 service_areas.neighbourhood_id IN (:ids)
-              )',
+              )
+            ) OR partners.id IN (:partner_ids)',
             ids: user_neighbourhood_ids,
-            tags: user_partnership_tag_ids
+            tags: user_partnership_tag_ids,
+            partner_ids: user_partner_ids
           ).distinct
 
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
+        user_partner_ids = user.partners.map(&:id)
 
         scope
           .left_joins(partners: %i[address service_areas])
           .where(
             'addresses.neighbourhood_id IN (:ids) OR
-            service_areas.neighbourhood_id IN (:ids)',
-            ids: user_neighbourhood_ids
+            service_areas.neighbourhood_id IN (:ids) OR
+            partners.id IN (:partner_ids)',
+            ids: user_neighbourhood_ids,
+            partner_ids: user_partner_ids
           ).distinct
       end
     end
