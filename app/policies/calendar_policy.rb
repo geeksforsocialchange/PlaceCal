@@ -37,7 +37,7 @@ class CalendarPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       return scope.all if user.root?
-      return scope.none if !user.partner_admin? && !user.neighbourhood_admin?
+      return scope.none if !user.partner_admin? && !user.neighbourhood_admin? && !user.partnership_admin?
 
       if user.partnership_admin?
         user_partnership_tag_ids = user.tags.map(&:id)
