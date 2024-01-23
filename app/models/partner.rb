@@ -99,6 +99,8 @@ class Partner < ApplicationRecord
 
   validate :three_or_less_category_tags
 
+  validate :partnership_admins_must_add_tag, on: %i[create]
+
   attr_accessor :accessed_by_user
 
   mount_uploader :image, ImageUploader
@@ -439,5 +441,18 @@ class Partner < ApplicationRecord
     return if categories.count < 4
 
     errors.add :base, 'Partner.tags can contain a maximum of 3 Category tags'
+  end
+
+  def partnership_admins_must_add_tag
+    return if accessed_by_user.nil? # HACK: to stop factory breaking tests
+    return unless accessed_by_user.partnership_admin?
+
+    if tags.any?
+      accessed_by_user.tags.each do |t|
+        return true if tags.include? t
+      end
+    end
+
+    errors.add :base, 'This partner must be a part of your partnership'
   end
 end

@@ -17,11 +17,18 @@ module PartnersHelper
       end
   end
 
-  def options_for_partner_tags
-    policy_scope(Tag)
-      .select(:name, :type, :id)
-      .order(:name)
-      .map { |r| [r.name_with_type, r.id] }
+  def options_for_partner_tags(partner = nil)
+    options = policy_scope(Tag)
+              .select(:name, :type, :id)
+              .order(:name)
+              .map { |r| [r.name_with_type, r.id] }
+    return options unless partner
+
+    (options + partner&.tags&.map { |r| [r.name_with_type, r.id] }).uniq
+  end
+
+  def permitted_options_for_partner_tags
+    policy_scope(Tag).pluck(:id)
   end
 
   def partner_service_area_text(partner)
