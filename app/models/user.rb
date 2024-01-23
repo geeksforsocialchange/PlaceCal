@@ -108,17 +108,13 @@ class User < ApplicationRecord
     user_neighbourhoods = owned_neighbourhood_ids
     user_tags = tags.pluck(:id)
 
-    a = Set.new(user_neighbourhoods)
-    b = Set.new(partner.owned_neighbourhood_ids)
+    neighbourhoods_a = Set.new(user_neighbourhoods)
+    neighbourhoods_b = Set.new(partner.owned_neighbourhood_ids)
+    return false unless neighbourhoods_a.superset?(neighbourhoods_b)
 
-    return false unless a.superset?(b)
-
-    # not needed as we check we're a partnership admin?
-    # return false if user_tags.empty? || partner.partnerships.empty?
-
-    a = Set.new(user_tags)
-    b = Set.new(partner.partnerships.pluck(:id))
-    return false unless a.superset?(b)
+    tags_a = Set.new(user_tags)
+    tags_b = Set.new(partner.partnerships.pluck(:id))
+    return false unless tags_a.superset?(tags_b)
 
     true
   end
