@@ -100,6 +100,29 @@ class User < ApplicationRecord
       )
   end
 
+  def only_partnership_admin_for_partner?(partner_id)
+    return unless partnership_admin?
+
+    partner = Partner.find(partner_id)
+
+    user_neighbourhoods = owned_neighbourhood_ids
+    user_tags = tags.pluck(:id)
+
+    a = Set.new(user_neighbourhoods)
+    b = Set.new(partner.owned_neighbourhood_ids)
+
+    return false unless a.superset?(b)
+
+    # not needed as we check we're a partnership admin?
+    # return false if user_tags.empty? || partner.partnerships.empty?
+
+    a = Set.new(user_tags)
+    b = Set.new(partner.partnerships.pluck(:id))
+    return false unless a.superset?(b)
+
+    true
+  end
+
   def can_view_neighbourhood_by_id?(neighbourhood_id)
     root? || (
       neighbourhood_admin? &&
