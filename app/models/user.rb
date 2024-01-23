@@ -92,7 +92,7 @@ class User < ApplicationRecord
   end
 
   def only_neighbourhood_admin_for_partner?(partner_id)
-    neighbourhood_admin? &&
+    (neighbourhood_admin? || partnership_admin?) &&
       Set.new(owned_neighbourhood_ids).superset?(
         Set.new(
           Partner.find_by(id: partner_id)&.owned_neighbourhood_ids
