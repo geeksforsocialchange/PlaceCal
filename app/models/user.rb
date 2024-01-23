@@ -92,12 +92,31 @@ class User < ApplicationRecord
   end
 
   def only_neighbourhood_admin_for_partner?(partner_id)
-    neighbourhood_admin? &&
+    (neighbourhood_admin? || partnership_admin?) &&
       Set.new(owned_neighbourhood_ids).superset?(
         Set.new(
           Partner.find_by(id: partner_id)&.owned_neighbourhood_ids
         )
       )
+  end
+
+  def only_partnership_admin_for_partner?(partner_id)
+    return unless partnership_admin?
+
+    partner = Partner.find(partner_id)
+
+    user_neighbourhoods = owned_neighbourhood_ids
+    user_tags = tags.pluck(:id)
+
+    neighbourhoods_a = Set.new(user_neighbourhoods)
+    neighbourhoods_b = Set.new(partner.owned_neighbourhood_ids)
+    return false unless neighbourhoods_a.superset?(neighbourhoods_b)
+
+    tags_a = Set.new(user_tags)
+    tags_b = Set.new(partner.partnerships.pluck(:id))
+    return false unless tags_a.superset?(tags_b)
+
+    true
   end
 
   def can_view_neighbourhood_by_id?(neighbourhood_id)

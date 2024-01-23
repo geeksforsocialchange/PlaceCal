@@ -224,4 +224,68 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid? # runs validations in the background
     assert_equal [error_message], @user.errors[:tags]
   end
+
+  test '#only_partnership_admin_for_partner? with no intersection' do
+    user = create(:user)
+    partner = create(:partner)
+
+    # returns false by default
+    assert_not user.only_partnership_admin_for_partner?(partner.id)
+  end
+
+  test '#only_partnership_admin_for_partner? by neighbourhood' do
+    user = create(:user)
+    user_neighbourhood_1 = user.neighbourhoods.create
+    user_neighbourhood_2 = user.neighbourhoods.create
+    user_neighbourhood_3 = user.neighbourhoods.create
+    tag = user.tags.create!(name: 'user tag', type: 'Partnership')
+
+    other_neighbourhood = create(:neighbourhood)
+
+    # match on address
+    partner = create(:partner)
+    partner.address.update! neighbourhood: user_neighbourhood_1
+
+    assert user.only_partnership_admin_for_partner?(partner.id)
+
+    # matches on service areas
+    partner.service_area_neighbourhoods << user_neighbourhood_2
+    partner.service_area_neighbourhoods << user_neighbourhood_3
+    assert user.only_partnership_admin_for_partner?(partner.id)
+
+    # bad match on address
+    partner.address.update! neighbourhood: other_neighbourhood
+    assert_not user.only_partnership_admin_for_partner?(partner.id)
+
+    # put this back
+    partner.address.update! neighbourhood: user_neighbourhood_1
+    assert user.only_partnership_admin_for_partner?(partner.id)
+
+    # bad service area
+    partner.service_area_neighbourhoods << other_neighbourhood
+    assert_not user.only_partnership_admin_for_partner?(partner.id)
+  end
+
+  test '#only_partnership_admin_for_partner? by tag' do
+    partner = create(:partner)
+    user = create(:user)
+
+    # set up location
+    user_neighbourhood_1 = user.neighbourhoods.create
+    partner.address.update! neighbourhood: user_neighbourhood_1
+
+    # yes
+    tag = user.tags.create!(name: 'user tag', type: 'Partnership')
+    partner.tags << tag
+
+    assert user.only_partnership_admin_for_partner?(partner.id)
+
+    # other_tag = Partnership.create!(:partnership, type: 'Partnership')
+    other_tag = Partnership.create!(name: 'Partnership tag')
+    partner.tags << other_tag
+
+    # no
+    user.reload
+    assert_not user.only_partnership_admin_for_partner?(partner.id)
+  end
 end
