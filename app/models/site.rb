@@ -33,9 +33,10 @@ class Site < ApplicationRecord
                                                                     c[:neighbourhood_id].blank?
                                                                   }, allow_destroy: true
 
-  validates :name, :slug, :domain, presence: true
+  validates :name, :slug, :url, presence: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
+  validates :url, format: { with: %r{\Ahttps://[^\s,]+\z}, message: 'A url must start with "https://"' }
 
   scope :published, -> { where(is_published: true) }
 
@@ -130,16 +131,6 @@ class Site < ApplicationRecord
     # @param request The request must expose the methods: host, subdomain, subdomains
     # @return [Site]
     def find_by_request(request)
-      # First try to find the correct site by the full host name.
-      site = Site.find_by(domain: request.host)
-      return site if site
-
-      # Is it Marvellous Mossley?
-      # TODO: Fix this horrible temporary fix
-      return Site.find_by(slug: 'mossley') if request.domain == 'marvellousmossley.org'
-
-      # Fall back to using the subdomain.
-      # Typically this will be for non-production sites.
       site_slug =
         if request.subdomain == 'www'
           request.subdomains.second if request&.subdomains&.second
