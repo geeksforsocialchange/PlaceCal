@@ -3,7 +3,7 @@
 module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
-    before_action :set_partner, only: %i[show edit update destroy]
+    before_action :set_partner, only: %i[show edit update destroy clear_address]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
     before_action :set_partner_tags_controller, only: %i[new edit]
@@ -106,6 +106,19 @@ module Admin
         end
         format.json { head :no_content }
       end
+    end
+
+    def clear_address
+      authorize @partner
+
+      Partner.transaction do
+        address = @partner.address
+        @partner.update! address_id: nil
+
+        address&.destroy
+      end
+
+      render json: { message: 'Address cleared' }
     end
 
     def setup

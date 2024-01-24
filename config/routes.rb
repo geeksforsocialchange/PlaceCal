@@ -37,6 +37,9 @@ Rails.application.routes.draw do
       collection do
         match :setup, via: %i[get post]
       end
+      member do
+        delete :clear_address
+      end
     end
     resources :tags
     resources :sites

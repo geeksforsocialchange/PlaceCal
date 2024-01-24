@@ -37,6 +37,10 @@ class PartnerPolicy < ApplicationPolicy
     return true if user.only_neighbourhood_admin_for_partner?(record.id)
   end
 
+  def clear_address?
+    user.root?
+  end
+
   def setup?
     create?
   end
