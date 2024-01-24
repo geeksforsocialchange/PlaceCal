@@ -5,7 +5,7 @@ export default class extends Controller {
 
 	connect() {
 		const confirmRemove =
-			"Removing this partner will remove this user from your view and you will no longer be able to access them.\n\nIf you want to keep the user in your view but still remove this partner from them, you'll need to make them an admin for another partner before removing them from this one.\n\nAre you sure you want to remove it?";
+			"Removing this partner will remove this user from your view and you will no longer be able to access them.\n\nIf you want to keep the user in your view but still remove this partner from them, you'll need to make them an admin for another partner before removing this one.\n\nAre you sure you want to remove it?";
 		const denyRemove =
 			"You can only remove partners that you manage from a user.";
 
