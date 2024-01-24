@@ -30,5 +30,6 @@ class UserPolicyTest < ActiveSupport::TestCase
     assert_equal(permitted_records(@root, User), User.all)
     assert_equal(permitted_records(@partnership_admin, User), [@partner_admin_in_partnership])
     assert_equal(permitted_records(@neighbourhood_admin, User), [@partner_admin_in_neighbourhood])
+    assert_equal(permitted_records(@partner_admin, User), [@partner_admin])
   end
 end
