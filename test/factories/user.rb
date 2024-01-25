@@ -23,7 +23,10 @@ FactoryBot.define do
     end
 
     factory(:partnership_admin) do
-      after(:create) { |user| user.tags = [create(:tag, type: 'Partnership')] }
+      after(:create) do |user|
+        user.tags = [create(:tag, type: 'Partnership')]
+        user.neighbourhoods = [create(:neighbourhood)]
+      end
     end
 
     factory(:neighbourhood_admin) do
