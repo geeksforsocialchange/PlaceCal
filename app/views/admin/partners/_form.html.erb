@@ -2,6 +2,7 @@
   <%= simple_form_for @partner do |f| %>
     <%= render_component "error", object: @partner %>
     <h2>Basic Information</h2>
+    <%= f.input :published, class: "form-control" %>
     <%= f.input :name, class: "form-control" %>
     <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
     <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>

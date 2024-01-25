@@ -53,6 +53,7 @@ class PartnerPolicy < ApplicationPolicy
                tag_ids: [] }]
 
     attrs << :slug if user.root?
+    attrs << :published if user.root? || user.neighbourhood_admin? || user.partnership_admin?
     attrs
   end
 
