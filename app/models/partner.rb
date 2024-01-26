@@ -101,6 +101,8 @@ class Partner < ApplicationRecord
 
   validate :partnership_admins_must_add_tag, on: %i[create]
 
+  validate :must_give_reason_to_unpublish
+
   attr_accessor :accessed_by_user
 
   mount_uploader :image, ImageUploader
@@ -150,7 +152,7 @@ class Partner < ApplicationRecord
     query
       .left_joins(:address, :service_areas)
       .where(
-        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        'published AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
@@ -177,7 +179,7 @@ class Partner < ApplicationRecord
     query
       .left_joins(:address, :service_areas)
       .where(
-        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        'published AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
@@ -454,5 +456,12 @@ class Partner < ApplicationRecord
     end
 
     errors.add :base, 'This partner must be a part of your partnership'
+  end
+
+  def must_give_reason_to_unpublish
+    return if published
+    return if !published && unpublished_reason.present?
+
+    errors.add :base, 'You need to give a reason for unpublising a Partner, this will help them resolve the issue.'
   end
 end

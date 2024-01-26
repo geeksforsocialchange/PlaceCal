@@ -54,6 +54,7 @@ class PartnerPolicy < ApplicationPolicy
 
     attrs << :slug if user.root?
     attrs << :published if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :unpublished_reason if user.root? || user.neighbourhood_admin? || user.partnership_admin?
     attrs
   end
 

@@ -2,7 +2,19 @@
   <%= simple_form_for @partner do |f| %>
     <%= render_component "error", object: @partner %>
     <h2>Basic Information</h2>
-    <%= f.input :published, class: "form-control" %>
+    <% if policy(@partner).permitted_attributes.include? :published %>
+      <%= f.input :published, class: "form-control" %>
+      <%= f.input :unpublished_reason, hint: "Tell the partner what they need to fix", class: "form-control" %>
+    <% else  %>
+      <% if !@partner.published %>
+        <div class="alert alert-success" role="alert">
+          <h3 class="alert-heading">Unpublished</h3>
+          <p><strong>Your partner is currently not visible to the public for the following reason:</strong> <%= @partner.unpublished_reason %></p>
+          <hr>
+          <p class="mb-0">Once you have fixed this issue get in touch with you're neighborhood or partnership admin so they can make you public again. If you disagree with this decision please get intouch witha GFSC or PHT.</p>
+        </div>
+      <% end  %>
+    <% end  %>
     <%= f.input :name, class: "form-control" %>
     <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
     <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>
