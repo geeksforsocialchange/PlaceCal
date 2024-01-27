@@ -2,6 +2,7 @@
 
 # app/models/partner.rb
 class Partner < ApplicationRecord
+  after_initialize :set_defaults, unless: :persisted?
   include Validation
 
   extend FriendlyId
@@ -463,5 +464,9 @@ class Partner < ApplicationRecord
     return if !published && unpublished_reason.present?
 
     errors.add :base, 'You need to give a reason for unpublising a Partner, this will help them resolve the issue.'
+  end
+
+  def set_defaults
+    self.published ||= true
   end
 end
