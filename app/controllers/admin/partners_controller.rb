@@ -63,7 +63,10 @@ module Admin
 
     def edit
       authorize @partner
-      @sites = Site.sites_that_contain_partner(@partner)
+      # @sites = Site.sites_that_contain_partner(@partner) PUT THIS BACK IN
+      return unless @partner.hidden
+
+      @mod_email = User.find(@partner.hidden_blame_id).email
     end
 
     def update
@@ -80,6 +83,19 @@ module Admin
                            .uniq { |service_area| service_area[:neighbourhood_id] }
 
       mutated_params[:service_areas_attributes] = uniq_service_areas
+
+      Rails.logger.debug '#' * 80
+      Rails.logger.debug '#' * 80
+      Rails.logger.debug mutated_params[:hidden]
+      Rails.logger.debug @partner.hidden
+      Rails.logger.debug '#' * 80
+      Rails.logger.debug '#' * 80
+
+      # not working - maybe I should try in the model on update or something
+      mutated_params[:hidden_blame_id] = current_user.id  if mutated_params[:hidden] == '1' && !@partner.hidden
+      Rails.logger.debug '0' * 80
+      Rails.logger.debug mutated_params
+      Rails.logger.debug '0' * 80
 
       if @partner.update(mutated_params)
         # have to redirect on associated service area errors or form breaks

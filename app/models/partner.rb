@@ -12,6 +12,7 @@ class Partner < ApplicationRecord
   html_render_cache :description
   html_render_cache :summary
   html_render_cache :accessibility_info
+  html_render_cache :hidden_reason
 
   # Associations
   has_and_belongs_to_many :users
@@ -102,7 +103,7 @@ class Partner < ApplicationRecord
 
   validate :partnership_admins_must_add_tag, on: %i[create]
 
-  validate :must_give_reason_to_unpublish
+  validate :must_give_reason_to_hide
 
   attr_accessor :accessed_by_user
 
@@ -153,7 +154,7 @@ class Partner < ApplicationRecord
     query
       .left_joins(:address, :service_areas)
       .where(
-        'published AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        'NOT hidden AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
@@ -180,7 +181,7 @@ class Partner < ApplicationRecord
     query
       .left_joins(:address, :service_areas)
       .where(
-        'published AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        'NOT hidden AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
@@ -459,14 +460,14 @@ class Partner < ApplicationRecord
     errors.add :base, 'This partner must be a part of your partnership'
   end
 
-  def must_give_reason_to_unpublish
-    return if published
-    return if !published && unpublished_reason.present?
+  def must_give_reason_to_hide
+    return unless hidden
+    return if hidden && hidden_reason.present?
 
-    errors.add :base, 'You need to give a reason for unpublising a Partner, this will help them resolve the issue.'
+    errors.add :base, 'You need to give a reason for hiding a Partner from all public sites, this will help them resolve the issue.'
   end
 
   def set_defaults
-    self.published ||= true
+    self.hidden ||= false
   end
 end

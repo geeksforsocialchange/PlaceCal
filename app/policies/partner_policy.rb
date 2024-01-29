@@ -53,8 +53,9 @@ class PartnerPolicy < ApplicationPolicy
                tag_ids: [] }]
 
     attrs << :slug if user.root?
-    attrs << :published if user.root? || user.neighbourhood_admin? || user.partnership_admin?
-    attrs << :unpublished_reason if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :hidden if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :hidden_reason if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :hidden_blame_id  if user.root? || user.neighbourhood_admin? || user.partnership_admin?
     attrs
   end
 

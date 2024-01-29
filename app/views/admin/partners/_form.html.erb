@@ -2,16 +2,23 @@
   <%= simple_form_for @partner do |f| %>
     <%= render_component "error", object: @partner %>
     <h2>Basic Information</h2>
-    <% if policy(@partner).permitted_attributes.include? :published %>
-      <%= f.input :published, class: "form-control" %>
-      <%= f.input :unpublished_reason, hint: "Tell the partner what they need to fix", class: "form-control" %>
+    <% if policy(@partner).permitted_attributes.include? :hidden %>
+      <div class="alert alert-warning" role="alert">
+        <h3 class="alert-heading">Moderation</h3>
+        <p>Hiding a partner is a last resort, and will remove them from all PlaceCal sites, not just yours. This is appropriate if a partner suddenly starts publishing things like spam or hate speech. In such cases, hiding a partner is the right action and we appreciate your help in keeping PlaceCal a safe place to be.</p>
+        <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out below. The partner will receive your email address in order to discuss or arrange reinstatement.</p>
+        <p>Please use the space below to explain the reason for hiding the partner and steps needed to re-instate them.</p>
+        <%= f.input :hidden, class: "form-control" %>
+        <%= f.input :hidden_reason, label: "Explenation for hiding",  class: "form-control" , input_html: { rows: 7 } %>
+      </div>
     <% else  %>
-      <% if !@partner.published %>
+      <% if @partner.hidden %>
         <div class="alert alert-success" role="alert">
-          <h3 class="alert-heading">Unpublished</h3>
-          <p><strong>Your partner is currently not visible to the public for the following reason:</strong> <%= @partner.unpublished_reason %></p>
+          <h3 class="alert-heading">Hidden</h3>
+          <p><strong>Your partner is currently not visible to the public for the following reason</strong> </p>
+          <p><%= @partner.hidden_reason_html.to_s.html_safe %></p>
           <hr>
-          <p class="mb-0">Once you have fixed this issue get in touch with you're neighborhood or partnership admin so they can make you public again. If you disagree with this decision please get intouch with <a href="mailto:support@placecal.org" class="alert-link">support@placecal.org</a>.</p>
+          <p class="mb-0">Once you have fixed this issue get in touch with <a href="mailto:<%= @mod_email %>" class="alert-link"><%= @mod_email %></a> so they can make you public again. If you feel this was in error, or that the [site] Admins are being unreasonable, you can raise a support ticket with PlaceCal here: <a href="mailto:support@placecal.org" class="alert-link">support@placecal.org</a>.</p>
         </div>
       <% end  %>
     <% end  %>

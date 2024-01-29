@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_26_173210) do
+ActiveRecord::Schema.define(version: 2024_01_29_154539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,8 +232,10 @@ ActiveRecord::Schema.define(version: 2024_01_26_173210) do
     t.string "description_html"
     t.string "summary_html"
     t.string "accessibility_info_html"
-    t.boolean "published"
-    t.string "unpublished_reason"
+    t.boolean "hidden", default: false
+    t.text "hidden_reason"
+    t.integer "hidden_blame_id"
+    t.string "hidden_reason_html"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
