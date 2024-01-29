@@ -255,12 +255,28 @@ class Partner < ApplicationRecord
     return true if user.root?
     return true if user.admin_for_partner?(id)
 
+    return true if user.neighbourhood_admin?
+    return true if user.partnership_admin?
+  end
+
+  def warn_user_clear_address?(user)
+    return false if user.root?
+    return false if user.admin_for_partner?(id)
+
     user_hood_ids = user.owned_neighbourhood_ids
-    return false if user_hood_ids.empty?
+    # this shouldn't happen (?) - a user has no neighbourhoods
+    #   but can still remove a partners address? if that is the case
+    #   then they aren't seeing the partner by neighbourhood anyway
+    #   so warning them that removing the address will remove the
+    #   partner seems wrong
+    return true if user_hood_ids.empty?
 
     sa_hood_ids = service_areas.pluck(:neighbourhood_id)
 
-    Set.new(user_hood_ids).any?(Set.new(sa_hood_ids))
+    any_service_areas = Set.new(user_hood_ids).any?(Set.new(sa_hood_ids))
+
+    # is the only way this user is tied to this partner through the address?
+    any_service_areas == false
   end
 
   def clear_address!

@@ -1,7 +1,8 @@
 <%= form.fields_for :address do |address_form| %>
 <div class='nested-fields'
      data-controller="partner-address"
-     data-partner-address-partner-id-value="<%= partner.id %>">
+     data-partner-address-partner-id-value="<%= partner.id %>"
+     data-partner-address-warn-of-delisting-value="<%= partner.warn_user_clear_address?(current_user) ? 'true' : 'false' %>">
 
     <%# this view is augmented by the /app/javascript/controllers/parter_address_controller.js %>
 

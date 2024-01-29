@@ -3,6 +3,7 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
 	static values = {
 		partnerId: String,
+		warnOfDelisting: String, // "true" or "false"
 	};
 
 	static targets = ["addressInfoArea"];
@@ -25,7 +26,12 @@ export default class extends Controller {
 		event.preventDefault();
 		console.log("do_clear_address");
 
-		if (!confirm("Please confirm you want to clear this partners address")) {
+		let warning_text = "Please confirm you want to clear this partners address";
+		if (this.warnOfDelistingValue === "true") {
+			warning_text = `This address links to you to this partner and by clearing this address you will no longer be able to access this partner,\n\n${warning_text}`;
+		}
+
+		if (!confirm(warning_text)) {
 			return;
 		}
 
