@@ -250,12 +250,17 @@ class Partner < ApplicationRecord
   def can_clear_address?(user = nil)
     return false if address.blank?
     return false if service_areas.empty?
-    return true if user&.root?
 
-    # TODO: only allow address to be cleared if user has a neighbourhood
-    #  that this partner has a service area falls within.
+    return false if user.blank?
+    return true if user.root?
+    return true if user.admin_for_partner?(id)
 
-    false
+    user_hood_ids = user.owned_neighbourhood_ids
+    return false if user_hood_ids.empty?
+
+    sa_hood_ids = service_areas.pluck(:neighbourhood_id)
+
+    Set.new(user_hood_ids).any?(Set.new(sa_hood_ids))
   end
 
   def clear_address!

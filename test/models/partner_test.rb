@@ -424,17 +424,45 @@ class PartnerTest < ActiveSupport::TestCase
     assert_predicate partner, :valid?
   end
 
-  test 'can_clear_address?' do
-    partner = Partner.new
+  test 'can_clear_address? for root' do
+    partner = build(:bare_partner)
+    # has no address
     assert_not partner.can_clear_address?
 
     partner.address = create(:address)
+    # missing service area
     assert_not partner.can_clear_address?
 
     partner.service_areas.build(neighbourhood: create(:neighbourhood))
+    # is not root
     assert_not partner.can_clear_address?
 
     root = create(:root)
     assert partner.can_clear_address?(root)
+  end
+
+  test 'can_clear_address? for partner admin' do
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.service_areas.build(neighbourhood: create(:neighbourhood))
+    partner.save!
+
+    citizen = create(:citizen)
+    citizen.partners << partner
+
+    assert partner.can_clear_address?(citizen)
+  end
+
+  test 'can_clear_address? for neighbourhood admin' do
+    neighbourhood = create(:neighbourhood)
+    citizen = create(:citizen)
+    citizen.neighbourhoods << neighbourhood
+
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.service_areas.build(neighbourhood: neighbourhood)
+    partner.save!
+
+    assert partner.can_clear_address?(citizen)
   end
 end
