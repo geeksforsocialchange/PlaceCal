@@ -1,30 +1,31 @@
+<%= form.fields_for :address do |address_form| %>
 <div class='nested-fields'
      data-controller="partner-address"
      data-partner-address-partner-id-value="<%= partner.id %>">
 
     <%# this view is augmented by the /app/javascript/controllers/parter_address_controller.js %>
 
-    <%= f.input :street_address,
+    <%= address_form.input :street_address,
      class: "form-control address_1 address_field",
      label: 'Street address' %>
 
-    <%= f.input :street_address2,
+    <%= address_form.input :street_address2,
      class: "form-control address_2 address_field",
      label: 'Street address 2' %>
 
-    <%= f.input :street_address3,
+    <%= address_form.input :street_address3,
      class: "form-control address_3 address_field",
      label: 'Street address 3' %>
 
-    <%= f.input :city,
+    <%= address_form.input :city,
      class: "form-control city address_field" %>
 
-    <%= f.input :postcode,
+    <%= address_form.input :postcode,
      class: "form-control postcode address_field" %>
 
-    <% if address.present? %>
+    <% if partner.can_clear_address? %>
 	<div data-partner-address-target="addressInfoArea">
-	    <p>Address in neighbourhood <%= link_to_neighbourhood(address.neighbourhood) %>.</p>
+	    <p>Address in neighbourhood <%= link_to_neighbourhood(partner.address.neighbourhood) %>.</p>
 	    <p>
 		<%= link_to 'Clear Address',
 		       '#',
@@ -35,3 +36,4 @@
 	</div>
     <% end %>
 </div>
+<% end %>

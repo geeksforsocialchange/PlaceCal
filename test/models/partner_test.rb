@@ -423,4 +423,18 @@ class PartnerTest < ActiveSupport::TestCase
     partner = create(:partner, :accessed_by_user => pa, :tags => [pa.tags.first])
     assert_predicate partner, :valid?
   end
+
+  test 'can_clear_address?' do
+    partner = Partner.new
+    assert_not partner.can_clear_address?
+
+    partner.address = create(:address)
+    assert_not partner.can_clear_address?
+
+    partner.service_areas.build(neighbourhood: create(:neighbourhood))
+    assert_not partner.can_clear_address?
+
+    root = create(:root)
+    assert partner.can_clear_address?(root)
+  end
 end

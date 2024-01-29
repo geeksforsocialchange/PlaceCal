@@ -111,14 +111,14 @@ module Admin
     def clear_address
       authorize @partner
 
-      Partner.transaction do
-        address = @partner.address
-        @partner.update! address_id: nil
+      if @partner.can_clear_address?(current_user)
+        @partner.clear_address!
+        render json: { message: 'Address cleared' }
 
-        address&.destroy
+      else
+        render json: { message: 'Could not clear address' },
+               status: :unprocessable_entity
       end
-
-      render json: { message: 'Address cleared' }
     end
 
     def setup

@@ -275,8 +275,8 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     @partner.reload
     assert_nil @partner.address
 
-    # will work even if the partner has no address
+    # will not work if no address is set
     delete clear_address_admin_partner_path(@partner)
-    assert_response :success
+    assert_response :unprocessable_entity
   end
 end

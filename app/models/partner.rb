@@ -247,6 +247,26 @@ class Partner < ApplicationRecord
     service_areas.any?
   end
 
+  def can_clear_address?(user = nil)
+    return false if address.blank?
+    return false if service_areas.empty?
+    return true if user&.root?
+
+    # TODO: only allow address to be cleared if user has a neighbourhood
+    #  that this partner has a service area falls within.
+
+    false
+  end
+
+  def clear_address!
+    Partner.transaction do
+      old_address = address
+      update! address_id: nil
+
+      old_address&.destroy
+    end
+  end
+
   def permalink
     "https://placecal.org/partners/#{id}"
   end

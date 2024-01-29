@@ -27,12 +27,10 @@
     <div id='address'>
       <div class="row">
         <div class="col-md-6">
-          <%= f.fields_for :address do |address_form| %>
-              <%= render 'address_fields',
-			 f: address_form,
-			 address: @partner.address,
-			 partner: @partner %>
-          <% end %>
+         
+            <%= render 'address_fields',
+		       form: f,
+		       partner: @partner %>
 	    
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
             <p>
