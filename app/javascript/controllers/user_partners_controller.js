@@ -4,6 +4,11 @@ export default class extends Controller {
 	static values = { permittedPartners: [String] };
 
 	connect() {
+		const confirmRemove =
+			"Removing this partner will remove this user from your view and you will no longer be able to access them.\n\nIf you want to keep the user in your view but still remove this partner from them, you'll need to make them an admin for another partner before removing this one.\n\nAre you sure you want to remove it?";
+		const denyRemove =
+			"You can only remove partners that you manage from a user.";
+
 		const getSelectValues = (select) => {
 			return [...(select && select.options)].reduce((accumulator, option) => {
 				if (option.selected) {
@@ -26,19 +31,13 @@ export default class extends Controller {
 				selectedPermittedValues.length <= 1 &&
 				permittedValues.includes(Number(event.params.args.data.id))
 			) {
-				if (
-					!confirm(
-						"Removing this partner will remove this user from your neighbourhood.\n\n Are you sure you want to remove it? \n\n  If you want to keep the user in the neighbourhood but still remove this partner from them, you'll need to make them an admin for another partner in your neighbourhood."
-					)
-				) {
+				if (!confirm(confirmRemove)) {
 					event.preventDefault();
 				}
 			}
 
 			if (!permittedValues.includes(Number(event.params.args.data.id))) {
-				alert(
-					"You can only remove partners in your neighbourhood from a user."
-				);
+				alert(denyRemove);
 				event.preventDefault();
 			}
 		});
