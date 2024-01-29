@@ -38,7 +38,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def clear_address?
-    user.root?
+    index?
   end
 
   def setup?
