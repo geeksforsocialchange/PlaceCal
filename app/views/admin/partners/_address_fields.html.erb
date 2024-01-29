@@ -23,7 +23,7 @@
     <%= address_form.input :postcode,
      class: "form-control postcode address_field" %>
 
-    <% if partner.can_clear_address? %>
+    <% if partner.can_clear_address?(current_user) %>
 	<div data-partner-address-target="addressInfoArea">
 	    <p>Address in neighbourhood <%= link_to_neighbourhood(partner.address.neighbourhood) %>.</p>
 	    <p>
