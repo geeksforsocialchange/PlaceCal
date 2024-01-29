@@ -84,6 +84,8 @@ module Admin
 
       mutated_params[:service_areas_attributes] = uniq_service_areas
 
+      hidden_in_this_edit = mutated_params[:hidden] == '1' && !@partner.hidden
+
       Rails.logger.debug '#' * 80
       Rails.logger.debug '#' * 80
       Rails.logger.debug mutated_params[:hidden]
@@ -92,7 +94,7 @@ module Admin
       Rails.logger.debug '#' * 80
 
       # not working - maybe I should try in the model on update or something
-      mutated_params[:hidden_blame_id] = current_user.id  if mutated_params[:hidden] == '1' && !@partner.hidden
+      mutated_params[:hidden_blame_id] = current_user.id  if hidden_in_this_edit
       Rails.logger.debug '0' * 80
       Rails.logger.debug mutated_params
       Rails.logger.debug '0' * 80
@@ -104,6 +106,17 @@ module Admin
         else
           flash[:success] = 'Partner was successfully updated.'
         end
+
+        # important this needs to only fire on change to hidden
+        if hidden_in_this_edit
+          ModerationMailer.hidden_message(
+            @partner.users,
+            @partner.name,
+            @partner.hidden_reason_html,
+            User.find(@partner.hidden_blame_id).email
+          )
+        end
+
         redirect_to edit_admin_partner_path(@partner)
       else
         flash.now[:danger] = 'Partner was not saved.'
