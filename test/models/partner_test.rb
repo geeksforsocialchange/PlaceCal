@@ -423,4 +423,15 @@ class PartnerTest < ActiveSupport::TestCase
     partner = create(:partner, :accessed_by_user => pa, :tags => [pa.tags.first])
     assert_predicate partner, :valid?
   end
+
+  test 'partner cannot be set to hidden without a reason' do
+    assert_raises(ActiveRecord::RecordInvalid, 'You need to give a reason for hiding a Partner from all public sites, this will help them resolve the issue.') do
+      @new_partner.update!(hidden: true)
+    end
+  end
+
+  test 'partner can be set to hidden with a reason' do
+    @new_partner.update!(hidden: true, hidden_reason: 'something has gone terribly wrong')
+    assert_predicate @new_partner, :valid?
+  end
 end

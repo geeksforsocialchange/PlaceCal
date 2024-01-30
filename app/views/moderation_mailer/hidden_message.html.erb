@@ -1,0 +1,15 @@
+<div>
+  <%= image_tag(image_url("logo.png"), height: '75') %>
+</div>
+
+<% if @user %>
+  <p><%= greeting_text(@user) %>,</p>
+<% else %>
+  <p>Copy of email sent to Partners users,</p>
+<% end %>
+
+<p>Your partner (<%= @partner_name %>) has been hidden from PlaceCal for the following reasons.</p>
+
+<%= @reason.to_s.html_safe %>
+
+<p>Once you have fixed this issue get in touch with <a href="mailto:<%= @mod_email %>"><%= @mod_email %></a> so they can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: <a href="mailto:support@placecal.org">support@placecal.org</a>.</p>

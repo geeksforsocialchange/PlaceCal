@@ -63,7 +63,7 @@ module Admin
 
     def edit
       authorize @partner
-      @sites = Site.sites_that_contain_partner(@partner)
+      # @sites = Site.sites_that_contain_partner(@partner)
       return unless @partner.hidden
 
       @mod_email = User.find(@partner.hidden_blame_id).email
@@ -73,6 +73,8 @@ module Admin
       authorize @partner
 
       mutated_params = permitted_attributes(@partner)
+
+      before = @partner.hidden
 
       @partner.accessed_by_user = current_user
 
@@ -100,13 +102,17 @@ module Admin
         end
 
         # important this needs to only fire on change to hidden
+        puts '?' * 80
+        @partner.users.each { |u| puts u.full_name }
+        puts '?' * 80
+
         if hidden_in_this_edit
           ModerationMailer.hidden_message(
             @partner.users,
             @partner.name,
             @partner.hidden_reason_html,
             User.find(@partner.hidden_blame_id).email
-          )
+          ).deliver
         end
 
         redirect_to edit_admin_partner_path(@partner)

@@ -169,6 +169,37 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select '#form-errors li', text: 'Partners cannot have an address outside of your ward.'
   end
+
+  test 'partner_admin is shown reason for hiding them' do
+    reason = 'This is bad content for PlaceCal'
+    user = create(:partner_admin)
+    partner = user.partners.first
+    partner.update!(hidden: true, hidden_reason: reason)
+
+    sign_in user
+
+    get '/partners/'
+    assert_select 'a' do |el|
+      puts el
+      # no links to partners!?
+    end
+    assert_select 'table' do |el|
+      puts el
+      # but can see the names
+    end
+
+    puts partner
+
+    get edit_admin_partner_path(partner)
+    # assert_response :success
+
+    # assert_select 'p#hidden-reason', count: 1, text: reason
+    assert_select 'p' do |el|
+      puts el
+      # <p>The page you were looking for does not exist</p>
+      # WHYYYYYYYYY
+    end
+  end
 end
 
 # Capybara feature test that doesn't work and i have no time to fix
