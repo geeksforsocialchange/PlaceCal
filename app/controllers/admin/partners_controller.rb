@@ -63,7 +63,7 @@ module Admin
 
     def edit
       authorize @partner
-      # @sites = Site.sites_that_contain_partner(@partner) PUT THIS BACK IN
+      @sites = Site.sites_that_contain_partner(@partner)
       return unless @partner.hidden
 
       @mod_email = User.find(@partner.hidden_blame_id).email
@@ -86,14 +86,6 @@ module Admin
 
       hidden_in_this_edit = mutated_params[:hidden] == '1' && !@partner.hidden
 
-      Rails.logger.debug '#' * 80
-      Rails.logger.debug '#' * 80
-      Rails.logger.debug mutated_params[:hidden]
-      Rails.logger.debug @partner.hidden
-      Rails.logger.debug '#' * 80
-      Rails.logger.debug '#' * 80
-
-      # not working - maybe I should try in the model on update or something
       mutated_params[:hidden_blame_id] = current_user.id  if hidden_in_this_edit
       Rails.logger.debug '0' * 80
       Rails.logger.debug mutated_params
