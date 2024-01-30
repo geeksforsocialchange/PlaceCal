@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require Rails.root.join('lib/rollbar_exception_filter')
-
 Rollbar.configure do |config|
   # Without configuration, Rollbar is enabled in all environments.
   # To disable in specific environments, set config.enabled=false.
