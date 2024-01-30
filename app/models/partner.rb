@@ -248,15 +248,23 @@ class Partner < ApplicationRecord
   end
 
   def can_clear_address?(user = nil)
-    return false if address.blank?
+    return false if address.blank? || address.missing_values?
     return false if service_areas.empty?
 
     return false if user.blank?
     return true if user.root?
     return true if user.admin_for_partner?(id)
 
-    return true if user.neighbourhood_admin?
+    # must be at least one of these types of admin
+    return false unless user.neighbourhood_admin? || user.partnership_admin?
+
     return true if user.partnership_admin?
+
+    user_hood_ids = user.owned_neighbourhood_ids
+    return false if user_hood_ids.empty? # (not a neighbourhood admin)
+
+    # must admin for this address specifically
+    user_hood_ids.include?(address.neighbourhood_id)
   end
 
   def warn_user_clear_address?(user)
@@ -264,11 +272,6 @@ class Partner < ApplicationRecord
     return false if user.admin_for_partner?(id)
 
     user_hood_ids = user.owned_neighbourhood_ids
-    # this shouldn't happen (?) - a user has no neighbourhoods
-    #   but can still remove a partners address? if that is the case
-    #   then they aren't seeing the partner by neighbourhood anyway
-    #   so warning them that removing the address will remove the
-    #   partner seems wrong
     return true if user_hood_ids.empty?
 
     sa_hood_ids = service_areas.pluck(:neighbourhood_id)

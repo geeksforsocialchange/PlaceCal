@@ -1,4 +1,4 @@
-<%= form.fields_for :address do |address_form| %>
+<%= form.fields_for :address, @partner.address || Address.new do |address_form| %>
 <div class='nested-fields'
      data-controller="partner-address"
      data-partner-address-partner-id-value="<%= partner.id %>"
@@ -32,7 +32,6 @@
 		       '#',
 		       class: "btn btn-secondary btn-sm",
 		       data: { action: "click->partner-address#do_clear_address" } %>
-		<strong>WARNING:</strong> clicking this button will permanently clear this partners address!
 	    </p>
 	</div>
     <% end %>

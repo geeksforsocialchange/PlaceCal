@@ -21,10 +21,7 @@ export default class extends Controller {
 	disconnect() {}
 
 	do_clear_address(event) {
-		console.log("do_clear_address");
-
 		event.preventDefault();
-		console.log("do_clear_address");
 
 		let warning_text = "Please confirm you want to clear this partners address";
 		if (this.warnOfDelistingValue === "true") {

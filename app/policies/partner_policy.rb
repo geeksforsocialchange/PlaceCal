@@ -38,7 +38,7 @@ class PartnerPolicy < ApplicationPolicy
   end
 
   def clear_address?
-    index?
+    edit?
   end
 
   def setup?
