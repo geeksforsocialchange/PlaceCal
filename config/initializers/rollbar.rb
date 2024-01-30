@@ -57,9 +57,5 @@ Rollbar.configure do |config|
   # https://devcenter.heroku.com/articles/deploying-to-a-custom-rails-environment
   config.environment = ENV['ROLLBAR_ENV'].presence || Rails.env
 
-  config.exception_level_filters.merge!(
-    'ActionController::RoutingError' => lambda { |error|
-                                          RollbarExceptionFilter.muffle_routing_error(error)
-                                        }
-  )
+  config.exception_level_filters.merge!('ActionController::RoutingError' => 'ignore')
 end
