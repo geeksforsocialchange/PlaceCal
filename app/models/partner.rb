@@ -105,6 +105,8 @@ class Partner < ApplicationRecord
 
   validate :must_give_reason_to_hide
 
+  validate :must_record_who_has_hidden
+
   attr_accessor :accessed_by_user
 
   mount_uploader :image, ImageUploader
@@ -465,6 +467,13 @@ class Partner < ApplicationRecord
     return if hidden && hidden_reason.present?
 
     errors.add :base, 'You need to give a reason for hiding a Partner from all public sites, this will help them resolve the issue.'
+  end
+
+  def must_record_who_has_hidden
+    return unless hidden
+    return if hidden && hidden_blame_id.present?
+
+    errors.add :base, 'You must record who has hidden the partner'
   end
 
   def set_defaults
