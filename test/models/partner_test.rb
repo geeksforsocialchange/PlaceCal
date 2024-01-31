@@ -471,21 +471,6 @@ class PartnerTest < ActiveSupport::TestCase
     assert partner.can_clear_address?(citizen)
   end
 
-  test 'can_clear_address? for partnership admin' do
-    neighbourhood = create(:neighbourhood)
-    tag = create(:partnership)
-    citizen = create(:citizen)
-    citizen.tags << tag
-
-    # cannot clear address if admin does not "own" address
-    partner = build(:bare_partner)
-    partner.address = create(:address)
-    partner.service_areas.build(neighbourhood: neighbourhood)
-    partner.save!
-
-    assert partner.can_clear_address?(citizen)
-  end
-
   test 'warn_user_clear_address?' do
     partner = build(:bare_partner)
     partner.address = create(:address)

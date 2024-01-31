@@ -255,15 +255,8 @@ class Partner < ApplicationRecord
     return true if user.root?
     return true if user.admin_for_partner?(id)
 
-    # must be at least one of these types of admin
-    return false unless user.neighbourhood_admin? || user.partnership_admin?
-
-    return true if user.partnership_admin?
-
-    user_hood_ids = user.owned_neighbourhood_ids
-    return false if user_hood_ids.empty? # (not a neighbourhood admin)
-
     # must admin for this address specifically
+    user_hood_ids = user.owned_neighbourhood_ids
     user_hood_ids.include?(address.neighbourhood_id)
   end
 
