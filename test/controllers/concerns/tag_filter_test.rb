@@ -19,7 +19,7 @@ class TagFilterTest < ActiveSupport::TestCase
 
   test 'instantiates' do
     filter = TagFilter.new({})
-    assert filter.is_a?(TagFilter)
+    assert_kind_of(TagFilter, filter)
   end
 
   test '#with_scope by type' do
@@ -99,7 +99,7 @@ class TagFilterTest < ActiveSupport::TestCase
     filter = TagFilter.new(params)
     output = filter.options_for_type(FakeView.new)
 
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html =
       "<option value=\"\">All</option>\n" \
@@ -114,7 +114,7 @@ class TagFilterTest < ActiveSupport::TestCase
     filter = TagFilter.new(params)
     output = filter.options_for_type(FakeView.new)
 
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html =
       "<option value=\"\">All</option>\n" \
@@ -130,7 +130,7 @@ class TagFilterTest < ActiveSupport::TestCase
     filter = TagFilter.new(params)
     output = filter.options_for_per_page(FakeView.new)
 
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html =
       "<option value=\"10\">10</option>\n" \
@@ -144,7 +144,7 @@ class TagFilterTest < ActiveSupport::TestCase
     filter = TagFilter.new(params)
     output = filter.options_for_per_page(FakeView.new)
 
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html =
       "<option value=\"10\">10</option>\n" \
@@ -161,7 +161,7 @@ class TagFilterTest < ActiveSupport::TestCase
     scope = filter.with_window(Tag.all)
 
     output = filter.next_page_link(FakeView.new, scope)
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html = "<span class='btn btn-outline-secondary disabled'>Next &raquo;</span>"
     assert_equal output, expected_html
@@ -174,7 +174,7 @@ class TagFilterTest < ActiveSupport::TestCase
     scope = filter.with_window(Tag.all)
 
     output = filter.next_page_link(FakeView.new, scope)
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html = '<a class="btn btn-secondary" href="/tags?page_num=2">Next &raquo;</a>'
     assert_equal output, expected_html
@@ -185,7 +185,7 @@ class TagFilterTest < ActiveSupport::TestCase
     scope = filter.with_window(Tag.all)
 
     output = filter.next_page_link(FakeView.new, scope)
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html = '<a class="btn btn-secondary" href="/tags?page_num=3">Next &raquo;</a>'
     assert_equal output, expected_html
@@ -196,7 +196,7 @@ class TagFilterTest < ActiveSupport::TestCase
     scope = filter.with_window(Tag.all)
 
     output = filter.next_page_link(FakeView.new, scope)
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html = "<span class='btn btn-outline-secondary disabled'>Next &raquo;</span>"
     assert_equal output, expected_html
@@ -211,7 +211,7 @@ class TagFilterTest < ActiveSupport::TestCase
     filter = TagFilter.new(params)
 
     output = filter.next_page_link(FakeView.new, Tag.all)
-    assert output.is_a?(String)
+    assert_kind_of(String, output)
 
     expected_html = '<a class="btn btn-secondary" href="/tags?name=alpha&page_num=3&per_page=20&type=facility">Next &raquo;</a>'
     assert_equal output, expected_html

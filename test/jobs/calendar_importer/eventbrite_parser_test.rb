@@ -19,7 +19,7 @@ class EventbriteParserTest < ActiveSupport::TestCase
 
       # we are only checking for RDF records extracted from response
       records = parser.download_calendar
-      assert records.is_a?(Array)
+      assert_kind_of(Array, records)
       assert_equal 17, records.count
     end
   end
