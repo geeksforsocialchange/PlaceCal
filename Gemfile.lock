@@ -272,7 +272,7 @@ GEM
       activerecord (>= 5.2)
       request_store (~> 1.1)
     parallel (1.24.0)
-    parser (3.3.0.4)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
     pg (1.4.3)
@@ -359,8 +359,9 @@ GEM
       parser (>= 3.2.1.0)
     rubocop-graphql (1.5.0)
       rubocop (>= 0.90, < 2)
-    rubocop-minitest (0.32.2)
+    rubocop-minitest (0.34.5)
       rubocop (>= 1.39, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     rubocop-performance (1.19.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
@@ -517,7 +518,7 @@ DEPENDENCIES
   rollbar
   rubocop (= 1.59.0)
   rubocop-graphql (= 1.5.0)
-  rubocop-minitest (= 0.32.2)
+  rubocop-minitest (= 0.34.5)
   rubocop-performance (= 1.19.1)
   rubocop-rails (= 2.23.1)
   rubocop-rake
