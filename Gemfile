@@ -102,7 +102,7 @@ group :development do
   gem 'rdoc'
   gem 'rubocop', '1.60.2', require: false
   gem 'rubocop-graphql', '1.5.0', require: false
-  gem 'rubocop-minitest', '0.32.2', require: false
+  gem 'rubocop-minitest', '0.34.5', require: false
   gem 'rubocop-performance', '1.20.2', require: false
   gem 'rubocop-rails', '2.23.1', require: false
   gem 'rubocop-rake', require: false
