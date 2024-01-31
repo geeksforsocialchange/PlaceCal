@@ -1,0 +1,41 @@
+<%= form.fields_for :address, @partner.address || Address.new do |address_form| %>
+<div class='nested-fields'
+     data-controller="partner-address"
+     data-partner-address-partner-id-value="<%= partner.id %>"
+     data-partner-address-warn-of-delisting-value="<%= partner.warn_user_clear_address?(current_user) ? 'true' : 'false' %>">
+
+  <%# this view is augmented by the /app/javascript/controllers/parter_address_controller.js %>
+
+  <%= address_form.input :street_address,
+      class: "form-control address_1 address_field",
+      label: 'Street address' %>
+
+  <%= address_form.input :street_address2,
+      class: "form-control address_2 address_field",
+      label: 'Street address 2' %>
+
+  <%= address_form.input :street_address3,
+      class: "form-control address_3 address_field",
+      label: 'Street address 3' %>
+
+  <%= address_form.input :city,
+      class: "form-control city address_field" %>
+
+  <%= address_form.input :postcode,
+      class: "form-control postcode address_field" %>
+
+  <% if partner.can_clear_address?(current_user) %>
+  <div data-partner-address-target="addressInfoArea">
+    <% if partner.address.neighbourhood.present? %>
+    <p>Address in neighbourhood <%= link_to_neighbourhood(partner.address.neighbourhood) %>.</p>
+    <% end %>
+    <p>
+      <%= link_to 'Clear Address',
+	  '#',
+	  class: "btn btn-secondary btn-sm",
+	  data: { action: "click->partner-address#do_clear_address" } %>
+    </p>
+  </div>
+  <% end %>
+</div>
+<% end %>

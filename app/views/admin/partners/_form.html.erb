@@ -27,9 +27,11 @@
     <div id='address'>
       <div class="row">
         <div class="col-md-6">
-          <%= f.fields_for :address, @partner.address || Address.new do |a| %>
-            <%= render 'address_fields', f: a %>
-          <% end %>
+         
+            <%= render 'address_fields',
+		       form: f,
+		       partner: @partner %>
+	    
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
             <p>
               The address for this partner is assigned to an out of date neighbourhood.

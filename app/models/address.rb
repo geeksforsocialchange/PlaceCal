@@ -31,6 +31,14 @@ class Address < ApplicationRecord
     self
   end
 
+  def missing_values?
+    street_address.blank? &&
+      street_address2.blank? &&
+      street_address3.blank? &&
+      city.blank? &&
+      postcode.blank?
+  end
+
   def first_address_line
     street_address
   end

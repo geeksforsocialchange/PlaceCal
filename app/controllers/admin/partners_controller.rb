@@ -3,7 +3,7 @@
 module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
-    before_action :set_partner, only: %i[show edit update destroy]
+    before_action :set_partner, only: %i[show edit update destroy clear_address]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
     before_action :set_partner_tags_controller, only: %i[new edit update]
@@ -105,6 +105,19 @@ module Admin
           redirect_to admin_partners_url
         end
         format.json { head :no_content }
+      end
+    end
+
+    def clear_address
+      authorize @partner
+
+      if @partner.can_clear_address?(current_user)
+        @partner.clear_address!
+        render json: { message: 'Address cleared' }
+
+      else
+        render json: { message: 'Could not clear address' },
+               status: :unprocessable_entity
       end
     end
 
