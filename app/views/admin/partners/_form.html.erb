@@ -15,7 +15,9 @@
         <div class="alert alert-success" role="alert">
           <h3 class="alert-heading">Hidden</h3>
           <p><strong>Your partner is currently not visible to the public for the following reason</strong> </p>
-          <p id="hidden-reason"><%= @partner.hidden_reason_html.to_s.html_safe %></p>
+          <div id="hidden-reason">
+            <%= @partner.hidden_reason_html.to_s.html_safe %>
+          </div>
           <hr>
           <p class="mb-0">Once you have fixed this issue get in touch with <a href="mailto:<%= @mod_email %>" class="alert-link"><%= @mod_email %></a> so they can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: <a href="mailto:support@placecal.org" class="alert-link">support@placecal.org</a>.</p>
         </div>

@@ -174,30 +174,15 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     reason = 'This is bad content for PlaceCal'
     user = create(:partner_admin)
     partner = user.partners.first
-    partner.update!(hidden: true, hidden_reason: reason)
+    partner.update!(hidden: true, hidden_reason: reason, hidden_blame_id: @admin.id)
 
     sign_in user
 
-    get '/partners/'
-    assert_select 'a' do |el|
-      puts el
-      # no links to partners!?
-    end
-    assert_select 'table' do |el|
-      puts el
-      # but can see the names
-    end
-
-    puts partner
-
     get edit_admin_partner_path(partner)
-    # assert_response :success
+    assert_response :success
 
-    # assert_select 'p#hidden-reason', count: 1, text: reason
-    assert_select 'p' do |el|
-      puts el
-      # <p>The page you were looking for does not exist</p>
-      # WHYYYYYYYYY
+    assert_select '#hidden-reason' do
+      assert_select 'p', count: 1, text: reason
     end
   end
 end
