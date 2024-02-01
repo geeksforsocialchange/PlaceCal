@@ -55,6 +55,12 @@ Style/HashSyntax:
 Rails/ActionOrder:
   Enabled: false
 
+Metrics/ClassLength:
+  Exclude:
+    - "test/**/*.rb"
+
+
+
 Rails/RootPathnameMethods:
   Enabled: false
 GraphQL/MaxComplexitySchema:

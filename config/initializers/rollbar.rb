@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require Rails.root.join('lib/rollbar_exception_filter')
-
 Rollbar.configure do |config|
   # Without configuration, Rollbar is enabled in all environments.
   # To disable in specific environments, set config.enabled=false.
@@ -57,9 +55,6 @@ Rollbar.configure do |config|
   # https://devcenter.heroku.com/articles/deploying-to-a-custom-rails-environment
   config.environment = ENV['ROLLBAR_ENV'].presence || Rails.env
 
-  config.exception_level_filters.merge!(
-    'ActionController::RoutingError' => lambda { |error|
-                                          RollbarExceptionFilter.muffle_routing_error(error)
-                                        }
-  )
+  # https://docs.rollbar.com/docs/ruby#exception-level-filters
+  config.exception_level_filters.merge!('ActionController::RoutingError' => 'ignore')
 end
