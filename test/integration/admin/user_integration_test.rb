@@ -109,8 +109,17 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Role'
   end
 
+  test "Neighbourhood admins with no partners in their neighbourhood cannot create users" do
+    sign_in @neighbourhood_admin
+    get new_admin_user_path(@citizen)
+    assert_response :redirect
+  end
+
   test "Create form has correct fields for neighbourhood admin" do
     sign_in @neighbourhood_admin
+    @partner.address.neighbourhood = @neighbourhood
+    @partner.save!
+
     get new_admin_user_path(@citizen)
     assert_response :success
 
@@ -147,6 +156,9 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
   test "Edit form has correct fields for neighbourhood admin" do
     sign_in @neighbourhood_admin
+    @partner.address.neighbourhood = @neighbourhood
+    @partner.save!
+
     get edit_admin_user_path(@citizen)
     assert_response :success
 
