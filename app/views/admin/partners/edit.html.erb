@@ -1,6 +1,34 @@
 <% content_for :title do %>Editing <%= @partner.name %><% end %>
 <h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
 
+<% if current_user.root? -%>
+  <p>ID: <%= @partner.id %></p>
+  <%# Show the Neighbourhood the partner is related to via Address %>
+  <% if @partner.address&.neighbourhood&.present? -%>
+    <p>Address in neighbourhood <%= link_to_neighbourhood(@partner.address.neighbourhood) %>.</p>
+  <% end -%>
+
+  <%# Show a list of Service Areas that the partner is related to %>
+  <% if @partner.service_areas.any? -%>
+    <p>In service areas <%= service_area_links(@partner) %>.</p>
+  <% end -%>
+
+  <%# Show a list of sites that the partner is related to %>
+  <span id="partner-sites">
+    <% partners_sites_links = site_links %>
+    <% if partners_sites_links.present? %>
+      <p>This partner appears on the following sites: <%= site_links %>.</p>
+    <% else %>
+      <p class="text-danger">This partner does not appear on any sites. This usually means one of two things:</p>
+      <ul>
+        <li>The address is outside any current PlaceCal instance's range due to where actual ward boundaries happen to fall. Please contact your PlaceCal organiser if this is the case.</li>
+        <li>It is inside a PlaceCal range, but you forgot to add a tag. Resave this partner with the appropriate tag.</li>
+        <li>If neither of these are the case, please contact <a href='mailto:support@placecal.org'>support@placecal.org</a> with the link to this page.</li>
+      </ul>
+    <% end %>
+  </span>
+  <br>
+<% end -%>
 
 <%= render 'form', model: :partner %>
 
