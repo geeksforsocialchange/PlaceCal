@@ -1,14 +1,9 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-	static values = { permittedPartners: [String] };
+	static values = { permittedTags: [String] };
 
 	connect() {
-		const confirmRemove =
-			"Removing this partner will remove this user from your view and you will no longer be able to access them.\n\nIf you want to keep the user in your view but still remove this partner from them, you'll need to make them an admin for another partner before removing this one.\n\nAre you sure you want to remove it?";
-		const denyRemove =
-			"You can only remove partners that you manage from a user.";
-
 		const getSelectValues = (select) => {
 			return [...(select && select.options)].reduce((accumulator, option) => {
 				if (option.selected) {
@@ -22,7 +17,8 @@ export default class extends Controller {
 
 		$(this.element).on("select2:unselecting", (event) => {
 			const selectedValues = getSelectValues(this.element);
-			const permittedValues = this.permittedPartnersValue;
+			const permittedValues = this.permittedTagsValue;
+
 			const selectedPermittedValues = permittedValues.filter((x) =>
 				selectedValues.includes(x)
 			);
@@ -31,13 +27,19 @@ export default class extends Controller {
 				selectedPermittedValues.length <= 1 &&
 				permittedValues.includes(Number(event.params.args.data.id))
 			) {
-				if (!confirm(confirmRemove)) {
+				if (
+					!confirm(
+						"Removing this tag will remove this partner from your partnership and you will no longer be able to access them, or any users that are partner admins for this partner, if they are not partner admins for anyone else in your partnership.\n\n Are you sure you want to remove it?"
+					)
+				) {
 					event.preventDefault();
 				}
 			}
 
 			if (!permittedValues.includes(Number(event.params.args.data.id))) {
-				alert(denyRemove);
+				alert(
+					"You can only remove partnership tags for partnerships that you manage."
+				);
 				event.preventDefault();
 			}
 		});

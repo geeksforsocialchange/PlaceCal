@@ -27,9 +27,11 @@
     <div id='address'>
       <div class="row">
         <div class="col-md-6">
-          <%= f.fields_for :address, @partner.address || Address.new do |a| %>
-            <%= render 'address_fields', f: a %>
-          <% end %>
+         
+            <%= render 'address_fields',
+		       form: f,
+		       partner: @partner %>
+	    
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
             <p>
               The address for this partner is assigned to an out of date neighbourhood.
@@ -113,8 +115,11 @@
     <p>Partners may have up to 3 category tags.</p>
     <%= f.association :tags,
         label: false,
-        collection: options_for_partner_tags,
-        input_html: { class: 'form-check', data: { controller: "select2" } } %>
+        collection: options_for_partner_tags(@partner),
+        input_html: { class: 'form-check', data: { 
+          controller: @partner_tags_controller,
+          "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
+        } } %>
     <hr>
     <br>
     <div class="row">

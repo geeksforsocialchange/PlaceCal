@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '2.7.6'
+ruby '3.1.2'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -16,9 +16,7 @@ gem 'rails'
 
 # Frontend
 gem 'coffee-rails'
-gem 'importmap-rails'
 gem 'jquery-rails'
-gem 'jquery-turbolinks'
 gem 'jsbundling-rails'
 gem 'sass-rails', '6.0.0'
 gem 'stimulus-rails'
@@ -51,7 +49,6 @@ gem 'simple_form'
 # Users, login, permissions
 gem 'devise'
 gem 'devise_invitable'
-gem 'omniauth-facebook'
 gem 'pundit'
 
 # Maps and geolocation
@@ -67,7 +64,6 @@ gem 'groupdate'
 
 # Markdown
 gem 'kramdown'
-gem 'rails_autolink'
 
 # Jobs
 gem 'delayed_job_active_record'
@@ -81,38 +77,37 @@ gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id'
-gem 'jbuilder'
-gem 'listen'
-gem 'oj'
+# gem 'listen' # needed?
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
+
 gem 'paper_trail'
 gem 'rollbar'
 gem 'sendgrid-actionmailer'
 gem 'uk_postcode'
-gem 'virtus'
-gem 'whenever', require: false
 
 group :development, :test do
-  gem 'byebug', platform: :mri
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'timecop'
 end
 
 group :development do
-  gem 'awesome_print'
   gem 'better_errors'
-  gem 'binding_of_caller'
+  gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop-graphql', require: false
-  gem 'rubocop-minitest', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rails', require: false
+  gem 'rubocop', '1.60.2', require: false
+  gem 'rubocop-graphql', '1.5.0', require: false
+  gem 'rubocop-minitest', '0.34.5', require: false
+  gem 'rubocop-performance', '1.20.2', require: false
+  gem 'rubocop-rails', '2.23.1', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
-  gem 'spring-watcher-listen'
+  # gem 'spring-watcher-listen'
   gem 'web-console'
   gem 'yard'
 end
@@ -128,11 +123,8 @@ group :test do
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   gem 'vcr'
-  gem 'webmock'
+  gem 'webmock' # used by VCR
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-# Use Redis for Action Cable
-gem 'redis'

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StrongParametersFormBuilder < SimpleForm::FormBuilder
-  def input(attribute_name, options = {}, &block)
+  def input(attribute_name, options = {}, &)
     disabled = self.options[:disabled]
     display_filter = self.options[:display_only]&.collect { |attr| attr.is_a?(Hash) ? attr.keys : attr }&.flatten
 
@@ -32,8 +32,8 @@ module ApplicationHelper
     end
   end
 
-  def filtered_form_for(object, options = {}, &block)
-    simple_form_for(object, options.merge(builder: StrongParametersFormBuilder), &block)
+  def filtered_form_for(object, options = {}, &)
+    simple_form_for(object, options.merge(builder: StrongParametersFormBuilder), &)
   end
 
   def has_any_global_admin_links?

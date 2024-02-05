@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_27_111308) do
+ActiveRecord::Schema.define(version: 2024_01_22_152631) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -187,12 +187,12 @@ ActiveRecord::Schema.define(version: 2023_07_27_111308) do
   end
 
   create_table "organisation_relationships", force: :cascade do |t|
-    t.bigint "subject_id", null: false
+    t.bigint "partner_subject_id", null: false
     t.string "verb", null: false
-    t.bigint "object_id", null: false
-    t.index ["object_id"], name: "index_organisation_relationships_on_object_id"
-    t.index ["subject_id", "verb", "object_id"], name: "unique_organisation_relationship_row", unique: true
-    t.index ["subject_id"], name: "index_organisation_relationships_on_subject_id"
+    t.bigint "partner_object_id", null: false
+    t.index ["partner_object_id"], name: "index_organisation_relationships_on_partner_object_id"
+    t.index ["partner_subject_id", "verb", "partner_object_id"], name: "unique_organisation_relationship_row", unique: true
+    t.index ["partner_subject_id"], name: "index_organisation_relationships_on_partner_subject_id"
   end
 
   create_table "partner_tags", force: :cascade do |t|
@@ -288,7 +288,7 @@ ActiveRecord::Schema.define(version: 2023_07_27_111308) do
   create_table "sites", force: :cascade do |t|
     t.string "name"
     t.string "slug"
-    t.string "domain"
+    t.string "url"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -412,8 +412,8 @@ ActiveRecord::Schema.define(version: 2023_07_27_111308) do
   add_foreign_key "events", "online_addresses"
   add_foreign_key "events", "partners"
   add_foreign_key "events", "partners", column: "place_id"
-  add_foreign_key "organisation_relationships", "partners", column: "object_id"
-  add_foreign_key "organisation_relationships", "partners", column: "subject_id"
+  add_foreign_key "organisation_relationships", "partners", column: "partner_object_id"
+  add_foreign_key "organisation_relationships", "partners", column: "partner_subject_id"
   add_foreign_key "partners", "addresses"
   add_foreign_key "partners_places", "partners"
   add_foreign_key "partners_places", "places"

@@ -17,7 +17,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.root? || user.neighbourhood_admin?
+    user.root? || can_see_any_partners?
   end
 
   def create?
@@ -37,13 +37,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.root? ||
-      (user.neighbourhood_admin? &&
-      !record.root? &&
-      !record.neighbourhood_admin? &&
-      !record.tag_admin? &&
-      record.partner_admin? &&
-      all_user_partners_in_admin_neighbourhood?(record, user))
+    user.root?
   end
 
   def permitted_attributes
@@ -118,19 +112,45 @@ class UserPolicy < ApplicationPolicy
       if user.root?
         scope.all
 
+      elsif user.partnership_admin?
+        user_neighbourhood_ids = user.owned_neighbourhood_ids
+        user_partner_ids = user.partners.map(&:id)
+        user_partnership_tag_ids = user.tags.map(&:id)
+
+        scope
+          .left_joins(partners: %i[address service_areas partner_tags])
+          .where(
+            '(partner_tags.tag_id IN (:tags) AND
+              (
+                addresses.neighbourhood_id IN (:ids) OR
+                service_areas.neighbourhood_id IN (:ids)
+              )
+            ) OR partners.id IN (:partner_ids)',
+            ids: user_neighbourhood_ids,
+            tags: user_partnership_tag_ids,
+            partner_ids: user_partner_ids
+          ).distinct
+
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
+        user_partner_ids = user.partners.map(&:id)
 
         scope
           .left_joins(partners: %i[address service_areas])
           .where(
             'addresses.neighbourhood_id IN (:ids) OR
-            service_areas.neighbourhood_id IN (:ids)',
-            ids: user_neighbourhood_ids
+            service_areas.neighbourhood_id IN (:ids) OR
+            partners.id IN (:partner_ids)',
+            ids: user_neighbourhood_ids,
+            partner_ids: user_partner_ids
           ).distinct
       end
     end
   end
-end
 
-# 17482
+  private
+
+  def can_see_any_partners?
+    PartnerPolicy::Scope.new(user, Partner).resolve&.to_a&.any?
+  end
+end

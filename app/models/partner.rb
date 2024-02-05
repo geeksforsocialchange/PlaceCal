@@ -16,7 +16,7 @@ class Partner < ApplicationRecord
   has_and_belongs_to_many :users
   has_many :calendars, dependent: :destroy
   has_many :events
-  belongs_to :address, optional: true
+  belongs_to :address, optional: true, dependent: :destroy
 
   has_many :partner_tags, dependent: :destroy
   has_many :tags, through: :partner_tags
@@ -38,14 +38,14 @@ class Partner < ApplicationRecord
   has_and_belongs_to_many :objects,
                           class_name: 'Partner',
                           join_table: :organisation_relationships,
-                          foreign_key: 'subject_id',
-                          association_foreign_key: 'object_id'
+                          foreign_key: 'partner_subject_id',
+                          association_foreign_key: 'partner_object_id'
 
   has_and_belongs_to_many :subjects,
                           class_name: 'Partner',
                           join_table: :organisation_relationships,
-                          foreign_key: 'object_id',
-                          association_foreign_key: 'subject_id'
+                          foreign_key: 'partner_object_id',
+                          association_foreign_key: 'partner_subject_id'
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
@@ -98,6 +98,8 @@ class Partner < ApplicationRecord
   validate :opening_times_is_json_or_nil
 
   validate :three_or_less_category_tags
+
+  validate :partnership_admins_must_add_tag, on: %i[create]
 
   attr_accessor :accessed_by_user
 
@@ -209,7 +211,7 @@ class Partner < ApplicationRecord
 
   # Get all Partners that manage at least one other Partner.
   scope :managers, lambda {
-    joins('JOIN organisation_relationships o_r on o_r.subject_id = partners.id')
+    joins('JOIN organisation_relationships o_r on o_r.partner_subject_id = partners.id')
       .where(o_r: { verb: :manages }).distinct
   }
 
@@ -243,6 +245,43 @@ class Partner < ApplicationRecord
 
   def has_service_areas?
     service_areas.any?
+  end
+
+  def can_clear_address?(user = nil)
+    return false if address.blank? || address.missing_values?
+    return false if service_areas.empty?
+
+    return false if user.blank?
+    return true if user.root?
+    return true if user.admin_for_partner?(id)
+
+    # must admin for this address specifically
+    user_hood_ids = user.owned_neighbourhood_ids
+    user_hood_ids.include?(address.neighbourhood_id)
+  end
+
+  def warn_user_clear_address?(user)
+    return false if user.root?
+    return false if user.admin_for_partner?(id)
+
+    user_hood_ids = user.owned_neighbourhood_ids
+    return true if user_hood_ids.empty?
+
+    sa_hood_ids = service_areas.pluck(:neighbourhood_id)
+
+    any_service_areas = Set.new(user_hood_ids).any?(Set.new(sa_hood_ids))
+
+    # is the only way this user is tied to this partner through the address?
+    any_service_areas == false
+  end
+
+  def clear_address!
+    Partner.transaction do
+      old_address = address
+      update! address_id: nil
+
+      old_address&.destroy
+    end
   end
 
   def permalink
@@ -439,5 +478,18 @@ class Partner < ApplicationRecord
     return if categories.count < 4
 
     errors.add :base, 'Partner.tags can contain a maximum of 3 Category tags'
+  end
+
+  def partnership_admins_must_add_tag
+    return if accessed_by_user.nil? # HACK: to stop factory breaking tests
+    return unless accessed_by_user.partnership_admin?
+
+    if tags.any?
+      accessed_by_user.tags.each do |t|
+        return true if tags.include? t
+      end
+    end
+
+    errors.add :base, 'This partner must be a part of your partnership'
   end
 end

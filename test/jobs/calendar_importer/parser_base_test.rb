@@ -24,13 +24,13 @@ class ParserBaseTest < ActiveSupport::TestCase
       Base.safely_parse_json('{ "data"')
     end
 
-    assert_equal "Source responded with invalid JSON (783: unexpected token at '{ \"data\"')", error.message
+    assert_equal "Source responded with invalid JSON (unexpected token at '{ \"data\"')", error.message
   end
 
   test 'read_http_source reads remote URL with valid input' do
     VCR.use_cassette(:example_dot_com) do
       response = Base.read_http_source('https://example.com')
-      assert response.is_a?(String), 'response should be a string'
+      assert_kind_of(String, response, 'response should be a string')
     end
   end
 

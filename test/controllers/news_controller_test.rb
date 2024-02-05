@@ -22,15 +22,9 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get index subdomain' do
-    get news_index_url(subdomain: @site.domain)
+    get news_index_url(subdomain: @site.slug)
     assert_response :success
     assert_select '.articles__article-card', 5
-
-    # counts
-    # assert_select 'p', { text: 'Found 5 articles.' }
-
-    # pagination
-    # assert_select 'p', { text: 'No more news items' }
     assert_select 'p', { count: 0, text: 'Older news items' }
   end
 
@@ -49,7 +43,7 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
       art.update! published_at: @epoch - n
     end
 
-    get news_index_url(subdomain: @site.domain)
+    get news_index_url(subdomain: @site.slug)
     assert_response :success
 
     # this is capped
@@ -62,7 +56,7 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     # assert_select 'p', { count: 0, text: 'No more news items' }
     assert_select 'p', { text: 'Older news items' }
 
-    get news_index_url(subdomain: @site.domain, offset: 20)
+    get news_index_url(subdomain: @site.slug, offset: 20)
 
     assert_select '.articles__article-card', 10 # only ten left
 
@@ -83,7 +77,7 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show event' do
-    get news_url(@articles.first, subdomain: @site.domain)
+    get news_url(@articles.first, subdomain: @site.slug)
     assert_response :success
   end
 end

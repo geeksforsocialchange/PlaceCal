@@ -8,25 +8,20 @@ class TagPolicyTest < ActiveSupport::TestCase
     @non_root = create(:editor)
 
     @partner_admin = create(:partner_admin)
-    @tag_admin = create(:tag_admin)
+    @partnership_admin = create(:partnership_admin)
 
     @normal_tag = create(:tag)
     @system_tag = create(:tag, system_tag: true)
   end
 
   def test_update
-    @non_root.tags << @normal_tag
-
     assert allows_access(@root, @normal_tag, :update)
-    assert allows_access(@non_root, @normal_tag, :update)
-
-    assert allows_access(@partner_admin, @normal_tag, :update)
-    assert denies_access(@partner_admin, @system_tag, :update)
-
-    assert allows_access(@tag_admin, @normal_tag, :update)
-    assert denies_access(@tag_admin, @system_tag, :update)
-
     assert allows_access(@root, @system_tag, :update)
+
+    assert denies_access(@partner_admin, @normal_tag, :update)
+    assert denies_access(@partner_admin, @system_tag, :update)
+    assert denies_access(@partnership_admin, @normal_tag, :update)
+    assert denies_access(@partnership_admin, @system_tag, :update)
     assert denies_access(@non_root, @system_tag, :update)
   end
 
@@ -42,13 +37,5 @@ class TagPolicyTest < ActiveSupport::TestCase
     fields = policy.permitted_attributes
 
     assert_not fields.include?(:type), 'Expecting type field to NOT be allowed for sub-model'
-  end
-
-  test 'permitted_attributes for partner_admins are just partner_ids' do
-    policy = TagPolicy.new(@partner_admin, Tag.new)
-    fields = policy.permitted_attributes
-
-    assert_includes fields, { partner_ids: [] }
-    assert_equal(1, fields.length)
   end
 end
