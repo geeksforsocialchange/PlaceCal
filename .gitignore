@@ -70,3 +70,4 @@ doc/rdoc
 
 # Ignore IDE config files
 .vscode
+/config/master.key
