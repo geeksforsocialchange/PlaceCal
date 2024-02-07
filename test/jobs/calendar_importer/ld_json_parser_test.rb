@@ -17,7 +17,7 @@ class LdJsonParserTest < ActiveSupport::TestCase
 
       # we are only checking for RDF records extracted from response
       records = parser.download_calendar
-      assert records.is_a?(Array)
+      assert_kind_of Array, records
       assert_equal expected_node_count, records.count, "Expected #{expected_node_count} nodes but found #{records.count}"
 
       events = parser.import_events_from(records)

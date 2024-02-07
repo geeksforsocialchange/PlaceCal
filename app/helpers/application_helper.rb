@@ -32,8 +32,8 @@ module ApplicationHelper
     end
   end
 
-  def filtered_form_for(object, options = {}, &block)
-    simple_form_for(object, options.merge(builder: StrongParametersFormBuilder), &block)
+  def filtered_form_for(object, options = {}, &)
+    simple_form_for(object, options.merge(builder: StrongParametersFormBuilder), &)
   end
 
   def has_any_global_admin_links?
