@@ -30,18 +30,18 @@ class SitePartnerTest < ActiveSupport::TestCase
     service_area_site = FactoryBot.create(:site, name: 'service area site')
     service_area_site.neighbourhoods << service_area_neighbourhood
 
-    tag = FactoryBot.create(:tag)
+    tag = FactoryBot.create(:partnership)
     tag_site = FactoryBot.create(:site, name: 'tag site')
     tag_site.tags << tag
+    tag_site.neighbourhoods << address_neighbourhood
 
     partner = FactoryBot.create(:partner)
     partner.address.neighbourhood = address_neighbourhood
     partner.service_area_neighbourhoods << service_area_neighbourhood
     partner.tags << tag
+    partner.save
 
-    service_area_site
-
-    found = Site.sites_that_contain_partner(partner).order(:id)
+    found = Site.sites_that_contain_partner(partner)
 
     assert_equal found, [address_site, service_area_site, tag_site]
   end

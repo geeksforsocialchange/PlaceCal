@@ -3,8 +3,8 @@
 module Admin
   class UsersController < Admin::ApplicationController
     before_action :set_user, only: %i[edit update destroy]
-    before_action :set_user_partners_controller, only: %i[new edit]
-    before_action :validate_neighbourhood_relation, only: %i[create]
+    before_action :set_user_partners_controller, only: %i[new edit create]
+    before_action :validate_partner_relation, only: %i[create]
 
     def profile
       authorize current_user, :profile?
@@ -136,10 +136,10 @@ module Admin
       end
     end
 
-    def validate_neighbourhood_relation
-      # we only allow the neighbourhood_admin to assign Partners from their own Neighbourhood so any ids here are proof of a relationship
+    def validate_partner_relation
+      # we only allow admins to assign partners they can see so any ids here are proof of a relationship
       return if current_user.root?
-      return unless current_user.neighbourhood_admin? && params[:user][:partner_ids].reject { |id| id == '' }.empty?
+      return unless params[:user][:partner_ids].reject { |id| id == '' }.empty?
 
       # we're about to refresh the page so save the users input
       @user = User.new(permitted_attributes(User))

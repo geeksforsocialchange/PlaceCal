@@ -17,6 +17,11 @@ class CalendarPolicyTest < ActiveSupport::TestCase
     @neighbourhood_admin.neighbourhoods = [@partner_in_neighbourhood.address.neighbourhood]
     @neighbourhood_admin.neighbourhoods << @partner_servicing_neighbourhood.service_areas.first.neighbourhood
 
+    @partnership_admin = create(:partnership_admin)
+    @partnership_admin.neighbourhoods = [@partner_in_neighbourhood.address.neighbourhood]
+    @partnership_admin.neighbourhoods << @partner_servicing_neighbourhood.service_areas.first.neighbourhood
+    @partner_servicing_neighbourhood.tags = @partnership_admin.tags
+
     @partner_outside_neighbourhood = create(:partner)
     @partner_outside_neighbourhood.address.neighbourhood = create(:neighbourhood)
     @partner_outside_neighbourhood.save!
@@ -46,6 +51,16 @@ class CalendarPolicyTest < ActiveSupport::TestCase
     # neighbourhood admin can see calendars for partners with service areas and addresses in neighbourhood
     assert_equal(
       permitted_records(@neighbourhood_admin, Calendar).sort,
+      [@neighbourhood_cal, @servicing_neighbourhood_cal].sort
+    )
+    # partnership admin can see calendars for partners with service areas and addresses in neighbourhood
+    # if they have a corresponding partnership tag
+    assert_equal(
+      permitted_records(@partnership_admin, Calendar).sort,
+      [@servicing_neighbourhood_cal].sort
+    )
+    assert_not_equal(
+      permitted_records(@partnership_admin, Calendar).sort,
       [@neighbourhood_cal, @servicing_neighbourhood_cal].sort
     )
     # partner admin can only see calendars for partners they admin for

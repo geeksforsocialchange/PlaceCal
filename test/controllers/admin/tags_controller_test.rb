@@ -12,7 +12,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     @unassigned_root_tag = create(:tag)
     @category_tag = create(:tag, type: 'Category', name: 'Activism', partner_ids: [@unassigned_partner.id])
 
-    @tag_admin = create(:tag_admin)
+    @partnership_admin = create(:partnership_admin)
     @partner_admin_with_no_partners = create(:partner_admin) do |user|
       user.partners = []
       user.save!
@@ -30,12 +30,12 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Show every Tag for roots
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root tag_admin partner_admin]) do
+  it_allows_access_to_index_for(%i[root]) do
     get admin_tags_url
     assert_response :success
   end
 
-  it_denies_access_to_index_for(%i[citizen]) do
+  it_denies_access_to_index_for(%i[citizen partnership_admin partner_admin]) do
     get admin_tags_url
     assert_redirected_to admin_root_url
   end
@@ -50,7 +50,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  it_denies_access_to_new_for(%i[tag_admin partner_admin citizen]) do
+  it_denies_access_to_new_for(%i[partnership_admin partner_admin citizen]) do
     get new_admin_tag_url
     assert_redirected_to admin_root_url
   end
@@ -62,7 +62,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  it_denies_access_to_create_for(%i[tag_admin partner_admin citizen]) do
+  it_denies_access_to_create_for(%i[partnership_admin partner_admin citizen]) do
     assert_no_difference('Tag.count') do
       post admin_tags_url,
            params: { tag: attributes_for(:tag) }
@@ -77,12 +77,12 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Allow tag admins to update partner_ids of public tags, and root-assigned tags
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_edit_for(%i[root partner_admin tag_admin]) do
+  it_allows_access_to_edit_for(%i[root]) do
     get edit_admin_tag_url(@unassigned_root_tag)
     assert_response :success
   end
 
-  it_denies_access_to_edit_for(%i[citizen]) do
+  it_denies_access_to_edit_for(%i[citizen partner_admin partnership_admin]) do
     get edit_admin_tag_url(@unassigned_root_tag)
     assert_redirected_to admin_root_url
   end
@@ -95,21 +95,6 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [@partner.id], @category_tag.reload.partner_ids
   end
 
-  # partner admins can add and remove partners they admin for without removing those they don't
-  it_allows_access_to_update_for(%i[partner_admin]) do
-    patch admin_tag_url(@category_tag),
-          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
-
-    assert_redirected_to admin_tags_url
-    assert_equal [@partner.id, @unassigned_partner.id].sort, @category_tag.reload.partner_ids.sort
-
-    patch admin_tag_url(@category_tag),
-          params:  { tag: { partner_ids: [] }, id: 'activism' }
-
-    assert_redirected_to admin_tags_url
-    assert_equal [@unassigned_partner.id].sort, @category_tag.reload.partner_ids.sort
-  end
-
   # partner admins cannot update partners they do not admin for
   it_allows_access_to_update_for(%i[partner_admin_with_no_partners]) do
     patch admin_tag_url(@category_tag),
@@ -119,7 +104,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [@unassigned_partner.id], @category_tag.reload.partner_ids
   end
 
-  it_denies_access_to_update_for(%i[citizen]) do
+  it_denies_access_to_update_for(%i[citizen partner_admin partnership_admin]) do
     patch admin_tag_url(@category_tag),
           params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
 
@@ -139,7 +124,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_tags_url
   end
 
-  it_denies_access_to_destroy_for(%i[tag_admin partner_admin citizen]) do
+  it_denies_access_to_destroy_for(%i[partnership_admin partner_admin citizen]) do
     assert_no_difference('Tag.count') do
       delete admin_tag_url(@unassigned_root_tag)
     end

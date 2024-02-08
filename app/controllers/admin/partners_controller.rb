@@ -3,9 +3,10 @@
 module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
-    before_action :set_partner, only: %i[show edit update destroy]
+    before_action :set_partner, only: %i[show edit update destroy clear_address]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
+    before_action :set_partner_tags_controller, only: %i[create new edit update]
 
     def index
       @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
@@ -107,6 +108,19 @@ module Admin
       end
     end
 
+    def clear_address
+      authorize @partner
+
+      if @partner.can_clear_address?(current_user)
+        @partner.clear_address!
+        render json: { message: 'Address cleared' }
+
+      else
+        render json: { message: 'Could not clear address' },
+               status: :unprocessable_entity
+      end
+    end
+
     def setup
       @partner = Partner.new
       authorize @partner
@@ -124,6 +138,15 @@ module Admin
     end
 
     private
+
+    def set_partner_tags_controller
+      @partner_tags_controller =
+        if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
+          'select2'
+        else
+          'partner-tags'
+        end
+    end
 
     def set_neighbourhoods
       if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))

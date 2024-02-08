@@ -15,6 +15,7 @@ gem 'puma'
 gem 'rails', '7.1.2'
 
 # Frontend
+gem 'coffee-rails'
 gem 'jquery-rails'
 gem 'jsbundling-rails'
 gem 'sass-rails', '6.0.0'
@@ -48,7 +49,6 @@ gem 'simple_form'
 # Users, login, permissions
 gem 'devise'
 gem 'devise_invitable'
-gem 'net-smtp'
 gem 'pundit'
 
 # Maps and geolocation
@@ -77,7 +77,11 @@ gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id'
-gem 'listen'
+# gem 'listen' # needed?
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
+
 gem 'paper_trail'
 gem 'rollbar'
 gem 'sendgrid-actionmailer'
@@ -96,15 +100,14 @@ group :development do
   gem 'letter_opener'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop', '1.59.0', require: false
+  gem 'rubocop', '1.60.2', require: false
   gem 'rubocop-graphql', '1.5.0', require: false
-  gem 'rubocop-minitest', '0.32.2', require: false
-  gem 'rubocop-performance', '1.19.1', require: false
-  gem 'rubocop-rails', '2.21.1', require: false
+  gem 'rubocop-minitest', '0.34.5', require: false
+  gem 'rubocop-performance', '1.20.2', require: false
+  gem 'rubocop-rails', '2.23.1', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
-
   gem 'web-console'
   gem 'yard'
 end

@@ -17,11 +17,18 @@ module PartnersHelper
       end
   end
 
-  def options_for_partner_tags
-    policy_scope(Tag)
-      .select(:name, :type, :id)
-      .order(:name)
-      .map { |r| [r.name_with_type, r.id] }
+  def options_for_partner_tags(partner = nil)
+    options = policy_scope(Tag)
+              .select(:name, :type, :id)
+              .order(:name)
+              .map { |r| [r.name_with_type, r.id] }
+    return options unless partner
+
+    (options + partner&.tags&.map { |r| [r.name_with_type, r.id] }).uniq
+  end
+
+  def permitted_options_for_partner_tags
+    policy_scope(Tag).pluck(:id)
   end
 
   def partner_service_area_text(partner)
@@ -53,16 +60,16 @@ module PartnersHelper
   end
 
   # Get a String containing a list of <a> tags for each site,
-  # where the name is the Site's name, and the URL is the site's domain
+  # where the name is the Site's name, and the URL is the site's url
   #
   # @return [String] HTML string
   def site_links
-    return unless @sites
+    return if @sites.blank?
 
-    @sites.order(:name)
-          .map { |site| link_to site.name, site.domain }
-          .join(', ')
-          .html_safe
+    @sites
+      .map { |site| link_to site.name, site.url }
+      .join(', ')
+      .html_safe
   end
 
   def partner_has_unmappable_postcode?(partner)

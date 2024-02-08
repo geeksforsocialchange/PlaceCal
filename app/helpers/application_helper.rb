@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StrongParametersFormBuilder < SimpleForm::FormBuilder
-  def input(attribute_name, options = {}, &block)
+  def input(attribute_name, options = {}, &)
     disabled = self.options[:disabled]
     display_filter = self.options[:display_only]&.collect { |attr| attr.is_a?(Hash) ? attr.keys : attr }&.flatten
 
