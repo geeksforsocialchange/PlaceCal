@@ -1,0 +1,10 @@
+.contact_details {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-gap: 0 0.5rem;
+
+	strong {
+		display: inline-block;
+		width: 1.2rem;
+	}
+}
