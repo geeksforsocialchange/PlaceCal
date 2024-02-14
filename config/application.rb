@@ -14,7 +14,8 @@ module PlaceCal
     # -- all .rb files in that directory are automatically loaded.
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.1
+    config.load_defaults 7.0
+    config.active_support.cache_format_version = 6.1
 
     config.active_job.queue_adapter = :delayed_job
 

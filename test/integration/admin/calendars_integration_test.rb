@@ -43,11 +43,11 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#calendar_partner_id' do
       assert_select 'option', count: 3
-    end
 
-    assert_select 'option[disabled="disabled"]', '(No Partner)', count: 1
-    assert_select 'option', @partner.name, count: 1
-    assert_select 'option', @partner_two.name, count: 1
+      assert_select 'option[disabled="disabled"]', text: '(No Partner)', count: 1
+      assert_select 'option', text: @partner.name, count: 1
+      assert_select 'option', text: @partner_two.name, count: 1
+    end
   end
 
   # GET new
@@ -57,7 +57,7 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
     sign_in @root
     get new_admin_calendar_path(partner_id: @partner.id)
 
-    assert_select 'option[selected="selected"]', @partner.name
+    assert_select 'option[selected="selected"]', text: @partner.name
   end
 
   test 'neighbourhood_admin : can get new' do
@@ -67,9 +67,8 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#calendar_partner_id' do
       assert_select 'option', count: 2
+      assert_select 'option', text: @partner.name, count: 1
     end
-
-    assert_select 'option', @partner.name, count: 1
   end
 
   test 'partner_admin : can get new' do
@@ -79,9 +78,8 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#calendar_partner_id' do
       assert_select 'option', count: 2
+      assert_select 'option', text: @partner.name, count: 1
     end
-
-    assert_select 'option', @partner.name, count: 1
   end
 
   # GET edit
@@ -92,10 +90,10 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#calendar_partner_id' do
       assert_select 'option', count: 3
-    end
 
-    assert_select 'option[selected="selected"]', @partner.name
-    assert_select 'option', @partner_two.name, count: 1
+      assert_select 'option[selected="selected"]', text: @partner.name
+      assert_select 'option', text: @partner_two.name, count: 1
+    end
   end
 
   test 'neighbourhood_admin : can get edit' do
@@ -105,9 +103,8 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#calendar_partner_id' do
       assert_select 'option', count: 2
+      assert_select 'option', text: @partner.name, count: 1
     end
-
-    assert_select 'option', @partner.name, count: 1
   end
 
   test 'partner_admin : can get edit' do
@@ -117,9 +114,8 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     assert_select 'select#calendar_partner_id' do
       assert_select 'option', count: 2
+      assert_select 'option', text: @partner.name, count: 1
     end
-
-    assert_select 'option', @partner.name, count: 1
   end
 
   test 'partner : can see which importer is selected' do
@@ -128,7 +124,7 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
     sign_in @partner_admin
     get edit_admin_calendar_path(@calendar)
 
-    assert_select 'option[value="ical"][selected="selected"]', nil, count: 1
+    assert_select 'option[value="ical"][selected="selected"]', count: 1
   end
 
   test 'partner : can change importer' do
