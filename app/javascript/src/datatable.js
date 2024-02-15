@@ -6,7 +6,9 @@ let dataTable = "";
 
 document.addEventListener("turbo:before-cache", function () {
 	if (dataTable !== null) {
-		dataTable.destroy();
+		$("#datatable").DataTable({
+			destroy: true,
+		});
 		dataTable = null;
 	}
 });
