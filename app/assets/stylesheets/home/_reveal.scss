@@ -1,0 +1,157 @@
+@import "variables_mixins";
+
+$image-width-portrait: 250px;
+$image-width-landscape: 385px;
+$image-spacing: 24px;
+
+.reveal {
+	position: relative;
+	margin-bottom: 2rem;
+
+	&__teaser {
+		overflow: hidden;
+	}
+
+	&__button {
+		background-color: $base-primary;
+		color: $base-text;
+		text-align: center;
+		position: absolute;
+		bottom: -0.75rem;
+		left: 0;
+		right: 0;
+		margin: 0 auto;
+		border-radius: 1rem;
+		padding: 0.4rem 1rem 0.4rem 2.5rem;
+
+		@include fontstyle(16 19 bold);
+
+		background-image: image-url("home/icons/minus-small.svg");
+		background-position: 1rem 53%;
+		background-repeat: no-repeat;
+		background-size: 0.75rem;
+	}
+
+	&.is-hidden {
+		.reveal__body {
+			display: none;
+
+			@include for-tablet-landscape-up {
+				display: block;
+			}
+		}
+
+		.reveal__button {
+			background-image: image-url("home/icons/plus-small.svg");
+
+			@include for-tablet-landscape-up {
+				display: none;
+			}
+		}
+	}
+
+	@include for-tablet-portrait-up {
+		&--ourstory {
+			img {
+				position: absolute;
+				top: 2rem;
+				width: $image-width-portrait;
+				max-width: 525px;
+				min-height: 300px;
+			}
+		}
+
+		&--clip-right {
+			padding-right: $image-width-portrait - 36px + $image-spacing;
+			padding-left: $text-spacing-portrait;
+
+			img {
+				clip-path: inset(0 2rem 0 0);
+				right: -2rem;
+			}
+		}
+
+		&--clip-left {
+			padding-left: $image-width-portrait - 36px + $image-spacing;
+			padding-right: $text-spacing-portrait;
+
+			img {
+				clip-path: inset(0 0 0 2rem);
+				left: -2rem;
+			}
+		}
+
+		&--right {
+			padding-right: $image-width-portrait + $image-spacing;
+			padding-left: $text-spacing-portrait;
+
+			img {
+				right: 0.5rem;
+			}
+		}
+
+		&--left {
+			padding-left: $image-width-portrait + $image-spacing;
+			padding-right: $text-spacing-portrait;
+
+			img {
+				left: 0.5rem;
+			}
+		}
+	}
+
+	@include for-tablet-landscape-up {
+		&--clip-right,
+		&--clip-left,
+		&--right,
+		&--left {
+			min-height: 500px;
+		}
+
+		img {
+			top: 0rem;
+			width: 45%;
+			clip-path: none;
+		}
+
+		&--clip-right,
+		&--right {
+			padding-right: 52%;
+			padding-right: calc(50% + 1rem);
+
+			img {
+				right: 0rem;
+			}
+		}
+
+		&--clip-left,
+		&--left {
+			padding-left: 52%;
+			padding-left: calc(50% + 1rem);
+
+			img {
+				left: 0rem;
+			}
+		}
+	}
+
+	@include for-desktop-up {
+		&--clip-left,
+		&--left {
+			padding-right: $text-spacing-desktop - 2rem;
+
+			img {
+				left: 5rem;
+			}
+		}
+
+		&--clip-right,
+		&--right {
+			padding-left: $text-spacing-desktop - 2rem;
+
+			img {
+				right: 5rem;
+			}
+		}
+	}
+}
