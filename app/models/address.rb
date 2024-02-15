@@ -12,7 +12,7 @@ class Address < ApplicationRecord
 
   has_many :events
   has_many :partners
-  has_many :calendars
+  # has_many :calendars
 
   belongs_to :neighbourhood, optional: true
 
