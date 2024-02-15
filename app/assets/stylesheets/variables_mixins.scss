@@ -1,0 +1,52 @@
+// Main site colour
+@import "variables/colours";
+
+@import "variables/typography";
+@import "variables/fonts";
+
+@import "modules/breakpoints";
+@import "modules/flexbox";
+@import "modules/placeholders";
+
+@use "sass:list";
+
+$home-base-size: 18;
+$default-radius: 1rem;
+
+// Turns an array of sizes into responsive CSS
+// [ Size in pt, Line height, Weight]
+@mixin fontmarkup($sizes) {
+	font-size: #{nth($sizes, 1) / $home-base-size}rem;
+	line-height: #{nth($sizes, 2) / nth($sizes, 1)};
+
+	@if length($sizes) == 3 {
+		font-weight: nth($sizes, 3);
+	}
+}
+
+@mixin fontstyle(
+	$default,
+	$portrait: false,
+	$landscape: false,
+	$desktop: false
+) {
+	@include fontmarkup($default);
+
+	@if length($portrait) > 1 {
+		@include for-tablet-portrait-up {
+			@include fontmarkup($portrait);
+		}
+	}
+
+	@if length($landscape) > 1 {
+		@include for-tablet-landscape-up {
+			@include fontmarkup($landscape);
+		}
+	}
+
+	@if length($desktop) > 1 {
+		@include for-desktop-up {
+			@include fontmarkup($desktop);
+		}
+	}
+}

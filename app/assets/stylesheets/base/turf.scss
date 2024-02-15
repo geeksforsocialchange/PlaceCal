@@ -1,0 +1,30 @@
+.neighbourhood,
+.service-area {
+	// padding-top: 0.5rem
+	span {
+		margin-top: 0.8rem;
+		padding: 0rem 0.7rem;
+		display: inline-block;
+		text-transform: uppercase;
+		font-weight: $extra-bold;
+		font-size: 0.77777778rem;
+		border-radius: 1rem;
+		letter-spacing: 0.086667rem;
+		background-color: $base-primary;
+		background-color: var(--base-primary);
+		color: $base-background;
+		color: var(--base-background);
+
+		@include for-phone-only {
+			font-size: 0.6rem;
+			padding: 0rem 0.3rem;
+		}
+	}
+
+	&--secondary span {
+		color: $base-text;
+		color: var(--base-text);
+		background-color: $base-rules;
+		background-color: var(--base-rules);
+	}
+}
