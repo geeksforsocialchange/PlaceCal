@@ -8,7 +8,7 @@
         <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out. The partner will receive your email address in order to discuss or arrange reinstatement.</p>
         <p>Please use the space below to explain the reason for hiding the partner and steps needed to re-instate them.</p>
         <%= f.input :hidden, class: "form-control" %>
-        <%= f.input :hidden_reason, label: "Explenation for hiding",  class: "form-control" , input_html: { rows: 7 } %>
+        <%= f.input :hidden_reason, label: "Explanation for hiding",  class: "form-control" , input_html: { rows: 7 } %>
       </div>
     <% else  %>
       <% if @partner.hidden %>
