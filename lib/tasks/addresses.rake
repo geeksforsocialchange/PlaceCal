@@ -13,18 +13,6 @@ namespace :addresses do
       num += 1
     end
   end
-
-  desc 'Geocode addresses that do not have a neighbourhood tag'
-  task set_missing_neighbourhood_tags: :environment do
-    $stdout.puts "Geocoding #{Address.where(neighbourhood_tag: nil).count} Addresses:"
-    num = 1
-    Address.where(neighbourhood_tag: nil).each do |a|
-      $stdout.puts "#{num}: #{a.street_address}, #{a.postcode}"
-      a.geocode_with_ward
-      a.save
-      num += 1
-    end
-  end
 end
 
 # TODO? Move this to events.rake ?   events.rake contains namespace :import
