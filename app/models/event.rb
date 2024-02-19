@@ -13,7 +13,6 @@ class Event < ApplicationRecord
   belongs_to :address, optional: true
   belongs_to :online_address, optional: true
   belongs_to :calendar, optional: true
-  has_and_belongs_to_many :collections
 
   validates :summary, :dtstart, :partner, presence: true
   validate :require_location
