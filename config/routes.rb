@@ -31,7 +31,6 @@ Rails.application.routes.draw do
         post :import
       end
     end
-    resources :collections
     resources :neighbourhoods
     resources :partners do
       collection do
@@ -84,13 +83,6 @@ Rails.application.routes.draw do
   get '/places/:id/events' => 'partners#show'
   get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places/:id/embed' => 'places#embed'
-
-  # Collections
-  resources :collections, only: %i[show]
-
-  # Named routes
-  get 'winter2017', to: 'collections#show', id: 1
-  get 'winter2018', to: 'collections#show', id: 2
 
   # Styleguide
   mount MountainView::Engine => '/styleguide'
