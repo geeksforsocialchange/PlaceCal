@@ -29,3 +29,19 @@
 	// Print stylesheet greyscale for borders
 	--print-grey: #dadada;
 }
+
+// view_component stylessheets
+
+@import "components/case_study_component.scss";
+@import "components/container_with_header_component.scss";
+@import "components/featured_partnerships_component.scss";
+@import "components/four_col_grid_component.scss";
+@import "components/full_width_action_component.scss";
+@import "components/hero_image_component.scss";
+@import "components/home_footer_component.scss";
+@import "components/home_strapline_component.scss";
+@import "components/link_btn_lrg_component.scss";
+@import "components/max_width_component.scss";
+@import "components/neighbourhood_home_card_component.scss";
+@import "components/partnership_card_component.scss";
+@import "components/pull_quote_component.scss";
