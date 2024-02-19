@@ -1,16 +1,7 @@
 <div class="form">
   <%= simple_form_for @partner do |f| %>
     <%= render_component "error", object: @partner %>
-    <% if policy(@partner).permitted_attributes.include? :hidden %>
-      <div class="alert alert-light border" role="alert">
-        <h2 class="alert-heading">Moderation</h2>
-        <p>Hiding a partner is a last resort, and will remove them from all PlaceCal sites, not just yours. This is appropriate if a partner suddenly starts publishing things like spam or hate speech. In such cases, hiding a partner is the right action and we appreciate your help in keeping PlaceCal a safe place to be.</p>
-        <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out. The partner will receive your email address in order to discuss or arrange reinstatement.</p>
-        <p>Please use the space below to explain the reason for hiding the partner and steps needed to re-instate them.</p>
-        <%= f.input :hidden, class: "form-control" %>
-        <%= f.input :hidden_reason, label: "Explanation for hiding",  class: "form-control" , input_html: { rows: 7 } %>
-      </div>
-    <% else  %>
+    <% unless policy(@partner).permitted_attributes.include? :hidden %>
       <% if @partner.hidden %>
         <div class="alert alert-success" role="alert">
           <h3 class="alert-heading">Hidden</h3>
@@ -143,6 +134,16 @@
           "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
         } } %>
     <hr>
+    <% if policy(@partner).permitted_attributes.include? :hidden %>
+      <div class="alert alert-light border" role="alert">
+        <h2 class="alert-heading">Moderation</h2>
+        <p>Hiding a partner is a last resort, and will remove them from all PlaceCal sites, not just yours. This is appropriate if a partner suddenly starts publishing things like spam or hate speech. In such cases, hiding a partner is the right action and we appreciate your help in keeping PlaceCal a safe place to be.</p>
+        <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out. The partner will receive your email address in order to discuss or arrange reinstatement.</p>
+        <p>Please use the space below to explain the reason for hiding the partner and steps needed to re-instate them.</p>
+        <%= f.input :hidden, class: "form-control" %>
+        <%= f.input :hidden_reason, label: "Explanation for hiding",  class: "form-control" , input_html: { rows: 7 } %>
+      </div>
+    <% end  %>
     <br>
     <div class="row">
       <div class="col-sm-12">
