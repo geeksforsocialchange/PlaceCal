@@ -7,7 +7,7 @@ setup_with_docker: install_dependencies docker setup_env setup_db seed_GFSC_prod
 
 docker: setup_docker_network setup_docker_container setup_env
 
-run:
+up:
 	docker start placecal-db || true
 	bin/dev
 
