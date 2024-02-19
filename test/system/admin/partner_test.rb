@@ -64,7 +64,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
     find :css, '#partner_image', wait: 100
 
-    image_path = File.join(fixture_path, 'files/damir-omerovic-UMaGtammiSI-unsplash.jpg')
+    image_path = File.join(fixture_paths.first, 'files/damir-omerovic-UMaGtammiSI-unsplash.jpg')
     attach_file 'partner_image', image_path
 
     base64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gIcSUNDX1BST0ZJTEUAAQEAAAIMbGNtcwIQAABtbnRyUkdCIFhZWi'
