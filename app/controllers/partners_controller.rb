@@ -40,7 +40,6 @@ class PartnersController < ApplicationController
   # GET /partners/1
   # GET /partners/1.json
   def show
-    # possibly should say partner not found or something
     redirect_to root_path if @partner.hidden
 
     upcoming_events = Event.by_partner(@partner).upcoming
