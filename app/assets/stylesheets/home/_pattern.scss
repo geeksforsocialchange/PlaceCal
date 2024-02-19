@@ -1,0 +1,85 @@
+.pattern {
+	background-repeat: no-repeat;
+
+	// How we Help: "We turn your local knowledge"
+	&--audience {
+		@include for-tablet-landscape-up {
+			background-image: image-url("home/patterns/landscape/audience_bl.svg"),
+				image-url("home/patterns/landscape/audience_br.svg");
+			background-position: bottom left, bottom right;
+		}
+
+		@include for-desktop-up {
+			background-image: image-url("home/patterns/desktop/audience_bl.svg"),
+				image-url("home/patterns/desktop/audience_br.svg");
+		}
+	}
+
+	// Our Story: "We would need to fix all of these at once to have an impact"
+	&--fixall {
+		@include for-tablet-landscape-up {
+			background-image: image-url("home/patterns/landscape/fixall_bl.svg"),
+				image-url("home/patterns/landscape/fixall_tr.svg");
+			background-position: bottom left, top right;
+		}
+
+		@include for-desktop-up {
+			background-image: image-url("home/patterns/desktop/fixall_br.svg"),
+				image-url("home/patterns/desktop/fixall_tl.svg");
+			background-position: bottom right, top left;
+		}
+	}
+
+	// Our Story: "We spoke to over 6,000 people..."
+	&--research {
+		@include for-tablet-portrait-up {
+			background-image: image-url("home/patterns/portrait/research_br.svg"),
+				image-url("home/patterns/portrait/research_tl.svg");
+			background-position: bottom right, top left;
+		}
+
+		@include for-tablet-landscape-up {
+			background-image: image-url("home/patterns/landscape/research_bl.svg");
+			background-position: bottom left;
+		}
+
+		@include for-desktop-up {
+			background-image: image-url("home/patterns/desktop/research_br.svg"),
+				image-url("home/patterns/desktop/research_tl.svg");
+			background-position: bottom right, top left;
+		}
+	}
+
+	// Home: "We help communities to thrive"
+	&--thrive {
+		@include for-tablet-portrait-up {
+			background-image: image-url("home/patterns/portrait/thrive_br.svg"),
+				image-url("home/patterns/portrait/thrive_tl.svg");
+			background-position: bottom right, top left;
+		}
+
+		@include for-tablet-landscape-up {
+			background-image: image-url("home/patterns/landscape/thrive_br.svg"),
+				image-url("home/patterns/landscape/thrive_tl.svg");
+		}
+
+		@include for-desktop-up {
+			background-image: image-url("home/patterns/desktop/thrive_br.svg"),
+				image-url("home/patterns/desktop/thrive_tl.svg");
+		}
+	}
+
+	// Who are PlaceCal?
+	&--who {
+		@include for-tablet-landscape-up {
+			background-image: image-url("home/patterns/landscape/who_bl.svg"),
+				image-url("home/patterns/landscape/who_tr.svg");
+			background-position: bottom left, top right;
+		}
+
+		@include for-desktop-up {
+			background-image: image-url("home/patterns/desktop/who_bl.svg"),
+				image-url("home/patterns/desktop/who_tr.svg");
+		}
+	}
+}

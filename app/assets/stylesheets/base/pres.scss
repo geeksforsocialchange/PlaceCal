@@ -1,0 +1,28 @@
+.pres {
+	text-align: center;
+
+	@include for-tablet-portrait-up {
+		font-size: 1.1111111rem;
+	}
+
+	font-weight: bold;
+	padding: 2rem 0;
+
+	&--alt {
+		background-color: $base-secondary;
+		background-color: var(--base-secondary);
+
+		h2 {
+			margin-top: 1rem;
+
+			span {
+				border-bottom-color: $base-background;
+				border-bottom-color: var(--base-background);
+			}
+		}
+	}
+
+	img {
+		width: 100%;
+	}
+}

@@ -1,0 +1,30 @@
+.impact {
+	@include for-tablet-portrait-up {
+		.card__title,
+		.card__body {
+			padding-left: 5rem;
+			padding-right: 5rem;
+		}
+
+		figure {
+			padding-left: 10%;
+			padding-right: 10%;
+		}
+	}
+
+	@include for-tablet-landscape-up {
+		.card__title,
+		.card__body {
+			padding-left: 9rem;
+			padding-right: 9rem;
+		}
+
+		&__cols {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-gap: 1.5rem;
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+		}
+	}
+}

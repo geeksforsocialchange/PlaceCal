@@ -7,7 +7,7 @@ setup_with_docker: install_dependencies docker setup_env setup_db seed_GFSC_prod
 
 docker: setup_docker_network setup_docker_container setup_env
 
-run:
+up:
 	docker start placecal-db || true
 	bin/dev
 
@@ -50,7 +50,7 @@ create_user:
 	bundle exec rails runner "User.create!(email: 'info@placecal.org', password: 'password', password_confirmation: 'password', role: :root)"
 
 test:
-	time sh -c "rails test --pride && rails test:system && rubocop"
+	time sh -c "rails test --pride && rails test:system && rubocop && prettier -c app/"
 
 tags:
 	find app/ lib/ test/ -iname '*.rb' | xargs etags

@@ -1,0 +1,45 @@
+@import "variables_mixins.scss";
+
+.preview {
+	h3 {
+		margin-bottom: 0;
+		margin-top: 0;
+		padding-top: 0.5rem;
+		padding-bottom: 0.5rem;
+	}
+}
+
+@supports (display: grid) {
+	.preview {
+		&__header {
+			display: grid;
+			grid-gap: 0 1rem;
+			grid-template-columns: 1fr auto;
+			border-width: 0 0 3px 0;
+			border-style: solid;
+			border-color: $base-rules;
+			border-color: var(--$base-rules);
+		}
+
+		h3 {
+			font-size: 1.33333rem;
+			align-self: center;
+
+			a {
+				text-decoration: none;
+
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+
+		&__neighbourhood {
+			align-self: center;
+
+			span {
+				margin-top: 0 !important;
+			}
+		}
+	}
+}
