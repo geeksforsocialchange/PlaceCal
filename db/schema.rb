@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_29_154539) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_20_095729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -239,37 +239,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_29_154539) do
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
 
-  create_table "partners_places", id: :serial, force: :cascade do |t|
-    t.integer "partner_id"
-    t.integer "place_id"
-    t.index ["partner_id"], name: "index_partners_places_on_partner_id"
-    t.index ["place_id"], name: "index_partners_places_on_place_id"
-  end
-
   create_table "partners_users", id: :serial, force: :cascade do |t|
     t.integer "partner_id"
     t.integer "user_id"
     t.index ["partner_id"], name: "index_partners_users_on_partner_id"
     t.index ["user_id"], name: "index_partners_users_on_user_id"
-  end
-
-  create_table "places", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "status"
-    t.string "logo"
-    t.string "phone"
-    t.jsonb "opening_times"
-    t.text "short_description"
-    t.text "booking_info"
-    t.text "accessibility_info"
-    t.integer "address_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "email"
-    t.string "url"
-    t.string "slug"
-    t.index ["address_id"], name: "index_places_on_address_id"
-    t.index ["slug"], name: "index_places_on_slug", unique: true
   end
 
   create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
@@ -418,11 +392,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_29_154539) do
   add_foreign_key "organisation_relationships", "partners", column: "partner_object_id"
   add_foreign_key "organisation_relationships", "partners", column: "partner_subject_id"
   add_foreign_key "partners", "addresses"
-  add_foreign_key "partners_places", "partners"
-  add_foreign_key "partners_places", "places"
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
-  add_foreign_key "places", "addresses"
   add_foreign_key "service_areas", "neighbourhoods"
   add_foreign_key "service_areas", "partners"
   add_foreign_key "sites", "users", column: "site_admin_id"
