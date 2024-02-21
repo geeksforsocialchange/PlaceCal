@@ -263,6 +263,29 @@ namespace :db do
     puts ''
   end
 
+  desc 'finds addresses that aren\'t related to any event, partner or place and removes them'
+  task clean_bad_addresses: :environment do
+    Address.transaction do
+      all_address_ids = Set.new(Address.pluck(:id))
+      puts "found #{all_address_ids.count} addresses"
+
+      partner_address_ids = Set.new(Partner.pluck(:address_id))
+      event_address_ids = Set.new(Event.pluck(:address_id))
+      place_address_ids = Set.new(
+        ActiveRecord::Base.connection.execute('select address_id from places').pluck('address_id')
+      )
+
+      orphaned_address_ids = all_address_ids.subtract(partner_address_ids | event_address_ids | place_address_ids)
+      if orphaned_address_ids.empty?
+        puts '  no orphaned addresses found'
+
+      else
+        puts "  #{orphaned_address_ids.count} orphaned addresses found"
+        Address.where(id: orphaned_address_ids).delete_all
+      end
+    end
+  end
+
   private
 
   def ensure_format(format)
