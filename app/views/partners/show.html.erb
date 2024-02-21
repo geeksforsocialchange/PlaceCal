@@ -41,9 +41,7 @@
         <% if @partner.has_service_areas? %>
           <p>We operate in <%= partner_service_area_text(@partner) %>.</p>
         <% end %>
-        <%= render_component "address",
-          address: @partner.address
-        %>
+        <%= render(AddressComponent.new(address: @partner.address)) %>
 
         <% unless @partner.accessibility_info_html.blank? %>
           <details id='accessibility-info'>

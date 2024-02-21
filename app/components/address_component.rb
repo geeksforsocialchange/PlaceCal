@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
-# app/components/contact_details/contact_details_component.rb
-class AddressComponent < MountainView::Presenter
-  property :address
-  property :raw_location
+class AddressComponent < ViewComponent::Base
+  attr_reader :address
+  attr_reader :raw_location
 
+  def initialize(address: nil, raw_location: nil)
+    @address = address
+    @raw_location = raw_location
+  end
+  
   def formatted_address
     if address.present?
 

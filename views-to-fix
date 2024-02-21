@@ -1,0 +1,188 @@
+
+- AddressComponent < MountainView::Presenter
+- AdminEditComponent < MountainView::Presenter
+- AdminIndexComponent < MountainView::Presenter
+- BreadcrumbComponent < MountainView::Presenter
+- ComputerAccessComponent < MountainView::Presenter
+- ContactDetailsComponent < MountainView::Presenter
+- DashboardCardComponent < MountainView::Presenter
+- ErrorComponent < MountainView::Presenter
+- EventComponent < MountainView::Presenter
+- EventListComponent < MountainView::Presenter
+- FreePublicWifiComponent < MountainView::Presenter
+- HeroComponent < MountainView::Presenter
+- NavigationComponent < MountainView::Presenter
+- OpeningTimesComponent < MountainView::Presenter
+- PaginatorComponent < MountainView::Presenter
+- PlaceComponent < MountainView::Presenter
+- PlacePartnerPreviewComponent < MountainView::Presenter
+- ProfileComponent < MountainView::Presenter
+- StepsComponent < MountainView::Presenter
+
+
+
+things to fix:
+
+
+app/views/pages/_audiences.html.erb
+* 3:<%= render_component "audience",
+* 10:<%= render_component "audience",
+* 17:<%= render_component "audience",
+* 24:<%= render_component "audience",
+* 31:<%= render_component "audience",
+* 38:<%= render_component "audience",
+
+app/views/pages/privacy.html.erb
+* 3:  <%= render_component "hero", title: "PlaceCal Privacy Policy" %>
+
+app/views/pages/community_groups.html.erb
+4:    <%= render_component "audience_intro",
+20:    <%= render_component "steps",
+49:      <%= render_component "impact_story",
+58:      <%= render_component "impact_story",
+
+app/views/admin/pages/home.html.erb
+22:      <%= render_component 'dashboard_card',
+36:      <%= render_component 'dashboard_card',
+53:      <%= render_component 'dashboard_card',
+
+app/views/admin/articles/new.html.erb
+3:<%= render_component "admin_new", model: :article %>
+
+app/views/admin/articles/edit.html.erb
+3:<%= render_component "admin_edit", model: :article, title: @article.title %>
+
+app/views/admin/articles/_form.html.erb
+3:  <%= render_component "error", object: @article %>
+
+app/views/admin/neighbourhoods/new.html.erb
+7:<%= render_component "admin_new", model: :neighbourhood %>
+
+app/views/admin/neighbourhoods/edit.html.erb
+5:<%= render_component "admin_edit",
+
+app/views/admin/neighbourhoods/_form.html.erb
+3:  <%= render_component "error", object: @neighbourhood %>
+
+app/views/admin/sites/new.html.erb
+3:<%= render_component "admin_new", model: :site %>
+
+app/views/admin/sites/edit.html.erb
+1:<%= render_component "admin_edit", model: :site, title: @site.name %>
+
+app/views/admin/sites/_form.html.erb
+6:  <%= render_component "error", object: @site %>
+
+app/views/admin/supporters/new.html.erb
+1:<%= render_component "admin_new", model: :supporter %>
+
+app/views/admin/supporters/edit.html.erb
+1:<%= render_component "admin_edit", model: :supporter, title: @supporter.name %>
+
+app/views/admin/supporters/index.html.erb
+1:<%= render_component "admin_index",
+
+app/views/admin/tags/new.html.erb
+3:<%= render_component "admin_new", model: :tag %>
+
+app/views/admin/tags/edit.html.erb
+10:  <%= render_component "admin_edit", model: :tag, title: @tag.name %>
+
+app/views/admin/tags/_form.html.erb
+17:  <%= render_component "error", object: @tag %>
+
+app/views/admin/partners/_form.html.erb
+3:    <%= render_component "error", object: @partner %>
+
+app/views/admin/partners/setup.html.erb
+3:<%= render_component "error", object: @partner %>
+
+app/views/admin/calendars/new.html.erb
+3:<%= render_component "admin_new", model: :calendar %>
+
+app/views/admin/calendars/edit.html.erb
+5:<%= render_component "admin_edit", model: :calendar, title: @calendar.name %>
+
+app/views/admin/collections/new.html.erb
+1:<%= render_component "admin_new", model: :collection %>
+
+app/views/admin/collections/edit.html.erb
+1:<%= render_component "admin_edit", model: :collection, title: @collection.name %>
+
+app/views/admin/collections/_form.html.erb
+2:  <%= render_component "error", object: @collection %>
+
+app/views/admin/collections/index.html.erb
+3:<%= render_component "admin_index",
+
+app/views/admin/users/profile.html.erb
+9:    <%= render_component "error", object: current_user %>
+
+app/views/admin/users/_form.html.erb
+1:<%= render_component "error", object: f.object %>
+
+app/views/layouts/admin/application.html.erb
+26:          <%= render_component "admin_flash" %>
+
+app/views/layouts/application.html.erb
+37:        <%= render_component "navigation", navigation: @navigation %>
+40:        <%= render_component "admin_flash" %>
+47:          <%= render_component "footer" %>
+
+app/views/sites/mossley.html.erb
+33:      <%= render_component 'profile', user: @site.site_admin %>
+45:        <%= render_component 'help_adding_events' %>
+48:        <%= render_component 'computer_access', places: @places_to_get_online %>
+51:        <%= render_component 'help_getting_help' %>
+
+app/views/sites/default.html.erb
+25:      <%= render_component 'profile', user: @site.site_admin %>
+37:        <%= render_component 'help_adding_events' %>
+41:        <%= render_component 'computer_access', places: @places_to_get_computer_access %>
+46:        <%= render_component 'free_public_wifi', places: @places_with_free_wifi %>
+50:        <%= render_component 'help_getting_help' %>
+
+app/views/events/activities.html.erb
+14:        <%= render_component "event", context: :week,
+
+app/views/events/show.html.erb
+5:<%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
+20:          <%= render_component "contact_details",
+32:        <%= render_component "address",
+42:<%= render_component "meta", permalink: "/events/#{@event.id}" do %>
+
+app/views/events/index.html.erb
+3:<%= render_component "hero", title: 'Events & activities in your area',
+7:  <%= render_component "event_list",
+16:<%= render_component "meta" do %>
+
+app/views/partners/show.html.erb
+9:  <%= render_component "hero", title: @partner.name, subtitle: @site.tagline, schema: 'name' %>
+12:    <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name %>
+30:        <%= render_component "contact_details",
+73:          <%= render_component "opening_times",
+93:            <%= render_component "address",
+99:            <%= render_component "contact_details",
+113:      <%= render_component "event_list",
+128:<%= render_component "meta", permalink: "/partners/#{@partner.id}" do %>
+
+app/views/partners/index.html.erb
+2:<%= render_component "hero", title: 'Partners in your area', subtitle: @site.tagline %>
+5:  <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
+12:      <%= render_component("place_partner_preview",
+
+app/views/news/show.html.erb
+4:  <%= render_component "hero", title: @article.title, subtitle: @site.tagline, schema: 'name' %>
+7:    <%= render_component "breadcrumb", trail: [['News', news_index_path], [@article.title, news_path(@article)]], site_name: @site.name %>
+
+app/views/news/index.html.erb
+3:<%= render_component 'hero', title: 'News from your area', subtitle: @site.tagline %>
+
+app/views/collections/show.html.erb
+9:<%= render_component "hero", title: @collection.name, subtitle: @site.tagline %>
+12:  <%= render_component "breadcrumb", trail: [[@collection.name, @collection.named_route]], site_name: @site.name %>
+45:  <%= render_component "event_list",
+57:  <%# = render_component "map", points: @map, site: @current_site.slug %>
+
+app/views/devise/invitations/edit.html.erb
+5:    <%= render_component "error", object: resource %>
