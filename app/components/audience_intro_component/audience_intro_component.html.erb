@@ -1,16 +1,16 @@
 <div class="card card--first center">
-  <h1 class="section"><%= properties[:title] %></h1>
+  <h1 class="section"><%= title %></h1>
 </div>
 
 <div class="card card--plain audience pattern pattern--audience reveal js-reveal">
   <div class="reveal__teaser">
-    <h2 class="center alt-title"><%= properties[:subtitle].html_safe %></h2>
+    <h2 class="center alt-title"><%= subtitle.html_safe %></h2>
     <div class="audience__photo">
-      <%= image_tag "home/audiences/#{properties[:image]}", alt: properties[:image_alt] %>
+      <%= image_tag "home/audiences/#{image}", alt: image_alt %>
     </div>
   </div>
   <div class="audience__body">
-    <%= properties[:yield] %>
+    <%= content %>
   </div>
   <div class="center">
     <%= link_to "Our story", our_story_path, class: 'btn btn--big btn--home-3' %>

@@ -1,11 +1,11 @@
 <article class="home">
   <div class="margin">
 
-    <%= render_component "audience_intro",
+    <%= render(AudienceIntroComponent.new( "audience_intro",
       title: "How we help community groups",
       subtitle: "We turn your local knowledge into great<br class='tablet-up'> community information websites",
       image: "communities_wide.jpg",
-      image_alt: "A photograph of a middle aged woman and young girl enjoying a pottery class" do %>
+      image_alt: "A photograph of a middle aged woman and young girl enjoying a pottery class")) do %>
 
       <div>
         <p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p>
@@ -17,7 +17,7 @@
       </div>
     <% end %>
 
-    <%= render_component "steps",
+    <%= render(StepsComponent.new(
       steps: [
         {
           id: 1,
@@ -40,7 +40,7 @@
           image_alt: "A community worker waving to a resident"
         }
       ]
-    %>
+    )) %>
 
     <div class="card card--split card--plain impact">
       <div class="card__title">
