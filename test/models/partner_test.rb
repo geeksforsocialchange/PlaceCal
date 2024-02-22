@@ -488,6 +488,37 @@ class PartnerTest < ActiveSupport::TestCase
     assert partner.can_clear_address?(citizen)
   end
 
+  test 'can_clear_address? returns false if a calendar is depending on this partner having a valid address' do
+    neighbourhood = create(:neighbourhood)
+    citizen = create(:citizen)
+
+    partner = build(:bare_partner)
+    partner.address = create(:address, neighbourhood: neighbourhood)
+    partner.service_areas.build(neighbourhood: neighbourhood)
+    partner.save!
+
+    citizen.partners << partner
+
+    # should be allowed still
+    assert partner.can_clear_address?(citizen)
+
+    VCR.use_cassette(:generic_webcal_feed, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Generic webcal Calendar',
+        source: 'webcal://p14-calendars.icloud.com/published/2/MTQ2NzIwNzk1NDE0NjcyMM7jQu_vEJtKcvFoPn3S2FrA6WGkdMmCuNCcP44HV1RjEsev_l3T5lO94XkBevJwb5wd-ayWykRsarVoSJrwZvc',
+        strategy: 'event'
+      )
+
+      assert_predicate calendar, :valid?
+
+      partner.calendar_places << calendar
+
+      # cannot remove because of above calendar
+      assert_not partner.can_clear_address?(citizen)
+    end
+  end
+
   test 'warn_user_clear_address?' do
     partner = build(:bare_partner)
     partner.address = create(:address)

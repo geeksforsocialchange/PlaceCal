@@ -64,6 +64,13 @@ class Calendar < ApplicationRecord
     %i[place room_number event_override].include? strategy.to_sym
   end
 
+  def strategy_needs_place?
+    return false if strategy == :no_location
+    return false if strategy == :online_only
+
+    true
+  end
+
   # Output recent calendar import activity
   # This uses PaperTrail to get historical records of the Event models, including deletes
   # It does this to show a "event added" / "event removed" thing

@@ -17,6 +17,7 @@ class Partner < ApplicationRecord
   # Associations
   has_and_belongs_to_many :users
   has_many :calendars, dependent: :destroy
+  has_many :calendar_places, class_name: 'Calendar', foreign_key: :place_id, inverse_of: :places
   has_many :events
   belongs_to :address, optional: true, dependent: :destroy
 
@@ -256,6 +257,9 @@ class Partner < ApplicationRecord
   def can_clear_address?(user = nil)
     return false if address.blank? || address.missing_values?
     return false if service_areas.empty?
+
+    # is this partner (address) some calendars location?
+    return false if calendar_places.any?(&:strategy_needs_place?)
 
     return false if user.blank?
     return true if user.root?
