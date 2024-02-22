@@ -17,7 +17,7 @@ class Partner < ApplicationRecord
   # Associations
   has_and_belongs_to_many :users
   has_many :calendars, dependent: :destroy
-  has_many :calendar_places, class_name: 'Calendar', foreign_key: :place_id, inverse_of: :places
+  has_many :calendar_places, class_name: 'Calendar', foreign_key: :place_id, inverse_of: :place
   has_many :events
   belongs_to :address, optional: true, dependent: :destroy
 

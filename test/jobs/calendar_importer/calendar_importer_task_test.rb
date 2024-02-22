@@ -233,4 +233,25 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 52, created_events.count # (at time of recording)
     end
   end
+
+  test 'halts if calendar strategy requires a valid place but non is set up' do
+    VCR.use_cassette(:generic_webcal_feed, allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Generic webcal Calendar',
+        source: 'webcal://p14-calendars.icloud.com/published/2/MTQ2NzIwNzk1NDE0NjcyMM7jQu_vEJtKcvFoPn3S2FrA6WGkdMmCuNCcP44HV1RjEsev_l3T5lO94XkBevJwb5wd-ayWykRsarVoSJrwZvc',
+        strategy: 'event',
+        place: nil # <-- has no default location
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      error = assert_raises(CalendarImporter::EventResolver::Problem) do
+        importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+        importer_task.run
+      end
+
+      assert_equal 'This calendar strategy needs a Default Location, but none has been set.', error.message
+    end
+  end
 end

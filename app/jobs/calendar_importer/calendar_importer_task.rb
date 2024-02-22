@@ -12,6 +12,8 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def run
+    CalendarImporter::EventResolver.validate_calendar_place!(calendar)
+
     parsed_events = event_data_from_parser
 
     if parsed_events.present?

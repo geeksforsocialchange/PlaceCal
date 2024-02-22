@@ -12,6 +12,12 @@ class CalendarImporter::EventResolver
 
   class Problem < StandardError; end
 
+  def self.validate_calendar_place!(calendar)
+    return if calendar.strategy_needs_place? && calendar.place&.address.present?
+
+    raise Problem, 'This calendar strategy needs a Default Location, but none has been set.'
+  end
+
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
     @uid = data.uid
