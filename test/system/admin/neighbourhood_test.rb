@@ -44,7 +44,9 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
     end
 
     # # check that changes persists
-    click_link 'Edit'
+    find_element_and_retry_if_not_found do
+      click_link 'Edit'
+    end
     users = select2_node 'neighbourhood_users'
     assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
   end
