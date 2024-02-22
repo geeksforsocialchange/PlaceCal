@@ -32,6 +32,17 @@ rescue Selenium::WebDriver::Error::StaleElementReferenceError
   retry
 end
 
+def find_element_and_retry_if_not_found(tries: 0, max_tries: 5)
+  tries += 1
+  yield
+rescue Capybara::ElementNotFound
+  unless tries >= max_tries
+    sleep 1
+    retry
+  end
+  retry
+end
+
 # Dir.glob(File.join(Rails.root, 'test/system/**/*.rb')) do |path|
 #  require path
 # end

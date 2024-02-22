@@ -3,7 +3,7 @@
 
 all: test
 
-setup_with_docker: install_dependencies docker setup_env setup_db seed_GFSC_prod_copy_db create_user run
+setup_with_docker: install_dependencies docker setup_env setup_db seed_GFSC_prod_copy_db create_user up
 
 docker: setup_docker_network setup_docker_container setup_env
 

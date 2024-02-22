@@ -143,7 +143,7 @@ def click_sidebar(href)
 end
 
 def await_datatables(time = 5)
-  find_element_and_retry_if_stale do
+  find_element_and_retry_if_not_found do
     page.find(:css, '#datatable_info', wait: time)
   end
 end
