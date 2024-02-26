@@ -73,7 +73,6 @@ gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 
 # Utilities
-gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id'
