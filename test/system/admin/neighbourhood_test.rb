@@ -47,7 +47,12 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
     find_element_and_retry_if_not_found do
       click_link 'Edit'
     end
-    users = select2_node 'neighbourhood_users'
-    assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
+
+    find_element_and_retry_if_stale do
+      find_element_and_retry_if_not_found do
+        users = select2_node 'neighbourhood_users'
+        assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
+      end
+    end
   end
 end
