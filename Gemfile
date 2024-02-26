@@ -81,6 +81,7 @@ gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
 
+gem 'invisible_captcha'
 gem 'paper_trail'
 gem 'rollbar'
 gem 'sendgrid-actionmailer'
