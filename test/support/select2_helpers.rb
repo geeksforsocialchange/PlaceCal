@@ -8,8 +8,10 @@ module Select2Helpers
 
   def select2_node(stable_identifier)
     await_select2 10
-    within ".#{stable_identifier}" do
-      find :css, '.select2-container'
+    find_element_and_retry_if_stale do
+      within ".#{stable_identifier}" do
+        find :css, '.select2-container'
+      end
     end
   end
 
