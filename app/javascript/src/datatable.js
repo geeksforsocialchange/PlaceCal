@@ -5,10 +5,8 @@ require("datatables.net-bs4")(window, $);
 let dataTable = "";
 
 document.addEventListener("turbo:before-cache", function () {
-	if (dataTable !== null) {
-		$("#datatable").DataTable({
-			destroy: true,
-		});
+	if (dataTable !== null && dataTable !== "") {
+		dataTable.destroy();
 		dataTable = null;
 	}
 });

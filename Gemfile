@@ -84,7 +84,6 @@ gem 'net-smtp', require: false
 gem 'invisible_captcha'
 gem 'paper_trail'
 gem 'rollbar'
-gem 'sendgrid-actionmailer'
 gem 'uk_postcode'
 
 group :development, :test do
