@@ -4,15 +4,6 @@ require("datatables.net-bs4")(window, $);
 // if you press the browser back button
 let dataTable = "";
 
-document.addEventListener("turbo:before-cache", function () {
-	if (dataTable !== null) {
-		$("#datatable").DataTable({
-			destroy: true,
-		});
-		dataTable = null;
-	}
-});
-
 document.addEventListener("turbo:load", function () {
 	try {
 		dataTable = $("#datatable").DataTable({
