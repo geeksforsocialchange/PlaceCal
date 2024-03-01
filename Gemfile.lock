@@ -300,6 +300,7 @@ GEM
       racc
     pg (1.4.3)
     popper_js (1.16.1)
+    prism (0.24.0)
     psych (4.0.6)
       stringio
     public_suffix (4.0.7)
@@ -307,7 +308,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.2.0)
       activesupport (>= 3.0.0)
-    racc (1.6.2)
+    racc (1.7.3)
     rack (2.2.8.1)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
@@ -377,7 +378,7 @@ GEM
       netrc (~> 0.8)
     rexml (3.2.6)
     rollbar (3.3.0)
-    rubocop (1.60.2)
+    rubocop (1.61.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -388,8 +389,9 @@ GEM
       rubocop-ast (>= 1.30.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.0)
+      parser (>= 3.3.0.4)
+      prism (>= 0.24.0)
     rubocop-graphql (1.5.0)
       rubocop (>= 0.90, < 2)
     rubocop-minitest (0.34.5)
@@ -544,7 +546,7 @@ DEPENDENCIES
   rails-erd
   rdoc
   rollbar
-  rubocop (= 1.60.2)
+  rubocop (= 1.61.0)
   rubocop-graphql (= 1.5.0)
   rubocop-minitest (= 0.34.5)
   rubocop-performance (= 1.20.2)
