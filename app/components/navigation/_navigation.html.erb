@@ -21,7 +21,7 @@
   </div>
   <nav class="nav header__menu js-menu" role="navigation">
     <ul>
-      <li><%= active_link_to "Home", root_path %></li>
+      <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
       <% navigation.each do |link_text, link_path| %>
         <li><%= active_link_to link_text, link_path, data: { turbolinks: false } %></li>
       <% end %>

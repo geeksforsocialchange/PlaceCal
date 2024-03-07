@@ -1,0 +1,51 @@
+@import 'variables_mixins'
+
+*
+  background-color: transparent !important
+  border-color: $print-grey !important
+
+html
+  font-size: 16px
+
+body
+  margin: 0
+  padding: 0
+  -webkit-print-color-adjust: exact
+
+header, footer, .hero, .breadcrumb, .breadcrumb + hr, .map, .paginator, .meta
+  display: none
+
+h1, h2
+  display: block !important
+
+a
+  text-decoration: none
+  border-bottom-width: 0 !important
+
+.place-info
+  h3
+    border-width: 0 0 3px 0
+    border-color: $print-grey
+    border-style: solid
+
+.events
+  +flexbox
+  +flex-wrap(wrap)
+  li
+    +flex(1 1 45%)
+  li:nth-of-type(2n + 1)
+    margin-right: 0.5rem
+  li:nth-of-type(2n)
+    margin-left: 0.5rem
+
+.event
+  font-size: 80%
+  margin-bottom: 1rem
+  &__date
+    display: none
+  &__details
+    border-bottom-width: 0
+  &__detail
+    +flex(1 1 30%)
+  h3
+    font-size: 1rem

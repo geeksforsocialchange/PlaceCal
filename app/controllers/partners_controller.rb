@@ -40,8 +40,6 @@ class PartnersController < ApplicationController
   # GET /partners/1
   # GET /partners/1.json
   def show
-    redirect_to root_path if @partner.hidden
-
     upcoming_events = Event.by_partner(@partner).upcoming
     if upcoming_events.none?
       # If no events, show an appropriate message why
