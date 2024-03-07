@@ -1,0 +1,310 @@
+@import "variables_mixins";
+
+$mossley-primary: #28a9e1;
+$mossley-primary-dark: #5775b9;
+$mossley-secondary: #f89520;
+$mossley-background: #bee7f6;
+$mossley-text: #4a4a4a;
+$mossley-text-alt: #ffffff;
+$mossley-text-buttons: #406618;
+
+$mossley-header-green: #3ab54a;
+
+// For some reason these are not interpolating properly
+:root {
+	--base-primary: #28a9e1;
+	--base-secondary: #f89520;
+	--base-background: #ffffff;
+	--base-rules: #bee7f6;
+	--base-text: #4a4a4a;
+	--base-tertiary: #f89520;
+	--base-map-stripe-second: #28a9e1;
+}
+
+body {
+	background-color: $mossley-background;
+	color: $mossley-text;
+
+	@include for-desktop-up {
+		background-image: image-url("regions/mossley/background@1x.png");
+
+		@include for-retina {
+			background-image: image-url("regions/mossley/background@2x.png");
+		}
+
+		background-position: 50% 3rem;
+	}
+}
+
+.background {
+	background-color: $mossley-text-alt;
+}
+
+a {
+	color: $mossley-secondary;
+}
+
+.h2--alt,
+.header__menu a,
+.footer h5 {
+	text-transform: none;
+	letter-spacing: normal;
+	font-weight: $bold;
+}
+
+.h2--alt,
+.footer h5 {
+	font-size: 1.11111rem;
+}
+
+.header__menu a {
+	@include for-tablet-portrait-up {
+		font-size: 1.22222rem;
+	}
+}
+
+.background {
+	border-width: 0 10px;
+	border-color: $mossley-primary;
+}
+
+.header {
+	background-color: $mossley-primary;
+	padding-top: 1rem;
+
+	&__branding {
+		width: 180px;
+		height: 61px;
+		background-size: 180px 61px;
+
+		@include for-tablet-portrait-up {
+			width: 222px;
+			height: 75px;
+			background-size: 222px 75px;
+		}
+	}
+
+	&__menu {
+		margin-top: 0.5rem;
+
+		@include for-tablet-portrait-up {
+			margin-top: 1rem;
+		}
+
+		li {
+			background-color: $mossley-background;
+
+			@include for-phone-only {
+				border-bottom-color: $mossley-text-alt;
+
+				&.nav__item--last {
+					border-bottom-width: 0;
+				}
+
+				&:hover {
+					background-color: $mossley-primary-dark;
+				}
+			}
+
+			@include for-tablet-landscape-up {
+				background-color: transparent;
+			}
+		}
+
+		a {
+			color: $mossley-primary-dark;
+
+			&:hover {
+				color: $mossley-text-alt;
+			}
+
+			@include for-tablet-portrait-up {
+				&:hover,
+				&.active {
+					color: $mossley-primary-dark;
+
+					&:after {
+						border-color: $base-primary;
+					}
+				}
+			}
+
+			@include for-tablet-landscape-up {
+				color: $mossley-text-alt;
+
+				&:hover,
+				&.active {
+					color: $mossley-text-alt;
+
+					&:after {
+						border-color: $mossley-secondary;
+					}
+				}
+			}
+		}
+	}
+}
+
+.region__title--mossley {
+	background-color: $mossley-header-green;
+	color: $mossley-text-alt;
+
+	h1 {
+		text-align: center;
+		padding: 3rem 0;
+		margin: 0;
+		font-family: $sans-serif;
+		font-weight: $bold;
+	}
+}
+
+.hero_image--mossley {
+	background-image: image-url("regions/mossley/hero-desktop.jpg");
+	background-size: auto 100%;
+	height: 220px;
+
+	@include for-tablet-landscape-up;
+	@include for-tablet-portrait-up {
+		height: 290px;
+	}
+
+	background-position: 50%;
+	background-repeat: no-repeat;
+}
+
+.region__management {
+	background-color: $mossley-primary;
+	color: $mossley-text-alt;
+
+	h2 {
+		border-bottom-color: $mossley-secondary;
+	}
+
+	.title-strip {
+		background-color: transparent;
+	}
+
+	.profile {
+		color: $mossley-primary;
+		background-color: $mossley-background;
+
+		a {
+			color: $mossley-primary;
+			text-decoration-color: $mossley-primary;
+		}
+
+		h3 {
+			border-bottom-color: $mossley-text-alt;
+		}
+	}
+}
+
+.footer {
+	color: $mossley-text-alt;
+	background-color: $mossley-primary;
+
+	hr {
+		border-color: $mossley-background;
+	}
+
+	a {
+		text-decoration-color: $mossley-secondary;
+	}
+
+	&__impressum {
+		color: $mossley-background;
+
+		a {
+			color: $mossley-background;
+		}
+	}
+}
+
+.svg {
+	&__background {
+		fill: $mossley-secondary;
+	}
+
+	&__primary {
+		fill: $mossley-text-alt;
+	}
+
+	&__secondary {
+		fill: $mossley-primary-dark;
+	}
+}
+
+.hero {
+	background-image: image-url("regions/mossley/hero-bg@1x.png"),
+		image-url("regions/mossley/hero-bg@1x.png");
+	background-position: (-7.5rem) 1.5rem, right -9.5rem top 2.5rem;
+
+	@include for-retina {
+		background-image: image-url("regions/mossley/hero-bg@2x.png"),
+			image-url("regions/mossley/hero-bg@2x.png");
+		background-size: 246px 199px;
+	}
+
+	@include for-tablet-portrait-up {
+		background-position: (-4.5rem) 1.5rem, right -4.5rem top 2.5rem;
+	}
+
+	@include for-tablet-landscape-up {
+		background-image: image-url("regions/mossley/hero-bg-landscape@1x.png"),
+			image-url("regions/mossley/hero-bg-landscape@1x.png");
+		background-position: (-2.5rem) 0rem, right -3.5rem top 1rem;
+
+		@include for-retina {
+			background-image: image-url("regions/mossley/hero-bg-landscape@2x.png"),
+				image-url("regions/mossley/hero-bg-landscape@2x.png");
+			background-size: 400px 327px;
+		}
+	}
+
+	h4,
+	&__divider {
+		display: none;
+	}
+
+	h1 {
+		color: white;
+		font-family: $sans-serif;
+		font-weight: $bold;
+		margin-top: 3.5rem;
+		margin-bottom: 3.5rem;
+	}
+}
+
+.paginator {
+	li {
+		border-color: $mossley-secondary;
+	}
+
+	li.paginator__arrow {
+		background-color: $mossley-secondary;
+	}
+
+	li.active,
+	li:hover {
+		background-color: $mossley-secondary;
+	}
+
+	a {
+		color: $mossley-text-buttons;
+	}
+}
+
+.event {
+	a {
+		color: $mossley-text;
+	}
+}
+
+.neighbourhood span {
+	background-color: $mossley-secondary;
+}
+
+[class^="icon-font--"]:before,
+[class*="icon-font--"]:before {
+	color: $mossley-secondary;
+}

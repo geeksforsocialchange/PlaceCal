@@ -1,0 +1,70 @@
+@import "variables_mixins";
+
+.breadcrumb {
+	@include flexbox;
+	@include flex-wrap(wrap);
+	@include justify-content(flex-start);
+
+	font-size: $small-font-size;
+	margin: 1rem 0;
+
+	.btn {
+		border-bottom-color: var(--base-primary);
+		margin-left: 0.5rem;
+		line-height: normal;
+	}
+
+	a {
+		border-bottom-style: solid;
+		border-bottom-color: $base-rules-dark;
+		border-bottom-width: 2px;
+		text-decoration: none;
+	}
+
+	.filters__toggle {
+		a {
+			border-bottom-color: transparent;
+		}
+
+		.filters__link {
+			border-bottom-style: solid;
+			border-bottom-color: $base-rules-dark;
+			border-bottom-width: 2px;
+		}
+	}
+
+	@include for-phone-only {
+		&__tagline {
+			display: none;
+		}
+	}
+
+	&__element {
+		@include flex(0 1 auto);
+
+		margin-right: 0.5rem;
+
+		@include for-phone-only {
+			margin-bottom: 0.5rem;
+		}
+
+		&--last {
+			display: flex;
+			flex-direction: row;
+			gap: 1rem;
+			justify-content: flex-end;
+
+			@include flex(1 1 auto);
+			@include for-tablet-portrait-up {
+				text-align: right;
+			}
+		}
+	}
+
+	&__filters {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+		justify-content: flex-end;
+	}
+}
