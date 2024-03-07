@@ -13,7 +13,7 @@ class ModerationMailer < ApplicationMailer
   def hidden_staff_alert(partner)
     @partner = partner
     @reason = partner.hidden_reason_html
-    @mod_email = User.find(partner.hidden_blame_id).email
+    @moderator = User.find(partner.hidden_blame_id)
 
     mail(to: 'support@placecal.org', subject: 'A partner has been hidden from PlaceCal')
   end
