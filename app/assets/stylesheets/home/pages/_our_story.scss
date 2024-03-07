@@ -1,0 +1,89 @@
+@import "variables_mixins";
+
+.our_story {
+	&__intro {
+		@include for-tablet-landscape-up {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-gap: 2rem;
+			padding-left: $text-spacing-portrait;
+			padding-right: $text-spacing-portrait;
+		}
+
+		@include for-desktop-up {
+			padding-left: $text-spacing-desktop;
+			padding-right: $text-spacing-desktop;
+			background-image: image-url("home/our_story/patterns/intro_tl.svg"),
+				image-url("home/our_story/patterns/intro_br.svg");
+			background-position: top left, bottom right;
+			background-repeat: no-repeat;
+		}
+	}
+
+	&__fixall {
+		@include for-tablet-landscape-up {
+			padding-left: 11rem;
+			padding-right: 11rem;
+
+			p {
+				padding-left: 2rem;
+				padding-right: 2rem;
+			}
+		}
+
+		@include for-desktop-up {
+			background-image: image-url("home/our_story/patterns/fix_tl.svg"),
+				image-url("home/our_story/patterns/fix_br.svg");
+			background-size: 275px 480px, 300px 480px;
+			background-repeat: no-repeat;
+			background-position: top left, bottom right;
+			padding-left: 20rem;
+			padding-right: 20rem;
+		}
+	}
+}
+
+.stats {
+	border-spacing: 0;
+
+	td {
+		width: 25%;
+		padding: 0.5rem;
+		border: 1rem solid transparent;
+		z-index: 1;
+	}
+
+	&__col {
+		&--labels {
+		}
+
+		&--placecal {
+			background-color: $home-green;
+		}
+
+		&--council {
+			background-color: $home-pink;
+		}
+
+		&--health {
+			background-color: $home-blue;
+		}
+	}
+
+	&__stripe {
+		background-color: $home-background-3;
+		z-index: 5;
+
+		td:nth-child(2) {
+			background-color: rgb(202, 227, 140);
+		}
+
+		td:nth-child(3) {
+			background-color: rgb(255, 180, 170);
+		}
+
+		td:nth-child(4) {
+			background-color: rgb(160, 228, 234);
+		}
+	}
+}

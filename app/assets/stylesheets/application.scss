@@ -1,0 +1,48 @@
+@import "variables/fonts";
+@import "globals";
+@import "mountain_view";
+
+:root {
+	// Main site colour
+	--base-primary: #afcf5a;
+
+	// Main page background
+	--base-background: #fffcf0;
+
+	// Main copy colour
+	--base-text: #5b4e46;
+
+	// Horizontal lines, for example around events
+	--base-rules: #f1e9da;
+
+	// Currently just used on breadcrumb
+	--base-rules-dark: #decbba;
+
+	// Contrast colours
+	--base-secondary: #f19089;
+
+	// Used for top map stripe and navigation in some states
+	--base-tertiary: #998675;
+
+	// Bottom of the double line on the map
+	--base-map-stripe-second: #c7b299;
+
+	// Print stylesheet greyscale for borders
+	--print-grey: #dadada;
+}
+
+// view_component stylessheets
+
+@import "components/case_study_component.scss";
+@import "components/container_with_header_component.scss";
+@import "components/featured_partnerships_component.scss";
+@import "components/four_col_grid_component.scss";
+@import "components/full_width_action_component.scss";
+@import "components/hero_image_component.scss";
+@import "components/home_footer_component.scss";
+@import "components/home_strapline_component.scss";
+@import "components/link_btn_lrg_component.scss";
+@import "components/max_width_component.scss";
+@import "components/neighbourhood_home_card_component.scss";
+@import "components/partnership_card_component.scss";
+@import "components/pull_quote_component.scss";

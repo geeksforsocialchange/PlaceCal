@@ -53,9 +53,10 @@ class AdminUserTest < ApplicationSystemTestCase
     click_link 'Users'
 
     # return to user to check data is intact
-    datatable_1st_row = page.all(:css, '.odd')[0]
-    within datatable_1st_row do
-      click_link 'Place'
+    find_element_and_retry_if_stale do
+      within page.all(:css, '.odd')[0] do
+        click_link 'Place'
+      end
     end
 
     partners = select2_node 'user_partners'

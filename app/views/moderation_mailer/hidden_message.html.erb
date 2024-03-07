@@ -1,0 +1,11 @@
+<div>
+  <%= image_tag(image_url("logo.png"), height: '75') %>
+</div>
+
+<p><%= greeting_text(@user) %>,</p>
+
+<p>Your partner (<%= @partner.name %>, id: <%= @partner.id %>) has been hidden from PlaceCal for the following reasons:</p>
+
+<%= @reason.to_s.html_safe %>
+
+<p>Once you have fixed this issue get in touch with <a href="mailto:support@placecal.org">support@placecal.org</a> so that we can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: <a href="mailto:support@placecal.org">support@placecal.org</a>.</p>
