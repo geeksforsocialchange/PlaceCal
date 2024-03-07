@@ -14,8 +14,6 @@ FactoryBot.define do
     partner_name { 'Addy Minny Strator' }
     partner_phone { '0161 0000001' }
 
-    hidden { false }
-
     summary { 'A cool garden centre' }
     description { 'Our cool garden centre is a very cool and neat garden centre. Come to our events. Now.' }
     url { 'http://example.com' }

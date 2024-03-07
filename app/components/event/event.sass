@@ -1,0 +1,71 @@
+@import "variables_mixins"
+
+.events li
+  width: 100%
+  display: block
+
+.event
+  margin-bottom: 2rem
+  h3
+    margin-bottom: 0.5em
+    display: inline-block
+    a
+      border-bottom-width: 0
+      text-decoration: none
+  &__header
+    display: grid
+    grid-template-columns: 1fr
+    +for-tablet-portrait-up
+      grid-template-columns: 1fr auto
+      align-items: center
+  &__details
+    +flexbox
+    +flex-wrap(wrap)
+    +align-items(center)
+    +justify-content(flex-start)
+    border-width: 3px 0
+    border-color: $base-rules
+    border-style: solid
+    padding: 0.5rem 0
+    +for-tablet-portrait-up
+      padding: 0.8rem 0
+    .icon
+      width: 1.75rem
+      height: 1.75rem
+      margin-right: 0.25rem
+  &--full
+    .event__details
+      border-top-width: 0
+      border-bottom-width: 10px
+  &__detail
+    +flexbox
+    +align-items(center)
+    margin-right: 1.3rem
+    margin-bottom: 0.3rem
+    +for-phone-only
+      +flex(1 0 100%)
+    +for-tablet-portrait-up
+      +flex(1 1 28%)
+    +for-tablet-landscape-up
+      +flex(0 1 auto)
+      margin-bottom: 0rem
+  &__time, &__date
+    +for-phone-only
+      +flex(1 0 44%) // Set by eye
+  &__duration
+    +for-phone-only
+      display: none
+  &__location
+    +for-tablet-portrait-up
+      +flex(1 0 61%) // Set by eye
+      margin-bottom: 0rem
+    +for-tablet-landscape-up
+      +flex(1 1 auto)
+  &__repeats
+    margin-bottom: 0
+  &__neighbourhood
+    +for-phone-only
+      display: none
+  &__fullinfo
+    h3
+      display: block

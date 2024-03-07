@@ -18,7 +18,6 @@
         <% end %>
 
         <%= simple_form_for @join, url: get_in_touch_path, html: { class: 'form' } do |f| %>
-          <%= invisible_captcha %>
           <div class="form__person form__mid-width">
             <div class="form__field">
               <%= f.input :name, label: 'Name:' %>

@@ -51,9 +51,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
 
     tags = select2_node 'partner_tags'
-    find_element_and_retry_if_not_found do
-      assert_select2_multiple [@tag.name_with_type], tags
-    end
+    assert_select2_multiple [@tag.name_with_type], tags
 
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     assert_select2_single @neighbourhood_one, service_areas[0]

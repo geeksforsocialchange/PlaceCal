@@ -71,8 +71,6 @@ module Admin
 
       mutated_params = permitted_attributes(@partner)
 
-      before = @partner.hidden
-
       @partner.accessed_by_user = current_user
 
       # prevent someone trying to add the same service_area twice by mistake and causing a crash
@@ -83,13 +81,6 @@ module Admin
 
       mutated_params[:service_areas_attributes] = uniq_service_areas
 
-      hidden_in_this_edit = mutated_params[:hidden] == '1' && !@partner.hidden
-
-      mutated_params[:hidden_blame_id] = current_user.id  if hidden_in_this_edit
-      Rails.logger.debug '0' * 80
-      Rails.logger.debug mutated_params
-      Rails.logger.debug '0' * 80
-
       if @partner.update(mutated_params)
         # have to redirect on associated service area errors or form breaks
         if @partner.errors[:service_areas].any?
@@ -97,20 +88,6 @@ module Admin
         else
           flash[:success] = 'Partner was successfully updated.'
         end
-
-        # important this needs to only fire on change to hidden
-        if hidden_in_this_edit
-          @partner.users.each do |user|
-            ModerationMailer.hidden_message(
-              user,
-              @partner
-            ).deliver
-          end
-          ModerationMailer.hidden_staff_alert(
-            @partner
-          ).deliver
-        end
-
         redirect_to edit_admin_partner_path(@partner)
       else
         flash.now[:danger] = 'Partner was not saved.'

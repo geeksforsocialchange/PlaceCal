@@ -1,0 +1,71 @@
+.icon
+  text-indent: -9999px
+  width: 1rem
+  height: 1rem
+  display: inline-block
+  background-position: center
+  background-repeat: no-repeat
+  background-size: contain
+  text-align: left // With align right it comes back into view
+
+  // Arrows for general UI goodness
+  &--arrow-left
+    background-image: image-url('icons/arrow/left.svg')
+  &--arrow-right
+    background-image: image-url('icons/arrow/right.svg')
+  &--arrow-down
+    background-image: image-url('icons/arrow/down.svg')
+
+  &--arrow-left-grey
+    background-image: image-url('icons/arrow/left-grey.svg')
+  &--arrow-right-grey
+    background-image: image-url('icons/arrow/right-grey.svg')
+
+  // Help icon
+  &--question-mark
+    background-image: image-url('icons/question-mark.svg')
+
+  // Event icons
+  &--time
+    background-image: image-url('icons/event/time.svg')
+  &--time-grey
+    background-image: image-url('icons/event/time-grey.svg')
+  &--duration
+    background-image: image-url('icons/event/duration.svg')
+  &--date
+    background-image: image-url('icons/event/date.svg')
+  &--place
+    background-image: image-url('icons/event/place.svg')
+  &--repeats
+    background-image: image-url('icons/event/repeats.svg')
+
+  // Bus
+  &--bus-stop
+    background-image: image-url('icons/bus/stop.svg')
+  &--bus-arrow
+    background-image: image-url('icons/bus/arrow.svg')
+
+  // Contact info on partners
+  &--contact
+    margin: 0.4rem 0 0.2rem
+  &--phone
+    background-image: image-url('icons/phone.svg')
+  &--email
+    background-image: image-url('icons/email.svg')
+  &--website
+    background-image: image-url('icons/website.svg')
+  &--twitter
+    background-image: image-url('icons/twitter.svg')
+  &--facebook
+    background-image: image-url('icons/facebook.svg')
+
+.svg
+  &__background
+    fill: $base-rules
+    fill: var(--base-rules)
+  &__primary
+    fill: $base-secondary
+    fill: var(--base-secondary)
+  &__secondary
+    fill: $base-text
+    fill: var(--base-text)

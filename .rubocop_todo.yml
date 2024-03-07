@@ -371,7 +371,6 @@ Rails/ReversibleMigration:
 Rails/SkipsModelValidations:
   Exclude:
     - 'lib/tasks/fixes/users.rake'
-    - 'db/migrate/20240125175508_partner_hidden_attribute_set_value.rb'
 
 # Offense count: 22
 # This cop supports unsafe autocorrection (--autocorrect-all).

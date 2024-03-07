@@ -92,7 +92,7 @@ Note that the system tests can take a while to run and are quite resource-intens
 
 ## Documentation for Developers
 
-The documentation for PlaceCal currently stored in notion and can be read [here](https://www.notion.so/gfsc/PlaceCal-developer-handbook-01649b69009340e3ae3035e9cf346f27). There is also a small amount of documentation sprinkled throughout the code itself and can be turned into HTML by running `rails yard`. If you are working with the code and are completely lost you can also try the GFSC discord server where you can prod a human for answers. Good Luck!
+The documentation for PlaceCal currently stored in notion and can be read [here](https://www.notion.so/gfsc/PlaceCal-developer-handbook-01649b69009340e3ae3035e9cf346f27). There is also a small amount of documentation sprinkled throughout the code itself and can be turned into HTML by running `rails doc:generate`. If you are working with the code and are completely lost you can also try the GFSC discord server where you can prod a human for answers. Good Luck!
 
 ### Generating new components
 

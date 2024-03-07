@@ -142,10 +142,8 @@ def click_sidebar(href)
   end
 end
 
-def await_datatables(time = 5)
-  find_element_and_retry_if_not_found do
-    page.find(:css, '#datatable_info', wait: time)
-  end
+def await_datatables(time = 15)
+  page.find(:css, '#datatable_info', wait: time)
 end
 
 # GraphQL helpers

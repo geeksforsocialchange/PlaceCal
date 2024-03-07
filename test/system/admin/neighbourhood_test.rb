@@ -22,10 +22,9 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
   test 'select2 inputs on neighbourhoods form' do
     # find first neighbourhood
     click_link 'Neighbourhoods'
-    find_element_and_retry_if_stale do
-      within page.all(:css, '.odd')[0] do
-        click_link
-      end
+    datatable_1st_row = page.all(:css, '.odd')[0]
+    within datatable_1st_row do
+      click_link
     end
 
     # check that slect2 is working
@@ -36,23 +35,14 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
     click_button 'Save'
 
     click_link 'Neighbourhoods'
-
-    find_element_and_retry_if_stale do
-      within page.all(:css, '.odd')[0] do
-        click_link
-      end
+    datatable_1st_row = page.all(:css, '.odd')[0]
+    within datatable_1st_row do
+      click_link
     end
 
     # # check that changes persists
-    find_element_and_retry_if_not_found do
-      click_link 'Edit'
-    end
-
-    find_element_and_retry_if_stale do
-      find_element_and_retry_if_not_found do
-        users = select2_node 'neighbourhood_users'
-        assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
-      end
-    end
+    click_link 'Edit'
+    users = select2_node 'neighbourhood_users'
+    assert_select2_multiple [@root_user.to_s, @neighbourhood_admin.to_s], users
   end
 end
