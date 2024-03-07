@@ -4,7 +4,7 @@ class ModerationMailer < ApplicationMailer
   def hidden_message(user, partner)
     @reason = partner.hidden_reason_html
     @mod_email = User.find(partner.hidden_blame_id).email
-    @partner_name = partner.name
+    @partner = partner
     @user = user
 
     mail(to: @user.email,  subject: 'Your partner has been hidden from PlaceCal')
