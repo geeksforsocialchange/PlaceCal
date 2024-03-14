@@ -7,6 +7,7 @@ class ContactDetailsComponent < MountainView::Presenter
   property :email, default: false
   property :facebook_link, default: false
   property :twitter_handle, default: false
+  property :instagram_handle, default: false
   property :is_valid_phone, default: false
 
   def twitter_url
