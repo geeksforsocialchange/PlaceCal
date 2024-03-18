@@ -25,6 +25,10 @@
     <strong class="icon icon--contact icon--twitter">Twitter:</strong>
     <span><%= link_to "@#{twitter_handle}", twitter_url, target: '_blank' %></span>
   <% end %>
+  <% if instagram_handle.present? %>
+    <strong class="icon icon--contact icon--instagram">Instagram:</strong>
+    <span><%= link_to "@#{instagram_handle}", "https://www.instagram.com/#{instagram_handle}/", target: '_blank' %></span>
+  <% end %>
   <% unless contact? %>
     No contact information - let us know!
   <% end %>
