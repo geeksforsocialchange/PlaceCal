@@ -80,6 +80,16 @@
               <%= f.error :twitter_handle, class: 'invalid-feedback' %>
             </div>
           </div>
+          <div class="form-group url optional twitter_handle form-group-invalid">
+            <%= f.label :instagram_handle %>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">@</div>
+              </div>
+              <%= f.input_field :instagram_handle, class: "form-control", placeholder: 'InstagramAccount' %>
+              <%= f.error :instagram_handle, class: 'invalid-feedback' %>
+            </div>
+          </div>
         </div>
       </div>
     </div>
