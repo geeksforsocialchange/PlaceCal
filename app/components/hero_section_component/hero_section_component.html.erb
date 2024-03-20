@@ -1,7 +1,9 @@
 <div class="hero_section">
   <img class="hero_section__img" src="<%= @image_path %>" alt="">
   <div class="hero_section__text">
-    <p class="hero_section__credit">Image credit: <%= @image_credit %></p>
+    <% if @image_credit.presence %>
+      <p class="hero_section__credit">Image credit: <%= @image_credit %></p>
+    <% end %>
     <h1 class="hero_section__title"><%= @title %></h1>
   </div>
 </div>
