@@ -92,9 +92,6 @@ Rails.application.routes.draw do
   get 'winter2017', to: 'collections#show', id: 1
   get 'winter2018', to: 'collections#show', id: 2
 
-  # Styleguide
-  mount MountainView::Engine => '/styleguide'
-
   get '/robots.txt' => 'pages#robots'
 
   post '/api/v1/graphql', to: 'graphql#execute'
