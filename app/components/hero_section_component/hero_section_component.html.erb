@@ -1,5 +1,13 @@
 <div class="hero_section">
-  <img class="hero_section__img" src="<%= @image_path %>" alt="">
+  <img 
+    class="hero_section__img"
+    src="<%= @image_path %>" 
+    <%if @alttext.presence %>
+      alt="<%= @alttext %>" 
+    <% else %> 
+      aria-hidden="true" 
+    <% end %> 
+  >
   <div class="hero_section__text">
     <% if @image_credit.presence %>
       <p class="hero_section__credit">Image credit: <%= @image_credit %></p>
