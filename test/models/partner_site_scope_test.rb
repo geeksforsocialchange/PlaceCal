@@ -138,12 +138,12 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
 
   test 'only finds partners with tags if site has tags' do
     neighbourhood = geocodable_neighbourhood_one
-    tag = create(:tag)
-    other_tag = create(:tag)
+    tag = create(:partnership)
+    other_tag = create(:partnership)
 
     site.neighbourhoods << neighbourhood
-    site.tags << tag
-    site.tags << other_tag
+    site.partnership << tag
+    site.partnership << other_tag
 
     # NOTE: we assume the relations between partners and sites via address
     #   neighbourhoods works and is tested elsewhere

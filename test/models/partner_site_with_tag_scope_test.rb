@@ -47,13 +47,13 @@ class PartnerSiteWithTagScopeTest < ActiveSupport::TestCase
   end
 
   test 'finds partners with tag' do
-    tag = create(:tag)
-    other_tag = create(:tag)
+    tag = create(:partnership)
+    other_tag = create(:partnership)
 
     neighbourhood = geocodable_neighbourhood_one
     site.neighbourhoods << neighbourhood
-    site.tags << tag
-    site.tags << other_tag
+    site.partnership << tag
+    site.partnership << other_tag
 
     4.times do |n|
       partner = create(:partner, name: "Partner #{n}", address: address_one)

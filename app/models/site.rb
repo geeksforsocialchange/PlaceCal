@@ -22,7 +22,7 @@ class Site < ApplicationRecord
   has_many :neighbourhoods, through: :sites_neighbourhoods
 
   has_many :sites_tag, dependent: :destroy
-  has_many :tags, through: :sites_tag
+  has_many :partnership, through: :sites_tag, source: :tag, class_name: 'Partnership'
 
   has_and_belongs_to_many :supporters
 

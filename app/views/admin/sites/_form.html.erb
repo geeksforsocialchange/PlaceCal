@@ -143,13 +143,13 @@
     <div class="row">
       <div class="col-md-6">
         <p class="font-weight-light">(If selected) Only show partners which are members of these Partnerships</p>
-        <% if policy(@site).permitted_attributes.include? :tags %>
-          <%= f.association :tags,
+        <% if policy(@site).permitted_attributes.include? :partnership %>
+          <%= f.association :partnership,
                             label: false,
                             collection: options_for_tags,
                             input_html: { class: 'form-check', data: { controller: "select2" } } %>
         <% else %>
-          <%= f.association :tags,
+          <%= f.association :partnership,
                             disabled: true,
                             label: false,
                             collection: options_for_tags,

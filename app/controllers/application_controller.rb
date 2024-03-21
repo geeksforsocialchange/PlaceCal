@@ -54,7 +54,7 @@ class ApplicationController < ActionController::Base
 
     if site
       events = events.for_site(site)
-      events = events.with_tags(site.tags) if site.tags.any?
+      events = events.with_tags(site.partnership) if site.partnership.any?
     end
 
     events = events.in_place(place) if place

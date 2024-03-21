@@ -44,8 +44,8 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     end
     @tagged_site.neighbourhoods << @neighbourhood4
 
-    @tag = create(:tag)
-    @tagged_site.tags << @tag
+    @tag = create(:partnership)
+    @tagged_site.partnership << @tag
 
     @tagged_site_partners.each do |partner|
       partner.tags << @tag
