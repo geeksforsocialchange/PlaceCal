@@ -30,10 +30,11 @@
       </div>
       <% if online? %>
         <div class="event__detail event__repeats">
-          <span class="icon-font--online"></span>
+          <span class="icon-font--online"> </span>
           Online
         </div>
-      <% elsif place || first_address_line %>
+      <% end %>
+      <% if place || first_address_line %>
         <div class="event__detail event__location">
           <span class="icon-font--place"></span>
           <% if place %>
