@@ -76,7 +76,7 @@ class EventsBySiteTagTest < ActionDispatch::IntegrationTest
       name: 'Tag',
       slug: 'tag',
       description: 'A tag about a thing',
-      type: 'Facility'
+      type: 'Partnership'
     )
 
     tag_site = Site.create!(
@@ -86,7 +86,7 @@ class EventsBySiteTagTest < ActionDispatch::IntegrationTest
       url: 'https://a-site.lvh.me',
       is_published: true
     )
-    tag_site.tags << tag
+    tag_site.partnership << tag
     tag_site.neighbourhoods << neighbourhood
 
     address = Address.create!(

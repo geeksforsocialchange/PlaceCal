@@ -60,7 +60,7 @@ class Article < ApplicationRecord
     # site has no tags or locations.
 
     site_neighbourhood_ids = site.owned_neighbourhoods.pluck(:id)
-    site_tag_ids = site.tags.pluck(:id)
+    site_tag_ids = site.partnership.pluck(:id)
 
     # if site has no tags or neighbourhoods then just return nothing to caller
     return none if site_neighbourhood_ids.empty? && site_tag_ids.empty?

@@ -143,7 +143,7 @@ class Partner < ApplicationRecord
     query = Partner
 
     # if site has tags show only partners WITH those tags
-    site_tag_ids = site.tags.map(&:id)
+    site_tag_ids = site.partnership.map(&:id)
     if site_tag_ids.any?
       query = query
               .left_joins(:partner_tags)

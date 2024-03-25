@@ -58,7 +58,7 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'show computer access card when partners are tagged for it' do
     tag = create(:tag, name: 'computers')
-    @site.tags << tag
+    @site.partnership << tag
 
     partner = build(:partner)
     partner.service_area_neighbourhoods << @neighbourhood
@@ -76,7 +76,7 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'show public wifi card when partners are tagged for it' do
     tag = create(:tag, name: 'wifi')
-    @site.tags << tag
+    @site.partnership << tag
 
     partner = build(:partner)
     partner.service_area_neighbourhoods << @neighbourhood

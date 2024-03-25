@@ -106,7 +106,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'site tags show up and display their type' do
-    @site.tags << @partnership_tag
+    @site.partnership << @partnership_tag
     @site_admin.tags << @partnership_tag
 
     sign_in(@site_admin)

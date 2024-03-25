@@ -125,12 +125,12 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal 5, found.count
   end
 
-  test '::for_site returns articles with site tags applied' do
-    tag = create(:tag)
+  test '::for_site returns articles with site.partnership applied' do
+    tag = create(:partnership)
     author = create(:root)
 
     site = create(:site)
-    site.tags << tag
+    site.partnership << tag
     site.validate!
 
     3.times do |n|
@@ -166,8 +166,8 @@ class ArticleTest < ActiveSupport::TestCase
       )
     end
 
-    tag = create(:tag)
-    site.tags << tag
+    tag = create(:partnership)
+    site.partnership << tag
 
     5.times do |n|
       article = Article.create!(

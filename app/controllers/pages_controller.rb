@@ -6,16 +6,16 @@ class PagesController < ApplicationController
 
   def home
     @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Partnership' }
+      site.partnership.none? { |tag| tag.type == 'Partnership' }
     end
   end
 
   def find_placecal
     @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Partnership' }
+      site.partnership.none? { |tag| tag.type == 'Partnership' }
     end
     @partnerships = Site.published.select do |site|
-      site.tags.any? { |tag| tag.type == 'Partnership' }
+      site.partnership.any? { |tag| tag.type == 'Partnership' }
     end
   end
 

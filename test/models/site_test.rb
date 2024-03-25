@@ -32,7 +32,7 @@ class SitePartnerTest < ActiveSupport::TestCase
 
     tag = FactoryBot.create(:partnership)
     tag_site = FactoryBot.create(:site, name: 'tag site')
-    tag_site.tags << tag
+    tag_site.partnership << tag
     tag_site.neighbourhoods << address_neighbourhood
 
     partner = FactoryBot.create(:partner)
