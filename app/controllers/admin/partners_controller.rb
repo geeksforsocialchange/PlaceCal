@@ -144,6 +144,12 @@ module Admin
       end
     end
 
+    def lookup_name
+      found = Partner.where(name: params[:name]).first
+
+      render json: { name_available: found.nil? }
+    end
+
     def setup
       @partner = Partner.new
       authorize @partner

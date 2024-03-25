@@ -119,6 +119,7 @@ group :test do
   gem 'json_matchers'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
+  gem 'minitest-retry'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   gem 'vcr'
