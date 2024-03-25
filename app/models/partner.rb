@@ -80,6 +80,9 @@ class Partner < ApplicationRecord
   validates :twitter_handle,
             format: { with: TWITTER_REGEX, message: 'invalid account name' },
             allow_blank: true
+  validates :instagram_handle,
+            format: { with: INSTAGRAM_REGEX, message: 'invalid account name' },
+            allow_blank: true
   validates :facebook_link,
             format: { with: FACEBOOK_REGEX, message: 'invalid page name' },
             allow_blank: true

@@ -2,6 +2,7 @@
 
 class JoinsController < ApplicationController
   before_action :set_site
+  invisible_captcha only: %i[create update]
 
   def new
     @join = Join.new

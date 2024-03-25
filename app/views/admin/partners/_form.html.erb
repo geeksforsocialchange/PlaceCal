@@ -10,7 +10,7 @@
             <%= @partner.hidden_reason_html.to_s.html_safe %>
           </div>
           <hr>
-          <p class="mb-0">Once you have fixed this issue get in touch with <a href="mailto:<%= @mod_email %>" class="alert-link"><%= @mod_email %></a> so they can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: <a href="mailto:support@placecal.org" class="alert-link">support@placecal.org</a>.</p>
+          <p>Once you have fixed this issue get in touch with <a href="mailto:support@placecal.org">support@placecal.org</a> so that we can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: <a href="mailto:support@placecal.org">support@placecal.org</a>.</p>
         </div>
       <% end  %>
     <% end  %>
@@ -36,11 +36,13 @@
     </div>
     <br>
     <hr>
-    <h2>Address</h2>
+    <h2>Place</h2>
+    <p>Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District. Keep this information as specific as possible – limited to where this partner actually runs events rather than the geographical spread of the people they are trying to reach.</p>
     <div id='address'>
       <div class="row">
         <div class="col-md-6">
          
+    <h3>Address</h3>
             <%= render 'address_fields',
 		       form: f,
 		       partner: @partner %>
@@ -59,42 +61,54 @@
           <% end %>
         </div>
         <div class="col-md-6">
-          <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
-          <div class="form-group url optional facebook_link form-group-invalid">
-            <%= f.label :facebook_link %>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text">https://facebook.com/</div>
-              </div>
-              <%= f.input_field :facebook_link, class: "form-control", placeholder: 'FacebookPageName' %>
-              <%= f.error :facebook_link, class: 'invalid-feedback' %>
+          <h3>Service Areas</h3>
+          <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
+          <div class="sites_neighbourhoods">
+            <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+              <%= render 'service_area_fields', :f => neighbourhood %>
+            <% end %>
+            <div class="links">
+              <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
             </div>
-          </div>
-          <div class="form-group url optional twitter_handle form-group-invalid">
-            <%= f.label :twitter_handle %>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text">@</div>
-              </div>
-              <%= f.input_field :twitter_handle, class: "form-control", placeholder: 'TwitterAccount' %>
-              <%= f.error :twitter_handle, class: 'invalid-feedback' %>
-            </div>
+            <br>
           </div>
         </div>
       </div>
     </div>
     <hr>
-    <h2>Service Areas</h2>
-    <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
-    <div class="sites_neighbourhoods">
-      <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-        <%= render 'service_area_fields', :f => neighbourhood %>
-      <% end %>
-      <div class="links">
-        <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+    <h2>Online</h2>
+      <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
+      <div class="form-group url optional facebook_link form-group-invalid">
+        <%= f.label :facebook_link %>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text">https://facebook.com/</div>
+          </div>
+          <%= f.input_field :facebook_link, class: "form-control", placeholder: 'FacebookPageName' %>
+          <%= f.error :facebook_link, class: 'invalid-feedback' %>
+        </div>
       </div>
-      <br>
-    </div>
+      <div class="form-group url optional twitter_handle form-group-invalid">
+        <%= f.label :twitter_handle %>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text">@</div>
+          </div>
+          <%= f.input_field :twitter_handle, class: "form-control", placeholder: 'TwitterAccount' %>
+          <%= f.error :twitter_handle, class: 'invalid-feedback' %>
+        </div>
+      </div>
+      <div class="form-group url optional twitter_handle form-group-invalid">
+        <%= f.label :instagram_handle %>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text">@</div>
+          </div>
+          <%= f.input_field :instagram_handle, class: "form-control", placeholder: 'InstagramAccount' %>
+          <%= f.error :instagram_handle, class: 'invalid-feedback' %>
+        </div>
+      </div>
+        
     <br>
     <hr>
     <h2>Contact Information</h2>
@@ -139,7 +153,7 @@
         <div class="alert alert-light border" role="alert">
           <h2 class="alert-heading">Moderation</h2>
           <p>Hiding a partner is a last resort, and will remove them from all PlaceCal sites, not just yours. This is appropriate if a partner suddenly starts publishing things like spam or hate speech. In such cases, hiding a partner is the right action and we appreciate your help in keeping PlaceCal a safe place to be.</p>
-          <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out. The partner will receive your email address in order to discuss or arrange reinstatement.</p>
+          <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out.</p>
           <p>Please use the space below to explain the reason for hiding the partner and steps needed to re-instate them.</p>
           <%= f.input :hidden, class: "form-control" %>
           <%= f.input :hidden_reason, label: "Explanation for hiding",  class: "form-control" , input_html: { rows: 7 } %>

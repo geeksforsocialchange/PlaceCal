@@ -64,9 +64,6 @@ module Admin
     def edit
       authorize @partner
       @sites = Site.sites_that_contain_partner(@partner)
-      return unless @partner.hidden
-
-      @mod_email = User.find(@partner.hidden_blame_id).email
     end
 
     def update

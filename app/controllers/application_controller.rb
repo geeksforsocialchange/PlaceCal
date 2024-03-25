@@ -171,7 +171,6 @@ class ApplicationController < ActionController::Base
 
   def set_navigation
     return @navigation if @navigation
-    return if instance_of?(MountainView::StyleguideController)
 
     @navigation = if default_site?
                     default_site_navigation

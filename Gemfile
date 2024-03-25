@@ -73,7 +73,6 @@ gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 
 # Utilities
-gem 'active_link_to'
 gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id'
@@ -82,9 +81,9 @@ gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
 
+gem 'invisible_captcha'
 gem 'paper_trail'
 gem 'rollbar'
-gem 'sendgrid-actionmailer'
 gem 'uk_postcode'
 
 group :development, :test do
@@ -100,11 +99,11 @@ group :development do
   gem 'letter_opener'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop', '1.60.2', require: false
+  gem 'rubocop', '1.62.0', require: false
   gem 'rubocop-graphql', '1.5.0', require: false
-  gem 'rubocop-minitest', '0.34.5', require: false
+  gem 'rubocop-minitest', '0.35.0', require: false
   gem 'rubocop-performance', '1.20.2', require: false
-  gem 'rubocop-rails', '2.23.1', require: false
+  gem 'rubocop-rails', '2.24.1', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
