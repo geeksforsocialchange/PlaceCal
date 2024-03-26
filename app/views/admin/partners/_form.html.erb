@@ -140,12 +140,28 @@
     <h2>Tags</h2>
     <p>What partnerships, categories and facilities does this partner have or belong to?</p>
     <p>Partners may have up to 3 category tags.</p>
-    <%= f.association :tags,
-        label: false,
-        collection: options_for_partner_tags(@partner),
+    <% if  current_user.partnership_admin? || current_user.root? %>
+      <%= f.association :partnerships,
+          label: "Partnerships",
+          collection: options_for_partner_partnerships(),
+          input_html: { class: 'form-check', data: { 
+            controller: 'partner-tags',
+            "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
+          } } %>
+      <hr>
+    <% end %>
+    <%= f.association :facilities,
+        label: "Facilities",
+        collection: Facility.all,
         input_html: { class: 'form-check', data: { 
-          controller: @partner_tags_controller,
-          "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
+          controller: 'select2',
+        } } %>
+    <hr>
+    <%= f.association :categories,
+        label: "Categories",
+        collection: Category.all,
+        input_html: { class: 'form-check', data: { 
+          controller: 'select2',
         } } %>
     <hr>
     <% unless @partner.new_record? %>
