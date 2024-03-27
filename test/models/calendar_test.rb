@@ -173,4 +173,51 @@ class CalendarTest < ActiveSupport::TestCase
       assert_equal ['Unable to autodetect calendar format, please pick an option from the list below'], calendar.errors[:source]
     end
   end
+
+  test 'that_appear_on_site scope returns only calendars within the partnership' do
+    tag = FactoryBot.create(:partnership)
+    neighbourhood = FactoryBot.create(:rusholme_neighbourhood)
+
+    partnership_site = FactoryBot.create(:site)
+    partnership_site.tags << tag
+    partnership_site.neighbourhoods << neighbourhood
+    partnership_site.save
+
+    neighbourhood_site = FactoryBot.create(:site)
+    neighbourhood_site.neighbourhoods << neighbourhood
+    neighbourhood_site.save
+
+    partner_in_partnership = FactoryBot.create(:partner)
+    partner_in_partnership.tags << tag
+    partner_in_partnership.service_areas.create(neighbourhood: neighbourhood)
+    partner_in_partnership.save
+
+    partner_in_neighbourhood = FactoryBot.create(:partner)
+    partner_in_neighbourhood.service_areas.create(neighbourhood: neighbourhood)
+    partner_in_neighbourhood.save
+
+    calendar_in_partnership_site = nil
+    calendar_in_neighbourhood_site = nil
+
+    # calendar's partner is in neighbourhood and with partnership tag
+    VCR.use_cassette(:import_test_calendar) do
+      calendar_in_partnership_site = FactoryBot.create(:calendar)
+      calendar_in_partnership_site.partner = partner_in_partnership
+      calendar_in_partnership_site.save
+    end
+
+    # calendar's partner is in neighbourhood but without partnership tag
+    VCR.use_cassette(:eventbrite_events) do
+      calendar_in_neighbourhood_site = FactoryBot.create(:calendar_for_eventbrite)
+      calendar_in_neighbourhood_site.partner = partner_in_neighbourhood
+      calendar_in_neighbourhood_site.save
+    end
+
+    partnership_site_calendars = Calendar.that_appear_on_site(partnership_site)
+    neighbourhood_site_calendars = Calendar.that_appear_on_site(neighbourhood_site)
+
+    # only calendars with partners that appear on the site appear on the site
+    assert_equal([calendar_in_partnership_site], partnership_site_calendars)
+    assert_equal([calendar_in_neighbourhood_site, calendar_in_partnership_site], neighbourhood_site_calendars.order(:name))
+  end
 end
