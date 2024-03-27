@@ -78,7 +78,7 @@ module Admin
         flash[:success] = 'User has been created! An invite has been sent'
         redirect_to admin_users_path
       else
-        Rails.logger.debug @user.errors.full_messages
+        @partners = collect_partners
         flash.now[:danger] = 'User was not created'
         render 'new', status: :unprocessable_entity
       end

@@ -29,7 +29,7 @@
       hint: 'This tag is read only and should not be edited' %>
   <% end -%>
 
-  <% if @tag.type.blank? || @tag.type == 'Tag' %>
+  <% if @tag.new_record? %>
   <%= f.input :type,
       collection: {
       'None': '',
