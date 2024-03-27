@@ -23,7 +23,7 @@ body {
 h1 {
 	font-family: $serif;
 	font-weight: normal;
-	font-size: 2.22222rem;
+	font-size: $h1-size;
 	line-height: 1;
 
 	@include for-tablet-portrait-up {

@@ -1,0 +1,47 @@
+@import "variables_mixins";
+
+.hero_section {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto 1.11rem auto;
+}
+
+.hero_section__img {
+	// border-radius: 1.11rem 1.11rem 0rem 0rem;
+	aspect-ratio: 2 / 1;
+	grid-column: 1 / 2;
+	grid-row: 1 / span 2;
+	object-fit: cover;
+	width: 100%;
+	@include for-tablet-landscape-up {
+		aspect-ratio: 3 / 1;
+	}
+}
+.hero_section__text {
+	align-items: center;
+	background-color: var(--base-background);
+	border-radius: 1.1rem 1.1rem 0rem 0rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1.55rem;
+	grid-column: 1 / 2;
+	grid-row: 2 / span 2;
+	padding: 1.55rem;
+	z-index: 100;
+}
+
+.hero_section__credit {
+	font-size: $small-font-size;
+	margin: 0;
+}
+
+.hero_section__title {
+	font-size: $h2-size;
+	line-height: 1.2;
+	margin: 0;
+	max-width: 860px;
+	text-align: center;
+	@include for-tablet-landscape-up {
+		font-size: $h1-size;
+	}
+}

@@ -55,7 +55,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Website address'
     assert_select 'label', text: 'Twitter handle'
 
-    assert_select 'h2', text: 'Address'
+    assert_select 'h3', text: 'Address'
     assert_select 'label', text: 'Street address *'
     assert_select 'label', text: 'Street address 2'
     assert_select 'label', text: 'Street address 3'
