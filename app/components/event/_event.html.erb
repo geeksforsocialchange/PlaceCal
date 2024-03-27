@@ -28,6 +28,12 @@
         <span class="icon-font--date"></span>
         <%= date %>
       </div>
+      <% if online? %>
+        <div class="event__detail event__repeats">
+          <span class="icon-font--online"> </span>
+          Online
+        </div>
+      <% end %>
       <% if place || first_address_line %>
         <div class="event__detail event__location">
           <span class="icon-font--place"></span>
