@@ -145,7 +145,7 @@ module Admin
     end
 
     def lookup_name
-      found = params[:name].present? && Partner.where(name: params[:name]).first
+      found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
 
       render json: { name_available: found.nil? }
     end

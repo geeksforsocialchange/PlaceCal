@@ -1,19 +1,20 @@
 import { Controller } from "@hotwired/stimulus";
-import _ from "lodash";
 
 // PartnerFormValidationController
 export default class extends Controller {
 	static targets = ["source"];
 
 	connect() {
-		const inputDebouncePeriod = 200;
-		const baseUrl = "/partners/lookup_name";
+		console.log("PartnerFormValidationController.connect");
+
+		//this.inputDebouncePeriod = 200;
+		this.baseUrl = "/partners/lookup_name";
 
 		const csrfToken = document
 			.querySelector('meta[name="csrf-token"]')
 			.getAttribute("content");
 
-		const endpointHeaders = {
+		this.endpointHeaders = {
 			method: "GET",
 			headers: {
 				Accept: "application/json",
@@ -22,41 +23,39 @@ export default class extends Controller {
 			},
 		};
 
-		const nameProblemFeedbackElement = document.getElementById(
+		this.nameProblemFeedbackElement = document.getElementById(
 			"partner-name-feedback"
 		);
 
-		const nameField = this.sourceTarget;
-		const originalValue = nameField.value;
-
-		this.inputFunction = _.debounce(() => {
-			this.sourceTarget.classList.remove("is-invalid");
-			nameProblemFeedbackElement.style.display = "none";
-
-			const nameValue = this.sourceTarget.value;
-			if (nameValue.length < 1 || nameValue === originalValue) {
-				return;
-			}
-
-			const tryName = encodeURIComponent(nameValue);
-			const url = `${baseUrl}?name=${tryName}`;
-
-			fetch(url, endpointHeaders)
-				.then((response) => response.json())
-				.then((data) => {
-					if (!data.name_available) {
-						this.sourceTarget.classList.add("is-invalid");
-						nameProblemFeedbackElement.style.display = "block";
-					}
-
-					this.sourceTarget.focus();
-				});
-		}, this.inputDebouncePeriod);
-
-		this.sourceTarget.oninput = (event) => {
-			this.inputFunction();
-		};
+		this.nameField = this.sourceTarget;
+		this.originalValue = this.nameField.value;
 	}
 
 	disconnect() {}
+
+	checkInput(event) {
+		console.log("PartnerFormValidationController.checkInput");
+
+		this.nameField.classList.remove("is-invalid");
+		this.nameProblemFeedbackElement.style.display = "none";
+
+		const nameValue = this.sourceTarget.value;
+		if (nameValue.length < 5 || nameValue === this.originalValue) {
+			return;
+		}
+
+		const tryName = encodeURIComponent(nameValue);
+		const url = `${this.baseUrl}?name=${tryName}`;
+
+		fetch(url, this.endpointHeaders)
+			.then((response) => response.json())
+			.then((data) => {
+				if (!data.name_available) {
+					this.nameField.classList.add("is-invalid");
+					this.nameProblemFeedbackElement.style.display = "block";
+				}
+
+				this.nameField.focus();
+			});
+	}
 }

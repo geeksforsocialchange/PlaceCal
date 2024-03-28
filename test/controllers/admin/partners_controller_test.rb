@@ -294,5 +294,11 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     get lookup_name_admin_partners_path(name: 'alpha-beta')
     payload = response.parsed_body
     assert payload['name_available']
+
+    # also case sensitive no
+    partner = create(:partner)
+    get lookup_name_admin_partners_path(name: 'ALPHA-BETA')
+    payload = response.parsed_body
+    assert payload['name_available']
   end
 end

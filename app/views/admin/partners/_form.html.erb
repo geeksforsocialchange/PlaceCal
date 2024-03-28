@@ -15,7 +15,10 @@
       <% end  %>
     <% end  %>
     <h2>Basic Information</h2>
-    <%= f.input :name, class: "form-control", input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source' } %>
+    <%= f.input :name,
+	class: "form-control",
+	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source', 'data-action': 'input->partner-form-validation#checkInput' },
+	hint: 'Must be at least 5 characters long' %>
     <p class="invalid-feedback" id="partner-name-feedback">This partner name has already been taken.</p>
 
     <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
