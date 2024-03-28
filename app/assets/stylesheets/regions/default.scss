@@ -15,7 +15,9 @@
 }
 
 .region__mission {
-	margin-top: 3rem;
+	background-color: $base-rules;
+	padding: 1rem 0;
+	margin-top: 1rem;
 	text-align: center;
 }
 
@@ -37,6 +39,7 @@
 	}
 
 	.title-strip {
+		margin-top: 0;
 		margin-bottom: 0;
 	}
 }
