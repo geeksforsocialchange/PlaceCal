@@ -26,12 +26,15 @@ export default class extends Controller {
 			"partner-name-feedback"
 		);
 
+		const nameField = this.sourceTarget;
+		const originalValue = nameField.value;
+
 		this.inputFunction = _.debounce(() => {
 			this.sourceTarget.classList.remove("is-invalid");
 			nameProblemFeedbackElement.style.display = "none";
 
 			const nameValue = this.sourceTarget.value;
-			if (nameValue.length < 1) {
+			if (nameValue.length < 1 || nameValue === originalValue) {
 				return;
 			}
 
