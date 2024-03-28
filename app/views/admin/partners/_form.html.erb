@@ -15,9 +15,8 @@
       <% end  %>
     <% end  %>
     <h2>Basic Information</h2>
-    <%= f.input :name,
-	class: "form-control",
-	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source' } %>
+    <%= f.input :name, class: "form-control", input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source' } %>
+    <p class="invalid-feedback" id="partner-name-feedback">This partner name has already been taken.</p>
 
     <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
     <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>
