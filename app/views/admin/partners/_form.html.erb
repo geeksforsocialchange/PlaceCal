@@ -138,11 +138,11 @@
     </div>
     <hr>
     <h2>Tags</h2>
-    <p>What partnerships, categories and facilities does this partner have or belong to?</p>
-    <p>Partners may have up to 3 category tags.</p>
+    <p>What other associations does this partner have apart from place.</p>
     <% if  current_user.partnership_admin? || current_user.root? %>
       <%= f.association :partnerships,
           label: "Partnerships",
+          hint:"Which communities of interest should this partner appear on",
           collection: options_for_partner_partnerships(),
           input_html: { class: 'form-check', data: { 
             controller: 'partner-tags',
@@ -152,6 +152,8 @@
     <% end %>
     <%= f.association :facilities,
         label: "Facilities",
+        hint:"What infrastructure does this partner provide.",
+        collection: options_for_partner_partnerships(),
         collection: Facility.all,
         input_html: { class: 'form-check', data: { 
           controller: 'select2',
@@ -159,6 +161,7 @@
     <hr>
     <%= f.association :categories,
         label: "Categories",
+        hint:"Partners may have up to 3 category tags, the public will be able to filter by these",
         collection: Category.all,
         input_html: { class: 'form-check', data: { 
           controller: 'select2',
