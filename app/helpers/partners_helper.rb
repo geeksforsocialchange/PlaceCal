@@ -17,16 +17,6 @@ module PartnersHelper
       end
   end
 
-  def options_for_partner_tags(partner = nil)
-    options = policy_scope(Tag)
-              .select(:name, :type, :id)
-              .order(:name)
-              .map { |r| [r.name_with_type, r.id] }
-    return options unless partner
-
-    (options + partner&.tags&.map { |r| [r.name_with_type, r.id] }).uniq
-  end
-
   def options_for_partner_partnerships
     options = policy_scope(Partnership)
               .select(:name, :type, :id)
