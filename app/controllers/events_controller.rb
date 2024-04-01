@@ -18,6 +18,7 @@ class EventsController < ApplicationController
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
     @events = filter_events(@period, repeating: @repeating, site: current_site)
+    @title = current_site.name
     # Sort criteria
     @events = sort_events(@events, @sort)
     @multiple_days = true
