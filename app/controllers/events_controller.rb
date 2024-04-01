@@ -32,8 +32,13 @@ class EventsController < ApplicationController
       end
       format.text
       format.ics do
+        events = Event.all
+        if @site
+          events = events.for_site(@site)
+          events = events.with_tags(@site.tags) if @site.tags.any?
+        end
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
-        ics_listing = Event.ical_feed
+        ics_listing = events.ical_feed
         cal = create_calendar(ics_listing)
         cal.publish
         render plain: cal.to_ical
