@@ -30,6 +30,10 @@
                   <%= radio_button_tag(:period, "week", period == 1.week) %>
                   <%= label_tag(:period_week, "Weekly view") %>
                 </div>
+                <div class="filters__option">
+                  <%= radio_button_tag(:period, "future") %>
+                  <%= label_tag(:period_future, "Future view") %>
+                </div>
               </div>
               <hr>
               <!-- Show or hide repeating events -->
