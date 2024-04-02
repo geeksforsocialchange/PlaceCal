@@ -45,18 +45,28 @@ class Calendar < ApplicationRecord
   )
 
   scope :that_appear_on_site, lambda { |site|
-    site_neighbourhoods = site.owned_neighbourhoods.map(&:id)
+    site_partnership_tag_ids = site.tags.map(&:id)
 
-    Calendar
-      .joins('JOIN events ON events.calendar_id = calendars.id')
-      .joins('JOIN partners ON events.partner_id = partners.id')
-      .joins('LEFT JOIN addresses ON partners.address_id = addresses.id')
-      .joins('LEFT JOIN service_areas ON service_areas.partner_id = partners.id')
-      .where(
-        '(addresses.neighbourhood_id IN (:site_neighbourhoods)) OR (service_areas.neighbourhood_id IN (:site_neighbourhoods))',
-        site_neighbourhoods: site_neighbourhoods
-      )
-      .distinct('calendars.id')
+    if site_partnership_tag_ids.length.positive?
+      return Calendar.left_joins(partner: %i[address service_areas partnerships])
+                     .where(
+                       '(partner_tags.tag_id IN (:tags) AND '\
+                       '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
+                       'service_areas.neighbourhood_id in (:neighbourhood_ids)))',
+                       neighbourhood_ids: site.owned_neighbourhood_ids,
+                       tags: site_partnership_tag_ids
+                     )
+                     .distinct
+    else
+      return Calendar.left_joins(partner: %i[address service_areas])
+                     .left_joins(events: %i[address])
+                     .where(
+                       '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
+                       'service_areas.neighbourhood_id in (:neighbourhood_ids))',
+                       neighbourhood_ids: site.owned_neighbourhood_ids
+                     )
+                     .distinct
+    end
   }
 
   # We need a default location for some strategies
