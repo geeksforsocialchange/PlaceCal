@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     resources :partners do
       collection do
         match :setup, via: %i[get post]
+        get :lookup_name
       end
       member do
         delete :clear_address
