@@ -261,6 +261,7 @@ class Calendar < ApplicationRecord
 
   # called for validation
   def check_source_reachable
+    return if source.blank?
     return unless source_changed?
 
     # The calendar importer will raise an exception if the source

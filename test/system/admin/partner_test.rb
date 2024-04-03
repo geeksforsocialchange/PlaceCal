@@ -145,10 +145,13 @@ class AdminPartnerTest < ApplicationSystemTestCase
     # the link adds a select2_node to the end of the array
     click_link 'Add Service Area'
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
-    select2 @neighbourhood_one, xpath: service_areas[-1].path
+    assert_predicate service_areas, :present?
+    select2 @neighbourhood_one, xpath: service_areas.last.path
+
     click_link 'Add Service Area'
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
-    select2 @neighbourhood_one, xpath: service_areas[-1].path
+    assert_predicate service_areas, :present?
+    select2 @neighbourhood_one, xpath: service_areas.last.path
 
     click_button 'Save Partner'
     assert_selector '.alert-success'
