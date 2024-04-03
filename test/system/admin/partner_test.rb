@@ -51,7 +51,9 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
 
     tags = select2_node 'partner_tags'
-    assert_select2_multiple [@tag.name_with_type], tags
+    find_element_and_retry_if_not_found do
+      assert_select2_multiple [@tag.name_with_type], tags
+    end
 
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     assert_select2_single @neighbourhood_one, service_areas[0]
@@ -64,7 +66,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
     find :css, '#partner_image', wait: 100
 
-    image_path = File.join(fixture_path, 'files/damir-omerovic-UMaGtammiSI-unsplash.jpg')
+    image_path = File.join(fixture_paths.first, 'files/damir-omerovic-UMaGtammiSI-unsplash.jpg')
     attach_file 'partner_image', image_path
 
     base64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gIcSUNDX1BST0ZJTEUAAQEAAAIMbGNtcwIQAABtbnRyUkdCIFhZWi'
@@ -143,10 +145,13 @@ class AdminPartnerTest < ApplicationSystemTestCase
     # the link adds a select2_node to the end of the array
     click_link 'Add Service Area'
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
-    select2 @neighbourhood_one, xpath: service_areas[-1].path
+    assert_predicate service_areas, :present?
+    select2 @neighbourhood_one, xpath: service_areas.last.path
+
     click_link 'Add Service Area'
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
-    select2 @neighbourhood_one, xpath: service_areas[-1].path
+    assert_predicate service_areas, :present?
+    select2 @neighbourhood_one, xpath: service_areas.last.path
 
     click_button 'Save Partner'
     assert_selector '.alert-success'

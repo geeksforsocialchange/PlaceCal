@@ -37,6 +37,10 @@ class PartnerPolicy < ApplicationPolicy
     return true if user.only_neighbourhood_admin_for_partner?(record.id)
   end
 
+  def clear_address?
+    edit?
+  end
+
   def setup?
     create?
   end
@@ -45,7 +49,7 @@ class PartnerPolicy < ApplicationPolicy
     attrs = [:name, :image, :summary, :description, :accessibility_info,
              :public_name, :public_email, :public_phone,
              :partner_name, :partner_email, :partner_phone,
-             :address_id, :url, :facebook_link, :twitter_handle,
+             :address_id, :url, :facebook_link, :twitter_handle, :instagram_handle,
              :opening_times,
              { calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
                address_attributes: %i[id street_address street_address2 street_address3 city postcode],
@@ -53,6 +57,9 @@ class PartnerPolicy < ApplicationPolicy
                tag_ids: [] }]
 
     attrs << :slug if user.root?
+    attrs << :hidden if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :hidden_reason if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :hidden_blame_id  if user.root? || user.neighbourhood_admin? || user.partnership_admin?
     attrs
   end
 

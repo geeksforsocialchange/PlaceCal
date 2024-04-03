@@ -17,7 +17,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    user.root? || can_see_any_partners?
   end
 
   def create?
@@ -146,5 +146,11 @@ class UserPolicy < ApplicationPolicy
           ).distinct
       end
     end
+  end
+
+  private
+
+  def can_see_any_partners?
+    PartnerPolicy::Scope.new(user, Partner).resolve&.to_a&.any?
   end
 end

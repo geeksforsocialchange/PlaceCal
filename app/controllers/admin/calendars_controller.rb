@@ -4,6 +4,7 @@
 module Admin
   class CalendarsController < Admin::ApplicationController
     before_action :set_calendar, only: %i[show edit update destroy import]
+    before_action :preselect_partner, only: %i[new create]
 
     def index
       @calendars = policy_scope(Calendar).order(updated_at: :desc).order(:name)
@@ -22,11 +23,6 @@ module Admin
     end
 
     def new
-      if params[:partner_id]
-        # TODO: better calendar-to-user scoping
-        # @partner = current_user.partners.where(id: params[:partner_id]).first
-        @partner = policy_scope(Partner).where(id: params[:partner_id]).first
-      end
       @calendar = Calendar.new
       authorize @calendar
     end
@@ -88,6 +84,13 @@ module Admin
     end
 
     private
+
+    def preselect_partner
+      return if params[:partner_id].blank?
+
+      # TODO: better calendar-to-user scoping
+      @partner = current_user.partners.where(id: params[:partner_id]).first
+    end
 
     def set_calendar
       @calendar = Calendar.find(params[:id])

@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
 
       @current_site = Site.find_by_request(request)
 
-      redirect_to(root_url(subdomain: false)) if @current_site.nil? && !response.redirect?
+      redirect_to(root_url(subdomain: false), allow_other_host: true) if @current_site.nil? && !response.redirect?
     else
       flash.now[:warning] = 'You have no site in your database, have you run `rails db:seed`?'
       @current_site = Site.new
@@ -171,7 +171,6 @@ class ApplicationController < ActionController::Base
 
   def set_navigation
     return @navigation if @navigation
-    return if instance_of?(MountainView::StyleguideController)
 
     @navigation = if default_site?
                     default_site_navigation

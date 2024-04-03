@@ -3,10 +3,10 @@
 module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
-    before_action :set_partner, only: %i[show edit update destroy]
+    before_action :set_partner, only: %i[show edit update destroy clear_address]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
-    before_action :set_partner_tags_controller, only: %i[new edit update]
+    before_action :set_partner_tags_controller, only: %i[create new edit update]
 
     def index
       @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
@@ -71,6 +71,8 @@ module Admin
 
       mutated_params = permitted_attributes(@partner)
 
+      before = @partner.hidden
+
       @partner.accessed_by_user = current_user
 
       # prevent someone trying to add the same service_area twice by mistake and causing a crash
@@ -81,6 +83,10 @@ module Admin
 
       mutated_params[:service_areas_attributes] = uniq_service_areas
 
+      hidden_in_this_edit = mutated_params[:hidden] == '1' && !@partner.hidden
+
+      mutated_params[:hidden_blame_id] = current_user.id  if hidden_in_this_edit
+
       if @partner.update(mutated_params)
         # have to redirect on associated service area errors or form breaks
         if @partner.errors[:service_areas].any?
@@ -88,6 +94,20 @@ module Admin
         else
           flash[:success] = 'Partner was successfully updated.'
         end
+
+        # important this needs to only fire on change to hidden
+        if hidden_in_this_edit
+          @partner.users.each do |user|
+            ModerationMailer.hidden_message(
+              user,
+              @partner
+            ).deliver
+          end
+          ModerationMailer.hidden_staff_alert(
+            @partner
+          ).deliver
+        end
+
         redirect_to edit_admin_partner_path(@partner)
       else
         flash.now[:danger] = 'Partner was not saved.'
@@ -106,6 +126,25 @@ module Admin
         end
         format.json { head :no_content }
       end
+    end
+
+    def clear_address
+      authorize @partner
+
+      if @partner.can_clear_address?(current_user)
+        @partner.clear_address!
+        render json: { message: 'Address cleared' }
+
+      else
+        render json: { message: 'Could not clear address' },
+               status: :unprocessable_entity
+      end
+    end
+
+    def lookup_name
+      found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
+
+      render json: { name_available: found.nil? }
     end
 
     def setup

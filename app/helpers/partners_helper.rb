@@ -64,7 +64,7 @@ module PartnersHelper
   #
   # @return [String] HTML string
   def site_links
-    return unless @sites
+    return if @sites.blank?
 
     @sites
       .map { |site| link_to site.name, site.url }

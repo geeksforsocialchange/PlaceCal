@@ -12,7 +12,6 @@ class Address < ApplicationRecord
 
   has_many :events
   has_many :partners
-  has_many :calendars
 
   belongs_to :neighbourhood, optional: true
 
@@ -29,6 +28,14 @@ class Address < ApplicationRecord
     street_address2 = street_address
     street_address = room_number_string
     self
+  end
+
+  def missing_values?
+    street_address.blank? &&
+      street_address2.blank? &&
+      street_address3.blank? &&
+      city.blank? &&
+      postcode.blank?
   end
 
   def first_address_line

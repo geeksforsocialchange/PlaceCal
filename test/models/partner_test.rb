@@ -423,4 +423,90 @@ class PartnerTest < ActiveSupport::TestCase
     partner = create(:partner, :accessed_by_user => pa, :tags => [pa.tags.first])
     assert_predicate partner, :valid?
   end
+
+  test 'partner cannot be set to hidden without a reason' do
+    assert_raises(ActiveRecord::RecordInvalid, 'You need to give a reason for hiding a Partner from all public sites, this will help them resolve the issue.') do
+      @new_partner.update!(hidden: true, hidden_blame_id: 1)
+    end
+  end
+
+  test 'partner cannot be set to hidden without someone to contact' do
+    assert_raises(ActiveRecord::RecordInvalid, 'You must record who has hidden the partner') do
+      @new_partner.update!(hidden: true, hidden_reason: 'something has gone terribly wrong')
+    end
+  end
+
+  test 'partner can be set to hidden with a reason and person to contact' do
+    @new_partner.update!(hidden: true, hidden_reason: 'something has gone terribly wrong', hidden_blame_id: 1)
+    assert_predicate @new_partner, :valid?
+  end
+
+  test 'can_clear_address? for root' do
+    partner = build(:bare_partner)
+    # has no address
+    assert_not partner.can_clear_address?
+
+    partner.address = create(:address)
+    # missing service area
+    assert_not partner.can_clear_address?
+
+    partner.service_areas.build(neighbourhood: create(:neighbourhood))
+    # is not root
+    assert_not partner.can_clear_address?
+
+    root = create(:root)
+    assert partner.can_clear_address?(root)
+  end
+
+  test 'can_clear_address? for partner admin' do
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.service_areas.build(neighbourhood: create(:neighbourhood))
+    partner.save!
+
+    citizen = create(:citizen)
+    citizen.partners << partner
+
+    assert partner.can_clear_address?(citizen)
+  end
+
+  test 'can_clear_address? for neighbourhood admin' do
+    neighbourhood = create(:neighbourhood)
+    citizen = create(:citizen)
+    citizen.neighbourhoods << neighbourhood
+
+    # cannot clear address if admin does not "own" address
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.service_areas.build(neighbourhood: neighbourhood)
+    partner.save!
+
+    assert_not partner.can_clear_address?(citizen)
+
+    # now partner is in admins neighbourhood pool, can clear
+    partner.address.neighbourhood = neighbourhood
+    assert partner.can_clear_address?(citizen)
+  end
+
+  test 'warn_user_clear_address?' do
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.save!
+
+    # am root
+    root = create(:root)
+    assert_not partner.warn_user_clear_address?(root)
+
+    # am owner
+    citizen = create(:citizen)
+    citizen.partners << partner
+    assert_not partner.warn_user_clear_address?(citizen)
+
+    # not root or owner, so warn
+    other_neighbourhood = create(:neighbourhood)
+    other_citizen = create(:citizen)
+    other_citizen.neighbourhoods << other_neighbourhood
+
+    assert partner.warn_user_clear_address?(other_citizen)
+  end
 end

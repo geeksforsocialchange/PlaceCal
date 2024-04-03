@@ -36,6 +36,9 @@ Style/Documentation:
 Naming/VariableNumber:
   Enabled: false
 
+Rails/EnvLocal:
+  Enabled: false
+
 # all these added when updating ruby (and rubocop) - i guess a default config
 # got updated. adding these here so we have the smallest code change in
 # this branch
@@ -54,6 +57,12 @@ Style/HashSyntax:
 
 Rails/ActionOrder:
   Enabled: false
+
+Metrics/ClassLength:
+  Exclude:
+    - "test/**/*.rb"
+
+
 
 Rails/RootPathnameMethods:
   Enabled: false

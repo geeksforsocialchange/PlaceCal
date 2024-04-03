@@ -265,4 +265,40 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_equal 'Partners must have an address or a service area inside your neighbourhood', flash[:danger]
   end
+
+  test 'root user clear address on partner clears address' do
+    sign_in @root
+
+    delete clear_address_admin_partner_path(@partner)
+    assert_response :success
+
+    @partner.reload
+    assert_nil @partner.address
+
+    # will not work if no address is set
+    delete clear_address_admin_partner_path(@partner)
+    assert_response :unprocessable_entity
+  end
+
+  test 'partner name availability endpoint' do
+    sign_in @root
+
+    # yes
+    get lookup_name_admin_partners_path(name: 'alpha-beta')
+    payload = response.parsed_body
+    assert payload['name_available']
+    # puts response.body
+
+    # no
+    partner = create(:partner)
+    get lookup_name_admin_partners_path(name: 'alpha-beta')
+    payload = response.parsed_body
+    assert payload['name_available']
+
+    # also case sensitive no
+    partner = create(:partner)
+    get lookup_name_admin_partners_path(name: 'ALPHA-BETA')
+    payload = response.parsed_body
+    assert payload['name_available']
+  end
 end

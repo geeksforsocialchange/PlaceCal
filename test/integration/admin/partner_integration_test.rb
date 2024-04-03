@@ -55,7 +55,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Website address'
     assert_select 'label', text: 'Twitter handle'
 
-    assert_select 'h2', text: 'Address'
+    assert_select 'h3', text: 'Address'
     assert_select 'label', text: 'Street address *'
     assert_select 'label', text: 'Street address 2'
     assert_select 'label', text: 'Street address 3'
@@ -168,6 +168,22 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     put admin_partner_path(@partner), params: { partner: partner_params }
 
     assert_select '#form-errors li', text: 'Partners cannot have an address outside of your ward.'
+  end
+
+  test 'partner_admin is shown reason for hiding them' do
+    reason = 'This is bad content for PlaceCal'
+    user = create(:partner_admin)
+    partner = user.partners.first
+    partner.update!(hidden: true, hidden_reason: reason, hidden_blame_id: @admin.id)
+
+    sign_in user
+
+    get edit_admin_partner_path(partner)
+    assert_response :success
+
+    assert_select '#hidden-reason' do
+      assert_select 'p', count: 1, text: reason
+    end
   end
 end
 

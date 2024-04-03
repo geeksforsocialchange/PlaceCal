@@ -21,3 +21,12 @@ application.register("user-partners", UserPartnersController);
 
 import PartnerTagsController from "./partner_tags_controller.js";
 application.register("partner-tags", PartnerTagsController);
+
+import PartnerAddressController from "./partner_address_controller.js";
+application.register("partner-address", PartnerAddressController);
+
+import PartnerFormValidationController from "./partner_form_validation_controller.js";
+application.register(
+	"partner-form-validation",
+	PartnerFormValidationController
+);

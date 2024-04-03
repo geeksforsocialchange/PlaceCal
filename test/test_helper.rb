@@ -53,7 +53,7 @@ module ActiveSupport
       define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
         users.each do |user|
           test "#{user}: can #{action}" do
-            variable = instance_variable_get("@#{user}")
+            variable = instance_variable_get(:"@#{user}")
 
             sign_in variable
 
@@ -65,7 +65,7 @@ module ActiveSupport
       define_singleton_method(:"it_denies_access_to_#{action}_for") do |users, &block|
         users.each do |user|
           test "#{user} : cannot #{action}" do
-            variable = instance_variable_get("@#{user}")
+            variable = instance_variable_get(:"@#{user}")
 
             sign_in variable
 
@@ -87,7 +87,7 @@ module ActiveSupport
       klass  = object.is_a?(Class) ? object : object.class
       policy = "#{klass}Policy".constantize
 
-      policy.new(user, object).send("#{action}?")
+      policy.new(user, object).send(:"#{action}?")
     end
 
     def denies_access(user, object, action)
@@ -142,8 +142,10 @@ def click_sidebar(href)
   end
 end
 
-def await_datatables(time = 15)
-  page.find(:css, '#datatable_info', wait: time)
+def await_datatables(time = 5)
+  find_element_and_retry_if_not_found do
+    page.find(:css, '#datatable_info', wait: time)
+  end
 end
 
 # GraphQL helpers
