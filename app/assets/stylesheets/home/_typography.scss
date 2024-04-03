@@ -1,0 +1,112 @@
+@import "variables_mixins";
+
+//--------------------------------------------//
+
+body {
+	@include fontstyle(16 26, 18 28);
+}
+
+// Hero text
+h1 {
+	font-family: $serif;
+
+	@include fontstyle(32 40, 45 55, (), 60 60);
+}
+
+// Intro copy
+.intro {
+	@include fontstyle(16 26 medium, (), 24 36);
+}
+
+// Navigation
+.navlink {
+	@include fontstyle(18 20 600);
+}
+
+//--------------------------------------------//
+
+// Section titles
+h1.section,
+h2 {
+	font-family: $sans-serif;
+
+	@include fontstyle(32 38 400, 35 45, (), 40 50);
+}
+
+// Phone/email section title
+h2.phone,
+.h2-phone {
+	@include fontstyle(28 40 300, 35 45, (), 40 50);
+}
+
+// Large titles
+h3 {
+	@include fontstyle(26 32 bold, 24 30);
+}
+
+// Small titles
+h3.small,
+.h3-small {
+	@include fontstyle(20 24 bold, (), (), 24 30);
+}
+
+// Buttons & 'strong text'
+.btn,
+.btn-size {
+	@include fontstyle(18 26 bold);
+}
+
+.btn--small {
+	@include fontstyle(16 19 bold);
+}
+
+// Small / descriptor
+.small {
+	@include fontstyle(14 22 medium);
+}
+
+// Tiny titles / info / dates
+.tinytitle {
+	@include fontstyle(14 22 bold);
+}
+
+// Image descriptor
+.caption,
+figcaption {
+	@include fontstyle(12 16 bold, 14 18);
+}
+
+//--------------------------------------------//
+
+.alt-title {
+	font-family: $serif;
+
+	@include fontstyle(26 36, 26 34, 30 40, 40 55);
+}
+
+.alt-title-small {
+	font-family: $serif;
+	font-weight: normal;
+
+	@include fontstyle(22 30, (), 26 34, 30 40);
+}
+
+//--------------------------------------------//
+
+.footer-title {
+	font-family: $serif;
+
+	@include fontstyle(20 30 300);
+}
+
+.footer-link {
+	font-family: $serif;
+
+	@include fontstyle(16 30, (), (), 18 34);
+}
+
+.footer-legal {
+	font-family: $serif;
+
+	@include fontstyle(12 18);
+}

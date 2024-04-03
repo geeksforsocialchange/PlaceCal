@@ -75,6 +75,12 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
+  asset_url = routes.default_url_options[:protocol]
+  asset_url += "://#{routes.default_url_options[:host]}"
+  asset_url += ":#{routes.default_url_options[:port]}" if routes.default_url_options[:port].present?
+
+  config.action_mailer.asset_host = asset_url
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false

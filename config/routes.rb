@@ -11,8 +11,8 @@ Rails.application.routes.draw do
              }
 
   # Static pages
-  get 'join', to: 'joins#new'
-  post 'join', to: 'joins#create'
+  get 'get-in-touch', to: 'joins#new'
+  post 'get-in-touch', to: 'joins#create'
   get 'privacy', to: 'pages#privacy'
   get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
@@ -36,6 +36,10 @@ Rails.application.routes.draw do
     resources :partners do
       collection do
         match :setup, via: %i[get post]
+        get :lookup_name
+      end
+      member do
+        delete :clear_address
       end
     end
     resources :tags
@@ -52,7 +56,7 @@ Rails.application.routes.draw do
     root 'pages#home'
   end
 
-  constraints(::Sites::Local) do
+  constraints(Sites::Local) do
     get '/' => 'sites#index'
   end
 
@@ -82,18 +86,12 @@ Rails.application.routes.draw do
   get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places/:id/embed' => 'places#embed'
 
-  # Calendars
-  resources :calendars, only: %i[index show]
-
   # Collections
   resources :collections, only: %i[show]
 
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
   get 'winter2018', to: 'collections#show', id: 2
-
-  # Styleguide
-  mount MountainView::Engine => '/styleguide'
 
   get '/robots.txt' => 'pages#robots'
 

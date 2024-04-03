@@ -15,3 +15,18 @@ application.register("opening-times", OpeningTimesController);
 
 import Select2Controller from "./select2_controller.js";
 application.register("select2", Select2Controller);
+
+import UserPartnersController from "./user_partners_controller.js";
+application.register("user-partners", UserPartnersController);
+
+import PartnerTagsController from "./partner_tags_controller.js";
+application.register("partner-tags", PartnerTagsController);
+
+import PartnerAddressController from "./partner_address_controller.js";
+application.register("partner-address", PartnerAddressController);
+
+import PartnerFormValidationController from "./partner_form_validation_controller.js";
+application.register(
+	"partner-form-validation",
+	PartnerFormValidationController
+);

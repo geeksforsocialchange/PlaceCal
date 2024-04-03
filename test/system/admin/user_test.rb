@@ -16,8 +16,7 @@ class AdminUserTest < ApplicationSystemTestCase
     @partner = @partner_admin.partners.first
     @partner_two = create :ashton_partner
 
-    @tag = create :tag
-    @tag_pub = create :tag_public
+    @tag = create(:partnership)
 
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
@@ -47,16 +46,17 @@ class AdminUserTest < ApplicationSystemTestCase
     assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
     tags = select2_node 'user_tags'
-    select2 @tag.name, @tag_pub.name, xpath: tags.path
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    select2 @tag.name, xpath: tags.path
+    assert_select2_multiple [@tag.name_with_type], tags
     click_button 'Update'
 
     click_link 'Users'
 
     # return to user to check data is intact
-    datatable_1st_row = page.all(:css, '.odd')[0]
-    within datatable_1st_row do
-      click_link 'Place'
+    find_element_and_retry_if_stale do
+      within page.all(:css, '.odd')[0] do
+        click_link 'Place'
+      end
     end
 
     partners = select2_node 'user_partners'
@@ -66,6 +66,6 @@ class AdminUserTest < ApplicationSystemTestCase
     assert_select2_multiple [@neighbourhood_one, @neighbourhood_two], neighbourhoods
 
     tags = select2_node 'user_tags'
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    assert_select2_multiple [@tag.name_with_type], tags
   end
 end

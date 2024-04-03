@@ -1,0 +1,62 @@
+<%= form_tag request.original_url, method: :get, class: 'filters__form', data: { turbo: false } do %>
+  <div class ="breadcrumb__element breadcrumb__element--last">
+
+  <%# category filters %>
+  <% if filters.show_category_filter? %>
+    <div class="breadcrumb__filters filters">
+      <div class="js-category-filters-toggle filters__toggle">
+        <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Category</span></a>
+      </div>
+      <div class="filters__dropdown filters__dropdown--hidden js-category-filters">
+        <div class="filters__group" >
+          <% filters.categories.each do |category| %>
+          <div class="filters__option">
+            <%= radio_button_tag 'category', category.id, filters.current_category?(category), class: "tag__button" %>
+            <%= label_tag 'category', category.name, class: "tag__label" %>
+          </div>
+          <% end %>
+        </div>
+        <hr>
+        <div class="filters__group">
+          <div class="filters__option">
+            <%= radio_button_tag 'category_mode', 'include', filters.include_mode?, class: "include__button" %>
+            <%= label_tag 'category_mode', 'Include', class: "include__label" %>
+          </div>
+          <div class="filters__option">
+            <%= radio_button_tag 'category_mode', 'exclude', filters.exclude_mode?, class: "include__button" %>
+            <%= label_tag 'category_mode', 'Exclude', class: "include__label" %>
+          </div>
+        </div>
+        <hr>
+        <% if filters.category_active? %>
+          <a href=<%= filters.reset_categories(request.original_url) %> class="btn size-patch" role="button">Reset</a>
+        <% end %>
+        <%= button_tag 'Filter', name: nil, class: 'btn size-patch' %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# neighbourhood filters %>
+  <div class="breadcrumb__filters filters">
+    <div class="js-neighbourhood-filters-toggle filters__toggle">
+      <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Neighbourhood</span></a>
+    </div>
+    <div class="filters__dropdown filters__dropdown--hidden js-neighbourhood-filters">
+      <div class="filters__group" >
+        <% filters.neighbourhood_names.each do |neighbourhood_name| %>
+        <div class="filters__option">
+          <%= radio_button_tag 'neighbourhood_name', neighbourhood_name, filters.current_neighbourhood_name?(neighbourhood_name), class: "tag__button" %>
+          <%= label_tag 'neighbourhood_name', neighbourhood_name, class: "tag__label" %>
+        </div>
+        <% end %>
+      </div>
+      <hr>
+      <% if filters.neighbourhood_active? %>
+      <a href=<%= filters.reset_neighbourhoods(request.original_url) %> class="btn size-patch" role="button">Reset</a>
+      <% end %>
+      <%= button_tag 'Filter', name: nil, class: 'btn size-patch' %>
+    </div>
+  </div>
+
+  </div>
+<% end %>

@@ -14,15 +14,12 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def edit?
-    index?
+    update?
   end
 
   def update?
     return true if user.root?
-    return true if user.partner_admin? && user.partner_ids.include?(record.partner_id)
-
-    # return true if user.neighbourhood_admin? && user.neighbourhoods.include?(record.address.neighbourhood)
-    index?
+    return true if scope.map(&:id).include? record.id
   end
 
   def import?
@@ -40,13 +37,34 @@ class CalendarPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       return scope.all if user.root?
-      return scope.none if !user.partner_admin? && !user.neighbourhood_admin?
+      return scope.none if !user.partner_admin? && !user.neighbourhood_admin? && !user.partnership_admin?
 
-      Calendar.left_outer_joins(partner: :address, place: :address)
-              .where(addresses: { neighbourhood_id: user.owned_neighbourhood_ids })
-              .or(Calendar.left_outer_joins(partner: :address, place: :address)
-              .where('partner_id IN (:partner_id) OR place_id IN (:partner_id)', partner_id: user.partner_ids))
-              .distinct
+      if user.partnership_admin?
+        user_partnership_tag_ids = user.tags.map(&:id)
+        partnership_calendars =
+          Calendar.left_joins(partner: %i[address service_areas partnerships])
+                  .where(
+                    'calendars.partner_id IN (:partner_ids) OR
+                      ( partner_tags.tag_id IN (:tags) AND
+                       (addresses.neighbourhood_id in (:neighbourhood_ids) OR
+                      service_areas.neighbourhood_id in (:neighbourhood_ids)))',
+                    neighbourhood_ids: user.owned_neighbourhood_ids,
+                    partner_ids: user.partner_ids,
+                    tags: user_partnership_tag_ids
+                  )
+                  .distinct
+      else
+        neighbourhood_calendars =
+          Calendar.left_joins(partner: %i[address service_areas])
+                  .where(
+                    '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
+                    'service_areas.neighbourhood_id in (:neighbourhood_ids) OR '\
+                    'calendars.partner_id IN (:partner_ids))',
+                    neighbourhood_ids: user.owned_neighbourhood_ids,
+                    partner_ids: user.partner_ids
+                  )
+                  .distinct
+      end
     end
   end
 end

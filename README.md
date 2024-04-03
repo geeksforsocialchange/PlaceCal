@@ -11,6 +11,8 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 To run PlaceCal locally you will need:
 
 - A Mac or a Linux machine (we don't support Windows at present)
+- GNU Compiler Collection (gcc) (for compiling ruby and gems)
+- Docker (optional) (for isolating and automating postgres management)
 - Postgres relational database. We are currently using v14.
   - Server
     - either installed for your distribution or as a docker image (with the correct open port -- see below)
@@ -20,7 +22,7 @@ To run PlaceCal locally you will need:
       - `libpq-dev` (debian)
       - `postgresql-libs` (arch)
       - `dev-db/postgresql` (gentoo)
-- Ruby 2.7.x. We reccomend using a version manager for this such as `rvm` or `rbenv`. Current version we are using is in `.ruby-version`.
+- Ruby 3.1.2 - We recommend using a version manager for this such as `rvm` or `rbenv`. Current version we are using is in `.ruby-version`.
   - [rvm](https://rvm.io/)
   - [rbenv](https://github.com/rbenv/rbenv)
     - [ruby-build](https://github.com/rbenv/ruby-build)
@@ -34,40 +36,25 @@ To run PlaceCal locally you will need:
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - Chrome/Chromium for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 
-## Quickstart
+## Quickstart with docker for GFSC devs
 
-With that said, here's what you need to get rolling.
+Make sure all of the above dependencies are installed (and ask someone to add your public ssh key to the servers if you are staff).
 
-### Set up Postgresql locally
-
-If you don't already have Postgresql installed and running, here's how you can set it up with Docker.
-
-**Skip these steps if you already have Postgresql set up.**
-
-Creating a Postgresql Docker image is reasonably quick:
+Then make sure the docker daemon is running, and run
 
 ```sh
-docker network create placecal-network
-docker create --name placecal-db --network placecal-network --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 -e 'POSTGRES_DB=placecal_db' -e 'POSTGRES_USER=postgres' -e 'POSTGRES_PASSWORD=foobar' -e 'POSTGRES_PORT=5432' postgres:14.1
-docker start placecal-db
+make setup_with_docker
 ```
 
-Make a copy of `.env.example` in `.env` in the root directory of the application. These will be loaded in as environment variables when you start the development server.
+Local site is now running at `lvh.me:3000`
 
-You can now set the following in `.env`:
+Some other useful commands for developing can be found in the makefile.
 
-```sh
-POSTGRES_HOST=localhost
-POSTGRES_USER=postgres
-PGPASSWORD=foobar
-```
+## Quickstart for everyone else
 
-### Clone this Git repository
+### Set up Postgresql locally with docker
 
-```sh
-git clone https://github.com/geeksforsocialchange/PlaceCal.git
-cd PlaceCal
-```
+If you don't already have Postgresql installed and running, you can set it up with docker, just run `make docker`. To tear down the docker setup, run `make clean`.
 
 ### Run the setup script
 
@@ -77,7 +64,7 @@ bin/setup
 
 Amongst other things, this will create an admin user for you:
 
-- Username: `admin@lvh.me`
+- Username: `root@placecal.org`
 - Password: `password`
 
 ### Run the thing
@@ -96,18 +83,21 @@ Before running the tests please make sure your development environment is up to 
 You can run the tests with:
 
 ```sh
-bin/test          # To run all tests
-bin/test --unit   # To only run unit tests
-bin/test --system # To only run system tests
+make              # will run all unit and system tests then lint check all code
+rails test        # will run all unit tests
+rails test:system # will run system tests
 ```
 
 Note that the system tests can take a while to run and are quite resource-intensive. To perform more advanced usage like executing only a specific test or test file, see the [Rails documentation on testing](https://guides.rubyonrails.org/testing.html).
 
-Note also that the test suite will also run all formatters and linters for you in autocorrect mode.
-
 ## Documentation for Developers
 
-The documentation for PlaceCal currently stored in notion and can be read [here](https://www.notion.so/gfsc/PlaceCal-developer-handbook-01649b69009340e3ae3035e9cf346f27). There is also a small amount of documentation sprinkled throughout the code itself and can be turned into HTML by running `rails doc:generate`. If you are working with the code and are completely lost you can also try the GFSC discord server where you can prod a human for answers. Good Luck!
+The documentation for PlaceCal currently stored in notion and can be read [here](https://www.notion.so/gfsc/PlaceCal-developer-handbook-01649b69009340e3ae3035e9cf346f27). There is also a small amount of documentation sprinkled throughout the code itself and can be turned into HTML by running `rails yard`. If you are working with the code and are completely lost you can also try the GFSC discord server where you can prod a human for answers. Good Luck!
+
+### Generating new components
+
+We use view_component to make components, and you can create a new one by running `rails g component <Name> <args>`
+More info here: https://viewcomponent.org/guide/generators.html
 
 ## Formatting
 

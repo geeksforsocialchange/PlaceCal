@@ -187,4 +187,326 @@ class PartnerTest < ActiveSupport::TestCase
     problems = partner.errors[:base]
     assert_equal 'Partners must have at least one of service area or address', problems.first
   end
+
+  test 'partner can have up to 3 "Category" tags' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 2')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 3')
+    partner.save
+
+    assert_predicate partner, :valid?
+  end
+
+  test 'partner cannot have more than 3 "Category" tags' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 2')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 3')
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 4')
+    partner.save
+
+    problems = partner.errors[:base]
+    assert_equal 'Partner.tags can contain a maximum of 3 Category tags', problems.first
+  end
+
+  test 'partner has "Category" single table inheritance' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
+    partner.save
+    assert_equal 1, partner.categories.count
+  end
+
+  test 'partner has "Facility" single table inheritance' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+    partner.tags << create(:tag, type: 'Facility', name: 'Facility Tag 1')
+    partner.save
+    assert_equal 1, partner.facilities.count
+  end
+
+  test 'partner has "Partnership" single table inheritance' do
+    partner = create(:partner)
+    assert_predicate partner, :valid?
+    partner.tags << create(:partnership)
+    partner.save
+    assert_equal 1, partner.partnerships.count
+  end
+
+  test '#neighbourhood_name_for_site returns ward level neighbourhood name' do
+    partner = create(:ashton_partner)
+    name = partner.neighbourhood_name_for_site('ward')
+
+    assert_equal('Ashton Hurst', name)
+  end
+
+  test '#neighbourhood_name_for_site returns district level neighbourhood name' do
+    partner = create(:ashton_partner)
+    partner.address.neighbourhood.parent = create(:neighbourhood_district)
+    name = partner.neighbourhood_name_for_site('district')
+
+    assert_equal('Manchester', name)
+  end
+
+  test '#neighbourhood_name_for_site returns service area name' do
+    partner = create(:ashton_service_area_partner)
+    name = partner.neighbourhood_name_for_site('ward')
+
+    assert_equal('Ashton Hurst', name)
+  end
+
+  test '#self.neighbourhood_names_for_site returns names of partners for site' do
+    site = create(:site)
+    partner = create(:ashton_partner)
+    site.neighbourhoods << partner.address.neighbourhood
+
+    site_names = Partner.neighbourhood_names_for_site(site, 'ward')
+
+    assert_equal(['Ashton Hurst'], site_names)
+  end
+
+  test '#self.neighbourhood_names_for_site returns district level names of partners for site' do
+    site = create(:site)
+    partner = create(:ashton_partner)
+    partner.address.neighbourhood.parent = create(:neighbourhood_district)
+    site.neighbourhoods << partner.address.neighbourhood
+
+    site_names = Partner.neighbourhood_names_for_site(site, 'district')
+
+    assert_equal(['Manchester'], site_names)
+  end
+
+  test '#self.neighbourhood_names_for_site returns names of partners service areas for site' do
+    site = create(:site)
+    partner = create(:ashton_service_area_partner)
+    site.neighbourhoods << partner.address.neighbourhood
+
+    site_names = Partner.neighbourhood_names_for_site(site, 'ward')
+
+    assert_equal(['Ashton Hurst'], site_names)
+  end
+
+  test '#self.for_neighbourhood_name_filter returns partners restricted by site name' do
+    partner_with_selected_neighbourhood = create(:ashton_partner)
+    partner_with_selected_service_area = create(:ashton_service_area_partner)
+    unselected_partner = create(:moss_side_partner)
+
+    partners = Partner.for_neighbourhood_name_filter(Partner.all, 'ward', 'Ashton Hurst')
+
+    assert_includes partners, partner_with_selected_neighbourhood
+    assert_includes partners, partner_with_selected_service_area
+    assert_not_includes partners, unselected_partner
+  end
+
+  test '#self.for_neighbourhood_name_filter returns partners restricted by site name at district level' do
+    district = create(:neighbourhood_district)
+
+    partner_with_selected_neighbourhood = create(:ashton_partner)
+    partner_with_selected_service_area = create(:moss_side_partner)
+    unselected_partner = create(:moss_side_partner)
+
+    partner_with_selected_neighbourhood.address.neighbourhood.parent = district
+    partner_with_selected_service_area.service_area_neighbourhoods = [district]
+
+    all_partners = [
+      partner_with_selected_neighbourhood,
+      partner_with_selected_service_area,
+      unselected_partner
+    ]
+
+    partners = Partner.for_neighbourhood_name_filter(all_partners, 'district', 'Manchester')
+
+    assert_includes partners, partner_with_selected_neighbourhood
+    assert_includes partners, partner_with_selected_service_area
+    assert_not_includes partners, unselected_partner
+  end
+
+  #
+  # testing how a user can assign an address (neighbourhood) to a partner
+  #
+
+  test 'NA admins can update partners outside of the neighbourhood pool (but not their address)' do
+    # given a partner with an address not in the users' set
+    # user can update other fields fine, but not change address.
+
+    Neighbourhood.destroy_all
+    a_neighbourhood = create(:bare_neighbourhood, name: 'alpha')
+
+    # build a neighbourhood admin
+    citizen_neighbourhood = create(:bare_neighbourhood, name: 'citizen alpha')
+    citizen = create(:citizen)
+    citizen.neighbourhoods << citizen_neighbourhood
+    assert_predicate citizen, :valid?
+
+    # build a partner NOT in the users set
+    partner = build(:bare_partner, address: nil)
+    partner.service_area_neighbourhoods << a_neighbourhood
+    partner.save!
+
+    # non-neighbourhood admin can update fields on partner okay
+    partner.accessed_by_user = citizen
+    partner.name = 'A different name'
+    partner.save!
+
+    # but cannot change the address to something they don't own
+    b_neighbourhood = create(:bare_neighbourhood, name: 'beta', unit_code_value: 'E05011368')
+    partner.accessed_by_user = citizen
+    partner.address = build(:address, neighbourhood: b_neighbourhood)
+
+    assert_not partner.valid?
+    assert_predicate partner.errors[:base], :present?
+
+    msg = partner.errors[:base].first
+    assert_equal 'Partners cannot have an address outside of your ward.', msg
+  end
+
+  test 'NA can create a partner in their neighbourhood' do
+    # given a user has a neighbourhood and let the user assign that neighbourhood to a new partner
+    # this should be allowed (creating partners in their neighbourhoods)
+
+    Neighbourhood.destroy_all
+
+    a_neighbourhood = create(:bare_neighbourhood, name: 'beta', unit_code_value: 'E05011368')
+
+    citizen = create(:citizen)
+    citizen.neighbourhoods << a_neighbourhood
+
+    assert_predicate citizen, :valid?
+
+    address = build(:address)
+    address.postcode = 'M15 5DD'
+
+    assert citizen.assigned_to_postcode?(address.postcode)
+
+    partner = build(:bare_partner, address: address)
+    partner.accessed_by_user = citizen
+    partner.save!
+  end
+
+  test 'users can change partner addresses to addresses they have neighbourhoods for' do
+    # given a user with a neighbourhood and a partner with an address NOT in that neighbourhood
+    # then that user should be able to assign their neighbourhood to that partners address
+
+    Neighbourhood.destroy_all
+
+    a_neighbourhood = create(:neighbourhood, unit_code_value: 'E05011368')
+    b_neighbourhood = create(:neighbourhood, unit_code_value: 'E05011111')
+
+    citizen = create(:citizen)
+    citizen.neighbourhoods << b_neighbourhood
+    assert_predicate citizen, :valid?
+
+    # partners address NOT in citizens neighbourhood pool
+    address = create(:address, neighbourhood: b_neighbourhood)
+    partner = create(:partner, address: address)
+    assert_predicate partner, :valid?
+
+    partner.accessed_by_user = citizen
+    partner.address.postcode = 'M15 5DD'
+    partner.update! name: 'A new partner name'
+  end
+
+  test 'partnership_admin cannot create a partner that is not part of their partnership' do
+    pa = create(:partnership_admin)
+    assert_raises(ActiveRecord::RecordInvalid, 'This partner must be a part of your partnership') do
+      create(:partner, :accessed_by_user => pa)
+    end
+  end
+
+  test 'partnership_admin can create a partner that is part of their partnership' do
+    pa = create(:partnership_admin)
+    partner = create(:partner, :accessed_by_user => pa, :tags => [pa.tags.first])
+    assert_predicate partner, :valid?
+  end
+
+  test 'partner cannot be set to hidden without a reason' do
+    assert_raises(ActiveRecord::RecordInvalid, 'You need to give a reason for hiding a Partner from all public sites, this will help them resolve the issue.') do
+      @new_partner.update!(hidden: true, hidden_blame_id: 1)
+    end
+  end
+
+  test 'partner cannot be set to hidden without someone to contact' do
+    assert_raises(ActiveRecord::RecordInvalid, 'You must record who has hidden the partner') do
+      @new_partner.update!(hidden: true, hidden_reason: 'something has gone terribly wrong')
+    end
+  end
+
+  test 'partner can be set to hidden with a reason and person to contact' do
+    @new_partner.update!(hidden: true, hidden_reason: 'something has gone terribly wrong', hidden_blame_id: 1)
+    assert_predicate @new_partner, :valid?
+  end
+
+  test 'can_clear_address? for root' do
+    partner = build(:bare_partner)
+    # has no address
+    assert_not partner.can_clear_address?
+
+    partner.address = create(:address)
+    # missing service area
+    assert_not partner.can_clear_address?
+
+    partner.service_areas.build(neighbourhood: create(:neighbourhood))
+    # is not root
+    assert_not partner.can_clear_address?
+
+    root = create(:root)
+    assert partner.can_clear_address?(root)
+  end
+
+  test 'can_clear_address? for partner admin' do
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.service_areas.build(neighbourhood: create(:neighbourhood))
+    partner.save!
+
+    citizen = create(:citizen)
+    citizen.partners << partner
+
+    assert partner.can_clear_address?(citizen)
+  end
+
+  test 'can_clear_address? for neighbourhood admin' do
+    neighbourhood = create(:neighbourhood)
+    citizen = create(:citizen)
+    citizen.neighbourhoods << neighbourhood
+
+    # cannot clear address if admin does not "own" address
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.service_areas.build(neighbourhood: neighbourhood)
+    partner.save!
+
+    assert_not partner.can_clear_address?(citizen)
+
+    # now partner is in admins neighbourhood pool, can clear
+    partner.address.neighbourhood = neighbourhood
+    assert partner.can_clear_address?(citizen)
+  end
+
+  test 'warn_user_clear_address?' do
+    partner = build(:bare_partner)
+    partner.address = create(:address)
+    partner.save!
+
+    # am root
+    root = create(:root)
+    assert_not partner.warn_user_clear_address?(root)
+
+    # am owner
+    citizen = create(:citizen)
+    citizen.partners << partner
+    assert_not partner.warn_user_clear_address?(citizen)
+
+    # not root or owner, so warn
+    other_neighbourhood = create(:neighbourhood)
+    other_citizen = create(:citizen)
+    other_citizen.neighbourhoods << other_neighbourhood
+
+    assert partner.warn_user_clear_address?(other_citizen)
+  end
 end

@@ -44,17 +44,6 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
     assert_content 'A new tag name'
   end
 
-  test 'citizen users cannot modify tag' do
-    @citizen.tags << @tag
-    @citizen.tags << @system_tag
-
-    log_in_with @citizen.email
-
-    visit edit_admin_tag_url(@system_tag)
-
-    assert_content 'This tag is a system tag meaning that it cannot be edited by non-root admins.'
-  end
-
   test 'root users can make a tag a system tag' do
     log_in_with @root.email
 
@@ -118,6 +107,32 @@ class Admin::TagsTest < ActionDispatch::IntegrationTest
 
     assert_selector :xpath, '//input[@name="tag[name]"][@value="AlphaFacility 2"]'
     assert_selector :xpath, '//input[@name="tag[slug]"][@value="alpha-facility-2"]'
+  end
+
+  # Assigned user field
+  test 'shows assigned user field on New' do
+    log_in_with @root.email
+    visit new_admin_tag_url
+
+    assert_css 'h2', text: 'Assigned Users'
+  end
+
+  test 'shows assigned user field on Edit of Partnership tag' do
+    log_in_with @root.email
+
+    partnership_tag = create(:partnership)
+    visit edit_admin_tag_url(partnership_tag)
+
+    assert_css 'h2', text: 'Assigned Users'
+  end
+
+  test 'hides assigned user field on Edit of tag that is not a Partnership' do
+    log_in_with @root.email
+
+    facility_tag = create(:tag, type: 'Facility')
+    visit edit_admin_tag_url(facility_tag)
+
+    assert_css 'h2', text: 'Assigned Users', count: 0
   end
 
   private

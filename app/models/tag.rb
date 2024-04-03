@@ -20,25 +20,33 @@ class Tag < ApplicationRecord
   has_many :article_tags, dependent: :destroy
   has_many :articles, through: :article_tags
 
-  validates :name, :slug, presence: true
+  validates :name, :slug, :type, presence: true
   validates :name, :slug, uniqueness: { scope: :type }
   validates :description,
             length: {
               maximum: 200,
               too_long: 'maximum length is 200 characters'
             }
-  validates :edit_permission, presence: true
+  validates :type,
+            inclusion: {
+              in: %w[Partnership Facility Category],
+              message: 'Type must be one of Category, Facility or Partnership'
+            }
   validate :check_editable_fields
 
-  enumerize :edit_permission,
-            in: %i[root all],
-            default: :root
-
   scope :users_tags, lambda { |user|
-    tag_ids = user.tags.map(&:id) + Tag.all.where(edit_permission: :all).map(&:id)
+                       return Tag.all if user.role == 'root' && !user.partnership_admin?
 
-    where(id: tag_ids.uniq)
-  }
+                       partnership_tags = Tag.where(type: 'Partnership', id: user.tags_users.distinct.pluck(:tag_id)).pluck(:id)
+                       other_tags = Tag.where("type != 'Partnership'").pluck(:id)
+
+                       Tag.where(id: partnership_tags + other_tags)
+                     }
+
+  def name_with_type
+    s_type = type || 'Tag'
+    "#{s_type}: #{name}"
+  end
 
   private
 

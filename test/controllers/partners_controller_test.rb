@@ -16,6 +16,7 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
       a.save
       a
     end
+
     # NOTE: Uhhh? What? Is this a factorybot thing? Why does create(:address, neighbourhood: n) not work here?
 
     @partners = addresses.map do |a|
@@ -45,6 +46,11 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
     @site = build(:site)
     @site.neighbourhoods.append(neighbourhoods.first)
     @site.save
+
+    create_typed_tags
+    @cat_tag = Tag.where(type: 'Category').first
+    @partner_with_tag = Partner.first
+    @partner_with_tag.tags.append(@cat_tag)
   end
 
   test 'should get index without subdomain' do

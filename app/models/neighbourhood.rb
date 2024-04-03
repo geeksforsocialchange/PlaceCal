@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Neighbourhood < ApplicationRecord
+  # WARNING: this must be updated for every new ONS dataset
+  #    see /lib/tasks/neighbourhoods.rake
+  LATEST_RELEASE_DATE = DateTime.new(2023, 5).freeze
+
   has_ancestry
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :sites, through: :sites_neighbourhoods
@@ -20,12 +24,20 @@ class Neighbourhood < ApplicationRecord
            source: :partners,
            class_name: 'Partner'
 
+  # validates :unit_code_value, presence: true, uniqueness: true
+
   # validates :name, presence: true
   validates :unit_code_value,
             length: { is: 9 },
             allow_blank: true
 
   before_update :inject_parent_name_field
+
+  scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
+
+  def legacy_neighbourhood?
+    release_date < Neighbourhood::LATEST_RELEASE_DATE
+  end
 
   def shortname
     if name_abbr.present?
@@ -42,7 +54,7 @@ class Neighbourhood < ApplicationRecord
     return "#{shortname}, #{parent_name} (#{unit.titleize})" if parent_name
 
     # "Wardname (Region)"
-    "#{shortname} (#{unit.titleize})"
+    "#{shortname} (#{unit&.titleize})"
   end
 
   def fullname
@@ -101,12 +113,23 @@ class Neighbourhood < ApplicationRecord
     ancestors.where(unit: 'country').first
   end
 
+  def name_from_badge_zoom(badge_zoom_level)
+    badge_zoom_level == 'district' ? district&.shortname : shortname
+  end
+
   class << self
     def find_from_postcodesio_response(res)
-      Neighbourhood.find_by!(unit: 'ward',
-                             unit_code_key: 'WD19CD',
-                             unit_code_value: res['codes']['admin_ward'],
-                             unit_name: res['admin_ward'])
+      ons_id = res['codes']['admin_ward']
+      Neighbourhood.where(unit_code_value: ons_id).first
+    end
+
+    def find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(scope, legacy_neighbourhoods)
+      scope = scope
+              .where('name is not null and name != \'\'')
+              .latest_release
+
+      scope = scope.or(where(id: legacy_neighbourhoods.pluck(:id))) if legacy_neighbourhoods.any?
+      scope
     end
   end
 

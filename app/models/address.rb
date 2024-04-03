@@ -2,16 +2,16 @@
 
 # app/models/address.rb
 class Address < ApplicationRecord
+  # Geocoding with postcodes.io
+  # Only postcode changes will change the result that postodes.io returns.
+  # (do this first)
+  validate :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
+
   validates :street_address, :country_code, presence: true
   validates :postcode, presence: true, postcode: true
 
-  # Geocoding with postcodes.io
-  # Only postcode changes will change the result that postodes.io returns.
-  after_validation :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
-
   has_many :events
   has_many :partners
-  has_many :calendars
 
   belongs_to :neighbourhood, optional: true
 
@@ -28,6 +28,14 @@ class Address < ApplicationRecord
     street_address2 = street_address
     street_address = room_number_string
     self
+  end
+
+  def missing_values?
+    street_address.blank? &&
+      street_address2.blank? &&
+      street_address3.blank? &&
+      city.blank? &&
+      postcode.blank?
   end
 
   def first_address_line
@@ -76,10 +84,18 @@ class Address < ApplicationRecord
   # 'admin_ward' from postcodes.io
   def geocode_with_ward
     res = Geocoder.search(postcode).first&.data
-    return unless res
+    if res.nil?
+      errors.add :postcode, 'was not found'
+      return
+    end
 
     # There shouldn't be any wards that are outside our system, if there are we just fail.
     neighbourhood = Neighbourhood.find_from_postcodesio_response(res)
+    if neighbourhood.nil?
+      errors.add :postcode, 'has been found but could not be mapped to a neighbourhood at this time'
+      return
+    end
+
     self.neighbourhood = neighbourhood
 
     # Standardise the lat and lng for each postcode

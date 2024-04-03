@@ -12,9 +12,15 @@
       <p>Partners this user can edit, as well as their associated calendars</p>
       <%= f.association :partners,
                         label: false,
-                        collection: options_for_partners,
-                        selected: @partners,
-                        input_html: { class: 'form-control', data: { controller: "select2" } } %>
+                        collection: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
+                        selected: @partners || @user.partners.pluck(:id),
+                        input_html: { 
+                          class: 'form-control',
+                          data: { 
+                            controller: @user_partners_controller, 
+                            "user-partners-permitted-partners-value": permitted_options_for_partners
+                          } 
+                        } %>
     </div>
 
     <div class="col-md-6">
@@ -25,7 +31,7 @@
 
         <%= f.association :neighbourhoods,
           label: false,
-          collection: options_for_neighbourhoods,
+          collection: options_for_user_neighbourhoods(f.object),
           input_html: { class: 'form-control', data: { controller: "select2" } } %>
 
       <% else %>
@@ -40,8 +46,8 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h3>Allowed Tags</h3>
-      <p>Grants access to apply the given tags</p>
+      <h3>Partnerships</h3>
+      <p>Grants access to add or remove partners from partnerships</p>
       <%= f.association :tags,
                         label: false,
                         collection: options_for_tags,

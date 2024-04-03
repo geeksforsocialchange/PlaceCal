@@ -8,7 +8,11 @@
   <% end %>
     <%= link_to root_path do %>
       <% if @site&.default_site? %>
-        <h2>PlaceCal</h2>
+        <% if request.path == '/' %>
+          <h1>PlaceCal</h1>
+        <% else %>
+          <h2>PlaceCal</h2>
+        <% end %>
       <% else %>
         <h2><%= @site&.name %></h2>
         <p>The Community Calendar</p>
@@ -17,9 +21,9 @@
   </div>
   <nav class="nav header__menu js-menu" role="navigation">
     <ul>
-      <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
-      <% navigation.each do |link| %>
-        <li><%= active_link_to link[0], link[1], data: { turbolinks: false } %></li>
+      <li><%= active_link_to "Home", root_path %></li>
+      <% navigation.each do |link_text, link_path| %>
+        <li><%= active_link_to link_text, link_path, data: { turbolinks: false } %></li>
       <% end %>
     </ul>
   </nav>

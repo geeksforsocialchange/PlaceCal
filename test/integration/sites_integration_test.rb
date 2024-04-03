@@ -43,10 +43,10 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'find placecal page shows sites with primary neighbourhood' do
     get find_placecal_url
-    assert_select '.find-ward__title', @site.name
+    assert_select '.neighbourhood_home_card__name', @site.place_name
 
-    url = assert_select('.find-ward').first['href']
-    assert_equal url, "http://#{@site.slug}.lvh.me:3000/"
+    url = assert_select('.neighbourhood_home_card__link')[1]['href']
+    assert_equal "http://#{@site.slug}.lvh.me:3000/events", url
   end
 
   test 'tag cards are hidden by default' do
@@ -96,5 +96,12 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     get 'http://mossley.lvh.me'
     assert_response :success
     assert_includes response.body, 'Marvellous Mossley'
+  end
+
+  test 'custom hero text' do
+    custom_text = 'this is the custom text'
+    site_with_hero_text = create(:site, hero_text: custom_text, slug: 'hero', site_admin: @site_admin)
+    get 'http://hero.lvh.me'
+    assert_select 'h1', custom_text
   end
 end

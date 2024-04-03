@@ -1,0 +1,19 @@
+@import "variables_mixins";
+
+.featured_partnerships {
+	margin-bottom: 2rem;
+}
+
+.featured_partnerships--title {
+	color: $home-background-3;
+	font-family: $sans-serif;
+	font-size: 1.8rem;
+	font-weight: 400;
+	margin: 2rem auto;
+	max-width: 25ch;
+	text-align: center;
+
+	@include for-tablet-portrait-up {
+		font-size: 2.2rem;
+	}
+}

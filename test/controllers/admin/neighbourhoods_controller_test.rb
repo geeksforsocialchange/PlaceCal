@@ -27,6 +27,18 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_root_url
   end
 
+  # Show neighbourhood
+
+  it_allows_access_to_show_for(%i[root neighbourhood_admin]) do
+    get admin_neighbourhood_url(@neighbourhood)
+    assert_response :success
+  end
+
+  it_denies_access_to_show_for(%i[citizen]) do
+    get admin_neighbourhood_url(@neighbourhood)
+    assert_redirected_to admin_root_url
+  end
+
   # New & Create Neighbourhood
   #
   #   Roots can create these manually.
@@ -47,24 +59,24 @@ class Admin::NeighbourhoodsControllerTest < ActionDispatch::IntegrationTest
   #   Allow roots to edit all places
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_edit_for(%i[root neighbourhood_admin]) do
+  it_allows_access_to_edit_for(%i[root]) do
     get edit_admin_neighbourhood_url(@neighbourhood)
     assert_response :success
   end
 
-  it_denies_access_to_edit_for(%i[citizen]) do
+  it_denies_access_to_edit_for(%i[citizen neighbourhood_admin]) do
     get edit_admin_neighbourhood_url(@neighbourhood)
     assert_redirected_to admin_root_url
   end
 
-  it_allows_access_to_update_for(%i[root neighbourhood_admin]) do
+  it_allows_access_to_update_for(%i[root]) do
     patch admin_neighbourhood_url(@neighbourhood),
           params: { neighbourhood: attributes_for(:neighbourhood) }
     # Redirect to main partner screen
     assert_redirected_to admin_neighbourhoods_url
   end
 
-  it_denies_access_to_update_for(%i[citizen]) do
+  it_denies_access_to_update_for(%i[citizen neighbourhood_admin]) do
     patch admin_neighbourhood_url(@neighbourhood),
           params: { neighbourhood: attributes_for(:neighbourhood) }
     # Redirect to main partner screen

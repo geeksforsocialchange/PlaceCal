@@ -1,73 +1,76 @@
 <% content_for :title do %>Editing <%= @partner.name %><% end %>
-
 <h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
 
-<% if current_user.root? -%>
-  <%# Show the Neighbourhood the partner is related to via Address %>
-  <% if @partner.address -%>
-    <p>In neighbourhood <%= link_to @partner.address.neighbourhood.name, edit_admin_neighbourhood_path(@partner.address.neighbourhood) %>.</p>
-  <% end -%>
+<p>ID: <%= @partner.id %></p>
+<%# Show the Neighbourhood the partner is related to via Address %>
+<% if @partner.address&.neighbourhood&.present? -%>
+    <p>Address in neighbourhood <%= link_to_neighbourhood(@partner.address.neighbourhood) %>.</p>
+<% end -%>
 
-  <%# Show a list of Service Areas that the partner is related to %>
-  <% if @partner.service_areas.any? -%>
+<%# Show a list of Service Areas that the partner is related to %>
+<% if @partner.service_areas.any? -%>
     <p>In service areas <%= service_area_links(@partner) %>.</p>
-  <% end -%>
+<% end -%>
 
-  <%# Show a list of sites that the partner is related to %>
-  <span id="partner-sites">
+<%# Show a list of sites that the partner is related to %>
+<span id="partner-sites">
     <% partners_sites_links = site_links %>
     <% if partners_sites_links.present? %>
-      <p>This partner appears on the following sites: <%= site_links %>.</p>
+	<p>This partner appears on the following sites: <%= site_links %>.</p>
     <% else %>
-      <p class="text-danger">This partner does not appear on any sites. This usually means one of two things:</p>
-      <ul>
-        <li>The address is outside any current PlaceCal instance's range due to where actual ward boundaries happen to fall. Please contact your PlaceCal organiser if this is the case.</li>
-        <li>It is inside a PlaceCal range, but you forgot to add a tag. Resave this partner with the appropriate tag.</li>
-        <li>If neither of these are the case, please contact <a href='mailto:support@placecal.org'>support@placecal.org</a> with the link to this page.</li>
-      </ul>
+	<p class="text-danger">This partner does not appear on any sites. This usually means one of two things:</p>
+	<ul>
+	    <li>The address is outside any current PlaceCal instance's range due to where actual ward boundaries happen to fall. Please contact your PlaceCal organiser if this is the case.</li>
+	    <li>It is inside a PlaceCal range, but you forgot to add a tag. Resave this partner with the appropriate tag.</li>
+	    <li>If neither of these are the case, please contact <a href='mailto:support@placecal.org'>support@placecal.org</a> with the link to this page.</li>
+	</ul>
     <% end %>
-  </span>
-  <br>
-<% end -%>
+</span>
+
+<br>
 
 <%= render 'form', model: :partner %>
 
 <br><hr><br>
 
-<h2>Connected entities</h2>
-
-<p>What other things is this Partner connected to? <em>Please save your changes above before adding connections!</em></p>
-
-<div class="row">
-  <div class="col-md-6">
-    <h3>Calendars</h3>
-    <p><%= @partner.calendars.count -%> connected <%= "calendar".pluralize(@partner.calendars.count) -%> found</p>
-    <ul>
-      <% @partner.calendars.each do |calendar| -%>
-        <li><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></li>
-      <% end -%>
-    </ul>
-
-    <p><%= link_to 'Add a new calendar',
+<div >
+  <h2>Connected entities</h2>
+  <p>What other things is this Partner connected to? <em>Please save your changes above before adding connections!</em></p>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Calendars</h3>
+      <p><%= @partner.calendars.count -%> connected <%= "calendar".pluralize(@partner.calendars.count) -%> found</p>
+      <ul>
+        <% @partner.calendars.each do |calendar| -%>
+          <li><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></li>
+        <% end -%>
+      </ul>
+      <p>
+        <%= link_to 'Add a new calendar',
                     new_admin_calendar_path(partner_id: @partner.id),
-                    class: "btn btn-primary mb-3 mr-2 btn-sm" %></p>
-  </div>
-
-  <div class="col-md-6">
-    <h3>Partner admins</h3>
-    <p><%= @partner.users.count %> <%= "user".pluralize(@partner.users.count) -%> can edit this partner</p>
-
-    <ul>
-      <% @partner.users.each do |p_user| -%>
-        <li><%= link_to p_user.email, edit_admin_user_path(p_user) %></li>
-      <% end -%>
-    </ul>
-
-    <p><%= link_to 'Add new partner admin',
-                    new_admin_user_path(partner_id: @partner.id),
                     class: "btn btn-primary mb-3 mr-2 btn-sm" %>
-    </p>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <h3>Partner admins</h3>
+      <p><%= @partner.users.count %> <%= "user".pluralize(@partner.users.count) -%> can edit this partner</p>
+      <ul>
+        <% @partner.users.each do |p_user| -%>
+          <li>
+          <% if policy(User).update? %>
+            <%= link_to p_user.email, edit_admin_user_path(p_user) %></li>
+          <% else %>
+            <%= p_user.email %></li>
+          <% end %>
+        <% end -%>
+      </ul>
+      <% if policy(User).update? %>
+        <p><%= link_to 'Add new partner admin',
+                        new_admin_user_path(partner_id: @partner.id),
+                        class: "btn btn-primary mb-3 mr-2 btn-sm" %>
+        </p>
+      <% end %>
+    </div>
   </div>
+  <br>
 </div>
-
-<br>

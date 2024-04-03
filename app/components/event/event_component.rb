@@ -43,6 +43,8 @@ class EventComponent < MountainView::Presenter
   end
 
   def date
+    return formatted_date(event.dtstart) if event.dtend.blank?
+
     if event.dtstart.to_date == event.dtend.to_date
       formatted_date(event.dtstart)
     else
@@ -71,9 +73,7 @@ class EventComponent < MountainView::Presenter
   end
 
   def neighbourhood_name(badge_zoom_level)
-    return event.neighbourhood&.district&.shortname if badge_zoom_level == 'district'
-
-    event.neighbourhood&.shortname
+    event.neighbourhood&.name_from_badge_zoom(badge_zoom_level)
   end
 
   def primary_neighbourhood?

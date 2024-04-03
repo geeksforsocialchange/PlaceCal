@@ -3,6 +3,8 @@
 module Admin
   class UsersController < Admin::ApplicationController
     before_action :set_user, only: %i[edit update destroy]
+    before_action :set_user_partners_controller, only: %i[new edit create]
+    before_action :validate_partner_relation, only: %i[create]
 
     def profile
       authorize current_user, :profile?
@@ -76,7 +78,7 @@ module Admin
         flash[:success] = 'User has been created! An invite has been sent'
         redirect_to admin_users_path
       else
-        Rails.logger.debug @user.errors.full_messages
+        @partners = collect_partners
         flash.now[:danger] = 'User was not created'
         render 'new', status: :unprocessable_entity
       end
@@ -96,6 +98,15 @@ module Admin
     end
 
     private
+
+    def set_user_partners_controller
+      @user_partners_controller =
+        if current_user.root?
+          'select2'
+        else
+          'user-partners'
+        end
+    end
 
     def collect_partners
       return policy_scope(Partner).where(id: params[:partner_id])&.map(&:id) if params[:partner_id]
@@ -123,6 +134,17 @@ module Admin
       else
         current_user.update_without_password(profile_params)
       end
+    end
+
+    def validate_partner_relation
+      # we only allow admins to assign partners they can see so any ids here are proof of a relationship
+      return if current_user.root?
+      return unless params[:user][:partner_ids].reject { |id| id == '' }.empty?
+
+      # we're about to refresh the page so save the users input
+      @user = User.new(permitted_attributes(User))
+      flash.now[:danger] = 'User was not created: You must assign a Partner to the User or you will not be able to access it after creation'
+      render 'new', status: :unprocessable_entity
     end
   end
 end

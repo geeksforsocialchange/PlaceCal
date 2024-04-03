@@ -1,0 +1,11 @@
+<div class="pullquote">
+  <blockquote class="blockquote--<%= @color_mode%>">
+    <%= render(MaxWidthComponent.new()) do %>
+      <p class="alt-title-small"><%= content %></p>
+    <% end %>
+  </blockquote>
+  <cite>
+    <strong class="h3-small"><%= @source %></strong>
+    <span class="small"><%= @context %></cite>
+  </cite>
+</div>

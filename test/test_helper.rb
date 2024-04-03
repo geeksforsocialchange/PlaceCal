@@ -24,6 +24,9 @@ include JsonMatchers::Minitest::Assertions
 require 'capybara/rails'
 require 'capybara/minitest'
 
+require 'database_cleaner/active_record'
+DatabaseCleaner.strategy = :truncation
+
 Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')).sort.each do |path|
   require path
 end
@@ -46,16 +49,11 @@ module ActiveSupport
 
     fixtures :neighbourhoods
 
-    # Usage:
-    #
-    # it_allows_access_to_action_for(%i[root tag_admin partner_admin place_admin citizen guest]) do
-    # end
-
     %i[index show new edit create update destroy].each do |action|
       define_singleton_method(:"it_allows_access_to_#{action}_for") do |users, &block|
         users.each do |user|
           test "#{user}: can #{action}" do
-            variable = instance_variable_get("@#{user}")
+            variable = instance_variable_get(:"@#{user}")
 
             sign_in variable
 
@@ -67,7 +65,7 @@ module ActiveSupport
       define_singleton_method(:"it_denies_access_to_#{action}_for") do |users, &block|
         users.each do |user|
           test "#{user} : cannot #{action}" do
-            variable = instance_variable_get("@#{user}")
+            variable = instance_variable_get(:"@#{user}")
 
             sign_in variable
 
@@ -89,7 +87,7 @@ module ActiveSupport
       klass  = object.is_a?(Class) ? object : object.class
       policy = "#{klass}Policy".constantize
 
-      policy.new(user, object).send("#{action}?")
+      policy.new(user, object).send(:"#{action}?")
     end
 
     def denies_access(user, object, action)
@@ -106,6 +104,16 @@ end
 module ActionDispatch
   class IntegrationTest
     include Devise::Test::IntegrationHelpers
+  end
+end
+
+class Minitest::Spec
+  before :each do
+    DatabaseCleaner.start
+  end
+
+  after :each do
+    DatabaseCleaner.clean
   end
 end
 
@@ -134,8 +142,10 @@ def click_sidebar(href)
   end
 end
 
-def await_datatables(time = 15)
-  page.find(:css, '#datatable_info', wait: time)
+def await_datatables(time = 5)
+  find_element_and_retry_if_not_found do
+    page.find(:css, '#datatable_info', wait: time)
+  end
 end
 
 # GraphQL helpers
@@ -187,5 +197,13 @@ end
 
 def from_site_slug(site, path)
   host = Rails.application.routes.default_url_options[:host]
-  "http://#{site.slug}.#{host}/#{path}"
+  "http://#{site.slug}.#{host}#{path}"
+end
+
+def create_typed_tags
+  create(:tag, name: 'free wifi', type: 'Facility')
+  create(:tag, name: 'fruit ecosystem', type: 'Category')
+  create(:tag, name: 'housing', type: 'Category')
+  create(:partnership)
+  create(:partnership)
 end

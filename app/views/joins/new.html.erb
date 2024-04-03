@@ -2,9 +2,9 @@
   <div class="margin">
     <div class="card card--alt card--split center">
       <div class="card__title">
-        <h1 class="section">Join us</h1>
-        <p class="alt-title-small">Want PlaceCal for your community group, organisation or area?</p>
-        <p>Get in touch and let’s discuss how you can<br class="tablet-up"> join our not-for-profit social enterprise.</p>
+        <h1 class="section">Get in touch</h1>
+        <p class="alt-title-small">Want to run PlaceCal in your community, group, or area?</p>
+        <p>Contact us to discuss how you can<br class="tablet-up"> join our not-for-profit social enterprise.</p>
       </div>
 
       <div class="card__body">
@@ -17,53 +17,55 @@
           </div>
         <% end %>
 
-        <%= simple_form_for @join, url: join_path, html: { class: 'form' } do |f| %>
-          <div class="form__person">
+        <%= simple_form_for @join, url: get_in_touch_path, html: { class: 'form' } do |f| %>
+          <%= invisible_captcha %>
+          <div class="form__person form__mid-width">
             <div class="form__field">
-              <%= f.input :name, label: 'Name' %>
+              <%= f.input :name, label: 'Name:' %>
             </div>
             <div class="form__field">
-              <%= f.input :email, as: :email, label: 'Email address' %>
+              <%= f.input :email, as: :email, label: 'Email address:' %>
             </div>
             <div class="form__field">
-              <%= f.input :phone, as: :tel, label: 'Phone number' %>
+              <%= f.input :job_title, label: 'Job title:' %>
             </div>
             <div class="form__field">
-              <%= f.input :job_title, label: 'Job title' %>
+              <%= f.input :phone, as: :tel, label: 'Phone number:' %>
             </div>
             <div class="form__field">
-              <%= f.input :job_org, label: 'Organisation name' %>
+              <%= f.input :job_org, label: 'Organisation name:' %>
             </div>
             <div class="form__field">
-              <%= f.input :area, label: 'Area you cover' %>
+              <%= f.input :area, label: 'The area it covers is:' %>
             </div>
           </div>
 
-          <div class="form__request">
-            <p><strong>I'd like:</strong></p>
-
-            <div class="form__checkbox">
-              <%= f.check_box :ringback %>
-              <%= f.label :ringback, 'A ring back' %>
+          <div class="form__contact form__small-width">
+            <div class="form__contact-child">
+              <p><strong>I'd like:</strong></p>
             </div>
-
-            <div class="form__checkbox">
-              <%= f.check_box :more_info %>
-              <%= f.label :more_info, 'More information' %>
+            <div class="form__contact-child">
+              <div class="form__checkbox">
+                <%= f.check_box :ringback %>
+                <%= f.label :ringback, 'A ring back' %>
+              </div>
+              <div class="form__checkbox">
+                <%= f.check_box :more_info %>
+                <%= f.label :more_info, 'More information' %>
+              </div>
             </div>
-
-            <br>
-            <%= f.input :why, as: :text, label:  'Why I want PlaceCal:', placeholder: "Let us know a bit more about why you'd like to join PlaceCal." %>
-
-            <%= f.submit "Submit", class: 'btn form__submit' %>
           </div>
+
+          <div class="form__info form__full-width">
+            <%= f.input :why, as: :text, label:  'Why I want PlaceCal:', placeholder: "Enter information about why you'd like to join PlaceCal here" %>
+          </div>
+
+          <%= f.submit "Submit", class: 'btn form__submit' %>
+
         <% end %>
       </div>
       <p class="regular-links">
-        Call us on<br class="mobile-only">
-        <%= link_to "+44 (0)161 247 6954", "tel:441612476954" %><br>
-        or email<br class="mobile-only">
-        <%= mail_to "info@placecal.org" %>.
+        Email us at <br class="mobile-only"><%= mail_to "info@placecal.org" %>
       </p>
       <br class="half">
     </div>

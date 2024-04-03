@@ -19,9 +19,9 @@ class PartnerPolicy < ApplicationPolicy
 
   def update?
     return true if user.root?
-
-    return true if user.can_alter_neighbourhood_by_id?(record.neighbourhood_id)
-    return true if user.can_alter_partner_by_id?(record.id)
+    return true if user.admin_for_partner?(record.id)
+    return true if user.partnership_admin_for_partner?(record.id)
+    return true if user.neighbourhood_admin_for_partner?(record.id)
 
     false
   end
@@ -32,9 +32,13 @@ class PartnerPolicy < ApplicationPolicy
 
   def destroy?
     return true if user.root?
-    return false unless user.neighbourhood_admin?
+    return true if user.admin_for_partner?(record.id)
+    return true if user.only_partnership_admin_for_partner?(record.id)
+    return true if user.only_neighbourhood_admin_for_partner?(record.id)
+  end
 
-    user.owned_neighbourhood_ids.include?(record.neighbourhood_id)
+  def clear_address?
+    edit?
   end
 
   def setup?
@@ -45,7 +49,7 @@ class PartnerPolicy < ApplicationPolicy
     attrs = [:name, :image, :summary, :description, :accessibility_info,
              :public_name, :public_email, :public_phone,
              :partner_name, :partner_email, :partner_phone,
-             :address_id, :url, :facebook_link, :twitter_handle,
+             :address_id, :url, :facebook_link, :twitter_handle, :instagram_handle,
              :opening_times,
              { calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
                address_attributes: %i[id street_address street_address2 street_address3 city postcode],
@@ -53,6 +57,9 @@ class PartnerPolicy < ApplicationPolicy
                tag_ids: [] }]
 
     attrs << :slug if user.root?
+    attrs << :hidden if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :hidden_reason if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << :hidden_blame_id  if user.root? || user.neighbourhood_admin? || user.partnership_admin?
     attrs
   end
 
@@ -61,9 +68,38 @@ class PartnerPolicy < ApplicationPolicy
       if user.root?
         scope.all
 
+      elsif user.partnership_admin?
+        user_neighbourhood_ids = user.owned_neighbourhood_ids
+        user_partnership_tag_ids = user.tags.map(&:id)
+
+        # If the user is a partner admin,
+        # or if they manage their partnership tag AND they neighbourhood admin for them
+        clause = <<-SQL.squish
+        partners_users.user_id = ? OR
+          (
+          partner_tags.tag_id IN (?) AND
+            (
+              addresses.neighbourhood_id IN (?)
+              OR service_areas.neighbourhood_id IN (?)
+            )
+          )
+        SQL
+
+        scope
+          .left_outer_joins(:users, :tags, :address, :service_areas)
+          .where(
+            clause,
+            user.id,
+            user_partnership_tag_ids,
+            user_neighbourhood_ids,
+            user_neighbourhood_ids
+          ).distinct
+
       else
         user_neighbourhood_ids = user.owned_neighbourhood_ids
 
+        # If the user is a partner admin,
+        # or if they neighbourhood admin for them
         clause = <<-SQL.squish
           partners_users.user_id = ?
             OR addresses.neighbourhood_id IN (?)

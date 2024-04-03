@@ -3,10 +3,10 @@
 module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
-    before_action :set_partner, only: %i[show edit update destroy]
+    before_action :set_partner, only: %i[show edit update destroy clear_address]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
-    before_action :set_service_area_map_ids, only: %i[new edit]
+    before_action :set_partner_tags_controller, only: %i[create new edit update]
 
     def index
       @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
@@ -39,6 +39,9 @@ module Admin
 
       authorize @partner
 
+      # prevent someone trying to add the same service_area twice by mistake and causing a crash
+      @partner.service_areas = @partner.service_areas.uniq(&:neighbourhood_id)
+
       respond_to do |format|
         if @partner.save
           format.html do
@@ -51,7 +54,6 @@ module Admin
           format.html do
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
-            set_service_area_map_ids
             render :new, status: :unprocessable_entity
           end
           format.json { render json: @partner.errors, status: :unprocessable_entity }
@@ -67,16 +69,49 @@ module Admin
     def update
       authorize @partner
 
+      mutated_params = permitted_attributes(@partner)
+
+      before = @partner.hidden
+
       @partner.accessed_by_user = current_user
 
-      if @partner.update(permitted_attributes(@partner))
-        flash[:success] = 'Partner was successfully updated.'
-        redirect_to edit_admin_partner_path(@partner)
+      # prevent someone trying to add the same service_area twice by mistake and causing a crash
+      uniq_service_areas = mutated_params[:service_areas_attributes]
+                           .to_h
+                           .map { |_, val| val }
+                           .uniq { |service_area| service_area[:neighbourhood_id] }
 
+      mutated_params[:service_areas_attributes] = uniq_service_areas
+
+      hidden_in_this_edit = mutated_params[:hidden] == '1' && !@partner.hidden
+
+      mutated_params[:hidden_blame_id] = current_user.id  if hidden_in_this_edit
+
+      if @partner.update(mutated_params)
+        # have to redirect on associated service area errors or form breaks
+        if @partner.errors[:service_areas].any?
+          flash[:danger] = @partner.errors[:service_areas][0]
+        else
+          flash[:success] = 'Partner was successfully updated.'
+        end
+
+        # important this needs to only fire on change to hidden
+        if hidden_in_this_edit
+          @partner.users.each do |user|
+            ModerationMailer.hidden_message(
+              user,
+              @partner
+            ).deliver
+          end
+          ModerationMailer.hidden_staff_alert(
+            @partner
+          ).deliver
+        end
+
+        redirect_to edit_admin_partner_path(@partner)
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
-        set_service_area_map_ids
         render :edit, status: :unprocessable_entity
       end
     end
@@ -91,6 +126,25 @@ module Admin
         end
         format.json { head :no_content }
       end
+    end
+
+    def clear_address
+      authorize @partner
+
+      if @partner.can_clear_address?(current_user)
+        @partner.clear_address!
+        render json: { message: 'Address cleared' }
+
+      else
+        render json: { message: 'Could not clear address' },
+               status: :unprocessable_entity
+      end
+    end
+
+    def lookup_name
+      found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
+
+      render json: { name_available: found.nil? }
     end
 
     def setup
@@ -111,20 +165,25 @@ module Admin
 
     private
 
-    def set_service_area_map_ids
-      # maps neighbourhood ID to service_area ID
-      @service_area_id_map = if @partner
-                               @partner
-                                 .service_areas.select(:id, :neighbourhood_id)
-                                 .map { |sa| { sa.neighbourhood_id => sa.id } }
-                                 .reduce({}, :merge)
-                             else
-                               {}
-                             end
+    def set_partner_tags_controller
+      @partner_tags_controller =
+        if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
+          'select2'
+        else
+          'partner-tags'
+        end
     end
 
     def set_neighbourhoods
-      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
+      if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
+        @all_neighbourhoods = Neighbourhood.order(:name)
+      elsif @partner.present? && current_user.neighbourhood_admin_for_partner?(@partner.id)
+        ids = @partner.owned_neighbourhood_ids | current_user.owned_neighbourhood_ids
+        @all_neighbourhoods = Neighbourhood.where(id: ids)
+      else
+        ids = current_user.owned_neighbourhood_ids
+        @all_neighbourhoods = Neighbourhood.where(id: ids)
+      end
     end
 
     def user_not_authorized

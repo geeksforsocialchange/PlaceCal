@@ -5,13 +5,22 @@ require 'test_helper'
 class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
-    @tag_admin = create(:tag_admin)
-    @partner_admin = create(:partner_admin)
     @citizen = create(:user)
 
-    @public_tag = create(:tag_public)
+    @partner = create(:partner)
+    @unassigned_partner = create(:partner)
     @unassigned_root_tag = create(:tag)
-    @assigned_root_tag = @tag_admin.tags.first
+    @category_tag = create(:tag, type: 'Category', name: 'Activism', partner_ids: [@unassigned_partner.id])
+
+    @partnership_admin = create(:partnership_admin)
+    @partner_admin_with_no_partners = create(:partner_admin) do |user|
+      user.partners = []
+      user.save!
+    end
+    @partner_admin = create(:partner_admin) do |user|
+      user.partners = [@partner]
+      user.save!
+    end
 
     host! 'admin.lvh.me'
   end
@@ -21,12 +30,12 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Show every Tag for roots
   #   Redirect everyone else to admin_root_url
 
-  it_allows_access_to_index_for(%i[root tag_admin partner_admin]) do
+  it_allows_access_to_index_for(%i[root]) do
     get admin_tags_url
     assert_response :success
   end
 
-  it_denies_access_to_index_for(%i[citizen]) do
+  it_denies_access_to_index_for(%i[citizen partnership_admin partner_admin]) do
     get admin_tags_url
     assert_redirected_to admin_root_url
   end
@@ -41,7 +50,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  it_denies_access_to_new_for(%i[tag_admin partner_admin citizen]) do
+  it_denies_access_to_new_for(%i[partnership_admin partner_admin citizen]) do
     get new_admin_tag_url
     assert_redirected_to admin_root_url
   end
@@ -53,7 +62,7 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  it_denies_access_to_create_for(%i[tag_admin partner_admin citizen]) do
+  it_denies_access_to_create_for(%i[partnership_admin partner_admin citizen]) do
     assert_no_difference('Tag.count') do
       post admin_tags_url,
            params: { tag: attributes_for(:tag) }
@@ -68,46 +77,38 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
   #   Allow tag admins to update partner_ids of public tags, and root-assigned tags
   #   Everyone else, redirect to admin_root_url
 
-  it_allows_access_to_edit_for(%i[root partner_admin tag_admin]) do
+  it_allows_access_to_edit_for(%i[root]) do
     get edit_admin_tag_url(@unassigned_root_tag)
     assert_response :success
   end
 
-  it_denies_access_to_edit_for(%i[citizen]) do
+  it_denies_access_to_edit_for(%i[citizen partner_admin partnership_admin]) do
     get edit_admin_tag_url(@unassigned_root_tag)
     assert_redirected_to admin_root_url
   end
 
-  def test_update_root
-    # Root can edit everything
-    assert allows_access(@root, @public_tag, :update)
-    assert allows_access(@root, @unassigned_root_tag, :update)
-    assert allows_access(@root, @assigned_root_tag, :update)
+  it_allows_access_to_update_for(%i[root]) do
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
+
+    assert_redirected_to admin_tags_url
+    assert_equal [@partner.id], @category_tag.reload.partner_ids
   end
 
-  def test_update_partner_admin
-    # Partner admins
-    # can only edit public tags
-    assert allows_access(@partner_admin, @public_tag, :update)
-    assert denies_access(@partner_admin, @unassigned_root_tag, :update)
-    assert denies_access(@partner_admin, @assigned_root_tag, :update)
+  # partner admins cannot update partners they do not admin for
+  it_allows_access_to_update_for(%i[partner_admin_with_no_partners]) do
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
+
+    assert_redirected_to admin_root_url
+    assert_equal [@unassigned_partner.id], @category_tag.reload.partner_ids
   end
 
-  def test_update_tag_admin
-    # Tag admins
-    # can only edit tags that are public, or they have had assigned to them
-    assert_includes @tag_admin.tags, @assigned_root_tag # For prosperity
-    assert allows_access(@tag_admin, @public_tag, :update)
-    assert allows_access(@tag_admin, @assigned_root_tag, :update)
-    # They may not edit unassigned tags >:(
-    assert denies_access(@tag_admin, @unassigned_root_tag, :update)
-  end
+  it_denies_access_to_update_for(%i[citizen partner_admin partnership_admin]) do
+    patch admin_tag_url(@category_tag),
+          params:  { tag: { partner_ids: [@partner.id] }, id: 'activism' }
 
-  def test_update_citizen
-    # Citizens may do nothing :)
-    assert denies_access(@citizen, @public_tag, :update)
-    assert denies_access(@citizen, @unassigned_root_tag, :update)
-    assert denies_access(@citizen, @assigned_root_tag, :update)
+    assert_redirected_to admin_root_url
   end
 
   # Delete Tag
@@ -123,29 +124,11 @@ class Admin::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_tags_url
   end
 
-  it_denies_access_to_destroy_for(%i[tag_admin partner_admin citizen]) do
+  it_denies_access_to_destroy_for(%i[partnership_admin partner_admin citizen]) do
     assert_no_difference('Tag.count') do
       delete admin_tag_url(@unassigned_root_tag)
     end
 
     assert_redirected_to admin_root_url
-  end
-
-  # Tag Scopes!
-  #
-  #   Root gets all the tags
-  #   Tag admins and partner admins get a mix of public tags and the tags they can access
-  #   Everyone else, gets public tags only
-
-  def test_scope
-    @all_tags = [@public_tag, @assigned_root_tag, @unassigned_root_tag].sort_by(&:id)
-    @tag_admin_tags = [@public_tag, @assigned_root_tag].sort_by(&:id)
-    @partner_admin_tags = [@public_tag]
-    @citizen_tags = [@public_tag]
-
-    assert_equal(permitted_records(@root, Tag).sort_by(&:id), @all_tags)
-    assert_equal(permitted_records(@tag_admin, Tag).sort_by(&:id), @tag_admin_tags)
-    assert_equal(permitted_records(@partner_admin, Tag).sort_by(&:id), @partner_admin_tags)
-    assert_equal(permitted_records(@citizen, Tag).sort_by(&:id), @citizen_tags)
   end
 end

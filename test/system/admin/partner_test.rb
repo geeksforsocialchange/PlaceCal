@@ -12,7 +12,6 @@ class AdminPartnerTest < ApplicationSystemTestCase
     @root_user = create :root, email: 'root@lvh.me'
     @partner = create :ashton_partner
     @tag = create :tag
-    @tag_pub = create :tag_public
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
 
@@ -42,8 +41,8 @@ class AdminPartnerTest < ApplicationSystemTestCase
     assert_select2_single @neighbourhood_two, service_areas[1]
 
     tags = select2_node 'partner_tags'
-    select2 @tag.name, @tag_pub.name, xpath: tags.path
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    select2 @tag.name, xpath: tags.path
+    assert_select2_multiple [@tag.name_with_type], tags
     click_button 'Save Partner'
 
     click_link 'Partners'
@@ -52,7 +51,9 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
 
     tags = select2_node 'partner_tags'
-    assert_select2_multiple [@tag.name, @tag_pub.name], tags
+    find_element_and_retry_if_not_found do
+      assert_select2_multiple [@tag.name_with_type], tags
+    end
 
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
     assert_select2_single @neighbourhood_one, service_areas[0]
@@ -65,7 +66,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
     click_link @partner.name
     find :css, '#partner_image', wait: 100
 
-    image_path = File.join(fixture_path, 'files/damir-omerovic-UMaGtammiSI-unsplash.jpg')
+    image_path = File.join(fixture_paths.first, 'files/damir-omerovic-UMaGtammiSI-unsplash.jpg')
     attach_file 'partner_image', image_path
 
     base64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gIcSUNDX1BST0ZJTEUAAQEAAAIMbGNtcwIQAABtbnRyUkdCIFhZWi'
@@ -112,5 +113,47 @@ class AdminPartnerTest < ApplicationSystemTestCase
     #   (in the browser). so we verify the select2 code has worked by seeing if it has
     #   correctly done its thing to the tag selector
     assert_selector '.partner_tags ul.select2-selection__rendered'
+  end
+
+  test 'adding dupplicate service_areas to an existing partner does not crash' do
+    click_link 'Partners'
+    await_datatables
+
+    click_link @partner.name
+
+    # because of the nested forms we get an array of node
+    # the link adds a select2_node to the end of the array
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    select2 @neighbourhood_one, xpath: service_areas[-1].path
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    select2 @neighbourhood_one, xpath: service_areas[-1].path
+
+    click_button 'Save Partner'
+    assert_selector '.alert-success'
+  end
+
+  test 'adding dupplicate service_areas to a new partner does not crash' do
+    click_link 'Partners'
+    await_datatables
+
+    click_link 'Add New Partner'
+    fill_in 'Name', with: 'Hulme Library'
+
+    # because of the nested forms we get an array of node
+    # the link adds a select2_node to the end of the array
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    assert_predicate service_areas, :present?
+    select2 @neighbourhood_one, xpath: service_areas.last.path
+
+    click_link 'Add Service Area'
+    service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
+    assert_predicate service_areas, :present?
+    select2 @neighbourhood_one, xpath: service_areas.last.path
+
+    click_button 'Save Partner'
+    assert_selector '.alert-success'
   end
 end

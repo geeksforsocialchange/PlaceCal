@@ -16,7 +16,8 @@ class PartnerUpdatePostcodeTest < ActionDispatch::IntegrationTest
       unit: 'ward',
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05011368',
-      unit_name: 'Hulme'
+      unit_name: 'Hulme',
+      release_date: DateTime.new(2023, 7)
     )
 
     neighbourhood_2 = Neighbourhood.create!( # 'OL6 8BH'
@@ -25,7 +26,8 @@ class PartnerUpdatePostcodeTest < ActionDispatch::IntegrationTest
       unit: 'ward',
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05000800',
-      unit_name: 'Ashton Hurst'
+      unit_name: 'Ashton Hurst',
+      release_date: DateTime.new(2023, 7)
     )
 
     @neighbourhood_admin.neighbourhoods << neighbourhood_1

@@ -2,6 +2,7 @@
 
 class JoinsController < ApplicationController
   before_action :set_site
+  invisible_captcha only: %i[create update]
 
   def new
     @join = Join.new
@@ -11,7 +12,7 @@ class JoinsController < ApplicationController
     @join = Join.new(join_params)
 
     if @join.submit
-      redirect_to join_path, notice: "Thank you for your interest in PlaceCal. We'll  be in touch with you shortly."
+      redirect_to get_in_touch_path, notice: "Thank you for your interest in PlaceCal. We'll  be in touch with you shortly."
     else
       flash[:error] = 'Please fill out the required fields below'
       render :new

@@ -12,7 +12,11 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
 
-    @tag = create(:tag)
+    # using a factory to create the neighbourhood_admin will not result in a shared neighbourhood
+    @neighbourhood_admin = create(:citizen)
+    @neighbourhood_admin.neighbourhoods = [@partner.address.neighbourhood]
+
+    @tag = create(:tag, type: 'Category')
 
     host! 'admin.lvh.me'
   end
@@ -51,7 +55,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Website address'
     assert_select 'label', text: 'Twitter handle'
 
-    assert_select 'h2', text: 'Address'
+    assert_select 'h3', text: 'Address'
     assert_select 'label', text: 'Street address *'
     assert_select 'label', text: 'Street address 2'
     assert_select 'label', text: 'Street address 3'
@@ -91,17 +95,6 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'a#destroy-partner', 'Delete Partner'
   end
 
-  test 'Edit does not have delete button for partner admins' do
-    @neighbourhood_region_admin.partners << @partner
-
-    sign_in @neighbourhood_region_admin
-
-    get edit_admin_partner_path(@partner)
-    assert_response :success
-
-    assert_select 'a#destroy-partner', false, 'This page must not have a Destroy Partner button'
-  end
-
   test 'Partner has owned tag preselected' do
     @neighbourhood_region_admin.tags << @tag
 
@@ -110,7 +103,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     get new_admin_partner_path(@partner)
     assert_response :success
 
-    tag_options = assert_select 'div.partner_tags option', count: 1, text: @tag.name
+    tag_options = assert_select 'div.partner_tags option', count: 1, text: @tag.name_with_type
 
     tag = tag_options.first
     assert tag.attributes.key?('selected')
@@ -158,6 +151,39 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
                   text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
     assert_select 'form .partner_image .invalid-feedback',
                   text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
+  end
+
+  test 'neighbourhood_admin cannot update an address outside of their neighbourhood' do
+    neighbourhood = create(:neighbourhood, unit_code_value: 'E05013808')
+
+    partner_params = {
+      name: @partner.name,
+      address_attributes: {
+        street_address: @partner.address.street_address,
+        postcode: 'W1J 7NF' # (from /test/support/geocoder.rb)
+      }
+    }
+
+    sign_in @neighbourhood_admin
+    put admin_partner_path(@partner), params: { partner: partner_params }
+
+    assert_select '#form-errors li', text: 'Partners cannot have an address outside of your ward.'
+  end
+
+  test 'partner_admin is shown reason for hiding them' do
+    reason = 'This is bad content for PlaceCal'
+    user = create(:partner_admin)
+    partner = user.partners.first
+    partner.update!(hidden: true, hidden_reason: reason, hidden_blame_id: @admin.id)
+
+    sign_in user
+
+    get edit_admin_partner_path(partner)
+    assert_response :success
+
+    assert_select '#hidden-reason' do
+      assert_select 'p', count: 1, text: reason
+    end
   end
 end
 

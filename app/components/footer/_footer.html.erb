@@ -15,7 +15,7 @@
         <h5 class="allcaps small">Site Navigation</h5>
         <nav role="navigation">
           <ul>
-            <li><%= active_link_to "Home", root_path, active: :exclusive %></li>
+            <li><%= active_link_to "Home", root_path %></li>
             <li><%= active_link_to "Events", events_path %></li>
             <li><%= active_link_to "Partners", partners_path %></li>
             <li><%= active_link_to "Log in", new_user_session_path %></li>
@@ -45,7 +45,6 @@
           Get in touch!
         </p>
         <p>
-          <strong>T:</strong> +44 (0)161 247 6954<br>
           <strong>E:</strong> <%= mail_to 'support@placecal.org' %>
         </p>
       </div>

@@ -5,16 +5,18 @@ var columns = [
     {"data": "unit_name"},
     {"data": "unit_code_key"},
     {"data": "unit_code_value"},
+    {"data": "release_date"},
   ]
 </script>
+
 
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Neighbourhoods",
     model: :neighbourhoods,
-    column_titles: ['ID', 'Our name', 'Official name', 'Official key', 'Official value'],
-    columns: %i[id name unit_name unit_code_key unit_code_value],
+    column_titles: ['ID', 'Our name', 'Official name', 'Official key', 'Official value', 'Release date'],
+    columns: %i[id name unit_name unit_code_key unit_code_value release_date],
     data: @neighbourhoods.limit(15),
-    source: admin_neighbourhoods_path(format: :json)
+    source: admin_neighbourhoods_path(current_user: @current_user, format: :json)
   }
 %>
 
@@ -24,3 +26,4 @@ var columns = [
 <p><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root) %></p>
 <% end %>
 
+<h5>ONS Latest Release Date Loaded: <%= Neighbourhood::LATEST_RELEASE_DATE %></h5>

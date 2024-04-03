@@ -30,7 +30,7 @@ jobs:
       PGPASSWORD: foobar
 
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           fetch-depth: 0
 
@@ -42,7 +42,7 @@ jobs:
       - uses: nodenv/actions/setup-nodenv@v2
       - uses: nodenv/actions/node-version@v2
         id: nodenv
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           node-version: ${{ steps.nodenv.outputs.node-version }}
           cache: yarn
@@ -53,7 +53,7 @@ jobs:
       - run: bin/test --lint --no-fix
       - if: failure()
         name: Upload test screenshots
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: test-screenshots
           path: tmp/screenshots/

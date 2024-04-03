@@ -14,12 +14,16 @@ class NeighbourhoodPolicy < ApplicationPolicy
     user.root?
   end
 
+  def show?
+    user.root? || user.neighbourhood_admin?
+  end
+
   def edit?
-    user.root? or user.neighbourhood_admin?
+    user.root?
   end
 
   def update?
-    user.root? or user.neighbourhood_admin?
+    user.root?
   end
 
   def destroy?
@@ -31,11 +35,7 @@ class NeighbourhoodPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    if user.root?
-      %i[name name_abbr unit unit_code_key unit_code_value unit_name].push(user_ids: [])
-    else
-      %i[name name_abbr]
-    end
+    %i[name name_abbr unit unit_code_key unit_code_value unit_name release_date].push(user_ids: []) if user.root?
   end
 
   class Scope < Scope
@@ -43,7 +43,7 @@ class NeighbourhoodPolicy < ApplicationPolicy
       if user.root?
         scope.all
       elsif user.neighbourhood_admin?
-        scope.where(id: user.owned_neighbourhood_ids)
+        scope.where(id: user.owned_neighbourhood_ids).distinct
       else
         scope.none
       end

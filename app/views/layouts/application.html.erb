@@ -3,8 +3,6 @@
   <head>
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag 'https://cdn.rawgit.com/h-ibaldo/Raleway_Fixed_Numerals/master/css/rawline.css', media: 'all' %>
-    <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Trocchi', media: 'all' %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
     <% if @site&.stylesheet_link %>
       <%= stylesheet_link_tag @site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' %>
@@ -44,7 +42,7 @@
       </main>
       <footer>
         <% if @site&.default_site? %>
-          <%= render_component "footer_home" %>
+          <%= render(HomeFooterComponent.new()) %>
         <% else %>
           <%= render_component "footer" %>
         <% end %>

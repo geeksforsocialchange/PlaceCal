@@ -17,28 +17,39 @@ module UsersHelper
   def user_has_no_rights?(user)
     return false if user.root?
     return false if user.editor?
-
-    return false if user.tag_admin?
+    return false if user.partnership_admin?
     return false if user.neighbourhood_admin?
     return false if user.partner_admin?
 
     true # they have no rights
   end
 
-  def options_for_partners
-    policy_scope(Partner).all.order(:name).pluck(:name, :id)
+  def options_for_partners(user = nil)
+    options = policy_scope(Partner).all.order(:name).pluck(:name, :id)
+    return options unless user
+
+    (options + user&.partners&.pluck(:name, :id)).uniq
   end
 
-  def options_for_neighbourhoods
-    policy_scope(Neighbourhood)
-      .where('name is not null and name != \'\'')
+  def permitted_options_for_partners
+    policy_scope(Partner).all.pluck(:id)
+  end
+
+  def options_for_user_neighbourhoods(for_user)
+    legacy_neighbourhoods = for_user.neighbourhoods.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
+
+    scope = Neighbourhood.find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(policy_scope(Neighbourhood), legacy_neighbourhoods)
+
+    scope
       .order(:name)
       .all
-      .collect { |ward| [ward.contextual_name, ward.id] }
-  end
-
-  def options_for_tags
-    policy_scope(Tag).order(:name).pluck(:name, :id)
+      .collect do |ward|
+        if ward.legacy_neighbourhood?
+          ["#{ward.contextual_name} - #{ward.release_date.year}/#{ward.release_date.month}", ward.id]
+        else
+          [ward.contextual_name, ward.id]
+        end
+      end
   end
 
   def role_label(value)

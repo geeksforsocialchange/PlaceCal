@@ -68,20 +68,22 @@ class EventsBySiteTagTest < ActionDispatch::IntegrationTest
       unit: 'ward',
       unit_code_key: 'WD19CD',
       unit_code_value: 'E05011368',
-      unit_name: 'Hulme'
+      unit_name: 'Hulme',
+      release_date: DateTime.new(2023, 7)
     )
 
     tag = Tag.create!(
       name: 'Tag',
       slug: 'tag',
-      description: 'A tag about a thing'
+      description: 'A tag about a thing',
+      type: 'Facility'
     )
 
     tag_site = Site.create!(
       name: 'A site',
       slug: 'a-site',
       description: 'A site about things',
-      domain: 'a-site.lvh.me',
+      url: 'https://a-site.lvh.me',
       is_published: true
     )
     tag_site.tags << tag

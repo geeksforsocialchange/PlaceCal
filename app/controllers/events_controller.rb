@@ -4,7 +4,7 @@
 class EventsController < ApplicationController
   include MapMarkers
 
-  before_action :set_event, only: %i[show edit update destroy]
+  before_action :set_event, only: %i[show]
   before_action :set_day, only: :index
   before_action :set_sort, only: :index
   before_action :set_primary_neighbourhood, only: :index
@@ -18,6 +18,7 @@ class EventsController < ApplicationController
     @period = params[:period].to_s || 'day'
     @repeating = params[:repeating] || 'on'
     @events = filter_events(@period, repeating: @repeating, site: current_site)
+    @title = current_site.name
     # Sort criteria
     @events = sort_events(@events, @sort)
     @multiple_days = true
@@ -32,8 +33,13 @@ class EventsController < ApplicationController
       end
       format.text
       format.ics do
+        events = Event.all
+        if @site
+          events = events.for_site(@site)
+          events = events.with_tags(@site.tags) if @site.tags.any?
+        end
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
-        ics_listing = Event.ical_feed
+        ics_listing = events.ical_feed
         cal = create_calendar(ics_listing)
         cal.publish
         render plain: cal.to_ical
@@ -61,55 +67,10 @@ class EventsController < ApplicationController
     end
   end
 
-  # GET /events/new
-  def new
-    @event = Event.new
-  end
-
-  # GET /events/1/edit
-  def edit; end
-
-  # POST /events
-  # POST /events.json
-  def create
-    @event = Event.new(event_params)
-
-    respond_to do |format|
-      if @event.save
-        format.html { redirect_to @event, notice: 'Event was successfully created.' }
-        format.json { render :show, status: :created, location: @event }
-      else
-        format.html { render :new }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /events/1
-  # PATCH/PUT /events/1.json
-  def update
-    default_update(@event, event_params)
-  end
-
-  # DELETE /events/1
-  # DELETE /events/1.json
-  def destroy
-    @event.destroy
-    respond_to do |format|
-      format.html { redirect_to events_url, notice: 'Event was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
-
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_event
     @event = Event.find(params[:id])
-  end
-
-  # Never trust parameters from the scary internet
-  def event_params
-    params.fetch(:event, {})
   end
 end

@@ -55,13 +55,6 @@ Rollbar.configure do |config|
   # https://devcenter.heroku.com/articles/deploying-to-a-custom-rails-environment
   config.environment = ENV['ROLLBAR_ENV'].presence || Rails.env
 
-  config.exception_level_filters.merge!('ActionController::RoutingError' => lambda do |error|
-    error.message =~ %r{No route matches \[[A-Z]+\] "/(.+)"}
-    case Regexp.last_match(1).split('/').first.to_s.downcase
-    when 'old', 'gate.php', 'wp-includes', 'mifs', 'vendor', 'epa'
-      'ignore'
-    else
-      'warning'
-    end
-  end)
+  # https://docs.rollbar.com/docs/ruby#exception-level-filters
+  config.exception_level_filters.merge!('ActionController::RoutingError' => 'ignore')
 end

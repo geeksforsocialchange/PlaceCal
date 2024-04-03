@@ -5,14 +5,18 @@ require 'test_helper'
 class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
   setup do
     @root = create(:root)
+    @another_root = create(:root)
 
     @site = create(:site)
+    @another_site = create(:site, name: 'another', site_admin: @another_root)
+
     @site_admin = @site.site_admin
 
     @neighbourhoods = create_list(:neighbourhood, 5)
     @number_of_neighbourhoods = Neighbourhood.all.length
 
-    @tag = create(:tag)
+    @tag = create(:tag, type: 'Category')
+    @partnership_tag = create(:partnership)
 
     host! 'admin.lvh.me'
   end
@@ -24,6 +28,15 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select 'title', text: 'Sites | PlaceCal Admin'
     assert_select 'h1', text: 'Sites'
+  end
+
+  test 'Admin site index shows all sites to signed in admin if none are assigned' do
+    sign_in(@root)
+    get admin_sites_path
+    assert_response :success
+
+    assert_select 'td', text: @another_site.name
+    assert_select 'td', text: @site.name
   end
 
   test 'root : can get new site' do
@@ -46,7 +59,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Name *'
     assert_select 'label', 'Place name'
     assert_select 'label', 'Tagline'
-    assert_select 'label', 'Domain *'
+    assert_select 'label', 'Url *'
     assert_select 'label', 'Slug *'
     assert_select 'label', 'Description'
     assert_select 'label', 'Site admin'
@@ -80,32 +93,27 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', 'Name *'
     assert_select 'label', 'Place name'
     assert_select 'label', 'Tagline'
-    assert_select 'label', text: 'Domain *', count: 0
-    assert_select 'label', text: 'Slug *', count: 0
+    assert_select 'label', text: 'Url *', count: 1
+    assert_select 'label', text: 'Slug *', count: 1
     assert_select 'label', 'Description'
     assert_select 'label', text: 'Site admin', count: 0
 
-    assert_select 'label', text: 'Theme', count: 0
-    assert_select 'label', text: 'Logo', count: 0
-    assert_select 'label', text: 'Footer logo', count: 0
+    assert_select 'label', text: 'Theme', count: 1
+    assert_select 'label', text: 'Logo', count: 1
+    assert_select 'label', text: 'Footer logo', count: 1
     assert_select 'label', 'Hero image'
     assert_select 'label', 'Hero image credit'
-
-    # See just neighbourhoods they admin
-    cocoon_select_template = assert_select('.add_fields').first['data-association-insertion-template']
-    neighbourhoods_shown = cocoon_select_template.scan(/(option value=)/).size
-    assert_equal(2, neighbourhoods_shown)
   end
 
-  test 'site tags show up' do
-    @site.tags << @tag
-    @site_admin.tags << @tag
+  test 'site tags show up and display their type' do
+    @site.tags << @partnership_tag
+    @site_admin.tags << @partnership_tag
 
     sign_in(@site_admin)
     get edit_admin_site_path(@site)
     assert_response :success
 
-    tag_options = assert_select 'div.site_tags option', count: 1, text: @tag.name
+    tag_options = assert_select 'div.site_tags option', count: 1, text: @partnership_tag.name_with_type
 
     tag = tag_options.first
     assert tag.attributes.key?('selected')
@@ -116,7 +124,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     new_site_params = {
       name: 'a new site',
-      domain: 'a-domain',
+      url: 'https://a-domain.placecal.org',
       slug: 'a-slug',
       logo: fixture_file_upload('bad-cat-picture.bmp'),
       footer_logo: fixture_file_upload('bad-cat-picture.bmp'),
@@ -148,7 +156,7 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
 
     site_params = {
       name: 'a new site',
-      domain: 'a-domain',
+      url: 'https://a-domain.placecal.org',
       slug: 'a-slug',
       logo: fixture_file_upload('bad-cat-picture.bmp'),
       footer_logo: fixture_file_upload('bad-cat-picture.bmp'),

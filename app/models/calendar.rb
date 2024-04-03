@@ -44,9 +44,30 @@ class Calendar < ApplicationRecord
     default: :idle
   )
 
-  scope :where_busy, -> { where(calendar_state: %i[in_queue in_worker]) }
-  scope :where_idle, -> { where(calendar_state: :idle) }
-  scope :where_errored, -> { where(calendar_state: :error) }
+  scope :that_appear_on_site, lambda { |site|
+    site_partnership_tag_ids = site.tags.map(&:id)
+
+    if site_partnership_tag_ids.length.positive?
+      return Calendar.left_joins(partner: %i[address service_areas partnerships])
+                     .where(
+                       '(partner_tags.tag_id IN (:tags) AND '\
+                       '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
+                       'service_areas.neighbourhood_id in (:neighbourhood_ids)))',
+                       neighbourhood_ids: site.owned_neighbourhood_ids,
+                       tags: site_partnership_tag_ids
+                     )
+                     .distinct
+    else
+      return Calendar.left_joins(partner: %i[address service_areas])
+                     .left_joins(events: %i[address])
+                     .where(
+                       '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
+                       'service_areas.neighbourhood_id in (:neighbourhood_ids))',
+                       neighbourhood_ids: site.owned_neighbourhood_ids
+                     )
+                     .distinct
+    end
+  }
 
   # We need a default location for some strategies
   def requires_default_location?
@@ -110,11 +131,15 @@ class Calendar < ApplicationRecord
   # @return nothing
   def queue_for_import!(force_import, from_date)
     transaction do
-      return unless calendar_state.idle? || calendar_state.error?
+      return if is_busy?
 
+      Calendar.record_timestamps = false
       update! calendar_state: :in_queue
 
       CalendarImporterJob.perform_later id, from_date, force_import
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
@@ -125,7 +150,11 @@ class Calendar < ApplicationRecord
     transaction do
       return unless calendar_state.in_queue?
 
+      Calendar.record_timestamps = false
       update! calendar_state: :in_worker
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
@@ -166,9 +195,13 @@ class Calendar < ApplicationRecord
       # before saving error
       reload
 
+      Calendar.record_timestamps = false
       self.calendar_state = :bad_source
       self.critical_error = problem
       save!
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
@@ -191,9 +224,13 @@ class Calendar < ApplicationRecord
       # before saving error
       reload
 
+      Calendar.record_timestamps = false
       self.calendar_state = :error
       self.critical_error = problem
       save validate: false
+
+    ensure
+      Calendar.record_timestamps = true
     end
   end
 
@@ -215,10 +252,16 @@ class Calendar < ApplicationRecord
     calendar_state.in_queue? || calendar_state.in_worker?
   end
 
+  # is a user allowed to requeue a calendar for import?
+  def can_be_requeued?
+    calendar_state.idle? || calendar_state.bad_source?
+  end
+
   private
 
   # called for validation
   def check_source_reachable
+    return if source.blank?
     return unless source_changed?
 
     # The calendar importer will raise an exception if the source
@@ -227,6 +270,6 @@ class Calendar < ApplicationRecord
   rescue CalendarImporter::Exceptions::InaccessibleFeed => e
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed => e
-    errors.add :source, "URL could not be parsed (#{e})"
+    errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
   end
 end

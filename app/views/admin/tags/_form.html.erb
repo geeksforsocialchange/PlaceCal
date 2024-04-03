@@ -1,5 +1,3 @@
-<%- disabled_fields = policy(@tag).disabled_fields %>
-
 <% if !@tag.new_record? %>
 <p>A tag of type <em><%= @tag.class %></em>.</p>
 <% end %>
@@ -19,21 +17,19 @@
   <%= render_component "error", object: @tag %>
 
   <%= f.input :name, class: 'form-control',
-              disabled: disabled_fields.include?(:name) || @tag.system_tag %>
+              disabled: @tag.system_tag %>
 
   <%= f.input :slug, class: 'form-control',
-              disabled: disabled_fields.include?(:slug) || @tag.system_tag %>
+              disabled:  @tag.system_tag %>
 
-  <%= f.input :description, class: 'form-control',
-              disabled: disabled_fields.include?(:description) %>
+  <%= f.input :description, class: 'form-control' %>
 
   <% if current_user.root? -%>
     <%= f.input :system_tag, class: 'form-control',
-      disabled: disabled_fields.include?(:system_tag),
       hint: 'This tag is read only and should not be edited' %>
   <% end -%>
 
-  <% if @tag.type.blank? || @tag.type == 'Tag' %>
+  <% if @tag.new_record? %>
   <%= f.input :type,
       collection: {
       'None': '',
@@ -46,32 +42,14 @@
   <br>
   <% end %>
 
-  
-  <%= f.input :edit_permission,
-              as: :radio_buttons,
-              label_method: ->(val){ edit_permission_label(val) },
-              hint: 'Users with this role will be granted access to assign this tag',
-              disabled: disabled_fields.include?(:edit_permission) %>
-
-
   <h2>Tagged Partners</h2>
   <p>Apply this tag to the given partners</p>
-  <% if disabled_fields.include?(:partner_ids) %>
-    <%# # Create a dummy field, because f.assoc disappears %>
-    <%= f.input :partners, collection: options_for_partners,
-        input_html: { class: 'form-control', data: { controller: "select2" } }, disabled: true %>
-  <% else %>
-    <%= f.association :partners, collection: options_for_partners,
+  <%= f.association :partners, collection: options_for_partners,
         input_html: { class: 'form-control', data: { controller: "select2" } } %>
-  <% end %>
 
-  <h2>Assigned Users</h2>
-  <p>Grant permission to assign this tag</p>
-  <% if disabled_fields.include?(:user_ids) %>
-    <%# # Create a dummy field, because f.assoc disappears %>
-    <%= f.association :users,
-        input_html: { class: 'form-control', data: { controller: "select2" } }, disabled: true %>
-  <% else %>
+  <% if show_assigned_user_field_for(f) %>
+    <h2>Assigned Users</h2>
+    <p>Grant permission to assign this tag</p>
     <%= f.association :users, collection: options_for_users,
         input_html: { class: 'form-control', data: { controller: "select2" } } %>
   <% end %>

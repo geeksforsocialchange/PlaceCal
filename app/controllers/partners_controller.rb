@@ -15,14 +15,16 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    # Get all Partners that manage at least one other partner
-    # @partners = Partner.managers.for_site(current_site).order(:name)
-
     # Get all partners based in the neighbourhoods associated with this site.
-    @partners = Partner
-                .for_site(current_site)
-                .includes(:service_areas, :address)
-                .order(:name)
+    partners = Partner
+               .for_site(current_site)
+               .includes(:service_areas, :address)
+               .order(:name)
+
+    neighbourhood_names = Partner.neighbourhood_names_for_site(current_site, current_site.badge_zoom_level)
+
+    @filters = PartnerFilters.new(current_site, neighbourhood_names, params)
+    @partners = @filters.apply_to(partners)
 
     # show only partners with no service_areas
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)
@@ -38,6 +40,8 @@ class PartnersController < ApplicationController
   # GET /partners/1
   # GET /partners/1.json
   def show
+    redirect_to root_path if @partner.hidden
+
     upcoming_events = Event.by_partner(@partner).upcoming
     if upcoming_events.none?
       # If no events, show an appropriate message why
@@ -99,8 +103,4 @@ class PartnersController < ApplicationController
         'All Partners'
       end
   end
-  # This controller doesn't allow CRUD
-  # def partner_params
-  #   params.fetch(:partner, {})
-  # end
 end

@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
     if sort == 'summary'
       [[Time.now, events.sort_by_summary]]
     else
-      events.sort_by_time.group_by_day(&:dtstart)
+      events.distinct.sort_by_time.group_by_day(&:dtstart)
     end
   end
 
@@ -89,13 +89,18 @@ class ApplicationController < ActionController::Base
   def current_site
     return @current_site if @current_site
 
-    # Do not return a site for the admin subdomain.
-    # The admin subdomain gives a global view of data.
-    return if request.subdomain == Site::ADMIN_SUBDOMAIN
+    if Site.count.positive?
+      # Do not return a site for the admin subdomain.
+      # The admin subdomain gives a global view of data.
+      return if request.subdomain == Site::ADMIN_SUBDOMAIN
 
-    @current_site = Site.find_by_request(request)
+      @current_site = Site.find_by_request(request)
 
-    redirect_to(root_url(subdomain: false)) if @current_site.nil? && !response.redirect?
+      redirect_to(root_url(subdomain: false), allow_other_host: true) if @current_site.nil? && !response.redirect?
+    else
+      flash.now[:warning] = 'You have no site in your database, have you run `rails db:seed`?'
+      @current_site = Site.new
+    end
 
     @current_site
   end
@@ -125,18 +130,6 @@ class ApplicationController < ActionController::Base
     event.description = "#{e.description}\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
     event.location = e.location
     event
-  end
-
-  def default_update(obj, obj_params)
-    respond_to do |format|
-      if obj.update(obj_params)
-        format.html { redirect_to obj, notice: "#{obj.class} was successfully updated." }
-        format.json { render :show, status: :ok, location: obj }
-      else
-        format.html { render :edit }
-        format.json { render json: obj.errors, status: :unprocessable_entity }
-      end
-    end
   end
 
   def authenticate_by_ip
@@ -178,7 +171,6 @@ class ApplicationController < ActionController::Base
 
   def set_navigation
     return @navigation if @navigation
-    return if instance_of?(MountainView::StyleguideController)
 
     @navigation = if default_site?
                     default_site_navigation
@@ -216,7 +208,7 @@ class ApplicationController < ActionController::Base
     [
       ['Our story', our_story_path],
       ['Find your PlaceCal', find_placecal_path],
-      ['Join us', join_path]
+      ['Get in touch', get_in_touch_path]
     ]
   end
 
