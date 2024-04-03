@@ -9,7 +9,7 @@
 		"@rails/ujs": "6.1.7",
 		"bootstrap": "4.6.2",
 		"datatables.net-bs4": "1.13.11",
-		"esbuild": "0.16.13",
+		"esbuild": "0.20.2",
 		"esbuild-rails": "1.0.7",
 		"jquery": "3.7.1",
 		"leaflet": "1.9.4",
