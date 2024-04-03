@@ -56,6 +56,12 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'ol.events li', 2
   end
 
+  test 'should get ics with configured subdomain' do
+    get "#{from_site_slug(@site, events_path)}.ics"
+
+    assert_response :success
+  end
+
   test 'should get index with invalid subdomain' do
     get url_for controller: :events, subdomain: 'notaknownsubdomain'
     assert_response :redirect
