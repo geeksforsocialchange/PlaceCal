@@ -86,9 +86,6 @@ module Admin
       hidden_in_this_edit = mutated_params[:hidden] == '1' && !@partner.hidden
 
       mutated_params[:hidden_blame_id] = current_user.id  if hidden_in_this_edit
-      Rails.logger.debug '0' * 80
-      Rails.logger.debug mutated_params
-      Rails.logger.debug '0' * 80
 
       if @partner.update(mutated_params)
         # have to redirect on associated service area errors or form breaks
@@ -142,6 +139,12 @@ module Admin
         render json: { message: 'Could not clear address' },
                status: :unprocessable_entity
       end
+    end
+
+    def lookup_name
+      found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
+
+      render json: { name_available: found.nil? }
     end
 
     def setup

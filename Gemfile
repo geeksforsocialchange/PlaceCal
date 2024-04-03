@@ -100,9 +100,9 @@ group :development do
   gem 'rails-erd'
   gem 'rdoc'
   gem 'rubocop', '1.62.0', require: false
-  gem 'rubocop-graphql', '1.5.0', require: false
+  gem 'rubocop-graphql', '1.5.1', require: false
   gem 'rubocop-minitest', '0.35.0', require: false
-  gem 'rubocop-performance', '1.20.2', require: false
+  gem 'rubocop-performance', '1.21.0', require: false
   gem 'rubocop-rails', '2.24.1', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'

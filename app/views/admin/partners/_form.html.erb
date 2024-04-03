@@ -15,7 +15,12 @@
       <% end  %>
     <% end  %>
     <h2>Basic Information</h2>
-    <%= f.input :name, class: "form-control" %>
+    <%= f.input :name,
+	class: "form-control",
+	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source', 'data-action': 'input->partner-form-validation#checkInput' },
+	hint: 'Must be at least 5 characters long' %>
+    <p class="invalid-feedback" id="partner-name-feedback">This partner name has already been taken.</p>
+
     <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
     <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>
     <%= f.input :description, class: "form-control", label: 'Description', input_html: { rows: 7 } %>
@@ -41,12 +46,12 @@
     <div id='address'>
       <div class="row">
         <div class="col-md-6">
-         
+
     <h3>Address</h3>
             <%= render 'address_fields',
 		       form: f,
 		       partner: @partner %>
-	    
+
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
             <p>
               The address for this partner is assigned to an out of date neighbourhood.
@@ -108,7 +113,7 @@
           <%= f.error :instagram_handle, class: 'invalid-feedback' %>
         </div>
       </div>
-        
+
     <br>
     <hr>
     <h2>Contact Information</h2>
@@ -143,9 +148,9 @@
     <%= f.association :tags,
         label: false,
         collection: options_for_partner_tags(@partner),
-        input_html: { class: 'form-check', data: { 
+        input_html: { class: 'form-check', data: {
           controller: @partner_tags_controller,
-          "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
+          "partner-tags-permitted-tags-value": permitted_options_for_partner_tags
         } } %>
     <hr>
     <% unless @partner.new_record? %>
