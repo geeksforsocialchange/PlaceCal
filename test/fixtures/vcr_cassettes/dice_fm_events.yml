@@ -3235,4 +3235,226 @@ http_interactions:
               }
           }
     recorded_at: Mon, 31 Oct 2022 13:59:45 GMT
-recorded_with: VCR 6.1.0
+  - request:
+      method: get
+      uri: http://schema.org/
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept:
+          - application/ld+json;profile=http://www.w3.org/ns/json-ld#context, application/ld+json;q=0.9,
+            text/html;q=0.8, application/xhtml+xml;q=0.8, application/json;q=0.5
+        User-Agent:
+          - Ruby RDF.rb/3.3.1
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Host:
+          - schema.org
+    response:
+      status:
+        code: 301
+        message: Moved Permanently
+      headers:
+        Location:
+          - https://schema.org/
+        X-Cloud-Trace-Context:
+          - e9adac33211971cfd6c0aeca08e854b9
+        Date:
+          - Wed, 03 Apr 2024 14:08:40 GMT
+        Content-Type:
+          - text/html
+        Server:
+          - Google Frontend
+        Content-Length:
+          - "0"
+      body:
+        encoding: UTF-8
+        string: ""
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: http://schema.org/docs/jsonldcontext.jsonld
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept:
+          - application/ld+json;profile=http://www.w3.org/ns/json-ld#context, application/ld+json;q=0.9,
+            text/html;q=0.8, application/xhtml+xml;q=0.8, application/json;q=0.5
+        User-Agent:
+          - Ruby RDF.rb/3.3.1
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Host:
+          - schema.org
+    response:
+      status:
+        code: 301
+        message: Moved Permanently
+      headers:
+        Location:
+          - https://schema.org/docs/jsonldcontext.jsonld
+        X-Cloud-Trace-Context:
+          - bd34d4380b7487015c7f464f9df37bc3
+        Date:
+          - Wed, 03 Apr 2024 14:08:40 GMT
+        Content-Type:
+          - text/html
+        Server:
+          - Google Frontend
+        Content-Length:
+          - "0"
+      body:
+        encoding: UTF-8
+        string: ""
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: http://schema.org/
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept:
+          - application/ld+json;profile=http://www.w3.org/ns/json-ld#context, application/ld+json;q=0.9,
+            text/html;q=0.8, application/xhtml+xml;q=0.8, application/json;q=0.5
+        User-Agent:
+          - Ruby RDF.rb/3.3.1
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Host:
+          - schema.org
+    response:
+      status:
+        code: 301
+        message: Moved Permanently
+      headers:
+        Location:
+          - https://schema.org/
+        X-Cloud-Trace-Context:
+          - 781bff9111b14a10eb766f34922c537d
+        Date:
+          - Wed, 03 Apr 2024 14:08:40 GMT
+        Content-Type:
+          - text/html
+        Server:
+          - Google Frontend
+        Content-Length:
+          - "0"
+      body:
+        encoding: UTF-8
+        string: ""
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: http://schema.org/docs/jsonldcontext.jsonld
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept:
+          - application/ld+json;profile=http://www.w3.org/ns/json-ld#context, application/ld+json;q=0.9,
+            text/html;q=0.8, application/xhtml+xml;q=0.8, application/json;q=0.5
+        User-Agent:
+          - Ruby RDF.rb/3.3.1
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Host:
+          - schema.org
+    response:
+      status:
+        code: 301
+        message: Moved Permanently
+      headers:
+        Location:
+          - https://schema.org/docs/jsonldcontext.jsonld
+        X-Cloud-Trace-Context:
+          - 2a14a0e696b7b53a0668c20ace7b1749
+        Date:
+          - Wed, 03 Apr 2024 14:08:41 GMT
+        Content-Type:
+          - text/html
+        Server:
+          - Google Frontend
+        Content-Length:
+          - "0"
+      body:
+        encoding: UTF-8
+        string: ""
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: http://schema.org/
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept:
+          - application/ld+json;profile=http://www.w3.org/ns/json-ld#context, application/ld+json;q=0.9,
+            text/html;q=0.8, application/xhtml+xml;q=0.8, application/json;q=0.5
+        User-Agent:
+          - Ruby RDF.rb/3.3.1
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Host:
+          - schema.org
+    response:
+      status:
+        code: 301
+        message: Moved Permanently
+      headers:
+        Location:
+          - https://schema.org/
+        X-Cloud-Trace-Context:
+          - 70f6ff861901aaa43c0fd40d5c7f65db
+        Date:
+          - Wed, 03 Apr 2024 14:08:41 GMT
+        Content-Type:
+          - text/html
+        Server:
+          - Google Frontend
+        Content-Length:
+          - "0"
+      body:
+        encoding: UTF-8
+        string: ""
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: http://schema.org/docs/jsonldcontext.jsonld
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept:
+          - application/ld+json;profile=http://www.w3.org/ns/json-ld#context, application/ld+json;q=0.9,
+            text/html;q=0.8, application/xhtml+xml;q=0.8, application/json;q=0.5
+        User-Agent:
+          - Ruby RDF.rb/3.3.1
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Host:
+          - schema.org
+    response:
+      status:
+        code: 301
+        message: Moved Permanently
+      headers:
+        Location:
+          - https://schema.org/docs/jsonldcontext.jsonld
+        X-Cloud-Trace-Context:
+          - eed20b8bcf05b86b948b95abef4e8749
+        Date:
+          - Wed, 03 Apr 2024 14:08:41 GMT
+        Content-Type:
+          - text/html
+        Server:
+          - Google Frontend
+        Content-Length:
+          - "0"
+      body:
+        encoding: UTF-8
+        string: ""
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.2.0

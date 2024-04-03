@@ -23,9 +23,7 @@ module CalendarImporter::Events
 
     def description
       text = @event.description
-      text = text.join(' ') if text.is_a?(Icalendar::Values::Array)
-
-      text.to_s # .gsub(/\A(\n)+\z/, '').strip
+      text.to_s
     end
 
     def location
