@@ -279,4 +279,26 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     delete clear_address_admin_partner_path(@partner)
     assert_response :unprocessable_entity
   end
+
+  test 'partner name availability endpoint' do
+    sign_in @root
+
+    # yes
+    get lookup_name_admin_partners_path(name: 'alpha-beta')
+    payload = response.parsed_body
+    assert payload['name_available']
+    # puts response.body
+
+    # no
+    partner = create(:partner)
+    get lookup_name_admin_partners_path(name: 'alpha-beta')
+    payload = response.parsed_body
+    assert payload['name_available']
+
+    # also case sensitive no
+    partner = create(:partner)
+    get lookup_name_admin_partners_path(name: 'ALPHA-BETA')
+    payload = response.parsed_body
+    assert payload['name_available']
+  end
 end

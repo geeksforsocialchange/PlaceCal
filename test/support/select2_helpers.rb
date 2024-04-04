@@ -19,8 +19,8 @@ module Select2Helpers
 
   def all_cocoon_select2_nodes(css_class)
     await_select2 10
-    within ".#{css_class}", wait: 10 do
-      all :css, '.select2-container', wait: 10
+    within ".#{css_class}" do
+      all :css, '.select2-container'
     end
   end
 

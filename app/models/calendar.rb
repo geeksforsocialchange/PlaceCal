@@ -262,6 +262,7 @@ class Calendar < ApplicationRecord
   # called for validation
   def check_source_reachable
     return unless source_changed?
+    return if errors[:source].any?
 
     # The calendar importer will raise an exception if the source
     #   URL has a problem
