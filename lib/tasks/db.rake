@@ -179,28 +179,8 @@ namespace :db do
     end
   end
 
-  desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to local dev DB"
-  task restore_local: :environment do
-    filename = ENV.fetch(DB_DUMP_ENV_KEY, nil)
-    raise "Could not find #{filename} file!" unless File.exist? filename
-
-    $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
-    puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev #{filename}`
-
-    if $CHILD_STATUS.success?
-      $stdout.puts '... done.'
-    else
-      warn 'Failed to restore DB dump to local dev DB!'
-      warn 'Please manually check to see whether local DB dev still exists.'
-      exit
-    end
-  end
-
   desc 'a better version of db:restore_local'
-  task restore_local_2: :environment do
-    # this does the same thing as the previous task but in a less hacky way by
-    #    utilising rails tasks and configurations.
-
+  task restore_local: :environment do
     filename = ENV.fetch(DB_DUMP_ENV_KEY, nil)
     raise "Could not find #{filename} file!" unless File.exist? filename
 
