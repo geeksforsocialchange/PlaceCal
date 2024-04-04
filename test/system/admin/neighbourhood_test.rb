@@ -22,8 +22,12 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
   test 'select2 inputs on neighbourhoods form' do
     # find first neighbourhood
     click_link 'Neighbourhoods'
+    await_datatables
+
     find_element_and_retry_if_stale do
-      within page.all(:css, '.odd')[0] do
+      datatable_1st_row = page.all(:css, 'table#datatable tbody tr')[0]
+
+      within datatable_1st_row do
         click_link
       end
     end
@@ -36,9 +40,12 @@ class AdminNeighbourhoodTest < ApplicationSystemTestCase
     click_button 'Save'
 
     click_link 'Neighbourhoods'
+    await_datatables
 
     find_element_and_retry_if_stale do
-      within page.all(:css, '.odd')[0] do
+      datatable_1st_row = page.all(:css, 'table#datatable tbody tr')[0]
+
+      within datatable_1st_row do
         click_link
       end
     end

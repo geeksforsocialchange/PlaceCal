@@ -30,9 +30,10 @@ class AdminUserTest < ApplicationSystemTestCase
 
   test 'select2 inputs on users form' do
     click_link 'Users'
+    await_datatables
 
     # edit a root user because they have access to all potential select2 inputs
-    datatable_1st_row = page.all(:css, '.odd')[0]
+    datatable_1st_row = page.all(:css, 'table#datatable tbody tr')[0]
     within datatable_1st_row do
       click_link 'Place'
     end
@@ -51,10 +52,12 @@ class AdminUserTest < ApplicationSystemTestCase
     click_button 'Update'
 
     click_link 'Users'
+    await_datatables
 
     # return to user to check data is intact
     find_element_and_retry_if_stale do
-      within page.all(:css, '.odd')[0] do
+      datatable_1st_row = page.all(:css, 'table#datatable tbody tr')[0]
+      within datatable_1st_row do
         click_link 'Place'
       end
     end
