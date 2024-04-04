@@ -179,7 +179,7 @@ namespace :db do
     end
   end
 
-  desc 'a better version of db:restore_local'
+  desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to local dev DB"
   task restore_local: :environment do
     filename = ENV.fetch(DB_DUMP_ENV_KEY, nil)
     raise "Could not find #{filename} file!" unless File.exist? filename
