@@ -232,4 +232,18 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test 'handles bad URLs' do
+    calendar = build(:calendar)
+
+    calendar.source = ''
+    assert_raises CalendarImporter::Exceptions::UnsupportedFeed do
+      CalendarImporter::CalendarImporter.new(calendar)
+    end
+
+    calendar.source = 'hts://example,com'
+    assert_raises CalendarImporter::Exceptions::UnsupportedFeed do
+      CalendarImporter::CalendarImporter.new(calendar)
+    end
+  end
 end

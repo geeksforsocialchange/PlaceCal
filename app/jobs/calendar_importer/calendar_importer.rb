@@ -40,7 +40,11 @@ class CalendarImporter::CalendarImporter
   # As a side effect, it runs CalendarImporter#parser, which sets self.parser to one of the values above
   # This ensures that self.parser is set during calendar_importer_task
   def validate_feed!
-    CalendarImporter::Parsers::Base.read_http_source @calendar.source
+    url = @calendar.source.to_s.strip
+    raise UnsupportedFeed, 'The provided URL is missing' if url.blank?
+    raise UnsupportedFeed, 'The provided URL is not a valid URL' unless Calendar::CALENDAR_REGEX.match?(url)
+
+    CalendarImporter::Parsers::Base.read_http_source url
 
     raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?
   end
