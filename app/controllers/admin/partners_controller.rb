@@ -5,8 +5,9 @@ module Admin
     include LoadUtilities
     before_action :set_partner, only: %i[show edit update destroy clear_address]
     before_action :set_tags, only: %i[new create edit]
-    before_action :set_neighbourhoods, only: %i[new edit]
+    before_action :set_neighbourhoods, only: %i[new edit create]
     before_action :set_partner_tags_controller, only: %i[create new edit update]
+    before_action :validate_category_limit, only: %i[create]
 
     def index
       @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
@@ -162,6 +163,18 @@ module Admin
     end
 
     private
+
+    def validate_category_limit
+      # the first param is always empty so we check n+1
+      return if permitted_attributes(Partner)[:category_ids].count < 5
+
+      # we're about to refresh the page so save the users input
+      @partner = Partner.new(permitted_attributes(Partner))
+      @partner.accessed_by_user = current_user
+      @partner.tags = current_user.tags
+      flash.now[:danger] = 'Partners can have a maximum of 3 Category tags'
+      render 'new', status: :unprocessable_entity
+    end
 
     def set_partner_tags_controller
       @partner_tags_controller =
