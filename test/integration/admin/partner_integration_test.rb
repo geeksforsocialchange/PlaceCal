@@ -6,6 +6,8 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
+    @site = create(:site)
+
     @admin = create(:root)
 
     @partner = create(:partner)
@@ -93,6 +95,27 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'a#destroy-partner', 'Delete Partner'
+  end
+
+  test 'Partner create form gives feedback on too many categories' do
+    cat_ids = []
+    5.times { |_| cat_ids << create(:category).id }
+    new_partner_params = {
+      name: 'A partner',
+      category_ids: cat_ids,
+      address_attributes: {
+        street_address: @partner.address.street_address,
+        postcode: @partner.address.postcode
+      }
+    }
+
+    sign_in @admin
+    post admin_partners_path, params: { partner: new_partner_params }
+
+    assert_not response.redirect?
+
+    assert_select '.flashes',
+                  text: 'Partners can have a maximum of 3 Category tags'
   end
 
   test 'Partner create form gives feedback on bad image selection' do
