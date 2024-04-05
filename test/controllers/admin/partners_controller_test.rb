@@ -94,6 +94,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Partner.count') do
       post admin_partners_url,
            params: { partner: { name: 'A new partner',
+                                category_ids: [],
                                 address_attributes: {
                                   street_address: '123 Moss Ln E',
                                   postcode: 'M15 5DD'
@@ -104,7 +105,7 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
   it_denies_access_to_create_for(%i[partner_admin]) do
     assert_difference('Partner.count', 0) do
       post admin_partners_url,
-           params: { partner: { name: 'A new partner' } }
+           params: { partner: { name: 'A new partner', category_ids: [] } }
     end
   end
 

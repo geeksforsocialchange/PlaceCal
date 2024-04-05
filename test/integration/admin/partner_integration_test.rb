@@ -10,6 +10,8 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     @partner = create(:partner)
 
+    @category = create(:category)
+
     @neighbourhood_region_admin = create(:neighbourhood_region_admin)
 
     # using a factory to create the neighbourhood_admin will not result in a shared neighbourhood
@@ -96,6 +98,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
   test 'Partner create form gives feedback on bad image selection' do
     new_partner_params = {
       name: 'A partner',
+      category_ids: [@category.id],
       address_attributes: {
         street_address: @partner.address.street_address,
         postcode: @partner.address.postcode
