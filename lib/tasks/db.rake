@@ -185,7 +185,24 @@ namespace :db do
     raise "Could not find #{filename} file!" unless File.exist? filename
 
     $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
-    puts `dropdb placecal_dev && createdb placecal_dev && pg_restore -d placecal_dev #{filename}`
+
+    db_config = Rails.configuration.database_configuration[Rails.env]
+
+    begin
+      Rake::Task['db:drop'].invoke
+
+    rescue ActiveRecord::ProtectedEnvironmentError
+      # https://github.com/rails/rails/issues/34041#issuecomment-426097998
+      puts "*** DB drop failed, you may have pending migrations ***\n\n"
+      raise
+    end
+
+    Rake::Task['db:create'].invoke
+
+    command = "pg_restore -h #{db_config['host']} -p #{db_config['port']} -d #{db_config['database']} -U #{db_config['username']} #{filename}"
+    puts "running: #{command}"
+    system command
+
     if $CHILD_STATUS.success?
       $stdout.puts '... done.'
     else
@@ -271,17 +288,48 @@ namespace :db do
 
       partner_address_ids = Set.new(Partner.pluck(:address_id))
       event_address_ids = Set.new(Event.pluck(:address_id))
-      place_address_ids = Set.new(
-        ActiveRecord::Base.connection.execute('select address_id from places').pluck('address_id')
-      )
 
-      orphaned_address_ids = all_address_ids.subtract(partner_address_ids | event_address_ids | place_address_ids)
+      orphaned_address_ids = all_address_ids.subtract(partner_address_ids | event_address_ids)
       if orphaned_address_ids.empty?
         puts '  no orphaned addresses found'
 
       else
         puts "  #{orphaned_address_ids.count} orphaned addresses found"
         Address.where(id: orphaned_address_ids).delete_all
+      end
+    end
+  end
+
+  desc 'scrubs events that have the same UID and dtstart, pass in `true` if you want those events deleted'
+  task :find_and_clean_duplicate_events, %i[destroy_arg] => :environment do |_t, args|
+    destroy = to_boolean(args[:destroy_arg])
+    if destroy
+      puts 'WARNING! you have selected DESTROY, this is not reversible'
+      sleep 5
+    end
+
+    bad_events = Event.group(:uid, :dtstart).count.keep_if { |_, count| count > 1 }
+    puts "Found #{bad_events.count} events with duplicate IDs"
+
+    bad_events.each do |fields, _|
+      uid, dtstart = fields
+
+      event_cluster = Event.where(uid: uid)
+
+      start_date = event_cluster.each_with_object({}) do |event, out|
+        out[event.dtstart] = out[event.dtstart].to_i + 1
+      end
+
+      bad_dates = start_date.keep_if { |_date, count| count > 1 }
+      next if bad_dates.empty?
+
+      bad_dates.each do |date, _count|
+        bad_event_cluster = event_cluster.where(dtstart: date).order(updated_at: :desc).offset(1)
+
+        puts "#{uid} has duplicate count: #{bad_event_cluster.count} for date #{date}"
+        puts "  #{bad_event_cluster.all.map(&:id).to_json}"
+
+        bad_event_cluster.destroy_all if destroy
       end
     end
   end
@@ -334,5 +382,9 @@ namespace :db do
           ActiveRecord::Base.connection_config[:host],
           ActiveRecord::Base.connection_config[:database],
           ActiveRecord::Base.connection_config[:username]
+  end
+
+  def to_boolean(value)
+    (@boolean ||= ActiveModel::Type::Boolean.new).cast value
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_20_095729) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_21_160911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -235,6 +235,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_095729) do
     t.text "hidden_reason"
     t.integer "hidden_blame_id"
     t.string "hidden_reason_html"
+    t.string "instagram_handle"
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
@@ -281,6 +282,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_095729) do
     t.string "badge_zoom_level"
     t.string "description_html"
     t.string "hero_text"
+    t.string "hero_alttext"
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 

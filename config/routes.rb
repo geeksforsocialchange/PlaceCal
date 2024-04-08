@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     resources :partners do
       collection do
         match :setup, via: %i[get post]
+        get :lookup_name
       end
       member do
         delete :clear_address
@@ -91,9 +92,6 @@ Rails.application.routes.draw do
   # Named routes
   get 'winter2017', to: 'collections#show', id: 1
   get 'winter2018', to: 'collections#show', id: 2
-
-  # Styleguide
-  mount MountainView::Engine => '/styleguide'
 
   get '/robots.txt' => 'pages#robots'
 

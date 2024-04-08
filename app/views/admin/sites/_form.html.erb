@@ -58,12 +58,14 @@
   <% end %>
 
   <%= f.input :hero_image, hint: image_uploader_hint(@site.hero_image) %>
-  <p><em>Header images should be 2260x700</em></p>
+  <p>The large image at the top of your sites homepage. For guidance on selecting the best image see the <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2">handbook</a></p>
 
   <%= image_tag f.object.hero_image.url, style: 'max-width: 300px' if f.object.hero_image.url %>
 
   <%= f.input :hero_image_credit %>
   <p><em>Who took this photo?</em></p>
+  
+  <%= f.input :hero_alttext, label: 'hero alt-text', hint: 'how should a screenreader describe this image?' %>
 
   <h2>Neighbourhood information</h2>
 

@@ -18,7 +18,7 @@
         <%= f.association :partner,
                           label: 'Partner Organiser',
                           collection: options_for_organiser,
-                          selected: (@partner ? @partner.id : ''),
+                          selected: (@partner&.id || @calendar.partner_id).to_s,
                           input_html: { class: 'form-control', data: {controller: "select2"} },
                           hint: 'What group organises these events?' %>
 
