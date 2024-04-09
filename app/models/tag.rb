@@ -27,6 +27,11 @@ class Tag < ApplicationRecord
               maximum: 200,
               too_long: 'maximum length is 200 characters'
             }
+  validates :type,
+            inclusion: {
+              in: %w[Partnership Facility Category],
+              message: 'Type must be one of Category, Facility or Partnership'
+            }
   validate :check_editable_fields
 
   # TECHDEBT
