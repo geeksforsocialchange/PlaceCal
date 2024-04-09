@@ -71,8 +71,6 @@ module Admin
 
       mutated_params = permitted_attributes(@partner)
 
-      before = @partner.hidden
-
       @partner.accessed_by_user = current_user
 
       # prevent someone trying to add the same service_area twice by mistake and causing a crash

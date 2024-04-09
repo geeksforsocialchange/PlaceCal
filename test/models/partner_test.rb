@@ -204,14 +204,14 @@ class PartnerTest < ActiveSupport::TestCase
     partner = create(:partner)
     assert_predicate partner, :valid?
 
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 2')
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 3')
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 4')
+    partner.categories << create(:category)
+    partner.categories << create(:category)
+    partner.categories << create(:category)
+    partner.categories << create(:category)
     partner.save
 
-    problems = partner.errors[:base]
-    assert_equal 'Partner.tags can contain a maximum of 3 Category tags', problems.first
+    problems = partner.errors[:categories]
+    assert_equal 'Partners can have a maximum of 3 Category tags', problems.first
   end
 
   test 'partner has "Category" single table inheritance' do

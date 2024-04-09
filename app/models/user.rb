@@ -29,6 +29,7 @@ class User < ApplicationRecord
 
   has_many :tags_users, dependent: :destroy
   has_many :tags, through: :tags_users
+  has_many :partnerships, through: :tags_users, source: :tag, class_name: 'Partnership'
 
   validates :email,
             presence: true,
