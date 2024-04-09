@@ -42,7 +42,11 @@ module Admin
       authorize @calendar
 
       if @calendar.save
-        flash[:success] = 'Successfully created new calendar'
+        if @calendar.queue_for_import! true, DateTime.now
+          flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
+        else
+          flash[:danger] = 'Successfully created new calendar but there was a problem importing events.'
+        end
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'
