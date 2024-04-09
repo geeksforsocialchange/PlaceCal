@@ -62,43 +62,43 @@ class PartnersHelperTest < ActionView::TestCase
     assert_equal('alpha, beta and cappa', output)
   end
 
-  test 'root user - options_for_partner_tags with no partner returns all allowed partners' do
+  test 'root user - options_for_partner_partnerships with no partner returns all allowed partners' do
     def policy_scope(_scope)
-      Pundit.policy_scope!(@root, Tag)
+      Pundit.policy_scope!(@root, Partnership)
     end
 
-    expected = Tag.order(:name).select(:name, :type, :id).map { |r| [r.name_with_type, r.id] }
+    expected = Partnership.order(:name).select(:name, :type, :id).map { |r| [r.name, r.id] }
 
-    assert_equal(expected, options_for_partner_tags)
+    assert_equal(expected, options_for_partner_partnerships)
   end
 
-  test 'root user - options_for_partner_tags with partner returns all allowed partners' do
+  test 'root user - options_for_partner_partnerships with partner returns all allowed partners' do
     def policy_scope(_scope)
-      Pundit.policy_scope!(@root, Tag)
+      Pundit.policy_scope!(@root, Partnership)
     end
 
-    expected = Tag.order(:name).select(:name, :type, :id).map { |r| [r.name_with_type, r.id] }
+    expected = Partnership.order(:name).select(:name, :type, :id).map { |r| [r.name, r.id] }
 
-    assert_equal(expected, options_for_partner_tags(@partner))
+    assert_equal(expected, options_for_partner_partnerships)
   end
 
-  test 'partnership admin user - options_for_partner_tags with no partner returns neighbourhood partners' do
+  test 'partnership admin user - options_for_partner_partnerships with no partner returns neighbourhood partners' do
     def policy_scope(_scope)
-      Pundit.policy_scope!(@partnership_admin, Tag)
+      Pundit.policy_scope!(@partnership_admin, Partnership)
     end
 
-    expected = [@partnership_tag, @category_tag, @system_tag, @facility_tag].map { |r| [r.name_with_type, r.id] }
+    expected = [@partnership_tag].map { |r| [r.name, r.id] }
 
-    assert_equal(expected.sort, options_for_partner_tags.sort)
+    assert_equal(expected.sort, options_for_partner_partnerships.sort)
   end
 
-  test 'partnership admin user - options_for_partner_tags with partner returns neighbourhood partners' do
+  test 'partnership admin user - options_for_partner_partnerships with partner returns neighbourhood partners' do
     def policy_scope(_scope)
-      Pundit.policy_scope!(@partnership_admin, Tag)
+      Pundit.policy_scope!(@partnership_admin, Partnership)
     end
 
-    expected = [@partnership_tag, @other_partnership_tag_belonging_to_partner, @category_tag, @system_tag, @facility_tag].map { |r| [r.name_with_type, r.id] }
+    expected = [@partnership_tag].map { |r| [r.name, r.id] }
 
-    assert_equal(expected.sort, options_for_partner_tags(@partner_in_neighbourhood).sort)
+    assert_equal(expected.sort, options_for_partner_partnerships.sort)
   end
 end

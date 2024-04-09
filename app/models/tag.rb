@@ -27,8 +27,15 @@ class Tag < ApplicationRecord
               maximum: 200,
               too_long: 'maximum length is 200 characters'
             }
+  validates :type,
+            inclusion: {
+              in: %w[Partnership Facility Category],
+              message: 'Type must be one of Category, Facility or Partnership'
+            }
   validate :check_editable_fields
 
+  # TECHDEBT
+  # we should look to work this out of the system as we now cover this with a scope on Partnership
   scope :users_tags, lambda { |user|
                        return Tag.all if user.role == 'root' && !user.partnership_admin?
 

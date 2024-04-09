@@ -484,9 +484,10 @@ class Partner < ApplicationRecord
   end
 
   def three_or_less_category_tags
-    return if categories.count < 4
+    # we can't just use categories.count here because of STI, on create they won't exist yet
+    return if category_ids.count < 4
 
-    errors.add :base, 'Partner.tags can contain a maximum of 3 Category tags'
+    errors.add :categories, 'Partners can have a maximum of 3 Category tags'
   end
 
   def partnership_admins_must_add_tag

@@ -60,6 +60,18 @@ class CalendarTest < ActiveSupport::TestCase
     end
   end
 
+  test 'source must be valid URL' do
+    calendar1 = build(:calendar)
+    calendar1.source = ''
+    assert_not calendar1.valid?
+    assert_predicate calendar1.errors[:source], :present?
+
+    calendar2 = build(:calendar)
+    calendar2.source = 'hts://example.com'
+    assert_not calendar2.valid?
+    assert_predicate calendar2.errors[:source], :present?
+  end
+
   test 'source only validated if it has changed' do
     calendar = VCR.use_cassette(:import_test_calendar) do
       create :calendar
