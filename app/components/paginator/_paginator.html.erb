@@ -23,16 +23,16 @@
               <!-- Day or week view -->
               <div class="filters__group">
                 <div class="filters__option">
-                  <%= radio_button_tag(:period, "day", period == 1.day) %>
+                  <%= radio_button_tag(:period, "day", period == 'day') %>
                   <%= label_tag(:period_day, "Daily view") %>
                 </div>
                 <div class="filters__option">
-                  <%= radio_button_tag(:period, "week", period == 1.week) %>
+                  <%= radio_button_tag(:period, "week", period == 'week') %>
                   <%= label_tag(:period_week, "Weekly view") %>
                 </div>
                 <div class="filters__option">
-                  <%= radio_button_tag(:period, "future") %>
-                  <%= label_tag(:period_future, "Future view") %>
+                  <%= radio_button_tag(:period, "future" , period == 'future') %>
+                  <%= label_tag(:period_future, "Show all") %>
                 </div>
               </div>
               <hr>
@@ -58,13 +58,15 @@
     <% end %>
   </div>
 
-  <ol class="paginator__buttons paginator__buttons--day">
-    <% paginator.each do |page| %>
-      <li class="<%= page[:css] %>">
-        <%= link_to page[:text], page[:link] %>
-      </li>
-    <% end %>
-  </ol>
+  <% if @period == 'day' || @period == 'week' %>
+    <ol class="paginator__buttons paginator__buttons--day">
+      <% paginator.each do |page| %>
+        <li class="<%= page[:css] %>">
+          <%= link_to page[:text], page[:link] %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
 
   <hr>
 </div>
