@@ -18,6 +18,11 @@ class EventsController < ApplicationController
     @period = params[:period] || 'future'
     @repeating = params[:repeating] || 'on'
     @events = filter_events(@period, repeating: @repeating, site: current_site)
+    # Duration to view - default to day view if there are too many future events
+    if params[:period].to_s == '' && @events.count > 200
+      @period = 'day'
+      @events = filter_events(@period, repeating: @repeating, site: current_site)
+    end
     @title = current_site.name
     # Sort criteria
     @events = sort_events(@events, @sort)
