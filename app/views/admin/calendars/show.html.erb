@@ -37,17 +37,13 @@
     <h2>Important Notices</h2>
     <% if @calendar.notices.present? %>
       <p>The following events could not be imported due to invalid data: </p>
-      <ul class="pl-3">
+      <ul id="calendar-notices" class="pl-3">
         <% @calendar.notices.each do |notice| %>
-          <li>
-            <%= content_tag :strong, notice["event"]["dtstart"].to_date.strftime('%e %b %Y') %>.
-            <%= content_tag :em, notice["event"]["summary"] %>.
-            <%= notice["errors"].join(", ")%>
-          </li>
+          <li><%= notice %></li>
         <% end %>
       </ul>
     <% else %>
-      No notices to show
+      <p>No notices to show</p>
     <% end %>
   </div>
 </div>
