@@ -61,6 +61,7 @@ Rails/ActionOrder:
 Metrics/ClassLength:
   Exclude:
     - "test/**/*.rb"
+    - "app/models/partner.rb"
 
 
 

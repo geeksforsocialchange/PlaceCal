@@ -15,15 +15,15 @@ class EventsImportTest < ActiveSupport::TestCase
       # Identify partner by partner.name == event_location.street_address
       # (Automatically created address will not match event location.)
       partner = create(:partner, name: 'Z-aRtS')
+      partner.address.postcode = 'M15 5ZA'
+      partner.save!
 
       from_date = Date.new(2018, 11, 20)
       force_import = false
       CalendarImporter::CalendarImporterTask.new(calendar, from_date, force_import).run
 
-      # pp Event.all
-      # pp Address.all
-
       # Did all events import?
+
       assert_equal 11, Event.count
 
       # Each partner created above will automatically create one address.
