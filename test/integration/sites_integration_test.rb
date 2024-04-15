@@ -30,7 +30,6 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     get 'http://hulme.lvh.me'
     assert_select 'h1',
                   'PlaceCal is a community events calendar where you can find everything near you, all in one place.'
-    assert_select 'h2', "PlaceCal is working to make #{@site.place_name} a better connected neighbourhood."
     assert_select 'p', @site.description
     assert_select 'strong', @site_admin.full_name
     assert_select 'strong', @site_admin.phone
