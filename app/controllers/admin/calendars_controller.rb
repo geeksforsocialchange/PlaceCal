@@ -42,12 +42,8 @@ module Admin
       authorize @calendar
 
       if @calendar.save
-        if @calendar.queue_for_import! true, DateTime.now
-          flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
-        else
-          flash[:danger] = 'Successfully created new calendar but there was a problem importing events.'
-        end
         redirect_to edit_admin_calendar_path(@calendar)
+        flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
         flash.now[:danger] = 'Calendar did not save'
         render 'new', status: :unprocessable_entity
@@ -56,7 +52,7 @@ module Admin
 
     def update
       if @calendar.update(calendar_params)
-        flash[:success] = 'Calendar successfully updated'
+        flash[:success] = 'Calendar successfully updated and queued for importing.'
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'

@@ -24,6 +24,8 @@ class Calendar < ApplicationRecord
 
   before_save :update_notice_count
 
+  after_save :automatically_queue_calendar
+
   # Output the calendar's name when it's requested as a string
   alias_attribute :to_s, :name
 
@@ -115,6 +117,10 @@ class Calendar < ApplicationRecord
   # internal model function
   def update_notice_count
     self.notice_count = (notices || []).count if notices_changed?
+  end
+
+  def automatically_queue_calendar
+    queue_for_import! true, DateTime.now
   end
 
   #
