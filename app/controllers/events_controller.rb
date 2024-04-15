@@ -20,7 +20,7 @@ class EventsController < ApplicationController
     @events = filter_events(@period, repeating: @repeating, site: current_site)
     # Duration to view - default to day view if there are too many future events
     if params[:period].to_s == '' && @events.count > 200
-      @period = 'day'
+      @period = 'week'
       @events = filter_events(@period, repeating: @repeating, site: current_site)
     end
     @title = current_site.name
