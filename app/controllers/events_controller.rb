@@ -14,10 +14,15 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    # Duration to view - default to day view
-    @period = params[:period].to_s || 'day'
+    # Duration to view - default to future view
+    @period = params[:period] || 'future'
     @repeating = params[:repeating] || 'on'
     @events = filter_events(@period, repeating: @repeating, site: current_site)
+    # Duration to view - default to day view if there are too many future events
+    if params[:period].to_s == '' && @events.count > 200
+      @period = 'week'
+      @events = filter_events(@period, repeating: @repeating, site: current_site)
+    end
     @title = current_site.name
     # Sort criteria
     @events = sort_events(@events, @sort)
