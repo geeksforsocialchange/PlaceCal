@@ -52,7 +52,7 @@ module Admin
 
     def update
       if @calendar.update(calendar_params)
-        flash[:success] = 'Calendar successfully updated and queued for importing.'
+        flash[:success] = 'Calendar successfully updated'
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'

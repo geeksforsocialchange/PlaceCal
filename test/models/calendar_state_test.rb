@@ -103,7 +103,8 @@ class CalendarStateTest < ActiveSupport::TestCase
   # error'd
   test 'can be tested for' do
     VCR.use_cassette(:import_test_calendar) do
-      calendar = create(:calendar, calendar_state: :error)
+      calendar = create(:calendar)
+      calendar.calendar_state = :error
       assert_predicate calendar.calendar_state, :error?
     end
   end
