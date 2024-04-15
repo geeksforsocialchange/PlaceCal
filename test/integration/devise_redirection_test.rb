@@ -30,9 +30,12 @@ class DeviseRedirectTest < ActionDispatch::IntegrationTest
     fill_in 'Email', with: 'root@placecal.org'
     click_button 'Send me reset password instructions'
 
-    # has redirected to log in page with flash
+    # this now stays on the password reset page
     assert_selector '.alert-success',
-                    text: 'You will receive an email with instructions on how to reset your password in a few minutes.'
+                    text: 'An email has been sent to that email address'
+    assert_equal 'http://lvh.me/users/password/new', current_url
+
+    click_link 'Admin log in'
     assert_equal 'http://lvh.me/users/sign_in', current_url
 
     # now pick up the reset email and extract the link
