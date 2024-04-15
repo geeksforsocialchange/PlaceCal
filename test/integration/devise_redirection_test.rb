@@ -28,11 +28,11 @@ class DeviseRedirectTest < ActionDispatch::IntegrationTest
     click_link 'Forgot your password?'
 
     fill_in 'Email', with: 'root@placecal.org'
-    click_button 'Send me reset password instructions'
+    click_button 'Submit'
 
     # this now stays on the password reset page
     assert_selector '.alert-success',
-                    text: 'An email has been sent to that email address'
+                    text: 'If a PlaceCal account is associated with the submitted email address, password reset instructions have been sent.'
     assert_equal 'http://lvh.me/users/password/new', current_url
 
     click_link 'Admin log in'
