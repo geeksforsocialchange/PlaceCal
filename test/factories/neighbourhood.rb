@@ -174,4 +174,24 @@ FactoryBot.define do
       ward.save
     end
   end
+
+  factory :eventbrite_valid_address_hood, class: 'Neighbourhood' do
+    name { '' }
+    name_abbr { '' }
+    unit { '' }
+    unit_code_key { '' }
+    unit_code_value { 'E05013808' }
+    unit_name { '' }
+    release_date { '' }
+  end
+
+  factory :ldjson_valid_address_hood, class: 'Neighbourhood' do
+    name { '' }
+    name_abbr { '' }
+    unit { '' }
+    unit_code_key { '' }
+    unit_code_value { 'E05012263' }
+    unit_name { '' }
+    release_date { '' }
+  end
 end

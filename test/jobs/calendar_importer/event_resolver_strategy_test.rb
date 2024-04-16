@@ -149,8 +149,8 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     calendar = create_calendar_with(strategy: 'event_override', place: @address_partner)
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
 
-    place, address = resolver.event_override_strategy(calendar.place)
-    assert_nil place
-    assert_nil address
+    assert_raises CalendarImporter::EventResolver::Problem do
+      resolver.event_override_strategy(calendar.place)
+    end
   end
 end

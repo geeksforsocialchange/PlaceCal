@@ -6,6 +6,8 @@ class CalendarImporter::EventResolver
   WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set '  \
                  'to ignore this. Add an address to the location field of the source calendar, or choose '      \
                  'another import strategy with a default location.'
+  INFO1_MSG = 'This location was not recognised by PlaceCal, please update the location field of the source ' \
+              'calendar, or choose another import strategy with a default location'
 
   attr_reader :data, :uid, :notices, :calendar
 
@@ -25,10 +27,6 @@ class CalendarImporter::EventResolver
 
   def has_no_occurences?
     occurences.count.zero?
-  end
-
-  def is_address_missing?
-    data.address_id.nil?
   end
 
   def occurences
@@ -74,8 +72,10 @@ class CalendarImporter::EventResolver
   def event_strategy(partner, address: nil)
     if data.has_location?
       address = Address.build_from_components(event_location_components, data.postcode)
+      raise Problem, INFO1_MSG if address.nil?
+
       partner = nil
-    elsif partner.present?
+    else
       raise Problem, WARNING2_MSG
     end
     [partner, address]
@@ -84,6 +84,8 @@ class CalendarImporter::EventResolver
   def event_override_strategy(partner, address: nil)
     if data.has_location?
       address = Address.build_from_components(event_location_components, data.postcode)
+      raise Problem, INFO1_MSG if address.nil?
+
       partner = nil
     elsif partner.present?
       address = partner.address
@@ -153,10 +155,6 @@ class CalendarImporter::EventResolver
       attributes = data.attributes.merge(event_time)
       unless event.update(attributes)
         notices << event.errors.full_messages.join(', ')
-      end
-
-      if event.address_id.blank? && calendar.strategy == 'event'
-        notices << "No place or address could be created or found for the event location: #{event.raw_location_from_source}"
       end
     end
   end
