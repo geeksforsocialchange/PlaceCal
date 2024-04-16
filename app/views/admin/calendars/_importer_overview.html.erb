@@ -1,9 +1,10 @@
 <% unless calendar.new_record? %>
-    <% problem = false %>
+    <% retry_button = nil %>
     <hr>
     <h3>Importing</h3>
     
     <% if calendar.calendar_state.idle? %>
+	<% retry_button = :idle %>
 	<p>
 	    Status: success.
 	    <% if calendar.last_import_at.present? %>
@@ -18,7 +19,7 @@
     <% end %>
 
     <% if calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
-	<% problem = true %>
+	<% retry_button = :error %>
 	
 	<!-- p>Status: error</p -->
 	<div class="alert alert-warning" role="alert">
@@ -27,7 +28,7 @@
     <% end %>
 
     <% if calendar.notices.present? %>
-	<% problem = true %>
+	<% retry_button = :error %>
 	
 	<h4>Notices</h4>
 	<p>The following events could not be imported due to invalid data: </p>
@@ -39,12 +40,14 @@
         </ul>
 	<p>[cCc] Please check your calendar is set up correctly and try again.</p>
     <% end %>
-    
-    <%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
-	<% if problem %>
-	    <%= f.submit 'Retry', class: 'btn btn-danger' %>
-	<% else %>
-	    <%= f.submit 'Import now', class: 'btn btn-secondary' %>
+
+    <% if retry_button %>
+	<%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
+	    <% if retry_button == :idle %>
+		<%= f.submit 'Import now', class: 'btn btn-secondary' %>
+	    <% elsif retry_button = :error %>
+		<%= f.submit 'Retry', class: 'btn btn-danger' %>
+	    <% end %>
 	<% end %>
     <% end %>
 
