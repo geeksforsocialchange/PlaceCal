@@ -22,6 +22,7 @@ class Calendar < ApplicationRecord
 
   validate :check_source_reachable
 
+  before_save :clear_status_on_source_change
   before_save :update_notice_count
 
   # Output the calendar's name when it's requested as a string
@@ -271,5 +272,13 @@ class Calendar < ApplicationRecord
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed => e
     errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
+  end
+
+  def clear_status_on_source_change
+    return unless source_changed?
+
+    self.critical_error = nil
+    self.notices = nil
+    self.last_import_at = nil
   end
 end
