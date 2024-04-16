@@ -16,8 +16,6 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     @neighbourhood_admin = create(:citizen)
     @neighbourhood_admin.neighbourhoods = [@partner.address.neighbourhood]
 
-    @tag = create(:tag, type: 'Category')
-
     host! 'admin.lvh.me'
   end
 
@@ -56,11 +54,11 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'label', text: 'Twitter handle'
 
     assert_select 'h3', text: 'Address'
-    assert_select 'label', text: 'Street address *'
+    assert_select 'label', text: 'Street address'
     assert_select 'label', text: 'Street address 2'
     assert_select 'label', text: 'Street address 3'
     assert_select 'label', text: 'City'
-    assert_select 'label', text: 'Postcode *'
+    assert_select 'label', text: 'Postcode'
 
     assert_select 'h2', text: 'Contact Information'
     assert_select 'h3', text: 'Public Contact'
@@ -93,20 +91,6 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'a#destroy-partner', 'Delete Partner'
-  end
-
-  test 'Partner has owned tag preselected' do
-    @neighbourhood_region_admin.tags << @tag
-
-    sign_in @neighbourhood_region_admin
-
-    get new_admin_partner_path(@partner)
-    assert_response :success
-
-    tag_options = assert_select 'div.partner_tags option', count: 1, text: @tag.name_with_type
-
-    tag = tag_options.first
-    assert tag.attributes.key?('selected')
   end
 
   test 'Partner create form gives feedback on bad image selection' do

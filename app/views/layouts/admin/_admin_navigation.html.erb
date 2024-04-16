@@ -14,6 +14,14 @@
     <%= admin_nav_link('Tags', admin_tags_path, 'tags') if policy(Tag).index? %>
   <% end -%>
 
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <span>Get support</span>
+    </h6>
+    <%= admin_nav_link('Handbook', 'https://handbook.placecal.org/', 'book')%>
+    <%= admin_nav_link('Discord', 'http://discord.gfsc.studio/', 'comment')%>
+    <%= admin_nav_link('Report a bug', 'https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md', 'bug')%>
+    <li class="nav-item"><span class="nav-link"><i class="fa fa-envelope feather"></i> support@placecal.org</span></li>
+
   <% if policy(Collection).index? || policy(Supporter).index? %>
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
       <span>In development</span>
@@ -25,13 +33,10 @@
   <% end %>
 </ul>
 
-<br><br><br>
+<br><br>
 
 <p class="small text-info ml-3">
-<i class="fa fa-bug"></i> <%= link_to "Report a bug", "https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md" %>
-
-
 <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'development' %>
-<br><i class="fa fa-git"></i> Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
+<i class="fa fa-git"></i> Build: <tt><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}" %></tt>
 
 </p>
