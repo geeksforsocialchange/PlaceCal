@@ -43,6 +43,52 @@ Geocoder::Lookup::Test.add_stub(
 )
 
 Geocoder::Lookup::Test.add_stub(
+  'M15 5ZA', [
+    { 'postcode' => 'M15 5ZA',
+      'quality' => 1,
+      'eastings' => 383_348,
+      'northings' => 396_672,
+      'country' => 'England',
+      'nhs_ha' => 'North West',
+      'longitude' => -2.252301,
+      'latitude' => 53.466521,
+      'european_electoral_region' => 'North West',
+      'primary_care_trust' => 'Manchester Teaching',
+      'region' => 'North West',
+      'lsoa' => 'Manchester 019D',
+      'msoa' => 'Manchester 019',
+      'incode' => '5ZA',
+      'outcode' => 'M15',
+      'parliamentary_constituency' => 'Manchester Central',
+      'parliamentary_constituency_2024' => 'Manchester Rusholme',
+      'admin_district' => 'Manchester',
+      'parish' => 'Manchester, unparished area',
+      'admin_county' => nil,
+      'date_of_introduction' => '199706',
+      'admin_ward' => 'Hulme',
+      'ced' => nil,
+      'ccg' => 'NHS Greater Manchester',
+      'nuts' => 'Manchester',
+      'pfa' => 'Greater Manchester',
+      'codes' =>
+        { 'admin_district' => 'E08000003',
+          'admin_county' => 'E99999999',
+          'admin_ward' => 'E05011368',
+          'parish' => 'E43000157',
+          'parliamentary_constituency' => 'E14000807',
+          'parliamentary_constituency_2024' => 'E14001353',
+          'ccg' => 'E38000217',
+          'ccg_id' => '14L',
+          'ced' => 'E99999999',
+          'nuts' => 'TLD33',
+          'lsoa' => 'E01005214',
+          'msoa' => 'E02001063',
+          'lau2' => 'E08000003',
+          'pfa' => 'E23000005' } }
+  ]
+)
+
+Geocoder::Lookup::Test.add_stub(
   'OL6 8BH', [
     { 'postcode' => 'OL6 8BH',
       'quality' => 1,
