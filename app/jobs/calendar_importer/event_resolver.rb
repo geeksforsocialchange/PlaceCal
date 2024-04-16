@@ -6,7 +6,6 @@ class CalendarImporter::EventResolver
   WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set '  \
                  'to ignore this. Add an address to the location field of the source calendar, or choose '      \
                  'another import strategy with a default location.'
-  INFO1_MSG = 'This location was not recognised by PlaceCal, woulfd you like to add it?'
 
   attr_reader :data, :uid, :notices, :calendar
 
@@ -86,7 +85,6 @@ class CalendarImporter::EventResolver
     if data.has_location?
       address = Address.build_from_components(event_location_components, data.postcode)
       partner = nil
-      raise Problem, INFO1_MSG if address.nil?
     elsif partner.present?
       address = partner.address
     else
