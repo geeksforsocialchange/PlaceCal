@@ -42,8 +42,8 @@ module Admin
       authorize @calendar
 
       if @calendar.save
-        flash[:success] = 'Successfully created new calendar'
         redirect_to edit_admin_calendar_path(@calendar)
+        flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
         flash.now[:danger] = 'Calendar did not save'
         render 'new', status: :unprocessable_entity
