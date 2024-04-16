@@ -51,7 +51,17 @@ class Partner < ApplicationRecord
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
-  accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
+  accepts_nested_attributes_for :address # accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
+
+  validates_associated :address, if: lambda { |partner|
+                                       [
+                                         partner.address.street_address,
+                                         partner.address.street_address2,
+                                         partner.address.street_address3,
+                                         partner.address.city,
+                                         partner.address.postcode
+                                       ].any?(&:present?)
+                                     }
 
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
@@ -91,8 +101,6 @@ class Partner < ApplicationRecord
   validates :public_email, :partner_email,
             format: { with: EMAIL_REGEX, message: 'invalid email address' },
             allow_blank: true
-
-  validates_associated :address, if: ->(p) { p.address.present? }
 
   validate :check_neighbourhood_access
 
