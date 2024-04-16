@@ -90,7 +90,7 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
     partner, address = resolver.event_strategy(calendar.place)
 
-    assert_equal partner, calendar.place
+    assert_nil partner
     assert_not_equal address, @address_partner.address
     assert_equal address.street_address, @event_data.location
     assert_equal address.postcode, @event_data.postcode
@@ -105,7 +105,7 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
     partner, address = resolver.event_override_strategy(calendar.place)
 
-    assert_equal partner, calendar.place
+    assert_nil partner
     assert_not_equal address, @address_partner.address
     assert_equal address.street_address, @event_data.location
     assert_equal address.postcode, @event_data.postcode
