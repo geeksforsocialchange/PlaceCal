@@ -75,6 +75,7 @@ class CalendarImporter::EventResolver
   def event_strategy(partner, address: nil)
     if data.has_location?
       address = Address.build_from_components(event_location_components, data.postcode)
+      partner = nil
     elsif partner.present?
       raise Problem, WARNING2_MSG
     end
@@ -84,6 +85,7 @@ class CalendarImporter::EventResolver
   def event_override_strategy(partner, address: nil)
     if data.has_location?
       address = Address.build_from_components(event_location_components, data.postcode)
+      partner = nil
       raise Problem, INFO1_MSG if address.nil?
     elsif partner.present?
       address = partner.address
