@@ -51,17 +51,11 @@ class Partner < ApplicationRecord
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
-  accepts_nested_attributes_for :address # accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
+  # If any of the address formfields are present we attempt to create an address
+  # this will trigger the validation
+  accepts_nested_attributes_for :address, reject_if: ->(c) { c[:city].blank? && c[:postcode].blank? && c[:street_address].blank? && c[:street_address2].blank? && c[:street_address3].blank? }
 
-  validates_associated :address, if: lambda { |partner|
-                                       [
-                                         partner.address.street_address,
-                                         partner.address.street_address2,
-                                         partner.address.street_address3,
-                                         partner.address.city,
-                                         partner.address.postcode
-                                       ].any?(&:present?)
-                                     }
+  validates_associated :address
 
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
