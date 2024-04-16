@@ -26,7 +26,9 @@ Make sure all of the above dependencies are installed (and ask someone to add yo
 
 Then make sure the docker daemon is running, and run
 
-`make setup_with_docker`
+```sh
+make setup_with_docker
+```
 
 Local site is now running at `lvh.me:3000`
 
