@@ -21,7 +21,6 @@
     <% if calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
 	<% retry_button = :error %>
 	
-	<!-- p>Status: error</p -->
 	<div class="alert alert-warning" role="alert">
 	    Error: <%= calendar.critical_error %>
 	</div>
@@ -45,7 +44,7 @@
 	<%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
 	    <% if retry_button == :idle %>
 		<%= f.submit 'Import now', class: 'btn btn-secondary' %>
-	    <% elsif retry_button = :error %>
+	    <% elsif retry_button == :error %>
 		<%= f.submit 'Retry', class: 'btn btn-danger' %>
 	    <% end %>
 	<% end %>
