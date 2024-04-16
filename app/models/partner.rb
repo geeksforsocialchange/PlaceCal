@@ -53,7 +53,13 @@ class Partner < ApplicationRecord
 
   # If any of the address formfields are present we attempt to create an address
   # this will trigger the validation
-  accepts_nested_attributes_for :address, reject_if: ->(c) { c[:city].blank? && c[:postcode].blank? && c[:street_address].blank? && c[:street_address2].blank? && c[:street_address3].blank? }
+  accepts_nested_attributes_for :address, reject_if: lambda { |c|
+    [c[:city].blank?,
+     c[:postcode].blank?,
+     c[:street_address].blank?,
+     c[:street_address2].blank?,
+     c[:street_address3].blank?].all?
+  }
 
   validates_associated :address
 
