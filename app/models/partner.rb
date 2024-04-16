@@ -372,8 +372,13 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.fuzzy_find_by_location(components)
-    Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
+  def self.find_from_event(components, postcode)
+    return Partner.left_joins(:address)
+                  .find_by(
+                    'lower(name) IN (:components) AND lower(addresses.postcode) = (:postcode)',
+                    components: components.map(&:downcase),
+                    postcode: postcode.downcase
+                  )
   end
 
   def self.neighbourhood_names_for_site(current_site, badge_zoom_level)
