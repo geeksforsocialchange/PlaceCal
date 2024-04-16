@@ -81,39 +81,22 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     end
   end
 
-  def test_event_strategy_with_data_location_with_place_uses_partner_place
-    # theory of test:
-    #   given
-    #     data location is present
-    #     calendar strategy is 'event'
-    #
-    #   then
-    #     use location from data
-    #       (not from calendar)
+  def test_event_strategy_with_data_location_with_place_keeps_address
     @event_data.location = @address_partner.name
     @event_data.postcode = @address_partner.address.postcode
 
     calendar = create_calendar_with(strategy: 'event', place: @other_address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
-    place, address = resolver.event_strategy(calendar.place)
+    partner, address = resolver.event_strategy(calendar.place)
 
-    # these come from the event data
-    assert_equal place, @address_partner
-    assert_equal address, @address_partner.address
+    assert_equal partner, calendar.place
+    assert_not_equal address, @address_partner.address
+    assert_equal address.street_address, @event_data.location
+    assert_equal address.postcode, @event_data.postcode
   end
 
-  def test_event_overide_strategy_with_data_location_with_place_uses_partner_place
-    # (same as above?)
-
-    # theory of test:
-    #   given
-    #     data location is present
-    #     calendar strategy is 'event_override'
-    #   then
-    #     use location from data
-    #       (not from calendar)
-
+  def test_event_overide_strategy_with_data_location_with_place_keeps_address
     @event_data.location = @address_partner.name
     @event_data.postcode = @address_partner.address.postcode
 
@@ -122,8 +105,10 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
     partner, address = resolver.event_override_strategy(calendar.place)
 
-    # these come from the event data
-    assert_equal partner, @address_partner
+    assert_equal partner, calendar.place
+    assert_not_equal address, @address_partner.address
+    assert_equal address.street_address, @event_data.location
+    assert_equal address.postcode, @event_data.postcode
   end
 
   def test_place_strategy_works

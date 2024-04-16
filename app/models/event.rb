@@ -139,13 +139,14 @@ class Event < ApplicationRecord
   end
 
   def location
-    use_address = address || partner&.address
-    #  (address if address.present?) ||
-    #  (partner.address if partner.present?)
-
+    use_address = address || partner_at_location&.address || partner&.address
     return '' if use_address.nil?
 
     use_address.to_s
+  end
+
+  def partner_at_location
+    @partner_at_location ||= Partner.find_from_event_address(address) || place
   end
 
   # TODO: plan this out on paper, currently half finished

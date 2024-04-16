@@ -207,17 +207,6 @@ class Partner < ApplicationRecord
     where.not(address_id: nil)
   }
 
-  # Get all Partners that have hosted an event in the last month or will host
-  # an event in the future
-  #
-  # TODO? This might be an incredibly inefficient query. If so, add a column
-  # to the Partner table, e.g. place_latest_dtstart, which can be updated on
-  # import.
-  scope :event_hosts, lambda {
-    joins('JOIN events ON events.place_id = partners.id')
-      .where('events.dtstart > ?', Date.today - 30).distinct
-  }
-
   # Get all Partners that manage at least one other Partner.
   scope :managers, lambda {
     joins('JOIN organisation_relationships o_r on o_r.partner_subject_id = partners.id')
@@ -372,13 +361,23 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.find_from_event(components, postcode)
-    return Partner.left_joins(:address)
-                  .find_by(
-                    'lower(name) IN (:components) AND lower(addresses.postcode) = (:postcode)',
-                    components: components.map(&:downcase),
-                    postcode: postcode.downcase
-                  )
+  def self.find_from_event_address(address)
+    address_components = [
+      address&.street_address || '',
+      address&.street_address2 || '',
+      address&.street_address3 || ''
+    ].reject(&:empty?)
+
+    if address_components.any? && address&.postcode
+      Partner.left_joins(:address)
+             .find_by(
+               'can_be_assigned_events AND '\
+               'lower(name) IN (:components) AND '\
+               'lower(addresses.postcode) = (:postcode)',
+               components: address_components.map(&:downcase),
+               postcode: address.postcode.downcase
+             )
+    end
   end
 
   def self.neighbourhood_names_for_site(current_site, badge_zoom_level)

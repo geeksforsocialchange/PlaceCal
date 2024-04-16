@@ -12,7 +12,7 @@
 
 #{sanitize(event.description, tags: [])}
 ) %>
-<%= event.place.to_s + ', ' if event.place %><%= event.location %>
+<%= event.partner_at_location.to_s + ', ' if event.partner_at_location %><%= event.location %>
 <%= %(
 https://placecal.org#{event_path(event)}
 ) %>

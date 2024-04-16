@@ -52,8 +52,8 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    if @event.place
-      @map = get_map_markers([@event.place])
+    if @event.partner_at_location
+      @map = get_map_markers([@event.partner_at_location])
     elsif @event.address
       @map = get_map_markers([@event.address])
     end

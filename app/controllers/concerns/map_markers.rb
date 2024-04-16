@@ -19,7 +19,7 @@ module MapMarkers
     locations = locations.map do |loc|
       next loc unless loc.is_a?(Event)
 
-      loc.place || loc.address
+      loc.partner_at_location || loc.address
     end
 
     # Partners
