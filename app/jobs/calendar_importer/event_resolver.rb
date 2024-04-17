@@ -72,65 +72,27 @@ class CalendarImporter::EventResolver
     data.partner_id = calendar.partner_id
   end
 
-  def event_strategy(place, address: nil)
+  def event_strategy(partner, address: nil)
     if data.has_location?
-      # place = 'attempt to match location'
-      # address = 'calendar.place.address || location'
-
-      # try to find the place
-      place = Partner.fuzzy_find_by_location(event_location_components)
-
-      # try to use that address
-      address = place&.address
-
-      # if no place, try to find an address
-      # (This only executes if there is no place given)
-      address ||= Address.search(data.location, event_location_components, data.postcode)
-
-      # if we have an address, try to use the place that address points to
-      # (Only runs if the fuzzy find and calendar.place are both nil)
-      place ||= address&.partners&.first
-
-      # NOTE: What happens if address has zero partners and the earlier assignments fail?
-      #       'place' is nil in this instance
-      # NOTE: Address.search can also return Nil if there are no event_location_components, or
-      #       if the address failed to save
-      # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
-
-    elsif place.present?
+      partner = Partner.find_from_event(event_location_components, data.postcode)
+      address = partner&.address || Address.build_from_components(event_location_components, data.postcode)
+    elsif partner.present?
       raise Problem, WARNING2_MSG
-    end # no location
-    # No longer an error if place is not present -- see #1198
-    # Passthrough here
-
-    [place, address]
+    end
+    [partner, address]
   end
 
-  def event_override_strategy(place, address: nil)
+  def event_override_strategy(partner, address: nil)
     if data.has_location?
-      # place = 'attempt to match location'
-      # address = 'calendar.place.address || location'
-      place = Partner.fuzzy_find_by_location(event_location_components)
-      address = place&.address
-      address ||= Address.search(data.location, event_location_components, data.postcode)
-
-      raise Problem, INFO1_MSG if place.nil? && address.nil?
-
-      # NOTE: Either one of 'place' or 'address' is unset here but not both
-      # NOTE: place is possibly unset here - fuzzy_find_by_location can be nil
-      # NOTE: address is possibly unset here - place might be nil or Address.search can return nil
-      #       In either case we will just drop this event on the floor
-    elsif place.present? # no location
-      address = place.address
-    # place = 'calendar.place'
-    # address = 'calendar.place.address'
-    # place = calendar.place
-
-    else # no place, no location
+      partner = Partner.find_from_event(event_location_components, data.postcode)
+      address = partner&.address || Address.build_from_components(event_location_components, data.postcode)
+      raise Problem, INFO1_MSG if partner.nil? && address.nil?
+    elsif partner.present?
+      address = partner.address
+    else
       raise Problem, WARNING1_MSG
     end
-
-    [place, address]
+    [partner, address]
   end
 
   def place_strategy(_place, _address: nil)

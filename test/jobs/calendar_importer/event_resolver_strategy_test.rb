@@ -91,6 +91,8 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #     use location from data
     #       (not from calendar)
     @event_data.location = @address_partner.name
+    @event_data.postcode = @address_partner.address.postcode
+
     calendar = create_calendar_with(strategy: 'event', place: @other_address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
@@ -113,13 +115,15 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #       (not from calendar)
 
     @event_data.location = @address_partner.name
+    @event_data.postcode = @address_partner.address.postcode
+
     calendar = create_calendar_with(strategy: 'event_override', place: @other_address_partner) # <--- different strategy
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
-    place, address = resolver.event_override_strategy(calendar.place)
+    partner, address = resolver.event_override_strategy(calendar.place)
 
     # these come from the event data
-    assert_equal place, @address_partner
+    assert_equal partner, @address_partner
   end
 
   def test_place_strategy_works
@@ -133,6 +137,7 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #     event place = calendar place
 
     @event_data.location = @address_partner.name
+
     calendar = create_calendar_with(strategy: 'place', place: @other_address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)

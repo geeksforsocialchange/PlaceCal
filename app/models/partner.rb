@@ -157,12 +157,17 @@ class Partner < ApplicationRecord
     return none if site_neighbourhood_ids.empty?
 
     query
+      .visible
       .left_joins(:address, :service_areas)
       .where(
-        'NOT hidden AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
+  }
+
+  scope :visible, lambda {
+    where(hidden: false)
   }
 
   scope :for_site_with_tag, lambda { |site, tag|
@@ -372,8 +377,13 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.fuzzy_find_by_location(components)
-    Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
+  def self.find_from_event(components, postcode)
+    return Partner.left_joins(:address)
+                  .find_by(
+                    'lower(name) IN (:components) AND lower(addresses.postcode) = (:postcode)',
+                    components: components.map(&:downcase),
+                    postcode: postcode.downcase
+                  )
   end
 
   def self.neighbourhood_names_for_site(current_site, badge_zoom_level)
