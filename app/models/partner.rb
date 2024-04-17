@@ -157,12 +157,17 @@ class Partner < ApplicationRecord
     return none if site_neighbourhood_ids.empty?
 
     query
+      .visible
       .left_joins(:address, :service_areas)
       .where(
-        'NOT hidden AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
+  }
+
+  scope :visible, lambda {
+    where(hidden: false)
   }
 
   scope :for_site_with_tag, lambda { |site, tag|
