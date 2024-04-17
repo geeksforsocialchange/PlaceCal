@@ -4,7 +4,7 @@
 
 PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.
 
-The codebase doesn't currently have enough seeds to create a dev environment suitable for developing from scratch. If you're interested in contributing to PlaceCal please get in touch with us at support@Placecal.org
+The codebase doesn't currently have enough seeds to create a dev environment suitable for developing from scratch. If you're interested in contributing to PlaceCal please get in touch at support@placecal.org
 
 To get an idea of the project and what we're about, check out [the handbook](https://handbook.placecal.org/).
 
@@ -12,13 +12,13 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 
 To run PlaceCal locally you will need to install the following dependencies:
 
-- Docker
-- Ruby 3.1.2
-- Node.js 16.x & (optional) NVM to manage it
-- Yarn 1.x
-- ImageMagick for image manipulation
+- [Docker](https://docs.docker.com/get-docker/)
+- [Ruby 3.1.2](https://www.ruby-lang.org/en/news/2022/04/12/ruby-3-1-2-released/)
+- [Node.js](https://nodejs.org/en/download) 16.x & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+- [ImageMagick](https://imagemagick.org/index.php) for image manipulation
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
-- Chrome/Chromium for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
+- [Chrome/Chromium](https://www.chromium.org/chromium-projects/) for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 
 ## Quickstart with docker for GFSC devs
 
@@ -38,7 +38,7 @@ Some other useful commands for developing can be found in the makefile.
 
 If the make command fails and you can't work out why, here are some suggestions:
 
-- Do you have an older version of the database hanging around? Try running `rails:db:drop:all`
+- Do you have an older version of the database hanging around? Try running `rails db:drop:all`
 - Is the docker daemon running?
 - Is the port in use by another application or docker container? Try stopping or removing any conflicting containers
 - Are you using the correct node version? Try running `nvm use`
@@ -81,15 +81,14 @@ make test
 
 ## Documentation for Developers
 
-The documentation for PlaceCal currently stored in notion and can be read [here](https://www.notion.so/gfsc/PlaceCal-developer-handbook-01649b69009340e3ae3035e9cf346f27). There is also a small amount of documentation sprinkled throughout the code itself and can be turned into HTML by running `rails yard`. If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers. Good Luck!
+The documentation for PlaceCal is currently stored in notion and can be read [here](https://handbook.placecal.org/placecal-developer-handbook). There is also a small amount of documentation sprinkled throughout the code itself and can be turned into HTML by running `rails yard`. If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers. Good Luck!
 
 ### Generating new components
 
 We use view_component to make components, and you can create a new one by running `rails g component <Name> <args>`
+Previously this system used mountain view, and some of the components are still generated using this.
 More info here: https://viewcomponent.org/guide/generators.html
 
 ## Donations
 
-If you'd like to support development, please consider sending us a one-off or regular donation on Ko-fi.
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M43THUM)
+If you'd like to support development, please consider sending us a one-off or regular donation on Ko-fi. You can do this through the "support" button in GitHub at the top of this repo.
