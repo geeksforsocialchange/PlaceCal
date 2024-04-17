@@ -8,7 +8,9 @@
 
   <%= address_form.input :street_address,
       class: "form-control address_1 address_field",
-      label: 'Street address' %>
+      label: 'Street address',
+      required: false
+    %>
 
   <%= address_form.input :street_address2,
       class: "form-control address_2 address_field",
@@ -22,7 +24,9 @@
       class: "form-control city address_field" %>
 
   <%= address_form.input :postcode,
-      class: "form-control postcode address_field" %>
+      class: "form-control postcode address_field",
+      required: false
+  %>
 
   <% if partner.can_clear_address?(current_user) %>
   <div data-partner-address-target="addressInfoArea">
