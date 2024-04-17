@@ -33,7 +33,6 @@ module Types
           description: 'The address where this event will take place'
 
     field :organizer, PartnerType,
-          method: :partner,
           description: 'The organising partner of this event'
 
     field :publisherUrl, String,
@@ -53,6 +52,13 @@ module Types
 
     def onlineEventUrlType
       object&.online_address&.link_type
+    end
+
+    def organizer
+      partner = object&.partner
+      return if partner.blank? || partner.hidden
+
+      partner
     end
   end
 end
