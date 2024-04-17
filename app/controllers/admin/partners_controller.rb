@@ -145,22 +145,6 @@ module Admin
       render json: { name_available: found.nil? }
     end
 
-    def setup
-      @partner = Partner.new
-      authorize @partner
-
-      render and return unless request.post?
-
-      @partner.attributes = setup_params
-      @partner.accessed_by_user = current_user
-
-      if @partner.valid?
-        redirect_to new_admin_partner_url(partner: setup_params)
-      else
-        render 'setup', status: :unprocessable_entity
-      end
-    end
-
     private
 
     def set_partner_tags_controller
