@@ -41,6 +41,13 @@ class Event < ApplicationRecord
     where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', week_start, week_end)
   }
 
+  # Find by day onwards
+  scope :future, lambda { |day|
+    day_start = day.midnight # 2024-04-01 00:00:00 +0100
+    where('dtstart >= ?',
+          day_start)
+  }
+
   # For the API eventFilter find by neighbourhood
   scope :for_neighbourhoods, lambda { |neighbourhoods|
     neighbourhood_ids = neighbourhoods.map(&:id)
