@@ -46,7 +46,7 @@ module Admin
         if @partner.save
           format.html do
             flash[:success] = 'Partner was successfully created.'
-            redirect_to admin_partners_path
+            redirect_to edit_admin_partner_path(@partner)
           end
 
           format.json { render :show, status: :created, location: @partner }
