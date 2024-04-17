@@ -67,7 +67,6 @@ class CalendarImporter::CalendarImporterTask
     parsed_event.determine_online_location
 
     parsed_event.determine_location_for_strategy
-    # next if parsed_event.is_address_missing?
 
     active_event_uids << parsed_event.uid
 

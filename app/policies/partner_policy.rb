@@ -50,7 +50,7 @@ class PartnerPolicy < ApplicationPolicy
              :public_name, :public_email, :public_phone,
              :partner_name, :partner_email, :partner_phone,
              :address_id, :url, :facebook_link, :twitter_handle, :instagram_handle,
-             :opening_times,
+             :opening_times, :can_be_assigned_events,
              { calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
                address_attributes: %i[id street_address street_address2 street_address3 city postcode],
                service_areas_attributes: %i[id neighbourhood_id _destroy],

@@ -81,39 +81,22 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     end
   end
 
-  def test_event_strategy_with_data_location_with_place_uses_partner_place
-    # theory of test:
-    #   given
-    #     data location is present
-    #     calendar strategy is 'event'
-    #
-    #   then
-    #     use location from data
-    #       (not from calendar)
+  def test_event_strategy_with_data_location_with_place_keeps_address
     @event_data.location = @address_partner.name
     @event_data.postcode = @address_partner.address.postcode
 
     calendar = create_calendar_with(strategy: 'event', place: @other_address_partner)
 
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
-    place, address = resolver.event_strategy(calendar.place)
+    partner, address = resolver.event_strategy(calendar.place)
 
-    # these come from the event data
-    assert_equal place, @address_partner
-    assert_equal address, @address_partner.address
+    assert_nil partner
+    assert_not_equal address, @address_partner.address
+    assert_equal address.street_address, @event_data.location
+    assert_equal address.postcode, @event_data.postcode
   end
 
-  def test_event_overide_strategy_with_data_location_with_place_uses_partner_place
-    # (same as above?)
-
-    # theory of test:
-    #   given
-    #     data location is present
-    #     calendar strategy is 'event_override'
-    #   then
-    #     use location from data
-    #       (not from calendar)
-
+  def test_event_overide_strategy_with_data_location_with_place_keeps_address
     @event_data.location = @address_partner.name
     @event_data.postcode = @address_partner.address.postcode
 
@@ -122,8 +105,10 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
     partner, address = resolver.event_override_strategy(calendar.place)
 
-    # these come from the event data
-    assert_equal partner, @address_partner
+    assert_nil partner
+    assert_not_equal address, @address_partner.address
+    assert_equal address.street_address, @event_data.location
+    assert_equal address.postcode, @event_data.postcode
   end
 
   def test_place_strategy_works
@@ -162,20 +147,20 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     #     event address = calendar place address
 
     calendar = create_calendar_with(strategy: 'event_override', place: @address_partner)
+    resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
+    place, address = resolver.event_override_strategy(calendar.place)
 
+    assert_equal place, calendar.place
+    assert_equal address, calendar.place.address
+  end
+
+  def test_override_strategy_fails_with_no_data_location_and_no_place
+    calendar = create_calendar_with(strategy: 'event_override')
+    calendar.place = nil
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
 
-    assert_raises(CalendarImporter::EventResolver::Problem) do
-      place, address = resolver.event_override_strategy(calendar.place)
+    assert_raises CalendarImporter::EventResolver::Problem do
+      resolver.event_override_strategy(calendar.place)
     end
-
-    # puts "address_partner=#{@address_partner.to_json}"
-    # puts "place=#{place.to_json}"
-    # puts "address=#{address.to_json}"
-
-    # FIXME
-    # these come from the calendar
-    # assert_equal place, @address_partner
-    # assert_equal address, @address_partner.address
   end
 end
