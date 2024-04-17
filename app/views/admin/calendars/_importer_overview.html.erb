@@ -15,7 +15,7 @@
 
     <% if calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
 	<p>Status: <span class="badge badge-primary">loading</span>.</p>
-	<p>[cCc] Please check back in a few minutes</p>
+	<p>Please check back in a few minutes</p>
     <% end %>
 
     <% if calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
@@ -39,7 +39,7 @@
 		<li><%= text %> <% if count > 1 %>(<%= count %> times)<% end %></li>
             <% end %>
         </ul>
-	<p>[cCc] Please check your calendar is set up correctly and try again.</p>
+	<p>Please check your calendar is set up correctly and try again.</p>
     <% end %>
 
     <% if retry_button %>
