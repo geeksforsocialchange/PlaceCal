@@ -129,7 +129,7 @@ class Calendar < ApplicationRecord
   #   date to use as the start point
   #
   # @return nothing
-  def queue_for_import!(force_import, from_date)
+  def queue_for_import!(force_import, from_date = Time.now)
     transaction do
       return if is_busy?
 
