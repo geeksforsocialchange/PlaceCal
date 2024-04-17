@@ -22,15 +22,15 @@ module Types
     end
 
     def partner(id:)
-      Partner.find(id)
+      Partner.visible.find(id)
     end
 
     def partner_connection(**_args)
-      Partner.all
+      Partner.visible.all
     end
 
     def partners_by_tag(tag_id:)
-      Partner.with_tags(tag_id).order(:name)
+      Partner.visible.with_tags(tag_id).order(:name)
     end
   end
 
