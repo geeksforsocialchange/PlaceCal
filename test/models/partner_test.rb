@@ -509,4 +509,33 @@ class PartnerTest < ActiveSupport::TestCase
 
     assert partner.warn_user_clear_address?(other_citizen)
   end
+
+  test '#self.find_from_event_address does not return partner with matching name and postcode unless events can be assigned' do
+    partner = create(:moss_side_partner)
+    address = create(:moss_side_address, street_address: partner.name)
+    found_partner = Partner.find_from_event_address(address)
+
+    assert_not found_partner
+  end
+
+  test '#self.find_from_event_address does not return partner if events can be assigned but name or postcode do not match' do
+    partner = create(:moss_side_partner, can_be_assigned_events: true)
+    address_with_right_postcode_wrong_name = create(:moss_side_address)
+    address_with_wrong_postcode_right_name = create(:address, street_address: partner.name)
+
+    found_partner_a = Partner.find_from_event_address(address_with_right_postcode_wrong_name)
+    found_partner_b = Partner.find_from_event_address(address_with_wrong_postcode_right_name)
+
+    assert_not found_partner_a
+    assert_not found_partner_b
+  end
+
+  test '#self.find_from_event_address returns partner with matching name and postcode if events can be assigned' do
+    partner = create(:moss_side_partner, can_be_assigned_events: true)
+    address = create(:moss_side_address, street_address: partner.name)
+    found_partner = Partner.find_from_event_address(address)
+
+    assert found_partner
+    assert_equal(found_partner.address.postcode, address.postcode)
+  end
 end
