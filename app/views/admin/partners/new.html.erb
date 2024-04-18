@@ -3,4 +3,81 @@
 <h1 class="page-header">New Partner</h1>
 
 <hr />
-<%= render 'form', model: :partner %>
+<div class="form">
+  <%= simple_form_for @partner do |f| %>
+    <%= render_component "error", object: @partner %>
+    <h2>Basic Information</h2>
+    <%= f.input :name,
+	class: "form-control",
+	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source', 'data-action': 'input->partner-form-validation#checkInput' },
+	hint: 'Must be at least 5 characters long' %>
+    <p class="invalid-feedback" id="partner-name-feedback">This partner name has already been taken.</p>
+
+    <h2>Place</h2>
+    <p>Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District. Keep this information as specific as possible – limited to where this partner actually runs events rather than the geographical spread of the people they are trying to reach.</p>
+    <div id='address'>
+      <div class="row">
+        <div class="col-md-6">
+
+    <h3>Address</h3>
+            <%= render 'address_fields',
+		       form: f,
+		       partner: @partner %>
+
+          <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
+            <p>
+              The address for this partner is assigned to an out of date neighbourhood.
+              You do not need to take any action but if you wish to reassign this to an
+              up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
+            </p>
+          <% end %>
+          <% if partner_has_unmappable_postcode?(@partner) %>
+            <p>
+              The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
+            </p>
+          <% end %>
+        </div>
+        <div class="col-md-6">
+          <h3>Service Areas</h3>
+          <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
+          <div class="sites_neighbourhoods">
+            <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+              <%= render 'service_area_fields', :f => neighbourhood %>
+            <% end %>
+            <div class="links">
+              <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <% if  current_user.partnership_admin? || current_user.root? %>
+    <h2>Tags</h2>
+    <p>What other associations does this partner have apart from place.</p>
+      <%= f.association :partnerships,
+          label: "Partnerships",
+          hint:"Which communities of interest should this partner appear on",
+          collection: options_for_partner_partnerships(),
+          input_html: { class: 'form-check', data: { 
+            controller: 'partner-tags',
+            "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
+          } } %>
+      <hr>
+    <% end %>
+    <br>
+    <div class="row">
+      <div class="col-sm-12">
+        <%= f.submit "Save Partner", class: "btn btn-primary btn-lg" %><br><br><br>
+        <% unless @partner.new_record? %>
+          <% if policy(@partner).destroy? %>
+            <%= link_to "Delete Partner", @partner, method: :delete, class: "btn btn-danger btn-sm", id: 'destroy-partner'  %>
+          <% else %>
+            <p>You do not have permission to delete this partner, please contact <%= mail_to "info@placecal.org", "info@placecal.org" %> if you need to delete this partner.</p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

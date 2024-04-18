@@ -181,50 +181,6 @@ class Admin::PartnersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # Setup Partner
-
-  test 'neighbourhood_admin : can access setup' do
-    sign_in @neighbourhood_admin
-
-    get setup_admin_partners_url
-    assert_response :success
-  end
-
-  test 'neighbourhood_admin : can setup new partner in ward' do
-    sign_in @neighbourhood_admin
-
-    params = {
-      partner: {
-        name: 'New Partner',
-        address_attributes: {
-          street_address: '123 Moss Ln E',
-          postcode: 'M15 5DD'
-        }
-      }
-    }
-
-    post setup_admin_partners_url, params: params
-    assert_redirected_to new_admin_partner_url(params)
-  end
-
-  test 'neighbourhood_admin : cannot setup new partner not in ward' do
-    sign_in @neighbourhood_admin
-
-    params = {
-      partner: {
-        name: 'New Partner',
-        address_attributes: {
-          street_address: 'Ashton-under-Lyne',
-          postcode: 'OL6 8BH'
-        }
-      }
-    }
-
-    post setup_admin_partners_url, params: params
-
-    assert_template :setup
-  end
-
   test 'neighbourhood_admin : can see all of a partners service areas' do
     sign_in @neighbourhood_admin
     get edit_admin_partner_url(@partner)
