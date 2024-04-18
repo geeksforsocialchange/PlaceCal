@@ -8,8 +8,7 @@ class EventComponent < MountainView::Presenter
   include ActionView::Helpers::DateHelper
 
   delegate :id, to: :event
-
-  delegate :place, to: :event
+  delegate :partner_at_location, to: :event
 
   def time
     if event.dtend

@@ -6,7 +6,7 @@
   <strong><%= event.summary %></strong><br>
   <%= "#{event.date}, #{event.time}" %><br>
   <%= event.description %><br>
-  <%= "#{event.place}, #{event.location}" %><br>
+  <%= "#{event.partner_at_location}, #{event.location}" %><br>
   <%= link_to "https://placecal.org#{event_path(event)}", "https://placecal.org#{event_path(event)}" %>
 </p>
 

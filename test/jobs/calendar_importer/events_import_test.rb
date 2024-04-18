@@ -33,7 +33,7 @@ class EventsImportTest < ActiveSupport::TestCase
       # assert_equal 3, Address.count
 
       # Were the correct number of events found at each partner location?
-      assert_equal 2, Event.where(place: partner).count
+      assert_equal 2, Event.joins(:address).where('lower(addresses.street_address) = (?)', partner.name.downcase).count
     end
   end
 

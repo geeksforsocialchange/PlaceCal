@@ -171,6 +171,10 @@
           controller: 'select2',
         } } %>
     <hr>
+    <h2>Event matching</h2>
+    <p>Can events imported from other partner's calendars be listed at this partner if their address matches?</p>
+    <%= f.input :can_be_assigned_events, class: "form-control" %>
+    <hr>
     <% unless @partner.new_record? %>
       <% if policy(@partner).permitted_attributes.include? :hidden %>
         <div class="alert alert-light border" role="alert">
