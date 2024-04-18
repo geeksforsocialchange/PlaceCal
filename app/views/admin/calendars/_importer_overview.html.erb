@@ -1,7 +1,7 @@
 <% unless calendar.new_record? %>
     <% retry_button = nil %>
     <hr>
-    <h3>Importer</h3>
+    <h3>Import status</h3>
     
     <% if calendar.calendar_state.idle? %>
 	<% retry_button = :idle %>
