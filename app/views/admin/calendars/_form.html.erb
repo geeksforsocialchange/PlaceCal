@@ -1,13 +1,11 @@
-<% if @calendar.critical_error %>
-  <div class="alert alert-warning" role="alert">
-    Error: <%= @calendar.critical_error %>
-  </div>
-<% end %>
-
-<p><%= link_to "View this calendar",
-                admin_calendar_path(@calendar.id),
-                class: "btn btn-sm btn-primary" unless @calendar.new_record? %>
+<p>
+  <%= link_to "View this calendar",
+      admin_calendar_path(@calendar.id),
+      class: "btn btn-sm btn-primary" unless @calendar.new_record? %>
 </p>
+
+<%= render 'importer_overview', calendar: @calendar %>
+<hr>
 
 <div id="js-calendar-form">
   <%= simple_form_for [:admin, @calendar] do |f| %>
@@ -61,6 +59,8 @@
       </div>
     </div>
 
+    <hr>
+    
     <h3 class="mt-5">Public Contact Information</h3>
     <div class="row">
       <div class="col-md-6">
@@ -76,12 +76,10 @@
       </div>
     </div>
 
-    <br><br>
+    <hr>
     <%= f.button :submit, class: "btn btn-primary mr-3" %>
     <% unless @calendar.new_record? %>
       <%= link_to "Destroy Calendar", admin_calendar_path(@calendar), method: :delete, class: "btn btn-danger" %>
     <% end %>
   <% end %>
 </div>
-
-<%= render('import') unless @calendar.new_record? %>
