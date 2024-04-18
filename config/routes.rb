@@ -35,7 +35,6 @@ Rails.application.routes.draw do
     resources :neighbourhoods
     resources :partners do
       collection do
-        match :setup, via: %i[get post]
         get :lookup_name
       end
       member do
