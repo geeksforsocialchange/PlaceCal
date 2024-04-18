@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get 'privacy', to: 'pages#privacy'
   get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
+  get 'terms-of-use', to: 'pages#terms_of_use', as: :terms_of_use
 
   get 'community-groups', to: 'pages#community_groups'
   get 'metropolitan-areas', to: 'pages#metropolitan_areas'
