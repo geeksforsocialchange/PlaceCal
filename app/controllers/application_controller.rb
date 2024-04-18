@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
     events = events.one_off_events_first if repeating == 'last'
     events =
       if period == 'future'
-        events.future(@current_day).includes(:place)
+        events.future(@today).includes(:place)
       elsif period == 'week'
         events.find_by_week(@current_day).includes(:place)
       else

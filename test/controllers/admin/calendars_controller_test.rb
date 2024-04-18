@@ -118,7 +118,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
 
     suppress_stdout do # The importer uses stdout to tell us progress when we run it locally. Avoid this in tests
       VCR.use_cassette('Zion Centre Guide') do
-        post import_admin_calendar_path(calendar), params: { starting_from: Date.today }
+        post import_admin_calendar_path(calendar)
         assert_redirected_to edit_admin_calendar_path(calendar)
       end
     end

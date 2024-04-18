@@ -136,12 +136,12 @@ class Calendar < ApplicationRecord
   #   date to use as the start point
   #
   # @return nothing
-  def queue_for_import!(force_import, from_date)
+  def queue_for_import!(force_import, from_date = Time.now)
     transaction do
       return if is_busy?
 
       Calendar.record_timestamps = false
-      update! calendar_state: :in_queue
+      update! calendar_state: :in_queue, notices: nil
 
       CalendarImporterJob.perform_later id, from_date, force_import
 
@@ -158,7 +158,7 @@ class Calendar < ApplicationRecord
       return unless calendar_state.in_queue?
 
       Calendar.record_timestamps = false
-      update! calendar_state: :in_worker
+      update! calendar_state: :in_worker, notices: nil
 
     ensure
       Calendar.record_timestamps = true
