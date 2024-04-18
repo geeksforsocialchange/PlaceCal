@@ -1,27 +1,27 @@
 <% unless calendar.new_record? %>
     <% retry_button = nil %>
     <hr>
-    <h3>Importing</h3>
+    <h3>Importer</h3>
     
     <% if calendar.calendar_state.idle? %>
 	<% retry_button = :idle %>
-	<p>
-	    Status: <span class="badge badge-success">success</span>.
-	    <% if calendar.last_import_at.present? %>
+	<h4><span class="badge badge-success">success</span></h4>
+	<% if calendar.last_import_at.present? %>
+	    <p>
 		<strong>Last updated <%= time_ago_in_words(calendar.last_import_at) %> ago</strong> (<%= calendar.last_import_at %>)
-	    <% end %>
-	</p>
+	    </p>
+	<% end %>
     <% end %>
 
     <% if calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
-	<p>Status: <span class="badge badge-primary">loading</span>.</p>
+	<h4><span class="badge badge-primary">loading</span></h4>
 	<p>Please check back in a few minutes</p>
     <% end %>
 
     <% if calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
 	<% retry_button = :error %>
 	
-	<p>Status: <span class="badge badge-danger">error</span>.</p>
+	<h4><span class="badge badge-danger">error</span></h4>
 	
 	<div class="alert alert-warning" role="alert">
 	    Error: <%= calendar.critical_error %>
@@ -45,7 +45,7 @@
     <% if retry_button %>
 	<%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
 	    <% if retry_button == :idle %>
-		<%= f.submit 'Re-import now', class: 'btn btn-secondary' %>
+		<%= f.submit 'Re-import now', class: 'btn btn-primary' %>
 	    <% elsif retry_button == :error %>
 		<%= f.submit 'Retry', class: 'btn btn-danger' %>
 	    <% end %>
