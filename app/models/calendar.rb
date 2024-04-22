@@ -174,7 +174,7 @@ class Calendar < ApplicationRecord
   # @param checksum [integer]
   #   integer checksum of retrieved source payload
   # @return nothing
-  def flag_complete_import_job!(notices, _checksum, importer_used)
+  def flag_complete_import_job!(notices, importer_used)
     transaction do
       return unless calendar_state.in_worker?
 
@@ -188,6 +188,18 @@ class Calendar < ApplicationRecord
         importer_used: importer_used
       )
 
+    ensure
+      Calendar.record_timestamps = true
+    end
+  end
+
+  def flag_checksum_change!(checksum)
+    transaction do
+      Calendar.record_timestamps = false
+      update!(
+        last_checksum: checksum,
+        checksum_updated_at: DateTime.current
+      )
     ensure
       Calendar.record_timestamps = true
     end

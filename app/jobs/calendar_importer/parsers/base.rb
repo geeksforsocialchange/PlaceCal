@@ -11,7 +11,7 @@ module CalendarImporter::Parsers
     PUBLIC = true
     NAME = ''
     KEY = ''
-    Output = Struct.new(:events, :checksum)
+    Output = Struct.new(:events, :checksum_changed)
 
     def self.handles_url?(calendar)
       calendar.source =~ allowlist_pattern
@@ -31,19 +31,13 @@ module CalendarImporter::Parsers
     def calendar_to_events
       data = download_calendar
       checksum = digest(data)
-
+      checksum_changed = @calendar.last_checksum != checksum
       ## record if checksum has changed since last time we interacted with it.
       ## if download_calendar fails it should raise an exception so this code won't run
-      if @calendar.last_checksum != checksum
-        @calendar.update!(
-          last_checksum: checksum,
-          checksum_updated_at: DateTime.current
-        )
-      end
+      @calendar.flag_checksum_change!(checksum) if checksum_changed
+      return Output.new([], checksum) if !@force_import && !checksum_changed
 
-      return Output.new([], checksum) if !@force_import && (@calendar.last_checksum == checksum)
-
-      Output.new(import_events_from(data), checksum)
+      Output.new(import_events_from(data), checksum_changed)
     end
 
     # @abstract Subclass is expect to implmement #download_calendar
