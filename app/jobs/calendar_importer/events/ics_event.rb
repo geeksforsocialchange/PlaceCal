@@ -50,42 +50,44 @@ module CalendarImporter::Events
 
     def online_event?
       # Either return the google conference value, or find the link in the description
-      link = @event.custom_properties.fetch 'x_google_conference', nil
+      link = @event.url
+      link ||= @event.custom_properties['x_google_conference']
       link ||= find_event_link
 
-      return unless link
+      link = link.first if link.is_a?(Array)
+      link = link.to_s
+
+      return if link.blank?
 
       # Then grab the first element of either the match object or the conference array
       # (The match object returns ICal Text, not a String, so we have to cast)
       # (We can't use .first here because the match object doesn't support it!)
       #
-      online_address = OnlineAddress.find_or_create_by(url: link[0].to_s,
-                                                       link_type: have_direct_url_to_stream?(link[0].to_s))
+      online_address = OnlineAddress.find_or_create_by(url: link,
+                                                       link_type: have_direct_url_to_stream?(link))
       online_address.id
     end
 
     private
 
     def have_direct_url_to_stream?(link)
-      # Oh my god why is ruby's iteration stuff so annoying
-      # also TODO: find a different name than "value"
-      domain = event_link_types.keys.find(proc {}) { |domain| link.include?(domain) }
+      domain = event_link_types.keys.find { |domain| link.include?(domain) }
 
       return event_link_types[domain][:type] if domain
 
-      # Because there is a type for each URL handled, this should never occur
-      # However, in the future, those URLs will be edited, so we should guard against this
-      raise MissingTypeForURL, "Type (direct/indirect) missing for URL #{link}"
+      'indirect'
     end
 
     def find_event_link
       link_regexes = event_link_types.values.pluck(:regex)
       regex = Regexp.union link_regexes
 
-      regex.match description
+      regex.match(description).to_a
     end
 
     def event_link_types
+      # this only detects "direct" link types now and everything else is "indirect"
+
       http = %r{(http(s)?://)?} # - https:// or http:// or nothing
       alphanum = /[A-Za-z0-9]+/      # - alphanumeric strings
       subdomain = /(#{alphanum}\.)?/ # - matches the www. or us04web in the zoom link
@@ -104,8 +106,7 @@ module CalendarImporter::Events
       {
         'meet.jit.si' => { regex: %r{#{http}#{subdomain}meet.jit.si/#{suffix}}, type: 'direct' },
         'meet.google.com' => { regex: %r{#{http}#{subdomain}meet.google.com/#{suffix}}, type: 'direct' },
-        'zoom.us' => { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' },
-        'facebook.com' => { regex: %r{#{http}#{subdomain}facebook.com/events/#{suffix}}, type: 'indirect' }
+        'zoom.us' => { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' }
       }
     end
   end
