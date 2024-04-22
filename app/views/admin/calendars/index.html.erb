@@ -25,7 +25,7 @@ var columns = [
     title: 'Calendars',
     model: :calendars,
     column_titles: ['Name', 'Partners', 'Notices', 'Events', 'Status', 'Last imported', 'Last updated'],
-    columns: %i[name partner notice_count events calendar_state last_import_at updated_at],
+    columns: %i[name partner notice_count events calendar_state last_import_at checksum_updated_at],
     data: @calendars,
     source: admin_calendars_path(format: :json),
     new_link: new_admin_calendar_path
