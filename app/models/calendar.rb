@@ -185,6 +185,7 @@ class Calendar < ApplicationRecord
         notices: notices,
         last_checksum: checksum,
         last_import_at: DateTime.current,
+        checksum_updated_at: DateTime.current,
         critical_error: nil,
         importer_used: importer_used
       )
