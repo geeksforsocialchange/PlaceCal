@@ -71,22 +71,25 @@ class Event < ApplicationRecord
 
   # Filter by Site
   scope :for_site, lambda { |site|
+    partners = Partner.for_site(site)
+
     if site&.tags&.any?
-      left_joins(partner: %i[address service_areas])
-        .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
+      left_joins(:address)
         .where(
-          '((service_areas.neighbourhood_id IN (:ids)) OR '\
-          '(addresses.neighbourhood_id in (:ids))) AND '\
-          'partner_tags.tag_id in (:tag_ids)',
-          ids: site.owned_neighbourhoods.map(&:id),
-          tag_ids: site.tags.map(&:id)
+          'partner_id in (:partner_ids) OR '\
+          '(lower(addresses.street_address) in (:partner_names) AND '\
+          'lower(addresses.postcode) in (:partner_postcodes))',
+          partner_ids: partners.map(&:id),
+          partner_names: partners.map { |p| p.name.downcase },
+          partner_postcodes: partners.map { |p| p.address.postcode.downcase }
         )
     else
-      left_joins(partner: %i[address service_areas])
+      left_joins(:address)
         .where(
-          '(service_areas.neighbourhood_id IN (:ids)) OR '\
-          '(addresses.neighbourhood_id in (:ids))',
-          ids: site.owned_neighbourhoods.map(&:id)
+          'partner_id in (:partner_ids) OR '\
+          'addresses.neighbourhood_id in (:neighbourhoods)',
+          neighbourhoods: site.owned_neighbourhoods.map(&:id),
+          partner_ids: partners.map(&:id)
         )
     end
   }
