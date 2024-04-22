@@ -2,6 +2,13 @@
 <h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
 
 <p>ID: <%= @partner.id %></p>
+
+<% if @partner.hidden %>
+  <div class='alert alert-danger'>
+    This partner is set to <strong>hidden</strong> and will not show on any public sites! (<a href='#partner-moderation'>Change this</a>)
+  </div>
+<% end %>
+
 <%# Show the Neighbourhood the partner is related to via Address %>
 <% if @partner.address&.neighbourhood&.present? -%>
     <p>Address in neighbourhood <%= link_to_neighbourhood(@partner.address.neighbourhood) %>.</p>
@@ -11,6 +18,7 @@
 <% if @partner.service_areas.any? -%>
     <p>In service areas <%= service_area_links(@partner) %>.</p>
 <% end -%>
+
 
 <%# Show a list of sites that the partner is related to %>
 <span id="partner-sites">

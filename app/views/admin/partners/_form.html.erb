@@ -177,7 +177,7 @@
     <hr>
     <% unless @partner.new_record? %>
       <% if policy(@partner).permitted_attributes.include? :hidden %>
-        <div class="alert alert-light border" role="alert">
+        <div id='partner-moderation' class="alert alert-light border" role="alert">
           <h2 class="alert-heading">Moderation</h2>
           <p>Hiding a partner is a last resort, and will remove them from all PlaceCal sites, not just yours. This is appropriate if a partner suddenly starts publishing things like spam or hate speech. In such cases, hiding a partner is the right action and we appreciate your help in keeping PlaceCal a safe place to be.</p>
           <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out.</p>
