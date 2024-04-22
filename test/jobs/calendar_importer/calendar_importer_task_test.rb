@@ -235,4 +235,32 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 52, created_events.count # (at time of recording)
     end
   end
+
+  test 'checksum date does not change on each import' do
+    VCR.use_cassette('Placecal Hulme & Moss Side Google Cal', allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Placecal Hulme & Moss Side',
+        source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics',
+        strategy: 'place'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+      assert_equal 'idle', calendar.calendar_state
+      checksum_date = calendar.checksum_updated_at
+
+      Timecop.freeze(16.days.from_now) do
+        calendar.update calendar_state: 'in_worker'
+        future_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+        future_task.run
+        assert_equal 'idle', calendar.calendar_state
+      end
+
+      assert_not_equal calendar.last_import_at, calendar.checksum_updated_at
+      assert_equal checksum_date, calendar.checksum_updated_at
+    end
+  end
 end
