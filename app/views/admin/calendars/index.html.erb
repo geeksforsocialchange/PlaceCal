@@ -24,7 +24,7 @@ var columns = [
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Calendars',
     model: :calendars,
-    column_titles: ['Name', 'Partners', 'Notices', 'Events', 'Status', 'Last imported', 'Last updated'],
+    column_titles: ['Name', 'Partners', 'Notices', 'Events', 'Status', 'Last imported', 'Source updated'],
     columns: %i[name partner notice_count events calendar_state last_import_at checksum_updated_at],
     data: @calendars,
     source: admin_calendars_path(format: :json),
