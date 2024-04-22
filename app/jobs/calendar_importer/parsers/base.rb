@@ -32,6 +32,15 @@ module CalendarImporter::Parsers
       data = download_calendar
       checksum = digest(data)
 
+      ## record if checksum has changed since last time we interacted with it.
+      ## if download_calendar fails it should raise an exception so this code won't run
+      if @calendar.last_checksum != checksum
+        @calendar.update!(
+          last_checksum: checksum,
+          checksum_updated_at: DateTime.current
+        )
+      end
+
       return Output.new([], checksum) if !@force_import && (@calendar.last_checksum == checksum)
 
       Output.new(import_events_from(data), checksum)
