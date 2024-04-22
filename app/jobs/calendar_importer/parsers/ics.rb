@@ -36,7 +36,9 @@ module CalendarImporter::Parsers
     def download_calendar
       # Why are we doing this?
       url = @url.gsub(%r{webcal://}, 'https://') # Remove the webcal:// and just use the part after it
-      Base.read_http_source url
+      res = Base.read_http_source url
+      # sanatize google calendar to prevent each requesting resetting the checksum
+      res.split("\n").reject { |l| l.include? 'DTSTAMP' }.join("\n")
     end
 
     def import_events_from(data)
