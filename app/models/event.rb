@@ -61,23 +61,34 @@ class Event < ApplicationRecord
   }
 
   scope :with_tags, lambda { |tags|
-    tag_ids = tags.map(&:id)
-
     joins(:partner)
       .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
-      .where('partner_tags.tag_id in (?)', tag_ids)
+      .where(
+        'partner_tags.tag_id in (:tag_ids)',
+        tag_ids: tags.map(&:id)
+      )
   }
 
   # Filter by Site
   scope :for_site, lambda { |site|
-    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
-
-    joins('left join addresses on events.address_id = addresses.id')
-      .joins('left join partners on events.partner_id = partners.id')
-      .joins('left join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
-             site_neighbourhood_ids,
-             site_neighbourhood_ids)
+    if site&.tags&.any?
+      left_joins(partner: %i[address service_areas])
+        .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
+        .where(
+          '((service_areas.neighbourhood_id IN (:ids)) OR '\
+          '(addresses.neighbourhood_id in (:ids))) AND '\
+          'partner_tags.tag_id in (:tag_ids)',
+          ids: site.owned_neighbourhoods.map(&:id),
+          tag_ids: site.tags.map(&:id)
+        )
+    else
+      left_joins(partner: %i[address service_areas])
+        .where(
+          '(service_areas.neighbourhood_id IN (:ids)) OR '\
+          '(addresses.neighbourhood_id in (:ids))',
+          ids: site.owned_neighbourhoods.map(&:id)
+        )
+    end
   }
 
   # Filter by Place
