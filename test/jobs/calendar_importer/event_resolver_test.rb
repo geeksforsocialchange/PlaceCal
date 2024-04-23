@@ -11,6 +11,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     :rrule,
     :last_modified,
     :custom_properties,
+    :url,
     # Fixes bug where entire argument to .new ended up under the uid value lmao
     # Who knew our importer was *that* robust?!
     keyword_init: true
