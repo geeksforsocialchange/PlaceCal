@@ -10,6 +10,8 @@ FactoryBot.define do
     public_contact_name { 'Public Calendar Name' }
     public_contact_email { 'public@communitygroup.com' }
     public_contact_phone { '0161 0000000' }
+    last_import_at { 1.month.ago }
+    checksum_updated_at { 1.month.ago }
 
     partner
 
