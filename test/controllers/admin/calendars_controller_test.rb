@@ -14,6 +14,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
       @neighbourhood_admin.neighbourhoods << @neighbourhood
 
       @calendar = create(:calendar, partner: @partner, place: @partner)
+      @calendar.update!(last_import_at: 1.month.ago)
 
       @citizen = create(:user)
 

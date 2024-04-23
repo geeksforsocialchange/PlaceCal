@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_11_200641) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_22_092628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_200641) do
     t.string "calendar_state", default: "idle"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
+    t.datetime "checksum_updated_at"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end

@@ -107,7 +107,8 @@ module Admin
         :importer_mode,
         :public_contact_name,
         :public_contact_phone,
-        :public_contact_email
+        :public_contact_email,
+        :checksum_updated_at
       )
     end
   end
