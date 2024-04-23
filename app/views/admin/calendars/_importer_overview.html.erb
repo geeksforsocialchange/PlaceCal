@@ -2,15 +2,17 @@
     <% retry_button = nil %>
     <hr>
     <h3>Import status</h3>
-    
+
+    <% if calendar.checksum_updated_at < 6.month.ago || calendar.last_import_at < 6.month.ago %>
+      <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Potential stale calender</h4>
+        <p>Is this calender still active? It has not been updated in over 6 months</p>
+      </div>
+    <% end %>
+
     <% if calendar.calendar_state.idle? %>
-	<% retry_button = :idle %>
-	<h4><span class="badge badge-success">success</span></h4>
-	<% if calendar.last_import_at.present? %>
-	    <p>
-		<strong>Last updated <%= time_ago_in_words(calendar.last_import_at) %> ago</strong> (<%= calendar.last_import_at %>)
-	    </p>
-	<% end %>
+      <% retry_button = :idle %>
+      <h4><span class="badge badge-success">success</span></h4>
     <% end %>
 
     <% if calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
@@ -27,6 +29,19 @@
 	    Error: <%= calendar.critical_error %>
 	</div>
     <% end %>
+
+    
+    <% if calendar.checksum_updated_at.present? %>
+      <p>
+        <strong>Source data last changed <%= time_ago_in_words(calendar.checksum_updated_at) %> ago</strong> (<%= calendar.checksum_updated_at %>)
+      </p>
+    <% end %>
+
+      <% if calendar.last_import_at.present? %>
+          <p>
+        <strong>Last import ran <%= time_ago_in_words(calendar.last_import_at) %> ago</strong> (<%= calendar.last_import_at %>)
+          </p>
+      <% end %>
 
     <% if calendar.notices.present? %>
 	<% retry_button = :error %>

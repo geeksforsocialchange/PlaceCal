@@ -373,6 +373,7 @@ Rails/SkipsModelValidations:
     - 'lib/tasks/fixes/users.rake'
     - 'db/migrate/20240125175508_partner_hidden_attribute_set_value.rb'
     - 'db/migrate/20240411200641_partner_can_be_assigned_events_set_value.rb'
+    - 'db/migrate/20240422092628_set_calendar_checksum_date.rb'
 
 # Offense count: 22
 # This cop supports unsafe autocorrection (--autocorrect-all).

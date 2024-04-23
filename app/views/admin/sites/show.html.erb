@@ -9,6 +9,7 @@
       <th>Name</th>
       <th>State</th>
       <th>Last imported at</th>
+      <th>Last source data change at</th>
     </tr>
   </thead>
   <tbody>
@@ -17,8 +18,10 @@
       <td><%= calendar.id %></td>
       <td><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></td>
       <td><%= calendar.calendar_state %></td>
-      <td><span title="<%= calendar.last_import_at %>"><%= calendar_last_imported(calendar) %></span></td>
+      <td><span title="<%= calendar.last_import_at %>"><%= time_ago_in_words(calendar.last_import_at) %></span></td>
+      <td><span title="<%= calendar.checksum_updated_at %>"><%= time_ago_in_words(calendar.checksum_updated_at) %></span></td>
     </tr>
     <% end %>
   <tbody>
 </table>
+
