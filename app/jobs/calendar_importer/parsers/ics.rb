@@ -25,7 +25,6 @@ module CalendarImporter::Parsers
         outlook: %r{^https?://outlook\.(office365|live)\.com/owa/calendar/.*},
         webcal: %r{^webcal://},
         mossley: %r{^https?://mossleycommunitycentre\.org\.uk},
-        theproudtrust: %r{^https?://www\.theproudtrust\.org},
         teamup: %r{^https?://ics\.teamup\.com/feed/.*},
         consortium: %r{^https://www\.consortium\.lgbt/events/.*},
         generic: %r{^https?://.*\.ics$}
