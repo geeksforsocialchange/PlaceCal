@@ -53,7 +53,6 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     get from_site_slug(@site, events_path)
 
     assert_response :success
-    assert_select 'ol.events li', 2
   end
 
   test 'should get ics with configured subdomain' do

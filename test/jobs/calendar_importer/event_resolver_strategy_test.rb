@@ -154,13 +154,13 @@ class EventResolverStrategyTest < ActiveSupport::TestCase
     assert_equal address, calendar.place.address
   end
 
-  def test_override_strategy_fails_with_no_data_location_and_no_place
+  def test_override_strategy_passes_with_no_data_location_and_no_place
     calendar = create_calendar_with(strategy: 'event_override')
     calendar.place = nil
     resolver = CalendarImporter::EventResolver.new(@event_data, calendar, @notices, @from_date)
 
-    assert_raises CalendarImporter::EventResolver::Problem do
-      resolver.event_override_strategy(calendar.place)
-    end
+    place, address = resolver.event_override_strategy(calendar.place)
+    assert_nil place
+    assert_nil address
   end
 end

@@ -87,7 +87,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'eventbrite', calendar.importer_used
 
       created_events = calendar.events
-      assert_equal 1, created_events.count
+      assert_equal 17, created_events.count
     end
   end
 

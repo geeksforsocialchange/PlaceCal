@@ -255,7 +255,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     assert_equal(["Summary can't be blank"], notices)
   end
 
-  test 'raises error when missing address' do
+  test 'still imports when missing address' do
     calendar = make_calendar_for_strategy('no_location')
     calendar.strategy = 'event'
 
@@ -263,9 +263,8 @@ class EventsResolverTest < ActiveSupport::TestCase
     from_date = @start_date
 
     resolver = CalendarImporter::EventResolver.new(@ics_event_data, calendar, notices, from_date)
+    place, address = resolver.determine_location_for_strategy
 
-    assert_raises CalendarImporter::EventResolver::Problem do
-      resolver.determine_location_for_strategy
-    end
+    assert_nil address
   end
 end

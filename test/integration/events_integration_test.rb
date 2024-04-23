@@ -4,41 +4,32 @@ require 'test_helper'
 
 class EventsIntegrationTest < ActionDispatch::IntegrationTest
   setup do
-    # Create a default site and a neighbourhood one
+    # create sites and data
+    ward = create(:neighbourhood)
+    tag = create(:partnership)
+
     @slugless_site = create_default_site
-
-    @default_site = create(:site)
     @neighbourhood_site = create(:site_local)
-    @regional_neighbourhood_site = create(:site_local)
+    @partnership_site = create(:site)
+    @date = DateTime.now.beginning_of_day
 
-    VCR.use_cassette(:import_test_calendar) do
-      @calendar = create(:calendar)
-    end
+    # add neighbourhoods and tags to sites
+    @neighbourhood_site.neighbourhoods << ward.region
+    @neighbourhood_site.save!
 
-    # Create one set of events for the default site
-    date = DateTime.now.beginning_of_day
-    @default_site_events = create_list(:event, 5, dtstart: date + 1.hour, calendar: @calendar)
-    @default_site_events.each do |event|
-      next if @default_site.neighbourhoods.include? event.neighbourhood
+    @partnership_site.neighbourhoods << ward.region
+    @partnership_site.tags << tag
+    @partnership_site.save!
 
-      @default_site.neighbourhoods << event.neighbourhood
-    end
+    # make partners
+    @partner = create(:partner, address: create(:address))
+    @partner.address.neighbourhood = @neighbourhood_site.neighbourhoods[0]
+    @partner.save!
 
-    # Create another set for the neighbourhood site
-    @neighbourhood_site_events = create_list(:event, 5, dtstart: date + 1.hour, calendar: @calendar)
-    @neighbourhood2 = create(:neighbourhood)
-    @neighbourhood_site_events.each do |event|
-      event.address.update(neighbourhood: @neighbourhood2)
-    end
-    @neighbourhood_site.neighbourhoods << @neighbourhood2
-
-    # Make a ward, add events to that ward
-    @ward = create(:neighbourhood)
-    @regional_ward_events = create_list(:event, 5, dtstart: date + 1.hour, calendar: @calendar)
-    @regional_ward_events.each { |event| event.address.update(neighbourhood: @ward) }
-
-    # Assign the regional site to have, a region containing the ward, as a neighbourhood
-    @regional_neighbourhood_site.neighbourhoods << @ward.region
+    @partnership_partner = create(:partner)
+    @partnership_partner.tags << tag
+    @partnership_partner.address.neighbourhood = @neighbourhood_site.neighbourhoods[0]
+    @partnership_partner.save!
   end
 
   test 'site with no slug redirects to find my placecal' do
@@ -46,30 +37,35 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
-  test 'default site index page shows all events that are on today and local info' do
-    get from_site_slug(@default_site, events_path)
-    assert_response :success
-    assert_select 'title', count: 1, text: "Events & activities in your area | #{@default_site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
-    assert_select 'div.hero h1', text: 'Events & activities in your area'
-    assert_select 'ol article', @default_site_events.length
-  end
-
   test 'neighbourhood site index page shows all events that are on today and local info' do
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(:calendar, partner: @partner)
+    end
+    other_events = create_list(:event, 5, dtstart: @date + 1.hour, calendar: @calendar)
+    neighbourhood_events = create_list(:event, 5, dtstart: @date + 1.hour, calendar: @calendar)
+    neighbourhood_events.each { |event| event.update(address: @partner.address, partner: @partner) }
+
     get from_site_slug(@neighbourhood_site, events_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Events & activities in your area | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: 'Events & activities in your area'
-    assert_select 'ol article', @neighbourhood_site_events.length
+    assert_select 'ol article', neighbourhood_events.length
   end
 
-  test 'regional site index page shows all events that are on today and local info' do
-    get from_site_slug(@regional_neighbourhood_site, events_path)
+  test 'partnership site index page shows all events that are on today and local info' do
+    VCR.use_cassette(:import_test_calendar) do
+      @calendar = create(:calendar, partner: @partnership_partner)
+    end
+    other_events = create_list(:event, 5, dtstart: @date + 1.hour, calendar: @calendar)
+    partnership_events = create_list(:event, 5, dtstart: @date + 1.hour, calendar: @calendar)
+    partnership_events.each { |event| event.update(address: @partnership_partner.address, partner: @partnership_partner) }
+
+    get from_site_slug(@partnership_site, events_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Events & activities in your area | #{@regional_neighbourhood_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
+    assert_select 'title', count: 1, text: "Events & activities in your area | #{@partnership_site.name}"
+    assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', text: 'Events & activities in your area'
-    assert_select 'ol article', @regional_ward_events.length
+    assert_select 'ol article', partnership_events.length
   end
 end

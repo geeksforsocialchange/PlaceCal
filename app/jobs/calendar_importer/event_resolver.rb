@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 class CalendarImporter::EventResolver
-  WARNING1_MSG = 'Could not determine where this event is. Add an address to the location field of the source ' \
-                 'calendar, or choose another import strategy with a default location'
-  WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set '  \
-                 'to ignore this. Add an address to the location field of the source calendar, or choose '      \
-                 'another import strategy with a default location.'
-  INFO1_MSG = 'This location was not recognised by PlaceCal, please update the location field of the source ' \
-              'calendar, or choose another import strategy with a default location'
-
   attr_reader :data, :uid, :notices, :calendar
 
   class Problem < StandardError; end
@@ -72,11 +64,7 @@ class CalendarImporter::EventResolver
   def event_strategy(partner, address: nil)
     if data.has_location?
       address = Address.build_from_components(event_location_components, data.postcode)
-      raise Problem, INFO1_MSG if address.nil?
-
       partner = nil
-    else
-      raise Problem, WARNING2_MSG
     end
     [partner, address]
   end
@@ -93,10 +81,6 @@ class CalendarImporter::EventResolver
     else
       partner = nil
     end
-    if partner.nil? && address.nil?
-      raise Problem, WARNING1_MSG
-    end
-
     [partner, address]
   end
 

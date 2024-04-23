@@ -114,7 +114,7 @@ class Address < ApplicationRecord
         street_address3: components[2]&.strip,
         postcode: postcode
       )
-      address if address.save
+      address.save ? address : nil
     end
   end
 end
