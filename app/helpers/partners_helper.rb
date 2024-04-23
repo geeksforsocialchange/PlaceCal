@@ -64,7 +64,7 @@ module PartnersHelper
     return if @sites.blank?
 
     @sites
-      .map { |site| link_to site.name, site.url }
+      .map { |site| link_to site.name, site.url, target: '_blank', rel: 'noopener' }
       .join(', ')
       .html_safe
   end
