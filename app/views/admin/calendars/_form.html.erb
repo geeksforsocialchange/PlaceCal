@@ -5,7 +5,7 @@
 </p>
 
 <%# don't show importer stats if it's never run %>
-<% unless @calendar.last_import_at == nil %>
+<% if @calendar.last_import_at.present? %>
   <%= render('importer_overview', calendar: @calendar) %>
 <% end %>
 <hr>
