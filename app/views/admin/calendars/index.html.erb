@@ -11,7 +11,7 @@ var columns = [
          return (type == "display") ? date.strtime : date.unixtime;
      }
     },
-    {"data": "updated_at",
+    {"data": "checksum_updated_at",
      "render": function (data, type, row) {
          date = JSON.parse(data.replace(/&quot;/g, '"'));
          return (type == "display") ? date.strtime : date.unixtime;
