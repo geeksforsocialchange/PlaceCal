@@ -183,7 +183,7 @@ http_interactions:
           (University of Leeds) \nThe event includes a screening of the film document
           of KIDNAP (30 mins) and reflections on other relevant work, including Rideout's
           Cell Project (2016) and Ali Matthews' What the Money Meant (2014).\n \nFor
-          further information please contact the organiser, Stephen Scott-Bottoms: stephen.bottoms@manchester.ac.uk
+          further information please contact the organiser, Alpha Beta: alpha.beta@manchester.ac.uk
           \n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher Education</ns:type><ns:times
           type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>11:30:00</ns:time></ns:start><ns:end
           tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>18:00:00</ns:time></ns:end></ns:times><ns:times
@@ -193,7 +193,7 @@ http_interactions:
           tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
           xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
           xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">Stephen
-          Scott-Bottoms</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">stephen.bottoms@manchester.ac.uk
+          Alpha Beta</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">alpha.beta@manchester.ac.uk
           </gpp:email></uom:contact><uom:eventInfo><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
           xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
           gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
@@ -423,7 +423,7 @@ http_interactions:
           (University of Leeds) \nThe event includes a screening of the film document
           of KIDNAP (30 mins) and reflections on other relevant work, including Rideout's
           Cell Project (2016) and Ali Matthews' What the Money Meant (2014).\n \nFor
-          further information please contact the organiser, Stephen Scott-Bottoms: stephen.bottoms@manchester.ac.uk
+          further information please contact the organiser, Alpha Beta: alpha.beta@manchester.ac.uk
           \n</ns:description><ns:status>confirmed</ns:status><ns:type>Higher Education</ns:type><ns:times
           type=\"GMT\"><ns:start tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>11:30:00</ns:time></ns:start><ns:end
           tz=\"GMT\"><ns:date>2018-07-20</ns:date><ns:time>18:00:00</ns:time></ns:end></ns:times><ns:times
@@ -432,8 +432,8 @@ http_interactions:
           type=\"user\"><ns:start tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>12:30:00</ns:time></ns:start><ns:end
           tz=\"Europe__London-D60\"><ns:date>2018-07-20</ns:date><ns:time>19:00:00</ns:time></ns:end></ns:times><ns:eventData><uom:data
           xmlns:uom=\"http://www.columbasystems.com/customers/uom/xml/details/2-0/\"><uom:contact><gpp:name
-          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">Stephen
-          Scott-Bottoms</gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">stephen.bottoms@manchester.ac.uk
+          xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">Alpha Beta
+          </gpp:name><gpp:email xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\">alpha.beta@manchester.ac.uk
           </gpp:email></uom:contact><uom:eventInfo><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
           xmlns:gpp=\"http://www.columbasystems.com/customers/gpp/xml/details/1-0/\"
           gpp:code=\"code:info-booking\" gpp:name=\"Booking\"/><uom:eventInfo xmlns:code=\"http://www.columbasystems.com/customers/uom/gpp/tag/\"
