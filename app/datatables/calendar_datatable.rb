@@ -18,7 +18,7 @@ class CalendarDatatable < Datatable
       events: { source: 'Calendar.events', searchable: false, orderable: false },
       state: { source: 'Calendar.calendar_state', searchable: false, orderable: false },
       last_import_at: { source: 'Calendar.last_import_at', searchable: false, orderable: false },
-      updated_at: { source: 'Calendar.updated_at', searchable: false, orderable: false }
+      checksum_updated_at: { source: 'Calendar.checksum_updated_at', searchable: false, orderable: false }
     }
   end
 
@@ -32,7 +32,7 @@ class CalendarDatatable < Datatable
         events: record.events&.count&.to_s || 0,
         state: record.calendar_state,
         last_import_at: json_datetime(record.last_import_at),
-        updated_at: json_datetime(record.updated_at)
+        checksum_updated_at: json_datetime(record.checksum_updated_at)
       }
     end
   end
