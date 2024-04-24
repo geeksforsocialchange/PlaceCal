@@ -81,7 +81,7 @@ class Event < ApplicationRecord
           'lower(addresses.postcode) in (:partner_postcodes))',
           partner_ids: partners.map(&:id),
           partner_names: partners.map { |p| p.name.downcase },
-          partner_postcodes: partners.map { |p| p.address.postcode.downcase }
+          partner_postcodes: partners.map(&:address).keep_if(&:present?).map { |a| a.postcode.downcase }
         )
     else
       left_joins(:address)
