@@ -4,10 +4,7 @@
       class: "btn btn-sm btn-primary" unless @calendar.new_record? %>
 </p>
 
-<%# don't show importer stats if it's never run %>
-<% if @calendar.last_import_at.present? %>
-  <%= render('importer_overview', calendar: @calendar) %>
-<% end %>
+<%= render('importer_overview', calendar: @calendar) %>
 <hr>
 
 <div id="js-calendar-form">
