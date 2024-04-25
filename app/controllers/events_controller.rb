@@ -28,7 +28,7 @@ class EventsController < ApplicationController
     @events = sort_events(@events, @sort)
     @multiple_days = true
 
-    @next = if params[:year]
+    @next = if params[:year].present?
               date = begin
                 Date.new(params[:year].to_i,
                          params[:month].to_i,
