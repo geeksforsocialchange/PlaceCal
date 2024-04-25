@@ -38,8 +38,8 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
 
     get edit_admin_partner_url(@partner)
 
-    assert_select 'span#partner-sites a', count: 1
-    assert_select 'span#partner-sites a:first', text: @site.name
+    assert_select 'td#partner-sites a', count: 1
+    assert_select 'td#partner-sites a:first', text: @site.name
   end
 
   test 'user can see sites this partner is involved with via service areas' do
@@ -50,8 +50,8 @@ class PartnerEditSiteTest < ActionDispatch::IntegrationTest
 
     get edit_admin_partner_url(@partner)
 
-    assert_select 'span#partner-sites a', count: 1
-    assert_select 'span#partner-sites a:first', text: @site.name
+    assert_select 'td#partner-sites a', count: 1
+    assert_select 'td#partner-sites a:first', text: @site.name
   end
 
   # service area selector

@@ -1,27 +1,45 @@
 <% content_for :title do %>Editing <%= @partner.name %><% end %>
-<h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
+<h1 class="page-header">
+  Edit Partner: <em><%= @partner.name %></em>
+  <% if current_user.root? %>
+    <small class="text-muted">(ID: <%= @partner.id %>)</small>
+  <% end %>
+</h1>
 
-<p>ID: <%= @partner.id %></p>
-<%# Show the Neighbourhood the partner is related to via Address %>
-<% if @partner.address&.neighbourhood&.present? -%>
-    <p>Address in neighbourhood <%= link_to_neighbourhood(@partner.address.neighbourhood) %>.</p>
-<% end -%>
+<h2>Relation links</h2>
+<table class="table table-bordered">
+  <tbody>
+    <% if @partner.address&.neighbourhood&.present? -%>
+      <tr>
+        <th scope="row">Address neighbourhood</th>
+        <td><%= link_to_neighbourhood(@partner.address.neighbourhood) %></td>
+      </tr>
+    <% end %>
 
-<%# Show a list of Service Areas that the partner is related to %>
-<% if @partner.service_areas.any? -%>
-    <p>In service areas <%= service_area_links(@partner) %>.</p>
-<% end -%>
+    <% if @partner.service_areas.any? -%>
+      <tr>
+        <th scope="row">Service areas</th>
+        <td><%= service_area_links(@partner) %></td>
+      </tr>
+    <% end %>
 
-<%# Show a list of sites that the partner is related to %>
-<span id="partner-sites">
     <% partners_sites_links = site_links %>
     <% if partners_sites_links.present? %>
-	    <p>View this partner on: <%= site_links %> (opens in new tab).</p>
-    <% else %>
-	    <p class="text-danger">
-        This partner does not appear on any PlaceCal sites. It could be missing a partnership tag, or based in a location that falls outside of any site's neighbourhoods. Contact your PlaceCal organiser or <a href='mailto:support@placecal.org'>support@placecal.org</a> to help fix this.</p>
+      <tr>
+        <th scope="row">Sites</th>
+        <td id='partner-sites'>
+          <% if partners_sites_links.present? %>
+            <%= site_links %> (opens in new tab)
+          <% else %>
+              <p class="text-danger">
+              This partner does not appear on any PlaceCal sites. It could be missing a partnership tag, or based in a location that falls outside of any site's neighbourhoods. Contact your PlaceCal organiser or <a href='mailto:support@placecal.org'>support@placecal.org</a> to help fix this.
+              </p>
+          <% end %>
+        </td>
+      </tr>
     <% end %>
-</span>
+  </tbody>
+</table>
 
 <br>
 

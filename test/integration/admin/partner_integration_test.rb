@@ -43,7 +43,7 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'title', text: "Editing #{@partner.name} | PlaceCal Admin"
-    assert_select 'h1', text: "Edit Partner: #{@partner.name}"
+    assert_select 'h1', text: "Edit Partner: #{@partner.name}\n    (ID: #{@partner.id})"
 
     assert_select 'h2', text: 'Basic Information'
     assert_select 'label', text: 'Name *'
