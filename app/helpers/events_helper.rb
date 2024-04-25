@@ -37,14 +37,10 @@ module EventsHelper
   end
 
   def next_url(next_event, period, sort, repeating)
-    # "/#{path}/#{next_event.dtstart.year}/#{next_event.dtstart.month}/#{next_event.dtstart.day}#{url_suffix}#paginator"
     opts = []
     opts << "period=#{period}"
     opts << "sort=#{sort}" if sort
     opts << "repeating=#{repeating}" if repeating
-
-    # http://climatejustice.lvh.me:3000/events/2024/5/15[%22period=day%22,
-
     opts = "?#{opts.join('&')}" if opts.any?
     "/events/#{next_event.dtstart.year}/#{next_event.dtstart.month}/#{next_event.dtstart.day}#{opts}#paginator"
   end
