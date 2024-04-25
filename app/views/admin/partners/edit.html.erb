@@ -16,14 +16,10 @@
 <span id="partner-sites">
     <% partners_sites_links = site_links %>
     <% if partners_sites_links.present? %>
-	<p>View this partner on: <%= site_links %> (opens in new tab).</p>
+	    <p>View this partner on: <%= site_links %> (opens in new tab).</p>
     <% else %>
-	<p class="text-danger">This partner does not appear on any sites. This usually means one of two things:</p>
-	<ul>
-	    <li>The address is outside any current PlaceCal instance's range due to where actual ward boundaries happen to fall. Please contact your PlaceCal organiser if this is the case.</li>
-	    <li>It is inside a PlaceCal range, but you forgot to add a tag. Resave this partner with the appropriate tag.</li>
-	    <li>If neither of these are the case, please contact <a href='mailto:support@placecal.org'>support@placecal.org</a> with the link to this page.</li>
-	</ul>
+	    <p class="text-danger">
+        This partner does not appear on any PlaceCal sites. It could be missing a partnership tag, or based in a location that falls outside of any site's neighbourhoods. Contact your PlaceCal organiser or <a href='mailto:support@placecal.org'>support@placecal.org</a> to help fix this.</p>
     <% end %>
 </span>
 
