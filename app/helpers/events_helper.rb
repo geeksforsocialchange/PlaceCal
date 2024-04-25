@@ -26,7 +26,7 @@ module EventsHelper
               online_address.url,
               class: 'btn btn-primary').html_safe
     elsif @event.publisher_url.blank?
-      link_to('Visit the webpage for this stream',
+      link_to('Visit the webpage for this event',
               online_address.url,
               class: 'btn btn-primary').html_safe
     end
