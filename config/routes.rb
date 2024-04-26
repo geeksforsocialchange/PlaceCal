@@ -67,7 +67,7 @@ Rails.application.routes.draw do
 
   # Events
   resources :events, only: %i[index show]
-  get '/events/:year/:month/:day' => 'events#index', constraints: ymd
+  get '/events/:year/:month/:day' => 'events#index', constraints: ymd, as: :events_by_date
 
   # Partners
   resources :partners, only: %i[index show]
