@@ -105,34 +105,6 @@ class Address < ApplicationRecord
   end
 
   class << self
-    # location - The raw location field
-    # components - Array containing parts of an event's location field, excluding the postcode.
-    def search(_location, components, postcode)
-      return nil if components.empty?
-
-      # try by street name string match
-      address = Address.find_by('lower(street_address) IN (?)', components.map(&:downcase))
-      return address if address
-
-      ukpc = UKPostcode.parse(postcode.to_s)
-
-      if ukpc.full_valid?
-        address = Address.find_by(postcode: ukpc.to_s)
-        return address if address
-      end
-
-      begin
-        # now just create one
-        Address.build_from_components(components, postcode)
-      rescue ActiveRecord::RecordNotFound
-        # This 'solution' makes it so if an address is provided to us that
-        # does not map cleanly on to our neighbourhood table then we simply
-        # consider that a failed look up. In practice we should do more to
-        # normalize data both coming from Postcodes.io and our UK government
-        # ward dataset
-      end
-    end
-
     def build_from_components(components, postcode)
       return if components.blank?
 
@@ -142,7 +114,7 @@ class Address < ApplicationRecord
         street_address3: components[2]&.strip,
         postcode: postcode
       )
-      address if address.save
+      address.save ? address : nil
     end
   end
 end

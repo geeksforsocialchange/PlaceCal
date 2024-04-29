@@ -42,8 +42,8 @@ module Admin
       authorize @calendar
 
       if @calendar.save
-        flash[:success] = 'Successfully created new calendar'
         redirect_to edit_admin_calendar_path(@calendar)
+        flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
         flash.now[:danger] = 'Calendar did not save'
         render 'new', status: :unprocessable_entity
@@ -74,10 +74,8 @@ module Admin
     end
 
     def import
-      date = Time.zone.parse(params[:starting_from])
       force_import = true
-      # CalendarImporterJob.perform_now @calendar.id, date, force_import
-      @calendar.queue_for_import! force_import, date
+      @calendar.queue_for_import! force_import
 
       flash[:success] = 'Calendar added to the import queue'
       redirect_to edit_admin_calendar_path(@calendar)
@@ -109,7 +107,8 @@ module Admin
         :importer_mode,
         :public_contact_name,
         :public_contact_phone,
-        :public_contact_email
+        :public_contact_email,
+        :checksum_updated_at
       )
     end
   end

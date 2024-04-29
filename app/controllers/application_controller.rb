@@ -52,18 +52,16 @@ class ApplicationController < ActionController::Base
 
     events = Event.all
 
-    if site
-      events = events.for_site(site)
-      events = events.with_tags(site.tags) if site.tags.any?
-    end
-
+    events = events.for_site(site) if site
     events = events.in_place(place) if place
     events = events.by_partner(partner) if partner
     events = events.by_partner_or_place(partner_or_place) if partner_or_place
     events = events.one_off_events_only if repeating == 'off'
     events = events.one_off_events_first if repeating == 'last'
     events =
-      if period == 'week'
+      if period == 'future'
+        events.future(@today).includes(:place)
+      elsif period == 'week'
         events.find_by_week(@current_day).includes(:place)
       else
         events.find_by_day(@current_day).includes(:place)

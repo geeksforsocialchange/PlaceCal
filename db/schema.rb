@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_21_160911) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_22_092628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_21_160911) do
     t.string "calendar_state", default: "idle"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
+    t.datetime "checksum_updated_at"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
   end
@@ -236,6 +237,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_21_160911) do
     t.integer "hidden_blame_id"
     t.string "hidden_reason_html"
     t.string "instagram_handle"
+    t.boolean "can_be_assigned_events", default: false
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end

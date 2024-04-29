@@ -204,14 +204,14 @@ class PartnerTest < ActiveSupport::TestCase
     partner = create(:partner)
     assert_predicate partner, :valid?
 
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 1')
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 2')
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 3')
-    partner.tags << create(:tag, type: 'Category', name: 'Category Tag 4')
+    partner.categories << create(:category)
+    partner.categories << create(:category)
+    partner.categories << create(:category)
+    partner.categories << create(:category)
     partner.save
 
-    problems = partner.errors[:base]
-    assert_equal 'Partner.tags can contain a maximum of 3 Category tags', problems.first
+    problems = partner.errors[:categories]
+    assert_equal 'Partners can have a maximum of 3 Category tags', problems.first
   end
 
   test 'partner has "Category" single table inheritance' do
@@ -508,5 +508,34 @@ class PartnerTest < ActiveSupport::TestCase
     other_citizen.neighbourhoods << other_neighbourhood
 
     assert partner.warn_user_clear_address?(other_citizen)
+  end
+
+  test '#self.find_from_event_address does not return partner with matching name and postcode unless events can be assigned' do
+    partner = create(:moss_side_partner)
+    address = create(:moss_side_address, street_address: partner.name)
+    found_partner = Partner.find_from_event_address(address)
+
+    assert_not found_partner
+  end
+
+  test '#self.find_from_event_address does not return partner if events can be assigned but name or postcode do not match' do
+    partner = create(:moss_side_partner, can_be_assigned_events: true)
+    address_with_right_postcode_wrong_name = create(:moss_side_address)
+    address_with_wrong_postcode_right_name = create(:address, street_address: partner.name)
+
+    found_partner_a = Partner.find_from_event_address(address_with_right_postcode_wrong_name)
+    found_partner_b = Partner.find_from_event_address(address_with_wrong_postcode_right_name)
+
+    assert_not found_partner_a
+    assert_not found_partner_b
+  end
+
+  test '#self.find_from_event_address returns partner with matching name and postcode if events can be assigned' do
+    partner = create(:moss_side_partner, can_be_assigned_events: true)
+    address = create(:moss_side_address, street_address: partner.name)
+    found_partner = Partner.find_from_event_address(address)
+
+    assert found_partner
+    assert_equal(found_partner.address.postcode, address.postcode)
   end
 end

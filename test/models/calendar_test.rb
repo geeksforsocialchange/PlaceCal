@@ -111,19 +111,20 @@ class CalendarTest < ActiveSupport::TestCase
   end
 
   test 'notices get counted when saved' do
-    VCR.use_cassette(:import_test_calendar) do
-      messages = %w[
-        alpha
-        beta
-        cappa
-      ]
-
-      calendar = build(:calendar)
-      calendar.notices = messages
-      calendar.save!
-
-      assert_equal 3, calendar.notice_count
+    calendar = VCR.use_cassette(:import_test_calendar) do
+      create(:calendar)
     end
+
+    messages = %w[
+      alpha
+      beta
+      cappa
+    ]
+
+    calendar.notices = messages
+    calendar.save!
+
+    assert_equal 3, calendar.notice_count
   end
 
   test 'notices are not counted if notices have not changed value' do
@@ -134,8 +135,9 @@ class CalendarTest < ActiveSupport::TestCase
         cappa
       ]
 
-      calendar = create(:calendar, notices: messages)
+      calendar = create(:calendar)
 
+      calendar.notices = messages
       calendar.name = 'A new name'
       calendar.save!
 
@@ -160,7 +162,7 @@ class CalendarTest < ActiveSupport::TestCase
 
       # flag_complete_import_job
       calendar.calendar_state = :in_worker
-      calendar.flag_complete_import_job! [], 123_456, 'null'
+      calendar.flag_complete_import_job! [],  'null'
       assert_equal today, calendar.updated_at
 
       # flag_bad_source
@@ -231,5 +233,34 @@ class CalendarTest < ActiveSupport::TestCase
     # only calendars with partners that appear on the site appear on the site
     assert_equal([calendar_in_partnership_site], partnership_site_calendars)
     assert_equal([calendar_in_neighbourhood_site, calendar_in_partnership_site], neighbourhood_site_calendars.order(:name))
+  end
+
+  test 'importer status fields are cleared if source changes' do
+    CalendarImporter::CalendarImporter.stub(:new, true) do
+      calendar = FactoryBot.create(:calendar)
+
+      assert_predicate calendar, :valid?
+      calendar.critical_error = 'A problem'
+      calendar.notices = %w[alpha beta cappa]
+      calendar.last_import_at = Date.new(1990, 1, 2)
+      calendar.name = 'A new name'
+      calendar.save!
+
+      # should persist when source not modified
+      calendar.reload
+      assert_equal 'A problem', calendar.critical_error
+      assert_equal %w[alpha beta cappa], calendar.notices
+      assert_equal Date.new(1990, 1, 2), calendar.last_import_at
+
+      # modify source
+      calendar.source = 'https://a-new-source.com'
+      calendar.save!
+
+      # should be cleared
+      calendar.reload
+      assert_predicate calendar.critical_error, :blank?
+      assert_predicate calendar.notices, :blank?
+      assert_predicate calendar.last_import_at, :blank?
+    end
   end
 end

@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 class CalendarImporter::EventResolver
-  WARNING1_MSG = 'Could not determine where this event is. Add an address to the location field of the source ' \
-                 'calendar, or choose another import strategy with a default location'
-  WARNING2_MSG = 'Could not determine where this event is. A default location is set but the importer is set '  \
-                 'to ignore this. Add an address to the location field of the source calendar, or choose '      \
-                 'another import strategy with a default location.'
-  INFO1_MSG = 'This location was not recognised by PlaceCal, woulfd you like to add it?'
-
   attr_reader :data, :uid, :notices, :calendar
 
   class Problem < StandardError; end
@@ -26,10 +19,6 @@ class CalendarImporter::EventResolver
 
   def has_no_occurences?
     occurences.count.zero?
-  end
-
-  def is_address_missing?
-    data.address_id.nil?
   end
 
   def occurences
@@ -59,7 +48,7 @@ class CalendarImporter::EventResolver
 
     if strategies.key?(calendar.strategy)
       strategy = strategies[calendar.strategy]
-      place, address = method(strategy).call(calendar.place)
+      partner, address = method(strategy).call(calendar.place)
     else
       # this shouldn't happen and should be fatal to the entire job
       raise "Calendar import strategy unknown! (ID=#{calendar.id}, strategy=#{calendar.strategy})"
@@ -67,124 +56,62 @@ class CalendarImporter::EventResolver
 
     # NOTE: In this context, data is a calendar object. But this doesn't make sense because
     #       determine_online_location sees a CalendarImporter::Events::IcsEvent object?
-    data.place_id = place.id if place
+    data.place_id = partner.id if partner
     data.address_id = address&.id
     data.partner_id = calendar.partner_id
   end
 
-  def event_strategy(place, address: nil)
+  def event_strategy(partner, address: nil)
     if data.has_location?
-      # place = 'attempt to match location'
-      # address = 'calendar.place.address || location'
-
-      # try to find the place
-      place = Partner.fuzzy_find_by_location(event_location_components)
-
-      # try to use that address
-      address = place&.address
-
-      # if no place, try to find an address
-      # (This only executes if there is no place given)
-      address ||= Address.search(data.location, event_location_components, data.postcode)
-
-      # if we have an address, try to use the place that address points to
-      # (Only runs if the fuzzy find and calendar.place are both nil)
-      place ||= address&.partners&.first
-
-      # NOTE: What happens if address has zero partners and the earlier assignments fail?
-      #       'place' is nil in this instance
-      # NOTE: Address.search can also return Nil if there are no event_location_components, or
-      #       if the address failed to save
-      # Both of these will cause the event to fail validation with "No place or address could be created/found (etc)"
-
-    elsif place.present?
-      raise Problem, WARNING2_MSG
-    end # no location
-    # No longer an error if place is not present -- see #1198
-    # Passthrough here
-
-    [place, address]
-  end
-
-  def event_override_strategy(place, address: nil)
-    if data.has_location?
-      # place = 'attempt to match location'
-      # address = 'calendar.place.address || location'
-      place = Partner.fuzzy_find_by_location(event_location_components)
-      address = place&.address
-      address ||= Address.search(data.location, event_location_components, data.postcode)
-
-      raise Problem, INFO1_MSG if place.nil? && address.nil?
-
-      # NOTE: Either one of 'place' or 'address' is unset here but not both
-      # NOTE: place is possibly unset here - fuzzy_find_by_location can be nil
-      # NOTE: address is possibly unset here - place might be nil or Address.search can return nil
-      #       In either case we will just drop this event on the floor
-    elsif place.present? # no location
-      address = place.address
-    # place = 'calendar.place'
-    # address = 'calendar.place.address'
-    # place = calendar.place
-
-    else # no place, no location
-      raise Problem, WARNING1_MSG
+      address = Address.build_from_components(event_location_components, data.postcode)
+      partner = nil
     end
-
-    [place, address]
+    [partner, address]
   end
 
-  def place_strategy(_place, _address: nil)
-    # Regardless of if the data has a location, we act the same
-    # We assign address to the place's address if possible, and otherwise we exit
+  def event_override_strategy(partner, address: nil)
+    if data.has_location?
+      address = Address.build_from_components(
+        event_location_components,
+        data.postcode
+      )
+    end
+    if address.nil?
+      address = partner&.address
+    else
+      partner = nil
+    end
+    [partner, address]
+  end
 
-    # This should theoretically never run ! :) (At least, it's not accounted for in Kim's table)
-    message = <<-TEXT
-    You have selected the "Default Location" strategy to set events on this calendar's locations,
-    but the "Default Location" field has not been set.
-    Please edit the calendar and set a Default Location, or choose another strategy.
-    TEXT
-
-    raise Problem, message if calendar.place.nil?
-
+  def place_strategy(_partner, _address: nil)
     [calendar.place, calendar.place.address]
-
     # NOTE: calendar.place can be nil, in which case this event will be dropped on the floor
     #       (Likely what is happening with Velociposse?)
   end
 
-  def room_number_strategy(place, address: nil)
+  def room_number_strategy(partner, address: nil)
     if data.has_location?
-      if place.present?
-        # place = 'calendar.place'
-        # address = '#{location}, place.address'
-
-        # xx place = calendar.place.address
-        new_address = place.address.dup
+      if partner.present?
+        new_address = partner.address.dup
         address = new_address.prepend_room_number(data.location)
         address.save
-
-      else # no place, yes location
+      else # no partner, yes location
         raise Problem, 'N/A'
       end
-
-    elsif place.present? # no location
-      address = place.address
-    # place = 'calendar.place'
-    # address = 'calendar.place.address'
-    # xx place = calendar.place.address
-
+    elsif partner.present? # no location
+      address = partner.address
     else # no place, no location
       raise Problem, 'N/A'
     end
-
-    [place, address]
+    [partner, address]
   end
 
-  def no_location_strategy(_place, _address: nil)
+  def no_location_strategy(_partner, _address: nil)
     [nil, nil]
   end
 
-  def online_only_strategy(_place, _address: nil)
+  def online_only_strategy(_partner, _address: nil)
     [nil, nil]
   end
 
@@ -217,10 +144,6 @@ class CalendarImporter::EventResolver
       attributes = data.attributes.merge(event_time)
       unless event.update(attributes)
         notices << event.errors.full_messages.join(', ')
-      end
-
-      if event.address_id.blank? && calendar.strategy == 'event'
-        notices << "No place or address could be created or found for the event location: #{event.raw_location_from_source}"
       end
     end
   end

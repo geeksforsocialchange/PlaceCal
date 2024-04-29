@@ -14,6 +14,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
       @neighbourhood_admin.neighbourhoods << @neighbourhood
 
       @calendar = create(:calendar, partner: @partner, place: @partner)
+      @calendar.update!(last_import_at: 1.month.ago)
 
       @citizen = create(:user)
 
@@ -118,7 +119,7 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
 
     suppress_stdout do # The importer uses stdout to tell us progress when we run it locally. Avoid this in tests
       VCR.use_cassette('Zion Centre Guide') do
-        post import_admin_calendar_path(calendar), params: { starting_from: Date.today }
+        post import_admin_calendar_path(calendar)
         assert_redirected_to edit_admin_calendar_path(calendar)
       end
     end
@@ -143,6 +144,30 @@ class Admin::CalendarControllerTest < ActionDispatch::IntegrationTest
     sign_in @root
 
     get edit_admin_calendar_path(calendar)
+    assert_predicate response, :successful?
+
+    assert_select 'ul#calendar-notices li', count: 3
+  end
+
+  test 'reporting calendar notices on admin show page' do
+    calendar = VCR.use_cassette(:calendar_for_outlook) do
+      create(:calendar,
+             source: 'https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics',
+             partner: @partner,
+             place: @partner)
+    end
+
+    calendar.calendar_state = 'idle'
+    calendar.notices = [
+      'Notice 1',
+      'Notice 2',
+      'Notice 3'
+    ]
+    calendar.save!
+
+    sign_in @root
+
+    get admin_calendar_path(calendar)
     assert_predicate response, :successful?
 
     assert_select 'ul#calendar-notices li', count: 3

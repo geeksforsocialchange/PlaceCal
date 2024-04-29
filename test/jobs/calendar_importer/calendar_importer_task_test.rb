@@ -70,6 +70,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
   test 'can import Eventbrite' do
     VCR.use_cassette(:eventbrite_events, allow_playback_repeats: true) do
+      create(:eventbrite_valid_address_hood)
       calendar = create(
         :calendar,
         name: 'Eventbrite calendar',
@@ -86,7 +87,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'eventbrite', calendar.importer_used
 
       created_events = calendar.events
-      assert_equal 3, created_events.count
+      assert_equal 17, created_events.count
     end
   end
 
@@ -134,6 +135,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
   test 'can import from generic ld+json source' do
     VCR.use_cassette(:heart_of_torbay, allow_playback_repeats: true) do
+      create(:ldjson_valid_address_hood)
       calendar = create(
         :calendar,
         name: 'Generic LD+JSON Calendar',
@@ -196,7 +198,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
         :calendar,
         name: 'Generic iCal Calendar',
         source: 'https://www.birchcommunitycentre.co.uk/events.ics',
-        strategy: 'event'
+        strategy: 'place'
       )
 
       calendar.update calendar_state: 'in_worker'
@@ -208,7 +210,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'ical', calendar.importer_used
 
       created_events = calendar.events
-      assert_equal 29, created_events.count # (at time of recording)
+      assert_equal 50, created_events.count # (at time of recording)
     end
   end
 
@@ -218,7 +220,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
         :calendar,
         name: 'Generic webcal Calendar',
         source: 'webcal://p14-calendars.icloud.com/published/2/MTQ2NzIwNzk1NDE0NjcyMM7jQu_vEJtKcvFoPn3S2FrA6WGkdMmCuNCcP44HV1RjEsev_l3T5lO94XkBevJwb5wd-ayWykRsarVoSJrwZvc',
-        strategy: 'event'
+        strategy: 'place'
       )
 
       calendar.update calendar_state: 'in_worker'
@@ -231,6 +233,34 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
 
       created_events = calendar.events
       assert_equal 52, created_events.count # (at time of recording)
+    end
+  end
+
+  test 'checksum date does not change on each import' do
+    VCR.use_cassette('Placecal Hulme & Moss Side Google Cal', allow_playback_repeats: true) do
+      calendar = create(
+        :calendar,
+        name: 'Placecal Hulme & Moss Side',
+        source: 'https://calendar.google.com/calendar/ical/alliscalm.net_u2ktkhtig0b7u9bd9j8re3af2k%40group.calendar.google.com/public/basic.ics',
+        strategy: 'place'
+      )
+
+      calendar.update calendar_state: 'in_worker'
+
+      importer_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+      importer_task.run
+      assert_equal 'idle', calendar.calendar_state
+      checksum_date = calendar.checksum_updated_at
+
+      Timecop.freeze(16.days.from_now) do
+        calendar.update calendar_state: 'in_worker'
+        future_task = CalendarImporter::CalendarImporterTask.new(calendar, Date.today, true)
+        future_task.run
+        assert_equal 'idle', calendar.calendar_state
+      end
+
+      assert_not_equal calendar.last_import_at, calendar.checksum_updated_at
+      assert_equal checksum_date, calendar.checksum_updated_at
     end
   end
 end

@@ -14,22 +14,16 @@ class EventsImportTest < ActiveSupport::TestCase
 
       # Identify partner by partner.name == event_location.street_address
       # (Automatically created address will not match event location.)
-      partner1 = create(:partner, name: 'Z-aRtS')
-
-      # Identify partner by partner.address.street_address == event_location.street_address
-      # (Other automatically created fields will not match event location.)
-      partner2 = create(:partner)
-      partner2.address.street_address = 'MartIn HarriS cEntre for Music and Drama'
-      partner2.address.save!
+      partner = create(:partner, name: 'Z-aRtS')
+      partner.address.postcode = 'M15 5ZA'
+      partner.save!
 
       from_date = Date.new(2018, 11, 20)
       force_import = false
       CalendarImporter::CalendarImporterTask.new(calendar, from_date, force_import).run
 
-      # pp Event.all
-      # pp Address.all
-
       # Did all events import?
+
       assert_equal 11, Event.count
 
       # Each partner created above will automatically create one address.
@@ -39,8 +33,7 @@ class EventsImportTest < ActiveSupport::TestCase
       # assert_equal 3, Address.count
 
       # Were the correct number of events found at each partner location?
-      assert_equal 2, Event.where(place: partner1).count
-      assert_equal 1, Event.where(place: partner2).count
+      assert_equal 2, Event.joins(:address).where('lower(addresses.street_address) = (?)', partner.name.downcase).count
     end
   end
 

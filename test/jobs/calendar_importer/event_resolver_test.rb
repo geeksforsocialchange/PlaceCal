@@ -11,6 +11,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     :rrule,
     :last_modified,
     :custom_properties,
+    :url,
     # Fixes bug where entire argument to .new ended up under the uid value lmao
     # Who knew our importer was *that* robust?!
     keyword_init: true
@@ -149,7 +150,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     @fake_ics_event[:description] = "Join us on jitsi: #{jitsi_link} words words words"
     ics_event_data = CalendarImporter::Events::IcsEvent.new(@fake_ics_event, @start_date, @end_date)
 
-    calendar = make_calendar_for_strategy('event')
+    calendar = make_calendar_for_strategy('place')
 
     resolver = CalendarImporter::EventResolver.new(ics_event_data, calendar, [], @start_date)
     resolver.determine_online_location
@@ -254,7 +255,7 @@ class EventsResolverTest < ActiveSupport::TestCase
     assert_equal(["Summary can't be blank"], notices)
   end
 
-  test 'generate notices when missing address' do
+  test 'still imports when missing address' do
     calendar = make_calendar_for_strategy('no_location')
     calendar.strategy = 'event'
 
@@ -262,10 +263,8 @@ class EventsResolverTest < ActiveSupport::TestCase
     from_date = @start_date
 
     resolver = CalendarImporter::EventResolver.new(@ics_event_data, calendar, notices, from_date)
-    resolver.determine_location_for_strategy
+    place, address = resolver.determine_location_for_strategy
 
-    resolver.save_all_occurences
-
-    assert_equal(['No place or address could be created or found for the event location: A location'], notices)
+    assert_nil address
   end
 end

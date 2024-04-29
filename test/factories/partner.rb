@@ -15,6 +15,7 @@ FactoryBot.define do
     partner_phone { '0161 0000001' }
 
     hidden { false }
+    can_be_assigned_events { false }
 
     summary { 'A cool garden centre' }
     description { 'Our cool garden centre is a very cool and neat garden centre. Come to our events. Now.' }

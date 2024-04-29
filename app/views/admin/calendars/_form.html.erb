@@ -1,13 +1,11 @@
-<% if @calendar.critical_error %>
-  <div class="alert alert-warning" role="alert">
-    Error: <%= @calendar.critical_error %>
-  </div>
-<% end %>
-
-<p><%= link_to "View this calendar",
-                admin_calendar_path(@calendar.id),
-                class: "btn btn-sm btn-primary" unless @calendar.new_record? %>
+<p>
+  <%= link_to "View this calendar",
+      admin_calendar_path(@calendar.id),
+      class: "btn btn-sm btn-primary" unless @calendar.new_record? %>
 </p>
+
+<%= render('importer_overview', calendar: @calendar) %>
+<hr>
 
 <div id="js-calendar-form">
   <%= simple_form_for [:admin, @calendar] do |f| %>
@@ -20,7 +18,7 @@
                           collection: options_for_organiser,
                           selected: (@partner&.id || @calendar.partner_id).to_s,
                           input_html: { class: 'form-control', data: {controller: "select2"} },
-                          hint: 'What group organises these events?' %>
+                          hint: 'Which group organises these events?' %>
 
         <%= f.input :name, hint: 'A simple description to help rememember what this calendar is' %>
         <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: "The source URL for your calendar feed. See the #{link_to 'PlaceCal Handbook', 'https://handbook.placecal.org/admin-handbook'} if you need help.".html_safe %>
@@ -47,20 +45,22 @@
       </div>
       <div class="col-md-6">
         <h3>Location</h3>
-        <%= f.input :strategy,
-                    as: :radio_buttons,
-                    label_method: ->(val){strategy_label(val)},
-                    hint: 'How should PlaceCal decide where events on this calendar are held?',
-                    input_html: { 'v-model': 'strategy', 'v-on:change': "updateLocation" } %>
         <div v-if="locationVisible">
           <%= f.association :place,
                             label: 'Default location',
                             collection: options_for_location,
                             input_html: { class: 'form-control', data: {controller: "select2"} } %>
         </div>
+        <%= f.input :strategy,
+                    as: :radio_buttons,
+                    label: 'Where should location information for this calendar come from?',
+                    label_method: ->(val){strategy_label(val)},
+                    input_html: { 'v-model': 'strategy', 'v-on:change': "updateLocation" } %>
       </div>
     </div>
 
+    <hr>
+    
     <h3 class="mt-5">Public Contact Information</h3>
     <div class="row">
       <div class="col-md-6">
@@ -76,12 +76,10 @@
       </div>
     </div>
 
-    <br><br>
+    <hr>
     <%= f.button :submit, class: "btn btn-primary mr-3" %>
     <% unless @calendar.new_record? %>
       <%= link_to "Destroy Calendar", admin_calendar_path(@calendar), method: :delete, class: "btn btn-danger" %>
     <% end %>
   <% end %>
 </div>
-
-<%= render('import') unless @calendar.new_record? %>

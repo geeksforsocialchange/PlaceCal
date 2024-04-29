@@ -1,0 +1,74 @@
+<% unless calendar.new_record? %>
+  <% retry_button = nil %>
+  <hr>
+  <h3>Import status</h3>
+
+  <% if calendar.checksum_updated_at.present? && calendar.last_import_at.present? %>
+    <% if calendar.checksum_updated_at < 6.month.ago || calendar.last_import_at < 6.month.ago %>
+      <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Potential stale calender</h4>
+        <p>Is this calender still active? It has not been updated in over 6 months</p>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% if calendar.calendar_state.idle? %>
+    <% retry_button = :idle %>
+    <h4><span class="badge badge-success">success</span></h4>
+  <% end %>
+
+  <% if calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
+    <h4><span class="badge badge-primary">loading</span></h4>
+    <p>Please check back in a few minutes</p>
+  <% end %>
+
+  <% if calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
+    <% retry_button = :error %>
+
+    <h4><span class="badge badge-danger">error</span></h4>
+
+    <div class="alert alert-warning" role="alert">
+      Error: <%= calendar.critical_error %>
+    </div>
+  <% end %>
+
+
+  <% if calendar.checksum_updated_at.present? %>
+    <p>
+    <strong>Source data last changed <%= time_ago_in_words(calendar.checksum_updated_at) %> ago</strong> (<%= calendar.checksum_updated_at %>)
+    </p>
+  <% end %>
+
+  <% if calendar.last_import_at.present? %>
+    <p>
+    <strong>Last import ran <%= time_ago_in_words(calendar.last_import_at) %> ago</strong> (<%= calendar.last_import_at %>)
+    </p>
+  <% end %>
+
+  <% if calendar.notices.present? %>
+    <% retry_button = :error %>
+
+    <h4>Notices</h4>
+    <p>The following events could not be imported due to invalid data: </p>
+
+    <ul id="calendar-notices">
+      <% calendar.notices.tally.each do |text, count| %>
+        <li><%= text %> <% if count > 1 %>(<%= count %> times)<% end %></li>
+      <% end %>
+    </ul>
+    <p>Please check your calendar is set up correctly and try again.</p>
+  <% end %>
+
+  <% if retry_button %>
+    <%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
+      <% if retry_button == :idle %>
+        <%= f.submit 'Re-import now', class: 'btn btn-primary' %>
+      <% elsif retry_button == :error %>
+        <%= f.submit 'Retry', class: 'btn btn-danger' %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+

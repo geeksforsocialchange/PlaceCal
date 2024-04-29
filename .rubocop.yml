@@ -61,8 +61,15 @@ Rails/ActionOrder:
 Metrics/ClassLength:
   Exclude:
     - "test/**/*.rb"
+    - "app/models/partner.rb"
 
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - app/controllers/application_controller.rb
 
+Metrics/PerceivedComplexity:
+  Exclude:
+    - app/controllers/application_controller.rb
 
 Rails/RootPathnameMethods:
   Enabled: false

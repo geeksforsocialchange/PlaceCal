@@ -16,10 +16,13 @@ class CalendarStateTest < ActiveSupport::TestCase
   test 'can be pushed into queue' do
     VCR.use_cassette(:import_test_calendar) do
       assert_enqueued_jobs 0
-      calendar = create(:calendar)
+      calendar = create(:calendar, notices: %w[one two three])
       calendar.queue_for_import! false, Date.new(2000, 1, 1)
       assert_predicate calendar.calendar_state, :in_queue?
       assert_enqueued_jobs 1
+
+      # clears notices
+      assert_nil calendar.notices
     end
   end
 
@@ -39,9 +42,12 @@ class CalendarStateTest < ActiveSupport::TestCase
 
   test 'can move into working state' do
     VCR.use_cassette(:import_test_calendar) do
-      calendar = create(:calendar, calendar_state: :in_queue, source: SOURCE_URL)
+      calendar = create(:calendar, calendar_state: :in_queue, source: SOURCE_URL, notices: %w[one two three])
       calendar.flag_start_import_job!
       assert_predicate calendar.calendar_state, :in_worker?
+
+      # clears notices
+      assert_nil calendar.notices
     end
   end
 
@@ -49,7 +55,7 @@ class CalendarStateTest < ActiveSupport::TestCase
   test 'can move into idle state' do
     VCR.use_cassette(:import_test_calendar) do
       calendar = create(:calendar, calendar_state: :in_worker, source: SOURCE_URL)
-      calendar.flag_complete_import_job! [], 0, 'ical'
+      calendar.flag_complete_import_job! [], 'ical'
       assert_predicate calendar.calendar_state, :idle?
       # are we close enough?
       # deal with weird database encoding serialisations
@@ -103,7 +109,8 @@ class CalendarStateTest < ActiveSupport::TestCase
   # error'd
   test 'can be tested for' do
     VCR.use_cassette(:import_test_calendar) do
-      calendar = create(:calendar, calendar_state: :error)
+      calendar = create(:calendar)
+      calendar.calendar_state = :error
       assert_predicate calendar.calendar_state, :error?
     end
   end

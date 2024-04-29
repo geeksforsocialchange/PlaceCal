@@ -1,13 +1,14 @@
 <article class="home margin">
   <div class="card card--plainer">
     <h1 class="center fc-primary">Forgot your password?</h1>
-
+    <p class="center">
+      Enter the email address associated with your PlaceCal account and we will send you an email with password reset instructions.
+    </p>
+    <br>
     <div class="centre form--login">
       <%= form_for(resource, as: resource_name,
                             url: password_path(resource_name),
                             html: { method: :post, class: 'form', data: { turbo: 'false' } }) do |f| %>
-
-      <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="form__field">
         <%= f.label :email %>
@@ -15,7 +16,7 @@
       </div>
       <br>
       <div class="actions">
-        <%= f.submit "Send me reset password instructions", class: "btn btn--big btn--home-3" %>
+        <%= f.submit "Submit", class: "btn btn--big btn--home-3" %>
       </div>
       <% end %>
       <br>

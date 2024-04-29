@@ -154,4 +154,69 @@ class EventTest < ActiveSupport::TestCase
       assert_equal events.first.dtstart, tomorrows_event.dtstart
     end
   end
+
+  test 'events.for_site for neighbourhood site returns events belonging to site partners AND happening at site partners locations' do
+    site_address = create(:moss_side_address)
+
+    site = create(:site_local)
+    site.neighbourhoods << site_address.neighbourhood
+    site.save!
+
+    partner = create(:partner)
+    partner.address.neighbourhood = site_address.neighbourhood
+    partner.save!
+
+    partner_outside_site = create(:partner, address: create(:ashton_address))
+
+    event_not_on_site = create(:event, dtstart: Time.now, calendar: @calendar)
+
+    partner_creator_event = create(:event, dtstart: Time.now, calendar: @calendar)
+    partner_creator_event.partner = partner
+    partner_creator_event.save!
+
+    event_in_neighbourhood = create(:event, dtstart: Time.now, calendar: @calendar)
+    event_in_neighbourhood.address = create(:address, postcode: site_address.postcode)
+    event_in_neighbourhood.partner = partner_outside_site
+    event_in_neighbourhood.save!
+
+    assert_equal 3, Event.count
+    assert_equal [partner_creator_event, event_in_neighbourhood].sort, Event.for_site(site).sort
+  end
+
+  test 'events.for_site for partnership site returns events belonging to site partners AND happening at site partners locations' do
+    site_address = create(:moss_side_address)
+
+    tag = create(:partnership)
+    site = create(:site)
+    site.neighbourhoods << site_address.neighbourhood
+    site.tags << tag
+    site.save!
+
+    partner = create(:partner)
+    partner.address = site_address
+    partner.address.neighbourhood = site_address.neighbourhood
+    partner.tags << tag
+    partner.save!
+
+    partner_outside_site = create(:partner, address: create(:ashton_address))
+
+    event_not_on_site = create(:event, dtstart: Time.now, calendar: @calendar)
+
+    partner_creator_event = create(:event, dtstart: Time.now, calendar: @calendar)
+    partner_creator_event.partner = partner
+    partner_creator_event.save!
+
+    event_in_neighbourhood = create(:event, dtstart: Time.now, calendar: @calendar)
+    event_in_neighbourhood.address = create(:address, postcode: site_address.postcode)
+    event_in_neighbourhood.partner = partner_outside_site
+    event_in_neighbourhood.save!
+
+    partner_assigned_event = create(:event, dtstart: Time.now, calendar: @calendar)
+    partner_assigned_event.address = create(:address, postcode: site_address.postcode, street_address: partner.name)
+    partner_assigned_event.partner = partner_outside_site
+    partner_assigned_event.save!
+
+    assert_equal 4, Event.count
+    assert_equal [partner_creator_event, partner_assigned_event].sort, Event.for_site(site).sort
+  end
 end

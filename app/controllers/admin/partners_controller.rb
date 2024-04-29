@@ -46,7 +46,7 @@ module Admin
         if @partner.save
           format.html do
             flash[:success] = 'Partner was successfully created.'
-            redirect_to admin_partners_path
+            redirect_to edit_admin_partner_path(@partner)
           end
 
           format.json { render :show, status: :created, location: @partner }
@@ -70,8 +70,6 @@ module Admin
       authorize @partner
 
       mutated_params = permitted_attributes(@partner)
-
-      before = @partner.hidden
 
       @partner.accessed_by_user = current_user
 
@@ -145,22 +143,6 @@ module Admin
       found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
 
       render json: { name_available: found.nil? }
-    end
-
-    def setup
-      @partner = Partner.new
-      authorize @partner
-
-      render and return unless request.post?
-
-      @partner.attributes = setup_params
-      @partner.accessed_by_user = current_user
-
-      if @partner.valid?
-        redirect_to new_admin_partner_url(partner: setup_params)
-      else
-        render 'setup', status: :unprocessable_entity
-      end
     end
 
     private

@@ -41,6 +41,13 @@ class Event < ApplicationRecord
     where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', week_start, week_end)
   }
 
+  # Find by day onwards
+  scope :future, lambda { |day|
+    day_start = day.midnight # 2024-04-01 00:00:00 +0100
+    where('dtstart >= ?',
+          day_start)
+  }
+
   # For the API eventFilter find by neighbourhood
   scope :for_neighbourhoods, lambda { |neighbourhoods|
     neighbourhood_ids = neighbourhoods.map(&:id)
@@ -54,23 +61,37 @@ class Event < ApplicationRecord
   }
 
   scope :with_tags, lambda { |tags|
-    tag_ids = tags.map(&:id)
-
     joins(:partner)
       .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
-      .where('partner_tags.tag_id in (?)', tag_ids)
+      .where(
+        'partner_tags.tag_id in (:tag_ids)',
+        tag_ids: tags.map(&:id)
+      )
   }
 
   # Filter by Site
   scope :for_site, lambda { |site|
-    site_neighbourhood_ids = site.owned_neighbourhoods.map(&:id)
+    partners = Partner.for_site(site)
 
-    joins('left join addresses on events.address_id = addresses.id')
-      .joins('left join partners on events.partner_id = partners.id')
-      .joins('left join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
-             site_neighbourhood_ids,
-             site_neighbourhood_ids)
+    if site&.tags&.any?
+      left_joins(:address)
+        .where(
+          'partner_id in (:partner_ids) OR '\
+          '(lower(addresses.street_address) in (:partner_names) AND '\
+          'lower(addresses.postcode) in (:partner_postcodes))',
+          partner_ids: partners.map(&:id),
+          partner_names: partners.map { |p| p.name.downcase },
+          partner_postcodes: partners.map(&:address).keep_if(&:present?).map { |a| a.postcode.downcase }
+        )
+    else
+      left_joins(:address)
+        .where(
+          'partner_id in (:partner_ids) OR '\
+          'addresses.neighbourhood_id in (:neighbourhoods)',
+          neighbourhoods: site.owned_neighbourhoods.map(&:id),
+          partner_ids: partners.map(&:id)
+        )
+    end
   }
 
   # Filter by Place
@@ -139,13 +160,14 @@ class Event < ApplicationRecord
   end
 
   def location
-    use_address = address || partner&.address
-    #  (address if address.present?) ||
-    #  (partner.address if partner.present?)
-
+    use_address = address || partner_at_location&.address || partner&.address
     return '' if use_address.nil?
 
     use_address.to_s
+  end
+
+  def partner_at_location
+    @partner_at_location ||= place || Partner.find_from_event_address(address)
   end
 
   # TODO: plan this out on paper, currently half finished

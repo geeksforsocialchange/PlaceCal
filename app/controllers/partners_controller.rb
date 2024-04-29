@@ -30,13 +30,6 @@ class PartnersController < ApplicationController
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)
   end
 
-  # # GET /places
-  # # GET /places.json
-  # def places_index
-  #   @places = Partner.event_hosts.for_site(current_site).order(:name)
-  #   @map = get_map_markers(@places) if @places.detect(&:address)
-  # end
-
   # GET /partners/1
   # GET /partners/1.json
   def show

@@ -14,14 +14,36 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    # Duration to view - default to day view
-    @period = params[:period].to_s || 'day'
+    # Duration to view - default to future view
+    @period = params[:period] || 'future'
     @repeating = params[:repeating] || 'on'
     @events = filter_events(@period, repeating: @repeating, site: current_site)
+    # Duration to view - default to day view if there are too many future events
+    if params[:period].to_s == '' && @events.count > 200
+      @period = 'week'
+      @events = filter_events(@period, repeating: @repeating, site: current_site)
+    end
     @title = current_site.name
     # Sort criteria
     @events = sort_events(@events, @sort)
     @multiple_days = true
+
+    @next = if params[:year].present?
+              date = begin
+                Date.new(params[:year].to_i,
+                         params[:month].to_i,
+                         params[:day].to_i)
+              rescue Date::Error
+                Time.zone.today
+              end
+              Event.for_site(current_site).future(
+                date
+              ).first
+            else
+              Event.for_site(current_site).future(
+                Time.zone.today
+              ).first
+            end
 
     respond_to do |format|
       format.html do
@@ -34,10 +56,7 @@ class EventsController < ApplicationController
       format.text
       format.ics do
         events = Event.all
-        if @site
-          events = events.for_site(@site)
-          events = events.with_tags(@site.tags) if @site.tags.any?
-        end
+        events = events.for_site(@site) if @site
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
         ics_listing = events.ical_feed
         cal = create_calendar(ics_listing)
@@ -52,8 +71,8 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    if @event.place
-      @map = get_map_markers([@event.place])
+    if @event.partner_at_location
+      @map = get_map_markers([@event.partner_at_location])
     elsif @event.address
       @map = get_map_markers([@event.address])
     end

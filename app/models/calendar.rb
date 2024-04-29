@@ -22,7 +22,10 @@ class Calendar < ApplicationRecord
 
   validate :check_source_reachable
 
+  before_save :clear_status_on_source_change
   before_save :update_notice_count
+
+  after_create :automatically_queue_calendar
 
   # Output the calendar's name when it's requested as a string
   alias_attribute :to_s, :name
@@ -31,7 +34,7 @@ class Calendar < ApplicationRecord
   # @attr [Enumerable<Symbol>] :strategy
   enumerize(
     :strategy,
-    in: %i[event place room_number event_override no_location online_only],
+    in: %i[event_override event place room_number no_location online_only],
     default: :place,
     scope: true
   )
@@ -117,6 +120,10 @@ class Calendar < ApplicationRecord
     self.notice_count = (notices || []).count if notices_changed?
   end
 
+  def automatically_queue_calendar
+    queue_for_import! false, DateTime.now
+  end
+
   #
   # calendar state mutators
   #
@@ -129,12 +136,12 @@ class Calendar < ApplicationRecord
   #   date to use as the start point
   #
   # @return nothing
-  def queue_for_import!(force_import, from_date)
+  def queue_for_import!(force_import, from_date = Time.now)
     transaction do
       return if is_busy?
 
       Calendar.record_timestamps = false
-      update! calendar_state: :in_queue
+      update! calendar_state: :in_queue, notices: nil
 
       CalendarImporterJob.perform_later id, from_date, force_import
 
@@ -151,7 +158,7 @@ class Calendar < ApplicationRecord
       return unless calendar_state.in_queue?
 
       Calendar.record_timestamps = false
-      update! calendar_state: :in_worker
+      update! calendar_state: :in_worker, notices: nil
 
     ensure
       Calendar.record_timestamps = true
@@ -167,7 +174,7 @@ class Calendar < ApplicationRecord
   # @param checksum [integer]
   #   integer checksum of retrieved source payload
   # @return nothing
-  def flag_complete_import_job!(notices, checksum, importer_used)
+  def flag_complete_import_job!(notices, importer_used)
     transaction do
       return unless calendar_state.in_worker?
 
@@ -176,12 +183,23 @@ class Calendar < ApplicationRecord
       update!(
         calendar_state: :idle,
         notices: notices,
-        last_checksum: checksum,
         last_import_at: DateTime.current,
         critical_error: nil,
         importer_used: importer_used
       )
 
+    ensure
+      Calendar.record_timestamps = true
+    end
+  end
+
+  def flag_checksum_change!(checksum)
+    transaction do
+      Calendar.record_timestamps = false
+      update!(
+        last_checksum: checksum,
+        checksum_updated_at: DateTime.current
+      )
     ensure
       Calendar.record_timestamps = true
     end
@@ -271,5 +289,13 @@ class Calendar < ApplicationRecord
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed => e
     errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
+  end
+
+  def clear_status_on_source_change
+    return unless source_changed?
+
+    self.critical_error = nil
+    self.notices = nil
+    self.last_import_at = nil
   end
 end

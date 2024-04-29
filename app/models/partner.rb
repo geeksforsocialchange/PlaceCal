@@ -51,7 +51,17 @@ class Partner < ApplicationRecord
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
-  accepts_nested_attributes_for :address, reject_if: ->(c) { c[:postcode].blank? && c[:street_address].blank? }
+  # If any of the address formfields are present we attempt to create an address
+  # this will trigger the validation
+  accepts_nested_attributes_for :address, reject_if: lambda { |c|
+    [c[:city],
+     c[:postcode],
+     c[:street_address],
+     c[:street_address2],
+     c[:street_address3]].all?(&:blank?)
+  }
+
+  validates_associated :address
 
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
@@ -91,8 +101,6 @@ class Partner < ApplicationRecord
   validates :public_email, :partner_email,
             format: { with: EMAIL_REGEX, message: 'invalid email address' },
             allow_blank: true
-
-  validates_associated :address, if: ->(p) { p.address.present? }
 
   validate :check_neighbourhood_access
 
@@ -157,12 +165,17 @@ class Partner < ApplicationRecord
     return none if site_neighbourhood_ids.empty?
 
     query
+      .visible
       .left_joins(:address, :service_areas)
       .where(
-        'NOT hidden AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
+  }
+
+  scope :visible, lambda {
+    where(hidden: false)
   }
 
   scope :for_site_with_tag, lambda { |site, tag|
@@ -205,17 +218,6 @@ class Partner < ApplicationRecord
   # only select partners that have addresses
   scope :with_address, lambda {
     where.not(address_id: nil)
-  }
-
-  # Get all Partners that have hosted an event in the last month or will host
-  # an event in the future
-  #
-  # TODO? This might be an incredibly inefficient query. If so, add a column
-  # to the Partner table, e.g. place_latest_dtstart, which can be updated on
-  # import.
-  scope :event_hosts, lambda {
-    joins('JOIN events ON events.place_id = partners.id')
-      .where('events.dtstart > ?', Date.today - 30).distinct
   }
 
   # Get all Partners that manage at least one other Partner.
@@ -372,8 +374,23 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.fuzzy_find_by_location(components)
-    Partner.find_by('lower(name) IN (?)', components.map(&:downcase))
+  def self.find_from_event_address(address)
+    address_components = [
+      address&.street_address || '',
+      address&.street_address2 || '',
+      address&.street_address3 || ''
+    ].reject(&:empty?)
+
+    if address_components.any? && address&.postcode
+      Partner.left_joins(:address)
+             .find_by(
+               'can_be_assigned_events AND '\
+               'lower(name) IN (:components) AND '\
+               'lower(addresses.postcode) = (:postcode)',
+               components: address_components.map(&:downcase),
+               postcode: address.postcode.downcase
+             )
+    end
   end
 
   def self.neighbourhood_names_for_site(current_site, badge_zoom_level)
@@ -484,9 +501,10 @@ class Partner < ApplicationRecord
   end
 
   def three_or_less_category_tags
-    return if categories.count < 4
+    # we can't just use categories.count here because of STI, on create they won't exist yet
+    return if category_ids.count < 4
 
-    errors.add :base, 'Partner.tags can contain a maximum of 3 Category tags'
+    errors.add :categories, 'Partners can have a maximum of 3 Category tags'
   end
 
   def partnership_admins_must_add_tag

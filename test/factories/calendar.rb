@@ -3,6 +3,9 @@
 FactoryBot.define do
   factory(:calendar) do
     name { 'Zion Centre' }
+    after :create do |cal|
+      cal.last_import_at = 1.month.ago
+    end
 
     # VCR.use_cassette(:import_test_calendar) do
     source { 'https://calendar.google.com/calendar/ical/mgemn0rmm44un8ucifb287coto%40group.calendar.google.com/public/basic.ics' }
@@ -10,6 +13,7 @@ FactoryBot.define do
     public_contact_name { 'Public Calendar Name' }
     public_contact_email { 'public@communitygroup.com' }
     public_contact_phone { '0161 0000000' }
+    checksum_updated_at { 1.month.ago }
 
     partner
 

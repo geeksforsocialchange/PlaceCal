@@ -50,16 +50,17 @@ class PartnerPolicy < ApplicationPolicy
              :public_name, :public_email, :public_phone,
              :partner_name, :partner_email, :partner_phone,
              :address_id, :url, :facebook_link, :twitter_handle, :instagram_handle,
-             :opening_times,
+             :opening_times, :can_be_assigned_events,
              { calendars_attributes: %i[id name source strategy place_id partner_id _destroy],
                address_attributes: %i[id street_address street_address2 street_address3 city postcode],
                service_areas_attributes: %i[id neighbourhood_id _destroy],
-               tag_ids: [] }]
+               tag_ids: [], category_ids: [], facility_ids: []  }]
 
     attrs << :slug if user.root?
     attrs << :hidden if user.root? || user.neighbourhood_admin? || user.partnership_admin?
     attrs << :hidden_reason if user.root? || user.neighbourhood_admin? || user.partnership_admin?
     attrs << :hidden_blame_id  if user.root? || user.neighbourhood_admin? || user.partnership_admin?
+    attrs << { partnership_ids: [] }  if user.root? || user.partnership_admin?
     attrs
   end
 

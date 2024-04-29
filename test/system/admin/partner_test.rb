@@ -11,7 +11,9 @@ class AdminPartnerTest < ApplicationSystemTestCase
     create_default_site
     @root_user = create :root, email: 'root@lvh.me'
     @partner = create :ashton_partner
-    @tag = create :tag
+    @partnership = create :partnership
+    @category = create :category
+    @facility = create :tag
     @neighbourhood_one = neighbourhoods[1].to_s.tr('w', 'W')
     @neighbourhood_two = neighbourhoods[2].to_s.tr('w', 'W')
 
@@ -40,9 +42,18 @@ class AdminPartnerTest < ApplicationSystemTestCase
     assert_select2_single @neighbourhood_one, service_areas[0]
     assert_select2_single @neighbourhood_two, service_areas[1]
 
-    tags = select2_node 'partner_tags'
-    select2 @tag.name, xpath: tags.path
-    assert_select2_multiple [@tag.name_with_type], tags
+    partnerships = select2_node 'partner_partnerships'
+    select2 @partnership.name, xpath: partnerships.path
+    assert_select2_multiple [@partnership.name], partnerships
+
+    categories = select2_node 'partner_categories'
+    select2 @category.name, xpath: categories.path
+    assert_select2_multiple [@category.name], categories
+
+    facilities = select2_node 'partner_facilities'
+    select2 @facility.name, xpath: facilities.path
+    assert_select2_multiple [@facility.name], facilities
+
     click_button 'Save Partner'
 
     click_link 'Partners'
@@ -50,9 +61,19 @@ class AdminPartnerTest < ApplicationSystemTestCase
 
     click_link @partner.name
 
-    tags = select2_node 'partner_tags'
+    partnerships = select2_node 'partner_partnerships'
     find_element_and_retry_if_not_found do
-      assert_select2_multiple [@tag.name_with_type], tags
+      assert_select2_multiple [@partnership.name], partnerships
+    end
+
+    categories = select2_node 'partner_categories'
+    find_element_and_retry_if_not_found do
+      assert_select2_multiple [@category.name], categories
+    end
+
+    facilities = select2_node 'partner_facilities'
+    find_element_and_retry_if_not_found do
+      assert_select2_multiple [@facility.name], facilities
     end
 
     service_areas = all_cocoon_select2_nodes 'sites_neighbourhoods'
@@ -106,13 +127,13 @@ class AdminPartnerTest < ApplicationSystemTestCase
     await_datatables
 
     click_link @partner.name
-    find :css, '.partner_tags', wait: 100
+    find :css, '.partner_partnerships', wait: 100
 
     # very specific bug in the view template here: if opening times has malformed data
     #   it will cause problems for the javascript that runs the partner tags selector
     #   (in the browser). so we verify the select2 code has worked by seeing if it has
     #   correctly done its thing to the tag selector
-    assert_selector '.partner_tags ul.select2-selection__rendered'
+    assert_selector '.partner_partnerships ul.select2-selection__rendered'
   end
 
   test 'adding dupplicate service_areas to an existing partner does not crash' do

@@ -34,11 +34,11 @@
           Online
         </div>
       <% end %>
-      <% if place || first_address_line %>
+      <% if partner_at_location || first_address_line %>
         <div class="event__detail event__location">
           <span class="icon-font--place"></span>
-          <% if place %>
-            <%= link_to place, partner_path(place) %>
+          <% if partner_at_location %>
+            <%= link_to partner_at_location, partner_path(partner_at_location) %>
           <% elsif first_address_line %>
             <%= first_address_line %>
           <% end %>

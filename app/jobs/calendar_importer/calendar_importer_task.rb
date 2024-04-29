@@ -27,7 +27,7 @@ class CalendarImporter::CalendarImporterTask
       purge_stale_events_from_calendar
     end
 
-    calendar.flag_complete_import_job! notices, calendar_source.checksum, parser::KEY
+    calendar.flag_complete_import_job! notices, parser::KEY
   end
 
   private
@@ -53,7 +53,7 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def event_data_from_parser
-    return [] if !force_import && calendar.last_checksum == calendar_source.checksum
+    return [] if !force_import && !calendar_source.checksum_changed
 
     calendar_source.events.map do |event_data|
       CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
@@ -67,7 +67,6 @@ class CalendarImporter::CalendarImporterTask
     parsed_event.determine_online_location
 
     parsed_event.determine_location_for_strategy
-    # next if parsed_event.is_address_missing?
 
     active_event_uids << parsed_event.uid
 

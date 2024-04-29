@@ -13,11 +13,11 @@ class PaginatorComponent < MountainView::Presenter
     pages = []
     # Create backward arrow link
     pages << { text: back_arrow,
-               link: create_event_url(pointer - period),
+               link: create_event_url(pointer - step),
                css: 'paginator__arrow paginator__arrow--back js-back' }
     # Create in-between links according to steps requested
     (0..steps).each do |i|
-      day = pointer + (period * i)
+      day = pointer + (step * i)
       css = active?(day) ? 'active js-button' : 'js-button'
       pages << { text: format_date(day),
                  link: create_event_url(day),
@@ -25,13 +25,13 @@ class PaginatorComponent < MountainView::Presenter
     end
     # Create forwards arrow link
     pages << { text: forward_arrow,
-               link: create_event_url(pointer + period),
+               link: create_event_url(pointer + step),
                css: 'paginator__arrow paginator__arrow--forwards js-forwards' }
   end
 
   # Paginator title
   def title
-    if period <= 1.day
+    if step <= 1.day
       # Thursday 14 September, 2017
       pointer.strftime('%A %e %B, %Y')
     else
@@ -39,7 +39,7 @@ class PaginatorComponent < MountainView::Presenter
       t = pointer.strftime('%A %e %B')
       t += ' - '
       # FIXME: 1.day needs sorting when we add in month views
-      t + (pointer + period - 1.day).strftime('%A %e %B %Y')
+      t + (pointer + step - 1.day).strftime('%A %e %B %Y')
     end
   end
 
@@ -49,7 +49,7 @@ class PaginatorComponent < MountainView::Presenter
   end
 
   # How far does each step take us?
-  def period
+  def step
     properties[:period] == 'week' ? 1.week : 1.day
   end
 
@@ -67,7 +67,7 @@ class PaginatorComponent < MountainView::Presenter
 
   # Which day are we doing our calculations based on?
   def pointer
-    if period == 1.week
+    if step == 1.week
       # This should be set by the model, but just to be sure
       properties[:pointer].beginning_of_week
     else
@@ -77,7 +77,7 @@ class PaginatorComponent < MountainView::Presenter
 
   # Format date according to context
   def format_date(date)
-    if period <= 1.day
+    if step <= 1.day
       todayify(date)
     else
       weekify(date)
@@ -101,7 +101,7 @@ class PaginatorComponent < MountainView::Presenter
   # Format the button for a week of events
   def weekify(date)
     today = Date.today
-    end_date = date + period - 1.day
+    end_date = date + step - 1.day
     date_fmt = if date.month == end_date.month
                  "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
                else
@@ -124,7 +124,7 @@ class PaginatorComponent < MountainView::Presenter
   # URL params to add back in
   def url_suffix
     str = []
-    str << 'period=week' if period == 1.week
+    str << "period=#{period}"
     str << "sort=#{sort}" if sort
     str << "repeating=#{repeating}" if repeating
     "?#{str.join('&')}" if str.any?
