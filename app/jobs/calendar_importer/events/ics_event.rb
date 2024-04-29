@@ -52,6 +52,7 @@ module CalendarImporter::Events
       # Either return the google conference value, or find the link in the description
       link = @event.url
       link ||= @event.custom_properties['x_google_conference']
+      link ||= maybe_location_is_link
       link ||= find_event_link
 
       link = link.first if link.is_a?(Array)
@@ -65,6 +66,15 @@ module CalendarImporter::Events
     end
 
     private
+
+    def maybe_location_is_link
+      return if location.blank?
+
+      URI.parse(location).to_s
+
+    rescue URI::InvalidURIError
+      # no URL found
+    end
 
     def have_direct_url_to_stream?(link)
       domain = event_link_types.keys.find { |domain| link.include?(domain) }

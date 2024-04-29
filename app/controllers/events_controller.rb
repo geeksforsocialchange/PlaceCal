@@ -28,6 +28,23 @@ class EventsController < ApplicationController
     @events = sort_events(@events, @sort)
     @multiple_days = true
 
+    @next = if params[:year].present?
+              date = begin
+                Date.new(params[:year].to_i,
+                         params[:month].to_i,
+                         params[:day].to_i)
+              rescue Date::Error
+                Time.zone.today
+              end
+              Event.for_site(current_site).future(
+                date
+              ).first
+            else
+              Event.for_site(current_site).future(
+                Time.zone.today
+              ).first
+            end
+
     respond_to do |format|
       format.html do
         if params[:simple].present?
