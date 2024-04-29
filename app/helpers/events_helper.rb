@@ -26,7 +26,7 @@ module EventsHelper
               online_address.url,
               class: 'btn btn-primary').html_safe
     elsif @event.publisher_url.blank?
-      link_to('Visit the webpage for this stream',
+      link_to('Visit the webpage for this event',
               online_address.url,
               class: 'btn btn-primary').html_safe
     end
@@ -34,5 +34,19 @@ module EventsHelper
 
   def html_to_plaintext(input)
     Nokogiri::HTML.fragment(input).text
+  end
+
+  def next_url(next_event)
+    opts = {
+      year: next_event.dtstart.year,
+      month: next_event.dtstart.month,
+      day: next_event.dtstart.day,
+      anchor: 'paginator',
+      period: @period,
+      sort: @sort,
+      repeating: @repeating
+    }.keep_if { |_key, value| value.present? }
+
+    events_by_date_path(opts)
   end
 end

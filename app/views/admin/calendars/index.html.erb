@@ -11,7 +11,7 @@ var columns = [
          return (type == "display") ? date.strtime : date.unixtime;
      }
     },
-    {"data": "updated_at",
+    {"data": "checksum_updated_at",
      "render": function (data, type, row) {
          date = JSON.parse(data.replace(/&quot;/g, '"'));
          return (type == "display") ? date.strtime : date.unixtime;
@@ -24,8 +24,8 @@ var columns = [
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Calendars',
     model: :calendars,
-    column_titles: ['Name', 'Partners', 'Notices', 'Events', 'Status', 'Last imported', 'Last updated'],
-    columns: %i[name partner notice_count events calendar_state last_import_at updated_at],
+    column_titles: ['Name', 'Partners', 'Notices', 'Events', 'Status', 'Last imported', 'Source updated'],
+    columns: %i[name partner notice_count events calendar_state last_import_at checksum_updated_at],
     data: @calendars,
     source: admin_calendars_path(format: :json),
     new_link: new_admin_calendar_path

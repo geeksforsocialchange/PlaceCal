@@ -28,6 +28,23 @@ class EventsController < ApplicationController
     @events = sort_events(@events, @sort)
     @multiple_days = true
 
+    @next = if params[:year].present?
+              date = begin
+                Date.new(params[:year].to_i,
+                         params[:month].to_i,
+                         params[:day].to_i)
+              rescue Date::Error
+                Time.zone.today
+              end
+              Event.for_site(current_site).future(
+                date
+              ).first
+            else
+              Event.for_site(current_site).future(
+                Time.zone.today
+              ).first
+            end
+
     respond_to do |format|
       format.html do
         if params[:simple].present?
@@ -39,10 +56,7 @@ class EventsController < ApplicationController
       format.text
       format.ics do
         events = Event.all
-        if @site
-          events = events.for_site(@site)
-          events = events.with_tags(@site.tags) if @site.tags.any?
-        end
+        events = events.for_site(@site) if @site
         # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
         ics_listing = events.ical_feed
         cal = create_calendar(ics_listing)

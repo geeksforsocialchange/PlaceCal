@@ -15,6 +15,7 @@ class Admin::CalendarsTest < ActionDispatch::IntegrationTest
 
     VCR.use_cassette(:import_test_calendar) do
       @calendar = create(:calendar, partner: @partner, place: @partner)
+      @calendar.update!(last_import_at: 1.month.ago)
     end
 
     host! 'admin.lvh.me'

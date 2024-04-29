@@ -12,6 +12,10 @@ class AddressComponent < MountainView::Presenter
       return address_lines.join(', <br>').html_safe
     end
 
+    uri = URI.parse(raw_location)
+    "<a href='#{uri}'>#{uri.hostname}</a>".html_safe
+
+  rescue URI::InvalidURIError
     raw_location
   end
 end

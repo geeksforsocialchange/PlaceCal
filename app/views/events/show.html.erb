@@ -4,7 +4,7 @@
 
 <%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
 
-<div class="c c--narrow c--space-after event__fullinfo">
+<div class="c c--narrowish c--space-after event__fullinfo">
   <%= @event.description_html.to_s.html_safe %>
   <%= event_link(@event) %>
 
@@ -12,8 +12,8 @@
 
   <%= online_link %>
 
-  <div class="g two-col">
-    <div class="gi gi__1-2">
+  <div class="g three-col">
+    <div class="gi gi__1-3">
       <% if @event.partner %>
         <h3 class="h4 udl">Contact information</h3>
         <div class="small">
@@ -26,13 +26,19 @@
         <% end %>
       </div>
     </div>
-    <div class="gi gi__1-2">
+    <div class="gi gi__1-3">
       <h3 class="h4 udl">Event address</h3>
       <div class="small">
         <%= render_component "address",
             address: @event.address,
 	    raw_location: @event.raw_location_from_source
         %>
+      </div>
+    </div>
+    <div class="gi gi__1-3">
+      <h3 class="h4 udl">Event organiser</h3>
+      <div class="small">
+        <span><%= link_to @event.partner, @event.partner %></span>
       </div>
     </div>
   </div>

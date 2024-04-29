@@ -162,7 +162,7 @@ class CalendarTest < ActiveSupport::TestCase
 
       # flag_complete_import_job
       calendar.calendar_state = :in_worker
-      calendar.flag_complete_import_job! [], 123_456, 'null'
+      calendar.flag_complete_import_job! [],  'null'
       assert_equal today, calendar.updated_at
 
       # flag_bad_source
