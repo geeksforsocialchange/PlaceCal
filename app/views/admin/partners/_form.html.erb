@@ -147,7 +147,7 @@
     <% if  current_user.partnership_admin? || current_user.root? %>
       <%= f.association :partnerships,
           label: "Partnerships",
-          hint:"Which communities of interest should this partner appear on?",
+          hint: "Which communities of interest should this partner appear on?",
           collection: options_for_partner_partnerships(),
           input_html: { class: 'form-check', data: { 
             controller: 'partner-tags',
@@ -157,7 +157,7 @@
     <% end %>
     <%= f.association :facilities,
         label: "Facilities",
-        hint:"What infrastructure does this partner provide?",
+        hint: "What infrastructure does this partner provide?",
         collection: Facility.all,
         input_html: { class: 'form-check', data: { 
           controller: 'select2',
