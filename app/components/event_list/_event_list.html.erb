@@ -24,5 +24,6 @@
     </ol>
   <% end %>
 <% else %>
-  <p>No events with this selection.<%= link_to 'skip to next date with events.', next_url(@next) if @next.present? %></p>
+  <p>No events with this selection.</p>
+  <p><%= link_to 'Skip to next date with events.', next_url(@next) if @next.present? %></p>
 <% end %>
