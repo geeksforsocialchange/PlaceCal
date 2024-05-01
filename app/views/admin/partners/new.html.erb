@@ -52,13 +52,12 @@
         </div>
       </div>
     </div>
-    <hr>
+
     <% if  current_user.partnership_admin? || current_user.root? %>
-    <h2>Tags</h2>
-    <p>What other associations does this partner have?</p>
+    <h2>Partnerships</h2>
       <%= f.association :partnerships,
           label: "Partnerships",
-          hint: "Which communities of interest should this partner appear on?",
+          hint: "Which partnerships is this partner in?",
           collection: options_for_partner_partnerships(),
           input_html: { class: 'form-check', data: { 
             controller: 'partner-tags',
