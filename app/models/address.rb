@@ -15,6 +15,8 @@ class Address < ApplicationRecord
 
   belongs_to :neighbourhood, optional: true
 
+  auto_strip_attributes :street_address, :street_address2, :street_address3, :city, :postcode
+
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
   }
