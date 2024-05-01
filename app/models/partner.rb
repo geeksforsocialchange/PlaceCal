@@ -65,6 +65,8 @@ class Partner < ApplicationRecord
 
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
+  auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
+
   # Validations
   validates :name,
             presence: true,
