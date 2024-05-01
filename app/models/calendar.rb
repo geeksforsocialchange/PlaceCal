@@ -30,7 +30,7 @@ class Calendar < ApplicationRecord
   # Output the calendar's name when it's requested as a string
   alias_attribute :to_s, :name
 
-  auto_strip_attributes :name, :url, :public_contact_name, :public_contact_email, :public_contact_phone
+  auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone
 
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
