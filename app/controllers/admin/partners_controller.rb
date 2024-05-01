@@ -23,7 +23,7 @@ module Admin
 
     def new
       @partner = params[:partner] ? Partner.new(permitted_attributes(Partner)) : Partner.new
-      @partner.tags = current_user.tags
+      @partner.partnerships = current_user.partnerships
 
       authorize @partner
     end
