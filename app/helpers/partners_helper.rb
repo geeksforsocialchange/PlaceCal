@@ -18,10 +18,10 @@ module PartnersHelper
   end
 
   def options_for_partner_partnerships
-    options = policy_scope(Partnership)
-              .select(:name, :type, :id)
-              .order(:name)
-              .map { |r| [r.name, r.id] }
+    policy_scope(Partnership)
+      .select(:name, :type, :id)
+      .order(:name)
+      .map { |r| [r.name, r.id] }
   end
 
   def permitted_options_for_partner_tags
