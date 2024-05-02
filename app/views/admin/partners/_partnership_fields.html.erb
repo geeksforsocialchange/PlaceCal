@@ -1,0 +1,14 @@
+<% if current_user.partnership_admin? || current_user.root? -%>
+<h2>Partnerships</h2>
+<%= f.association :partnerships,
+    label: "Partnerships",
+    hint: "Which partnerships is this partner in?",
+    collection: options_for_partner_partnerships,
+    input_html: { 
+      class: 'form-check', data: { 
+        controller: 'partner-tags',
+        "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
+      } 
+    } 
+%>
+<% end -%>
