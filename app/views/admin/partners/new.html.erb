@@ -52,24 +52,15 @@
         </div>
       </div>
     </div>
+
+    <%= render 'partnership_fields', f: f %>
+
     <hr>
-    <% if  current_user.partnership_admin? || current_user.root? %>
-    <h2>Tags</h2>
-    <p>What other associations does this partner have?</p>
-      <%= f.association :partnerships,
-          label: "Partnerships",
-          hint: "Which communities of interest should this partner appear on?",
-          collection: options_for_partner_partnerships(),
-          input_html: { class: 'form-check', data: { 
-            controller: 'partner-tags',
-            "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
-          } } %>
-      <hr>
-    <% end %>
+    
     <br>
     <div class="row">
       <div class="col-sm-12">
-        <%= f.submit "Save Partner", class: "btn btn-primary btn-lg" %><br><br><br>
+        <%= f.submit "Save and continue...", class: "btn btn-primary btn-lg" %><br><br><br>
         <% unless @partner.new_record? %>
           <% if policy(@partner).destroy? %>
             <%= link_to "Delete Partner", @partner, method: :delete, class: "btn btn-danger btn-sm", id: 'destroy-partner'  %>

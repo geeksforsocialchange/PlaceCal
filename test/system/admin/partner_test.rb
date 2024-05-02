@@ -174,7 +174,7 @@ class AdminPartnerTest < ApplicationSystemTestCase
     assert_predicate service_areas, :present?
     select2 @neighbourhood_one, xpath: service_areas.last.path
 
-    click_button 'Save Partner'
+    click_button 'Save and continue...'
     assert_selector '.alert-success'
   end
 end

@@ -114,7 +114,7 @@ class Partner < ApplicationRecord
 
   validate :three_or_less_category_tags
 
-  validate :partnership_admins_must_add_tag, on: %i[create]
+  validate :partnership_admins_must_add_partnership, on: %i[create]
 
   validate :must_give_reason_to_hide
 
@@ -509,13 +509,13 @@ class Partner < ApplicationRecord
     errors.add :categories, 'Partners can have a maximum of 3 Category tags'
   end
 
-  def partnership_admins_must_add_tag
+  def partnership_admins_must_add_partnership
     return if accessed_by_user.nil? # HACK: to stop factory breaking tests
     return unless accessed_by_user.partnership_admin?
 
-    if tags.any?
-      accessed_by_user.tags.each do |t|
-        return true if tags.include? t
+    if partnership_ids.any?
+      accessed_by_user.tags.pluck(:id).each do |t|
+        return true if partnership_ids.include? t
       end
     end
 
