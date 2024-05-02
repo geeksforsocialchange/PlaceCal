@@ -4,8 +4,6 @@ export default class extends Controller {
 	static values = { permittedTags: [String] };
 
 	connect() {
-		console.log("PartnerTagsController.connect");
-
 		const getSelectValues = (select) => {
 			return [...(select && select.options)].reduce((accumulator, option) => {
 				if (option.selected) {
