@@ -83,6 +83,8 @@ GEM
       activerecord (>= 5.2.6)
     ansi (1.5.0)
     ast (2.4.2)
+    auto_strip_attributes (2.6.0)
+      activerecord (>= 4.0)
     autoprefixer-rails (10.4.7.0)
       execjs (~> 2)
     base64 (0.2.0)
@@ -489,6 +491,7 @@ PLATFORMS
 DEPENDENCIES
   ajax-datatables-rails
   ancestry
+  auto_strip_attributes
   better_errors
   bootsnap
   bootstrap
