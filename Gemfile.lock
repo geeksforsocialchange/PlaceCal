@@ -83,6 +83,8 @@ GEM
       activerecord (>= 5.2.6)
     ansi (1.5.0)
     ast (2.4.2)
+    auto_strip_attributes (2.6.0)
+      activerecord (>= 4.0)
     autoprefixer-rails (10.4.7.0)
       execjs (~> 2)
     base64 (0.2.0)
@@ -93,6 +95,8 @@ GEM
       rack (>= 0.9.0)
     bigdecimal (3.1.7)
     bindex (0.8.1)
+    binding_of_caller (1.0.1)
+      debug_inspector (>= 1.2.0)
     bootsnap (1.12.0)
       msgpack (~> 1.2)
     bootstrap (4.6.2)
@@ -138,6 +142,7 @@ GEM
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
     date (3.3.4)
+    debug_inspector (1.2.0)
     delayed_job (4.1.10)
       activesupport (>= 3.0, < 8.0)
     delayed_job_active_record (4.1.7)
@@ -489,7 +494,9 @@ PLATFORMS
 DEPENDENCIES
   ajax-datatables-rails
   ancestry
+  auto_strip_attributes
   better_errors
+  binding_of_caller
   bootsnap
   bootstrap
   capybara-select-2

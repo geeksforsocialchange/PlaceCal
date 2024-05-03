@@ -6,8 +6,6 @@ export default class extends Controller {
 	static targets = ["source"];
 
 	connect() {
-		console.log("PartnerFormValidationController.connect");
-
 		const inputDebouncePeriod = 500; // ms
 		const baseUrl = "/partners/lookup_name";
 

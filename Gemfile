@@ -73,6 +73,7 @@ gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 
 # Utilities
+gem 'auto_strip_attributes'
 gem 'bootsnap', require: false
 gem 'enumerize'
 gem 'friendly_id'
@@ -94,6 +95,7 @@ end
 
 group :development do
   gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'

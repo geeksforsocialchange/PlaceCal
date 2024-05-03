@@ -420,7 +420,7 @@ class PartnerTest < ActiveSupport::TestCase
 
   test 'partnership_admin can create a partner that is part of their partnership' do
     pa = create(:partnership_admin)
-    partner = create(:partner, :accessed_by_user => pa, :tags => [pa.tags.first])
+    partner = create(:partner, :accessed_by_user => pa, :partnerships => [pa.partnerships.first])
     assert_predicate partner, :valid?
   end
 
