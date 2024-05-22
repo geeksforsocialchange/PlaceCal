@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '3.1.2'
+ruby '3.3.1'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -12,7 +12,7 @@ end
 gem 'minitest-rails'
 gem 'pg'
 gem 'puma'
-gem 'rails', '7.1.3.2'
+gem 'rails', '7.1.3.3'
 
 # Frontend
 gem 'coffee-rails'
