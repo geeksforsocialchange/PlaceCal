@@ -15,28 +15,28 @@
     <% end %>
     <div class="event__details">
       <div class="event__detail event__time">
-        <span class="icon-font--time"></span>
+        <span class="icon-time"></span>
         <%= time %>
       </div>
       <% if duration %>
         <div class="event__detail event__duration">
-          <span class="icon-font--duration"></span>
+          <span class="icon-duration"></span>
           <%= duration %>
         </div>
       <% end %>
       <div class="event__detail event__date">
-        <span class="icon-font--date"></span>
+        <span class="icon-date"></span>
         <%= date %>
       </div>
       <% if online? %>
         <div class="event__detail event__repeats">
-          <span class="icon-font--online"> </span>
+          <span class="icon-online"> </span>
           Online
         </div>
       <% end %>
       <% if partner_at_location || first_address_line %>
         <div class="event__detail event__location">
-          <span class="icon-font--place"></span>
+          <span class="icon-place"></span>
           <% if partner_at_location %>
             <%= link_to partner_at_location, partner_path(partner_at_location) %>
           <% elsif first_address_line %>
@@ -46,7 +46,7 @@
       <% end %>
       <% if repeats %>
         <div class="event__detail event__repeats">
-          <span class="icon-font--repeats"></span>
+          <span class="icon-repeats"></span>
           <%= repeats %>
         </div>
       <% end %>
