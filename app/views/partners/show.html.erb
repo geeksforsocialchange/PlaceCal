@@ -112,7 +112,7 @@
 
     <hr>
 
-    <% if @events.any? %>
+    <% if @events.any? || @paginator %>
       <%= render_component "event_list",
         events: @events,
         pointer: @current_day,
