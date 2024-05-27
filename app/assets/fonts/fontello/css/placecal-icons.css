@@ -1,13 +1,12 @@
 @font-face {
 	font-family: "placecal-icons";
-	src: url("fontello/font/placecal-icons.eot?12555807");
-	src: url("fontello/font/placecal-icons.eot?12555807#iefix")
+	src: url("../font/placecal-icons.eot?39775298");
+	src: url("../font/placecal-icons.eot?39775298#iefix")
 			format("embedded-opentype"),
-		url("fontello/font/placecal-icons.woff2?12555807") format("woff2"),
-		url("fontello/font/placecal-icons.woff?12555807") format("woff"),
-		url("fontello/font/placecal-icons.ttf?12555807") format("truetype"),
-		url("fontello/font/placecal-icons.svg?12555807#placecal-icons")
-			format("svg");
+		url("../font/placecal-icons.woff2?39775298") format("woff2"),
+		url("../font/placecal-icons.woff?39775298") format("woff"),
+		url("../font/placecal-icons.ttf?39775298") format("truetype"),
+		url("../font/placecal-icons.svg?39775298#placecal-icons") format("svg");
 	font-weight: normal;
 	font-style: normal;
 }
@@ -17,7 +16,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'placecal-icons';
-    src: url('../font/placecal-icons.svg?12555807#placecal-icons') format('svg');
+    src: url('../font/placecal-icons.svg?39775298#placecal-icons') format('svg');
   }
 }
 */
@@ -40,12 +39,14 @@
 	text-transform: none;
 
 	/* fix buttons height, for twitter bootstrap */
-	line-height: 1;
+	line-height: 1em;
 
-	font-size: 175%;
-	vertical-align: middle;
-	color: $base-secondary;
-	color: var(--base-secondary);
+	/* Animation center compensation - margins should be symmetric */
+	/* remove if not needed */
+	margin-left: 0.2em;
+
+	/* you can be more comfortable with increased icons size */
+	/* font-size: 120%; */
 
 	/* Font smoothing. That was taken from TWBS */
 	-webkit-font-smoothing: antialiased;
@@ -54,3 +55,25 @@
 	/* Uncomment for 3D effect */
 	/* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
+
+.icon-date:before {
+	content: "\e800";
+} /* '' */
+.icon-duration:before {
+	content: "\e801";
+} /* '' */
+.icon-place:before {
+	content: "\e802";
+} /* '' */
+.icon-repeats:before {
+	content: "\e803";
+} /* '' */
+.icon-time:before {
+	content: "\e804";
+} /* '' */
+.icon-online-alt:before {
+	content: "\e807";
+} /* '' */
+.icon-online:before {
+	content: "\e808";
+} /* '' */

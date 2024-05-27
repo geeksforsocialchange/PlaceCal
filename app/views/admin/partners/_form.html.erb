@@ -143,21 +143,11 @@
     </div>
     <hr>
     <h2>Tags</h2>
-    <p>What other associations does this partner have apart from place.</p>
-    <% if  current_user.partnership_admin? || current_user.root? %>
-      <%= f.association :partnerships,
-          label: "Partnerships",
-          hint:"Which communities of interest should this partner appear on",
-          collection: options_for_partner_partnerships(),
-          input_html: { class: 'form-check', data: { 
-            controller: 'partner-tags',
-            "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
-          } } %>
-      <hr>
-    <% end %>
+    <p>What other associations does this partner have?</p>
+    <%= render 'partnership_fields', f: f %>
     <%= f.association :facilities,
         label: "Facilities",
-        hint:"What infrastructure does this partner provide.",
+        hint: "What infrastructure does this partner provide?",
         collection: Facility.all,
         input_html: { class: 'form-check', data: { 
           controller: 'select2',

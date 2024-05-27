@@ -31,6 +31,8 @@ class User < ApplicationRecord
   has_many :tags, through: :tags_users
   has_many :partnerships, through: :tags_users, source: :tag, class_name: 'Partnership'
 
+  auto_strip_attributes :first_name, :last_name, :email, :phone
+
   validates :email,
             presence: true,
             uniqueness: true,
