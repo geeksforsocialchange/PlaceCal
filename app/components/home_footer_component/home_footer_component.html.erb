@@ -52,12 +52,11 @@
     <hr class="footer_home__hr">
 
     <div class="footer_home__foot">
-      <p>&copy; 2019-<%= Date.today.year %> Place Health Technology CIC t/a PlaceCal.</p>
+      <p><%= t('colophon.copyright', year: Date.today.year ) %></p>
 
       <p>
-        Registered in England and Wales.<br>
-        5 Ribston Street, Manchester, M15 5RH.<br>
-        Company No. 12135472<br>
+        <%= t('colophon.company') %><br>
+        <%= t('colophon.address') %><br>
         <%= link_to "Privacy policy", privacy_path, class: "footer_home__foot__link" %>
         <%= link_to "Terms of use", terms_of_use_path, class: "footer_home__foot__link" %>
       </p>
