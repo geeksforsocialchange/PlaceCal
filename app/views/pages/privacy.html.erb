@@ -6,15 +6,15 @@
     <%= render MaxWidthComponent.new do %>
       <br> 
     
-      <p>At PlaceCal.org, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by PlaceCal.org and how we use it.</p><p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us through email at support@placecal.org.</p>
+      <p>At PlaceCal.org, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by PlaceCal.org and how we use it.</p><p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us through email at <%= t('contact.email') %>.</p>
 
       <p>One of our main priorities is the privacy of our visitors. This Privacy Policy document contains the types of information that are collected and recorded by placecal.org and placecal-staging.org, and how we use it.</p>
       <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
 
       <h3>Our Contact Details</h3>
-      <p>Name: Place Health Technology CIC</p>
-      <p>Address: 5 Ribston Street, Manchester, England, M15 5RH</p>
-      <p>Email: <a href="mailto:support@placecal.org">support@placecal.org</a></p>
+      <p>Name: <%= t('colophon.copyright') %></p>
+      <p>Address: <%= t('colophon.address') %></p>
+      <p>Email: <a href="mailto:<%= t('contact.email') %>"><%= t('contact.email') %></a></p>
 
       <h3>Personal Information</h3>
       <h4>The type of personal information we collect</h4>
@@ -48,7 +48,7 @@
       <p><strong>Your right to restriction of processing</strong> - You have the right to ask us to restrict the processing of your personal information in certain circumstances.</p>
       <p><strong>Your right to data portability</strong> - You have the right to ask that we transfer the personal information you gave us to another organisation, or to you, in certain circumstances.</p>
       <p>You are not required to pay any charge for exercising your rights. If you make a request, we have one month to respond to you.</p>
-      <p>Please contact us at <a href="mailto:support@placecal.org">support@placecal.org</a> if you wish to make a request.</p>
+      <p>Please contact us at <a href="mailto:<%= t('contact.email') %>"><%= t('contact.email') %></a> if you wish to make a request.</p>
 
       <h4>How to complain</h4>
       <p>If you have any concerns about our use of your personal information, you can make a complaint to us at support@placecal.org</p>
