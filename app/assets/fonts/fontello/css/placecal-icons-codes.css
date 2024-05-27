@@ -1,0 +1,21 @@
+.icon-date:before {
+	content: "\e800";
+} /* '' */
+.icon-duration:before {
+	content: "\e801";
+} /* '' */
+.icon-place:before {
+	content: "\e802";
+} /* '' */
+.icon-repeats:before {
+	content: "\e803";
+} /* '' */
+.icon-time:before {
+	content: "\e804";
+} /* '' */
+.icon-online-alt:before {
+	content: "\e807";
+} /* '' */
+.icon-online:before {
+	content: "\e808";
+} /* '' */

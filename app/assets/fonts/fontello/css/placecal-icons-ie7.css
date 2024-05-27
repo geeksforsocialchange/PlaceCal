@@ -1,0 +1,55 @@
+[class^="icon-"],
+[class*=" icon-"] {
+	font-family: "placecal-icons";
+	font-style: normal;
+	font-weight: normal;
+
+	/* fix buttons height */
+	line-height: 1em;
+
+	/* you can be more comfortable with increased icons size */
+	/* font-size: 120%; */
+}
+
+.icon-date {
+	*zoom: expression(
+		this.runtimeStyle[ "zoom" ] = "1",
+		this.innerHTML = "&#xe800;&nbsp;"
+	);
+}
+.icon-duration {
+	*zoom: expression(
+		this.runtimeStyle[ "zoom" ] = "1",
+		this.innerHTML = "&#xe801;&nbsp;"
+	);
+}
+.icon-place {
+	*zoom: expression(
+		this.runtimeStyle[ "zoom" ] = "1",
+		this.innerHTML = "&#xe802;&nbsp;"
+	);
+}
+.icon-repeats {
+	*zoom: expression(
+		this.runtimeStyle[ "zoom" ] = "1",
+		this.innerHTML = "&#xe803;&nbsp;"
+	);
+}
+.icon-time {
+	*zoom: expression(
+		this.runtimeStyle[ "zoom" ] = "1",
+		this.innerHTML = "&#xe804;&nbsp;"
+	);
+}
+.icon-online-alt {
+	*zoom: expression(
+		this.runtimeStyle[ "zoom" ] = "1",
+		this.innerHTML = "&#xe807;&nbsp;"
+	);
+}
+.icon-online {
+	*zoom: expression(
+		this.runtimeStyle[ "zoom" ] = "1",
+		this.innerHTML = "&#xe808;&nbsp;"
+	);
+}
