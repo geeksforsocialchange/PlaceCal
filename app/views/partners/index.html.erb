@@ -1,4 +1,5 @@
 <% content_for :title, 'Partners' %>
+<% content_for :image, @site.hero_image.opengraph.url if @site.hero_image %>
 
 <%= render_component "hero", title: 'Our Partners', subtitle: @site.tagline %>
 

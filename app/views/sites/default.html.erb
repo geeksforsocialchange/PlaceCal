@@ -1,3 +1,5 @@
+<% content_for :image, @site.hero_image.opengraph.url if @site.hero_image %>
+
 <%= render(
   HeroSectionComponent.new(
     image_path: @site.hero_image,
