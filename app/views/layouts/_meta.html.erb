@@ -1,3 +1,18 @@
+<% if current_page?(root_url) && @site&.slug == 'default-site' %>
+  <% title = 'PlaceCal | The Community Calendar' %>
+<% elsif content_for?(:title) && @site&.name %>
+  <% title = yield(:title) + " | " + @site.name %>
+<% elsif content_for?(:title) %>
+  <% title = yield(:title) %>
+<% elsif @site&.name %>
+  <% title = @site.name %>
+<% else %>
+  <% title = 'PlaceCal | The Community Calendar' %>
+<% end %>
+
+<title><%= title %></title>
+<meta property="og:title" content="<%= title %>">
+
 <link rel="icon" type="image/png" href="<%= image_url('favicon.png') %>">
 <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -5,7 +20,7 @@
 <% if content_for?(:description) %>
   <% description = yield(:description) %>
 <% else %>
-  <% description = "#{@site&.name} is a community events calendar where you can find out everything that's happening, all in one place." %>
+  <% description = t('meta.description', site: @site&.name ) %>
 <% end %>
 
 <meta property="description" content="<%= description %>">

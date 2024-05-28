@@ -42,3 +42,5 @@ en:
   date:
     formats:
       datetime: "%b %-d, %Y %l:%M"
+  meta:
+    description: "%{site} is a community events calendar where you can find out everything that's happening, all in one place."

@@ -5,7 +5,6 @@ FactoryBot.define do
     sequence(:name) do |n|
       "Hulme #{n}"
     end
-    tagline { 'The Community Calendar' }
     hero_image_credit { 'Place Cal' }
     url { "https://#{name.parameterize}.placecal.org" }
     slug { name.parameterize }
