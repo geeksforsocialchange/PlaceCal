@@ -1,6 +1,7 @@
-<% content_for :title, "Events & activities in your area" %>
+<% content_for :title, "Events" %>
+<% content_for :image, @site.hero_image.opengraph.url if @site.hero_image %>
 
-<%= render_component "hero", title: 'Events & activities in your area',
+<%= render_component "hero", title: 'Events & activities',
                              subtitle: @site.tagline %>
 
 <div class="c c--lg-space-after">

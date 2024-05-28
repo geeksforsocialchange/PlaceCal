@@ -1,5 +1,6 @@
-<% content_for :title, 'Partners in your area' %>
-<%= render_component "hero", title: 'Partners in your area', subtitle: @site.tagline %>
+<% content_for :title, 'Partners' %>
+
+<%= render_component "hero", title: 'Our Partners', subtitle: @site.tagline %>
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
