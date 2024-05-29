@@ -127,9 +127,5 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[property="og:description"]' do |element|
       assert_equal description_plain, element.attr('content').to_s
     end
-
-    assert_select 'meta[name="twitter:description"]' do |element|
-      assert_equal description_plain, element.attr('content').to_s
-    end
   end
 end

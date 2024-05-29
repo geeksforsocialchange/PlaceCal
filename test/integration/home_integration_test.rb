@@ -19,7 +19,6 @@ class HomeIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'title', count: 1, text: @site.name.to_s
 
     # If no better option, load the defaults
-    # Note images are too convoluted to test here so we are just going to test for presence
     assert_select 'h1', count: 1,
                         text: "PlaceCal is a community events calendar where you can find out everything that's happening, all in one place."
     assert_select 'meta[property="og:title"]' do |elements|
@@ -30,10 +29,13 @@ class HomeIntegrationTest < ActionDispatch::IntegrationTest
       assert_equal "#{@site.name.to_s} is a community events calendar where you can find out everything that's happening, all in one place.",
                    elements.first['content']
     end
+    # Images are too convoluted to test here so we are just going to test for presence for now
     assert_select 'meta[property="og:image"]', true
 
-    # If things are set, then show them accordingly
+    # If tagline is set, then show them accordingly
     @site.update!(tagline: 'This should show up as description instead of the default description if set')
+    get @site.url
+
     assert_select 'meta[property="og:description"]' do |elements|
       assert_equal @site.tagline,
                    elements.first['content']

@@ -1,6 +1,6 @@
 <% content_for :title, "Events" %>
-<% content_for :image, @site.hero_image.opengraph.url if @site.hero_image %>
-<% content_for :description, @site.tagline unless @site.tagline.empty? %>
+<% content_for :image, @site.opengraph_image %>
+<% content_for :description, @site.opengraph_description %>
 
 <%= render_component "hero", title: 'Events & activities',
                              subtitle: @site.tagline %>

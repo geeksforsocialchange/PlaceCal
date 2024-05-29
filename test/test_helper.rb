@@ -27,6 +27,8 @@ require 'capybara/minitest'
 require 'database_cleaner/active_record'
 DatabaseCleaner.strategy = :truncation
 
+include AbstractController::Translation
+
 Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')).sort.each do |path|
   require path
 end
