@@ -42,7 +42,7 @@ class PartnerSiteWithTagScopeTest < ActiveSupport::TestCase
 
   test 'empty site/tag returns nothing' do
     tag = nil
-    output = Partner.for_site_with_tag(site, tag)
+    output = Partner.for_site(site).with_tags(tag)
     assert_empty output, 'site should be empty'
   end
 
@@ -69,7 +69,7 @@ class PartnerSiteWithTagScopeTest < ActiveSupport::TestCase
       create :partner, name: "Partner with no tags #{n}", address: address_one
     end
 
-    output = Partner.for_site_with_tag(site, tag)
+    output = Partner.for_site(site).with_tags(tag)
     assert_equal 4, output.all.length
   end
 end
