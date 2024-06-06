@@ -81,7 +81,11 @@ make test
 
 ## Documentation for Developers
 
-The documentation for PlaceCal is currently stored in notion and can be read [here](https://handbook.placecal.org/placecal-developer-handbook). There is also a small amount of documentation sprinkled throughout the code itself and can be turned into HTML by running `rails yard`. If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers. Good Luck!
+The documentation for PlaceCal is currently stored in notion and can be read [here](https://handbook.placecal.org/placecal-developer-handbook).
+
+The developer Procfile will load a yard language server, this is visible at `http://localhost:8808`.
+
+If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers. Good Luck!
 
 ### Generating new components
 
