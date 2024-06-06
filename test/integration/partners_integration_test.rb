@@ -62,7 +62,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'title', count: 1, text: "Partners | #{@default_site.name}"
     assert_select 'div.hero h4', text: 'The Community Calendar'
-    assert_select 'div.hero h1', text: 'Partners'
+    assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
     assert_select '.preview__header', text: @default_site_partners.first.name
