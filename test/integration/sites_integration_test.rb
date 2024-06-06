@@ -7,7 +7,7 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
     create_default_site
     @root = create(:root)
     @site_admin = create(:user)
-    @site = create(:site, slug: 'hulme', site_admin: @site_admin)
+    @site = create(:site, slug: 'hulme', site_admin: @site_admin, url: 'https://hulme.lvh.me')
     @neighbourhood = create(:neighbourhood)
     @sites_neighbourhood = create(:sites_neighbourhood,
                                   site: @site,
@@ -58,19 +58,24 @@ class SitesIntegrationTest < ActionDispatch::IntegrationTest
   test 'show computer access card when partners are tagged for it' do
     tag = create(:tag, name: 'computers')
     @site.tags << tag
-
     partner = build(:partner)
-    partner.service_area_neighbourhoods << @neighbourhood
     partner.tags << tag
     partner.save!
 
-    get 'http://hulme.lvh.me'
-
-    assert_select '.help__computer_access'
-
+    # Show a partner in the list if it has the right tag and neighbourhood
+    partner.service_area_neighbourhoods << @neighbourhood
+    partner.save!
+    get @site.url
+    assert_select '.help__computer_access', 1
     url = partner_path(partner)
     selector = ".help__computer_access a[href='#{url}']"
     assert_select selector
+
+    # Shouldn't show up if it's not in the right neighbourhood
+    @site.neighbourhoods = []
+    @site.save!
+    get @site.url
+    assert_select '.help__computer_access', false, "Shouldn't show up if it's not in the right neighbourhood"
   end
 
   test 'show public wifi card when partners are tagged for it' do
