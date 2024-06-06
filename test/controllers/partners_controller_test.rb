@@ -17,13 +17,12 @@ class PartnersControllerTest < ActionDispatch::IntegrationTest
       a
     end
 
-    # NOTE: Uhhh? What? Is this a factorybot thing? Why does create(:address, neighbourhood: n) not work here?
-
     @partners = addresses.map do |a|
       create_list(:partner, 3, address: a)
     end
 
-    # NOTE: Uhhh, what does this do? - Alexandria, 2022-05-31
+    # DEPRECATED: Set up relationships between partners
+    # TODO: Remove object relation system
     @partners.each do |for_nbd|
       o_r = OrganisationRelationship.new
       o_r.subject = for_nbd[0]

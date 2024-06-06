@@ -124,8 +124,6 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     get from_site_slug(@default_site, event_path(@events[0]))
     assert_response :success
 
-    assert_select 'meta[property="og:description"]' do |element|
-      assert_equal description_plain, element.attr('content').to_s
-    end
+    assert_page_description description_plain
   end
 end
