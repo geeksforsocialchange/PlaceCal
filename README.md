@@ -79,18 +79,19 @@ You can run the tests & rubocop with:
 make test
 ```
 
-## Documentation for Developers
+## Documentation
 
-The documentation for PlaceCal is currently stored in notion and can be read [here](https://handbook.placecal.org/placecal-developer-handbook).
+Further documentation for PlaceCal is in the [PlaceCal Handbook](https://handbook.placecal.org/).
 
-The developer Procfile will load a yard language server, this is visible at `http://localhost:8808`.
+The developer Procfile will load a `yard` language server, this is visible at `http://localhost:8808`.
 
-If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers. Good Luck!
+If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers.
 
 ### Generating new components
 
 We use view_component to make components, and you can create a new one by running `rails g component <Name> <args>`
 Previously this system used mountain view, and some of the components are still generated using this.
+
 More info here: https://viewcomponent.org/guide/generators.html
 
 ## Donations
