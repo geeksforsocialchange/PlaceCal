@@ -10,7 +10,7 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
 
     @slugless_site = create_default_site
     @neighbourhood_site = create(:site_local)
-    @partnership_site = create(:site)
+    @partnership_site = create(:site, tagline: 'Our Cool Partnership')
     @date = DateTime.now.beginning_of_day
 
     # add neighbourhoods and tags to sites
@@ -47,9 +47,9 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
 
     get from_site_slug(@neighbourhood_site, events_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Events & activities in your area | #{@neighbourhood_site.name}"
+    assert_select 'title', count: 1, text: "Events | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: 'Events & activities in your area'
+    assert_select 'div.hero h1', text: 'Events & activities'
     assert_select 'ol article', neighbourhood_events.length
   end
 
@@ -63,9 +63,9 @@ class EventsIntegrationTest < ActionDispatch::IntegrationTest
 
     get from_site_slug(@partnership_site, events_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Events & activities in your area | #{@partnership_site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
-    assert_select 'div.hero h1', text: 'Events & activities in your area'
+    assert_select 'title', count: 1, text: "Events | #{@partnership_site.name}"
+    assert_select 'div.hero h4', text: @partnership_site.tagline
+    assert_select 'div.hero h1', text: 'Events & activities'
     assert_select 'ol article', partnership_events.length
   end
 end

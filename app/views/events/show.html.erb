@@ -1,7 +1,6 @@
-<% content_for :title, "#{@event.summary}, #{@event.date}, #{@event.time}" %>
+<% content_for :title, @event.og_title %>
+<% content_for :image, @site.og_image %>
 <% content_for :description, html_to_plaintext(@event.description_html) %>
-<% content_for :image, @site.opengraph_image %>
-<% content_for :permalink, @event.permalink %>
 
 <%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
 

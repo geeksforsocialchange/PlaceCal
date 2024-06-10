@@ -1,13 +1,12 @@
 <% content_for :title, @partner.name %>
-<% content_for :description, @partner.summary if @partner.summary %>
 <% 
   if @partner.image
     content_for :image, @partner.image
   else
-    content_for :image, @site.opengraph_image
+    content_for :image, @site.og_image
   end
 %>
-<% content_for :permalink, @partner.permalink %>
+<% content_for :description, @partner.summary if @partner.summary %>
 
 <div vocab="http://schema.org/" typeof="Organization">
 

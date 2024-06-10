@@ -12,6 +12,7 @@
 
 <title><%= title %></title>
 <meta property="og:title" content="<%= title %>">
+<meta property="og:site_name" content="<%= @site&.name || 'PlaceCal' %>">
 
 <link rel="icon" type="image/png" href="<%= image_url('favicon.png') %>">
 <link rel="apple-touch-icon" href="<%= image_url('apple-touch-icon.png') %>">
@@ -40,6 +41,4 @@
 <meta name="twitter:site" content="@PlaceCal">
 <meta name="twitter:creator" content="@gfscstudio">
 
-<% if content_for?(:permalink) %>
-  <meta property="og:url" content="<%= yield(:permalink) %>">
-<% end %>
+<meta property="og:url" content="<%= request.original_url %>">

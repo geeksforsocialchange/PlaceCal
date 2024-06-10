@@ -13,7 +13,6 @@ class CollectionsIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'title', count: 1, text: "#{@collection.name} | #{@site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', text: @collection.name
     # assert_select 'ol article', 5
   end

@@ -125,11 +125,11 @@ class Site < ApplicationRecord
     end
   end
 
-  def opengraph_image
+  def og_image
     hero_image&.opengraph&.url ? hero_image.opengraph.url : false
   end
 
-  def opengraph_description
+  def og_description
     tagline && tagline.empty? ? false : tagline
   end
 
