@@ -1,3 +1,5 @@
+<% content_for :title, "Privacy Policy" %>
+
 <article class="home margin">
 
   <%= render_component "hero", title: "PlaceCal Privacy Policy" %>
@@ -38,7 +40,7 @@
       <p>Your information is securely stored on our server in London, UK.</p>
       <p>We keep personal identifiers, contacts and characteristics (as described in the "Type of information we collect" section above) for as long as this information is relevant – meaning as long as a partner, user or calendar this information is associated with is active. ‘Active’ in this sense refers to being a live account which can be logged into by the user, a partner with an associated calendar, or a linked calendar with a working source.</p>
       <p>When a user requests to delete their account we will remove all personal identifying information associated with that user account. This does not automatically remove that same individual’s information from partners and calendars. For a user’s information to be removed from a partner or calendar, or for a partner or calendar that user manages to be deleted, this needs to be specified. Once a user account is deleted their information will be removed from PlaceCal and no longer be accessible by any user or staff.</p>
-      <p>Copies of this data may be created by employees of Geeks for Social Change Ltd and Place Health Technology CIC solely for development purposes. This information is destroyed when employees leave the company.</p>
+      <p>Copies of this data may be created by employees and registered volunteers of Geeks for Social Change Ltd and Place Health Technology CIC solely for development purposes. This information is destroyed when employees leave the company or volunteer agreements end.</p>
 
       <h4>Your data protection rights</h4>
       <p>Under data protection law, you have rights including:</p>
@@ -54,12 +56,14 @@
       <p>If you have any concerns about our use of your personal information, you can make a complaint to us at support@placecal.org</p>
       <p>You can also complain to the ICO if you are unhappy with how we have used your data.</p>
       <p>The ICO’s address:</p>
-      <p>Information Commissioner’s Office</p>
-      <p>Wycliffe House</p>
-      <p>Water Lane</p>
-      <p>Wilmslow</p>
-      <p>Cheshire</p>
-      <p>SK9 5AF</p>
+      <address>
+      Information Commissioner’s Office<br>
+      Wycliffe House<br>
+      Water Lane<br>
+      Wilmslow<br>
+      Cheshire<br>
+      SK9 5AF<br>
+      </address>
       <p>Helpline number: <a href="tel:0303-123-1113">0303 123 1113</a></p>
       <p>ICO website: <a href="https://www.ico.org.uk" target="_blank">https://www.ico.org.uk</a></p>
 
@@ -77,7 +81,7 @@
       <p>PlaceCal uses a third party service called Plausible which allows us to track site visits. You can consult Plausible’s Privacy Policy here: <a href="https://plausible.io/data-policy" target="_blank">https://plausible.io/data-policy</a>. Plausible does not use cookies to track your data, nor does it store any personal data or personally identifiable information (PII). We use the information provided by Plausible's logging to analyse usage of the site in order to improve it.</p>
 
       <h3>Consent</h3>
-      <p>By using our website, you hereby consent to our Privacy Policy and agree to its Terms and Conditions.</p>
+      <p>By using our website, you hereby consent to our Privacy Policy and agree to its <%= link_to 'Terms and Conditions', terms_of_use_url %>.</p>
 
       <br>
     <% end %>
