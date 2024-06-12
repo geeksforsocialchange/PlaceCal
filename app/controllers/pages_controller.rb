@@ -23,4 +23,6 @@ class PagesController < ApplicationController
     robots = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
     render plain: robots
   end
+
+  def terms_of_use; end
 end
