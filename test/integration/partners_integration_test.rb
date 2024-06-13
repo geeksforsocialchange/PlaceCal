@@ -84,7 +84,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@region_site, partners_path)
     assert_response :success
     assert_select 'title', count: 1, text: "Partners | #{@region_site.name}"
-    assert_select 'div.hero h4', text: @neighbourhood_site.tagline
+    assert_select 'div.hero h4', text: @region_site.tagline
     assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed (select the h3 tag to avoid badge selection)
@@ -97,7 +97,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select 'title', count: 1, text: "Partners | #{@tagged_site.name}"
-    assert_select 'div.hero h4', text: @neighbourhood_site.tagline
+    assert_select 'div.hero h4', text: @tagged_site.tagline
     assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
