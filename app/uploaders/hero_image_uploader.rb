@@ -2,14 +2,18 @@
 
 # app/uploaders/hero_image_uploader.rb
 class HeroImageUploader < DefaultUploader
-  process resize_to_fit: [2260, 700]
+  process resize_to_fill: [2260, 700]
 
   version :standard do
-    process resize_to_fit: [1130, 350]
+    process resize_to_fill: [1130, 350]
+  end
+
+  version :opengraph do
+    process resize_to_fill: [1200, 630]
   end
 
   version :site_preview do
-    process resize_to_fit: [160, 160]
+    process resize_to_fill: [160, 160]
   end
 
   # Add a white list of extensions which are allowed to be uploaded.

@@ -60,9 +60,8 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   test 'placecal partners page shows all partners and relevant local info' do
     get from_site_slug(@default_site, partners_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Partners in your area | #{@default_site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
-    assert_select 'div.hero h1', text: 'Partners in your area'
+    assert_select 'title', count: 1, text: "Partners | #{@default_site.name}"
+    assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
     assert_select '.preview__header', text: @default_site_partners.first.name
@@ -72,9 +71,9 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   test 'neighbourhood site page shows all partners and relevant local info' do
     get from_site_slug(@neighbourhood_site, partners_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Partners in your area | #{@neighbourhood_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: 'Partners in your area'
+    assert_select 'title', count: 1, text: "Partners | #{@neighbourhood_site.name}"
+    assert_select 'div.hero h4', text: @neighbourhood_site.tagline
+    assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
     assert_select '.preview__header', text: @neighbourhood_site_partners.first.name
@@ -84,9 +83,9 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
   test 'region site page shows descendent partners' do
     get from_site_slug(@region_site, partners_path)
     assert_response :success
-    assert_select 'title', count: 1, text: "Partners in your area | #{@region_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: 'Partners in your area'
+    assert_select 'title', count: 1, text: "Partners | #{@region_site.name}"
+    assert_select 'div.hero h4', text: @region_site.tagline
+    assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed (select the h3 tag to avoid badge selection)
     assert_select 'div.preview__header h3', text: @region_site_partners.first.name
@@ -97,9 +96,9 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@tagged_site, partners_path)
     assert_response :success
 
-    assert_select 'title', count: 1, text: "Partners in your area | #{@tagged_site.name}"
-    assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
-    assert_select 'div.hero h1', text: 'Partners in your area'
+    assert_select 'title', count: 1, text: "Partners | #{@tagged_site.name}"
+    assert_select 'div.hero h4', text: @tagged_site.tagline
+    assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
     assert_select '.preview__header', text: @tagged_site_partners.first.name

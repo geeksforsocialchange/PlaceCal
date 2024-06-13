@@ -181,6 +181,11 @@ class Event < ApplicationRecord
     "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
   end
 
+  def og_title
+    str = "#{summary}, #{date}, #{time}"
+    str += " @ #{partner.name}" if partner
+  end
+
   private
 
   def require_location

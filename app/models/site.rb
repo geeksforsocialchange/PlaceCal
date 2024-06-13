@@ -125,6 +125,14 @@ class Site < ApplicationRecord
     end
   end
 
+  def og_image
+    hero_image&.opengraph&.url ? hero_image.opengraph.url : false
+  end
+
+  def og_description
+    tagline && tagline.empty? ? false : tagline
+  end
+
   class << self
     # Find the requested Site from information in the rails request object.
     #
