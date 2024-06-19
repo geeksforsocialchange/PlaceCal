@@ -1,6 +1,6 @@
 <% content_for :title, @partner.name %>
 <% 
-  if @partner.image
+  if @partner.image.present?
     content_for :image, @partner.image
   else
     content_for :image, @site.og_image
