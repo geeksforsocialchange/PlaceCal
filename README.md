@@ -94,6 +94,12 @@ Previously this system used mountain view, and some of the components are still 
 
 More info here: https://viewcomponent.org/guide/generators.html
 
+## API
+
+API examples and test environment are provided using [Bruno](https://www.usebruno.com/).
+
+Install it with your system package manager then point it at the `collections` directory.
+
 ## Donations
 
 If you'd like to support development, please consider sending us a one-off or regular donation on Ko-fi. You can do this through the "support" button in GitHub at the top of this repo.

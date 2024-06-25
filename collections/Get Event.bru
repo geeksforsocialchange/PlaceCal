@@ -1,0 +1,35 @@
+meta {
+  name: Get Event
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    event(id: 381224) {
+      id
+      name
+      summary
+      description
+      startDate
+      endDate
+      address {
+        streetAddress
+        postalCode
+        addressLocality
+        addressRegion
+      }
+      organizer {
+        id
+        name
+      }
+    }
+  }
+  
+}
