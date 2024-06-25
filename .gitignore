@@ -21,7 +21,11 @@
 # Ignore Byebug command history file.
 .byebug_history
 
+# System file junk
 .DS_Store
+.fontello
+
+# User config
 .env
 
 # Files
