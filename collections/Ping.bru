@@ -1,0 +1,19 @@
+meta {
+  name: Ping
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://placecal.org/api/v1/graphql
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {"query": "query { ping }" }
+}
