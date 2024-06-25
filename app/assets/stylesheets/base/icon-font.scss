@@ -1,31 +1,33 @@
 @font-face {
-	font-family: "fontello";
-	src: font-url("fontello.eot");
-	src: font-url("fontello.eot#iefix") format("embedded-opentype"),
-		font-url("fontello.woff2") format("woff2"),
-		font-url("fontello.woff") format("woff"),
-		font-url("fontello.ttf") format("truetype"),
-		font-url("fontello.svg#fontello") format("svg");
+	font-family: "placecal-icons";
+	src: url("fontello/font/placecal-icons.eot?12555807");
+	src: url("fontello/font/placecal-icons.eot?12555807#iefix")
+			format("embedded-opentype"),
+		url("fontello/font/placecal-icons.woff2?12555807") format("woff2"),
+		url("fontello/font/placecal-icons.woff?12555807") format("woff"),
+		url("fontello/font/placecal-icons.ttf?12555807") format("truetype"),
+		url("fontello/font/placecal-icons.svg?12555807#placecal-icons")
+			format("svg");
 	font-weight: normal;
 	font-style: normal;
 }
+
 /* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
 /* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
 /*
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
-    font-family: 'fontello';
-    src: url('../font/fontello.svg?81468796#fontello') format('svg');
+    font-family: 'placecal-icons';
+    src: url('../font/placecal-icons.svg?12555807#placecal-icons') format('svg');
   }
 }
 */
-
-[class^="icon-font--"]:before,
-[class*="icon-font--"]:before {
-	font-family: "fontello";
+[class^="icon-font"]:before,
+[class*=" icon-font"]:before {
+	font-family: "placecal-icons";
 	font-style: normal;
 	font-weight: normal;
-	speak: none;
+	speak: never;
 
 	display: inline-block;
 	text-decoration: inherit;
@@ -41,7 +43,6 @@
 	/* fix buttons height, for twitter bootstrap */
 	line-height: 1;
 
-	/* you can be more comfortable with increased icons size */
 	font-size: 175%;
 	vertical-align: middle;
 	color: $base-secondary;
@@ -54,22 +55,3 @@
 	/* Uncomment for 3D effect */
 	/* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
-
-.icon-font--date:before {
-	content: "\e800";
-} /* '' */
-.icon-font--duration:before {
-	content: "\e801";
-} /* '' */
-.icon-font--place:before {
-	content: "\e802";
-} /* '' */
-.icon-font--repeats:before {
-	content: "\e803";
-} /* '' */
-.icon-font--time:before {
-	content: "\e804";
-} /* '' */
-.icon-font--online:before {
-	content: "⏺";
-} /* '' */

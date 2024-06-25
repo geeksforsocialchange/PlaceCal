@@ -10,7 +10,7 @@ class PartnersController < ApplicationController
   before_action :set_title, only: %i[index show]
   before_action :redirect_from_default_site
 
-  PAGINATION_THRESHOLD = 20
+  PAGINATION_THRESHOLD = 30
 
   # GET /partners
   # GET /partners.json

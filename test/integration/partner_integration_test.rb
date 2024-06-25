@@ -19,7 +19,6 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@default_site, partner_path(@partner))
     assert_response :success
     assert_select 'title', count: 1, text: "#{@partner.name} | #{@default_site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
     assert_select 'div.hero h1', @partner.name
     assert_select 'p', @partner.summary
     assert_select 'p', @partner.description

@@ -25,12 +25,12 @@ class SitesController < ApplicationController
   def set_places_to_get_computer_access
     tag = Tag.find_by(slug: 'computers')
 
-    @places_to_get_computer_access = Partner.for_site_with_tag(current_site, tag)
+    @places_to_get_computer_access = Partner.for_site(current_site).with_tags(tag)
   end
 
   def set_places_with_free_wifi
     tag = Tag.find_by(slug: 'wifi')
 
-    @places_with_free_wifi = Partner.for_site_with_tag(current_site, tag)
+    @places_with_free_wifi = Partner.for_site(current_site).with_tags(tag)
   end
 end

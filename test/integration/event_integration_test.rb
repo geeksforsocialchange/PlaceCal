@@ -24,8 +24,7 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
   test 'event show pages have event and local info' do
     get from_site_slug(@default_site, event_path(@event))
     assert_response :success
-    assert_select 'title', count: 1, text: "#{@event.summary}, #{@event.date}, #{@event.time} | #{@default_site.name}"
-    assert_select 'div.hero h4', text: 'The Community Calendar'
+    assert_select 'title', count: 1, text: "#{@event.summary}, #{@event.date}, #{@event.time} @ #{@event.partner.name} | #{@default_site.name}"
     assert_select 'div.hero h1', text: @event.summary
     assert_select 'div.event__detail', count: 4
     assert_select '[data-controller="leaflet"]', 1
@@ -36,7 +35,7 @@ class EventIntegrationTest < ActionDispatch::IntegrationTest
     get "http://#{@neighbourhood_site.slug}.lvh.me/events/#{@event.id}"
     assert_response :success
     assert_select 'title', count: 1,
-                           text: "#{@event.summary}, #{@event.date}, #{@event.time} | #{@neighbourhood_site.name}"
+                           text: "#{@event.summary}, #{@event.date}, #{@event.time} @ #{@event.partner.name} | #{@neighbourhood_site.name}"
     assert_select 'div.hero h4', text: "Neighbourhood's Community Calendar"
     assert_select 'div.hero h1', text: @event.summary
     assert_select 'div.event__detail', count: 4

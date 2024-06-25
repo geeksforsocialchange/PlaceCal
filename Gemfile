@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '3.1.2'
+ruby '3.1.6'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -12,7 +12,7 @@ end
 gem 'minitest-rails'
 gem 'pg'
 gem 'puma'
-gem 'rails', '7.1.3.2'
+gem 'rails', '7.1.3.4'
 
 # Frontend
 gem 'coffee-rails'
@@ -88,6 +88,7 @@ gem 'rollbar'
 gem 'uk_postcode'
 
 group :development, :test do
+  gem 'byebug'
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'timecop'
@@ -102,9 +103,9 @@ group :development do
   gem 'rails-erd'
   gem 'rdoc'
   gem 'rubocop', '1.62.0', require: false
-  gem 'rubocop-graphql', '1.5.1', require: false
+  gem 'rubocop-graphql', '1.5.2', require: false
   gem 'rubocop-minitest', '0.35.0', require: false
-  gem 'rubocop-performance', '1.21.0', require: false
+  gem 'rubocop-performance', '1.21.1', require: false
   gem 'rubocop-rails', '2.24.1', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'

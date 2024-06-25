@@ -124,6 +124,8 @@ class Partner < ApplicationRecord
 
   mount_uploader :image, ImageUploader
 
+  scope :visible, -> { where(hidden: false) }
+
   scope :recently_updated, -> { order(updated_at: desc) }
 
   # Takes in a list of neighbourhood ids, and returns a list of Partners
@@ -137,7 +139,6 @@ class Partner < ApplicationRecord
              ids, ids)
   }
 
-  # Takes in a Site and fetches all Partners for that site
   #   In its basic mode (without tags) it looks for partners by address
   #   or service area and returns a distinct set (as a partner can
   #   have many service areas or an address that overlaps).
@@ -174,38 +175,6 @@ class Partner < ApplicationRecord
         neighbourhood_ids: site_neighbourhood_ids
       )
       .distinct
-  }
-
-  scope :visible, lambda {
-    where(hidden: false)
-  }
-
-  scope :for_site_with_tag, lambda { |site, tag|
-    return none if tag.nil?
-
-    query = Partner
-            .select('"partners".*, LOWER("partners"."name") as sortable_name')
-
-    query = query
-            .left_joins(:partner_tags)
-            .where(partner_tags: { tag: tag })
-
-    # now look for addresses and service areas
-    site_neighbourhood_ids = site.owned_neighbourhood_ids
-
-    # skip everything if site has no neighbourhoods
-    return none if site_neighbourhood_ids.empty?
-
-    # TODO; move this scope part that is very similar to the `for_site` method above
-    #   into a shared scope (with possible tests)
-    query
-      .left_joins(:address, :service_areas)
-      .where(
-        'NOT hidden AND (service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-        neighbourhood_ids: site_neighbourhood_ids
-      )
-      .distinct
-      .order('sortable_name')
   }
 
   # Get a list of Partners that have the given tags

@@ -7,5 +7,10 @@
 <%= filtered_form_for([:admin, @user],
                       display_only: display_fields) do |f| %>
   <%= render 'form', f: f %>
+  
+  <p>
+    Please note: inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path %>.
+  </p>
+
   <%= f.submit "Invite", class: "btn btn-primary " %>
 <% end %>

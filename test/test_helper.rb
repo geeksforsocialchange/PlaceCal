@@ -27,6 +27,8 @@ require 'capybara/minitest'
 require 'database_cleaner/active_record'
 DatabaseCleaner.strategy = :truncation
 
+include AbstractController::Translation
+
 Dir.glob(File.join(Rails.root, 'test/support/**/*.rb')).sort.each do |path|
   require path
 end
@@ -104,6 +106,19 @@ end
 module ActionDispatch
   class IntegrationTest
     include Devise::Test::IntegrationHelpers
+
+    def assert_og_title(match)
+      assert_select 'meta[property="og:title"]' do |elements|
+        assert_equal match,
+                     elements.first['content']
+      end
+    end
+
+    def assert_og_description(match)
+      assert_select 'meta[property="og:description"]' do |element|
+        assert_equal match, element.attr('content').to_s
+      end
+    end
   end
 end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_22_092628) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -277,7 +277,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_22_092628) do
     t.string "hero_image"
     t.string "hero_image_credit"
     t.string "footer_logo"
-    t.string "tagline", default: "The Community Calendar"
+    t.string "tagline"
     t.string "place_name"
     t.string "theme"
     t.boolean "is_published", default: false

@@ -2,33 +2,14 @@
 <html>
   <head>
     <%= csrf_meta_tags %>
-
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
     <% if @site&.stylesheet_link %>
       <%= stylesheet_link_tag @site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' %>
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload' %>
-
-    <% if current_page?(root_url) && @site&.slug == 'default-site' %>
-      <% title = 'PlaceCal | The Community Calendar' %>
-    <% elsif content_for?(:title) && @site&.name %>
-      <% title = yield(:title) + " | " + @site.name %>
-    <% elsif content_for?(:title) %>
-      <% title = yield(:title) %>
-    <% elsif @site&.name %>
-      <% title = @site.name %>
-    <% else %>
-      <% title = 'PlaceCal | The Community Calendar' %>
-    <% end %>
-
-    <title><%= title %></title>
-    <meta property="og:title" content="<%= title %>" />
-    <meta name="twitter:title" content="<%= title %>" />
-
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-
   </head>
 
   <body>
