@@ -13,7 +13,7 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 To run PlaceCal locally you will need to install the following dependencies:
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Ruby 3.1.6](https://www.ruby-lang.org/)
+- [Ruby 3.3.3](https://www.ruby-lang.org/)
 - [Node.js](https://nodejs.org/en/download) 16.x & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
