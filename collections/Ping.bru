@@ -1,19 +1,18 @@
 meta {
   name: Ping
-  type: http
-  seq: 2
+  type: graphql
+  seq: 1
 }
 
 post {
   url: {{baseURL}}/api/v1/graphql
-  body: json
+  body: graphql
   auth: none
 }
 
-headers {
-  Content-Type: application/json
-}
-
-body:json {
-  {"query": "query { ping }" }
+body:graphql {
+  {
+    ping
+  }
+  
 }

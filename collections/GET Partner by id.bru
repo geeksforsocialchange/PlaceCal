@@ -1,0 +1,28 @@
+meta {
+  name: GET Partner by id
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    partner(id: 209) {
+      id
+      name
+      summary
+      description
+      accessibilitySummary
+      logo
+      url
+      twitterUrl
+      facebookUrl
+    }
+  }
+  
+}

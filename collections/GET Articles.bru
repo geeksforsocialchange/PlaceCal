@@ -1,0 +1,35 @@
+meta {
+  name: GET Articles
+  type: graphql
+  seq: 7
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    articleConnection {
+      edges {
+        node {
+          name
+          headline
+          author
+          text
+          articleBody
+          image
+          datePublished
+          dateCreated
+          dateUpdated
+          providers {
+            id
+          }
+        }
+      }
+    }
+  }
+  
+}
