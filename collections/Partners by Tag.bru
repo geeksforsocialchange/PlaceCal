@@ -1,0 +1,42 @@
+meta {
+  name: Partners by Tag
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    partnersByTag(tagId: 3) {
+      id
+      name
+      description
+      summary
+      contact {
+        email
+        telephone
+      }
+      url
+      address {
+        streetAddress
+        postalCode
+        addressRegion
+        geo {
+          latitude
+          longitude
+        }
+      }
+      areasServed {
+        name
+        abbreviatedName
+      }
+      logo
+    }
+  }
+  
+}

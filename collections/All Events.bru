@@ -1,0 +1,39 @@
+meta {
+  name: All Events
+  type: graphql
+  seq: 6
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    eventConnection {
+      edges {
+        node {
+          id
+          name
+          summary
+          description
+          startDate
+          endDate
+          address {
+            streetAddress
+            postalCode
+            addressLocality
+            addressRegion
+          }
+          organizer {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+  
+}

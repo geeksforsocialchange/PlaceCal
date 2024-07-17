@@ -1,0 +1,65 @@
+meta {
+  name: Partners Index (Partner Connection)
+  type: graphql
+  seq: 5
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    partnerConnection(first: 10, after: "Mw") {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          summary
+          description
+          accessibilitySummary
+          logo
+          url
+          facebookUrl
+          twitterUrl
+          address {
+            streetAddress
+            postalCode
+            addressLocality
+            addressRegion
+            geo {
+              latitude
+              longitude
+            }
+          }
+          contact {
+            name
+            email
+            telephone
+          }
+          openingHours {
+            dayOfWeek
+            opens
+            closes
+          }
+          areasServed {
+            name
+            abbreviatedName
+            unit
+            unitName
+            unitCodeKey
+            unitCodeValue
+          }
+        }
+      }
+    }
+  }
+  
+}

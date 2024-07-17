@@ -1,0 +1,26 @@
+meta {
+  name: Articles by Tag
+  type: graphql
+  seq: 11
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    articlesByTag(tagId: 3) {
+      headline
+      articleBody
+      datePublished
+      providers {
+        id
+      }
+      image
+    }
+  }
+  
+}

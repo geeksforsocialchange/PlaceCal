@@ -1,7 +1,7 @@
 meta {
-  name: GET Articles
+  name: All Articles
   type: graphql
-  seq: 7
+  seq: 10
 }
 
 post {
@@ -15,15 +15,10 @@ body:graphql {
     articleConnection {
       edges {
         node {
-          name
           headline
-          author
-          text
+          datePublished
           articleBody
           image
-          datePublished
-          dateCreated
-          dateUpdated
           providers {
             id
           }

@@ -1,7 +1,7 @@
 meta {
-  name: GET Events
+  name: Events Index (EventConnection)
   type: graphql
-  seq: 5
+  seq: 9
 }
 
 post {
@@ -12,8 +12,13 @@ post {
 
 body:graphql {
   {
-    eventConnection {
+    eventConnection(first: 10, after: "MTA") {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       edges {
+        cursor
         node {
           id
           name
@@ -21,11 +26,16 @@ body:graphql {
           description
           startDate
           endDate
+          publisherUrl
           address {
             streetAddress
             postalCode
             addressLocality
             addressRegion
+            geo {
+              latitude
+              longitude
+            }
           }
           organizer {
             id

@@ -1,0 +1,26 @@
+meta {
+  name: Articles by Partner Tag
+  type: graphql
+  seq: 12
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    articlesByPartnerTag(tagId: 3) {
+      headline
+      articleBody
+      datePublished
+      providers {
+        id
+      }
+      image
+    }
+  }
+  
+}
