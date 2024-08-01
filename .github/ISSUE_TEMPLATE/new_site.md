@@ -14,8 +14,9 @@ labels:
 - Region covered: 
 - Site name:
 - Desired colour scheme (pick one): orange blue green pink
-- Domain: your_desired_subdomain.placecal.org
+- PlaceCal domain: your_desired_subdomain.placecal.org
 - [Optional] Partnership name:
+- [Optional] Your domain (if you have one): yourdomain.com
 - [Optional] Images: _Attach logos and hero image to this ticket if you have them!_
 
 ## Acceptance criteria (for PlaceCal devs)
