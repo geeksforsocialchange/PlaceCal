@@ -12,7 +12,7 @@ post {
 
 body:graphql {
   {
-    partner(id: 209) {
+    partner( {{id}} ) {
       id
       name
       summary
@@ -25,4 +25,8 @@ body:graphql {
     }
   }
   
+}
+
+vars:pre-request {
+  id: id: 209
 }

@@ -12,7 +12,10 @@ post {
 
 body:graphql {
   {
-    partnerConnection(first: 10, after: "Mw") {
+    partnerConnection( 
+      {{first}}
+      after: "Mw" 
+    ) {
       pageInfo {
         hasNextPage
         endCursor
@@ -62,4 +65,9 @@ body:graphql {
     }
   }
   
+}
+
+vars:pre-request {
+  first: first: 10 
+  after: after: "Mw"
 }

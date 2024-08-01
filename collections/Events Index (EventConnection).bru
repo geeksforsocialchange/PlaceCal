@@ -12,7 +12,10 @@ post {
 
 body:graphql {
   {
-    eventConnection(first: 10, after: "MTA") {
+    eventConnection(
+      {{first}}
+      after: "MTA"
+  ) {
       pageInfo {
         hasNextPage
         endCursor
@@ -46,4 +49,9 @@ body:graphql {
     }
   }
   
+}
+
+vars:pre-request {
+  first: first: 10
+  after: after: "MTA"
 }

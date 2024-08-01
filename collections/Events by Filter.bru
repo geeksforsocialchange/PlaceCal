@@ -13,7 +13,7 @@ post {
 body:graphql {
   {
     eventsByFilter(
-      tagId: 3
+      {{tagId}}
       fromDate: "2024-01-01 00:00"
       toDate: "2025-06-15 00:00"
     ) {
@@ -38,4 +38,10 @@ body:graphql {
     }
   }
   
+}
+
+vars:pre-request {
+  tagId: tagId: 3
+  fromDate: fromDate: "2024-01-01 00:00"
+  toDate: toDate: "2025-06-15 00:00"
 }

@@ -12,7 +12,7 @@ post {
 
 body:graphql {
   {
-    event(id: 381224) {
+    event({{id}}) {
       id
       name
       summary
@@ -32,4 +32,8 @@ body:graphql {
     }
   }
   
+}
+
+vars:pre-request {
+  id: id: 381224
 }

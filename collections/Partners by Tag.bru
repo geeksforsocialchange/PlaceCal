@@ -12,7 +12,7 @@ post {
 
 body:graphql {
   {
-    partnersByTag(tagId: 3) {
+    partnersByTag({{tagId}}) {
       id
       name
       description
@@ -39,4 +39,8 @@ body:graphql {
     }
   }
   
+}
+
+vars:pre-request {
+  tagId: tagId: 3
 }

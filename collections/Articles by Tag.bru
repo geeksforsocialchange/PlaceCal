@@ -12,7 +12,7 @@ post {
 
 body:graphql {
   {
-    articlesByTag(tagId: 3) {
+    articlesByTag({{tagId}}) {
       headline
       articleBody
       datePublished
@@ -23,4 +23,8 @@ body:graphql {
     }
   }
   
+}
+
+vars:pre-request {
+  tagId: tagId: 3
 }
