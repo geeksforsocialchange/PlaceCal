@@ -11,7 +11,7 @@ labels:
 # New site request (for requester to complete)
 
 - Name of person:
-- Region covered: 
+- Region covered:
 - Site name:
 - Desired colour scheme (pick one): orange blue green pink
 - PlaceCal domain: your_desired_subdomain.placecal.org
