@@ -8,24 +8,23 @@ labels:
   - impacts client
 ---
 
-# New site request
+# New site request (for requester to complete)
 
-- Name of person: person_name
-- Region covered: region_name
-- Site name: site_name
-- Desired colour scheme (pick one): orange blue green pink custom
-- [Optional] Interest covered: partnership_name
-- Domain: site_name_slug.placecal.org
+- Name of person:
+- Region covered: 
+- Site name:
+- Desired colour scheme (pick one): orange blue green pink
+- Domain: your_desired_subdomain.placecal.org
+- [Optional] Partnership name:
+- [Optional] Images: _Attach logos and hero image to this ticket if you have them!_
 
-## Acceptance criteria
+## Acceptance criteria (for PlaceCal devs)
 
 - [ ] site_name_slug.placecal.org exists!
 - [ ] site_name_slug.placecal.org is not set to public
-- [ ] site_name_slug.placecal.org has an SSL certificate added (see [handbook](https://gfsc.notion.site/Creating-a-new-PlaceCal-Site-bd90494c88e74bfe94c306f714ede8dc))
 - [ ] Header and footer logos are created (preferably as svg), with transparent background
 - [ ] Site has logos uploaded in correct places
 - [ ] person_name is set as site admin
 - [ ] person_name is set as neighbourhood admin for region_name
 - [ ] If it's an partership-based site, person_name is set as partnership admin for partnership_name
-- [ ] The [handbook](https://gfsc.notion.site/Creating-a-new-PlaceCal-Site-bd90494c88e74bfe94c306f714ede8dc) is accurate (make edits if not clear)
 - [ ] person_name is informed their site has been created
