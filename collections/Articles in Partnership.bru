@@ -1,0 +1,30 @@
+meta {
+  name: Articles in Partnership
+  type: graphql
+  seq: 11
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    articlesByTag({{tagId}}) {
+      headline
+      articleBody
+      datePublished
+      providers {
+        id
+      }
+      image
+    }
+  }
+  
+}
+
+vars:pre-request {
+  tagId: tagId: 3
+}

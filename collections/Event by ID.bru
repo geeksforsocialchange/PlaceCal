@@ -1,0 +1,39 @@
+meta {
+  name: Event by ID
+  type: graphql
+  seq: 8
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    event({{id}}) {
+      id
+      name
+      summary
+      description
+      startDate
+      endDate
+      address {
+        streetAddress
+        postalCode
+        addressLocality
+        addressRegion
+      }
+      organizer {
+        id
+        name
+      }
+    }
+  }
+  
+}
+
+vars:pre-request {
+  id: id: 381224
+}

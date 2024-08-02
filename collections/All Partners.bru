@@ -1,0 +1,31 @@
+meta {
+  name: All Partners
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    partnerConnection {
+      edges {
+        node {
+          id
+          summary
+          description
+          accessibilitySummary
+          logo
+          url
+          twitterUrl
+          facebookUrl
+        }
+      }
+    }
+  }
+  
+}
