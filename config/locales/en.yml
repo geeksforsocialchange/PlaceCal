@@ -48,7 +48,7 @@ en:
               blank: "Select at least one Tag"
   admin:
     calendars:
-      handbook_hint: "The source URL for your calendar feed. See the <a href='https://handbook.placecal.org/reference/supported-calendar-sources'>PlaceCal Handbook</a> if you need help."
+      handbook_hint_html: "The source URL for your calendar feed. See the <a href='https://handbook.placecal.org/reference/supported-calendar-sources'>PlaceCal Handbook</a> if you need help."
   date:
     formats:
       datetime: "%b %-d, %Y %l:%M"
