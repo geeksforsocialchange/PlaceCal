@@ -61,7 +61,7 @@ jobs:
 
       - if: github.ref == 'refs/heads/main'
         name: Deploy to placecal-staging.org
-        uses: dokku/github-action@06286975346ec9a8d3827e6c5329d0d159d4635d # v1.4.0
+        uses: dokku/github-action@0c02c44f990eac0ed2b3ee90a9b3ca0a38d15349 # v1.5.0
         with:
           branch: main
           ci_branch_name: main
@@ -70,7 +70,7 @@ jobs:
 
       - if: github.ref == 'refs/heads/production'
         name: Deploy to placecal.org
-        uses: dokku/github-action@06286975346ec9a8d3827e6c5329d0d159d4635d # v1.4.0
+        uses: dokku/github-action@0c02c44f990eac0ed2b3ee90a9b3ca0a38d15349 # v1.5.0
         with:
           branch: main
           ci_branch_name: production
