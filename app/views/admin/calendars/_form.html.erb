@@ -21,7 +21,7 @@
                           hint: 'Which group organises these events?' %>
 
         <%= f.input :name, hint: 'A simple description to help rememember what this calendar is' %>
-        <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: t('admin.calendars.handbook_hint_html').html_safe %>
+        <%= f.input :source, label: 'URL', placeholder: 'https://your-domain.com/events.ics', hint: t('admin.calendars.handbook_hint') %>
         <%= f.input :importer_mode,
           collection: options_for_importer,
           default: 'auto',
