@@ -75,14 +75,15 @@ gem 'rack-cors', require: 'rack/cors'
 # Utilities
 gem 'auto_strip_attributes'
 gem 'bootsnap', require: false
+gem 'csv'
 gem 'enumerize'
 gem 'friendly_id'
 # gem 'listen' # needed?
+gem 'invisible_captcha'
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
-
-gem 'invisible_captcha'
+gem 'observer'
 gem 'paper_trail'
 gem 'rollbar'
 gem 'uk_postcode'

@@ -138,6 +138,7 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    csv (3.3.0)
     database_cleaner-active_record (2.1.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -295,6 +296,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
+    observer (0.1.2)
     orm_adapter (0.5.0)
     paper_trail (15.1.0)
       activerecord (>= 6.1)
@@ -507,6 +509,7 @@ DEPENDENCIES
   carrierwave
   cocoon
   coffee-rails
+  csv
   database_cleaner-active_record
   delayed_job_active_record
   devise
@@ -542,6 +545,7 @@ DEPENDENCIES
   net-imap
   net-pop
   net-smtp
+  observer
   paper_trail
   pg
   puma
