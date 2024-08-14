@@ -5,6 +5,10 @@ module CalendarImporter::Parsers
     NAME = 'LD+JSON'
     KEY = 'ld-json'
 
+    def initialize(calendar, options = {})
+      super calendar, options
+    end
+
     DOMAINS = ['various'].freeze
 
     CONTEXT = {
@@ -55,7 +59,7 @@ module CalendarImporter::Parsers
         'WebSite' => :consume_website
       }.freeze
 
-      event_types = %w[business childrens course_instance comedy dance delivery education event_series exhibition festival food hackathon literary music publication sale screening social sports theatre visual_arts]
+      event_types = %w[business childrens course_instance comedy dance delivery education event_series exhibition festival food hackathon literary music publication sale screening social sports theatre visual_arts].freeze
 
       event_types.each do |type|
         define_method(:"consume_#{type}_event") do |data|
@@ -102,14 +106,14 @@ module CalendarImporter::Parsers
           if dispatch_to
             send dispatch_to, data
           else
-            Rails.logger.debug { "uknown type '#{type}'" }
+            Rails.logger.debug { "unknown ld+json type '#{type}'" }
           end
           nil
         end
       end
 
       def validate_events
-        events.select! { |ev| ev.valid? && ev.in_future? }
+        events.select { |ev| ev.valid? && ev.in_future? }
       end
 
       def events
@@ -125,10 +129,6 @@ module CalendarImporter::Parsers
       events = try_parser.import_events_from(data)
 
       events.present?
-    end
-
-    def initialize(calendar, options = {})
-      super calendar, options
     end
 
     def download_calendar
