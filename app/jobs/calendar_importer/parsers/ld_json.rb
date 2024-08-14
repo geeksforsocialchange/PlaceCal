@@ -113,7 +113,7 @@ module CalendarImporter::Parsers
       end
 
       def validate_events
-        events.select { |ev| ev.valid? && ev.in_future? }
+        events.select! { |ev| ev.valid? && ev.in_future? }
       end
 
       def events
