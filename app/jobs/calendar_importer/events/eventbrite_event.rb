@@ -46,13 +46,13 @@ module CalendarImporter::Events
     end
 
     def dtstart
-      DateTime.parse(@event['start']['local'])
+      DateTime.parse(@event['start']['utc'])
     rescue StandardError
       nil
     end
 
     def dtend
-      DateTime.parse(@event['end']['local'])
+      DateTime.parse(@event['end']['utc'])
     rescue StandardError
       nil
     end
