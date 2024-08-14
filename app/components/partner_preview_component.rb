@@ -19,4 +19,12 @@ class PartnerPreviewComponent < ViewComponent::Base
 
     @site.primary_neighbourhood && (@partner.address&.neighbourhood == @site.primary_neighbourhood)
   end
+
+  def data_categories
+    @partner.categories.pluck(:id)
+  end
+
+  def data_neighbourhoods
+    @partner.neighbourhoods.pluck(:id)
+  end
 end

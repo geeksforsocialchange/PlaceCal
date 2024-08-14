@@ -213,6 +213,13 @@ class Partner < ApplicationRecord
     objects.where(organisation_relationships: { verb: :manages })
   end
 
+  def neighbourhoods
+    arr = []
+    arr << address.neighbourhood if address&.neighbourhood
+    arr << service_areas&.map(&:neighbourhood) if service_areas
+    arr.flatten
+  end
+
   def to_s
     name
   end
