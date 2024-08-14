@@ -6,7 +6,7 @@
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
-    <%= @filters.render_filters(self) %>
+    <%= render FilterComponent.new(partners: @partners, site: @site) %>
   <% end %>
 
   <hr>

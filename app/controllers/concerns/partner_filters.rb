@@ -39,7 +39,18 @@ class PartnerFilters
     #   where those partners have addresses or service areas
     #     in the neighbourhoods of the site
 
-    @categories ||= Category.all
+    @categories ||= Category
+                    .joins(:partner_tags)
+                    .left_joins(:partner_tags)
+                    .left_joins(partners: %i[address service_areas])
+                    .where(
+                      '(addresses.neighbourhood_id in (:neighbourhood_ids) OR service_areas.neighbourhood_id in (:neighbourhood_ids))',
+                      neighbourhood_ids: @site_neighbourhood_ids
+                    )
+                    .group('tags.id')
+                    .having('count(partner_tags.tag_id) > 0')
+                    .having('(count(addresses.id) > 0 OR count(service_areas.id) > 0)')
+                    .order(:name)
   end
 
   def show_category_filter?
