@@ -1,0 +1,16 @@
+<li class="preview" data-categories="12">
+  <div class="preview__header">
+    <h3><%= link_to @partner.name, @partner %></h3>
+    <% if show_neighbourhood? %>
+      <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
+        <span><%= @neighbourhood_name %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @partner.description %>
+    <div class="preview__details">
+      <%= content_tag :p, @partner.summary %>
+    </div>
+  <% end %>
+</li>

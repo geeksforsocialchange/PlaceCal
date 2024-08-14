@@ -10,9 +10,10 @@
   <% end %>
 
   <hr>
-  <ul class="partners reset two-col" id="partners" >
+  <ul class="partners reset two-col" id="partners">
     <% @partners.each do |partner| %>
-      <%= render_component("place_partner_preview",
+      <%= render PartnerPreviewComponent.new(partner: partner, site: @site) %>
+      <%# render_component("place_partner_preview",
                            previewee: partner,
                            primary_neighbourhood: @primary_neighbourhood,
                            service_areas: partner.service_areas,
@@ -26,3 +27,5 @@
 <div id="map">
   <%= render 'shared/map', points: @map, site: @current_site.slug %>
 </div>
+
+<%= console %>
