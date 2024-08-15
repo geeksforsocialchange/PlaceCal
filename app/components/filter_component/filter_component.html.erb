@@ -12,7 +12,7 @@
           <% categories.each do |category| %>
           <div class="filters__option">
             <%= radio_button_tag 'category', category.id, current_category?(category), class: "tag__button" %>
-            <%= label_tag 'category', category.name, class: "tag__label" %>
+            <%= label_tag "category_#{category.id}", category.name, class: "tag__label" %>
           </div>
           <% end %>
         </div>
@@ -45,8 +45,8 @@
       <div class="filters__group">
         <% neighbourhoods.each do |neighbourhood| %>
           <div class="filters__option">
-            <%= radio_button_tag "neighbourhood", neighbourhood.name, class: "tag__button" %>
-            <%= label_tag "neighbourhood_#{neighbourhood.name}", neighbourhood.name, class: "tag__label" %>
+            <%= radio_button_tag "neighbourhood", neighbourhood.id, neighbourhood.name, class: "tag__button" %>
+            <%= label_tag "neighbourhood_#{neighbourhood.id}", neighbourhood.name, class: "tag__label" %>
           </div>
         <% end %>
       </div>

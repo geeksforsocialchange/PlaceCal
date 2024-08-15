@@ -7,6 +7,7 @@ class FilterComponent < ViewComponent::Base
     @site = site
   end
 
+  # Categories
   def categories
     @partners.map(&:categories).flatten.uniq.sort_by(&:name)
   end
@@ -16,7 +17,7 @@ class FilterComponent < ViewComponent::Base
   end
 
   def show_category_filter?
-    true
+    categories.any?
   end
 
   def include_mode?
@@ -27,6 +28,7 @@ class FilterComponent < ViewComponent::Base
     false
   end
 
+  # Neighbourhoods
   def neighbourhoods
     @partners.map(&:neighbourhoods).flatten.uniq.sort_by(&:name)
   end
