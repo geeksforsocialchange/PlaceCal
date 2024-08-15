@@ -150,15 +150,16 @@ class Partner < ApplicationRecord
   #
   # @param site [Site] The site we want partners for.
   # @return [ActiveRecord::Relation<Partner>]
-  scope :for_site, lambda { |site|
+  scope :for_site, lambda { |site, filter = false|
     query = Partner
 
     # if site has tags show only partners WITH those tags
     site_tag_ids = site.tags.map(&:id)
+    site_tag_ids << filter if filter
     if site_tag_ids.any?
       query = query
-              .left_joins(:partner_tags)
-              .where('partner_tags.tag_id in (?)', site_tag_ids)
+              .joins(:tags)
+              .where('tags.id in (?)', site_tag_ids)
     end
 
     # now look for addresses and service areas
@@ -182,8 +183,14 @@ class Partner < ApplicationRecord
   # @param tags [Array<Tag>] A list of tags
   # @return [ActiveRecord::Relation<Partner>]
   scope :with_tags, lambda { |tag_ids|
-    left_joins(:partner_tags)
-      .where('partner_tags.tag_id in (?)', tag_ids)
+    joins(:categories).where('tags.id in (?)', tag_ids)
+  }
+
+  scope :with_neighbourhoods, lambda { |neighbourhood_ids|
+    joins(:address, :service_areas).where(
+      '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
+      neighbourhood_ids: neighbourhood_ids
+    )
   }
 
   # only select partners that have addresses
@@ -217,7 +224,7 @@ class Partner < ApplicationRecord
     arr = []
     arr << address.neighbourhood if address&.neighbourhood
     arr << service_areas&.map(&:neighbourhood) if service_areas
-    arr.flatten
+    arr.flatten.uniq
   end
 
   def to_s
@@ -443,7 +450,7 @@ class Partner < ApplicationRecord
 
     partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
     new_service_areas = partner_service_areas.reject { |e| e == service_area_to_remove.neighbourhood_id }
-    user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
+    # user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
 
     in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
     services_user_neighbourhood = new_service_areas.present?
@@ -467,7 +474,7 @@ class Partner < ApplicationRecord
   def valid_json?(json)
     JSON.parse(json)
     true
-  rescue JSON::ParserError, TypeError => e
+  rescue JSON::ParserError, TypeError => _e
     false
   end
 

@@ -16,10 +16,25 @@ class PartnersController < ApplicationController
   # GET /partners.json
   def index
     # Get all partners based in the neighbourhoods associated with this site.
-    @partners = Partner
-                .for_site(current_site)
-                .includes(:service_areas, :address)
-                .order(:name)
+    neighbourhood_partners =
+      if params[:neighbourhood]
+        Neighbourhood
+          .find(params[:neighbourhood])
+          .partners
+      else
+        Partner
+          .for_site(current_site)
+          #  .includes(:service_areas, :address) # Already included in scope, I think?
+          .order(:name)
+      end
+
+    @partners =
+      if params[:category]
+        category_partners = Partner.with_tags(params[:category])
+        [neighbourhood_partners, category_partners].reduce(:&)
+      else
+        neighbourhood_partners
+      end
 
     # show only partners with no service_areas
     @map = get_map_markers(@partners, true) if @partners.detect(&:address)

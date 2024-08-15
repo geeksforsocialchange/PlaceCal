@@ -35,6 +35,10 @@ class Neighbourhood < ApplicationRecord
 
   scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
 
+  def partners
+    (service_area_partners + address_partners).uniq
+  end
+
   def legacy_neighbourhood?
     release_date < Neighbourhood::LATEST_RELEASE_DATE
   end
