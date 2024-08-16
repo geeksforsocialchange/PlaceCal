@@ -15,7 +15,7 @@
   <% end %>
 
   <hr>
-  <%= turbo_frame_tag "partner_previews" do %>
+  <%# turbo_frame_tag "partner_previews" do %>
     <ul class="partners reset two-col" id="partners">
       <% @partners.each do |partner| %>
         <%= render PartnerPreviewComponent.new(partner: partner, site: @site) %>
@@ -28,11 +28,9 @@
                             ) %>
       <% end %>
     </ul>
-  <% end %>
+  <%# end %>
 </div>
 
 <div id="map">
-  <%# render 'shared/map', points: @map, site: @current_site.slug %>
+  <%= render 'shared/map', points: @map, site: @current_site.slug %>
 </div>
-
-<%# console %>

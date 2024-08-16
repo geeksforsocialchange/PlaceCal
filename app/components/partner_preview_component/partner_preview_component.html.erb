@@ -11,8 +11,8 @@
   <% if @partner.description %>
     <div class="preview__details">
       <%= content_tag :p, @partner.summary %>
-      <%= @partner.categories.map(&:name) %><br>
-      <%= @partner.neighbourhoods.map(&:name) %>
+      <!-- Categories: <%= @partner.categories.map(&:name).join(", ") %> -->
     </div>
   <% end %>
 </li>
+  
