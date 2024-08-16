@@ -7,7 +7,7 @@ module SeedTags
     Site.create!(
       name: 'Default Site',
       slug: 'default-site',
-      domain: 'default-site.placecal.org'
+      url: 'default-site.placecal.org'
     )
   end
 end
