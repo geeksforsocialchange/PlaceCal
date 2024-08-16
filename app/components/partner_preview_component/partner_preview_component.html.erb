@@ -1,9 +1,9 @@
-<li class="preview" data-categories="<%= data_categories %>" data-neighbourhoods="<%= data_neighbourhoods %>">
+<li class="preview">
   <div class="preview__header">
     <h3><%= link_to @partner.name, @partner %></h3>
     <% if show_neighbourhood? %>
       <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
-        <span><%= @neighbourhood_name %></span>
+        <span><%= neighbourhood_name %></span>
       </div>
     <% end %>
   </div>

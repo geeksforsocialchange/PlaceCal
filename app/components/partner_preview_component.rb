@@ -5,26 +5,22 @@ class PartnerPreviewComponent < ViewComponent::Base
     super
     @partner = partner
     @site = site
-    @show_neighbourhoods = @site.show_neighbourhoods?
-    @neighbourhood_name = @partner.neighbourhood_name_for_site(@site.badge_zoom_level)
   end
 
+  # Should this partner show a neighbourhood lozenge?
   def show_neighbourhood?
-    @show_neighbourhoods || service_areas.any?
+    @site.show_neighbourhoods? || @partner.neighbourhoods.any?
   end
 
+  def neighbourhood_name
+    @partner.neighbourhood_name_for_site(@site.badge_zoom_level)
+  end
+
+  # If the neighbourhood is the site's primary one, show the lozenge in a different colour
   def primary_neighbourhood?
     # Show everything as primary if primary is not set
     return true unless @site.primary_neighbourhood
 
     @site.primary_neighbourhood && (@partner.address&.neighbourhood == @site.primary_neighbourhood)
-  end
-
-  def data_categories
-    @partner.categories.pluck(:id)
-  end
-
-  def data_neighbourhoods
-    @partner.neighbourhoods.pluck(:id)
   end
 end
