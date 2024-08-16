@@ -1,6 +1,8 @@
 <%= form_with url: partners_path, 
               method: :get, 
-              data: { controller: "partner-filter-component", search_form_target: "form", turbo_frame: "partner_previews" }, 
+              data: { controller: "partner-filter-component", 
+                      "partner-filter-component-target": "form", 
+                      turbo_frame: "partner_previews" }, 
               class: 'filters__form' do %>
   <div class ="breadcrumb__element breadcrumb__element--last">
 
@@ -16,7 +18,7 @@
               <div class="filters__option">
                 <%= radio_button_tag "category", 
                                       category.id, 
-                                      current_category?(category), 
+                                      category_selected?(category.id),
                                       data: { action: "partner-filter-component#submitCategory",
                                               "partner-filter-component-target": "category" },
                                       class: "tag__button" %>
@@ -26,7 +28,7 @@
           </div>
           <%# if category_active? %>
             <hr>
-            <a href=<%= request.original_url %> class="btn size-patch" role="button">Reset</a>
+            <a href=<%= partners_url %> class="btn size-patch" role="button">Reset</a>
           <%# end %>
         </div>
       </div>
@@ -43,7 +45,7 @@
             <div class="filters__option">
               <%= radio_button_tag "neighbourhood",
                                     neighbourhood.id, 
-                                    neighbourhood.name, 
+                                    neighbourhood_selected?(neighbourhood.id),
                                     data: { action: "partner-filter-component#submitNeighbourhood",
                                             "partner-filter-component-target": "neighbourhood" },
                                     class: "tag__button" %>
@@ -53,7 +55,7 @@
         </div>
         <% # if neighbourhood_active? %>
           <hr>
-          <a href=<%= request.original_url %> class="btn size-patch" role="button">Reset</a>
+          <a href=<%= partners_url %> class="btn size-patch" role="button">Reset</a>
         <% # end %>
       </div>
     </div>

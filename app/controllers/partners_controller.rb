@@ -15,11 +15,15 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
+    # Set filter values
+    @selected_category = params[:category]
+    @selected_neighbourhood = params[:neighbourhood]
+
     # Get all partners based in the neighbourhoods associated with this site.
     neighbourhood_partners =
-      if params[:neighbourhood]
+      if @selected_neighbourhood
         Neighbourhood
-          .find(params[:neighbourhood])
+          .find(@selected_neighbourhood)
           .partners
       else
         Partner
@@ -29,8 +33,8 @@ class PartnersController < ApplicationController
       end
 
     @partners =
-      if params[:category]
-        category_partners = Partner.with_tags(params[:category])
+      if @selected_category
+        category_partners = Partner.with_tags(@selected_category)
         [neighbourhood_partners, category_partners].reduce(:&)
       else
         neighbourhood_partners
