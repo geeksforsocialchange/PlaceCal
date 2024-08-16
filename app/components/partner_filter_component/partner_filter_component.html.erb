@@ -10,7 +10,10 @@
     <% if show_category_filter? %>
       <div class="breadcrumb__filters filters">
         <div class="js-category-filters-toggle filters__toggle">
-          <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Category</span></a>
+          <a href="#">
+            <span class="icon icon--arrow-down">↓</span> 
+            <span data-partner-filter-component-target="categoryText" class="filters__link">Category</span>
+            </a>
         </div>
         <div class="filters__dropdown filters__dropdown--hidden js-category-filters">
           <div class="filters__group">
@@ -28,7 +31,7 @@
           </div>
           <%# if category_active? %>
             <hr>
-            <a href=<%= partners_url %> class="btn size-patch" role="button">Reset</a>
+            <button data-action="partner-filter-component#resetCategory" class="btn size-patch">Reset</button>
           <%# end %>
         </div>
       </div>
@@ -37,7 +40,10 @@
     <%# Neighbourhood filter %>
     <div class="breadcrumb__filters filters">
       <div class="js-neighbourhood-filters-toggle filters__toggle">
-        <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Neighbourhood</span></a>
+        <a href="#">
+          <span class="icon icon--arrow-down">↓</span> 
+          <span data-partner-filter-component-target="neighbourhoodText" class="filters__link">Neighbourhood</span>
+        </a>
       </div>
       <div class="filters__dropdown filters__dropdown--hidden js-neighbourhood-filters">
         <div class="filters__group">
@@ -55,7 +61,7 @@
         </div>
         <% # if neighbourhood_active? %>
           <hr>
-          <a href=<%= partners_url %> class="btn size-patch" role="button">Reset</a>
+          <button data-action="partner-filter-component#resetNeighbourhood" class="btn size-patch">Reset</button>
         <% # end %>
       </div>
     </div>

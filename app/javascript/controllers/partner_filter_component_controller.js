@@ -2,17 +2,40 @@ import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="partner-filter-component"
 export default class extends Controller {
-	static targets = ["category", "neighbourhood", "form"];
+	static targets = [
+		"form",
+		"category",
+		"categoryText",
+		"neighbourhood",
+		"neighbourhoodText",
+	];
 
-	connect() {}
+	connect() {
+		// Find the associated label for each selected param and get the text contents
+		// If params are selected, they show up instead of "Category" and "Neighbourhood" text
+		this.categoryTextTarget.innerHTML = this.categoryTargets.find(
+			(r) => r.checked
+		).labels[0].textContent;
+		this.neighbourhoodTextTarget.innerHTML = this.neighbourhoodTargets.find(
+			(r) => r.checked
+		).labels[0].textContent;
+	}
 
 	submitCategory() {
-		console.log(this.categoryTargets.find((r) => r.checked).value);
 		this.formTarget.submit();
 	}
 
 	submitNeighbourhood() {
-		console.log(this.neighbourhoodTargets.find((r) => r.checked).value);
+		this.formTarget.submit();
+	}
+
+	resetCategory() {
+		this.categoryTargets.find((r) => r.checked).checked = false;
+		this.formTarget.submit();
+	}
+
+	resetNeighbourhood() {
+		this.neighbourhoodTargets.find((r) => r.checked).checked = false;
 		this.formTarget.submit();
 	}
 }
