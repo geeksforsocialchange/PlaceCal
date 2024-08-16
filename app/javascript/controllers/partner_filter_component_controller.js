@@ -37,7 +37,7 @@ export default class extends Controller {
 	}
 
 	resetNeighbourhood() {
-		this.neighbourhoodTargets.find((r) => r.checked).checked = false;
+		this.selectedNeighbourhood.checked = false;
 		this.formTarget.submit();
 	}
 

@@ -28,7 +28,6 @@ class PartnersController < ApplicationController
       else
         Partner
           .for_site(current_site)
-          #  .includes(:service_areas, :address) # Already included in scope, I think?
           .order(:name)
       end
 
