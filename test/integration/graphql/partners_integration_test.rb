@@ -279,6 +279,7 @@ class GraphQLPartnerTest < ActionDispatch::IntegrationTest
 
     data = result['data']
     partner_data = data['partnersByTag']
+
     assert_equal(1, partner_data.length, 'expecting to see a tag on this partner')
   end
 

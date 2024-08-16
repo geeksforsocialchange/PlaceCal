@@ -183,7 +183,7 @@ class Partner < ApplicationRecord
   # @param tags [Array<Tag>] A list of tags
   # @return [ActiveRecord::Relation<Partner>]
   scope :with_tags, lambda { |tag_ids|
-    joins(:categories).where('tags.id in (?)', tag_ids)
+    joins(:tags).where('tags.id in (?)', tag_ids)
   }
 
   scope :with_neighbourhoods, lambda { |neighbourhood_ids|

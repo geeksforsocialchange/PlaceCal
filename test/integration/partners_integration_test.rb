@@ -64,7 +64,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
-    assert_select '.preview__header', text: @default_site_partners.first.name
+    assert_select '.preview__header h3', text: @default_site_partners.first.name
     assert_select '.preview__details', text: @default_site_partners.first.summary
   end
 
@@ -76,7 +76,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
-    assert_select '.preview__header', text: @neighbourhood_site_partners.first.name
+    assert_select '.preview__header h3', text: @neighbourhood_site_partners.first.name
     assert_select '.preview__details', text: @neighbourhood_site_partners.first.summary
   end
 
@@ -101,7 +101,7 @@ class PartnersIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'div.hero h1', text: 'Our Partners'
     assert_select 'ul.partners li', 5
     # Ensure title/summary description is displayed
-    assert_select '.preview__header', text: @tagged_site_partners.first.name
+    assert_select '.preview__header h3', text: @tagged_site_partners.first.name
     assert_select '.preview__details', text: @tagged_site_partners.first.summary
   end
 

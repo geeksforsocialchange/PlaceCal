@@ -6,29 +6,19 @@
 
 <div class="c c--lg-space-after">
   <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
-    <%= turbo_frame_tag "partner_previews_filter" do %>
-      <%= render PartnerFilterComponent.new(partners: @partners, 
-                                            site: @site,
-                                            selected_category: @selected_category, 
-                                            selected_neighbourhood: @selected_neighbourhood) %>
-    <% end %>
+    <%= render PartnerFilterComponent.new(partners: @partners, 
+                                          site: @site,
+                                          selected_category: @selected_category, 
+                                          selected_neighbourhood: @selected_neighbourhood) %>
   <% end %>
 
   <hr>
-  <%# turbo_frame_tag "partner_previews" do %>
-    <ul class="partners reset two-col" id="partners">
-      <% @partners.each do |partner| %>
-        <%= render PartnerPreviewComponent.new(partner: partner, site: @site) %>
-        <%# render_component("place_partner_preview",
-                            previewee: partner,
-                            primary_neighbourhood: @primary_neighbourhood,
-                            service_areas: partner.service_areas,
-                            show_neighbourhoods: @current_site.show_neighbourhoods?,
-                            neighbourhood_name: partner.neighbourhood_name_for_site(@current_site.badge_zoom_level)
-                            ) %>
-      <% end %>
-    </ul>
-  <%# end %>
+
+  <ul class="partners reset two-col" id="partners">
+    <% @partners.each do |partner| %>
+      <%= render PartnerPreviewComponent.new(partner: partner, site: @site) %>
+    <% end %>
+  </ul>
 </div>
 
 <div id="map">

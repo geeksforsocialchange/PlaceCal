@@ -22,14 +22,6 @@ class PartnerFilterComponent < ViewComponent::Base
     categories.any?
   end
 
-  def include_mode?
-    true
-  end
-
-  def exclude_mode?
-    false
-  end
-
   # Neighbourhoods
   def neighbourhoods
     @partners.map(&:neighbourhoods).flatten.uniq.sort_by(&:name)
