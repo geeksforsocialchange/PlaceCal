@@ -8,15 +8,26 @@
 	&__toggle {
 	}
 
+	&__label {
+		text-align: left;
+	}
+
 	&__dropdown {
 		background-color: $base-background;
 		box-shadow: 7px 7px 20px 0px rgba(153, 134, 117, 0.83);
 		padding: 1rem;
 		position: absolute;
-		right: 0rem;
 		top: 2rem;
-		width: 14rem;
 		z-index: 500;
+		text-align: center;
+
+		&--category {
+			left: -2rem;
+		}
+
+		&--neighbourhood {
+			right: -3rem;
+		}
 
 		&--hidden {
 			display: none;
@@ -25,19 +36,17 @@
 
 	&__option {
 		padding: 0.25rem 0;
-		display: block;
+		display: grid;
+		grid-template-columns: auto 1fr;
+	}
+
+	&__reset {
 	}
 
 	input {
-		float: right;
-
 		&:checked + label {
 			font-weight: bold;
 		}
-	}
-
-	label {
-		display: inline-block;
 	}
 
 	hr {

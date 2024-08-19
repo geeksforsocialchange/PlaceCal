@@ -15,7 +15,7 @@
             <span data-partner-filter-component-target="categoryText" class="filters__link">Category</span>
             </a>
         </div>
-        <div class="filters__dropdown filters__dropdown--hidden js-category-filters">
+        <div class="filters__dropdown filters__dropdown--category filters__dropdown--hidden js-category-filters">
           <div class="filters__group">
             <% categories.each do |category| %>
               <div class="filters__option">
@@ -25,7 +25,7 @@
                                       data: { action: "partner-filter-component#submitCategory",
                                               "partner-filter-component-target": "category" },
                                       class: "tag__button" %>
-                <%= label_tag "category_#{category.id}", category.name, class: "tag__label" %>
+                <%= label_tag "category_#{category.id}", category.name, class: "filters__label" %>
               </div>
             <% end %>
           </div>
@@ -44,7 +44,7 @@
           <span data-partner-filter-component-target="neighbourhoodText" class="filters__link">Neighbourhood</span>
         </a>
       </div>
-      <div class="filters__dropdown filters__dropdown--hidden js-neighbourhood-filters">
+      <div class="filters__dropdown filters__dropdown--neighbourhood filters__dropdown--hidden js-neighbourhood-filters">
         <div class="filters__group">
           <% neighbourhoods.each do |neighbourhood| %>
             <div class="filters__option">
@@ -54,12 +54,12 @@
                                     data: { action: "partner-filter-component#submitNeighbourhood",
                                             "partner-filter-component-target": "neighbourhood" },
                                     class: "tag__button" %>
-              <%= label_tag "neighbourhood_#{neighbourhood.id}", neighbourhood.name, class: "tag__label" %>
+              <%= label_tag "neighbourhood_#{neighbourhood.id}", neighbourhood.name, class: "filters__label" %>
             </div>
           <% end %>
         </div>
         <% # if neighbourhood_active? %>
-          <button data-action="partner-filter-component#resetNeighbourhood" class="btn size-patch">Reset</button>
+          <button data-action="partner-filter-component#resetNeighbourhood" class="btn size-patch filter__reset">Reset</button>
         <% # end %>
       </div>
     </div>
