@@ -10,19 +10,20 @@
 
 	&__label {
 		text-align: left;
+		margin-left: 0.25rem;
 	}
 
 	&__dropdown {
 		background-color: $base-background;
 		box-shadow: 7px 7px 20px 0px rgba(153, 134, 117, 0.83);
-		padding: 1rem;
+		padding: 0.8rem;
 		position: absolute;
 		top: 2rem;
 		z-index: 500;
 		text-align: center;
 
 		&--category {
-			left: -2rem;
+			left: -1rem;
 		}
 
 		&--neighbourhood {
