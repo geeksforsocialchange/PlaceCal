@@ -133,6 +133,20 @@ class Site < ApplicationRecord
     tagline && tagline.empty? ? false : tagline
   end
 
+  def robots
+    config = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
+
+    if is_published?
+      config
+    else
+      <<~TXT
+        #{config}
+        User-agent: *
+        Disallow: /
+      TXT
+    end
+  end
+
   class << self
     # Find the requested Site from information in the rails request object.
     #
