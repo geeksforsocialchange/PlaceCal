@@ -24,21 +24,21 @@ export default class extends Controller {
 	}
 
 	submitCategory() {
-		this.formTarget.submit();
+		this.formTarget.requestSubmit();
 	}
 
 	submitNeighbourhood() {
-		this.formTarget.submit();
+		this.formTarget.requestSubmit();
 	}
 
 	resetCategory() {
 		this.selectedCategory.checked = false;
-		this.formTarget.submit();
+		this.formTarget.requestSubmit();
 	}
 
 	resetNeighbourhood() {
 		this.selectedNeighbourhood.checked = false;
-		this.formTarget.submit();
+		this.formTarget.requestSubmit();
 	}
 
 	get selectedCategory() {

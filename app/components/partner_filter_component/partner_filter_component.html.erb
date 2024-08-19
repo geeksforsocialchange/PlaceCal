@@ -1,7 +1,8 @@
 <%= form_with url: partners_path, 
               method: :get, 
               data: { controller: "partner-filter-component", 
-                      "partner-filter-component-target": "form" }, 
+                      "partner-filter-component-target": "form",
+                      "turbo-frame": "partner_previews"}, 
               class: 'filters__form' do %>
   <div class ="breadcrumb__element breadcrumb__element--last">
     <span class="filters__link">Filter by:</span>
