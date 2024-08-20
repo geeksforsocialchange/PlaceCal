@@ -15,11 +15,6 @@ class SitesController < ApplicationController
     end
   end
 
-  def robots
-    robots = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
-    render plain: robots
-  end
-
   private
 
   def set_places_to_get_computer_access
