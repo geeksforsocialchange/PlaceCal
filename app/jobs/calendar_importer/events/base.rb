@@ -37,9 +37,9 @@ module CalendarImporter::Events
 
       # do we have HTML? yeah let's get rid of that
       doc = Nokogiri::HTML.fragment(clean_text)
-      if as_plaintext
-        clean_text = doc.text
 
+      if as_plaintext
+        doc.text
       else
         tags = doc.css('*')
 
@@ -75,10 +75,9 @@ module CalendarImporter::Events
           body_text = doc.serialize
           clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
         end
-      end
 
-      # convert HTML tags into markdown kramdown
-      Kramdown::Document.new(clean_text, input: input_mode).to_kramdown.strip
+        Kramdown::Document.new(clean_text, input: input_mode).to_kramdown.strip
+      end
     end
 
     def attributes
