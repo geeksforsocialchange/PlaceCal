@@ -5,7 +5,10 @@
 		position: relative;
 	}
 
-	&__toggle {
+	&__toggle button {
+		border: none;
+		background: none;
+		font-family: $sans-serif;
 	}
 
 	&__label {

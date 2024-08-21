@@ -6,11 +6,45 @@ export default class extends Controller {
 		"form",
 		"category",
 		"categoryText",
+		"categoryDropdown",
 		"neighbourhood",
 		"neighbourhoodText",
+		"neighbourhoodDropdown",
 	];
 
 	connect() {
+		this.updateLabels();
+	}
+
+	submitCategory() {
+		this.submitForm();
+	}
+
+	submitNeighbourhood() {
+		this.submitForm();
+	}
+
+	resetCategory() {
+		this.selectedCategory.checked = false;
+		this.submitForm();
+	}
+
+	resetNeighbourhood() {
+		this.selectedNeighbourhood.checked = false;
+		this.submitForm();
+	}
+
+	toggleCategory() {
+		this.categoryDropdownTarget.classList.toggle("filters__dropdown--hidden");
+	}
+
+	toggleNeighbourhood() {
+		this.neighbourhoodDropdownTarget.classList.toggle(
+			"filters__dropdown--hidden"
+		);
+	}
+
+	updateLabels() {
 		// Find the associated label for each selected param and get the text contents
 		// If params are selected, they show up instead of "Category" and "Neighbourhood" text
 		if (this.selectedCategory) {
@@ -22,23 +56,9 @@ export default class extends Controller {
 				this.selectedNeighbourhood.labels[0].textContent;
 		}
 	}
-
-	submitCategory() {
+	submitForm() {
 		this.formTarget.requestSubmit();
-	}
-
-	submitNeighbourhood() {
-		this.formTarget.requestSubmit();
-	}
-
-	resetCategory() {
-		this.selectedCategory.checked = false;
-		this.formTarget.requestSubmit();
-	}
-
-	resetNeighbourhood() {
-		this.selectedNeighbourhood.checked = false;
-		this.formTarget.requestSubmit();
+		this.updateLabels();
 	}
 
 	get selectedCategory() {

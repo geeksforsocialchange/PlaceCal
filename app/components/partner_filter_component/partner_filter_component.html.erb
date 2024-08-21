@@ -1,9 +1,8 @@
-<%# turbo_frame_tag "partners_filter" do %>
 <%= form_with url: partners_path, 
               method: :get, 
               data: { controller: "partner-filter-component", 
                       "partner-filter-component-target": "form",
-                      # "turbo-frame": "partner_previews"
+                      "turbo-action": "advance"
                     }, 
               class: 'filters__form' do %>
   <div class ="breadcrumb__element breadcrumb__element--last">
@@ -11,13 +10,13 @@
     <%# Category filter %>
     <% if show_category_filter? %>
       <div class="breadcrumb__filters filters">
-        <div class="js-category-filters-toggle filters__toggle">
-          <a href="#">
+        <div class="filters__toggle">
+          <button type="button" data-action="partner-filter-component#toggleCategory">
             <span class="icon icon--arrow-down">↓</span> 
             <span data-partner-filter-component-target="categoryText" class="filters__link">Category</span>
-            </a>
+          </button>
         </div>
-        <div class="filters__dropdown filters__dropdown--category filters__dropdown--hidden js-category-filters">
+        <div class="filters__dropdown filters__dropdown--hidden filters__dropdown--category" data-partner-filter-component-target="categoryDropdown">
           <div class="filters__group">
             <% categories.each do |category| %>
               <div class="filters__option">
@@ -40,14 +39,14 @@
 
     <%# Neighbourhood filter %>
     <div class="breadcrumb__filters filters">
-      <div class="js-neighbourhood-filters-toggle filters__toggle">
-        <a href="#">
+      <div class="filters__toggle">
+        <button type="button" data-action="partner-filter-component#toggleNeighbourhood">
           <span class="icon icon--arrow-down">↓</span> 
           <span data-partner-filter-component-target="neighbourhoodText" class="filters__link">Neighbourhood</span>
-        </a>
+        </button>
       </div>
-      <div class="filters__dropdown filters__dropdown--neighbourhood filters__dropdown--hidden js-neighbourhood-filters">
-        <div class="filters__group">
+      <div class="filters__dropdown filters__dropdown--hidden filters__dropdown--neighbourhood" data-partner-filter-component-target="neighbourhoodDropdown">
+        <div class="filters__group" id="neighbourhoods_filter">
           <% neighbourhoods.each do |neighbourhood| %>
             <div class="filters__option">
               <%= radio_button_tag "neighbourhood",
@@ -68,4 +67,3 @@
 
   </div>
 <% end %>
-<%# end %>
