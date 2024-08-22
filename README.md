@@ -13,7 +13,7 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 To run PlaceCal locally you will need to install the following dependencies:
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Ruby 3.3.3](https://www.ruby-lang.org/)
+- [Ruby 3.3.4](https://www.ruby-lang.org/)
 - [Node.js 20.x](https://nodejs.org/en/download) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
@@ -66,6 +66,23 @@ Amongst other things, this will create an admin user for you:
 - Make sure you use `lvh.me:3000` instead of `localhost:3000` or you **will** have authentication problems
 - The admin interface is at `admin.lvh.me:3000`
 - Access code docs through your local filesystem and update them with `bin/rails yard`
+
+### Importing calendars
+
+To import all events, run the following command. For production environments, this task should be run on a cron at regular intervals.
+
+```sh
+rails events:import_all_calendars
+```
+
+To import one calendar, run:
+
+```sh
+rails events:import_calendar[100]
+
+# nb: zsh users will need to escape brackets
+rails events:import_calendar\[100\]
+```
 
 ## Testing, linting and formatting
 

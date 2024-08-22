@@ -44,6 +44,7 @@ class CalendarImporter::CalendarImporterTask
     @parser ||= CalendarImporter::CalendarImporter.new(calendar).parser
   end
 
+  # Get a properly formatted event list from the source
   def calendar_source
     @calendar_source ||= parser.new(
       calendar,
@@ -52,6 +53,7 @@ class CalendarImporter::CalendarImporterTask
     ).calendar_to_events
   end
 
+  # Send the event data to be imported
   def event_data_from_parser
     return [] if !force_import && !calendar_source.checksum_changed
 
@@ -60,6 +62,7 @@ class CalendarImporter::CalendarImporterTask
     end
   end
 
+  # Attempt to create each event
   def process_event(parsed_event)
     return if parsed_event.is_private?
     return if parsed_event.has_no_occurences?
