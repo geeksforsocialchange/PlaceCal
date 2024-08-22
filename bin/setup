@@ -27,7 +27,7 @@ FileUtils.chdir APP_ROOT do
   system! 'bin/rails db:prepare'
 
   puts "\n== Importing events =="
-  system! 'bin/rails import:all_events'
+  system! 'bin/rails events:import_all_calendars'
 
   puts "\n== Removing old logs and tempfiles =="
   system! 'bin/rails log:clear tmp:clear'

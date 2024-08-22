@@ -41,7 +41,7 @@ setup_env:
 
 setup_db:
 	bundle exec rails db:create db:schema:load
-	bundle exec rails import:all_events
+	bundle exec rails events:import_all_calendars
 
 seed_GFSC_prod_copy_db:
 	rails db:dump_production_and_restore_other restore_on_local=1

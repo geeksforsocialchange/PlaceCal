@@ -5,6 +5,10 @@ module CalendarImporter::Parsers
     NAME = 'LD+JSON'
     KEY = 'ld-json'
 
+    def initialize(calendar, options = {})
+      super calendar, options
+    end
+
     DOMAINS = ['various'].freeze
 
     CONTEXT = {
@@ -32,15 +36,15 @@ module CalendarImporter::Parsers
         'BusinessEvent' => :consume_business_event,
         'ChildrensEvent' => :consume_childrens_event,
         'ComedyEvent' => :consume_comedy_event,
-        'CourseInstance' => :consume_course_instance,
+        'CourseInstance' => :consume_course_instance_event,
         'DanceEvent' => :consume_dance_event,
         'DeliveryEvent' => :consume_delivery_event,
         'EducationEvent' => :consume_education_event,
-        'EventSeries' => :consume_event_series,
+        'EventSeries' => :consume_event_series_event,
         'ExhibitionEvent' => :consume_exhibition_event,
-        'Festival' => :consume_festival,
+        'Festival' => :consume_festival_event,
         'FoodEvent' => :consume_food_event,
-        'Hackathon' => :consume_hackathon,
+        'Hackathon' => :consume_hackathon_event,
         'LiteraryEvent' => :consume_literary_event,
         'MusicEvent' => :consume_music_event,
         'PublicationEvent' => :consume_publication_event,
@@ -55,83 +59,19 @@ module CalendarImporter::Parsers
         'WebSite' => :consume_website
       }.freeze
 
-      def consume_business_event(data)
-        consume_event data
-      end
+      event_types = %w[business childrens course_instance comedy dance delivery education event_series exhibition festival food hackathon literary music publication sale screening social sports theatre visual_arts].freeze
 
-      def consume_childrens_event(data)
-        consume_event data
+      event_types.each do |type|
+        define_method(:"consume_#{type}_event") do |data|
+          consume_event data
+        end
       end
-
-      def consume_comedy_event(data)
-        consume_event data
-      end
-
-      def consume_dance_event(data)
-        consume_event data
-      end
-
-      def consume_delivery_event(data)
-        consume_event data
-      end
-
-      def consume_education_event(data)
-        consume_event data
-      end
-
-      def consume_exhibition_event(data)
-        consume_event data
-      end
-
-      def consume_food_event(data)
-        consume_event data
-      end
-
-      def consume_literary_event(data)
-        consume_event data
-      end
-
-      def consume_music_event(data)
-        consume_event data
-      end
-
-      def consume_publication_event(data)
-        consume_event data
-      end
-
-      def consume_sale_event(data)
-        consume_event data
-      end
-
-      def consume_screening_event(data)
-        consume_event data
-      end
-
-      def consume_social_event(data)
-        consume_event data
-      end
-
-      def consume_sports_event(data)
-        consume_event data
-      end
-
-      def consume_theater_event(data)
-        consume_event data
-      end
-
-      def consume_visual_arts_event(data)
-        consume_event data
-      end
-
-      def consume_course_instance(data); end
-      def consume_event_series(data); end
-      def consume_festival(data); end
-      def consume_hackathon(data); end
 
       def consume_place(data)
         consume data['event']
       end
 
+      # TODO: Investigate why these are here, they seem like other types than event?
       def consume_brand(data); end
       def consume_website(data); end
 
@@ -166,7 +106,7 @@ module CalendarImporter::Parsers
           if dispatch_to
             send dispatch_to, data
           else
-            Rails.logger.debug { "uknown type '#{type}'" }
+            Rails.logger.debug { "unknown ld+json type '#{type}'" }
           end
           nil
         end
@@ -189,10 +129,6 @@ module CalendarImporter::Parsers
       events = try_parser.import_events_from(data)
 
       events.present?
-    end
-
-    def initialize(calendar, options = {})
-      super calendar, options
     end
 
     def download_calendar
