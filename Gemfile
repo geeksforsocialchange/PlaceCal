@@ -73,6 +73,7 @@ gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 
 # Utilities
+gem 'appsignal'
 gem 'auto_strip_attributes'
 gem 'bootsnap', require: false
 gem 'csv'
