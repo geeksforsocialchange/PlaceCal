@@ -88,7 +88,6 @@ namespace :events do
 
   desc 'clean up OnlineAddresses'
   task refresh_online_addresses: :environment do
-    # Clean out all OnlineAddress entities
     Event.where.not(online_address_id: nil).map do |e|
       e.online_address_id = nil
       e.save!

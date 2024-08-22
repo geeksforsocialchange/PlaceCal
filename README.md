@@ -69,7 +69,7 @@ Amongst other things, this will create an admin user for you:
 
 ### Importing calendars
 
-To import all events, run:
+To import all events, run the following command. For production environments, this task should be run on a cron at regular intervals.
 
 ```sh
 rails events:import_all_calendars
@@ -83,8 +83,6 @@ rails events:import_calendar[100]
 # nb: zsh users will need to escape brackets
 rails events:import_calendar\[100\]
 ```
-
-For production environments, this task should be run on a cron at regular intervals.
 
 ## Testing, linting and formatting
 
