@@ -69,10 +69,16 @@ Amongst other things, this will create an admin user for you:
 
 ### Importing calendars
 
-To import all events, run the following command. For production environments, this task should be run on a cron at regular intervals.
+To import all events, run the following command.
 
 ```sh
 rails events:import_all_calendars
+```
+
+After this has run once, the following command can be run which attempts to skip calendars which have not been updated. This should be run regularly on a cron in production environments. If you are using dokku to deploy like we are, this is handled in the `app.json` config file.
+
+```sh
+rails events:scan_for_calendars_needing_import
 ```
 
 To import one calendar, run:
