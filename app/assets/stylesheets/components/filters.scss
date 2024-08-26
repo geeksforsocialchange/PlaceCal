@@ -1,0 +1,59 @@
+@import "variables_mixins";
+
+.filters {
+	&__form {
+		position: relative;
+	}
+
+	&__toggle button {
+		border: none;
+		background: none;
+		font-family: $sans-serif;
+	}
+
+	&__label {
+		text-align: left;
+		margin-left: 0.25rem;
+	}
+
+	&__dropdown {
+		background-color: $base-background;
+		box-shadow: 7px 7px 20px 0px rgba(153, 134, 117, 0.83);
+		padding: 0.8rem;
+		position: absolute;
+		top: 2rem;
+		z-index: 500;
+		text-align: center;
+
+		&--category {
+			left: -1rem;
+		}
+
+		&--neighbourhood {
+			right: -3rem;
+		}
+
+		&--hidden {
+			display: none;
+		}
+	}
+
+	&__option {
+		padding: 0.25rem 0;
+		display: grid;
+		grid-template-columns: auto 1fr;
+	}
+
+	&__reset {
+	}
+
+	input {
+		&:checked + label {
+			font-weight: bold;
+		}
+	}
+
+	hr {
+		border-width: 3px 0 0;
+	}
+}

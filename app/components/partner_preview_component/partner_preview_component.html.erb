@@ -1,16 +1,18 @@
 <li class="preview">
   <div class="preview__header">
-    <h3><%= link_to name, link %></h3>
-    <% if show_service_area? || show_neighbourhood? %>
+    <h3><%= link_to @partner.name, @partner, data: { "turbo-frame": "_top" } %></h3>
+    <% if show_neighbourhood? %>
       <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> preview__neighbourhood">
         <span><%= neighbourhood_name %></span>
       </div>
     <% end %>
   </div>
 
-  <% if description %>
+  <% if @partner.description %>
     <div class="preview__details">
-      <%= content_tag :p, description %>
+      <%= content_tag :p, @partner.summary %>
+      <!-- Categories: <%= @partner.categories.map(&:name).join(", ") %> -->
     </div>
   <% end %>
 </li>
+  
