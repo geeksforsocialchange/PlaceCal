@@ -1,0 +1,6 @@
+# https://docs.appsignal.com/application/markers/deploy-markers.html
+
+production:
+  revision: <%= ENV['GIT_REV'] %>
+staging:
+  revision: <%= ENV['GIT_REV'] %>
