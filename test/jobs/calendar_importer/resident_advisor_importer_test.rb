@@ -3,66 +3,67 @@
 require 'test_helper'
 
 class ResidentAdvisorParserTest < ActiveSupport::TestCase
-  test 'detect if its a club' do
-    parser = CalendarImporter::Parsers::ResidentAdvisor
-    assert_equal [:clubs,  182_584], parser.ra_entity('https://ra.co/clubs/182584')
+  MAXIMUM_RA_RETURNED_RESULTS = 10
+
+  setup do
+    @valid_ra_club = 'https://ra.co/clubs/182584'
+    @valid_ra_promoter = 'https://ra.co/promoters/73787'
+
+    VCR.use_cassette(:ra_promoter) do
+      ra_promoter_calendar = build(
+        :calendar,
+        strategy: :event,
+        name: :import_ra_promoter,
+        source: @valid_ra_promoter
+      )
+      @promoter_parser = CalendarImporter::Parsers::ResidentAdvisor.new(ra_promoter_calendar)
+    end
   end
 
-  test 'detect if its a promoter' do
-    parser = CalendarImporter::Parsers::ResidentAdvisor
-    assert_equal [:promoters,  133_684], parser.ra_entity('https://ra.co/promoters/133684')
+  # NOTE: this is just testing the method, doesn't matter which parser it uses
+  # A bit ugly to use VCR for these, but the calendar importer checks the URL when it instantiates
+  test 'detect club urls' do
+    VCR.use_cassette(:ra_promoter) do
+      assert_equal [:clubs,  182_584], @promoter_parser.ra_entity('https://ra.co/clubs/182584')
+    end
+  end
+
+  test 'detect promoter urls' do
+    VCR.use_cassette(:ra_promoter) do
+      assert_equal [:promoters,  133_684], @promoter_parser.ra_entity('https://ra.co/promoters/133684')
+    end
   end
 
   test 'reject if its not a promoter or club' do
-    parser = CalendarImporter::Parsers::ResidentAdvisor
-    assert_not parser.ra_entity('https://ra.co/promarters/133684')
-    assert_not parser.ra_entity('https://ras.co/clubs/133684')
-    assert_not parser.ra_entity('https://ra.co/133684')
-    assert_not parser.ra_entity('https://ra.co/asdasd/')
+    VCR.use_cassette(:ra_promoter) do
+      assert_not @promoter_parser.ra_entity('https://ra.co/promarters/133684')
+      assert_not @promoter_parser.ra_entity('https://ras.co/clubs/133684')
+      assert_not @promoter_parser.ra_entity('https://ra.co/133684')
+      assert_not @promoter_parser.ra_entity('https://ra.co/asdasd/')
+    end
   end
-  # test 'extracts events from Eventbrite calendars' do
-  #   os_event_url = 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
 
-  #   VCR.use_cassette(:eventbrite_events) do
-  #     calendar = create(
-  #       :calendar,
-  #       strategy: :event,
-  #       name: :import_test_calendar,
-  #       source: os_event_url
-  #     )
-  #     assert_predicate calendar, :valid?
+  test 'promoter links download events' do
+    VCR.use_cassette(:ra_promoter) do
+      records = @promoter_parser.download_calendar
+      assert_kind_of(Array, records)
+      assert_equal MAXIMUM_RA_RETURNED_RESULTS, records.count
+    end
+  end
 
-  #     parser = CalendarImporter::Parsers::Eventbrite.new(calendar, url: os_event_url)
+  test 'club links download events' do
+    VCR.use_cassette(:ra_club) do
+      ra_club_calendar = build(
+        :calendar,
+        strategy: :event,
+        name: :import_ra_club,
+        source: @valid_ra_club
+      )
+      club_parser = CalendarImporter::Parsers::ResidentAdvisor.new(ra_club_calendar)
 
-  #     # we are only checking for RDF records extracted from response
-  #     records = parser.download_calendar
-  #     assert_kind_of(Array, records)
-  #     assert_equal 17, records.count
-  #   end
-  # end
-
-  # test 'ignores 504 bad gateway responses' do
-  #   os_event_url = 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
-
-  #   VCR.use_cassette(:eventbrite_bad_gateway) do
-  #     calendar = build(
-  #       :calendar,
-  #       strategy: :event,
-  #       name: :import_test_calendar,
-  #       source: os_event_url
-  #     )
-
-  #     parser = CalendarImporter::Parsers::Eventbrite.new(calendar, url: os_event_url)
-
-  #     begin
-  #       records = parser.download_calendar
-  #     rescue RestClient::BadGateway
-  #       # this is essentially validating that the download_calendar
-  #       #    method is NOT raising a BadGateway exception.
-  #       #    There is a bug in how RestClient reports the BadGateway
-  #       #    exception is raised that itself was causing an exception.
-  #       flunk 'Was not expecting RestClient::BadGateway'
-  #     end
-  #   end
-  # end
+      records = club_parser.download_calendar
+      assert_kind_of(Array, records)
+      assert_equal MAXIMUM_RA_RETURNED_RESULTS, records.count
+    end
+  end
 end
