@@ -66,7 +66,7 @@ module CalendarImporter::Parsers
     #  if successful. If the URL is invalid or the response from the URL
     #  is not 200 (even following redirects) then raise the correct
     #  exception with an appropriate message
-    def self.read_http_source(url, follow_redirects: false)
+    def self.read_http_source(url, follow_redirects: true)
       # User-Agent is currently set to make Resident Advisor happy, but this is also more "honest".
       # It may be this method needs per-vendor headers
       response = HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
