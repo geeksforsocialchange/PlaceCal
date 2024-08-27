@@ -2,7 +2,7 @@
 
 module CalendarImporter::Parsers
   class ResidentAdvisor < Base
-    NAME = 'ResidentAdvisor'
+    NAME = 'Resident Advisor'
     KEY = 'residentadvisor'
     DOMAINS = %w[ra.co].freeze
     RA_ENDPOINT = 'https://ra.co/graphql'
@@ -12,40 +12,44 @@ module CalendarImporter::Parsers
       RA_REGEX
     end
 
-    # Takes an URL
-    # Returns [(promoter OR club), id of entity]
-    def self.ra_entity(url)
+    def download_calendar
+      ra_entity = ra_entity(@url)
+      return unless ra_entity
+
+      if ra_entity[0] == :promoters
+        get_promoter_events(ra_entity[1])
+      elsif ra_entity[0] == :clubs
+        get_club_events(ra_entity[1])
+      end
+    end
+
+    def import_events_from(data)
+      data.map { |d| CalendarImporter::Events::ResidentAdvisor.new(d) }
+    end
+
+    # Converts an RA URL into [(promoter OR club), (id of entity)]
+    def ra_entity(url)
       result = RA_REGEX.match(url)
       return false unless result
 
       [result[1].to_sym, result[2].to_i]
     end
 
-    def download_calendar
-      ra_entity = ra_entity(@url)
-      return unless ra_entity
-
-      # response_body = Base.read_http_source(api_url)
-
-      Base.safely_parse_json response_body
-    end
-
-    def import_events_from(data)
-      data.map { |d| CalendarImporter::Events::MeetupEvent.new(d) }
-    end
-
-    def self.get_promoter_events(id)
+    def get_promoter_events(id)
+      # LATEST query is discovered via introspection.
+      # I think it gives the next 10 events.
       query = <<~GRAPHQL
         promoter(id: #{id}) {
           id
           name
           email
-          events(type: FIRST) {
+          events(type: LATEST) {
             id
             title
             content
             startTime
             endTime
+            contentUrl
             venue {
               id
               name
@@ -59,15 +63,42 @@ module CalendarImporter::Parsers
       events['data']['promoter']['events']
     end
 
-    # Massage the GraphQL query into a post request body
-    def self.postify_query_string(query)
-      "{\"query\": \"{#{query}}\"}".gsub("\n", '')
+    def get_club_events(id)
+      # LATEST query is discovered via introspection.
+      # I think it gives the next 10 events.
+      query = <<~GRAPHQL
+        venue(id: #{id}) {
+          id
+          name
+          address
+          events(type: LATEST) {
+            id
+            title
+            content
+            startTime
+            endTime
+            contentUrl
+          }
+        }
+      GRAPHQL
+
+      events = query_graphql_endpoint(query)
+      events['data']['venue']['events']
     end
 
-    def self.query_graphql_endpoint(query)
+    # Send a POST request to the GraphQL endpoint
+    # TODO: Migrate into a generic GraphQL base class
+    def query_graphql_endpoint(query)
       HTTParty.post(RA_ENDPOINT,
                     body: postify_query_string(query),
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'User-Agent': 'Mozilla/5' })
+                    headers: { 'Content-Type': 'application/json',
+                               'Accept': 'application/json',
+                               'User-Agent': 'Mozilla/5.0' })
+    end
+
+    # Massage a GraphQL query into a post request body
+    def postify_query_string(query)
+      "{\"query\": \"{#{query}}\"}".gsub("\n", '')
     end
   end
 end
