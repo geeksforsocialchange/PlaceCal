@@ -9,7 +9,7 @@
 	},
 	"cron": [
 		{
-			"command": "bundle exec rails import:scan_for_calendars_needing_import",
+			"command": "bundle exec rails events:scan_for_calendars_needing_import",
 			"schedule": "0 * * * *"
 		}
 	]
