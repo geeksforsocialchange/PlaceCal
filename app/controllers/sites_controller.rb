@@ -18,14 +18,14 @@ class SitesController < ApplicationController
   private
 
   def set_places_to_get_computer_access
-    tag = Tag.find_by(slug: 'computers')
-
-    @places_to_get_computer_access = Partner.for_site(current_site).with_tags(tag)
+    @places_to_get_computer_access = Partner.for_site(current_site)
+                                            .joins(:tags)
+                                            .where('tags.slug': 'computers')
   end
 
   def set_places_with_free_wifi
-    tag = Tag.find_by(slug: 'wifi')
-
-    @places_with_free_wifi = Partner.for_site(current_site).with_tags(tag)
+    @places_with_free_wifi = Partner.for_site(current_site)
+                                    .joins(:tags)
+                                    .where('tags.slug': 'wifi')
   end
 end
