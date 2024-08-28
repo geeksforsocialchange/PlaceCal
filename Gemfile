@@ -12,7 +12,7 @@ end
 gem 'minitest-rails'
 gem 'pg'
 gem 'puma'
-gem 'rails', '7.1.3.4'
+gem 'rails', '7.2.1'
 
 # Frontend
 gem 'coffee-rails'
