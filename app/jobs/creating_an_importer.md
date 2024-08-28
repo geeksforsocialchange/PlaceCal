@@ -5,7 +5,7 @@ Calendars can be imported through the following rake tasks:
 ```
 rails events:import_all_calendars # Imports all calendars - usually in dev environment
 rails events:import_calendars[:id] # Imports one calendar - usually in a dev environment
-rails events:scan_for_calendars_needing_import # Imports only updated calendars - run as a cronjob
+rails events:scan_for_calendars_needing_import # Imports only updated calendars - run as a cronjob in a production environment
 ```
 
 They can also be triggered in the Calendar interface in the web admin.
