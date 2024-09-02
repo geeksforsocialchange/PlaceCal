@@ -11,7 +11,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   Selenium::WebDriver.logger.ignore(:browser_options)
 
   # TODO: Remove this hack
-  # Currently, the first test is always failing as the webserver isn't loaded yet.
+  # Currently, the first test is always failing as the browser can't connect properly until it reloads.
   # This gives it a kick to get it up and running.
   setup do
     visit '/'
