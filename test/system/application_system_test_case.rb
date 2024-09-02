@@ -9,4 +9,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   Capybara.server = :puma, { Silent: true }
   Selenium::WebDriver.logger.ignore(:browser_options)
+
+  # TODO: Remove this hack
+  # Currently, the first test is always failing as the webserver isn't loaded yet.
+  # This gives it a kick to get it up and running.
+  setup do
+    visit '/'
+  end
 end
