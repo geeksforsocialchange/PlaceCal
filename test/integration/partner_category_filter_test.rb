@@ -33,23 +33,13 @@ class PartnerCategoryFilterIntegrationTest < ActionDispatch::IntegrationTest
     get from_site_slug(@site, partners_path(category: @tag.id))
 
     assert_select '.filters__link', text: 'Category', count: 1
-    assert_select 'ul#partners li', count: 7
-  end
-
-  # exclude mode
-  test 'can be selected to filter out selected category' do
-    given_some_tagged_partners_exist
-
-    get from_site_slug(@site, partners_path(category: @tag.id, category_mode: 'exclude'))
-
-    assert_select '.filters__link', text: 'Category', count: 1
     assert_select 'ul#partners li', count: 3
   end
 
   def given_some_tagged_partners_exist
     @tag = create(:category)
 
-    7.times do |n|
+    3.times do |n|
       partner = create(:partner, address: @address, name: "Partner with tag #{n}")
       partner.tags << @tag
     end

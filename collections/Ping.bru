@@ -1,0 +1,18 @@
+meta {
+  name: Ping
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    ping
+  }
+  
+}

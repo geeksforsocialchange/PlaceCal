@@ -4,6 +4,21 @@ module CalendarImporter::Events
   class LinkedDataEvent < Base
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location
 
+    def initialize(data)
+      super data
+
+      @url = data['url']
+      @description = data['description']
+      @start_time = parse_timestamp(read_value_of(data, 'start_date'))
+      @end_time = parse_timestamp(read_value_of(data, 'end_date'))
+      @summary = data['name']
+      @location = extract_location(data)
+
+      # Repeating events share a URL, so we need to add the starttime as a param.
+      # Otherwise, PlaceCal will assume they're all the same event and update instead of create.
+      @uid = "#{@url}?start=#{@start_time}"
+    end
+
     def read_value_of(data, field_name)
       field_data = data[field_name]
       return unless field_data
@@ -24,19 +39,6 @@ module CalendarImporter::Events
       address = loc['address']
       address = address['street_address'] if address.is_a?(Hash)
       address
-    end
-
-    def initialize(data)
-      super data
-
-      @url = data['url']
-      @description = data['description']
-      @start_time = parse_timestamp(read_value_of(data, 'start_date'))
-      @end_time = parse_timestamp(read_value_of(data, 'end_date'))
-      @summary = data['name']
-      @location = extract_location(data)
-
-      @uid = @url
     end
 
     def attributes

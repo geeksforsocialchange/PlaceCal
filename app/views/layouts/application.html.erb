@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
@@ -10,6 +10,7 @@
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <meta name="turbo-refresh-method" content="morph">
   </head>
 
   <body>

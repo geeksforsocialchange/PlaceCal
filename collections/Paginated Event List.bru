@@ -1,0 +1,57 @@
+meta {
+  name: Paginated Event List
+  type: graphql
+  seq: 9
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    eventConnection(
+      {{first}}
+      after: "MTA"
+  ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          summary
+          description
+          startDate
+          endDate
+          publisherUrl
+          address {
+            streetAddress
+            postalCode
+            addressLocality
+            addressRegion
+            geo {
+              latitude
+              longitude
+            }
+          }
+          organizer {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+  
+}
+
+vars:pre-request {
+  first: first: 10
+  after: after: "MTA"
+}

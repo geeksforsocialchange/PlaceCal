@@ -1,0 +1,30 @@
+meta {
+  name: All Articles
+  type: graphql
+  seq: 10
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    articleConnection {
+      edges {
+        node {
+          headline
+          datePublished
+          articleBody
+          image
+          providers {
+            id
+          }
+        }
+      }
+    }
+  }
+  
+}

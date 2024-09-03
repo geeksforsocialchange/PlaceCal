@@ -67,7 +67,9 @@ module CalendarImporter::Parsers
     #  is not 200 (even following redirects) then raise the correct
     #  exception with an appropriate message
     def self.read_http_source(url, follow_redirects: true)
-      response = HTTParty.get(url, follow_redirects: follow_redirects)
+      # User-Agent is currently set to make Resident Advisor happy, but this is also more "honest".
+      # It may be this method needs per-vendor headers
+      response = HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
       return response.body if response.success?
 
       msg = "The source URL could not be read (code=#{response.code})"

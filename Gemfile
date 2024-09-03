@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '3.1.6'
+ruby '3.3.4'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -73,16 +73,18 @@ gem 'graphql'
 gem 'rack-cors', require: 'rack/cors'
 
 # Utilities
+gem 'appsignal'
 gem 'auto_strip_attributes'
 gem 'bootsnap', require: false
+gem 'csv'
 gem 'enumerize'
 gem 'friendly_id'
 # gem 'listen' # needed?
+gem 'invisible_captcha'
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
-
-gem 'invisible_captcha'
+gem 'observer'
 gem 'paper_trail'
 gem 'rollbar'
 gem 'uk_postcode'
@@ -103,8 +105,8 @@ group :development do
   gem 'rails-erd'
   gem 'rdoc'
   gem 'rubocop', '1.62.0', require: false
-  gem 'rubocop-graphql', '1.5.2', require: false
-  gem 'rubocop-minitest', '0.35.0', require: false
+  gem 'rubocop-graphql', '1.5.4', require: false
+  gem 'rubocop-minitest', '0.35.1', require: false
   gem 'rubocop-performance', '1.21.1', require: false
   gem 'rubocop-rails', '2.24.1', require: false
   gem 'rubocop-rake', require: false

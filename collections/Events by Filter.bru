@@ -1,0 +1,47 @@
+meta {
+  name: Events by Filter
+  type: graphql
+  seq: 7
+}
+
+post {
+  url: {{baseURL}}/api/v1/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  {
+    eventsByFilter(
+      {{tagId}}
+      fromDate: "2024-01-01 00:00"
+      toDate: "2025-06-15 00:00"
+    ) {
+      id
+      name
+      summary
+      description
+      startDate
+      endDate
+      publisherUrl
+      address {
+        streetAddress
+        postalCode
+        geo {
+          latitude
+          longitude
+        }
+      }
+      organizer {
+        id
+      }
+    }
+  }
+  
+}
+
+vars:pre-request {
+  tagId: tagId: 3
+  fromDate: fromDate: "2024-01-01 00:00"
+  toDate: toDate: "2025-06-15 00:00"
+}

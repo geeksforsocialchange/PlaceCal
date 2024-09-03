@@ -13,8 +13,8 @@ To get an idea of the project and what we're about, check out [the handbook](htt
 To run PlaceCal locally you will need to install the following dependencies:
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Ruby 3.1.6](https://www.ruby-lang.org/)
-- [Node.js](https://nodejs.org/en/download) 16.x & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
+- [Ruby 3.3.4](https://www.ruby-lang.org/)
+- [Node.js 20.x](https://nodejs.org/en/download) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
@@ -67,6 +67,29 @@ Amongst other things, this will create an admin user for you:
 - The admin interface is at `admin.lvh.me:3000`
 - Access code docs through your local filesystem and update them with `bin/rails yard`
 
+### Importing calendars
+
+To import all events, run the following command.
+
+```sh
+rails events:import_all_calendars
+```
+
+After this has run once, the following command can be run which attempts to skip calendars which have not been updated. This should be run regularly on a cron in production environments. If you are using dokku to deploy like we are, this is handled in the `app.json` config file.
+
+```sh
+rails events:scan_for_calendars_needing_import
+```
+
+To import one calendar, run:
+
+```sh
+rails events:import_calendar[100]
+
+# nb: zsh users will need to escape brackets
+rails events:import_calendar\[100\]
+```
+
 ## Testing, linting and formatting
 
 PlaceCal tests are written in minitest. We use Rubocop to lint our Ruby code.
@@ -93,6 +116,12 @@ We use view_component to make components, and you can create a new one by runnin
 Previously this system used mountain view, and some of the components are still generated using this.
 
 More info here: https://viewcomponent.org/guide/generators.html
+
+## API
+
+API examples and test environment are provided using [Bruno](https://www.usebruno.com/).
+
+Install it with your system package manager then point it at the `collections` directory.
 
 ## Donations
 
