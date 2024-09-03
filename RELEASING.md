@@ -8,8 +8,9 @@ Every pull request gets added to the latest draft release automatically. Validat
    1. If it's a bug fix, check the bug linked in the PR is fixed on the [staging server](https://placecal-staging.org/). If it is, add a screenshot in a comment on the bug's issue ticket so the original reporter gets notified a fix is on the way.
    2. If it's a new feature, make a screenshot or video of the feature working on the staging server and add it as a comment in the pull release.
 2. In both cases, open new issues as needed if these don't resolve the issue.
-3. If you're happy to proceed, continue to the next step. If not, merge PRs to address issues until you are.
-4. Decide the next version number [by reviewing the current one](https://github.com/geeksforsocialchange/PlaceCal/releases)
+3. Add the `verified` tag to the issues affected if you're happy the fix is working
+4. If you're happy to proceed, move to the next section of the guide. If not, merge PRs to address issues until you are.
+5. Decide the next version number [by reviewing the current one](https://github.com/geeksforsocialchange/PlaceCal/releases)
 
 ## 2. Deploy to production
 
@@ -25,8 +26,9 @@ Every pull request gets added to the latest draft release automatically. Validat
 Assuming everything is working, create a new release.
 
 1. [Edit the draft release](https://github.com/geeksforsocialchange/PlaceCal/releases)
-2. Give it a version number and nice description of what's changed. Refer to previous releases to get an idea how to write these. Match the release title to a tag with the same version number.
-3. Press the "Publish" button on the release.
-4. Email releases@lists.placecal.org with the patch notes.
+2. Give it a version number and nice description of what's changed. Refer to previous releases to get an idea how to write these.
+3. Match the release title to a tag with the same version number.
+4. Press the "Publish" button on the release.
+5. Email releases@lists.placecal.org with the patch notes.
 
 Well done! You released a new version of PlaceCal.
