@@ -86,7 +86,6 @@ gem 'net-pop', require: false
 gem 'net-smtp', require: false
 gem 'observer'
 gem 'paper_trail'
-gem 'rollbar'
 gem 'uk_postcode'
 
 group :development, :test do

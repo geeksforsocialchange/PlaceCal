@@ -386,7 +386,6 @@ GEM
       netrc (~> 0.8)
     rexml (3.2.9)
       strscan
-    rollbar (3.5.2)
     rubocop (1.62.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -558,7 +557,6 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   rdoc
-  rollbar
   rubocop (= 1.62.0)
   rubocop-graphql (= 1.5.4)
   rubocop-minitest (= 0.35.1)
