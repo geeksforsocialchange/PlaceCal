@@ -59,7 +59,6 @@ class CalendarImporterJob < ApplicationJob
     #   see note in Calendar#flag_error_import_job! for details
     calendar.reload
     calendar.flag_error_import_job! full_message
-    # puts full_message, backtrace if Rails.env.development?
   end
 
   def report_bad_source_error(e)
