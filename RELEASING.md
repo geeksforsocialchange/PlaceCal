@@ -8,7 +8,7 @@ Every pull request gets added to the latest draft release automatically. Validat
    1. If it's a bug fix, check the bug linked in the PR is fixed on the [staging server](https://placecal-staging.org/). If it is, add a screenshot in a comment on the bug's issue ticket so the original reporter gets notified a fix is on the way.
    2. If it's a new feature, make a screenshot or video of the feature working on the staging server and add it as a comment in the pull release.
 2. In both cases, open new issues as needed if these don't resolve the issue.
-3. Add the `verified` tag to the issues affected if you're happy the fix is working
+3. Add the `verified` label to resolved issues if you're happy the fix is working
 4. If you're happy to proceed, move to the next section of the guide. If not, merge PRs to address issues until you are.
 5. Decide the next version number [by reviewing the current one](https://github.com/geeksforsocialchange/PlaceCal/releases)
 
