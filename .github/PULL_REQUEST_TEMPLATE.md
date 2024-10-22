@@ -7,7 +7,6 @@
 - [ ] I have commented my code, particularly in hard-to-understand areas,
 - [ ] I have made corresponding changes to the documentation,
 - [ ] I have added tests that prove my fix is effective or that my feature works,
-- [ ] New and existing unit tests pass locally with my changes
 - [ ] Title include "WIP" if work is in progress.
 -->
 
@@ -33,6 +32,7 @@ Include anything else we should know about.-->
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] This change requires a change to the deployment process
 - [ ] This change requires a documentation update
 - [ ] Documentation update
 
