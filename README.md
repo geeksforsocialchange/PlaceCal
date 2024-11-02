@@ -117,6 +117,101 @@ Previously this system used mountain view, and some of the components are still 
 
 More info here: https://viewcomponent.org/guide/generators.html
 
+### Folder structure
+
+Our project is showing it's age and migration across multiple Rails version. Here's the state of play at the moment - we are currently aiming to simplify this and remove deprecated files.
+
+```
+── app
+│   ├── assets
+│   │   ├── builds              # Old javascript builds - possibly deprecated
+│   │   ├── config              # Unsure what this is - something PWA related?
+│   │   ├── fonts
+│   │   ├── images
+│   │   ├── pdfs                # Legacy PDFs from our early years (can be deleted)
+│   │   └── stylesheets
+│   ├── channels                # Unused boilerplate - could be cut
+│   ├── components              # A mix of mountain_view and view_component components (the latter have the `_component` suffix).
+│   ├── constraints             # Directs to correct site based on subdomain
+│   ├── controllers             # Public app controllers
+│   │   ├── admin               # Admin area controllers
+│   │   ├── concerns
+│   │   └── users
+│   ├── datatables              # Admin area datatables
+│   ├── graphql                 # API
+│   ├── helpers
+│   ├── javascript              # This should be where all the js lives!
+│   │   ├── controllers
+│   │   └── src
+│   ├── jobs                    # Importer logic - jobs are created by cron (`/lib/tasks`). There's a readme here with more info
+│   ├── mailers                 # Email configuration
+│   ├── models
+│   ├── policies                # Pundit rules for who can do and access what
+│   ├── uploaders               # CarrierWave rules for handling image and logo uploads
+│   ├── validators              # Postcode validator - should possibly live somewhere else
+│   └── views
+│       ├── admin               # Admin area
+│       ├── collections         # Deprecated feature to create abritrary event collections, was previously used for our early winter festivals
+│       ├── devise              # Authentication
+│       ├── events              # Event indexes and show page
+│       ├── join_mailer         # Templates for creating accounts
+│       ├── joins               # "Join PlaceCal" form page
+│       ├── layouts             # Page templates
+│       ├── moderation_mailer   # Templates for when partners get moderated
+│       ├── mountain_view       # Deprecated - views for the mountain_view stylesheet page showing all the components
+│       ├── news                # News article templates - half implemented
+│       ├── pages               # Static pages mostly used on homepage. Some pages here are not linked anywhere currently
+│       ├── partners            # Partner indexes and show pages
+│       ├── shared              # Some shared elements - should probably be migrated to view_components
+│       └── sites               # Site homepages e.g. mysite.placecal.org
+├── collections                 # API examples to be loaded with Bruno
+├── config
+│   ├── environments
+│   ├── initializers
+│   ├── locales
+│   └── robots
+├── db
+│   ├── images                  # Some seed images - not been looked at for a while
+│   │   ├── sites
+│   │   └── supporters
+│   ├── migrate
+│   └── seeds                   # Seeds to make a test site - currently semi working
+├── doc                         # Another directory that probably needs either deleting or reworking!
+│   └── adr                     # Architectural decision records, used in the early stage of the project then dropped off
+├── lib
+│   ├── assets
+│   ├── data                    # UK geography ward to district data used to create neighbourhood info
+│   ├── tasks                   # Rake tasks that create ActiveJobs
+│   └── templates
+│       └── erb                 # Not sure what this is - some kind of template for rails scaffolds?
+├── log
+├── nginx.conf.d                # Config files here get added to the nginx config by dokku
+├── public
+├── scripts
+├── test
+│   ├── components
+│   ├── controllers
+│   ├── factories
+│   ├── fixtures
+│   │   ├── files
+│   │   └── vcr_cassettes       # These record actual output from iCal/API endpoints so we can test against them
+│   ├── helpers
+│   ├── integration
+│   │   ├── admin
+│   │   └── graphql             # API tests
+│   ├── jobs
+│   ├── mailers
+│   │   └── previews
+│   ├── models
+│   ├── policies
+│   ├── support
+│   │   └── api
+│   └── system                  # Capybara tests for things that need JavaScript
+│       ├── admin
+│       └── graphql
+└── vendor                      # Currently empty - could potentially delete
+```
+
 ## API
 
 API examples and test environment are provided using [Bruno](https://www.usebruno.com/).
