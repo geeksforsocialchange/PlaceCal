@@ -131,4 +131,5 @@ Lint/SelfAssignment:
   Enabled: false
 Lint/RedundantCopDisableDirective:
   Enabled: false
-
+Lint/MissingSuper:
+  Enabled: false
