@@ -45,7 +45,7 @@ module EventsHelper
       period: @period,
       sort: @sort,
       repeating: @repeating
-    }.keep_if { |_key, value| value.present? }
+    }.compact_blank!
 
     events_by_date_path(opts)
   end
