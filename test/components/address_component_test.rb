@@ -5,11 +5,8 @@ require 'view_component/test_case'
 
 class AddressComponentTest < ViewComponent::TestCase
   setup do
-    VCR.use_cassette('import_test_calendar') do
-      @test_event = create(:event)
-      @address = @test_event.address.street_address
-      @raw_location = @test_event.raw_location_from_source
-    end
+    @address = '123 Moss Ln E'
+    @raw_location = 'Unformatted Address, Ungeolocated Lane, Manchester'
   end
 
   def test_component_renders_address
