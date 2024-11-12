@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class AddressComponent < ViewComponent::Base
+  erb_template <<~ERB
+    <p class="place_info__address" property="address" typeof="PostalAddress">
+      <%= formatted_address %>
+    </p>
+  ERB
+
   def initialize(address:, raw_location: nil)
     super
     @address = address
