@@ -13,10 +13,10 @@ class AddressComponent < ViewComponent::Base
       return address_lines.join(", #{tag.br}")
     end
 
-    uri = URI.parse(raw_location)
+    uri = URI.parse(@raw_location)
     "<a href='#{uri}'>#{uri.hostname}</a>"
 
   rescue URI::InvalidURIError
-    raw_location
+    @raw_location
   end
 end
