@@ -3,6 +3,7 @@
 ## About
 
 This serves as the reference documentation for components in PlaceCal (how to generate them etc).
+
 In case you find something unclear, inaccurate or out of date, please feel to create a new issue describing what needs doing :smile:
 
 ## Technical Details
