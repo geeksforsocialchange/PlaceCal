@@ -95,6 +95,7 @@ Rails.application.routes.draw do
 
   get '/robots.txt' => 'pages#robots'
 
+  get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
 
   mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?

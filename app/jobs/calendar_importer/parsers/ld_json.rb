@@ -6,7 +6,7 @@ module CalendarImporter::Parsers
     KEY = 'ld-json'
 
     def initialize(calendar, options = {})
-      super calendar, options
+      super
     end
 
     DOMAINS = ['various'].freeze

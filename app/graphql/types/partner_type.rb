@@ -32,11 +32,14 @@ module Types
           description: 'The URL provided by the partner for users to find out more info'
 
     field :twitter_url, String,
-          description: 'The URL to the partner\'s Twitter profile'
+          description: "Full URL for partner's Twitter / X profile"
 
     field :facebook_url, String,
           method: :facebook_link,
-          description: 'The URL of the partner\'s Facebook page'
+          description: "Full URL of partner's Facebook page"
+
+    field :instagram_url, String,
+          description: "Full URL of partner's instagram page"
 
     field :areas_served, [NeighbourhoodType],
           method: :service_area_neighbourhoods,

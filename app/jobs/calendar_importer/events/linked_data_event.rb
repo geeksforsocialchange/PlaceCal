@@ -5,7 +5,7 @@ module CalendarImporter::Events
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location
 
     def initialize(data)
-      super data
+      super
 
       @url = data['url']
       @description = data['description']

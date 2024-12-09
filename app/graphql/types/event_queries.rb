@@ -61,7 +61,7 @@ module Types
         end
       end
 
-      query = query.where('dtstart >= ?', from_date)
+      query = query.where(dtstart: from_date..)
 
       if args[:to_date].present?
         if args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
@@ -80,7 +80,7 @@ module Types
           raise GraphQL::ExecutionError, "toDate not in 'YYYY-MM-DD HH:MM' format"
         end
 
-        query = query.where('dtstart < ?', to_date)
+        query = query.where(dtstart: ...to_date)
       end
 
       if args[:neighbourhood_id].present?

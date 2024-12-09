@@ -44,8 +44,7 @@ class Event < ApplicationRecord
   # Find by day onwards
   scope :future, lambda { |day|
     day_start = day.midnight # 2024-04-01 00:00:00 +0100
-    where('dtstart >= ?',
-          day_start)
+    where(dtstart: day_start..)
   }
 
   # For the API eventFilter find by neighbourhood
@@ -81,7 +80,7 @@ class Event < ApplicationRecord
           'lower(addresses.postcode) in (:partner_postcodes))',
           partner_ids: partners.map(&:id),
           partner_names: partners.map { |p| p.name.downcase },
-          partner_postcodes: partners.map(&:address).keep_if(&:present?).map { |a| a.postcode.downcase }
+          partner_postcodes: partners.map(&:address).compact_blank!.map { |a| a.postcode.downcase }
         )
     else
       left_joins(:address)
@@ -115,11 +114,11 @@ class Event < ApplicationRecord
   scope :one_off_events_only, -> { where(rrule: false) }
   scope :one_off_events_first, -> { order(rrule: :asc) }
 
-  scope :upcoming, -> { where('dtstart >= ?', DateTime.current.beginning_of_day) }
-  scope :past, -> { where('dtstart <= ?', DateTime.current.beginning_of_day) }
+  scope :upcoming, -> { where(dtstart: DateTime.current.beginning_of_day..) }
+  scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
 
   # Global feed
-  scope :ical_feed, -> { where('dtstart >= ?', Time.now - 1.week).where('dtend < ?', Time.now + 1.month) }
+  scope :ical_feed, -> { where(dtstart: (Time.now - 1.week)..).where(dtend: ...(Time.now + 1.month)) }
 
   def repeat_frequency
     rrule[0]['table']['frequency'].titleize if rrule

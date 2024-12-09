@@ -1,33 +1,34 @@
 # Releasing PlaceCal
 
-## 1. Review the [draft release](https://github.com/geeksforsocialchange/PlaceCal/releases)
+## 1. Validate changes since the [last release](https://github.com/geeksforsocialchange/PlaceCal/releases)
 
-Every pull request gets added to the latest draft release automatically by robots.
+Every pull request gets added to the latest draft release automatically. Validate them on the staging server before continuing.
 
-Go through each one and test any related tickets are truly fixed on the staging site and the new behaviour works as described. If there are any issues, make a call as to whether they need resolving before the release can happen or not. If they're not blocking issues, reopen the tickets or open new tickets for them instead and continue with the release.
+1. Validate that each pull request in the draft release does what it's meant to:
+   1. If it's a bug fix, check the bug linked in the PR is fixed on the [staging server](https://placecal-staging.org/). If it is, add a screenshot in a comment on the bug's issue ticket so the original reporter gets notified a fix is on the way.
+   2. If it's a new feature, make a screenshot or video of the feature working on the staging server and add it as a comment in the pull release.
+2. In both cases, open new issues as needed if these don't resolve the issue.
+3. Add the `verified` label to resolved issues if you're happy the fix is working
+4. If you're happy to proceed, move to the next section of the guide. If not, merge PRs to address issues until you are.
+5. Decide the next version number [by reviewing the current one](https://github.com/geeksforsocialchange/PlaceCal/releases)
 
-Ensure that the node version specified in `package.json` matches the version specified in `.node-version`.
+## 2. Deploy to production
 
-## 2. Open a pull request
+1. [Open a pull request from `main` into `production`](https://github.com/geeksforsocialchange/PlaceCal/compare/production...main)
+2. Title it with the next version number.
+3. Ensure you are doing a **merge commit based merge**. Do not squash or rebase, and wait for CI to pass.
+4. **Do not update the branch using the automatically generated prompt**. Github will invite you to update the branch because `production` has additional merge commits that don't exist in `main`. It's no big deal if you forget, but this just creates an unneeded extra commit that needs merging back into `main` later.
+5. Get someone to approve the PR, then merge into production.
+6. Once the CI passes on the `production` branch, the patch is live. You can double check the git reference in the admin interface on the left sidebar to check this has happened.
 
-If everything looks good to publish, open a pull request from `main` into `production` and give it a title reflecting the new version we're releasing.
+## 3. Make a release
 
-Github will invite you to update the branch because `production` has aditional merge commits that don't exist in `main`, you don't need to do this.
+Assuming everything is working, create a new release.
 
-## 3. Edit the release
+1. [Edit the draft release](https://github.com/geeksforsocialchange/PlaceCal/releases)
+2. Give it a version number and nice description of what's changed. Refer to previous releases to get an idea how to write these.
+3. Match the release title to a tag with the same version number.
+4. Press the "Publish" button on the release.
+5. Email releases@lists.placecal.org with the patch notes.
 
-Edit the draft release to reflect the reality of what we're releasing after reviewing for any unresolved issues. The main aim here is to avoid misleading our future selves with "Fixed X" items when we actually didn't. **Importantly, don't remove any PR links.** Even if the thing they related to didn't work, we want the reference there to know what's included.
-
-Set the release up to create a new tag of the head of the `main` branch on publish and set the release title to match.
-
-## 4. Merge the pull request
-
-Do a **merge commit based merge**. Do not squash or rebase! And wait for CI!
-
-## 5. Publish the release
-
-Press the "publish" button on the release.
-
-## 6. Check the release
-
-Check to make sure the release went to plan and everything works as expected.
+Well done! You released a new version of PlaceCal.

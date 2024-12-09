@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '3.3.4'
+ruby '3.3.6'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -86,7 +86,6 @@ gem 'net-pop', require: false
 gem 'net-smtp', require: false
 gem 'observer'
 gem 'paper_trail'
-gem 'rollbar'
 gem 'uk_postcode'
 
 group :development, :test do
@@ -104,11 +103,11 @@ group :development do
   gem 'letter_opener'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop', '1.62.0', require: false
+  gem 'rubocop', '1.69.1', require: false
   gem 'rubocop-graphql', '1.5.4', require: false
   gem 'rubocop-minitest', '0.35.1', require: false
-  gem 'rubocop-performance', '1.21.1', require: false
-  gem 'rubocop-rails', '2.24.1', require: false
+  gem 'rubocop-performance', '1.23.0', require: false
+  gem 'rubocop-rails', '2.27.0', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'

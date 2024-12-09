@@ -288,6 +288,10 @@ class Partner < ApplicationRecord
     "https://twitter.com/#{twitter_handle}" if twitter_handle.present?
   end
 
+  def instagram_url
+    "https://instagram.com/#{instagram_handle}" if instagram_handle.present?
+  end
+
   def logo_url
     image&.url
   end
