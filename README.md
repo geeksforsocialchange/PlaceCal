@@ -124,13 +124,11 @@ Our project is showing it's age and migration across multiple Rails version. Her
 ```
 ── app
 │   ├── assets
-│   │   ├── builds              # Old javascript builds - possibly deprecated
-│   │   ├── config              # Unsure what this is - something PWA related?
+│   │   ├── builds              # Bundled JavaScript
+│   │   ├── config              # Specifies assets to be compiled
 │   │   ├── fonts
 │   │   ├── images
-│   │   ├── pdfs                # Legacy PDFs from our early years (can be deleted)
 │   │   └── stylesheets
-│   ├── channels                # Unused boilerplate - could be cut
 │   ├── components              # A mix of mountain_view and view_component components (the latter have the `_component` suffix).
 │   ├── constraints             # Directs to correct site based on subdomain
 │   ├── controllers             # Public app controllers
@@ -140,7 +138,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   ├── datatables              # Admin area datatables
 │   ├── graphql                 # API
 │   ├── helpers
-│   ├── javascript              # This should be where all the js lives!
+│   ├── javascript              # Source JavaScript
 │   │   ├── controllers
 │   │   └── src
 │   ├── jobs                    # Importer logic - jobs are created by cron (`/lib/tasks`). There's a readme here with more info
@@ -148,7 +146,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   ├── models
 │   ├── policies                # Pundit rules for who can do and access what
 │   ├── uploaders               # CarrierWave rules for handling image and logo uploads
-│   ├── validators              # Postcode validator - should possibly live somewhere else
+│   ├── validators              # Postcode validator - should possibly live somewhere else, or have other validators moved in here
 │   └── views
 │       ├── admin               # Admin area
 │       ├── collections         # Deprecated feature to create abritrary event collections, was previously used for our early winter festivals
@@ -183,7 +181,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   ├── data                    # UK geography ward to district data used to create neighbourhood info
 │   ├── tasks                   # Rake tasks that create ActiveJobs
 │   └── templates
-│       └── erb                 # Not sure what this is - some kind of template for rails scaffolds?
+│       └── erb                 # Rails scaffold templates
 ├── log
 ├── nginx.conf.d                # Config files here get added to the nginx config by dokku
 ├── public
@@ -209,7 +207,6 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   └── system                  # Capybara tests for things that need JavaScript
 │       ├── admin
 │       └── graphql
-└── vendor                      # Currently empty - could potentially delete
 ```
 
 ## API
