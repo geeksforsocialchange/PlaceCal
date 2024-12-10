@@ -46,9 +46,8 @@
         <% if @partner.has_service_areas? %>
           <p>We operate in <%= partner_service_area_text(@partner) %>.</p>
         <% end %>
-        <%= render_component "address",
-          address: @partner.address
-        %>
+
+        <%= render AddressComponent.new(address: @partner.address) %>
 
         <% unless @partner.accessibility_info_html.blank? %>
           <details id='accessibility-info'>
@@ -97,9 +96,7 @@
         <div class="gi gi__1-2">
           <h3 class="udl udl--fw allcaps h4">Address</h3>
           <div class="small">
-            <%= render_component "address",
-              address: place.address
-            %>
+            <%= render AddressComponent.new(address: place.address) %>
           </div>
           <h3 class="udl udl--fw allcaps h4">Contact</h3>
           <div class="small">
