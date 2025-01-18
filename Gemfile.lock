@@ -406,7 +406,7 @@ GEM
     rubocop-minitest (0.35.1)
       rubocop (>= 1.61, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
-    rubocop-performance (1.23.0)
+    rubocop-performance (1.23.1)
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
     rubocop-rails (2.27.0)
@@ -561,7 +561,7 @@ DEPENDENCIES
   rubocop (= 1.70.0)
   rubocop-graphql (= 1.5.4)
   rubocop-minitest (= 0.35.1)
-  rubocop-performance (= 1.23.0)
+  rubocop-performance (= 1.23.1)
   rubocop-rails (= 2.27.0)
   rubocop-rake
   sass-rails (= 6.0.0)
