@@ -39,6 +39,11 @@ jobs:
           bundler-cache: true
           cache-version: 3
 
+      - name: Install Imagemagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
       - uses: nodenv/actions/setup-nodenv@v2
       - uses: nodenv/actions/node-version@v2
         id: nodenv
