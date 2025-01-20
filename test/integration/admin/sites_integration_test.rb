@@ -47,9 +47,9 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'title', text: 'New Site | PlaceCal Admin'
   end
 
-  test 'create a site through the admin page' do
-    # TODO: add capybara so we can get this junk working
-  end
+  # test 'create a site through the admin page' do
+  #   # TODO: add capybara
+  # end
 
   test 'root users see appropriate fields' do
     sign_in(@root)
