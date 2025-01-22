@@ -35,6 +35,6 @@
 		"{*.{rb,jbuilder,rake,ru},.simplecov,Gemfile,Rakefile}": "bundle exec rubocop --force-exclusion --autocorrect"
 	},
 	"engines": {
-		"node": "20.18.1"
+		"node": "20.18.2"
 	}
 }
