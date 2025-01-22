@@ -34,6 +34,7 @@ class EventbriteParserTest < ActiveSupport::TestCase
         name: :import_test_calendar,
         source: os_event_url
       )
+      assert_predicate calendar, :valid?
 
       parser = CalendarImporter::Parsers::Eventbrite.new(calendar, url: os_event_url)
 
