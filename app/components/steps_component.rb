@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# app/components/steps/steps_component.rb
+# app/components/steps_component/steps_component.rb
 class StepsComponent < ViewComponent::Base
   def initialize(steps:, start_message: nil, end_message: nil)
     super
