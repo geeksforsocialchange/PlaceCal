@@ -58,7 +58,7 @@ jobs:
       - run: bin/test --lint --no-fix
       - if: failure()
         name: Upload test screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
         with:
           name: test-screenshots
           path: tmp/screenshots/
