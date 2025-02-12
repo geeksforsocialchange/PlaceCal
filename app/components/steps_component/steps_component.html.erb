@@ -6,11 +6,11 @@
   <div class="card__body card__body--wide">
     <%= image_tag 'home/how/start.png', alt: 'A diagram of a disconected neighbourhood', class: 'steps__image' %>
     <div class="steps__caption">
-      <p class="center"><%= start_message %></p>
+      <p class="center"><%= @start_message %></p>
     </div>
   </div>
 
-  <% steps.each do |step| %>
+  <% @steps.each do |step| %>
     <div class="card__body">
       <%= image_tag "home/how/#{step[:id]}.png", alt: step[:image_alt], class: 'steps__image steps__image--numeral' %>
       <div class="steps__caption">
@@ -21,7 +21,7 @@
 
   <div class="card__body card__body--wide">
     <div class="steps__caption">
-      <p class="center"><%= end_message %></p>
+      <p class="center"><%= @end_message %></p>
     </div>
     <%= image_tag 'home/how/end.png', alt: 'A diagram of a connected neighbourhood', class: 'steps__image' %>
     <br>
