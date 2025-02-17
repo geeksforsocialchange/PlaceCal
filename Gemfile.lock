@@ -227,7 +227,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jsbundling-rails (1.0.2)
       railties (>= 6.0.0)
-    json (2.9.1)
+    json (2.10.1)
     json-canonicalization (0.3.0)
     json-ld (3.2.3)
       htmlentities (~> 4.3)
@@ -249,6 +249,7 @@ GEM
     letter_opener (1.8.1)
       launchy (>= 2.2, < 3)
     link_header (0.0.8)
+    lint_roller (1.1.0)
     logger (1.6.5)
     loofah (2.24.0)
       crass (~> 1.0.2)
@@ -387,9 +388,10 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.3.7)
-    rubocop (1.71.2)
+    rubocop (1.72.2)
       json (~> 2.3)
-      language_server-protocol (>= 3.17.0)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.1.0)
       parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
@@ -559,7 +561,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   rdoc
-  rubocop (= 1.71.2)
+  rubocop (= 1.72.2)
   rubocop-graphql (= 1.5.4)
   rubocop-minitest (= 0.35.1)
   rubocop-performance (= 1.23.1)
