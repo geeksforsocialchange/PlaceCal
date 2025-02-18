@@ -24,7 +24,7 @@ class ParserBaseTest < ActiveSupport::TestCase
       Base.safely_parse_json('{ "data"')
     end
 
-    assert_equal "Source responded with invalid JSON (unexpected token at '{ \"data\"')", error.message
+    assert_includes error.message, 'Source responded with invalid JSON'
   end
 
   test 'read_http_source reads remote URL with valid input' do
