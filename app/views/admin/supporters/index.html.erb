@@ -1,8 +1,9 @@
-<%= render_component "admin_index",
+<%= render_component AdminIndexComponent.new(
   title: "Supporters",
   model: :supporters,
   column_titles: ['ID', 'Name', 'Logo', 'Global?'],
   columns: %i[id name logo is_global],
   data: @supporters,
   new_link: new_admin_supporter_path
+)
 %>
