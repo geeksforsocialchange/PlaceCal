@@ -1,7 +1,7 @@
 name: Test and maybe deploy
 
 on:
-  - push
+  - pull_request_target
 
 jobs:
   test-and-deploy:
