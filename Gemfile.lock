@@ -402,8 +402,9 @@ GEM
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.38.1)
       parser (>= 3.3.1.0)
-    rubocop-graphql (1.5.4)
-      rubocop (>= 1.50, < 2)
+    rubocop-graphql (1.5.5)
+      lint_roller (~> 1.1)
+      rubocop (>= 1.72.1, < 2)
     rubocop-minitest (0.37.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1, < 2.0)
@@ -568,7 +569,7 @@ DEPENDENCIES
   rails-erd
   rdoc
   rubocop (= 1.74.0)
-  rubocop-graphql (= 1.5.4)
+  rubocop-graphql (= 1.5.5)
   rubocop-minitest (= 0.37.1)
   rubocop-performance (= 1.24.0)
   rubocop-rails (= 2.30.3)
