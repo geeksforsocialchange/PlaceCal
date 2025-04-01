@@ -17,6 +17,6 @@ class AdminIndexComponent < ViewComponent::Base
   end
 
   def model_name
-    @model.class.name
+    @model.to_s.chop.humanize
   end
 end
