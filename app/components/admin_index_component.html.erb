@@ -1,14 +1,14 @@
-<% content_for :title do %><%= properties[:title] %><% end %>
+<% content_for :title do %><%= @title %><% end %>
 
-<h1 class="page-header"><%= properties[:title] %></h1>
+<h1 class="page-header"><%= @title %></h1>
 
 <%# A weird bug in the datatables template means that we have to apply the margin for each link, rather than for the container span. So this span has no class. TODO: Fix this. %>
 <span>
-  <%- if policy(model_name.constantize).create? && properties[:new_link] %>
-    <%= link_to "Add New #{model_name}", properties[:new_link], data: { turbo: false }, class: "btn btn-primary" %>
+  <%- if helpers.policy(model_name.constantize).create? && @new_link %>
+    <%= link_to "Add New #{model_name}", @new_link, data: { turbo: false }, class: "btn btn-primary" %>
   <% end %>
 
-  <% additional_links.each do |link| %>
+  <% @additional_links.each do |link| %>
     <%= sanitize link %>
   <% end %>
 </span>
@@ -16,16 +16,16 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <% properties[:columns].each do |column| %>
+      <% @columns.each do |column| %>
         <th><%= column %></th>
       <% end %>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <% properties[:data]&.each do |record| %>
+    <% @data&.each do |record| %>
       <tr>
-        <% record.slice(properties[:columns]).each do |key, value| %>
+        <% record.slice(@columns).each do |key, value| %>
           <td>
             <% if key == 'logo' && record.logo.url %>
               <%= image_tag record.logo.url, style: 'background-color: #5b4e46' %>
@@ -36,7 +36,7 @@
             <% end %>
           </td>
         <% end %>
-        <td><%= link_to "Edit", "/#{properties[:model]}/#{record.id}/edit",
+        <td><%= link_to "Edit", "/#{@model}/#{record.id}/edit",
                                 data: { turbo: false },
                                 class: "btn btn-primary" %>
         </td>
