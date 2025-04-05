@@ -107,7 +107,7 @@ group :development do
   gem 'rubocop-graphql', '1.5.5', require: false
   gem 'rubocop-minitest', '0.37.1', require: false
   gem 'rubocop-performance', '1.24.0', require: false
-  gem 'rubocop-rails', '2.30.3', require: false
+  gem 'rubocop-rails', '2.31.0', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
