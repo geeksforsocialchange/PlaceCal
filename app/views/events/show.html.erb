@@ -17,11 +17,11 @@
       <% if @event.partner %>
         <h3 class="h4 udl">Contact information</h3>
         <div class="small">
-          <%= render_component "contact_details",
+          <%= render ContactDetails.new(
             name: @event.partner.name,
             email: @event.partner.public_email,
             phone: @event.partner.public_phone,
-            url: @event.partner.url
+            url: @event.partner.url)
           %>
         <% end %>
       </div>

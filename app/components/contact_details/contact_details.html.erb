@@ -1,5 +1,5 @@
 <p class="contact_details">
-  <% if phone.present? %>
+  <% if @phone.present? %>
     <strong class="icon icon--contact icon--phone">Phone:</strong>
     <span>
       <%- if is_valid_phone %>
@@ -9,27 +9,27 @@
       <% end %>
     </span>
   <% end %>
-  <% if email.present? %>
+  <% if @email.present? %>
     <strong class="icon icon--contact icon--email">Email:</strong>
-    <span><%= mail_to email, email, target: '_blank' %></span>
+    <span><%= mail_to @email, @email, target: '_blank' %></span>
   <% end %>
-  <% if url.present? %>
+  <% if @url.present? %>
     <strong class="icon icon--contact icon--website"> Website:</strong>
-    <span><%= link_to strip_url(url), url, target: '_blank' %></span>
+    <span><%= link_to strip_url(@url), @url, target: '_blank' %></span>
   <% end %>
-  <% if facebook_link.present? %>
+  <% if @facebook_link.present? %>
     <strong class="icon icon--contact icon--facebook">Facebook:</strong>
-    <span><%= link_to facebook_link, facebook_url, target: '_blank' %></span>
+    <span><%= link_to @facebook_link, @facebook_url, target: '_blank' %></span>
   <% end %>
-  <% if twitter_handle.present? %>
+  <% if @twitter_handle.present? %>
     <strong class="icon icon--contact icon--twitter">Twitter:</strong>
-    <span><%= link_to "@#{twitter_handle}", twitter_url, target: '_blank' %></span>
+    <span><%= link_to "@#{@twitter_handle}", @twitter_url, target: '_blank' %></span>
   <% end %>
-  <% if instagram_handle.present? %>
+  <% if @instagram_handle.present? %>
     <strong class="icon icon--contact icon--instagram">Instagram:</strong>
-    <span><%= link_to "@#{instagram_handle}", "https://www.instagram.com/#{instagram_handle}/", target: '_blank' %></span>
+    <span><%= link_to "@#{@instagram_handle}", "https://www.instagram.com/#{@instagram_handle}/", target: '_blank' %></span>
   <% end %>
-  <% unless contact? %>
+  <% unless :contact? %>
     No contact information - let us know!
   <% end %>
 </p>
