@@ -17,11 +17,7 @@
       <% if @event.partner %>
         <h3 class="h4 udl">Contact information</h3>
         <div class="small">
-          <%= render ContactDetails.new(
-            name: @event.partner.name,
-            email: @event.partner.public_email,
-            phone: @event.partner.public_phone,
-            url: @event.partner.url)
+          <%= render ContactDetails.new(partner: @event.partner)
           %>
         <% end %>
       </div>

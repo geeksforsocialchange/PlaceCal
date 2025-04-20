@@ -1,11 +1,11 @@
-<p class="contact_details">
+<p class="contact_details">  
   <% if @phone.present? %>
     <strong class="icon icon--contact icon--phone">Phone:</strong>
     <span>
-      <%- if is_valid_phone %>
-        <%= link_to phone, "tel:#{phone}", target: '_blank' %>
+      <%- if @is_valid_phone %>
+        <%= link_to @phone, "tel:#{@phone}", target: '_blank' %>
       <% else %>
-        <%= phone %>
+        <%= @phone %>
       <% end %>
     </span>
   <% end %>
