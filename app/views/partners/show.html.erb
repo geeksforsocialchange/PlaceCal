@@ -93,7 +93,7 @@
           <h3 class="udl udl--fw allcaps h4">Contact</h3>
           <div class="small">
             <%= render ContactDetails.new(
-              @partner,
+              partner: @partner,
               email: place.public_email,
               phone: place.public_phone,
               url: place.url,
