@@ -13,7 +13,7 @@ class ContactDetails < ViewComponent::Base
     @facebook_link = partner.facebook_link
     @twitter_handle = partner.twitter_handle
     @instagram_handle = partner.instagram_handle
-    @is_valid_phone = partner.valid_public_phone?
+    @is_valid_phone = phone || partner.valid_public_phone?
     @twitter_url = "https://twitter.com/#{partner.twitter_handle}"
     @facebook_url = "https://facebook.com/#{partner.facebook_link}"
     @contact = @phone || partner.public_phone || email || partner.public_email || url || partner.url || partner.facebook_link || partner.twitter_handle
