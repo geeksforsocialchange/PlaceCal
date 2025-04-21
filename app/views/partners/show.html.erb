@@ -31,15 +31,7 @@
         <% end %>
 
         <h3 class="udl udl--fw allcaps h4">Get in touch</h3>
-        <%= render_component "contact_details",
-          name: @partner.name,
-          email: @partner.public_email,
-          phone: @partner.public_phone,
-          url: @partner.url,
-          twitter_handle: @partner.twitter_handle,
-          instagram_handle: @partner.instagram_handle,
-          facebook_link: @partner.facebook_link,
-          is_valid_phone: @partner.valid_public_phone?
+        <%= render ContactDetails.new(partner: @partner)
         %>
 
         <h3 class="udl udl--fw allcaps h4">Address</h3>
@@ -100,11 +92,12 @@
           </div>
           <h3 class="udl udl--fw allcaps h4">Contact</h3>
           <div class="small">
-            <%= render_component "contact_details",
+            <%= render ContactDetails.new(
+              partner: @partner,
               email: place.public_email,
               phone: place.public_phone,
-              url: place.url,
-              is_valid_phone: @partner.valid_public_phone?
+              url: place.url
+              )
             %>
           </div>
         </div>

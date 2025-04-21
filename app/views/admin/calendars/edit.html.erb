@@ -2,4 +2,4 @@
   const currentInfo = <%= @calendar.to_json.html_safe %>
 </script>
 
-<%= render_component "admin_edit", model: :calendar, title: @calendar.name %>
+<%= render AdminEdit.new(model: :calendar, title: @calendar.name) %>
