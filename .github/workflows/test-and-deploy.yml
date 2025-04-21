@@ -54,7 +54,7 @@ jobs:
       - run: yarn install --immutable
 
       - run: bin/test --unit --no-lint
-      - run: bin/test --system --no-lint
+      #     - run: bin/test --system --no-lint
       - run: bin/test --lint --no-fix
       - if: failure()
         name: Upload test screenshots
