@@ -1,6 +1,5 @@
 <%= simple_form_for [:admin, @collection] do |f| %>
-  <%= render_component "error", object: @collection %>
-
+  <%= render(ErrorComponent.new(@collection)) %>
   <%= f.input :name, id: :collection_name %>
   <%= f.input :route %>
   <%= f.input :description %>

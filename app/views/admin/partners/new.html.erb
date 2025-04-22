@@ -5,7 +5,7 @@
 <hr />
 <div class="form">
   <%= simple_form_for @partner do |f| %>
-    <%= render_component "error", object: @partner %>
+  <%= render(ErrorComponent.new(@partner)) %>
     <h2>Basic Information</h2>
     <%= f.input :name,
 	class: "form-control",

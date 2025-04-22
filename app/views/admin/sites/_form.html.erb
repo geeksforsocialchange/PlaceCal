@@ -3,7 +3,7 @@
 <% end %>
 
 <%= simple_form_for [:admin, @site] do |f| %>
-  <%= render_component "error", object: @site %>
+  <%= render(ErrorComponent.new(@site)) %>
   <%= f.input :name %>
   <%= f.input :place_name %>
   <%= f.input :tagline %>

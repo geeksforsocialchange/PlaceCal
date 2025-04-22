@@ -1,6 +1,6 @@
 <div class="form">
   <%= simple_form_for @partner do |f| %>
-    <%= render_component "error", object: @partner %>
+    <%= render(ErrorComponent.new(@partner)) %>
     <% unless policy(@partner).permitted_attributes.include? :hidden %>
       <% if @partner.hidden %>
         <div class="alert alert-success" role="alert">
