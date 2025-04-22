@@ -2,8 +2,7 @@
   <div class="card card--plainer">
     <h1 class="center fc-primary"><%= t "devise.invitations.edit.header" %></h1>
 
-    <%= render_component "error", object: resource %>
-
+    <%= render(ErrorComponent.new(resource)) %>
     <div class="centre form--login">
       <%= form_for(resource,  as: resource_name,
                               url: invitation_path(resource_name),

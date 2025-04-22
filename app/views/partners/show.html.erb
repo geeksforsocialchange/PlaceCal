@@ -64,13 +64,10 @@
         <% end %>
 
         <%= render "shared/map", points: @map, site: @current_site.slug, compact: true %>
-
         <% if @opening_times.any? %>
           <br>
           <h3 class="udl udl--fw allcaps h4">Opening times</h3>
-          <%= render_component "opening_times",
-            times: @opening_times
-          %>
+          <%= render(OpeningTimes.new(times: @opening_times)) %>
         <% end %>
       </div>
     </div>
