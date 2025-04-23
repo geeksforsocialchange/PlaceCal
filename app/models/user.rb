@@ -182,9 +182,9 @@ class User < ApplicationRecord
   def partner_in_neighbourhood_scope?(partner_id)
     neighbourhood_admin? &&
       (
-        owned_neighbourhood_ids & (
+        owned_neighbourhood_ids &
           Partner.find_by(id: partner_id).owned_neighbourhood_ids
-        )
+
       ).any?
   end
 
