@@ -9,6 +9,10 @@ class HeroComponent < ViewComponent::Base
   end
 
   def clean_title(title)
-    return title.length > 32 ? title.split.in_groups(2, false).map { |g| g.join(' ') }.join('<br> ').html_safe : title # rubocop:disable Rails/OutputSafety
+    if title.length > 32
+      title.split.in_groups(2, false).map { |g| g.join(' ') }.join('<br> ').html_safe?
+    else
+      title
+    end
   end
 end
