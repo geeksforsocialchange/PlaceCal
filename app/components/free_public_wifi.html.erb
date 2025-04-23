@@ -21,9 +21,9 @@
   </svg>
 
   <h3 class="h2--alt"><span>Public Wifi</span></h3>
-  <% if places.any? %>
+  <% if @places.any? %>
     <ul>
-      <% places.each do |location| %>
+      <% @places.each do |location| %>
         <li><%= link_to location.name, partner_path(location) %></li>
       <% end %>
     </ul>

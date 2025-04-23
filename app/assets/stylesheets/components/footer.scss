@@ -1,0 +1,149 @@
+@import "variables_mixins";
+
+.footer {
+	background-color: $base-text;
+	background-color: var(--base-text);
+	color: $base-background;
+	color: var(--base-background);
+	font-size: 0.9rem;
+	line-height: 1.4rem;
+	padding: 3rem 0;
+
+	p {
+		margin: 0.5rem 0;
+	}
+
+	a {
+		color: $base-background;
+		color: var(--base-background);
+		border-color: $base-secondary;
+		border-color: var(--base-secondary);
+	}
+
+	h5 {
+		margin-top: 0;
+	}
+
+	&__inner {
+		display: grid;
+		grid-gap: 1rem;
+		grid-template-columns: 1fr;
+		grid-template-areas: "logo" "hr-1" "navigation" "regional" "general";
+
+		@include for-tablet-portrait-up {
+			grid-template-columns: repeat(2, 1fr);
+			grid-template-areas: "logo logo" "hr-1 hr-1" "navigation navigation" "regional general";
+		}
+
+		@include for-tablet-landscape-up {
+			grid-template-columns: repeat(3, 1fr);
+			grid-template-areas: "logo navigation navigation" ". regional general";
+		}
+
+		&--nosite {
+			// One fewer region if we're not on a region page
+			grid-template-areas: "logo" "hr-1" "navigation" "general";
+
+			@include for-tablet-portrait-up {
+				grid-template-columns: 1fr;
+				grid-template-areas: "logo" "hr-1" "navigation" "general";
+			}
+
+			@include for-tablet-landscape-up {
+				grid-template-columns: repeat(3, 1fr);
+				grid-template-areas: "logo navigation navigation" ". general general";
+			}
+		}
+	}
+
+	&__item {
+		grid-column: 1 / -1;
+	}
+
+	&__hr {
+		width: 100%;
+		border: 3px solid $base-tertiary;
+
+		&--1 {
+			grid-area: hr-1;
+
+			@include for-tablet-landscape-up {
+				display: none;
+			}
+		}
+	}
+
+	&__logo {
+		grid-area: logo;
+		align-self: center;
+
+		img {
+			max-width: 187px;
+		}
+	}
+
+	&__nav {
+		grid-area: navigation;
+		font-size: 1rem;
+
+		ul {
+			list-style-type: none;
+			margin-left: 0;
+			padding-left: 0;
+		}
+
+		li {
+			display: inline-block;
+			margin-right: 0.5rem;
+		}
+	}
+
+	&__enquiries--general {
+		grid-area: general;
+	}
+
+	&__enquiries--regional {
+		grid-area: regional;
+	}
+
+	&__supporters ul {
+		padding: 0;
+		margin: 1rem 0 0 0;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-gap: 1rem;
+		list-style-type: none;
+
+		@include for-tablet-portrait-up {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		@include for-tablet-landscape-up {
+			grid-template-columns: repeat(6, 1fr);
+		}
+	}
+
+	&__supporter {
+		display: grid;
+		align-items: center;
+		justify-items: center;
+
+		img {
+			max-width: 100%;
+		}
+	}
+
+	&__impressum {
+		margin-top: 3rem;
+		color: $base-tertiary;
+
+		a {
+			color: $base-tertiary;
+			text-decoration-color: $base-tertiary;
+		}
+	}
+
+	pre {
+		overflow: hidden;
+	}
+}
