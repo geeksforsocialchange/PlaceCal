@@ -9,8 +9,7 @@
 <% content_for :description, @partner.summary if @partner.summary %>
 
 <div vocab="http://schema.org/" typeof="Organization">
-
-  <%= render_component "hero", title: @partner.name, subtitle: @site.tagline, schema: 'name' %>
+  <%= render(HeroComponent.new(@partner.name, @site.tagline, 'name')) %>
 
   <div class="c c--lg-space-after">
     <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name %>
@@ -119,6 +118,8 @@
   </div>
 </div>
 
-<%= render_component "meta", permalink: "/partners/#{@partner.id}" do %>
+<%= render(Meta.new("/partners/#{@partner.id}")) do |component| %>
+<% component.with_link do %>
   <%= link_to "Subscribe to #{@partner}'s events with iCal", partner_url(@partner, protocol: :webcal, format: :ics) %>
+  <% end %>
 <% end %>
