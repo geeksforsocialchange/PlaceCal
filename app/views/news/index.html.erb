@@ -1,6 +1,6 @@
 <% content_for :title, "News from your area" %>
 
-<%= render_component 'hero', title: 'News from your area', subtitle: @site.tagline %>
+<%= render(HeroComponent.new('News from your area', @site.tagline)) %>
 
 
 <div class='articles'>
