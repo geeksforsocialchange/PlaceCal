@@ -26,7 +26,7 @@
         <% if @site&.default_site? %>
           <%= render(HomeFooterComponent.new()) %>
         <% else %>
-          <%= render_component "footer" %>
+          <%= render(Footer.new(@site)) %>
         <% end %>
       </footer>
      </div>

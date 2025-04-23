@@ -37,20 +37,20 @@
   <div class="c">
     <div class="gr gr--3">
       <div>
-        <%= render_component 'help_adding_events' %>
+        <%= render(HelpAddingEvents.new(@site)) %>
       </div>
       <% if @places_to_get_computer_access.present? -%>
       <div>
-        <%= render_component 'computer_access', places: @places_to_get_computer_access %>
+        <%= render(ComputerAccess.new(@places_to_get_computer_access)) %>
       </div>
       <% end -%>
       <% if @places_with_free_wifi.present? -%>
       <div>
-        <%= render_component 'free_public_wifi', places: @places_with_free_wifi %>
+        <%= render(FreePublicWifi.new(@places_with_free_wifi)) %>
       </div>
       <% end -%>
       <div>
-        <%= render_component 'help_getting_help' %>
+        <%= render(HelpGettingHelp.new()) %>
       </div>
     </div>
   </div>
