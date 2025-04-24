@@ -146,6 +146,8 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
+    database_consistency (2.0.4)
+      activerecord (>= 3.2)
     date (3.4.1)
     debug_inspector (1.2.0)
     delayed_job (4.1.10)
@@ -533,6 +535,7 @@ DEPENDENCIES
   coffee-rails
   csv
   database_cleaner-active_record
+  database_consistency
   delayed_job_active_record
   devise
   devise_invitable
