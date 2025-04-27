@@ -50,7 +50,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.text "title", null: false
     t.text "body", null: false
     t.date "published_at"
-    t.boolean "is_draft", default: false, null: false
+    t.boolean "is_draft", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "author_id", null: false
