@@ -105,7 +105,7 @@ class ArticleTest < ActiveSupport::TestCase
     2.times do |n|
       partner_1.articles.create!(
         title: "#{n} Article from Partner 1",
-        is_draft: nil,
+        is_draft: false,
         body: 'lorem ipsum dorem ditsum',
         author: author
       )
@@ -115,7 +115,7 @@ class ArticleTest < ActiveSupport::TestCase
     3.times do |n|
       partner_2.articles.create!(
         title: "#{n} Article from Partner 2",
-        is_draft: nil,
+        is_draft: false,
         body: 'lorem ipsum dorem ditsum',
         author: author
       )
@@ -136,7 +136,7 @@ class ArticleTest < ActiveSupport::TestCase
     3.times do |n|
       article = Article.create!(
         title: "#{n} Article with tag",
-        is_draft: nil,
+        is_draft: false,
         body: 'lorem ipsum dorem ditsum',
         author: author
       )
@@ -160,7 +160,7 @@ class ArticleTest < ActiveSupport::TestCase
     3.times do |n|
       partner.articles.create!(
         title: "#{n} Article from Partner by neighbourhood",
-        is_draft: nil,
+        is_draft: false,
         body: 'lorem ipsum dorem ditsum',
         author: author
       )
@@ -172,7 +172,7 @@ class ArticleTest < ActiveSupport::TestCase
     5.times do |n|
       article = Article.create!(
         title: "#{n} Article with tag",
-        is_draft: nil,
+        is_draft: false,
         body: 'lorem ipsum dorem ditsum',
         author: author
       )
