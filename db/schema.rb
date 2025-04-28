@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_27_200239) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,7 +42,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["article_id", "tag_id"], name: "index_article_tags_article_id_tag_id", unique: true
-    t.index ["article_id"], name: "index_article_tags_on_article_id"
     t.index ["tag_id"], name: "index_article_tags_on_tag_id"
   end
 
@@ -66,8 +65,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.string "source", null: false
     t.jsonb "notices"
     t.datetime "last_import_at", precision: nil
-    t.integer "partner_id", null: false
-    t.integer "place_id"
+    t.bigint "partner_id", null: false
+    t.bigint "place_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "strategy"
@@ -120,8 +119,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
   end
 
   create_table "events", force: :cascade do |t|
-    t.integer "place_id"
-    t.integer "calendar_id"
+    t.bigint "place_id"
+    t.bigint "calendar_id"
     t.string "uid"
     t.text "summary", null: false
     t.text "description"
@@ -133,8 +132,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.datetime "dtend", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.integer "partner_id", null: false
-    t.integer "address_id"
+    t.bigint "partner_id", null: false
+    t.bigint "address_id"
     t.string "are_spaces_available"
     t.text "footer"
     t.string "publisher_url"
@@ -179,7 +178,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["neighbourhood_id", "user_id"], name: "index_neighbourhoods_users_neighbourhood_id_user_id", unique: true
-    t.index ["neighbourhood_id"], name: "index_neighbourhoods_users_on_neighbourhood_id"
     t.index ["user_id"], name: "index_neighbourhoods_users_on_user_id"
   end
 
@@ -201,7 +199,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
   create_table "partner_tags", force: :cascade do |t|
     t.bigint "partner_id", null: false
     t.bigint "tag_id", null: false
-    t.index ["partner_id", "tag_id"], name: "index_partner_tags_on_partner_id_and_tag_id"
     t.index ["partner_id", "tag_id"], name: "index_partner_tags_partner_id_tag_id", unique: true
     t.index ["tag_id", "partner_id"], name: "index_partner_tags_on_tag_id_and_partner_id"
   end
@@ -213,7 +210,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.string "public_email"
     t.string "admin_name"
     t.string "admin_email"
-    t.integer "address_id"
+    t.bigint "address_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "is_a_place", default: false, null: false
@@ -289,8 +286,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.string "description_html"
     t.string "hero_text"
     t.string "hero_alttext"
-    t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
-    t.index ["site_admin_id"], name: "index_sites_site_admin"
   end
 
   create_table "sites_neighbourhoods", force: :cascade do |t|
@@ -300,14 +295,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["neighbourhood_id", "site_id"], name: "index_sites_neighbourhoods_neighbourhood_id_site_id", unique: true
-    t.index ["neighbourhood_id"], name: "index_sites_neighbourhoods_neighbourhood_id"
     t.index ["site_id"], name: "index_sites_neighbourhoods_site_id"
   end
 
   create_table "sites_supporters", id: false, force: :cascade do |t|
     t.bigint "site_id", null: false
     t.bigint "supporter_id", null: false
-    t.index ["site_id", "supporter_id"], name: "index_sites_supporters_on_site_id_and_supporter_id"
     t.index ["site_id", "supporter_id"], name: "index_sites_supporters_site_id_supporter_id", unique: true
     t.index ["supporter_id", "site_id"], name: "index_sites_supporters_on_supporter_id_and_site_id"
   end
@@ -347,7 +340,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
   create_table "tags_users", force: :cascade do |t|
     t.bigint "tag_id", null: false
     t.bigint "user_id", null: false
-    t.index ["tag_id", "user_id"], name: "index_tags_users_on_tag_id_and_user_id"
     t.index ["tag_id", "user_id"], name: "index_tags_users_tag_id_user_id", unique: true
     t.index ["user_id", "tag_id"], name: "index_tags_users_on_user_id_and_tag_id"
   end
@@ -386,7 +378,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_192512) do
 
   create_table "versions", force: :cascade do |t|
     t.string "item_type", null: false
-    t.integer "item_id", null: false
+    t.bigint "item_id", null: false
     t.string "event", null: false
     t.string "whodunnit"
     t.jsonb "object"
