@@ -81,6 +81,7 @@ gem 'enumerize'
 gem 'friendly_id'
 # gem 'listen' # needed?
 gem 'invisible_captcha'
+gem 'mutex_m' # Fixes an warning with the spring gemspec - can remove later
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
