@@ -103,7 +103,7 @@ group :development do
   gem 'letter_opener'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop', '1.75.5', require: false
+  gem 'rubocop', '1.75.6', require: false
   gem 'rubocop-graphql', '1.5.5', require: false
   gem 'rubocop-minitest', '0.38.0', require: false
   gem 'rubocop-performance', '1.25.0', require: false
