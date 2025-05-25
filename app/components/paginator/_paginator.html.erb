@@ -1,7 +1,7 @@
 <div class="paginator" id="paginator">
   <div class="paginator__context">
     <% if properties[:show_breadcrumb] %>
-      <%= render(new BreadcrumbComponent(trail: [['Events', events_path]], site_name: @site.name)) do %>
+      <%= render(BreadcrumbComponent.new(trail: [['Events', events_path]], site_name: @site.name)) do %>
         <div class="breadcrumb__filters filters">
           <%= form_tag('', method: :get, class: 'filters__form js-filters-form', enforce_utf8: false) do %>
             <div class="js-filters-toggle filters__toggle">

@@ -5,7 +5,7 @@
 <%= render(HeroComponent.new("Our Partners", @site.tagline)) %>
 <%= turbo_frame_tag "partner_previews" do %>
 <div class="c c--lg-space-after">
-  <%= render(new BreadcrumbComponent(trail: [['Partners', partners_path]], site_name: @site.name)) do %>
+  <%= render(BreadcrumbComponent.new(trail: [['Partners', partners_path]], site_name: @site.name)) do %>
     <%= render PartnerFilterComponent.new(partners: @partners, 
                                           site: @site,
                                           selected_category: @selected_category, 
