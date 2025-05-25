@@ -3,7 +3,7 @@
 <div vocab="http://schema.org/" typeof="Article">
   <%= render(HeroComponent.new(@article.title, @site.tagline, 'name')) %>
   <div class="c c--lg-space-after">
-    <%= render(new BreadcrumbComponent(trail: [['News', news_index_path], [@article.title, news_path(@article)]], site_name: @site.name)) %>
+    <%= render(BreadcrumbComponent.new(trail: [['News', news_index_path], [@article.title, news_path(@article)]], site_name: @site.name)) %>
     <hr>
 
     <div class='g article'>
