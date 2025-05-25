@@ -9,7 +9,7 @@
 <%= render(HeroComponent.new(@collection.name, @site.tagline)) %>
 
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [[@collection.name, @collection.named_route]], site_name: @site.name %>
+  <%= render(new BreadcrumbComponent(trail: [[@collection.name, @collection.named_route]], site_name: @site.name)) %>
 
   <hr>
 
