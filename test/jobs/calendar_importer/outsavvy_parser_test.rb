@@ -17,7 +17,7 @@ class OutsavvyParserTest < ActiveSupport::TestCase
 
       parser = CalendarImporter::Parsers::Outsavvy.new(calendar, url: outsavvy_url)
 
-      data = parser.extract_event_urls
+      data = parser.extract_event_urls(outsavvy_url)
 
       data.map do |url|
         assert_match(url_pattern, url)
@@ -38,7 +38,7 @@ class OutsavvyParserTest < ActiveSupport::TestCase
 
       parser = CalendarImporter::Parsers::Outsavvy.new(calendar, url: outsavvy_url)
 
-      data = parser.extract_event_urls
+      data = parser.extract_event_urls(outsavvy_url)
 
       assert_empty(data)
     end
