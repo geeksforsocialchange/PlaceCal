@@ -12,7 +12,7 @@
   <%= render(HeroComponent.new(@partner.name, @site.tagline, 'name')) %>
 
   <div class="c c--lg-space-after">
-    <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name %>
+    <%= render(BreadcrumbComponent.new(trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name)) %>
 
     <hr>
 
