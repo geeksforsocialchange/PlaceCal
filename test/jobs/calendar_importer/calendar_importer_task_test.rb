@@ -92,7 +92,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
   end
 
   test 'can import OutSavvy (ld+json) events when manually selected' do
-    VCR.use_cassette(:out_savvy_events, allow_playback_repeats: true) do
+    VCR.use_cassette(:out_savvy_events, allow_playback_repeats: true, :match_requests_on => [:host]) do
       calendar = create(
         :calendar,
         name: 'OutSavvy calendar',
@@ -105,7 +105,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       importer_task.run
 
       assert_equal 'idle', calendar.calendar_state
-      assert_equal 'ld-json', calendar.importer_used
+      assert_equal 'outsavvy', calendar.importer_used
 
       created_events = calendar.events
       assert_equal 4, created_events.count
