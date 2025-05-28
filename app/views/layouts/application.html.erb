@@ -19,14 +19,14 @@
         <%= render_component "navigation", navigation: @navigation %>
       </header>
       <main>
-        <%= render_component "admin_flash" %>
+        <%= render(AdminFlash.new()) %>
         <%= yield %>
       </main>
       <footer>
         <% if @site&.default_site? %>
           <%= render(HomeFooterComponent.new()) %>
         <% else %>
-          <%= render_component "footer" %>
+          <%= render(Footer.new(@site)) %>
         <% end %>
       </footer>
      </div>

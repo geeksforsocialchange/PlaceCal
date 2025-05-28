@@ -2,8 +2,7 @@
 <% content_for :image, @site.og_image %>
 <% content_for :description, @site.og_description %>
 
-<%= render_component "hero", title: 'Events & activities',
-                             subtitle: @site.tagline %>
+<%= render(HeroComponent.new("Events & activities", @site.tagline)) %>
 
 <div class="c c--lg-space-after">
   <%= render_component "event_list",
@@ -15,6 +14,8 @@
   %>
 </div>
 
-<%= render_component "meta" do %>
-  <%= link_to "Subscribe to #{@title} with iCal", events_url(protocol: :webcal, format: :ics) %>
+<%= render(Meta.new('/hello/world')) do |component| %>
+  <% component.with_link do %>
+    <%= link_to "Subscribe to #{@title} with iCal", events_url(protocol: :webcal, format: :ics) %>
+  <% end %>
 <% end %>

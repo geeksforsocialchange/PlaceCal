@@ -1,10 +1,9 @@
 <% content_for :title, @article.title %>
 
 <div vocab="http://schema.org/" typeof="Article">
-  <%= render_component "hero", title: @article.title, subtitle: @site.tagline, schema: 'name' %>
-
+  <%= render(HeroComponent.new(@article.title, @site.tagline, 'name')) %>
   <div class="c c--lg-space-after">
-    <%= render_component "breadcrumb", trail: [['News', news_index_path], [@article.title, news_path(@article)]], site_name: @site.name %>
+    <%= render(BreadcrumbComponent.new(trail: [['News', news_index_path], [@article.title, news_path(@article)]], site_name: @site.name)) %>
     <hr>
 
     <div class='g article'>

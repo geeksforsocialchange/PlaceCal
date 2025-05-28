@@ -14,7 +14,7 @@
     as: :tag,
     url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
 
-  <%= render_component "error", object: @tag %>
+  <%= render(ErrorComponent.new(@tag)) %>
 
   <%= f.input :name, class: 'form-control',
               disabled: @tag.system_tag %>

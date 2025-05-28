@@ -1,6 +1,7 @@
 <%- disabled_fields = policy(@article).disabled_fields %>
 <%= simple_form_for [:admin, @article] do |f| %>
-  <%= render_component "error", object: @article %>
+
+  <%= render(ErrorComponent.new(@article)) %>
 
   <%= f.input :title, id: :article_title, as: :string, input_html: { class: 'special' } %>
 

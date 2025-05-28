@@ -4,4 +4,4 @@
 
 <p class="alert alert-danger" role="alert">Warning: neighbourhoods should not be created here and this page is only left as a placeholder!</p>
 
-<%= render_component "admin_new", model: :neighbourhood %>
+<%= render(AdminNew.new(:neighbourhood)) %>

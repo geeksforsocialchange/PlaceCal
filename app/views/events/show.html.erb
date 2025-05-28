@@ -17,11 +17,7 @@
       <% if @event.partner %>
         <h3 class="h4 udl">Contact information</h3>
         <div class="small">
-          <%= render_component "contact_details",
-            name: @event.partner.name,
-            email: @event.partner.public_email,
-            phone: @event.partner.public_phone,
-            url: @event.partner.url
+          <%= render ContactDetails.new(partner: @event.partner)
           %>
         <% end %>
       </div>
@@ -42,7 +38,8 @@
 </div>
 <%= render 'shared/map', points: @map, site: @current_site.slug, style: :multi %>
 
-<%= render_component "meta", permalink: "/events/#{@event.id}" do %>
+<%= render(Meta.new("/events/#{@event.id}")) do |component| %>
+<% component.with_link do %>
   <%# link_to 'Subscribe to this event with iCal', event_url(@event, protocol: :webcal, format: :ics) %>
   <% contact = @event&.calendar&.contact_information %>
   <% if contact %>
@@ -52,5 +49,6 @@
                                   subject: "I think there's a problem with PlaceCal event http://placecal.org#{event_path(@event)}",
                                   cc: 'support@placecal.org' %>
     </div>
+  <% end %>
   <% end %>
 <% end %>

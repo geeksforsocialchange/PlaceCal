@@ -6,10 +6,10 @@
   <% content_for :image_alt, "Image for #{@collection.name}" %>
 <% end %>
 
-<%= render_component "hero", title: @collection.name, subtitle: @site.tagline %>
+<%= render(HeroComponent.new(@collection.name, @site.tagline)) %>
 
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [[@collection.name, @collection.named_route]], site_name: @site.name %>
+  <%= render(BreadcrumbComponent.new(trail: [[@collection.name, @collection.named_route]], site_name: @site.name)) %>
 
   <hr>
 

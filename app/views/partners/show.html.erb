@@ -9,11 +9,10 @@
 <% content_for :description, @partner.summary if @partner.summary %>
 
 <div vocab="http://schema.org/" typeof="Organization">
-
-  <%= render_component "hero", title: @partner.name, subtitle: @site.tagline, schema: 'name' %>
+  <%= render(HeroComponent.new(@partner.name, @site.tagline, 'name')) %>
 
   <div class="c c--lg-space-after">
-    <%= render_component "breadcrumb", trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name %>
+    <%= render(BreadcrumbComponent.new(trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name)) %>
 
     <hr>
 
@@ -31,15 +30,7 @@
         <% end %>
 
         <h3 class="udl udl--fw allcaps h4">Get in touch</h3>
-        <%= render_component "contact_details",
-          name: @partner.name,
-          email: @partner.public_email,
-          phone: @partner.public_phone,
-          url: @partner.url,
-          twitter_handle: @partner.twitter_handle,
-          instagram_handle: @partner.instagram_handle,
-          facebook_link: @partner.facebook_link,
-          is_valid_phone: @partner.valid_public_phone?
+        <%= render ContactDetails.new(partner: @partner)
         %>
 
         <h3 class="udl udl--fw allcaps h4">Address</h3>
@@ -72,13 +63,10 @@
         <% end %>
 
         <%= render "shared/map", points: @map, site: @current_site.slug, compact: true %>
-
         <% if @opening_times.any? %>
           <br>
           <h3 class="udl udl--fw allcaps h4">Opening times</h3>
-          <%= render_component "opening_times",
-            times: @opening_times
-          %>
+          <%= render(OpeningTimes.new(times: @opening_times)) %>
         <% end %>
       </div>
     </div>
@@ -100,11 +88,12 @@
           </div>
           <h3 class="udl udl--fw allcaps h4">Contact</h3>
           <div class="small">
-            <%= render_component "contact_details",
+            <%= render ContactDetails.new(
+              partner: @partner,
               email: place.public_email,
               phone: place.public_phone,
-              url: place.url,
-              is_valid_phone: @partner.valid_public_phone?
+              url: place.url
+              )
             %>
           </div>
         </div>
@@ -129,6 +118,8 @@
   </div>
 </div>
 
-<%= render_component "meta", permalink: "/partners/#{@partner.id}" do %>
+<%= render(Meta.new("/partners/#{@partner.id}")) do |component| %>
+<% component.with_link do %>
   <%= link_to "Subscribe to #{@partner}'s events with iCal", partner_url(@partner, protocol: :webcal, format: :ics) %>
+  <% end %>
 <% end %>

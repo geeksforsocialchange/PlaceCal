@@ -2,10 +2,10 @@
 <% content_for :image, @site.og_image %>
 <% content_for :description, @site.og_description %>
 
-<%= render_component "hero", title: 'Our Partners', subtitle: @site.tagline %>
+<%= render(HeroComponent.new("Our Partners", @site.tagline)) %>
 <%= turbo_frame_tag "partner_previews" do %>
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [['Partners', partners_path]], site_name: @site.name do %>
+  <%= render(BreadcrumbComponent.new(trail: [['Partners', partners_path]], site_name: @site.name)) do %>
     <%= render PartnerFilterComponent.new(partners: @partners, 
                                           site: @site,
                                           selected_category: @selected_category, 
