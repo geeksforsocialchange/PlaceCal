@@ -26,6 +26,10 @@ module CalendarImporter::Parsers
       results = EventbriteSDK::Organizer.retrieve(id: organizer_id).events.with_expansion(:venue).page(1)
 
       loop do
+        results.map do |event|
+          html = get_event_description(EventbriteSDK.token, event.id)
+          # Add description to event.description.html
+        end
         @events += results
         results = results.next_page
         break if results.blank?
@@ -38,6 +42,13 @@ module CalendarImporter::Parsers
 
     def import_events_from(data)
       data.map { |d| CalendarImporter::Events::EventbriteEvent.new(d) }
+    end
+
+    # Get full event description
+    def get_event_description(token, event_id)
+      resource = RestClient::Resource.new("https://www.eventbriteapi.com/v3/events/#{event_id}/description/")
+      response = resource.get(:Authorization => "Bearer #{token}")
+      Base.safely_parse_json(response)['description']
     end
   end
 end
