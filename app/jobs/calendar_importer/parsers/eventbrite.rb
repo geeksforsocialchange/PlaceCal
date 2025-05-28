@@ -28,7 +28,7 @@ module CalendarImporter::Parsers
       loop do
         results.map do |event|
           html = get_event_description(EventbriteSDK.token, event.id)
-          # Add description to event.description.html
+          event.assign_attributes('description.html' => html)
         end
         @events += results
         results = results.next_page
