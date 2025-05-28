@@ -33,6 +33,7 @@
 
 // view_component stylessheets
 
+@import "components/breadcrumb_component";
 @import "components/case_study_component";
 @import "components/contact_details_component";
 @import "components/container_with_header_component";
@@ -48,8 +49,8 @@
 @import "components/link_btn_lrg_component";
 @import "components/max_width_component";
 @import "components/meta";
-@import "components/opening_times";
 @import "components/neighbourhood_home_card_component";
+@import "components/opening_times";
 @import "components/partner_preview_component.scss";
 @import "components/partnership_card_component";
 @import "components/pull_quote_component";

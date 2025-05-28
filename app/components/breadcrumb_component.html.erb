@@ -1,17 +1,17 @@
 <div class="breadcrumb">
   <div class="breadcrumb__element">
     <span class="breadcrumb__tagline">
-      <%= link_to site_name, "/" %>
+      <%= link_to @site_name, "/" %>
     </span>
   </div>
-  <% properties[:trail].each do |link| %>
+  <% @trail.each do |link| %>
     <div class="breadcrumb__element">
       <span class="icon icon--arrow-right">→</span>
       <%= link_to link[0], link[1] %>
     </div>
   <% end %>
   <div class="breadcrumb__element breadcrumb__element--last">
-    <%= properties[:yield] %>
+    <%= content %>
     <!-- <div class="breadcrumb__help">
     <a href="#">Help</a> <span class="icon icon--question-mark">?</span>
     </div> -->
