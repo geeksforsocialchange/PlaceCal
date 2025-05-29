@@ -22,7 +22,7 @@ FactoryBot.define do
     factory :calendar_for_eventbrite, class: 'Calendar' do
       name { 'Eventbrite Calendar 1' }
       # VCR.use_cassette(:eventbrite_events) do
-      source { 'https://www.eventbrite.co.uk/o/ftm-london-32888898939' }
+      source { 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483' }
     end
 
     factory :calendar_for_outlook, class: 'Calendar' do

@@ -300,3 +300,5 @@ Geocoder::Lookup::Test.add_stub(
       } }
   ]
 )
+
+Geocoder::Lookup::Test.add_stub('M4 5AJ', [])
