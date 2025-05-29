@@ -6,7 +6,7 @@ class CaseStudyComponent < ViewComponent::Base
   def initialize(partner:)
     super
     partner_info = YAML.load_file(
-      File.join(__dir__, 'case_study_component/case_study_data.yml')
+      File.join(__dir__, 'case_study_data.yml')
     )[partner]
 
     @partner = partner_info['partner']
