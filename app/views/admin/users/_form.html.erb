@@ -1,5 +1,4 @@
-<%= render_component "error", object: f.object %>
-
+<%= render(ErrorComponent.new(f.object)) %>
 <div class="form-group">
   <%= render "contact", f: f %>
 

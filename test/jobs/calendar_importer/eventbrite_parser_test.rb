@@ -4,7 +4,7 @@ require 'test_helper'
 
 class EventbriteParserTest < ActiveSupport::TestCase
   test 'extracts events from Eventbrite calendars' do
-    os_event_url = 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
+    os_event_url = 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483'
 
     VCR.use_cassette(:eventbrite_events) do
       calendar = create(
@@ -20,12 +20,12 @@ class EventbriteParserTest < ActiveSupport::TestCase
       # we are only checking for RDF records extracted from response
       records = parser.download_calendar
       assert_kind_of(Array, records)
-      assert_equal 17, records.count
+      assert_equal 72, records.count
     end
   end
 
   test 'ignores 504 bad gateway responses' do
-    os_event_url = 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
+    os_event_url = 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483'
 
     VCR.use_cassette(:eventbrite_bad_gateway) do
       calendar = build(
@@ -34,6 +34,7 @@ class EventbriteParserTest < ActiveSupport::TestCase
         name: :import_test_calendar,
         source: os_event_url
       )
+      assert_predicate calendar, :valid?
 
       parser = CalendarImporter::Parsers::Eventbrite.new(calendar, url: os_event_url)
 

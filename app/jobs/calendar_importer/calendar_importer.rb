@@ -9,6 +9,7 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::Ics,
     CalendarImporter::Parsers::ManchesterUni,
     CalendarImporter::Parsers::Meetup,
+    CalendarImporter::Parsers::Outsavvy,
     CalendarImporter::Parsers::ResidentAdvisor,
     CalendarImporter::Parsers::Squarespace,
     CalendarImporter::Parsers::Ticketsolve,

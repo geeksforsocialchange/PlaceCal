@@ -1,12 +1,14 @@
 inherit_from: .rubocop_todo.yml
 
 require:
-  - rubocop-graphql
-  - rubocop-minitest
-  - rubocop-performance
-  - rubocop-rails
   - rubocop-rake
 
+plugins:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-graphql
+  - rubocop-rails
+  
 AllCops:
   NewCops: enable
   Exclude:

@@ -6,10 +6,10 @@
   <% content_for :image_alt, "Image for #{@collection.name}" %>
 <% end %>
 
-<%= render_component "hero", title: @collection.name, subtitle: @site.tagline %>
+<%= render(HeroComponent.new(@collection.name, @site.tagline)) %>
 
 <div class="c c--lg-space-after">
-  <%= render_component "breadcrumb", trail: [[@collection.name, @collection.named_route]], site_name: @site.name %>
+  <%= render(BreadcrumbComponent.new(trail: [[@collection.name, @collection.named_route]], site_name: @site.name)) %>
 
   <hr>
 
@@ -17,18 +17,6 @@
       <div class="gi gi__3-5">
         <% if @collection.description %>
           <div class="first-ele-lg"><%# = markdown @collection.description %></div>
-        <% end %>
-
-        <%# FIXME: this needs to be killed after launch! %>
-        <% if @collection.id == 1 %>
-          <p>
-            <%= link_to 'Download winter leaflet (PDF, colour)', asset_path('2017/12/placecal_winter2017.pdf'), class: 'btn' %><br>
-            <%= link_to 'Download winter leaflet (PDF, B&W)', asset_path('2017/12/placecal_winter2017_bw.pdf'), class: 'btn' %>
-          </p>
-          <p>
-            <%= link_to 'Download winter A3 Poster (PDF, colour)', asset_path('2017/12/placecal_winter2017_poster.pdf'), class: 'btn' %><br>
-            <%= link_to 'Download winter A3 Poster (PDF, B&W)', asset_path('2017/12/placecal_winter2017_poster_bw.pdf'), class: 'btn' %>
-          </p>
         <% end %>
       </div>
       <div class="gi gi__2-5 gi--image">

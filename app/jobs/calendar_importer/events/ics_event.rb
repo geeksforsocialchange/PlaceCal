@@ -32,9 +32,7 @@ module CalendarImporter::Events
       @event.location.to_s
     end
 
-    def rrule
-      @event.rrule
-    end
+    delegate :rrule, to: :@event
 
     def last_updated
       @event.last_modified.to_s
@@ -44,9 +42,7 @@ module CalendarImporter::Events
       rrule.present?
     end
 
-    def occurrences_between(from, to)
-      @event.occurrences_between(from, to)
-    end
+    delegate :occurrences_between, to: :@event
 
     def online_event?
       # Either return the google conference value, or find the link in the description

@@ -1,0 +1,16 @@
+<% if errors_present? %>
+  <div id='form-errors' class="card text-white bg-danger mb-3">
+    <div class="card-header">
+      <h6><%= pluralize(error_count, "error") %> prohibited this <%= object_class_name %> from being saved</h6>
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        <ul class="list-unstyle mb-0">
+          <% error_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+<% end %>

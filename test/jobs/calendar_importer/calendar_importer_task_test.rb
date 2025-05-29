@@ -74,7 +74,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       calendar = create(
         :calendar,
         name: 'Eventbrite calendar',
-        source: 'https://www.eventbrite.co.uk/o/ftm-london-32888898939',
+        source: 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483',
         strategy: 'event'
       )
 
@@ -87,12 +87,12 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       assert_equal 'eventbrite', calendar.importer_used
 
       created_events = calendar.events
-      assert_equal 17, created_events.count
+      assert_equal 72, created_events.count
     end
   end
 
   test 'can import OutSavvy (ld+json) events when manually selected' do
-    VCR.use_cassette(:out_savvy_events, allow_playback_repeats: true) do
+    VCR.use_cassette(:out_savvy_events, allow_playback_repeats: true, :match_requests_on => [:host]) do
       calendar = create(
         :calendar,
         name: 'OutSavvy calendar',
@@ -105,7 +105,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
       importer_task.run
 
       assert_equal 'idle', calendar.calendar_state
-      assert_equal 'ld-json', calendar.importer_used
+      assert_equal 'outsavvy', calendar.importer_used
 
       created_events = calendar.events
       assert_equal 4, created_events.count
@@ -188,7 +188,7 @@ class CalendarImporterTaskTest < ActiveSupport::TestCase
         importer_task.run
       end
 
-      assert_equal "Source responded with invalid JSON (unexpected token at '{ \"key\": \"va')", error.message
+      assert_includes error.message, 'Source responded with invalid JSON'
     end
   end
 

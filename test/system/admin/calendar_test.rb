@@ -37,7 +37,7 @@ class AdminCalendarTest < ApplicationSystemTestCase
       assert_select2_single @partner_two.name, default_location
 
       fill_in 'Name', with: 'test cal'
-      fill_in 'URL', with: 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
+      fill_in 'URL', with: 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483'
 
       click_button 'Create Calendar'
 
