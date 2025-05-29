@@ -133,10 +133,10 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
   end
 
   test 'imports eventbrite calendars' do
-    url = 'https://www.eventbrite.co.uk/o/berwickshire-association-for-voluntary-service-15751503063'
+    url = 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483'
 
     VCR.use_cassette('Eventbrite calendar', allow_playback_repeats: true) do
-      calendar = create(:calendar, name: 'Eventbrite - BAVS', source: url)
+      calendar = create(:calendar, name: 'Eventbrite - Queer Lit & Social Refuge', source: url)
 
       parser_class = CalendarImporter::CalendarImporter.new(calendar).parser
       output = parser_class.new(calendar).calendar_to_events
@@ -144,9 +144,9 @@ class CalendarImporter::CalendarImporterTest < ActiveSupport::TestCase
       first_event = events.first
       last_event = events.last
 
-      assert_equal 41, events.count
-      assert_equal 'BAVS Forum: Supporting Positive Pathways – Action Research Event', first_event.summary
-      assert_equal 'Vision 4 Eyemouth', last_event.summary
+      assert_equal 73, events.count
+      assert_equal 'Do You Believe in Life After Loss – Andrew Flewitt in Conversation.', first_event.summary
+      assert_equal 'Write That Novel: A writers workshop', last_event.summary
     end
   end
 

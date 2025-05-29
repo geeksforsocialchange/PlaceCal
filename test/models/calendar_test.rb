@@ -83,7 +83,7 @@ class CalendarTest < ActiveSupport::TestCase
     assert_predicate calendar, :valid? # does not need VCR cassette
 
     VCR.use_cassette(:eventbrite_events) do
-      calendar.source = 'https://www.eventbrite.co.uk/o/ftm-london-32888898939'
+      calendar.source = 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483'
       assert_predicate calendar, :valid? # source changed, will validate URL reachable
     end
   end

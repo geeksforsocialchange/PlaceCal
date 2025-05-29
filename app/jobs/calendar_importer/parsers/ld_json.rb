@@ -11,25 +11,6 @@ module CalendarImporter::Parsers
 
     DOMAINS = ['various'].freeze
 
-    CONTEXT = {
-      'geo' => 'http://schema.org/geo',
-      'location' => 'http://schema.org/location',
-      'description' => 'http://schema.org/description',
-      'latitude' => 'http://schema.org/latitude',
-      'longitude' => 'http://schema.org/longitude',
-      'address' => 'http://schema.org/address',
-      'end_date' => 'http://schema.org/endDate',
-      'start_date' => 'http://schema.org/startDate',
-      'organiser' => 'http://schema.org/organizer',
-      'event' => 'http://schema.org/event',
-      'name' => 'http://schema.org/name',
-      'street_address' => 'http://schema.org/streetAddress',
-
-      'logo_url' => { '@id' => 'http://schema.org/logo', '@type' => '@id' },
-      'image_url' => { '@id' => 'http://schema.org/image', '@type' => '@id' },
-      'url' => { '@id' => 'http://schema.org/url', '@type' => '@id' }
-    }.freeze
-
     class EventConsumer
       TYPE_DISPATCH = {
         'Event' => :consume_event,
@@ -132,17 +113,7 @@ module CalendarImporter::Parsers
     end
 
     def download_calendar
-      response_body = Base.read_http_source(@url)
-
-      doc = Nokogiri::HTML(response_body)
-      data_nodes = doc.xpath('//script[@type="application/ld+json"]')
-
-      data_nodes.reduce([]) do |out, node|
-        json = Base.safely_parse_json(node.inner_html)
-        expanded = JSON::LD::API.expand(json)
-        compact = JSON::LD::API.compact(expanded, CONTEXT)
-        out.append compact
-      end
+      Base.parse_ld_json(@url)
     end
 
     def import_events_from(data)
