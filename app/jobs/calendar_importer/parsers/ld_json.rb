@@ -40,7 +40,7 @@ module CalendarImporter::Parsers
         'WebSite' => :consume_website
       }.freeze
 
-      event_types = %w[business childrens course_instance comedy dance delivery education event_series exhibition festival food hackathon literary music publication sale screening social sports theatre visual_arts].freeze
+      event_types = %w[business childrens course_instance comedy dance delivery education event_series exhibition festival food hackathon literary music publication sale screening social sports theater visual_arts].freeze
 
       event_types.each do |type|
         define_method(:"consume_#{type}_event") do |data|

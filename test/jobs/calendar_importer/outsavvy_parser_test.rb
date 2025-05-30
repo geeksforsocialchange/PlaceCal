@@ -43,4 +43,28 @@ class OutsavvyParserTest < ActiveSupport::TestCase
       assert_empty(data)
     end
   end
+
+  test 'gets URL of original event listing' do
+    VCR.use_cassette(:outsavvy_publisher_url) do
+      calendar = build(
+        :calendar,
+        strategy: :event,
+        name: :import_test_calendar,
+        source: 'https://www.outsavvy.com/organiser/ldn-queer-mart'
+      )
+
+      parser = CalendarImporter::Parsers::Outsavvy.new(calendar, url: calendar.source)
+
+      data = parser.download_calendar
+
+      consumer = CalendarImporter::Parsers::LdJson::EventConsumer.new
+      consumer.consume data
+      consumer.validate_events
+      consumer.events
+
+      expected = 'https://www.outsavvy.com/event/25977/ldn-queer-mart-lgbtqia-art-market'
+
+      assert_equal(consumer.events[0].publisher_url, expected)
+    end
+  end
 end
