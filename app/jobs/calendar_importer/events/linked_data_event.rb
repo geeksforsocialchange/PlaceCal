@@ -59,5 +59,9 @@ module CalendarImporter::Events
     def occurrences_between(*)
       [Dates.new(start_time, end_time)]
     end
+
+    def publisher_url
+      @event['url']
+    end
   end
 end
