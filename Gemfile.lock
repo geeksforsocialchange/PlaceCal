@@ -407,7 +407,7 @@ GEM
     rubocop-graphql (1.5.5)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1, < 2)
-    rubocop-minitest (0.38.0)
+    rubocop-minitest (0.38.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.38.0, < 2.0)
@@ -572,7 +572,7 @@ DEPENDENCIES
   rdoc
   rubocop (= 1.75.8)
   rubocop-graphql (= 1.5.5)
-  rubocop-minitest (= 0.38.0)
+  rubocop-minitest (= 0.38.1)
   rubocop-performance (= 1.25.0)
   rubocop-rails (= 2.32.0)
   rubocop-rake
