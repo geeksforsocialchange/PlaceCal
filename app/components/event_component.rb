@@ -1,14 +1,20 @@
 # frozen_string_literal: true
 
 # app/components/event/event_component.rb
-class EventComponent < MountainView::Presenter
+class EventComponent < ViewComponent::Base
   properties :context, :event, :primary_neighbourhood, :show_neighbourhoods, :badge_zoom_level
 
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::DateHelper
 
-  delegate :id, to: :event
-  delegate :partner_at_location, to: :event
+  def initialize(context: '', event: '', primary_neighbourhood: '', show_neighbourhoods: false, badge_zoom_level: 1)
+    super
+    @context = context
+    @event = event
+    @primary_neighbourhood = primary_neighbourhood
+    @show_neighbourhoods = show_neighbourhoods
+    @badge_zoom_level = badge_zoom_level
+  end
 
   def time
     if event.dtend
@@ -34,7 +40,7 @@ class EventComponent < MountainView::Presenter
   end
 
   def formatted_date(date)
-    if date.year == Time.now.year
+    if date.year == Time.zone.now.year
       date.strftime('%e %b')
     else
       date.strftime('%e %b %Y')
@@ -52,8 +58,9 @@ class EventComponent < MountainView::Presenter
   end
 
   delegate :summary, to: :event
-
   delegate :description, to: :event
+  delegate :id, to: :event
+  delegate :partner_at_location, to: :event
 
   def page?
     context == :page
