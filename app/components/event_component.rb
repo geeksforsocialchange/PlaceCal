@@ -2,18 +2,17 @@
 
 # app/components/event/event_component.rb
 class EventComponent < ViewComponent::Base
-  properties :context, :event, :primary_neighbourhood, :show_neighbourhoods, :badge_zoom_level
-
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::DateHelper
 
-  def initialize(context: '', event: '', primary_neighbourhood: '', show_neighbourhoods: false, badge_zoom_level: 1)
+  def initialize(site: nil, context: nil, event: nil, show_neighbourhoods: nil, primary_neighbourhood: nil)
     super
+    @site = site
     @context = context
     @event = event
     @primary_neighbourhood = primary_neighbourhood
     @show_neighbourhoods = show_neighbourhoods
-    @badge_zoom_level = badge_zoom_level
+    @badge_zoom_level = @site.badge_zoom_level
   end
 
   def time
@@ -62,35 +61,37 @@ class EventComponent < ViewComponent::Base
   delegate :id, to: :event
   delegate :partner_at_location, to: :event
 
+  attr_reader :event
+
   def page?
-    context == :page
+    @context == :page
   end
 
   def partner
-    event.partner.first
+    @event.partner.first
   end
 
   def first_address_line
-    event.address&.street_address&.delete('\\')
+    @event.address&.street_address&.delete('\\')
   end
 
   def repeats
-    event.rrule.present? ? event.rrule[0]['table']['frequency'].titleize : false
+    @event.rrule.present? ? event.rrule[0]['table']['frequency'].titleize : false
   end
 
   def neighbourhood_name(badge_zoom_level)
-    event.neighbourhood&.name_from_badge_zoom(badge_zoom_level)
+    @event.neighbourhood&.name_from_badge_zoom(badge_zoom_level)
   end
 
   def primary_neighbourhood?
     # Show everything as primary if primary is not set
-    return true unless primary_neighbourhood
+    return true unless @primary_neighbourhood
 
-    event.neighbourhood == primary_neighbourhood || primary_neighbourhood.children.include?(event.neighbourhood)
+    @event.neighbourhood == @primary_neighbourhood || @primary_neighbourhood.children.include?(event.neighbourhood)
   end
 
   def online?
-    event.online_address.present?
+    @event.online_address.present?
   end
 
   private
@@ -104,12 +105,4 @@ class EventComponent < ViewComponent::Base
   end
 
   # Prevent method-access in erb file for named properties.
-
-  def event
-    properties[:event]
-  end
-
-  def context
-    properties[:context]
-  end
 end
