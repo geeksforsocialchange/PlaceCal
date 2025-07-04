@@ -5,7 +5,6 @@ class Neighbourhood < ApplicationRecord
   #    see /lib/tasks/neighbourhoods.rake
   LATEST_RELEASE_DATE = DateTime.new(2023, 5).freeze
 
-  self.primary_key = 'id'
   has_ancestry
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :sites, through: :sites_neighbourhoods
