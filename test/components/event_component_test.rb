@@ -12,7 +12,7 @@ class EventComponentTest < ViewComponent::TestCase
       @primary_neighbourhood = create(:neighbourhood)
       @show_neighbourhoods = false
     end
-    with_request_url('/events/11234.json', host: 'mossley.mossley.localhost') do
+    with_request_url('/events/11234', host: "#{@site.slug}.lvh.me:3000") do
       render_inline(EventComponent.new(site: @site, context: @context, event: @event, primary_neighbourhood: @primary_neighbourhood, show_neighbourhoods: @show_neighbourhoods))
       assert_text 'N.A. (Narcotics Anonymous) - Meetup '
       assert_text '123 Moss Ln E'
@@ -31,7 +31,7 @@ class EventComponentTest < ViewComponent::TestCase
       @primary_neighbourhood = create(:neighbourhood)
       @show_neighbourhoods = false
     end
-    with_request_url('/events/11234.json', host: 'mossley.mossley.localhost') do
+    with_request_url('/events/11234', host: "#{@site.slug}.lvh.me:3000") do
       render_inline(EventComponent.new(site: @site, context: @context, event: @event, primary_neighbourhood: @primary_neighbourhood, show_neighbourhoods: @show_neighbourhoods))
       assert_text 'N.A. (Narcotics Anonymous) - Meetup '
       assert_text '123 Moss Ln E'
@@ -50,7 +50,7 @@ class EventComponentTest < ViewComponent::TestCase
       @primary_neighbourhood = create(:neighbourhood)
       @show_neighbourhoods = true
     end
-    with_request_url('/events/11234.json', host: 'mossley.mossley.localhost') do
+    with_request_url('/events/11234', host: "#{@site.slug}.lvh.me:3000") do
       render_inline(EventComponent.new(site: @site, context: @context, event: @event, primary_neighbourhood: @primary_neighbourhood, show_neighbourhoods: @show_neighbourhoods))
       assert_text 'N.A. (Narcotics Anonymous) - Meetup '
       assert_text '123 Moss Ln E'
@@ -69,7 +69,7 @@ class EventComponentTest < ViewComponent::TestCase
       @primary_neighbourhood = create(:neighbourhood)
       @show_neighbourhoods = true
     end
-    with_request_url('/events/11234.json', host: 'mossley.mossley.localhost') do
+    with_request_url('/events/11234', host: "#{@site.slug}.lvh.me:3000") do
       render_inline(EventComponent.new(site: @site, context: @context, event: @event, primary_neighbourhood: @primary_neighbourhood, show_neighbourhoods: @show_neighbourhoods))
       assert_text 'N.A. (Narcotics Anonymous) - Meetup '
       assert_text '123 Moss Ln E'
@@ -88,7 +88,7 @@ class EventComponentTest < ViewComponent::TestCase
       @primary_neighbourhood = create(:neighbourhood)
       @show_neighbourhoods = false
     end
-    with_request_url('/events/11234.json', host: 'mossley.mossley.localhost') do
+    with_request_url('/events/11234', host: "#{@site.slug}.lvh.me:3000") do
       render_inline(EventComponent.new(site: @site, context: @context, event: @event, primary_neighbourhood: @primary_neighbourhood, show_neighbourhoods: @show_neighbourhoods))
       assert_text 'N.A. (Narcotics Anonymous) - Meetup '
       assert_text '123 Moss Ln E'
