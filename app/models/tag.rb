@@ -6,7 +6,6 @@ class Tag < ApplicationRecord
 
   friendly_id :name, use: :slugged
 
-  self.primary_key = 'id'
   self.table_name = 'tags' # Maybe we can remove this? Tag should automagically railsify to tags right?
 
   has_many :tags_users, dependent: :destroy

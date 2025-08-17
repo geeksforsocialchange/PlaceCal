@@ -6,7 +6,6 @@ class Site < ApplicationRecord
 
   include HtmlRenderCache
   html_render_cache :description
-  self.primary_key = 'id'
 
   friendly_id :name, use: :slugged
 
