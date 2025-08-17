@@ -1,3 +1,0 @@
-event list (use in collections.show, partners)
-events -> activities?
-events -> show
