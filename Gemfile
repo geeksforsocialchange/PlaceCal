@@ -111,6 +111,7 @@ group :development do
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
+  gem 'mutex_m'
   gem 'web-console'
   gem 'yard'
 end
