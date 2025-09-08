@@ -286,6 +286,7 @@ GEM
     msgpack (1.5.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
+    mutex_m (0.2.0)
     net-imap (0.5.9)
       date
       net-protocol
@@ -557,6 +558,7 @@ DEPENDENCIES
   minitest-rails-capybara
   minitest-reporters
   mountain_view
+  mutex_m
   net-imap
   net-pop
   net-smtp
