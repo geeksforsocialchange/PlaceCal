@@ -1,7 +1,10 @@
 name: Test and maybe deploy
 
 on:
-  - push
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   test-and-deploy:
