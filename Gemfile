@@ -101,6 +101,7 @@ group :development do
   gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
+  gem 'mutex_m'
   gem 'rails-erd'
   gem 'rdoc'
   gem 'rubocop', '1.75.8', require: false
@@ -111,7 +112,6 @@ group :development do
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
-  gem 'mutex_m'
   gem 'web-console'
   gem 'yard'
 end
