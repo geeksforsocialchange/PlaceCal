@@ -67,4 +67,27 @@ class OutsavvyParserTest < ActiveSupport::TestCase
       assert_equal(consumer.events[0].publisher_url, expected)
     end
   end
+
+  test 'detects cancelled events' do
+    VCR.use_cassette(:outsavvy_cancelled_event) do
+      calendar = build(
+        :calendar,
+        strategy: :event,
+        name: :import_test_calendar,
+        source: 'https://www.outsavvy.com/organiser/a-whole-orange'
+      )
+
+      parser = CalendarImporter::Parsers::Outsavvy.new(calendar, url: calendar.source)
+
+      data = parser.download_calendar
+
+      consumer = CalendarImporter::Parsers::LdJson::EventConsumer.new
+      consumer.consume data
+      consumer.events
+
+      expected = false
+
+      assert_equal(consumer.events[18].not_cancelled?, expected)
+    end
+  end
 end
