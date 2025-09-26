@@ -3,7 +3,7 @@
 
 all: test
 
-setup_with_docker: install_dependencies docker setup_env setup_db seed_GFSC_prod_copy_db create_user up
+setup_with_docker: install_dependencies docker setup_env setup_db seed_GFSC_prod_copy_db up
 
 docker: setup_docker_network setup_docker_container setup_env
 
@@ -45,9 +45,6 @@ setup_db:
 
 seed_GFSC_prod_copy_db:
 	rails db:dump_production_and_restore_other restore_on_local=1
-
-create_user:
-	bundle exec rails runner "User.create!(email: 'info@placecal.org', password: 'password', password_confirmation: 'password', role: :root)"
 
 test:
 	time sh -c "rails test --pride && rails test:system && rubocop && prettier -c app/"
