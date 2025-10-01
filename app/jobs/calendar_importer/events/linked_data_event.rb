@@ -57,6 +57,8 @@ module CalendarImporter::Events
       @start_time.present? && (@start_time > DateTime.now)
     end
 
+    ## Events may have a status, such as cancelled or scheduled (see https://schema.org/EventStatusType for a complete list).
+    ## We are not handling any statuses other than cancelled, on the assumption that alternative states won't be implemented.
     def not_cancelled?
       @status.present? && @status != 'https://schema.org/EventCancelled'
     end
