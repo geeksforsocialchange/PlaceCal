@@ -2,7 +2,7 @@
 
 module CalendarImporter::Events
   class LinkedDataEvent < Base
-    attr_reader :uid, :start_time, :end_time, :summary, :description, :location
+    attr_reader :uid, :start_time, :end_time, :summary, :description, :location, :status
 
     def initialize(data)
       super
@@ -13,6 +13,7 @@ module CalendarImporter::Events
       @end_time = parse_timestamp(read_value_of(data, 'end_date'))
       @summary = data['name']
       @location = extract_location(data)
+      @status = data['http://schema.org/eventStatus']
 
       # Repeating events share a URL, so we need to add the starttime as a param.
       # Otherwise, PlaceCal will assume they're all the same event and update instead of create.
@@ -42,7 +43,7 @@ module CalendarImporter::Events
     end
 
     def attributes
-      valid? && in_future? && super
+      valid? && in_future? && not_cancelled? && super
     end
 
     def valid?
@@ -54,6 +55,12 @@ module CalendarImporter::Events
 
     def in_future?
       @start_time.present? && (@start_time > DateTime.now)
+    end
+
+    ## Events may have a status, such as cancelled or scheduled (see https://schema.org/EventStatusType for a complete list).
+    ## We are not handling any statuses other than cancelled, on the assumption that alternative states won't be implemented.
+    def not_cancelled?
+      @status.present? && @status != 'https://schema.org/EventCancelled'
     end
 
     def occurrences_between(*)
