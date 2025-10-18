@@ -107,7 +107,7 @@ group :development do
   gem 'rubocop', '1.75.8', require: false
   gem 'rubocop-graphql', '1.5.6', require: false
   gem 'rubocop-minitest', '0.38.2', require: false
-  gem 'rubocop-performance', '1.26.0', require: false
+  gem 'rubocop-performance', '1.26.1', require: false
   gem 'rubocop-rails', '2.33.4', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
