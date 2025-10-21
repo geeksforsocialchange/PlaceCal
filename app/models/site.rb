@@ -147,11 +147,28 @@ class Site < ApplicationRecord
   end
 
   class << self
+    # Find any sites with URLs that match the specified domain
+    #
+    # [QAD 2025-10-21] This a band-aid to work around the implementation in
+    # https://github.com/geeksforsocialchange/PlaceCal/pull/2201 which removed
+    # the site.domain field in favour of a site.url field. Long-term, a better
+    # implementation would be to restore site.domain and reverse the implementation
+    # of the above PR.
+    def find_using_domain(domain)
+      # Should be no need to sanitize `domain` because the interpolation happens
+      # before it is passed to Arel for sanitization
+      find_by(url: ["https://#{domain}", "https://#{domain}/"])
+    end
+
     # Find the requested Site from information in the rails request object.
     #
     # @param request The request must expose the methods: host, subdomain, subdomains
     # @return [Site]
     def find_by_request(request)
+      # If there is a site with the domain in request.host, return it
+      site = find_using_domain(request.host)
+      return site if site.present?
+
       site_slug =
         if request.subdomain == 'www'
           request.subdomains.second if request&.subdomains&.second
