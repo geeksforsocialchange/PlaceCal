@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in this code please report it to:
 
-Email: [kim@gfsc.studio](mailto:kim@gfsc.studio)
+Email: [security@gfsc.studio](mailto:security@gfsc.studio)
 
 Please include the following information in your report:
 
@@ -16,4 +16,4 @@ Please include the following information in your report:
 
 ## Additional information
 
-For general security concerns or questions, please contact [kim@gfsc.studio](mailto:kim@gfsc.studio)
+For general security concerns or questions, please contact [security@gfsc.studio](mailto:security@gfsc.studio)
