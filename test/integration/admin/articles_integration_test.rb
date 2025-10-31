@@ -73,10 +73,10 @@ class Admin::ArticlesTest < ActionDispatch::IntegrationTest
 
     # top of page form error box
     assert_select '#form-errors li',
-                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png, webp'
 
     assert_select 'form .article_article_image .invalid-feedback',
-                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png, webp'
   end
 
   test 'update article image upload problem feedback' do
@@ -98,9 +98,9 @@ class Admin::ArticlesTest < ActionDispatch::IntegrationTest
 
     # top of page form error box
     assert_select '#form-errors li',
-                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png, webp'
 
     assert_select 'form .article_article_image .invalid-feedback',
-                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png'
+                  text: 'Article image You are not allowed to upload "bmp" files, allowed types: svg, jpg, jpeg, png, webp'
   end
 end
