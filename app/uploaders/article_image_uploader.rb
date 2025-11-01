@@ -8,6 +8,6 @@ class ArticleImageUploader < DefaultUploader
   end
 
   def extension_allowlist
-    %w[svg jpg jpeg png]
+    %w[svg jpg jpeg png webp]
   end
 end
