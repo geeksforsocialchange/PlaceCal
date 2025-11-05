@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
+ActiveRecord::Schema[7.2].define(version: 2024_05_28_221355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,8 +140,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.bigint "online_address_id"
     t.string "description_html"
     t.string "summary_html"
+    t.index ["address_id"], name: "index_events_on_address_id"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
     t.index ["online_address_id"], name: "index_events_on_online_address_id"
+    t.index ["partner_id"], name: "index_events_on_partner_id"
     t.index ["place_id"], name: "index_events_on_place_id"
   end
 
@@ -157,7 +159,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
-  create_table "neighbourhoods", force: :cascade do |t|
+  create_table "neighbourhoods", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "name_abbr"
     t.string "ancestry"
@@ -195,7 +197,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.index ["partner_subject_id"], name: "index_organisation_relationships_on_partner_subject_id"
   end
 
-  create_table "partner_tags", force: :cascade do |t|
+  create_table "partner_tags", id: :serial, force: :cascade do |t|
     t.bigint "partner_id", null: false
     t.bigint "tag_id", null: false
     t.index ["partner_id", "tag_id"], name: "index_partner_tags_on_partner_id_and_tag_id"
@@ -249,12 +251,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.index ["user_id"], name: "index_partners_users_on_user_id"
   end
 
-  create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
-    t.string "version"
-    t.integer "runtime"
-    t.datetime "migrated_on", precision: nil
-  end
-
   create_table "service_areas", force: :cascade do |t|
     t.bigint "neighbourhood_id"
     t.bigint "partner_id"
@@ -288,7 +284,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.index ["site_admin_id"], name: "index_sites_on_site_admin_id"
   end
 
-  create_table "sites_neighbourhoods", force: :cascade do |t|
+  create_table "sites_neighbourhoods", id: :serial, force: :cascade do |t|
     t.integer "neighbourhood_id"
     t.integer "site_id"
     t.string "relation_type"
@@ -324,7 +320,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.boolean "is_global", default: false
   end
 
-  create_table "tags", force: :cascade do |t|
+  create_table "tags", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "slug"
     t.text "description"
@@ -334,7 +330,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.string "type"
   end
 
-  create_table "tags_users", force: :cascade do |t|
+  create_table "tags_users", id: :serial, force: :cascade do |t|
     t.bigint "tag_id", null: false
     t.bigint "user_id", null: false
     t.index ["tag_id", "user_id"], name: "index_tags_users_on_tag_id_and_user_id"
@@ -384,7 +380,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_221355) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
-  add_foreign_key "addresses", "neighbourhoods"
   add_foreign_key "articles", "users", column: "author_id"
   add_foreign_key "calendars", "partners"
   add_foreign_key "calendars", "partners", column: "place_id"
