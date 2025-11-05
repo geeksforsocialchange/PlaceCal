@@ -20,13 +20,9 @@ end
 class CustomDomainTest < ActiveSupport::TestCase
   # We could use webmock here but we're not actually simulating the HTTP part so we'll make a little mock struct
   MockRequest = Struct.new(:host) do
-    def subdomains
-      host.split('.')
-    end
+    def subdomains = host.split('.')
 
-    def subdomain
-      subdomains.first
-    end
+    def subdomain = subdomains.first
   end
 
   setup do
