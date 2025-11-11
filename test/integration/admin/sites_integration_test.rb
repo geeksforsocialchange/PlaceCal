@@ -137,18 +137,18 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h6', text: '3 errors prohibited this Site from being saved'
 
     # top of page form error box
-    assert_select '#form-errors li', text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select '#form-errors li', text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select '#form-errors li',
-                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select '#form-errors li',
-                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png, webp'
 
     assert_select 'form .site_logo .invalid-feedback',
-                  text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+                  text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select 'form .site_footer_logo .invalid-feedback',
-                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select 'form .site_hero_image .invalid-feedback',
-                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png, webp'
   end
 
   test 'update site image upload problem feedback' do
@@ -169,17 +169,17 @@ class AdminSitesIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'h6', text: '3 errors prohibited this Site from being saved'
 
     # top of page form error box
-    assert_select '#form-errors li', text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+    assert_select '#form-errors li', text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select '#form-errors li',
-                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select '#form-errors li',
-                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png, webp'
 
     assert_select 'form .site_logo .invalid-feedback',
-                  text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+                  text: 'Logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select 'form .site_footer_logo .invalid-feedback',
-                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png'
+                  text: 'Footer logo You are not allowed to upload "bmp" files, allowed types: svg, png, webp'
     assert_select 'form .site_hero_image .invalid-feedback',
-                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png'
+                  text: 'Hero image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, png, webp'
   end
 end
