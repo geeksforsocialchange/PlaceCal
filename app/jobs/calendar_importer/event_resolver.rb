@@ -18,7 +18,7 @@ class CalendarImporter::EventResolver
   end
 
   def has_no_occurences?
-    occurences.count.zero?
+    occurences.none?
   end
 
   def occurences

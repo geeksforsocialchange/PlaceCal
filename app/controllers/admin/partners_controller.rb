@@ -3,6 +3,7 @@
 module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
+
     before_action :set_partner, only: %i[show edit update destroy clear_address]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]

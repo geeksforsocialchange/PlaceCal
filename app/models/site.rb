@@ -5,6 +5,7 @@ class Site < ApplicationRecord
   extend Enumerize
 
   include HtmlRenderCache
+
   html_render_cache :description
 
   friendly_id :name, use: :slugged
@@ -89,7 +90,7 @@ class Site < ApplicationRecord
 
   # Should we show the neighbourhood lozenge out on this site?
   def show_neighbourhoods?
-    owned_neighbourhood_ids.count > 1
+    owned_neighbourhood_ids.many?
   end
 
   def self.badge_zoom_level_label(value)
@@ -97,7 +98,7 @@ class Site < ApplicationRecord
   end
 
   def join_word
-    if owned_neighbourhoods.count > 1
+    if owned_neighbourhoods.many?
       'near'
     else
       'in'

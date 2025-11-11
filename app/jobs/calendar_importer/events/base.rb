@@ -130,7 +130,7 @@ module CalendarImporter::Events
 
     def online_event?
       # TODO: Put in default here
-      nil
+      false
     end
   end
 end

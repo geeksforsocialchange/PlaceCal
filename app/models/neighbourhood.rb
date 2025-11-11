@@ -141,6 +141,5 @@ class Neighbourhood < ApplicationRecord
 
   def inject_parent_name_field
     self.parent_name = parent.name if parent
-    true
   end
 end

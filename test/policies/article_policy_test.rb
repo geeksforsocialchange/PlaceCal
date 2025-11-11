@@ -34,43 +34,43 @@ class ArticlePolicyTest < ActiveSupport::TestCase
   end
 
   def test_show
-    assert allows_access(@root, Article, :index)
-    assert allows_access(@editor, Article, :index)
-    assert allows_access(@partner_admin, Article, :index)
-    assert allows_access(@neighbourhood_admin, Article, :index)
+    assert allows_access?(@root, Article, :index)
+    assert allows_access?(@editor, Article, :index)
+    assert allows_access?(@partner_admin, Article, :index)
+    assert allows_access?(@neighbourhood_admin, Article, :index)
 
-    assert denies_access(@partnerless_neighbourhood_admin, Article, :index)
-    assert denies_access(@citizen, Article, :index)
+    assert denies_access?(@partnerless_neighbourhood_admin, Article, :index)
+    assert denies_access?(@citizen, Article, :index)
   end
 
   def test_create
-    assert allows_access(@root, Article, :create)
-    assert allows_access(@editor, Article, :create)
-    assert allows_access(@partner_admin, Article, :create)
-    assert allows_access(@neighbourhood_admin, Article, :create)
+    assert allows_access?(@root, Article, :create)
+    assert allows_access?(@editor, Article, :create)
+    assert allows_access?(@partner_admin, Article, :create)
+    assert allows_access?(@neighbourhood_admin, Article, :create)
 
-    assert denies_access(@partnerless_neighbourhood_admin, Article, :create)
-    assert denies_access(@citizen, Article, :create)
+    assert denies_access?(@partnerless_neighbourhood_admin, Article, :create)
+    assert denies_access?(@citizen, Article, :create)
   end
 
   def test_update
-    assert allows_access(@root, Article, :update)
-    assert allows_access(@editor, Article, :update)
-    assert allows_access(@partner_admin, Article, :update)
-    assert allows_access(@neighbourhood_admin, Article, :update)
+    assert allows_access?(@root, Article, :update)
+    assert allows_access?(@editor, Article, :update)
+    assert allows_access?(@partner_admin, Article, :update)
+    assert allows_access?(@neighbourhood_admin, Article, :update)
 
-    assert denies_access(@partnerless_neighbourhood_admin, Article, :update)
-    assert denies_access(@citizen, Article, :update)
+    assert denies_access?(@partnerless_neighbourhood_admin, Article, :update)
+    assert denies_access?(@citizen, Article, :update)
   end
 
   def test_destroy
-    assert allows_access(@root, Article, :destroy)
-    assert allows_access(@editor, Article, :destroy)
-    assert allows_access(@partner_admin, Article, :destroy)
-    assert allows_access(@neighbourhood_admin, Article, :destroy)
+    assert allows_access?(@root, Article, :destroy)
+    assert allows_access?(@editor, Article, :destroy)
+    assert allows_access?(@partner_admin, Article, :destroy)
+    assert allows_access?(@neighbourhood_admin, Article, :destroy)
 
-    assert denies_access(@partnerless_neighbourhood_admin, Article, :destroy)
-    assert denies_access(@citizen, Article, :destroy)
+    assert denies_access?(@partnerless_neighbourhood_admin, Article, :destroy)
+    assert denies_access?(@citizen, Article, :destroy)
   end
 
   def test_scope
