@@ -110,9 +110,9 @@ class PartnerIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_select 'h6', text: '1 error prohibited this Partner from being saved'
     assert_select '#form-errors li',
-                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
+                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png, webp'
     assert_select 'form .partner_image .invalid-feedback',
-                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png'
+                  text: 'Image You are not allowed to upload "bmp" files, allowed types: jpg, jpeg, gif, png, webp'
   end
 
   test 'neighbourhood_admin cannot update an address outside of their neighbourhood' do

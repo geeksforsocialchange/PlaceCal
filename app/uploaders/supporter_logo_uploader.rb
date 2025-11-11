@@ -17,7 +17,7 @@ class SupporterLogoUploader < DefaultUploader
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_allowlist
-    %w[jpg jpeg gif png svg]
+    %w[jpg jpeg gif png svg webp]
   end
 
   # Override the filename of the uploaded files:
