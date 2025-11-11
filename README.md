@@ -57,7 +57,7 @@ bin/setup
 
 Amongst other things, this will create an admin user for you:
 
-- Username: `root@placecal.org`
+- Username: `info@placecal.org`
 - Password: `password`
 
 ### Run the thing
