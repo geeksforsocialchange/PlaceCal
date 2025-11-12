@@ -133,4 +133,3 @@ Lint/SelfAssignment:
   Enabled: false
 Lint/RedundantCopDisableDirective:
   Enabled: false
-  

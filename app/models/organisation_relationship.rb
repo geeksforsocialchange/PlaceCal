@@ -15,5 +15,6 @@ class OrganisationRelationship < ApplicationRecord
   # rubocop:enable Rails/InverseOf
 
   extend Enumerize
+
   enumerize :verb, in: %i[manages]
 end

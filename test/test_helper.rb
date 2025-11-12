@@ -81,19 +81,19 @@ module ActiveSupport
     #
     # Usage:
     #
-    # allows_access(@root, @partner, :create)
-    # denies_access(@partner_admin, @partner, :update)
+    # allows_access?(@root, @partner, :create)
+    # denies_access?(@partner_admin, @partner, :update)
     # permitted_records(@partner_admin, Partner)
 
-    def allows_access(user, object, action)
+    def allows_access?(user, object, action)
       klass  = object.is_a?(Class) ? object : object.class
       policy = "#{klass}Policy".constantize
 
       policy.new(user, object).send(:"#{action}?")
     end
 
-    def denies_access(user, object, action)
-      !allows_access(user, object, action)
+    def denies_access?(user, object, action)
+      !allows_access?(user, object, action)
     end
 
     def permitted_records(user, klass)
