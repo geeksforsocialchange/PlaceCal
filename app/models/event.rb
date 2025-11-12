@@ -5,6 +5,7 @@ class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule notices]
 
   include HtmlRenderCache
+
   html_render_cache :description
   html_render_cache :summary
 
@@ -208,8 +209,7 @@ class Event < ApplicationRecord
                               dtstart: dtstart,
                               summary: summary,
                               calendar_id: calendar_id)
-                       .count
-                       .positive?
+                       .any?
 
     errors.add(:base, 'Unfortunately this event is a duplicate of an ' \
                       "existing event for calendar: #{calendar_id} " \

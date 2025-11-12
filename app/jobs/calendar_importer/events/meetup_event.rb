@@ -57,7 +57,7 @@ module CalendarImporter::Events
       [Dates.new(dtstart, dtend)]
     end
 
-    def online_event?
+    def online_event_id
       return unless @event['is_online_event']
 
       online_address = OnlineAddress.find_or_create_by(url: @event['link'], link_type: 'indirect')

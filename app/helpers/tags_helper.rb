@@ -10,7 +10,7 @@ module TagsHelper
     User.all.order(:last_name).collect { |e| [e.admin_name, e.id] }
   end
 
-  def show_assigned_user_field_for(form)
+  def show_assigned_user_field_for?(form)
     [Tag, Partnership].include?(form.object.class)
   end
 

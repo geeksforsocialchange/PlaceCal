@@ -8,7 +8,7 @@ class ArticlePolicy < ApplicationPolicy
   # @return [Boolean]
   def index?
     return true if user.root? || user.editor?
-    return true if user.partner_admin? && user.partners.count.positive?
+    return true if user.partner_admin? && user.partners.any?
 
     # True if neighbourhood admin oversees any partners
     return true if user.neighbourhood_admin? && owned_neighbourhoods_have_partners?
@@ -92,6 +92,6 @@ class ArticlePolicy < ApplicationPolicy
   # @return [ActiveRecord::Relation<Article>] A list of Partners
   def owned_neighbourhoods_have_partners?
     # We can make this less shallow, but it's not important since scoping rules have the deeper stuff anyway
-    Partner.from_neighbourhoods_and_service_areas(user.owned_neighbourhood_ids).count.positive?
+    Partner.from_neighbourhoods_and_service_areas(user.owned_neighbourhood_ids).any?
   end
 end
