@@ -128,9 +128,6 @@ module CalendarImporter::Events
       ip_class&.casecmp('private')&.zero? || description&.include?('#placecal-ignore')
     end
 
-    def online_event?
-      # TODO: Put in default here
-      false
-    end
+    def online_event_id; end
   end
 end

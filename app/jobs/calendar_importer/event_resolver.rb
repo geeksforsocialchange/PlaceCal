@@ -26,7 +26,7 @@ class CalendarImporter::EventResolver
   end
 
   def determine_online_location
-    data.online_address_id = data.online_event?
+    data.online_address_id = data.online_event_id
   end
 
   def determine_location_for_strategy

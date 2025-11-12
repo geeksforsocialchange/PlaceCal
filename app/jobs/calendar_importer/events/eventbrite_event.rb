@@ -64,8 +64,8 @@ module CalendarImporter::Events
       @occurrences
     end
 
-    def online_event?
-      return nil unless @event['online_event']
+    def online_event_id
+      return unless @event['online_event']
 
       online_address = OnlineAddress.find_or_create_by(url: @event['url'], link_type: 'indirect')
       online_address.id

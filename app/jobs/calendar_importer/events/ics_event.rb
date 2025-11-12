@@ -44,7 +44,7 @@ module CalendarImporter::Events
 
     delegate :occurrences_between, to: :@event
 
-    def online_event?
+    def online_event_id
       # Either return the google conference value, or find the link in the description
       link = @event.url
       link ||= @event.custom_properties['x_google_conference']
