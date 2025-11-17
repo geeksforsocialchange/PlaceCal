@@ -47,57 +47,57 @@ class PartnerPolicyTest < ActiveSupport::TestCase
 
   #  Everyone except guess can view list
   def test_index
-    assert denies_access(@citizen, Partner, :index)
+    assert denies_access?(@citizen, Partner, :index)
 
-    assert allows_access(@root, Partner, :index)
-    assert allows_access(@correct_partner_admin, Partner, :index)
-    assert allows_access(@correct_ward_admin, Partner, :index)
-    assert allows_access(@correct_service_area_admin, Partner, :index)
-    assert allows_access(@correct_district_admin, Partner, :index)
-    assert allows_access(@correct_district_admin, Partner, :index)
-    assert allows_access(@partnership_admin, Partner, :index)
+    assert allows_access?(@root, Partner, :index)
+    assert allows_access?(@correct_partner_admin, Partner, :index)
+    assert allows_access?(@correct_ward_admin, Partner, :index)
+    assert allows_access?(@correct_service_area_admin, Partner, :index)
+    assert allows_access?(@correct_district_admin, Partner, :index)
+    assert allows_access?(@correct_district_admin, Partner, :index)
+    assert allows_access?(@partnership_admin, Partner, :index)
 
-    # assert allows_access(@multi_admin, Partner, :index)
+    # assert allows_access?(@multi_admin, Partner, :index)
   end
 
   #  Root admins can create
   #  Everyone else can't create
   def test_create
-    assert denies_access(@citizen, Partner, :create)
-    assert denies_access(@correct_partner_admin, Partner, :create)
+    assert denies_access?(@citizen, Partner, :create)
+    assert denies_access?(@correct_partner_admin, Partner, :create)
 
-    assert allows_access(@root, Partner, :create)
-    assert allows_access(@correct_ward_admin, Partner, :create)
-    assert allows_access(@correct_district_admin, Partner, :create)
+    assert allows_access?(@root, Partner, :create)
+    assert allows_access?(@correct_ward_admin, Partner, :create)
+    assert allows_access?(@correct_district_admin, Partner, :create)
 
-    # assert allows_access(@multi_admin, Partner, :create)
+    # assert allows_access?(@multi_admin, Partner, :create)
   end
 
   #  Partner admin, root admin can update
   #  Different partner admin, guest can't
   def test_update
-    assert denies_access(@citizen, @partner, :update)
-    assert denies_access(@wrong_partner_admin, @partner, :update)
+    assert denies_access?(@citizen, @partner, :update)
+    assert denies_access?(@wrong_partner_admin, @partner, :update)
 
-    assert allows_access(@root, @partner, :update)
-    assert allows_access(@correct_partner_admin, @partner, :update)
-    assert allows_access(@correct_ward_admin, @partner, :update)
-    assert allows_access(@partnership_admin, @partner, :update)
-    # assert allows_access(@correct_district_admin, @partner, :update)
+    assert allows_access?(@root, @partner, :update)
+    assert allows_access?(@correct_partner_admin, @partner, :update)
+    assert allows_access?(@correct_ward_admin, @partner, :update)
+    assert allows_access?(@partnership_admin, @partner, :update)
+    # assert allows_access?(@correct_district_admin, @partner, :update)
 
-    # assert allows_access(@multi_admin, @partner, :update)
-    # assert allows_access(@multi_admin, @partner_two, :update)
-    # assert allows_access(@multi_admin, @ashton_partner, :update)
+    # assert allows_access?(@multi_admin, @partner, :update)
+    # assert allows_access?(@multi_admin, @partner_two, :update)
+    # assert allows_access?(@multi_admin, @ashton_partner, :update)
   end
 
   # Root and neighbourhood admin only can destroy
 
   def test_destroy
-    assert denies_access(@citizen, @partner, :destroy)
-    assert allows_access(@root, @partner, :destroy)
-    assert denies_access(@correct_ward_admin, @partner, :destroy)
-    assert allows_access(@only_ward_admin, @only_ward_admin_partner, :destroy)
-    assert allows_access(@correct_partner_admin, @partner, :destroy)
+    assert denies_access?(@citizen, @partner, :destroy)
+    assert allows_access?(@root, @partner, :destroy)
+    assert denies_access?(@correct_ward_admin, @partner, :destroy)
+    assert allows_access?(@only_ward_admin, @only_ward_admin_partner, :destroy)
+    assert allows_access?(@correct_partner_admin, @partner, :destroy)
   end
 
   def test_scope
@@ -120,23 +120,23 @@ class PartnerPolicyTest < ActiveSupport::TestCase
     user = create(:user)
 
     # user with no partners
-    assert denies_access(user, Partner, :create)
+    assert denies_access?(user, Partner, :create)
 
     neighbourhood = create(:neighbourhood)
     user.neighbourhoods << neighbourhood
 
     # can create partners if user has neighbourhoods
-    assert allows_access(user, Partner, :create)
+    assert allows_access?(user, Partner, :create)
   end
 
   def test_update_with_partner_permissions
     user = create(:user)
 
     # denies user with no partners
-    assert denies_access(user, @other_partner, :update)
+    assert denies_access?(user, @other_partner, :update)
 
     # can update partners user has access to
     user.partners << @other_partner
-    assert allows_access(user, @other_partner, :update)
+    assert allows_access?(user, @other_partner, :update)
   end
 end

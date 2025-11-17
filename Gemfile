@@ -12,7 +12,7 @@ end
 gem 'minitest-rails'
 gem 'pg'
 gem 'puma'
-gem 'rails', '7.2.2.2'
+gem 'rails', '7.2.3'
 
 # Frontend
 gem 'coffee-rails'
@@ -104,11 +104,11 @@ group :development do
   gem 'mutex_m'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop', '1.75.8', require: false
+  gem 'rubocop', '1.81.7', require: false
   gem 'rubocop-graphql', '1.5.6', require: false
   gem 'rubocop-minitest', '0.38.2', require: false
-  gem 'rubocop-performance', '1.26.0', require: false
-  gem 'rubocop-rails', '2.33.4', require: false
+  gem 'rubocop-performance', '1.26.1', require: false
+  gem 'rubocop-rails', '2.34.0', require: false
   gem 'rubocop-rake', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'

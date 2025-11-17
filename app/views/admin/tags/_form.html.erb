@@ -47,7 +47,7 @@
   <%= f.association :partners, collection: options_for_partners,
         input_html: { class: 'form-control', data: { controller: "select2" } } %>
 
-  <% if show_assigned_user_field_for(f) %>
+  <% if show_assigned_user_field_for?(f) %>
     <h2>Assigned Users</h2>
     <p>Grant permission to assign this tag</p>
     <%= f.association :users, collection: options_for_users,

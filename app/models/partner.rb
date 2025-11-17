@@ -6,9 +6,11 @@ class Partner < ApplicationRecord
   include Validation
 
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   include HtmlRenderCache
+
   html_render_cache :description
   html_render_cache :summary
   html_render_cache :accessibility_info
@@ -353,7 +355,7 @@ class Partner < ApplicationRecord
 
   def neighbourhood_name_for_site(badge_zoom_level)
     if service_areas.any?
-      if service_areas.count > 1
+      if service_areas.many?
         'Various'
       else
         service_areas.first&.neighbourhood&.shortname

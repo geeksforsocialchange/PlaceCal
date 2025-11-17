@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
   def current_site
     return @current_site if @current_site
 
-    if Site.count.positive?
+    if Site.any?
       # Do not return a site for the admin subdomain.
       # The admin subdomain gives a global view of data.
       return if request.subdomain == Site::ADMIN_SUBDOMAIN

@@ -9,11 +9,6 @@ class Join
   validates :name, :email, :why, presence: true
 
   def submit
-    if valid?
-      JoinMailer.join_us(self).deliver
-      true
-    else
-      false
-    end
+    valid? && JoinMailer.join_us(self).deliver
   end
 end

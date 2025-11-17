@@ -267,10 +267,10 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
     # top of page form error box
     assert_select '#form-errors li',
-                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png, webp"
 
     assert_select 'form .user_avatar .invalid-feedback',
-                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png, webp"
   end
 
   test 'update user avatar upload problem feedback' do
@@ -289,10 +289,10 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
     # top of page form error box
     assert_select '#form-errors li',
-                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png, webp"
 
     assert_select 'form .user_avatar .invalid-feedback',
-                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png, webp"
   end
 
   test 'update profile avatar upload problem feedback' do
@@ -310,10 +310,10 @@ class AdminUserIntegrationTest < ActionDispatch::IntegrationTest
 
     # top of page form error box
     assert_select '#form-errors li',
-                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png, webp"
 
     assert_select 'form .user_avatar .invalid-feedback',
-                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png"
+                  text: "Avatar You are not allowed to upload \"bmp\" files, allowed types: jpg, jpeg, png, webp"
   end
 
   test 'a neighbourhood_admin can create a user with a partner' do

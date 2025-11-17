@@ -62,7 +62,7 @@ class PartnersController < ApplicationController
       @period = params[:period] || 'week'
       @events = filter_events(@period, partner_or_place: @partner)
       # Sort criteria
-      @sort = params[:sort].to_s || 'time'
+      @sort = params[:sort] || 'time'
       @events = sort_events(@events, @sort)
       @paginator = true
     end

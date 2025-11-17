@@ -15,14 +15,14 @@ class TagPolicyTest < ActiveSupport::TestCase
   end
 
   def test_update
-    assert allows_access(@root, @normal_tag, :update)
-    assert allows_access(@root, @system_tag, :update)
+    assert allows_access?(@root, @normal_tag, :update)
+    assert allows_access?(@root, @system_tag, :update)
 
-    assert denies_access(@partner_admin, @normal_tag, :update)
-    assert denies_access(@partner_admin, @system_tag, :update)
-    assert denies_access(@partnership_admin, @normal_tag, :update)
-    assert denies_access(@partnership_admin, @system_tag, :update)
-    assert denies_access(@non_root, @system_tag, :update)
+    assert denies_access?(@partner_admin, @normal_tag, :update)
+    assert denies_access?(@partner_admin, @system_tag, :update)
+    assert denies_access?(@partnership_admin, @normal_tag, :update)
+    assert denies_access?(@partnership_admin, @system_tag, :update)
+    assert denies_access?(@non_root, @system_tag, :update)
   end
 
   test 'permitted_attributes have `type` when record is a Tag' do
