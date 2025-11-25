@@ -40,5 +40,11 @@
 			"matchCurrentVersion": "13.4",
 			"allowedVersions": "13.4"
 		}
-	]
+	],
+	"npm": {
+		"minimumReleaseAge": "7 days"
+	},
+	"rubygems": {
+		"minimumReleaseAge": "7 days"
+	}
 }
