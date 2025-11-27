@@ -39,7 +39,7 @@
 			"matchPackageNames": ["postgres"],
 			"matchCurrentVersion": "13.4",
 			"allowedVersions": "13.4"
-		}
+		},
 		{
       		"matchManagers": ["npm", "rubygems"],
       		"minimumReleaseAge": "7 days"
