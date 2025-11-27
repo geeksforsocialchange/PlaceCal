@@ -41,8 +41,8 @@
 			"allowedVersions": "13.4"
 		},
 		{
-      		"matchManagers": ["npm", "rubygems"],
-      		"minimumReleaseAge": "7 days"
-    	}
-	],
+			"matchManagers": ["npm", "rubygems"],
+			"minimumReleaseAge": "7 days"
+		}
+	]
 }
