@@ -54,25 +54,24 @@ RSpec.configure do |config|
     Timecop.return
   end
 
-  # Database cleaner for system/feature specs
-  config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
-  config.before(type: :system) do
+  # Database cleaner for system/feature specs (truncation strategy)
+  # Only use DatabaseCleaner for system/feature specs that need JS
+  config.before(:each, type: :system) do
     DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
   end
 
-  config.before(type: :feature) do
+  config.after(:each, type: :system) do
+    DatabaseCleaner.clean
+  end
+
+  config.before(:each, type: :feature) do
     DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
   end
 
-  config.before do |example|
-    DatabaseCleaner.start if example.metadata[:type].in?(%i[system feature])
-  end
-
-  config.after do |example|
-    DatabaseCleaner.clean if example.metadata[:type].in?(%i[system feature])
+  config.after(:each, type: :feature) do
+    DatabaseCleaner.clean
   end
 
   # Filter slow tests unless explicitly requested
