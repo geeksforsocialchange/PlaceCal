@@ -35,6 +35,7 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_USER: postgres
       PGPASSWORD: foobar
+      RAILS_ENV: test
 
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
@@ -60,9 +61,27 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
 
-      - run: bin/test --unit --no-lint
-      #     - run: bin/test --system --no-lint
-      - run: bin/test --lint --no-fix
+      - name: Prepare database
+        run: bin/rails db:test:prepare
+
+      - name: Build assets
+        run: bin/yarn run build
+
+      - name: Run RSpec tests
+        run: bundle exec rspec
+
+      - name: Run Cucumber features
+        run: bundle exec cucumber
+
+      # System specs disabled in CI (require Chrome)
+      # - name: Run system specs
+      #   run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
+
+      - name: Run linters
+        run: |
+          bin/yarn run format:check
+          bundle exec rubocop
+
       - name: Check database consistency
         run: RAILS_ENV=test bundle exec database_consistency
       - if: failure()
