@@ -10,7 +10,7 @@ FactoryBot.define do
     role { 'citizen' }
 
     # Role-specific factories
-    factory :root_user do
+    factory :root_user, aliases: [:root] do
       email { 'admin@normalcal.org' }
       first_name { 'Admin' }
       last_name { 'User' }

@@ -8,7 +8,7 @@ FactoryBot.define do
     published_at { 1.day.ago }
     association :author, factory: :user
 
-    factory :draft_article do
+    factory :draft_article, aliases: [:article_draft] do
       is_draft { true }
       published_at { nil }
     end
