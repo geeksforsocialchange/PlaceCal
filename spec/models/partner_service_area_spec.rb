@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Partner, 'service_area' do
-  let(:neighbourhood) { neighbourhoods(:one) }
+  let(:neighbourhood) { create(:riverside_ward) }
   let(:user) do
     u = create(:user)
     u.neighbourhoods << neighbourhood
