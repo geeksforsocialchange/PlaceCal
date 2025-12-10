@@ -68,8 +68,8 @@ swarm:
       prompt_file: .claude-on-rails/prompts/jobs.md
 
     tests:
-      description: "Minitest testing, factories, and test coverage specialist"
-      directory: ./test
+      description: "RSpec testing, factories, and test coverage specialist"
+      directory: ./spec
       model: opus
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
       prompt_file: .claude-on-rails/prompts/tests.md

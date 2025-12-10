@@ -2,6 +2,7 @@
 
 - Deciders: TBD
 - Date: 2025-12-10
+- Status: **Completed**
 
 ## Context and Problem Statement
 
@@ -53,30 +54,243 @@ Chosen option 3: Full migration to RSpec + Cucumber with Normal Island data.
 - Migration effort required
 - Temporary dual test suites during migration
 
+---
+
+## Implementation Phases
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| 1 | Foundation Setup (gems, config, move legacy tests) | ✅ Complete |
+| 2 | Normal Island Data & Factories | ✅ Complete |
+| 3 | Model Specs | ✅ Complete |
+| 4 | Component Specs | ✅ Complete |
+| 5 | Policy Specs | ✅ Complete |
+| 6 | Request Specs | ✅ Complete |
+| 7 | Job Specs (Calendar Importer) | ✅ Complete |
+| 8 | System Specs | ✅ Complete |
+| 9 | Cucumber Features | ✅ Complete |
+| 10 | Development Seeds & Cleanup | ✅ Complete |
+
+### Final Test Counts
+
+| Type | Count |
+|------|-------|
+| RSpec examples (fast, default) | 569 |
+| RSpec examples (including slow/system) | 586 |
+| Cucumber scenarios | 15 |
+| Cucumber steps | 69 |
+
+---
+
+## Migration Map
+
+### Directory Structure Changes
+
+| Old Location | New Location | Notes |
+|--------------|--------------|-------|
+| `test/` | *(removed)* | Legacy Minitest suite deleted |
+| — | `spec/` | RSpec test root |
+| — | `features/` | Cucumber features |
+
+### Test File Migration
+
+#### Models (`test/models/` → `spec/models/`)
+
+| Legacy Test | New Spec |
+|-------------|----------|
+| `partner_test.rb` | `partner_spec.rb` |
+| `event_test.rb` | `event_spec.rb` |
+| `calendar_test.rb` | `calendar_spec.rb` |
+| `user_test.rb` | `user_spec.rb` |
+| `site_test.rb` | `site_spec.rb` |
+| `address_test.rb` | `address_spec.rb` |
+| `neighbourhood_test.rb` | `neighbourhood_spec.rb` |
+| `tag_test.rb` | `tag_spec.rb` |
+| `article_test.rb` | `article_spec.rb` |
+| `collection_test.rb` | `collection_spec.rb` |
+| `online_address_test.rb` | `online_address_spec.rb` |
+| `calendar_state_test.rb` | `calendar_state_spec.rb` |
+
+#### Policies (`test/policies/` → `spec/policies/`)
+
+| Legacy Test | New Spec |
+|-------------|----------|
+| `partner_policy_test.rb` | `partner_policy_spec.rb` |
+| `user_policy_test.rb` | `user_policy_spec.rb` |
+| `article_policy_test.rb` | `article_policy_spec.rb` |
+| `calendar_policy_test.rb` | `calendar_policy_spec.rb` |
+
+#### Controllers/Integration → Request Specs
+
+| Legacy Location | New Location |
+|-----------------|--------------|
+| `test/controllers/admin/` | `spec/requests/admin/` |
+| `test/controllers/public/` | `spec/requests/public/` |
+| `test/integration/graphql/` | `spec/requests/graphql/` |
+
+#### Components (`test/components/` → `spec/components/`)
+
+| Legacy Test | New Spec |
+|-------------|----------|
+| `address_component_test.rb` | `address_component_spec.rb` |
+| `breadcrumb_component_test.rb` | `breadcrumb_component_spec.rb` |
+| `partner_filter_component_test.rb` | `partner_filter_component_spec.rb` |
+| `partner_preview_component_test.rb` | `partner_preview_component_spec.rb` |
+
+#### Jobs (`test/jobs/` → `spec/jobs/`)
+
+| Legacy Test | New Spec |
+|-------------|----------|
+| `calendar_importer/*_test.rb` | `calendar_importer/*_spec.rb` |
+
+#### Helpers (`test/helpers/` → `spec/helpers/`)
+
+| Legacy Test | New Spec |
+|-------------|----------|
+| `mailer_helper_test.rb` | `mailer_helper_spec.rb` |
+| `articles_helper_test.rb` | `articles_helper_spec.rb` |
+| `partners_helper_test.rb` | `partners_helper_spec.rb` |
+| `users_helper_test.rb` | `users_helper_spec.rb` |
+| `calendars_helper_test.rb` | `calendars_helper_spec.rb` |
+
+#### Mailers (`test/mailers/` → `spec/mailers/`)
+
+| Legacy Test | New Spec |
+|-------------|----------|
+| `join_mailer_test.rb` | `join_mailer_spec.rb` |
+| `devise_user_invitation_mailer_test.rb` | `devise_user_invitation_mailer_spec.rb` |
+
+#### System Tests (`test/system/` → `spec/system/`)
+
+| Legacy Test | New Spec |
+|-------------|----------|
+| `admin/partner_test.rb` | `admin/partners_spec.rb` |
+| `admin/calendar_test.rb` | `admin/calendars_spec.rb` |
+| `admin/article_test.rb` | `admin/articles_spec.rb` |
+| `admin/user_test.rb` | `admin/users_spec.rb` |
+| `admin/site_test.rb` | `admin/sites_spec.rb` |
+| `admin/tag_test.rb` | `admin/tags_spec.rb` |
+| `admin/neighbourhood_test.rb` | `admin/neighbourhoods_spec.rb` |
+| `create_admin_users_test.rb` | `user_invitation_spec.rb` |
+| `graphql/graphql_test.rb` | `graphql/api_spec.rb` |
+| `collections_test.rb` | *(skipped - was commented out)* |
+
+---
+
 ## Normal Island Geography
 
 Fictional geography hierarchy using "NO" as country code:
 
 ```
-Country: Normal Island (NO)
-├── Region: Northvale
-│   └── County: Greater Millbrook
-│       ├── District: Millbrook
-│       │   ├── Ward: Riverside
-│       │   ├── Ward: Oldtown
-│       │   ├── Ward: Greenfield
-│       │   └── Ward: Harbourside
-│       └── District: Ashdale
-│           ├── Ward: Hillcrest
-│           └── Ward: Valleyview
-└── Region: Southmere
-    └── County: Coastshire
-        └── District: Seaview
-            ├── Ward: Cliffside
-            └── Ward: Beachfront
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           NORMAL ISLAND (Country)                           │
+│                              Code: NO                                       │
+├─────────────────────────────────┬───────────────────────────────────────────┤
+│           NORTHVALE             │              SOUTHMERE                    │
+│            (Region)             │               (Region)                    │
+├─────────────────────────────────┼───────────────────────────────────────────┤
+│      GREATER MILLBROOK          │            COASTSHIRE                     │
+│          (County)               │              (County)                     │
+├────────────────┬────────────────┼───────────────────────────────────────────┤
+│   MILLBROOK    │    ASHDALE     │              SEAVIEW                      │
+│   (District)   │   (District)   │             (District)                    │
+├────────────────┼────────────────┼─────────────────────┬─────────────────────┤
+│  ┌──────────┐  │  ┌──────────┐  │    ┌──────────┐     │    ┌──────────┐    │
+│  │Riverside │  │  │Hillcrest │  │    │Cliffside │     │    │Beachfront│    │
+│  │  (Ward)  │  │  │  (Ward)  │  │    │  (Ward)  │     │    │  (Ward)  │    │
+│  │ NOMB 1RS │  │  │ NOAD 1HC │  │    │ NOSV 1CS │     │    │ NOSV 2BF │    │
+│  └──────────┘  │  └──────────┘  │    └──────────┘     │    └──────────┘    │
+│  ┌──────────┐  │  ┌──────────┐  │                     │                    │
+│  │ Oldtown  │  │  │Valleyview│  │                     │                    │
+│  │  (Ward)  │  │  │  (Ward)  │  │                     │                    │
+│  │ NOMB 2OT │  │  │ NOAD 2VV │  │                     │                    │
+│  └──────────┘  │  └──────────┘  │                     │                    │
+│  ┌──────────┐  │                │                     │                    │
+│  │Greenfield│  │                │                     │                    │
+│  │  (Ward)  │  │                │                     │                    │
+│  │ NOMB 3GF │  │                │                     │                    │
+│  └──────────┘  │                │                     │                    │
+│  ┌──────────┐  │                │                     │                    │
+│  │Harbourside│ │                │                     │                    │
+│  │  (Ward)  │  │                │                     │                    │
+│  │ NOMB 4HS │  │                │                     │                    │
+│  └──────────┘  │                │                     │                    │
+└────────────────┴────────────────┴─────────────────────┴─────────────────────┘
 ```
 
-Postcode format: `NO[District] [Ward][Number]` (e.g., `NOMB 1RS` for Riverside)
+### Postcode Format
+
+Normal Island postcodes follow the pattern: `NO[District] [Ward][Number]`
+
+| Ward | District | Postcode |
+|------|----------|----------|
+| Riverside | Millbrook | `NOMB 1RS` |
+| Oldtown | Millbrook | `NOMB 2OT` |
+| Greenfield | Millbrook | `NOMB 3GF` |
+| Harbourside | Millbrook | `NOMB 4HS` |
+| Hillcrest | Ashdale | `NOAD 1HC` |
+| Valleyview | Ashdale | `NOAD 2VV` |
+| Cliffside | Seaview | `NOSV 1CS` |
+| Beachfront | Seaview | `NOSV 2BF` |
+
+### Partners
+
+| Partner | Ward | Factory |
+|---------|------|---------|
+| Riverside Community Hub | Riverside | `:riverside_community_hub` |
+| Oldtown Library | Oldtown | `:oldtown_library` |
+| Greenfield Youth Centre | Greenfield | `:greenfield_youth_centre` |
+| Harbourside Arts Centre | Harbourside | `:harbourside_arts_centre` |
+| Ashdale Sports Club | Hillcrest | `:ashdale_sports_club` |
+| Coastline Wellness Centre | Cliffside | `:coastline_wellness_centre` |
+
+### Sites
+
+| Site | Slug | Coverage |
+|------|------|----------|
+| Normal Island Central | `default-site` | All of Normal Island |
+| Millbrook Community Calendar | `millbrook` | Millbrook District |
+| Ashdale Connect | `ashdale` | Ashdale District |
+| Coastshire Events | `coastshire` | Coastshire County |
+
+---
+
+## Configuration Changes
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `Gemfile` | Added rspec-rails, cucumber-rails, factory_bot_rails, etc. |
+| `.rspec` | RSpec configuration |
+| `spec/spec_helper.rb` | RSpec base configuration |
+| `spec/rails_helper.rb` | Rails-specific RSpec configuration |
+| `config/cucumber.yml` | Cucumber profiles |
+| `features/support/env.rb` | Cucumber environment setup |
+| `bin/test` | Updated to run RSpec/Cucumber instead of Minitest |
+
+### Running Tests
+
+```bash
+# Fast unit tests (default, excludes slow/system)
+bin/test --unit --no-lint
+
+# System tests only (browser-based)
+bin/test --system --no-lint
+
+# Cucumber features only
+bin/test --cucumber --no-lint
+
+# All tests
+bin/test --no-lint
+
+# Direct commands
+bundle exec rspec                          # Fast specs
+RUN_SLOW_TESTS=true bundle exec rspec      # All specs including system
+bundle exec cucumber                        # Cucumber features
+```
+
+---
 
 ## Testing Guidelines
 
@@ -96,18 +310,14 @@ Postcode format: `NO[District] [Ward][Number]` (e.g., `NOMB 1RS` for Riverside)
 2. **Policy specs**: Test all CRUD actions for all roles. Use shared examples.
 3. **Component specs**: Test rendering, slots, and edge cases. Use `render_inline`.
 4. **Request specs**: Test response codes and JSON structure. Don't test UI.
-5. **System specs**: Only for critical user journeys. One flow per test.
+5. **System specs**: Only for critical user journeys. One flow per test. Tag with `:slow`.
 6. **Cucumber**: Business-readable. One scenario per acceptance criterion.
 
-## Implementation Phases
+---
 
-1. Foundation Setup (gems, config, move legacy tests)
-2. Normal Island Data & Factories
-3. Model Specs
-4. Component Specs
-5. Policy Specs
-6. Request Specs
-7. Job Specs (Calendar Importer)
-8. System Specs
-9. Cucumber Features
-10. Development Seeds & Cleanup
+## References
+
+- [Testing Guide](../testing-guide.md) - Detailed guide for writing new tests
+- [Normal Island data](../../lib/normal_island.rb) - Source of truth for fictional geography
+- [RSpec documentation](https://rspec.info/documentation/)
+- [Cucumber documentation](https://cucumber.io/docs/cucumber/)

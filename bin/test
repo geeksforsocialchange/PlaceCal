@@ -12,8 +12,9 @@ def process_argv(option)
   case option
   when '-h', '--help'
     puts 'Run the tests.'
-    puts '  -u, --unit    Run unit tests'
-    puts '  -s, --system  Run system tests'
+    puts '  -u, --unit    Run unit tests (RSpec without slow/system tests)'
+    puts '  -s, --system  Run system tests (RSpec with slow tests)'
+    puts '  -c, --cucumber Run Cucumber features'
     puts '  -l, --lint    Run linters and formatters'
     puts '  --no-lint     Disable linters and formatters'
     puts '  --no-fix      Lint and format without autocorrection'
@@ -22,6 +23,8 @@ def process_argv(option)
     @options[:unit_only] = true
   when '-s', '--system'
     @options[:system_only] = true
+  when '-c', '--cucumber'
+    @options[:cucumber_only] = true
   when '-l', '--lint'
     @options[:lint_only] = true
   when '--no-lint'
@@ -48,16 +51,20 @@ FileUtils.chdir APP_ROOT do
   system! 'bin/yarn run build'
 
   if @options[:unit_only]
-    puts "\n== Running unit tests =="
-    system! 'bin/rails test'
+    puts "\n== Running unit tests (RSpec) =="
+    system! 'bin/bundle exec rspec'
   elsif @options[:system_only]
-    puts "\n== Running system tests =="
-    system! 'bin/rails test:system'
+    puts "\n== Running system tests (RSpec with slow tests) =="
+    system! 'RUN_SLOW_TESTS=true bin/bundle exec rspec spec/system'
+  elsif @options[:cucumber_only]
+    puts "\n== Running Cucumber features =="
+    system! 'bin/bundle exec cucumber'
   elsif @options[:lint_only]
     # Do nothing
   else
-    puts "\n== Running all tests =="
-    system! 'bin/rails test:all'
+    puts "\n== Running all tests (RSpec + Cucumber) =="
+    system! 'RUN_SLOW_TESTS=true bin/bundle exec rspec'
+    system! 'bin/bundle exec cucumber'
   end
 
   unless @options[:without_lint]
