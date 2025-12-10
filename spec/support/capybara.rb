@@ -21,7 +21,12 @@ Capybara.javascript_driver = :headless_chrome
 Capybara.configure do |config|
   config.default_max_wait_time = 5
   config.server = :puma, { Silent: true }
+  config.always_include_port = true
 end
+
+# Use lvh.me for subdomain testing (resolves to 127.0.0.1)
+Capybara.app_host = 'http://lvh.me'
+Capybara.server_host = 'lvh.me'
 
 RSpec.configure do |config|
   config.before(type: :system) do

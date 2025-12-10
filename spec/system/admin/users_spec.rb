@@ -5,36 +5,34 @@ require 'rails_helper'
 RSpec.describe 'Admin Users', :slow, type: :system do
   include_context 'admin login'
 
-  let!(:neighbourhood_admin) { create(:neighbourhood_admin) }
-  let!(:partner_admin) do
-    partner = create(:riverside_community_hub)
-    create(:partner_admin, partner: partner)
-  end
-  let!(:partner) { partner_admin.partners.first }
-  let!(:partner_two) { create(:oldtown_library) }
-  let!(:partnership) { create(:partnership) }
+  # Create wards first to avoid duplicates
   let!(:riverside_ward) { create(:riverside_ward) }
   let!(:oldtown_ward) { create(:oldtown_ward) }
+  let!(:neighbourhood_admin) { create(:neighbourhood_admin, neighbourhood: riverside_ward) }
+  let!(:partner) { create(:riverside_community_hub, address: create(:address, neighbourhood: riverside_ward)) }
+  let!(:partner_admin) { create(:partner_admin, partner: partner) }
+  let!(:partner_two) { create(:oldtown_library, address: create(:address, neighbourhood: oldtown_ward)) }
+  let!(:partnership) { create(:partnership) }
 
   describe 'select2 inputs on users form' do
     it 'allows selecting partners, neighbourhoods and tags', :aggregate_failures do
       click_link 'Users'
 
       # Edit a root user (has access to all potential select2 inputs)
-      datatable_1st_row = page.all(:css, '.odd')[0]
-      within datatable_1st_row do
-        click_link 'Place'
-      end
+      # Click on the admin user's first name to edit
+      click_link admin_user.first_name
 
       # Select partners
       partners_node = select2_node('user_partners')
       select2 partner.name, partner_two.name, xpath: partners_node.path
       assert_select2_multiple [partner.name, partner_two.name], partners_node
 
-      # Select neighbourhoods
+      # Select neighbourhoods (displayed as "Name (Unit)" with titleized unit)
       neighbourhoods_node = select2_node('user_neighbourhoods')
       select2 riverside_ward.name, oldtown_ward.name, xpath: neighbourhoods_node.path
-      assert_select2_multiple [riverside_ward.name, oldtown_ward.name], neighbourhoods_node
+      # UI displays unit titleized: "Riverside (Ward)" not "Riverside (ward)"
+      assert_select2_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
+                               "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
 
       # Select tags
       tags_node = select2_node('user_tags')
@@ -47,16 +45,15 @@ RSpec.describe 'Admin Users', :slow, type: :system do
       click_link 'Users'
 
       find_element_and_retry_if_stale do
-        within page.all(:css, '.odd')[0] do
-          click_link 'Place'
-        end
+        click_link admin_user.first_name
       end
 
       partners_node = select2_node('user_partners')
       assert_select2_multiple [partner.name, partner_two.name], partners_node
 
       neighbourhoods_node = select2_node('user_neighbourhoods')
-      assert_select2_multiple [riverside_ward.name, oldtown_ward.name], neighbourhoods_node
+      assert_select2_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
+                               "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
 
       tags_node = select2_node('user_tags')
       assert_select2_multiple [partnership.name_with_type], tags_node

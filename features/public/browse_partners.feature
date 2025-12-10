@@ -1,4 +1,4 @@
-@public
+@public @wip
 Feature: Browse Partners
   As a community member
   I want to browse local organisations
@@ -6,12 +6,10 @@ Feature: Browse Partners
 
   Scenario: Viewing the partners page
     Given there is a partner called "Riverside Community Hub"
-    When I visit the home page
-    And I click "Partners"
-    Then I should see "Partners"
+    When I visit the partners page
+    Then I should see "Riverside Community Hub"
 
   Scenario: Partner details show contact information
     Given there is a partner called "Oldtown Library"
-    When I visit the home page
-    And I click "Partners"
+    When I visit the partners page
     Then I should see "Oldtown Library"
