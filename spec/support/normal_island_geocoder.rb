@@ -223,3 +223,50 @@ Geocoder::Lookup::Test.add_stub(
       } }
   ]
 )
+
+# Manchester postcodes (from VCR cassettes)
+# These are real UK postcodes used in the recorded API responses
+%w[M15\ 5DD M155DD M16\ 7BA M167BA M15\ 6BX M156BX].each do |postcode|
+  Geocoder::Lookup::Test.add_stub(
+    postcode, [
+      { 'postcode' => postcode.gsub(/\s+/, ' ').strip,
+        'quality' => 1,
+        'eastings' => 384_000,
+        'northings' => 397_000,
+        'country' => 'England',
+        'longitude' => -2.2426,
+        'latitude' => 53.4668,
+        'region' => 'North West',
+        'admin_district' => 'Manchester',
+        'admin_county' => 'Greater Manchester',
+        'admin_ward' => 'Hulme',
+        'codes' => {
+          'admin_district' => 'E08000003',
+          'admin_county' => 'E11000001',
+          'admin_ward' => 'E05011368'
+        } }
+    ]
+  )
+end
+
+# Default stub for any other UK postcode (catch-all)
+Geocoder::Lookup::Test.set_default_stub(
+  [
+    { 'postcode' => 'UNKNOWN',
+      'quality' => 1,
+      'eastings' => 400_000,
+      'northings' => 400_000,
+      'country' => 'England',
+      'longitude' => -1.5,
+      'latitude' => 53.0,
+      'region' => 'Test Region',
+      'admin_district' => 'Test District',
+      'admin_county' => 'Test County',
+      'admin_ward' => 'Test Ward',
+      'codes' => {
+        'admin_district' => 'E00000001',
+        'admin_county' => 'E00000001',
+        'admin_ward' => 'E00000001'
+      } }
+  ]
+)
