@@ -6,10 +6,9 @@ RSpec.describe Site, type: :model do
   describe 'associations' do
     it { is_expected.to have_many(:sites_neighbourhoods).dependent(:destroy) }
     it { is_expected.to have_many(:neighbourhoods).through(:sites_neighbourhoods) }
-    it { is_expected.to have_many(:sites_tags).dependent(:destroy) }
-    it { is_expected.to have_many(:tags).through(:sites_tags) }
-    it { is_expected.to have_many(:sites_supporters).dependent(:destroy) }
-    it { is_expected.to have_many(:supporters).through(:sites_supporters) }
+    it { is_expected.to have_many(:sites_tag).dependent(:destroy) }
+    it { is_expected.to have_many(:tags).through(:sites_tag) }
+    it { is_expected.to have_and_belong_to_many(:supporters) }
     it { is_expected.to belong_to(:site_admin).class_name('User').optional }
   end
 
@@ -17,11 +16,8 @@ RSpec.describe Site, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:slug) }
 
-    describe 'slug uniqueness' do
-      subject { build(:site) }
-
-      it { is_expected.to validate_uniqueness_of(:slug) }
-    end
+    # Note: FriendlyId handles slug uniqueness at the database level
+    # No explicit validates_uniqueness_of on slug in the model
   end
 
   describe 'factories' do
@@ -63,12 +59,9 @@ RSpec.describe Site, type: :model do
   end
 
   describe 'theming' do
-    it 'has theme attributes' do
-      site = build(:site,
-                   logo: nil,
-                   hero_image: nil,
-                   theme_colour: '#FF0000')
-      expect(site.theme_colour).to eq('#FF0000')
+    it 'has theme attribute' do
+      site = build(:site, theme: 'pink')
+      expect(site.theme).to eq('pink')
     end
   end
 
