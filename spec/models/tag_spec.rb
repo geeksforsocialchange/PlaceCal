@@ -8,8 +8,8 @@ RSpec.describe Tag, type: :model do
     it { is_expected.to have_many(:partners).through(:partner_tags) }
     it { is_expected.to have_many(:tags_users).dependent(:destroy) }
     it { is_expected.to have_many(:users).through(:tags_users) }
-    it { is_expected.to have_many(:sites_tags).dependent(:destroy) }
-    it { is_expected.to have_many(:sites).through(:sites_tags) }
+    it { is_expected.to have_many(:sites_tag).dependent(:destroy) }
+    it { is_expected.to have_many(:sites).through(:sites_tag) }
   end
 
   describe 'validations' do

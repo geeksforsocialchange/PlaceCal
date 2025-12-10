@@ -110,10 +110,11 @@ RSpec.describe 'GraphQL Events', type: :request do
       expect(organizer['name']).to eq(partner.name)
     end
 
-    it 'returns null for non-existent event' do
+    it 'returns error for non-existent event' do
       result = execute_query(query, variables: { id: 999_999 })
 
-      expect(result['data']['event']).to be_nil
+      # GraphQL returns error when record not found
+      expect(result['errors']).to be_present
     end
   end
 
@@ -131,7 +132,7 @@ RSpec.describe 'GraphQL Events', type: :request do
 
     let(:query) do
       <<-GRAPHQL
-        query($fromDate: ISO8601Date!, $toDate: ISO8601Date!) {
+        query($fromDate: String, $toDate: String) {
           eventsByFilter(fromDate: $fromDate, toDate: $toDate) {
             id
             summary
@@ -142,9 +143,13 @@ RSpec.describe 'GraphQL Events', type: :request do
     end
 
     it 'returns events within date range' do
+      # Format required: "YYYY-MM-DD HH:MM"
+      from_date = Date.current.strftime('%Y-%m-%d 00:00')
+      to_date = 7.days.from_now.to_date.strftime('%Y-%m-%d 23:59')
+
       result = execute_query(query, variables: {
-                               fromDate: Date.current.iso8601,
-                               toDate: 7.days.from_now.to_date.iso8601
+                               fromDate: from_date,
+                               toDate: to_date
                              })
 
       expect(result['errors']).to be_nil

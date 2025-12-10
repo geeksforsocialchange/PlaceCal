@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :collection do
     sequence(:name) { |n| "Collection #{n}" }
     description { Faker::Lorem.paragraph }
+    route { 'named-route' }
 
     factory :collection_with_events do
       transient do

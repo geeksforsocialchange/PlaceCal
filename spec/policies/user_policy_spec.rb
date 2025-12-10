@@ -55,8 +55,9 @@ RSpec.describe UserPolicy, type: :policy do
       let(:target_user) { partner_admin }
 
       before do
-        partner_admin.partners.first.address.neighbourhood = ward
-        partner_admin.partners.first.save!
+        address = partner_admin.partners.first.address
+        address.neighbourhood = ward
+        address.save!
       end
 
       it { is_expected.to permit_action(:show) }
