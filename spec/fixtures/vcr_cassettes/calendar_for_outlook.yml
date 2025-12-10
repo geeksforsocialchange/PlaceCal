@@ -1,0 +1,90 @@
+---
+http_interactions:
+  - request:
+      method: get
+      uri: https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Cache-Control:
+          - private
+        Content-Length:
+          - "249"
+        Content-Type:
+          - text/calendar; charset=utf-8
+        Vary:
+          - Accept-Encoding
+        Server:
+          - Microsoft-IIS/10.0
+        Request-Id:
+          - c1d2ece8-f766-2eaf-55bc-cb12c9e15785
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains; preload
+        Alt-Svc:
+          - h3=":443",h3-29=":443"
+        X-Calculatedfetarget:
+          - DB6PR0501CU002.internal.outlook.com
+        X-Backendhttpstatus:
+          - "200"
+          - "200"
+        Set-Cookie:
+          - ClientId=CA4C15E222D14997B182281835EB7EF0; expires=Fri, 19-Jan-2024 11:10:17
+            GMT; path=/;SameSite=None; secure
+          - ClientId=CA4C15E222D14997B182281835EB7EF0; expires=Fri, 19-Jan-2024 11:10:17
+            GMT; path=/;SameSite=None; secure
+          - OIDC=1; expires=Wed, 19-Jul-2023 11:10:17 GMT; path=/;SameSite=None; secure;
+            HttpOnly
+          - OutlookSession=b3352fca9b67471d9df6c343fb755427; path=/; secure; HttpOnly;
+            SameSite=None
+        X-Calculatedbetarget:
+          - DB8PR09MB2923.eurprd09.PROD.OUTLOOK.COM
+        X-Rum-Validated:
+          - "1"
+        X-Rum-Notupdatequeriedpath:
+          - "1"
+        X-Content-Type-Options:
+          - nosniff
+        Datasource:
+          - Exo
+        X-Diaginfo:
+          - DB8PR09MB2923
+        X-Beserver:
+          - DB8PR09MB2923
+        X-Ua-Compatible:
+          - IE=EmulateIE7
+        X-Proxy-Routingcorrectness:
+          - "1"
+        X-Ms-Forwardingcorrelationid:
+          - 30d7b39d-b227-42d4-af21-f69a48d0f946
+        X-Proxy-Backendserverstatus:
+          - "200"
+        X-Feproxyinfo:
+          - LO4P265CA0255.GBRP265.PROD.OUTLOOK.COM
+        X-Feefzinfo:
+          - LHR
+        X-Feserver:
+          - DB6PR0501CA0046
+          - LO4P265CA0255
+        X-Firsthopcafeefz:
+          - LHR
+        Date:
+          - Thu, 19 Jan 2023 11:10:17 GMT
+      body:
+        encoding: ASCII-8BIT
+        string:
+          "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+          2010\r\nVERSION:2.0\r\nX-WR-CALNAME:Zion Centre What's on Guide\r\nEND:VCALENDAR\r\n"
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.1.0

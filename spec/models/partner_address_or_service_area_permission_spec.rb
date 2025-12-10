@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Partner, 'address or service area permission validation' do
-  let(:user_neighbourhood) { neighbourhoods(:one) }
+  let(:user_neighbourhood) { create(:riverside_ward) }
   let(:user) do
     u = create(:user)
     u.neighbourhoods << user_neighbourhood
@@ -38,7 +38,7 @@ RSpec.describe Partner, 'address or service area permission validation' do
   end
 
   it "is invalid with a service area not in user's ward set" do
-    other_neighbourhood = neighbourhoods(:two)
+    other_neighbourhood = create(:oldtown_ward)
 
     new_partner.service_area_neighbourhoods << user_neighbourhood
     new_partner.service_area_neighbourhoods << other_neighbourhood

@@ -94,8 +94,8 @@ RSpec.describe Article do
   end
 
   describe '.for_site' do
-    let(:neighbourhood_1) { neighbourhoods(:one) }
-    let(:neighbourhood_2) { neighbourhoods(:two) }
+    let(:neighbourhood_1) { create(:riverside_ward) }
+    let(:neighbourhood_2) { create(:oldtown_ward) }
     let(:author) { create(:root) }
 
     it 'returns articles for site (via neighbourhood)' do

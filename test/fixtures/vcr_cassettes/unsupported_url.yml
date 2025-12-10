@@ -1,0 +1,450 @@
+---
+http_interactions:
+  - request:
+      method: get
+      uri: https://raw.githubusercontent.com/geeksforsocialchange/PlaceCal/main/config/routes.rb
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "1047"
+        Cache-Control:
+          - max-age=300
+        Content-Security-Policy:
+          - default-src 'none'; style-src 'unsafe-inline'; sandbox
+        Content-Type:
+          - text/plain; charset=utf-8
+        Etag:
+          - W/"1b83f27837e2535cee12a8935894e3b5d6c9b9edf42d73f5aa1cad3a59dbecc4"
+        Strict-Transport-Security:
+          - max-age=31536000
+        X-Content-Type-Options:
+          - nosniff
+        X-Frame-Options:
+          - deny
+        X-Xss-Protection:
+          - 1; mode=block
+        X-Github-Request-Id:
+          - DA3C:5405:279D31B:295FDAF:651159E6
+        Accept-Ranges:
+          - bytes
+        Date:
+          - Mon, 25 Sep 2023 10:07:51 GMT
+        Via:
+          - 1.1 varnish
+        X-Served-By:
+          - cache-lhr7374-LHR
+        X-Cache:
+          - HIT
+        X-Cache-Hits:
+          - "1"
+        X-Timer:
+          - S1695636471.124037,VS0,VE180
+        Vary:
+          - Authorization,Accept-Encoding,Origin
+        Access-Control-Allow-Origin:
+          - "*"
+        Cross-Origin-Resource-Policy:
+          - cross-origin
+        X-Fastly-Request-Id:
+          - 8712888888825ef05a4f84ddb806dc1cb3e33f6f
+        Expires:
+          - Mon, 25 Sep 2023 10:12:51 GMT
+        Source-Age:
+          - "0"
+      body:
+        encoding: ASCII-8BIT
+        string: |
+          # frozen_string_literal: true
+
+          # config/routes.rb
+          Rails.application.routes.draw do
+            # User login stuff
+            devise_for :users,
+                       controllers: {
+                         invitations: 'users/invitations',
+                         sessions: 'users/sessions',
+                         passwords: 'users/passwords'
+                       }
+
+            # Static pages
+            get 'get-in-touch', to: 'joins#new'
+            post 'get-in-touch', to: 'joins#create'
+            get 'privacy', to: 'pages#privacy'
+            get 'find-placecal', to: 'pages#find_placecal'
+            get 'our-story', to: 'pages#our_story'
+
+            get 'community-groups', to: 'pages#community_groups'
+            get 'metropolitan-areas', to: 'pages#metropolitan_areas'
+            get 'vcses', to: 'pages#vcses'
+            get 'housing-providers', to: 'pages#housing_providers'
+            get 'social-prescribers', to: 'pages#social_prescribers'
+            get 'culture-tourism', to: 'pages#culture_tourism'
+
+            scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
+              resources :articles
+              resources :calendars do
+                member do
+                  post :import
+                end
+              end
+              resources :collections
+              resources :neighbourhoods
+              resources :partners do
+                collection do
+                  match :setup, via: %i[get post]
+                end
+              end
+              resources :tags
+              resources :sites
+              resources :supporters
+              resources :users do
+                member do
+                  patch :update_profile
+                end
+              end
+              get 'profile' => 'users#profile', as: :profile
+              get 'jobs' => 'jobs#index', as: :jobs
+
+              root 'pages#home'
+            end
+
+            constraints(Sites::Local) do
+              get '/' => 'sites#index'
+            end
+
+            root 'pages#home'
+
+            ymd = { year: /\d{4}/,
+                    month: /\d{1,2}/,
+                    day: /\d{1,2}/ }
+
+            # Events
+            resources :events, only: %i[index show]
+            get '/events/:year/:month/:day' => 'events#index', constraints: ymd
+
+            # Partners
+            resources :partners, only: %i[index show]
+            get '/partners/:id/events' => 'partners#show'
+            get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
+            get '/places' => 'partners#index' # Removing separate Places view for now.
+            get '/partners/:id/embed' => 'places#embed'
+
+            # news
+            resources :news, only: %i[index show]
+
+            # Legacy routes from when some Partners were Places. Don't let Google down...
+            get '/places/:id' => 'partners#show'
+            get '/places/:id/events' => 'partners#show'
+            get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
+            get '/places/:id/embed' => 'places#embed'
+
+            # Calendars
+            resources :calendars, only: %i[index show]
+
+            # Collections
+            resources :collections, only: %i[show]
+
+            # Named routes
+            get 'winter2017', to: 'collections#show', id: 1
+            get 'winter2018', to: 'collections#show', id: 2
+
+            # Styleguide
+            mount MountainView::Engine => '/styleguide'
+
+            get '/robots.txt' => 'pages#robots'
+
+            post '/api/v1/graphql', to: 'graphql#execute'
+
+            mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?
+          end
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: https://raw.githubusercontent.com/geeksforsocialchange/PlaceCal/main/config/routes.rb
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "1047"
+        Cache-Control:
+          - max-age=300
+        Content-Security-Policy:
+          - default-src 'none'; style-src 'unsafe-inline'; sandbox
+        Content-Type:
+          - text/plain; charset=utf-8
+        Etag:
+          - W/"1b83f27837e2535cee12a8935894e3b5d6c9b9edf42d73f5aa1cad3a59dbecc4"
+        Strict-Transport-Security:
+          - max-age=31536000
+        X-Content-Type-Options:
+          - nosniff
+        X-Frame-Options:
+          - deny
+        X-Xss-Protection:
+          - 1; mode=block
+        X-Github-Request-Id:
+          - DA3C:5405:279D31B:295FDAF:651159E6
+        Accept-Ranges:
+          - bytes
+        Date:
+          - Mon, 25 Sep 2023 10:07:51 GMT
+        Via:
+          - 1.1 varnish
+        X-Served-By:
+          - cache-lhr7367-LHR
+        X-Cache:
+          - HIT
+        X-Cache-Hits:
+          - "1"
+        X-Timer:
+          - S1695636471.470341,VS0,VE1
+        Vary:
+          - Authorization,Accept-Encoding,Origin
+        Access-Control-Allow-Origin:
+          - "*"
+        Cross-Origin-Resource-Policy:
+          - cross-origin
+        X-Fastly-Request-Id:
+          - 5e023a9a8c7d6baf074982dbd0ef3a3e18c61b0f
+        Expires:
+          - Mon, 25 Sep 2023 10:12:51 GMT
+        Source-Age:
+          - "0"
+      body:
+        encoding: ASCII-8BIT
+        string: |
+          # frozen_string_literal: true
+
+          # config/routes.rb
+          Rails.application.routes.draw do
+            # User login stuff
+            devise_for :users,
+                       controllers: {
+                         invitations: 'users/invitations',
+                         sessions: 'users/sessions',
+                         passwords: 'users/passwords'
+                       }
+
+            # Static pages
+            get 'get-in-touch', to: 'joins#new'
+            post 'get-in-touch', to: 'joins#create'
+            get 'privacy', to: 'pages#privacy'
+            get 'find-placecal', to: 'pages#find_placecal'
+            get 'our-story', to: 'pages#our_story'
+
+            get 'community-groups', to: 'pages#community_groups'
+            get 'metropolitan-areas', to: 'pages#metropolitan_areas'
+            get 'vcses', to: 'pages#vcses'
+            get 'housing-providers', to: 'pages#housing_providers'
+            get 'social-prescribers', to: 'pages#social_prescribers'
+            get 'culture-tourism', to: 'pages#culture_tourism'
+
+            scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
+              resources :articles
+              resources :calendars do
+                member do
+                  post :import
+                end
+              end
+              resources :collections
+              resources :neighbourhoods
+              resources :partners do
+                collection do
+                  match :setup, via: %i[get post]
+                end
+              end
+              resources :tags
+              resources :sites
+              resources :supporters
+              resources :users do
+                member do
+                  patch :update_profile
+                end
+              end
+              get 'profile' => 'users#profile', as: :profile
+              get 'jobs' => 'jobs#index', as: :jobs
+
+              root 'pages#home'
+            end
+
+            constraints(Sites::Local) do
+              get '/' => 'sites#index'
+            end
+
+            root 'pages#home'
+
+            ymd = { year: /\d{4}/,
+                    month: /\d{1,2}/,
+                    day: /\d{1,2}/ }
+
+            # Events
+            resources :events, only: %i[index show]
+            get '/events/:year/:month/:day' => 'events#index', constraints: ymd
+
+            # Partners
+            resources :partners, only: %i[index show]
+            get '/partners/:id/events' => 'partners#show'
+            get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
+            get '/places' => 'partners#index' # Removing separate Places view for now.
+            get '/partners/:id/embed' => 'places#embed'
+
+            # news
+            resources :news, only: %i[index show]
+
+            # Legacy routes from when some Partners were Places. Don't let Google down...
+            get '/places/:id' => 'partners#show'
+            get '/places/:id/events' => 'partners#show'
+            get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
+            get '/places/:id/embed' => 'places#embed'
+
+            # Calendars
+            resources :calendars, only: %i[index show]
+
+            # Collections
+            resources :collections, only: %i[show]
+
+            # Named routes
+            get 'winter2017', to: 'collections#show', id: 1
+            get 'winter2018', to: 'collections#show', id: 2
+
+            # Styleguide
+            mount MountainView::Engine => '/styleguide'
+
+            get '/robots.txt' => 'pages#robots'
+
+            post '/api/v1/graphql', to: 'graphql#execute'
+
+            mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?
+          end
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+  - request:
+      method: get
+      uri: https://raw.githubusercontent.com/geeksforsocialchange/PlaceCal/main/config/database.yml
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "383"
+        Cache-Control:
+          - max-age=300
+        Content-Security-Policy:
+          - default-src 'none'; style-src 'unsafe-inline'; sandbox
+        Content-Type:
+          - text/plain; charset=utf-8
+        Etag:
+          - W/"cb36e829c2434a6307319cee57490758d9c42a953494819b0d6573fad02be350"
+        Strict-Transport-Security:
+          - max-age=31536000
+        X-Content-Type-Options:
+          - nosniff
+        X-Frame-Options:
+          - deny
+        X-Xss-Protection:
+          - 1; mode=block
+        X-Github-Request-Id:
+          - 98EA:075B:2E4AD74:3054A4C:65115BF7
+        Accept-Ranges:
+          - bytes
+        Date:
+          - Mon, 25 Sep 2023 10:07:51 GMT
+        Via:
+          - 1.1 varnish
+        X-Served-By:
+          - cache-lcy-eglc8600041-LCY
+        X-Cache:
+          - MISS
+        X-Cache-Hits:
+          - "0"
+        X-Timer:
+          - S1695636472.652914,VS0,VE177
+        Vary:
+          - Authorization,Accept-Encoding,Origin
+        Access-Control-Allow-Origin:
+          - "*"
+        Cross-Origin-Resource-Policy:
+          - cross-origin
+        X-Fastly-Request-Id:
+          - 5f2cb387f8ec811343dc049f9761fcac7b7b0938
+        Expires:
+          - Mon, 25 Sep 2023 10:12:51 GMT
+        Source-Age:
+          - "0"
+      body:
+        encoding: ASCII-8BIT
+        string: |
+          # SQLite version 3.x
+          #   gem install sqlite3
+          #
+          #   Ensure the SQLite 3 gem is defined in your Gemfile
+          #   gem 'sqlite3'
+          #
+          default: &default
+            adapter: postgresql
+            pool: 5
+            timeout: 5000
+
+          development:
+            <<: *default
+            database: <%= ENV['POSTGRES_DB'] || 'placecal_dev' %>
+            username: <%= ENV['POSTGRES_USER'] %>
+            password: <%= ENV['PGPASSWORD'] %>
+            host: <%= ENV['POSTGRES_HOST'] %>
+
+          # Warning: The database defined as "test" will be erased and
+          # re-generated from your development database when you run "rake".
+          # Do not set this db to the same as development or production.
+          test:
+            <<: *default
+            database: placecal_test
+            username: <%= ENV['POSTGRES_USER'] %>
+            password: <%= ENV['PGPASSWORD'] %>
+            host: <%= ENV['POSTGRES_HOST'] %>
+
+          production:
+            <<: *default
+            database: placecal_production
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.1.0
