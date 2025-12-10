@@ -51,6 +51,9 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
 
+  # Include Pundit helpers for helper specs
+  config.include Pundit::Authorization, type: :helper
+
   # Freeze time in tests (matching legacy behavior)
   config.before do
     Timecop.freeze(Time.zone.local(2022, 11, 8))

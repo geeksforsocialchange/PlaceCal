@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :user do
-    sequence(:email) { |n| "user#{n}@normalcal.org" }
+    sequence(:email) { |n| "user#{n}@placecal.org" }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     password { 'password123' }
@@ -11,7 +11,7 @@ FactoryBot.define do
 
     # Role-specific factories
     factory :root_user, aliases: [:root] do
-      email { 'admin@normalcal.org' }
+      email { 'admin@placecal.org' }
       first_name { 'Admin' }
       last_name { 'User' }
       role { 'root' }
