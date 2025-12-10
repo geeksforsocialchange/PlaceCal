@@ -17,7 +17,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.root? || can_see_any_partners?
+    user.root? || user.neighbourhood_admin? || user.partnership_admin? || can_see_any_partners?
   end
 
   def create?
@@ -28,8 +28,20 @@ class UserPolicy < ApplicationPolicy
     index?
   end
 
+  def show?
+    return true if user.root?
+    return true if user.id == record.id
+    return scope_includes_record? if user.neighbourhood_admin? || user.partnership_admin?
+
+    false
+  end
+
   def update?
-    index?
+    return true if user.root?
+    return true if user.id == record.id
+    return scope_includes_record? if user.neighbourhood_admin? || user.partnership_admin?
+
+    false
   end
 
   def edit?
@@ -152,5 +164,12 @@ class UserPolicy < ApplicationPolicy
 
   def can_see_any_partners?
     PartnerPolicy::Scope.new(user, Partner).resolve&.to_a&.any?
+  end
+
+  def scope_includes_record?
+    resolved_scope = Scope.new(user, record.class).resolve
+    return false if resolved_scope.nil?
+
+    resolved_scope.where(id: record.id).exists?
   end
 end

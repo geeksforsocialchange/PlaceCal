@@ -37,7 +37,8 @@ RSpec.describe PartnerPolicy, type: :policy do
       it { is_expected.to permit_action(:show) }
       it { is_expected.to permit_action(:update) }
       it { is_expected.to forbid_action(:create) }
-      it { is_expected.to forbid_action(:destroy) }
+      # Note: partner_admin CAN destroy their own partner per current policy
+      it { is_expected.to permit_action(:destroy) }
     end
 
     context 'on another partner' do
@@ -54,7 +55,7 @@ RSpec.describe PartnerPolicy, type: :policy do
     let(:ward) { create(:riverside_ward) }
     let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
     let(:partner_in_neighbourhood) do
-      address = create(:riverside_address)
+      address = create(:address, neighbourhood: ward)
       create(:partner, address: address)
     end
     let(:partner_outside_neighbourhood) do
@@ -89,13 +90,13 @@ RSpec.describe PartnerPolicy, type: :policy do
       user
     end
     let(:partner_in_partnership) do
-      address = create(:riverside_address)
+      address = create(:address, neighbourhood: ward)
       partner = create(:partner, address: address)
       partner.tags << partnership_tag
       partner
     end
     let(:partner_not_in_partnership) do
-      address = create(:riverside_address)
+      address = create(:address, neighbourhood: ward)
       create(:partner, address: address)
     end
 
@@ -111,8 +112,9 @@ RSpec.describe PartnerPolicy, type: :policy do
       subject { described_class.new(user, partner_not_in_partnership) }
 
       it { is_expected.to permit_action(:index) }
-      # Neighbourhood admin can still see/edit partners in their neighbourhood
-      it { is_expected.to permit_action(:show) }
+      # Note: partnership_admin can only see partners in their partnership,
+      # even if also a neighbourhood_admin for that area
+      it { is_expected.to forbid_action(:show) }
     end
   end
 

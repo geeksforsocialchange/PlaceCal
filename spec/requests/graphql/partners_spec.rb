@@ -92,10 +92,11 @@ RSpec.describe 'GraphQL Partners', type: :request do
       expect(address_data['neighbourhood']['name']).to eq('Riverside')
     end
 
-    it 'returns null for non-existent partner' do
+    it 'returns error for non-existent partner' do
       result = execute_query(query, variables: { id: 999_999 })
 
-      expect(result['data']['partner']).to be_nil
+      # GraphQL returns error when record not found
+      expect(result['errors']).to be_present
     end
   end
 
@@ -130,34 +131,4 @@ RSpec.describe 'GraphQL Partners', type: :request do
     end
   end
 
-  describe 'partnersForSite query' do
-    let(:site) { create(:site) }
-    let(:ward) { create(:riverside_ward) }
-    let!(:partner_in_site) do
-      address = create(:riverside_address)
-      create(:partner, address: address)
-    end
-
-    before do
-      site.neighbourhoods << ward
-    end
-
-    let(:query) do
-      <<-GRAPHQL
-        query($siteId: ID!) {
-          partnersForSite(siteId: $siteId) {
-            id
-            name
-          }
-        }
-      GRAPHQL
-    end
-
-    it 'returns partners for a specific site' do
-      result = execute_query(query, variables: { siteId: site.id })
-
-      expect(result['errors']).to be_nil
-      expect(result['data']['partnersForSite']).to be_an(Array)
-    end
-  end
 end

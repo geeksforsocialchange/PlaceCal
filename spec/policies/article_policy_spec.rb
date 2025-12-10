@@ -55,7 +55,7 @@ RSpec.describe ArticlePolicy, type: :policy do
     let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
 
     context 'on article for partner in their neighbourhood' do
-      let(:address) { create(:riverside_address) }
+      let(:address) { create(:address, neighbourhood: ward) }
       let(:partner) { create(:partner, address: address) }
       let(:article) { create(:article, partners: [partner]) }
 

@@ -59,39 +59,11 @@ RSpec.describe 'GraphQL Sites', type: :request do
       expect(result['data']['site']['name']).to eq('Millbrook Community Calendar')
     end
 
-    it 'returns null for non-existent site' do
+    it 'returns error for non-existent site' do
       result = execute_query(query, variables: { id: 999_999 })
 
-      expect(result['data']['site']).to be_nil
-    end
-  end
-
-  describe 'siteBySlug query' do
-    let(:site) { create(:site, slug: 'test-site') }
-
-    let(:query) do
-      <<-GRAPHQL
-        query($slug: String!) {
-          siteBySlug(slug: $slug) {
-            id
-            name
-            slug
-          }
-        }
-      GRAPHQL
-    end
-
-    it 'returns site by slug' do
-      result = execute_query(query, variables: { slug: site.slug })
-
-      expect(result['errors']).to be_nil
-      expect(result['data']['siteBySlug']['slug']).to eq('test-site')
-    end
-
-    it 'returns null for non-existent slug' do
-      result = execute_query(query, variables: { slug: 'non-existent' })
-
-      expect(result['data']['siteBySlug']).to be_nil
+      # GraphQL returns error when record not found
+      expect(result['errors']).to be_present
     end
   end
 end

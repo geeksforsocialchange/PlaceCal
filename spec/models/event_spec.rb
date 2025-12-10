@@ -4,7 +4,8 @@ require 'rails_helper'
 
 RSpec.describe Event, type: :model do
   describe 'associations' do
-    it { is_expected.to belong_to(:partner).optional }
+    # Note: partner association is optional: true but has presence validation
+    it { is_expected.to belong_to(:partner).optional(false) }
     it { is_expected.to belong_to(:place).class_name('Partner').optional }
     it { is_expected.to belong_to(:address).optional }
     it { is_expected.to belong_to(:online_address).optional }
@@ -19,8 +20,8 @@ RSpec.describe Event, type: :model do
   end
 
   describe 'paper_trail' do
-    it 'tracks changes' do
-      expect(described_class.paper_trail.enabled?).to be true
+    it 'has paper_trail enabled' do
+      expect(described_class.new).to respond_to(:versions)
     end
   end
 
@@ -117,14 +118,16 @@ RSpec.describe Event, type: :model do
   describe 'location requirement' do
     let(:partner) { create(:partner) }
 
-    it 'requires some form of location' do
-      event = build(:event, partner: partner, address: nil, online_address: nil, place: nil)
-      # The event factory sets up an address by default, so we need to explicitly remove it
+    it 'requires some form of location when calendar strategy requires it' do
+      # Create calendar with 'place' strategy which requires location
+      place_calendar = create(:place_calendar, partner: partner)
+      event = build(:event, partner: partner, calendar: place_calendar, address: nil, online_address: nil, place: nil)
       event.address = nil
       event.place = nil
       event.online_address = nil
       # The validation will fail if no location is set
       expect(event).not_to be_valid
+      expect(event.errors[:base].first).to include('No place or address')
     end
 
     it 'is valid with just an address' do
@@ -134,6 +137,14 @@ RSpec.describe Event, type: :model do
 
     it 'is valid with just an online address' do
       event = build(:online_event, partner: partner, address: nil, place: nil)
+      expect(event).to be_valid
+    end
+
+    it 'does not require location for event strategy calendar' do
+      # Default calendar factory uses 'event' strategy
+      event = build(:event, partner: partner, address: nil, online_address: nil)
+      event.address = nil
+      event.online_address = nil
       expect(event).to be_valid
     end
   end

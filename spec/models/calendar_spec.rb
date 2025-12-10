@@ -4,8 +4,14 @@ require 'rails_helper'
 
 RSpec.describe Calendar, type: :model do
   describe 'associations' do
-    it { is_expected.to belong_to(:partner).optional }
-    it { is_expected.to belong_to(:place).class_name('Partner').optional }
+    # Note: partner has optional: true on association but presence validation
+    it { is_expected.to belong_to(:partner).optional(false) }
+    # Note: place is conditionally required based on strategy (default strategy is 'place')
+    # Test with a strategy that doesn't require place
+    it 'belongs to place (optional based on strategy)' do
+      calendar = Calendar.new(strategy: 'event')
+      expect(calendar).to belong_to(:place).class_name('Partner').optional
+    end
     it { is_expected.to have_many(:events).dependent(:destroy) }
   end
 
@@ -43,7 +49,10 @@ RSpec.describe Calendar, type: :model do
 
       %i[place room_number event_override].each do |strategy|
         it "requires place for #{strategy} strategy" do
-          calendar = build(:calendar, partner: partner, strategy: strategy, place: nil)
+          # Build with 'event' strategy first (doesn't require place), then change
+          calendar = build(:calendar, partner: partner, strategy: 'event')
+          calendar.place = nil
+          calendar.strategy = strategy
           allow(calendar).to receive(:check_source_reachable)
           expect(calendar).not_to be_valid
           expect(calendar.errors[:place]).to include("can't be blank with this strategy")
