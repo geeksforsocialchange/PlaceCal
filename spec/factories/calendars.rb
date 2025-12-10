@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :calendar do
     sequence(:name) { |n| "Calendar #{n}" }
-    source { 'https://calendar.google.com/calendar/ical/example/public/basic.ics' }
+    sequence(:source) { |n| "https://calendar.google.com/calendar/ical/example#{n}/public/basic.ics" }
     strategy { 'event' }
     association :partner
 
