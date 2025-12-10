@@ -96,6 +96,11 @@ group :development, :test do
   gem 'timecop'
 end
 
+# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
+group :ai, optional: true do
+  gem 'claude-on-rails'
+end
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
