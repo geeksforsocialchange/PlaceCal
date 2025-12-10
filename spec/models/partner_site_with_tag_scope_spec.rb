@@ -21,7 +21,8 @@ RSpec.describe Partner, '.with_tags scope' do
       release_date: release_date
     )
   end
-  let(:address_one) { create(:bare_address_1, postcode: post_code) }
+  # Must explicitly set neighbourhood - factory skips geocoding
+  let(:address_one) { create(:bare_address_1, postcode: post_code, neighbourhood: geocodable_neighbourhood) }
 
   before do
     Neighbourhood.destroy_all

@@ -26,8 +26,9 @@ RSpec.describe Partner, 'address or service area permission validation' do
   end
 
   it 'is valid with service area contained within users neighbourhood subtrees' do
-    child_neighbourhood = create(:neighbourhood)
-    parent_neighbourhood = child_neighbourhood.parent
+    # Use a ward which has a parent (district) - base :neighbourhood has no parent
+    child_neighbourhood = create(:riverside_ward)
+    parent_neighbourhood = child_neighbourhood.parent # millbrook_district
 
     user.neighbourhoods << parent_neighbourhood
 

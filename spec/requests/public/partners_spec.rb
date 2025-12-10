@@ -11,9 +11,10 @@ RSpec.describe 'Public Partners', type: :request do
   end
 
   describe 'GET /partners' do
+    # Must use same ward instance - :riverside_address creates NEW ward via association
     let!(:partners) do
       Array.new(3) do
-        address = create(:riverside_address)
+        address = create(:address, neighbourhood: ward)
         create(:partner, address: address)
       end
     end
@@ -32,7 +33,7 @@ RSpec.describe 'Public Partners', type: :request do
 
     it 'does not show hidden partners' do
       hidden_partner = create(:partner,
-                              address: create(:riverside_address),
+                              address: create(:address, neighbourhood: ward),
                               hidden: true,
                               hidden_reason: 'Test',
                               hidden_blame_id: 1)
@@ -63,28 +64,32 @@ RSpec.describe 'Public Partners', type: :request do
 
   describe 'GET /partners with category filter' do
     let(:category) { create(:category_tag) }
+    # Must use same ward instance
     let!(:categorized_partner) do
-      partner = create(:partner, address: create(:riverside_address))
+      partner = create(:partner, address: create(:address, neighbourhood: ward))
       partner.categories << category
       partner
     end
     let!(:uncategorized_partner) do
-      create(:partner, address: create(:riverside_address))
+      create(:partner, address: create(:address, neighbourhood: ward))
     end
 
     it 'filters partners by category' do
-      get partners_url(host: "#{site.slug}.lvh.me", params: { category: category.slug })
+      # Filter by category ID since slug format may vary
+      get partners_url(host: "#{site.slug}.lvh.me", params: { category: category.id })
       expect(response).to be_successful
     end
   end
 
   describe 'GET /partners with neighbourhood filter' do
+    # Must use same ward instance
     let!(:riverside_partner) do
-      create(:partner, address: create(:riverside_address))
+      create(:partner, address: create(:address, neighbourhood: ward))
     end
 
     it 'filters partners by neighbourhood' do
-      get partners_url(host: "#{site.slug}.lvh.me", params: { neighbourhood: 'Riverside' })
+      # Controller expects neighbourhood ID, not name
+      get partners_url(host: "#{site.slug}.lvh.me", params: { neighbourhood: ward.id })
       expect(response).to be_successful
     end
   end

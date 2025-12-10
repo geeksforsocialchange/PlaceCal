@@ -16,23 +16,20 @@ RSpec.describe Address, type: :model do
   end
 
   describe 'postcode normalization' do
-    it 'normalizes postcodes on assignment' do
-      # Create with Normal Island postcode which is stubbed in geocoder
-      address = build(:riverside_address)
-
-      # Test normalization on a new instance
+    it 'normalizes UK postcodes on assignment' do
+      # Test normalization with valid UK postcodes (UKPostcode gem only handles UK format)
       test_address = Address.new
-      test_address.postcode = '  nomb  1rs  '
-      expect(test_address.postcode).to eq('NOMB 1RS')
+      test_address.postcode = '  m15  5dd  '
+      expect(test_address.postcode).to eq('M15 5DD')
     end
 
-    it 'handles various postcode formats' do
+    it 'handles various UK postcode formats' do
       address = Address.new
       [
-        ['   NOMB 1RS', 'NOMB 1RS'],
-        ['nomb1rs  ', 'NOMB 1RS'],
-        ['  NOMB   1RS ', 'NOMB 1RS'],
-        ['NOAD 1HC', 'NOAD 1HC']
+        ['   M15 5DD', 'M15 5DD'],
+        ['m155dd  ', 'M15 5DD'],
+        ['  M15   5DD ', 'M15 5DD'],
+        ['SW1A 1AA', 'SW1A 1AA']
       ].each do |input, expected|
         address.postcode = input
         expect(address.postcode).to eq(expected), "Expected '#{input}' to normalize to '#{expected}'"
@@ -68,10 +65,14 @@ RSpec.describe Address, type: :model do
       end
 
       it 'adds error for postcode not found' do
-        address = build(:address,
-                        street_address: '123 Unknown Street',
-                        postcode: 'XX99 9XX',
-                        country_code: 'XX')
+        # Use valid UK format postcode that passes format validation
+        address = Address.new(
+          street_address: '123 Unknown Street',
+          postcode: 'ZZ99 9ZZ',  # Valid UK format but unknown location
+          country_code: 'GB'
+        )
+        # Manually invoke geocode validation (normally runs before_validation)
+        address.valid?
         expect(address).not_to be_valid
         expect(address.errors[:postcode]).to include('was not found')
       end
@@ -90,10 +91,13 @@ RSpec.describe Address, type: :model do
       end
 
       it 'adds error for unmapped neighbourhood' do
-        address = build(:address,
-                        street_address: '123 Unmapped Street',
-                        postcode: 'YY99 9YY',
-                        country_code: 'YY')
+        # Use valid UK format postcode
+        address = Address.new(
+          street_address: '123 Unmapped Street',
+          postcode: 'ZZ11 1ZZ',  # Valid UK format
+          country_code: 'GB'
+        )
+        address.valid?
         expect(address).not_to be_valid
         expect(address.errors[:postcode]).to include('has been found but could not be mapped to a neighbourhood at this time')
       end

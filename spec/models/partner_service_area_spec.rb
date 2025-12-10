@@ -20,8 +20,8 @@ RSpec.describe Partner, 'service_area' do
     end
 
     it 'is valid when set, can be accessed' do
-      model = build(:ashton_service_area_partner)
-      model.save!
+      # Must use create() to trigger after(:create) callback that adds service_area
+      model = create(:ashton_service_area_partner)
       expect(model).to be_valid
 
       service_areas = model.service_areas
@@ -69,11 +69,12 @@ RSpec.describe Partner, 'service_area' do
       neighbourhoods = partner.service_area_neighbourhoods.order('neighbourhoods.name').all
       expect(neighbourhoods.count).to eq(2)
 
+      # Names are ordered alphabetically: 'Ashton' < 'Riverside'
       n1 = neighbourhoods[0]
-      expect(n1.name).to eq('Ashton Hurst')
+      expect(n1.name).to eq('Ashton')
 
       n2 = neighbourhoods[1]
-      expect(n2.name).to eq('Hulme')
+      expect(n2.name).to eq('Riverside')
     end
   end
 

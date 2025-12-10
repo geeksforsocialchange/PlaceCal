@@ -29,6 +29,9 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
+    # Handle case when record is User class (not instance) - e.g. policy(User).show?
+    return index? if record.is_a?(Class)
+
     return true if user.root?
     return true if user.id == record.id
     return scope_includes_record? if user.neighbourhood_admin? || user.partnership_admin?
@@ -37,6 +40,9 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
+    # Handle case when record is User class (not instance) - e.g. policy(User).update?
+    return index? if record.is_a?(Class)
+
     return true if user.root?
     return true if user.id == record.id
     return scope_includes_record? if user.neighbourhood_admin? || user.partnership_admin?

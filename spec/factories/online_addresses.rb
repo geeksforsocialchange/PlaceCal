@@ -3,21 +3,11 @@
 FactoryBot.define do
   factory :online_address do
     url { Faker::Internet.url }
-    link_type { 'other' }
+    link_type { 'indirect' }
 
-    factory :zoom_address do
+    factory :direct_online_address do
       url { 'https://zoom.us/j/1234567890' }
-      link_type { 'zoom' }
-    end
-
-    factory :teams_address do
-      url { 'https://teams.microsoft.com/l/meetup-join/example' }
-      link_type { 'teams' }
-    end
-
-    factory :youtube_address do
-      url { 'https://www.youtube.com/watch?v=example' }
-      link_type { 'youtube' }
+      link_type { 'direct' }
     end
   end
 end
