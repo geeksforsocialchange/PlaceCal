@@ -72,6 +72,9 @@ FactoryBot.define do
       after(:create) do |user, evaluator|
         if evaluator.partnership_tag
           user.tags << evaluator.partnership_tag
+        else
+          # Create a default partnership tag if none provided
+          user.tags << create(:partnership)
         end
       end
     end
