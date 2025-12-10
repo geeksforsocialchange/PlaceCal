@@ -6,7 +6,7 @@ FactoryBot.define do
   factory :site do
     sequence(:name) { |n| "Site #{n}" }
     sequence(:slug) { |n| "site-#{n}" }
-    url { "https://#{slug}.normalcal.org" }
+    url { "https://#{slug}.placecal.org" }
     tagline { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
     theme { 'pink' }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'admin login' do
-  let(:admin_user) { create(:root_user, email: 'admin@normalcal.org', password: 'password') }
+  let(:admin_user) { create(:root_user, email: 'admin@placecal.org', password: 'password') }
 
   before do
     create_default_site

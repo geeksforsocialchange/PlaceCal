@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'User Invitation Flow', :slow, type: :system do
-  let(:admin_user) { create(:root_user, email: 'admin@normalcal.org', password: 'password') }
+  let(:admin_user) { create(:root_user, email: 'admin@placecal.org', password: 'password') }
 
   before do
     create_default_site
@@ -32,7 +32,7 @@ RSpec.describe 'User Invitation Flow', :slow, type: :system do
     # Fill in new user details
     fill_in 'First name', with: 'New'
     fill_in 'Last name', with: 'User'
-    fill_in 'Email', with: 'new.user@normalcal.org'
+    fill_in 'Email', with: 'new.user@placecal.org'
     choose 'Root: Can do everything'
     click_button 'Invite'
 
