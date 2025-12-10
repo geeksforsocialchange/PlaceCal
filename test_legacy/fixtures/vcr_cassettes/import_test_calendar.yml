@@ -1,0 +1,63 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://calendar.google.com/calendar/ical/example/public/basic.ics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Httparty
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Wed, 10 Dec 2025 15:43:48 GMT
+      P3p:
+      - CP="This is not a P3P policy! See g.co/p3phelp for more info."
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Report-To:
+      - '{"group":"calendar_coop_coep","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/calendar"}]}'
+      Cross-Origin-Embedder-Policy-Report-Only:
+      - require-corp; report-to="calendar_coop_coep"
+      Content-Security-Policy:
+      - require-trusted-types-for 'script';report-uri /calendar/cspreport
+      Cross-Origin-Opener-Policy-Report-Only:
+      - same-origin-allow-popups; report-to="calendar_coop_coep"
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - NID=527=CGPAr76UfLhIsYyrfzkkIgJtR6l2_E2f03nAqHmyrhtsZAg43MBzueV1AqD7RA5IC2fhlB2i6Yi7HaPJfJCQTxEjmHzNkmMgEjMPUndB8mTJ_FXwCDPD_iOjSltMQjEKVUzYT8RHGBH67bjaio5b1zILDJRhirldPzjlVpk6yHBlIeLlzWGrBQJNGpyH9xt8Up_Vp3UUfho-;
+        expires=Thu, 11-Jun-2026 15:43:48 GMT; path=/; domain=.google.com; HttpOnly
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      X-L2-Request-Path:
+      - l2-managed-14
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        PGh0bWwgbGFuZz0iZW4tR0IiIGRpcj1sdHI+PG1ldGEgY2hhcnNldD11dGYtOD48bWV0YSBuYW1lPXZpZXdwb3J0IGNvbnRlbnQ9ImluaXRpYWwtc2NhbGU9MSwgbWluaW11bS1zY2FsZT0xLCB3aWR0aD1kZXZpY2Utd2lkdGgiPjx0aXRsZT5FcnJvciA0MDQgKE5vdCBmb3VuZCkhITE8L3RpdGxlPjxzdHlsZSBub25jZT0icEZBNm1jZ3A5eUtvLWd1UHMydnRpdyI+KnttYXJnaW46MDtwYWRkaW5nOjB9aHRtbCxjb2Rle2ZvbnQ6MTVweC8yMnB4IGFyaWFsLHNhbnMtc2VyaWZ9aHRtbHtiYWNrZ3JvdW5kOiNmZmY7Y29sb3I6IzIyMjtwYWRkaW5nOjE1cHh9Ym9keXtjb2xvcjojMjIyO3RleHQtYWxpZ246dW5zZXQ7bWFyZ2luOjclIGF1dG8gMDttYXgtd2lkdGg6MzkwcHg7bWluLWhlaWdodDoxODBweDtwYWRkaW5nOjMwcHggMCAxNXB4O30qID4gYm9keXtiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9lcnJvcnMvcm9ib3QucG5nKSAxMDAlIDVweCBuby1yZXBlYXQ7cGFkZGluZy1yaWdodDoyMDVweH1we21hcmdpbjoxMXB4IDAgMjJweDtvdmVyZmxvdzpoaWRkZW59cHJle3doaXRlLXNwYWNlOnByZS13cmFwO31pbnN7Y29sb3I6Izc3Nzt0ZXh0LWRlY29yYXRpb246bm9uZX1hIGltZ3tib3JkZXI6MH1AbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOjc3MnB4KXtib2R5e2JhY2tncm91bmQ6bm9uZTttYXJnaW4tdG9wOjA7bWF4LXdpZHRoOm5vbmU7cGFkZGluZy1yaWdodDowfX0jbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzF4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7bWFyZ2luLWxlZnQ6LTVweH1AbWVkaWEgb25seSBzY3JlZW4gYW5kIChtaW4tcmVzb2x1dGlvbjoxOTJkcGkpeyNsb2dve2JhY2tncm91bmQ6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIG5vLXJlcGVhdCAwJSAwJS8xMDAlIDEwMCU7LW1vei1ib3JkZXItaW1hZ2U6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIDB9fUBtZWRpYSBvbmx5IHNjcmVlbiBhbmQgKC13ZWJraXQtbWluLWRldmljZS1waXhlbC1yYXRpbzoyKXsjbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzJ4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7LXdlYmtpdC1iYWNrZ3JvdW5kLXNpemU6MTAwJSAxMDAlfX0jbG9nb3tkaXNwbGF5OmlubGluZS1ibG9jaztoZWlnaHQ6NTRweDt3aWR0aDoxNTBweH08L3N0eWxlPjxtYWluIGlkPSJhZi1lcnJvci1jb250YWluZXIiIHJvbGU9Im1haW4iPjxhIGhyZWY9Ly93d3cuZ29vZ2xlLmNvbT48c3BhbiBpZD1sb2dvIGFyaWEtbGFiZWw9R29vZ2xlIHJvbGU9aW1nPjwvc3Bhbj48L2E+PHA+PGI+NDA0LjwvYj4gPGlucz5UaGF04oCZcyBhbiBlcnJvci48L2lucz48cD5UaGUgcmVxdWVzdGVkIFVSTCB3YXMgbm90IGZvdW5kIG9uIHRoaXMgc2VydmVyLiA8aW5zPlRoYXTigJlzIGFsbCB3ZSBrbm93LjwvaW5zPjxwPklmIHRoZSBwcm9ibGVtIHBlcnNpc3RzLCBzZWUgdGhlIDxhIGhyZWY9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vYXBwc3N0YXR1cyN2PXN0YXR1cyZhbXA7aGw9ZW4tR0IiPkdvb2dsZSBXb3Jrc3BhY2UgU3RhdHVzIERhc2hib2FyZDwvYT4gb3IgdmlzaXQgdGhlIDxhIGhyZWY9Imh0dHBzOi8vc3VwcG9ydC5nb29nbGUuY29tL2NhbGVuZGFyP2hsPWVuLUdCIj5IZWxwIENlbnRlcjwvYT4uPC9wPjwvbWFpbj4=
+  recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.1.0

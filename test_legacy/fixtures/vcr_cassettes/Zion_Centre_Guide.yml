@@ -1,0 +1,291 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Httparty
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private
+      Content-Length:
+      - '142'
+      Content-Type:
+      - text/calendar; charset=utf-8
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-HTTPAPI/2.0
+      X-Nanoproxy:
+      - '1,1'
+      Datasource:
+      - Exo
+      Request-Id:
+      - 25056f18-0662-9b03-201d-40b9a7b27af0
+      X-Calculatedfetarget:
+      - AM8P191CU001.internal.outlook.com
+      X-Backend-End:
+      - '2025-12-10T15:43:24.944'
+      Ms-Cv:
+      - GG8FJWIGA5sgHUC5p7J68A.1.1
+      X-Backend-Begin:
+      - '2025-12-10T15:43:24.429'
+      X-Backendhttpstatus:
+      - '200,200'
+      X-Besku:
+      - WCS7
+      X-Calculatedbetarget:
+      - AS4PR09MB5768.eurprd09.prod.outlook.com
+      X-Content-Type-Options:
+      - nosniff
+      X-Feefzinfo:
+      - AMS
+      X-Feserver:
+      - LO2P265CA0143
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Owa-Diagnosticsinfo:
+      - 519;19;105;
+      X-Proxy-Backendserverstatus:
+      - '200'
+      X-Proxy-Routingcorrectness:
+      - '1'
+      X-Responseorigin:
+      - OwaAppPool
+      X-Rum-Notupdatequeriedpath:
+      - '1'
+      X-Rum-Notupdatequerieddbcopy:
+      - '1'
+      X-Rum-Validated:
+      - '1'
+      X-Traceid:
+      - 687b346414fa81c90835a55437b86542
+      X-Ua-Compatible:
+      - IE=EmulateIE7
+      X-Firsthopcafeefz:
+      - LHR
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Nel:
+      - '{"report_to":"NelOfficeUpload1","max_age":7200,"include_subdomains":true,"failure_fraction":1.0,"success_fraction":0.01}'
+      Report-To:
+      - '{"group":"NelOfficeUpload1","max_age":7200,"endpoints":[{"url":"https://exo.nel.measure.office.net/api/report?TenantId=&FrontEnd=Cafe&DestinationEndpoint=LHR&RemoteIP=95.172.225.0&Environment=MT&HttpStatusFrom=BE&ServiceName=OwaCalendar&MiraPartnerName="}],"include_subdomains":true}'
+      Set-Cookie:
+      - ClientId=4BBCF6BCF4CE4247B45348E4CFBE647A; expires=Thu, 10-Dec-2026 15:43:24
+        GMT; path=/;SameSite=None; secure
+      - ClientId=4BBCF6BCF4CE4247B45348E4CFBE647A; expires=Thu, 10-Dec-2026 15:43:24
+        GMT; path=/;SameSite=None; secure
+      - OIDC=1; expires=Wed, 10-Jun-2026 15:43:24 GMT; path=/;SameSite=None; secure;
+        HttpOnly
+      Date:
+      - Wed, 10 Dec 2025 15:43:24 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:Zion Centre What's on Guide\r\nEND:VCALENDAR\r\n"
+  recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+- request:
+    method: get
+    uri: https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Httparty
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private
+      Content-Length:
+      - '142'
+      Content-Type:
+      - text/calendar; charset=utf-8
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-HTTPAPI/2.0
+      X-Nanoproxy:
+      - '1,1'
+      Datasource:
+      - Exo
+      Request-Id:
+      - fdd53f81-2349-50b8-7ba9-2699401d730c
+      X-Calculatedfetarget:
+      - AM0P190CU001.internal.outlook.com
+      X-Backend-End:
+      - '2025-12-10T15:43:25.163'
+      Ms-Cv:
+      - gT/V/UkjuFB7qSaZQB1zDA.1.1
+      X-Backend-Begin:
+      - '2025-12-10T15:43:25.038'
+      X-Backendhttpstatus:
+      - '200,200'
+      X-Besku:
+      - WCS7
+      X-Calculatedbetarget:
+      - AS4PR09MB5768.eurprd09.prod.outlook.com
+      X-Content-Type-Options:
+      - nosniff
+      X-Feefzinfo:
+      - AMS
+      X-Feserver:
+      - LO2P265CA0141
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Owa-Diagnosticsinfo:
+      - 124;0;62;
+      X-Proxy-Backendserverstatus:
+      - '200'
+      X-Proxy-Routingcorrectness:
+      - '1'
+      X-Responseorigin:
+      - OwaAppPool
+      X-Rum-Notupdatequeriedpath:
+      - '1'
+      X-Rum-Notupdatequerieddbcopy:
+      - '1'
+      X-Rum-Validated:
+      - '1'
+      X-Traceid:
+      - e5292f122d1305c5c734c53486e9320f
+      X-Ua-Compatible:
+      - IE=EmulateIE7
+      X-Firsthopcafeefz:
+      - LHR
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Nel:
+      - '{"report_to":"NelOfficeUpload1","max_age":7200,"include_subdomains":true,"failure_fraction":1.0,"success_fraction":0.01}'
+      Report-To:
+      - '{"group":"NelOfficeUpload1","max_age":7200,"endpoints":[{"url":"https://exo.nel.measure.office.net/api/report?TenantId=&FrontEnd=Cafe&DestinationEndpoint=LHR&RemoteIP=95.172.225.0&Environment=MT&HttpStatusFrom=BE&ServiceName=OwaCalendar&MiraPartnerName="}],"include_subdomains":true}'
+      Set-Cookie:
+      - ClientId=D96D2706407345ACAF5EFF88B153D790; expires=Thu, 10-Dec-2026 15:43:25
+        GMT; path=/;SameSite=None; secure
+      - ClientId=D96D2706407345ACAF5EFF88B153D790; expires=Thu, 10-Dec-2026 15:43:25
+        GMT; path=/;SameSite=None; secure
+      - OIDC=1; expires=Wed, 10-Jun-2026 15:43:25 GMT; path=/;SameSite=None; secure;
+        HttpOnly
+      Date:
+      - Wed, 10 Dec 2025 15:43:24 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:Zion Centre What's on Guide\r\nEND:VCALENDAR\r\n"
+  recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+- request:
+    method: get
+    uri: https://outlook.office365.com/owa/calendar/8a1f38963ce347bab8cfe0d0d8c5ff16@thebiglifegroup.com/5c9fc0f3292e4f0a9af20e18aa6f17739803245039959967240/calendar.ics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Httparty
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private
+      Content-Length:
+      - '142'
+      Content-Type:
+      - text/calendar; charset=utf-8
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-HTTPAPI/2.0
+      X-Nanoproxy:
+      - '1,1'
+      Datasource:
+      - Exo
+      Request-Id:
+      - ec9f53b5-c53b-d79f-c532-5b219e69c4cf
+      X-Calculatedfetarget:
+      - AM9P250CU001.internal.outlook.com
+      X-Backend-End:
+      - '2025-12-10T15:43:25.351'
+      Ms-Cv:
+      - tVOf7DvFn9fFMlshnmnEzw.1.1
+      X-Backend-Begin:
+      - '2025-12-10T15:43:25.257'
+      X-Backendhttpstatus:
+      - '200,200'
+      X-Besku:
+      - WCS7
+      X-Calculatedbetarget:
+      - AS4PR09MB5768.eurprd09.prod.outlook.com
+      X-Content-Type-Options:
+      - nosniff
+      X-Feefzinfo:
+      - AMS
+      X-Feserver:
+      - LO2P265CA0133
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Owa-Diagnosticsinfo:
+      - 110;0;54;
+      X-Proxy-Backendserverstatus:
+      - '200'
+      X-Proxy-Routingcorrectness:
+      - '1'
+      X-Responseorigin:
+      - OwaAppPool
+      X-Rum-Notupdatequeriedpath:
+      - '1'
+      X-Rum-Notupdatequerieddbcopy:
+      - '1'
+      X-Rum-Validated:
+      - '1'
+      X-Traceid:
+      - b3eda3fe9d2ffdd7b5fb90cb3a0efa95
+      X-Ua-Compatible:
+      - IE=EmulateIE7
+      X-Firsthopcafeefz:
+      - LHR
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Nel:
+      - '{"report_to":"NelOfficeUpload1","max_age":7200,"include_subdomains":true,"failure_fraction":1.0,"success_fraction":0.01}'
+      Report-To:
+      - '{"group":"NelOfficeUpload1","max_age":7200,"endpoints":[{"url":"https://exo.nel.measure.office.net/api/report?TenantId=&FrontEnd=Cafe&DestinationEndpoint=LHR&RemoteIP=95.172.225.0&Environment=MT&HttpStatusFrom=BE&ServiceName=OwaCalendar&MiraPartnerName="}],"include_subdomains":true}'
+      Set-Cookie:
+      - ClientId=A214D6DAF5624E2CABE9DAD76212D920; expires=Thu, 10-Dec-2026 15:43:25
+        GMT; path=/;SameSite=None; secure
+      - ClientId=A214D6DAF5624E2CABE9DAD76212D920; expires=Thu, 10-Dec-2026 15:43:25
+        GMT; path=/;SameSite=None; secure
+      - OIDC=1; expires=Wed, 10-Jun-2026 15:43:25 GMT; path=/;SameSite=None; secure;
+        HttpOnly
+      Date:
+      - Wed, 10 Dec 2025 15:43:26 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:Zion Centre What's on Guide\r\nEND:VCALENDAR\r\n"
+  recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.1.0
