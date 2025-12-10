@@ -8,8 +8,9 @@ FactoryBot.define do
     summary { Faker::Lorem.paragraph(sentence_count: 2) }
     description { Faker::Lorem.paragraphs(number: 3).join("\n\n") }
     public_email { Faker::Internet.email }
-    public_phone { '01onal 234567' }
-    opening_times { {} }
+    public_phone { '0161 234 5678' }
+    opening_times { [] }
+    association :address, factory: :riverside_address
 
     # Normal Island partners
     factory :riverside_community_hub do
