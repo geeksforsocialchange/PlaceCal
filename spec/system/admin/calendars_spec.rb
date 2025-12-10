@@ -10,38 +10,39 @@ RSpec.describe 'Admin Calendars', :slow, type: :system do
 
   describe 'select2 inputs on calendar form' do
     it 'allows selecting partner organiser and default location', :vcr do
-      VCR.use_cassette(:eventbrite_events, allow_playback_repeats: true) do
-        click_link 'Calendars'
-        await_datatables
+      # Stub calendar source validation to avoid HTTP requests
+      allow_any_instance_of(Calendar).to receive(:check_source_reachable).and_return(true)
 
-        click_link 'Add New Calendar'
+      click_link 'Calendars'
+      await_datatables
 
-        # Select partner organiser
-        partner_organiser = select2_node('calendar_partner')
-        select2 partner.name, xpath: partner_organiser.path
-        assert_select2_single partner.name, partner_organiser
+      click_link 'Add New Calendar'
 
-        # Select default location
-        default_location = select2_node('calendar_place')
-        select2 partner_two.name, xpath: default_location.path
-        assert_select2_single partner_two.name, default_location
+      # Select partner organiser
+      partner_organiser = select2_node('calendar_partner')
+      select2 partner.name, xpath: partner_organiser.path
+      assert_select2_single partner.name, partner_organiser
 
-        fill_in 'Name', with: 'Test Calendar'
-        fill_in 'URL', with: 'https://www.eventbrite.co.uk/o/test-org-12345'
+      # Select default location
+      default_location = select2_node('calendar_place')
+      select2 partner_two.name, xpath: default_location.path
+      assert_select2_single partner_two.name, default_location
 
-        click_button 'Create Calendar'
+      fill_in 'Name', with: 'Test Calendar'
+      fill_in 'URL', with: 'https://www.eventbrite.co.uk/o/test-org-12345'
 
-        # Verify data persists
-        click_link 'Calendars'
-        await_datatables
-        click_link 'Test Calendar'
+      click_button 'Create Calendar'
 
-        partner_organiser = select2_node('calendar_partner')
-        assert_select2_single partner.name, partner_organiser
+      # Verify data persists
+      click_link 'Calendars'
+      await_datatables
+      click_link 'Test Calendar'
 
-        default_location = select2_node('calendar_place')
-        assert_select2_single partner_two.name, default_location
-      end
+      partner_organiser = select2_node('calendar_partner')
+      assert_select2_single partner.name, partner_organiser
+
+      default_location = select2_node('calendar_place')
+      assert_select2_single partner_two.name, default_location
     end
   end
 end

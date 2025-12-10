@@ -18,6 +18,11 @@ Given('the following partners exist:') do |table|
   end
 end
 
+When('I visit the partners page') do
+  create_default_site
+  visit '/partners'
+end
+
 When('I create a new partner with name {string}') do |name|
   click_link 'Partners'
   await_datatables

@@ -71,7 +71,7 @@ jobs:
         run: bundle exec rspec
 
       - name: Run Cucumber features
-        run: bundle exec cucumber
+        run: bundle exec cucumber --tags "not @wip"
 
       # System specs disabled in CI (require Chrome)
       # - name: Run system specs

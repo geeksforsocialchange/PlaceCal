@@ -4,20 +4,20 @@
 
 Given('there is an event called {string}') do |name|
   partner = @partner || create(:partner)
-  @event = create(:event, name: name, partner: partner)
+  @event = create(:event, summary: name, partner: partner)
 end
 
 Given('there is an event called {string} on {string}') do |name, date_str|
   partner = @partner || create(:partner)
   date = Date.parse(date_str)
-  @event = create(:event, name: name, partner: partner, dtstart: date.to_datetime)
+  @event = create(:event, summary: name, partner: partner, dtstart: date.to_datetime)
 end
 
 Given('the following events exist:') do |table|
   partner = @partner || create(:partner)
   table.hashes.each do |row|
     date = row['date'] ? Date.parse(row['date']).to_datetime : Time.current
-    create(:event, name: row['name'], partner: partner, dtstart: date)
+    create(:event, summary: row['name'], partner: partner, dtstart: date)
   end
 end
 
@@ -27,7 +27,7 @@ When('I view the events page') do
 end
 
 When('I view the event {string}') do |name|
-  event = Event.find_by(name: name)
+  event = Event.find_by(summary: name)
   visit "/events/#{event.id}"
 end
 

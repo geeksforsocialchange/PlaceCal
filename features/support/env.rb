@@ -9,6 +9,10 @@
 require 'cucumber/rails'
 require 'capybara/cucumber'
 
+# Load shared spec support files (UK postcode stub, geocoder stubs)
+require Rails.root.join('spec/support/uk_postcode_stub')
+require Rails.root.join('spec/support/normal_island_geocoder')
+
 # FactoryBot is already loaded by cucumber-rails
 # Just configure paths if not already set
 FactoryBot.definition_file_paths = [Rails.root.join('spec/factories')] if FactoryBot.definition_file_paths.empty?
@@ -43,7 +47,12 @@ Capybara.javascript_driver = :headless_chrome
 Capybara.configure do |config|
   config.default_max_wait_time = 5
   config.server = :puma, { Silent: true }
+  config.always_include_port = true
 end
+
+# Use lvh.me for subdomain testing (resolves to 127.0.0.1)
+Capybara.app_host = 'http://lvh.me'
+Capybara.server_host = 'lvh.me'
 
 # Include FactoryBot methods in World
 World(FactoryBot::Syntax::Methods)

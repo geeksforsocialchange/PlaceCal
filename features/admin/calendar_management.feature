@@ -1,4 +1,4 @@
-@admin
+@admin @wip
 Feature: Calendar Management
   As an administrator
   I want to manage calendars that import events

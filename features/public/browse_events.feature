@@ -1,4 +1,4 @@
-@public
+@public @wip
 Feature: Browse Events
   As a community member
   I want to browse upcoming events

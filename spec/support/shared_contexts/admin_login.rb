@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'admin login' do
-  let(:admin_user) { create(:root_user, email: 'admin@placecal.org', password: 'password') }
+  let(:admin_user) { create(:root_user, email: 'admin@placecal.org', password: 'password', password_confirmation: 'password') }
 
   before do
     create_default_site
@@ -9,7 +9,9 @@ RSpec.shared_context 'admin login' do
   end
 
   def login_as_admin
-    visit '/users/sign_in'
+    # Visit admin subdomain for login
+    port = Capybara.current_session.server.port
+    visit "http://admin.lvh.me:#{port}/users/sign_in"
     fill_in 'Email', with: admin_user.email
     fill_in 'Password', with: 'password'
     click_button 'Log in'

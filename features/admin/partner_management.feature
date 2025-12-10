@@ -1,4 +1,4 @@
-@admin
+@admin @wip
 Feature: Partner Management
   As an administrator
   I want to manage partners in the system

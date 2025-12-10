@@ -5,12 +5,13 @@ require 'rails_helper'
 RSpec.describe 'Admin Partners', :slow, type: :system do
   include_context 'admin login'
 
-  let!(:partner) { create(:riverside_community_hub) }
+  # Create wards first, then use them in partner factory to avoid duplicates
+  let!(:riverside_ward) { create(:riverside_ward) }
+  let!(:oldtown_ward) { create(:oldtown_ward) }
+  let!(:partner) { create(:riverside_community_hub, address: create(:address, neighbourhood: riverside_ward)) }
   let!(:partnership) { create(:partnership) }
   let!(:category) { create(:category) }
   let!(:facility) { create(:facility) }
-  let!(:riverside_ward) { create(:riverside_ward) }
-  let!(:oldtown_ward) { create(:oldtown_ward) }
 
   describe 'select2 inputs on partner form' do
     it 'allows adding service areas, partnerships, categories and facilities', :aggregate_failures do

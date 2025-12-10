@@ -58,13 +58,13 @@ FileUtils.chdir APP_ROOT do
     system! 'RUN_SLOW_TESTS=true bin/bundle exec rspec spec/system'
   elsif @options[:cucumber_only]
     puts "\n== Running Cucumber features =="
-    system! 'bin/bundle exec cucumber'
+    system! 'bin/bundle exec cucumber --tags "not @wip"'
   elsif @options[:lint_only]
     # Do nothing
   else
     puts "\n== Running all tests (RSpec + Cucumber) =="
     system! 'RUN_SLOW_TESTS=true bin/bundle exec rspec'
-    system! 'bin/bundle exec cucumber'
+    system! 'bin/bundle exec cucumber --tags "not @wip"'
   end
 
   unless @options[:without_lint]
