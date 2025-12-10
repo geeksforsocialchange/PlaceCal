@@ -28,6 +28,11 @@ end
 # Monkey-patch UKPostcode.parse to handle Normal Island postcodes
 module UKPostcodeNormalIslandExtension
   def parse(str)
+    # Handle nil/empty strings by returning an invalid postcode object
+    if str.nil? || str.to_s.strip.empty?
+      return NormalIslandPostcode.new('')
+    end
+
     normalized = str.to_s.upcase.strip
     if normalized.match?(NormalIslandPostcode::PATTERN)
       NormalIslandPostcode.new(normalized)
