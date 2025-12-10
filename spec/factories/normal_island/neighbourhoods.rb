@@ -34,6 +34,14 @@ FactoryBot.define do
       unit_code_value { 'E05000686' }
     end
 
+    # Legacy compatibility - used in partner_service_area_spec
+    factory :ashton_neighbourhood do
+      name { 'Ashton' }
+      unit { 'ward' }
+      unit_code_key { 'E05000687' }
+      unit_code_value { 'E05000687' }
+    end
+
     # Country level
     factory :normal_island_country do
       name { NormalIsland::COUNTRY[:name] }

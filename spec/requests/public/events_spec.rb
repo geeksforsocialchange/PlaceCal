@@ -5,7 +5,9 @@ require 'rails_helper'
 RSpec.describe 'Public Events', type: :request do
   let(:site) { create(:site, slug: 'test-site') }
   let(:ward) { create(:riverside_ward) }
-  let(:partner) { create(:riverside_partner) }
+  # Must use same ward instance - create partner with address in our ward
+  let(:address) { create(:address, neighbourhood: ward) }
+  let(:partner) { create(:partner, address: address) }
 
   before do
     site.neighbourhoods << ward
@@ -16,7 +18,7 @@ RSpec.describe 'Public Events', type: :request do
       create_list(:event, 5,
                   partner: partner,
                   dtstart: 1.day.from_now,
-                  address: partner.address)
+                  address: address)
     end
 
     it 'returns successful response' do
@@ -38,7 +40,7 @@ RSpec.describe 'Public Events', type: :request do
              partner: partner,
              summary: 'Test Event',
              dtstart: 1.day.from_now,
-             address: partner.address)
+             address: address)
     end
 
     it 'shows the event details' do
@@ -59,14 +61,14 @@ RSpec.describe 'Public Events', type: :request do
              partner: partner,
              summary: 'Today Event',
              dtstart: Time.current.beginning_of_day + 10.hours,
-             address: partner.address)
+             address: address)
     end
     let!(:future_event) do
       create(:event,
              partner: partner,
              summary: 'Future Event',
              dtstart: 7.days.from_now,
-             address: partner.address)
+             address: address)
     end
 
     it 'filters events by date' do

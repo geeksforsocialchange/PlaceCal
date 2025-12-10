@@ -37,7 +37,7 @@ RSpec.describe 'Admin::Users', type: :request do
     end
   end
 
-  describe 'GET /admin/users/:id' do
+  describe 'GET /admin/users/:id/edit' do
     let(:target_user) { create(:user) }
 
     context 'as a root user' do
@@ -45,8 +45,9 @@ RSpec.describe 'Admin::Users', type: :request do
 
       before { sign_in user }
 
-      it 'shows user details' do
-        get admin_user_url(target_user, host: admin_host)
+      it 'shows user edit form' do
+        # Note: users controller only has edit, not show
+        get edit_admin_user_url(target_user, host: admin_host)
         expect(response).to be_successful
         expect(response.body).to include(target_user.email)
       end

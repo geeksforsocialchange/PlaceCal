@@ -175,14 +175,17 @@ RSpec.describe User, type: :model do
   end
 
   describe '#owned_neighbourhoods' do
-    let(:region) { create(:northvale_region) }
-    let(:user) { create(:neighbourhood_admin, neighbourhood: region) }
+    # Create ward first - this builds the full hierarchy (ward -> district -> county -> region -> country)
+    let!(:ward) { create(:riverside_ward) }
+    let(:district) { ward.parent } # millbrook_district
+    let(:user) { create(:neighbourhood_admin, neighbourhood: district) }
 
     it 'returns all descendant neighbourhoods' do
       owned = user.owned_neighbourhoods
-      expect(owned).to include(region)
-      # The ancestry includes children (county, district, wards)
+      expect(owned).to include(district)
+      # The subtree includes the district itself and its children (wards)
       expect(owned.count).to be > 1
+      expect(owned).to include(ward)
     end
   end
 

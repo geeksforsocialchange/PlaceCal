@@ -22,9 +22,10 @@ RSpec.describe 'Public Pages', type: :request do
     end
   end
 
-  describe 'GET /about' do
+  describe 'GET /privacy' do
     it 'returns successful response' do
-      get about_url(host: "#{site.slug}.lvh.me")
+      # Note: /about doesn't exist, but /privacy does
+      get '/privacy', headers: { 'Host' => "#{site.slug}.lvh.me" }
       expect(response).to be_successful
     end
   end
