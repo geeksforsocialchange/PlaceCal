@@ -4,11 +4,26 @@ require_relative '../../../lib/normal_island'
 
 FactoryBot.define do
   # Base neighbourhood factory
-  factory :neighbourhood do
+  factory :neighbourhood, aliases: [:bare_neighbourhood] do
     sequence(:name) { |n| "Neighbourhood #{n}" }
     unit { 'ward' }
     unit_code_key { 'NO00WD' }
     sequence(:unit_code_value) { |n| "NO400000#{n}" }
+
+    # Legacy test compatibility - these are used by VCR fixtures
+    factory :eventbrite_valid_address_hood do
+      name { 'Eventbrite Test Area' }
+      unit { 'ward' }
+      unit_code_key { 'E05000000' }
+      unit_code_value { 'E05000001' }
+    end
+
+    factory :ldjson_valid_address_hood do
+      name { 'LD+JSON Test Area' }
+      unit { 'ward' }
+      unit_code_key { 'E05000000' }
+      unit_code_value { 'E05000002' }
+    end
 
     # Country level
     factory :normal_island_country do
