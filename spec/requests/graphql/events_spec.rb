@@ -7,7 +7,7 @@ RSpec.describe 'GraphQL Events', type: :request do
   let(:address) { partner.address }
 
   def execute_query(query_string, variables: {})
-    post '/graphql', params: { query: query_string, variables: variables.to_json }
+    post '/api/v1/graphql', params: { query: query_string, variables: variables.to_json }
     JSON.parse(response.body)
   end
 

@@ -14,6 +14,11 @@ FactoryBot.define do
       end
     end
 
+    # Skip source validation in tests (HTTP request)
+    before(:create) do |calendar|
+      calendar.define_singleton_method(:check_source_reachable) { true }
+    end
+
     factory :ics_calendar do
       source { 'https://example.com/calendar.ics' }
       strategy { 'event' }
