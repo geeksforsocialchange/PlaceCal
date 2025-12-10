@@ -7,6 +7,13 @@ FactoryBot.define do
     strategy { 'event' }
     association :partner
 
+    # Auto-set place when strategy requires it
+    after(:build) do |calendar|
+      if %w[place room_number event_override].include?(calendar.strategy) && calendar.place.nil?
+        calendar.place = calendar.partner
+      end
+    end
+
     factory :ics_calendar do
       source { 'https://example.com/calendar.ics' }
       strategy { 'event' }
@@ -25,6 +32,11 @@ FactoryBot.define do
     factory :outlook_calendar do
       source { 'https://outlook.office365.com/owa/calendar/example/calendar.ics' }
       strategy { 'event' }
+    end
+
+    # Calendar with place strategy (uses partner as place)
+    factory :place_calendar do
+      strategy { 'place' }
     end
   end
 end

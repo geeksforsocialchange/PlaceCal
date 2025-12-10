@@ -48,7 +48,7 @@ FactoryBot.define do
       type { 'Facility' }
     end
 
-    factory :millbrook_together_tag, class: 'Partnership' do
+    factory :millbrook_together_tag, aliases: [:millbrook_partnership_tag], class: 'Partnership' do
       name { 'Millbrook Together' }
       type { 'Partnership' }
     end
@@ -56,6 +56,12 @@ FactoryBot.define do
     factory :coastal_alliance_tag, class: 'Partnership' do
       name { 'Coastal Alliance' }
       type { 'Partnership' }
+    end
+
+    # Legacy compatibility factories
+    factory :community_services_tag, class: 'Category' do
+      name { 'Community Services' }
+      type { 'Category' }
     end
   end
 end

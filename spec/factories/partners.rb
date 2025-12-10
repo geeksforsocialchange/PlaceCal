@@ -66,5 +66,16 @@ FactoryBot.define do
         end
       end
     end
+
+    # Legacy compatibility - partner with service area
+    factory :ashton_service_area_partner do
+      name { 'Ashton Service Partner' }
+      summary { 'A partner with service areas' }
+      association :address, factory: :riverside_address
+
+      after(:create) do |partner|
+        create(:service_area, partner: partner, neighbourhood: create(:neighbourhood))
+      end
+    end
   end
 end
