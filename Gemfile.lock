@@ -80,11 +80,10 @@ GEM
       zeitwerk
     ancestry (4.1.0)
       activerecord (>= 5.2.6)
-    ansi (1.5.0)
     appsignal (3.13.0)
       rack
     ast (2.4.3)
-    async (2.35.1)
+    async (2.35.0)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
@@ -94,14 +93,14 @@ GEM
       activerecord (>= 4.0)
     autoprefixer-rails (10.4.7.0)
       execjs (~> 2)
-    base64 (0.2.0)
+    base64 (0.3.0)
     bcrypt (3.1.20)
-    benchmark (0.4.0)
+    benchmark (0.5.0)
     better_errors (2.9.1)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
-    bigdecimal (3.1.9)
+    bigdecimal (3.3.1)
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
@@ -131,7 +130,7 @@ GEM
       marcel (~> 1.0.0)
       mini_mime (>= 0.1.3)
       ssrf_filter (~> 1.0)
-    cgi (0.5.1)
+    cgi (0.5.0)
     choice (0.2.0)
     claude-code-sdk-ruby (0.1.6)
       async (~> 2)
@@ -157,7 +156,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.3.6)
+    concurrent-ruby (1.3.5)
     connection_pool (2.5.5)
     console (1.34.2)
       fiber-annotation
@@ -167,11 +166,40 @@ GEM
       rexml
     crass (1.0.6)
     csv (3.3.0)
+    cucumber (10.1.1)
+      base64 (~> 0.2)
+      builder (~> 3.2)
+      cucumber-ci-environment (> 9, < 11)
+      cucumber-core (> 15, < 17)
+      cucumber-cucumber-expressions (> 17, < 19)
+      cucumber-html-formatter (> 20.3, < 22)
+      diff-lcs (~> 1.5)
+      logger (~> 1.6)
+      mini_mime (~> 1.1)
+      multi_test (~> 1.1)
+      sys-uname (~> 1.3)
+    cucumber-ci-environment (10.0.1)
+    cucumber-core (15.3.0)
+      cucumber-gherkin (> 27, < 35)
+      cucumber-messages (> 26, < 30)
+      cucumber-tag-expressions (> 5, < 9)
+    cucumber-cucumber-expressions (18.0.1)
+      bigdecimal
+    cucumber-gherkin (34.0.0)
+      cucumber-messages (> 25, < 29)
+    cucumber-html-formatter (21.15.1)
+      cucumber-messages (> 19, < 28)
+    cucumber-messages (27.2.0)
+    cucumber-rails (4.0.0)
+      capybara (>= 3.25, < 4)
+      cucumber (>= 7, < 11)
+      railties (>= 6.1, < 9)
+    cucumber-tag-expressions (8.1.0)
     database_cleaner-active_record (2.1.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
-    database_consistency (2.0.4)
+    database_consistency (2.1.1)
       activerecord (>= 3.2)
     date (3.4.1)
     debug_inspector (1.2.0)
@@ -189,17 +217,19 @@ GEM
     devise_invitable (2.0.9)
       actionmailer (>= 5.0)
       devise (>= 4.6)
+    diff-lcs (1.6.2)
+    docile (1.4.1)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
       railties (>= 3.2)
-    drb (2.2.1)
+    drb (2.2.3)
     dry-configurable (1.3.0)
       dry-core (~> 1.1)
       zeitwerk (~> 2.6)
-    dry-core (1.2.0)
+    dry-core (1.1.0)
       concurrent-ruby (~> 1.0)
       logger
       zeitwerk (~> 2.6)
@@ -237,20 +267,22 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
+    faker (3.5.3)
+      i18n (>= 1.8.11, < 2)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-follow_redirects (0.5.0)
+    faraday-follow_redirects (0.4.0)
       faraday (>= 1, < 3)
-    faraday-multipart (1.2.0)
+    faraday-multipart (1.1.1)
       multipart-post (~> 2.0)
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
     faraday-net_http_persistent (2.3.1)
       faraday (~> 2.5)
       net-http-persistent (>= 4.0.4, < 5)
-    faraday-retry (2.4.0)
+    faraday-retry (2.3.2)
       faraday (~> 2.0)
     fast-mcp-annotations (1.5.3)
       addressable (~> 2.8)
@@ -291,7 +323,7 @@ GEM
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.14.8)
+    i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     icalendar (2.7.1)
       ice_cube (~> 0.16)
@@ -304,7 +336,7 @@ GEM
       ruby-vips (>= 2.0.17, < 3)
     invisible_captcha (2.2.0)
       rails (>= 5.2)
-    io-console (0.8.0)
+    io-console (0.8.1)
     io-event (1.14.2)
     irb (1.14.3)
       rdoc (>= 4.0.0)
@@ -315,7 +347,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jsbundling-rails (1.0.2)
       railties (>= 6.0.0)
-    json (2.18.0)
+    json (2.16.0)
     json-canonicalization (0.3.0)
     json-ld (3.2.3)
       htmlentities (~> 4.3)
@@ -339,7 +371,7 @@ GEM
     link_header (0.0.8)
     lint_roller (1.1.0)
     logger (1.7.0)
-    loofah (2.24.0)
+    loofah (2.24.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.8.1)
@@ -349,6 +381,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    memoist3 (1.0.0)
     method_source (1.0.0)
     metrics (0.15.0)
     mime-types (3.4.1)
@@ -356,45 +389,35 @@ GEM
     mime-types-data (3.2022.0105)
     mini_magick (4.11.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.8)
-    minitest (5.25.5)
-    minitest-rails (7.1.1)
-      minitest (~> 5.20)
-      railties (>= 7.1.0, < 8.0.0)
-    minitest-rails-capybara (0.0.2)
-      capybara
-      minitest-rails
-    minitest-reporters (1.5.0)
-      ansi
-      builder
-      minitest (>= 5.0)
-      ruby-progressbar
+    mini_portile2 (2.8.9)
+    minitest (5.26.2)
     mountain_view (0.14.0)
       rails (>= 3.2.0)
     msgpack (1.5.2)
     multi_json (1.15.0)
+    multi_test (1.1.0)
     multi_xml (0.6.0)
     multipart-post (2.4.1)
-    mutex_m (0.3.0)
-    net-http (0.9.1)
+    mutex_m (0.2.0)
+    net-http (0.8.0)
       uri (>= 0.11.1)
-    net-http-persistent (4.0.8)
-      connection_pool (>= 2.2.4, < 4)
-    net-imap (0.5.6)
+    net-http-persistent (4.0.6)
+      connection_pool (~> 2.2, >= 2.2.4)
+    net-imap (0.5.12)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.5.0)
+    net-smtp (0.5.1)
       net-protocol
     netrc (0.11.0)
-    nio4r (2.7.4)
-    nokogiri (1.18.1)
+    nio4r (2.7.5)
+    nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.18.1-x86_64-linux-gnu)
+    nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     observer (0.1.2)
     orm_adapter (0.5.0)
@@ -411,19 +434,24 @@ GEM
     psych (4.0.6)
       stringio
     public_suffix (4.0.7)
-    puma (5.6.9)
+    puma (7.1.0)
       nio4r (~> 2.0)
     pundit (2.2.0)
       activesupport (>= 3.0.0)
+    pundit-matchers (3.1.2)
+      rspec-core (~> 3.12)
+      rspec-expectations (~> 3.12)
+      rspec-mocks (~> 3.12)
+      rspec-support (~> 3.12)
     racc (1.8.1)
-    rack (2.2.13)
+    rack (2.2.21)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-session (1.0.2)
       rack (< 3)
     rack-test (2.2.0)
       rack (>= 1.3)
-    rackup (1.0.1)
+    rackup (1.0.0)
       rack (< 3)
       webrick
     rails (7.2.3)
@@ -472,8 +500,8 @@ GEM
       link_header (~> 0.0, >= 0.0.8)
     rdoc (6.11.0)
       psych (>= 4.0.0)
-    regexp_parser (2.10.0)
-    reline (0.6.0)
+    regexp_parser (2.11.3)
+    reline (0.6.2)
       io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
@@ -486,6 +514,23 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.3.7)
+    rspec-core (3.13.6)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.7)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-rails (7.1.1)
+      actionpack (>= 7.0)
+      activesupport (>= 7.0)
+      railties (>= 7.0)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
+    rspec-support (3.13.6)
     rubocop (1.82.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -503,10 +548,6 @@ GEM
     rubocop-graphql (1.5.6)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1, < 2)
-    rubocop-minitest (0.38.2)
-      lint_roller (~> 1.1)
-      rubocop (>= 1.75.0, < 2.0)
-      rubocop-ast (>= 1.38.0, < 2.0)
     rubocop-performance (1.26.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
@@ -519,9 +560,12 @@ GEM
       rubocop-ast (>= 1.44.0, < 2.0)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
+    rubocop-rspec (3.8.0)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.81)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-mcp-client (0.9.1)
+    ruby-mcp-client (0.9.0)
       faraday (~> 2.0)
       faraday-follow_redirects (~> 0.3)
       faraday-retry (~> 2.0)
@@ -550,9 +594,17 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    shoulda-matchers (6.5.0)
+      activesupport (>= 5.2.0)
     simple_form (5.1.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.2)
+    simplecov_json_formatter (0.1.4)
     spring (2.1.1)
     sprockets (4.1.1)
       concurrent-ruby (~> 1.0)
@@ -564,7 +616,10 @@ GEM
     ssrf_filter (1.0.8)
     stimulus-rails (1.0.4)
       railties (>= 6.0.0)
-    stringio (3.1.2)
+    stringio (3.1.7)
+    sys-uname (1.4.1)
+      ffi (~> 1.1)
+      memoist3 (~> 1.0.0)
     thor (1.3.2)
     tilt (2.0.11)
     timecop (0.9.5)
@@ -583,7 +638,7 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
-    unicode-emoji (4.1.0)
+    unicode-emoji (4.2.0)
     uri (1.1.1)
     useragent (0.16.11)
     vcr (6.1.0)
@@ -604,14 +659,14 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.1)
     websocket (1.2.10)
-    websocket-driver (0.8.0)
+    websocket-driver (0.7.7)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.36)
-    zeitwerk (2.7.1)
+    zeitwerk (2.7.3)
 
 PLATFORMS
   ruby
@@ -627,12 +682,14 @@ DEPENDENCIES
   bootsnap
   bootstrap
   byebug
+  capybara
   capybara-select-2
   carrierwave
   claude-on-rails
   cocoon
   coffee-rails
   csv
+  cucumber-rails
   database_cleaner-active_record
   database_consistency
   delayed_job_active_record
@@ -642,6 +699,7 @@ DEPENDENCIES
   enumerize
   eventbrite_sdk
   factory_bot_rails
+  faker
   font-awesome-rails
   foreman
   friendly_id
@@ -662,9 +720,6 @@ DEPENDENCIES
   kramdown
   leaflet-rails
   letter_opener
-  minitest-rails
-  minitest-rails-capybara
-  minitest-reporters
   mountain_view
   mutex_m
   net-imap
@@ -675,21 +730,25 @@ DEPENDENCIES
   pg
   puma
   pundit
+  pundit-matchers (~> 3.0)
   rack-cors
   rails (= 7.2.3)
   rails-controller-testing
   rails-erd
   rdoc
+  rspec-rails (~> 7.0)
   rubocop (= 1.82.1)
   rubocop-graphql (= 1.5.6)
-  rubocop-minitest (= 0.38.2)
   rubocop-performance (= 1.26.1)
   rubocop-rails (= 2.34.3)
   rubocop-rake
+  rubocop-rspec
   sass-rails (= 6.0.0)
   select2-rails
   selenium-webdriver
+  shoulda-matchers (~> 6.0)
   simple_form
+  simplecov
   spring
   stimulus-rails
   timecop

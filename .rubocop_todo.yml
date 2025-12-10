@@ -41,7 +41,7 @@ Lint/DuplicateBranch:
 Lint/EmptyBlock:
   Exclude:
     - 'db/seeds.rb'
-    - 'test/integration/graphql/article_query_type_test.rb'
+    - 'test_legacy/integration/graphql/article_query_type_test.rb'
 
 # Offense count: 2
 Lint/LiteralAsCondition:
@@ -53,7 +53,7 @@ Lint/LiteralAsCondition:
 # Configuration parameters: MaximumRangeSize.
 Lint/MissingCopEnableDirective:
   Exclude:
-    - 'test/integration/admin/user_integration_test.rb'
+    - 'test_legacy/integration/admin/user_integration_test.rb'
 
 # Offense count: 5
 Lint/MissingSuper:
@@ -95,8 +95,8 @@ Lint/UselessMethodDefinition:
 # Configuration parameters: CheckForMethodsWithNoSideEffects.
 Lint/Void:
   Exclude:
-    - 'test/controllers/partners_controller_test.rb'
-    - 'test/models/site_test.rb'
+    - 'test_legacy/controllers/partners_controller_test.rb'
+    - 'test_legacy/models/site_test.rb'
 
 # Offense count: 42
 # Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
@@ -129,26 +129,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 16
 
-# Offense count: 2
-Minitest/AssertRaisesCompoundBody:
-  Exclude:
-    - 'test/jobs/calendar_importer/calendar_importer_task_test.rb'
-    - 'test/models/partner_service_area_test.rb'
-
-# Offense count: 1
-Minitest/AssertWithExpectedArgument:
-  Exclude:
-    - 'test/test_helper.rb'
-
-# Offense count: 1
-Minitest/AssertionInLifecycleHook:
-  Exclude:
-    - 'test/policies/article_policy_test.rb'
-
-# Offense count: 80
-Minitest/MultipleAssertions:
-  Max: 25
-
 # Offense count: 7
 Naming/AccessorMethodName:
   Exclude:
@@ -167,8 +147,8 @@ Naming/MemoizedInstanceVariableName:
   Exclude:
     - 'app/controllers/admin/sites_controller.rb'
     - 'app/models/concerns/html_render_cache.rb'
-    - 'test/models/partner_site_scope_test.rb'
-    - 'test/models/partner_site_with_tag_scope_test.rb'
+    - 'test_legacy/models/partner_site_scope_test.rb'
+    - 'test_legacy/models/partner_site_with_tag_scope_test.rb'
 
 # Offense count: 2
 # Configuration parameters: EnforcedStyle, AllowedPatterns, IgnoredPatterns.
@@ -210,16 +190,16 @@ Naming/PredicatePrefix:
 # AllowedIdentifiers: capture3, iso8601, rfc1123_date, rfc822, rfc2822, rfc3339
 Naming/VariableNumber:
   Exclude:
-    - 'test/controllers/admin/partner_update_postcode_test.rb'
-    - 'test/factories/address.rb'
-    - 'test/helpers/calendars_helper_test.rb'
-    - 'test/integration/event_site_integration_test.rb'
-    - 'test/integration/graphql/event_integration_test.rb'
-    - 'test/integration/graphql/partners_integration_test.rb'
-    - 'test/models/article_test.rb'
-    - 'test/models/partner_site_scope_test.rb'
-    - 'test/models/partner_site_with_tag_scope_test.rb'
-    - 'test/policies/partner_scope_test.rb'
+    - 'test_legacy/controllers/admin/partner_update_postcode_test.rb'
+    - 'test_legacy/factories/address.rb'
+    - 'test_legacy/helpers/calendars_helper_test.rb'
+    - 'test_legacy/integration/event_site_integration_test.rb'
+    - 'test_legacy/integration/graphql/event_integration_test.rb'
+    - 'test_legacy/integration/graphql/partners_integration_test.rb'
+    - 'test_legacy/models/article_test.rb'
+    - 'test_legacy/models/partner_site_scope_test.rb'
+    - 'test_legacy/models/partner_site_with_tag_scope_test.rb'
+    - 'test_legacy/policies/partner_scope_test.rb'
 
 # Offense count: 1
 # Configuration parameters: MinSize.
@@ -252,12 +232,12 @@ Rails/Date:
     - 'app/components/paginator/paginator_component.rb'
     - 'app/controllers/application_controller.rb'
     - 'app/models/partner.rb'
-    - 'test/controllers/admin/calendars_controller_test.rb'
-    - 'test/controllers/partners_controller_test.rb'
-    - 'test/integration/event_site_integration_test.rb'
-    - 'test/integration/graphql/partners_integration_test.rb'
-    - 'test/jobs/calendar_importer/calendar_importer_task_test.rb'
-    - 'test/models/events_test.rb'
+    - 'test_legacy/controllers/admin/calendars_controller_test.rb'
+    - 'test_legacy/controllers/partners_controller_test.rb'
+    - 'test_legacy/integration/event_site_integration_test.rb'
+    - 'test_legacy/integration/graphql/partners_integration_test.rb'
+    - 'test_legacy/jobs/calendar_importer/calendar_importer_task_test.rb'
+    - 'test_legacy/models/events_test.rb'
 
 # Offense count: 7
 # Configuration parameters: EnforcedStyle.
@@ -268,7 +248,7 @@ Rails/FilePath:
     - 'config/environments/development.rb'
     - 'config/initializers/assets.rb'
     - 'lib/tasks/db.rake'
-    - 'test/test_helper.rb'
+    - 'test_legacy/test_helper.rb'
 
 # Offense count: 8
 # Configuration parameters: Include.
@@ -391,10 +371,10 @@ Rails/TimeZone:
     - 'app/models/partner.rb'
     - 'app/models/site.rb'
     - 'lib/tasks/db.rake'
-    - 'test/controllers/events_controller_test.rb'
-    - 'test/controllers/partners_controller_test.rb'
-    - 'test/integration/graphql/event_integration_test.rb'
-    - 'test/models/events_test.rb'
+    - 'test_legacy/controllers/events_controller_test.rb'
+    - 'test_legacy/controllers/partners_controller_test.rb'
+    - 'test_legacy/integration/graphql/event_integration_test.rb'
+    - 'test_legacy/models/events_test.rb'
 
 # Offense count: 4
 Rails/TransactionExitStatement:
@@ -520,7 +500,7 @@ Style/IfUnlessModifier:
 # Offense count: 1
 Style/MixinUsage:
   Exclude:
-    - 'test/test_helper.rb'
+    - 'test_legacy/test_helper.rb'
 
 # Offense count: 4
 # Configuration parameters: AllowedMethods.

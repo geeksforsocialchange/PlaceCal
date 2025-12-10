@@ -4,7 +4,7 @@ require:
   - rubocop-rake
 
 plugins:
-  - rubocop-minitest
+  - rubocop-rspec
   - rubocop-performance
   - rubocop-graphql
   - rubocop-rails
@@ -45,13 +45,17 @@ Rails/EnvLocal:
 # got updated. adding these here so we have the smallest code change in
 # this branch
 
-Minitest/EmptyLineBeforeAssertionMethods:
+# RSpec configuration
+RSpec/MultipleExpectations:
   Enabled: false
 
-Minitest/AssertMatch:
+RSpec/ExampleLength:
   Enabled: false
 
-Minitest/AssertOperator:
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/DescribeClass:
   Enabled: false
 
 Style/HashSyntax:
@@ -62,8 +66,39 @@ Rails/ActionOrder:
 
 Metrics/ClassLength:
   Exclude:
-    - "test/**/*.rb"
+    - "spec/**/*.rb"
+    - "test_legacy/**/*.rb"
     - "app/models/partner.rb"
+
+Metrics/ModuleLength:
+  Exclude:
+    - "lib/normal_island.rb"
+
+# Cucumber-generated files - exclude from style checks
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "lib/tasks/cucumber.rake"
+    - "features/support/env.rb"
+    - "spec/spec_helper.rb"
+
+Rake/Desc:
+  Exclude:
+    - "lib/tasks/cucumber.rake"
+
+Rake/DuplicateTask:
+  Exclude:
+    - "lib/tasks/cucumber.rake"
+
+Rails/RakeEnvironment:
+  Exclude:
+    - "lib/tasks/cucumber.rake"
+
+Lint/EmptyBlock:
+  Exclude:
+    - "lib/tasks/cucumber.rake"
+
+RSpec/IncludeExamples:
+  Enabled: false
 
 Metrics/CyclomaticComplexity:
   Exclude:
