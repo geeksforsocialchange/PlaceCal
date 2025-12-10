@@ -25,8 +25,9 @@ FactoryBot.define do
       role { 'editor' }
     end
 
+    # Neighbourhood admin - citizen role but with neighbourhood association
     factory :neighbourhood_admin do
-      role { 'neighbourhood_admin' }
+      role { 'citizen' }
 
       transient do
         neighbourhood { nil }
@@ -39,8 +40,9 @@ FactoryBot.define do
       end
     end
 
+    # Partner admin - citizen role but with partner association
     factory :partner_admin do
-      role { 'partner_admin' }
+      role { 'citizen' }
 
       transient do
         partner { nil }
@@ -53,8 +55,9 @@ FactoryBot.define do
       end
     end
 
+    # Partnership admin - citizen role but with partnership tag association
     factory :partnership_admin do
-      role { 'partnership_admin' }
+      role { 'citizen' }
 
       transient do
         partnership_tag { nil }
