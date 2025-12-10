@@ -10,6 +10,11 @@ FactoryBot.define do
     longitude { -1.5 }
     association :neighbourhood, factory: :riverside_ward
 
+    # Skip geocode validation in tests (neighbourhood is already set)
+    after(:build) do |address|
+      address.define_singleton_method(:geocode_with_ward) { true }
+    end
+
     # Normal Island addresses
     factory :riverside_address do
       street_address { NormalIsland::ADDRESSES[:riverside][:street_address] }
