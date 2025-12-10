@@ -1,0 +1,261 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Httparty
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '133'
+      Content-Type:
+      - text/calendar; charset=utf-8
+      Request-Id:
+      - 033721ad-5897-ba67-e3ba-829e2a9d0138
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Calculatedbetarget:
+      - LOAP302MB2100.GBRP302.PROD.OUTLOOK.COM
+      X-Backendhttpstatus:
+      - '200'
+      Set-Cookie:
+      - ClientId=0E32756ED71843CF9C46F50403ECFDB4; expires=Thu, 10 Dec 2026 15:43:25
+        GMT; path=/;SameSite=None; secure; samesite=none
+      - ClientId=317D461351A14265B6C3640F9EFD3C54; expires=Thu, 10 Dec 2026 15:43:25
+        GMT; path=/;SameSite=None; secure; samesite=none
+      X-Virtualaccount:
+      - 'False'
+      X-Responseorigin:
+      - OwaNetCore
+      X-Rum-Validated:
+      - '1'
+      X-Rum-Notupdatequeriedpath:
+      - '1'
+      X-Rum-Notupdatequerieddbcopy:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Traceid:
+      - 28208a13b1b114ed66fc0effcc1f97a3
+      X-Besku:
+      - WCS8
+      X-Frame-Options:
+      - SAMEORIGIN
+      Datasource:
+      - Exo
+      X-Owa-Diagnosticsinfo:
+      - 268;5;179;
+      X-Owa-Resulttype:
+      - Success
+      Server-Timing:
+      - total;dur=268, auth;dur=0, rpc;dur=179, uc;dur=0
+      X-Backend-Begin:
+      - '2025-12-10T15:43:25.638'
+      X-Backend-End:
+      - '2025-12-10T15:43:25.900'
+      X-Proxy-Routingcorrectness:
+      - '1'
+      Alt-Svc:
+      - '":443";ma=2592000,h3-29=":443";ma=2592000'
+      X-Proxy-Backendserverstatus:
+      - '200'
+      X-Firsthopcafeefz:
+      - LHR
+      X-Feproxyinfo:
+      - LO4P302CA0044.GBRP302.PROD.OUTLOOK.COM
+      X-Feefzinfo:
+      - LHR
+      X-Feserver:
+      - LO4P302CA0044
+      Date:
+      - Wed, 10 Dec 2025 15:43:23 GMT
+    body:
+      encoding: UTF-8
+      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:ACCG Public Events\r\nEND:VCALENDAR\r\n"
+  recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+- request:
+    method: get
+    uri: https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Httparty
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '133'
+      Content-Type:
+      - text/calendar; charset=utf-8
+      Request-Id:
+      - f7a7e60e-c9f2-8a1b-cd94-9b9212ce27fb
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Calculatedbetarget:
+      - LOAP302MB2100.GBRP302.PROD.OUTLOOK.COM
+      X-Backendhttpstatus:
+      - '200'
+      Set-Cookie:
+      - ClientId=6F71A64BC87B4E8480EBD930882D82E5; expires=Thu, 10 Dec 2026 15:43:26
+        GMT; path=/;SameSite=None; secure; samesite=none
+      - ClientId=C07CBB185E934ABFA0E2CAC06B25EEC5; expires=Thu, 10 Dec 2026 15:43:26
+        GMT; path=/;SameSite=None; secure; samesite=none
+      X-Virtualaccount:
+      - 'False'
+      X-Responseorigin:
+      - OwaNetCore
+      X-Rum-Validated:
+      - '1'
+      X-Rum-Notupdatequeriedpath:
+      - '1'
+      X-Rum-Notupdatequerieddbcopy:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Traceid:
+      - 7051ab50ee2663a92a1a724c0603a487
+      X-Besku:
+      - WCS8
+      X-Frame-Options:
+      - SAMEORIGIN
+      Datasource:
+      - Exo
+      X-Owa-Diagnosticsinfo:
+      - 90;0;42;
+      X-Owa-Resulttype:
+      - Success
+      Server-Timing:
+      - total;dur=91, auth;dur=0, rpc;dur=42, uc;dur=0
+      X-Backend-Begin:
+      - '2025-12-10T15:43:26.040'
+      X-Backend-End:
+      - '2025-12-10T15:43:26.121'
+      X-Proxy-Routingcorrectness:
+      - '1'
+      Alt-Svc:
+      - '":443";ma=2592000,h3-29=":443";ma=2592000'
+      X-Proxy-Backendserverstatus:
+      - '200'
+      X-Firsthopcafeefz:
+      - LHR
+      X-Feproxyinfo:
+      - LO4P265CA0242.GBRP265.PROD.OUTLOOK.COM
+      X-Feefzinfo:
+      - LHR
+      X-Feserver:
+      - LO4P265CA0242
+      Date:
+      - Wed, 10 Dec 2025 15:43:22 GMT
+    body:
+      encoding: UTF-8
+      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:ACCG Public Events\r\nEND:VCALENDAR\r\n"
+  recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+- request:
+    method: get
+    uri: https://outlook.live.com/owa/calendar/1c816fe0-358f-4712-9b0f-0265edacde57/8306ff62-3b76-4ad5-8dbe-db435bfea444/cid-536CE5C17F8CF3C2/calendar.ics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Httparty
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '133'
+      Content-Type:
+      - text/calendar; charset=utf-8
+      Request-Id:
+      - 3430cf74-c51c-35b3-d679-33c890c197bb
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Calculatedbetarget:
+      - LOAP302MB2100.GBRP302.PROD.OUTLOOK.COM
+      X-Backendhttpstatus:
+      - '200'
+      Set-Cookie:
+      - ClientId=16A579211F85475296D1295E472EABBB; expires=Thu, 10 Dec 2026 15:43:26
+        GMT; path=/;SameSite=None; secure; samesite=none
+      - ClientId=419F2EF4A41C44278336BE0111D313CF; expires=Thu, 10 Dec 2026 15:43:26
+        GMT; path=/;SameSite=None; secure; samesite=none
+      X-Virtualaccount:
+      - 'False'
+      X-Responseorigin:
+      - OwaNetCore
+      X-Rum-Validated:
+      - '1'
+      X-Rum-Notupdatequeriedpath:
+      - '1'
+      X-Rum-Notupdatequerieddbcopy:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Traceid:
+      - fad1c72453bd644a9f028f4f9f43bf5e
+      X-Besku:
+      - WCS8
+      X-Frame-Options:
+      - SAMEORIGIN
+      Datasource:
+      - Exo
+      X-Owa-Diagnosticsinfo:
+      - 57;0;25;
+      X-Owa-Resulttype:
+      - Success
+      Server-Timing:
+      - total;dur=58, auth;dur=0, rpc;dur=25, uc;dur=0
+      X-Backend-Begin:
+      - '2025-12-10T15:43:26.548'
+      X-Backend-End:
+      - '2025-12-10T15:43:26.602'
+      X-Proxy-Routingcorrectness:
+      - '1'
+      Alt-Svc:
+      - '":443";ma=2592000,h3-29=":443";ma=2592000'
+      X-Proxy-Backendserverstatus:
+      - '200'
+      X-Firsthopcafeefz:
+      - LHR
+      X-Feproxyinfo:
+      - LO2P265CA0138.GBRP265.PROD.OUTLOOK.COM
+      X-Feefzinfo:
+      - LHR
+      X-Feserver:
+      - LO2P265CA0138
+      Date:
+      - Wed, 10 Dec 2025 15:43:25 GMT
+    body:
+      encoding: UTF-8
+      string: "BEGIN:VCALENDAR\r\nMETHOD:PUBLISH\r\nPRODID:Microsoft Exchange Server
+        2010\r\nVERSION:2.0\r\nX-WR-CALNAME:ACCG Public Events\r\nEND:VCALENDAR\r\n"
+  recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.1.0
