@@ -9,11 +9,11 @@ FactoryBot.define do
     description { Faker::Lorem.paragraphs(number: 3).join("\n\n") }
     public_email { Faker::Internet.email }
     public_phone { '0161 234 5678' }
-    opening_times { [] }
+    opening_times { '[]' }
     association :address, factory: :riverside_address
 
     # Normal Island partners
-    factory :riverside_community_hub do
+    factory :riverside_community_hub, aliases: [:riverside_partner] do
       name { NormalIsland::PARTNERS[:riverside_community_hub][:name] }
       summary { NormalIsland::PARTNERS[:riverside_community_hub][:summary] }
       association :address, factory: :riverside_address
@@ -49,11 +49,12 @@ FactoryBot.define do
       association :address, factory: :cliffside_address
     end
 
-    # Partner with service areas (no fixed address)
+    # Partner with service areas (plus base address for validation)
     factory :mobile_partner do
       name { 'Mobile Services' }
       summary { 'Community services delivered across multiple locations' }
-      address { nil }
+      # Needs an address to pass validation, service areas added after create
+      association :address, factory: :riverside_address
 
       transient do
         service_area_wards { [] }

@@ -8,7 +8,6 @@ FactoryBot.define do
     password { 'password123' }
     password_confirmation { 'password123' }
     role { 'citizen' }
-    confirmed_at { Time.current }
 
     # Role-specific factories
     factory :root_user do

@@ -7,17 +7,17 @@ FactoryBot.define do
     description { Faker::Lorem.sentence }
 
     # Tag types
-    factory :category, class: 'Category' do
+    factory :category, aliases: [:category_tag], class: 'Category' do
       type { 'Category' }
       sequence(:name) { |n| "Category #{n}" }
     end
 
-    factory :facility, class: 'Facility' do
+    factory :facility, aliases: [:facility_tag], class: 'Facility' do
       type { 'Facility' }
       sequence(:name) { |n| "Facility #{n}" }
     end
 
-    factory :partnership, class: 'Partnership' do
+    factory :partnership, aliases: [:partnership_tag], class: 'Partnership' do
       type { 'Partnership' }
       sequence(:name) { |n| "Partnership #{n}" }
     end
