@@ -64,7 +64,7 @@ jobs:
       #     - run: bin/test --system --no-lint
       - run: bin/test --lint --no-fix
       - name: Check database consistency
-        run: bundle exec database_consistency
+        run: RAILS_ENV=test bundle exec database_consistency
       - if: failure()
         name: Upload test screenshots
         uses: actions/upload-artifact@v4
