@@ -155,4 +155,148 @@ RSpec.describe 'GraphQL Events', type: :request do
       expect(result['data']['eventsByFilter']).to be_an(Array)
     end
   end
+
+  describe 'eventsByFilter with neighbourhood scope' do
+    let(:neighbourhood1) { create(:riverside_ward) }
+    let(:neighbourhood2) { create(:oldtown_ward) }
+
+    let(:address1) { create(:address, neighbourhood: neighbourhood1) }
+    let(:address2) { create(:address, neighbourhood: neighbourhood2) }
+
+    let(:partner1) { create(:partner, address: address1) }
+    let(:partner2) { create(:partner, address: address2) }
+
+    before do
+      create_list(:event, 3, partner: partner1, dtstart: 1.hour.from_now, address: address1)
+      create_list(:event, 5, partner: partner2, dtstart: 1.hour.from_now, address: address2)
+    end
+
+    let(:query) do
+      <<-GRAPHQL
+        query($neighbourhoodId: ID) {
+          eventsByFilter(neighbourhoodId: $neighbourhoodId) {
+            id
+            name
+          }
+        }
+      GRAPHQL
+    end
+
+    it 'filters events by neighbourhood' do
+      result = execute_query(query, variables: { neighbourhoodId: neighbourhood2.id })
+
+      expect(result['errors']).to be_nil
+      events = result['data']['eventsByFilter']
+      expect(events.length).to eq(5)
+    end
+  end
+
+  describe 'eventsByFilter with tag scope' do
+    let(:blue_tag) { create(:tag, name: 'Blue') }
+    let(:red_tag) { create(:tag, name: 'Red') }
+
+    let(:blue_partner) { create(:partner) }
+    let(:red_partner) { create(:partner) }
+
+    before do
+      blue_partner.tags << blue_tag
+      red_partner.tags << red_tag
+
+      create_list(:event, 6, partner: blue_partner, dtstart: 1.hour.from_now, address: blue_partner.address)
+      create_list(:event, 2, partner: red_partner, dtstart: 1.hour.from_now, address: red_partner.address)
+    end
+
+    let(:query) do
+      <<-GRAPHQL
+        query($tagId: ID) {
+          eventsByFilter(tagId: $tagId) {
+            id
+            name
+          }
+        }
+      GRAPHQL
+    end
+
+    it 'filters events by partner tag' do
+      result = execute_query(query, variables: { tagId: blue_tag.id })
+
+      expect(result['errors']).to be_nil
+      events = result['data']['eventsByFilter']
+      expect(events.length).to eq(6)
+    end
+  end
+
+  describe 'event geo location' do
+    let!(:event) do
+      create(:event,
+             partner: partner,
+             dtstart: Time.current,
+             address: create(:address, latitude: 53.4808, longitude: -2.2426))
+    end
+
+    let(:query) do
+      <<-GRAPHQL
+        query {
+          eventConnection {
+            edges {
+              node {
+                id
+                address {
+                  geo {
+                    longitude
+                    latitude
+                  }
+                }
+              }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it 'includes geo coordinates' do
+      result = execute_query(query)
+
+      expect(result['errors']).to be_nil
+      edges = result['data']['eventConnection']['edges']
+      expect(edges.length).to eq(1)
+
+      geo = edges.first['node']['address']['geo']
+      expect(geo['latitude']).to be_present
+      expect(geo['longitude']).to be_present
+    end
+  end
+
+  describe 'online event details' do
+    let!(:online_event) do
+      event = create(:event, partner: partner, dtstart: Time.current, address: address)
+      event.create_online_address!(url: 'https://zoom.us/j/123456', link_type: 'direct')
+      event
+    end
+
+    let(:query) do
+      <<-GRAPHQL
+        query {
+          eventConnection {
+            edges {
+              node {
+                id
+                onlineEventUrl
+                onlineEventUrlType
+              }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it 'includes online event URL and type' do
+      result = execute_query(query)
+
+      expect(result['errors']).to be_nil
+      node = result['data']['eventConnection']['edges'].first['node']
+      expect(node['onlineEventUrl']).to eq('https://zoom.us/j/123456')
+      expect(node['onlineEventUrlType']).to eq('direct')
+    end
+  end
 end
