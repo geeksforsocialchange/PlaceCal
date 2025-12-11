@@ -113,6 +113,60 @@ RSpec.describe Event, type: :model do
         expect(result).not_to include(past_event)
       end
     end
+
+    describe '.for_site' do
+      let(:ward) { create(:riverside_ward) }
+      let(:site) { create(:site) }
+      let(:address) { create(:address, neighbourhood: ward) }
+      let(:partner) { create(:partner, address: address) }
+      let!(:event1) do
+        create(:event,
+               partner: partner,
+               summary: 'Event in site neighbourhood',
+               dtstart: 1.hour.from_now,
+               dtend: 2.hours.from_now,
+               address: address)
+      end
+      let!(:event2) do
+        create(:event,
+               partner: partner,
+               summary: 'Second event in site',
+               dtstart: 1.hour.from_now,
+               dtend: 2.hours.from_now,
+               address: address)
+      end
+
+      before do
+        site.neighbourhoods << ward
+      end
+
+      it 'returns events in the site neighbourhood' do
+        result = described_class.for_site(site)
+        expect(result.count).to eq(2)
+        expect(result).to include(event1, event2)
+      end
+
+      it 'does not return events outside site neighbourhood' do
+        other_ward = create(:oldtown_ward)
+        other_site = create(:site)
+        other_site.neighbourhoods << other_ward
+
+        result = described_class.for_site(other_site)
+        expect(result.count).to eq(0)
+      end
+
+      it 'returns events for partners with service areas in the site scope' do
+        other_ward = create(:oldtown_ward)
+        other_site = create(:site)
+        other_site.neighbourhoods << other_ward
+
+        # Partner adds service area in the other site's neighbourhood
+        partner.service_areas.create!(neighbourhood: other_ward)
+
+        result = described_class.for_site(other_site)
+        expect(result.count).to eq(2)
+      end
+    end
   end
 
   describe 'location requirement' do

@@ -76,4 +76,56 @@ RSpec.describe 'Public Events', type: :request do
       expect(response).to be_successful
     end
   end
+
+  describe 'GET /events with partner tag filtering' do
+    let(:tag) { create(:tag, type: 'Facility', name: 'Test Facility', slug: 'test-facility') }
+    let(:tag_site) { create(:site, slug: 'tag-site', is_published: true) }
+
+    let(:partner_with_tag) do
+      p = create(:partner, name: 'Partner with tag', address: address)
+      p.tags << tag
+      p
+    end
+
+    let(:partner_without_tag) do
+      create(:partner, name: 'Partner without tag', address: address)
+    end
+
+    before do
+      # Site has tag and neighbourhood
+      tag_site.tags << tag
+      tag_site.neighbourhoods << ward
+
+      # Create events for tagged partner
+      2.times do |n|
+        create(:event,
+               partner: partner_with_tag,
+               summary: "Event with tagged partner #{n}",
+               dtstart: 1.hour.from_now,
+               dtend: 2.hours.from_now,
+               address: address)
+      end
+
+      # Create events for untagged partner
+      3.times do |n|
+        create(:event,
+               partner: partner_without_tag,
+               summary: "Event without tagged partner #{n}",
+               dtstart: 1.hour.from_now,
+               dtend: 2.hours.from_now,
+               address: address)
+      end
+    end
+
+    it 'shows only events from partners with matching tags' do
+      get events_url(host: "#{tag_site.slug}.lvh.me")
+      expect(response).to be_successful
+
+      # Should show events from tagged partner
+      expect(response.body).to include('Event with tagged partner')
+
+      # Should NOT show events from untagged partner (site has tag filter)
+      expect(response.body).not_to include('Event without tagged partner')
+    end
+  end
 end
