@@ -33,6 +33,11 @@ RSpec.configure do |config|
     driven_by :headless_chrome
   end
 
+  # Reset Capybara session before each system test to ensure clean state
+  config.before(type: :system) do
+    Capybara.reset_sessions!
+  end
+
   # Configure ActionMailer to use Capybara's dynamic server port
   # This ensures email links (password reset, invitation) point to the correct host:port
   config.before(type: :system) do
@@ -48,5 +53,10 @@ RSpec.configure do |config|
       port: port,
       protocol: 'http'
     }
+  end
+
+  # Clean up after each system test
+  config.after(type: :system) do
+    Capybara.reset_sessions!
   end
 end
