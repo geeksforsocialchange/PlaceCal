@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+#
+# RuboCop configuration for PlaceCal
+# Organized by: Plugins, AllCops, then alphabetically by namespace
+#
+
 inherit_from: .rubocop_todo.yml
 
 require:
@@ -8,21 +14,127 @@ plugins:
   - rubocop-performance
   - rubocop-graphql
   - rubocop-rails
-  
+
+# =============================================================================
+# AllCops - Global settings
+# =============================================================================
+
 AllCops:
   NewCops: enable
+  SuggestExtensions: false
   Exclude:
     - "node_modules/**/*"
     - "tmp/**/*"
     - "vendor/**/*"
     - ".git/**/*"
     - "db/schema.rb"
-  SuggestExtensions: false
+
+# =============================================================================
+# GraphQL cops
+# =============================================================================
 
 GraphQL/FieldName:
   Enabled: false
 
+GraphQL/MaxComplexitySchema:
+  Enabled: false
+
+GraphQL/MaxDepthSchema:
+  Enabled: false
+
 GraphQL/ObjectDescription:
+  Enabled: false
+
+# =============================================================================
+# Layout cops
+# =============================================================================
+
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
+  Enabled: false
+
+Layout/ExtraSpacing:
+  Enabled: false
+
+Layout/LineContinuationLeadingSpace:
+  Enabled: false
+
+Layout/LineContinuationSpacing:
+  Enabled: false
+
+# =============================================================================
+# Lint cops
+# =============================================================================
+
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - "spec/**/*.rb"
+    - "lib/tasks/db.rake"
+
+Lint/EmptyBlock:
+  Exclude:
+    - "lib/tasks/cucumber.rake"
+
+Lint/RedundantCopDisableDirective:
+  Enabled: false
+
+Lint/RedundantDirGlobSort:
+  Enabled: false
+
+Lint/RedundantStringCoercion:
+  Enabled: false
+
+Lint/SelfAssignment:
+  Enabled: false
+
+Lint/SymbolConversion:
+  Enabled: false
+
+# =============================================================================
+# Metrics cops
+# =============================================================================
+
+Metrics/ClassLength:
+  Exclude:
+    - "spec/**/*.rb"
+    - "app/models/partner.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "app/controllers/application_controller.rb"
+
+Metrics/ModuleLength:
+  Exclude:
+    - "lib/normal_island.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "app/controllers/application_controller.rb"
+
+# =============================================================================
+# Naming cops
+# =============================================================================
+
+Naming/BlockForwarding:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+# =============================================================================
+# Performance cops
+# =============================================================================
+
+Performance/MapMethodChain:
+  Enabled: false
+
+Performance/StringReplacement:
+  Enabled: false
+
+# =============================================================================
+# Rails cops
+# =============================================================================
+
+Rails/ActionOrder:
   Enabled: false
 
 Rails/DynamicFindBy:
@@ -32,56 +144,31 @@ Rails/DynamicFindBy:
     - find_by_sql
     - find_by_week
 
-Style/Documentation:
-  Enabled: false
-
-Naming/VariableNumber:
-  Enabled: false
-
 Rails/EnvLocal:
   Enabled: false
 
-# all these added when updating ruby (and rubocop) - i guess a default config
-# got updated. adding these here so we have the smallest code change in
-# this branch
-
-# RSpec configuration
-# Request/system specs often need multiple expectations per example
-RSpec/MultipleExpectations:
+Rails/FindEach:
   Enabled: false
 
-# Integration tests are naturally longer than unit tests
-RSpec/ExampleLength:
+Rails/Pluck:
   Enabled: false
 
-RSpec/NestedGroups:
-  Max: 4
-
-# Request and feature specs don't describe a specific class
-RSpec/DescribeClass:
-  Enabled: false
-
-Style/HashSyntax:
-  Enabled: false
-
-Rails/ActionOrder:
-  Enabled: false
-
-Metrics/ClassLength:
-  Exclude:
-    - "spec/**/*.rb"
-    - "app/models/partner.rb"
-
-Metrics/ModuleLength:
-  Exclude:
-    - "lib/normal_island.rb"
-
-# Cucumber-generated files - exclude from style checks
-Style/FrozenStringLiteralComment:
+Rails/RakeEnvironment:
   Exclude:
     - "lib/tasks/cucumber.rake"
-    - "features/support/env.rb"
-    - "spec/spec_helper.rb"
+
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: false
+
+Rails/RootPathnameMethods:
+  Enabled: false
+
+Rails/ThreeStateBooleanColumn:
+  Enabled: false
+
+# =============================================================================
+# Rake cops
+# =============================================================================
 
 Rake/Desc:
   Exclude:
@@ -91,15 +178,31 @@ Rake/DuplicateTask:
   Exclude:
     - "lib/tasks/cucumber.rake"
 
-Rails/RakeEnvironment:
-  Exclude:
-    - "lib/tasks/cucumber.rake"
+# =============================================================================
+# RSpec cops - Test suite configuration
+# =============================================================================
 
-Lint/EmptyBlock:
-  Exclude:
-    - "lib/tasks/cucumber.rake"
+# Allow multiple expectations in integration/request specs
+RSpec/MultipleExpectations:
+  Enabled: false
 
-# shared_examples_for is valid - cop only accepts shared_examples
+# Integration tests are naturally longer than unit tests
+RSpec/ExampleLength:
+  Enabled: false
+
+# Allow deeper nesting for complex test scenarios
+RSpec/NestedGroups:
+  Max: 4
+
+# Request and feature specs don't describe a specific class
+RSpec/DescribeClass:
+  Enabled: false
+
+# Request specs describe endpoints not methods
+RSpec/DescribeMethod:
+  Enabled: false
+
+# shared_examples_for is valid alongside shared_examples
 RSpec/IncludeExamples:
   Enabled: false
 
@@ -135,10 +238,6 @@ RSpec/VerifiedDoubles:
 RSpec/SpecFilePathFormat:
   Enabled: false
 
-# Request specs describe endpoints not methods
-RSpec/DescribeMethod:
-  Enabled: false
-
 # Helper methods with expectations are valid (check_source_has_events pattern)
 RSpec/NoExpectationExample:
   Enabled: false
@@ -147,80 +246,55 @@ RSpec/NoExpectationExample:
 RSpec/MultipleDescribes:
   Enabled: false
 
-Lint/ConstantDefinitionInBlock:
-  Exclude:
-    - "spec/**/*.rb"
-    - "lib/tasks/db.rake"
-
 # Similar tests with different inputs are sometimes clearer than shared examples
 RSpec/RepeatedExample:
   Enabled: false
 
-Metrics/CyclomaticComplexity:
-  Exclude:
-    - app/controllers/application_controller.rb
+# =============================================================================
+# Style cops
+# =============================================================================
 
-Metrics/PerceivedComplexity:
-  Exclude:
-    - app/controllers/application_controller.rb
-
-Rails/RootPathnameMethods:
-  Enabled: false
-GraphQL/MaxComplexitySchema:
-  Enabled: false
-GraphQL/MaxDepthSchema:
-  Enabled: false
-Naming/BlockForwarding:
-  Enabled: false
-Rails/RedundantActiveRecordAllMethod:
-  Enabled: false
-Style/ReturnNilInPredicateMethodDefinition:
-  Enabled: false
-Style/YodaCondition:
-  Enabled: false
-Layout/LineContinuationSpacing:
-  Enabled: false
-Performance/MapMethodChain:
-  Enabled: false
-Style/RedundantFreeze:
-  Enabled: false
-Layout/EmptyLinesAroundExceptionHandlingKeywords:
-  Enabled: false
-Performance/StringReplacement:
-  Enabled: false
-Style/ZeroLengthPredicate:
-  Enabled: false
 Style/ArrayIntersect:
   Enabled: false
-Style/RedundantReturn:
+
+Style/Documentation:
   Enabled: false
-Style/RedundantConstantBase:
-  Enabled: false
-Rails/ThreeStateBooleanColumn:
-  Enabled: false
-Lint/RedundantDirGlobSort:
-  Enabled: false
-Rails/FindEach:
-  Enabled: false
-Lint/RedundantStringCoercion:
-  Enabled: false
-Layout/LineContinuationLeadingSpace:
-  Enabled: false
-Rails/Pluck:
-  Enabled: false
-Style/RedundantCurrentDirectoryInPath:
-  Enabled: false
-Layout/ExtraSpacing:
-  Enabled: false
-Style/SuperWithArgsParentheses:
-  Enabled: false
-Lint/SymbolConversion:
-  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "lib/tasks/cucumber.rake"
+    - "features/support/env.rb"
+    - "spec/spec_helper.rb"
+
 Style/HashEachMethods:
   Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+Style/RedundantConstantBase:
+  Enabled: false
+
+Style/RedundantCurrentDirectoryInPath:
+  Enabled: false
+
+Style/RedundantFreeze:
+  Enabled: false
+
 Style/RedundantLineContinuation:
   Enabled: false
-Lint/SelfAssignment:
+
+Style/RedundantReturn:
   Enabled: false
-Lint/RedundantCopDisableDirective:
+
+Style/ReturnNilInPredicateMethodDefinition:
+  Enabled: false
+
+Style/SuperWithArgsParentheses:
+  Enabled: false
+
+Style/YodaCondition:
+  Enabled: false
+
+Style/ZeroLengthPredicate:
   Enabled: false

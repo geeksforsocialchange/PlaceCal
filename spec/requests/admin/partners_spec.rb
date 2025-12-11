@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::Partners', type: :request do
-  let(:admin_host) { 'admin.lvh.me' }
-
   describe 'GET /admin/partners' do
     context 'as an unauthenticated user' do
       it 'redirects to login' do
