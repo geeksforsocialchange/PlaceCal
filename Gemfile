@@ -103,7 +103,6 @@ group :development do
   gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
-  gem 'mutex_m'
   gem 'rails-erd'
   gem 'rdoc'
   gem 'rubocop', '1.81.7', require: false
