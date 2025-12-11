@@ -32,7 +32,8 @@ RSpec.describe 'Admin::Articles', type: :request do
       it 'preselects author as current user' do
         get new_admin_article_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(neighbourhood_admin.admin_name)
+        # admin_name uses angle brackets which are HTML-escaped
+        expect(response.body).to include(CGI.escapeHTML(neighbourhood_admin.admin_name))
       end
     end
 
@@ -49,7 +50,8 @@ RSpec.describe 'Admin::Articles', type: :request do
       it 'preselects author as current user' do
         get new_admin_article_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partner_admin.admin_name)
+        # admin_name uses angle brackets which are HTML-escaped
+        expect(response.body).to include(CGI.escapeHTML(partner_admin.admin_name))
       end
     end
 
@@ -59,7 +61,8 @@ RSpec.describe 'Admin::Articles', type: :request do
       it 'preselects author as current user' do
         get new_admin_article_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(editor_user.admin_name)
+        # admin_name uses angle brackets which are HTML-escaped
+        expect(response.body).to include(CGI.escapeHTML(editor_user.admin_name))
       end
     end
   end

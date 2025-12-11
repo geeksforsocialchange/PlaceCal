@@ -92,9 +92,9 @@ RSpec.describe 'Admin::Users', type: :request do
 
       before { sign_in user }
 
-      it 'redirects when no partners in neighbourhood' do
+      it 'shows form with empty partner selector' do
         get new_admin_user_url(host: admin_host)
-        expect(response).to be_redirect
+        expect(response).to be_successful
       end
     end
   end

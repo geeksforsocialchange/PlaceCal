@@ -78,6 +78,17 @@ RSpec.describe 'GraphQL Articles', type: :request do
 
   describe 'articlesByTag query' do
     let(:tag) { create(:tag) }
+    let(:query) do
+      <<-GRAPHQL
+        query($tagId: ID!) {
+          articlesByTag(tagId: $tagId) {
+            name
+            author
+            text
+          }
+        }
+      GRAPHQL
+    end
     let(:epoch) { DateTime.current.beginning_of_day }
 
     before do
@@ -110,18 +121,6 @@ RSpec.describe 'GraphQL Articles', type: :request do
       end
     end
 
-    let(:query) do
-      <<-GRAPHQL
-        query($tagId: ID!) {
-          articlesByTag(tagId: $tagId) {
-            name
-            author
-            text
-          }
-        }
-      GRAPHQL
-    end
-
     it 'returns only published articles with tag' do
       result = execute_query(query, variables: { tagId: tag.id })
 
@@ -130,17 +129,28 @@ RSpec.describe 'GraphQL Articles', type: :request do
       expect(articles.length).to eq(3)
     end
 
-    it 'sorts articles by publish date (newest first)' do
+    it 'sorts articles by title' do
       result = execute_query(query, variables: { tagId: tag.id })
 
       articles = result['data']['articlesByTag']
-      expect(articles.first['name']).to eq('Tagged published article 2')
-      expect(articles.last['name']).to eq('Tagged published article 0')
+      expect(articles.first['name']).to eq('Tagged published article 0')
+      expect(articles.last['name']).to eq('Tagged published article 2')
     end
   end
 
   describe 'articlesByPartnerTag query' do
     let(:tag) { create(:tag) }
+    let(:query) do
+      <<-GRAPHQL
+        query($tagId: ID!) {
+          articlesByPartnerTag(tagId: $tagId) {
+            name
+            author
+            text
+          }
+        }
+      GRAPHQL
+    end
     let(:partner) { create(:partner) }
     let(:epoch) { DateTime.current.beginning_of_day }
 
@@ -176,18 +186,6 @@ RSpec.describe 'GraphQL Articles', type: :request do
       end
     end
 
-    let(:query) do
-      <<-GRAPHQL
-        query($tagId: ID!) {
-          articlesByPartnerTag(tagId: $tagId) {
-            name
-            author
-            text
-          }
-        }
-      GRAPHQL
-    end
-
     it 'returns only published articles from partners with tag' do
       result = execute_query(query, variables: { tagId: tag.id })
 
@@ -196,12 +194,12 @@ RSpec.describe 'GraphQL Articles', type: :request do
       expect(articles.length).to eq(5)
     end
 
-    it 'sorts articles by publish date (newest first)' do
+    it 'sorts articles by title' do
       result = execute_query(query, variables: { tagId: tag.id })
 
       articles = result['data']['articlesByPartnerTag']
-      expect(articles.first['name']).to eq('Partner article 4')
-      expect(articles.last['name']).to eq('Partner article 0')
+      expect(articles.first['name']).to eq('Partner article 0')
+      expect(articles.last['name']).to eq('Partner article 4')
     end
   end
 

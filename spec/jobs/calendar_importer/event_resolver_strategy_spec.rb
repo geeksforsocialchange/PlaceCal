@@ -113,7 +113,7 @@ RSpec.describe CalendarImporter::EventResolver do
   end
 
   describe '#place_strategy' do
-    it 'works' do
+    it 'resolves place from calendar and address from event data' do
       event_data.location = address_partner.name
 
       calendar = create_calendar_with(strategy: 'place', place: other_address_partner)

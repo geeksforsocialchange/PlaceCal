@@ -82,7 +82,7 @@ RSpec.describe 'Public Articles (News)', type: :request do
     end
 
     context 'with author missing name' do
-      let!(:no_name_author) { create(:root_user, first_name: '', last_name: '') }
+      let!(:no_name_author) { create(:user, role: 'root', first_name: '', last_name: '') }
       let!(:article) { create(:article, is_draft: false, author: no_name_author) }
 
       it 'does not show author component' do

@@ -6,8 +6,9 @@ RSpec.describe 'Admin::Sites', type: :request do
   let(:admin_host) { 'admin.lvh.me' }
 
   let!(:root_user) { create(:root_user) }
-  let!(:another_root) { create(:root_user) }
-  let!(:site) { create(:site) }
+  let!(:another_root) { create(:user, role: 'root') }
+  let!(:site_admin_user) { create(:user, role: 'root') }
+  let!(:site) { create(:site, site_admin: site_admin_user) }
   let!(:another_site) { create(:site, name: 'another', site_admin: another_root) }
   let(:site_admin) { site.site_admin }
   let!(:neighbourhoods) { create_list(:neighbourhood, 5) }
@@ -82,7 +83,7 @@ RSpec.describe 'Admin::Sites', type: :request do
 
         # Count how many neighbourhoods are shown in the template
         template_content = CGI.unescape_html(cocoon_template[1])
-        neighbourhoods_count = template_content.scan(/option value=/).size
+        neighbourhoods_count = template_content.scan('option value=').size
         expect(neighbourhoods_count).to eq(Neighbourhood.count)
       end
     end

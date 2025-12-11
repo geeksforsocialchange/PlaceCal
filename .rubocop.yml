@@ -46,15 +46,18 @@ Rails/EnvLocal:
 # this branch
 
 # RSpec configuration
+# Request/system specs often need multiple expectations per example
 RSpec/MultipleExpectations:
   Enabled: false
 
+# Integration tests are naturally longer than unit tests
 RSpec/ExampleLength:
   Enabled: false
 
 RSpec/NestedGroups:
   Max: 4
 
+# Request and feature specs don't describe a specific class
 RSpec/DescribeClass:
   Enabled: false
 
@@ -97,42 +100,51 @@ Lint/EmptyBlock:
   Exclude:
     - "lib/tasks/cucumber.rake"
 
+# shared_examples_for is valid - cop only accepts shared_examples
 RSpec/IncludeExamples:
   Enabled: false
 
+# let! is valid for database setup that needs to run before tests
 RSpec/LetSetup:
   Enabled: false
 
+# Integration tests need more helpers than unit tests (default is 5)
 RSpec/MultipleMemoizedHelpers:
-  Enabled: false
+  Max: 15
 
+# Stubbing any instance is valid for testing external dependencies
 RSpec/AnyInstance:
   Enabled: false
 
+# Stylistic preference - "for X" reads better than "when X" in some cases
 RSpec/ContextWording:
   Enabled: false
 
+# Numbered variables (partner1, partner2) are readable in test contexts
 RSpec/IndexedLet:
   Enabled: false
 
+# Test-scoped constants are valid for test fixtures
 RSpec/LeakyConstantDeclaration:
   Enabled: false
 
+# instance_double requires exact class matching which isn't always feasible
 RSpec/VerifiedDoubles:
   Enabled: false
 
+# Request specs use descriptive paths like graphql/events_spec.rb
 RSpec/SpecFilePathFormat:
   Enabled: false
 
+# Request specs describe endpoints not methods
 RSpec/DescribeMethod:
   Enabled: false
 
-RSpec/ExampleWording:
-  Enabled: false
-
+# Helper methods with expectations are valid (check_source_has_events pattern)
 RSpec/NoExpectationExample:
   Enabled: false
 
+# Some spec files test related functionality across multiple top-level describes
 RSpec/MultipleDescribes:
   Enabled: false
 
@@ -141,6 +153,7 @@ Lint/ConstantDefinitionInBlock:
     - "spec/**/*.rb"
     - "lib/tasks/db.rake"
 
+# Similar tests with different inputs are sometimes clearer than shared examples
 RSpec/RepeatedExample:
   Enabled: false
 
