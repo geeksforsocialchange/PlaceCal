@@ -70,7 +70,6 @@ Rails/ActionOrder:
 Metrics/ClassLength:
   Exclude:
     - "spec/**/*.rb"
-    - "test_legacy/**/*.rb"
     - "app/models/partner.rb"
 
 Metrics/ModuleLength:
