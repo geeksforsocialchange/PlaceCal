@@ -4,6 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'User Invitation Flow', :slow, type: :system do
   let(:admin_user) { create(:root_user, email: 'admin@placecal.org', password: 'password', password_confirmation: 'password') }
+  # Use unique email to avoid conflicts with other tests
+  let(:invited_user_email) { "invited.user.#{SecureRandom.hex(4)}@placecal.org" }
 
   before do
     create_default_site
@@ -26,7 +28,7 @@ RSpec.describe 'User Invitation Flow', :slow, type: :system do
     # Fill in new user details
     fill_in 'First name', with: 'New'
     fill_in 'Last name', with: 'User'
-    fill_in 'Email', with: 'new.user@placecal.org'
+    fill_in 'Email', with: invited_user_email
     choose 'Root: Can do everything'
     click_button 'Invite'
 
