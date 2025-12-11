@@ -40,7 +40,7 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
     it 'shows system_tag option for root users' do
       login_as(root_user)
       port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
       expect(page).to have_css('input#tag_system_tag')
     end
@@ -48,7 +48,7 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
     it 'hides system_tag option for citizen users' do
       login_as(citizen_user)
       port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
       expect(page).not_to have_css('input#tag_system_tag')
     end
@@ -58,7 +58,7 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
     it 'allows root users to modify tags' do
       login_as(root_user)
       port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
       fill_in 'Name', with: 'A new tag name'
       click_button 'Save'
@@ -72,13 +72,13 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
       port = Capybara.current_session.server.port
 
       # Toggle on
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
       check 'System tag'
       click_button 'Save'
       assert_has_flash(:success, 'Tag was saved successfully')
 
       # Check is toggled
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
       expect(page).to have_css('input[name="tag[system_tag]"][checked="checked"]', visible: :all)
 
       # Toggle off
@@ -87,7 +87,7 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
       assert_has_flash(:success, 'Tag was saved successfully')
 
       # Check is NOT toggled
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
       expect(page).not_to have_css('input[name="tag[system_tag]"][checked="checked"]', visible: :all)
     end
   end
@@ -138,7 +138,7 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
     it 'shows assigned users field on New tag page' do
       login_as(root_user)
       port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/admin/tags/new"
+      visit "http://admin.lvh.me:#{port}/tags/new"
 
       expect(page).to have_css('h2', text: 'Assigned Users')
     end
@@ -147,7 +147,7 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
       partnership_tag = create(:partnership)
       login_as(root_user)
       port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{partnership_tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{partnership_tag.id}/edit"
 
       expect(page).to have_css('h2', text: 'Assigned Users')
     end
@@ -156,7 +156,7 @@ RSpec.describe 'Admin Tags', :slow, type: :system do
       facility_tag = create(:tag, type: 'Facility')
       login_as(root_user)
       port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/admin/tags/#{facility_tag.id}/edit"
+      visit "http://admin.lvh.me:#{port}/tags/#{facility_tag.id}/edit"
 
       expect(page).not_to have_css('h2', text: 'Assigned Users')
     end
