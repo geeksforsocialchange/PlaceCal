@@ -226,7 +226,7 @@ Geocoder::Lookup::Test.add_stub(
 
 # Manchester postcodes (from VCR cassettes)
 # These are real UK postcodes used in the recorded API responses
-%w[M15\ 5DD M155DD M16\ 7BA M167BA M15\ 6BX M156BX].each do |postcode|
+['M15 5DD', 'M155DD', 'M16 7BA', 'M167BA', 'M15 6BX', 'M156BX'].each do |postcode|
   Geocoder::Lookup::Test.add_stub(
     postcode, [
       { 'postcode' => postcode.gsub(/\s+/, ' ').strip,

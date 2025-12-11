@@ -34,12 +34,7 @@ FactoryBot.define do
       end
 
       after(:create) do |user, evaluator|
-        if evaluator.neighbourhood
-          user.neighbourhoods << evaluator.neighbourhood
-        else
-          # Create a default neighbourhood if none provided
-          user.neighbourhoods << create(:riverside_ward)
-        end
+        user.neighbourhoods << (evaluator.neighbourhood || create(:riverside_ward))
       end
     end
 
@@ -52,12 +47,7 @@ FactoryBot.define do
       end
 
       after(:create) do |user, evaluator|
-        if evaluator.partner
-          user.partners << evaluator.partner
-        else
-          # Create a default partner if none provided
-          user.partners << create(:partner)
-        end
+        user.partners << (evaluator.partner || create(:partner))
       end
     end
 
@@ -70,12 +60,7 @@ FactoryBot.define do
       end
 
       after(:create) do |user, evaluator|
-        if evaluator.partnership_tag
-          user.tags << evaluator.partnership_tag
-        else
-          # Create a default partnership tag if none provided
-          user.tags << create(:partnership)
-        end
+        user.tags << (evaluator.partnership_tag || create(:partnership))
       end
     end
   end

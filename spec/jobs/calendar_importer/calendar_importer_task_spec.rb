@@ -14,7 +14,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         calendar.reload
@@ -36,7 +36,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         expect(calendar.calendar_state).to eq('idle')
@@ -58,7 +58,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         expect(calendar.calendar_state).to eq('idle')
@@ -81,7 +81,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         expect(calendar.calendar_state).to eq('idle')
@@ -104,7 +104,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         expect(calendar.calendar_state).to eq('idle')
@@ -129,7 +129,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         expect(calendar.calendar_state).to eq('idle')
@@ -152,10 +152,10 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
           calendar_state: 'in_worker'
         )
 
-        expect {
-          importer_task = described_class.new(calendar, Date.today, true)
+        expect do
+          importer_task = described_class.new(calendar, Time.zone.today, true)
           importer_task.run
-        }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
       end
     end
 
@@ -169,10 +169,10 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
           calendar_state: 'in_worker'
         )
 
-        expect {
-          importer_task = described_class.new(calendar, Date.today, true)
+        expect do
+          importer_task = described_class.new(calendar, Time.zone.today, true)
           importer_task.run
-        }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /Source responded with invalid JSON/)
+        end.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /Source responded with invalid JSON/)
       end
     end
   end
@@ -189,7 +189,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         expect(calendar.calendar_state).to eq('idle')
@@ -211,7 +211,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
 
         expect(calendar.calendar_state).to eq('idle')
@@ -235,14 +235,14 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
         calendar.update calendar_state: 'in_worker'
 
-        importer_task = described_class.new(calendar, Date.today, true)
+        importer_task = described_class.new(calendar, Time.zone.today, true)
         importer_task.run
         expect(calendar.calendar_state).to eq('idle')
         checksum_date = calendar.checksum_updated_at
 
         Timecop.freeze(16.days.from_now) do
           calendar.update calendar_state: 'in_worker'
-          future_task = described_class.new(calendar, Date.today, true)
+          future_task = described_class.new(calendar, Time.zone.today, true)
           future_task.run
           expect(calendar.calendar_state).to eq('idle')
         end

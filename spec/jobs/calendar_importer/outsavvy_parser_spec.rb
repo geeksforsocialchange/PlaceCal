@@ -20,9 +20,7 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
 
         data = parser.extract_event_urls(outsavvy_url)
 
-        data.each do |url|
-          expect(url).to match(url_pattern)
-        end
+        expect(data).to all(match(url_pattern))
       end
     end
 

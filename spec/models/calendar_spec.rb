@@ -4,14 +4,16 @@ require 'rails_helper'
 
 RSpec.describe Calendar, type: :model do
   describe 'associations' do
-    # Note: partner has optional: true on association but presence validation
+    # NOTE: partner has optional: true on association but presence validation
     it { is_expected.to belong_to(:partner).optional(false) }
-    # Note: place is conditionally required based on strategy (default strategy is 'place')
+
+    # NOTE: place is conditionally required based on strategy (default strategy is 'place')
     # Test with a strategy that doesn't require place
     it 'belongs to place (optional based on strategy)' do
-      calendar = Calendar.new(strategy: 'event')
+      calendar = described_class.new(strategy: 'event')
       expect(calendar).to belong_to(:place).class_name('Partner').optional
     end
+
     it { is_expected.to have_many(:events).dependent(:destroy) }
   end
 
@@ -73,7 +75,7 @@ RSpec.describe Calendar, type: :model do
   describe 'enumerizations' do
     describe 'strategy' do
       it 'defaults to place' do
-        calendar = Calendar.new
+        calendar = described_class.new
         expect(calendar.strategy).to eq('place')
       end
 
@@ -87,7 +89,7 @@ RSpec.describe Calendar, type: :model do
 
     describe 'calendar_state' do
       it 'defaults to idle' do
-        calendar = Calendar.new
+        calendar = described_class.new
         expect(calendar.calendar_state).to eq('idle')
       end
 

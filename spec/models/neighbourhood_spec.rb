@@ -108,7 +108,7 @@ RSpec.describe Neighbourhood, type: :model do
     let(:ward) { create(:riverside_ward) }
 
     it 'includes parent name and unit type' do
-      # Note: parent_name is set on update via callback
+      # NOTE: parent_name is set on update via callback
       ward.update!(parent_name: ward.parent.name)
       expect(ward.contextual_name).to include('Riverside')
       expect(ward.contextual_name).to include('Ward')

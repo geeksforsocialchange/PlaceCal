@@ -18,13 +18,13 @@ RSpec.describe Address, type: :model do
   describe 'postcode normalization' do
     it 'normalizes UK postcodes on assignment' do
       # Test normalization with valid UK postcodes (UKPostcode gem only handles UK format)
-      test_address = Address.new
+      test_address = described_class.new
       test_address.postcode = '  m15  5dd  '
       expect(test_address.postcode).to eq('M15 5DD')
     end
 
     it 'handles various UK postcode formats' do
-      address = Address.new
+      address = described_class.new
       [
         ['   M15 5DD', 'M15 5DD'],
         ['m155dd  ', 'M15 5DD'],
@@ -66,7 +66,7 @@ RSpec.describe Address, type: :model do
 
       it 'adds error for postcode not found' do
         # Use valid UK format postcode that passes format validation
-        address = Address.new(
+        address = described_class.new(
           street_address: '123 Unknown Street',
           postcode: 'ZZ99 9ZZ',  # Valid UK format but unknown location
           country_code: 'GB'
@@ -92,7 +92,7 @@ RSpec.describe Address, type: :model do
 
       it 'adds error for unmapped neighbourhood' do
         # Use valid UK format postcode
-        address = Address.new(
+        address = described_class.new(
           street_address: '123 Unmapped Street',
           postcode: 'ZZ11 1ZZ',  # Valid UK format
           country_code: 'GB'
@@ -106,12 +106,12 @@ RSpec.describe Address, type: :model do
 
   describe '#missing_values?' do
     it 'returns true when all fields are blank' do
-      address = Address.new
+      address = described_class.new
       expect(address.missing_values?).to be true
     end
 
     it 'returns false when any field has value' do
-      address = Address.new(street_address: '123 Main St')
+      address = described_class.new(street_address: '123 Main St')
       expect(address.missing_values?).to be false
     end
   end

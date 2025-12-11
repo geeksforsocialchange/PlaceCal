@@ -265,7 +265,7 @@ RSpec.describe Partner, type: :model do
     end
 
     it 'defaults to empty array' do
-      partner = Partner.new
+      partner = described_class.new
       expect(partner.opening_times_data).to eq('[]')
     end
 
@@ -275,7 +275,7 @@ RSpec.describe Partner, type: :model do
         { opens: '09:00', closes: '17:00' }
       ].to_json
 
-      partner = Partner.new(opening_times: opening_times)
+      partner = described_class.new(opening_times: opening_times)
       found = JSON.parse(partner.opening_times_data)
       expect(found.length).to eq(2)
     end

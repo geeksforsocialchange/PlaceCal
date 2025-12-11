@@ -20,36 +20,36 @@ RSpec.describe Tag, type: :model do
   describe 'STI types' do
     describe Category do
       it 'is a subclass of Tag' do
-        expect(Category.superclass).to eq(Tag)
+        expect(described_class.superclass).to eq(Tag)
       end
 
       it 'can be created' do
         category = create(:category_tag)
-        expect(category).to be_a(Category)
+        expect(category).to be_a(described_class)
         expect(category.type).to eq('Category')
       end
     end
 
     describe Facility do
       it 'is a subclass of Tag' do
-        expect(Facility.superclass).to eq(Tag)
+        expect(described_class.superclass).to eq(Tag)
       end
 
       it 'can be created' do
         facility = create(:facility_tag)
-        expect(facility).to be_a(Facility)
+        expect(facility).to be_a(described_class)
         expect(facility.type).to eq('Facility')
       end
     end
 
     describe Partnership do
       it 'is a subclass of Tag' do
-        expect(Partnership.superclass).to eq(Tag)
+        expect(described_class.superclass).to eq(Tag)
       end
 
       it 'can be created' do
         partnership = create(:partnership_tag)
-        expect(partnership).to be_a(Partnership)
+        expect(partnership).to be_a(described_class)
         expect(partnership.type).to eq('Partnership')
       end
     end

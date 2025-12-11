@@ -29,9 +29,7 @@ end
 module UKPostcodeNormalIslandExtension
   def parse(str)
     # Handle nil/empty strings by returning an invalid postcode object
-    if str.nil? || str.to_s.strip.empty?
-      return NormalIslandPostcode.new('')
-    end
+    return NormalIslandPostcode.new('') if str.nil? || str.to_s.strip.empty?
 
     normalized = str.to_s.upcase.strip
     if normalized.match?(NormalIslandPostcode::PATTERN)

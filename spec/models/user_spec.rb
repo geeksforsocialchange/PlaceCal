@@ -241,13 +241,13 @@ RSpec.describe User, type: :model do
 
   describe 'password validation' do
     it 'requires password by default' do
-      user = User.new(email: 'test@test.com', role: 'citizen')
+      user = described_class.new(email: 'test@test.com', role: 'citizen')
       expect(user).not_to be_valid
       expect(user.errors[:password]).to be_present
     end
 
     it 'skips password validation when skip_password_validation is set' do
-      user = User.new(email: 'test@test.com', role: 'citizen')
+      user = described_class.new(email: 'test@test.com', role: 'citizen')
       user.skip_password_validation = true
       expect(user).to be_valid
     end

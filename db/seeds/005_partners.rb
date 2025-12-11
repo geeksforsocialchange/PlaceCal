@@ -20,7 +20,7 @@ module SeedPartners
     $stdout.puts 'Partners'
 
     # Create partners for each Normal Island location
-    NormalIsland::PARTNERS.each do |key, data|
+    NormalIsland::PARTNERS.each do |_key, data|
       ward = Neighbourhood.find_by(name: NormalIsland::WARDS[data[:ward]][:name])
       next unless ward
 

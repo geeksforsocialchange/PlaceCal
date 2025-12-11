@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Event, type: :model do
   describe 'associations' do
-    # Note: partner association is optional: true but has presence validation
+    # NOTE: partner association is optional: true but has presence validation
     it { is_expected.to belong_to(:partner).optional(false) }
     it { is_expected.to belong_to(:place).class_name('Partner').optional }
     it { is_expected.to belong_to(:address).optional }

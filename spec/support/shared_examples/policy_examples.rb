@@ -44,7 +44,7 @@ module PolicySpecHelpers
 
   def permitted_records(user, klass)
     scope_class = "#{klass}Policy::Scope".constantize
-    scope_class.new(user, klass).resolve&.to_a || []
+    scope_class.new(user, klass).resolve.to_a
   end
 end
 

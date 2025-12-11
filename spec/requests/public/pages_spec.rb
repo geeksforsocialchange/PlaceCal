@@ -24,7 +24,7 @@ RSpec.describe 'Public Pages', type: :request do
 
   describe 'GET /privacy' do
     it 'returns successful response' do
-      # Note: /about doesn't exist, but /privacy does
+      # NOTE: /about doesn't exist, but /privacy does
       get '/privacy', headers: { 'Host' => "#{site.slug}.lvh.me" }
       expect(response).to be_successful
     end

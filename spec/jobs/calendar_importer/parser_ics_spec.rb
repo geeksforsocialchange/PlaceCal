@@ -15,17 +15,17 @@ RSpec.describe CalendarImporter::Parsers::Ics do
     end
 
     it 'handles missing ICAL data' do
-      expect {
+      expect do
         parser.parse_remote_calendars('')
-      }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, 'Source returned empty ICS data')
+      end.to raise_error(CalendarImporter::Exceptions::InvalidResponse, 'Source returned empty ICS data')
     end
 
     it 'handles badly formed ICAL data' do
       bad_ics_data = file_fixture('family-action-org-uk-bad.ics').read
 
-      expect {
+      expect do
         parser.parse_remote_calendars(bad_ics_data)
-      }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, 'Could not parse ICS response (Invalid iCalendar input line: */)')
+      end.to raise_error(CalendarImporter::Exceptions::InvalidResponse, 'Could not parse ICS response (Invalid iCalendar input line: */)')
     end
   end
 end
@@ -44,9 +44,9 @@ RSpec.describe 'ICS event parsing' do
 
         parser = CalendarImporter::Parsers::Ics.new(calendar, args)
 
-        expect {
+        expect do
           parser.calendar_to_events
-        }.to raise_error(CalendarImporter::Exceptions::InvalidResponse)
+        end.to raise_error(CalendarImporter::Exceptions::InvalidResponse)
       end
     end
   end
