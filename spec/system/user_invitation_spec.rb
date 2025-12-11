@@ -46,6 +46,10 @@ RSpec.describe 'User Invitation Flow', :slow, type: :system do
     invitation_token = body[/invitation_token=([a-zA-Z0-9_-]+)/, 1]
     expect(invitation_token).to be_present, "Could not extract invitation token from email body: #{body[0..500]}"
 
+    # Reset session to ensure clean state before accepting invitation
+    # This prevents any lingering admin session from interfering
+    Capybara.reset_sessions!
+
     # Build the invitation URL using the current test session's port
     # This is more reliable than using the URL from the email which may have
     # a different host/port depending on ActionMailer configuration timing
