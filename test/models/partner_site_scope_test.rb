@@ -163,8 +163,8 @@ class PartnerSiteScopeTest < ActiveSupport::TestCase
     found = Partner.for_site(site)
     assert_equal 3, found.count, 'Partner should only appear once'
 
-    found_ids = found.map(&:id)
-    should_be_ids = [partner_a.id, partner_b.id, partner_c.id]
+    found_ids = found.map(&:id).sort
+    should_be_ids = [partner_a.id, partner_b.id, partner_c.id].sort
 
     assert_equal found_ids, should_be_ids
   end
