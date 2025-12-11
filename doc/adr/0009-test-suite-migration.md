@@ -7,6 +7,7 @@
 ## Context and Problem Statement
 
 The current PlaceCal test suite has several issues:
+
 - 112 test files using Minitest (~11,500 lines, ~500 test methods)
 - Test data uses UK-specific geography (Manchester, Hulme, Moss Side, real postcodes)
 - Tests are coupled to real-world locations which can change
@@ -15,6 +16,7 @@ The current PlaceCal test suite has several issues:
 - Test organization is inconsistent across layers
 
 We need a modern, maintainable test suite that:
+
 - Uses fictional test data to avoid coupling to real-world changes
 - Provides clear separation between test types
 - Includes executable business documentation via BDD
@@ -58,27 +60,27 @@ Chosen option 3: Full migration to RSpec + Cucumber with Normal Island data.
 
 ## Implementation Phases
 
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1 | Foundation Setup (gems, config, move legacy tests) | ✅ Complete |
-| 2 | Normal Island Data & Factories | ✅ Complete |
-| 3 | Model Specs | ✅ Complete |
-| 4 | Component Specs | ✅ Complete |
-| 5 | Policy Specs | ✅ Complete |
-| 6 | Request Specs | ✅ Complete |
-| 7 | Job Specs (Calendar Importer) | ✅ Complete |
-| 8 | System Specs | ✅ Complete |
-| 9 | Cucumber Features | ✅ Complete |
-| 10 | Development Seeds & Cleanup | ✅ Complete |
+| Phase | Description                                        | Status      |
+| ----- | -------------------------------------------------- | ----------- |
+| 1     | Foundation Setup (gems, config, move legacy tests) | ✅ Complete |
+| 2     | Normal Island Data & Factories                     | ✅ Complete |
+| 3     | Model Specs                                        | ✅ Complete |
+| 4     | Component Specs                                    | ✅ Complete |
+| 5     | Policy Specs                                       | ✅ Complete |
+| 6     | Request Specs                                      | ✅ Complete |
+| 7     | Job Specs (Calendar Importer)                      | ✅ Complete |
+| 8     | System Specs                                       | ✅ Complete |
+| 9     | Cucumber Features                                  | ✅ Complete |
+| 10    | Development Seeds & Cleanup                        | ✅ Complete |
 
 ### Final Test Counts
 
-| Type | Count |
-|------|-------|
-| RSpec examples (fast, default) | 569 |
-| RSpec examples (including slow/system) | 586 |
-| Cucumber scenarios | 15 |
-| Cucumber steps | 69 |
+| Type                                   | Count |
+| -------------------------------------- | ----- |
+| RSpec examples (fast, default)         | 569   |
+| RSpec examples (including slow/system) | 586   |
+| Cucumber scenarios                     | 15    |
+| Cucumber steps                         | 69    |
 
 ---
 
@@ -86,94 +88,94 @@ Chosen option 3: Full migration to RSpec + Cucumber with Normal Island data.
 
 ### Directory Structure Changes
 
-| Old Location | New Location | Notes |
-|--------------|--------------|-------|
-| `test/` | *(removed)* | Legacy Minitest suite deleted |
-| — | `spec/` | RSpec test root |
-| — | `features/` | Cucumber features |
+| Old Location | New Location | Notes                         |
+| ------------ | ------------ | ----------------------------- |
+| `test/`      | _(removed)_  | Legacy Minitest suite deleted |
+| —            | `spec/`      | RSpec test root               |
+| —            | `features/`  | Cucumber features             |
 
 ### Test File Migration
 
 #### Models (`test/models/` → `spec/models/`)
 
-| Legacy Test | New Spec |
-|-------------|----------|
-| `partner_test.rb` | `partner_spec.rb` |
-| `event_test.rb` | `event_spec.rb` |
-| `calendar_test.rb` | `calendar_spec.rb` |
-| `user_test.rb` | `user_spec.rb` |
-| `site_test.rb` | `site_spec.rb` |
-| `address_test.rb` | `address_spec.rb` |
-| `neighbourhood_test.rb` | `neighbourhood_spec.rb` |
-| `tag_test.rb` | `tag_spec.rb` |
-| `article_test.rb` | `article_spec.rb` |
-| `collection_test.rb` | `collection_spec.rb` |
+| Legacy Test              | New Spec                 |
+| ------------------------ | ------------------------ |
+| `partner_test.rb`        | `partner_spec.rb`        |
+| `event_test.rb`          | `event_spec.rb`          |
+| `calendar_test.rb`       | `calendar_spec.rb`       |
+| `user_test.rb`           | `user_spec.rb`           |
+| `site_test.rb`           | `site_spec.rb`           |
+| `address_test.rb`        | `address_spec.rb`        |
+| `neighbourhood_test.rb`  | `neighbourhood_spec.rb`  |
+| `tag_test.rb`            | `tag_spec.rb`            |
+| `article_test.rb`        | `article_spec.rb`        |
+| `collection_test.rb`     | `collection_spec.rb`     |
 | `online_address_test.rb` | `online_address_spec.rb` |
 | `calendar_state_test.rb` | `calendar_state_spec.rb` |
 
 #### Policies (`test/policies/` → `spec/policies/`)
 
-| Legacy Test | New Spec |
-|-------------|----------|
-| `partner_policy_test.rb` | `partner_policy_spec.rb` |
-| `user_policy_test.rb` | `user_policy_spec.rb` |
-| `article_policy_test.rb` | `article_policy_spec.rb` |
+| Legacy Test               | New Spec                  |
+| ------------------------- | ------------------------- |
+| `partner_policy_test.rb`  | `partner_policy_spec.rb`  |
+| `user_policy_test.rb`     | `user_policy_spec.rb`     |
+| `article_policy_test.rb`  | `article_policy_spec.rb`  |
 | `calendar_policy_test.rb` | `calendar_policy_spec.rb` |
 
 #### Controllers/Integration → Request Specs
 
-| Legacy Location | New Location |
-|-----------------|--------------|
-| `test/controllers/admin/` | `spec/requests/admin/` |
-| `test/controllers/public/` | `spec/requests/public/` |
+| Legacy Location             | New Location             |
+| --------------------------- | ------------------------ |
+| `test/controllers/admin/`   | `spec/requests/admin/`   |
+| `test/controllers/public/`  | `spec/requests/public/`  |
 | `test/integration/graphql/` | `spec/requests/graphql/` |
 
 #### Components (`test/components/` → `spec/components/`)
 
-| Legacy Test | New Spec |
-|-------------|----------|
-| `address_component_test.rb` | `address_component_spec.rb` |
-| `breadcrumb_component_test.rb` | `breadcrumb_component_spec.rb` |
-| `partner_filter_component_test.rb` | `partner_filter_component_spec.rb` |
+| Legacy Test                         | New Spec                            |
+| ----------------------------------- | ----------------------------------- |
+| `address_component_test.rb`         | `address_component_spec.rb`         |
+| `breadcrumb_component_test.rb`      | `breadcrumb_component_spec.rb`      |
+| `partner_filter_component_test.rb`  | `partner_filter_component_spec.rb`  |
 | `partner_preview_component_test.rb` | `partner_preview_component_spec.rb` |
 
 #### Jobs (`test/jobs/` → `spec/jobs/`)
 
-| Legacy Test | New Spec |
-|-------------|----------|
+| Legacy Test                   | New Spec                      |
+| ----------------------------- | ----------------------------- |
 | `calendar_importer/*_test.rb` | `calendar_importer/*_spec.rb` |
 
 #### Helpers (`test/helpers/` → `spec/helpers/`)
 
-| Legacy Test | New Spec |
-|-------------|----------|
-| `mailer_helper_test.rb` | `mailer_helper_spec.rb` |
-| `articles_helper_test.rb` | `articles_helper_spec.rb` |
-| `partners_helper_test.rb` | `partners_helper_spec.rb` |
-| `users_helper_test.rb` | `users_helper_spec.rb` |
+| Legacy Test                | New Spec                   |
+| -------------------------- | -------------------------- |
+| `mailer_helper_test.rb`    | `mailer_helper_spec.rb`    |
+| `articles_helper_test.rb`  | `articles_helper_spec.rb`  |
+| `partners_helper_test.rb`  | `partners_helper_spec.rb`  |
+| `users_helper_test.rb`     | `users_helper_spec.rb`     |
 | `calendars_helper_test.rb` | `calendars_helper_spec.rb` |
 
 #### Mailers (`test/mailers/` → `spec/mailers/`)
 
-| Legacy Test | New Spec |
-|-------------|----------|
-| `join_mailer_test.rb` | `join_mailer_spec.rb` |
+| Legacy Test                             | New Spec                                |
+| --------------------------------------- | --------------------------------------- |
+| `join_mailer_test.rb`                   | `join_mailer_spec.rb`                   |
 | `devise_user_invitation_mailer_test.rb` | `devise_user_invitation_mailer_spec.rb` |
 
 #### System Tests (`test/system/` → `spec/system/`)
 
-| Legacy Test | New Spec |
-|-------------|----------|
-| `admin/partner_test.rb` | `admin/partners_spec.rb` |
-| `admin/calendar_test.rb` | `admin/calendars_spec.rb` |
-| `admin/article_test.rb` | `admin/articles_spec.rb` |
-| `admin/user_test.rb` | `admin/users_spec.rb` |
-| `admin/site_test.rb` | `admin/sites_spec.rb` |
-| `admin/tag_test.rb` | `admin/tags_spec.rb` |
-| `admin/neighbourhood_test.rb` | `admin/neighbourhoods_spec.rb` |
-| `create_admin_users_test.rb` | `user_invitation_spec.rb` |
-| `graphql/graphql_test.rb` | `graphql/api_spec.rb` |
-| `collections_test.rb` | *(skipped - was commented out)* |
+| Legacy Test                   | New Spec                        |
+| ----------------------------- | ------------------------------- |
+| `admin/partner_test.rb`       | `admin/partners_spec.rb`        |
+| `admin/calendar_test.rb`      | `admin/calendars_spec.rb`       |
+| `admin/article_test.rb`       | `admin/articles_spec.rb`        |
+| `admin/user_test.rb`          | `admin/users_spec.rb`           |
+| `admin/site_test.rb`          | `admin/sites_spec.rb`           |
+| `admin/tag_test.rb`           | `admin/tags_spec.rb`            |
+| `admin/neighbourhood_test.rb` | `admin/neighbourhoods_spec.rb`  |
+| `create_admin_users_test.rb`  | `user_invitation_spec.rb`       |
+| `graphql/graphql_test.rb`     | `graphql/api_spec.rb`           |
+| `collections_test.rb`         | _(skipped - was commented out)_ |
 
 ---
 
@@ -222,36 +224,36 @@ Fictional geography hierarchy using "NO" as country code:
 
 Normal Island postcodes follow the pattern: `NO[District] [Ward][Number]`
 
-| Ward | District | Postcode |
-|------|----------|----------|
-| Riverside | Millbrook | `NOMB 1RS` |
-| Oldtown | Millbrook | `NOMB 2OT` |
-| Greenfield | Millbrook | `NOMB 3GF` |
+| Ward        | District  | Postcode   |
+| ----------- | --------- | ---------- |
+| Riverside   | Millbrook | `NOMB 1RS` |
+| Oldtown     | Millbrook | `NOMB 2OT` |
+| Greenfield  | Millbrook | `NOMB 3GF` |
 | Harbourside | Millbrook | `NOMB 4HS` |
-| Hillcrest | Ashdale | `NOAD 1HC` |
-| Valleyview | Ashdale | `NOAD 2VV` |
-| Cliffside | Seaview | `NOSV 1CS` |
-| Beachfront | Seaview | `NOSV 2BF` |
+| Hillcrest   | Ashdale   | `NOAD 1HC` |
+| Valleyview  | Ashdale   | `NOAD 2VV` |
+| Cliffside   | Seaview   | `NOSV 1CS` |
+| Beachfront  | Seaview   | `NOSV 2BF` |
 
 ### Partners
 
-| Partner | Ward | Factory |
-|---------|------|---------|
-| Riverside Community Hub | Riverside | `:riverside_community_hub` |
-| Oldtown Library | Oldtown | `:oldtown_library` |
-| Greenfield Youth Centre | Greenfield | `:greenfield_youth_centre` |
-| Harbourside Arts Centre | Harbourside | `:harbourside_arts_centre` |
-| Ashdale Sports Club | Hillcrest | `:ashdale_sports_club` |
-| Coastline Wellness Centre | Cliffside | `:coastline_wellness_centre` |
+| Partner                   | Ward        | Factory                      |
+| ------------------------- | ----------- | ---------------------------- |
+| Riverside Community Hub   | Riverside   | `:riverside_community_hub`   |
+| Oldtown Library           | Oldtown     | `:oldtown_library`           |
+| Greenfield Youth Centre   | Greenfield  | `:greenfield_youth_centre`   |
+| Harbourside Arts Centre   | Harbourside | `:harbourside_arts_centre`   |
+| Ashdale Sports Club       | Hillcrest   | `:ashdale_sports_club`       |
+| Coastline Wellness Centre | Cliffside   | `:coastline_wellness_centre` |
 
 ### Sites
 
-| Site | Slug | Coverage |
-|------|------|----------|
-| Normal Island Central | `default-site` | All of Normal Island |
-| Millbrook Community Calendar | `millbrook` | Millbrook District |
-| Ashdale Connect | `ashdale` | Ashdale District |
-| Coastshire Events | `coastshire` | Coastshire County |
+| Site                         | Slug           | Coverage             |
+| ---------------------------- | -------------- | -------------------- |
+| Normal Island Central        | `default-site` | All of Normal Island |
+| Millbrook Community Calendar | `millbrook`    | Millbrook District   |
+| Ashdale Connect              | `ashdale`      | Ashdale District     |
+| Coastshire Events            | `coastshire`   | Coastshire County    |
 
 ---
 
@@ -259,15 +261,15 @@ Normal Island postcodes follow the pattern: `NO[District] [Ward][Number]`
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `Gemfile` | Added rspec-rails, cucumber-rails, factory_bot_rails, etc. |
-| `.rspec` | RSpec configuration |
-| `spec/spec_helper.rb` | RSpec base configuration |
-| `spec/rails_helper.rb` | Rails-specific RSpec configuration |
-| `config/cucumber.yml` | Cucumber profiles |
-| `features/support/env.rb` | Cucumber environment setup |
-| `bin/test` | Updated to run RSpec/Cucumber instead of Minitest |
+| File                      | Change                                                     |
+| ------------------------- | ---------------------------------------------------------- |
+| `Gemfile`                 | Added rspec-rails, cucumber-rails, factory_bot_rails, etc. |
+| `.rspec`                  | RSpec configuration                                        |
+| `spec/spec_helper.rb`     | RSpec base configuration                                   |
+| `spec/rails_helper.rb`    | Rails-specific RSpec configuration                         |
+| `config/cucumber.yml`     | Cucumber profiles                                          |
+| `features/support/env.rb` | Cucumber environment setup                                 |
+| `bin/test`                | Updated to run RSpec/Cucumber instead of Minitest          |
 
 ### Running Tests
 
@@ -294,15 +296,15 @@ bundle exec cucumber                        # Cucumber features
 
 ## Testing Guidelines
 
-| Test Type | Use For | Speed |
-|-----------|---------|-------|
-| Model Spec | Validations, scopes, instance/class methods | Fast |
-| Policy Spec | Authorization rules per role | Fast |
-| Component Spec | ViewComponent rendering, slots, variants | Fast |
-| Request Spec | HTTP responses, API contracts, redirects | Medium |
-| Job Spec | Background job logic, external API calls | Medium |
-| System Spec | Critical UI flows, JavaScript interactions | Slow |
-| Cucumber Feature | Business scenarios, acceptance criteria | Slow |
+| Test Type        | Use For                                     | Speed  |
+| ---------------- | ------------------------------------------- | ------ |
+| Model Spec       | Validations, scopes, instance/class methods | Fast   |
+| Policy Spec      | Authorization rules per role                | Fast   |
+| Component Spec   | ViewComponent rendering, slots, variants    | Fast   |
+| Request Spec     | HTTP responses, API contracts, redirects    | Medium |
+| Job Spec         | Background job logic, external API calls    | Medium |
+| System Spec      | Critical UI flows, JavaScript interactions  | Slow   |
+| Cucumber Feature | Business scenarios, acceptance criteria     | Slow   |
 
 ### Rules
 

@@ -47,10 +47,10 @@ seed_GFSC_prod_copy_db:
 	rails db:dump_production_and_restore_other restore_on_local=1
 
 test:
-	time sh -c "rails test --pride && rails test:system && rubocop && prettier -c app/"
+	time sh -c "bundle exec rspec && bundle exec cucumber --tags 'not @wip' && rubocop && prettier -c app/"
 
 tags:
-	find app/ lib/ test/ -iname '*.rb' | xargs etags
+	find app/ lib/ spec/ -iname '*.rb' | xargs etags
 
 
 # Fontello config section
