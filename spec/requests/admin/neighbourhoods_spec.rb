@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::Neighbourhoods', type: :request do
-  let(:admin_host) { 'admin.lvh.me' }
-
   let!(:root_user) { create(:root_user) }
   let!(:neighbourhood) { create(:neighbourhood) }
   let!(:neighbourhood_admin) { create(:neighbourhood_admin) }

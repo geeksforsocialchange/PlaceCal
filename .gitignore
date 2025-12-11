@@ -80,3 +80,4 @@ doc/rdoc
 .claude-on-rails/sessions/
 .claude-swarm/
 claude-swarm.log
+spec/examples.txt

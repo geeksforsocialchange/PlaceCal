@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::Articles', type: :request do
-  let(:admin_host) { 'admin.lvh.me' }
-
   let!(:root_user) { create(:root_user) }
   let!(:editor_user) { create(:editor_user) }
   let!(:citizen_user) { create(:citizen_user) }

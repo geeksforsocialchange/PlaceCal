@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::Calendars', type: :request do
-  let(:admin_host) { 'admin.lvh.me' }
   let(:partner) { create(:partner) }
 
   describe 'GET /admin/calendars' do

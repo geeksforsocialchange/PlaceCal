@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::Sites', type: :request do
-  let(:admin_host) { 'admin.lvh.me' }
-
   let!(:root_user) { create(:root_user) }
   let!(:another_root) { create(:user, role: 'root') }
   let!(:site_admin_user) { create(:user, role: 'root') }
