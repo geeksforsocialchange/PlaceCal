@@ -30,17 +30,17 @@ bundle exec rspec --format documentation
 
 ### Test Locations
 
-| Type | Location | Purpose |
-|------|----------|---------|
-| Model specs | `spec/models/` | Validations, scopes, methods |
-| Policy specs | `spec/policies/` | Authorization rules |
-| Request specs | `spec/requests/` | HTTP responses, APIs |
-| Component specs | `spec/components/` | ViewComponent rendering |
-| Job specs | `spec/jobs/` | Background job logic |
-| Helper specs | `spec/helpers/` | View helper methods |
-| Mailer specs | `spec/mailers/` | Email delivery |
-| System specs | `spec/system/` | Browser-based UI tests |
-| Cucumber | `features/` | BDD acceptance tests |
+| Type            | Location           | Purpose                      |
+| --------------- | ------------------ | ---------------------------- |
+| Model specs     | `spec/models/`     | Validations, scopes, methods |
+| Policy specs    | `spec/policies/`   | Authorization rules          |
+| Request specs   | `spec/requests/`   | HTTP responses, APIs         |
+| Component specs | `spec/components/` | ViewComponent rendering      |
+| Job specs       | `spec/jobs/`       | Background job logic         |
+| Helper specs    | `spec/helpers/`    | View helper methods          |
+| Mailer specs    | `spec/mailers/`    | Email delivery               |
+| System specs    | `spec/system/`     | Browser-based UI tests       |
+| Cucumber        | `features/`        | BDD acceptance tests         |
 
 ---
 
@@ -86,6 +86,7 @@ end
 ```
 
 **Tips:**
+
 - Use `build` instead of `create` when you don't need persistence
 - Use Normal Island factories for location-based tests
 - Test edge cases (nil values, empty strings)
@@ -309,6 +310,7 @@ end
 ```
 
 **System spec helpers:**
+
 - `include_context 'admin login'` - logs in as root user
 - `await_datatables` - waits for DataTables to load
 - `select2_node(class)` - finds Select2 container
@@ -452,17 +454,17 @@ create(:service_area, partner: partner, neighbourhood: ward)
 
 ## Support Files
 
-| File | Purpose |
-|------|---------|
-| `spec/rails_helper.rb` | Main RSpec configuration |
-| `spec/support/capybara.rb` | Browser/Selenium setup |
-| `spec/support/select2_helpers.rb` | Select2 dropdown helpers |
-| `spec/support/system_helpers.rb` | System test utilities |
-| `spec/support/site_helpers.rb` | `create_default_site` helper |
-| `spec/support/graphql_helpers.rb` | GraphQL test utilities |
-| `spec/support/vcr.rb` | HTTP recording config |
-| `spec/support/shared_examples/` | Reusable test examples |
-| `spec/support/shared_contexts/` | Reusable test setup |
+| File                              | Purpose                      |
+| --------------------------------- | ---------------------------- |
+| `spec/rails_helper.rb`            | Main RSpec configuration     |
+| `spec/support/capybara.rb`        | Browser/Selenium setup       |
+| `spec/support/select2_helpers.rb` | Select2 dropdown helpers     |
+| `spec/support/system_helpers.rb`  | System test utilities        |
+| `spec/support/site_helpers.rb`    | `create_default_site` helper |
+| `spec/support/graphql_helpers.rb` | GraphQL test utilities       |
+| `spec/support/vcr.rb`             | HTTP recording config        |
+| `spec/support/shared_examples/`   | Reusable test examples       |
+| `spec/support/shared_contexts/`   | Reusable test setup          |
 
 ---
 
