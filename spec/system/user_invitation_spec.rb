@@ -40,12 +40,12 @@ RSpec.describe 'User Invitation Flow', :slow, type: :system do
     email = ActionMailer::Base.deliveries.last
     expect(email).to be_present
 
-    # Extract invitation link from email
+    # Extract invitation URL from email - it already has the correct port from ActionMailer config
     body = email.body.parts.first.body.raw_source
-    invitation_url = body[%r{https?://[^\s]+invitation_token=[^\s]+}]
+    invitation_url = body[%r{https?://[^\s"<>]+invitation_token=[^\s"<>]+}]
     expect(invitation_url).to be_present
 
-    # Accept invitation
+    # Accept invitation using the URL directly (it has the correct test port)
     visit invitation_url
     fill_in 'New password', with: 'password123'
     fill_in 'Repeat password', with: 'password123'
