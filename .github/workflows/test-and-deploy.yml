@@ -52,6 +52,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y imagemagick
 
+      - name: Install Chrome for system tests
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+
       - uses: nodenv/actions/setup-nodenv@v2
       - uses: nodenv/actions/node-version@v2
         id: nodenv
@@ -67,15 +72,11 @@ jobs:
       - name: Build assets
         run: bin/yarn run build
 
-      - name: Run RSpec tests
-        run: bundle exec rspec
+      - name: Run RSpec tests (including system tests)
+        run: RUN_SLOW_TESTS=true bundle exec rspec
 
       - name: Run Cucumber features
         run: bundle exec cucumber --tags "not @wip"
-
-      # System specs disabled in CI (require Chrome)
-      # - name: Run system specs
-      #   run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
 
       - name: Run linters
         run: |
@@ -89,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-screenshots
-          path: tmp/screenshots/
+          path: tmp/capybara/
           if-no-files-found: ignore
 
       - if: github.ref == 'refs/heads/main' && github.repository == 'geeksforsocialchange/PlaceCal'
