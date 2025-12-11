@@ -25,7 +25,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
   end
 
   describe 'manual selection' do
-    it 'works' do
+    it 'imports events when importer mode is manually selected' do
       VCR.use_cassette('Uknown Teamup Feed', allow_playback_repeats: true) do
         calendar = create(
           :calendar,

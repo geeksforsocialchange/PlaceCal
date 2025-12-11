@@ -158,6 +158,16 @@ RSpec.describe 'GraphQL Events', type: :request do
 
   describe 'eventsByFilter with neighbourhood scope' do
     let(:neighbourhood1) { create(:riverside_ward) }
+    let(:query) do
+      <<-GRAPHQL
+        query($neighbourhoodId: Int) {
+          eventsByFilter(neighbourhoodId: $neighbourhoodId) {
+            id
+            name
+          }
+        }
+      GRAPHQL
+    end
     let(:neighbourhood2) { create(:oldtown_ward) }
 
     let(:address1) { create(:address, neighbourhood: neighbourhood1) }
@@ -171,17 +181,6 @@ RSpec.describe 'GraphQL Events', type: :request do
       create_list(:event, 5, partner: partner2, dtstart: 1.hour.from_now, address: address2)
     end
 
-    let(:query) do
-      <<-GRAPHQL
-        query($neighbourhoodId: ID) {
-          eventsByFilter(neighbourhoodId: $neighbourhoodId) {
-            id
-            name
-          }
-        }
-      GRAPHQL
-    end
-
     it 'filters events by neighbourhood' do
       result = execute_query(query, variables: { neighbourhoodId: neighbourhood2.id })
 
@@ -193,6 +192,16 @@ RSpec.describe 'GraphQL Events', type: :request do
 
   describe 'eventsByFilter with tag scope' do
     let(:blue_tag) { create(:tag, name: 'Blue') }
+    let(:query) do
+      <<-GRAPHQL
+        query($tagId: Int) {
+          eventsByFilter(tagId: $tagId) {
+            id
+            name
+          }
+        }
+      GRAPHQL
+    end
     let(:red_tag) { create(:tag, name: 'Red') }
 
     let(:blue_partner) { create(:partner) }
@@ -204,17 +213,6 @@ RSpec.describe 'GraphQL Events', type: :request do
 
       create_list(:event, 6, partner: blue_partner, dtstart: 1.hour.from_now, address: blue_partner.address)
       create_list(:event, 2, partner: red_partner, dtstart: 1.hour.from_now, address: red_partner.address)
-    end
-
-    let(:query) do
-      <<-GRAPHQL
-        query($tagId: ID) {
-          eventsByFilter(tagId: $tagId) {
-            id
-            name
-          }
-        }
-      GRAPHQL
     end
 
     it 'filters events by partner tag' do
@@ -268,33 +266,28 @@ RSpec.describe 'GraphQL Events', type: :request do
   end
 
   describe 'online event details' do
+    let!(:online_address) { OnlineAddress.create!(url: 'https://zoom.us/j/123456', link_type: 'direct') }
     let!(:online_event) do
-      event = create(:event, partner: partner, dtstart: Time.current, address: address)
-      event.create_online_address!(url: 'https://zoom.us/j/123456', link_type: 'direct')
-      event
+      create(:event, partner: partner, dtstart: Time.current, address: address, online_address: online_address)
     end
 
     let(:query) do
       <<-GRAPHQL
-        query {
-          eventConnection {
-            edges {
-              node {
-                id
-                onlineEventUrl
-                onlineEventUrlType
-              }
-            }
+        query($id: ID!) {
+          event(id: $id) {
+            id
+            onlineEventUrl
+            onlineEventUrlType
           }
         }
       GRAPHQL
     end
 
     it 'includes online event URL and type' do
-      result = execute_query(query)
+      result = execute_query(query, variables: { id: online_event.id })
 
       expect(result['errors']).to be_nil
-      node = result['data']['eventConnection']['edges'].first['node']
+      node = result['data']['event']
       expect(node['onlineEventUrl']).to eq('https://zoom.us/j/123456')
       expect(node['onlineEventUrlType']).to eq('direct')
     end

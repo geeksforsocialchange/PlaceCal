@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Public Sites', type: :request do
   let!(:default_site) { create_default_site }
   let(:site_admin) { create(:root_user) }
-  let(:site) { create(:site, slug: 'hulme', site_admin: site_admin, url: 'https://hulme.lvh.me') }
+  let(:site) { create(:site, slug: 'hulme', site_admin: site_admin, url: 'https://hulme.lvh.me', place_name: 'Hulme Community') }
   let(:ward) { create(:riverside_ward) }
 
   before do
@@ -44,7 +44,10 @@ RSpec.describe 'Public Sites', type: :request do
   end
 
   describe 'find placecal page' do
-    it 'shows sites with primary neighbourhood' do
+    it 'shows published sites' do
+      # Publish the site so it appears in the list
+      site.update!(is_published: true)
+
       get find_placecal_url(host: 'lvh.me')
       expect(response).to be_successful
       expect(response.body).to include(site.place_name)
