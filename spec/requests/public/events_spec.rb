@@ -128,4 +128,71 @@ RSpec.describe 'Public Events', type: :request do
       expect(response.body).not_to include('Event without tagged partner')
     end
   end
+
+  describe 'GET /events index content' do
+    let!(:events) do
+      create_list(:event, 5,
+                  partner: partner,
+                  dtstart: 1.hour.from_now,
+                  dtend: 2.hours.from_now,
+                  address: address)
+    end
+
+    it 'shows correct page title' do
+      get events_url(host: "#{site.slug}.lvh.me")
+      expect(response.body).to include("<title>Events | #{site.name}</title>")
+    end
+
+    it 'shows events header' do
+      get events_url(host: "#{site.slug}.lvh.me")
+      expect(response.body).to include('Events')
+    end
+  end
+
+  describe 'GET /events/:id show content' do
+    let(:event) do
+      create(:event,
+             partner: partner,
+             summary: 'Community Workshop',
+             dtstart: 1.day.from_now,
+             dtend: 1.day.from_now + 2.hours,
+             address: address)
+    end
+
+    it 'shows event in hero section' do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response).to be_successful
+      expect(response.body).to include('Community Workshop')
+    end
+
+    it 'shows contact information section' do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include('contact')
+    end
+  end
+
+  describe 'GET /events/:id with bad ID' do
+    let!(:default_site) { create_default_site }
+
+    it 'returns not found for non-existent event' do
+      get event_url(99_999, host: 'lvh.me')
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).to include('Not found')
+    end
+  end
+
+  describe 'default site redirect' do
+    let!(:default_site) { create_default_site }
+
+    it 'redirects events page on base domain' do
+      get events_url(host: 'lvh.me')
+      expect(response).to be_redirect
+    end
+
+    it 'redirects event page on base domain' do
+      event = create(:event, partner: partner, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: 'lvh.me')
+      expect(response).to be_redirect
+    end
+  end
 end
