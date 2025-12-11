@@ -9,30 +9,30 @@ RSpec.describe Calendar do
 
   describe 'calendar_state' do
     it 'is idle by default' do
-      expect(Calendar.new.calendar_state).to be_idle
+      expect(described_class.new.calendar_state).to be_idle
     end
   end
 
   describe '#queue_for_import!' do
     it 'can be pushed into queue' do
       VCR.use_cassette(:import_test_calendar) do
-        expect {
+        expect do
           calendar = create(:calendar, notices: %w[one two three])
           calendar.queue_for_import!(false, Date.new(2000, 1, 1))
           expect(calendar.calendar_state).to be_in_queue
           # clears notices
           expect(calendar.notices).to be_nil
-        }.to have_enqueued_job.exactly(1)
+        end.to have_enqueued_job.exactly(1)
       end
     end
 
     it 'cannot be queued if not idle' do
       VCR.use_cassette(:import_test_calendar) do
-        expect {
+        expect do
           calendar = create(:calendar, calendar_state: :in_queue)
           calendar.queue_for_import!(false, Date.new(2000, 1, 1))
           expect(calendar.calendar_state).to be_in_queue
-        }.not_to have_enqueued_job
+        end.not_to have_enqueued_job
       end
     end
   end

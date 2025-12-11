@@ -30,7 +30,7 @@ RSpec.describe Partner, '.for_site scope' do
   end
 
   it 'empty site returns nothing' do
-    output = Partner.for_site(site)
+    output = described_class.for_site(site)
     expect(output).to be_empty
   end
 
@@ -39,7 +39,7 @@ RSpec.describe Partner, '.for_site scope' do
 
     create_list(:partner, 5, address: address_one)
 
-    output = Partner.for_site(site)
+    output = described_class.for_site(site)
     expect(output.count).to eq(5)
   end
 
@@ -58,7 +58,7 @@ RSpec.describe Partner, '.for_site scope' do
       partner.save!
     end
 
-    output = Partner.for_site(site)
+    output = described_class.for_site(site)
     expect(output.count).to eq(5)
   end
 
@@ -77,7 +77,7 @@ RSpec.describe Partner, '.for_site scope' do
     # partner by address
     create(:partner, address: address_one)
 
-    output = Partner.for_site(site)
+    output = described_class.for_site(site)
     expect(output.count).to eq(2)
   end
 
@@ -117,7 +117,7 @@ RSpec.describe Partner, '.for_site scope' do
     end
 
     # finds set (neighbourhood_a OR neighbourhood_b)
-    output = Partner.for_site(site)
+    output = described_class.for_site(site)
     expect(output.count).to eq(10)
   end
 
@@ -149,7 +149,7 @@ RSpec.describe Partner, '.for_site scope' do
       # skipped
       create_partner_with_tags(geocodable_neighbourhood)
 
-      found = Partner.for_site(site)
+      found = described_class.for_site(site)
       expect(found.count).to eq(3)
 
       found_ids = found.map(&:id)

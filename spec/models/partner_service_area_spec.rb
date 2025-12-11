@@ -43,10 +43,10 @@ RSpec.describe Partner, 'service_area' do
       partner.address = create(:address, neighbourhood: neighbourhood)
       partner.save!
 
-      expect {
+      expect do
         partner.service_areas.create!(neighbourhood: neighbourhood)
         partner.service_areas.create!(neighbourhood: neighbourhood)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'must be within users neighbourhoods' do

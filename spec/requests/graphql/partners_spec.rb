@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'GraphQL Partners', type: :request do
   def execute_query(query_string, variables: {})
     post '/api/v1/graphql', params: { query: query_string, variables: variables.to_json }
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'partnerConnection query' do
@@ -130,5 +130,4 @@ RSpec.describe 'GraphQL Partners', type: :request do
       expect(partner_ids).not_to include(untagged_partner.id)
     end
   end
-
 end

@@ -9,9 +9,7 @@ FactoryBot.define do
 
     # Auto-set place when strategy requires it
     after(:build) do |calendar|
-      if %w[place room_number event_override].include?(calendar.strategy) && calendar.place.nil?
-        calendar.place = calendar.partner
-      end
+      calendar.place = calendar.partner if %w[place room_number event_override].include?(calendar.strategy) && calendar.place.nil?
     end
 
     # Skip source validation in tests (HTTP request)

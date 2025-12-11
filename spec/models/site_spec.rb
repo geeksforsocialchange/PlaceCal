@@ -16,7 +16,7 @@ RSpec.describe Site, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:slug) }
 
-    # Note: FriendlyId handles slug uniqueness at the database level
+    # NOTE: FriendlyId handles slug uniqueness at the database level
     # No explicit validates_uniqueness_of on slug in the model
   end
 

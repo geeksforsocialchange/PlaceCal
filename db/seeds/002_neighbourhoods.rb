@@ -67,7 +67,7 @@ module SeedNeighbourhoods
     end
 
     # Wards
-    NormalIsland::WARDS.each do |key, data|
+    NormalIsland::WARDS.each do |_key, data|
       Neighbourhood.create!(
         name: data[:name],
         name_abbr: data[:name],

@@ -37,7 +37,7 @@ RSpec.describe PartnerPolicy, type: :policy do
       it { is_expected.to permit_action(:show) }
       it { is_expected.to permit_action(:update) }
       it { is_expected.to forbid_action(:create) }
-      # Note: partner_admin CAN destroy their own partner per current policy
+      # NOTE: partner_admin CAN destroy their own partner per current policy
       it { is_expected.to permit_action(:destroy) }
     end
 
@@ -112,7 +112,7 @@ RSpec.describe PartnerPolicy, type: :policy do
       subject { described_class.new(user, partner_not_in_partnership) }
 
       it { is_expected.to permit_action(:index) }
-      # Note: partnership_admin can only see partners in their partnership,
+      # NOTE: partnership_admin can only see partners in their partnership,
       # even if also a neighbourhood_admin for that area
       it { is_expected.to forbid_action(:show) }
     end

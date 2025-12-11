@@ -12,15 +12,15 @@ RSpec.describe CalendarImporter::Parsers::Base do
     end
 
     it 'raises for missing JSON' do
-      expect {
+      expect do
         described_class.safely_parse_json('')
-      }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, 'Source responded with missing JSON')
+      end.to raise_error(CalendarImporter::Exceptions::InvalidResponse, 'Source responded with missing JSON')
     end
 
     it 'raises for badly formed JSON' do
-      expect {
+      expect do
         described_class.safely_parse_json('{ "data"')
-      }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /Source responded with invalid JSON/)
+      end.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /Source responded with invalid JSON/)
     end
   end
 
@@ -35,18 +35,18 @@ RSpec.describe CalendarImporter::Parsers::Base do
 
     it 'raises correct exception with invalid URL' do
       VCR.use_cassette(:invalid_url) do
-        expect {
+        expect do
           described_class.read_http_source('https://dandilion.gfsc.studio')
-        }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, /There was a socket error.*Failed to open TCP connection to dandilion.gfsc.studio:443/)
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, /There was a socket error.*Failed to open TCP connection to dandilion.gfsc.studio:443/)
       end
     end
 
     it 'raises correct exception when URL gives invalid response' do
       # NOTE: this cassette has been hand modified to respond with a 401 code
       VCR.use_cassette(:example_dot_com_bad_response) do
-        expect {
+        expect do
           described_class.read_http_source('https://example.com')
-        }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, 'The source URL could not be read (code=401)')
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, 'The source URL could not be read (code=401)')
       end
     end
   end

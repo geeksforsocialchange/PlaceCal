@@ -8,7 +8,7 @@ RSpec.describe 'GraphQL Events', type: :request do
 
   def execute_query(query_string, variables: {})
     post '/api/v1/graphql', params: { query: query_string, variables: variables.to_json }
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'eventConnection query' do
@@ -120,16 +120,6 @@ RSpec.describe 'GraphQL Events', type: :request do
 
   describe 'eventsByFilter query' do
     let(:site) { create(:site) }
-    let(:ward) { create(:riverside_ward) }
-
-    before do
-      site.neighbourhoods << ward
-      create_list(:event, 3,
-                  partner: partner,
-                  dtstart: 1.day.from_now,
-                  address: address)
-    end
-
     let(:query) do
       <<-GRAPHQL
         query($fromDate: String, $toDate: String) {
@@ -140,6 +130,15 @@ RSpec.describe 'GraphQL Events', type: :request do
           }
         }
       GRAPHQL
+    end
+    let(:ward) { create(:riverside_ward) }
+
+    before do
+      site.neighbourhoods << ward
+      create_list(:event, 3,
+                  partner: partner,
+                  dtstart: 1.day.from_now,
+                  address: address)
     end
 
     it 'returns events within date range' do

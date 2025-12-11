@@ -11,14 +11,14 @@ RSpec.describe Partner, 'address or service area presence validation' do
   let(:root_user) { create(:root) }
   let(:neighbourhood) { create(:riverside_ward) }
   let(:new_partner) do
-    Partner.new(
+    described_class.new(
       name: 'Alpha name',
       summary: 'Summary of alpha',
       accessed_by_user: user
     )
   end
   let(:new_partner_for_root) do
-    Partner.new(
+    described_class.new(
       name: 'Alpha name',
       summary: 'Summary of alpha',
       accessed_by_user: root_user

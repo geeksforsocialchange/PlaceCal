@@ -8,7 +8,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Neighbourhood #{n}" }
     unit { 'ward' }
     unit_code_key { 'NO00WD' }
-    sequence(:unit_code_value) { |n| "N%08d" % n }  # 9 characters total
+    sequence(:unit_code_value) { |n| format('N%08d', n) }  # 9 characters total
     release_date { Neighbourhood::LATEST_RELEASE_DATE }  # Current release
 
     # Legacy test compatibility - these are used by VCR fixtures

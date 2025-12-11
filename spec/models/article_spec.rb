@@ -40,7 +40,7 @@ RSpec.describe Article do
 
       # articles without tag
       4.times do |n|
-        Article.create!(
+        described_class.create!(
           title: "Article title no. #{n}",
           body: 'lorem ipsum ...',
           author: user
@@ -49,7 +49,7 @@ RSpec.describe Article do
 
       # with tags
       2.times do |n|
-        article = Article.create!(
+        article = described_class.create!(
           title: "Article title no. #{n}",
           body: 'lorem ipsum ...',
           author: user
@@ -57,7 +57,7 @@ RSpec.describe Article do
         article.tags << tag
       end
 
-      found = Article.with_tags(tag.id)
+      found = described_class.with_tags(tag.id)
       expect(found.count).to eq(2)
     end
   end
@@ -71,7 +71,7 @@ RSpec.describe Article do
 
       # articles not by partner (no tag)
       3.times do |n|
-        Article.create!(
+        described_class.create!(
           title: "Article title no. #{n}",
           body: 'lorem ipsum ...',
           author: user
@@ -80,7 +80,7 @@ RSpec.describe Article do
 
       # articles by tagged partner
       5.times do |n|
-        article = Article.create!(
+        article = described_class.create!(
           title: "Article title no. #{n}",
           body: 'lorem ipsum ...',
           author: user
@@ -88,7 +88,7 @@ RSpec.describe Article do
         article.partners << partner
       end
 
-      found = Article.with_partner_tag(tag.id)
+      found = described_class.with_partner_tag(tag.id)
       expect(found.length).to eq(5)
     end
   end
@@ -126,7 +126,7 @@ RSpec.describe Article do
         )
       end
 
-      found = Article.for_site(site).select(:id)
+      found = described_class.for_site(site).select(:id)
       expect(found.count).to eq(5)
     end
 
@@ -138,7 +138,7 @@ RSpec.describe Article do
       site.validate!
 
       3.times do |n|
-        article = Article.create!(
+        article = described_class.create!(
           title: "#{n} Article with tag",
           is_draft: nil,
           body: 'lorem ipsum dorem ditsum',
@@ -148,7 +148,7 @@ RSpec.describe Article do
         article.validate!
       end
 
-      found = Article.for_site(site)
+      found = described_class.for_site(site)
       expect(found.count).to eq(3)
     end
 
@@ -172,7 +172,7 @@ RSpec.describe Article do
       site.tags << tag
 
       5.times do |n|
-        article = Article.create!(
+        article = described_class.create!(
           title: "#{n} Article with tag",
           is_draft: nil,
           body: 'lorem ipsum dorem ditsum',
@@ -181,7 +181,7 @@ RSpec.describe Article do
         article.tags << tag
       end
 
-      found = Article.for_site(site).select(:id)
+      found = described_class.for_site(site).select(:id)
       expect(found.count).to eq(8)
     end
   end

@@ -45,17 +45,17 @@ module SeedSites
 
     # Coastshire Events
     coastshire_county = Neighbourhood.find_by(name: 'Coastshire')
-    if coastshire_county
-      coastshire_site = Site.create!(
-        name: NormalIsland::SITES[:coastshire_events][:name],
-        slug: NormalIsland::SITES[:coastshire_events][:slug],
-        tagline: NormalIsland::SITES[:coastshire_events][:tagline],
-        url: 'http://coastshire.lvh.me:3000',
-        is_published: true,
-        primary_neighbourhood: coastshire_county
-      )
-      $stdout.puts "  Created site: #{coastshire_site.name}"
-    end
+    return unless coastshire_county
+
+    coastshire_site = Site.create!(
+      name: NormalIsland::SITES[:coastshire_events][:name],
+      slug: NormalIsland::SITES[:coastshire_events][:slug],
+      tagline: NormalIsland::SITES[:coastshire_events][:tagline],
+      url: 'http://coastshire.lvh.me:3000',
+      is_published: true,
+      primary_neighbourhood: coastshire_county
+    )
+    $stdout.puts "  Created site: #{coastshire_site.name}"
   end
 end
 

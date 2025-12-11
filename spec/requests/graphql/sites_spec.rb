@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'GraphQL Sites', type: :request do
   def execute_query(query_string, variables: {})
     post '/api/v1/graphql', params: { query: query_string, variables: variables.to_json }
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'siteConnection query' do

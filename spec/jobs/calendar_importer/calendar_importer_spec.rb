@@ -213,9 +213,9 @@ RSpec.describe CalendarImporter::CalendarImporter do
       VCR.use_cassette('gfsc_studio') do
         calendar = build(:calendar, name: 'GFSC Studio', source: 'https://gfsc.studio', importer_mode: 'auto')
 
-        expect {
+        expect do
           described_class.new(calendar).parser
-        }.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed)
+        end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed)
       end
     end
   end
@@ -224,17 +224,17 @@ RSpec.describe CalendarImporter::CalendarImporter do
     it 'raises error for empty URL' do
       calendar = build(:calendar, source: '')
 
-      expect {
+      expect do
         described_class.new(calendar)
-      }.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed, /missing/)
+      end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed, /missing/)
     end
 
     it 'raises error for invalid URL format' do
       calendar = build(:calendar, source: 'hts://example,com')
 
-      expect {
+      expect do
         described_class.new(calendar)
-      }.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed, /not a valid URL/)
+      end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed, /not a valid URL/)
     end
   end
 end

@@ -103,6 +103,6 @@ class ArticlePolicy < ApplicationPolicy
     resolved_scope = Scope.new(user, record.class).resolve
     return false if resolved_scope.nil?
 
-    resolved_scope.where(id: record.id).exists?
+    resolved_scope.exists?(id: record.id)
   end
 end

@@ -40,9 +40,9 @@ RSpec.describe CalendarImporter::Parsers::Meetup do
 
         parser = described_class.new(calendar, url: bad_user_url)
 
-        expect {
+        expect do
           parser.download_calendar
-        }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
       end
     end
   end

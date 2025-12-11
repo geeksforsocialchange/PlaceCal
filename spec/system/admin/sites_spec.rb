@@ -74,10 +74,10 @@ RSpec.describe 'Admin Sites', :slow, type: :system do
       service_areas = all(:css, '.sites_neighbourhoods .select2-container', wait: 1)
 
       expect(service_areas.length).to be_zero,
-        '@site should only have a primary neighbourhood, ' \
-        'if this fails either this is now rendering where ' \
-        "it shouldn't or another neighborhood has been added " \
-        'at setup and the test should be adjusted'
+                                      '@site should only have a primary neighbourhood, ' \
+                                      'if this fails either this is now rendering where ' \
+                                      "it shouldn't or another neighborhood has been added " \
+                                      'at setup and the test should be adjusted'
     end
   end
 end
