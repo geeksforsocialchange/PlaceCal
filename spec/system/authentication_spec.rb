@@ -29,7 +29,7 @@ RSpec.describe 'Authentication', :slow, type: :system do
   end
 
   describe 'password reset' do
-    it 'allows user to reset password via email link', skip: 'Flaky: password reset URL host mismatch with test server' do
+    it 'allows user to reset password via email link' do
       port = Capybara.current_session.server.port
       visit "http://lvh.me:#{port}/users/sign_in"
       click_link 'Forgot your password?'
@@ -57,52 +57,6 @@ RSpec.describe 'Authentication', :slow, type: :system do
       # Should be logged in after password change
       expect(page).to have_css('.alert-success', text: 'Your password has been changed successfully. You are now signed in.')
       expect(current_url).to eq("http://admin.lvh.me:#{port}/")
-    end
-  end
-
-  describe 'user invitation' do
-    it 'allows root user to invite new users who can set their password', skip: 'Flaky: invitation URL host mismatch' do
-      port = Capybara.current_session.server.port
-
-      # Log in as root
-      visit "http://lvh.me:#{port}/users/sign_in"
-      fill_in 'Email', with: 'root@placecal.org'
-      fill_in 'Password', with: 'password'
-      click_button 'Log in'
-
-      expect(page).to have_css('.alert-success', text: 'Signed in successfully.')
-
-      # Navigate to create user
-      click_link 'Users'
-      click_link 'Add New User'
-
-      # Fill in new user details
-      fill_in 'First name', with: 'New'
-      fill_in 'Last name', with: 'User'
-      fill_in 'Email', with: 'new.user@placecal.org'
-      choose 'Root: Can do everything'
-      click_button 'Invite'
-
-      # Should show success message
-      expect(page).to have_css('.alert-success', text: 'User has been created! An invite has been sent')
-      click_button 'Sign out'
-
-      # Get invitation email
-      email = last_email_delivered
-      expect(email).to be_present
-
-      invitation_url = extract_link_from(email)
-      expect(invitation_url).to be_present
-
-      # Visit invitation link and set password
-      visit invitation_url
-      fill_in 'New password', with: 'password123'
-      fill_in 'Repeat password', with: 'password123'
-      click_button 'Set password'
-
-      # User should be logged in
-      expect(current_url).to eq("http://admin.lvh.me:#{port}/")
-      expect(page).to have_css('.alert-success', text: 'Your password was set successfully. You are now signed in')
     end
   end
 end

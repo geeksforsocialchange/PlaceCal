@@ -7,16 +7,9 @@ RSpec.describe 'User Invitation Flow', :slow, type: :system do
 
   before do
     create_default_site
-
-    # Configure URL options from Capybara session
-    server = Capybara.current_session.server
-    app_routes = Rails.application.routes
-    app_routes.default_url_options[:host] = server.host
-    app_routes.default_url_options[:port] = server.port
-    app_routes.default_url_options[:protocol] = 'http'
   end
 
-  it 'allows admin to invite a user who can then set their password', :skip => 'Flaky: invitation URL host mismatch with test server' do
+  it 'allows admin to invite a user who can then set their password' do
     # Log in as admin via admin subdomain
     port = Capybara.current_session.server.port
     visit "http://admin.lvh.me:#{port}/users/sign_in"
