@@ -181,32 +181,32 @@ Chosen option 3: Full migration to RSpec + Cucumber with Normal Island data.
 
 #### Cucumber Features (`features/`)
 
-| Feature File                       | Scenarios | Description                            |
-| ---------------------------------- | --------- | -------------------------------------- |
-| `admin/sites.feature`              | 4         | Site management (list, create, view)   |
-| `admin/articles.feature`           | 5         | Article management and associations    |
-| `admin/tags.feature`               | 5         | Tag CRUD and partner assignment        |
-| `admin/calendars.feature`          | 2         | Calendar viewing and listing           |
-| `admin/users.feature`              | 2         | User management access                 |
-| `admin/partners.feature`           | 3         | Partner CRUD operations                |
-| `public/news.feature`              | 4         | News browsing and article display      |
-| `public/site_browsing.feature`     | 5         | Site homepage, events, partners        |
-| `public/browse_events.feature`     | 3         | Event listing and details              |
-| `public/browse_partners.feature`   | 2         | Partner listing                        |
-| `authentication.feature`           | 3         | Login/logout flows                     |
+| Feature File                     | Scenarios | Description                          |
+| -------------------------------- | --------- | ------------------------------------ |
+| `admin/sites.feature`            | 4         | Site management (list, create, view) |
+| `admin/articles.feature`         | 5         | Article management and associations  |
+| `admin/tags.feature`             | 5         | Tag CRUD and partner assignment      |
+| `admin/calendars.feature`        | 2         | Calendar viewing and listing         |
+| `admin/users.feature`            | 2         | User management access               |
+| `admin/partners.feature`         | 3         | Partner CRUD operations              |
+| `public/news.feature`            | 4         | News browsing and article display    |
+| `public/site_browsing.feature`   | 5         | Site homepage, events, partners      |
+| `public/browse_events.feature`   | 3         | Event listing and details            |
+| `public/browse_partners.feature` | 2         | Partner listing                      |
+| `authentication.feature`         | 3         | Login/logout flows                   |
 
 #### Step Definitions (`features/step_definitions/`)
 
-| File                       | Purpose                                    |
-| -------------------------- | ------------------------------------------ |
-| `authentication_steps.rb`  | Login/logout, user creation                |
-| `navigation_steps.rb`      | Page visits, clicks, content assertions    |
-| `partner_steps.rb`         | Partner creation and management            |
-| `event_steps.rb`           | Event creation with dates                  |
-| `calendar_steps.rb`        | Calendar management                        |
-| `article_steps.rb`         | Article creation with site-aware linking   |
-| `site_steps.rb`            | Site management, subdomain navigation      |
-| `tag_steps.rb`             | Tag creation and partner tagging           |
+| File                      | Purpose                                  |
+| ------------------------- | ---------------------------------------- |
+| `authentication_steps.rb` | Login/logout, user creation              |
+| `navigation_steps.rb`     | Page visits, clicks, content assertions  |
+| `partner_steps.rb`        | Partner creation and management          |
+| `event_steps.rb`          | Event creation with dates                |
+| `calendar_steps.rb`       | Calendar management                      |
+| `article_steps.rb`        | Article creation with site-aware linking |
+| `site_steps.rb`           | Site management, subdomain navigation    |
+| `tag_steps.rb`            | Tag creation and partner tagging         |
 
 ---
 
@@ -327,15 +327,16 @@ bundle exec cucumber                        # Cucumber features
 
 GitHub Actions workflow (`.github/workflows/test-and-deploy.yml`) includes:
 
-| Step                     | Configuration                                         |
-| ------------------------ | ----------------------------------------------------- |
-| Chrome install           | `browser-actions/setup-chrome@latest` (stable)        |
-| RSpec command            | `RUN_SLOW_TESTS=true bundle exec rspec`               |
-| Cucumber command         | `bundle exec cucumber --tags "not @wip"`              |
-| Screenshot upload        | `tmp/capybara/` on test failure                       |
-| Linting                  | RuboCop and Prettier                                  |
+| Step              | Configuration                                  |
+| ----------------- | ---------------------------------------------- |
+| Chrome install    | `browser-actions/setup-chrome@latest` (stable) |
+| RSpec command     | `RUN_SLOW_TESTS=true bundle exec rspec`        |
+| Cucumber command  | `bundle exec cucumber --tags "not @wip"`       |
+| Screenshot upload | `tmp/capybara/` on test failure                |
+| Linting           | RuboCop and Prettier                           |
 
 **Flaky Test Fixes Applied:**
+
 - Dynamic ActionMailer port configuration in `spec/support/capybara.rb`
 - Capybara session reset between system tests (before and after hooks)
 - Unique email generation in invitation tests
