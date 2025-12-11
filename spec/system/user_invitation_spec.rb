@@ -40,13 +40,16 @@ RSpec.describe 'User Invitation Flow', :slow, type: :system do
     email = ActionMailer::Base.deliveries.last
     expect(email).to be_present
 
-    # Extract invitation URL from email - it already has the correct port from ActionMailer config
+    # Extract invitation token from email body
+    # Handle both HTML and text email parts
     body = email.body.parts.first.body.raw_source
-    invitation_url = body[%r{https?://[^\s"<>]+invitation_token=[^\s"<>]+}]
-    expect(invitation_url).to be_present
+    invitation_token = body[/invitation_token=([a-zA-Z0-9_-]+)/, 1]
+    expect(invitation_token).to be_present, "Could not extract invitation token from email body: #{body[0..500]}"
 
-    # Accept invitation using the URL directly (it has the correct test port)
-    visit invitation_url
+    # Build the invitation URL using the current test session's port
+    # This is more reliable than using the URL from the email which may have
+    # a different host/port depending on ActionMailer configuration timing
+    visit "http://lvh.me:#{port}/users/invitation/accept?invitation_token=#{invitation_token}"
     fill_in 'New password', with: 'password123'
     fill_in 'Repeat password', with: 'password123'
     click_button 'Set password'
