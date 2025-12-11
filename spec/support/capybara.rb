@@ -32,4 +32,21 @@ RSpec.configure do |config|
   config.before(type: :system) do
     driven_by :headless_chrome
   end
+
+  # Configure ActionMailer to use Capybara's dynamic server port
+  # This ensures email links (password reset, invitation) point to the correct host:port
+  config.before(type: :system) do
+    port = Capybara.current_session.server.port
+    ActionMailer::Base.default_url_options = {
+      host: 'lvh.me',
+      port: port,
+      protocol: 'http'
+    }
+    # Also update Rails routes default URL options for consistency
+    Rails.application.routes.default_url_options = {
+      host: 'lvh.me',
+      port: port,
+      protocol: 'http'
+    }
+  end
 end
