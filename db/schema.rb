@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_27_200239) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_11_213231) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -141,10 +141,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_200239) do
     t.string "description_html"
     t.string "summary_html"
     t.index ["address_id"], name: "index_events_address_id"
+    t.index ["calendar_id", "dtstart"], name: "index_events_calendar_id_dtstart"
     t.index ["calendar_id"], name: "index_events_on_calendar_id"
+    t.index ["dtstart"], name: "index_events_dtstart"
     t.index ["online_address_id"], name: "index_events_on_online_address_id"
     t.index ["partner_id"], name: "index_events_partner_id"
     t.index ["place_id"], name: "index_events_on_place_id"
+    t.index ["uid"], name: "index_events_uid"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -241,14 +244,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_200239) do
     t.boolean "can_be_assigned_events", default: false, null: false
     t.index "lower((name)::text)", name: "index_partners_lower_name_", unique: true
     t.index ["address_id"], name: "index_partners_on_address_id"
+    t.index ["hidden"], name: "index_partners_hidden"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
 
   create_table "partners_users", id: :serial, force: :cascade do |t|
     t.integer "partner_id"
     t.integer "user_id"
-    t.index ["partner_id"], name: "index_partners_users_on_partner_id"
-    t.index ["user_id"], name: "index_partners_users_on_user_id"
+    t.index ["partner_id", "user_id"], name: "index_partners_users_partner_id_user_id", unique: true
+    t.index ["user_id", "partner_id"], name: "index_partners_users_user_id_partner_id"
   end
 
   create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
@@ -286,6 +290,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_27_200239) do
     t.string "description_html"
     t.string "hero_text"
     t.string "hero_alttext"
+    t.index ["is_published"], name: "index_sites_is_published"
+    t.index ["slug"], name: "index_sites_slug", unique: true
+    t.index ["url"], name: "index_sites_url"
   end
 
   create_table "sites_neighbourhoods", force: :cascade do |t|
