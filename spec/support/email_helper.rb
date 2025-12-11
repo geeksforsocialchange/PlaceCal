@@ -32,4 +32,10 @@ end
 
 RSpec.configure do |config|
   config.include EmailHelper, type: :mailer
+  config.include EmailHelper, type: :system
+  config.include EmailHelper, type: :feature
+
+  config.before(:each, type: :system) do
+    ActionMailer::Base.deliveries.clear
+  end
 end
