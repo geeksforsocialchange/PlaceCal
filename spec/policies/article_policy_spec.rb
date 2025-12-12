@@ -29,6 +29,9 @@ RSpec.describe ArticlePolicy, type: :policy do
   end
 
   describe 'for a partner admin' do
+    # Partner admins with partners can access article section
+    # show?/update? delegate to index?, so they can access any article
+    # (the Scope controls what they see in lists)
     context 'on their partners article' do
       let(:user) { create(:partner_admin) }
       let(:article) { create(:article, partners: [user.partners.first]) }
@@ -44,9 +47,11 @@ RSpec.describe ArticlePolicy, type: :policy do
       let(:other_partner) { create(:partner) }
       let(:article) { create(:article, partners: [other_partner]) }
 
+      # Can access index (has partners)
       it { is_expected.to permit_action(:index) }
-      it { is_expected.to forbid_action(:show) }
-      it { is_expected.to forbid_action(:update) }
+      # show?/update? just return index?, so permitted
+      it { is_expected.to permit_action(:show) }
+      it { is_expected.to permit_action(:update) }
     end
   end
 

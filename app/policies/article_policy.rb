@@ -15,9 +15,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def show?
-    return true if user.root? || user.editor?
-
-    scope_includes_record?
+    index?
   end
 
   def create?
@@ -29,9 +27,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user.root? || user.editor?
-
-    scope_includes_record?
+    index?
   end
 
   def edit?
@@ -97,12 +93,5 @@ class ArticlePolicy < ApplicationPolicy
   def owned_neighbourhoods_have_partners?
     # We can make this less shallow, but it's not important since scoping rules have the deeper stuff anyway
     Partner.from_neighbourhoods_and_service_areas(user.owned_neighbourhood_ids).any?
-  end
-
-  def scope_includes_record?
-    resolved_scope = Scope.new(user, record.class).resolve
-    return false if resolved_scope.nil?
-
-    resolved_scope.exists?(id: record.id)
   end
 end

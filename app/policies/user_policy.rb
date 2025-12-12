@@ -28,26 +28,8 @@ class UserPolicy < ApplicationPolicy
     index?
   end
 
-  def show?
-    # Handle case when record is User class (not instance) - e.g. policy(User).show?
-    return index? if record.is_a?(Class)
-
-    return true if user.root?
-    return true if user.id == record.id
-    return scope_includes_record? if user.neighbourhood_admin? || user.partnership_admin?
-
-    false
-  end
-
   def update?
-    # Handle case when record is User class (not instance) - e.g. policy(User).update?
-    return index? if record.is_a?(Class)
-
-    return true if user.root?
-    return true if user.id == record.id
-    return scope_includes_record? if user.neighbourhood_admin? || user.partnership_admin?
-
-    false
+    index?
   end
 
   def edit?
@@ -170,12 +152,5 @@ class UserPolicy < ApplicationPolicy
 
   def can_see_any_partners?
     PartnerPolicy::Scope.new(user, Partner).resolve&.to_a&.any?
-  end
-
-  def scope_includes_record?
-    resolved_scope = Scope.new(user, record.class).resolve
-    return false if resolved_scope.nil?
-
-    resolved_scope.exists?(id: record.id)
   end
 end
