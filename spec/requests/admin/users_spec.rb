@@ -84,15 +84,28 @@ RSpec.describe 'Admin::Users', type: :request do
       end
     end
 
-    context 'as a neighbourhood admin with no partners' do
+    context 'as a neighbourhood admin with partners in their neighbourhood' do
+      let(:ward) { create(:riverside_ward) }
+      let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
+      let!(:partner) { create(:partner, address: create(:address, neighbourhood: ward)) }
+
+      before { sign_in user }
+
+      it 'shows form with partner selector' do
+        get new_admin_user_url(host: admin_host)
+        expect(response).to be_successful
+      end
+    end
+
+    context 'as a neighbourhood admin with no partners in their neighbourhood' do
       let(:ward) { create(:riverside_ward) }
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
 
       before { sign_in user }
 
-      it 'shows form with empty partner selector' do
+      it 'denies access' do
         get new_admin_user_url(host: admin_host)
-        expect(response).to be_successful
+        expect(response).to have_http_status(:forbidden).or redirect_to(root_path)
       end
     end
   end

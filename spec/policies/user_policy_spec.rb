@@ -48,7 +48,17 @@ RSpec.describe UserPolicy, type: :policy do
     let(:ward) { create(:riverside_ward) }
     let(:current_user) { create(:neighbourhood_admin, neighbourhood: ward) }
 
-    it { is_expected.to permit_action(:index) }
+    context 'with partners in their neighbourhood' do
+      let!(:partner_in_neighbourhood) do
+        create(:partner, address: create(:address, neighbourhood: ward))
+      end
+
+      it { is_expected.to permit_action(:index) }
+    end
+
+    context 'without partners in their neighbourhood' do
+      it { is_expected.to forbid_action(:index) }
+    end
 
     context 'when target user is partner admin in their neighbourhood' do
       let(:partner_admin) { create(:partner_admin) }
