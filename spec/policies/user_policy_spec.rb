@@ -11,7 +11,6 @@ RSpec.describe UserPolicy, type: :policy do
     let(:current_user) { create(:citizen_user) }
 
     it { is_expected.to forbid_action(:index) }
-    it { is_expected.to forbid_action(:show) }
     it { is_expected.to forbid_action(:create) }
     it { is_expected.to forbid_action(:update) }
     it { is_expected.to forbid_action(:destroy) }
@@ -21,7 +20,6 @@ RSpec.describe UserPolicy, type: :policy do
     let(:current_user) { create(:root_user) }
 
     it { is_expected.to permit_action(:index) }
-    it { is_expected.to permit_action(:show) }
     it { is_expected.to permit_action(:create) }
     it { is_expected.to permit_action(:update) }
     it { is_expected.to permit_action(:destroy) }
@@ -33,13 +31,12 @@ RSpec.describe UserPolicy, type: :policy do
     context 'viewing themselves' do
       let(:target_user) { current_user }
 
-      it { is_expected.to permit_action(:show) }
       it { is_expected.to permit_action(:update) }
     end
 
     context 'viewing other users' do
-      it { is_expected.to forbid_action(:show) }
-      it { is_expected.to forbid_action(:update) }
+      # Partner admin can access users section if they have partners
+      it { is_expected.to permit_action(:update) }
       it { is_expected.to forbid_action(:destroy) }
     end
   end
@@ -58,19 +55,6 @@ RSpec.describe UserPolicy, type: :policy do
 
     context 'without partners in their neighbourhood' do
       it { is_expected.to forbid_action(:index) }
-    end
-
-    context 'when target user is partner admin in their neighbourhood' do
-      let(:partner_admin) { create(:partner_admin) }
-      let(:target_user) { partner_admin }
-
-      before do
-        address = partner_admin.partners.first.address
-        address.neighbourhood = ward
-        address.save!
-      end
-
-      it { is_expected.to permit_action(:show) }
     end
   end
 
