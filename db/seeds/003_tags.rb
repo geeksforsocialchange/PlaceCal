@@ -1,32 +1,43 @@
 # frozen_string_literal: true
 
+require_relative '../../lib/normal_island'
+
 module SeedTags
   def self.run
     $stdout.puts 'Tags'
 
-    # category tag
-    Tag.create!(
-      name: 'Category Tag',
-      slug: 'category-tag',
-      type: 'Category',
-      description: 'A tag about a category'
-    )
+    # Create category tags
+    NormalIsland::TAGS[:categories].each do |tag_data|
+      tag = Tag.create!(
+        name: tag_data[:name],
+        slug: tag_data[:name].parameterize,
+        type: tag_data[:type],
+        description: "Events and activities related to #{tag_data[:name].downcase}"
+      )
+      $stdout.puts "  Created category: #{tag.name}"
+    end
 
-    # facility tag
-    Tag.create!(
-      name: 'Facility Tag',
-      slug: 'facility-tag',
-      type: 'Facility',
-      description: 'A tag about a facility'
-    )
+    # Create facility tags
+    NormalIsland::TAGS[:facilities].each do |tag_data|
+      tag = Tag.create!(
+        name: tag_data[:name],
+        slug: tag_data[:name].parameterize,
+        type: tag_data[:type],
+        description: "Venue has: #{tag_data[:name]}"
+      )
+      $stdout.puts "  Created facility: #{tag.name}"
+    end
 
-    # partnership tag
-    Tag.create!(
-      name: 'Partnership Tag',
-      slug: 'partnership-tag',
-      type: 'Partnership',
-      description: 'A tag about a partnership'
-    )
+    # Create partnership tags
+    NormalIsland::TAGS[:partnerships].each do |tag_data|
+      tag = Tag.create!(
+        name: tag_data[:name],
+        slug: tag_data[:name].parameterize,
+        type: tag_data[:type],
+        description: "Part of the #{tag_data[:name]} partnership"
+      )
+      $stdout.puts "  Created partnership: #{tag.name}"
+    end
   end
 end
 
