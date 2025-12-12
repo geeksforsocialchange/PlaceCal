@@ -17,7 +17,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.root? || user.neighbourhood_admin? || user.partnership_admin? || can_see_any_partners?
+    user.root? || can_see_any_partners?
   end
 
   def create?
