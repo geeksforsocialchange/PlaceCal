@@ -18,7 +18,7 @@ module CalendarImporter::Parsers
       user_name = (@url =~ %r{^https://www\.meetup\.com/([^/]*)/?$}) && Regexp.last_match(1)
       return [] if user_name.blank?
 
-      api_url = "https://api.meetup.com/#{user_name}/events"
+      api_url = "https://www.meetup.com/#{user_name}/events/ical"
       response_body = Base.read_http_source(api_url)
 
       Base.safely_parse_json response_body
