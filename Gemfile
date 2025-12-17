@@ -104,7 +104,7 @@ group :development do
   gem 'mutex_m'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop', '1.81.7', require: false
+  gem 'rubocop', '1.82.0', require: false
   gem 'rubocop-graphql', '1.5.6', require: false
   gem 'rubocop-minitest', '0.38.2', require: false
   gem 'rubocop-performance', '1.26.1', require: false
