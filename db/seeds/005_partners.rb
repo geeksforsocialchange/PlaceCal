@@ -1,43 +1,48 @@
 # frozen_string_literal: true
 
+require_relative '../../lib/normal_island'
+
 module SeedPartners
-  LONG_TEXT = <<-LOREM_IPSUM
-  Nullam in tristique orci. Mauris congue ex eget varius pretium. Quisque at posuere
-  lorem. Vestibulum mauris justo, vestibulum non laoreet varius, vehicula varius dui.
-  Donec suscipit sapien nulla, eu imperdiet lorem porttitor in. Nullam aliquet magna
-  scelerisque ipsum gravida feugiat. Pellentesque consectetur massa eget vulputate
-  consectetur. Sed at venenatis metus. Praesent eleifend turpis interdum massa varius
-  vehicula. Suspendisse potenti. Nullam vel malesuada sapien.
+  LONG_TEXT = <<~LOREM_IPSUM
+    Welcome to our community organisation! We provide a range of services and activities
+    for local residents. Our friendly team is dedicated to supporting the community and
+    creating opportunities for everyone to get involved.
 
-  Nam et lobortis risus. Quisque nec magna dolor. Mauris congue, metus et laoreet
-  fermentum, nisl dolor vestibulum quam, et convallis justo orci eu mi. Proin
-  condimentum ligula nec fringilla tempor. Morbi bibendum nec leo at pretium. Vivamus
-  feugiat mi a mi facilisis, vel auctor ligula pretium. Mauris efficitur, ante non
-  blandit sagittis, odio diam ornare velit, sit amet fringilla tortor est id dui.
+    We offer regular events, workshops, and drop-in sessions throughout the week. Whether
+    you're looking for social activities, learning opportunities, or just a friendly place
+    to meet others, we're here for you.
 
-  Donec imperdiet sem quis molestie dictum. Aliquam nec metus nec magna imperdiet
-  congue. Nulla dui enim, sodales in lacinia a, elementum nec risus. In pellentesque
-  mauris a ex dapibus volutpat. Nam feugiat massa et est maximus, at convallis est
-  sollicitudin. Cras finibus vitae leo sit amet mattis. Morbi ullamcorper, est vitae
-  pellentesque egestas, urna turpis porttitor nulla, gravida volutpat metus mauris
-  quis dui. Aliquam pretium nec arcu nec vehicula. Nullam tincidunt tellus ullamcorper
-  facilisis scelerisque. Nam dolor leo, interdum vitae feugiat tempus, accumsan sed
-  felis. Vivamus dui tellus, eleifend quis mattis sed, ornare at libero.
+    Our facilities are fully accessible and we welcome visitors of all ages and backgrounds.
+    Please get in touch if you'd like to know more about what we do or how you can get involved.
   LOREM_IPSUM
 
   def self.run
     $stdout.puts 'Partners'
 
-    partner = Partner.new(
-      name: 'Sample Partner',
-      summary: 'The summary of Sample Partner',
-      description: LONG_TEXT
-    )
+    # Create partners for each Normal Island location
+    NormalIsland::PARTNERS.each do |_key, data|
+      ward = Neighbourhood.find_by(name: NormalIsland::WARDS[data[:ward]][:name])
+      next unless ward
 
-    neighbourhood = Neighbourhood.last
-    partner.service_area_neighbourhoods << neighbourhood
+      address_data = NormalIsland::ADDRESSES[data[:ward]]
 
-    partner.save!
+      address = Address.create!(
+        street_address: address_data[:street_address],
+        postcode: address_data[:postcode],
+        latitude: address_data[:latitude],
+        longitude: address_data[:longitude],
+        neighbourhood: ward
+      )
+
+      partner = Partner.create!(
+        name: data[:name],
+        summary: data[:summary],
+        description: LONG_TEXT,
+        address: address
+      )
+
+      $stdout.puts "  Created partner: #{partner.name} (#{ward.name})"
+    end
   end
 end
 

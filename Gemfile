@@ -9,7 +9,6 @@ git_source(:github) do |repo_name|
 end
 
 # Core
-gem 'minitest-rails'
 gem 'pg'
 gem 'puma'
 gem 'rails', '7.2.3'
@@ -92,12 +91,15 @@ group :development, :test do
   gem 'byebug'
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rspec-rails', '~> 7.0'
   gem 'timecop'
 end
 
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'claude-on-rails'
   gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
@@ -106,10 +108,10 @@ group :development do
   gem 'rdoc'
   gem 'rubocop', '1.81.7', require: false
   gem 'rubocop-graphql', '1.5.6', require: false
-  gem 'rubocop-minitest', '0.38.2', require: false
   gem 'rubocop-performance', '1.26.1', require: false
   gem 'rubocop-rails', '2.34.2', require: false
   gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
   gem 'web-console'
@@ -117,15 +119,17 @@ group :development do
 end
 
 group :test do
-  # gem 'simplecov', require: false
+  gem 'capybara'
   gem 'capybara-select-2'
+  gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'
   gem 'graphql-client'
   gem 'json_matchers'
-  gem 'minitest-rails-capybara'
-  gem 'minitest-reporters'
+  gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers', '~> 6.0'
+  gem 'simplecov', require: false
   gem 'vcr'
   gem 'webmock' # used by VCR
 end
