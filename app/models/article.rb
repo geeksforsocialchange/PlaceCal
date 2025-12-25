@@ -10,6 +10,7 @@ class Article < ApplicationRecord
   friendly_id :slug_candidates, use: :slugged
 
   validates :title, :body, presence: true
+  validates :slug, uniqueness: true
 
   before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
 

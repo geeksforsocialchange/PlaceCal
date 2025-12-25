@@ -81,6 +81,7 @@ gem 'enumerize'
 gem 'friendly_id'
 # gem 'listen' # needed?
 gem 'invisible_captcha'
+gem 'mutex_m' # Fixes an warning with the spring gemspec - can remove later
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
@@ -98,10 +99,10 @@ end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'database_consistency', require: false
   gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
-  gem 'mutex_m'
   gem 'rails-erd'
   gem 'rdoc'
   gem 'rubocop', '1.82.1', require: false
