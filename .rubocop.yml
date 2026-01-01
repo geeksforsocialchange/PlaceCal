@@ -296,5 +296,10 @@ Style/SuperWithArgsParentheses:
 Style/YodaCondition:
   Enabled: false
 
+Style/StringLiterals:
+  Exclude:
+    - "spec/**/*.rb"
+    - "features/**/*.rb"
+
 Style/ZeroLengthPredicate:
   Enabled: false
