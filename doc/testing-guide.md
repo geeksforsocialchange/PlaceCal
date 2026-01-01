@@ -6,6 +6,8 @@ A guide for writing and running tests in PlaceCal.
 
 ## Quick Reference
 
+**Note:** Tests require a running PostgreSQL database. If using Docker, ensure `make docker` is running first.
+
 ### Running Tests
 
 ```bash
