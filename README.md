@@ -96,6 +96,8 @@ PlaceCal uses **RSpec** for unit/integration tests and **Cucumber** for BDD-styl
 
 We use [Prettier](https://prettier.io/) to format everything it's able to parse. We run this automatically as part of a pre-commit hook.
 
+**Note:** Tests require a running PostgreSQL database. If using Docker, ensure `make docker` is running first.
+
 ### Running tests
 
 ```sh
