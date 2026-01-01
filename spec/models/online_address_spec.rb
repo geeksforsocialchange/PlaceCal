@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe OnlineAddress do
-  describe 'event association' do
-    it 'can create online address with event' do
+  describe "event association" do
+    it "can create online address with event" do
       VCR.use_cassette(:import_test_calendar) do
         event = create(:event)
         online_address = create(:online_address)

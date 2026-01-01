@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe CalendarImporter::EventResolver do
   FakeICSEvent = Struct.new(
@@ -60,20 +60,20 @@ RSpec.describe CalendarImporter::EventResolver do
   let(:fake_ics_event) do
     event = FakeICSEvent.new(
       uid: 123,
-      summary: 'A summary',
-      description: 'A description',
-      location: 'A location',
-      rrule: '',
-      last_modified: '',
+      summary: "A summary",
+      description: "A description",
+      location: "A location",
+      rrule: "",
+      last_modified: "",
       custom_properties: {}
     )
     patch_ics_dates(event, start_date, end_date)
   end
   let(:ics_event_data) { CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date) }
 
-  describe 'location strategies' do
-    it 'online only strategy does not set place or address' do
-      calendar = make_calendar_for_strategy('online_only')
+  describe "location strategies" do
+    it "online only strategy does not set place or address" do
+      calendar = make_calendar_for_strategy("online_only")
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
@@ -84,8 +84,8 @@ RSpec.describe CalendarImporter::EventResolver do
       expect(resolver.data.partner_id).to eq(calendar.partner_id)
     end
 
-    it 'no location strategy does not set place or address' do
-      calendar = make_calendar_for_strategy('no_location')
+    it "no location strategy does not set place or address" do
+      calendar = make_calendar_for_strategy("no_location")
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
@@ -97,14 +97,14 @@ RSpec.describe CalendarImporter::EventResolver do
     end
   end
 
-  describe 'online location detection' do
-    context 'with ICS events' do
-      it 'detects google meet url in custom properties' do
-        meet_link = 'https://meet.google.com/aaa-aaaa-aaa'
-        fake_ics_event[:custom_properties] = { 'x_google_conference' => [meet_link] }
+  describe "online location detection" do
+    context "with ICS events" do
+      it "detects google meet url in custom properties" do
+        meet_link = "https://meet.google.com/aaa-aaaa-aaa"
+        fake_ics_event[:custom_properties] = { "x_google_conference" => [meet_link] }
         ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
-        calendar = make_calendar_for_strategy('event')
+        calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
@@ -115,12 +115,12 @@ RSpec.describe CalendarImporter::EventResolver do
         expect(online_address.url).to eq(meet_link)
       end
 
-      it 'detects jitsi link in description' do
-        jitsi_link = 'https://meet.jit.si/blahblabladsf'
+      it "detects jitsi link in description" do
+        jitsi_link = "https://meet.jit.si/blahblabladsf"
         fake_ics_event[:description] = "Join us on jitsi: #{jitsi_link} words words words"
         ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
-        calendar = make_calendar_for_strategy('place')
+        calendar = make_calendar_for_strategy("place")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
@@ -131,12 +131,12 @@ RSpec.describe CalendarImporter::EventResolver do
         expect(online_address.url).to eq(jitsi_link)
       end
 
-      it 'detects google meet link in description' do
-        meet_link = 'https://meet.google.com/aaa-aaaa-aaa'
+      it "detects google meet link in description" do
+        meet_link = "https://meet.google.com/aaa-aaaa-aaa"
         fake_ics_event[:description] = "Join us on meets: #{meet_link} words words words"
         ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
-        calendar = make_calendar_for_strategy('event')
+        calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
@@ -147,12 +147,12 @@ RSpec.describe CalendarImporter::EventResolver do
         expect(online_address.url).to eq(meet_link)
       end
 
-      it 'detects zoom link in description' do
-        zoom_link = 'https://us04web.zoom.us/j/78434510758?pwd=aILSsYSJRSb_uO87tFjulZuLAA0eXT.1'
+      it "detects zoom link in description" do
+        zoom_link = "https://us04web.zoom.us/j/78434510758?pwd=aILSsYSJRSb_uO87tFjulZuLAA0eXT.1"
         fake_ics_event[:description] = "join us on zoom: <p>#{zoom_link}<p> words words words"
         ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
-        calendar = make_calendar_for_strategy('event')
+        calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
@@ -164,13 +164,13 @@ RSpec.describe CalendarImporter::EventResolver do
       end
     end
 
-    context 'with eventbrite events' do
-      it 'detects online event url' do
-        eventbrite_link = 'https://www.eventbrite.co.uk/e/some-random-event-woo-hoo-111111111111'
+    context "with eventbrite events" do
+      it "detects online event url" do
+        eventbrite_link = "https://www.eventbrite.co.uk/e/some-random-event-woo-hoo-111111111111"
         fake_eventbrite_event = FakeEventbriteEvent.new(
-          id: '111111111111',
-          name: { text: 'A summary' },
-          description: { text: 'A description' },
+          id: "111111111111",
+          name: { text: "A summary" },
+          description: { text: "A description" },
           venue: nil,
           start: { local: start_date.iso8601 },
           end: { local: end_date.iso8601 },
@@ -179,7 +179,7 @@ RSpec.describe CalendarImporter::EventResolver do
         )
         event_data = CalendarImporter::Events::EventbriteEvent.new(fake_eventbrite_event)
 
-        calendar = make_calendar_for_strategy('event')
+        calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(event_data, calendar, [], start_date)
         resolver.determine_online_location
@@ -191,13 +191,13 @@ RSpec.describe CalendarImporter::EventResolver do
       end
     end
 
-    context 'with meetup events' do
-      it 'detects online event url' do
-        meetup_link = 'https://www.meetup.co.uk/e/some-random-event-woo-hoo-111111111111'
+    context "with meetup events" do
+      it "detects online event url" do
+        meetup_link = "https://www.meetup.co.uk/e/some-random-event-woo-hoo-111111111111"
         fake_meetup_event = FakeMeetupEvent.new(
-          id: '111111111',
-          name: { text: 'A summary' },
-          description: { text: '<p>This is a meetup description!</p>' },
+          id: "111111111",
+          name: { text: "A summary" },
+          description: { text: "<p>This is a meetup description!</p>" },
           venue: nil,
           time: start_date.to_i,
           utc_offset: (end_date.to_i - start_date.to_i),
@@ -206,7 +206,7 @@ RSpec.describe CalendarImporter::EventResolver do
         )
         event_data = CalendarImporter::Events::MeetupEvent.new(fake_meetup_event)
 
-        calendar = make_calendar_for_strategy('event')
+        calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(event_data, calendar, [], start_date)
         resolver.determine_online_location
@@ -219,9 +219,9 @@ RSpec.describe CalendarImporter::EventResolver do
     end
   end
 
-  describe 'notices' do
-    it 'are empty when no problems occur' do
-      calendar = make_calendar_for_strategy('no_location')
+  describe "notices" do
+    it "are empty when no problems occur" do
+      calendar = make_calendar_for_strategy("no_location")
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
@@ -231,12 +231,12 @@ RSpec.describe CalendarImporter::EventResolver do
       expect(notices).to be_empty
     end
 
-    it 'generates notices when Event fails validations' do
-      calendar = make_calendar_for_strategy('no_location')
+    it "generates notices when Event fails validations" do
+      calendar = make_calendar_for_strategy("no_location")
       notices = []
 
       event = ics_event_data.instance_variable_get(:@event)
-      event.summary = ''
+      event.summary = ""
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
       resolver.determine_location_for_strategy
@@ -245,9 +245,9 @@ RSpec.describe CalendarImporter::EventResolver do
       expect(notices).to eq(["Summary can't be blank"])
     end
 
-    it 'still imports when missing address' do
-      calendar = make_calendar_for_strategy('no_location')
-      calendar.strategy = 'event'
+    it "still imports when missing address" do
+      calendar = make_calendar_for_strategy("no_location")
+      calendar.strategy = "event"
 
       notices = []
 

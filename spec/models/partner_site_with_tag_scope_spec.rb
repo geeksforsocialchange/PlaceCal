@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe Partner, '.with_tags scope' do
-  let(:post_code) { 'M15 5DD' }
-  let(:unit) { 'ward' }
-  let(:unit_code) { 'E05011368' }
-  let(:unit_name) { 'Hulme' }
-  let(:unit_code_key) { 'WD19CD' }
+RSpec.describe Partner, ".with_tags scope" do
+  let(:post_code) { "M15 5DD" }
+  let(:unit) { "ward" }
+  let(:unit_code) { "E05011368" }
+  let(:unit_name) { "Hulme" }
+  let(:unit_code_key) { "WD19CD" }
   let(:release_date) { DateTime.new(2023, 7) }
 
   let(:site) { create(:site) }
@@ -28,13 +28,13 @@ RSpec.describe Partner, '.with_tags scope' do
     Neighbourhood.destroy_all
   end
 
-  it 'empty site/tag returns nothing' do
+  it "empty site/tag returns nothing" do
     tag = nil
     output = described_class.for_site(site).with_tags(tag)
     expect(output).to be_empty
   end
 
-  it 'finds partners with tag' do
+  it "finds partners with tag" do
     tag = create(:tag)
     other_tag = create(:tag)
 

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'Devise User Invitation Mailer', type: :mailer do
+RSpec.describe "Devise User Invitation Mailer", type: :mailer do
   include EmailHelper
 
-  it 'sends an email when inviting a user' do
-    user = User.new(email: 'user@example.com')
-    user.password = user.password_confirmation = 'password'
+  it "sends an email when inviting a user" do
+    user = User.new(email: "user@example.com")
+    user.password = user.password_confirmation = "password"
     user.save!
     user.invite!
 

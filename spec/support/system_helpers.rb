@@ -4,16 +4,16 @@
 module SystemHelpers
   # Click a sidebar navigation link
   def click_sidebar(href)
-    within '.sidebar-sticky' do
+    within ".sidebar-sticky" do
       link = page.find(:css, "a[href*='#{href}']")
-      visit link['href']
+      visit link["href"]
     end
   end
 
   # Wait for datatables to load
   def await_datatables(time = 5)
     find_element_with_retry do
-      page.find(:css, '#datatable_info', wait: time)
+      page.find(:css, "#datatable_info", wait: time)
     end
   end
 
@@ -32,7 +32,7 @@ module SystemHelpers
   # Suppress stdout during block execution
   def suppress_stdout
     stdout = $stdout
-    $stdout = File.open(File::NULL, 'w')
+    $stdout = File.open(File::NULL, "w")
     yield
   ensure
     $stdout = stdout

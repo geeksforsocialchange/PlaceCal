@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe Partner, 'address or service area permission validation' do
+RSpec.describe Partner, "address or service area permission validation" do
   let(:user_neighbourhood) { create(:riverside_ward) }
   let(:user) do
     u = create(:user)
@@ -11,21 +11,21 @@ RSpec.describe Partner, 'address or service area permission validation' do
   end
   let(:new_partner) { build(:partner, address: nil, accessed_by_user: user) }
 
-  it 'is valid if address is in user ward' do
+  it "is valid if address is in user ward" do
     new_partner.address = create(:address, neighbourhood: user_neighbourhood)
     new_partner.save!
 
     expect(new_partner).to be_valid
   end
 
-  it 'is valid with service area in user neighbourhoods' do
+  it "is valid with service area in user neighbourhoods" do
     new_partner.service_area_neighbourhoods << user_neighbourhood
     new_partner.save!
 
     expect(new_partner).to be_valid
   end
 
-  it 'is valid with service area contained within users neighbourhood subtrees' do
+  it "is valid with service area contained within users neighbourhood subtrees" do
     # Use a ward which has a parent (district) - base :neighbourhood has no parent
     child_neighbourhood = create(:riverside_ward)
     parent_neighbourhood = child_neighbourhood.parent # millbrook_district

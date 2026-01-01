@@ -1,25 +1,25 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe CalendarImporter::Events::Base do
-  describe '#html_sanitize' do
+  describe "#html_sanitize" do
     subject(:event) { described_class.new(nil) }
 
-    it 'returns blank string with no input' do
+    it "returns blank string with no input" do
       output = event.html_sanitize(nil)
 
-      expect(output).to eq('')
+      expect(output).to eq("")
     end
 
-    it 'returns plain text if input' do
-      input = 'This is plain text'
+    it "returns plain text if input" do
+      input = "This is plain text"
       output = event.html_sanitize(input)
 
       expect(output).to eq(input)
     end
 
-    it 'returns content if HTML is input' do
+    it "returns content if HTML is input" do
       input = <<-HTML
         <h1 id="title">A title!</h1>
         <p>This is input</p>
@@ -55,7 +55,7 @@ RSpec.describe CalendarImporter::Events::Base do
       expect(output).to eq(expected_output.strip)
     end
 
-    it 'handles badly formed HTML' do
+    it "handles badly formed HTML" do
       input = <<-HTML
         <h1>A title!</h2>
         <p>This is input
@@ -71,19 +71,19 @@ RSpec.describe CalendarImporter::Events::Base do
       #   that gets stripped by vim when in
       #   heredoc mode. -ik
       expected_output = [
-        '### A title! ',
-        '',
-        'This is input',
-        '',
-        'Another Paragraph',
-        '',
-        'Things'
+        "### A title! ",
+        "",
+        "This is input",
+        "",
+        "Another Paragraph",
+        "",
+        "Things"
       ].join("\n")
 
       expect(output).to eq(expected_output.strip)
     end
 
-    it 'given markdown input nothing is changed on output' do
+    it "given markdown input nothing is changed on output" do
       input = <<~MARKDOWN.strip
         ### A title!
 
@@ -101,11 +101,11 @@ RSpec.describe CalendarImporter::Events::Base do
       expect(output).to eq(input)
     end
 
-    it 'can filter out &amp; type HTML entities' do
-      bad_text = '<p>VFD PRESENTS: Queer Comedy Nights // Britney &amp; Sarah Kendall</p>'
+    it "can filter out &amp; type HTML entities" do
+      bad_text = "<p>VFD PRESENTS: Queer Comedy Nights // Britney &amp; Sarah Kendall</p>"
       output = event.html_sanitize(bad_text, as_plaintext: true)
 
-      clean_text = 'VFD PRESENTS: Queer Comedy Nights // Britney & Sarah Kendall'
+      clean_text = "VFD PRESENTS: Queer Comedy Nights // Britney & Sarah Kendall"
       expect(output).to eq(clean_text)
     end
   end

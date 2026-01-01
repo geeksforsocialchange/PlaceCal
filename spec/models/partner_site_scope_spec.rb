@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe Partner, '.for_site scope' do
+RSpec.describe Partner, ".for_site scope" do
   # NOTE: these MUST match up with the geocoder response defined in spec/support/normal_island_geocoder.rb
-  let(:post_code) { 'M15 5DD' }
-  let(:unit) { 'ward' }
-  let(:unit_code) { 'E05011368' }
-  let(:unit_name) { 'Hulme' }
-  let(:unit_code_key) { 'WD19CD' }
+  let(:post_code) { "M15 5DD" }
+  let(:unit) { "ward" }
+  let(:unit_code) { "E05011368" }
+  let(:unit_name) { "Hulme" }
+  let(:unit_code_key) { "WD19CD" }
   let(:release_date) { DateTime.new(2023, 7) }
 
   let(:site) { create(:site) }
@@ -29,12 +29,12 @@ RSpec.describe Partner, '.for_site scope' do
     Neighbourhood.destroy_all
   end
 
-  it 'empty site returns nothing' do
+  it "empty site returns nothing" do
     output = described_class.for_site(site)
     expect(output).to be_empty
   end
 
-  it 'can find partners in site with address' do
+  it "can find partners in site with address" do
     site.neighbourhoods << geocodable_neighbourhood
 
     create_list(:partner, 5, address: address_one)
@@ -43,7 +43,7 @@ RSpec.describe Partner, '.for_site scope' do
     expect(output.count).to eq(5)
   end
 
-  it 'can find partners in site with service areas (without duplicates)' do
+  it "can find partners in site with service areas (without duplicates)" do
     neighbourhood_a = create(:bare_neighbourhood)
     site.neighbourhoods << neighbourhood_a
 
@@ -62,7 +62,7 @@ RSpec.describe Partner, '.for_site scope' do
     expect(output.count).to eq(5)
   end
 
-  it 'can find partners by address and service_area' do
+  it "can find partners by address and service_area" do
     neighbourhood_a = create(:bare_neighbourhood)
     site.neighbourhoods << neighbourhood_a
 
@@ -81,7 +81,7 @@ RSpec.describe Partner, '.for_site scope' do
     expect(output.count).to eq(2)
   end
 
-  it 'ignores partners on other sites' do
+  it "ignores partners on other sites" do
     neighbourhood_a = create(:bare_neighbourhood)
     site.neighbourhoods << neighbourhood_a
 
@@ -121,7 +121,7 @@ RSpec.describe Partner, '.for_site scope' do
     expect(output.count).to eq(10)
   end
 
-  describe 'with tags' do
+  describe "with tags" do
     def create_partner_with_tags(neighbourhood, *tags)
       partner = build(:partner, address: nil)
       partner.service_area_neighbourhoods << neighbourhood
@@ -132,7 +132,7 @@ RSpec.describe Partner, '.for_site scope' do
       partner
     end
 
-    it 'only finds partners with tags if site has tags' do
+    it "only finds partners with tags if site has tags" do
       tag = create(:tag)
       other_tag = create(:tag)
 

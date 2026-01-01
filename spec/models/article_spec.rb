@@ -1,29 +1,29 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Article do
   let(:article) { create(:article) }
   let(:article_draft) { create(:article_draft) }
 
-  describe 'validations' do
-    it 'is valid' do
+  describe "validations" do
+    it "is valid" do
       expect(article).to be_valid
     end
 
-    it 'requires title to be present' do
-      article.title = ''
+    it "requires title to be present" do
+      article.title = ""
       expect(article).not_to be_valid
     end
 
-    it 'requires body to be present' do
-      article.body = ''
+    it "requires body to be present" do
+      article.body = ""
       expect(article).not_to be_valid
     end
   end
 
-  describe 'published_at' do
-    it 'updates correctly when is_draft is set' do
+  describe "published_at" do
+    it "updates correctly when is_draft is set" do
       expect(article_draft.published_at).to be_nil
 
       article_draft.is_draft = false
@@ -33,8 +33,8 @@ RSpec.describe Article do
     end
   end
 
-  describe '.with_tags' do
-    it 'finds articles tagged with tag' do
+  describe ".with_tags" do
+    it "finds articles tagged with tag" do
       user = create(:user)
       tag = create(:tag)
 
@@ -42,7 +42,7 @@ RSpec.describe Article do
       4.times do |n|
         described_class.create!(
           title: "Article title no. #{n}",
-          body: 'lorem ipsum ...',
+          body: "lorem ipsum ...",
           author: user
         )
       end
@@ -51,7 +51,7 @@ RSpec.describe Article do
       2.times do |n|
         article = described_class.create!(
           title: "Article title no. #{n}",
-          body: 'lorem ipsum ...',
+          body: "lorem ipsum ...",
           author: user
         )
         article.tags << tag
@@ -62,8 +62,8 @@ RSpec.describe Article do
     end
   end
 
-  describe '.with_partner_tag' do
-    it 'finds articles from partners with a given tag' do
+  describe ".with_partner_tag" do
+    it "finds articles from partners with a given tag" do
       user = create(:user)
       tag = create(:tag)
       partner = create(:partner)
@@ -73,7 +73,7 @@ RSpec.describe Article do
       3.times do |n|
         described_class.create!(
           title: "Article title no. #{n}",
-          body: 'lorem ipsum ...',
+          body: "lorem ipsum ...",
           author: user
         )
       end
@@ -82,7 +82,7 @@ RSpec.describe Article do
       5.times do |n|
         article = described_class.create!(
           title: "Article title no. #{n}",
-          body: 'lorem ipsum ...',
+          body: "lorem ipsum ...",
           author: user
         )
         article.partners << partner
@@ -93,12 +93,12 @@ RSpec.describe Article do
     end
   end
 
-  describe '.for_site' do
+  describe ".for_site" do
     let(:neighbourhood_1) { create(:riverside_ward) }
     let(:neighbourhood_2) { create(:oldtown_ward) }
     let(:author) { create(:root) }
 
-    it 'returns articles for site (via neighbourhood)' do
+    it "returns articles for site (via neighbourhood)" do
       site = create(:site)
       site.neighbourhoods << neighbourhood_1
       site.neighbourhoods << neighbourhood_2
@@ -111,7 +111,7 @@ RSpec.describe Article do
         partner_1.articles.create!(
           title: "#{n} Article from Partner 1",
           is_draft: nil,
-          body: 'lorem ipsum dorem ditsum',
+          body: "lorem ipsum dorem ditsum",
           author: author
         )
       end
@@ -121,7 +121,7 @@ RSpec.describe Article do
         partner_2.articles.create!(
           title: "#{n} Article from Partner 2",
           is_draft: nil,
-          body: 'lorem ipsum dorem ditsum',
+          body: "lorem ipsum dorem ditsum",
           author: author
         )
       end
@@ -130,7 +130,7 @@ RSpec.describe Article do
       expect(found.count).to eq(5)
     end
 
-    it 'returns articles with site tags applied' do
+    it "returns articles with site tags applied" do
       tag = create(:tag)
 
       site = create(:site)
@@ -141,7 +141,7 @@ RSpec.describe Article do
         article = described_class.create!(
           title: "#{n} Article with tag",
           is_draft: nil,
-          body: 'lorem ipsum dorem ditsum',
+          body: "lorem ipsum dorem ditsum",
           author: author
         )
         article.tags << tag
@@ -152,7 +152,7 @@ RSpec.describe Article do
       expect(found.count).to eq(3)
     end
 
-    it 'finds articles by both neighbourhood and tag' do
+    it "finds articles by both neighbourhood and tag" do
       site = create(:site)
 
       site.neighbourhoods << neighbourhood_1
@@ -163,7 +163,7 @@ RSpec.describe Article do
         partner.articles.create!(
           title: "#{n} Article from Partner by neighbourhood",
           is_draft: nil,
-          body: 'lorem ipsum dorem ditsum',
+          body: "lorem ipsum dorem ditsum",
           author: author
         )
       end
@@ -175,7 +175,7 @@ RSpec.describe Article do
         article = described_class.create!(
           title: "#{n} Article with tag",
           is_draft: nil,
-          body: 'lorem ipsum dorem ditsum',
+          body: "lorem ipsum dorem ditsum",
           author: author
         )
         article.tags << tag
@@ -186,10 +186,10 @@ RSpec.describe Article do
     end
   end
 
-  describe 'body_html' do
-    it 'is rendered from body' do
+  describe "body_html" do
+    it "is rendered from body" do
       art = create(:article)
-      art.body = 'A body of text about something'
+      art.body = "A body of text about something"
       art.save!
       expect(art.body_html).to be_present
     end

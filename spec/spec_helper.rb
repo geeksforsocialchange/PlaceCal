@@ -54,5 +54,5 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
 
   # Persist example status for --only-failures support
-  config.example_status_persistence_file_path = 'spec/examples.txt'
+  config.example_status_persistence_file_path = "spec/examples.txt"
 end

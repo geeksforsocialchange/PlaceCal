@@ -39,7 +39,7 @@ FactoryBot.define do
 
     # Recurring event
     factory :recurring_event do
-      rrule { 'FREQ=WEEKLY;COUNT=10' }
+      rrule { "FREQ=WEEKLY;COUNT=10" }
     end
   end
 end

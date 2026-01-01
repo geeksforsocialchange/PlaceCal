@@ -5,29 +5,29 @@ FactoryBot.define do
     sequence(:email) { |n| "user#{n}@placecal.org" }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    password { 'password123' }
-    password_confirmation { 'password123' }
-    role { 'citizen' }
+    password { "password123" }
+    password_confirmation { "password123" }
+    role { "citizen" }
 
     # Role-specific factories
     factory :root_user, aliases: [:root] do
-      email { 'admin@placecal.org' }
-      first_name { 'Admin' }
-      last_name { 'User' }
-      role { 'root' }
+      email { "admin@placecal.org" }
+      first_name { "Admin" }
+      last_name { "User" }
+      role { "root" }
     end
 
     factory :citizen_user do
-      role { 'citizen' }
+      role { "citizen" }
     end
 
     factory :editor_user do
-      role { 'editor' }
+      role { "editor" }
     end
 
     # Neighbourhood admin - citizen role but with neighbourhood association
     factory :neighbourhood_admin do
-      role { 'citizen' }
+      role { "citizen" }
 
       transient do
         neighbourhood { nil }
@@ -40,7 +40,7 @@ FactoryBot.define do
 
     # Partner admin - citizen role but with partner association
     factory :partner_admin do
-      role { 'citizen' }
+      role { "citizen" }
 
       transient do
         partner { nil }
@@ -53,7 +53,7 @@ FactoryBot.define do
 
     # Partnership admin - citizen role but with partnership tag association
     factory :partnership_admin do
-      role { 'citizen' }
+      role { "citizen" }
 
       transient do
         partnership_tag { nil }

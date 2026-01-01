@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 # Event location resolution strategies:
 #
@@ -30,26 +30,26 @@ RSpec.describe CalendarImporter::EventResolver do
     keyword_init: true
   )
 
-  let(:neighbourhood) { create(:neighbourhood, unit_code_value: 'E05011368') }
-  let(:other_neighbourhood) { create(:neighbourhood, unit_code_value: 'E05000800') }
+  let(:neighbourhood) { create(:neighbourhood, unit_code_value: "E05011368") }
+  let(:other_neighbourhood) { create(:neighbourhood, unit_code_value: "E05000800") }
   let(:start_date) { Date.new(1990, 1, 1) }
   let(:end_date) { Date.new(1990, 1, 2) }
-  let(:address) { create(:address, street_address: '123 alpha', neighbourhood: neighbourhood, postcode: 'M15 5DD') }
-  let(:other_address) { create(:address, street_address: '456 beta', neighbourhood: other_neighbourhood, postcode: 'OL6 8BH') }
-  let(:address_partner) { create(:partner, name: 'Address Partner', address: address) }
-  let(:other_address_partner) { create(:partner, name: 'Other Address Partner', address: other_address) }
+  let(:address) { create(:address, street_address: "123 alpha", neighbourhood: neighbourhood, postcode: "M15 5DD") }
+  let(:other_address) { create(:address, street_address: "456 beta", neighbourhood: other_neighbourhood, postcode: "OL6 8BH") }
+  let(:address_partner) { create(:partner, name: "Address Partner", address: address) }
+  let(:other_address_partner) { create(:partner, name: "Other Address Partner", address: other_address) }
   let(:notices) { [] }
   let(:from_date) { Date.new(1990, 1, 1) }
   let(:event_data) do
     FakeEvent.new(
       uid: 123,
-      summary: 'A summary',
-      description: 'A description',
-      rrule: '',
-      last_modified: '',
+      summary: "A summary",
+      description: "A description",
+      rrule: "",
+      last_modified: "",
       ocurrences_between: [[start_date, end_date]],
       has_location?: true,
-      postcode: ''
+      postcode: ""
     )
   end
 
@@ -59,12 +59,12 @@ RSpec.describe CalendarImporter::EventResolver do
     end
   end
 
-  describe '#event_strategy' do
-    it 'with data location with place keeps address' do
+  describe "#event_strategy" do
+    it "with data location with place keeps address" do
       event_data.location = address_partner.name
       event_data.postcode = address_partner.address.postcode
 
-      calendar = create_calendar_with(strategy: 'event', place: other_address_partner)
+      calendar = create_calendar_with(strategy: "event", place: other_address_partner)
 
       resolver = described_class.new(event_data, calendar, notices, from_date)
       partner, address_result = resolver.event_strategy(calendar.place)
@@ -76,12 +76,12 @@ RSpec.describe CalendarImporter::EventResolver do
     end
   end
 
-  describe '#event_override_strategy' do
-    it 'with data location with place keeps address' do
+  describe "#event_override_strategy" do
+    it "with data location with place keeps address" do
       event_data.location = address_partner.name
       event_data.postcode = address_partner.address.postcode
 
-      calendar = create_calendar_with(strategy: 'event_override', place: other_address_partner)
+      calendar = create_calendar_with(strategy: "event_override", place: other_address_partner)
 
       resolver = described_class.new(event_data, calendar, notices, from_date)
       partner, address_result = resolver.event_override_strategy(calendar.place)
@@ -92,8 +92,8 @@ RSpec.describe CalendarImporter::EventResolver do
       expect(address_result.postcode).to eq(event_data.postcode)
     end
 
-    it 'works with no data location' do
-      calendar = create_calendar_with(strategy: 'event_override', place: address_partner)
+    it "works with no data location" do
+      calendar = create_calendar_with(strategy: "event_override", place: address_partner)
       resolver = described_class.new(event_data, calendar, notices, from_date)
       place, address_result = resolver.event_override_strategy(calendar.place)
 
@@ -101,8 +101,8 @@ RSpec.describe CalendarImporter::EventResolver do
       expect(address_result).to eq(calendar.place.address)
     end
 
-    it 'passes with no data location and no place' do
-      calendar = create_calendar_with(strategy: 'event_override')
+    it "passes with no data location and no place" do
+      calendar = create_calendar_with(strategy: "event_override")
       calendar.place = nil
       resolver = described_class.new(event_data, calendar, notices, from_date)
 
@@ -112,11 +112,11 @@ RSpec.describe CalendarImporter::EventResolver do
     end
   end
 
-  describe '#place_strategy' do
-    it 'resolves place from calendar and address from event data' do
+  describe "#place_strategy" do
+    it "resolves place from calendar and address from event data" do
       event_data.location = address_partner.name
 
-      calendar = create_calendar_with(strategy: 'place', place: other_address_partner)
+      calendar = create_calendar_with(strategy: "place", place: other_address_partner)
 
       resolver = described_class.new(event_data, calendar, notices, from_date)
 

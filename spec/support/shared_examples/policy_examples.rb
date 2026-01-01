@@ -1,37 +1,37 @@
 # frozen_string_literal: true
 
 # Shared examples for Pundit policy testing
-RSpec.shared_examples 'allows access' do |action|
+RSpec.shared_examples "allows access" do |action|
   it "allows #{action}" do
     expect(policy.send("#{action}?")).to be true
   end
 end
 
-RSpec.shared_examples 'denies access' do |action|
+RSpec.shared_examples "denies access" do |action|
   it "denies #{action}" do
     expect(policy.send("#{action}?")).to be false
   end
 end
 
-RSpec.shared_examples 'allows all CRUD actions' do
+RSpec.shared_examples "allows all CRUD actions" do
   %i[index show new create edit update destroy].each do |action|
-    include_examples 'allows access', action
+    include_examples "allows access", action
   end
 end
 
-RSpec.shared_examples 'denies all CRUD actions' do
+RSpec.shared_examples "denies all CRUD actions" do
   %i[index show new create edit update destroy].each do |action|
-    include_examples 'denies access', action
+    include_examples "denies access", action
   end
 end
 
-RSpec.shared_examples 'allows read-only actions' do
+RSpec.shared_examples "allows read-only actions" do
   %i[index show].each do |action|
-    include_examples 'allows access', action
+    include_examples "allows access", action
   end
 
   %i[new create edit update destroy].each do |action|
-    include_examples 'denies access', action
+    include_examples "denies access", action
   end
 end
 

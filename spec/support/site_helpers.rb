@@ -4,7 +4,7 @@
 module SiteHelpers
   # Create the default site required for URL routing
   def create_default_site
-    create(:site, slug: 'default-site')
+    create(:site, slug: "default-site")
   end
 
   # Generate a URL for a specific site subdomain

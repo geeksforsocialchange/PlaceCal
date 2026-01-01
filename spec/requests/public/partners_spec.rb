@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'Public Partners', type: :request do
-  let(:site) { create(:site, slug: 'test-site') }
+RSpec.describe "Public Partners", type: :request do
+  let(:site) { create(:site, slug: "test-site") }
   let(:ward) { create(:riverside_ward) }
 
   before do
     site.neighbourhoods << ward
   end
 
-  describe 'GET /partners' do
+  describe "GET /partners" do
     # Must use same ward instance - :riverside_address creates NEW ward via association
     let!(:partners) do
       Array.new(3) do
@@ -19,79 +19,79 @@ RSpec.describe 'Public Partners', type: :request do
       end
     end
 
-    it 'returns successful response' do
+    it "returns successful response" do
       get partners_url(host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
     end
 
-    it 'displays partners in site neighbourhood' do
+    it "displays partners in site neighbourhood" do
       get partners_url(host: "#{site.slug}.lvh.me")
       partners.each do |partner|
         expect(response.body).to include(partner.name)
       end
     end
 
-    it 'does not show hidden partners' do
+    it "does not show hidden partners" do
       hidden_partner = create(:partner,
                               address: create(:address, neighbourhood: ward),
                               hidden: true,
-                              hidden_reason: 'Test',
+                              hidden_reason: "Test",
                               hidden_blame_id: 1)
       get partners_url(host: "#{site.slug}.lvh.me")
       expect(response.body).not_to include(hidden_partner.name)
     end
   end
 
-  describe 'GET /partners/:id' do
+  describe "GET /partners/:id" do
     let(:partner) { create(:riverside_partner) }
 
-    it 'shows the partner details' do
+    it "shows the partner details" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
       expect(response.body).to include(partner.name)
     end
 
-    it 'shows partner summary' do
+    it "shows partner summary" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.summary)
     end
 
-    it 'shows partner address' do
+    it "shows partner address" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.address.postcode)
     end
 
-    it 'shows correct page title' do
+    it "shows correct page title" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("<title>#{partner.name} | #{site.name}</title>")
     end
 
-    context 'without accessibility info' do
-      it 'hides accessibility section' do
+    context "without accessibility info" do
+      it "hides accessibility section" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
-        expect(response.body).not_to include('accessibility-info')
+        expect(response.body).not_to include("accessibility-info")
       end
     end
 
-    context 'with accessibility info' do
-      before { partner.update!(accessibility_info: 'Wheelchair accessible entrance') }
+    context "with accessibility info" do
+      before { partner.update!(accessibility_info: "Wheelchair accessible entrance") }
 
-      it 'shows accessibility section' do
+      it "shows accessibility section" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
-        expect(response.body).to include('accessibility-info')
-        expect(response.body).to include('Wheelchair accessible entrance')
+        expect(response.body).to include("accessibility-info")
+        expect(response.body).to include("Wheelchair accessible entrance")
       end
     end
 
-    context 'without calendar' do
-      it 'shows no events message' do
+    context "without calendar" do
+      it "shows no events message" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
-        expect(response.body).to include('does not list events')
+        expect(response.body).to include("does not list events")
       end
     end
   end
 
-  describe 'GET /partners with category filter' do
+  describe "GET /partners with category filter" do
     let(:category) { create(:category_tag) }
     # Must use same ward instance
     let!(:categorized_partner) do
@@ -103,27 +103,27 @@ RSpec.describe 'Public Partners', type: :request do
       create(:partner, address: create(:address, neighbourhood: ward))
     end
 
-    it 'filters partners by category' do
+    it "filters partners by category" do
       # Filter by category ID since slug format may vary
       get partners_url(host: "#{site.slug}.lvh.me", params: { category: category.id })
       expect(response).to be_successful
     end
   end
 
-  describe 'GET /partners with neighbourhood filter' do
+  describe "GET /partners with neighbourhood filter" do
     # Must use same ward instance
     let!(:riverside_partner) do
       create(:partner, address: create(:address, neighbourhood: ward))
     end
 
-    it 'filters partners by neighbourhood' do
+    it "filters partners by neighbourhood" do
       # Controller expects neighbourhood ID, not name
       get partners_url(host: "#{site.slug}.lvh.me", params: { neighbourhood: ward.id })
       expect(response).to be_successful
     end
   end
 
-  describe 'GET /partners index content' do
+  describe "GET /partners index content" do
     let!(:partners) do
       Array.new(5) do
         address = create(:address, neighbourhood: ward)
@@ -131,17 +131,17 @@ RSpec.describe 'Public Partners', type: :request do
       end
     end
 
-    it 'shows page title with site name' do
+    it "shows page title with site name" do
       get partners_url(host: "#{site.slug}.lvh.me")
       expect(response.body).to include("<title>Partners | #{site.name}</title>")
     end
 
-    it 'shows partners header' do
+    it "shows partners header" do
       get partners_url(host: "#{site.slug}.lvh.me")
-      expect(response.body).to include('Our Partners')
+      expect(response.body).to include("Our Partners")
     end
 
-    it 'shows partner names and summaries' do
+    it "shows partner names and summaries" do
       get partners_url(host: "#{site.slug}.lvh.me")
       partners.each do |partner|
         expect(response.body).to include(partner.name)
@@ -150,9 +150,9 @@ RSpec.describe 'Public Partners', type: :request do
     end
   end
 
-  describe 'GET /partners with tagged site' do
+  describe "GET /partners with tagged site" do
     let(:tag) { create(:tag) }
-    let(:tagged_site) { create(:site, slug: 'tagged-site') }
+    let(:tagged_site) { create(:site, slug: "tagged-site") }
     let!(:tagged_partners) do
       Array.new(3) do
         address = create(:address, neighbourhood: ward)
@@ -171,7 +171,7 @@ RSpec.describe 'Public Partners', type: :request do
       tagged_site.tags << tag
     end
 
-    it 'shows only tagged partners' do
+    it "shows only tagged partners" do
       get partners_url(host: "#{tagged_site.slug}.lvh.me")
       expect(response).to be_successful
 
@@ -184,11 +184,11 @@ RSpec.describe 'Public Partners', type: :request do
     end
   end
 
-  describe 'default site redirect' do
+  describe "default site redirect" do
     let!(:default_site) { create_default_site }
 
-    it 'redirects partners page on base domain' do
-      get partners_url(host: 'lvh.me')
+    it "redirects partners page on base domain" do
+      get partners_url(host: "lvh.me")
       expect(response).to be_redirect
     end
   end

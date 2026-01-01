@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'capybara-select-2'
+require "capybara-select-2"
 
 # Helpers for Select2 dropdown interactions in system specs
 module Select2Helpers
@@ -10,8 +10,8 @@ module Select2Helpers
   # Wait for select2 containers to be ready
   def await_select2(time = 30)
     find_element_with_retry do
-      page.all(:css, '.select2-container', wait: time)
-      expect(page).to have_selector('.select2-selection')
+      page.all(:css, ".select2-container", wait: time)
+      expect(page).to have_selector(".select2-selection")
     end
   end
 
@@ -20,7 +20,7 @@ module Select2Helpers
     await_select2(10)
     find_element_with_retry do
       within(".#{stable_identifier}") do
-        find(:css, '.select2-container')
+        find(:css, ".select2-container")
       end
     end
   end
@@ -29,7 +29,7 @@ module Select2Helpers
   def all_cocoon_select2_nodes(css_class)
     await_select2(10)
     within(".#{css_class}") do
-      all(:css, '.select2-container')
+      all(:css, ".select2-container")
     end
   end
 
@@ -37,7 +37,7 @@ module Select2Helpers
   def assert_select2_single(option, node)
     await_select2(10)
     within(:xpath, node.path) do
-      expect(page).to have_selector('.select2-selection__rendered', text: option)
+      expect(page).to have_selector(".select2-selection__rendered", text: option)
     end
   end
 
@@ -45,12 +45,12 @@ module Select2Helpers
   def assert_select2_multiple(options_array, node)
     find_element_with_retry do
       within(:xpath, node.path) do
-        expect(page).to have_selector('.select2-selection__choice', count: options_array.length)
-        rendered = find(:css, '.select2-selection__rendered').text.delete('×').delete("\n")
+        expect(page).to have_selector(".select2-selection__choice", count: options_array.length)
+        rendered = find(:css, ".select2-selection__rendered").text.delete("×").delete("\n")
         options_array.each do |opt|
-          rendered = rendered.gsub(opt, '')
+          rendered = rendered.gsub(opt, "")
         end
-        expect(rendered).to eq(''), "'#{rendered}' is in the selected data but not in the options passed to this test"
+        expect(rendered).to eq(""), "'#{rendered}' is in the selected data but not in the options passed to this test"
       end
     end
   end

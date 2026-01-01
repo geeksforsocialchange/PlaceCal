@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'GraphQL Events', type: :request do
+RSpec.describe "GraphQL Events", type: :request do
   let(:partner) { create(:riverside_partner) }
   let(:address) { partner.address }
 
   def execute_query(query_string, variables: {})
-    post '/api/v1/graphql', params: { query: query_string, variables: variables.to_json }
+    post "/api/v1/graphql", params: { query: query_string, variables: variables.to_json }
     response.parsed_body
   end
 
-  describe 'eventConnection query' do
+  describe "eventConnection query" do
     before do
       create_list(:event, 5,
                   partner: partner,
@@ -35,30 +35,30 @@ RSpec.describe 'GraphQL Events', type: :request do
       GRAPHQL
     end
 
-    it 'returns events with pagination' do
+    it "returns events with pagination" do
       result = execute_query(query)
 
-      expect(result['errors']).to be_nil
-      expect(result['data']['eventConnection']['edges'].length).to eq(5)
+      expect(result["errors"]).to be_nil
+      expect(result["data"]["eventConnection"]["edges"].length).to eq(5)
     end
 
-    it 'includes event details' do
+    it "includes event details" do
       result = execute_query(query)
 
-      edges = result['data']['eventConnection']['edges']
-      node = edges.first['node']
+      edges = result["data"]["eventConnection"]["edges"]
+      node = edges.first["node"]
 
-      expect(node['id']).to be_present
-      expect(node['summary']).to be_present
+      expect(node["id"]).to be_present
+      expect(node["summary"]).to be_present
     end
   end
 
-  describe 'event query' do
+  describe "event query" do
     let!(:event) do
       create(:event,
              partner: partner,
-             summary: 'Test Event Summary',
-             description: 'Detailed description of the event',
+             summary: "Test Event Summary",
+             description: "Detailed description of the event",
              dtstart: Time.current,
              address: address)
     end
@@ -86,39 +86,39 @@ RSpec.describe 'GraphQL Events', type: :request do
       GRAPHQL
     end
 
-    it 'returns a specific event by ID' do
+    it "returns a specific event by ID" do
       result = execute_query(query, variables: { id: event.id })
 
-      expect(result['errors']).to be_nil
-      expect(result['data']['event']['id']).to eq(event.id.to_s)
-      expect(result['data']['event']['summary']).to eq('Test Event Summary')
+      expect(result["errors"]).to be_nil
+      expect(result["data"]["event"]["id"]).to eq(event.id.to_s)
+      expect(result["data"]["event"]["summary"]).to eq("Test Event Summary")
     end
 
-    it 'includes address information' do
+    it "includes address information" do
       result = execute_query(query, variables: { id: event.id })
 
-      event_data = result['data']['event']
-      expect(event_data['address']['streetAddress']).to be_present
-      expect(event_data['address']['postalCode']).to eq(address.postcode)
+      event_data = result["data"]["event"]
+      expect(event_data["address"]["streetAddress"]).to be_present
+      expect(event_data["address"]["postalCode"]).to eq(address.postcode)
     end
 
-    it 'includes organizer (partner) information' do
+    it "includes organizer (partner) information" do
       result = execute_query(query, variables: { id: event.id })
 
-      organizer = result['data']['event']['organizer']
-      expect(organizer['id']).to eq(partner.id.to_s)
-      expect(organizer['name']).to eq(partner.name)
+      organizer = result["data"]["event"]["organizer"]
+      expect(organizer["id"]).to eq(partner.id.to_s)
+      expect(organizer["name"]).to eq(partner.name)
     end
 
-    it 'returns error for non-existent event' do
+    it "returns error for non-existent event" do
       result = execute_query(query, variables: { id: 999_999 })
 
       # GraphQL returns error when record not found
-      expect(result['errors']).to be_present
+      expect(result["errors"]).to be_present
     end
   end
 
-  describe 'eventsByFilter query' do
+  describe "eventsByFilter query" do
     let(:site) { create(:site) }
     let(:query) do
       <<-GRAPHQL
@@ -141,22 +141,22 @@ RSpec.describe 'GraphQL Events', type: :request do
                   address: address)
     end
 
-    it 'returns events within date range' do
+    it "returns events within date range" do
       # Format required: "YYYY-MM-DD HH:MM"
-      from_date = Date.current.strftime('%Y-%m-%d 00:00')
-      to_date = 7.days.from_now.to_date.strftime('%Y-%m-%d 23:59')
+      from_date = Date.current.strftime("%Y-%m-%d 00:00")
+      to_date = 7.days.from_now.to_date.strftime("%Y-%m-%d 23:59")
 
       result = execute_query(query, variables: {
                                fromDate: from_date,
                                toDate: to_date
                              })
 
-      expect(result['errors']).to be_nil
-      expect(result['data']['eventsByFilter']).to be_an(Array)
+      expect(result["errors"]).to be_nil
+      expect(result["data"]["eventsByFilter"]).to be_an(Array)
     end
   end
 
-  describe 'eventsByFilter with neighbourhood scope' do
+  describe "eventsByFilter with neighbourhood scope" do
     let(:neighbourhood1) { create(:riverside_ward) }
     let(:query) do
       <<-GRAPHQL
@@ -181,17 +181,17 @@ RSpec.describe 'GraphQL Events', type: :request do
       create_list(:event, 5, partner: partner2, dtstart: 1.hour.from_now, address: address2)
     end
 
-    it 'filters events by neighbourhood' do
+    it "filters events by neighbourhood" do
       result = execute_query(query, variables: { neighbourhoodId: neighbourhood2.id })
 
-      expect(result['errors']).to be_nil
-      events = result['data']['eventsByFilter']
+      expect(result["errors"]).to be_nil
+      events = result["data"]["eventsByFilter"]
       expect(events.length).to eq(5)
     end
   end
 
-  describe 'eventsByFilter with tag scope' do
-    let(:blue_tag) { create(:tag, name: 'Blue') }
+  describe "eventsByFilter with tag scope" do
+    let(:blue_tag) { create(:tag, name: "Blue") }
     let(:query) do
       <<-GRAPHQL
         query($tagId: Int) {
@@ -202,7 +202,7 @@ RSpec.describe 'GraphQL Events', type: :request do
         }
       GRAPHQL
     end
-    let(:red_tag) { create(:tag, name: 'Red') }
+    let(:red_tag) { create(:tag, name: "Red") }
 
     let(:blue_partner) { create(:partner) }
     let(:red_partner) { create(:partner) }
@@ -215,16 +215,16 @@ RSpec.describe 'GraphQL Events', type: :request do
       create_list(:event, 2, partner: red_partner, dtstart: 1.hour.from_now, address: red_partner.address)
     end
 
-    it 'filters events by partner tag' do
+    it "filters events by partner tag" do
       result = execute_query(query, variables: { tagId: blue_tag.id })
 
-      expect(result['errors']).to be_nil
-      events = result['data']['eventsByFilter']
+      expect(result["errors"]).to be_nil
+      events = result["data"]["eventsByFilter"]
       expect(events.length).to eq(6)
     end
   end
 
-  describe 'event geo location' do
+  describe "event geo location" do
     let!(:event) do
       create(:event,
              partner: partner,
@@ -252,21 +252,21 @@ RSpec.describe 'GraphQL Events', type: :request do
       GRAPHQL
     end
 
-    it 'includes geo coordinates' do
+    it "includes geo coordinates" do
       result = execute_query(query)
 
-      expect(result['errors']).to be_nil
-      edges = result['data']['eventConnection']['edges']
+      expect(result["errors"]).to be_nil
+      edges = result["data"]["eventConnection"]["edges"]
       expect(edges.length).to eq(1)
 
-      geo = edges.first['node']['address']['geo']
-      expect(geo['latitude']).to be_present
-      expect(geo['longitude']).to be_present
+      geo = edges.first["node"]["address"]["geo"]
+      expect(geo["latitude"]).to be_present
+      expect(geo["longitude"]).to be_present
     end
   end
 
-  describe 'online event details' do
-    let!(:online_address) { OnlineAddress.create!(url: 'https://zoom.us/j/123456', link_type: 'direct') }
+  describe "online event details" do
+    let!(:online_address) { OnlineAddress.create!(url: "https://zoom.us/j/123456", link_type: "direct") }
     let!(:online_event) do
       create(:event, partner: partner, dtstart: Time.current, address: address, online_address: online_address)
     end
@@ -283,13 +283,13 @@ RSpec.describe 'GraphQL Events', type: :request do
       GRAPHQL
     end
 
-    it 'includes online event URL and type' do
+    it "includes online event URL and type" do
       result = execute_query(query, variables: { id: online_event.id })
 
-      expect(result['errors']).to be_nil
-      node = result['data']['event']
-      expect(node['onlineEventUrl']).to eq('https://zoom.us/j/123456')
-      expect(node['onlineEventUrlType']).to eq('direct')
+      expect(result["errors"]).to be_nil
+      node = result["data"]["event"]
+      expect(node["onlineEventUrl"]).to eq("https://zoom.us/j/123456")
+      expect(node["onlineEventUrlType"]).to eq("direct")
     end
   end
 end

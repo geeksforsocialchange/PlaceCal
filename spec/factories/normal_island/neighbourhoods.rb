@@ -1,45 +1,45 @@
 # frozen_string_literal: true
 
-require_relative '../../../lib/normal_island'
+require_relative "../../../lib/normal_island"
 
 FactoryBot.define do
   # Base neighbourhood factory
   factory :neighbourhood, aliases: [:bare_neighbourhood] do
     sequence(:name) { |n| "Neighbourhood #{n}" }
-    unit { 'ward' }
-    unit_code_key { 'ZZ00WD' }
-    sequence(:unit_code_value) { |n| format('N%08d', n) }  # 9 characters total
+    unit { "ward" }
+    unit_code_key { "ZZ00WD" }
+    sequence(:unit_code_value) { |n| format("N%08d", n) }  # 9 characters total
     release_date { Neighbourhood::LATEST_RELEASE_DATE }  # Current release
 
     # Legacy test compatibility - these are used by VCR fixtures
     factory :eventbrite_valid_address_hood do
-      name { 'Eventbrite Test Area' }
-      unit { 'ward' }
-      unit_code_key { 'E05000000' }
-      unit_code_value { 'E05000001' }
+      name { "Eventbrite Test Area" }
+      unit { "ward" }
+      unit_code_key { "E05000000" }
+      unit_code_value { "E05000001" }
     end
 
     factory :ldjson_valid_address_hood do
-      name { 'LD+JSON Test Area' }
-      unit { 'ward' }
-      unit_code_key { 'E05000000' }
-      unit_code_value { 'E05000002' }
+      name { "LD+JSON Test Area" }
+      unit { "ward" }
+      unit_code_key { "E05000000" }
+      unit_code_value { "E05000002" }
     end
 
     # Legacy compatibility - used in partner_service_area_spec
     factory :moss_side_neighbourhood do
-      name { 'Moss Side' }
-      unit { 'ward' }
-      unit_code_key { 'E05000686' }
-      unit_code_value { 'E05000686' }
+      name { "Moss Side" }
+      unit { "ward" }
+      unit_code_key { "E05000686" }
+      unit_code_value { "E05000686" }
     end
 
     # Legacy compatibility - used in partner_service_area_spec
     factory :ashton_neighbourhood do
-      name { 'Ashton' }
-      unit { 'ward' }
-      unit_code_key { 'E05000687' }
-      unit_code_value { 'E05000687' }
+      name { "Ashton" }
+      unit { "ward" }
+      unit_code_key { "E05000687" }
+      unit_code_value { "E05000687" }
     end
 
     # Country level

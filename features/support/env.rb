@@ -6,16 +6,16 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-require 'cucumber/rails'
-require 'capybara/cucumber'
+require "cucumber/rails"
+require "capybara/cucumber"
 
 # Load shared spec support files (UK postcode stub, geocoder stubs)
-require Rails.root.join('spec/support/uk_postcode_stub')
-require Rails.root.join('spec/support/normal_island_geocoder')
+require Rails.root.join("spec/support/uk_postcode_stub")
+require Rails.root.join("spec/support/normal_island_geocoder")
 
 # FactoryBot is already loaded by cucumber-rails
 # Just configure paths if not already set
-FactoryBot.definition_file_paths = [Rails.root.join('spec/factories')] if FactoryBot.definition_file_paths.empty?
+FactoryBot.definition_file_paths = [Rails.root.join("spec/factories")] if FactoryBot.definition_file_paths.empty?
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail.
@@ -25,7 +25,7 @@ ActionController::Base.allow_rescue = false
 begin
   DatabaseCleaner.strategy = :transaction
 rescue NameError
-  raise 'You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it.'
+  raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
 end
 
 Cucumber::Rails::Database.javascript_strategy = :truncation
@@ -33,11 +33,11 @@ Cucumber::Rails::Database.javascript_strategy = :truncation
 # Capybara configuration for JavaScript tests
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless')
-  options.add_argument('--no-sandbox')
-  options.add_argument('--disable-gpu')
-  options.add_argument('--window-size=1400,1400')
-  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument("--headless")
+  options.add_argument("--no-sandbox")
+  options.add_argument("--disable-gpu")
+  options.add_argument("--window-size=1400,1400")
+  options.add_argument("--disable-dev-shm-usage")
 
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
@@ -51,8 +51,8 @@ Capybara.configure do |config|
 end
 
 # Use lvh.me for subdomain testing (resolves to 127.0.0.1)
-Capybara.app_host = 'http://lvh.me'
-Capybara.server_host = 'lvh.me'
+Capybara.app_host = "http://lvh.me"
+Capybara.server_host = "lvh.me"
 
 # Include FactoryBot methods in World
 World(FactoryBot::Syntax::Methods)
@@ -67,10 +67,10 @@ After do
 end
 
 # Use truncation for JavaScript scenarios
-Before('@javascript') do
+Before("@javascript") do
   DatabaseCleaner.strategy = :truncation
 end
 
-Before('not @javascript') do
+Before("not @javascript") do
   DatabaseCleaner.strategy = :transaction
 end

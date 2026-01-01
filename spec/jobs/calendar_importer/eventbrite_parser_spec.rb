@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe CalendarImporter::Parsers::Eventbrite do
-  describe '#download_calendar' do
-    it 'extracts events from Eventbrite calendars' do
-      os_event_url = 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483'
+  describe "#download_calendar" do
+    it "extracts events from Eventbrite calendars" do
+      os_event_url = "https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483"
 
       VCR.use_cassette(:eventbrite_events) do
         calendar = create(
@@ -25,8 +25,8 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
       end
     end
 
-    it 'ignores 504 bad gateway responses' do
-      os_event_url = 'https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483'
+    it "ignores 504 bad gateway responses" do
+      os_event_url = "https://www.eventbrite.co.uk/o/queer-lit-social-refuge-48062165483"
 
       VCR.use_cassette(:eventbrite_bad_gateway) do
         calendar = build(

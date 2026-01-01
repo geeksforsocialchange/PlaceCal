@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/normal_island'
+require_relative "../../lib/normal_island"
 
 FactoryBot.define do
   factory :partner do
@@ -8,8 +8,8 @@ FactoryBot.define do
     summary { Faker::Lorem.paragraph(sentence_count: 2) }
     description { Faker::Lorem.paragraphs(number: 3).join("\n\n") }
     public_email { Faker::Internet.email }
-    public_phone { '0161 234 5678' }
-    opening_times { '[]' }
+    public_phone { "0161 234 5678" }
+    opening_times { "[]" }
     association :address, factory: :riverside_address
 
     # Normal Island partners
@@ -51,8 +51,8 @@ FactoryBot.define do
 
     # Partner with service areas (plus base address for validation)
     factory :mobile_partner do
-      name { 'Mobile Services' }
-      summary { 'Community services delivered across multiple locations' }
+      name { "Mobile Services" }
+      summary { "Community services delivered across multiple locations" }
       # Needs an address to pass validation, service areas added after create
       association :address, factory: :riverside_address
 
@@ -69,8 +69,8 @@ FactoryBot.define do
 
     # Legacy compatibility - partner with service area
     factory :ashton_service_area_partner do
-      name { 'Ashton Service Partner' }
-      summary { 'A partner with service areas' }
+      name { "Ashton Service Partner" }
+      summary { "A partner with service areas" }
       association :address, factory: :riverside_address
 
       after(:create) do |partner|

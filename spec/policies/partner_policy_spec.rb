@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe PartnerPolicy, type: :policy do
   subject { described_class.new(user, partner) }
 
   let(:partner) { create(:partner) }
 
-  describe 'for a citizen (no admin rights)' do
+  describe "for a citizen (no admin rights)" do
     let(:user) { create(:citizen_user) }
 
     it { is_expected.to forbid_action(:index) }
@@ -17,7 +17,7 @@ RSpec.describe PartnerPolicy, type: :policy do
     it { is_expected.to forbid_action(:destroy) }
   end
 
-  describe 'for a root user' do
+  describe "for a root user" do
     let(:user) { create(:root_user) }
 
     it { is_expected.to permit_action(:index) }
@@ -27,12 +27,12 @@ RSpec.describe PartnerPolicy, type: :policy do
     it { is_expected.to permit_action(:destroy) }
   end
 
-  describe 'for a partner admin' do
+  describe "for a partner admin" do
     let(:user) { create(:partner_admin) }
     let(:partner) { user.partners.first }
     let(:other_partner) { create(:partner) }
 
-    context 'on their own partner' do
+    context "on their own partner" do
       it { is_expected.to permit_action(:index) }
       it { is_expected.to permit_action(:show) }
       it { is_expected.to permit_action(:update) }
@@ -41,7 +41,7 @@ RSpec.describe PartnerPolicy, type: :policy do
       it { is_expected.to permit_action(:destroy) }
     end
 
-    context 'on another partner' do
+    context "on another partner" do
       subject { described_class.new(user, other_partner) }
 
       it { is_expected.to permit_action(:index) }
@@ -51,7 +51,7 @@ RSpec.describe PartnerPolicy, type: :policy do
     end
   end
 
-  describe 'for a neighbourhood admin' do
+  describe "for a neighbourhood admin" do
     let(:ward) { create(:riverside_ward) }
     let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
     let(:partner_in_neighbourhood) do
@@ -63,7 +63,7 @@ RSpec.describe PartnerPolicy, type: :policy do
       create(:partner, address: address)
     end
 
-    context 'on a partner in their neighbourhood' do
+    context "on a partner in their neighbourhood" do
       subject { described_class.new(user, partner_in_neighbourhood) }
 
       it { is_expected.to permit_action(:index) }
@@ -72,7 +72,7 @@ RSpec.describe PartnerPolicy, type: :policy do
       it { is_expected.to permit_action(:update) }
     end
 
-    context 'on a partner outside their neighbourhood' do
+    context "on a partner outside their neighbourhood" do
       subject { described_class.new(user, partner_outside_neighbourhood) }
 
       it { is_expected.to permit_action(:index) }
@@ -81,7 +81,7 @@ RSpec.describe PartnerPolicy, type: :policy do
     end
   end
 
-  describe 'for a partnership admin' do
+  describe "for a partnership admin" do
     let(:ward) { create(:riverside_ward) }
     let(:partnership_tag) { create(:partnership_tag) }
     let(:user) do
@@ -100,7 +100,7 @@ RSpec.describe PartnerPolicy, type: :policy do
       create(:partner, address: address)
     end
 
-    context 'on a partner in their partnership' do
+    context "on a partner in their partnership" do
       subject { described_class.new(user, partner_in_partnership) }
 
       it { is_expected.to permit_action(:index) }
@@ -108,7 +108,7 @@ RSpec.describe PartnerPolicy, type: :policy do
       it { is_expected.to permit_action(:update) }
     end
 
-    context 'on a partner not in their partnership' do
+    context "on a partner not in their partnership" do
       subject { described_class.new(user, partner_not_in_partnership) }
 
       it { is_expected.to permit_action(:index) }
@@ -118,32 +118,32 @@ RSpec.describe PartnerPolicy, type: :policy do
     end
   end
 
-  describe 'Scope' do
+  describe "Scope" do
     let!(:partner1) { create(:partner) }
     let!(:partner2) { create(:partner) }
 
-    describe 'for root user' do
+    describe "for root user" do
       let(:user) { create(:root_user) }
 
-      it 'returns all partners' do
+      it "returns all partners" do
         scope = Pundit.policy_scope(user, Partner)
         expect(scope).to include(partner1, partner2)
       end
     end
 
-    describe 'for citizen' do
+    describe "for citizen" do
       let(:user) { create(:citizen_user) }
 
-      it 'returns no partners' do
+      it "returns no partners" do
         scope = Pundit.policy_scope(user, Partner)
         expect(scope).to be_empty
       end
     end
 
-    describe 'for partner admin' do
+    describe "for partner admin" do
       let(:user) { create(:partner_admin) }
 
-      it 'returns only their partners' do
+      it "returns only their partners" do
         scope = Pundit.policy_scope(user, Partner)
         expect(scope).to include(user.partners.first)
         expect(scope).not_to include(partner1)

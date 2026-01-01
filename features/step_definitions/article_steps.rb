@@ -2,7 +2,7 @@
 
 # Step definitions for article management
 
-Given('there is an article called {string}') do |title|
+Given("there is an article called {string}") do |title|
   # Use the existing partner if set, otherwise create one linked to the site's neighbourhood
   if @partner
     partner = @partner
@@ -20,7 +20,7 @@ Given('there is an article called {string}') do |title|
   create(:article_partner, article: @article, partner: partner)
 end
 
-Given('there is an article called {string} authored by {string}') do |title, author_name|
+Given("there is an article called {string} authored by {string}") do |title, author_name|
   # Use the existing partner if set, otherwise create one linked to the site's neighbourhood
   if @partner
     partner = @partner
@@ -33,13 +33,13 @@ Given('there is an article called {string} authored by {string}') do |title, aut
   else
     partner = create(:partner)
   end
-  first_name, last_name = author_name.split(' ', 2)
-  author = create(:root_user, first_name: first_name, last_name: last_name || '')
+  first_name, last_name = author_name.split(" ", 2)
+  author = create(:root_user, first_name: first_name, last_name: last_name || "")
   @article = create(:article, title: title, author: author, is_draft: false)
   create(:article_partner, article: @article, partner: partner)
 end
 
-Given('there is an article called {string} published today') do |title|
+Given("there is an article called {string} published today") do |title|
   # Use the existing partner if set, otherwise create one linked to the site's neighbourhood
   if @partner
     partner = @partner
@@ -57,11 +57,11 @@ Given('there is an article called {string} published today') do |title|
   create(:article_partner, article: @article, partner: partner)
 end
 
-When('I view the article {string}') do |title|
+When("I view the article {string}") do |title|
   article = Article.find_by(title: title)
   visit "/news/#{article.id}"
 end
 
-Then('I should see the article {string}') do |title|
+Then("I should see the article {string}") do |title|
   expect(page).to have_content(title)
 end

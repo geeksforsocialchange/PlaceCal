@@ -10,7 +10,7 @@ class NormalIslandPostcode
   PATTERN = /\AZZ[A-Z]{2}\s*\d[A-Z]{2}\z/i
 
   def initialize(postcode)
-    @postcode = postcode.to_s.upcase.gsub(/\s+/, ' ')
+    @postcode = postcode.to_s.upcase.gsub(/\s+/, " ")
   end
 
   def full_valid?
@@ -30,7 +30,7 @@ end
 module UKPostcodeNormalIslandExtension
   def parse(str)
     # Handle nil/empty strings by returning an invalid postcode object
-    return NormalIslandPostcode.new('') if str.nil? || str.to_s.strip.empty?
+    return NormalIslandPostcode.new("") if str.nil? || str.to_s.strip.empty?
 
     normalized = str.to_s.upcase.strip
     if normalized.match?(NormalIslandPostcode::PATTERN)

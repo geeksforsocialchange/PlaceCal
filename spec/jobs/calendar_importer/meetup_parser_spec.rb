@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe CalendarImporter::Parsers::Meetup do
-  describe '#download_calendar' do
-    it 'downloads and parses data correctly' do
-      meetup_url = 'https://www.meetup.com/tglondon/'
+  describe "#download_calendar" do
+    it "downloads and parses data correctly" do
+      meetup_url = "https://www.meetup.com/tglondon/"
 
       VCR.use_cassette(:good_meetup_source) do
         calendar = build(
@@ -22,9 +22,9 @@ RSpec.describe CalendarImporter::Parsers::Meetup do
       end
     end
 
-    it 'handles badly formed responses (non JSON)' do
+    it "handles badly formed responses (non JSON)" do
       # non existant user
-      bad_user_url = 'https://www.meetup.com/haeKohtheuwae7uY6sie'
+      bad_user_url = "https://www.meetup.com/haeKohtheuwae7uY6sie"
 
       VCR.use_cassette(:bad_meetup_gateway) do
         # FIXME: this is cheating a bit as we are knowingly building an

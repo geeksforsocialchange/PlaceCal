@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/normal_island'
+require_relative "../../lib/normal_island"
 
 FactoryBot.define do
   factory :site do
@@ -9,8 +9,8 @@ FactoryBot.define do
     url { "https://#{slug}.placecal.org" }
     tagline { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
-    theme { 'pink' }
-    hero_image_credit { 'Normal Island Photography' }
+    theme { "pink" }
+    hero_image_credit { "Normal Island Photography" }
 
     # Normal Island sites
     factory :millbrook_site do
@@ -20,7 +20,7 @@ FactoryBot.define do
 
       after(:create) do |site|
         district = create(:millbrook_district)
-        create(:sites_neighbourhood, site: site, neighbourhood: district, relation_type: 'Primary')
+        create(:sites_neighbourhood, site: site, neighbourhood: district, relation_type: "Primary")
       end
     end
 
@@ -31,7 +31,7 @@ FactoryBot.define do
 
       after(:create) do |site|
         district = create(:ashdale_district)
-        create(:sites_neighbourhood, site: site, neighbourhood: district, relation_type: 'Primary')
+        create(:sites_neighbourhood, site: site, neighbourhood: district, relation_type: "Primary")
       end
     end
 
@@ -42,7 +42,7 @@ FactoryBot.define do
 
       after(:create) do |site|
         county = create(:coastshire_county)
-        create(:sites_neighbourhood, site: site, neighbourhood: county, relation_type: 'Primary')
+        create(:sites_neighbourhood, site: site, neighbourhood: county, relation_type: "Primary")
       end
     end
 
@@ -56,6 +56,6 @@ FactoryBot.define do
   factory :sites_neighbourhood do
     association :site
     association :neighbourhood
-    relation_type { 'Primary' }
+    relation_type { "Primary" }
   end
 end

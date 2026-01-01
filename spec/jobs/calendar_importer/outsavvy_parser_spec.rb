@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe CalendarImporter::Parsers::Outsavvy do
-  describe '#extract_event_urls' do
-    it 'extracts event URLs from organiser page with live events' do
-      outsavvy_url = 'https://www.outsavvy.com/organiser/a-whole-orange'
+  describe "#extract_event_urls" do
+    it "extracts event URLs from organiser page with live events" do
+      outsavvy_url = "https://www.outsavvy.com/organiser/a-whole-orange"
       url_pattern = %r{^https://www\.outsavvy\.com/event/[A-Za-z0-9-]+}
 
       VCR.use_cassette(:outsavvy_events) do
@@ -24,8 +24,8 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
       end
     end
 
-    it 'returns empty list for organiser page with no events' do
-      outsavvy_url = 'https://www.outsavvy.com/organiser/treacles'
+    it "returns empty list for organiser page with no events" do
+      outsavvy_url = "https://www.outsavvy.com/organiser/treacles"
 
       VCR.use_cassette(:outsavvy_no_events) do
         calendar = build(
@@ -44,14 +44,14 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
     end
   end
 
-  describe '#download_calendar' do
-    it 'gets URL of original event listing' do
+  describe "#download_calendar" do
+    it "gets URL of original event listing" do
       VCR.use_cassette(:outsavvy_publisher_url) do
         calendar = build(
           :calendar,
           strategy: :event,
           name: :import_test_calendar,
-          source: 'https://www.outsavvy.com/organiser/ldn-queer-mart'
+          source: "https://www.outsavvy.com/organiser/ldn-queer-mart"
         )
 
         parser = described_class.new(calendar, url: calendar.source)
@@ -63,19 +63,19 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
         consumer.validate_events
         consumer.events
 
-        expected = 'https://www.outsavvy.com/event/25977/ldn-queer-mart-lgbtqia-art-market'
+        expected = "https://www.outsavvy.com/event/25977/ldn-queer-mart-lgbtqia-art-market"
 
         expect(consumer.events[0].publisher_url).to eq(expected)
       end
     end
 
-    it 'detects cancelled events' do
+    it "detects cancelled events" do
       VCR.use_cassette(:outsavvy_cancelled_event) do
         calendar = build(
           :calendar,
           strategy: :event,
           name: :import_test_calendar,
-          source: 'https://www.outsavvy.com/organiser/a-whole-orange'
+          source: "https://www.outsavvy.com/organiser/a-whole-orange"
         )
 
         parser = described_class.new(calendar, url: calendar.source)
