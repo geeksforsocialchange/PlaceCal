@@ -276,4 +276,4 @@ bundle install
 
 ## Donations
 
-If you'd like to support development, please consider sending us a one-off or regular donation on Ko-fi. You can do this through the "support" button in GitHub at the top of this repo.
+If you'd like to support development, please consider [supporting GFSC](https://gfsc.community/support-us/).
