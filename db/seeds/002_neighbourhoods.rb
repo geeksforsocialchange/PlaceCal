@@ -9,7 +9,7 @@ module SeedNeighbourhoods
     # Country
     country = Neighbourhood.create!(
       name: NormalIsland::COUNTRY[:name],
-      name_abbr: 'NO',
+      name_abbr: 'ZZ',
       unit: NormalIsland::COUNTRY[:unit],
       unit_code_key: NormalIsland::COUNTRY[:unit_code_key],
       unit_code_value: NormalIsland::COUNTRY[:unit_code_value],
