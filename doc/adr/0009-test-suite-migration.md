@@ -212,12 +212,12 @@ Chosen option 3: Full migration to RSpec + Cucumber with Normal Island data.
 
 ## Normal Island Geography
 
-Fictional geography hierarchy using "NO" as country code:
+Fictional geography hierarchy using "ZZ" as country code (a user-assigned ISO 3166 code):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                           NORMAL ISLAND (Country)                           │
-│                              Code: NO                                       │
+│                              Code: ZZ                                       │
 ├─────────────────────────────────┬───────────────────────────────────────────┤
 │           NORTHVALE             │              SOUTHMERE                    │
 │            (Region)             │               (Region)                    │
