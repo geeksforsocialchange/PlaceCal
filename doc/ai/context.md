@@ -1,19 +1,19 @@
-# ClaudeOnRails Context
+# AI Agents Context
 
-This project uses ClaudeOnRails with a swarm of specialized agents for Rails development.
+This project optionally supports AI coding assistants with specialized agents for Rails development.
 
 ## Project Information
 
 - **Rails Version**: 7.2.3
 - **Ruby Version**: 3.3.6
 - **Project Type**: Full-stack Rails
-- **Test Framework**: Minitest
+- **Test Framework**: RSpec
 - **GraphQL**: Enabled
 - **Turbo/Stimulus**: Enabled
 
 ## Swarm Configuration
 
-The claude-swarm.yml file defines specialized agents for different aspects of Rails development:
+The agents-swarm.yml file defines specialized agents for different aspects of Rails development:
 
 - Each agent has specific expertise and works in designated directories
 - Agents collaborate to implement features across all layers

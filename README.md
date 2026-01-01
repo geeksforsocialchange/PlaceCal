@@ -195,6 +195,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   └── seeds                   # Seeds using Normal Island data for development
 ├── doc                         # Documentation including testing guides and ADRs
 │   ├── adr                     # Architectural decision records
+│   ├── ai                      # Optional AI coding assistant configuration
 │   └── testing-guide.md        # Guide for writing tests with Normal Island data
 ├── features                    # Cucumber BDD features
 │   ├── step_definitions        # Step implementations
@@ -235,6 +236,41 @@ Our project is showing it's age and migration across multiple Rails version. Her
 API examples and test environment are provided using [Bruno](https://www.usebruno.com/).
 
 Install it with your system package manager then point it at the `collections` directory.
+
+## AI Coding Assistants (Optional)
+
+PlaceCal includes optional support for AI coding assistants. We're tool-agnostic and have structured the project to work with various AI assistants.
+
+**Note:** This is a legacy codebase with significant tech debt. AI assistants can help navigate and improve it, but expect some rough edges.
+
+### Setup
+
+```sh
+bin/setup-ai
+```
+
+This enables the optional `:ai` gem group and installs dependencies.
+
+### What's Included
+
+- `AGENTS.md` - Context file for AI assistants
+- `doc/ai/` - Agent configuration and prompts
+- `agents-swarm.yml` - Multi-agent swarm configuration
+
+### Using with Different Tools
+
+The configuration is designed to be adaptable:
+
+- **Claude Code / Cursor**: Uses `AGENTS.md` for context automatically
+- **Other assistants**: Point them at `AGENTS.md` and `doc/ai/context.md`
+- **Swarm-based tools**: Use `agents-swarm.yml` for multi-agent setups
+
+### Disabling
+
+```sh
+bundle config unset --local with
+bundle install
+```
 
 ## Donations
 

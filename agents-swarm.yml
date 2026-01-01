@@ -18,7 +18,7 @@ swarm:
       model: opus
       connections:
         [models, controllers, views, graphql, stimulus, jobs, tests, devops]
-      prompt_file: .claude-on-rails/prompts/architect.md
+      prompt_file: doc/ai/prompts/architect.md
       vibe: true
 
     models:
@@ -26,7 +26,7 @@ swarm:
       directory: ./app/models
       model: opus
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/models.md
+      prompt_file: doc/ai/prompts/models.md
 
     controllers:
       description: "Rails controllers, routing, and request handling specialist"
@@ -34,7 +34,7 @@ swarm:
       model: opus
 
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/controllers.md
+      prompt_file: doc/ai/prompts/controllers.md
 
     views:
       description: "Rails views, layouts, partials, and asset pipeline specialist"
@@ -44,39 +44,39 @@ swarm:
       connections: [stimulus]
 
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/views.md
+      prompt_file: doc/ai/prompts/views.md
 
     graphql:
       description: "GraphQL schema, resolvers, and mutations specialist"
       directory: ./app/graphql
       model: opus
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/graphql.md
+      prompt_file: doc/ai/prompts/graphql.md
 
     stimulus:
       description: "Stimulus.js controllers and Turbo integration specialist"
       directory: ./app/javascript
       model: opus
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/stimulus.md
+      prompt_file: doc/ai/prompts/stimulus.md
 
     jobs:
       description: "Background jobs, ActiveJob, and async processing specialist"
       directory: ./app/jobs
       model: opus
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/jobs.md
+      prompt_file: doc/ai/prompts/jobs.md
 
     tests:
       description: "RSpec testing, factories, and test coverage specialist"
       directory: ./spec
       model: opus
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/tests.md
+      prompt_file: doc/ai/prompts/tests.md
 
     devops:
       description: "Deployment, Docker, CI/CD, and production configuration specialist"
       directory: ./config
       model: opus
       allowed_tools: [Read, Edit, Write, Bash, Grep, Glob, LS]
-      prompt_file: .claude-on-rails/prompts/devops.md
+      prompt_file: doc/ai/prompts/devops.md

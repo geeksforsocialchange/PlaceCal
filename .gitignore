@@ -76,8 +76,8 @@ doc/rdoc
 .vscode
 /config/master.key
 
-# ClaudeOnRails
-.claude-on-rails/sessions/
+# AI coding assistants (user-specific settings)
+.claude/
 .claude-swarm/
 claude-swarm.log
 spec/examples.txt
