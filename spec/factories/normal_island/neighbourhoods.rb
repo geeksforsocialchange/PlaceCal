@@ -7,7 +7,7 @@ FactoryBot.define do
   factory :neighbourhood, aliases: [:bare_neighbourhood] do
     sequence(:name) { |n| "Neighbourhood #{n}" }
     unit { 'ward' }
-    unit_code_key { 'NO00WD' }
+    unit_code_key { 'ZZ00WD' }
     sequence(:unit_code_value) { |n| format('N%08d', n) }  # 9 characters total
     release_date { Neighbourhood::LATEST_RELEASE_DATE }  # Current release
 

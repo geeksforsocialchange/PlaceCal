@@ -13,7 +13,7 @@ RSpec.describe Neighbourhood, type: :model do
   end
 
   describe 'validations' do
-    it { is_expected.to allow_value('NO4000001').for(:unit_code_value) }
+    it { is_expected.to allow_value('ZZ4000001').for(:unit_code_value) }
     it { is_expected.to allow_value('').for(:unit_code_value) }
     # unit_code_value must be exactly 9 characters or blank
     it { is_expected.not_to allow_value('TOOLONG123').for(:unit_code_value) }

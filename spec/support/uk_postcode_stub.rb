@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 # Stub UKPostcode to accept Normal Island postcodes in tests
-# Normal Island postcodes follow pattern: NO[District] [Ward][Number]
-# e.g., NOMB 1RS, NOAD 2VV, NOSV 1CS
+# Normal Island postcodes follow pattern: ZZ[District] [Ward][Number]
+# e.g., ZZMB 1RS, ZZAD 2VV, ZZSV 1CS
+# Uses ZZ - a user-assigned ISO 3166 country code
 
 # Create a fake postcode class for Normal Island
 class NormalIslandPostcode
-  PATTERN = /\ANO[A-Z]{2}\s*\d[A-Z]{2}\z/i
+  PATTERN = /\AZZ[A-Z]{2}\s*\d[A-Z]{2}\z/i
 
   def initialize(postcode)
     @postcode = postcode.to_s.upcase.gsub(/\s+/, ' ')

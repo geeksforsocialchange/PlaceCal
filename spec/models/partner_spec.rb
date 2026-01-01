@@ -244,7 +244,7 @@ RSpec.describe Partner, type: :model do
     let(:partner) { create(:partner, accessed_by_user: user) }
 
     it 'can update postcode' do
-      new_postcode = 'NOAD 1HC' # Hillcrest
+      new_postcode = 'ZZAD 1HC' # Hillcrest
       partner.update!(
         address_attributes: {
           id: partner.address.id,

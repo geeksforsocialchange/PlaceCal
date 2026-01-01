@@ -231,40 +231,40 @@ Fictional geography hierarchy using "NO" as country code:
 │  ┌──────────┐  │  ┌──────────┐  │    ┌──────────┐     │    ┌──────────┐    │
 │  │Riverside │  │  │Hillcrest │  │    │Cliffside │     │    │Beachfront│    │
 │  │  (Ward)  │  │  │  (Ward)  │  │    │  (Ward)  │     │    │  (Ward)  │    │
-│  │ NOMB 1RS │  │  │ NOAD 1HC │  │    │ NOSV 1CS │     │    │ NOSV 2BF │    │
+│  │ ZZMB 1RS │  │  │ ZZAD 1HC │  │    │ ZZSV 1CS │     │    │ ZZSV 2BF │    │
 │  └──────────┘  │  └──────────┘  │    └──────────┘     │    └──────────┘    │
 │  ┌──────────┐  │  ┌──────────┐  │                     │                    │
 │  │ Oldtown  │  │  │Valleyview│  │                     │                    │
 │  │  (Ward)  │  │  │  (Ward)  │  │                     │                    │
-│  │ NOMB 2OT │  │  │ NOAD 2VV │  │                     │                    │
+│  │ ZZMB 2OT │  │  │ ZZAD 2VV │  │                     │                    │
 │  └──────────┘  │  └──────────┘  │                     │                    │
 │  ┌──────────┐  │                │                     │                    │
 │  │Greenfield│  │                │                     │                    │
 │  │  (Ward)  │  │                │                     │                    │
-│  │ NOMB 3GF │  │                │                     │                    │
+│  │ ZZMB 3GF │  │                │                     │                    │
 │  └──────────┘  │                │                     │                    │
 │  ┌──────────┐  │                │                     │                    │
 │  │Harbourside│ │                │                     │                    │
 │  │  (Ward)  │  │                │                     │                    │
-│  │ NOMB 4HS │  │                │                     │                    │
+│  │ ZZMB 4HS │  │                │                     │                    │
 │  └──────────┘  │                │                     │                    │
 └────────────────┴────────────────┴─────────────────────┴─────────────────────┘
 ```
 
 ### Postcode Format
 
-Normal Island postcodes follow the pattern: `NO[District] [Ward][Number]`
+Normal Island postcodes follow the pattern: `ZZ[District] [Ward][Number]` (ZZ is a user-assigned ISO 3166 code)
 
 | Ward        | District  | Postcode   |
 | ----------- | --------- | ---------- |
-| Riverside   | Millbrook | `NOMB 1RS` |
-| Oldtown     | Millbrook | `NOMB 2OT` |
-| Greenfield  | Millbrook | `NOMB 3GF` |
-| Harbourside | Millbrook | `NOMB 4HS` |
-| Hillcrest   | Ashdale   | `NOAD 1HC` |
-| Valleyview  | Ashdale   | `NOAD 2VV` |
-| Cliffside   | Seaview   | `NOSV 1CS` |
-| Beachfront  | Seaview   | `NOSV 2BF` |
+| Riverside   | Millbrook | `ZZMB 1RS` |
+| Oldtown     | Millbrook | `ZZMB 2OT` |
+| Greenfield  | Millbrook | `ZZMB 3GF` |
+| Harbourside | Millbrook | `ZZMB 4HS` |
+| Hillcrest   | Ashdale   | `ZZAD 1HC` |
+| Valleyview  | Ashdale   | `ZZAD 2VV` |
+| Cliffside   | Seaview   | `ZZSV 1CS` |
+| Beachfront  | Seaview   | `ZZSV 2BF` |
 
 ### Partners
 

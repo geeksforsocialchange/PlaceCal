@@ -42,8 +42,8 @@ RSpec.describe Address, type: :model do
       let(:address) do
         build(:address,
               street_address: '123 Main Street',
-              postcode: 'NOMB 1RS',
-              country_code: 'NO')
+              postcode: 'ZZMB 1RS',
+              country_code: 'ZZ')
       end
 
       it 'is valid and assigns neighbourhood' do
@@ -148,9 +148,9 @@ RSpec.describe Address, type: :model do
       address = build(:address,
                       street_address: '123 Main St',
                       city: 'Millbrook',
-                      postcode: 'NOMB 1RS')
+                      postcode: 'ZZMB 1RS')
       expect(address.to_s).to include('123 Main St')
-      expect(address.to_s).to include('NOMB 1RS')
+      expect(address.to_s).to include('ZZMB 1RS')
     end
   end
 
@@ -161,7 +161,7 @@ RSpec.describe Address, type: :model do
 
     it 'creates address from component array' do
       components = ['Street Line 1', 'Line 2', 'Line 3']
-      address = described_class.build_from_components(components, 'NOMB 1RS')
+      address = described_class.build_from_components(components, 'ZZMB 1RS')
       expect(address).to be_persisted
       expect(address.street_address).to eq('Street Line 1')
       expect(address.street_address2).to eq('Line 2')
@@ -169,8 +169,8 @@ RSpec.describe Address, type: :model do
     end
 
     it 'returns nil for blank components' do
-      expect(described_class.build_from_components(nil, 'NOMB 1RS')).to be_nil
-      expect(described_class.build_from_components([], 'NOMB 1RS')).to be_nil
+      expect(described_class.build_from_components(nil, 'ZZMB 1RS')).to be_nil
+      expect(described_class.build_from_components([], 'ZZMB 1RS')).to be_nil
     end
   end
 

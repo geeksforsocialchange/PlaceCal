@@ -7,7 +7,7 @@
 # test and development environments.
 #
 # Geography hierarchy:
-# Country: Normal Island (NO)
+# Country: Normal Island (ZZ - user-assigned ISO 3166 code)
 # ├── Region: Northvale
 # │   └── County: Greater Millbrook
 # │       ├── District: Millbrook
@@ -29,8 +29,8 @@ module NormalIsland
   COUNTRY = {
     name: 'Normal Island',
     unit: 'country',
-    unit_code_key: 'NO00CD',
-    unit_code_value: 'NO0000001'
+    unit_code_key: 'ZZ00CD',
+    unit_code_value: 'ZZ0000001'
   }.freeze
 
   # Regions
@@ -38,14 +38,14 @@ module NormalIsland
     northvale: {
       name: 'Northvale',
       unit: 'region',
-      unit_code_key: 'NO00RG',
-      unit_code_value: 'NO1000001'
+      unit_code_key: 'ZZ00RG',
+      unit_code_value: 'ZZ1000001'
     },
     southmere: {
       name: 'Southmere',
       unit: 'region',
-      unit_code_key: 'NO00RG',
-      unit_code_value: 'NO1000002'
+      unit_code_key: 'ZZ00RG',
+      unit_code_value: 'ZZ1000002'
     }
   }.freeze
 
@@ -54,15 +54,15 @@ module NormalIsland
     greater_millbrook: {
       name: 'Greater Millbrook',
       unit: 'county',
-      unit_code_key: 'NO00CT',
-      unit_code_value: 'NO2000001',
+      unit_code_key: 'ZZ00CT',
+      unit_code_value: 'ZZ2000001',
       parent_region: :northvale
     },
     coastshire: {
       name: 'Coastshire',
       unit: 'county',
-      unit_code_key: 'NO00CT',
-      unit_code_value: 'NO2000002',
+      unit_code_key: 'ZZ00CT',
+      unit_code_value: 'ZZ2000002',
       parent_region: :southmere
     }
   }.freeze
@@ -72,22 +72,22 @@ module NormalIsland
     millbrook: {
       name: 'Millbrook',
       unit: 'district',
-      unit_code_key: 'NO00DT',
-      unit_code_value: 'NO3000001',
+      unit_code_key: 'ZZ00DT',
+      unit_code_value: 'ZZ3000001',
       parent_county: :greater_millbrook
     },
     ashdale: {
       name: 'Ashdale',
       unit: 'district',
-      unit_code_key: 'NO00DT',
-      unit_code_value: 'NO3000002',
+      unit_code_key: 'ZZ00DT',
+      unit_code_value: 'ZZ3000002',
       parent_county: :greater_millbrook
     },
     seaview: {
       name: 'Seaview',
       unit: 'district',
-      unit_code_key: 'NO00DT',
-      unit_code_value: 'NO3000003',
+      unit_code_key: 'ZZ00DT',
+      unit_code_value: 'ZZ3000003',
       parent_county: :coastshire
     }
   }.freeze
@@ -97,128 +97,128 @@ module NormalIsland
     riverside: {
       name: 'Riverside',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000001',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000001',
       parent_district: :millbrook,
-      postcode: 'NOMB 1RS'
+      postcode: 'ZZMB 1RS'
     },
     oldtown: {
       name: 'Oldtown',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000002',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000002',
       parent_district: :millbrook,
-      postcode: 'NOMB 2OT'
+      postcode: 'ZZMB 2OT'
     },
     greenfield: {
       name: 'Greenfield',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000003',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000003',
       parent_district: :millbrook,
-      postcode: 'NOMB 3GF'
+      postcode: 'ZZMB 3GF'
     },
     harbourside: {
       name: 'Harbourside',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000004',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000004',
       parent_district: :millbrook,
-      postcode: 'NOMB 4HS'
+      postcode: 'ZZMB 4HS'
     },
     hillcrest: {
       name: 'Hillcrest',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000005',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000005',
       parent_district: :ashdale,
-      postcode: 'NOAD 1HC'
+      postcode: 'ZZAD 1HC'
     },
     valleyview: {
       name: 'Valleyview',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000006',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000006',
       parent_district: :ashdale,
-      postcode: 'NOAD 2VV'
+      postcode: 'ZZAD 2VV'
     },
     cliffside: {
       name: 'Cliffside',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000007',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000007',
       parent_district: :seaview,
-      postcode: 'NOSV 1CL'
+      postcode: 'ZZSV 1CL'
     },
     beachfront: {
       name: 'Beachfront',
       unit: 'ward',
-      unit_code_key: 'NO00WD',
-      unit_code_value: 'NO4000008',
+      unit_code_key: 'ZZ00WD',
+      unit_code_value: 'ZZ4000008',
       parent_district: :seaview,
-      postcode: 'NOSV 2BF'
+      postcode: 'ZZSV 2BF'
     }
   }.freeze
 
   # Postcodes - mapping postcode to ward key
   POSTCODES = {
-    'NOMB 1RS' => :riverside,
-    'NOMB 2OT' => :oldtown,
-    'NOMB 3GF' => :greenfield,
-    'NOMB 4HS' => :harbourside,
-    'NOAD 1HC' => :hillcrest,
-    'NOAD 2VV' => :valleyview,
-    'NOSV 1CL' => :cliffside,
-    'NOSV 2BF' => :beachfront
+    'ZZMB 1RS' => :riverside,
+    'ZZMB 2OT' => :oldtown,
+    'ZZMB 3GF' => :greenfield,
+    'ZZMB 4HS' => :harbourside,
+    'ZZAD 1HC' => :hillcrest,
+    'ZZAD 2VV' => :valleyview,
+    'ZZSV 1CL' => :cliffside,
+    'ZZSV 2BF' => :beachfront
   }.freeze
 
   # Sample addresses for each ward
   ADDRESSES = {
     riverside: {
       street_address: '1 River Road',
-      postcode: 'NOMB 1RS',
+      postcode: 'ZZMB 1RS',
       latitude: 53.5,
       longitude: -1.5
     },
     oldtown: {
       street_address: '10 Heritage Lane',
-      postcode: 'NOMB 2OT',
+      postcode: 'ZZMB 2OT',
       latitude: 53.52,
       longitude: -1.48
     },
     greenfield: {
       street_address: '25 Park Avenue',
-      postcode: 'NOMB 3GF',
+      postcode: 'ZZMB 3GF',
       latitude: 53.54,
       longitude: -1.46
     },
     harbourside: {
       street_address: '42 Dock Street',
-      postcode: 'NOMB 4HS',
+      postcode: 'ZZMB 4HS',
       latitude: 53.48,
       longitude: -1.52
     },
     hillcrest: {
       street_address: '15 Summit Drive',
-      postcode: 'NOAD 1HC',
+      postcode: 'ZZAD 1HC',
       latitude: 53.6,
       longitude: -1.4
     },
     valleyview: {
       street_address: '8 Valley Road',
-      postcode: 'NOAD 2VV',
+      postcode: 'ZZAD 2VV',
       latitude: 53.62,
       longitude: -1.38
     },
     cliffside: {
       street_address: '3 Cliff Walk',
-      postcode: 'NOSV 1CL',
+      postcode: 'ZZSV 1CL',
       latitude: 52.0,
       longitude: -0.5
     },
     beachfront: {
       street_address: '20 Promenade',
-      postcode: 'NOSV 2BF',
+      postcode: 'ZZSV 2BF',
       latitude: 52.02,
       longitude: -0.48
     }

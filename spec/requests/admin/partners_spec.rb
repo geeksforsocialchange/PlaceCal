@@ -316,7 +316,7 @@ RSpec.describe 'Admin::Partners', type: :request do
           name: partner.name,
           address_attributes: {
             street_address: partner.address.street_address,
-            postcode: 'NOAD 1HC' # Oldtown postcode
+            postcode: 'ZZAD 1HC' # Hillcrest postcode
           }
         }
 

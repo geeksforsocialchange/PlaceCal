@@ -119,7 +119,7 @@ bundle exec cucumber                     # Cucumber features
 
 ### Test data: Normal Island
 
-Tests use a fictional geography called "Normal Island" (country code: NO) to avoid conflicts with real UK data. See `lib/normal_island.rb` for the full data structure and `doc/testing-guide.md` for guidance on writing tests.
+Tests use a fictional geography called "Normal Island" (country code: ZZ, a user-assigned ISO 3166 code) to avoid conflicts with real UK data. See `lib/normal_island.rb` for the full data structure and `doc/testing-guide.md` for guidance on writing tests.
 
 ## Documentation
 

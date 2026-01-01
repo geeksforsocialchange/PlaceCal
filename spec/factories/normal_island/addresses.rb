@@ -5,7 +5,7 @@ require_relative '../../../lib/normal_island'
 FactoryBot.define do
   factory :address, aliases: [:bare_address_1] do
     street_address { Faker::Address.street_address }
-    postcode { 'NOMB 1RS' }
+    postcode { 'ZZMB 1RS' }
     latitude { 53.5 }
     longitude { -1.5 }
     association :neighbourhood, factory: :riverside_ward

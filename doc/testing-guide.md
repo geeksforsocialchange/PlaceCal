@@ -471,22 +471,22 @@ create(:service_area, partner: partner, neighbourhood: ward)
 ## Normal Island Quick Reference
 
 ```
-NORMAL ISLAND (NO)
+NORMAL ISLAND (ZZ - user-assigned ISO 3166 code)
 ├── Northvale (Region)
 │   └── Greater Millbrook (County)
 │       ├── Millbrook (District)
-│       │   ├── Riverside   → NOMB 1RS → Riverside Community Hub
-│       │   ├── Oldtown     → NOMB 2OT → Oldtown Library
-│       │   ├── Greenfield  → NOMB 3GF → Greenfield Youth Centre
-│       │   └── Harbourside → NOMB 4HS → Harbourside Arts Centre
+│       │   ├── Riverside   → ZZMB 1RS → Riverside Community Hub
+│       │   ├── Oldtown     → ZZMB 2OT → Oldtown Library
+│       │   ├── Greenfield  → ZZMB 3GF → Greenfield Youth Centre
+│       │   └── Harbourside → ZZMB 4HS → Harbourside Arts Centre
 │       └── Ashdale (District)
-│           ├── Hillcrest   → NOAD 1HC → Ashdale Sports Club
-│           └── Valleyview  → NOAD 2VV
+│           ├── Hillcrest   → ZZAD 1HC → Ashdale Sports Club
+│           └── Valleyview  → ZZAD 2VV
 └── Southmere (Region)
     └── Coastshire (County)
         └── Seaview (District)
-            ├── Cliffside   → NOSV 1CS → Coastline Wellness Centre
-            └── Beachfront  → NOSV 2BF
+            ├── Cliffside   → ZZSV 1CL → Coastline Wellness Centre
+            └── Beachfront  → ZZSV 2BF
 ```
 
 See [lib/normal_island.rb](../lib/normal_island.rb) for full data definitions.
