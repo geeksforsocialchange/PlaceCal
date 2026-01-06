@@ -22,8 +22,8 @@ module GraphQLHelpers
 
   # Assert a field equals a value
   def expect_field_equals(obj, key, value)
-    expect(obj).to have_key(key), "Expected field '#{key}' to exist"
-    expect(obj[key]).to eq(value), "Expected '#{key}' to equal '#{value}', got '#{obj[key]}'"
+    actual = expect_field(obj, key)
+    expect(actual).to eq(value), "Expected '#{key}' to equal '#{value}', got '#{actual}'"
   end
 
   # Assert a field does not exist
