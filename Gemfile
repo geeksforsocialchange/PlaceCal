@@ -141,9 +141,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-# Optional AI coding assistant support
-# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
-group :ai, optional: true do
-  gem 'claude-on-rails'
-end

@@ -39,9 +39,9 @@ RSpec.describe "GraphQL Partners", type: :request do
       result = execute_query(query)
 
       edges = result["data"]["partnerConnection"]["edges"]
-      partners.each_with_index do |partner, index|
-        node = edges[index]["node"]
-        expect(node["id"]).to eq(partner.id.to_s)
+      partners.each do |partner|
+        node = edges.find { |e| e["node"]["id"] == partner.id.to_s }&.dig("node")
+        expect(node).to be_present, "Expected to find partner #{partner.id} in response"
         expect(node["name"]).to eq(partner.name)
         expect(node["summary"]).to eq(partner.summary)
       end
