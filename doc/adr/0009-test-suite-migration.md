@@ -216,19 +216,19 @@ Chosen option 3: Full migration to RSpec + Cucumber with Normal Island data.
 Fictional geography hierarchy using "ZZ" as country code (a user-assigned ISO 3166 code):
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           NORMAL ISLAND (Country)                           │
-│                              Code: ZZ                                       │
-├─────────────────────────────────┬───────────────────────────────────────────┤
-│           NORTHVALE             │              SOUTHMERE                    │
-│            (Region)             │               (Region)                    │
-├─────────────────────────────────┼───────────────────────────────────────────┤
-│      GREATER MILLBROOK          │            COASTSHIRE                     │
-│          (County)               │              (County)                     │
-├────────────────┬────────────────┼───────────────────────────────────────────┤
-│   MILLBROOK    │    ASHDALE     │              SEAVIEW                      │
-│   (District)   │   (District)   │             (District)                    │
-├────────────────┼────────────────┼─────────────────────┬─────────────────────┤
+┌────────────────────────────────────────────────────────────────────────────┐
+│                           NORMAL ISLAND (Country)                          │
+│                              Code: ZZ                                      │
+├─────────────────────────────────┬──────────────────────────────────────────┤
+│           NORTHVALE             │              SOUTHMERE                   │
+│            (Region)             │               (Region)                   │
+├─────────────────────────────────┼──────────────────────────────────────────┤
+│      GREATER MILLBROOK          │             COASTSHIRE                   │
+│          (County)               │              (County)                    │
+├────────────────┬────────────────┼──────────────────────────────────────────┤
+│   MILLBROOK    │    ASHDALE     │              SEAVIEW                     │
+│   (District)   │   (District)   │             (District)                   │
+├────────────────┼────────────────┼─────────────────────┬────────────────────┤
 │  ┌──────────┐  │  ┌──────────┐  │    ┌──────────┐     │    ┌──────────┐    │
 │  │Riverside │  │  │Hillcrest │  │    │Cliffside │     │    │Beachfront│    │
 │  │  (Ward)  │  │  │  (Ward)  │  │    │  (Ward)  │     │    │  (Ward)  │    │
@@ -249,12 +249,12 @@ Fictional geography hierarchy using "ZZ" as country code (a user-assigned ISO 31
 │  │  (Ward)  │  │                │                     │                    │
 │  │ ZZMB 4HS │  │                │                     │                    │
 │  └──────────┘  │                │                     │                    │
-└────────────────┴────────────────┴─────────────────────┴─────────────────────┘
+└────────────────┴────────────────┴─────────────────────┴────────────────────┘
 ```
 
 ### Postcode Format
 
-Normal Island postcodes follow the pattern: `ZZ[District] [Ward][Number]` (ZZ is a user-assigned ISO 3166 code)
+Normal Island postcodes follow the pattern: `ZZ[District] [Ward]` (ZZ is a user-assigned ISO 3166 code)
 
 | Ward        | District  | Postcode   |
 | ----------- | --------- | ---------- |

@@ -16,6 +16,7 @@ FactoryBot.define do
       dtend { 1.week.ago.at_beginning_of_hour + 2.hours }
     end
 
+    # Note time is frozen by `timecop` gem - see rails_helper.rb
     factory :future_event do
       dtstart { 1.week.from_now.at_beginning_of_hour }
       dtend { 1.week.from_now.at_beginning_of_hour + 2.hours }
