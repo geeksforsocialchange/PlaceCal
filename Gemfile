@@ -91,10 +91,6 @@ gem 'uk_postcode'
 group :development, :test do
   gem 'byebug'
   gem 'dotenv-rails'
-  gem 'factory_bot_rails'
-  gem 'faker'
-  gem 'rspec-rails', '~> 7.0'
-  gem 'timecop'
 end
 
 # Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
@@ -128,13 +124,17 @@ group :test do
   gem 'capybara-select-2'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'
+  gem 'factory_bot_rails'
+  gem 'faker'
   gem 'graphql-client'
   gem 'json_matchers'
   gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
+  gem 'rspec-rails', '~> 7.0'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov', require: false
+  gem 'timecop'
   gem 'vcr'
   gem 'webmock' # used by VCR
 end

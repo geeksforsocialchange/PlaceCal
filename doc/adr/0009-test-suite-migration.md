@@ -1,19 +1,20 @@
 # Test Suite Migration to RSpec + Cucumber with Normal Island Data
 
+- Author: @kimadactyl
 - Deciders: TBD
 - Date: 2025-12-10
 - Status: **Completed**
 
 ## Context and Problem Statement
 
-The current PlaceCal test suite has several issues:
+The current PlaceCal test suite has been worked on by many developers over the last 8 years and is very large - 112 test files using Minitest (~11,500 lines, ~500 test methods). As a result we have some deep-rooted problems to resolve:
 
-- 112 test files using Minitest (~11,500 lines, ~500 test methods)
-- Test data uses UK-specific geography (Manchester, Hulme, Moss Side, real postcodes)
-- Tests are coupled to real-world locations which can change
-- No BDD/acceptance test layer exists
-- Factories mix real places with test data, making tests brittle
-- Test organization is inconsistent across layers
+- Test data uses UK-specific geography (Manchester, Hulme, Moss Side, real postcodes) which makes it hard to think about abstractly
+- These boundaries also change every few years, making this rationalisation even more confusing
+- No BDD test layer exists so we don't have a clear definition of what the app is meant to _do_, making developer onboarding hard
+- Factories load in some real data across tests, making them brittle
+- Test organization is inconsistent across layers, with no clear separation of concerns between controller, model, view testing etc
+- There is little consistent style in test naming, organisation, scope, etc
 
 We need a modern, maintainable test suite that:
 
