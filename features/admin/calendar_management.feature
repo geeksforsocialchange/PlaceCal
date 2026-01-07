@@ -1,4 +1,4 @@
-@admin @wip
+@admin @javascript
 Feature: Calendar Management
   As an administrator
   I want to manage calendars that import events

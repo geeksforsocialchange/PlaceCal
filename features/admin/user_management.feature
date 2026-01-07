@@ -1,4 +1,4 @@
-@admin @wip
+@admin @javascript
 Feature: User Management
   As a root administrator
   I want to manage user accounts

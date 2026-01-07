@@ -24,10 +24,21 @@ When("I visit the partners page") do
 end
 
 When("I create a new partner with name {string}") do |name|
+  # Ensure we have neighbourhoods for the geocoder
+  create(:riverside_ward) unless Neighbourhood.exists?(name: "Riverside")
+
   click_link "Partners"
   await_datatables
   click_link "Add New Partner"
   fill_in "Name", with: name
+
+  # Fill in address (required - partner needs address or service area)
+  fill_in "Street address", with: "123 Main Street"
+  fill_in "City", with: "Millbrook"
+  fill_in "Postcode", with: "ZZMB 1RS"
+
+  # Wait for any async validation to complete
+  sleep 0.6
   click_button "Save and continue..."
 end
 

@@ -329,7 +329,8 @@ From `app/assets/stylesheets/admin.scss`:
 - `bootstrap`, `popper.js`
 - `select2`
 - `datatables.net-*`
-- `jquery`
+
+**Note:** jQuery remains for public frontend; admin will no longer depend on it.
 
 **From `Gemfile`:**
 
