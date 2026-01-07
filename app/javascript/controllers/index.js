@@ -40,5 +40,8 @@ application.register("tom-select", TomSelectController);
 import AdminTableController from "./admin_table_controller.js";
 application.register("admin-table", AdminTableController);
 
+import MultiStepFormController from "./multi_step_form_controller.js";
+application.register("multi-step-form", MultiStepFormController);
+
 import UserPartnersController from "./user_partners_controller.js";
 application.register("user-partners", UserPartnersController);

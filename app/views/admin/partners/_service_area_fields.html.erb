@@ -1,22 +1,18 @@
-<fieldset class="input-group nested-fields p-0">
-    <%# The style width setting here is applied to dynamically created elements, we do not know why. %>
-    <%# TODO: Fix the dynamic styling so that width does not get applied, so we can remove this smell %>
-    
+<div class="nested-fields flex items-center gap-2">
     <%= f.input :neighbourhood_id,
                 collection: options_for_service_area_neighbourhoods(@partner),
                 include_blank: true,
                 value_method: ->(obj) { obj[:id] },
                 label_method: ->(obj) { obj[:name] },
-                input_html: { 
-                    class: 'form-control', 
+                wrapper: :tw_vertical_form,
+                input_html: {
+                    class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm',
                     data: { controller: "tom-select" },
                     disabled: f.object.neighbourhood_id && !current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id),
                 },
-                label: '', label_html: { hidden: true } %>
+                label: false %>
 
     <%- if !f.object.neighbourhood_id || current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id)%>
-        <div class="input-group-append p-0">
-            <%= link_to_remove_association 'Remove', f, class: "pl-2 pt-1 text-danger" %>
-        </div>
+        <%= link_to_remove_association 'Remove', f, class: "text-sm text-red-600 hover:text-red-800" %>
     <% end %>
-</fieldset>
+</div>

@@ -29,20 +29,23 @@ Feature: Partner Administration
   Scenario: Deleting a partner
     Given there is a partner called "Temporary Partner"
     When I edit the partner "Temporary Partner"
-    And I click "Delete Partner"
+    And I go to the "Admin" step
+    And I click "Delete Partner" and confirm
     Then I should see a success message
     And I should not see "Temporary Partner"
 
-  # Moderation (Root Only)
+  # Moderation (Root Only - Admin step)
   Scenario: Root user can see moderation section
     Given there is a partner called "Moderation Test Partner"
     When I edit the partner "Moderation Test Partner"
+    And I go to the "Admin" step
     Then I should see "Moderation"
     And I should see "Hidden"
 
   Scenario: Hiding a partner with reason
     Given there is a partner called "Problem Partner"
     When I edit the partner "Problem Partner"
+    And I go to the "Admin" step
     And I check "Hidden"
     And I fill in "Explanation for hiding" with "Spam content detected"
     And I click the "Save Partner" button
