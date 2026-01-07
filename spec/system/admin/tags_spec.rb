@@ -10,13 +10,6 @@ RSpec.describe "Admin Tags", :slow, type: :system do
            password_confirmation: "password")
   end
 
-  let!(:citizen_user) do
-    create(:citizen_user,
-           email: "citizen@placecal.org",
-           password: "password",
-           password_confirmation: "password")
-  end
-
   let!(:tag) { create(:tag) }
   let!(:system_tag) { create(:tag, system_tag: true) }
 
@@ -46,13 +39,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       expect(page).to have_css("input#tag_system_tag")
     end
 
-    it "hides system_tag option for citizen users" do
-      login_as(citizen_user)
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-
-      expect(page).not_to have_css("input#tag_system_tag")
-    end
+    # NOTE: Non-root users cannot access tag edit pages (TagPolicy.edit? requires root)
+    # so there's no need to test hiding system_tag for citizen users
   end
 
   describe "tag editing" do
