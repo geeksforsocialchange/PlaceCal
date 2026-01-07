@@ -37,5 +37,8 @@ application.register("select2", Select2Controller);
 import TomSelectController from "./tom_select_controller.js";
 application.register("tom-select", TomSelectController);
 
+import AdminTableController from "./admin_table_controller.js";
+application.register("admin-table", AdminTableController);
+
 import UserPartnersController from "./user_partners_controller.js";
 application.register("user-partners", UserPartnersController);

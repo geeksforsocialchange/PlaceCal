@@ -8,8 +8,7 @@ import "./src/jquery";
 require("@nathanvda/cocoon");
 require("select2")(window, $);
 
-// Datatables
-import "./src/datatable.js";
+// Note: DataTables removed - now using Stimulus admin_table_controller
 
 $(document).on("turbo:load", function () {
 	$("[data-toggle='tooltip']").tooltip();

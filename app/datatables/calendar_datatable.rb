@@ -31,8 +31,8 @@ class CalendarDatatable < Datatable
         notice_count: record.notice_count&.to_s || 0,
         events: record.events&.count&.to_s || 0,
         state: record.calendar_state,
-        last_import_at: json_datetime(record.last_import_at),
-        checksum_updated_at: json_datetime(record.checksum_updated_at)
+        last_import_at: format_datetime(record.last_import_at),
+        checksum_updated_at: format_datetime(record.checksum_updated_at)
       }
     end
   end
@@ -45,10 +45,7 @@ class CalendarDatatable < Datatable
 
   private
 
-  def json_datetime(datetime)
-    {
-      unixtime: datetime.to_i,
-      strtime: datetime ? "#{time_ago_in_words(datetime)} ago" : 'never'
-    }.to_json
+  def format_datetime(datetime)
+    datetime ? "#{time_ago_in_words(datetime)} ago" : 'never'
   end
 end

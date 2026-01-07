@@ -8,34 +8,56 @@
   <%- if policy(model_name.constantize).create? && defined?(new_link) %>
     <%= link_to "Add New #{model_name}", new_link, data: { turbo: false }, class: "btn btn-primary mb-3" %>
   <% end %>
-
-  <%# are these used at all?
-    # <.% if defined?(additional_links) %.>
-    # <.% additional_links.each do |link| %.>
-    #   <.%= sanitize link %.>
-    # <.% end %.>
-    # <.% end %.>
-  %>
 </span>
 
-<table class="table table-striped" id="datatable" data-source="<%= source %>">
-  <thead>
-    <tr>
-      <% column_titles.each do |title| %>
-        <th><%= title %></th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <%# While testing, it might be easier to delete the following block %>
-    <% data&.each do |record| %>
+<div data-controller="admin-table"
+     data-admin-table-source-value="<%= source %>"
+     data-admin-table-columns-value="<%= columns.map { |c| { data: c.to_s } }.to_json %>"
+     data-admin-table-page-length-value="15">
+
+  <div class="row mb-3">
+    <div class="col-sm-12 col-md-6">
+      <div class="input-group">
+        <input type="search"
+               class="form-control"
+               placeholder="Search..."
+               data-admin-table-target="search"
+               data-action="input->admin-table#search">
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-striped" data-admin-table-target="table">
+    <thead>
       <tr>
-        <% record.slice(columns).each do |key, value| %>
-          <td>
-            <%= value %>
-          </td>
+        <% column_titles.each_with_index do |col_title, index| %>
+          <th data-column="<%= columns[index] %>"
+              data-action="click->admin-table#sort"
+              style="cursor: pointer;">
+            <%= col_title %>
+          </th>
         <% end %>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody data-admin-table-target="tbody">
+      <tr>
+        <td colspan="<%= columns.length %>" class="text-center py-4">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Loading...
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-5">
+      <div data-admin-table-target="info" class="text-muted"></div>
+    </div>
+    <div class="col-sm-12 col-md-7">
+      <nav aria-label="Table navigation">
+        <ul class="pagination justify-content-end" data-admin-table-target="pagination">
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

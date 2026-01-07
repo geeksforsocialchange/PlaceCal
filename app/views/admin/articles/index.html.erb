@@ -1,15 +1,3 @@
-<script>
-var columns = [
-    {"data": "id"},
-    {"data": "title"},
-    {"data": "author"},
-    {"data": "partners"},
-    {"data": "published_at"},
-    {"data": "is_draft"},
-    {"data": "updated_at"}
-  ]
-</script>
-
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Articles",
     model: :articles,

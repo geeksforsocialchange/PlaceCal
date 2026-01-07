@@ -7,11 +7,13 @@ module CucumberHelpers
     create(:site, slug: "default-site") unless Site.exists?(slug: "default-site")
   end
 
-  # Wait for datatables to load
+  # Wait for admin table to load (Stimulus controller replaces DataTables)
   def await_datatables(time = 5)
-    page.find(:css, "#datatable_info", wait: time)
+    # Wait for the Stimulus admin-table controller to finish loading data
+    # It updates the info target when data is loaded
+    page.find(:css, "[data-admin-table-target='info']", text: /Showing|No entries/, wait: time)
   rescue Capybara::ElementNotFound
-    # DataTables not present on this page
+    # Admin table not present on this page
   end
 
   # Wait for page to settle after JavaScript actions
