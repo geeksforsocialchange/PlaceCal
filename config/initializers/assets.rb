@@ -30,3 +30,6 @@ Rails.application.config.assets.precompile += %w[
   sites/moston.css
   sites/mossley.css
 ]
+
+# NOTE: admin_tailwind.css is pre-built by Tailwind CLI into app/assets/builds/
+# and picked up automatically by Rails - no need to add to precompile list
