@@ -2,7 +2,7 @@
 
 class PullQuoteComponent < ViewComponent::Base
   def initialize(source:, context:, options:)
-    super
+    super()
     @context = context
     @source = source
     @color_mode = options[:light_mode] ? 'light' : 'dark'

@@ -2,7 +2,7 @@
 
 class FullWidthActionComponent < ViewComponent::Base
   def initialize(title:, link_text:, link_url:, color:)
-    super
+    super()
     @title = title
     @link_text = link_text
     @link_url = link_url

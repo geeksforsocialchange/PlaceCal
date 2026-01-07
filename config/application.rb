@@ -14,7 +14,7 @@ module PlaceCal
     # -- all .rb files in that directory are automatically loaded.
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 8.0
 
     config.active_job.queue_adapter = :delayed_job
 
@@ -22,6 +22,13 @@ module PlaceCal
 
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+
+    # Collapse MountainView component subdirectories for Zeitwerk
+    # These directories contain views/templates, not namespaced classes
+    config.autoload_lib(ignore: %w[assets tasks])
+    Rails.autoloaders.main.collapse(
+      Dir[Rails.root.join('app/components/*/')]
+    )
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do

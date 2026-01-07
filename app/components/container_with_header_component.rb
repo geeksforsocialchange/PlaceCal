@@ -2,7 +2,7 @@
 
 class ContainerWithHeaderComponent < ViewComponent::Base
   def initialize(title:, color:)
-    super
+    super()
     @title = title
     @color = color
   end

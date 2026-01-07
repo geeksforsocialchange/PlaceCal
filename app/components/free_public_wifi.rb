@@ -2,7 +2,7 @@
 
 class FreePublicWifi < ViewComponent::Base
   def initialize(places)
-    super
+    super()
     @places = places
   end
 end

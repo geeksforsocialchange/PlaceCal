@@ -2,7 +2,7 @@
 
 class PartnerPreviewComponent < ViewComponent::Base
   def initialize(partner:, site:)
-    super
+    super()
     @partner = partner
     @site = site
   end

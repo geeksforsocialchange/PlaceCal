@@ -3,7 +3,7 @@
 class Meta < ViewComponent::Base
   renders_one :link
   def initialize(permalink)
-    super
+    super()
     @permalink = permalink
   end
 end
