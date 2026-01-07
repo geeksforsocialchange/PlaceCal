@@ -105,6 +105,7 @@ class Partner < ApplicationRecord
   validates :public_email, :partner_email,
             format: { with: EMAIL_REGEX, message: 'invalid email address' },
             allow_blank: true
+  validates :slug, uniqueness: true
 
   validate :check_neighbourhood_access
 
