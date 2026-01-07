@@ -42,19 +42,21 @@ Then("I should not see {string}") do |content|
 end
 
 Then("I should see a success message") do
-  expect(page).to have_selector(".alert-success")
+  # Look for green alert (Tailwind) or Bootstrap alert-success
+  expect(page).to have_selector("[role='alert'].bg-green-50, .alert-success")
 end
 
 Then("I should see the success message {string}") do |message|
-  expect(page).to have_selector(".alert-success", text: message)
+  expect(page).to have_selector("[role='alert'].bg-green-50, .alert-success", text: message)
 end
 
 Then("I should see an error message") do
-  expect(page).to have_selector(".alert-danger")
+  # Look for red alert (Tailwind) or Bootstrap alert-danger
+  expect(page).to have_selector("[role='alert'].bg-red-50, .alert-danger")
 end
 
 Then("I should see the error message {string}") do |message|
-  expect(page).to have_selector(".alert-danger", text: message)
+  expect(page).to have_selector("[role='alert'].bg-red-50, .alert-danger", text: message)
 end
 
 When("I fill in {string} with {string}") do |field, value|

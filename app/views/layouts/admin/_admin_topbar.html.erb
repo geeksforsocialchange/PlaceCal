@@ -1,13 +1,17 @@
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-  <%= link_to 'PlaceCal', admin_root_path, class: "navbar-brand col-sm-3 col-md-2 mr-0" %>
-  <ul class="navbar-nav flex-row px-3">
-    <li class="nav-item text-nowrap mr-4">
-      <%= link_to "<i class='fa fa-user'></i> #{@current_user&.email} #{"👑" if @current_user&.role == :root}".html_safe, admin_profile_path, class: 'nav-link'  %>
+<nav class="fixed top-0 left-0 right-0 h-14 bg-gray-900 shadow-lg flex items-center justify-between px-4 z-50">
+  <%= link_to 'PlaceCal', admin_root_path, class: "text-white font-bold text-lg hover:text-placecal-orange transition-colors" %>
+  <ul class="flex items-center gap-4">
+    <li>
+      <%= link_to admin_profile_path, class: 'text-gray-300 hover:text-white transition-colors flex items-center gap-2' do %>
+        <i class='fa fa-user'></i>
+        <span><%= @current_user&.email %> <%= "👑" if @current_user&.role == :root %></span>
+      <% end %>
     </li>
-    <li class="nav-item text-nowrap">
-      <%= button_to destroy_user_session_path, method: :delete, class: 'btn nav-link', form: { data: { turbo: 'false' } } do %>
-      <i class='fa fa-sign-out'></i> Sign out
-    <% end %>
+    <li>
+      <%= button_to destroy_user_session_path, method: :delete, class: 'text-gray-300 hover:text-white transition-colors flex items-center gap-2', form: { data: { turbo: 'false' } } do %>
+        <i class='fa fa-sign-out'></i>
+        <span>Sign out</span>
+      <% end %>
     </li>
   </ul>
 </nav>

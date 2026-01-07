@@ -6,35 +6,33 @@
 
     <%= stylesheet_link_tag 'admin', 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all', 'data-turbo-track': 'reload' %>
     <link rel="stylesheet" href="/assets/tom-select.css" media="all" data-turbo-track="reload">
-    
+    <link rel="stylesheet" href="/assets/admin_tailwind.css" media="all" data-turbo-track="reload">
+
     <%= javascript_include_tag 'admin', 'data-turbo-track': 'reload', defer: true %>
     <%= stylesheet_link_tag 'admin', 'data-turbo-track': 'reload' %>
 
     <%= render "layouts/meta" %>
   </head>
 
-  <body>
+  <body class="bg-gray-50">
     <%= render "layouts/admin/admin_topbar" %>
 
-    <div class="container-fluid">
-      <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-          <div class="sidebar-sticky">
-            <%= render "layouts/admin/admin_navigation" %>
-          </div>
-        </nav>
-        <main role="main" class="col-md-9 mt-3 ml-sm-auto col-lg-10 px-4">
-          <%= render(AdminFlash.new()) %>
-          <%= yield %>
+    <div class="flex pt-14">
+      <nav class="hidden md:block w-56 fixed h-screen bg-gray-100 border-r border-gray-200 overflow-y-auto">
+        <div class="py-4">
+          <%= render "layouts/admin/admin_navigation" %>
+        </div>
+      </nav>
+      <main role="main" class="flex-1 md:ml-56 min-h-screen px-6 py-4">
+        <%= render(AdminFlash.new()) %>
+        <%= yield %>
 
-          <% if Rails.env.development? %>
-            <div class="text-monospace text-muted mt-5">
-              <%= debug(params) %>
-              <%# console %>
-            </div>
-          <% end %>
-        </main>
-      </div>
+        <% if Rails.env.development? %>
+          <div class="font-mono text-gray-500 mt-8 text-sm">
+            <%= debug(params) %>
+          </div>
+        <% end %>
+      </main>
     </div>
   </body>
 </html>

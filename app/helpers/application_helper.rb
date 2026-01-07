@@ -22,10 +22,13 @@ module ApplicationHelper
   end
 
   def admin_nav_link(name, path, icon = false)
-    content_tag :li, class: 'nav-item' do
-      klass = current_page?(path) ? 'nav-link active' : 'nav-link'
+    content_tag :li do
+      base_classes = 'flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors'
+      active_classes = 'bg-placecal-orange text-white'
+      inactive_classes = 'text-gray-700 hover:bg-gray-200'
+      klass = current_page?(path) ? "#{base_classes} #{active_classes}" : "#{base_classes} #{inactive_classes}"
       if icon
-        link_to "<i class='fa fa-#{icon} feather'></i> #{name}".html_safe, path, class: klass
+        link_to "<i class='fa fa-#{icon} w-4'></i> #{name}".html_safe, path, class: klass
       else
         link_to name, path, class: klass
       end
