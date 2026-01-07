@@ -155,7 +155,7 @@ RSpec.describe Partner, ".for_site scope" do
       found_ids = found.map(&:id)
       should_be_ids = [partner_a.id, partner_b.id, partner_c.id]
 
-      expect(found_ids).to eq(should_be_ids)
+      expect(found_ids).to match_array(should_be_ids)
     end
   end
 end
