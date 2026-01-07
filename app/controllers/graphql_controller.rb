@@ -2,6 +2,12 @@
 
 class GraphqlController < ApplicationController
   skip_before_action :verify_authenticity_token
+  skip_before_action :set_supporters
+  skip_before_action :set_navigation
+
+  rescue_from ActiveRecord::RecordNotFound do |e|
+    render json: { errors: [{ message: e.message }], data: nil }, status: :ok
+  end
 
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,

@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+inherit_from: ../.rubocop.yml
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes

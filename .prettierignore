@@ -9,3 +9,4 @@
 /dump/
 /public/assets/
 /coverage/
+/config/cucumber.yml

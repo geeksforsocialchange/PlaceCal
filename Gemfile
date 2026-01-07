@@ -9,7 +9,6 @@ git_source(:github) do |repo_name|
 end
 
 # Core
-gem 'minitest-rails'
 gem 'pg'
 gem 'puma'
 gem 'rails', '7.2.3'
@@ -92,8 +91,6 @@ gem 'uk_postcode'
 group :development, :test do
   gem 'byebug'
   gem 'dotenv-rails'
-  gem 'factory_bot_rails'
-  gem 'timecop'
 end
 
 group :development do
@@ -107,10 +104,10 @@ group :development do
   gem 'rdoc'
   gem 'rubocop', '1.82.1', require: false
   gem 'rubocop-graphql', '1.5.6', require: false
-  gem 'rubocop-minitest', '0.38.2', require: false
   gem 'rubocop-performance', '1.26.1', require: false
   gem 'rubocop-rails', '2.34.3', require: false
   gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
   gem 'web-console'
@@ -118,17 +115,28 @@ group :development do
 end
 
 group :test do
-  # gem 'simplecov', require: false
+  gem 'capybara'
   gem 'capybara-select-2'
+  gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'
+  gem 'factory_bot_rails'
+  gem 'faker'
   gem 'graphql-client'
   gem 'json_matchers'
-  gem 'minitest-rails-capybara'
-  gem 'minitest-reporters'
+  gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
+  gem 'rspec-rails', '~> 7.0'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers', '~> 6.0'
+  gem 'simplecov', require: false
+  gem 'timecop'
   gem 'vcr'
   gem 'webmock' # used by VCR
+end
+
+# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
+group :ai, optional: true do
+  gem 'claude-on-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

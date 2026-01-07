@@ -6,6 +6,10 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # Configure 'rails notes' to inspect Cucumber files
+  config.annotations.register_directories('features')
+  config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
+
   routes.default_url_options = {
     host: ENV.fetch('SITE_DOMAIN', 'lvh.me'),
     port: 3000,

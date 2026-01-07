@@ -35,6 +35,7 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_USER: postgres
       PGPASSWORD: foobar
+      RAILS_ENV: test
 
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
@@ -51,6 +52,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y imagemagick
 
+      - name: Install Chrome for system tests
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+
       - uses: nodenv/actions/setup-nodenv@v2
       - uses: nodenv/actions/node-version@v2
         id: nodenv
@@ -60,9 +66,23 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
 
-      - run: bin/test --unit --no-lint
-      #     - run: bin/test --system --no-lint
-      - run: bin/test --lint --no-fix
+      - name: Prepare database
+        run: bin/rails db:test:prepare
+
+      - name: Build assets
+        run: bin/yarn run build
+
+      - name: Run RSpec tests (including system tests)
+        run: RUN_SLOW_TESTS=true bundle exec rspec
+
+      - name: Run Cucumber features
+        run: bundle exec cucumber --tags "not @wip"
+
+      - name: Run linters
+        run: |
+          bin/yarn run format:check
+          bundle exec rubocop
+
       - name: Check database consistency
         run: RAILS_ENV=test bundle exec database_consistency
       - if: failure()
@@ -70,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-screenshots
-          path: tmp/screenshots/
+          path: tmp/capybara/
           if-no-files-found: ignore
 
       - if: github.ref == 'refs/heads/main' && github.repository == 'geeksforsocialchange/PlaceCal'

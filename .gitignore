@@ -75,3 +75,9 @@ doc/rdoc
 # Ignore IDE config files
 .vscode
 /config/master.key
+
+# AI coding assistants (user-specific settings)
+.claude/
+.claude-swarm/
+claude-swarm.log
+spec/examples.txt
