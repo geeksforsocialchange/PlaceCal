@@ -4,7 +4,7 @@ class PartnerFilterComponent < ViewComponent::Base
   include Turbo::FramesHelper
 
   def initialize(partners:, site:, selected_category:, selected_neighbourhood:)
-    super
+    super()
     @partners = partners
     @site = site
     @selected_category = selected_category.to_i
