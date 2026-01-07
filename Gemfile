@@ -93,11 +93,6 @@ group :development, :test do
   gem 'dotenv-rails'
 end
 
-# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
-group :ai, optional: true do
-  gem 'claude-on-rails'
-end
-
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -137,6 +132,11 @@ group :test do
   gem 'timecop'
   gem 'vcr'
   gem 'webmock' # used by VCR
+end
+
+# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
+group :ai, optional: true do
+  gem 'claude-on-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
