@@ -4,7 +4,7 @@ class AdminIndexComponent < ViewComponent::Base
   # rubocop:disable Metrics/ParameterLists
   def initialize(title:, model:, data:, new_link:, column_titles: [], columns: %i[], additional_links: [], default: [])
     # rubocop:enable Metrics/ParameterLists
-    super
+    super()
     @title = title
     @model = model
     @data = data

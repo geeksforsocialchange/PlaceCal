@@ -2,7 +2,7 @@
 
 class HeroComponent < ViewComponent::Base
   def initialize(title, subtitle = '', schema = nil)
-    super
+    super()
     @title = clean_title(title)
     @subtitle = subtitle
     @schema = schema
