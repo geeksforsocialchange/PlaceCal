@@ -207,7 +207,8 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
-    httparty (0.21.0)
+    httparty (0.24.0)
+      csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     i18n (1.14.8)
@@ -290,7 +291,8 @@ GEM
       rails (>= 3.2.0)
     msgpack (1.5.2)
     multi_json (1.15.0)
-    multi_xml (0.6.0)
+    multi_xml (0.8.0)
+      bigdecimal (>= 3.1, < 5)
     mutex_m (0.3.0)
     net-imap (0.5.6)
       date
