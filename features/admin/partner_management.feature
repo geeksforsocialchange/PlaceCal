@@ -1,24 +1,13 @@
 @admin @javascript
-Feature: Partner Management
-  As an administrator
-  I want to manage partners in the system
-  So that community organisations can share their events
+Feature: Partner Administration
+  As a root administrator
+  I want to manage all partners in the system
+  So that I can oversee community organisations
 
   Background:
     Given I am logged in as a root user
 
-  Scenario: Creating a new partner
-    When I create a new partner with name "Riverside Community Hub"
-    Then I should see a success message
-    And I should see the partner "Riverside Community Hub" in the list
-
-  Scenario: Editing an existing partner
-    Given there is a partner called "Oldtown Library"
-    When I edit the partner "Oldtown Library"
-    And I update the partner summary to "A welcoming community library"
-    Then I should see a success message
-    And the partner "Oldtown Library" should have summary "A welcoming community library"
-
+  # Partner Index and Navigation
   Scenario: Viewing partner list
     Given the following partners exist:
       | name                    | summary                        |
@@ -30,32 +19,31 @@ Feature: Partner Management
     And I should see "Oldtown Library"
     And I should see "Greenfield Youth Centre"
 
-  Scenario: Partner edit form shows all sections
-    Given there is a partner called "Community Centre"
-    When I edit the partner "Community Centre"
-    Then I should see "Basic Information"
-    And I should see "Place"
-    And I should see "Online"
-    And I should see "Contact Information"
-
-  Scenario: Updating partner description
-    Given there is a partner called "Oldtown Library"
-    When I edit the partner "Oldtown Library"
-    And I fill in "Description" with "A historic library serving the community since 1920"
-    And I click the "Save Partner" button
+  # Partner Creation
+  Scenario: Creating a new partner
+    When I create a new partner with name "Riverside Community Hub"
     Then I should see a success message
+    And I should see the partner "Riverside Community Hub" in the list
 
-  Scenario: Partner form shows tag sections
-    Given there is a partner called "Youth Centre"
-    And there is a partnership tag called "Millbrook Partnership"
-    When I edit the partner "Youth Centre"
-    Then I should see "Partnerships"
-    And I should see "Categories"
-    And I should see "Facilities"
-
+  # Partner Deletion (Root Only)
   Scenario: Deleting a partner
     Given there is a partner called "Temporary Partner"
     When I edit the partner "Temporary Partner"
     And I click "Delete Partner"
     Then I should see a success message
     And I should not see "Temporary Partner"
+
+  # Moderation (Root Only)
+  Scenario: Root user can see moderation section
+    Given there is a partner called "Moderation Test Partner"
+    When I edit the partner "Moderation Test Partner"
+    Then I should see "Moderation"
+    And I should see "Hidden"
+
+  Scenario: Hiding a partner with reason
+    Given there is a partner called "Problem Partner"
+    When I edit the partner "Problem Partner"
+    And I check "Hidden"
+    And I fill in "Explanation for hiding" with "Spam content detected"
+    And I click the "Save Partner" button
+    Then I should see a success message

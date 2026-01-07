@@ -64,3 +64,11 @@ end
 When("I wait for the datatable to load") do
   await_datatables
 end
+
+When("I check {string}") do |checkbox_label|
+  check checkbox_label
+end
+
+When("I uncheck {string}") do |checkbox_label|
+  uncheck checkbox_label
+end

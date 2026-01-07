@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Step definitions for admin entities (neighbourhoods, collections, supporters, dashboard)
+# Note: Tag steps are in tag_steps.rb
 
 # Neighbourhood steps
 Given("there is a neighbourhood called {string}") do |name|
