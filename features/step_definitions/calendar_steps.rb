@@ -37,3 +37,10 @@ end
 Then("the calendar should show as {string}") do |state|
   expect(page).to have_content(state)
 end
+
+When("I edit the calendar {string}") do |name|
+  click_link "Calendars"
+  await_datatables
+  # The calendar name is a link to the edit page
+  click_link name
+end
