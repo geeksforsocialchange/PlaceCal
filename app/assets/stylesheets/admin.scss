@@ -1,8 +1,9 @@
-@import "select2";
+// Note: Select2 removed - now using Tom Select with its own CSS
 @import "leaflet";
 @import "partner";
 @import "font-awesome";
 
+// Bootstrap still needed for some pages during migration
 @import "bootstrap";
 
 body {

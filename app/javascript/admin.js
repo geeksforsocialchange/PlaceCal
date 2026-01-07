@@ -1,18 +1,14 @@
 require("@rails/ujs").start();
 import "@hotwired/turbo-rails";
 
+// Bootstrap still needed for some pages during migration
 import "bootstrap";
 import "./src/jquery";
 
-// Input selectors
+// Input selectors - Cocoon for nested forms
 require("@nathanvda/cocoon");
-require("select2")(window, $);
-
+// Note: Select2 removed - now using Tom Select via Stimulus controller
 // Note: DataTables removed - now using Stimulus admin_table_controller
-
-$(document).on("turbo:load", function () {
-	$("[data-toggle='tooltip']").tooltip();
-});
 
 // Cocoon callback to reinitialize Stimulus controllers on dynamically added elements
 // Cocoon uses jQuery to clone and insert elements, which bypasses Stimulus's MutationObserver
