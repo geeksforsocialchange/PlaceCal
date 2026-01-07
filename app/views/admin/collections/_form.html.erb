@@ -4,7 +4,7 @@
   <%= f.input :route %>
   <%= f.input :description %>
 
-  <%= f.association :events, collection: options_for_events, input_html: { class: 'select2' } %>
+  <%= f.association :events, collection: options_for_events, input_html: { data: { controller: "tom-select" } } %>
 
   <%= f.input :image %>
 

@@ -150,7 +150,7 @@
         hint: "What infrastructure does this partner provide?",
         collection: Facility.all,
         input_html: { class: 'form-check', data: { 
-          controller: 'select2',
+          controller: "tom-select",
         } } %>
     <hr>
     <%= f.association :categories,
@@ -158,7 +158,7 @@
         hint:"Partners may have up to 3 category tags, the public will be able to filter by these",
         collection: Category.all,
         input_html: { class: 'form-check', data: { 
-          controller: 'select2',
+          controller: "tom-select",
         } } %>
     <hr>
     <h2>Event matching</h2>

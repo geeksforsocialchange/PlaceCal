@@ -1,94 +1,92 @@
 # frozen_string_literal: true
 
-# Step definitions for enhanced select box interactions (Select2/Tom Select)
+# Step definitions for enhanced select box interactions (Tom Select)
 # These select boxes create overlay elements that require special handling
 
 # Select a single option from a searchable drop down select box
 When("I select {string} from the {string} drop down select box") do |option, field|
-  select2_select(option, from: field)
+  tom_select_select(option, from: field)
 end
 
 # Select from the service area drop down (nested Cocoon field)
 When("I select {string} from the service area drop down select box") do |option|
   # Find the most recently added service area field
   within(".sites_neighbourhoods") do
-    container = find(".select2-container", match: :first)
+    container = find(".ts-wrapper", match: :first)
     container.click
   end
 
   # Wait for dropdown and select option
-  within(".select2-dropdown") do
-    find(".select2-results__option", text: option, match: :prefer_exact).click
+  within(".ts-dropdown") do
+    find(".option", text: option, match: :prefer_exact).click
   end
 end
 
 # Select multiple options from a searchable drop down select box
 When("I select {string} and {string} from the {string} drop down select box") do |option1, option2, field|
-  select2_select(option1, from: field)
-  select2_select(option2, from: field)
+  tom_select_select(option1, from: field)
+  tom_select_select(option2, from: field)
 end
 
 # Clear all selections from a searchable drop down
 When("I clear the {string} drop down select box") do |field|
-  select2_clear(field)
+  tom_select_clear(field)
 end
 
 # Verify a drop down select box has a specific option selected
 Then("the {string} drop down select box should have {string} selected") do |field, option|
-  expect(page).to have_select2_selection(field, option)
+  expect(page).to have_tom_select_selection(field, option)
 end
 
 # Verify a drop down select box does not have a specific option selected
 Then("the {string} drop down select box should not have {string} selected") do |field, option|
-  expect(page).not_to have_select2_selection(field, option)
+  expect(page).not_to have_tom_select_selection(field, option)
 end
 
-# Helper methods for Select2/Tom Select interactions
-module Select2Helpers
-  # Select an option from a Select2 dropdown
-  def select2_select(option, from:)
+# Helper methods for Tom Select interactions
+module TomSelectHelpers
+  # Select an option from a Tom Select dropdown
+  def tom_select_select(option, from:)
     label = find("label", text: from, match: :prefer_exact)
-    select_id = label[:for]
 
-    container = if select_id
-                  find("##{select_id}").find(:xpath, "..").find(".select2-container", match: :first)
-                else
-                  label.find(:xpath, "..").find(".select2-container", match: :first)
-                end
+    # Tom Select modifies the label's for attribute to point to the control
+    # e.g., partner_category_ids becomes partner_category_ids-ts-control
+    # We need to find the ts-wrapper within the label's parent form-group
+    form_group = label.find(:xpath, "ancestor::div[contains(@class, 'form-group')]")
+    container = form_group.find(".ts-wrapper", match: :first)
 
-    container.click
+    # Click the control to open the dropdown
+    container.find(".ts-control").click
 
-    within(".select2-dropdown") do
-      find(".select2-results__option", text: option, match: :prefer_exact).click
+    # Wait for dropdown to appear and select option
+    # Tom Select renders the dropdown inside the wrapper
+    within(container) do
+      find(".ts-dropdown .option", text: option, match: :prefer_exact).click
     end
   end
 
-  # Clear all selections from a Select2
-  def select2_clear(field)
+  # Clear all selections from a Tom Select
+  def tom_select_clear(field)
     label = find("label", text: field, match: :prefer_exact)
-    select_id = label[:for]
+    form_group = label.find(:xpath, "ancestor::div[contains(@class, 'form-group')]")
+    container = form_group.find(".ts-wrapper", match: :first)
 
-    container = if select_id
-                  find("##{select_id}").find(:xpath, "..").find(".select2-container", match: :first)
-                else
-                  label.find(:xpath, "..").find(".select2-container", match: :first)
-                end
+    # Tom Select uses .clear-button for clearing
+    return unless container.has_css?(".clear-button")
 
-    return unless container.has_css?(".select2-selection__clear")
-
-    container.find(".select2-selection__clear").click
+    container.find(".clear-button").click
   end
 
-  # Check if a Select2 has a specific selection - returns a custom matcher
+  # Check if a Tom Select has a specific selection - returns a custom matcher
   # rubocop:disable Naming/PredicatePrefix
-  def have_select2_selection(field, option)
-    HaveSelect2Selection.new(field, option)
+  def have_tom_select_selection(field, option)
+    HaveTomSelectSelection.new(field, option)
   end
   # rubocop:enable Naming/PredicatePrefix
 end
 
-# Custom RSpec matcher for Select2 selections
-class HaveSelect2Selection
+# Custom RSpec matcher for Tom Select selections
+class HaveTomSelectSelection
   def initialize(field, option)
     @field = field
     @option = option
@@ -97,25 +95,21 @@ class HaveSelect2Selection
   def matches?(page)
     @page = page
     label = page.find("label", text: @field, match: :prefer_exact)
-    select_id = label[:for]
+    form_group = label.find(:xpath, "ancestor::div[contains(@class, 'form-group')]")
+    container = form_group.find(".ts-wrapper", match: :first)
 
-    container = if select_id
-                  page.find("##{select_id}").find(:xpath, "..").find(".select2-container", match: :first)
-                else
-                  label.find(:xpath, "..").find(".select2-container", match: :first)
-                end
-
-    container.has_css?(".select2-selection__choice", text: @option) ||
-      container.has_css?(".select2-selection__rendered", text: @option)
+    # Tom Select uses .item for multi-select choices and shows text in ts-control for single select
+    container.has_css?(".item", text: @option) ||
+      container.has_css?(".ts-control", text: @option)
   end
 
   def failure_message
-    "expected Select2 '#{@field}' to have '#{@option}' selected"
+    "expected Tom Select '#{@field}' to have '#{@option}' selected"
   end
 
   def failure_message_when_negated
-    "expected Select2 '#{@field}' not to have '#{@option}' selected"
+    "expected Tom Select '#{@field}' not to have '#{@option}' selected"
   end
 end
 
-World(Select2Helpers)
+World(TomSelectHelpers)

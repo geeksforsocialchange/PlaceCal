@@ -34,5 +34,8 @@ application.register("partner-tags", PartnerTagsController);
 import Select2Controller from "./select2_controller.js";
 application.register("select2", Select2Controller);
 
+import TomSelectController from "./tom_select_controller.js";
+application.register("tom-select", TomSelectController);
+
 import UserPartnersController from "./user_partners_controller.js";
 application.register("user-partners", UserPartnersController);

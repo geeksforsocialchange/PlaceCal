@@ -20,7 +20,8 @@
 		"postcss": "^8.5.6",
 		"sass": "1.97.1",
 		"select2": "4.0.13",
-		"tailwindcss": "^4.1.18"
+		"tailwindcss": "^4.1.18",
+		"tom-select": "^2.4.3"
 	},
 	"devDependencies": {
 		"husky": "8.0.3",

@@ -17,7 +17,7 @@
                           label: 'Partner Organiser',
                           collection: options_for_organiser,
                           selected: (@partner&.id || @calendar.partner_id).to_s,
-                          input_html: { class: 'form-control', data: {controller: "select2"} },
+                          input_html: { class: 'form-control', data: {controller: "tom-select"} },
                           hint: 'Which group organises these events?' %>
 
         <%= f.input :name, hint: 'A simple description to help rememember what this calendar is' %>
@@ -49,7 +49,7 @@
           <%= f.association :place,
                             label: 'Default location',
                             collection: options_for_location,
-                            input_html: { class: 'form-control', data: {controller: "select2"} } %>
+                            input_html: { class: 'form-control', data: {controller: "tom-select"} } %>
         </div>
         <%= f.input :strategy,
                     as: :radio_buttons,

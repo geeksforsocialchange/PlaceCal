@@ -9,7 +9,7 @@
                 label_method: ->(obj) { obj[:name] },
                 input_html: { 
                     class: 'form-control', 
-                    data: { controller: "select2" },
+                    data: { controller: "tom-select" },
                     disabled: f.object.neighbourhood_id && !current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id),
                 },
                 label: '', label_html: { hidden: true } %>

@@ -45,13 +45,13 @@
   <h2>Tagged Partners</h2>
   <p>Apply this tag to the given partners</p>
   <%= f.association :partners, collection: options_for_partners,
-        input_html: { class: 'form-control', data: { controller: "select2" } } %>
+        input_html: { class: 'form-control', data: { controller: "tom-select" } } %>
 
   <% if show_assigned_user_field_for?(f) %>
     <h2>Assigned Users</h2>
     <p>Grant permission to assign this tag</p>
     <%= f.association :users, collection: options_for_users,
-        input_html: { class: 'form-control', data: { controller: "select2" } } %>
+        input_html: { class: 'form-control', data: { controller: "tom-select" } } %>
   <% end %>
 
   <span>
