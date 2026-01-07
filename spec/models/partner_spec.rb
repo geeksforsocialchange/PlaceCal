@@ -19,6 +19,9 @@ RSpec.describe Partner, type: :model do
   end
 
   describe "validations" do
+    # shoulda-matchers needs an existing record for uniqueness validation
+    subject { create(:partner) }
+
     describe "name" do
       it { is_expected.to validate_presence_of(:name) }
       it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
