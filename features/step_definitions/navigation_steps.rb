@@ -8,7 +8,8 @@ When("I visit the home page") do
 end
 
 When("I visit the admin dashboard") do
-  visit "/admin"
+  port = Capybara.current_session.server.port
+  visit "http://admin.lvh.me:#{port}/"
 end
 
 When("I click {string}") do |link_text|
@@ -54,4 +55,12 @@ end
 
 Then("I should see the error message {string}") do |message|
   expect(page).to have_selector(".alert-danger", text: message)
+end
+
+When("I fill in {string} with {string}") do |field, value|
+  fill_in field, with: value
+end
+
+When("I wait for the datatable to load") do
+  await_datatables
 end
