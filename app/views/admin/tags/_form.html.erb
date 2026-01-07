@@ -1,66 +1,82 @@
 <% if !@tag.new_record? %>
-<p>A tag of type <em><%= @tag.class %></em>.</p>
+  <p class="text-sm text-gray-600 mb-4">A tag of type <em class="font-medium"><%= @tag.class %></em>.</p>
 <% end %>
 
 <% if @tag.system_tag %>
-  <div class="card text-black bg-warning mb-3">
-    <div class="card-header">
-      <h6>WARNING: This tag is used by the PlaceCal backend so you cannot change the Name or Slug values.</h6>
+  <div class="rounded-md bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <i class="fa fa-exclamation-triangle text-yellow-400"></i>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm text-yellow-700 font-medium">
+          WARNING: This tag is used by the PlaceCal backend so you cannot change the Name or Slug values.
+        </p>
+      </div>
     </div>
   </div>
 <% end %>
 
 <%= simple_form_for @tag,
     as: :tag,
-    url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
+    url: (@tag.new_record? ? admin_tags_path : admin_tag_path),
+    html: { class: 'space-y-6' } do |f| %>
 
   <%= render(ErrorComponent.new(@tag)) %>
 
-  <%= f.input :name, class: 'form-control',
-              disabled: @tag.system_tag %>
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Basic Information</h3>
 
-  <%= f.input :slug, class: 'form-control',
-              disabled:  @tag.system_tag %>
+    <%= f.input :name, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
+                disabled: @tag.system_tag %>
 
-  <%= f.input :description, class: 'form-control' %>
+    <%= f.input :slug, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
+                disabled: @tag.system_tag %>
 
-  <% if current_user.root? -%>
-    <%= f.input :system_tag, class: 'form-control',
-      hint: 'This tag is read only and should not be edited' %>
-  <% end -%>
+    <%= f.input :description, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 } %>
 
-  <% if @tag.new_record? %>
-  <%= f.input :type,
-      collection: {
-      'None': '',
-      'Category': 'Category',
-      'Facility': 'Facility',
-      'Partnership': 'Partnership' },
-      default: 'None',
-      class: 'form-control' %>
-  <p><em>Be careful!</em> Once set this cannot be changed.</p>
-  <br>
-  <% end %>
+    <% if current_user.root? -%>
+      <%= f.input :system_tag, wrapper: :tw_boolean,
+          hint: 'This tag is read only and should not be edited' %>
+    <% end -%>
 
-  <h2>Tagged Partners</h2>
-  <p>Apply this tag to the given partners</p>
-  <%= f.association :partners, collection: options_for_partners,
-        input_html: { class: 'form-control', data: { controller: "tom-select" } } %>
+    <% if @tag.new_record? %>
+      <%= f.input :type,
+          collection: { 'None': '', 'Category': 'Category', 'Facility': 'Facility', 'Partnership': 'Partnership' },
+          default: 'None',
+          wrapper: :tw_vertical_form,
+          input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+      <p class="text-sm text-amber-600"><em>Be careful!</em> Once set this cannot be changed.</p>
+    <% end %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Tagged Partners</h3>
+    <p class="text-sm text-gray-600">Apply this tag to the given partners</p>
+    <%= f.association :partners, collection: options_for_partners,
+          wrapper: :tw_vertical_form,
+          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+  </div>
 
   <% if show_assigned_user_field_for?(f) %>
-    <h2>Assigned Users</h2>
-    <p>Grant permission to assign this tag</p>
-    <%= f.association :users, collection: options_for_users,
-        input_html: { class: 'form-control', data: { controller: "tom-select" } } %>
+    <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+      <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Assigned Users</h3>
+      <p class="text-sm text-gray-600">Grant permission to assign this tag</p>
+      <%= f.association :users, collection: options_for_users,
+          wrapper: :tw_vertical_form,
+          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+    </div>
   <% end %>
 
-  <span>
-    <br>
-    <br>
-    <%= f.submit "Save", class: "btn btn-primary" %>
+  <div class="flex items-center gap-4 pt-4">
+    <%= f.submit "Save", class: "inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2" %>
     <% if !@tag.new_record? && policy(@tag).destroy? %>
-      <%= link_to "Destroy", admin_tag_path(@tag), method: :delete, class: "ml-3 btn btn-danger" %>
+      <%= link_to "Destroy", admin_tag_path(@tag), method: :delete,
+          class: "inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2",
+          data: { confirm: "Are you sure you want to delete this tag?" } %>
     <% end %>
-  </span>
-  <br>
+  </div>
 <% end %>
