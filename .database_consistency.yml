@@ -5,6 +5,9 @@
 CollectionEvent:
   enabled: false # This is a HABTM join table (collections_events), not a standalone model
 
+SitesSupporter:
+  enabled: false # This is a HABTM join table (sites_supporters), not a standalone model
+
 # OrganisationRelationship table exists but has no model - may be legacy/unused
 OrganisationRelationship:
   enabled: false
@@ -12,12 +15,17 @@ OrganisationRelationship:
 # User model - Devise manages these token uniqueness constraints
 User:
   index_users_on_invitation_token:
-    enabled: false # Managed by Devise Invitable
+    UniqueIndexChecker:
+      enabled: false # Managed by Devise Invitable
   index_users_on_reset_password_token:
-    enabled: false # Managed by Devise Recoverable
-  # The sites association uses site_admin foreign key which is correct for has_many
+    UniqueIndexChecker:
+      enabled: false # Managed by Devise Recoverable
+  # The sites association uses site_admin_id foreign key
   sites:
-    enabled: false # site_admin column is indexed on sites table, foreign key is correct
+    enabled: false # Legacy schema, skip all checks for this association
+  articles:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
 
 # Site model - sites_neighbourhood is the join table, not a direct association
 Site:
@@ -28,3 +36,18 @@ Site:
 Neighbourhood:
   addresses:
     enabled: false # Intentional: addresses should persist if neighbourhood is deleted
+
+# Foreign key cascade checks - we use model-level dependent options,
+# not database-level cascades, for safer application-level control
+OnlineAddress:
+  events:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+
+Address:
+  events:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+  partners:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify

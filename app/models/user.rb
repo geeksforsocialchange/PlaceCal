@@ -22,7 +22,8 @@ class User < ApplicationRecord
   # has_many :partners, through: :partners_users
 
   has_and_belongs_to_many :partners
-  has_many :sites, foreign_key: :site_admin
+  has_many :sites, foreign_key: :site_admin_id, inverse_of: :site_admin, dependent: :nullify
+  has_many :articles, foreign_key: :author_id, inverse_of: :author, dependent: :nullify
 
   has_many :neighbourhoods_users, dependent: :destroy
   has_many :neighbourhoods, through: :neighbourhoods_users

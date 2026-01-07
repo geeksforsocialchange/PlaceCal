@@ -10,8 +10,8 @@ class Address < ApplicationRecord
   validates :street_address, :country_code, presence: true
   validates :postcode, presence: true, postcode: true
 
-  has_many :events
-  has_many :partners
+  has_many :events, dependent: :nullify
+  has_many :partners, dependent: :nullify
 
   belongs_to :neighbourhood, optional: true
 

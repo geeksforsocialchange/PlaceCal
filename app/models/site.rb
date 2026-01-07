@@ -25,9 +25,10 @@ class Site < ApplicationRecord
   has_many :sites_tag, dependent: :destroy
   has_many :tags, through: :sites_tag
 
+  has_many :sites_supporters, dependent: :destroy
   has_and_belongs_to_many :supporters
 
-  belongs_to :site_admin, class_name: 'User', optional: true
+  belongs_to :site_admin, class_name: 'User', inverse_of: :sites, optional: true
 
   accepts_nested_attributes_for :sites_neighbourhood
   accepts_nested_attributes_for :sites_neighbourhoods, reject_if: lambda { |c|
