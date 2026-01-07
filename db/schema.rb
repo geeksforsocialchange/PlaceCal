@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_11_213231) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_07_165602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -142,7 +142,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_11_213231) do
     t.string "summary_html"
     t.index ["address_id"], name: "index_events_address_id"
     t.index ["calendar_id", "dtstart"], name: "index_events_calendar_id_dtstart"
-    t.index ["calendar_id"], name: "index_events_on_calendar_id"
     t.index ["dtstart"], name: "index_events_dtstart"
     t.index ["online_address_id"], name: "index_events_on_online_address_id"
     t.index ["partner_id"], name: "index_events_partner_id"

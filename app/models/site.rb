@@ -35,6 +35,7 @@ class Site < ApplicationRecord
                                                                   }, allow_destroy: true
 
   validates :name, :slug, :url, presence: true
+  validates :slug, uniqueness: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
 
