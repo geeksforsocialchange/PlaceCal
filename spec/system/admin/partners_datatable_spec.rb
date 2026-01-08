@@ -46,10 +46,11 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   end
 
   def wait_for_datatable
-    # Wait for loading to complete (spinner to disappear)
-    expect(page).not_to have_content("Loading data...", wait: 10)
-    # Then wait for at least one data row
-    expect(page).to have_css("[data-admin-table-target='tbody'] tr", minimum: 1, wait: 10)
+    # Wait for loading to complete - check that tbody doesn't have loading state
+    expect(page).not_to have_css("[data-admin-table-target='tbody']", text: "Loading data...", wait: 15)
+    # Wait for the datatable info to show actual counts (not loading state)
+    # The info target shows "1–X of Y" or "No entries" when loaded
+    expect(page).to have_css("[data-admin-table-target='info']", text: /\d+–\d+ of \d+|No entries/, wait: 15)
   end
 
   def datatable_row_count
@@ -356,7 +357,8 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     before do
       # Create enough partners for pagination
       30.times { |i| create(:partner, name: "Paginated Partner #{i.to_s.rjust(2, '0')}") }
-      visit current_path # Reload to get new partners
+      # Reload the page to get new partners (use admin URL to maintain session)
+      click_link "Partners"
       wait_for_datatable
     end
 
@@ -417,10 +419,11 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "shows relative time for recent updates" do
       partner_alpha.touch
 
-      visit current_path
+      # Reload the page (use admin link to maintain session)
+      click_link "Partners"
       wait_for_datatable
 
-      within("[data-admin-table-target='tbody'] tr", text: "Alpha") do
+      within("[data-admin-table-target='tbody'] tr", text: "Alpha Community Centre") do
         expect(page).to have_content("Today")
       end
     end
@@ -489,7 +492,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   describe "empty state" do
     before do
       Partner.destroy_all
-      visit current_path
+      # Reload the page (use admin link to maintain session)
+      click_link "Partners"
+      wait_for_datatable
     end
 
     it "shows empty state message when no partners" do
