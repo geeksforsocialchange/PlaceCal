@@ -6,11 +6,11 @@ module Admin
     before_action :set_variables_for_sites_neighbourhoods_selection, only: %i[new edit]
 
     def index
-      @sites = policy_scope(Site).order({ updated_at: :desc }, :name)
+      @sites = policy_scope(Site)
       authorize @sites
 
       respond_to do |format|
-        format.html
+        format.html { @sites = @sites.order(updated_at: :desc, name: :asc) }
         format.json do
           render json: SiteDatatable.new(
             params,

@@ -1,8 +1,54 @@
-<%= render partial: "layouts/admin/datatable", locals: {
-    title: "Users",
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Users',
     model: :users,
-    column_titles: ['ID', 'First name', 'Last name', 'Roles', 'Email', 'Last updated'],
-    columns: %i[id first_name last_name admin_roles email updated_at],
+    column_titles: [
+      'User',
+      'Roles',
+      icon_column_header(:users, 'Partners'),
+      'Neighbourhoods',
+      'Last Updated',
+      ''
+    ],
+    columns: %i[name roles partners neighbourhoods updated_at actions],
+    column_config: {
+      name: {},
+      roles: { sortable: false },
+      partners: { align: :center, sortable: false, fit: true },
+      neighbourhoods: { align: :center, sortable: false, fit: true },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'updated_at', direction: 'desc' },
+    filters: [
+      {
+        column: 'role',
+        label: 'Role',
+        width: 'w-28',
+        options: [
+          { value: 'root', label: 'Root' },
+          { value: 'editor', label: 'Editor' },
+          { value: 'citizen', label: 'Citizen' }
+        ]
+      },
+      {
+        column: 'has_partners',
+        label: 'Partners',
+        width: 'w-32',
+        options: [
+          { value: 'yes', label: 'Has partners' },
+          { value: 'no', label: 'No partners' }
+        ]
+      },
+      {
+        column: 'has_neighbourhoods',
+        label: 'Neighbourhoods',
+        width: 'w-40',
+        options: [
+          { value: 'yes', label: 'Has neighbourhoods' },
+          { value: 'no', label: 'No neighbourhoods' }
+        ]
+      }
+    ],
     data: @users,
     source: admin_users_path(format: :json),
     new_link: new_admin_user_path

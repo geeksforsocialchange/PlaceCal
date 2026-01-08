@@ -5,10 +5,11 @@ module Admin
     before_action :set_neighbourhood, only: %i[show edit update destroy]
 
     def index
-      @neighbourhoods = policy_scope(Neighbourhood).order(:name)
+      @neighbourhoods = policy_scope(Neighbourhood)
       authorize @neighbourhoods
+
       respond_to do |format|
-        format.html
+        format.html { @neighbourhoods = @neighbourhoods.order(:name) }
         format.json do
           render json: NeighbourhoodDatatable.new(
             params,

@@ -1,76 +1,58 @@
-<h1 class="text-2xl font-semibold text-gray-900 mb-6">Tags</h1>
-
-<% if current_user.role.root? %>
-  <%= link_to new_admin_tag_path, class: "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-white bg-orange-500 hover:bg-orange-600 transition-colors shadow-sm mb-6" do %>
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-    </svg>
-    Add Tag
-  <% end %>
-<% end %>
-
-<%= form_tag admin_tags_path, method: :get do %>
-<div class="flex flex-wrap items-end gap-4 mb-6">
-  <div>
-    <%= label_tag 'type', 'Type', class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= select_tag 'type',
-	@filter.options_for_type(self),
-	class: "block rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm" %>
-  </div>
-
-  <div>
-    <%= label_tag 'per_page', 'Per Page', class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= select_tag 'per_page',
-	@filter.options_for_per_page(self),
-	class: "block rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm" %>
-  </div>
-
-  <div>
-    <%= label_tag 'name', 'Name', class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= text_field_tag 'name',
-	@filter.name_value,
-	class: "block rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm" %>
-  </div>
-
-  <div>
-    <%= submit_tag 'Apply Filter', class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300" %>
-  </div>
-
-  <div>
-    <%= link_to 'Reset', admin_tags_path, class: "inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900" %>
-  </div>
-</div>
-<% end %>
-
-<%
-  scope_tags = @filter.with_scope(@tags)
-  window_tags = @filter.with_window(scope_tags)
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Tags',
+    model: :tags,
+    column_titles: [
+      'Tag',
+      'Type',
+      'Description',
+      'System',
+      'Partners',
+      'Last Updated',
+      ''
+    ],
+    columns: %i[name type description system_tag partners_count updated_at actions],
+    column_config: {
+      name: {},
+      type: { fit: true },
+      description: {},
+      system_tag: { align: :center, sortable: true, fit: true },
+      partners_count: { align: :center, sortable: false, fit: true },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'updated_at', direction: 'desc' },
+    filters: [
+      {
+        column: 'type',
+        label: 'Type',
+        width: 'w-36',
+        options: [
+          { value: 'Category', label: 'Category' },
+          { value: 'Partnership', label: 'Partnership' },
+          { value: 'Facility', label: 'Facility' }
+        ]
+      },
+      {
+        column: 'system_tag',
+        label: 'System Tag',
+        width: 'w-36',
+        options: [
+          { value: 'yes', label: 'System tags' },
+          { value: 'no', label: 'User-created' }
+        ]
+      },
+      {
+        column: 'has_partners',
+        label: 'Partners',
+        width: 'w-36',
+        options: [
+          { value: 'yes', label: 'Has partners' },
+          { value: 'no', label: 'No partners' }
+        ]
+      }
+    ],
+    data: @tags,
+    source: admin_tags_path(format: :json),
+    new_link: (new_admin_tag_path if current_user.role.root?)
+  }
 %>
-
-<p class="text-sm text-gray-600 mb-4"><%= scope_tags.count %> tags found</p>
-
-<div class="bg-white shadow-sm rounded-lg overflow-hidden">
-  <table class="min-w-full divide-y divide-gray-200">
-    <thead class="bg-gray-50">
-      <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-      </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-200">
-      <% window_tags.each do |tag| %>
-      <tr class="hover:bg-gray-50">
-        <td class="px-6 py-4 whitespace-nowrap text-sm"><%= link_to tag.name, edit_admin_tag_path(tag), class: "text-placecal-orange hover:underline" %></td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= tag.class %></td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right"><%= tag.id %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-
-<p class="mt-4 flex gap-4">
-  <%= @filter.prev_page_link(self, window_tags) %>
-  <%= @filter.next_page_link(self, window_tags) %>
-</p>

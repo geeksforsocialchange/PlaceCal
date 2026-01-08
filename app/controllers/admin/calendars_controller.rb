@@ -7,11 +7,11 @@ module Admin
     before_action :preselect_partner, only: %i[new create]
 
     def index
-      @calendars = policy_scope(Calendar).order(updated_at: :desc).order(:name)
+      @calendars = policy_scope(Calendar)
       authorize Calendar
 
       respond_to do |format|
-        format.html
+        format.html { @calendars = @calendars.order(updated_at: :desc, name: :asc) }
         format.json do
           render json: CalendarDatatable.new(
             params,

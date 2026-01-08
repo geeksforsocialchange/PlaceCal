@@ -1,8 +1,73 @@
+<%
+  # Build partner options for filter dropdown
+  partner_ids_with_calendars = Calendar.distinct.pluck(:partner_id).compact
+  partner_options = Partner.where(id: partner_ids_with_calendars).order(:name).map do |p|
+    { value: p.id.to_s, label: p.name.truncate(40) }
+  end
+%>
+
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Calendars',
     model: :calendars,
-    column_titles: ['Name', 'Partners', 'Notices', 'Events', 'Status', 'Last imported', 'Source updated'],
-    columns: %i[name partner notice_count events state last_import_at checksum_updated_at],
+    column_titles: [
+      'Calendar',
+      'Partner',
+      icon_column_header(:status, 'Status'),
+      icon_column_header(:event, 'Events'),
+      icon_column_header(:warning, 'Notices'),
+      'Last Import',
+      'Source Updated',
+      ''
+    ],
+    columns: %i[name partner state events notices last_import_at checksum_updated_at actions],
+    column_config: {
+      name: {},
+      partner: { sortable: false },
+      state: { align: :center, sortable: false, fit: true },
+      events: { align: :center, sortable: false, fit: true },
+      notices: { align: :center, fit: true },
+      last_import_at: { fit: true },
+      checksum_updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'last_import_at', direction: 'desc' },
+    filters: [
+      {
+        column: 'state',
+        label: 'Status',
+        width: 'w-32',
+        options: [
+          { value: 'idle', label: 'Idle' },
+          { value: 'in_queue', label: 'In Queue' },
+          { value: 'in_worker', label: 'Importing' },
+          { value: 'error', label: 'Error' },
+          { value: 'bad_source', label: 'Bad Source' }
+        ]
+      },
+      {
+        column: 'partner',
+        label: 'Partner',
+        options: partner_options
+      },
+      {
+        column: 'has_events',
+        label: 'Events',
+        width: 'w-28',
+        options: [
+          { value: 'yes', label: 'Has events' },
+          { value: 'no', label: 'No events' }
+        ]
+      },
+      {
+        column: 'has_notices',
+        label: 'Notices',
+        width: 'w-28',
+        options: [
+          { value: 'yes', label: 'Has notices' },
+          { value: 'no', label: 'No notices' }
+        ]
+      }
+    ],
     data: @calendars,
     source: admin_calendars_path(format: :json),
     new_link: new_admin_calendar_path

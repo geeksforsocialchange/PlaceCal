@@ -1,17 +1,58 @@
-<%= render partial: "layouts/admin/datatable", locals: {
-    title: "Neighbourhoods",
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Neighbourhoods',
     model: :neighbourhoods,
-    column_titles: ['ID', 'Our name', 'Official name', 'Official key', 'Official value', 'Release date'],
-    columns: %i[id name unit_name unit_code_key unit_code_value release_date],
-    data: @neighbourhoods.limit(15),
+    column_titles: [
+      'Neighbourhood',
+      'Type',
+      'Parent',
+      'Code',
+      'Release',
+      ''
+    ],
+    columns: %i[name unit parent_name unit_code_value release_date actions],
+    column_config: {
+      name: {},
+      unit: { fit: true },
+      parent_name: {},
+      unit_code_value: { fit: true },
+      release_date: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'name', direction: 'asc' },
+    filters: [
+      {
+        column: 'unit',
+        label: 'Type',
+        width: 'w-32',
+        options: [
+          { value: 'ward', label: 'Ward' },
+          { value: 'district', label: 'District' },
+          { value: 'county', label: 'County' },
+          { value: 'region', label: 'Region' },
+          { value: 'country', label: 'Country' }
+        ]
+      },
+      {
+        column: 'release',
+        label: 'Release',
+        width: 'w-32',
+        options: [
+          { value: 'current', label: 'Current' },
+          { value: 'legacy', label: 'Legacy' }
+        ]
+      }
+    ],
+    data: @neighbourhoods,
     source: admin_neighbourhoods_path(current_user: @current_user, format: :json)
   }
 %>
 
-<h2>Neighbourhood Roots</h2>
+<h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">Neighbourhood Roots</h2>
 
-<% Neighbourhood.roots.order(:name).each do |root| %>
-<p><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root) %></p>
-<% end %>
+<div class="bg-white shadow-sm rounded-lg p-4">
+  <% Neighbourhood.roots.order(:name).each do |root| %>
+    <p class="mb-2"><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root), class: "text-placecal-orange hover:underline" %></p>
+  <% end %>
+</div>
 
-<h5>ONS Latest Release Date Loaded: <%= Neighbourhood::LATEST_RELEASE_DATE %></h5>
+<p class="text-sm text-gray-500 mt-4">ONS Latest Release Date Loaded: <%= Neighbourhood::LATEST_RELEASE_DATE %></p>
