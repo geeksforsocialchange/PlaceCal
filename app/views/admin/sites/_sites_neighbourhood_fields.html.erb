@@ -10,7 +10,7 @@
           wrapper: false %>
       <div class="flex-shrink-0">
           <%= f.hidden_field :relation_type, value: 'Secondary' %>
-          <%= link_to_remove_association 'Remove', f, class: "text-sm text-red-600 hover:text-red-800" %>
+          <%= nested_form_remove_link(f, 'Remove') %>
       </div>
     <% end  %>
 </fieldset>

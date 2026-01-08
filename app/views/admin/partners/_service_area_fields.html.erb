@@ -13,6 +13,6 @@
                 label: false %>
 
     <%- if !f.object.neighbourhood_id || current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id)%>
-        <%= link_to_remove_association 'Remove', f, class: "text-sm text-red-600 hover:text-red-800" %>
+        <%= nested_form_remove_link(f, 'Remove') %>
     <% end %>
 </div>

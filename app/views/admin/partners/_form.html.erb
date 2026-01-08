@@ -141,15 +141,14 @@
           <div>
             <h3 class="text-lg font-medium text-gray-900 mb-4">Service Areas</h3>
             <p class="text-sm text-gray-600 mb-4">If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
-            <div class="space-y-3">
+            <%= nested_form_for(f, :service_areas,
+                  add_text: 'Add Service Area',
+                  add_class: 'inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors',
+                  partial: 'service_area_fields') do %>
               <%= f.simple_fields_for :service_areas do |neighbourhood| %>
                 <%= render 'service_area_fields', f: neighbourhood %>
               <% end %>
-              <div class="mt-4">
-                <%= link_to_add_association 'Add Service Area', f, :service_areas,
-                    class: "inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors" %>
-              </div>
-            </div>
+            <% end %>
           </div>
         </div>
       </div>

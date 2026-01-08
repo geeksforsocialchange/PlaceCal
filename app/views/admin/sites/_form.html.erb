@@ -118,12 +118,14 @@
 
   <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
     <div class="sites_neighbourhoods mb-6">
-      <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
-        <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
+      <%= nested_form_for(f, :sites_neighbourhoods,
+            add_text: 'Add neighbourhood',
+            add_class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600',
+            partial: 'sites_neighbourhood_fields') do %>
+        <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
+          <%= render 'sites_neighbourhood_fields', f: neighbourhood %>
+        <% end %>
       <% end %>
-      <div class="mt-4">
-        <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600" %>
-      </div>
     </div>
   <% else %>
     <div class="sites_neighbourhoods mb-6">

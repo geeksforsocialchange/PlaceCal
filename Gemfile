@@ -39,7 +39,6 @@ gem 'carrierwave'
 gem 'image_processing'
 
 # Admin
-gem 'cocoon'
 gem 'font-awesome-rails'
 gem 'simple_form'
 
