@@ -94,11 +94,20 @@ RSpec.describe PartnerDatatable do
         expect(name_html).to include("/edit")
       end
 
-      it "includes partner ID" do
+      it "includes partner ID with hashtag icon" do
         datatable = create_datatable
 
         name_html = datatable.data.first[:name]
-        expect(name_html).to include("ID: #{partner.id}")
+        expect(name_html).to include("fa-hashtag")
+        expect(name_html).to include(partner.id.to_s)
+      end
+
+      it "includes partner slug with link icon" do
+        datatable = create_datatable
+
+        name_html = datatable.data.first[:name]
+        expect(name_html).to include("fa-link")
+        expect(name_html).to include(partner.slug)
       end
     end
 
