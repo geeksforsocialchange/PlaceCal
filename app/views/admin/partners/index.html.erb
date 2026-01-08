@@ -1,7 +1,8 @@
 <%
   # Get ward neighbourhoods grouped by district for hierarchical dropdown
-  wards = Neighbourhood.where(unit: 'ward').includes(:parent).order(:name)
-  ward_groups = wards.group_by { |w| w.parent&.shortname || 'Other' }
+  # Note: ancestry gem provides parent method, not association - use parent_name field instead
+  wards = Neighbourhood.where(unit: 'ward').order(:name)
+  ward_groups = wards.group_by { |w| w.parent_name.presence || 'Other' }
                      .sort_by { |district, _| district }
                      .map do |district, district_wards|
     {
