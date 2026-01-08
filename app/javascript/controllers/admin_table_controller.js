@@ -12,6 +12,7 @@ export default class extends Controller {
 		"summary",
 		"filter",
 		"clearFilters",
+		"clearSort",
 		"sortIcon",
 		"dependentFilter",
 	];
@@ -19,13 +20,15 @@ export default class extends Controller {
 		source: String,
 		columns: Array,
 		pageLength: { type: Number, default: 25 },
+		defaultSortColumn: { type: String, default: "" },
+		defaultSortDirection: { type: String, default: "desc" },
 	};
 
 	connect() {
 		this.currentPage = 0;
 		this.searchTerm = "";
-		this.sortColumn = null;
-		this.sortDirection = "asc";
+		this.sortColumn = this.defaultSortColumnValue || null;
+		this.sortDirection = this.defaultSortDirectionValue || "desc";
 		this.totalRecords = 0;
 		this.filteredRecords = 0;
 		this.filters = {};
@@ -55,6 +58,29 @@ export default class extends Controller {
 		this.currentPage = 0;
 		this.loadData();
 		this.updateSortIndicators();
+		this.updateClearSortButton();
+	}
+
+	resetSort() {
+		this.sortColumn = this.defaultSortColumnValue || null;
+		this.sortDirection = this.defaultSortDirectionValue || "desc";
+		this.currentPage = 0;
+		this.loadData();
+		this.updateSortIndicators();
+		this.updateClearSortButton();
+	}
+
+	updateClearSortButton() {
+		if (this.hasClearSortTarget) {
+			const isDefaultSort =
+				this.sortColumn === (this.defaultSortColumnValue || null) &&
+				this.sortDirection === (this.defaultSortDirectionValue || "desc");
+			this.clearSortTarget.classList.toggle("hidden", isDefaultSort);
+		}
+	}
+
+	get visibleColumnsCount() {
+		return this.columnsValue.filter((col) => !col.hidden).length;
 	}
 
 	applyFilter(event) {
@@ -85,26 +111,21 @@ export default class extends Controller {
 			if (select.dataset.filterDependsOn === parentColumn) {
 				const childColumn = select.dataset.filterColumn;
 
-				// Clear the dependent filter
+				// Clear the dependent filter value
 				select.value = "";
 				delete this.filters[childColumn];
 
-				// Show/hide options based on parent value
-				const options = select.querySelectorAll("option[data-parent]");
-				options.forEach((option) => {
-					if (!parentValue || option.dataset.parent === parentValue) {
-						option.style.display = "";
-					} else {
-						option.style.display = "none";
-					}
-				});
+				// Show/hide the select based on whether parent has a value
+				if (parentValue) {
+					select.classList.remove("hidden");
 
-				// Enable/disable the select based on whether parent has a value
-				select.disabled = !parentValue;
-				if (!parentValue) {
-					select.classList.add("opacity-50", "cursor-not-allowed");
+					// Show only options matching the parent value
+					const options = select.querySelectorAll("option[data-parent]");
+					options.forEach((option) => {
+						option.hidden = option.dataset.parent !== parentValue;
+					});
 				} else {
-					select.classList.remove("opacity-50", "cursor-not-allowed");
+					select.classList.add("hidden");
 				}
 			}
 		});
@@ -115,11 +136,10 @@ export default class extends Controller {
 		this.filterTargets.forEach((select) => {
 			select.value = "";
 		});
-		// Also reset dependent filters
+		// Also reset and hide dependent filters
 		this.dependentFilterTargets.forEach((select) => {
 			select.value = "";
-			select.disabled = true;
-			select.classList.add("opacity-50", "cursor-not-allowed");
+			select.classList.add("hidden");
 		});
 		this.currentPage = 0;
 		this.loadData();
@@ -215,13 +235,16 @@ export default class extends Controller {
 			params.append(`columns[${i}][search][regex]`, "false");
 		});
 
-		// Add sorting (default to first column ascending if not set)
-		const sortColIndex =
-			this.sortColumn !== null
-				? this.columnsValue.findIndex((c) => c.data === this.sortColumn)
-				: 0;
+		// Add sorting
+		const sortColIndex = this.sortColumn
+			? this.columnsValue.findIndex((c) => c.data === this.sortColumn)
+			: -1;
 		params.append("order[0][column]", sortColIndex >= 0 ? sortColIndex : 0);
 		params.append("order[0][dir]", this.sortDirection);
+		// Also send column name for non-visible columns like updated_at
+		if (this.sortColumn) {
+			params.append("sort_column", this.sortColumn);
+		}
 
 		// Add custom filters
 		Object.entries(this.filters).forEach(([key, value]) => {
@@ -250,7 +273,7 @@ export default class extends Controller {
 	showLoading() {
 		this.tbodyTarget.innerHTML = `
       <tr>
-        <td colspan="${this.columnsValue.length}" class="px-6 py-12 text-center">
+        <td colspan="${this.visibleColumnsCount}" class="px-6 py-12 text-center">
           <div class="flex flex-col items-center justify-center text-gray-500">
             <svg style="width: 2rem; height: 2rem; animation: spin 1s linear infinite; color: #e87d1e;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -266,7 +289,7 @@ export default class extends Controller {
 	showError() {
 		this.tbodyTarget.innerHTML = `
       <tr>
-        <td colspan="${this.columnsValue.length}" class="px-6 py-12 text-center">
+        <td colspan="${this.visibleColumnsCount}" class="px-6 py-12 text-center">
           <div class="flex flex-col items-center justify-center text-red-500">
             <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
@@ -285,7 +308,7 @@ export default class extends Controller {
 		if (data.length === 0) {
 			this.tbodyTarget.innerHTML = `
         <tr>
-          <td colspan="${this.columnsValue.length}" class="px-6 py-12 text-center">
+          <td colspan="${this.visibleColumnsCount}" class="px-6 py-12 text-center">
             <div class="flex flex-col items-center justify-center text-gray-400">
               <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
@@ -304,9 +327,10 @@ export default class extends Controller {
 				(row) => `
         <tr class="hover:bg-orange-50/30 transition-colors">
           ${this.columnsValue
+						.filter((col) => !col.hidden)
 						.map(
 							(col) =>
-								`<td class="px-6 py-4 text-sm">${row[col.data] ?? ""}</td>`
+								`<td class="px-4 py-4 text-sm">${row[col.data] ?? ""}</td>`
 						)
 						.join("")}
         </tr>
@@ -419,20 +443,19 @@ export default class extends Controller {
 	}
 
 	updateSortIndicators() {
-		this.tableTarget.querySelectorAll("th[data-column]").forEach((th) => {
-			const icon = th.querySelector("svg");
-			if (icon) {
-				if (th.dataset.column === this.sortColumn) {
-					icon.style.opacity = "1";
-					icon.innerHTML =
-						this.sortDirection === "asc"
-							? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>'
-							: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>';
-				} else {
-					icon.style.opacity = "0.3";
-					icon.innerHTML =
-						'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>';
-				}
+		// Only update SVGs with sortIcon target, not header icons
+		this.sortIconTargets.forEach((icon) => {
+			const column = icon.dataset.column;
+			if (column === this.sortColumn) {
+				icon.style.opacity = "1";
+				icon.innerHTML =
+					this.sortDirection === "asc"
+						? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>'
+						: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>';
+			} else {
+				icon.style.opacity = "0.3";
+				icon.innerHTML =
+					'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>';
 			}
 		});
 	}

@@ -10,10 +10,10 @@ module Admin
     before_action :set_partner_tags_controller, only: %i[create new edit update]
 
     def index
-      @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
+      @partners = policy_scope(Partner).includes(:address)
 
       respond_to do |format|
-        format.html
+        format.html { @partners = @partners.order(updated_at: :desc, name: :asc) }
         format.json do
           render json: PartnerDatatable.new(params,
                                             view_context: view_context,

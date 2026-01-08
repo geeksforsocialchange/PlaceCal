@@ -1,56 +1,73 @@
 <%
-  # Get districts for the first-level filter
-  districts = Neighbourhood.where(unit: 'district').order(:name)
-  district_options = districts.map { |d| { value: d.id.to_s, label: d.shortname } }
+  # Get wards that have partners, with counts
+  ward_counts = Neighbourhood
+    .where(unit: 'ward')
+    .joins(addresses: :partners)
+    .group('neighbourhoods.id')
+    .count
 
-  # Get all wards with their parent district ID for the dependent filter
-  wards = Neighbourhood.where(unit: 'ward').order(:name)
-  ward_options = wards.map do |w|
-    { value: w.id.to_s, label: w.shortname, parent: w.ancestry&.split('/')&.last }
+  ward_options = Neighbourhood
+    .where(id: ward_counts.keys)
+    .order(:name)
+    .map do |w|
+      {
+        value: w.id.to_s,
+        label: "#{w.shortname} (#{ward_counts[w.id]})",
+        parent: w.ancestry&.split('/')&.last
+      }
+    end
+
+  # Get districts that have partners in their wards, with counts
+  district_ids_with_partners = ward_options.map { |w| w[:parent] }.compact.uniq
+  district_counts = ward_options.each_with_object(Hash.new(0)) do |ward, counts|
+    counts[ward[:parent]] += ward_counts[ward[:value].to_i]
   end
+
+  district_options = Neighbourhood
+    .where(id: district_ids_with_partners)
+    .order(:name)
+    .map do |d|
+      { value: d.id.to_s, label: "#{d.shortname} (#{district_counts[d.id.to_s]})" }
+    end
 
   # Get partnerships for filter dropdown
   partnership_options = Partnership.order(:name).map do |p|
     { value: p.id.to_s, label: p.name }
+  end
+
+  # Get categories that have partners, with counts
+  category_counts = Category.joins(:partners).group('tags.id').count
+  category_options = Category.where(id: category_counts.keys).order(:name).map do |c|
+    { value: c.id.to_s, label: "#{c.name} (#{category_counts[c.id]})" }
   end
 %>
 
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Partners",
     model: :partners,
-    column_titles: ['Partner', 'Ward', 'Partnerships', 'Calendars', 'Admins', 'Categories', ''],
-    columns: %i[name ward partnerships calendars admins categories actions],
+    column_titles: [
+      'Partner',
+      'Ward',
+      'Partnerships',
+      icon_column_header(:calendar, 'Calendars'),
+      icon_column_header(:users, 'Admins'),
+      icon_column_header(:tag, 'Categories'),
+      'Updated',
+      ''
+    ],
+    columns: %i[name ward partnerships calendars admins categories updated_at actions],
     column_config: {
-      name: { width: 'w-1/4' },
-      ward: { width: 'w-36' },
-      partnerships: { sortable: false, width: 'w-44' },
-      calendars: { align: :center, sortable: false, width: 'w-12' },
-      admins: { align: :center, sortable: false, width: 'w-12' },
-      categories: { align: :center, sortable: false, width: 'w-12' },
-      actions: { sortable: false, width: 'w-16' }
+      name: {},
+      ward: { sortable: false },
+      partnerships: { sortable: false },
+      calendars: { align: :center, sortable: false, fit: true },
+      admins: { align: :center, sortable: false, fit: true },
+      categories: { align: :center, sortable: false, fit: true },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
     },
+    default_sort: { column: 'updated_at', direction: 'desc' },
     filters: [
-      {
-        column: 'calendar_status',
-        label: 'Calendar',
-        options: [
-          { value: 'connected', label: 'Connected' },
-          { value: 'none', label: 'No calendar' }
-        ]
-      },
-      {
-        column: 'has_admins',
-        label: 'Admin users',
-        options: [
-          { value: 'yes', label: 'Has admins' },
-          { value: 'no', label: 'No admins' }
-        ]
-      },
-      {
-        column: 'partnership',
-        label: 'Partnership',
-        options: partnership_options
-      },
       {
         column: 'district',
         label: 'District',
@@ -61,6 +78,35 @@
         label: 'Ward',
         depends_on: 'district',
         options: ward_options
+      },
+      {
+        column: 'partnership',
+        label: 'Partnership',
+        options: partnership_options
+      },
+      {
+        column: 'calendar_status',
+        label: 'Calendar',
+        width: 'w-28',
+        options: [
+          { value: 'connected', label: 'Connected' },
+          { value: 'none', label: 'No calendar' }
+        ]
+      },
+      {
+        column: 'has_admins',
+        label: 'Admins',
+        width: 'w-28',
+        options: [
+          { value: 'yes', label: 'Has admins' },
+          { value: 'no', label: 'No admins' }
+        ]
+      },
+      {
+        column: 'category',
+        label: 'Category',
+        width: 'w-28',
+        options: category_options
       }
     ],
     data: @partners,

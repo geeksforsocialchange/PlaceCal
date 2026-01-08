@@ -55,6 +55,25 @@ module ApplicationHelper
     )
   end
 
+  # Icon column header for datatables
+  # Usage: icon_column_header(:calendar, 'Calendars')
+  COLUMN_ICONS = {
+    calendar: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+    users: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
+    tag: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z'
+  }.freeze
+
+  def icon_column_header(icon_name, tooltip)
+    path = COLUMN_ICONS[icon_name.to_sym]
+    return tooltip unless path
+
+    content_tag(:span, title: tooltip) do
+      content_tag(:svg, class: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24') do
+        tag.path(d: path, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2')
+      end
+    end
+  end
+
   # ported from https://github.com/comfy/active_link_to/blob/master/lib/active_link_to/active_link_to.rb
   def active_link_to(title, url, data: nil)
     current_path = request.original_fullpath

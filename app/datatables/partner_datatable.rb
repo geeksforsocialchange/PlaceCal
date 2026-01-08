@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength, Rails/OutputSafety
+# rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class PartnerDatatable < Datatable
   extend Forwardable
 
@@ -8,13 +8,15 @@ class PartnerDatatable < Datatable
   def_delegator :@view, :admin_partner_users_path
 
   def view_columns
+    # Order must match columns array in index.html.erb
     @view_columns ||= {
-      name: { source: 'Partner.name', cond: :like },
-      ward: { source: 'ward_neighbourhoods.name', cond: :like, searchable: true, orderable: true },
+      name: { source: 'Partner.name', cond: :like, searchable: true },
+      ward: { source: 'ward_neighbourhoods.name', searchable: false, orderable: false },
       partnerships: { source: 'Partner.id', searchable: false, orderable: false },
       calendars: { source: 'Partner.id', searchable: false, orderable: false },
       admins: { source: 'Partner.id', searchable: false, orderable: false },
       categories: { source: 'Partner.id', searchable: false, orderable: false },
+      updated_at: { source: 'Partner.updated_at', searchable: false, orderable: true },
       actions: { source: 'Partner.id', searchable: false, orderable: false }
     }
   end
@@ -33,6 +35,7 @@ class PartnerDatatable < Datatable
         calendars: render_calendar_status(record, calendars_count),
         admins: render_tick_cross(users_count.positive?, "#{users_count} admin#{'s' if users_count != 1}", 'No admins'),
         categories: render_tick_cross(categories_count.positive?, "#{categories_count} categor#{'y' if categories_count == 1}#{'ies' if categories_count != 1}", 'No categories'),
+        updated_at: render_updated_at(record),
         actions: render_actions(record)
       }
     end
@@ -82,6 +85,12 @@ class PartnerDatatable < Datatable
         partner_ids = Partner.joins(:tags).where(tags: { id: params[:filter][:partnership], type: 'Partnership' }).pluck(:id)
         records = records.where(id: partner_ids)
       end
+
+      # Category filter
+      if params[:filter][:category].present?
+        partner_ids = Partner.joins(:tags).where(tags: { id: params[:filter][:category], type: 'Category' }).pluck(:id)
+        records = records.where(id: partner_ids)
+      end
     end
 
     records
@@ -90,15 +99,18 @@ class PartnerDatatable < Datatable
   # Override count methods to handle GROUP BY correctly
   # When using GROUP BY, count returns a hash, so we need to count the keys
   def records_total_count
-    count = fetch_records.unscope(:limit, :offset, :order).except(:group, :having, :select)
-                         .select('DISTINCT partners.id').count
-    count.is_a?(Hash) ? count.keys.count : count
+    # Total count should be all partners in the base scope (before any filters)
+    options[:partners].count
   end
 
   def records_filtered_count
-    count = filter_records(fetch_records).unscope(:limit, :offset, :order).except(:group, :having, :select)
-                                         .select('DISTINCT partners.id').count
-    count.is_a?(Hash) ? count.keys.count : count
+    # Filtered count includes our custom filters AND the DataTables search
+    # We need to keep HAVING clauses since calendar/admin filters use them
+    records = filter_records(fetch_records).unscope(:limit, :offset, :order)
+
+    # Count using a subquery to preserve GROUP BY and HAVING
+    subquery = records.except(:select).select('partners.id')
+    Partner.from(subquery, :partners).count
   end
 
   private
@@ -119,14 +131,17 @@ class PartnerDatatable < Datatable
     neighbourhood ||= record.service_areas.first&.neighbourhood if record.service_areas.any?
 
     if neighbourhood
+      name = neighbourhood.shortname
+      display_name = name.length > 20 ? "#{name[0..18]}…" : name
+
       <<~HTML.html_safe
         <button type="button"
                 class="text-gray-600 hover:text-orange-600 hover:underline cursor-pointer text-left"
                 data-action="click->admin-table#filterByValue"
                 data-filter-column="ward"
                 data-filter-value="#{neighbourhood.id}"
-                title="Filter by #{ERB::Util.html_escape(neighbourhood.shortname)}">
-          #{ERB::Util.html_escape(neighbourhood.shortname)}
+                title="Filter by #{ERB::Util.html_escape(name)}">
+          #{ERB::Util.html_escape(display_name)}
         </button>
       HTML
     else
@@ -192,7 +207,7 @@ class PartnerDatatable < Datatable
       # Create clickable buttons for each partnership
       buttons = partnerships.map do |p|
         name = p.name
-        display_name = name.length > 12 ? "#{name[0..10]}…" : name
+        display_name = name.length > 25 ? "#{name[0..23]}…" : name
 
         <<~BUTTON
           <button type="button"
@@ -204,12 +219,38 @@ class PartnerDatatable < Datatable
         BUTTON
       end
 
+      separator = partnerships.size >= 2 ? '<br>' : ', '
       <<~HTML.html_safe
         <span class="text-sm">
-          #{buttons.join(', ')}
+          #{buttons.join(separator)}
         </span>
       HTML
     end
+  end
+
+  def render_updated_at(record)
+    date = record.updated_at
+    return '—' unless date
+
+    # Show relative time for recent updates, absolute for older
+    days_ago = (Time.current - date).to_i / 1.day
+
+    if days_ago.zero?
+      relative = 'Today'
+    elsif days_ago == 1
+      relative = 'Yesterday'
+    elsif days_ago < 7
+      relative = "#{days_ago} days ago"
+    elsif days_ago < 30
+      weeks = days_ago / 7
+      relative = "#{weeks} week#{'s' if weeks != 1} ago"
+    else
+      relative = date.strftime('%-d %b %Y')
+    end
+
+    <<~HTML.html_safe
+      <span class="text-gray-500 text-sm whitespace-nowrap" title="#{date.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
+    HTML
   end
 
   def render_date(date)
@@ -275,4 +316,4 @@ class PartnerDatatable < Datatable
     '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
   end
 end
-# rubocop:enable Metrics/ClassLength, Rails/OutputSafety
+# rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

@@ -3,11 +3,17 @@
 <%- model_name = model.to_s.chop.humanize %>
 <%- filters_defined = defined?(filters) && filters.present? %>
 
+<%
+  default_sort_col = defined?(default_sort) && default_sort ? default_sort[:column] : ''
+  default_sort_dir = defined?(default_sort) && default_sort ? default_sort[:direction] : 'asc'
+%>
 <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200"
      data-controller="admin-table"
      data-admin-table-source-value="<%= source %>"
-     data-admin-table-columns-value="<%= columns.map { |c| { data: c.to_s } }.to_json %>"
-     data-admin-table-page-length-value="25">
+     data-admin-table-columns-value="<%= columns.map { |c| { data: c.to_s, hidden: column_config&.dig(c, :hidden) || false } }.to_json %>"
+     data-admin-table-page-length-value="25"
+     data-admin-table-default-sort-column-value="<%= default_sort_col %>"
+     data-admin-table-default-sort-direction-value="<%= default_sort_dir %>">
 
   <!-- Header -->
   <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
@@ -30,10 +36,10 @@
 
   <!-- Filter Bar -->
   <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-    <div class="flex flex-col lg:flex-row gap-4">
+    <div class="flex flex-wrap items-start gap-4">
       <!-- Search -->
-      <div class="flex-1 max-w-md">
-        <div class="relative">
+      <div class="w-full sm:w-auto sm:flex-none">
+        <div class="relative max-w-md">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -47,9 +53,9 @@
         </div>
       </div>
 
-      <% if filters_defined %>
-        <!-- Filter Dropdowns -->
-        <div class="flex flex-wrap gap-3">
+      <!-- Filter Dropdowns and Reset Buttons -->
+      <div class="flex flex-wrap items-center gap-3">
+        <% if filters_defined %>
           <% filters.each do |filter| %>
             <%
               is_dependent = filter[:depends_on].present?
@@ -59,9 +65,8 @@
                     data-filter-column="<%= filter[:column] %>"
                     <% if is_dependent %>data-filter-depends-on="<%= filter[:depends_on] %>"<% end %>
                     data-action="change->admin-table#applyFilter"
-                    <% if is_dependent %>disabled<% end %>
-                    class="block pl-3 pr-8 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none <%= 'opacity-50 cursor-not-allowed' if is_dependent %>"
-                    style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 0.65rem auto;">
+                    class="block pl-3 pr-6 py-1.5 text-xs border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none <%= 'hidden' if is_dependent %> <%= filter[:width] %>"
+                    style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.4rem center; background-size: 0.5rem auto;">
               <option value=""><%= filter[:label] %></option>
               <% filter[:options]&.each do |opt| %>
                 <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %>><%= opt[:label] %></option>
@@ -73,11 +78,19 @@
           <button type="button"
                   data-action="click->admin-table#clearFilters"
                   data-admin-table-target="clearFilters"
-                  class="hidden px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                  class="hidden px-2 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
             Clear filters
           </button>
-        </div>
-      <% end %>
+        <% end %>
+
+        <!-- Reset Sort -->
+        <button type="button"
+                data-action="click->admin-table#resetSort"
+                data-admin-table-target="clearSort"
+                class="hidden px-2 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
+          Reset sort
+        </button>
+      </div>
     </div>
   </div>
 
@@ -89,13 +102,15 @@
           <% column_titles.each_with_index do |col_title, index| %>
             <%
               col_config = defined?(column_config) && column_config[columns[index]]
+              next if col_config&.dig(:hidden)
               sortable = col_config.nil? || col_config[:sortable] != false
-              width_class = col_config&.dig(:width) || ''
+              fit_content = col_config&.dig(:fit)
+              width_class = fit_content ? 'w-px whitespace-nowrap' : (col_config&.dig(:width) || '')
               align_class = col_config&.dig(:align) == :center ? 'text-center' : 'text-left'
             %>
             <th data-column="<%= columns[index] %>"
                 <% if sortable %>data-action="click->admin-table#sort"<% end %>
-                class="px-6 py-3 <%= align_class %> text-xs font-semibold text-gray-600 uppercase tracking-wider <%= width_class %> <%= 'cursor-pointer hover:bg-gray-100 select-none' if sortable %>">
+                class="px-4 py-3 <%= align_class %> text-xs font-semibold text-gray-600 uppercase tracking-wider <%= width_class %> <%= 'cursor-pointer hover:bg-gray-100 select-none' if sortable %>">
               <div class="flex items-center gap-1 <%= 'justify-center' if col_config&.dig(:align) == :center %>">
                 <%= col_title %>
                 <% if sortable %>
