@@ -95,7 +95,7 @@ class CalendarDatatable < Datatable
         <a href="#{edit_admin_calendar_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
-        <span class="text-xs text-gray-400 font-mono"><i class="fa fa-hashtag"></i>#{record.id}</span>
+        <span class="text-xs text-gray-400 font-mono"><i class="fa fa-hashtag mr-1"></i>#{record.id}</span>
       </div>
     HTML
   end

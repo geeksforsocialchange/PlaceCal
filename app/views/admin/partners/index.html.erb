@@ -30,9 +30,10 @@
       { value: d.id.to_s, label: "#{d.shortname} (#{district_counts[d.id.to_s]})" }
     end
 
-  # Get partnerships for filter dropdown
-  partnership_options = Partnership.order(:name).map do |p|
-    { value: p.id.to_s, label: p.name }
+  # Get partnerships for filter dropdown, with counts
+  partnership_counts = Partnership.joins(:partners).group('tags.id').count
+  partnership_options = Partnership.where(id: partnership_counts.keys).order(:name).map do |p|
+    { value: p.id.to_s, label: "#{p.name} (#{partnership_counts[p.id]})" }
   end
 
   # Get categories that have partners, with counts
