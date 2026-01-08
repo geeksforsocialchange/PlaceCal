@@ -4,17 +4,15 @@
     column_titles: [
       'User',
       'Roles',
-      icon_column_header(:users, 'Partners'),
-      'Neighbourhoods',
+      'Last Login',
       'Last Updated',
       ''
     ],
-    columns: %i[name roles partners neighbourhoods updated_at actions],
+    columns: %i[name roles last_sign_in_at updated_at actions],
     column_config: {
       name: {},
       roles: { sortable: false },
-      partners: { align: :center, sortable: false, fit: true },
-      neighbourhoods: { align: :center, sortable: false, fit: true },
+      last_sign_in_at: { fit: true },
       updated_at: { fit: true },
       actions: { sortable: false, fit: true }
     },

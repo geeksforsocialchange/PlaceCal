@@ -17,8 +17,7 @@ class UserDatatable < Datatable
       first_name: { source: 'User.first_name', cond: :like, searchable: true },
       email: { source: 'User.email', cond: :like, searchable: true },
       roles: { source: 'User.role', searchable: false, orderable: false },
-      partners: { source: 'User.id', searchable: false, orderable: false },
-      neighbourhoods: { source: 'User.id', searchable: false, orderable: false },
+      last_sign_in_at: { source: 'User.last_sign_in_at', searchable: false, orderable: true },
       updated_at: { source: 'User.updated_at', searchable: false, orderable: true },
       actions: { source: 'User.id', searchable: false, orderable: false }
     }
@@ -26,14 +25,10 @@ class UserDatatable < Datatable
 
   def data
     records.map do |record|
-      partners_count = record.partners.size
-      neighbourhoods_count = record.neighbourhoods.size
-
       {
         name: render_name_cell(record),
         roles: render_roles_cell(record),
-        partners: render_count_cell(partners_count, 'partner'),
-        neighbourhoods: render_count_cell(neighbourhoods_count, 'neighbourhood'),
+        last_sign_in_at: render_relative_time(record.last_sign_in_at),
         updated_at: render_relative_time(record.updated_at),
         actions: render_actions(record)
       }
@@ -122,23 +117,6 @@ class UserDatatable < Datatable
     HTML
   end
 
-  def render_count_cell(count, label)
-    if count.positive?
-      <<~HTML.html_safe
-        <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
-          #{check_icon}
-          <span class="ml-1 text-xs">#{count}</span>
-        </span>
-      HTML
-    else
-      <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="No #{label}s">
-          #{cross_icon}
-        </span>
-      HTML
-    end
-  end
-
   def render_relative_time(datetime)
     return '<span class="text-gray-400">—</span>'.html_safe unless datetime
 
@@ -171,14 +149,6 @@ class UserDatatable < Datatable
         </a>
       </div>
     HTML
-  end
-
-  def check_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-  end
-
-  def cross_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
   end
 end
 # rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
