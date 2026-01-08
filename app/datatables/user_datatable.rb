@@ -12,10 +12,10 @@ class UserDatatable < Datatable
   end
 
   def view_columns
+    # NOTE: name searchable is false because we override filter_records to search
+    # across first_name, last_name, and email
     @view_columns ||= {
-      name: { source: 'User.last_name', cond: :like, searchable: true },
-      first_name: { source: 'User.first_name', cond: :like, searchable: true },
-      email: { source: 'User.email', cond: :like, searchable: true },
+      name: { source: 'User.last_name', cond: :like, searchable: false, orderable: true },
       roles: { source: 'User.role', searchable: false, orderable: false },
       last_sign_in_at: { source: 'User.last_sign_in_at', searchable: false, orderable: true },
       updated_at: { source: 'User.updated_at', searchable: false, orderable: true },
@@ -27,20 +27,39 @@ class UserDatatable < Datatable
     records.map do |record|
       row_data = {
         name: render_name_cell(record),
-        first_name: record.first_name,
-        email: record.email,
         roles: render_roles_cell(record),
         last_sign_in_at: render_relative_time(record.last_sign_in_at),
         updated_at: render_relative_time(record.updated_at),
         actions: render_actions(record)
       }
 
-      # Add row class for elevated roles
-      row_data[:DT_RowClass] = 'bg-red-50' if record.role.to_s == 'root'
-      row_data[:DT_RowClass] = 'bg-blue-50' if record.role.to_s == 'editor'
+      # Add row styling for elevated roles (inline style for reliability)
+      case record.role.to_s
+      when 'root'
+        row_data[:DT_RowAttr] = { style: 'background-color: #fef2f2;' }
+      when 'editor'
+        row_data[:DT_RowAttr] = { style: 'background-color: #eff6ff;' }
+      end
 
       row_data
     end
+  end
+
+  # Override to search across first_name, last_name, and email
+  def filter_records(records)
+    filtered = super
+
+    # Apply search across name fields if there's a search term
+    search_value = params.dig(:search, :value)
+    if search_value.present?
+      search_term = "%#{search_value}%"
+      filtered = filtered.where(
+        'users.first_name ILIKE :term OR users.last_name ILIKE :term OR users.email ILIKE :term',
+        term: search_term
+      )
+    end
+
+    filtered
   end
 
   def get_raw_records
