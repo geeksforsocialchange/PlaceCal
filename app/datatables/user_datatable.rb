@@ -91,6 +91,15 @@ class UserDatatable < Datatable
           records = records.where.missing(:neighbourhoods).distinct
         end
       end
+
+      # Site admin filter
+      if params[:filter][:is_site_admin].present?
+        if params[:filter][:is_site_admin] == 'yes'
+          records = records.where(id: Site.where.not(site_admin_id: nil).select(:site_admin_id))
+        elsif params[:filter][:is_site_admin] == 'no'
+          records = records.where.not(id: Site.where.not(site_admin_id: nil).select(:site_admin_id))
+        end
+      end
     end
 
     records
