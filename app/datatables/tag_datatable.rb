@@ -87,7 +87,7 @@ class TagDatatable < Datatable
         <a href="#{edit_admin_tag_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">ID: #{record.id} · #{ERB::Util.html_escape(record.slug)}</span>
+        <span class="text-xs text-gray-400 font-mono"><i class="fa fa-hashtag"></i>#{record.id} <i class="fa fa-link"></i>#{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
   end
