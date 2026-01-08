@@ -9,6 +9,16 @@ body {
 	font-size: 0.875rem;
 }
 
+// Spin animation for loading spinners
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 .feather {
 	width: 16px;
 	height: 16px;
