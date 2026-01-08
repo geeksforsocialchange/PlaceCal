@@ -1,9 +1,44 @@
-<%= render AdminIndexComponent.new(
-  title: "Supporters",
-  model: :supporters,
-  column_titles: ['ID', 'Name', 'Logo', 'Global?'],
-  columns: %i[id name logo is_global],
-  data: @supporters,
-  new_link: new_admin_supporter_path
-)
-%>
+<% content_for :title do %>Supporters<% end %>
+
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-gray-900">Supporters</h1>
+</div>
+
+<div class="mb-4">
+  <% if policy(Supporter).create? %>
+    <%= link_to "Add New Supporter", new_admin_supporter_path, data: { turbo: false },
+        class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors" %>
+  <% end %>
+</div>
+
+<div class="bg-white shadow-sm rounded-lg overflow-hidden">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Logo</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Global?</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <% @supporters.each do |supporter| %>
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= supporter.id %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= supporter.name %></td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <% if supporter.logo.url %>
+              <%= image_tag supporter.logo.url, class: "h-8 bg-gray-700 rounded" %>
+            <% end %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= supporter.is_global ? 'Yes' : 'No' %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <%= link_to "Edit", edit_admin_supporter_path(supporter), data: { turbo: false },
+                class: "text-placecal-orange hover:underline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

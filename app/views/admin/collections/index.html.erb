@@ -1,11 +1,38 @@
-<%# TODO: Only show Edit link for root users %>
+<% content_for :title do %>Collections<% end %>
 
-<%= render AdminIndexComponent.new(
-  title: "Collections",
-  model: :collections,
-  column_titles: ['ID', 'Name', 'Description'],
-  columns: %i[id name description],
-  data: @collections,
-  new_link: new_admin_collection_path
-)
-%>
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-gray-900">Collections</h1>
+</div>
+
+<div class="mb-4">
+  <% if policy(Collection).create? %>
+    <%= link_to "Add New Collection", new_admin_collection_path, data: { turbo: false },
+        class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors" %>
+  <% end %>
+</div>
+
+<div class="bg-white shadow-sm rounded-lg overflow-hidden">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <% @collections.each do |collection| %>
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= collection.id %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= collection.name %></td>
+          <td class="px-6 py-4 text-sm text-gray-500"><%= truncate(collection.description, length: 100) %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <%= link_to "Edit", edit_admin_collection_path(collection), data: { turbo: false },
+                class: "text-placecal-orange hover:underline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
