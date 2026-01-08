@@ -57,14 +57,14 @@ module PartnersHelper
   end
 
   # Get a String containing a list of <a> tags for each site,
-  # where the name is the Site's name, and the URL is the site's url
+  # where the name is the Site's name, and the URL points directly to the partner's page on that site
   #
   # @return [String] HTML string
   def site_links
-    return if @sites.blank?
+    return if @sites.blank? || @partner.blank?
 
     @sites
-      .map { |site| link_to site.name, site.url, target: '_blank', rel: 'noopener' }
+      .map { |site| link_to site.name, "#{site.url.chomp('/')}/partners/#{@partner.slug}", target: '_blank', rel: 'noopener' }
       .join(', ')
       .html_safe
   end

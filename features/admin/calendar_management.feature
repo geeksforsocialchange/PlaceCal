@@ -25,11 +25,11 @@ Feature: Calendar Administration
   # Calendar Creation
   Scenario: Add new calendar button is visible
     When I go to the "Calendars" admin section
-    Then I should see "Add New Calendar"
+    Then I should see "Add Calendar"
 
   Scenario: New calendar form shows required fields
     When I go to the "Calendars" admin section
-    And I click "Add New Calendar"
+    And I click "Add Calendar"
     Then I should see "Partner Organiser"
     And I should see "Name"
     And I should see "URL"

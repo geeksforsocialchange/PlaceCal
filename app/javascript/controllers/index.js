@@ -31,9 +31,6 @@ application.register(
 import PartnerTagsController from "./partner_tags_controller.js";
 application.register("partner-tags", PartnerTagsController);
 
-import Select2Controller from "./select2_controller.js";
-application.register("select2", Select2Controller);
-
 import TomSelectController from "./tom_select_controller.js";
 application.register("tom-select", TomSelectController);
 
@@ -45,3 +42,9 @@ application.register("multi-step-form", MultiStepFormController);
 
 import UserPartnersController from "./user_partners_controller.js";
 application.register("user-partners", UserPartnersController);
+
+import NestedFormController from "./nested_form_controller.js";
+application.register("nested-form", NestedFormController);
+
+import DropdownController from "./dropdown_controller.js";
+application.register("dropdown", DropdownController);

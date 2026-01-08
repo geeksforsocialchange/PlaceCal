@@ -9,9 +9,9 @@ Feature: Admin Dashboard
 
   Scenario: Dashboard shows quick add buttons
     When I visit the admin dashboard
-    Then I should see "Add New Partner"
-    And I should see "Add New Calendar"
-    And I should see "Add New User"
+    Then I should see "Add Partner"
+    And I should see "Add Calendar"
+    And I should see "Add User"
 
   Scenario: Dashboard shows recently updated partners
     Given there is a partner called "Active Community Centre"

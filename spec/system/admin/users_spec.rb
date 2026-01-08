@@ -14,30 +14,30 @@ RSpec.describe "Admin Users", :slow, type: :system do
   let!(:partner_two) { create(:oldtown_library, address: create(:address, neighbourhood: oldtown_ward)) }
   let!(:partnership) { create(:partnership) }
 
-  describe "select2 inputs on users form" do
+  describe "tom-select inputs on users form" do
     it "allows selecting partners, neighbourhoods and tags", :aggregate_failures do
       click_link "Users"
 
-      # Edit a root user (has access to all potential select2 inputs)
+      # Edit a root user (has access to all potential tom-select inputs)
       # Click on the admin user's first name to edit
       click_link admin_user.first_name
 
       # Select partners
-      partners_node = select2_node("user_partners")
-      select2 partner.name, partner_two.name, xpath: partners_node.path
-      assert_select2_multiple [partner.name, partner_two.name], partners_node
+      partners_node = tom_select_node("user_partners")
+      tom_select partner.name, partner_two.name, xpath: partners_node.path
+      assert_tom_select_multiple [partner.name, partner_two.name], partners_node
 
       # Select neighbourhoods (displayed as "Name (Unit)" with titleized unit)
-      neighbourhoods_node = select2_node("user_neighbourhoods")
-      select2 riverside_ward.name, oldtown_ward.name, xpath: neighbourhoods_node.path
+      neighbourhoods_node = tom_select_node("user_neighbourhoods")
+      tom_select riverside_ward.name, oldtown_ward.name, xpath: neighbourhoods_node.path
       # UI displays unit titleized: "Riverside (Ward)" not "Riverside (ward)"
-      assert_select2_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
-                               "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
+      assert_tom_select_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
+                                  "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
 
       # Select tags
-      tags_node = select2_node("user_tags")
-      select2 partnership.name, xpath: tags_node.path
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      tags_node = tom_select_node("user_tags")
+      tom_select partnership.name, xpath: tags_node.path
+      assert_tom_select_multiple [partnership.name_with_type], tags_node
 
       click_button "Update"
 
@@ -48,15 +48,15 @@ RSpec.describe "Admin Users", :slow, type: :system do
         click_link admin_user.first_name
       end
 
-      partners_node = select2_node("user_partners")
-      assert_select2_multiple [partner.name, partner_two.name], partners_node
+      partners_node = tom_select_node("user_partners")
+      assert_tom_select_multiple [partner.name, partner_two.name], partners_node
 
-      neighbourhoods_node = select2_node("user_neighbourhoods")
-      assert_select2_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
-                               "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
+      neighbourhoods_node = tom_select_node("user_neighbourhoods")
+      assert_tom_select_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
+                                  "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
 
-      tags_node = select2_node("user_tags")
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      tags_node = tom_select_node("user_tags")
+      assert_tom_select_multiple [partnership.name_with_type], tags_node
     end
   end
 end

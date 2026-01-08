@@ -113,7 +113,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'capybara-select-2'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'

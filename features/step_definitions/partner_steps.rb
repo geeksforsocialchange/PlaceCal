@@ -29,7 +29,7 @@ When("I create a new partner with name {string}") do |name|
 
   click_link "Partners"
   await_datatables
-  click_link "Add New Partner"
+  click_link "Add Partner"
   fill_in "Name", with: name
 
   # Fill in address (required - partner needs address or service area)

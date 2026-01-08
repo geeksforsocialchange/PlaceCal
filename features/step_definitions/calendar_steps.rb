@@ -16,9 +16,9 @@ When("I create a new calendar with name {string} for {string}") do |name, partne
   partner = Partner.find_by(name: partner_name)
   click_link "Calendars"
   await_datatables
-  click_link "Add New Calendar"
+  click_link "Add Calendar"
   fill_in "Name", with: name
-  # Select partner would need Select2 interaction
+  # Select partner would need Tom Select interaction
   click_button "Create Calendar"
 end
 

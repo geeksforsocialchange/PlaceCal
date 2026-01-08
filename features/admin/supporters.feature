@@ -10,11 +10,11 @@ Feature: Supporter Management
   Scenario: Viewing the supporters list
     When I go to the "Supporters" admin section
     Then I should see "Supporters"
-    And I should see "Add New Supporter"
+    And I should see "Add Supporter"
 
   Scenario: Creating a new supporter form
     When I go to the "Supporters" admin section
-    And I click "Add New Supporter"
+    And I click "Add Supporter"
     Then I should see "Create a new Supporter"
     And I should see "Name"
     And I should see "Url"

@@ -102,7 +102,7 @@ module Admin
     def set_user_partners_controller
       @user_partners_controller =
         if current_user.root?
-          'select2'
+          'tom-select'
         else
           'user-partners'
         end

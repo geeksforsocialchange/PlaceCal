@@ -8,7 +8,7 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
   let!(:neighbourhood_admin) { create(:neighbourhood_admin) }
   let!(:riverside_ward) { create(:riverside_ward) }
 
-  describe "select2 inputs on neighbourhood form" do
+  describe "tom-select inputs on neighbourhood form" do
     it "allows selecting users", :aggregate_failures do
       click_link "Neighbourhoods"
 
@@ -22,9 +22,9 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
       click_link "Edit"
 
       # Select users
-      users_node = select2_node("neighbourhood_users")
-      select2 admin_user.to_s, neighbourhood_admin.to_s, xpath: users_node.path
-      assert_select2_multiple [admin_user.to_s, neighbourhood_admin.to_s], users_node
+      users_node = tom_select_node("neighbourhood_users")
+      tom_select admin_user.to_s, neighbourhood_admin.to_s, xpath: users_node.path
+      assert_tom_select_multiple [admin_user.to_s, neighbourhood_admin.to_s], users_node
 
       click_button "Save"
 
@@ -43,8 +43,8 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
 
       find_element_and_retry_if_stale do
         find_element_and_retry_if_not_found do
-          users_node = select2_node("neighbourhood_users")
-          assert_select2_multiple [admin_user.to_s, neighbourhood_admin.to_s], users_node
+          users_node = tom_select_node("neighbourhood_users")
+          assert_tom_select_multiple [admin_user.to_s, neighbourhood_admin.to_s], users_node
         end
       end
     end

@@ -151,7 +151,7 @@ module Admin
     def set_partner_tags_controller
       @partner_tags_controller =
         if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
-          'select2'
+          'tom-select'
         else
           'partner-tags'
         end

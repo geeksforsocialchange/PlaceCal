@@ -6,8 +6,13 @@
 
 <div class="mb-4">
   <% if policy(Collection).create? %>
-    <%= link_to "Add New Collection", new_admin_collection_path, data: { turbo: false },
-        class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors" %>
+    <%= link_to new_admin_collection_path, data: { turbo: false },
+        class: "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-white bg-orange-500 hover:bg-orange-600 transition-colors shadow-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Add Collection
+    <% end %>
   <% end %>
 </div>
 

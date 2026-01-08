@@ -82,11 +82,6 @@
             hint: 'Must be at least 5 characters long' %>
         <p class="hidden text-sm text-red-600" id="partner-name-feedback">This partner name has already been taken.</p>
 
-        <% if policy(@partner).permitted_attributes.include? :slug %>
-          <%= f.input :slug, wrapper: :tw_vertical_form,
-              input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
-        <% end %>
-
         <%= f.input :summary, wrapper: :tw_vertical_form, label: 'Summary', as: 'text',
             input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', maxlength: 200, rows: 2 } %>
 
@@ -255,6 +250,17 @@
 
     <!-- Step 5: Admin -->
     <div data-multi-step-form-target="step" class="hidden space-y-6">
+      <% if policy(@partner).permitted_attributes.include? :slug %>
+        <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+          <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">URL Settings</h2>
+          <p class="text-sm text-gray-600">Customize the URL slug for this partner. This appears in the partner's public URL.</p>
+          <%= f.input :slug, wrapper: :tw_vertical_form,
+              label: 'URL Slug',
+              hint: 'Leave blank to auto-generate from name',
+              input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+        </div>
+      <% end %>
+
       <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
         <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Event Matching</h2>
         <p class="text-sm text-gray-600">Can events imported from other partner's calendars be listed at this partner if their address matches?</p>

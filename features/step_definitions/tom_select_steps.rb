@@ -8,21 +8,28 @@ When("I select {string} from the {string} drop down select box") do |option, fie
   tom_select_select(option, from: field)
 end
 
-# Select from the service area drop down (nested Cocoon field)
+# Select from the service area drop down (nested form field)
 When("I select {string} from the service area drop down select box") do |option|
-  # Wait a moment for Cocoon to add the element and Stimulus to detect it
+  # Wait for Stimulus nested-form controller to add the element
   sleep 1
 
   # Find the service area nested fields specifically
   # The address fields have data-controller="partner-address", service area fields don't
   # Look for all nested-fields and find the one that's NOT the address fields
-  all_nested = page.all(".nested-fields", wait: 5)
-  service_area_container = all_nested.find do |el|
-    el[:class].to_s.exclude?("partner-address") &&
-      (el["data-controller"].nil? || el["data-controller"].exclude?("partner-address"))
+  service_area_container = nil
+  attempts = 0
+
+  while service_area_container.nil? && attempts < 10
+    all_nested = page.all(".nested-fields", wait: 2)
+    service_area_container = all_nested.find do |el|
+      el[:class].to_s.exclude?("partner-address") &&
+        (el["data-controller"].nil? || el["data-controller"].to_s.empty? || el["data-controller"].exclude?("partner-address"))
+    end
+    sleep 0.5 if service_area_container.nil?
+    attempts += 1
   end
 
-  raise "Could not find service area container" unless service_area_container
+  raise "Could not find service area container after #{attempts} attempts. Found #{page.all('.nested-fields').count} nested-fields elements." unless service_area_container
 
   # Check for Tom Select wrapper or native select
   if service_area_container.has_css?(".ts-wrapper", wait: 3)

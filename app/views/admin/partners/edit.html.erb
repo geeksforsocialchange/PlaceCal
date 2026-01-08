@@ -67,3 +67,231 @@
     </div>
   </div>
 </div>
+
+<hr class="my-8 border-gray-200">
+
+<%# Upcoming Events Section %>
+<div>
+  <h2 class="text-xl font-semibold text-gray-900 mb-2">Upcoming Events</h2>
+  <p class="text-gray-600 mb-4">Events from this partner's calendars in the next 30 days</p>
+
+  <% upcoming_events = @partner.events.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart).limit(20) %>
+
+  <% if upcoming_events.any? %>
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Calendar</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <% upcoming_events.each do |event| %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <div class="text-sm font-medium text-gray-900"><%= truncate(event.summary, length: 60) %></div>
+                <% if event.place.present? %>
+                  <div class="text-xs text-gray-500"><%= truncate(event.place, length: 40) %></div>
+                <% end %>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
+                <div><%= event.dtstart.strftime('%a %d %b %Y') %></div>
+                <div class="text-xs text-gray-400"><%= event.dtstart.strftime('%H:%M') %> - <%= event.dtend&.strftime('%H:%M') || '?' %></div>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-500">
+                <% if event.calendar %>
+                  <%= link_to event.calendar.name, edit_admin_calendar_path(event.calendar), class: "text-placecal-orange hover:underline" %>
+                <% else %>
+                  <span class="text-gray-400">—</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @partner.events.upcoming.count > 20 %>
+      <p class="mt-3 text-sm text-gray-500">Showing 20 of <%= @partner.events.upcoming.count %> upcoming events</p>
+    <% end %>
+  <% else %>
+    <div class="bg-gray-50 rounded-lg p-6 text-center">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      <p class="mt-2 text-sm text-gray-600">No upcoming events found</p>
+      <p class="text-xs text-gray-400 mt-1">Events will appear here once calendars are synced</p>
+    </div>
+  <% end %>
+</div>
+
+<hr class="my-8 border-gray-200">
+
+<%# Frontend Preview Section %>
+<div>
+  <h2 class="text-xl font-semibold text-gray-900 mb-2">Frontend Preview</h2>
+  <p class="text-gray-600 mb-4">How this partner appears on public PlaceCal sites</p>
+
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <%# Preview Header %>
+    <div class="bg-gradient-to-r from-gray-800 to-gray-700 px-6 py-8">
+      <h3 class="text-2xl font-bold text-white"><%= @partner.name %></h3>
+    </div>
+
+    <div class="p-6">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <%# Main Content - 3/5 %>
+        <div class="lg:col-span-3 space-y-6">
+          <%# Summary %>
+          <% if @partner.summary.present? %>
+            <div>
+              <p class="text-lg text-gray-800 leading-relaxed"><%= @partner.summary %></p>
+            </div>
+          <% end %>
+
+          <%# Description %>
+          <% if @partner.description_html.present? %>
+            <div class="prose prose-sm max-w-none text-gray-600">
+              <%= @partner.description_html.to_s.html_safe %>
+            </div>
+          <% end %>
+
+          <%# Contact Details %>
+          <div>
+            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 border-b border-gray-200 pb-2">Get in touch</h4>
+            <div class="space-y-2 text-sm">
+              <% if @partner.url.present? %>
+                <div class="flex items-center text-gray-600">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                  </svg>
+                  <%= link_to @partner.url, @partner.url, target: '_blank', rel: 'noopener', class: 'text-placecal-orange hover:underline truncate' %>
+                </div>
+              <% end %>
+              <% if @partner.public_email.present? %>
+                <div class="flex items-center text-gray-600">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  </svg>
+                  <%= mail_to @partner.public_email, @partner.public_email, class: 'text-placecal-orange hover:underline' %>
+                </div>
+              <% end %>
+              <% if @partner.public_phone.present? %>
+                <div class="flex items-center text-gray-600">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                  </svg>
+                  <%= @partner.public_phone %>
+                </div>
+              <% end %>
+              <% if @partner.url.blank? && @partner.public_email.blank? && @partner.public_phone.blank? %>
+                <p class="text-gray-400 italic">No public contact details set</p>
+              <% end %>
+            </div>
+          </div>
+
+          <%# Address %>
+          <div>
+            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 border-b border-gray-200 pb-2">Address</h4>
+            <% if @partner.has_service_areas? %>
+              <p class="text-sm text-gray-600 mb-2">Operates in <%= partner_service_area_text(@partner) %></p>
+            <% end %>
+            <% if @partner.address.present? %>
+              <div class="text-sm text-gray-600">
+                <% if @partner.address.street_address.present? %>
+                  <p><%= @partner.address.street_address %></p>
+                <% end %>
+                <% if @partner.address.street_address2.present? %>
+                  <p><%= @partner.address.street_address2 %></p>
+                <% end %>
+                <% if @partner.address.city.present? %>
+                  <p><%= @partner.address.city %></p>
+                <% end %>
+                <% if @partner.address.postcode.present? %>
+                  <p><%= @partner.address.postcode %></p>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-gray-400 italic text-sm">No address set</p>
+            <% end %>
+          </div>
+
+          <%# Accessibility %>
+          <% if @partner.accessibility_info_html.present? %>
+            <div>
+              <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 border-b border-gray-200 pb-2">Accessibility information</h4>
+              <div class="prose prose-sm max-w-none text-gray-600">
+                <%= @partner.accessibility_info_html.to_s.html_safe %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Sidebar - 2/5 %>
+        <div class="lg:col-span-2 space-y-6">
+          <%# Partner Image %>
+          <% if @partner.image.present? %>
+            <div class="rounded-lg overflow-hidden border border-gray-200">
+              <%= image_tag @partner.image.standard.url, alt: @partner.name, class: 'w-full h-auto' %>
+            </div>
+          <% else %>
+            <div class="rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 p-8 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <p class="mt-2 text-sm text-gray-400">No image uploaded</p>
+            </div>
+          <% end %>
+
+          <%# Opening Times %>
+          <% if @partner.opening_times.present? %>
+            <% begin %>
+              <% opening_times_data = JSON.parse(@partner.opening_times) %>
+              <% if opening_times_data.any? %>
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Opening times</h4>
+                  <div class="space-y-1 text-sm">
+                    <% opening_times_data.each do |slot| %>
+                      <% day_name = slot['dayOfWeek'].to_s.split('/').last %>
+                      <% opens = Time.parse(slot['opens']).strftime('%H:%M') rescue slot['opens'] %>
+                      <% closes = Time.parse(slot['closes']).strftime('%H:%M') rescue slot['closes'] %>
+                      <div class="flex justify-between">
+                        <span class="font-medium text-gray-700"><%= day_name %></span>
+                        <span class="text-gray-600"><%= opens %> - <%= closes %></span>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% rescue JSON::ParserError %>
+              <%# Invalid JSON, skip opening times display %>
+            <% end %>
+          <% end %>
+
+          <%# Tags/Partnerships %>
+          <% if @partner.tags.any? %>
+            <div>
+              <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Partnerships</h4>
+              <div class="flex flex-wrap gap-2">
+                <% @partner.tags.each do |tag| %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                    <%= tag.name %>
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# Preview Footer %>
+    <div class="bg-gray-50 border-t border-gray-200 px-6 py-3">
+      <p class="text-xs text-gray-500">
+        This preview shows how the partner information will appear on public PlaceCal sites.
+        Events and map are not shown in this preview.
+      </p>
+    </div>
+  </div>
+</div>

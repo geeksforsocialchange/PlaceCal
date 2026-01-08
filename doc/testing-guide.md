@@ -292,7 +292,7 @@ RSpec.describe 'Admin Partners', :slow, type: :system do
     end
   end
 
-  describe 'select2 dropdowns' do
+  describe 'tom-select dropdowns' do
     let!(:partnership) { create(:partnership) }
 
     it 'allows selecting tags' do
@@ -300,9 +300,9 @@ RSpec.describe 'Admin Partners', :slow, type: :system do
       await_datatables
       click_link partner.name
 
-      partnerships_node = select2_node('partner_partnerships')
-      select2 partnership.name, xpath: partnerships_node.path
-      assert_select2_multiple [partnership.name], partnerships_node
+      partnerships_node = tom_select_node('partner_partnerships')
+      tom_select partnership.name, xpath: partnerships_node.path
+      assert_tom_select_multiple [partnership.name], partnerships_node
 
       click_button 'Save Partner'
       expect(page).to have_selector('.alert-success')
@@ -315,9 +315,9 @@ end
 
 - `include_context 'admin login'` - logs in as root user
 - `await_datatables` - waits for DataTables to load
-- `select2_node(class)` - finds Select2 container
-- `select2 value, xpath:` - selects value in Select2
-- `assert_select2_single` / `assert_select2_multiple` - verify selections
+- `tom_select_node(class)` - finds Tom Select container
+- `tom_select value, xpath:` - selects value in Tom Select
+- `assert_tom_select_single` / `assert_tom_select_multiple` - verify selections
 
 ### 7. Cucumber Features
 
@@ -456,17 +456,17 @@ create(:service_area, partner: partner, neighbourhood: ward)
 
 ## Support Files
 
-| File                              | Purpose                      |
-| --------------------------------- | ---------------------------- |
-| `spec/rails_helper.rb`            | Main RSpec configuration     |
-| `spec/support/capybara.rb`        | Browser/Selenium setup       |
-| `spec/support/select2_helpers.rb` | Select2 dropdown helpers     |
-| `spec/support/system_helpers.rb`  | System test utilities        |
-| `spec/support/site_helpers.rb`    | `create_default_site` helper |
-| `spec/support/graphql_helpers.rb` | GraphQL test utilities       |
-| `spec/support/vcr.rb`             | HTTP recording config        |
-| `spec/support/shared_examples/`   | Reusable test examples       |
-| `spec/support/shared_contexts/`   | Reusable test setup          |
+| File                                 | Purpose                      |
+| ------------------------------------ | ---------------------------- |
+| `spec/rails_helper.rb`               | Main RSpec configuration     |
+| `spec/support/capybara.rb`           | Browser/Selenium setup       |
+| `spec/support/tom_select_helpers.rb` | Tom Select dropdown helpers  |
+| `spec/support/system_helpers.rb`     | System test utilities        |
+| `spec/support/site_helpers.rb`       | `create_default_site` helper |
+| `spec/support/graphql_helpers.rb`    | GraphQL test utilities       |
+| `spec/support/vcr.rb`                | HTTP recording config        |
+| `spec/support/shared_examples/`      | Reusable test examples       |
+| `spec/support/shared_contexts/`      | Reusable test setup          |
 
 ---
 

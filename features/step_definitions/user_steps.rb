@@ -31,7 +31,7 @@ When("I create a new user with name {string}") do |name|
 
   click_link "Users"
   await_datatables
-  click_link "Add New User"
+  click_link "Add User"
   fill_in "First name", with: first_name
   fill_in "Last name", with: last_name
   fill_in "Email", with: email

@@ -13,31 +13,31 @@ RSpec.describe "Admin Sites", :slow, type: :system do
     create(:sites_neighbourhood, site: site, neighbourhood: riverside_ward)
   end
 
-  describe "select2 inputs on site form" do
+  describe "tom-select inputs on site form" do
     it "allows selecting site admin, neighbourhoods and tags", :aggregate_failures do
       click_link "Sites"
       click_link "Add New Site"
 
       # Select site admin
-      site_admin_node = select2_node("site_site_admin")
-      select2 admin_user.to_s, xpath: site_admin_node.path
-      assert_select2_single admin_user.to_s, site_admin_node
+      site_admin_node = tom_select_node("site_site_admin")
+      tom_select admin_user.to_s, xpath: site_admin_node.path
+      assert_tom_select_single admin_user.to_s, site_admin_node
 
       # Select primary neighbourhood (only appears when creating a site)
-      neighbourhood_main = select2_node("site_sites_neighbourhood_neighbourhood_id")
-      select2 riverside_ward.name, xpath: neighbourhood_main.path
-      assert_select2_single riverside_ward.name, neighbourhood_main
+      neighbourhood_main = tom_select_node("site_sites_neighbourhood_neighbourhood_id")
+      tom_select riverside_ward.name, xpath: neighbourhood_main.path
+      assert_tom_select_single riverside_ward.name, neighbourhood_main
 
-      # Add additional neighbourhood via cocoon
+      # Add additional neighbourhood via nested form
       click_link "Add neighbourhood"
-      service_areas = all_cocoon_select2_nodes("sites_neighbourhoods")
-      select2 oldtown_ward.name, xpath: service_areas[-1].path
-      assert_select2_single oldtown_ward.name, service_areas[0]
+      service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
+      tom_select oldtown_ward.name, xpath: service_areas[-1].path
+      assert_tom_select_single oldtown_ward.name, service_areas[0]
 
       # Select tags
-      tags_node = select2_node("site_tags")
-      select2 partnership.name, xpath: tags_node.path
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      tags_node = tom_select_node("site_tags")
+      tom_select partnership.name, xpath: tags_node.path
+      assert_tom_select_multiple [partnership.name_with_type], tags_node
 
       fill_in "Name", with: "Test Site"
       fill_in "Url", with: "https://test.com"
@@ -49,14 +49,14 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link "Sites"
       click_link "Test Site"
 
-      site_admin_node = select2_node("site_site_admin")
-      assert_select2_single admin_user.to_s, site_admin_node
+      site_admin_node = tom_select_node("site_site_admin")
+      assert_tom_select_single admin_user.to_s, site_admin_node
 
-      service_areas = all_cocoon_select2_nodes("sites_neighbourhoods")
-      assert_select2_single oldtown_ward.name, service_areas[0]
+      service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
+      assert_tom_select_single oldtown_ward.name, service_areas[0]
 
-      tags_node = select2_node("site_tags")
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      tags_node = tom_select_node("site_tags")
+      assert_tom_select_multiple [partnership.name_with_type], tags_node
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       find(:xpath, '//input[@value="Update Site"]', wait: 100)
 
       # The primary neighbourhood should not appear in the sites_neighbourhoods section
-      service_areas = all(:css, ".sites_neighbourhoods .select2-container", wait: 1)
+      service_areas = all(:css, ".sites_neighbourhoods .ts-wrapper", wait: 1)
 
       expect(service_areas.length).to be_zero,
                                       "@site should only have a primary neighbourhood, " \

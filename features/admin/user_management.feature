@@ -11,7 +11,7 @@ Feature: User Administration
   Scenario: Viewing user list
     When I go to the "Users" admin section
     Then I should see "Users"
-    And I should see "Add New User"
+    And I should see "Add User"
 
   Scenario: User list shows existing users
     Given there is a user called "Alice Smith"
@@ -23,7 +23,7 @@ Feature: User Administration
   # User Creation
   Scenario: New user form shows required fields
     When I go to the "Users" admin section
-    And I click "Add New User"
+    And I click "Add User"
     Then I should see "First name"
     And I should see "Last name"
     And I should see "Email"

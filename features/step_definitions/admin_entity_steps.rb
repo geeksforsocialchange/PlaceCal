@@ -5,7 +5,7 @@
 
 # Neighbourhood steps
 Given("there is a neighbourhood called {string}") do |name|
-  create(:neighbourhood, name: name)
+  create(:neighbourhood, name: name, name_abbr: name, unit: "ward")
 end
 
 # Collection steps

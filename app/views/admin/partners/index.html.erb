@@ -1,8 +1,57 @@
+<%
+  # Get ward neighbourhoods for filter dropdown
+  ward_options = Neighbourhood.where(unit: 'ward').order(:name).map do |n|
+    { value: n.id.to_s, label: n.shortname }
+  end
+
+  # Get partnerships for filter dropdown
+  partnership_options = Partnership.order(:name).map do |p|
+    { value: p.id.to_s, label: p.name }
+  end
+%>
+
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Partners",
     model: :partners,
-    column_titles: ['ID', 'Name', 'Slug', 'Address', 'Last updated'],
-    columns: %i[id name slug address updated_at],
+    column_titles: ['Partner', 'Ward', 'Partnerships', 'Calendars', 'Admins', 'Categories', ''],
+    columns: %i[name ward partnerships calendars admins categories actions],
+    column_config: {
+      name: { width: 'w-1/4' },
+      ward: { width: 'w-28' },
+      partnerships: { sortable: false, width: 'w-36' },
+      calendars: { align: :center, sortable: false, width: 'w-16' },
+      admins: { align: :center, sortable: false, width: 'w-16' },
+      categories: { align: :center, sortable: false, width: 'w-16' },
+      actions: { sortable: false, width: 'w-20' }
+    },
+    filters: [
+      {
+        column: 'calendar_status',
+        label: 'Calendar',
+        options: [
+          { value: 'connected', label: 'Connected' },
+          { value: 'none', label: 'No calendar' }
+        ]
+      },
+      {
+        column: 'has_admins',
+        label: 'Admin users',
+        options: [
+          { value: 'yes', label: 'Has admins' },
+          { value: 'no', label: 'No admins' }
+        ]
+      },
+      {
+        column: 'partnership',
+        label: 'Partnership',
+        options: partnership_options
+      },
+      {
+        column: 'ward',
+        label: 'Ward',
+        options: ward_options
+      }
+    ],
     data: @partners,
     source: admin_partners_path(format: :json),
     new_link: new_admin_partner_path

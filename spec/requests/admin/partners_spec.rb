@@ -30,16 +30,17 @@ RSpec.describe "Admin::Partners", type: :request do
 
       before { sign_in user }
 
-      it "shows all partners" do
+      it "shows partners index page with datatable" do
         get admin_partners_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partner1.name)
-        expect(response.body).to include(partner2.name)
+        expect(response.body).to include("Partners") # Page title
+        expect(response.body).to include("data-controller=\"admin-table\"") # Datatable
+        expect(response.body).to include(admin_partners_path(format: :json)) # JSON source
       end
 
       it "includes add new partner button" do
         get admin_partners_url(host: admin_host)
-        expect(response.body).to include("Add New Partner")
+        expect(response.body).to include("Add Partner")
       end
     end
 
@@ -50,11 +51,11 @@ RSpec.describe "Admin::Partners", type: :request do
 
       before { sign_in user }
 
-      it "shows only their partner" do
+      it "shows partners index page with datatable" do
         get admin_partners_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partner.name)
-        expect(response.body).not_to include(other_partner.name)
+        expect(response.body).to include("data-controller=\"admin-table\"")
+        expect(response.body).to include(admin_partners_path(format: :json)) # JSON source
       end
     end
 
@@ -73,10 +74,11 @@ RSpec.describe "Admin::Partners", type: :request do
 
       before { sign_in user }
 
-      it "shows partners in their neighbourhood" do
+      it "shows partners index page with datatable" do
         get admin_partners_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partner_in_neighbourhood.name)
+        expect(response.body).to include("data-controller=\"admin-table\"")
+        expect(response.body).to include(admin_partners_path(format: :json)) # JSON source
       end
     end
   end

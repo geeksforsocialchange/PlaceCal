@@ -28,18 +28,26 @@
       required: false
   %>
 
-  <% if partner.can_clear_address?(current_user) %>
-  <div data-partner-address-target="addressInfoArea">
-    <% if partner.address.neighbourhood.present? %>
-    <p>Address in neighbourhood <%= link_to_neighbourhood(partner.address.neighbourhood) %>.</p>
+  <div data-partner-address-target="addressInfoArea" class="mt-4">
+    <% if partner.address&.neighbourhood.present? %>
+      <div class="rounded-md bg-blue-50 p-3 mb-3">
+        <div class="flex items-center">
+          <svg class="h-4 w-4 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          <span class="text-sm text-blue-700">
+            Neighbourhood: <strong><%= link_to_neighbourhood(partner.address.neighbourhood) %></strong>
+          </span>
+        </div>
+      </div>
     <% end %>
-    <p>
+    <% if partner.can_clear_address?(current_user) %>
       <%= link_to 'Clear Address',
-	  '#',
-	  class: "btn btn-secondary btn-sm",
-	  data: { action: "click->partner-address#do_clear_address" } %>
-    </p>
+          '#',
+          class: "inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors",
+          data: { action: "click->partner-address#do_clear_address" } %>
+    <% end %>
   </div>
-  <% end %>
 </div>
 <% end %>
