@@ -91,8 +91,6 @@ GEM
       traces (~> 0.18)
     auto_strip_attributes (2.6.0)
       activerecord (>= 4.0)
-    autoprefixer-rails (10.4.7.0)
-      execjs (~> 2)
     base64 (0.3.0)
     bcrypt (3.1.20)
     benchmark (0.5.0)
@@ -106,10 +104,6 @@ GEM
       debug_inspector (>= 1.2.0)
     bootsnap (1.12.0)
       msgpack (~> 1.2)
-    bootstrap (4.6.2)
-      autoprefixer-rails (>= 9.1.0)
-      popper_js (>= 1.16.1, < 2)
-      sassc-rails (>= 2.0.0)
     builder (3.3.0)
     byebug (11.1.3)
     capybara (3.40.0)
@@ -430,7 +424,6 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.4.3)
-    popper_js (1.16.1)
     prism (1.6.0)
     psych (4.0.6)
       stringio
@@ -589,7 +582,6 @@ GEM
       sprockets-rails
       tilt
     securerandom (0.4.1)
-    select2-rails (4.0.13)
     selenium-webdriver (4.17.0)
       base64 (~> 0.2)
       rexml (~> 3.2, >= 3.2.5)
@@ -681,7 +673,6 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootsnap
-  bootstrap
   byebug
   capybara
   capybara-select-2
@@ -745,7 +736,6 @@ DEPENDENCIES
   rubocop-rake
   rubocop-rspec
   sass-rails (= 6.0.0)
-  select2-rails
   selenium-webdriver
   shoulda-matchers (~> 6.0)
   simple_form

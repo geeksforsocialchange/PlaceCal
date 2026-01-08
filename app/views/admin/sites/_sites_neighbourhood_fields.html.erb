@@ -1,17 +1,16 @@
-<fieldset class="input-group nested-fields p-0">
-    <%# The style width setting here is applied to dynamically created elements, we do not know why. %>
-    <%# TODO: Fix the dynamic styling so that width does not get applied, so we can remove this smell %>
+<fieldset class="flex items-center gap-2 nested-fields mb-2">
     <% if f.object.relation_type != 'Primary'  %>
         <%# If the sites neighbourhood's relation_type is primary we do not render it %>
         <%# so it does not submit a primary relation as being a secondary one or remove it %>
       <%= f.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
           value_method: ->(obj) { obj[:id] },
           label_method: ->(obj) { obj[:name] },
-          input_html: { class: 'form-control', data: { controller: "tom-select" }, style: "width: 599.8px;" },
-          label: '', label_html: { hidden: true } %>
-      <div class="input-group-append p-0">
+          input_html: { data: { controller: "tom-select" }, class: "flex-1" },
+          label: '', label_html: { hidden: true },
+          wrapper: false %>
+      <div class="flex-shrink-0">
           <%= f.hidden_field :relation_type, value: 'Secondary' %>
-          <%= link_to_remove_association 'Remove', f, class: "pl-2 pt-1 text-danger" %>
+          <%= link_to_remove_association 'Remove', f, class: "text-sm text-red-600 hover:text-red-800" %>
       </div>
     <% end  %>
 </fieldset>

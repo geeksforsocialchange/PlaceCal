@@ -1,5 +1,5 @@
 <% if !@site.new_record? && policy(@site).show? %>
-<p><%= link_to 'Show all site calendars', admin_site_path(@site) %></p>
+<p class="mb-4"><%= link_to 'Show all site calendars', admin_site_path(@site), class: "text-placecal-orange hover:underline" %></p>
 <% end %>
 
 <%= simple_form_for [:admin, @site] do |f| %>
@@ -7,15 +7,15 @@
   <%= f.input :name %>
   <%= f.input :place_name %>
   <%= f.input :tagline %>
-  <div class="row">
-    <div class="col-md-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
       <% if policy(@site).permitted_attributes.include? :url  %>
         <%= f.input :url %>
       <% else %>
         <%= f.input :url, disabled: true  %>
       <% end %>
     </div>
-    <div class="col-md-6">
+    <div>
       <% if policy(@site).permitted_attributes.include? :slug  %>
         <%= f.input :slug %>
       <% else %>
@@ -31,11 +31,11 @@
   <% if policy(@site).permitted_attributes.include? :site_admin_id %>
     <%= f.association(:site_admin, label_method: :admin_name, input_html: { data: { controller: "tom-select" } }) %>
   <% else %>
-    <p><strong>Admin</strong>: <%= @site.site_admin %></p>
+    <p class="text-gray-700"><strong>Admin</strong>: <%= @site.site_admin %></p>
   <% end %>
 
 
-  <h2>Images</h2>
+  <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">Images</h2>
 
   <% if policy(@site).permitted_attributes.include? :theme %>
     <%= f.input :theme, collection: Site.theme.values, include_blank: false %>
@@ -43,52 +43,52 @@
 
   <% if policy(@site).permitted_attributes.include? :logo %>
 
-    <div class="row">
-      <div class="col-md-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
         <%= f.input :logo, hint: image_uploader_hint(@site.logo) %>
-        <%= image_tag f.object.logo.url, class: 'card-img-top' if f.object.logo.url %>
+        <%= image_tag f.object.logo.url, class: 'max-w-full rounded-lg' if f.object.logo.url %>
       </div>
-      <div class="col-md-6">
+      <div>
         <%= f.input :footer_logo, hint: image_uploader_hint(@site.footer_logo) %>
-        <div style="background-color: #5b4e46; padding: 1rem">
-          <%= image_tag f.object.footer_logo.url, class: 'card-img-top' if f.object.footer_logo.url %>
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <%= image_tag f.object.footer_logo.url, class: 'max-w-full' if f.object.footer_logo.url %>
         </div>
       </div>
     </div>
   <% end %>
 
   <%= f.input :hero_image, hint: image_uploader_hint(@site.hero_image) %>
-  <p>The large image at the top of your sites homepage. For guidance on selecting the best image see the <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2">handbook</a></p>
+  <p class="text-sm text-gray-600 mb-4">The large image at the top of your sites homepage. For guidance on selecting the best image see the <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2" class="text-placecal-orange hover:underline">handbook</a></p>
 
-  <%= image_tag f.object.hero_image.url, style: 'max-width: 300px' if f.object.hero_image.url %>
+  <%= image_tag f.object.hero_image.url, class: 'max-w-xs rounded-lg' if f.object.hero_image.url %>
 
   <%= f.input :hero_image_credit %>
-  <p><em>Who took this photo?</em></p>
-  
+  <p class="text-sm text-gray-500 italic mb-4">Who took this photo?</p>
+
   <%= f.input :hero_alttext, label: 'hero alt-text', hint: 'how should a screenreader describe this image?' %>
 
-  <h2>Neighbourhood information</h2>
+  <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">Neighbourhood information</h2>
 
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Main neighbourhood</h3>
-      <p class="font-weight-light">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Main neighbourhood</h3>
+      <p class="text-sm text-gray-500 mb-4">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
 
       <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
         <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
         <% if primary_neighbourhood.present? %>
-          <h3>
-            <span class="badge badge-secondary">
+          <p class="mb-4">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
               <%= primary_neighbourhood.contextual_name %>
               <% if primary_neighbourhood.legacy_neighbourhood? %>
                 (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>)
               <% end %>
             </span>
-          </h3>
+          </p>
           <%= sn.hidden_field :relation_type, value: "Primary" %>
           <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
           <% if primary_neighbourhood.legacy_neighbourhood? %>
-          <p>
+          <p class="text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md">
             Warning: This neighbourhood not from the current release
             (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>).
             Please contact a PlaceCal admin.
@@ -98,74 +98,69 @@
           <%= sn.hidden_field :relation_type, value: "Primary" %>
           <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
               value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
-              input_html: { class: 'form-control col-6', data: { controller: "tom-select" } },
+              input_html: { data: { controller: "tom-select" } },
               label: '', label_html: { hidden: true } %>
         <% end %>
       <% end %>
   </div>
-    <div class="col-md-6">
-      <h3>Neighbourhood information display</h3>
-      <p class="font-weight-light">What level of geographical zoom should PlaceCal display in the small badge next to partners and events? eg. Hulme / Manchester</p>
-      
+    <div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Neighbourhood information display</h3>
+      <p class="text-sm text-gray-500 mb-4">What level of geographical zoom should PlaceCal display in the small badge next to partners and events? eg. Hulme / Manchester</p>
+
       <%= f.input :badge_zoom_level,
         as: :radio_buttons,
         label_method: ->(val){ Site.badge_zoom_level_label(val) } %>
     </div>
   </div>
-  <br>
 
-  <h3>Other neighbourhoods to include</h3>
-  <p class="font-weight-light">Information from these neighbourhoods will also be displayed on this site</p>
+  <h3 class="text-lg font-medium text-gray-900 mt-6 mb-2">Other neighbourhoods to include</h3>
+  <p class="text-sm text-gray-500 mb-4">Information from these neighbourhoods will also be displayed on this site</p>
 
   <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
-    <div class="sites_neighbourhoods">
+    <div class="sites_neighbourhoods mb-6">
       <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
         <%= render 'sites_neighbourhood_fields', :f => neighbourhood %>
       <% end %>
-      <div class="links">
-        <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "btn btn-primary btn-sm" %>
+      <div class="mt-4">
+        <%= link_to_add_association 'Add neighbourhood', f, :sites_neighbourhoods, class: "inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600" %>
       </div>
-      <br></br>
     </div>
   <% else %>
-    <div class="sites_neighbourhoods">
-      <ul>
+    <div class="sites_neighbourhoods mb-6">
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
         <% @site.sites_neighbourhoods.each do |neighbourhood| %>
           <% if neighbourhood.relation_type != 'Primary'  %>
             <li><%= neighbourhood.name %></li>
           <% end %>
         <% end %>
       </ul>
-      <br></br>
     </div>
   <% end %>
 
-    <h2>Partnerships</h2>
+    <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">Partnerships</h2>
 
-    <div class="row">
-      <div class="col-md-6">
-        <p class="font-weight-light">(If selected) Only show partners which are members of these Partnerships</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <p class="text-sm text-gray-500 mb-4">(If selected) Only show partners which are members of these Partnerships</p>
         <% if policy(@site).permitted_attributes.include? :tags %>
           <%= f.association :tags,
                             label: false,
                             collection: options_for_tags,
-                            input_html: { class: 'form-check', data: { controller: "tom-select" } } %>
+                            input_html: { data: { controller: "tom-select" } } %>
         <% else %>
           <%= f.association :tags,
                             disabled: true,
                             label: false,
                             collection: options_for_tags,
-                            input_html: { class: 'form-check', data: { controller: "tom-select" } } %>
+                            input_html: { data: { controller: "tom-select" } } %>
         <% end %>
       </div>
     </div>
-    <br>
-    <br>
 
-
-  <%= f.button :submit, class: "btn btn-primary btn-lg" %>
-  <% unless @site.new_record? %>
-    <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "btn btn-danger btn-lg" %>
-  <% end %>
-  <br>
+  <div class="flex items-center gap-4 mt-8">
+    <%= f.button :submit, class: "inline-flex items-center px-6 py-3 text-base font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600" %>
+    <% unless @site.new_record? %>
+      <%= link_to "Destroy Site", admin_site_path(@site), method: :delete, class: "inline-flex items-center px-6 py-3 text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700" %>
+    <% end %>
+  </div>
 <% end %>

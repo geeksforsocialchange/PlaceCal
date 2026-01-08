@@ -1,8 +1,7 @@
 require("@rails/ujs").start();
 import "@hotwired/turbo-rails";
 
-// Bootstrap still needed for some pages during migration
-import "bootstrap";
+// jQuery still needed for Cocoon nested forms
 import "./src/jquery";
 
 // Input selectors - Cocoon for nested forms

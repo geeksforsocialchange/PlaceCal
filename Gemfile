@@ -39,10 +39,8 @@ gem 'carrierwave'
 gem 'image_processing'
 
 # Admin
-gem 'bootstrap'
 gem 'cocoon'
 gem 'font-awesome-rails'
-gem 'select2-rails'
 gem 'simple_form'
 
 # Users, login, permissions
