@@ -1,6 +1,7 @@
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Users',
     model: :users,
+    search_fieldset: true,
     column_titles: [
       'User',
       'Roles',
@@ -30,8 +31,9 @@
       },
       {
         type: :radio,
-        column: 'has_partners',
-        label: 'Partners',
+        column: 'is_site_admin',
+        label: 'Site',
+        group: 'Admin Types',
         options: [
           { value: 'yes', label: 'Yes' },
           { value: 'no', label: 'No' }
@@ -40,7 +42,8 @@
       {
         type: :radio,
         column: 'has_neighbourhoods',
-        label: 'Neighbourhoods',
+        label: 'Neighbourhood',
+        group: 'Admin Types',
         options: [
           { value: 'yes', label: 'Yes' },
           { value: 'no', label: 'No' }
@@ -48,8 +51,9 @@
       },
       {
         type: :radio,
-        column: 'is_site_admin',
-        label: 'Site Admin',
+        column: 'has_partners',
+        label: 'Partner',
+        group: 'Admin Types',
         options: [
           { value: 'yes', label: 'Yes' },
           { value: 'no', label: 'No' }

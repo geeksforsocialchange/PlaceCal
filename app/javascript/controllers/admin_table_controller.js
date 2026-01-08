@@ -107,7 +107,7 @@ export default class extends Controller {
 	}
 
 	applyRadioFilter(event) {
-		const button = event.target;
+		const button = event.currentTarget;
 		const container = button.closest("[data-admin-table-target='radioFilter']");
 		const column = container.dataset.filterColumn;
 		const value = button.dataset.filterValue;

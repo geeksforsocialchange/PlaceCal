@@ -54,7 +54,7 @@ class UserDatatable < Datatable
     if search_value.present?
       search_term = "%#{search_value}%"
       filtered = filtered.where(
-        'users.first_name ILIKE :term OR users.last_name ILIKE :term OR users.email ILIKE :term',
+        "users.first_name ILIKE :term OR users.last_name ILIKE :term OR users.email ILIKE :term OR CONCAT(users.first_name, ' ', users.last_name) ILIKE :term",
         term: search_term
       )
     end
