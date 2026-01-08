@@ -14,6 +14,8 @@ class UserDatatable < Datatable
   def view_columns
     @view_columns ||= {
       name: { source: 'User.last_name', cond: :like, searchable: true },
+      first_name: { source: 'User.first_name', cond: :like, searchable: true },
+      email: { source: 'User.email', cond: :like, searchable: true },
       roles: { source: 'User.role', searchable: false, orderable: false },
       partners: { source: 'User.id', searchable: false, orderable: false },
       neighbourhoods: { source: 'User.id', searchable: false, orderable: false },
