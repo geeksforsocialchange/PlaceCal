@@ -77,6 +77,23 @@ class UserDatatable < Datatable
     filter_records(get_raw_records).except(:limit, :offset, :order).count
   end
 
+  # Override to put NULL last_sign_in_at values at the bottom
+  def sort_records(records)
+    sort_by = datatable.orders.first
+    return records unless sort_by
+
+    column_name = sort_by.column.source
+    direction = sort_by.direction
+
+    # For last_sign_in_at, put NULLs at the bottom regardless of sort direction
+    if column_name == 'User.last_sign_in_at'
+      nulls_position = direction == 'desc' ? 'NULLS LAST' : 'NULLS FIRST'
+      records.order(Arel.sql("users.last_sign_in_at #{direction.upcase} #{nulls_position}"))
+    else
+      super
+    end
+  end
+
   private
 
   def render_name_cell(record)
