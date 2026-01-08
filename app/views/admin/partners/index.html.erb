@@ -1,7 +1,13 @@
 <%
-  # Get ward neighbourhoods for filter dropdown
-  ward_options = Neighbourhood.where(unit: 'ward').order(:name).map do |n|
-    { value: n.id.to_s, label: n.shortname }
+  # Get ward neighbourhoods grouped by district for hierarchical dropdown
+  wards = Neighbourhood.where(unit: 'ward').includes(:parent).order(:name)
+  ward_groups = wards.group_by { |w| w.parent&.shortname || 'Other' }
+                     .sort_by { |district, _| district }
+                     .map do |district, district_wards|
+    {
+      label: district,
+      options: district_wards.sort_by(&:shortname).map { |w| { value: w.id.to_s, label: w.shortname } }
+    }
   end
 
   # Get partnerships for filter dropdown
@@ -49,7 +55,7 @@
       {
         column: 'ward',
         label: 'Ward',
-        options: ward_options
+        groups: ward_groups
       }
     ],
     data: @partners,
