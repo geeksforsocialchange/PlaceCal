@@ -25,7 +25,7 @@
 	},
 	"scripts": {
 		"build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
-		"build:css": "sass ./app/assets/stylesheets/application.sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+		"build:css": "sass ./app/assets/stylesheets/application.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules",
 		"build:css:admin-tailwind": "./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./public/assets/admin_tailwind.css --minify",
 		"build:all": "yarn build && yarn build:css && yarn build:css:admin-tailwind",
 		"format": "prettier --write .",
