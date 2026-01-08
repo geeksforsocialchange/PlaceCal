@@ -38,10 +38,11 @@ class TagDatatable < Datatable
   end
 
   def get_raw_records
+    # Use includes for eager loading, but NOT left_joins which causes duplicates
+    # when tags have multiple partners
     records = options[:tags]
               .includes(:partners)
-              .left_joins(:partners)
-              .references(:partners)
+              .distinct
 
     # Apply filters from request params
     if params[:filter].present?

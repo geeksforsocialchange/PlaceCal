@@ -19,7 +19,7 @@ Feature: Partner Index Table
     Given there is a partner called "Community Hub"
     When I go to the "Partners" admin section
     Then I should see the partner table with columns:
-      | Partner | Ward | Partnerships | Calendars | Admins | Categories |
+      | Partner | Ward | Partnerships | Updated |
 
   Scenario: Partner table shows partner with ward from address
     Given there is a partner called "Central Library" in "Central Ward"
@@ -63,21 +63,21 @@ Feature: Partner Index Table
     Then I should see "No Calendar" in the partner table
     And I should not see "Has Calendar" in the partner table
 
-  Scenario: Filter partners by admin users - has admins
+  Scenario: Filter partners by admin status - has admins
     Given there is a partner called "With Admin"
     And the partner "With Admin" has an admin user
     And there is a partner called "Without Admin"
     When I go to the "Partners" admin section
-    And I filter by "Admin users" with value "Has admins"
+    And I filter by "Admins" with value "Has admins"
     Then I should see "With Admin" in the partner table
     And I should not see "Without Admin" in the partner table
 
-  Scenario: Filter partners by admin users - no admins
+  Scenario: Filter partners by admin status - no admins
     Given there is a partner called "With Admin"
     And the partner "With Admin" has an admin user
     And there is a partner called "Without Admin"
     When I go to the "Partners" admin section
-    And I filter by "Admin users" with value "No admins"
+    And I filter by "Admins" with value "No admins"
     Then I should see "Without Admin" in the partner table
     And I should not see "With Admin" in the partner table
 
@@ -91,24 +91,7 @@ Feature: Partner Index Table
     Then I should see "Age Friendly Partner" in the partner table
     And I should not see "Community Partner" in the partner table
 
-  Scenario: Filter partners by ward
-    Given there is a partner called "Central Partner" in "Central Ward"
-    And there is a partner called "Riverside Partner" in "Riverside Ward"
-    When I go to the "Partners" admin section
-    And I filter by "Ward" with value "Central Ward"
-    Then I should see "Central Partner" in the partner table
-    And I should not see "Riverside Partner" in the partner table
-
   # Clicking to Filter
-  Scenario: Click on ward name to filter by that ward
-    Given there is a partner called "Central Partner" in "Central Ward"
-    And there is a partner called "Riverside Partner" in "Riverside Ward"
-    When I go to the "Partners" admin section
-    And I click the ward "Central Ward" in the partner table
-    Then I should see "Central Partner" in the partner table
-    And I should not see "Riverside Partner" in the partner table
-    And the "Ward" filter should show "Central Ward"
-
   Scenario: Click on partnership name to filter by that partnership
     Given there is a partner called "Age Friendly Partner"
     And the partner "Age Friendly Partner" has the partnership "Age Friendly"

@@ -36,10 +36,11 @@ class SiteDatatable < Datatable
   end
 
   def get_raw_records
+    # Use includes for eager loading, but NOT left_joins which causes duplicates
+    # when sites have multiple neighbourhoods
     records = options[:sites]
               .includes(:neighbourhoods, :site_admin)
-              .left_joins(:neighbourhoods)
-              .references(:neighbourhoods)
+              .distinct
 
     # Apply filters from request params
     if params[:filter].present?

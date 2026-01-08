@@ -12,8 +12,16 @@ When("I visit the admin dashboard") do
   visit "http://admin.lvh.me:#{port}/"
 end
 
-When("I click {string}") do |link_text|
-  click_link link_text
+When("I click {string}") do |text|
+  # Try clicking as a link first, then as a button
+  if page.has_link?(text, wait: 1)
+    click_link text
+  elsif page.has_button?(text, wait: 1)
+    click_button text
+  else
+    # Fall back to finding any clickable element with this text
+    find(:xpath, "//*[text()='#{text}' or contains(text(), '#{text}')]").click
+  end
 end
 
 When("I click {string} and confirm") do |link_text|

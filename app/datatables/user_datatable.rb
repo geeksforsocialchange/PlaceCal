@@ -39,10 +39,11 @@ class UserDatatable < Datatable
   end
 
   def get_raw_records
+    # Use includes for eager loading, but NOT left_joins which causes duplicates
+    # when users have multiple partners/neighbourhoods
     records = options[:users]
               .includes(:partners, :neighbourhoods, :tags)
-              .left_joins(:partners, :neighbourhoods)
-              .references(:partners, :neighbourhoods)
+              .distinct
 
     # Apply filters from request params
     if params[:filter].present?

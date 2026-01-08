@@ -2,7 +2,8 @@
 //= link_tree ../images
 //= link_tree ../builds
 
-// Site-specific themes (compiled via Sprockets)
+// Site-specific stylesheets (compiled via Sprockets)
+//= link home.css
 //= link_directory ../stylesheets/themes .css
 //= link_directory ../stylesheets/themes/custom .css
 //= link print.css
