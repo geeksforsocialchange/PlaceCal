@@ -10,14 +10,26 @@ Capybara.disable_animation = true
 # Register Cuprite driver - pure Ruby driver using Chrome DevTools Protocol
 # More reliable than Selenium, no separate chromedriver needed
 Capybara.register_driver :cuprite do |app|
+  browser_opts = {}
+
+  # CI/Docker environments need additional Chrome flags
+  if ENV["DOCKER"] || ENV["CI"]
+    browser_opts = {
+      "no-sandbox" => nil,
+      "disable-gpu" => nil,
+      "disable-dev-shm-usage" => nil,
+      "disable-software-rasterizer" => nil
+    }
+  end
+
   options = {
     window_size: [1400, 1400],
     js_errors: true,
     headless: ENV.fetch("HEADLESS", "true") != "false",
     slowmo: ENV["SLOWMO"]&.to_f,
-    process_timeout: 15,
-    timeout: 10,
-    browser_options: ENV["DOCKER"] || ENV.fetch("CI", nil) ? { "no-sandbox" => nil } : {}
+    process_timeout: 30,
+    timeout: 15,
+    browser_options: browser_opts
   }
   # Use explicit Chrome path if provided (e.g., from GitHub Actions)
   options[:browser_path] = ENV["BROWSER_PATH"] if ENV["BROWSER_PATH"].present?
