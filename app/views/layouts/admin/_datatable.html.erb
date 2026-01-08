@@ -53,25 +53,47 @@
         </div>
       </div>
 
-      <!-- Filter Dropdowns and Reset Buttons -->
+      <!-- Filters and Reset Buttons -->
       <div class="flex flex-wrap items-center gap-3">
         <% if filters_defined %>
           <% filters.each do |filter| %>
-            <%
-              is_dependent = filter[:depends_on].present?
-              target_name = is_dependent ? "dependentFilter" : "filter"
-            %>
-            <select data-admin-table-target="<%= target_name %>"
-                    data-filter-column="<%= filter[:column] %>"
-                    <% if is_dependent %>data-filter-depends-on="<%= filter[:depends_on] %>"<% end %>
-                    data-action="change->admin-table#applyFilter"
-                    class="block pl-3 pr-6 py-1.5 text-xs border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none <%= 'hidden' if is_dependent %> <%= filter[:width] %>"
-                    style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.4rem center; background-size: 0.5rem auto;">
-              <option value=""><%= filter[:label] %></option>
-              <% filter[:options]&.each do |opt| %>
-                <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %>><%= opt[:label] %></option>
-              <% end %>
-            </select>
+            <% if filter[:type] == :radio %>
+              <!-- Radio Button Filter -->
+              <fieldset class="flex items-center gap-1 text-xs" data-admin-table-target="radioFilter" data-filter-column="<%= filter[:column] %>">
+                <span class="text-gray-500 font-medium mr-1"><%= filter[:label] %>:</span>
+                <label class="inline-flex items-center cursor-pointer">
+                  <input type="radio" name="filter_<%= filter[:column] %>" value=""
+                         data-action="change->admin-table#applyRadioFilter"
+                         class="sr-only peer" checked>
+                  <span class="px-2 py-1 rounded-md peer-checked:bg-orange-100 peer-checked:text-orange-800 text-gray-600 hover:bg-gray-100 transition-colors">All</span>
+                </label>
+                <% filter[:options]&.each do |opt| %>
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="filter_<%= filter[:column] %>" value="<%= opt[:value] %>"
+                           data-action="change->admin-table#applyRadioFilter"
+                           class="sr-only peer">
+                    <span class="px-2 py-1 rounded-md peer-checked:bg-orange-100 peer-checked:text-orange-800 text-gray-600 hover:bg-gray-100 transition-colors"><%= opt[:label] %></span>
+                  </label>
+                <% end %>
+              </fieldset>
+            <% else %>
+              <!-- Dropdown Filter -->
+              <%
+                is_dependent = filter[:depends_on].present?
+                target_name = is_dependent ? "dependentFilter" : "filter"
+              %>
+              <select data-admin-table-target="<%= target_name %>"
+                      data-filter-column="<%= filter[:column] %>"
+                      <% if is_dependent %>data-filter-depends-on="<%= filter[:depends_on] %>"<% end %>
+                      data-action="change->admin-table#applyFilter"
+                      class="block pl-3 pr-6 py-1.5 text-xs border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none <%= 'hidden' if is_dependent %> <%= filter[:width] %>"
+                      style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.4rem center; background-size: 0.5rem auto;">
+                <option value=""><%= filter[:label] %></option>
+                <% filter[:options]&.each do |opt| %>
+                  <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %>><%= opt[:label] %></option>
+                <% end %>
+              </select>
+            <% end %>
           <% end %>
 
           <!-- Clear Filters -->

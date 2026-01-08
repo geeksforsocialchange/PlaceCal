@@ -11,6 +11,7 @@ export default class extends Controller {
 		"pagination",
 		"summary",
 		"filter",
+		"radioFilter",
 		"clearFilters",
 		"clearSort",
 		"sortIcon",
@@ -105,6 +106,24 @@ export default class extends Controller {
 		this.updateClearFiltersButton();
 	}
 
+	applyRadioFilter(event) {
+		const fieldset = event.target.closest(
+			"[data-admin-table-target='radioFilter']"
+		);
+		const column = fieldset.dataset.filterColumn;
+		const value = event.target.value;
+
+		if (value) {
+			this.filters[column] = value;
+		} else {
+			delete this.filters[column];
+		}
+
+		this.currentPage = 0;
+		this.loadData();
+		this.updateClearFiltersButton();
+	}
+
 	// Update dependent filter dropdowns when parent filter changes
 	updateDependentFilters(parentColumn, parentValue) {
 		this.dependentFilterTargets.forEach((select) => {
@@ -141,6 +160,11 @@ export default class extends Controller {
 			select.value = "";
 			select.classList.add("hidden");
 		});
+		// Reset radio button filters to "All"
+		this.radioFilterTargets.forEach((fieldset) => {
+			const allRadio = fieldset.querySelector('input[value=""]');
+			if (allRadio) allRadio.checked = true;
+		});
 		this.currentPage = 0;
 		this.loadData();
 		this.updateClearFiltersButton();
@@ -157,6 +181,14 @@ export default class extends Controller {
 			this.filterTargets.forEach((select) => {
 				if (select.dataset.filterColumn === column) {
 					select.value = value;
+				}
+			});
+
+			// Update the corresponding radio button to match
+			this.radioFilterTargets.forEach((fieldset) => {
+				if (fieldset.dataset.filterColumn === column) {
+					const radio = fieldset.querySelector(`input[value="${value}"]`);
+					if (radio) radio.checked = true;
 				}
 			});
 
@@ -323,9 +355,21 @@ export default class extends Controller {
 		}
 
 		this.tbodyTarget.innerHTML = data
-			.map(
-				(row) => `
-        <tr class="hover:bg-orange-50/30 transition-colors">
+			.map((row) => {
+				// Build row attributes from DT_RowAttr (e.g., inline styles)
+				let rowAttrs = "";
+				if (row.DT_RowAttr) {
+					Object.entries(row.DT_RowAttr).forEach(([key, value]) => {
+						rowAttrs += ` ${key}="${value}"`;
+					});
+				}
+				// Build row classes
+				const rowClass = row.DT_RowClass
+					? `${row.DT_RowClass} hover:bg-orange-50/30 transition-colors`
+					: "hover:bg-orange-50/30 transition-colors";
+
+				return `
+        <tr class="${rowClass}"${rowAttrs}>
           ${this.columnsValue
 						.filter((col) => !col.hidden)
 						.map(
@@ -334,8 +378,8 @@ export default class extends Controller {
 						)
 						.join("")}
         </tr>
-      `
-			)
+      `;
+			})
 			.join("");
 	}
 
