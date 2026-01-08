@@ -149,7 +149,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
     it "does not crash when adding duplicate service areas to new partner" do
       click_link "Partners"
       await_datatables
-      click_link "Add New Partner"
+      click_link "Add Partner"
 
       fill_in "Name", with: "Test Partner"
 

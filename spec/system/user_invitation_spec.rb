@@ -23,7 +23,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
 
     # Navigate to create user
     click_link "Users"
-    click_link "Add New User"
+    click_link "Add User"
 
     # Fill in new user details
     fill_in "First name", with: "New"

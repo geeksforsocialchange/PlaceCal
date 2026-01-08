@@ -11,9 +11,15 @@ module SystemHelpers
   end
 
   # Wait for datatables to load
+  # Supports both old DataTables (#datatable_info) and new Stimulus admin-table
   def await_datatables(time = 5)
     find_element_with_retry do
-      page.find(:css, "#datatable_info", wait: time)
+      # Try new Stimulus admin-table first, then fall back to legacy DataTables
+      if page.has_css?("[data-admin-table-target='info']", wait: 1)
+        page.find(:css, "[data-admin-table-target='info']", text: /Showing|No entries/, wait: time)
+      else
+        page.find(:css, "#datatable_info", wait: time)
+      end
     end
   end
 

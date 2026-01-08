@@ -16,7 +16,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       click_link "Calendars"
       await_datatables
 
-      click_link "Add New Calendar"
+      click_link "Add Calendar"
 
       # Select partner organiser
       partner_organiser = tom_select_node("calendar_partner")

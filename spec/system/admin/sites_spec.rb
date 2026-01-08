@@ -16,7 +16,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
   describe "tom-select inputs on site form" do
     it "allows selecting site admin, neighbourhoods and tags", :aggregate_failures do
       click_link "Sites"
-      click_link "Add New Site"
+      click_link "Add Site"
 
       # Select site admin
       site_admin_node = tom_select_node("site_site_admin")

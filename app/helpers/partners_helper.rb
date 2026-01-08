@@ -31,12 +31,14 @@ module PartnersHelper
   def partner_service_area_text(partner)
     neighbourhoods = partner.service_area_neighbourhoods.order(:name).all
 
-    if neighbourhoods.length == 1
+    case neighbourhoods.length
+    when 0
+      'No service area'
+    when 1
       neighbourhoods.first.name
-
     else
       head = neighbourhoods[0..-2]
-      tail = neighbourhoods[-1]
+      tail = neighbourhoods.last
 
       "#{head.map(&:name).join(', ')} and #{tail.name}"
     end
