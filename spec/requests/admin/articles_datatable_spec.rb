@@ -4,28 +4,23 @@ require "rails_helper"
 
 RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
   let(:admin_user) { create(:root_user) }
-  let(:admin_host) { "admin.lvh.me" }
+  # Define columns for this datatable
+  let(:datatable_columns) do
+    [
+      { data: :title, searchable: true, orderable: true },
+      { data: :author, orderable: true },
+      { data: :partners },
+      { data: :published_at, orderable: true },
+      { data: :is_draft, orderable: true },
+      { data: :updated_at, orderable: true },
+      { data: :actions }
+    ]
+  end
 
   before { sign_in admin_user }
 
-  # Helper to make datatable requests with proper params
   def datatable_request(params = {})
-    base_params = {
-      "draw" => "1",
-      "start" => "0",
-      "length" => "25",
-      "search" => { "value" => "", "regex" => "false" },
-      "columns" => {
-        "0" => { "data" => "title", "name" => "title", "searchable" => "true", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "1" => { "data" => "author", "name" => "author", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "2" => { "data" => "partners", "name" => "partners", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "3" => { "data" => "published_at", "name" => "published_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "4" => { "data" => "is_draft", "name" => "is_draft", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "5" => { "data" => "updated_at", "name" => "updated_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "6" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
-      },
-      "order" => { "0" => { "column" => "5", "dir" => "desc" } }
-    }
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 5)
     get admin_articles_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -33,20 +28,10 @@ RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
     context "basic functionality" do
       let!(:article) { create(:article, title: "Test Article") }
 
-      it "returns JSON with datatable structure" do
-        datatable_request
-
-        expect(response).to have_http_status(:success)
-        json = response.parsed_body
-        expect(json).to have_key("draw")
-        expect(json).to have_key("recordsTotal")
-        expect(json).to have_key("recordsFiltered")
-        expect(json).to have_key("data")
-      end
+      it_behaves_like "datatable JSON structure"
 
       it "returns all articles in data array" do
         create(:article, title: "Another Article")
-
         datatable_request
 
         json = response.parsed_body
@@ -66,43 +51,21 @@ RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
       let!(:matching_article) { create(:article, title: "Community Event Guide") }
       let!(:non_matching_article) { create(:article, title: "Sports News") }
 
-      it "filters articles by search term" do
-        datatable_request("search" => { "value" => "Community" })
-
-        json = response.parsed_body
-        titles = json["data"].map { |d| d["title"] }
-        expect(titles.join).to include("Community")
-        expect(titles.join).not_to include("Sports")
-      end
-
-      it "search is case insensitive" do
-        datatable_request("search" => { "value" => "COMMUNITY" })
-
-        json = response.parsed_body
-        titles = json["data"].map { |d| d["title"] }
-        expect(titles.join).to include("Community")
-      end
+      it_behaves_like "datatable search",
+                      search_field: :title,
+                      matching_value: "Community",
+                      non_matching_value: "Sports"
     end
 
     context "sorting" do
       let!(:article_a) { create(:article, title: "Alpha Article") }
       let!(:article_z) { create(:article, title: "Zeta Article") }
 
-      it "sorts by title ascending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "asc" } })
-
-        json = response.parsed_body
-        titles = json["data"].map { |d| d["title"] }
-        expect(titles.join).to match(/Alpha.*Zeta/m)
-      end
-
-      it "sorts by title descending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "desc" } })
-
-        json = response.parsed_body
-        titles = json["data"].map { |d| d["title"] }
-        expect(titles.join).to match(/Zeta.*Alpha/m)
-      end
+      it_behaves_like "datatable sorting",
+                      column_index: 0,
+                      field: :title,
+                      first_value: "Alpha",
+                      last_value: "Zeta"
     end
 
     context "is_draft filter" do
@@ -137,23 +100,11 @@ RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
       end
       let!(:article_without_partners) { create(:article, title: "Article Without Partners") }
 
-      it "filters articles with partners" do
-        datatable_request("filter" => { "has_partners" => "yes" })
-
-        json = response.parsed_body
-        titles = json["data"].map { |d| d["title"] }
-        expect(titles.join).to include("With Partners")
-        expect(titles.join).not_to include("Without Partners")
-      end
-
-      it "filters articles without partners" do
-        datatable_request("filter" => { "has_partners" => "no" })
-
-        json = response.parsed_body
-        titles = json["data"].map { |d| d["title"] }
-        expect(titles.join).to include("Without Partners")
-        expect(titles.join).not_to include("With Partners")
-      end
+      it_behaves_like "datatable yes/no filter",
+                      filter_name: "has_partners",
+                      field: :title,
+                      yes_value: "With Partners",
+                      no_value: "Without Partners"
     end
 
     context "data rendering" do
@@ -180,7 +131,6 @@ RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
 
         json = response.parsed_body
         article_data = json["data"].find { |d| d["title"].include?("Render Test") }
-        # admin_name formats as "LASTNAME, Firstname <email>"
         expect(article_data["author"]).to include("AUTHOR, Test")
       end
 
@@ -220,22 +170,8 @@ RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
         expect(article_data["is_draft"]).to include("bg-amber-100")
       end
 
-      it "renders updated_at as relative time" do
-        datatable_request
-
-        json = response.parsed_body
-        article_data = json["data"].find { |d| d["title"].include?("Render Test") }
-        expect(article_data["updated_at"]).to include("Today")
-      end
-
-      it "renders actions with edit button" do
-        datatable_request
-
-        json = response.parsed_body
-        article_data = json["data"].find { |d| d["title"].include?("Render Test") }
-        expect(article_data["actions"]).to include("Edit")
-        expect(article_data["actions"]).to include("href=")
-      end
+      it_behaves_like "datatable renders relative time", field: :updated_at
+      it_behaves_like "datatable renders edit button"
     end
   end
 end

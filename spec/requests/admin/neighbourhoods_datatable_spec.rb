@@ -4,27 +4,22 @@ require "rails_helper"
 
 RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
   let(:admin_user) { create(:root_user) }
-  let(:admin_host) { "admin.lvh.me" }
+  # Define columns for this datatable
+  let(:datatable_columns) do
+    [
+      { data: :name, searchable: true, orderable: true },
+      { data: :unit, orderable: true },
+      { data: :parent_name, orderable: true },
+      { data: :unit_code_value },
+      { data: :release_date, orderable: true },
+      { data: :actions }
+    ]
+  end
 
   before { sign_in admin_user }
 
-  # Helper to make datatable requests with proper params
   def datatable_request(params = {})
-    base_params = {
-      "draw" => "1",
-      "start" => "0",
-      "length" => "25",
-      "search" => { "value" => "", "regex" => "false" },
-      "columns" => {
-        "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "1" => { "data" => "unit", "name" => "unit", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "2" => { "data" => "parent_name", "name" => "parent_name", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "3" => { "data" => "unit_code_value", "name" => "unit_code_value", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "4" => { "data" => "release_date", "name" => "release_date", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "5" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
-      },
-      "order" => { "0" => { "column" => "0", "dir" => "asc" } }
-    }
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 0, default_sort_dir: "asc")
     get admin_neighbourhoods_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -32,20 +27,10 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
     context "basic functionality" do
       let!(:neighbourhood) { create(:neighbourhood, name: "Test Ward") }
 
-      it "returns JSON with datatable structure" do
-        datatable_request
-
-        expect(response).to have_http_status(:success)
-        json = response.parsed_body
-        expect(json).to have_key("draw")
-        expect(json).to have_key("recordsTotal")
-        expect(json).to have_key("recordsFiltered")
-        expect(json).to have_key("data")
-      end
+      it_behaves_like "datatable JSON structure"
 
       it "returns all neighbourhoods in data array" do
         create(:neighbourhood, name: "Another Ward")
-
         datatable_request
 
         json = response.parsed_body
@@ -65,43 +50,21 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
       let!(:matching_neighbourhood) { create(:neighbourhood, name: "Manchester Central") }
       let!(:non_matching_neighbourhood) { create(:neighbourhood, name: "London West") }
 
-      it "filters neighbourhoods by search term" do
-        datatable_request("search" => { "value" => "Manchester" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("Manchester")
-        expect(names.join).not_to include("London")
-      end
-
-      it "search is case insensitive" do
-        datatable_request("search" => { "value" => "MANCHESTER" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("Manchester")
-      end
+      it_behaves_like "datatable search",
+                      search_field: :name,
+                      matching_value: "Manchester",
+                      non_matching_value: "London"
     end
 
     context "sorting" do
       let!(:neighbourhood_a) { create(:neighbourhood, name: "Alpha Ward") }
       let!(:neighbourhood_z) { create(:neighbourhood, name: "Zeta Ward") }
 
-      it "sorts by name ascending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "asc" } })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to match(/Alpha.*Zeta/m)
-      end
-
-      it "sorts by name descending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "desc" } })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to match(/Zeta.*Alpha/m)
-      end
+      it_behaves_like "datatable sorting",
+                      column_index: 0,
+                      field: :name,
+                      first_value: "Alpha",
+                      last_value: "Zeta"
     end
 
     context "unit filter" do
@@ -166,9 +129,7 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
                release_date: current_date)
       end
 
-      before do
-        admin_user.neighbourhoods << neighbourhood
-      end
+      before { admin_user.neighbourhoods << neighbourhood }
 
       it "renders neighbourhood name cell with unit subtitle" do
         datatable_request

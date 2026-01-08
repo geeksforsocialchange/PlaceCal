@@ -4,28 +4,23 @@ require "rails_helper"
 
 RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
   let(:admin_user) { create(:root_user) }
-  let(:admin_host) { "admin.lvh.me" }
+  # Define columns for this datatable
+  let(:datatable_columns) do
+    [
+      { data: :name, searchable: true, orderable: true },
+      { data: :type, orderable: true },
+      { data: :description },
+      { data: :system_tag, orderable: true },
+      { data: :partners_count },
+      { data: :updated_at, orderable: true },
+      { data: :actions }
+    ]
+  end
 
   before { sign_in admin_user }
 
-  # Helper to make datatable requests with proper params
   def datatable_request(params = {})
-    base_params = {
-      "draw" => "1",
-      "start" => "0",
-      "length" => "25",
-      "search" => { "value" => "", "regex" => "false" },
-      "columns" => {
-        "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "1" => { "data" => "type", "name" => "type", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "2" => { "data" => "description", "name" => "description", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "3" => { "data" => "system_tag", "name" => "system_tag", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "4" => { "data" => "partners_count", "name" => "partners_count", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "5" => { "data" => "updated_at", "name" => "updated_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "6" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
-      },
-      "order" => { "0" => { "column" => "5", "dir" => "desc" } }
-    }
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 5)
     get admin_tags_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -33,20 +28,10 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
     context "basic functionality" do
       let!(:tag) { create(:tag, name: "Test Tag") }
 
-      it "returns JSON with datatable structure" do
-        datatable_request
-
-        expect(response).to have_http_status(:success)
-        json = response.parsed_body
-        expect(json).to have_key("draw")
-        expect(json).to have_key("recordsTotal")
-        expect(json).to have_key("recordsFiltered")
-        expect(json).to have_key("data")
-      end
+      it_behaves_like "datatable JSON structure"
 
       it "returns all tags in data array" do
         create(:tag, name: "Another Tag")
-
         datatable_request
 
         json = response.parsed_body
@@ -66,43 +51,21 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
       let!(:matching_tag) { create(:tag, name: "Environment") }
       let!(:non_matching_tag) { create(:tag, name: "Sports") }
 
-      it "filters tags by search term" do
-        datatable_request("search" => { "value" => "Environment" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("Environment")
-        expect(names.join).not_to include("Sports")
-      end
-
-      it "search is case insensitive" do
-        datatable_request("search" => { "value" => "ENVIRONMENT" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("Environment")
-      end
+      it_behaves_like "datatable search",
+                      search_field: :name,
+                      matching_value: "Environment",
+                      non_matching_value: "Sports"
     end
 
     context "sorting" do
       let!(:tag_a) { create(:tag, name: "Alpha Tag") }
       let!(:tag_z) { create(:tag, name: "Zeta Tag") }
 
-      it "sorts by name ascending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "asc" } })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to match(/Alpha.*Zeta/m)
-      end
-
-      it "sorts by name descending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "desc" } })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to match(/Zeta.*Alpha/m)
-      end
+      it_behaves_like "datatable sorting",
+                      column_index: 0,
+                      field: :name,
+                      first_value: "Alpha",
+                      last_value: "Zeta"
     end
 
     context "type filter" do
@@ -143,23 +106,11 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
       let!(:system_tag) { create(:tag, name: "System Tag", system_tag: true) }
       let!(:user_tag) { create(:tag, name: "User Tag", system_tag: false) }
 
-      it "filters system tags" do
-        datatable_request("filter" => { "system_tag" => "yes" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("System Tag")
-        expect(names.join).not_to include("User Tag")
-      end
-
-      it "filters user-created tags" do
-        datatable_request("filter" => { "system_tag" => "no" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("User Tag")
-        expect(names.join).not_to include("System Tag")
-      end
+      it_behaves_like "datatable yes/no filter",
+                      filter_name: "system_tag",
+                      field: :name,
+                      yes_value: "System Tag",
+                      no_value: "User Tag"
     end
 
     context "has_partners filter" do
@@ -171,23 +122,11 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
       end
       let!(:tag_without_partners) { create(:tag, name: "Tag Without Partners") }
 
-      it "filters tags with partners" do
-        datatable_request("filter" => { "has_partners" => "yes" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("With Partners")
-        expect(names.join).not_to include("Without Partners")
-      end
-
-      it "filters tags without partners" do
-        datatable_request("filter" => { "has_partners" => "no" })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("Without Partners")
-        expect(names.join).not_to include("With Partners")
-      end
+      it_behaves_like "datatable yes/no filter",
+                      filter_name: "has_partners",
+                      field: :name,
+                      yes_value: "With Partners",
+                      no_value: "Without Partners"
     end
 
     context "data rendering" do
@@ -234,22 +173,8 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
         expect(tag_data["partners_count"]).to include("text-emerald-600")
       end
 
-      it "renders updated_at as relative time" do
-        datatable_request
-
-        json = response.parsed_body
-        tag_data = json["data"].find { |d| d["name"].include?("Render Test") }
-        expect(tag_data["updated_at"]).to include("Today")
-      end
-
-      it "renders actions with edit button" do
-        datatable_request
-
-        json = response.parsed_body
-        tag_data = json["data"].find { |d| d["name"].include?("Render Test") }
-        expect(tag_data["actions"]).to include("Edit")
-        expect(tag_data["actions"]).to include("href=")
-      end
+      it_behaves_like "datatable renders relative time", field: :updated_at
+      it_behaves_like "datatable renders edit button"
     end
   end
 end

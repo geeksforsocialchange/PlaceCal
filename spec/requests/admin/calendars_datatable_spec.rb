@@ -5,29 +5,24 @@ require "rails_helper"
 # rubocop:disable Rails/SkipsModelValidations
 RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
   let(:admin_user) { create(:root_user) }
-  let(:admin_host) { "admin.lvh.me" }
+  # Define columns for this datatable
+  let(:datatable_columns) do
+    [
+      { data: :name, searchable: true, orderable: true },
+      { data: :partner },
+      { data: :state },
+      { data: :events },
+      { data: :notices, orderable: true },
+      { data: :last_import_at, orderable: true },
+      { data: :checksum_updated_at, orderable: true },
+      { data: :actions }
+    ]
+  end
 
   before { sign_in admin_user }
 
-  # Helper to make datatable requests with proper params
   def datatable_request(params = {})
-    base_params = {
-      "draw" => "1",
-      "start" => "0",
-      "length" => "25",
-      "search" => { "value" => "", "regex" => "false" },
-      "columns" => {
-        "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "1" => { "data" => "partner", "name" => "partner", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "2" => { "data" => "state", "name" => "state", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "3" => { "data" => "events", "name" => "events", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "4" => { "data" => "notices", "name" => "notices", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "5" => { "data" => "last_import_at", "name" => "last_import_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "6" => { "data" => "checksum_updated_at", "name" => "checksum_updated_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "7" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
-      },
-      "order" => { "0" => { "column" => "5", "dir" => "desc" } }
-    }
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 5)
     get admin_calendars_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -35,20 +30,10 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
     context "basic functionality" do
       let!(:calendar) { create(:calendar, name: "Test Calendar") }
 
-      it "returns JSON with datatable structure" do
-        datatable_request
-
-        expect(response).to have_http_status(:success)
-        json = response.parsed_body
-        expect(json).to have_key("draw")
-        expect(json).to have_key("recordsTotal")
-        expect(json).to have_key("recordsFiltered")
-        expect(json).to have_key("data")
-      end
+      it_behaves_like "datatable JSON structure"
 
       it "returns all calendars in data array" do
         create(:calendar, name: "Another Calendar")
-
         datatable_request
 
         json = response.parsed_body
@@ -69,7 +54,6 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:calendar_error) { create(:calendar, name: "Error Calendar") }
 
       before do
-        # after_create callback sets state to in_queue, so we need to reset it
         calendar_idle.update_column(:calendar_state, "idle")
         calendar_error.update_column(:calendar_state, "error")
       end
@@ -95,50 +79,21 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:matching_calendar) { create(:calendar, name: "Community Events") }
       let!(:non_matching_calendar) { create(:calendar, name: "Sports Schedule") }
 
-      it "filters calendars by search term" do
-        datatable_request("search" => { "value" => "Community" })
-
-        json = response.parsed_body
-        expect(json["recordsFiltered"]).to eq(1)
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to include("Community Events")
-      end
-
-      it "search is case insensitive" do
-        datatable_request("search" => { "value" => "COMMUNITY" })
-
-        json = response.parsed_body
-        expect(json["recordsFiltered"]).to eq(1)
-      end
-
-      it "returns empty results for non-matching search" do
-        datatable_request("search" => { "value" => "nonexistent12345" })
-
-        json = response.parsed_body
-        expect(json["recordsFiltered"]).to eq(0)
-        expect(json["data"]).to be_empty
-      end
+      it_behaves_like "datatable search",
+                      search_field: :name,
+                      matching_value: "Community",
+                      non_matching_value: "Sports"
     end
 
     context "sorting" do
       let!(:calendar_a) { create(:calendar, name: "Alpha Calendar") }
       let!(:calendar_z) { create(:calendar, name: "Zeta Calendar") }
 
-      it "sorts by name ascending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "asc" } })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to match(/Alpha.*Zeta/m)
-      end
-
-      it "sorts by name descending" do
-        datatable_request("order" => { "0" => { "column" => "0", "dir" => "desc" } })
-
-        json = response.parsed_body
-        names = json["data"].map { |d| d["name"] }
-        expect(names.join).to match(/Zeta.*Alpha/m)
-      end
+      it_behaves_like "datatable sorting",
+                      column_index: 0,
+                      field: :name,
+                      first_value: "Alpha",
+                      last_value: "Zeta"
     end
 
     context "pagination" do
@@ -172,10 +127,8 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:queued_calendar) { create(:calendar, name: "Queued Calendar") }
 
       before do
-        # after_create callback sets state to in_queue, so we need to set states explicitly
         idle_calendar.update_column(:calendar_state, "idle")
         error_calendar.update_column(:calendar_state, "error")
-        # queued_calendar is already in_queue from the callback
       end
 
       it "filters by idle state" do
@@ -222,46 +175,24 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:calendar_with_events) { create(:calendar, name: "With Events") }
       let!(:calendar_without_events) { create(:calendar, name: "Without Events") }
 
-      before do
-        create(:event, calendar: calendar_with_events)
-      end
+      before { create(:event, calendar: calendar_with_events) }
 
-      it "filters calendars with events" do
-        datatable_request("filter" => { "has_events" => "yes" })
-
-        json = response.parsed_body
-        expect(json["recordsFiltered"]).to eq(1)
-        expect(json["data"].first["name"]).to include("With Events")
-      end
-
-      it "filters calendars without events" do
-        datatable_request("filter" => { "has_events" => "no" })
-
-        json = response.parsed_body
-        expect(json["recordsFiltered"]).to eq(1)
-        expect(json["data"].first["name"]).to include("Without Events")
-      end
+      it_behaves_like "datatable yes/no filter",
+                      filter_name: "has_events",
+                      field: :name,
+                      yes_value: "With Events",
+                      no_value: "Without Events"
     end
 
     context "has_notices filter" do
       let!(:calendar_with_notices) { create(:calendar, name: "With Notices", notice_count: 5) }
       let!(:calendar_without_notices) { create(:calendar, name: "Without Notices", notice_count: 0) }
 
-      it "filters calendars with notices" do
-        datatable_request("filter" => { "has_notices" => "yes" })
-
-        json = response.parsed_body
-        expect(json["recordsFiltered"]).to eq(1)
-        expect(json["data"].first["name"]).to include("With Notices")
-      end
-
-      it "filters calendars without notices" do
-        datatable_request("filter" => { "has_notices" => "no" })
-
-        json = response.parsed_body
-        expect(json["recordsFiltered"]).to eq(1)
-        expect(json["data"].first["name"]).to include("Without Notices")
-      end
+      it_behaves_like "datatable yes/no filter",
+                      filter_name: "has_notices",
+                      field: :name,
+                      yes_value: "With Notices",
+                      no_value: "Without Notices"
     end
 
     context "multiple filters combined" do
@@ -269,9 +200,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:matching_calendar) { create(:calendar, name: "Match Calendar", partner: partner) }
       let!(:other_calendar) { create(:calendar, name: "Other Calendar") }
 
-      before do
-        create(:event, calendar: matching_calendar)
-      end
+      before { create(:event, calendar: matching_calendar) }
 
       it "combines partner and has_events filters" do
         datatable_request("filter" => {
@@ -326,7 +255,6 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:calendar) { create(:calendar, name: "Render Test", partner: partner, notice_count: 3) }
 
       before do
-        # Set state to idle for state icon test (after_create callback sets it to in_queue)
         calendar.update_column(:calendar_state, "idle")
         calendar.update_column(:last_import_at, Time.current)
         create(:event, calendar: calendar)
@@ -377,22 +305,8 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         expect(notices_html).to include("text-amber-600")
       end
 
-      it "renders last_import_at as relative time" do
-        datatable_request
-
-        json = response.parsed_body
-        time_html = json["data"].first["last_import_at"]
-        expect(time_html).to include("Today")
-      end
-
-      it "renders actions with edit button" do
-        datatable_request
-
-        json = response.parsed_body
-        actions_html = json["data"].first["actions"]
-        expect(actions_html).to include("Edit")
-        expect(actions_html).to include("href=")
-      end
+      it_behaves_like "datatable renders relative time", field: :last_import_at
+      it_behaves_like "datatable renders edit button"
     end
   end
 end
