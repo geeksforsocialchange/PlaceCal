@@ -70,7 +70,7 @@ jobs:
         run: bin/rails db:test:prepare
 
       - name: Build assets
-        run: bin/yarn run build
+        run: bin/yarn run build:all
 
       - name: Run RSpec tests (including system tests)
         run: RUN_SLOW_TESTS=true bundle exec rspec
