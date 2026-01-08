@@ -41,7 +41,7 @@ module TomSelectHelpers
     options.each do |option|
       # Scroll the element into view
       scroll_to(wrapper)
-      sleep 0.2
+      sleep 0.1
 
       # Tom Select stores the instance on the original select element
       # The select is a sibling of .ts-wrapper, so look in the parent container
@@ -89,7 +89,7 @@ module TomSelectHelpers
         })()
       JS
 
-      sleep 0.2
+      sleep 0.1
     end
   end
 

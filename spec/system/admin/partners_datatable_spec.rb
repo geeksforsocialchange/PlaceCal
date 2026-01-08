@@ -47,10 +47,10 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   def wait_for_datatable
     # Wait for loading to complete - check that tbody doesn't have loading state
-    expect(page).not_to have_css("[data-admin-table-target='tbody']", text: "Loading data...", wait: 15)
+    expect(page).not_to have_css("[data-admin-table-target='tbody']", text: "Loading data...", wait: 5)
     # Wait for the datatable info to show actual counts (not loading state)
     # The info target shows "1–X of Y" or "No entries" when loaded
-    expect(page).to have_css("[data-admin-table-target='info']", text: /\d+–\d+ of \d+|No entries/, wait: 15)
+    expect(page).to have_css("[data-admin-table-target='info']", text: /\d+–\d+ of \d+|No entries/, wait: 5)
   end
 
   def datatable_row_count
@@ -94,7 +94,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   describe "search functionality" do
     it "filters partners by name" do
       fill_in "Search...", with: "Alpha"
-      sleep 0.5 # Wait for debounce
+      sleep 0.35 # Wait for debounce
 
       wait_for_datatable
       expect(datatable_row_count).to eq(1)
@@ -104,14 +104,14 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
     it "shows no results message for non-matching search" do
       fill_in "Search...", with: "nonexistent12345"
-      sleep 0.5
+      sleep 0.35
 
       expect(page).to have_content("No records found")
     end
 
     it "clears search when input is emptied" do
       fill_in "Search...", with: "Alpha"
-      sleep 0.5
+      sleep 0.35
       wait_for_datatable
 
       # Clear the search input using JavaScript and trigger input event
@@ -120,7 +120,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
         input.value = '';
         input.dispatchEvent(new Event('input', { bubbles: true }));
       JS
-      sleep 0.5
+      sleep 0.35
       # Wait specifically for unfiltered state (no "(filtered)" indicator)
       expect(page).to have_css("[data-admin-table-target='info']", text: /3–3 of 3|1–3 of 3/, wait: 10)
 
@@ -129,7 +129,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
     it "search is case insensitive" do
       fill_in "Search...", with: "ALPHA"
-      sleep 0.5
+      sleep 0.35
       wait_for_datatable
 
       datatable_contains("Alpha Community Centre")
@@ -337,7 +337,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "applies both search and filter" do
       select_datatable_filter "Partnership One", column: "partnership"
       fill_in "Search...", with: "Alpha"
-      sleep 0.5
+      sleep 0.35
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -347,7 +347,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "clear filters does not clear search" do
       select_datatable_filter "Has admins", column: "has_admins"
       fill_in "Search...", with: "Alpha"
-      sleep 0.5
+      sleep 0.35
       wait_for_datatable
 
       click_button "Clear filters"
@@ -463,7 +463,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
     it "updates summary when search reduces results" do
       fill_in "Search...", with: "Alpha"
-      sleep 0.5
+      sleep 0.35
       wait_for_datatable
 
       within("[data-admin-table-target='summary']") do
@@ -486,7 +486,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "shows combined filter and search count" do
       select_datatable_filter "Partnership One", column: "partnership"
       fill_in "Search...", with: "Alpha"
-      sleep 0.5
+      sleep 0.35
       wait_for_datatable
 
       within("[data-admin-table-target='summary']") do

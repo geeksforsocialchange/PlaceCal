@@ -54,6 +54,7 @@ jobs:
 
       - name: Install Chrome for system tests
         uses: browser-actions/setup-chrome@latest
+        id: setup-chrome
         with:
           chrome-version: stable
 
@@ -74,9 +75,13 @@ jobs:
 
       - name: Run RSpec tests (including system tests)
         run: RUN_SLOW_TESTS=true bundle exec rspec
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Run Cucumber features
         run: bundle exec cucumber --tags "not @wip"
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Run linters
         run: |

@@ -16,7 +16,7 @@ module SystemHelpers
       "[data-multi-step-form-target='stepButton'][data-step='#{step_number}'].bg-placecal-orange",
       wait: 5
     )
-    sleep 0.3 # Allow any animations to complete
+    sleep 0.1 # Brief pause for DOM update (animations disabled)
   end
 
   # Named helpers for common form steps
@@ -92,8 +92,8 @@ module SystemHelpers
     select_element.select(value)
     # Trigger change event to ensure Stimulus controller handles it
     select_element.evaluate_script("this.dispatchEvent(new Event('change', { bubbles: true }))")
-    # Wait for AJAX to start and complete
-    sleep 0.3
+    # Brief pause for event dispatch
+    sleep 0.1
   end
 
   # Wait for admin-table datatable to finish loading after filter/search

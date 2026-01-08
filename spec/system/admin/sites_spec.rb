@@ -68,7 +68,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link site.name
 
       # Wait for the page to load
-      find(:xpath, '//input[@value="Update Site"]', wait: 100)
+      find(:xpath, '//input[@value="Update Site"]', wait: 5)
 
       # The primary neighbourhood should not appear in the sites_neighbourhoods section
       service_areas = all(:css, ".sites_neighbourhoods .ts-wrapper", wait: 1)

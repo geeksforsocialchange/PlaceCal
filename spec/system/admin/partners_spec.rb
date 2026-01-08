@@ -67,13 +67,13 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       click_link partner.name
 
       # Image upload is on Basic Info tab (default)
-      find(:css, "#partner_image", wait: 30)
+      find(:css, "#partner_image", wait: 5)
 
       image_path = Rails.root.join("spec/fixtures/files/test_image.jpg")
       attach_file "partner_image", image_path
 
       # Wait for preview image to update (uses Stimulus image-preview controller)
-      preview = find(:css, "[data-image-preview-target='img']", visible: true, wait: 15)
+      preview = find(:css, "[data-image-preview-target='img']", visible: true, wait: 5)
       expect(preview["src"]).to start_with("data:image/")
     end
   end
@@ -117,7 +117,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
 
       # If opening times has malformed data, it will cause problems for
       # the JavaScript that runs the partner tags selector
-      expect(page).to have_selector(".partner_partnerships .ts-control", wait: 30)
+      expect(page).to have_selector(".partner_partnerships .ts-control", wait: 5)
     end
   end
 
