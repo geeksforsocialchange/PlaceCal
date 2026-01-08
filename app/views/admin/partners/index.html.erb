@@ -1,14 +1,12 @@
 <%
-  # Get ward neighbourhoods grouped by district for hierarchical dropdown
-  # Note: ancestry gem provides parent method, not association - use parent_name field instead
+  # Get districts for the first-level filter
+  districts = Neighbourhood.where(unit: 'district').order(:name)
+  district_options = districts.map { |d| { value: d.id.to_s, label: d.shortname } }
+
+  # Get all wards with their parent district ID for the dependent filter
   wards = Neighbourhood.where(unit: 'ward').order(:name)
-  ward_groups = wards.group_by { |w| w.parent_name.presence || 'Other' }
-                     .sort_by { |district, _| district }
-                     .map do |district, district_wards|
-    {
-      label: district,
-      options: district_wards.sort_by(&:shortname).map { |w| { value: w.id.to_s, label: w.shortname } }
-    }
+  ward_options = wards.map do |w|
+    { value: w.id.to_s, label: w.shortname, parent: w.ancestry&.split('/')&.last }
   end
 
   # Get partnerships for filter dropdown
@@ -54,9 +52,15 @@
         options: partnership_options
       },
       {
+        column: 'district',
+        label: 'District',
+        options: district_options
+      },
+      {
         column: 'ward',
         label: 'Ward',
-        groups: ward_groups
+        depends_on: 'district',
+        options: ward_options
       }
     ],
     data: @partners,

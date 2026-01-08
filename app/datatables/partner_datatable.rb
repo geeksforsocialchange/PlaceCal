@@ -65,6 +65,15 @@ class PartnerDatatable < Datatable
         records = records.having('COUNT(DISTINCT users.id) = 0')
       end
 
+      # District filter - filter by all wards within a district
+      if params[:filter][:district].present?
+        district = Neighbourhood.find_by(id: params[:filter][:district])
+        if district
+          ward_ids = district.descendants.where(unit: 'ward').pluck(:id)
+          records = records.where(ward_neighbourhoods: { id: ward_ids })
+        end
+      end
+
       # Ward/neighbourhood filter
       records = records.where(ward_neighbourhoods: { id: params[:filter][:ward] }) if params[:filter][:ward].present?
 

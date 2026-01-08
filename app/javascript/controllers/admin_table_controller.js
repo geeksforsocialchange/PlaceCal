@@ -13,6 +13,7 @@ export default class extends Controller {
 		"filter",
 		"clearFilters",
 		"sortIcon",
+		"dependentFilter",
 	];
 	static values = {
 		source: String,
@@ -66,15 +67,59 @@ export default class extends Controller {
 			delete this.filters[column];
 		}
 
+		// Check if this filter has dependent filters that need updating
+		const dependsOn = event.target.dataset.filterDependsOn;
+		if (!dependsOn) {
+			// This might be a parent filter - update any dependent filters
+			this.updateDependentFilters(column, value);
+		}
+
 		this.currentPage = 0;
 		this.loadData();
 		this.updateClearFiltersButton();
+	}
+
+	// Update dependent filter dropdowns when parent filter changes
+	updateDependentFilters(parentColumn, parentValue) {
+		this.dependentFilterTargets.forEach((select) => {
+			if (select.dataset.filterDependsOn === parentColumn) {
+				const childColumn = select.dataset.filterColumn;
+
+				// Clear the dependent filter
+				select.value = "";
+				delete this.filters[childColumn];
+
+				// Show/hide options based on parent value
+				const options = select.querySelectorAll("option[data-parent]");
+				options.forEach((option) => {
+					if (!parentValue || option.dataset.parent === parentValue) {
+						option.style.display = "";
+					} else {
+						option.style.display = "none";
+					}
+				});
+
+				// Enable/disable the select based on whether parent has a value
+				select.disabled = !parentValue;
+				if (!parentValue) {
+					select.classList.add("opacity-50", "cursor-not-allowed");
+				} else {
+					select.classList.remove("opacity-50", "cursor-not-allowed");
+				}
+			}
+		});
 	}
 
 	clearFilters() {
 		this.filters = {};
 		this.filterTargets.forEach((select) => {
 			select.value = "";
+		});
+		// Also reset dependent filters
+		this.dependentFilterTargets.forEach((select) => {
+			select.value = "";
+			select.disabled = true;
+			select.classList.add("opacity-50", "cursor-not-allowed");
 		});
 		this.currentPage = 0;
 		this.loadData();
