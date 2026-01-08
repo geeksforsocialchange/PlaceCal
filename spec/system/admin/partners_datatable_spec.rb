@@ -46,6 +46,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   end
 
   def wait_for_datatable
+    # Wait for loading to complete (spinner to disappear)
+    expect(page).not_to have_content("Loading data...", wait: 10)
+    # Then wait for at least one data row
     expect(page).to have_css("[data-admin-table-target='tbody'] tr", minimum: 1, wait: 10)
   end
 
@@ -89,7 +92,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "search functionality" do
     it "filters partners by name" do
-      fill_in "Search by name...", with: "Alpha"
+      fill_in "Search...", with: "Alpha"
       sleep 0.5 # Wait for debounce
 
       wait_for_datatable
@@ -99,18 +102,18 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "shows no results message for non-matching search" do
-      fill_in "Search by name...", with: "nonexistent12345"
+      fill_in "Search...", with: "nonexistent12345"
       sleep 0.5
 
       expect(page).to have_content("No records found")
     end
 
     it "clears search when input is emptied" do
-      fill_in "Search by name...", with: "Alpha"
+      fill_in "Search...", with: "Alpha"
       sleep 0.5
       wait_for_datatable
 
-      fill_in "Search by name...", with: ""
+      fill_in "Search...", with: ""
       sleep 0.5
       wait_for_datatable
 
@@ -118,7 +121,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "search is case insensitive" do
-      fill_in "Search by name...", with: "ALPHA"
+      fill_in "Search...", with: "ALPHA"
       sleep 0.5
       wait_for_datatable
 
@@ -168,7 +171,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "calendar status filter" do
     it "filters to show only partners with calendars" do
-      select "Connected", from: "Calendar"
+      select_datatable_filter "Connected", column: "calendar_status"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -176,7 +179,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "filters to show only partners without calendars" do
-      select "No calendar", from: "Calendar"
+      select_datatable_filter "No calendar", column: "calendar_status"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(2)
@@ -186,7 +189,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "admin users filter" do
     it "filters to show only partners with admins" do
-      select "Has admins", from: "Admins"
+      select_datatable_filter "Has admins", column: "has_admins"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -194,7 +197,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "filters to show only partners without admins" do
-      select "No admins", from: "Admins"
+      select_datatable_filter "No admins", column: "has_admins"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(2)
@@ -204,7 +207,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "category filter" do
     it "filters by selected category" do
-      select "Health Services", from: "Category"
+      select_datatable_filter "Health Services", column: "category"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -214,7 +217,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "partnership filter" do
     it "filters by selected partnership" do
-      select "Partnership One", from: "Partnership"
+      select_datatable_filter "Partnership One", column: "partnership"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -235,19 +238,19 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   describe "cascading district/ward filter" do
     it "shows ward dropdown only after selecting district" do
       # Ward dropdown should be hidden initially
-      expect(page).to have_select("District")
+      expect(page).to have_css("select[data-filter-column='district']")
       expect(page).to have_css("select[data-filter-column='ward'].hidden", visible: :hidden)
     end
 
     it "shows ward dropdown after selecting district" do
-      select "Test District", from: "District"
+      select_datatable_filter "Test District", column: "district"
 
       # Ward dropdown should now be visible
-      expect(page).to have_select("Ward", visible: true)
+      expect(page).to have_css("select[data-filter-column='ward']:not(.hidden)")
     end
 
     it "ward dropdown only shows wards from selected district" do
-      select "Test District", from: "District"
+      select_datatable_filter "Test District", column: "district"
 
       ward_select = find("select[data-filter-column='ward']")
       expect(ward_select).to have_css("option", text: "Ward Alpha")
@@ -255,7 +258,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "selecting district filters partners" do
-      select "Test District", from: "District"
+      select_datatable_filter "Test District", column: "district"
       wait_for_datatable
 
       # All partners are in this district's wards
@@ -263,10 +266,10 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "selecting ward further filters partners" do
-      select "Test District", from: "District"
+      select_datatable_filter "Test District", column: "district"
       wait_for_datatable
 
-      select "Ward Alpha", from: "Ward"
+      select_datatable_filter "Ward Alpha", column: "ward"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(2)
@@ -276,12 +279,12 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "changing district clears ward selection" do
-      select "Test District", from: "District"
-      select "Ward Alpha", from: "Ward"
+      select_datatable_filter "Test District", column: "district"
+      select_datatable_filter "Ward Alpha", column: "ward"
       wait_for_datatable
 
       # Clear district selection
-      select "District", from: "District"
+      select_datatable_filter "District", column: "district"
 
       expect(page).to have_css("select[data-filter-column='ward'].hidden", visible: :hidden)
     end
@@ -289,8 +292,8 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "multiple filters combined" do
     it "applies multiple filters simultaneously" do
-      select "Has admins", from: "Admins"
-      select "Health Services", from: "Category"
+      select_datatable_filter "Has admins", column: "has_admins"
+      select_datatable_filter "Health Services", column: "category"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -300,15 +303,15 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "shows clear filters button when filters are active" do
       expect(page).not_to have_button("Clear filters")
 
-      select "Has admins", from: "Admins"
+      select_datatable_filter "Has admins", column: "has_admins"
       wait_for_datatable
 
       expect(page).to have_button("Clear filters")
     end
 
     it "clears all filters when clicking clear button" do
-      select "Has admins", from: "Admins"
-      select "Health Services", from: "Category"
+      select_datatable_filter "Has admins", column: "has_admins"
+      select_datatable_filter "Health Services", column: "category"
       wait_for_datatable
 
       click_button "Clear filters"
@@ -321,8 +324,8 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "search combined with filters" do
     it "applies both search and filter" do
-      select "Partnership One", from: "Partnership"
-      fill_in "Search by name...", with: "Alpha"
+      select_datatable_filter "Partnership One", column: "partnership"
+      fill_in "Search...", with: "Alpha"
       sleep 0.5
       wait_for_datatable
 
@@ -331,8 +334,8 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "clear filters does not clear search" do
-      select "Has admins", from: "Admins"
-      fill_in "Search by name...", with: "Alpha"
+      select_datatable_filter "Has admins", column: "has_admins"
+      fill_in "Search...", with: "Alpha"
       sleep 0.5
       wait_for_datatable
 
@@ -340,7 +343,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
       wait_for_datatable
 
       # Search should still be active
-      expect(find_field("Search by name...").value).to eq("Alpha")
+      expect(find_field("Search...").value).to eq("Alpha")
       datatable_contains("Alpha Community Centre")
     end
   end
@@ -436,7 +439,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "summary display updates" do
     it "updates summary when filter reduces results" do
-      select "Has admins", from: "Admins"
+      select_datatable_filter "Has admins", column: "has_admins"
       wait_for_datatable
 
       within("[data-admin-table-target='summary']") do
@@ -445,7 +448,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "updates summary when search reduces results" do
-      fill_in "Search by name...", with: "Alpha"
+      fill_in "Search...", with: "Alpha"
       sleep 0.5
       wait_for_datatable
 
@@ -455,7 +458,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "reverts summary when filters cleared" do
-      select "Has admins", from: "Admins"
+      select_datatable_filter "Has admins", column: "has_admins"
       wait_for_datatable
 
       click_button "Clear filters"
@@ -467,8 +470,8 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "shows combined filter and search count" do
-      select "Partnership One", from: "Partnership"
-      fill_in "Search by name...", with: "Alpha"
+      select_datatable_filter "Partnership One", column: "partnership"
+      fill_in "Search...", with: "Alpha"
       sleep 0.5
       wait_for_datatable
 

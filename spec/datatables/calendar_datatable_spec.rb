@@ -112,11 +112,12 @@ RSpec.describe CalendarDatatable do
         expect(name_html).to include("/edit")
       end
 
-      it "includes calendar ID" do
+      it "includes calendar ID with hashtag icon" do
         datatable = create_datatable
 
         name_html = datatable.data.first[:name]
-        expect(name_html).to include("ID: #{calendar.id}")
+        expect(name_html).to include("fa-hashtag")
+        expect(name_html).to include(calendar.id.to_s)
       end
     end
 

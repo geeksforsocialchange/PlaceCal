@@ -43,6 +43,26 @@ module SystemHelpers
   ensure
     $stdout = stdout
   end
+
+  # Select a filter value by its data-filter-column attribute
+  # This works with the datatable dropdown filters that don't have labels
+  def select_datatable_filter(value, column:)
+    select_element = find("[data-filter-column='#{column}']:not(.hidden)", visible: true, match: :first)
+    select_element.select(value)
+    # Trigger change event to ensure Stimulus controller handles it
+    select_element.evaluate_script("this.dispatchEvent(new Event('change', { bubbles: true }))")
+    # Wait for AJAX to start and complete
+    sleep 0.3
+  end
+
+  # Wait for admin-table datatable to finish loading after filter/search
+  def wait_for_admin_table_load(timeout: 10)
+    # Wait for loading spinner to disappear (if shown) and content to load
+    using_wait_time(timeout) do
+      expect(page).not_to have_content("Loading data...")
+      expect(page).to have_css("[data-admin-table-target='tbody'] tr", minimum: 1)
+    end
+  end
 end
 
 RSpec.configure do |config|

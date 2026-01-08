@@ -49,7 +49,7 @@ class PartnerDatatable < Datatable
               .joins('LEFT JOIN addresses ON addresses.id = partners.address_id')
               .joins('LEFT JOIN neighbourhoods AS ward_neighbourhoods ON ward_neighbourhoods.id = addresses.neighbourhood_id')
               .select('partners.*, COUNT(DISTINCT calendars.id) as calendars_count, COUNT(DISTINCT users.id) as users_count')
-              .group('partners.id, ward_neighbourhoods.name')
+              .group('partners.id')
 
     # Apply filters from request params
     if params[:filter].present?
