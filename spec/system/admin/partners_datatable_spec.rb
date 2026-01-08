@@ -130,8 +130,12 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   end
 
   describe "sorting" do
+    def click_partner_header
+      find("th[data-column='name']").click
+    end
+
     it "sorts by partner name ascending when clicking header" do
-      click_on "Partner"
+      click_partner_header
       wait_for_datatable
 
       rows = all("[data-admin-table-target='tbody'] tr")
@@ -139,9 +143,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "toggles sort direction on second click" do
-      click_on "Partner"
+      click_partner_header
       wait_for_datatable
-      click_on "Partner"
+      click_partner_header
       wait_for_datatable
 
       rows = all("[data-admin-table-target='tbody'] tr")
@@ -151,7 +155,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "shows reset sort button after changing sort" do
       expect(page).not_to have_button("Reset sort")
 
-      click_on "Partner"
+      click_partner_header
       wait_for_datatable
 
       expect(page).to have_button("Reset sort")
@@ -159,7 +163,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
     it "resets sort to default when clicking reset button" do
       # Change from default sort
-      click_on "Partner"
+      click_partner_header
       wait_for_datatable
 
       click_button "Reset sort"
@@ -401,7 +405,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "navigates to edit page when clicking Edit button" do
-      within("[data-admin-table-target='tbody'] tr", text: "Alpha") do
+      within("[data-admin-table-target='tbody'] tr", text: "Alpha Community Centre") do
         click_link "Edit"
       end
 
