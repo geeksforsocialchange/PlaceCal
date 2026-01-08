@@ -27,6 +27,8 @@ class UserDatatable < Datatable
     records.map do |record|
       row_data = {
         name: render_name_cell(record),
+        first_name: record.first_name,
+        email: record.email,
         roles: render_roles_cell(record),
         last_sign_in_at: render_relative_time(record.last_sign_in_at),
         updated_at: render_relative_time(record.updated_at),
@@ -34,8 +36,8 @@ class UserDatatable < Datatable
       }
 
       # Add row class for elevated roles
-      row_data[:DT_RowClass] = 'tw-bg-red-50' if record.role.to_s == 'root'
-      row_data[:DT_RowClass] = 'tw-bg-blue-50' if record.role.to_s == 'editor'
+      row_data[:DT_RowClass] = 'bg-red-50' if record.role.to_s == 'root'
+      row_data[:DT_RowClass] = 'bg-blue-50' if record.role.to_s == 'editor'
 
       row_data
     end
@@ -103,15 +105,19 @@ class UserDatatable < Datatable
   private
 
   def render_name_cell(record)
-    full_name = [record.first_name, record.last_name].compact.join(' ').presence || 'No name'
+    full_name = [record.first_name, record.last_name].compact.join(' ').presence
     role_badge = render_role_badge(record.role.to_s)
+
+    name_html = if full_name
+                  "<a href=\"#{edit_admin_user_path(record)}\" class=\"font-medium text-gray-900 hover:text-orange-600\">#{ERB::Util.html_escape(full_name)}</a>"
+                else
+                  "<a href=\"#{edit_admin_user_path(record)}\" class=\"italic text-gray-400 hover:text-orange-600\">No name</a>"
+                end
 
     <<~HTML.html_safe
       <div class="flex flex-col">
         <div class="flex items-center gap-2">
-          <a href="#{edit_admin_user_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
-            #{ERB::Util.html_escape(full_name)}
-          </a>
+          #{name_html}
           #{role_badge}
         </div>
         <span class="text-xs text-gray-400 font-mono"><i class="fa fa-hashtag mr-1"></i>#{record.id} <i class="fa fa-envelope mr-1"></i>#{ERB::Util.html_escape(record.email)}</span>

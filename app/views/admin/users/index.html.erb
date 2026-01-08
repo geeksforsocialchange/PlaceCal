@@ -8,9 +8,11 @@
       'Last Updated',
       ''
     ],
-    columns: %i[name roles last_sign_in_at updated_at actions],
+    columns: %i[name first_name email roles last_sign_in_at updated_at actions],
     column_config: {
       name: {},
+      first_name: { visible: false },
+      email: { visible: false },
       roles: { sortable: false },
       last_sign_in_at: { fit: true },
       updated_at: { fit: true },

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Source paths for content detection */
+@source "../../app/datatables/**/*.rb";
+
 /*
  * Admin Tailwind CSS
  *
