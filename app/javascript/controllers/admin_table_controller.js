@@ -107,11 +107,16 @@ export default class extends Controller {
 	}
 
 	applyRadioFilter(event) {
-		const fieldset = event.target.closest(
-			"[data-admin-table-target='radioFilter']"
-		);
-		const column = fieldset.dataset.filterColumn;
-		const value = event.target.value;
+		const button = event.target;
+		const container = button.closest("[data-admin-table-target='radioFilter']");
+		const column = container.dataset.filterColumn;
+		const value = button.dataset.filterValue;
+
+		// Update selected state on buttons
+		container.querySelectorAll("button").forEach((btn) => {
+			btn.removeAttribute("data-selected");
+		});
+		button.setAttribute("data-selected", "");
 
 		if (value) {
 			this.filters[column] = value;
@@ -161,9 +166,12 @@ export default class extends Controller {
 			select.classList.add("hidden");
 		});
 		// Reset radio button filters to "All"
-		this.radioFilterTargets.forEach((fieldset) => {
-			const allRadio = fieldset.querySelector('input[value=""]');
-			if (allRadio) allRadio.checked = true;
+		this.radioFilterTargets.forEach((container) => {
+			container.querySelectorAll("button").forEach((btn) => {
+				btn.removeAttribute("data-selected");
+			});
+			const allBtn = container.querySelector('button[data-filter-value=""]');
+			if (allBtn) allBtn.setAttribute("data-selected", "");
 		});
 		this.currentPage = 0;
 		this.loadData();
@@ -184,11 +192,16 @@ export default class extends Controller {
 				}
 			});
 
-			// Update the corresponding radio button to match
-			this.radioFilterTargets.forEach((fieldset) => {
-				if (fieldset.dataset.filterColumn === column) {
-					const radio = fieldset.querySelector(`input[value="${value}"]`);
-					if (radio) radio.checked = true;
+			// Update the corresponding radio button filter to match
+			this.radioFilterTargets.forEach((container) => {
+				if (container.dataset.filterColumn === column) {
+					container.querySelectorAll("button").forEach((btn) => {
+						btn.removeAttribute("data-selected");
+					});
+					const btn = container.querySelector(
+						`button[data-filter-value="${value}"]`
+					);
+					if (btn) btn.setAttribute("data-selected", "");
 				}
 			});
 
