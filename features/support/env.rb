@@ -8,6 +8,7 @@
 
 require "cucumber/rails"
 require "capybara/cucumber"
+require "capybara/cuprite"
 
 # Load shared spec support files (UK postcode stub, geocoder stubs)
 require Rails.root.join("spec/support/uk_postcode_stub")
@@ -30,19 +31,39 @@ end
 
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
-# Capybara configuration for JavaScript tests
-Capybara.register_driver :headless_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument("--headless")
-  options.add_argument("--no-sandbox")
-  options.add_argument("--disable-gpu")
-  options.add_argument("--window-size=1400,1400")
-  options.add_argument("--disable-dev-shm-usage")
+# Disable CSS animations for faster, more reliable tests
+Capybara.disable_animation = true
 
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+# Cuprite driver configuration - pure Ruby driver using Chrome DevTools Protocol
+Capybara.register_driver :cuprite do |app|
+  browser_opts = {}
+
+  # CI/Docker environments need additional Chrome flags
+  if ENV["DOCKER"] || ENV["CI"]
+    browser_opts = {
+      "no-sandbox" => nil,
+      "disable-gpu" => nil,
+      "disable-dev-shm-usage" => nil,
+      "disable-software-rasterizer" => nil
+    }
+  end
+
+  options = {
+    window_size: [1400, 1400],
+    js_errors: true,
+    headless: ENV.fetch("HEADLESS", "true") != "false",
+    slowmo: ENV["SLOWMO"]&.to_f,
+    process_timeout: 30,
+    timeout: 15,
+    browser_options: browser_opts
+  }
+  # Use explicit Chrome path if provided (e.g., from GitHub Actions)
+  options[:browser_path] = ENV["BROWSER_PATH"] if ENV["BROWSER_PATH"].present?
+
+  Capybara::Cuprite::Driver.new(app, **options)
 end
 
-Capybara.javascript_driver = :headless_chrome
+Capybara.javascript_driver = :cuprite
 
 Capybara.configure do |config|
   config.default_max_wait_time = 5
