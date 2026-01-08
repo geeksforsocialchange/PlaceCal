@@ -34,8 +34,8 @@ class UserDatatable < Datatable
       }
 
       # Add row class for elevated roles
-      row_data[:DT_RowClass] = 'bg-red-50' if record.role.to_s == 'root'
-      row_data[:DT_RowClass] = 'bg-blue-50' if record.role.to_s == 'editor'
+      row_data[:DT_RowClass] = 'tw-bg-red-50' if record.role.to_s == 'root'
+      row_data[:DT_RowClass] = 'tw-bg-blue-50' if record.role.to_s == 'editor'
 
       row_data
     end
