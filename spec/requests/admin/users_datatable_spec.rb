@@ -4,13 +4,12 @@ require "rails_helper"
 
 RSpec.describe "Admin::Users Datatable JSON API", type: :request do
   let(:admin_user) { create(:root_user) }
-  # Define columns for this datatable
+  # Define columns for this datatable (must match view_columns in user_datatable.rb)
   let(:datatable_columns) do
     [
       { data: :name, searchable: true, orderable: true },
       { data: :roles },
-      { data: :partners },
-      { data: :neighbourhoods },
+      { data: :last_sign_in_at, orderable: true },
       { data: :updated_at, orderable: true },
       { data: :actions }
     ]
@@ -19,7 +18,7 @@ RSpec.describe "Admin::Users Datatable JSON API", type: :request do
   before { sign_in admin_user }
 
   def datatable_request(params = {})
-    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 4)
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 3)
     get admin_users_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -188,24 +187,6 @@ RSpec.describe "Admin::Users Datatable JSON API", type: :request do
         expect(user_data["roles"]).to include("Partner Admin")
         expect(user_data["roles"]).to include("bg-blue-100")
         expect(user_data["roles"]).to include("bg-purple-100")
-      end
-
-      it "renders partners count cell" do
-        datatable_request
-
-        json = response.parsed_body
-        user_data = json["data"].find { |d| d["name"].include?("Test User") }
-        expect(user_data["partners"]).to include("1")
-        expect(user_data["partners"]).to include("text-emerald-600")
-      end
-
-      it "renders neighbourhoods count cell" do
-        datatable_request
-
-        json = response.parsed_body
-        user_data = json["data"].find { |d| d["name"].include?("Test User") }
-        expect(user_data["neighbourhoods"]).to include("1")
-        expect(user_data["neighbourhoods"]).to include("text-emerald-600")
       end
 
       it_behaves_like "datatable renders relative time", field: :updated_at
