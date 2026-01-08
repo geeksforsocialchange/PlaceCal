@@ -111,12 +111,27 @@ export default class extends Controller {
 		const container = button.closest("[data-admin-table-target='radioFilter']");
 		const column = container.dataset.filterColumn;
 		const value = button.dataset.filterValue;
+		const isAllButton = button.dataset.isAll === "true";
 
-		// Update selected state on buttons
+		// Reset all buttons to unselected state
 		container.querySelectorAll("button").forEach((btn) => {
-			btn.removeAttribute("data-selected");
+			btn.classList.remove(
+				"bg-white",
+				"bg-orange-500",
+				"text-gray-900",
+				"text-white",
+				"shadow-sm"
+			);
+			btn.classList.add("text-gray-500", "hover:text-gray-700");
 		});
-		button.setAttribute("data-selected", "");
+
+		// Apply selected state to clicked button
+		button.classList.remove("text-gray-500", "hover:text-gray-700");
+		if (isAllButton) {
+			button.classList.add("bg-white", "text-gray-900", "shadow-sm");
+		} else {
+			button.classList.add("bg-orange-500", "text-white", "shadow-sm");
+		}
 
 		if (value) {
 			this.filters[column] = value;
@@ -168,10 +183,20 @@ export default class extends Controller {
 		// Reset radio button filters to "All"
 		this.radioFilterTargets.forEach((container) => {
 			container.querySelectorAll("button").forEach((btn) => {
-				btn.removeAttribute("data-selected");
+				btn.classList.remove(
+					"bg-white",
+					"bg-orange-500",
+					"text-gray-900",
+					"text-white",
+					"shadow-sm"
+				);
+				btn.classList.add("text-gray-500", "hover:text-gray-700");
 			});
 			const allBtn = container.querySelector('button[data-filter-value=""]');
-			if (allBtn) allBtn.setAttribute("data-selected", "");
+			if (allBtn) {
+				allBtn.classList.remove("text-gray-500", "hover:text-gray-700");
+				allBtn.classList.add("bg-white", "text-gray-900", "shadow-sm");
+			}
 		});
 		this.currentPage = 0;
 		this.loadData();
@@ -196,12 +221,22 @@ export default class extends Controller {
 			this.radioFilterTargets.forEach((container) => {
 				if (container.dataset.filterColumn === column) {
 					container.querySelectorAll("button").forEach((btn) => {
-						btn.removeAttribute("data-selected");
+						btn.classList.remove(
+							"bg-white",
+							"bg-orange-500",
+							"text-gray-900",
+							"text-white",
+							"shadow-sm"
+						);
+						btn.classList.add("text-gray-500", "hover:text-gray-700");
 					});
 					const btn = container.querySelector(
 						`button[data-filter-value="${value}"]`
 					);
-					if (btn) btn.setAttribute("data-selected", "");
+					if (btn) {
+						btn.classList.remove("text-gray-500", "hover:text-gray-700");
+						btn.classList.add("bg-orange-500", "text-white", "shadow-sm");
+					}
 				}
 			});
 
