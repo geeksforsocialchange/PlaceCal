@@ -20,8 +20,43 @@
 	--color-placecal-purple: #9c27b0;
 }
 
+/* Leaflet map styles - embedded from leaflet package */
+@import "leaflet/dist/leaflet.css";
+
+/* Spin animation for loading spinners */
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 /* Custom admin component styles using @apply */
 @layer components {
+	/* Admin-specific base styles */
+	.feather {
+		width: 16px;
+		height: 16px;
+		vertical-align: text-bottom;
+	}
+
+	.card-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-gap: 1rem;
+	}
+
+	/* Partner page specific styles */
+	.map-marker {
+		height: 300px !important;
+	}
+
+	.breadcrumb .size-patch {
+		box-sizing: border-box;
+		line-height: inherit;
+	}
 	.admin-tw-card {
 		@apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
 	}
