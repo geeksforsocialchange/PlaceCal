@@ -131,8 +131,11 @@ export default class extends Controller {
 	showLoading() {
 		this.tbodyTarget.innerHTML = `
       <tr>
-        <td colspan="${this.columnsValue.length}" class="text-center py-4">
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <td colspan="${this.columnsValue.length}" class="px-6 py-4 text-center text-gray-500">
+          <svg class="animate-spin inline-block h-5 w-5 mr-2 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
           Loading...
         </td>
       </tr>
@@ -142,7 +145,7 @@ export default class extends Controller {
 	showError() {
 		this.tbodyTarget.innerHTML = `
       <tr>
-        <td colspan="${this.columnsValue.length}" class="text-center py-4 text-danger">
+        <td colspan="${this.columnsValue.length}" class="px-6 py-4 text-center text-red-600">
           Error loading data. Please try again.
         </td>
       </tr>
@@ -153,7 +156,7 @@ export default class extends Controller {
 		if (data.length === 0) {
 			this.tbodyTarget.innerHTML = `
         <tr>
-          <td colspan="${this.columnsValue.length}" class="text-center py-4">
+          <td colspan="${this.columnsValue.length}" class="px-6 py-4 text-center text-gray-500">
             No records found
           </td>
         </tr>
@@ -164,9 +167,14 @@ export default class extends Controller {
 		this.tbodyTarget.innerHTML = data
 			.map(
 				(row) => `
-        <tr>
+        <tr class="hover:bg-gray-50">
           ${this.columnsValue
-						.map((col) => `<td>${row[col.data] ?? ""}</td>`)
+						.map(
+							(col) =>
+								`<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+									row[col.data] ?? ""
+								}</td>`
+						)
 						.join("")}
         </tr>
       `
@@ -189,21 +197,35 @@ export default class extends Controller {
 			startPage = Math.max(0, endPage - maxVisiblePages);
 		}
 
+		const btnBase =
+			"relative inline-flex items-center px-3 py-2 text-sm font-medium border";
+		const btnEnabled =
+			"bg-white text-gray-700 border-gray-300 hover:bg-gray-50";
+		const btnDisabled =
+			"bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed";
+		const btnActive = "bg-orange-500 text-white border-orange-500";
+
 		// First and Previous buttons
 		pages.push(`
-      <li class="page-item ${this.currentPage === 0 ? "disabled" : ""}">
-        <a class="page-link" href="#" data-action="admin-table#firstPage">&laquo;</a>
+      <li>
+        <a class="${btnBase} ${
+			this.currentPage === 0 ? btnDisabled : btnEnabled
+		} rounded-l-md" href="#" data-action="admin-table#firstPage">&laquo;</a>
       </li>
-      <li class="page-item ${this.currentPage === 0 ? "disabled" : ""}">
-        <a class="page-link" href="#" data-action="admin-table#previousPage">&lsaquo;</a>
+      <li>
+        <a class="${btnBase} ${
+			this.currentPage === 0 ? btnDisabled : btnEnabled
+		}" href="#" data-action="admin-table#previousPage">&lsaquo;</a>
       </li>
     `);
 
 		// Page numbers
 		for (let i = startPage; i < endPage; i++) {
 			pages.push(`
-        <li class="page-item ${i === this.currentPage ? "active" : ""}">
-          <a class="page-link" href="#" data-action="admin-table#goToPage" data-page="${i}">${
+        <li>
+          <a class="${btnBase} ${
+				i === this.currentPage ? btnActive : btnEnabled
+			}" href="#" data-action="admin-table#goToPage" data-page="${i}">${
 				i + 1
 			}</a>
         </li>
@@ -212,15 +234,15 @@ export default class extends Controller {
 
 		// Next and Last buttons
 		pages.push(`
-      <li class="page-item ${
-				this.currentPage >= this.totalPages - 1 ? "disabled" : ""
-			}">
-        <a class="page-link" href="#" data-action="admin-table#nextPage">&rsaquo;</a>
+      <li>
+        <a class="${btnBase} ${
+			this.currentPage >= this.totalPages - 1 ? btnDisabled : btnEnabled
+		}" href="#" data-action="admin-table#nextPage">&rsaquo;</a>
       </li>
-      <li class="page-item ${
-				this.currentPage >= this.totalPages - 1 ? "disabled" : ""
-			}">
-        <a class="page-link" href="#" data-action="admin-table#lastPage">&raquo;</a>
+      <li>
+        <a class="${btnBase} ${
+			this.currentPage >= this.totalPages - 1 ? btnDisabled : btnEnabled
+		} rounded-r-md" href="#" data-action="admin-table#lastPage">&raquo;</a>
       </li>
     `);
 
