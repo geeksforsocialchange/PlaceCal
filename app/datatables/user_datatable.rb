@@ -125,7 +125,6 @@ class UserDatatable < Datatable
 
   def render_name_cell(record)
     full_name = [record.first_name, record.last_name].compact.join(' ').presence
-    role_badge = render_role_badge(record.role.to_s)
 
     name_html = if full_name
                   "<a href=\"#{edit_admin_user_path(record)}\" class=\"font-medium text-gray-900 hover:text-orange-600\">#{ERB::Util.html_escape(full_name)}</a>"
@@ -135,30 +134,24 @@ class UserDatatable < Datatable
 
     <<~HTML.html_safe
       <div class="flex flex-col">
-        <div class="flex items-center gap-2">
-          #{name_html}
-          #{role_badge}
-        </div>
+        #{name_html}
         <span class="text-xs text-gray-400 font-mono"><i class="fa fa-hashtag mr-1"></i>#{record.id} <i class="fa fa-envelope mr-1"></i>#{ERB::Util.html_escape(record.email)}</span>
       </div>
     HTML
   end
 
-  def render_role_badge(role)
-    case role
-    when 'root'
-      '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Root</span>'
-    when 'editor'
-      '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">Editor</span>'
-    else
-      ''
-    end
-  end
-
   def render_roles_cell(record)
     roles = []
 
-    # Admin type badges only (primary role is shown next to name)
+    # Primary role badge
+    case record.role.to_s
+    when 'root'
+      roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Root</span>'
+    when 'editor'
+      roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">Editor</span>'
+    end
+
+    # Admin type badges
     roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">Partner Admin</span>' if record.partner_admin?
     roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">Neighbourhood Admin</span>' if record.neighbourhood_admin?
     roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800">Partnership Admin</span>' if record.partnership_admin?
