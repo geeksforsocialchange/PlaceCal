@@ -19,7 +19,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     fill_in "Password", with: "password"
     click_button "Log in"
 
-    expect(page).to have_selector(".alert-success", text: "Signed in successfully.")
+    expect(page).to have_selector("[role='alert']", text: "Signed in successfully.")
 
     # Navigate to create user
     click_link "Users"
@@ -32,7 +32,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     choose "Root: Can do everything"
     click_button "Invite"
 
-    expect(page).to have_selector(".alert-success", text: "User has been created! An invite has been sent")
+    expect(page).to have_selector("[role='alert']", text: "User has been created! An invite has been sent")
 
     click_button "Sign out"
 
@@ -58,6 +58,6 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     fill_in "Repeat password", with: "password123"
     click_button "Set password"
 
-    expect(page).to have_selector(".alert-success", text: "Your password was set successfully. You are now signed in")
+    expect(page).to have_selector("[role='alert']", text: "Your password was set successfully. You are now signed in")
   end
 end

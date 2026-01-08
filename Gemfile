@@ -114,6 +114,7 @@ end
 group :test do
   gem 'capybara'
   gem 'cucumber-rails', require: false
+  gem 'cuprite'
   gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'
   gem 'faker'
@@ -122,7 +123,6 @@ group :test do
   gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 7.0'
-  gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov', require: false
   gem 'timecop'

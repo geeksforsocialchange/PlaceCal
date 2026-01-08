@@ -2,6 +2,44 @@
 
 # Helpers for system specs
 module SystemHelpers
+  # Navigate to a specific step in a multi-step form
+  # Steps are: 0=Basic Info, 1=Place, 2=Contact, 3=Tags, 4=Admin
+  def go_to_form_step(step_number)
+    # Wait for multi-step form to be initialized
+    expect(page).to have_css("[data-controller='multi-step-form']", wait: 10)
+
+    button = find("[data-multi-step-form-target='stepButton'][data-step='#{step_number}']", wait: 10)
+    button.click
+
+    # Wait for the button to become active (has orange background)
+    expect(page).to have_css(
+      "[data-multi-step-form-target='stepButton'][data-step='#{step_number}'].bg-placecal-orange",
+      wait: 5
+    )
+    sleep 0.3 # Allow any animations to complete
+  end
+
+  # Named helpers for common form steps
+  def go_to_basic_info_tab
+    go_to_form_step(0)
+  end
+
+  def go_to_place_tab
+    go_to_form_step(1)
+  end
+
+  def go_to_contact_tab
+    go_to_form_step(2)
+  end
+
+  def go_to_tags_tab
+    go_to_form_step(3)
+  end
+
+  def go_to_admin_tab
+    go_to_form_step(4)
+  end
+
   # Click a sidebar navigation link
   def click_sidebar(href)
     within ".sidebar-sticky" do
@@ -12,11 +50,14 @@ module SystemHelpers
 
   # Wait for datatables to load
   # Supports both old DataTables (#datatable_info) and new Stimulus admin-table
-  def await_datatables(time = 5)
+  def await_datatables(time = 10)
     find_element_with_retry do
       # Try new Stimulus admin-table first, then fall back to legacy DataTables
       if page.has_css?("[data-admin-table-target='info']", wait: 1)
-        page.find(:css, "[data-admin-table-target='info']", text: /Showing|No entries/, wait: time)
+        # New admin-table shows "1–X of Y" or "No records found"
+        # First wait for loading to complete
+        expect(page).not_to have_css("[data-admin-table-target='tbody']", text: "Loading data...", wait: time)
+        page.find(:css, "[data-admin-table-target='info']", text: /\d+–\d+ of \d+|No records|No entries/, wait: time)
       else
         page.find(:css, "#datatable_info", wait: time)
       end

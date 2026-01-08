@@ -39,7 +39,9 @@ module NestedFormHelper
     # Remove the built object so it doesn't persist
     form.object.send(association).delete(new_object)
 
-    content_tag(:div, data: { controller: 'nested-form' }) do
+    # Add association-specific class for test selectors (e.g., "sites_neighbourhoods" for service_areas)
+    wrapper_class = "nested-form-#{association.to_s.tr('_', '-')}"
+    content_tag(:div, class: wrapper_class, data: { controller: 'nested-form' }) do
       safe_join([
                   content_tag(:template, template_content, data: { nested_form_target: 'template' }),
                   content_tag(:div, capture(&block), class: container_class, data: { nested_form_target: 'container' }),

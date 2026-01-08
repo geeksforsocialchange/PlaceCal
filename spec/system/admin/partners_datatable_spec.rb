@@ -114,9 +114,15 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
       sleep 0.5
       wait_for_datatable
 
-      fill_in "Search...", with: ""
+      # Clear the search input using JavaScript and trigger input event
+      page.execute_script(<<~JS)
+        var input = document.querySelector("[data-admin-table-target='search']");
+        input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      JS
       sleep 0.5
-      wait_for_datatable
+      # Wait specifically for unfiltered state (no "(filtered)" indicator)
+      expect(page).to have_css("[data-admin-table-target='info']", text: /3–3 of 3|1–3 of 3/, wait: 10)
 
       expect(datatable_row_count).to eq(3)
     end

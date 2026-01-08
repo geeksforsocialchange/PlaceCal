@@ -11,12 +11,11 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
   describe "tom-select inputs on neighbourhood form" do
     it "allows selecting users", :aggregate_failures do
       click_link "Neighbourhoods"
+      await_datatables
 
-      # Find and click the first neighbourhood
-      find_element_and_retry_if_stale do
-        within page.all(:css, ".odd")[0] do
-          click_link
-        end
+      # Click the first neighbourhood name in the table
+      within "[data-admin-table-target='tbody']" do
+        first("a").click
       end
 
       click_link "Edit"
@@ -30,11 +29,10 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
 
       # Navigate back to verify data persists
       click_link "Neighbourhoods"
+      await_datatables
 
-      find_element_and_retry_if_stale do
-        within page.all(:css, ".odd")[0] do
-          click_link
-        end
+      within "[data-admin-table-target='tbody']" do
+        first("a").click
       end
 
       find_element_and_retry_if_not_found do

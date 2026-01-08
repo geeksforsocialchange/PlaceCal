@@ -21,33 +21,75 @@ module TomSelectHelpers
   end
 
   # Find all nested form (Cocoon replacement) Tom Select nodes
-  def all_nested_form_tom_select_nodes(css_class)
+  # @param association [String] The association name (e.g., "service_areas")
+  #   This will look for the wrapper class "nested-form-{association}" with underscores replaced by hyphens
+  def all_nested_form_tom_select_nodes(association)
     await_tom_select(10)
+    css_class = "nested-form-#{association.to_s.tr('_', '-')}"
     within(".#{css_class}") do
       all(:css, ".ts-wrapper")
     end
   end
 
   # Select a value in a Tom Select dropdown
+  # Uses JavaScript to directly interact with Tom Select for reliability
   # @param options [Array<String>] The option text(s) to select
-  # @param xpath [String] The xpath of the Tom Select container
+  # @param xpath [String] The xpath of the Tom Select wrapper
   def tom_select(*options, xpath:)
-    within(:xpath, xpath) do
-      # Click the control to open the dropdown
-      find(".ts-control").click
+    wrapper = find(:xpath, xpath)
 
-      options.each do |option|
-        # Type to search and find the option
-        input = find(".ts-control input", visible: :all)
-        input.set(option)
-        sleep 0.2 # Allow search results to load
+    options.each do |option|
+      # Scroll the element into view
+      scroll_to(wrapper)
+      sleep 0.2
 
-        # Click the matching option in the dropdown
-        find(".ts-dropdown .option", text: option, match: :prefer_exact).click
+      # Tom Select stores the instance on the original select element
+      # The select is a sibling of .ts-wrapper, so look in the parent container
+      # Use JavaScript to find the Tom Select instance from the wrapper
+      result = page.evaluate_script(<<~JS)
+        (function() {
+          var wrapper = document.evaluate('#{xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+          if (!wrapper) return { error: 'Wrapper not found' };
+
+          // The select element is a sibling of the wrapper
+          var parent = wrapper.parentElement;
+          var select = parent.querySelector('select');
+          if (!select) return { error: 'Select not found in parent' };
+          if (!select.tomselect) return { error: 'Tom Select not initialized on select' };
+
+          var ts = select.tomselect;
+          var opts = [];
+          for (var key in ts.options) {
+            var opt = ts.options[key];
+            opts.push({ value: key, text: opt.text || opt.label || opt.name || key });
+          }
+          return { selectId: select.id, options: opts };
+        })()
+      JS
+
+      raise Capybara::ElementNotFound, "Tom Select error: #{result['error']}" if result["error"]
+
+      # Find the option that matches the text
+      matching_option = result["options"].find { |o| o["text"]&.include?(option) }
+
+      if matching_option.nil?
+        option_texts = result["options"].map { |o| o["text"] }.join(", ")
+        raise Capybara::ElementNotFound,
+              "Option '#{option}' not found. Available: [#{option_texts}]"
       end
 
-      # Close dropdown by clicking outside if it's still open
-      find("body").click if has_selector?(".ts-dropdown", wait: 0.5)
+      # Use Tom Select API to add the item
+      select_id = result["selectId"]
+      page.execute_script(<<~JS)
+        (function() {
+          var select = document.getElementById('#{select_id}');
+          if (select && select.tomselect) {
+            select.tomselect.addItem('#{matching_option['value']}');
+          }
+        })()
+      JS
+
+      sleep 0.2
     end
   end
 

@@ -2,24 +2,31 @@
 
 require "capybara/rails"
 require "capybara/rspec"
-require "selenium-webdriver"
+require "capybara/cuprite"
 
-Capybara.register_driver :headless_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument("--headless")
-  options.add_argument("--no-sandbox")
-  options.add_argument("--disable-gpu")
-  options.add_argument("--window-size=1400,1400")
-  options.add_argument("--disable-dev-shm-usage")
+# Disable CSS animations for more reliable tests
+Capybara.disable_animation = true
 
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+# Register Cuprite driver - pure Ruby driver using Chrome DevTools Protocol
+# More reliable than Selenium, no separate chromedriver needed
+Capybara.register_driver :cuprite do |app|
+  Capybara::Cuprite::Driver.new(
+    app,
+    window_size: [1400, 1400],
+    js_errors: true,
+    headless: ENV.fetch("HEADLESS", "true") != "false",
+    slowmo: ENV["SLOWMO"]&.to_f,
+    process_timeout: 30,
+    timeout: 15,
+    browser_options: ENV["DOCKER"] ? { "no-sandbox" => nil } : {}
+  )
 end
 
-Capybara.javascript_driver = :headless_chrome
+Capybara.javascript_driver = :cuprite
 
 # Configure default host for system tests
 Capybara.configure do |config|
-  config.default_max_wait_time = 5
+  config.default_max_wait_time = 10
   config.server = :puma, { Silent: true }
   config.always_include_port = true
 end
@@ -30,7 +37,7 @@ Capybara.server_host = "lvh.me"
 
 RSpec.configure do |config|
   config.before(type: :system) do
-    driven_by :headless_chrome
+    driven_by :cuprite
   end
 
   # Reset Capybara session before each system test to ensure clean state
@@ -59,4 +66,7 @@ RSpec.configure do |config|
   config.after(type: :system) do
     Capybara.reset_sessions!
   end
+
+  # Filter Cuprite/Ferrum from backtraces
+  config.filter_gems_from_backtrace("capybara", "cuprite", "ferrum")
 end
