@@ -91,7 +91,7 @@ class UserDatatable < Datatable
         <a href="#{edit_admin_user_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(full_name)}
         </a>
-        <span class="text-xs text-gray-500">#{ERB::Util.html_escape(record.email)}</span>
+        <span class="text-xs text-gray-400 font-mono">ID: #{record.id} · #{ERB::Util.html_escape(record.email)}</span>
       </div>
     HTML
   end

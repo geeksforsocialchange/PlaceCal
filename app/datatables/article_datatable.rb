@@ -86,7 +86,7 @@ class ArticleDatatable < Datatable
         <a href="#{edit_admin_article_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.title)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">#{ERB::Util.html_escape(record.slug)}</span>
+        <span class="text-xs text-gray-400 font-mono">ID: #{record.id} · #{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
   end

@@ -69,20 +69,21 @@ class NeighbourhoodDatatable < Datatable
   private
 
   def render_name_cell(record)
+    subtitle = "ID: #{record.id} · #{ERB::Util.html_escape(record.unit_name || record.unit)}"
     if can_view?(record)
       <<~HTML.html_safe
         <div class="flex flex-col">
           <a href="#{admin_neighbourhood_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
             #{ERB::Util.html_escape(record.name)}
           </a>
-          <span class="text-xs text-gray-400">#{ERB::Util.html_escape(record.unit_name || record.unit)}</span>
+          <span class="text-xs text-gray-400 font-mono">#{subtitle}</span>
         </div>
       HTML
     else
       <<~HTML.html_safe
         <div class="flex flex-col">
           <span class="font-medium text-gray-900">#{ERB::Util.html_escape(record.name)}</span>
-          <span class="text-xs text-gray-400">#{ERB::Util.html_escape(record.unit_name || record.unit)}</span>
+          <span class="text-xs text-gray-400 font-mono">#{subtitle}</span>
         </div>
       HTML
     end
