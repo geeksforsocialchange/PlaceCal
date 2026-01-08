@@ -82,8 +82,9 @@ Then("the {string} filter should show {string}") do |filter_label, expected_valu
   expect(matching_select.value).not_to be_empty
 
   # The value in the select is the ID, but we want to verify the visible text
+  # Use start_with to allow for count suffix like "Age Friendly (1)"
   selected_option = matching_select.find("option[value='#{matching_select.value}']")
-  expect(selected_option.text).to eq(expected_value)
+  expect(selected_option.text).to start_with(expected_value)
 end
 
 Then("the {string} filter should be cleared") do |filter_label|

@@ -69,7 +69,7 @@ module SystemHelpers
     attempts = 0
     begin
       yield
-    rescue Capybara::ElementNotFound, Selenium::WebDriver::Error::StaleElementReferenceError => e
+    rescue Capybara::ElementNotFound, Ferrum::NodeNotFoundError => e
       attempts += 1
       retry if attempts < max_attempts
       raise e

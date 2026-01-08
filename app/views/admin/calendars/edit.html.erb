@@ -1,5 +1,1 @@
-<script>
-  const currentInfo = <%= @calendar.to_json.html_safe %>
-</script>
-
 <%= render AdminEdit.new(model: :calendar, title: @calendar.name) %>

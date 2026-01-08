@@ -18,9 +18,12 @@ When("I edit the user {string}") do |name|
   click_link "Users"
   await_datatables
   # The user name is a link to the edit page (first name links to edit)
+  # Find within the datatable to avoid ambiguity with column headers
   parts = name.split(" ", 2)
   first_name = parts[0]
-  click_link first_name
+  within("[data-admin-table-target='tbody']") do
+    click_link first_name
+  end
 end
 
 When("I create a new user with name {string}") do |name|

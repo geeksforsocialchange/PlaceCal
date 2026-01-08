@@ -459,7 +459,7 @@ create(:service_area, partner: partner, neighbourhood: ward)
 | File                                 | Purpose                      |
 | ------------------------------------ | ---------------------------- |
 | `spec/rails_helper.rb`               | Main RSpec configuration     |
-| `spec/support/capybara.rb`           | Browser/Selenium setup       |
+| `spec/support/capybara.rb`           | Browser/Cuprite setup        |
 | `spec/support/tom_select_helpers.rb` | Tom Select dropdown helpers  |
 | `spec/support/system_helpers.rb`     | System test utilities        |
 | `spec/support/site_helpers.rb`       | `create_default_site` helper |

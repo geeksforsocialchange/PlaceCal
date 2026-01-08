@@ -15,12 +15,12 @@ end
 When("I click {string}") do |text|
   # Try clicking as a link first, then as a button
   if page.has_link?(text, wait: 1)
-    click_link text
+    click_link text, match: :first
   elsif page.has_button?(text, wait: 1)
-    click_button text
+    click_button text, match: :first
   else
     # Fall back to finding any clickable element with this text
-    find(:xpath, "//*[text()='#{text}' or contains(text(), '#{text}')]").click
+    find(:xpath, "//*[text()='#{text}' or contains(text(), '#{text}')]", match: :first).click
   end
 end
 
