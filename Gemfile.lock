@@ -187,9 +187,6 @@ GEM
       cucumber (>= 7, < 11)
       railties (>= 6.1, < 9)
     cucumber-tag-expressions (8.1.0)
-    cuprite (0.15)
-      capybara (~> 3.0)
-      ferrum (~> 0.14.0)
     database_cleaner-active_record (2.2.2)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
@@ -286,11 +283,6 @@ GEM
       json (~> 2.0)
       mime-types (~> 3.4)
       rack (< 3)
-    ferrum (0.14)
-      addressable (~> 2.5)
-      concurrent-ruby (~> 1.1)
-      webrick (~> 1.7)
-      websocket-driver (>= 0.6, < 0.8)
     ffi (1.17.0)
     ffi (1.17.0-x86_64-linux-gnu)
     fiber-annotation (0.2.0)
@@ -689,7 +681,6 @@ DEPENDENCIES
   coffee-rails
   csv
   cucumber-rails
-  cuprite (= 0.15)
   database_cleaner-active_record
   database_consistency
   delayed_job_active_record

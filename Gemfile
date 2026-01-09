@@ -114,7 +114,6 @@ end
 group :test do
   gem 'capybara'
   gem 'cucumber-rails', require: false
-  gem 'cuprite', '0.15'  # Used by Cucumber tests
   gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'
   gem 'faker'
@@ -124,7 +123,7 @@ group :test do
   gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 7.0'
-  gem 'selenium-webdriver'  # Used by RSpec system tests (more stable in CI than Cuprite)
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov', require: false
   gem 'timecop'
