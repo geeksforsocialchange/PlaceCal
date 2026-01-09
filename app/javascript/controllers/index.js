@@ -57,3 +57,9 @@ application.register(
 
 import PartnerTabsController from "./partner_tabs_controller.js";
 application.register("partner-tabs", PartnerTabsController);
+
+import AutoExpandController from "./auto_expand_controller.js";
+application.register("auto-expand", AutoExpandController);
+
+import CharCounterController from "./char_counter_controller.js";
+application.register("char-counter", CharCounterController);
