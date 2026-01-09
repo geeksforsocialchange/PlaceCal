@@ -136,6 +136,22 @@ jobs:
           path: tmp/capybara/
           if-no-files-found: ignore
 
+  # This job provides a single status check for branch protection rules
+  # It runs on all PRs and pushes, unlike deploy which only runs on main/production
+  ci:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ]; then
+            echo "lint result: ${{ needs.lint.result }}"
+            echo "test result: ${{ needs.test.result }}"
+            exit 1
+          fi
+          echo "All checks passed!"
+
   deploy:
     needs: [lint, test]
     runs-on: ubuntu-latest
