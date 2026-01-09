@@ -66,18 +66,15 @@ RSpec.configure do |config|
   # Disable transactional fixtures for system/feature tests
   # System tests run in separate threads from the browser - transactions
   # would cause the browser to see uncommitted data, leading to hangs
-  config.before(:each, type: :system) do |example|
+  config.before(:each, type: :system) do
     self.use_transactional_tests = false
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
-    puts "[SYSTEM TEST] Starting: #{example.description}" if ENV["CI"]
     # driven_by is required for Rails system test integration (screenshots, etc.)
     driven_by :cuprite
-    puts "[SYSTEM TEST] Driver initialized" if ENV["CI"]
   end
 
-  config.after(:each, type: :system) do |example|
-    puts "[SYSTEM TEST] Completed: #{example.description}" if ENV["CI"]
+  config.after(:each, type: :system) do
     DatabaseCleaner.clean
   end
 
