@@ -110,7 +110,12 @@ jobs:
 
       - name: Run RSpec system tests
         if: matrix.suite == 'system'
-        run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
+        run: |
+          echo "Chrome path: $BROWSER_PATH"
+          echo "Testing Chrome..."
+          $BROWSER_PATH --version || echo "Chrome version check failed"
+          echo "Starting system tests..."
+          RUN_SLOW_TESTS=true bundle exec rspec spec/system --format documentation
         env:
           BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 

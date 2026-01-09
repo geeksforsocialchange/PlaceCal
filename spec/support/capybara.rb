@@ -53,6 +53,8 @@ Capybara.app_host = "http://lvh.me"
 Capybara.server_host = "127.0.0.1"
 
 RSpec.configure do |config|
+  # Use Cuprite driver for system tests - driven_by is required for Rails
+  # system test integration (screenshot on failure, etc.)
   config.before(type: :system) do
     driven_by :cuprite
   end
