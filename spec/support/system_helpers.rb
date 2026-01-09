@@ -2,42 +2,47 @@
 
 # Helpers for system specs
 module SystemHelpers
-  # Navigate to a specific step in a multi-step form
-  # Steps are: 0=Basic Info, 1=Place, 2=Contact, 3=Tags, 4=Admin
-  def go_to_form_step(step_number)
-    # Wait for multi-step form to be initialized
-    expect(page).to have_css("[data-controller='multi-step-form']", wait: 10)
+  # Navigate to a specific tab in the partner form using daisyUI tabs
+  # Uses the aria-label attribute to find the correct tab
+  def go_to_partner_tab(tab_label)
+    # Wait for partner-tabs controller to be initialized
+    expect(page).to have_css("[data-controller*='partner-tabs']", wait: 10)
 
-    button = find("[data-multi-step-form-target='stepButton'][data-step='#{step_number}']", wait: 10)
-    button.click
+    # Find and click the tab by its aria-label
+    tab = find("input.tab[aria-label='#{tab_label}']", wait: 10)
+    tab.click
 
-    # Wait for the button to become active (has orange background)
-    expect(page).to have_css(
-      "[data-multi-step-form-target='stepButton'][data-step='#{step_number}'].bg-placecal-orange",
-      wait: 5
-    )
-    sleep 0.1 # Brief pause for DOM update (animations disabled)
+    # Wait for the tab content to be visible
+    sleep 0.2 # Brief pause for tab switch
   end
 
-  # Named helpers for common form steps
+  # Named helpers for common form tabs
   def go_to_basic_info_tab
-    go_to_form_step(0)
+    go_to_partner_tab("Basic Info")
   end
 
   def go_to_place_tab
-    go_to_form_step(1)
+    go_to_partner_tab("Location")
   end
 
   def go_to_contact_tab
-    go_to_form_step(2)
+    go_to_partner_tab("Contact")
   end
 
   def go_to_tags_tab
-    go_to_form_step(3)
+    go_to_partner_tab("Tags")
   end
 
-  def go_to_admin_tab
-    go_to_form_step(4)
+  def go_to_calendars_tab
+    go_to_partner_tab("Calendars")
+  end
+
+  def go_to_admins_tab
+    go_to_partner_tab("Admins")
+  end
+
+  def go_to_settings_tab
+    go_to_partner_tab("⚙ Settings")
   end
 
   # Click a sidebar navigation link
@@ -63,7 +68,7 @@ module SystemHelpers
     attempts = 0
     begin
       yield
-    rescue Capybara::ElementNotFound, Ferrum::NodeNotFoundError => e
+    rescue Capybara::ElementNotFound => e
       attempts += 1
       retry if attempts < max_attempts
       raise e
