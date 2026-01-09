@@ -89,8 +89,20 @@ module TomSelectHelpers
         })()
       JS
 
-      # Wait for Tom Select to update the DOM
-      sleep 0.3
+      # Wait for the item to appear in the DOM with the expected text
+      # This is more robust than a fixed sleep
+      begin
+        Timeout.timeout(10) do
+          loop do
+            item = wrapper.all(:css, ".ts-control .item").last
+            break if item&.text&.include?(option)
+
+            sleep 0.1
+          end
+        end
+      rescue Timeout::Error
+        # Continue anyway, let the assertion handle the failure
+      end
     end
   end
 
