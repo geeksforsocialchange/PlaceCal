@@ -16,29 +16,29 @@ module SystemHelpers
     sleep 0.2 # Brief pause for tab switch
   end
 
-  # Named helpers for common form tabs
+  # Named helpers for common form tabs (with emoji icons)
   def go_to_basic_info_tab
-    go_to_partner_tab("Basic Info")
+    go_to_partner_tab("📋 Basic Info")
   end
 
   def go_to_place_tab
-    go_to_partner_tab("Location")
+    go_to_partner_tab("📍 Location")
   end
 
   def go_to_contact_tab
-    go_to_partner_tab("Contact")
+    go_to_partner_tab("📞 Contact")
   end
 
   def go_to_tags_tab
-    go_to_partner_tab("Tags")
+    go_to_partner_tab("🏷️ Tags")
   end
 
   def go_to_calendars_tab
-    go_to_partner_tab("Calendars")
+    go_to_partner_tab("📅 Calendars")
   end
 
   def go_to_admins_tab
-    go_to_partner_tab("Admins")
+    go_to_partner_tab("👥 Admins")
   end
 
   def go_to_settings_tab

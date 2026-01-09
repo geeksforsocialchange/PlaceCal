@@ -126,17 +126,17 @@ end
 
 # Navigate to a specific tab in the partner form (daisyUI tabs)
 When("I go to the {string} step") do |step_name|
-  # Map step names to their tab aria-labels
+  # Map step names to their tab aria-labels (with emoji icons)
   tab_labels = {
-    "basic info" => "Basic Info",
-    "place" => "Location",
-    "location" => "Location",
-    "contact" => "Contact",
-    "tags" => "Tags",
-    "admin" => "Admins",
-    "admins" => "Admins",
+    "basic info" => "📋 Basic Info",
+    "place" => "📍 Location",
+    "location" => "📍 Location",
+    "contact" => "📞 Contact",
+    "tags" => "🏷️ Tags",
+    "admin" => "👥 Admins",
+    "admins" => "👥 Admins",
     "settings" => "⚙ Settings",
-    "calendars" => "Calendars"
+    "calendars" => "📅 Calendars"
   }
 
   tab_label = tab_labels[step_name.downcase]

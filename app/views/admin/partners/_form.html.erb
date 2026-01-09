@@ -18,7 +18,7 @@
 
   <%# Radio Tabs - daisyUI tabs-lift %>
   <div role="tablist" class="tabs tabs-lift">
-    <input type="radio" name="partner_tabs" class="tab" aria-label="Basic Info" data-partner-tabs-target="tab" data-hash="basic" checked="checked" />
+    <input type="radio" name="partner_tabs" class="tab" aria-label="📋 Basic Info" data-partner-tabs-target="tab" data-hash="basic" checked="checked" />
     <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="basic">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-4">
@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="Location" data-partner-tabs-target="tab" data-hash="location" />
+    <input type="radio" name="partner_tabs" class="tab" aria-label="📍 Location" data-partner-tabs-target="tab" data-hash="location" />
     <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="location">
       <h2 class="text-lg font-bold mb-1">Location</h2>
       <p class="text-sm text-base-content/60 mb-6">Partners need at least one place - either a fixed address or a service area.</p>
@@ -169,7 +169,7 @@
       <%= render 'opening_times', f: f %>
     </div>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="Contact" data-partner-tabs-target="tab" data-hash="contact" />
+    <input type="radio" name="partner_tabs" class="tab" aria-label="📞 Contact" data-partner-tabs-target="tab" data-hash="contact" />
     <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="contact">
       <h2 class="text-lg font-bold mb-1">Online Presence</h2>
       <p class="text-sm text-base-content/60 mb-6">Website and social media links.</p>
@@ -265,7 +265,7 @@
       </div>
     </div>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="Tags" data-partner-tabs-target="tab" data-hash="tags" />
+    <input type="radio" name="partner_tabs" class="tab" aria-label="🏷️ Tags" data-partner-tabs-target="tab" data-hash="tags" />
     <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="tags">
       <h2 class="text-lg font-bold mb-1">Tags & Associations</h2>
       <p class="text-sm text-base-content/60 mb-6">Categorise this partner and link to partnerships.</p>
@@ -304,7 +304,7 @@
     </div>
 
     <% unless @partner.new_record? %>
-      <input type="radio" name="partner_tabs" class="tab" aria-label="Calendars" data-partner-tabs-target="tab" data-hash="calendars" />
+      <input type="radio" name="partner_tabs" class="tab" aria-label="📅 Calendars" data-partner-tabs-target="tab" data-hash="calendars" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="calendars">
         <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
           <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -344,7 +344,7 @@
         </div>
       </div>
 
-      <input type="radio" name="partner_tabs" class="tab" aria-label="Admins" data-partner-tabs-target="tab" data-hash="admins" />
+      <input type="radio" name="partner_tabs" class="tab" aria-label="👥 Admins" data-partner-tabs-target="tab" data-hash="admins" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="admins">
         <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
           <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -388,7 +388,7 @@
         <% end %>
       </div>
 
-      <input type="radio" name="partner_tabs" class="tab" aria-label="Preview" data-partner-tabs-target="tab" data-hash="preview" />
+      <input type="radio" name="partner_tabs" class="tab" aria-label="👁️ Preview" data-partner-tabs-target="tab" data-hash="preview" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="preview">
         <h2 class="text-lg font-bold mb-1">Live Site Preview</h2>
         <p class="text-sm text-base-content/60 mb-6">How this partner appears on PlaceCal.</p>
