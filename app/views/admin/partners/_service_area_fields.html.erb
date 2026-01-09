@@ -2,40 +2,42 @@
      data-controller="cascading-neighbourhood"
      data-cascading-neighbourhood-country-value="9402">
 
-  <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-end">
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend text-xs">Region</legend>
-      <select class="select select-bordered select-sm w-full"
-              data-cascading-neighbourhood-target="region"
-              data-action="change->cascading-neighbourhood#regionChanged">
-        <option value="">Loading...</option>
-      </select>
-    </fieldset>
+  <div class="flex gap-2 items-end">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1">
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-xs">Region</legend>
+        <select class="select select-bordered select-sm w-full"
+                data-cascading-neighbourhood-target="region"
+                data-action="change->cascading-neighbourhood#regionChanged">
+          <option value="">Loading...</option>
+        </select>
+      </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend text-xs">Area</legend>
-      <select class="select select-bordered select-sm w-full"
-              data-cascading-neighbourhood-target="district"
-              data-action="change->cascading-neighbourhood#districtChanged"
-              disabled>
-        <option value="">Select area...</option>
-      </select>
-    </fieldset>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-xs">Area</legend>
+        <select class="select select-bordered select-sm w-full"
+                data-cascading-neighbourhood-target="district"
+                data-action="change->cascading-neighbourhood#districtChanged"
+                disabled>
+          <option value="">Select area...</option>
+        </select>
+      </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend text-xs">Ward</legend>
-      <select class="select select-bordered select-sm w-full"
-              data-cascading-neighbourhood-target="ward"
-              data-action="change->cascading-neighbourhood#wardChanged"
-              disabled>
-        <option value="">Select ward...</option>
-      </select>
-    </fieldset>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-xs">Ward</legend>
+        <select class="select select-bordered select-sm w-full"
+                data-cascading-neighbourhood-target="ward"
+                data-action="change->cascading-neighbourhood#wardChanged"
+                disabled>
+          <option value="">Select ward...</option>
+        </select>
+      </fieldset>
+    </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1 pb-1">
       <span class="loading loading-spinner loading-xs hidden" data-cascading-neighbourhood-target="loading"></span>
       <%- if !f.object.neighbourhood_id || current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id)%>
-        <%= nested_form_remove_link(f, 'Remove', class: 'btn btn-ghost btn-sm text-error') %>
+        <%= nested_form_remove_link(f, '<svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>'.html_safe, class: 'btn btn-ghost btn-sm btn-square text-error') %>
       <% end %>
     </div>
   </div>

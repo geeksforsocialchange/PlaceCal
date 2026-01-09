@@ -113,7 +113,7 @@
             Service Areas
           </h3>
           <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address.</p>
-          <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-primary btn-sm', partial: 'service_area_fields') do %>
+          <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
             <%= f.simple_fields_for :service_areas do |neighbourhood| %>
               <%= render 'service_area_fields', f: neighbourhood %>
             <% end %>
@@ -234,7 +234,7 @@
           <div class="flex flex-wrap gap-4">
             <% Facility.all.each do |facility| %>
               <label class="label cursor-pointer gap-2 justify-start">
-                <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-primary checkbox-sm', id: "facility_#{facility.id}" %>
+                <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm accent-placecal-orange', id: "facility_#{facility.id}" %>
                 <span class="label-text"><%= facility.name %></span>
               </label>
             <% end %>
@@ -248,7 +248,7 @@
           <div class="flex flex-wrap gap-4">
             <% Category.all.each do |category| %>
               <label class="label cursor-pointer gap-2 justify-start">
-                <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-secondary checkbox-sm', id: "category_#{category.id}" %>
+                <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm accent-placecal-orange', id: "category_#{category.id}" %>
                 <span class="label-text"><%= category.name %></span>
               </label>
             <% end %>
@@ -259,70 +259,88 @@
     </div>
 
     <% unless @partner.new_record? %>
-      <input type="radio" name="partner_tabs" class="tab" aria-label="Connections" data-partner-tabs-target="tab" data-hash="connections" />
-      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="connections">
-        <h2 class="text-lg font-bold mb-1">Connected Entities</h2>
-        <p class="text-sm text-base-content/60 mb-6">Calendars and users linked to this partner.</p>
+      <input type="radio" name="partner_tabs" class="tab" aria-label="Calendars" data-partner-tabs-target="tab" data-hash="calendars" />
+      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="calendars">
+        <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Calendars
+          <span class="badge badge-neutral"><%= @partner.calendars.count %></span>
+        </h2>
+        <p class="text-sm text-base-content/60 mb-6">Event sources connected to this partner.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="card bg-base-200/50 border border-base-300">
-            <div class="card-body p-4">
-              <h3 class="font-semibold flex items-center gap-2">
-                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                Calendars
-                <span class="badge badge-neutral badge-sm"><%= @partner.calendars.count %></span>
-              </h3>
-              <% if @partner.calendars.any? %>
-                <ul class="menu menu-sm bg-base-100 rounded-box mt-2 max-h-48 overflow-y-auto">
-                  <% @partner.calendars.each do |calendar| %>
-                    <li><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></li>
-                  <% end %>
-                </ul>
-              <% else %>
-                <p class="text-sm text-base-content/60 mt-2">No calendars connected yet.</p>
-              <% end %>
-              <div class="mt-4">
-                <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-primary btn-sm" do %>
-                  <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                  Add Calendar
-                <% end %>
+        <% if @partner.calendars.any? %>
+          <div class="grid gap-3 max-w-2xl">
+            <% @partner.calendars.each do |calendar| %>
+              <div class="card card-compact bg-base-200/50 border border-base-300">
+                <div class="card-body flex-row items-center justify-between">
+                  <div>
+                    <h3 class="font-medium"><%= calendar.name %></h3>
+                    <p class="text-xs text-base-content/60"><%= calendar.source %></p>
+                  </div>
+                  <%= link_to "Edit", edit_admin_calendar_path(calendar), class: "btn btn-ghost btn-sm" %>
+                </div>
               </div>
-            </div>
+            <% end %>
           </div>
+        <% else %>
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <p class="mt-2 text-base-content/60">No calendars connected yet</p>
+          </div>
+        <% end %>
 
-          <div class="card bg-base-200/50 border border-base-300">
-            <div class="card-body p-4">
-              <h3 class="font-semibold flex items-center gap-2">
-                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                Partner Admins
-                <span class="badge badge-neutral badge-sm"><%= @partner.users.count %></span>
-              </h3>
-              <% if @partner.users.any? %>
-                <ul class="menu menu-sm bg-base-100 rounded-box mt-2 max-h-48 overflow-y-auto">
-                  <% @partner.users.each do |p_user| %>
-                    <li>
-                      <% if policy(User).update? %>
-                        <%= link_to p_user.email, edit_admin_user_path(p_user) %>
-                      <% else %>
-                        <span><%= p_user.email %></span>
-                      <% end %>
-                    </li>
-                  <% end %>
-                </ul>
-              <% else %>
-                <p class="text-sm text-base-content/60 mt-2">No admins assigned yet.</p>
-              <% end %>
-              <% if policy(User).update? %>
-                <div class="mt-4">
-                  <%= link_to new_admin_user_path(partner_id: @partner.id), class: "btn btn-primary btn-sm" do %>
-                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Add Admin
+        <div class="mt-6">
+          <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add Calendar
+          <% end %>
+        </div>
+      </div>
+
+      <input type="radio" name="partner_tabs" class="tab" aria-label="Admins" data-partner-tabs-target="tab" data-hash="admins" />
+      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="admins">
+        <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Admins
+          <span class="badge badge-neutral"><%= @partner.users.count %></span>
+        </h2>
+        <p class="text-sm text-base-content/60 mb-6">Users who can manage this partner.</p>
+
+        <% if @partner.users.any? %>
+          <div class="grid gap-3 max-w-2xl">
+            <% @partner.users.each do |p_user| %>
+              <div class="card card-compact bg-base-200/50 border border-base-300">
+                <div class="card-body flex-row items-center justify-between">
+                  <div>
+                    <h3 class="font-medium"><%= p_user.email %></h3>
+                    <p class="text-xs text-base-content/60">Added <%= time_ago_in_words(p_user.created_at) %> ago</p>
+                  </div>
+                  <% if policy(User).update? %>
+                    <%= link_to "Edit", edit_admin_user_path(p_user), class: "btn btn-ghost btn-sm" %>
                   <% end %>
                 </div>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
           </div>
-        </div>
+        <% else %>
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <p class="mt-2 text-base-content/60">No admins assigned yet</p>
+          </div>
+        <% end %>
+
+        <% if policy(User).update? %>
+          <div class="mt-6">
+            <%= link_to new_admin_user_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Admin
+            <% end %>
+          </div>
+        <% end %>
       </div>
 
       <input type="radio" name="partner_tabs" class="tab" aria-label="Preview" data-partner-tabs-target="tab" data-hash="preview" />
@@ -382,14 +400,14 @@
                     <% if @partner.url.present? %>
                       <div class="mb-3">
                         <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Website</div>
-                        <%= link_to @partner.url, @partner.url, target: '_blank', class: 'link link-primary break-all' %>
+                        <%= link_to @partner.url, @partner.url, target: '_blank', class: 'link text-placecal-orange hover:text-orange-600 break-all' %>
                       </div>
                     <% end %>
 
                     <% if @partner.public_email.present? %>
                       <div class="mb-3">
                         <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Email</div>
-                        <%= mail_to @partner.public_email, @partner.public_email, class: 'link link-primary' %>
+                        <%= mail_to @partner.public_email, @partner.public_email, class: 'link text-placecal-orange hover:text-orange-600' %>
                       </div>
                     <% end %>
 
@@ -433,7 +451,7 @@
                     </td>
                     <td>
                       <% if event.calendar %>
-                        <%= link_to event.calendar.name, edit_admin_calendar_path(event.calendar), class: "link link-primary text-sm" %>
+                        <%= link_to event.calendar.name, edit_admin_calendar_path(event.calendar), class: "link text-placecal-orange hover:text-orange-600 text-sm" %>
                       <% end %>
                     </td>
                   </tr>
@@ -452,11 +470,11 @@
       </div>
     <% end %>
 
-    <%# Spacer to push Admin tab right %>
+    <%# Spacer to push Settings tab right %>
     <div class="tab flex-1 cursor-default"></div>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="⚙ Admin" data-partner-tabs-target="tab" data-hash="admin" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="admin">
+    <input type="radio" name="partner_tabs" class="tab" aria-label="⚙ Settings" data-partner-tabs-target="tab" data-hash="settings" />
+    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="settings">
       <% if policy(@partner).permitted_attributes.include? :slug %>
         <div class="mb-8">
           <h2 class="text-lg font-bold mb-1">URL Settings</h2>
