@@ -169,8 +169,8 @@ Feature: Partner Editing
     And I go to the "Place" step
     Then I should see "Opening Times"
     And I should see "Day"
-    And I should see "Opening Time"
-    And I should see "Closing Time"
+    And I should see "Opens"
+    And I should see "Closes"
 
   Scenario: Adding opening times to a partner
     Given there is a partner called "9 to 5 Partner"

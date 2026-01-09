@@ -64,18 +64,20 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       go_to_place_tab
 
       within '[data-controller="opening-times"]' do
-        select "Sunday", from: "day"
-        check("allDay")
-        click_button "Add"
+        # Use Stimulus targets for selecting elements
+        find('[data-opening-times-target="day"]').select("Sunday")
+        find('[data-opening-times-target="allDay"]').check
+        click_button "Add Opening Time"
 
         expected_time = '{"@type":"OpeningHoursSpecification","dayOfWeek":"http://schema.org/Sunday","opens":"00:00:00","closes":"23:59:00"}'
         data = find('[data-opening-times-target="textarea"]', visible: :hidden).value
 
-        expect(all(:css, ".list-group-item").last.text).to start_with("Sunday all day")
+        # New UI uses div elements, not li.list-group-item
+        expect(find('[data-opening-times-target="list"] div', text: /Sunday/, wait: 5).text).to include("Sunday all day")
         expect(data).to include(expected_time)
 
-        # Remove the opening time
-        all(:css, ".list-group-item").last.click_button("Remove")
+        # Remove the opening time - click the button inside the div
+        find('[data-opening-times-target="list"] div', text: /Sunday/).find("button").click
         data = find('[data-opening-times-target="textarea"]', visible: :hidden).value
         expect(data).not_to include(expected_time)
       end

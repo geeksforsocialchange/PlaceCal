@@ -270,3 +270,15 @@
 	background: oklch(var(--b3)) !important;
 	color: oklch(var(--bc) / 0.7) !important;
 }
+
+/* Custom orange checkboxes for PlaceCal theme */
+.checkbox-warning:checked,
+.checkbox-warning[checked="checked"],
+.checkbox-warning:indeterminate {
+	--chkbg: var(--color-placecal-orange) !important;
+	border-color: var(--color-placecal-orange) !important;
+}
+
+.checkbox-warning {
+	border-color: var(--color-placecal-orange) !important;
+}

@@ -24,9 +24,16 @@ When("I click {string}") do |text|
   end
 end
 
-When("I click {string} and confirm") do |link_text|
+When("I click {string} and confirm") do |text|
   accept_confirm do
-    click_link link_text
+    # Try link first, then button, then any clickable element
+    if page.has_link?(text, wait: 1)
+      click_link text
+    elsif page.has_button?(text, wait: 1)
+      click_button text
+    else
+      find(:xpath, "//*[text()='#{text}' or contains(text(), '#{text}')]", match: :first).click
+    end
   end
 end
 

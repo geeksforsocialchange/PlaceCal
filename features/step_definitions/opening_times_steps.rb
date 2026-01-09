@@ -3,34 +3,40 @@
 # Step definitions for opening times picker (Stimulus controller)
 
 When("I add opening time {string} from {string} to {string}") do |day, open_time, close_time|
-  # Select the day
-  select day, from: "day"
+  # Wait for Stimulus controller to be connected
+  expect(page).to have_css("[data-controller='opening-times']", wait: 5)
 
-  # Set opening time
-  fill_in "open", with: open_time
+  # Select the day using the Stimulus target
+  find("[data-opening-times-target='day']").select(day)
 
-  # Set closing time
-  fill_in "close", with: close_time
+  # Set opening time using the Stimulus target
+  find("[data-opening-times-target='open']").set(open_time)
 
-  # Click Add button
-  click_button "Add"
+  # Set closing time using the Stimulus target
+  find("[data-opening-times-target='close']").set(close_time)
 
-  # Wait for the opening time to be added to the list
-  expect(page).to have_css("[data-opening-times-target='list'] li", wait: 5)
+  # Click Add button using the Stimulus action
+  find("button[data-action*='opening-times#addOpeningTime']").click
+
+  # Wait for the opening time to be added to the list (the list item is a div with flex class)
+  expect(page).to have_css("[data-opening-times-target='list'] div.flex", text: day, wait: 5)
 end
 
 When("I add all-day opening time for {string}") do |day|
-  # Select the day
-  select day, from: "day"
+  # Wait for Stimulus controller to be connected
+  expect(page).to have_css("[data-controller='opening-times']", wait: 5)
 
-  # Check all day checkbox
-  check "allDay"
+  # Select the day using the Stimulus target
+  find("[data-opening-times-target='day']").select(day)
 
-  # Click Add button
-  click_button "Add"
+  # Check all day checkbox using the Stimulus target
+  find("[data-opening-times-target='allDay']").check
 
-  # Wait for the opening time to be added to the list
-  expect(page).to have_css("[data-opening-times-target='list'] li", wait: 5)
+  # Click Add button using the Stimulus action
+  find("button[data-action*='opening-times#addOpeningTime']").click
+
+  # Wait for the opening time to be added to the list (the list item is a div with flex class)
+  expect(page).to have_css("[data-opening-times-target='list'] div.flex", text: day, wait: 5)
 end
 
 Then("the partner should have opening time on {string}") do |day|

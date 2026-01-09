@@ -30,12 +30,14 @@ When("I create a new partner with name {string}") do |name|
   click_link "Partners"
   await_datatables
   click_link "Add Partner"
+
+  # New partner form uses simple_form labels, not fieldset/legend pattern
   fill_in "Name", with: name
 
-  # Fill in address (required - partner needs address or service area)
-  fill_in "Street address", with: "123 Main Street"
-  fill_in "City", with: "Millbrook"
-  fill_in "Postcode", with: "ZZMB 1RS"
+  # Address uses fieldset/legend pattern (from partial)
+  fill_in_fieldset "Street address", with: "123 Main Street"
+  fill_in_fieldset "City", with: "Millbrook"
+  fill_in_fieldset "Postcode", with: "ZZMB 1RS"
 
   # Wait for any async validation to complete
   sleep 0.3

@@ -2,44 +2,50 @@
 <%# Everything else is written in HTML so that the syntax matches the stimulus docs %>
 
 <div data-controller="opening-times" data-opening-times-data-value='<%= @partner.opening_times_data %>'>
-  <ul class="space-y-2" data-opening-times-target="list">
-  </ul>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <%# Current times - left side %>
+    <div class="bg-base-200 rounded-lg p-4 min-h-40">
+      <div data-opening-times-target="list" class="space-y-2">
+        <%# Items rendered by Stimulus controller %>
+      </div>
+      <p data-opening-times-target="empty" class="text-base-content/50 italic text-center py-6 <%= @partner.opening_times.present? ? 'hidden' : '' %>">No opening times set yet</p>
+    </div>
 
-  <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Day</legend>
-      <select class="select select-bordered w-full" id="day" data-opening-times-target="day">
-        <option value="Monday">Monday</option>
-        <option value="Tuesday">Tuesday</option>
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option>
-        <option value="Friday">Friday</option>
-        <option value="Saturday">Saturday</option>
-        <option value="Sunday">Sunday</option>
-      </select>
-    </fieldset>
+    <%# Add new time - right side %>
+    <div class="space-y-3">
+      <div class="form-control">
+        <label class="label"><span class="label-text font-medium">Day</span></label>
+        <select class="select select-bordered w-full" data-opening-times-target="day">
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
+          <option value="Sunday">Sunday</option>
+        </select>
+      </div>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Opening Time</legend>
-      <input class="input input-bordered w-full" id="open" type="time" name="" value="00:00" data-opening-times-target="open">
-    </fieldset>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="form-control">
+          <label class="label"><span class="label-text font-medium">Opens</span></label>
+          <input class="input input-bordered w-full" type="time" value="09:00" data-opening-times-target="open">
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text font-medium">Closes</span></label>
+          <input class="input input-bordered w-full" type="time" value="17:00" data-opening-times-target="close">
+        </div>
+      </div>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Closing Time</legend>
-      <input class="input input-bordered w-full" id="close" type="time" name="" value="00:00" data-opening-times-target="close">
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">All Day</legend>
-      <label class="label cursor-pointer justify-start gap-2">
-        <input class="checkbox checkbox-sm accent-placecal-orange" id="allDay" type="checkbox" name="" value="" data-opening-times-target="allDay" data-action="change->opening-times#allDay">
-        <span class="label-text">Yes</span>
+      <label class="label cursor-pointer justify-start gap-3">
+        <input class="checkbox checkbox-warning" type="checkbox" data-opening-times-target="allDay" data-action="change->opening-times#allDay">
+        <span class="label-text">Open all day (24 hours)</span>
       </label>
-    </fieldset>
 
-    <button data-action="click->opening-times#addOpeningTime" type="button" class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange">
-      Add Time
-    </button>
+      <button data-action="click->opening-times#addOpeningTime" type="button" class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange w-full">
+        Add Opening Time
+      </button>
+    </div>
   </div>
 
   <%= f.text_area :opening_times, data: { opening_times_target: "textarea" }, hidden: true %>

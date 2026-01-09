@@ -24,6 +24,31 @@ module CucumberHelpers
   rescue Timeout::Error
     # Page didn't fully load, continue anyway
   end
+
+  # Fill in a field by finding its fieldset legend (daisyUI pattern)
+  def fill_in_fieldset(legend_text, with:)
+    # First try standard fill_in (works with label, name, or id)
+    fill_in legend_text, with: with
+  rescue Capybara::ElementNotFound
+    # Fall back to finding by fieldset legend
+    fieldsets = page.all("fieldset").select do |fs|
+      legend = fs.first("legend")
+      next false unless legend
+
+      legend_text_actual = legend.text.strip
+      legend_text_actual == legend_text ||
+        legend_text_actual.start_with?(legend_text) ||
+        legend_text_actual.downcase.include?(legend_text.downcase)
+    end
+
+    fieldset = fieldsets.find { |fs| fs.first("legend")&.text&.strip == legend_text }
+    fieldset ||= fieldsets.first
+
+    raise Capybara::ElementNotFound, "Could not find fieldset for '#{legend_text}'" unless fieldset
+
+    input = fieldset.find("input, textarea, select", match: :first)
+    input.set(with)
+  end
 end
 
 World(CucumberHelpers)

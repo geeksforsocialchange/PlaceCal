@@ -126,11 +126,8 @@
       <p class="text-sm text-base-content/60 mb-6">Partners need at least one place - either a fixed address or a service area.</p>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
-          <h3 class="font-semibold mb-4 flex items-center gap-2">
-            <svg class="size-5 text-base-content/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            Address
-          </h3>
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+          <legend class="fieldset-legend">Address</legend>
           <%= render 'address_fields', form: f, partner: @partner %>
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
             <div role="alert" class="alert alert-warning mt-4 text-sm">
@@ -144,29 +141,23 @@
               <span>Postcode not in our system yet.</span>
             </div>
           <% end %>
-        </div>
+        </fieldset>
 
-        <div>
-          <h3 class="font-semibold mb-4 flex items-center gap-2">
-            <svg class="size-5 text-base-content/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-            Service Areas
-          </h3>
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+          <legend class="fieldset-legend">Service Areas</legend>
           <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address.</p>
           <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
             <%= f.simple_fields_for :service_areas do |neighbourhood| %>
               <%= render 'service_area_fields', f: neighbourhood %>
             <% end %>
           <% end %>
-        </div>
+        </fieldset>
       </div>
 
-      <div class="divider my-8"></div>
-
-      <h3 class="font-semibold mb-4 flex items-center gap-2">
-        <svg class="size-5 text-base-content/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Opening Times
-      </h3>
-      <%= render 'opening_times', f: f %>
+      <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4 mt-8">
+        <legend class="fieldset-legend">Opening Times</legend>
+        <%= render 'opening_times', f: f %>
+      </fieldset>
     </div>
 
     <input type="radio" name="partner_tabs" class="tab" aria-label="📞 Contact" data-partner-tabs-target="tab" data-hash="contact" />
@@ -279,7 +270,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
             <% Facility.all.each do |facility| %>
               <label class="label cursor-pointer gap-2 justify-start py-1">
-                <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm checkbox-primary', id: "facility_#{facility.id}" %>
+                <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm checkbox-warning', id: "facility_#{facility.id}" %>
                 <span class="label-text text-sm"><%= facility.name %></span>
               </label>
             <% end %>
@@ -293,7 +284,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
             <% Category.all.each do |category| %>
               <label class="label cursor-pointer gap-2 justify-start py-1">
-                <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm checkbox-primary', id: "category_#{category.id}" %>
+                <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm checkbox-warning', id: "category_#{category.id}" %>
                 <span class="label-text text-sm"><%= category.name %></span>
               </label>
             <% end %>
