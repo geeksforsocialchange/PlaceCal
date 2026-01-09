@@ -85,34 +85,24 @@ module TomSelectHelpers
           var select = document.getElementById('#{select_id}');
           if (select && select.tomselect) {
             select.tomselect.addItem('#{matching_option['value']}');
+            // Force refresh of the control display
+            select.tomselect.refreshItems();
           }
         })()
       JS
 
-      # Wait for the item to appear in the DOM with the expected text
-      # This is more robust than a fixed sleep
-      begin
-        Timeout.timeout(10) do
-          loop do
-            item = wrapper.all(:css, ".ts-control .item").last
-            break if item&.text&.include?(option)
-
-            sleep 0.1
-          end
-        end
-      rescue Timeout::Error
-        # Continue anyway, let the assertion handle the failure
-      end
+      # Wait for the item element to exist and have the correct text
+      # Use Capybara's built-in waiting with longer timeout for CI
+      expect(wrapper).to have_selector(".ts-control .item", text: option, wait: 15)
     end
   end
 
   # Assert a single value is selected in Tom Select
   def assert_tom_select_single(option, node)
     await_tom_select(10)
-    # Allow time for Tom Select to render the selected item
-    sleep 0.2
     within(:xpath, node.path) do
-      expect(page).to have_selector(".ts-control .item", text: option, wait: 10)
+      # Use longer wait time for CI environments
+      expect(page).to have_selector(".ts-control .item", text: option, wait: 15)
     end
   end
 
