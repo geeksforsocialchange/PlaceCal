@@ -63,9 +63,11 @@ RSpec.configure do |config|
     Timecop.return
   end
 
-  # Database cleaner for system/feature specs (deletion strategy)
-  # Deletion is faster than truncation for PostgreSQL
+  # Disable transactional fixtures for system/feature tests
+  # System tests run in separate threads from the browser - transactions
+  # would cause the browser to see uncommitted data, leading to hangs
   config.before(:each, type: :system) do
+    self.use_transactional_tests = false
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
   end
@@ -75,6 +77,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :feature) do
+    self.use_transactional_tests = false
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
   end
