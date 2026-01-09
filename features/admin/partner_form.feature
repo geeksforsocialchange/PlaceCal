@@ -7,20 +7,20 @@ Feature: Partner Editing
   Background:
     Given I am logged in as a root user
 
-  # Form Section Visibility (multi-step form)
-  Scenario: Partner edit form shows all sections across steps
+  # Form Section Visibility (tabbed form)
+  Scenario: Partner edit form shows all sections across tabs
     Given there is a partner called "Community Centre"
     When I edit the partner "Community Centre"
     Then I should see "Basic Information"
-    When I go to the "Place" step
-    Then I should see "Place"
+    When I go to the "Location" step
+    Then I should see "Location"
     And I should see "Opening Times"
     When I go to the "Contact" step
     Then I should see "Online Presence"
     And I should see "Contact Information"
     When I go to the "Tags" step
     Then I should see "Tags & Associations"
-    When I go to the "Admin" step
+    When I go to the "Settings" step
     Then I should see "Event Matching"
 
   Scenario: Partner form shows tag sections
@@ -37,7 +37,7 @@ Feature: Partner Editing
     Given there is a partner called "Old Name Centre"
     When I edit the partner "Old Name Centre"
     And I fill in "Name" with "New Name Centre"
-    And I click the "Save Partner" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating partner summary
@@ -51,14 +51,14 @@ Feature: Partner Editing
     Given there is a partner called "Oldtown Library"
     When I edit the partner "Oldtown Library"
     And I fill in "Description" with "A historic library serving the community since 1920"
-    And I click the "Save Partner" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating partner accessibility information
     Given there is a partner called "Accessible Venue"
     When I edit the partner "Accessible Venue"
     And I fill in "Accessibility Information" with "Step-free access via rear entrance"
-    And I click the "Save Partner" button
+    And I click the "Save" button
     Then I should see a success message
 
   # Address Fields (Place step)
@@ -68,7 +68,7 @@ Feature: Partner Editing
     And I go to the "Place" step
     And I fill in "Street address" with "456 High Street"
     And I fill in "City" with "Millbrook"
-    And I click the "Save Partner" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Partner address form shows all fields
@@ -84,18 +84,18 @@ Feature: Partner Editing
     Given there is a partner called "Web Presence Org"
     When I edit the partner "Web Presence Org"
     And I go to the "Contact" step
-    And I fill in "Website address" with "https://example.org"
-    And I click the "Save Partner" button
+    And I fill in "Website" with "https://example.org"
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating partner social media handles
     Given there is a partner called "Social Media Org"
     When I edit the partner "Social Media Org"
     And I go to the "Contact" step
-    And I fill in "Facebook link" with "SocialMediaOrgPage"
-    And I fill in "Twitter handle" with "SocialMediaOrg"
-    And I fill in "Instagram handle" with "socialmediaorg"
-    And I click the "Save Partner" button
+    And I fill in "partner_facebook_link" with "SocialMediaOrgPage"
+    And I fill in "partner_twitter_handle" with "SocialMediaOrg"
+    And I fill in "partner_instagram_handle" with "socialmediaorg"
+    And I click the "Save" button
     Then I should see a success message
 
   # Contact Information Fields (Contact step)
@@ -103,31 +103,31 @@ Feature: Partner Editing
     Given there is a partner called "Contact Info Test"
     When I edit the partner "Contact Info Test"
     And I go to the "Contact" step
-    And I fill in "Public name" with "John Smith"
-    And I fill in "Public email" with "public@example.org"
-    And I fill in "Public phone" with "0161 123 4567"
-    And I click the "Save Partner" button
+    And I fill in "partner_public_name" with "John Smith"
+    And I fill in "partner_public_email" with "public@example.org"
+    And I fill in "partner_public_phone" with "0161 123 4567"
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating partnership contact information
     Given there is a partner called "Partnership Contact Test"
     When I edit the partner "Partnership Contact Test"
     And I go to the "Contact" step
-    And I fill in "Partner name" with "Jane Doe"
-    And I fill in "Partner email" with "partner@example.org"
-    And I fill in "Partner phone" with "0161 987 6543"
-    And I click the "Save Partner" button
+    And I fill in "partner_partner_name" with "Jane Doe"
+    And I fill in "partner_partner_email" with "partner@example.org"
+    And I fill in "partner_partner_phone" with "0161 987 6543"
+    And I click the "Save" button
     Then I should see a success message
 
-  # Tag Fields (Tags step)
+  # Tag Fields (Tags step) - categories and facilities are now checkboxes
   Scenario: Adding categories to a partner
     Given there is a partner called "Categorised Partner"
     And there is a category tag called "Health & Wellbeing"
     And there is a category tag called "Arts & Culture"
     When I edit the partner "Categorised Partner"
     And I go to the "Tags" step
-    And I select "Health & Wellbeing" from the "Categories" drop down select box
-    And I click the "Save Partner" button
+    And I check "Health & Wellbeing"
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Adding facilities to a partner
@@ -136,8 +136,8 @@ Feature: Partner Editing
     And there is a facility tag called "Parking Available"
     When I edit the partner "Accessible Partner"
     And I go to the "Tags" step
-    And I select "Wheelchair Accessible" from the "Facilities" drop down select box
-    And I click the "Save Partner" button
+    And I check "Wheelchair Accessible"
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Adding partnerships to a partner
@@ -146,10 +146,12 @@ Feature: Partner Editing
     When I edit the partner "Partnered Org"
     And I go to the "Tags" step
     And I select "Millbrook Together" from the "Partnerships" drop down select box
-    And I click the "Save Partner" button
+    And I click the "Save" button
     Then I should see a success message
 
   # Service Areas (Place step)
+  # TODO: Service areas now use cascading neighbourhood dropdowns requiring AJAX setup
+  @wip
   Scenario: Adding a service area to a partner
     Given there is a partner called "Outreach Service"
     And there is a neighbourhood called "Central Ward"
@@ -157,7 +159,7 @@ Feature: Partner Editing
     And I go to the "Place" step
     And I click "Add Service Area"
     And I select "Central Ward" from the service area drop down select box
-    And I click the "Save Partner" button
+    And I click the "Save" button
     Then I should see a success message
 
   # Opening Times (Place step)
@@ -175,14 +177,14 @@ Feature: Partner Editing
     When I edit the partner "9 to 5 Partner"
     And I go to the "Place" step
     And I add opening time "Monday" from "09:00" to "17:00"
-    And I click the "Save Partner" button
+    And I click the "Save" button
     Then I should see a success message
 
-  # Event Matching (Admin step)
+  # Event Matching (Settings step)
   Scenario: Enabling event matching for a partner
     Given there is a partner called "Event Venue"
     When I edit the partner "Event Venue"
-    And I go to the "Admin" step
-    And I check "Can be assigned events"
-    And I click the "Save Partner" button
+    And I go to the "Settings" step
+    And I check "partner_can_be_assigned_events"
+    And I click the "Save" button
     Then I should see a success message

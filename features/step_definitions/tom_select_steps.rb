@@ -74,27 +74,53 @@ end
 module TomSelectHelpers
   # Select an option from a Tom Select dropdown
   def tom_select_select(option, from:)
-    label = find("label", text: from, match: :prefer_exact)
-
-    # Tom Select modifies the label's for attribute to point to the control
-    # e.g., partner_category_ids becomes partner_category_ids-ts-control
-    # We need to find the ts-wrapper within the label's parent wrapper
-    # Works with both Bootstrap (form-group) and Tailwind (mb-4) wrappers
-    form_group = begin
-      label.find(:xpath, "ancestor::div[contains(@class, 'form-group')]")
+    # Try finding by label first (standard form), then by legend (daisyUI fieldset)
+    form_group = nil
+    begin
+      label = find("label", text: from, match: :prefer_exact)
+      form_group = begin
+        label.find(:xpath, "ancestor::div[contains(@class, 'form-group')]")
+      rescue Capybara::ElementNotFound
+        label.find(:xpath, "ancestor::div[contains(@class, 'mb-4')]")
+      end
     rescue Capybara::ElementNotFound
-      # Try Tailwind wrapper (mb-4 class from tw_vertical_form)
-      label.find(:xpath, "ancestor::div[contains(@class, 'mb-4')]")
+      # Try finding by fieldset legend (daisyUI pattern)
+      fieldset = find("fieldset", text: from, match: :prefer_exact)
+      form_group = fieldset
     end
-    container = form_group.find(".ts-wrapper", match: :first)
+
+    # Wait for Tom Select to initialize
+    container = form_group.find(".ts-wrapper", match: :first, wait: 5)
 
     # Click the control to open the dropdown
-    container.find(".ts-control").click
+    control = container.find(".ts-control")
+    control.click
 
-    # Wait for dropdown to appear and select option
-    # Tom Select renders the dropdown inside the wrapper
-    within(container) do
-      find(".ts-dropdown .option", text: option, match: :prefer_exact).click
+    # Wait a moment for dropdown to render
+    sleep 0.5
+
+    # First try finding dropdown with standard visibility check
+    # Then fall back to visible: :all since Capybara's visibility detection
+    # can have issues with dynamically shown elements
+    dropdown = nil
+    begin
+      dropdown = page.find(".ts-dropdown", visible: true, wait: 2)
+    rescue Capybara::ElementNotFound
+      # Capybara visibility detection can be unreliable for dynamically styled elements
+      # If the dropdown has active styles, find it with visible: :all
+      dropdowns = page.all(".ts-dropdown", visible: :all)
+      dropdown = dropdowns.find { |d| d[:style]&.include?("display: block") }
+    end
+
+    raise "Tom Select dropdown not found" unless dropdown
+
+    within(dropdown) do
+      # Find option with visible: :all for same reason
+      opt = all(".option", text: option, visible: :all, wait: 2).first
+      raise "Option '#{option}' not found in dropdown" unless opt
+
+      # Use JS click to avoid interactability issues with dynamically positioned elements
+      page.execute_script("arguments[0].click()", opt)
     end
   end
 

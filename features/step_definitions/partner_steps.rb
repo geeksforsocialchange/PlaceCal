@@ -49,8 +49,11 @@ When("I edit the partner {string}") do |name|
 end
 
 When("I update the partner summary to {string}") do |summary|
-  fill_in "Summary", with: summary
-  click_button "Save Partner"
+  # Find summary field by fieldset legend (daisyUI pattern)
+  fieldset = page.find("fieldset", text: "Summary")
+  input = fieldset.find("textarea")
+  input.set(summary)
+  click_button "Save"
 end
 
 Then("I should see the partner {string} in the list") do |name|

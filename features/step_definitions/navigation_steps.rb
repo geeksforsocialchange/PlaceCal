@@ -74,7 +74,31 @@ Then("I should see the error message {string}") do |message|
 end
 
 When("I fill in {string} with {string}") do |field, value|
+  # Try standard fill_in first (works with label, name, or id)
+
   fill_in field, with: value
+rescue Capybara::ElementNotFound
+  # Fall back to finding by fieldset legend (daisyUI pattern)
+  # First try matching the legend text directly for better accuracy
+  fieldsets = page.all("fieldset").select do |fs|
+    legend = fs.first("legend")
+    next false unless legend
+
+    # Match against legend text - exact or starts with (to handle "Partner Name *" for "Name")
+    legend_text = legend.text.strip
+    legend_text == field ||
+      legend_text.start_with?(field) ||
+      legend_text.downcase.include?(field.downcase)
+  end
+
+  # If multiple fieldsets match, prefer exact match
+  fieldset = fieldsets.find { |fs| fs.first("legend")&.text&.strip == field }
+  fieldset ||= fieldsets.first
+
+  raise Capybara::ElementNotFound, "Could not find fieldset for '#{field}'" unless fieldset
+
+  input = fieldset.find("input, textarea, select", match: :first)
+  input.set(value)
 end
 
 When("I wait for the datatable to load") do
@@ -83,53 +107,56 @@ end
 
 When("I check {string}") do |checkbox_label|
   check checkbox_label
+rescue Capybara::ElementNotFound
+  # Fall back to finding checkbox by nearby text (daisyUI pattern)
+  begin
+    label = page.find("label", text: checkbox_label)
+    checkbox = label.find("input[type='checkbox']")
+    checkbox.check
+  rescue Capybara::ElementNotFound
+    # Try finding checkbox by id derived from label
+    field_id = checkbox_label.downcase.gsub(/\s+/, "_")
+    page.find("input[type='checkbox'][id*='#{field_id}']").check
+  end
 end
 
 When("I uncheck {string}") do |checkbox_label|
   uncheck checkbox_label
 end
 
-# Navigate to a specific step in a multi-step form
+# Navigate to a specific tab in the partner form (daisyUI tabs)
 When("I go to the {string} step") do |step_name|
-  # Map step names to their indices
-  step_indices = {
-    "basic info" => 0,
-    "place" => 1,
-    "contact" => 2,
-    "tags" => 3,
-    "admin" => 4
+  # Map step names to their tab aria-labels
+  tab_labels = {
+    "basic info" => "Basic Info",
+    "place" => "Location",
+    "location" => "Location",
+    "contact" => "Contact",
+    "tags" => "Tags",
+    "admin" => "Admins",
+    "admins" => "Admins",
+    "settings" => "⚙ Settings",
+    "calendars" => "Calendars"
   }
 
-  step_index = step_indices[step_name.downcase]
-  raise "Unknown step: #{step_name}" unless step_index
+  tab_label = tab_labels[step_name.downcase]
+  raise "Unknown step: #{step_name}" unless tab_label
 
-  # Find and click the step button by data-step attribute
-  step_button = page.find("button[data-step='#{step_index}']")
-  step_button.click
+  # Find and click the tab by aria-label attribute
+  tab = page.find("input.tab[aria-label='#{tab_label}']", wait: 10)
+  tab.click
 
-  # Wait a moment for Stimulus to process the click and update the DOM
-  sleep 0.3
-
-  # Use JavaScript to ensure the step is shown (fallback if Stimulus didn't work)
-  page.execute_script(<<~JS)
-    const steps = document.querySelectorAll('[data-multi-step-form-target="step"]');
-    steps.forEach((step, index) => {
-      if (index === #{step_index}) {
-        step.classList.remove('hidden');
-      } else {
-        step.classList.add('hidden');
-      }
-    });
-  JS
-
-  # Wait for the DOM to update
-  sleep 0.1
+  # Wait for the tab content to be visible
+  sleep 0.2
 end
 
 When("I go to form step {int}") do |step_number|
-  # Click the step button by step index (0-based internally, 1-based for user)
-  step_index = step_number - 1
-  step_button = page.find("button[data-step='#{step_index}']")
-  step_button.click
-  page.find("[data-multi-step-form-target='step']:not(.hidden)", wait: 2)
+  # Map step numbers to tab labels (1-based for user)
+  tab_labels = ["Basic Info", "Location", "Contact", "Tags", "Admins"]
+  tab_label = tab_labels[step_number - 1]
+  raise "Invalid step number: #{step_number}" unless tab_label
+
+  tab = page.find("input.tab[aria-label='#{tab_label}']", wait: 10)
+  tab.click
+  sleep 0.2
 end

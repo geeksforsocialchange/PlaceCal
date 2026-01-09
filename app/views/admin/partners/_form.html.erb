@@ -41,11 +41,8 @@
             <legend class="fieldset-legend">Summary</legend>
             <%= f.input_field :summary, as: :text, class: 'textarea textarea-bordered w-full min-h-16', maxlength: 200, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
             <div class="flex items-center justify-between mt-1">
-              <p class="fieldset-label">A brief one-line description</p>
+              <p class="fieldset-label">A brief one-line summary</p>
               <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 200</span>
-            </div>
-            <div class="h-0.5 bg-base-200 rounded-full overflow-hidden mt-1">
-              <div class="h-full bg-base-300 transition-all duration-150 ease-out" data-char-counter-target="bar" style="width: 0%"></div>
             </div>
           </fieldset>
 
@@ -580,7 +577,7 @@
   </div>
 
   <%# Save Bar %>
-  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 p-4 -mx-4 sm:-mx-6 mt-6 flex justify-center gap-3 shadow-lg">
+  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 p-4 -mx-4 sm:-mx-6 mt-6 flex justify-end gap-3 shadow-lg">
     <%= f.submit "Save", class: "btn btn-outline border-placecal-orange text-placecal-orange hover:bg-placecal-orange hover:text-white hover:border-placecal-orange" %>
     <%= f.submit "Save & Continue", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
   </div>

@@ -33,9 +33,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
   end
 
   def assert_has_flash(type, message)
-    # Support both old Bootstrap and new Tailwind flash messages
-    color_class = type == :success ? "bg-green-50" : "bg-red-50"
-    expect(page).to have_css("[role='alert'].#{color_class}, .flashes .alert-#{type}", text: message)
+    # Support daisyUI alert classes
+    alert_class = type == :success ? "alert-success" : "alert-error"
+    expect(page).to have_css("[role='alert'].#{alert_class}, .flashes .alert-#{type}", text: message, wait: 5)
   end
 
   describe "system tag visibility" do
