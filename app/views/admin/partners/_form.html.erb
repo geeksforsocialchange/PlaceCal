@@ -1,5 +1,4 @@
 <%= simple_form_for @partner, html: { data: { controller: 'partner-tabs' } } do |f| %>
-  <%= render(ErrorComponent.new(@partner)) %>
 
   <% unless policy(@partner).permitted_attributes.include? :hidden %>
     <% if @partner.hidden %>

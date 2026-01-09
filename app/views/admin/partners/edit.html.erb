@@ -1,5 +1,7 @@
 <% content_for :title do %>Editing <%= @partner.name %><% end %>
 
+<%= render(ErrorComponent.new(@partner)) %>
+
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-2xl font-semibold">Edit Partner</h1>
