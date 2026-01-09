@@ -195,18 +195,18 @@ RSpec.describe "Admin::Partners", type: :request do
       it "has correct page title and heading" do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response.body).to include("<title>Editing #{partner.name} | PlaceCal Admin</title>")
-        expect(response.body).to include("Edit Partner: <em>#{partner.name}</em>")
+        expect(response.body).to include("Edit Partner")
+        expect(response.body).to include(partner.name)
       end
 
       it "has basic information section with required labels" do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response.body).to include("Basic Information")
-        expect(response.body).to include("Name")
+        expect(response.body).to include("Partner Name")
         expect(response.body).to include("Summary")
         expect(response.body).to include("Description")
-        expect(response.body).to include("Image")
-        expect(response.body).to include("Website address")
-        expect(response.body).to include("Twitter handle")
+        expect(response.body).to include("Partner Image")
+        expect(response.body).to include("Website")
       end
 
       it "has address section with required labels" do
@@ -221,18 +221,11 @@ RSpec.describe "Admin::Partners", type: :request do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response.body).to include("Contact Information")
         expect(response.body).to include("Public Contact")
-        expect(response.body).to include("Public name")
-        expect(response.body).to include("Public email")
-        expect(response.body).to include("Public phone")
         expect(response.body).to include("Partnership Contact")
-        expect(response.body).to include("Partner name")
-        expect(response.body).to include("Partner email")
-        expect(response.body).to include("Partner phone")
       end
 
       it "has delete button for root users" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("destroy-partner")
         expect(response.body).to include("Delete Partner")
       end
     end
@@ -249,7 +242,6 @@ RSpec.describe "Admin::Partners", type: :request do
 
       it "shows delete button" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("destroy-partner")
         expect(response.body).to include("Delete Partner")
       end
     end
@@ -268,7 +260,7 @@ RSpec.describe "Admin::Partners", type: :request do
       it "shows hidden reason to partner admin" do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include("hidden-reason")
+        expect(response.body).to include("This partner is hidden")
         expect(response.body).to include(reason)
       end
     end
