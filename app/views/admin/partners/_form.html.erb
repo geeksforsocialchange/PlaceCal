@@ -1,4 +1,4 @@
-<%= simple_form_for @partner, html: { data: { controller: 'partner-tabs' } } do |f| %>
+<%= simple_form_for @partner, html: { data: { controller: 'partner-tabs live-validation' } } do |f| %>
 
   <% unless policy(@partner).permitted_attributes.include? :hidden %>
     <% if @partner.hidden %>
@@ -30,8 +30,11 @@
             <%= f.input_field :name, class: 'input input-bordered w-full',
                 'data-controller': "partner-form-validation",
                 'data-partner-form-validation-target': 'source',
-                'data-action': 'input->partner-form-validation#checkInput' %>
-            <p class="fieldset-label">Must be at least 5 characters long</p>
+                'data-action': 'input->partner-form-validation#checkInput',
+                'data-validate-required': 'true',
+                'data-validate-min': '5',
+                'data-validate-required-message': 'Partner name is required',
+                'data-validate-min-message': 'Name must be at least 5 characters' %>
           </fieldset>
 
           <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="200">
@@ -96,12 +99,12 @@
                     </label>
                   </div>
                 </div>
-                <%# Delete button %>
+                <%# Delete checkbox %>
                 <div class="mt-2 flex justify-end">
-                  <label class="flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors">
-                    <%= f.check_box :remove_image, class: 'checkbox checkbox-xs checkbox-error' %>
+                  <label class="inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60">
+                    <%= f.check_box :remove_image, class: 'sr-only' %>
                     <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    Remove image
+                    Remove image on save
                   </label>
                 </div>
               <% else %>
@@ -177,7 +180,9 @@
       <div class="grid gap-4 max-w-2xl mb-8">
         <fieldset class="fieldset">
           <legend class="fieldset-legend">Website</legend>
-          <%= f.input_field :url, class: 'input input-bordered w-full', placeholder: 'https://your-website.org' %>
+          <%= f.input_field :url, class: 'input input-bordered w-full', placeholder: 'https://your-website.org',
+              'data-validate-url': 'true',
+              'data-validate-url-message': 'Enter a valid URL (including https://)' %>
         </fieldset>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -226,7 +231,9 @@
             </fieldset>
             <fieldset class="fieldset">
               <legend class="fieldset-legend">Email</legend>
-              <%= f.input_field :public_email, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              <%= f.input_field :public_email, class: 'input input-bordered input-sm w-full bg-base-100',
+                  'data-validate-email': 'true',
+                  'data-validate-email-message': 'Enter a valid email address' %>
             </fieldset>
             <fieldset class="fieldset">
               <legend class="fieldset-legend">Phone</legend>
@@ -248,7 +255,9 @@
             </fieldset>
             <fieldset class="fieldset">
               <legend class="fieldset-legend">Email</legend>
-              <%= f.input_field :partner_email, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              <%= f.input_field :partner_email, class: 'input input-bordered input-sm w-full bg-base-100',
+                  'data-validate-email': 'true',
+                  'data-validate-email-message': 'Enter a valid email address' %>
             </fieldset>
             <fieldset class="fieldset">
               <legend class="fieldset-legend">Phone</legend>
@@ -270,11 +279,11 @@
         <fieldset class="fieldset">
           <legend class="fieldset-legend">Facilities</legend>
           <p class="fieldset-label mb-3">What infrastructure does this partner provide?</p>
-          <div class="flex flex-wrap gap-4">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
             <% Facility.all.each do |facility| %>
-              <label class="label cursor-pointer gap-2 justify-start">
-                <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm accent-placecal-orange', id: "facility_#{facility.id}" %>
-                <span class="label-text"><%= facility.name %></span>
+              <label class="label cursor-pointer gap-2 justify-start py-1">
+                <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm checkbox-primary', id: "facility_#{facility.id}" %>
+                <span class="label-text text-sm"><%= facility.name %></span>
               </label>
             <% end %>
           </div>
@@ -284,11 +293,11 @@
         <fieldset class="fieldset">
           <legend class="fieldset-legend">Categories</legend>
           <p class="fieldset-label mb-3">Partners may have up to 3 category tags</p>
-          <div class="flex flex-wrap gap-4">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
             <% Category.all.each do |category| %>
-              <label class="label cursor-pointer gap-2 justify-start">
-                <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm accent-placecal-orange', id: "category_#{category.id}" %>
-                <span class="label-text"><%= category.name %></span>
+              <label class="label cursor-pointer gap-2 justify-start py-1">
+                <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm checkbox-primary', id: "category_#{category.id}" %>
+                <span class="label-text text-sm"><%= category.name %></span>
               </label>
             <% end %>
           </div>

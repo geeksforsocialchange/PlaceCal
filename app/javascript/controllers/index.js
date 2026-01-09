@@ -63,3 +63,6 @@ application.register("auto-expand", AutoExpandController);
 
 import CharCounterController from "./char_counter_controller.js";
 application.register("char-counter", CharCounterController);
+
+import LiveValidationController from "./live_validation_controller.js";
+application.register("live-validation", LiveValidationController);
