@@ -87,9 +87,9 @@ After do
   Timecop.return
 end
 
-# Use truncation for JavaScript scenarios
+# Use deletion for JavaScript scenarios (faster than truncation for PostgreSQL)
 Before("@javascript") do
-  DatabaseCleaner.strategy = :truncation
+  DatabaseCleaner.strategy = :deletion
 end
 
 Before("not @javascript") do

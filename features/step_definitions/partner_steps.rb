@@ -38,7 +38,7 @@ When("I create a new partner with name {string}") do |name|
   fill_in "Postcode", with: "ZZMB 1RS"
 
   # Wait for any async validation to complete
-  sleep 0.6
+  sleep 0.3
   click_button "Save and continue..."
 end
 

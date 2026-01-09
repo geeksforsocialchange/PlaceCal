@@ -11,7 +11,7 @@ end
 # Select from the service area drop down (nested form field)
 When("I select {string} from the service area drop down select box") do |option|
   # Wait for Stimulus nested-form controller to add the element
-  sleep 1
+  sleep 0.5
 
   # Find the service area nested fields specifically
   # The address fields have data-controller="partner-address", service area fields don't

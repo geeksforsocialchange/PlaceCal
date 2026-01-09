@@ -108,7 +108,7 @@ When("I go to the {string} step") do |step_name|
   step_button.click
 
   # Wait a moment for Stimulus to process the click and update the DOM
-  sleep 0.5
+  sleep 0.3
 
   # Use JavaScript to ensure the step is shown (fallback if Stimulus didn't work)
   page.execute_script(<<~JS)
