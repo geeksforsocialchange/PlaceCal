@@ -72,8 +72,10 @@ Capybara.configure do |config|
 end
 
 # Use lvh.me for subdomain testing (resolves to 127.0.0.1)
+# app_host: URL the browser uses to access the app (supports subdomains)
+# server_host: Where Puma binds - must be 127.0.0.1 for CI compatibility
 Capybara.app_host = "http://lvh.me"
-Capybara.server_host = "lvh.me"
+Capybara.server_host = "127.0.0.1"
 
 # Include FactoryBot methods in World
 World(FactoryBot::Syntax::Methods)
