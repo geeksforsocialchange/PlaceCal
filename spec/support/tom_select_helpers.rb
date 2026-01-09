@@ -89,15 +89,18 @@ module TomSelectHelpers
         })()
       JS
 
-      sleep 0.1
+      # Wait for Tom Select to update the DOM
+      sleep 0.3
     end
   end
 
   # Assert a single value is selected in Tom Select
   def assert_tom_select_single(option, node)
     await_tom_select(10)
+    # Allow time for Tom Select to render the selected item
+    sleep 0.2
     within(:xpath, node.path) do
-      expect(page).to have_selector(".ts-control .item", text: option)
+      expect(page).to have_selector(".ts-control .item", text: option, wait: 10)
     end
   end
 
