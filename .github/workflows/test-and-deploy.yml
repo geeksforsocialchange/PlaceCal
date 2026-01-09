@@ -41,13 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # NOTE: RSpec system tests hang in CI despite working locally (~2 min).
-        # Root cause appears to be Rails' driven_by method interacting with
-        # GitHub Actions' Chrome in a way that causes hangs. Cucumber tests
-        # (which use Capybara directly without Rails' SystemTestCase) work fine.
-        # Investigation attempted: asset precompilation, Chrome flags, hook ordering.
-        # Cucumber tests cover the same admin UI functionality, so this is acceptable.
-        suite: [unit, cucumber]
+        suite: [unit, system, cucumber]
 
     services:
       postgres:
@@ -118,12 +112,11 @@ jobs:
         if: matrix.suite == 'unit'
         run: bundle exec rspec --exclude-pattern 'spec/system/**/*'
 
-      # RSpec system tests commented out - see matrix comment above
-      # - name: Run RSpec system tests
-      #   if: matrix.suite == 'system'
-      #   run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
-      #   env:
-      #     BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+      - name: Run RSpec system tests
+        if: matrix.suite == 'system'
+        run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Run Cucumber features
         if: matrix.suite == 'cucumber'

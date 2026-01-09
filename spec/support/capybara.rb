@@ -25,8 +25,8 @@ Capybara.register_driver :cuprite do |app|
       "disable-translate" => nil,
       "disable-default-apps" => nil,
       "mute-audio" => nil,
-      "hide-scrollbars" => nil,
-      "single-process" => nil
+      "hide-scrollbars" => nil
+      # NOTE: single-process flag removed - causes hangs in containerized environments
     }
   end
 

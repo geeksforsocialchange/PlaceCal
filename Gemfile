@@ -114,7 +114,7 @@ end
 group :test do
   gem 'capybara'
   gem 'cucumber-rails', require: false
-  gem 'cuprite'
+  gem 'cuprite', '0.15'  # Pinned for CI stability - 0.17+ causes hangs in GitHub Actions
   gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'
   gem 'faker'
