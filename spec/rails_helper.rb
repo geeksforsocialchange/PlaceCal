@@ -70,8 +70,9 @@ RSpec.configure do |config|
     self.use_transactional_tests = false
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
-    # driven_by is required for Rails system test integration (screenshots, etc.)
-    driven_by :cuprite
+    # Use Selenium with headless Chrome - Rails' default and most stable for CI
+    # Cuprite causes hangs in CI but Selenium works reliably
+    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
   end
 
   config.after(:each, type: :system) do
