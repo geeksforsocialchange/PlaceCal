@@ -57,28 +57,6 @@ RSpec.configure do |config|
     driven_by :cuprite
   end
 
-  # Reset Capybara session before each system test to ensure clean state
-  config.before(type: :system) do
-    Capybara.reset_sessions!
-  end
-
-  # Configure ActionMailer to use Capybara's dynamic server port
-  # This ensures email links (password reset, invitation) point to the correct host:port
-  config.before(type: :system) do
-    port = Capybara.current_session.server.port
-    ActionMailer::Base.default_url_options = {
-      host: "lvh.me",
-      port: port,
-      protocol: "http"
-    }
-    # Also update Rails routes default URL options for consistency
-    Rails.application.routes.default_url_options = {
-      host: "lvh.me",
-      port: port,
-      protocol: "http"
-    }
-  end
-
   # Clean up after each system test
   config.after(type: :system) do
     Capybara.reset_sessions!
