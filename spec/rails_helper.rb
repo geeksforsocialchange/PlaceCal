@@ -63,10 +63,10 @@ RSpec.configure do |config|
     Timecop.return
   end
 
-  # Database cleaner for system/feature specs (truncation strategy)
-  # Only use DatabaseCleaner for system/feature specs that need JS
+  # Database cleaner for system/feature specs (deletion strategy)
+  # Deletion is faster than truncation for PostgreSQL
   config.before(:each, type: :system) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
   end
 
@@ -75,7 +75,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :feature) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
   end
 
