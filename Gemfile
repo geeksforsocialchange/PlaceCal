@@ -120,6 +120,7 @@ group :test do
   gem 'faker'
   gem 'graphql-client'
   gem 'json_matchers'
+  gem 'parallel_tests'
   gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 7.0'
