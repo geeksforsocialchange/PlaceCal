@@ -53,9 +53,6 @@ Capybara.app_host = "http://lvh.me"
 Capybara.server_host = "127.0.0.1"
 
 RSpec.configure do |config|
-  # NOTE: driven_by :cuprite is called in rails_helper.rb AFTER DatabaseCleaner setup
-  # to ensure proper ordering. The hooks here are for cleanup only.
-
   # Clean up after each system test
   config.after(type: :system) do
     Capybara.reset_sessions!
