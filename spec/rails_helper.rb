@@ -70,8 +70,8 @@ RSpec.configure do |config|
     self.use_transactional_tests = false
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
-    # driven_by is required for Rails system test integration (screenshots, etc.)
     puts "[SYSTEM TEST] Starting: #{example.description}" if ENV["CI"]
+    # driven_by is required for Rails system test integration (screenshots, etc.)
     driven_by :cuprite
     puts "[SYSTEM TEST] Driver initialized" if ENV["CI"]
   end

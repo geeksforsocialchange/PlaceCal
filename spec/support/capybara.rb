@@ -12,13 +12,21 @@ Capybara.disable_animation = true
 Capybara.register_driver :cuprite do |app|
   browser_opts = {}
 
-  # CI/Docker environments need additional Chrome flags
+  # CI/Docker environments need additional Chrome flags for stability
   if ENV["DOCKER"] || ENV["CI"]
     browser_opts = {
       "no-sandbox" => nil,
       "disable-gpu" => nil,
       "disable-dev-shm-usage" => nil,
-      "disable-software-rasterizer" => nil
+      "disable-software-rasterizer" => nil,
+      "disable-extensions" => nil,
+      "disable-background-networking" => nil,
+      "disable-sync" => nil,
+      "disable-translate" => nil,
+      "disable-default-apps" => nil,
+      "mute-audio" => nil,
+      "hide-scrollbars" => nil,
+      "single-process" => nil
     }
   end
 
