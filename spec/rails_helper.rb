@@ -70,6 +70,9 @@ RSpec.configure do |config|
     self.use_transactional_tests = false
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
+    # Initialize driver AFTER database setup to ensure proper ordering
+    # This is required for Rails system test integration (screenshots, etc.)
+    driven_by :cuprite
   end
 
   config.after(:each, type: :system) do

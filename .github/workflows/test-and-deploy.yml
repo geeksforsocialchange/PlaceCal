@@ -41,11 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # NOTE: RSpec system tests are skipped in CI due to a hang issue with
-        # Cuprite/Chrome initialization. Cucumber tests cover similar functionality
-        # and pass. See redo-admin-ui branch commits for investigation details.
-        # TODO: Investigate RSpec system test hang (works locally, hangs in CI)
-        suite: [unit, cucumber]
+        suite: [unit, system, cucumber]
 
     services:
       postgres:
@@ -108,16 +104,19 @@ jobs:
       - name: Build assets
         run: bin/yarn run build:all
 
+      - name: Precompile Rails assets
+        if: matrix.suite != 'unit'
+        run: RAILS_ENV=test bin/rails assets:precompile
+
       - name: Run RSpec unit tests
         if: matrix.suite == 'unit'
         run: bundle exec rspec --exclude-pattern 'spec/system/**/*'
 
-      # RSpec system tests skipped due to CI hang - see matrix comment above
-      # - name: Run RSpec system tests
-      #   if: matrix.suite == 'system'
-      #   run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
-      #   env:
-      #     BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+      - name: Run RSpec system tests
+        if: matrix.suite == 'system'
+        run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Run Cucumber features
         if: matrix.suite == 'cucumber'

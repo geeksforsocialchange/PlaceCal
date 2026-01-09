@@ -48,8 +48,13 @@ RSpec.describe "Authentication", :slow, type: :system do
       link = extract_link_from(email)
       expect(link).to be_present
 
+      # Convert HTTPS to HTTP since test server doesn't support SSL
+      # Also ensure we use the correct port (email may have different host/port)
+      uri = URI.parse(link)
+      test_link = "http://lvh.me:#{port}#{uri.path}?#{uri.query}"
+
       # Visit the reset link and set new password
-      visit link
+      visit test_link
       fill_in "New password", with: "newpassword123"
       fill_in "Confirm new password", with: "newpassword123"
       click_button "Change my password"
