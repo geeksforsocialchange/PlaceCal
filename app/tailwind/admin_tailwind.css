@@ -39,6 +39,24 @@
 	}
 }
 
+/* Auto-expanding textareas */
+.field-sizing-content {
+	field-sizing: content;
+}
+
+/* daisyUI tabs-lift radio input fixes */
+@layer components {
+	/* Radio input tabs need appearance:none and content from aria-label */
+	.tabs-lift > input[type="radio"].tab {
+		appearance: none;
+		-webkit-appearance: none;
+	}
+
+	.tabs-lift > input[type="radio"].tab::after {
+		content: attr(aria-label);
+	}
+}
+
 /* Custom admin component styles using @apply */
 @layer components {
 	/* Admin-specific base styles */

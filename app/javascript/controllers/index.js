@@ -54,3 +54,6 @@ application.register(
 	"cascading-neighbourhood",
 	CascadingNeighbourhoodController
 );
+
+import PartnerTabsController from "./partner_tabs_controller.js";
+application.register("partner-tabs", PartnerTabsController);

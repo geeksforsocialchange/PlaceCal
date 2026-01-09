@@ -1,26 +1,11 @@
 <% content_for :title do %>Editing <%= @partner.name %><% end %>
-<h1 class="text-2xl font-semibold text-gray-900 mb-4">Edit Partner: <em><%= @partner.name %></em></h1>
 
-<p class="text-sm text-gray-500 mb-2">ID: <%= @partner.id %></p>
-<%# Show the Neighbourhood the partner is related to via Address %>
-<% if @partner.address&.neighbourhood&.present? -%>
-    <p class="text-gray-700 mb-2">Address in neighbourhood <%= link_to_neighbourhood(@partner.address.neighbourhood) %>.</p>
-<% end -%>
-
-<%# Show a list of Service Areas that the partner is related to %>
-<% if @partner.service_areas.any? -%>
-    <p class="text-gray-700 mb-2">In service areas <%= service_area_links(@partner) %>.</p>
-<% end -%>
-
-<%# Show a list of sites that the partner is related to %>
-<span id="partner-sites">
-    <% partners_sites_links = site_links %>
-    <% if partners_sites_links.present? %>
-        <p class="text-gray-700 mb-4">View this partner on: <%= site_links %> (opens in new tab).</p>
-    <% else %>
-        <p class="text-red-600 mb-4">
-        This partner does not appear on any PlaceCal sites. It could be missing a partnership tag, or based in a location that falls outside of any site's neighbourhoods. Contact your PlaceCal organiser or <a href='mailto:support@placecal.org' class="underline">support@placecal.org</a> to help fix this.</p>
-    <% end %>
-</span>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Edit Partner</h1>
+    <p class="text-base-content/60 mt-1"><%= @partner.name %></p>
+  </div>
+  <div class="text-sm text-base-content/50">ID: <%= @partner.id %></div>
+</div>
 
 <%= render 'form', model: :partner %>
