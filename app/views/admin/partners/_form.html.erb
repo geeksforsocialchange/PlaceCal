@@ -1,321 +1,347 @@
-<%= simple_form_for @partner, html: { class: 'space-y-6' } do |f| %>
+<%= simple_form_for @partner, html: { class: '' } do |f| %>
   <%= render(ErrorComponent.new(@partner)) %>
 
   <% unless policy(@partner).permitted_attributes.include? :hidden %>
     <% if @partner.hidden %>
-      <div class="rounded-md bg-red-50 border-l-4 border-red-400 p-4 mb-6">
-        <div class="flex">
-          <div class="flex-shrink-0">
-            <i class="fa fa-exclamation-circle text-red-400"></i>
-          </div>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-800">Hidden</h3>
-            <p class="mt-1 text-sm text-red-700"><strong>Your partner is currently not visible to the public for the following reason:</strong></p>
-            <div id="hidden-reason" class="mt-2 text-sm text-red-700">
-              <%= @partner.hidden_reason_html.to_s.html_safe %>
-            </div>
-            <p class="mt-3 text-sm text-red-700">
-              Once you have fixed this issue get in touch with <a href="mailto:support@placecal.org" class="font-medium underline">support@placecal.org</a> so that we can make you public again.
-            </p>
-          </div>
+      <div role="alert" class="alert alert-error mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div>
+          <h3 class="font-bold">This partner is hidden</h3>
+          <p>Your partner is currently not visible to the public for the following reason:</p>
+          <div class="mt-2 p-3 bg-error/20 rounded"><%= @partner.hidden_reason_html.to_s.html_safe %></div>
+          <p class="mt-2">Once you have fixed this issue, contact <a href="mailto:support@placecal.org" class="link">support@placecal.org</a> to make your partner public again.</p>
         </div>
       </div>
     <% end %>
   <% end %>
 
   <div data-controller="multi-step-form">
-    <!-- Step Navigation -->
-    <nav class="mb-6">
-      <ol class="flex items-center gap-2 flex-wrap">
-        <li>
-          <button type="button" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="0"
-                  class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-placecal-orange text-white">
-            <span class="hidden sm:inline">1.</span> Basic Info
-          </button>
-        </li>
-        <li class="text-gray-400">→</li>
-        <li>
-          <button type="button" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="1"
-                  class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-gray-100 text-gray-600">
-            <span class="hidden sm:inline">2.</span> Place
-          </button>
-        </li>
-        <li class="text-gray-400">→</li>
-        <li>
-          <button type="button" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="2"
-                  class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-gray-100 text-gray-600">
-            <span class="hidden sm:inline">3.</span> Contact
-          </button>
-        </li>
-        <li class="text-gray-400">→</li>
-        <li>
-          <button type="button" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="3"
-                  class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-gray-100 text-gray-600">
-            <span class="hidden sm:inline">4.</span> Tags
-          </button>
-        </li>
-        <li class="text-gray-400">→</li>
-        <li>
-          <button type="button" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="4"
-                  class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-gray-100 text-gray-600">
-            <span class="hidden sm:inline">5.</span> Admin
-          </button>
-        </li>
-      </ol>
-      <div class="mt-2 h-1 w-full bg-gray-200 rounded-full overflow-hidden">
-        <div data-multi-step-form-target="progress" class="h-full bg-placecal-orange transition-all duration-300" style="width: 20%"></div>
-      </div>
-    </nav>
+    <%# Tab Navigation %>
+    <div class="tabs tabs-bordered mb-6">
+      <button type="button" class="tab tab-active" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="0">
+        Basic Info
+      </button>
+      <button type="button" class="tab" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="1">
+        Place
+      </button>
+      <button type="button" class="tab" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="2">
+        Contact
+      </button>
+      <button type="button" class="tab" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="3">
+        Tags
+      </button>
+      <button type="button" class="tab" data-multi-step-form-target="stepButton" data-action="click->multi-step-form#goToStep" data-step="4">
+        Admin
+      </button>
+    </div>
 
-    <!-- Step 1: Basic Information -->
+    <%# Progress Bar %>
+    <progress class="progress progress-primary w-full mb-6" data-multi-step-form-target="progress" value="20" max="100"></progress>
+
+    <%# Step 1: Basic Information %>
     <div data-multi-step-form-target="step" class="space-y-6">
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Basic Information</h2>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-lg">Basic Information</h2>
+          <p class="text-sm text-base-content/70 mb-4">Enter the core details about your partner organisation.</p>
 
-        <%= f.input :name, wrapper: :tw_vertical_form,
-            input_html: {
-              class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm',
-              'data-controller': "partner-form-validation",
-              'data-partner-form-validation-target': 'source',
-              'data-action': 'input->partner-form-validation#checkInput'
-            },
-            hint: 'Must be at least 5 characters long' %>
-        <p class="hidden text-sm text-red-600" id="partner-name-feedback">This partner name has already been taken.</p>
+          <div class="grid gap-4 max-w-2xl">
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Partner Name <span class="text-error">*</span></legend>
+              <%= f.input_field :name, class: 'input input-bordered w-full',
+                  'data-controller': "partner-form-validation",
+                  'data-partner-form-validation-target': 'source',
+                  'data-action': 'input->partner-form-validation#checkInput' %>
+              <p class="fieldset-label">Must be at least 5 characters long</p>
+            </fieldset>
 
-        <%= f.input :summary, wrapper: :tw_vertical_form, label: 'Summary', as: 'text',
-            input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', maxlength: 200, rows: 2 } %>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Summary</legend>
+              <%= f.input_field :summary, as: :text, class: 'textarea textarea-bordered w-full', maxlength: 200, rows: 2 %>
+              <p class="fieldset-label">A brief one-line description (maximum 200 characters)</p>
+            </fieldset>
 
-        <%= f.input :description, wrapper: :tw_vertical_form, label: 'Description',
-            input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 7 } %>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Description</legend>
+              <%= f.input_field :description, class: 'textarea textarea-bordered w-full', rows: 5 %>
+              <p class="fieldset-label">Full description of what this partner does</p>
+            </fieldset>
 
-        <%= f.input :accessibility_info, wrapper: :tw_vertical_form, label: 'Accessibility Information',
-            input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 7 } %>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Accessibility Information</legend>
+              <%= f.input_field :accessibility_info, class: 'textarea textarea-bordered w-full', rows: 3 %>
+              <p class="fieldset-label">Details about accessibility features and provisions</p>
+            </fieldset>
+          </div>
+        </div>
       </div>
 
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Partner Image</h3>
-        <div data-controller="image-preview" class="space-y-4">
-          <%= f.input :image, wrapper: :tw_file,
-              hint: image_uploader_hint(@partner.image),
-              as: :file,
-              input_html: { data: { action: "change->image-preview#file" } } %>
-          <% if @partner.image.url %>
-            <%= image_tag @partner.image.url, width: '125', class: 'rounded-lg', data: { image_preview_target: "img" } %>
-          <% else %>
-            <%= image_tag "", style: 'display:none;', width: '125', class: 'rounded-lg', data: { image_preview_target: "img" } %>
-          <% end %>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-base">Partner Image</h3>
+          <div data-controller="image-preview" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Upload Image</legend>
+                <%= f.input_field :image, as: :file, class: 'file-input file-input-bordered w-full', data: { action: "change->image-preview#file" } %>
+                <p class="fieldset-label"><%= image_uploader_hint(@partner.image) %></p>
+              </fieldset>
+              <div class="flex justify-center">
+                <% if @partner.image.url %>
+                  <%= image_tag @partner.image.url, width: '150', class: 'rounded-lg border border-base-300', data: { image_preview_target: "img" } %>
+                <% else %>
+                  <div class="w-36 h-36 bg-base-200 rounded-lg flex items-center justify-center border-2 border-dashed border-base-300">
+                    <span class="text-base-content/40 text-sm">No image</span>
+                  </div>
+                  <%= image_tag "", style: 'display:none;', width: '150', class: 'rounded-lg border border-base-300', data: { image_preview_target: "img" } %>
+                <% end %>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Step 2: Place -->
+    <%# Step 2: Place %>
     <div data-multi-step-form-target="step" class="hidden space-y-6">
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Place</h2>
-        <p class="text-sm text-gray-600">Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District.</p>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-lg">Place</h2>
+          <p class="text-sm text-base-content/70 mb-4">Partners need at least one place - either a fixed address or a service area.</p>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-          <div>
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Address</h3>
-            <%= render 'address_fields', form: f, partner: @partner %>
-
-            <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
-              <div class="mt-4 rounded-md bg-yellow-50 p-4">
-                <p class="text-sm text-yellow-700">
-                  The address for this partner is assigned to an out of date neighbourhood. Contact <a href="mailto:support@placecal.org" class="underline">support@placecal.org</a> to reassign.
-                </p>
-              </div>
-            <% end %>
-            <% if partner_has_unmappable_postcode?(@partner) %>
-              <div class="mt-4 rounded-md bg-yellow-50 p-4">
-                <p class="text-sm text-yellow-700">The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.</p>
-              </div>
-            <% end %>
-          </div>
-
-          <div>
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Service Areas</h3>
-            <p class="text-sm text-gray-600 mb-4">If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
-            <%= nested_form_for(f, :service_areas,
-                  add_text: 'Add Service Area',
-                  add_class: 'inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors',
-                  partial: 'service_area_fields') do %>
-              <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-                <%= render 'service_area_fields', f: neighbourhood %>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <h3 class="font-semibold mb-4">Address</h3>
+              <%= render 'address_fields', form: f, partner: @partner %>
+              <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
+                <div role="alert" class="alert alert-warning mt-4 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                  <span>Outdated neighbourhood. Contact <a href="mailto:support@placecal.org" class="link">support</a> to reassign.</span>
+                </div>
               <% end %>
-            <% end %>
+              <% if partner_has_unmappable_postcode?(@partner) %>
+                <div role="alert" class="alert alert-warning mt-4 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                  <span>Postcode not in our system yet.</span>
+                </div>
+              <% end %>
+            </div>
+
+            <div>
+              <h3 class="font-semibold mb-4">Service Areas</h3>
+              <p class="text-sm text-base-content/70 mb-4">If this partner delivers services outside the above address.</p>
+              <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-primary btn-sm', partial: 'service_area_fields') do %>
+                <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+                  <%= render 'service_area_fields', f: neighbourhood %>
+                <% end %>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Opening Times</h3>
-        <%= render 'opening_times', f: f %>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-base">Opening Times</h3>
+          <%= render 'opening_times', f: f %>
+        </div>
       </div>
     </div>
 
-    <!-- Step 3: Contact & Online -->
+    <%# Step 3: Contact & Online %>
     <div data-multi-step-form-target="step" class="hidden space-y-6">
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Online Presence</h2>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-lg">Online Presence</h2>
+          <p class="text-sm text-base-content/70 mb-4">Website and social media.</p>
 
-        <%= f.input :url, wrapper: :tw_vertical_form, label: 'Website address', placeholder: 'https://your-website.org',
-            input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+          <div class="grid gap-4 max-w-2xl">
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Website</legend>
+              <%= f.input_field :url, class: 'input input-bordered w-full', placeholder: 'https://your-website.org' %>
+            </fieldset>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <div class="space-y-2">
-            <%= f.label :facebook_link, class: 'block text-sm font-medium text-gray-700' %>
-            <div class="flex rounded-md shadow-sm">
-              <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                facebook.com/
-              </span>
-              <%= f.input_field :facebook_link, class: "flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 focus:ring-placecal-orange focus:border-placecal-orange sm:text-sm", placeholder: 'PageName' %>
-            </div>
-          </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Facebook</legend>
+                <label class="input input-bordered flex items-center gap-1">
+                  <span class="text-base-content/50 text-xs">facebook.com/</span>
+                  <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
 
-          <div class="space-y-2">
-            <%= f.label :twitter_handle, class: 'block text-sm font-medium text-gray-700' %>
-            <div class="flex rounded-md shadow-sm">
-              <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                @
-              </span>
-              <%= f.input_field :twitter_handle, class: "flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 focus:ring-placecal-orange focus:border-placecal-orange sm:text-sm", placeholder: 'TwitterHandle' %>
-            </div>
-          </div>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">X (Twitter)</legend>
+                <label class="input input-bordered flex items-center gap-1">
+                  <span class="text-base-content/50">@</span>
+                  <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
 
-          <div class="space-y-2">
-            <%= f.label :instagram_handle, class: 'block text-sm font-medium text-gray-700' %>
-            <div class="flex rounded-md shadow-sm">
-              <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                @
-              </span>
-              <%= f.input_field :instagram_handle, class: "flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 focus:ring-placecal-orange focus:border-placecal-orange sm:text-sm", placeholder: 'InstagramHandle' %>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Instagram</legend>
+                <label class="input input-bordered flex items-center gap-1">
+                  <span class="text-base-content/50">@</span>
+                  <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Contact Information</h2>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-lg">Contact Information</h2>
+          <p class="text-sm text-base-content/70 mb-4">How people can get in touch.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900">Public Contact</h3>
-            <p class="text-sm text-gray-600">This information will be shown to the public.</p>
-            <%= f.input :public_name, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
-            <%= f.input :public_email, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
-            <%= f.input :public_phone, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
-          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-base-200/50 rounded-lg p-4 space-y-3">
+              <h3 class="font-semibold">Public Contact</h3>
+              <p class="text-xs text-base-content/60">Shown on PlaceCal.</p>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Name</legend>
+                <%= f.input_field :public_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Email</legend>
+                <%= f.input_field :public_email, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Phone</legend>
+                <%= f.input_field :public_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              </fieldset>
+            </div>
 
-          <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900">Partnership Contact</h3>
-            <p class="text-sm text-gray-600"><em>If different from public contact:</em> The contact person for PlaceCal.</p>
-            <%= f.input :partner_name, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
-            <%= f.input :partner_email, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
-            <%= f.input :partner_phone, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+            <div class="bg-base-200/50 rounded-lg p-4 space-y-3">
+              <h3 class="font-semibold">Partnership Contact</h3>
+              <p class="text-xs text-base-content/60">Internal contact for PlaceCal.</p>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Name</legend>
+                <%= f.input_field :partner_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Email</legend>
+                <%= f.input_field :partner_email, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Phone</legend>
+                <%= f.input_field :partner_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              </fieldset>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Step 4: Tags -->
+    <%# Step 4: Tags %>
     <div data-multi-step-form-target="step" class="hidden space-y-6">
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Tags & Associations</h2>
-        <p class="text-sm text-gray-600">What other associations does this partner have?</p>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-lg">Tags & Associations</h2>
+          <p class="text-sm text-base-content/70 mb-4">Categorise and link to partnerships.</p>
 
-        <%= render 'partnership_fields', f: f %>
+          <div class="grid gap-4 max-w-2xl">
+            <%= render 'partnership_fields', f: f %>
 
-        <%= f.association :facilities,
-            label: "Facilities",
-            hint: "What infrastructure does this partner provide?",
-            collection: Facility.all,
-            wrapper: :tw_vertical_form,
-            input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Facilities</legend>
+              <%= f.association :facilities, label: false, collection: Facility.all, input_html: { class: 'select select-bordered w-full', data: { controller: "tom-select" } } %>
+              <p class="fieldset-label">What infrastructure does this partner provide?</p>
+            </fieldset>
 
-        <%= f.association :categories,
-            label: "Categories",
-            hint: "Partners may have up to 3 category tags, the public will be able to filter by these",
-            collection: Category.all,
-            wrapper: :tw_vertical_form,
-            input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Categories</legend>
+              <%= f.association :categories, label: false, collection: Category.all, input_html: { class: 'select select-bordered w-full', data: { controller: "tom-select" } } %>
+              <p class="fieldset-label">Partners may have up to 3 category tags</p>
+            </fieldset>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Step 5: Admin -->
+    <%# Step 5: Admin %>
     <div data-multi-step-form-target="step" class="hidden space-y-6">
       <% if policy(@partner).permitted_attributes.include? :slug %>
-        <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-          <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">URL Settings</h2>
-          <p class="text-sm text-gray-600">Customize the URL slug for this partner. This appears in the partner's public URL.</p>
-          <%= f.input :slug, wrapper: :tw_vertical_form,
-              label: 'URL Slug',
-              hint: 'Leave blank to auto-generate from name',
-              input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+        <div class="card bg-base-100 shadow-sm">
+          <div class="card-body">
+            <h2 class="card-title text-lg">URL Settings</h2>
+            <p class="text-sm text-base-content/70 mb-4">Customise the URL slug for this partner.</p>
+            <div class="max-w-md">
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">URL Slug</legend>
+                <%= f.input_field :slug, class: 'input input-bordered w-full' %>
+                <p class="fieldset-label">Leave blank to auto-generate from name</p>
+              </fieldset>
+            </div>
+          </div>
         </div>
       <% end %>
 
-      <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Event Matching</h2>
-        <p class="text-sm text-gray-600">Can events imported from other partner's calendars be listed at this partner if their address matches?</p>
-        <%= f.input :can_be_assigned_events, wrapper: :tw_boolean %>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-lg">Event Matching</h2>
+          <p class="text-sm text-base-content/70 mb-4">Can events imported from other partner's calendars be listed at this partner if their address matches?</p>
+          <%= f.input :can_be_assigned_events, wrapper: :tw_boolean %>
+        </div>
       </div>
 
       <% unless @partner.new_record? %>
         <% if policy(@partner).permitted_attributes.include? :hidden %>
-          <div class="bg-white shadow-sm rounded-lg p-6 space-y-4 border border-amber-200">
-            <h2 class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3">Moderation</h2>
-            <div class="rounded-md bg-amber-50 p-4 mb-4">
-              <p class="text-sm text-amber-700">
-                <strong>Hiding a partner is a last resort</strong> and will remove them from all PlaceCal sites, not just yours.
-                This is appropriate if a partner suddenly starts publishing things like spam or hate speech.
-              </p>
-              <p class="text-sm text-amber-700 mt-2">
-                Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team.
-              </p>
+          <div class="card bg-base-100 shadow-sm border-l-4 border-warning">
+            <div class="card-body">
+              <h2 class="card-title text-lg">Moderation</h2>
+              <div role="alert" class="alert alert-warning mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <span class="text-sm">Hiding a partner is a last resort and will remove them from all PlaceCal sites.</span>
+              </div>
+              <div class="space-y-4 max-w-2xl">
+                <%= f.input :hidden, wrapper: :tw_boolean %>
+                <fieldset class="fieldset">
+                  <legend class="fieldset-legend">Reason for hiding</legend>
+                  <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full', rows: 3 %>
+                </fieldset>
+              </div>
             </div>
-            <%= f.input :hidden, wrapper: :tw_boolean %>
-            <%= f.input :hidden_reason, label: "Explanation for hiding", wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 7 } %>
           </div>
         <% end %>
+
+        <div class="card bg-base-100 shadow-sm border-l-4 border-error">
+          <div class="card-body">
+            <h2 class="card-title text-lg text-error">Danger Zone</h2>
+            <% if policy(@partner).destroy? %>
+              <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this partner permanently?" } do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Delete Partner
+              <% end %>
+            <% else %>
+              <p class="text-sm text-base-content/60">You do not have permission to delete this partner.</p>
+            <% end %>
+          </div>
+        </div>
       <% end %>
     </div>
 
-    <!-- Navigation Buttons -->
-    <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+    <%# Navigation Buttons %>
+    <div class="flex items-center justify-between pt-6 mt-6 border-t border-base-300">
       <button type="button" data-multi-step-form-target="prevButton" data-action="click->multi-step-form#prevStep"
-              class="invisible inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
-        <i class="fa fa-arrow-left mr-2"></i> Previous
+              class="btn btn-ghost invisible">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Previous
       </button>
 
-      <div class="flex items-center gap-4">
-        <%= f.submit "Save Partner", class: "inline-flex justify-center rounded-md bg-placecal-orange px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2" %>
+      <div class="flex items-center gap-3">
+        <%= f.submit "Save Partner", class: "btn btn-primary" %>
 
         <button type="button" data-multi-step-form-target="nextButton" data-action="click->multi-step-form#nextStep"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 transition-colors">
-          Next <i class="fa fa-arrow-right ml-2"></i>
+                class="btn btn-neutral">
+          Next
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </button>
       </div>
     </div>
-
-    <% unless @partner.new_record? %>
-      <div class="pt-6 border-t border-gray-200 mt-6">
-        <% if policy(@partner).destroy? %>
-          <%= link_to "Delete Partner", @partner, method: :delete, id: 'destroy-partner',
-              class: "inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500",
-              data: { confirm: "Are you sure you want to delete this partner? This action cannot be undone." } %>
-        <% else %>
-          <p class="text-sm text-gray-500">You do not have permission to delete this partner. Please contact <%= mail_to "info@placecal.org", "info@placecal.org" %> if you need to delete this partner.</p>
-        <% end %>
-      </div>
-    <% end %>
   </div>
 <% end %>
 

@@ -58,20 +58,12 @@ export default class extends Controller {
 			}
 		});
 
-		// Update step buttons
+		// Update step buttons with daisyUI tab classes
 		this.stepButtonTargets.forEach((button, index) => {
-			button.classList.remove(
-				"bg-placecal-orange",
-				"text-white",
-				"bg-gray-100",
-				"text-gray-600"
-			);
 			if (index === this.currentStepValue) {
-				button.classList.add("bg-placecal-orange", "text-white");
-			} else if (index < this.currentStepValue) {
-				button.classList.add("bg-green-100", "text-green-800");
+				button.classList.add("tab-active");
 			} else {
-				button.classList.add("bg-gray-100", "text-gray-600");
+				button.classList.remove("tab-active");
 			}
 		});
 	}
@@ -86,7 +78,7 @@ export default class extends Controller {
 			}
 		}
 
-		// Update next button text
+		// Update next button
 		if (this.hasNextButtonTarget) {
 			if (this.currentStepValue === this.totalStepsValue - 1) {
 				this.nextButtonTarget.classList.add("hidden");
@@ -95,11 +87,11 @@ export default class extends Controller {
 			}
 		}
 
-		// Update progress bar if present
+		// Update progress bar (daisyUI progress element uses value attribute)
 		if (this.hasProgressTarget) {
 			const percentage =
 				((this.currentStepValue + 1) / this.totalStepsValue) * 100;
-			this.progressTarget.style.width = `${percentage}%`;
+			this.progressTarget.value = percentage;
 		}
 	}
 

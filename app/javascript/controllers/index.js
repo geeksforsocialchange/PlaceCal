@@ -48,3 +48,9 @@ application.register("nested-form", NestedFormController);
 
 import DropdownController from "./dropdown_controller.js";
 application.register("dropdown", DropdownController);
+
+import CascadingNeighbourhoodController from "./cascading_neighbourhood_controller.js";
+application.register(
+	"cascading-neighbourhood",
+	CascadingNeighbourhoodController
+);

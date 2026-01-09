@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+	themes: light --default, corporate;
+}
 
 /* Source paths for content detection */
 @source "../../app/datatables/**/*.rb";

@@ -4,49 +4,45 @@
      data-partner-address-partner-id-value="<%= partner.id %>"
      data-partner-address-warn-of-delisting-value="<%= partner.warn_user_clear_address?(current_user) ? 'true' : 'false' %>">
 
-  <%# this view is augmented by the /app/javascript/controllers/parter_address_controller.js %>
+  <div class="grid gap-3">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Street address</legend>
+      <%= address_form.input_field :street_address, class: 'input input-bordered w-full address_field' %>
+    </fieldset>
 
-  <%= address_form.input :street_address,
-      class: "form-control address_1 address_field",
-      label: 'Street address',
-      required: false
-    %>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Street address 2</legend>
+      <%= address_form.input_field :street_address2, class: 'input input-bordered w-full address_field' %>
+    </fieldset>
 
-  <%= address_form.input :street_address2,
-      class: "form-control address_2 address_field",
-      label: 'Street address 2' %>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Street address 3</legend>
+      <%= address_form.input_field :street_address3, class: 'input input-bordered w-full address_field' %>
+    </fieldset>
 
-  <%= address_form.input :street_address3,
-      class: "form-control address_3 address_field",
-      label: 'Street address 3' %>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">City</legend>
+      <%= address_form.input_field :city, class: 'input input-bordered w-full address_field' %>
+    </fieldset>
 
-  <%= address_form.input :city,
-      class: "form-control city address_field" %>
-
-  <%= address_form.input :postcode,
-      class: "form-control postcode address_field",
-      required: false
-  %>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Postcode</legend>
+      <%= address_form.input_field :postcode, class: 'input input-bordered w-full address_field' %>
+    </fieldset>
+  </div>
 
   <div data-partner-address-target="addressInfoArea" class="mt-4">
     <% if partner.address&.neighbourhood.present? %>
-      <div class="rounded-md bg-blue-50 p-3 mb-3">
-        <div class="flex items-center">
-          <svg class="h-4 w-4 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-          </svg>
-          <span class="text-sm text-blue-700">
-            Neighbourhood: <strong><%= link_to_neighbourhood(partner.address.neighbourhood) %></strong>
-          </span>
-        </div>
+      <div class="alert alert-info text-sm">
+        <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        <span>Neighbourhood: <strong><%= link_to_neighbourhood(partner.address.neighbourhood) %></strong></span>
       </div>
     <% end %>
     <% if partner.can_clear_address?(current_user) %>
-      <%= link_to 'Clear Address',
-          '#',
-          class: "inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors",
-          data: { action: "click->partner-address#do_clear_address" } %>
+      <%= link_to 'Clear Address', '#', class: "btn btn-ghost btn-xs mt-2", data: { action: "click->partner-address#do_clear_address" } %>
     <% end %>
   </div>
 </div>

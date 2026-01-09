@@ -5,9 +5,10 @@
   <ul class="space-y-2" data-opening-times-target="list">
   </ul>
 
-  <div class="mt-4 flex flex-wrap items-center gap-4">
-    <label class="flex items-center gap-2 text-sm font-medium text-gray-700" for="day">Day
-      <select class="rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm" id="day" data-opening-times-target="day">
+  <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Day</legend>
+      <select class="select select-bordered w-full" id="day" data-opening-times-target="day">
         <option value="Monday">Monday</option>
         <option value="Tuesday">Tuesday</option>
         <option value="Wednesday">Wednesday</option>
@@ -16,17 +17,29 @@
         <option value="Saturday">Saturday</option>
         <option value="Sunday">Sunday</option>
       </select>
-    </label>
-    <label class="flex items-center gap-2 text-sm font-medium text-gray-700" for="open">Opening Time
-      <input class="rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm" id="open" type="time" name="" value="00:00" data-opening-times-target="open">
-    </label>
-    <label class="flex items-center gap-2 text-sm font-medium text-gray-700" for="close">Closing Time
-      <input class="rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm" id="close" type="time" name="" value="00:00" data-opening-times-target="close">
-    </label>
-    <label class="flex items-center gap-2 text-sm font-medium text-gray-700" for="allDay">All Day
-      <input class="h-4 w-4 rounded border-gray-300 text-placecal-orange focus:ring-placecal-orange" id="allDay" type="checkbox" name="" value="" data-opening-times-target="allDay" data-action="change->opening-times#allDay">
-    </label>
-    <button data-action="click->opening-times#addOpeningTime" type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors">Add</button>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Opening Time</legend>
+      <input class="input input-bordered w-full" id="open" type="time" name="" value="00:00" data-opening-times-target="open">
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Closing Time</legend>
+      <input class="input input-bordered w-full" id="close" type="time" name="" value="00:00" data-opening-times-target="close">
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">All Day</legend>
+      <label class="label cursor-pointer justify-start gap-2">
+        <input class="checkbox checkbox-primary" id="allDay" type="checkbox" name="" value="" data-opening-times-target="allDay" data-action="change->opening-times#allDay">
+        <span class="label-text">Yes</span>
+      </label>
+    </fieldset>
+
+    <button data-action="click->opening-times#addOpeningTime" type="button" class="btn btn-primary">
+      Add Time
+    </button>
   </div>
 
   <%= f.text_area :opening_times, data: { opening_times_target: "textarea" }, hidden: true %>

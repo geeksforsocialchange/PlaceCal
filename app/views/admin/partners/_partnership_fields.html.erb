@@ -1,15 +1,19 @@
 <% if current_user.partnership_admin? || current_user.root? -%>
-  <%= f.association :partnerships,
-      label: "Partnerships",
-      hint: "Which partnerships is this partner in?",
-      collection: options_for_partner_partnerships,
-      wrapper: :tw_vertical_form,
-      input_html: {
-        class: 'block w-full',
-        data: {
-          controller: 'partner-tags',
-          "partner-tags-permitted-tags-value": permitted_options_for_partner_tags
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Partnerships</legend>
+    <%= f.association :partnerships,
+        label: false,
+        collection: options_for_partner_partnerships,
+        wrapper: false,
+        input_html: {
+          class: 'select select-bordered w-full min-h-32',
+          multiple: true,
+          data: {
+            controller: 'partner-tags',
+            "partner-tags-permitted-tags-value": permitted_options_for_partner_tags
+          }
         }
-      }
-  %>
+    %>
+    <p class="fieldset-label">Which partnerships is this partner in?</p>
+  </fieldset>
 <% end -%>

@@ -1,18 +1,45 @@
-<div class="nested-fields flex items-center gap-2">
-    <%= f.input :neighbourhood_id,
-                collection: options_for_service_area_neighbourhoods(@partner),
-                include_blank: true,
-                value_method: ->(obj) { obj[:id] },
-                label_method: ->(obj) { obj[:name] },
-                wrapper: :tw_vertical_form,
-                input_html: {
-                    class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm',
-                    data: { controller: "tom-select" },
-                    disabled: f.object.neighbourhood_id && !current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id),
-                },
-                label: false %>
+<div class="nested-fields p-3 bg-base-200 rounded-lg mb-2"
+     data-controller="cascading-neighbourhood"
+     data-cascading-neighbourhood-country-value="9402">
 
-    <%- if !f.object.neighbourhood_id || current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id)%>
-        <%= nested_form_remove_link(f, 'Remove') %>
-    <% end %>
+  <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-end">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend text-xs">Region</legend>
+      <select class="select select-bordered select-sm w-full"
+              data-cascading-neighbourhood-target="region"
+              data-action="change->cascading-neighbourhood#regionChanged">
+        <option value="">Loading...</option>
+      </select>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend text-xs">Area</legend>
+      <select class="select select-bordered select-sm w-full"
+              data-cascading-neighbourhood-target="district"
+              data-action="change->cascading-neighbourhood#districtChanged"
+              disabled>
+        <option value="">Select area...</option>
+      </select>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend text-xs">Ward</legend>
+      <select class="select select-bordered select-sm w-full"
+              data-cascading-neighbourhood-target="ward"
+              data-action="change->cascading-neighbourhood#wardChanged"
+              disabled>
+        <option value="">Select ward...</option>
+      </select>
+    </fieldset>
+
+    <div class="flex items-center gap-2">
+      <span class="loading loading-spinner loading-xs hidden" data-cascading-neighbourhood-target="loading"></span>
+      <%- if !f.object.neighbourhood_id || current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id)%>
+        <%= nested_form_remove_link(f, 'Remove', class: 'btn btn-ghost btn-sm text-error') %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Hidden field that stores the actual neighbourhood_id %>
+  <%= f.hidden_field :neighbourhood_id, data: { cascading_neighbourhood_target: "output" } %>
 </div>
