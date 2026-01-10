@@ -22,6 +22,9 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       admin_label = "#{admin_user.first_name} #{admin_user.last_name} (#{admin_user.email})"
       select admin_label, from: "site_site_admin_id"
 
+      # Navigate to Neighbourhoods tab
+      click_link_or_button "Neighbourhoods"
+
       # Select primary neighbourhood (only appears when creating a site)
       neighbourhood_main = tom_select_node("site_sites_neighbourhood_neighbourhood_id")
       tom_select riverside_ward.name, xpath: neighbourhood_main.path
@@ -42,6 +45,9 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       # Navigate back to Basic Info and fill required fields
       click_link_or_button "Basic Info"
       fill_in "site_name", with: "Test Site"
+
+      # URL and Slug are on Admin tab
+      click_link_or_button "Admin"
       fill_in "site_url", with: "https://test.com"
       fill_in "site_slug", with: "test-site"
 
@@ -54,6 +60,8 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       # Site admin is plain select with "First Last (email)" format
       expect(page).to have_select("site_site_admin_id", selected: admin_label)
 
+      # Navigate to Neighbourhoods tab to check neighbourhoods
+      click_link_or_button "Neighbourhoods"
       service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
       assert_tom_select_single oldtown_ward.name, service_areas[0]
 
