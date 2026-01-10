@@ -143,8 +143,9 @@ RSpec.describe "Admin::Users", type: :request do
       it "shows basic information section" do
         get admin_profile_url(host: admin_host)
         expect(response.body).to include("Basic information")
-        expect(response.body).to include("First Name")
-        expect(response.body).to include("Last Name")
+        # Profile page uses old Bootstrap form with lowercase labels
+        expect(response.body).to include("First name")
+        expect(response.body).to include("Last name")
         expect(response.body).to include("Email")
       end
 
