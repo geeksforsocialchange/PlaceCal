@@ -1,16 +1,24 @@
 <% content_for :title do %>New User<% end %>
 
-<h1 class="page-header">New User</h1>
+<div class="mb-6">
+  <h1 class="text-2xl font-bold">New User</h1>
+  <p class="text-sm text-base-content/60 mt-1">Invite a new user to PlaceCal.</p>
+</div>
 
 <%- display_fields = policy(@current_user).permitted_attributes_for_create %>
 
 <%= filtered_form_for([:admin, @user],
-                      display_only: display_fields) do |f| %>
+                      display_only: display_fields,
+                      html: { data: { controller: 'live-validation' } }) do |f| %>
   <%= render 'form', f: f %>
-  
-  <p>
-    Please note: inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path %>.
-  </p>
 
-  <%= f.submit "Invite", class: "btn btn-primary " %>
+  <div role="alert" class="alert mt-6 max-w-2xl">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-orange' %>.</span>
+  </div>
+
+  <%# Sticky Save Bar %>
+  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 p-4 -mx-4 sm:-mx-6 mt-8 flex justify-end gap-3 shadow-lg">
+    <%= f.submit "Invite User", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+  </div>
 <% end %>

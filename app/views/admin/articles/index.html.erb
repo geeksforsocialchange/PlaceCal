@@ -5,17 +5,15 @@
       'Article',
       'Author',
       'Partners',
-      'Published',
       'Status',
       'Last Updated',
       ''
     ],
-    columns: %i[title author partners published_at is_draft updated_at actions],
+    columns: %i[title author partners is_draft updated_at actions],
     column_config: {
       title: {},
       author: { sortable: true },
       partners: { sortable: false },
-      published_at: { fit: true },
       is_draft: { align: :center, fit: true },
       updated_at: { fit: true },
       actions: { sortable: false, fit: true }

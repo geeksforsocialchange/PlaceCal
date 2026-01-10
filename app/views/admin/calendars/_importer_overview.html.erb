@@ -1,74 +1,95 @@
 <% unless calendar.new_record? %>
   <% retry_button = nil %>
-  <hr class="my-6 border-gray-200">
-  <h3 class="text-lg font-medium text-gray-900 mb-4">Import status</h3>
 
+  <%# Stale calendar warning - shown separately above %>
   <% if calendar.checksum_updated_at.present? && calendar.last_import_at.present? %>
     <% if calendar.checksum_updated_at < 6.month.ago || calendar.last_import_at < 6.month.ago %>
-      <div class="rounded-md bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4" role="alert">
-        <h4 class="text-sm font-medium text-yellow-800">Potential stale calender</h4>
-        <p class="text-sm text-yellow-700 mt-1">Is this calender still active? It has not been updated in over 6 months</p>
+      <div role="alert" class="alert alert-warning mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        <span>Potential stale calendar - not updated in over 6 months.</span>
       </div>
     <% end %>
   <% end %>
 
-  <% if calendar.calendar_state.idle? %>
-    <% retry_button = :idle %>
-    <p class="mb-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">success</span></p>
-  <% end %>
-
-  <% if calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
-    <p class="mb-2"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">loading</span></p>
-    <p class="text-gray-600 mb-4">Please check back in a few minutes</p>
-  <% end %>
-
+  <%# Error message - shown separately above %>
   <% if calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
     <% retry_button = :error %>
-
-    <p class="mb-2"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">error</span></p>
-
-    <div class="rounded-md bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4" role="alert">
-      <p class="text-sm text-yellow-700">Error: <%= calendar.critical_error %></p>
+    <div role="alert" class="alert alert-error mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span><%= calendar.critical_error %></span>
     </div>
   <% end %>
 
-
-  <% if calendar.checksum_updated_at.present? %>
-    <p class="text-gray-700 mb-2">
-    <strong>Source data last changed <%= time_ago_in_words(calendar.checksum_updated_at) %> ago</strong> (<%= calendar.checksum_updated_at %>)
-    </p>
-  <% end %>
-
-  <% if calendar.last_import_at.present? %>
-    <p class="text-gray-700 mb-4">
-    <strong>Last import ran <%= time_ago_in_words(calendar.last_import_at) %> ago</strong> (<%= calendar.last_import_at %>)
-    </p>
-  <% end %>
-
-  <% if calendar.notices.present? %>
-    <% retry_button = :error %>
-
-    <h4 class="text-md font-medium text-gray-900 mb-2">Notices</h4>
-    <p class="text-gray-600 mb-2">The following events could not be imported due to invalid data: </p>
-
-    <ul id="calendar-notices" class="list-disc pl-6 mb-4 space-y-1 text-gray-700">
-      <% calendar.notices.tally.each do |text, count| %>
-        <li><%= text %> <% if count > 1 %>(<%= count %> times)<% end %></li>
+  <%# Main status bar - all on one line %>
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-2 p-4 bg-base-200/50 border border-base-300 rounded-lg">
+    <%# Status Badge %>
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-medium text-base-content/60">Status:</span>
+      <% if calendar.calendar_state.idle? %>
+        <% retry_button = :idle %>
+        <span class="badge badge-success gap-1">
+          <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Success
+        </span>
+      <% elsif calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
+        <span class="badge badge-info gap-1">
+          <span class="loading loading-spinner loading-xs"></span>
+          Importing...
+        </span>
+      <% elsif calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
+        <span class="badge badge-error gap-1">
+          <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          Error
+        </span>
       <% end %>
-    </ul>
-    <p class="text-gray-600 mb-4">Please check your calendar is set up correctly and try again.</p>
-  <% end %>
+    </div>
 
-  <% if retry_button %>
-    <%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
-      <% if retry_button == :idle %>
-        <%= f.submit 'Re-import now', class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600' %>
-      <% elsif retry_button == :error %>
-        <%= f.submit 'Retry', class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700' %>
-      <% end %>
+    <% if calendar.checksum_updated_at.present? %>
+      <div class="flex items-center gap-2 text-sm">
+        <span class="text-base-content/60">Source changed:</span>
+        <span class="font-medium"><%= time_ago_in_words(calendar.checksum_updated_at) %> ago</span>
+      </div>
     <% end %>
+
+    <% if calendar.last_import_at.present? %>
+      <div class="flex items-center gap-2 text-sm">
+        <span class="text-base-content/60">Last import:</span>
+        <span class="font-medium"><%= time_ago_in_words(calendar.last_import_at) %> ago</span>
+      </div>
+    <% end %>
+
+    <% if retry_button %>
+      <div class="ml-auto">
+        <%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
+          <% if retry_button == :idle %>
+            <%= f.submit 'Re-import now', class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange' %>
+          <% elsif retry_button == :error %>
+            <%= f.submit 'Retry Import', class: 'btn btn-sm btn-error' %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <%# Notices - collapsible below %>
+  <% if calendar.notices.present? %>
+    <div class="collapse collapse-arrow bg-warning/10 border border-warning/30 rounded-lg mt-4">
+      <input type="checkbox" />
+      <div class="collapse-title font-medium text-warning-content flex items-center gap-2 py-3 min-h-0">
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        Import Notices
+        <span class="badge badge-warning badge-sm"><%= calendar.notices.count %></span>
+      </div>
+      <div class="collapse-content">
+        <ul class="space-y-1">
+          <% calendar.notices.tally.each do |text, count| %>
+            <li class="text-sm flex items-start gap-2">
+              <span class="text-warning">•</span>
+              <span><%= text %><% if count > 1 %> <span class="badge badge-ghost badge-xs"><%= count %>x</span><% end %></span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
   <% end %>
-
 <% end %>
-
-

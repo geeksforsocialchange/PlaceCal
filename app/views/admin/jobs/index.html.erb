@@ -1,44 +1,106 @@
-<h1>Calendar Importer Status</h1>
+<div class="mb-6">
+  <h1 class="text-2xl font-bold">Calendar Importer Status</h1>
+  <p class="text-sm text-base-content/60 mt-1">Overview of all calendar import jobs and their current state.</p>
+</div>
 
-<p>Currently have <%= @job_count %> jobs</p>
+<%# Stats Cards %>
+<div class="flex flex-wrap gap-2 mb-8">
+  <div class="badge badge-lg badge-outline gap-1">
+    <span class="text-base-content/60">Jobs:</span>
+    <span class="font-bold"><%= @job_count %></span>
+  </div>
+  <% states = Calendar::ALLOWED_STATES %>
+  <% states.each do |state_name| %>
+    <% count = @calendar_counts[state_name.to_s] || 0 %>
+    <%
+      badge_class = case state_name
+        when :idle then 'badge-success'
+        when :in_queue, :in_worker then 'badge-info'
+        when :error, :bad_source then 'badge-error'
+        else 'badge-ghost'
+      end
+    %>
+    <div class="badge badge-lg <%= badge_class %> gap-1">
+      <span><%= state_name.to_s.titleize %>:</span>
+      <span class="font-bold"><%= count %></span>
+    </div>
+  <% end %>
+</div>
 
-<% states = Calendar::ALLOWED_STATES -%>
+<% if @error_calendars.count > 0 %>
+  <div class="mb-6">
+    <h2 class="font-bold flex items-center gap-2 mb-3 text-error">
+      <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      Error Calendars
+      <span class="badge badge-error badge-sm"><%= @error_calendars.count %></span>
+    </h2>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>State</th>
-      <th>Count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% states.each do |state_name| -%>
-      <tr>
-        <td><%= state_name %></td>
-        <td><%= @calendar_counts[state_name.to_s] || 0 %></td>
-      </tr>
-    <% end -%>
-  </tbody>
-</table>
+    <div class="overflow-x-auto">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Calendar</th>
+            <th>Partner</th>
+            <th>State</th>
+            <th>Error</th>
+            <th class="text-right">Events</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @error_calendars.order(:name).each do |cal| %>
+            <tr class="hover">
+              <td><%= link_to cal.name, edit_admin_calendar_path(cal), class: "link link-hover text-placecal-orange font-medium" %></td>
+              <td class="text-sm"><%= link_to cal.partner.name, admin_partner_path(cal.partner), class: "link link-hover" %></td>
+              <td><span class="badge badge-error badge-sm"><%= cal.calendar_state %></span></td>
+              <td class="text-sm text-error max-w-md truncate"><%= cal.critical_error %></td>
+              <td class="text-right tabular-nums"><%= cal.events.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
 
-<% if @error_calendars.count > 0 -%>
-<h2><%= @error_calendars.count %> Error Calendars</h2>
-<% @error_calendars.order(:name).each do |cal| -%>
-  <h3><%= link_to cal.name, edit_admin_calendar_path(cal) -%></h3>
-  <%= render 'calendar_row', cal: cal %>
-  <br>
-<% end -%>
-<% end -%>
+<% if @busy_calendars.count > 0 %>
+  <div class="mb-6">
+    <h2 class="font-bold flex items-center gap-2 mb-3 text-info">
+      <span class="loading loading-spinner loading-xs"></span>
+      Busy Calendars
+      <span class="badge badge-info badge-sm"><%= @busy_calendars.count %></span>
+    </h2>
 
-<% if @busy_calendars.count > 0 -%>
-<h2><%= @busy_calendars.count %> Busy Calendars</h2>
-<% @busy_calendars.order(:name).each do |cal| -%>
-  <h3><%= link_to cal.name, edit_admin_calendar_path(cal) -%></h3>
-  <%= render 'calendar_row', cal: cal %>
-<br>
-<% end -%>
-<% end -%>
+    <div class="overflow-x-auto">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Calendar</th>
+            <th>Partner</th>
+            <th>State</th>
+            <th>Strategy</th>
+            <th class="text-right">Events</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @busy_calendars.order(:name).each do |cal| %>
+            <tr class="hover">
+              <td><%= link_to cal.name, edit_admin_calendar_path(cal), class: "link link-hover text-placecal-orange font-medium" %></td>
+              <td class="text-sm"><%= link_to cal.partner.name, admin_partner_path(cal.partner), class: "link link-hover" %></td>
+              <td><span class="badge badge-info badge-sm"><%= cal.calendar_state %></span></td>
+              <td class="text-sm"><%= cal.strategy %></td>
+              <td class="text-right tabular-nums"><%= cal.events.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
 
-<!-- pre>
-<% #= JSON.pretty_generate(@calendar_counts) %>
-</pre -->
+<% if @error_calendars.count == 0 && @busy_calendars.count == 0 %>
+  <div class="text-center py-12">
+    <svg class="mx-auto size-12 text-success/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <p class="mt-3 font-medium text-success">All Clear</p>
+    <p class="text-sm text-base-content/60">No calendars with errors or currently importing.</p>
+  </div>
+<% end %>

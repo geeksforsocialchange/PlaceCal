@@ -1,11 +1,18 @@
 <% if @tag.system_tag && !current_user.root? %>
-  <% content_for :title do %><%= @tag.name%><% end %>
+  <% content_for :title do %><%= @tag.name %><% end %>
 
-  <h1 class="page-header"><%= @tag.name %></h1>
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-semibold"><%= @tag.name %></h1>
+      <p class="text-base-content/60 mt-1">System tag</p>
+    </div>
+    <div class="text-sm text-base-content/50">ID: <%= @tag.id %></div>
+  </div>
 
-  <!-- TODO: come up with better words here -->
-  <p>This tag is a <em>system tag</em> meaning that it cannot be edited by non-root admins.</p>
-
+  <div role="alert" class="alert alert-warning">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+    <span>This tag is a <strong>system tag</strong> meaning that it cannot be edited by non-root admins.</span>
+  </div>
 <% else %>
-  <%= render AdminEdit.new(model: :tag, title: @tag.name) %>
+  <%= render AdminEdit.new(model: :tag, title: @tag.name, id: @tag.id) %>
 <% end %>

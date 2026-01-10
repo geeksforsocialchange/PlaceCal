@@ -2,9 +2,12 @@
 
 # app/components/admin_edit_component.rb
 class AdminEdit < ViewComponent::Base
-  def initialize(title:, model:)
+  def initialize(title:, model:, id: nil)
     super
-    @title = "Edit #{@model.to_s.humanize}: #{title}"
+    @title = title
     @model = model
+    @model_name = model.to_s.humanize
+    @id = id
+    @page_title = "Edit #{@model_name}: #{title}"
   end
 end

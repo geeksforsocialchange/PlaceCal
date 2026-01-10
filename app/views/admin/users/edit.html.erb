@@ -1,20 +1,54 @@
-<h1 class="page-header">Edit User: <%= @user.full_name %></h1>
+<% content_for :title do %>Edit User: <%= @user.full_name.presence || @user.email %><% end %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Edit User</h1>
+    <p class="text-base-content/60 mt-1"><%= @user.full_name.presence || @user.email %></p>
+  </div>
+  <div class="text-sm text-base-content/50">ID: <%= @user.id %></div>
+</div>
 
 <%- disabled_fields = policy(@user).disabled_attributes_for_update %>
 <%- displayable_fields = policy(@user).permitted_attributes_for_update %>
 
-<%=  filtered_form_for(@user,
-                       method: :put,
-                       url: admin_user_path(@user),
-                       disabled: disabled_fields,
-                       display_only: displayable_fields) do |f| %>
+<%= filtered_form_for(@user,
+                     method: :put,
+                     url: admin_user_path(@user),
+                     disabled: disabled_fields,
+                     display_only: displayable_fields,
+                     html: { data: { controller: 'live-validation' } }) do |f| %>
   <%= render 'form', f: f %>
-  <%= f.submit "Update", class: "btn btn-primary " %>
-  <% if policy(@user).destroy? && !@user.site_admin? -%>
-    <%= link_to "Delete user", 
-      admin_user_path(@user), 
-      method: :delete, 
-      class: "btn btn-danger", 
-      data: { confirm: "Please confirm you want to delete this user.\n\nThis is permanent!" } %>
-  <% end -%>
+
+  <% if policy(@user).destroy? && !@user.site_admin? %>
+    <div class="divider my-8"></div>
+
+    <div>
+      <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
+      <div class="card bg-error/5 border border-error/20 max-w-xl">
+        <div class="card-body p-4">
+          <h3 class="font-semibold flex items-center gap-2">
+            <svg class="size-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            Delete this user
+          </h3>
+          <p class="text-sm text-base-content/70 mt-2">
+            Permanently remove this user account. This action cannot be undone.
+          </p>
+          <div class="mt-4">
+            <%= link_to admin_user_path(@user),
+                method: :delete,
+                class: "btn btn-error btn-sm",
+                data: { confirm: "Please confirm you want to delete this user.\n\nThis is permanent!" } do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              Delete User
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Sticky Save Bar %>
+  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 p-4 -mx-4 sm:-mx-6 mt-8 flex justify-end gap-3 shadow-lg">
+    <%= f.submit "Save User", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+  </div>
 <% end %>

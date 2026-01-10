@@ -94,8 +94,13 @@ class ArticleDatatable < Datatable
   def render_author_cell(record)
     return '<span class="text-gray-400">—</span>'.html_safe unless record.author
 
+    author = record.author
+    display_name = author.full_name.presence || author.email
+
     <<~HTML.html_safe
-      <span class="text-gray-600">#{ERB::Util.html_escape(record.author.admin_name)}</span>
+      <a href="#{edit_admin_user_path(author)}" class="link link-hover text-placecal-orange">
+        #{ERB::Util.html_escape(display_name)}
+      </a>
     HTML
   end
 
