@@ -9,7 +9,6 @@ export default class extends Controller {
 			plugins: this.element.multiple ? ["remove_button"] : [],
 			allowEmptyOption: true,
 			closeAfterSelect: !this.element.multiple,
-			controlInput: null, // Use default control input behavior
 		});
 	}
 
