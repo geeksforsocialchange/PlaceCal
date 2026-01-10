@@ -24,10 +24,23 @@ When("I visit the partners page") do
 end
 
 When("I create a new partner with name {string}") do |name|
+  # Ensure we have neighbourhoods for the geocoder
+  create(:riverside_ward) unless Neighbourhood.exists?(name: "Riverside")
+
   click_link "Partners"
   await_datatables
-  click_link "Add New Partner"
+  click_link "Add Partner"
+
+  # New partner form uses simple_form labels, not fieldset/legend pattern
   fill_in "Name", with: name
+
+  # Address uses fieldset/legend pattern (from partial)
+  fill_in_fieldset "Street address", with: "123 Main Street"
+  fill_in_fieldset "City", with: "Millbrook"
+  fill_in_fieldset "Postcode", with: "ZZMB 1RS"
+
+  # Wait for any async validation to complete
+  sleep 0.3
   click_button "Save and continue..."
 end
 
@@ -38,8 +51,11 @@ When("I edit the partner {string}") do |name|
 end
 
 When("I update the partner summary to {string}") do |summary|
-  fill_in "Summary", with: summary
-  click_button "Save Partner"
+  # Find summary field by fieldset legend (daisyUI pattern)
+  fieldset = page.find("fieldset", text: "Summary")
+  input = fieldset.find("textarea")
+  input.set(summary)
+  click_button "Save"
 end
 
 Then("I should see the partner {string} in the list") do |name|

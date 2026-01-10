@@ -63,4 +63,8 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.assets.paths << Rails.root.join('app/javascript')
+
+  # Disable CSS/JS compression in test to avoid SassC compressor issues with asset paths
+  config.assets.css_compressor = nil
+  config.assets.js_compressor = nil
 end

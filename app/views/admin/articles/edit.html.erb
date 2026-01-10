@@ -1,3 +1,1 @@
-<% content_for :title do %>Editing <%= @article.title %><% end %>
-
-<%= render AdminEdit.new(model: :article, title: @article.title) %>
+<%= render AdminEdit.new(model: :article, title: @article.title, id: @article.id) %>

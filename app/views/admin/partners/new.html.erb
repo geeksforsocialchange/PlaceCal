@@ -1,53 +1,53 @@
 <% content_for :title do %>New Partner<% end %>
 
-<h1 class="page-header">New Partner</h1>
+<h1 class="text-2xl font-semibold text-gray-900 mb-6">New Partner</h1>
 
-<hr />
+<hr class="my-6 border-gray-200" />
 <div class="form">
   <%= simple_form_for @partner do |f| %>
   <%= render(ErrorComponent.new(@partner)) %>
-    <h2>Basic Information</h2>
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
     <%= f.input :name,
-	class: "form-control",
 	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source', 'data-action': 'input->partner-form-validation#checkInput' },
 	hint: 'Must be at least 5 characters long' %>
-    <p class="invalid-feedback" id="partner-name-feedback">This partner name has already been taken.</p>
+    <p class="text-sm text-red-600 hidden" id="partner-name-feedback">This partner name has already been taken.</p>
 
-    <h2>Place</h2>
-    <p>Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District. Keep this information as specific as possible – limited to where this partner actually runs events rather than the geographical spread of the people they are trying to reach.</p>
+    <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">Place</h2>
+    <p class="text-gray-600 mb-4">Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District. Keep this information as specific as possible – limited to where this partner actually runs events rather than the geographical spread of the people they are trying to reach.</p>
     <div id='address'>
-      <div class="row">
-        <div class="col-md-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
 
-    <h3>Address</h3>
+    <h3 class="text-lg font-medium text-gray-900 mb-4">Address</h3>
             <%= render 'address_fields',
 		       form: f,
 		       partner: @partner %>
 
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
-            <p>
+            <p class="text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md mt-4">
               The address for this partner is assigned to an out of date neighbourhood.
               You do not need to take any action but if you wish to reassign this to an
-              up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
+              up to date neighbourhood please contact support at <a href="mailto:support@placecal.org" class="underline">support@placecal.org</a>.
             </p>
           <% end %>
           <% if partner_has_unmappable_postcode?(@partner) %>
-            <p>
+            <p class="text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md mt-4">
               The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
             </p>
           <% end %>
         </div>
-        <div class="col-md-6">
-          <h3>Service Areas</h3>
-          <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
+        <div>
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Service Areas</h3>
+          <p class="text-sm text-gray-600 mb-4">If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
           <div class="sites_neighbourhoods">
-            <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-              <%= render 'service_area_fields', :f => neighbourhood %>
+            <%= nested_form_for(f, :service_areas,
+                  add_text: 'Add Service Area',
+                  add_class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600',
+                  partial: 'service_area_fields') do %>
+              <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+                <%= render 'service_area_fields', f: neighbourhood %>
+              <% end %>
             <% end %>
-            <div class="links">
-              <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
-            </div>
-            <br>
           </div>
         </div>
       </div>
@@ -55,20 +55,17 @@
 
     <%= render 'partnership_fields', f: f %>
 
-    <hr>
-    
-    <br>
-    <div class="row">
-      <div class="col-sm-12">
-        <%= f.submit "Save and continue...", class: "btn btn-primary btn-lg" %><br><br><br>
-        <% unless @partner.new_record? %>
-          <% if policy(@partner).destroy? %>
-            <%= link_to "Delete Partner", @partner, method: :delete, class: "btn btn-danger btn-sm", id: 'destroy-partner'  %>
-          <% else %>
-            <p>You do not have permission to delete this partner, please contact <%= mail_to "info@placecal.org", "info@placecal.org" %> if you need to delete this partner.</p>
-          <% end %>
+    <hr class="my-8 border-gray-200">
+
+    <div class="flex items-center gap-4">
+      <%= f.submit "Save and continue...", class: "inline-flex items-center px-6 py-3 text-base font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600" %>
+      <% unless @partner.new_record? %>
+        <% if policy(@partner).destroy? %>
+          <%= link_to "Delete Partner", @partner, method: :delete, class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700", id: 'destroy-partner' %>
+        <% else %>
+          <p class="text-sm text-gray-600">You do not have permission to delete this partner, please contact <%= mail_to "info@placecal.org", "info@placecal.org" %> if you need to delete this partner.</p>
         <% end %>
-      </div>
+      <% end %>
     </div>
   <% end %>
 </div>

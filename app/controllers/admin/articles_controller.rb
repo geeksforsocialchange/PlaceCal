@@ -5,11 +5,11 @@ module Admin
     before_action :set_article, only: %i[edit update destroy]
 
     def index
-      @articles = policy_scope(Article).order({ updated_at: :desc }, :title)
+      @articles = policy_scope(Article)
       authorize @articles
 
       respond_to do |format|
-        format.html
+        format.html { @articles = @articles.order(updated_at: :desc, title: :asc) }
         format.json do
           render json: ArticleDatatable.new(
             params,

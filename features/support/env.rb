@@ -8,6 +8,7 @@
 
 require "cucumber/rails"
 require "capybara/cucumber"
+require "selenium-webdriver"
 
 # Load shared spec support files (UK postcode stub, geocoder stubs)
 require Rails.root.join("spec/support/uk_postcode_stub")
@@ -30,19 +31,22 @@ end
 
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
-# Capybara configuration for JavaScript tests
-Capybara.register_driver :headless_chrome do |app|
+# Disable CSS animations for faster, more reliable tests
+Capybara.disable_animation = true
+
+# Selenium driver configuration - consistent with RSpec system tests
+Capybara.register_driver :selenium_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument("--headless")
-  options.add_argument("--no-sandbox")
-  options.add_argument("--disable-gpu")
+  options.add_argument("--headless=new") unless ENV["HEADLESS"] == "false"
   options.add_argument("--window-size=1400,1400")
+  options.add_argument("--disable-gpu")
+  options.add_argument("--no-sandbox")
   options.add_argument("--disable-dev-shm-usage")
 
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
-Capybara.javascript_driver = :headless_chrome
+Capybara.javascript_driver = :selenium_headless
 
 Capybara.configure do |config|
   config.default_max_wait_time = 5
@@ -51,8 +55,10 @@ Capybara.configure do |config|
 end
 
 # Use lvh.me for subdomain testing (resolves to 127.0.0.1)
+# app_host: URL the browser uses to access the app (supports subdomains)
+# server_host: Where Puma binds - must be 127.0.0.1 for CI compatibility
 Capybara.app_host = "http://lvh.me"
-Capybara.server_host = "lvh.me"
+Capybara.server_host = "127.0.0.1"
 
 # Include FactoryBot methods in World
 World(FactoryBot::Syntax::Methods)
@@ -66,9 +72,9 @@ After do
   Timecop.return
 end
 
-# Use truncation for JavaScript scenarios
+# Use deletion for JavaScript scenarios (faster than truncation for PostgreSQL)
 Before("@javascript") do
-  DatabaseCleaner.strategy = :truncation
+  DatabaseCleaner.strategy = :deletion
 end
 
 Before("not @javascript") do

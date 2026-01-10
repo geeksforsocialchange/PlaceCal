@@ -1,18 +1,8 @@
 require("@rails/ujs").start();
 import "@hotwired/turbo-rails";
 
-import "bootstrap";
-import "./src/jquery";
-
-// Input selectors
-require("@nathanvda/cocoon");
-require("select2")(window, $);
-
-// Datatables
-import "./src/datatable.js";
-
-$(document).on("turbo:load", function () {
-	$("[data-toggle='tooltip']").tooltip();
-});
+// Note: Cocoon removed - now using Stimulus nested_form_controller
+// Note: Select2 removed - now using Tom Select via Stimulus controller
+// Note: DataTables removed - now using Stimulus admin_table_controller
 
 import "./controllers";

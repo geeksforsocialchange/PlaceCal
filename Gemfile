@@ -39,10 +39,7 @@ gem 'carrierwave'
 gem 'image_processing'
 
 # Admin
-gem 'bootstrap'
-gem 'cocoon'
 gem 'font-awesome-rails'
-gem 'select2-rails'
 gem 'simple_form'
 
 # Users, login, permissions
@@ -116,13 +113,13 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'capybara-select-2'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'graphql-client'
   gem 'json_matchers'
+  gem 'parallel_tests'
   gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 7.0'

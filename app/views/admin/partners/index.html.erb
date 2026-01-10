@@ -1,18 +1,115 @@
-<script>
-var columns = [
-    {"data": "id"},
-    {"data": "name"},
-    {"data": "slug"},
-    {"data": "address"},
-    {"data": "updated_at"}
-  ]
-</script>
+<%
+  # Get wards that have partners, with counts
+  ward_counts = Neighbourhood
+    .where(unit: 'ward')
+    .joins(addresses: :partners)
+    .group('neighbourhoods.id')
+    .count
+
+  ward_options = Neighbourhood
+    .where(id: ward_counts.keys)
+    .order(:name)
+    .map do |w|
+      {
+        value: w.id.to_s,
+        label: "#{w.shortname} (#{ward_counts[w.id]})",
+        parent: w.ancestry&.split('/')&.last
+      }
+    end
+
+  # Get districts that have partners in their wards, with counts
+  district_ids_with_partners = ward_options.map { |w| w[:parent] }.compact.uniq
+  district_counts = ward_options.each_with_object(Hash.new(0)) do |ward, counts|
+    counts[ward[:parent]] += ward_counts[ward[:value].to_i]
+  end
+
+  district_options = Neighbourhood
+    .where(id: district_ids_with_partners)
+    .order(:name)
+    .map do |d|
+      { value: d.id.to_s, label: "#{d.shortname} (#{district_counts[d.id.to_s]})" }
+    end
+
+  # Get partnerships for filter dropdown, with counts
+  partnership_counts = Partnership.joins(:partners).group('tags.id').count
+  partnership_options = Partnership.where(id: partnership_counts.keys).order(:name).map do |p|
+    { value: p.id.to_s, label: "#{p.name} (#{partnership_counts[p.id]})" }
+  end
+
+  # Get categories that have partners, with counts
+  category_counts = Category.joins(:partners).group('tags.id').count
+  category_options = Category.where(id: category_counts.keys).order(:name).map do |c|
+    { value: c.id.to_s, label: "#{c.name} (#{category_counts[c.id]})" }
+  end
+%>
 
 <%= render partial: "layouts/admin/datatable", locals: {
     title: "Partners",
     model: :partners,
-    column_titles: ['ID', 'Name', 'Slug', 'Address', 'Last updated'],
-    columns: %i[id name slug address updated_at],
+    column_titles: [
+      'Partner',
+      'Ward',
+      'Partnerships',
+      icon_column_header(:calendar, 'Calendars'),
+      icon_column_header(:users, 'Admins'),
+      icon_column_header(:tag, 'Categories'),
+      'Last Updated',
+      ''
+    ],
+    columns: %i[name ward partnerships calendars admins categories updated_at actions],
+    column_config: {
+      name: {},
+      ward: { sortable: false },
+      partnerships: { sortable: false },
+      calendars: { align: :center, sortable: false, fit: true },
+      admins: { align: :center, sortable: false, fit: true },
+      categories: { align: :center, sortable: false, fit: true },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'updated_at', direction: 'desc' },
+    filters: [
+      {
+        column: 'district',
+        label: 'District',
+        options: district_options
+      },
+      {
+        column: 'ward',
+        label: 'Ward',
+        depends_on: 'district',
+        options: ward_options
+      },
+      {
+        column: 'partnership',
+        label: 'Partnership',
+        options: partnership_options
+      },
+      {
+        column: 'calendar_status',
+        label: 'Calendar',
+        width: 'w-28',
+        options: [
+          { value: 'connected', label: 'Connected' },
+          { value: 'none', label: 'No calendar' }
+        ]
+      },
+      {
+        column: 'has_admins',
+        label: 'Admins',
+        width: 'w-28',
+        options: [
+          { value: 'yes', label: 'Has admins' },
+          { value: 'no', label: 'No admins' }
+        ]
+      },
+      {
+        column: 'category',
+        label: 'Category',
+        width: 'w-28',
+        options: category_options
+      }
+    ],
     data: @partners,
     source: admin_partners_path(format: :json),
     new_link: new_admin_partner_path

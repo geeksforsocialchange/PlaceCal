@@ -13,50 +13,68 @@ RSpec.describe "Admin Sites", :slow, type: :system do
     create(:sites_neighbourhood, site: site, neighbourhood: riverside_ward)
   end
 
-  describe "select2 inputs on site form" do
-    it "allows selecting site admin, neighbourhoods and tags", :aggregate_failures do
-      click_link "Sites"
-      click_link "Add New Site"
+  describe "tom-select inputs on site form" do
+    # Helper to click site form tabs (daisyUI radio tab inputs)
+    def click_site_tab(tab_name)
+      find("input.tab[aria-label*='#{tab_name}']", wait: 10).click
+      sleep 0.2
+    end
 
-      # Select site admin
-      site_admin_node = select2_node("site_site_admin")
-      select2 admin_user.to_s, xpath: site_admin_node.path
-      assert_select2_single admin_user.to_s, site_admin_node
+    it "allows selecting neighbourhoods and tags", :aggregate_failures do
+      click_link "Sites"
+      click_link "Add Site"
+
+      # Site admin uses plain select with "First Last (email)" format
+      admin_label = "#{admin_user.first_name} #{admin_user.last_name} (#{admin_user.email})"
+      select admin_label, from: "site_site_admin_id"
+
+      # Navigate to Neighbourhoods tab
+      click_site_tab "Neighbourhoods"
 
       # Select primary neighbourhood (only appears when creating a site)
-      neighbourhood_main = select2_node("site_sites_neighbourhood_neighbourhood_id")
-      select2 riverside_ward.name, xpath: neighbourhood_main.path
-      assert_select2_single riverside_ward.name, neighbourhood_main
+      neighbourhood_main = tom_select_node("site_sites_neighbourhood_neighbourhood_id")
+      tom_select riverside_ward.name, xpath: neighbourhood_main.path
+      assert_tom_select_single riverside_ward.name, neighbourhood_main
 
-      # Add additional neighbourhood via cocoon
+      # Add additional neighbourhood via nested form
       click_link "Add neighbourhood"
-      service_areas = all_cocoon_select2_nodes("sites_neighbourhoods")
-      select2 oldtown_ward.name, xpath: service_areas[-1].path
-      assert_select2_single oldtown_ward.name, service_areas[0]
+      service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
+      tom_select oldtown_ward.name, xpath: service_areas[-1].path
+      assert_tom_select_single oldtown_ward.name, service_areas[0]
 
-      # Select tags
-      tags_node = select2_node("site_tags")
-      select2 partnership.name, xpath: tags_node.path
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      # Select tags - need to navigate to Partnerships tab
+      click_site_tab "Partnerships"
+      tags_node = tom_select_node("site_tags")
+      tom_select partnership.name, xpath: tags_node.path
+      assert_tom_select_multiple [partnership.name_with_type], tags_node
 
-      fill_in "Name", with: "Test Site"
-      fill_in "Url", with: "https://test.com"
-      fill_in "Slug", with: "test-site"
+      # Navigate back to Basic Info and fill required fields
+      click_site_tab "Basic Info"
+      fill_in "site_name", with: "Test Site"
 
-      click_button "Create Site"
+      # URL and Slug are on Admin tab
+      click_site_tab "Admin"
+      fill_in "site_url", with: "https://test.com"
+      fill_in "site_slug", with: "test-site"
+
+      click_button "Save"
 
       # Verify data persists
       click_link "Sites"
       click_link "Test Site"
 
-      site_admin_node = select2_node("site_site_admin")
-      assert_select2_single admin_user.to_s, site_admin_node
+      # Site admin is plain select with "First Last (email)" format
+      expect(page).to have_select("site_site_admin_id", selected: admin_label)
 
-      service_areas = all_cocoon_select2_nodes("sites_neighbourhoods")
-      assert_select2_single oldtown_ward.name, service_areas[0]
+      # Navigate to Neighbourhoods tab to check neighbourhoods
+      click_site_tab "Neighbourhoods"
+      service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
+      assert_tom_select_single oldtown_ward.name, service_areas[0]
 
-      tags_node = select2_node("site_tags")
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      # Navigate to Partnerships tab to check tags
+      click_site_tab "Partnerships"
+      tags_node = tom_select_node("site_tags")
+      assert_tom_select_multiple [partnership.name_with_type], tags_node
     end
   end
 
@@ -68,10 +86,10 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link site.name
 
       # Wait for the page to load
-      find(:xpath, '//input[@value="Update Site"]', wait: 100)
+      find(:xpath, '//input[@value="Save"]', wait: 5)
 
       # The primary neighbourhood should not appear in the sites_neighbourhoods section
-      service_areas = all(:css, ".sites_neighbourhoods .select2-container", wait: 1)
+      service_areas = all(:css, ".sites_neighbourhoods .ts-wrapper", wait: 1)
 
       expect(service_areas.length).to be_zero,
                                       "@site should only have a primary neighbourhood, " \

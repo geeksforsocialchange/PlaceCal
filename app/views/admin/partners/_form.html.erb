@@ -1,195 +1,745 @@
-<div class="form">
-  <%= simple_form_for @partner do |f| %>
-    <%= render(ErrorComponent.new(@partner)) %>
-    <% unless policy(@partner).permitted_attributes.include? :hidden %>
-      <% if @partner.hidden %>
-        <div class="alert alert-success" role="alert">
-          <h3 class="alert-heading">Hidden</h3>
-          <p><strong>Your partner is currently not visible to the public for the following reason</strong> </p>
-          <div id="hidden-reason">
-            <%= @partner.hidden_reason_html.to_s.html_safe %>
-          </div>
-          <hr>
-          <p>Once you have fixed this issue get in touch with <a href="mailto:support@placecal.org">support@placecal.org</a> so that we can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: <a href="mailto:support@placecal.org">support@placecal.org</a>.</p>
-        </div>
-      <% end  %>
-    <% end  %>
-    <h2>Basic Information</h2>
-    <%= f.input :name,
-	class: "form-control",
-	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source', 'data-action': 'input->partner-form-validation#checkInput' },
-	hint: 'Must be at least 5 characters long' %>
-    <p class="invalid-feedback" id="partner-name-feedback">This partner name has already been taken.</p>
+<%= simple_form_for @partner, html: { data: { controller: 'partner-tabs live-validation' } } do |f| %>
 
-    <%= f.input :slug, class: "form-control" if policy(@partner).permitted_attributes.include? :slug %>
-    <%= f.input :summary, class: "form-control", label: 'Summary', input_html: { maxlength: 200, rows: 2 }, as: 'text' %>
-    <%= f.input :description, class: "form-control", label: 'Description', input_html: { rows: 7 } %>
-    <%= f.input :accessibility_info, class: "form-control", label: 'Accessibility Information', input_html: { rows: 7 } %>
-    <div class="row">
-      <div class="col-md-6" data-controller="image-preview">
-        <%= f.input :image,
-            hint: image_uploader_hint(@partner.image),
-            as: :file,
-            input_html: { data: { action: "change->image-preview#file"} }
-            %>
-        <% if @partner.image.url  %>
-        <%= image_tag @partner.image.url,  width: '125', class: 'brand_image', data: { image_preview_target: "img"}  %>
-        <% else  %>
-        <%= image_tag "", style: 'display:none;', width: '125', class: 'brand_image', data: { image_preview_target: "img"} %>
-        <% end  %>
+  <% unless policy(@partner).permitted_attributes.include? :hidden %>
+    <% if @partner.hidden %>
+      <div role="alert" class="alert alert-error mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div>
+          <h3 class="font-bold">This partner is hidden</h3>
+          <p>Your partner is currently not visible to the public for the following reason:</p>
+          <div class="mt-2 p-3 bg-error/20 rounded"><%= @partner.hidden_reason_html.to_s.html_safe %></div>
+          <p class="mt-2">Once you have fixed this issue, contact <a href="mailto:support@placecal.org" class="link">support@placecal.org</a> to make your partner public again.</p>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%# Radio Tabs - daisyUI tabs-lift %>
+  <div role="tablist" class="tabs tabs-lift">
+    <input type="radio" name="partner_tabs" class="tab" aria-label="📋 Basic Info" data-partner-tabs-target="tab" data-hash="basic" checked="checked" />
+    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="basic">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-4">
+          <h2 class="text-lg font-bold mb-1">Basic Information</h2>
+          <p class="text-sm text-base-content/60 mb-4">Enter the core details about your partner organisation.</p>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Partner Name <span class="text-error">*</span></legend>
+            <%= f.input_field :name, class: 'input input-bordered w-full',
+                'data-controller': "partner-form-validation",
+                'data-partner-form-validation-target': 'source',
+                'data-action': 'input->partner-form-validation#checkInput',
+                'data-validate-required': 'true',
+                'data-validate-min': '5',
+                'data-validate-required-message': 'Partner name is required',
+                'data-validate-min-message': 'Name must be at least 5 characters' %>
+          </fieldset>
+
+          <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="200">
+            <legend class="fieldset-legend">Summary</legend>
+            <%= f.input_field :summary, as: :text, class: 'textarea textarea-bordered w-full min-h-16', maxlength: 200, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
+            <div class="flex items-center justify-between mt-1">
+              <p class="fieldset-label">A brief one-line summary</p>
+              <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 200</span>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Description</legend>
+            <%= f.input_field :description, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
+            <p class="fieldset-label">Full description of what this partner does</p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Accessibility Information</legend>
+            <%= f.input_field :accessibility_info, class: 'textarea textarea-bordered w-full min-h-20', data: { controller: 'auto-expand' } %>
+            <p class="fieldset-label">Details about accessibility features</p>
+          </fieldset>
+        </div>
+
+        <%# Partner Image - Right column on larger screens %>
+        <div class="lg:border-l lg:border-base-300 lg:pl-6">
+          <h3 class="font-semibold mb-4 flex items-center gap-2">
+            <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Partner Image
+          </h3>
+          <div data-controller="image-preview">
+            <%# File Input / Dropzone %>
+            <div class="mb-4">
+              <div class="relative overflow-hidden rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors bg-base-200/50 hover:bg-base-200 cursor-pointer"
+                   data-image-preview-target="dropzone">
+                <label class="flex items-center gap-3 p-3 cursor-pointer">
+                  <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+                    <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-base-content">Choose file or drag here</p>
+                    <p class="text-xs text-base-content/50"><%= image_uploader_hint(@partner.image) %></p>
+                  </div>
+                  <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
+                </label>
+              </div>
+            </div>
+
+            <%# Image Preview %>
+            <div class="relative group" data-image-preview-target="wrapper">
+              <% if @partner.image.url %>
+                <div class="relative rounded-lg overflow-hidden border border-base-300 bg-base-200">
+                  <%= image_tag @partner.image.url, class: 'w-full h-auto', data: { image_preview_target: "img" } %>
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <label class="btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer">
+                      <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                      Replace
+                      <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file" } %>
+                    </label>
+                  </div>
+                </div>
+                <%# Delete checkbox %>
+                <div class="mt-2 flex justify-end">
+                  <label class="inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60">
+                    <%= f.check_box :remove_image, class: 'sr-only' %>
+                    <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Remove image on save
+                  </label>
+                </div>
+              <% else %>
+                <div class="aspect-square rounded-lg border border-base-300 bg-base-200/50 flex items-center justify-center" data-image-preview-target="placeholder">
+                  <div class="text-center text-base-content/30 p-4">
+                    <svg class="w-16 h-16 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <p class="text-sm font-medium">No image uploaded</p>
+                    <p class="text-xs mt-1">Upload an image above</p>
+                  </div>
+                </div>
+                <%= image_tag "", style: 'display:none;', class: 'w-full h-auto rounded-lg border border-base-300', data: { image_preview_target: "img" } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <br>
-    <hr>
-    <h2>Place</h2>
-    <p>Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District. Keep this information as specific as possible – limited to where this partner actually runs events rather than the geographical spread of the people they are trying to reach.</p>
-    <div id='address'>
-      <div class="row">
-        <div class="col-md-6">
 
-    <h3>Address</h3>
-            <%= render 'address_fields',
-		       form: f,
-		       partner: @partner %>
+    <input type="radio" name="partner_tabs" class="tab" aria-label="📍 Location" data-partner-tabs-target="tab" data-hash="location" />
+    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="location">
+      <h2 class="text-lg font-bold mb-1">Location</h2>
+      <p class="text-sm text-base-content/60 mb-6">Partners need at least one place - either a fixed address or a service area.</p>
 
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+          <legend class="fieldset-legend">Address</legend>
+          <%= render 'address_fields', form: f, partner: @partner %>
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
-            <p>
-              The address for this partner is assigned to an out of date neighbourhood.
-              You do not need to take any action but if you wish to reassign this to an
-              up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
-            </p>
+            <div role="alert" class="alert alert-warning mt-4 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <span>Outdated neighbourhood. Contact <a href="mailto:support@placecal.org" class="link">support</a> to reassign.</span>
+            </div>
           <% end %>
           <% if partner_has_unmappable_postcode?(@partner) %>
-            <p>
-              The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
-            </p>
-          <% end %>
-        </div>
-        <div class="col-md-6">
-          <h3>Service Areas</h3>
-          <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
-          <div class="sites_neighbourhoods">
-            <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-              <%= render 'service_area_fields', :f => neighbourhood %>
-            <% end %>
-            <div class="links">
-              <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+            <div role="alert" class="alert alert-warning mt-4 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <span>Postcode not in our system yet.</span>
             </div>
-            <br>
-          </div>
-        </div>
+          <% end %>
+        </fieldset>
+
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+          <legend class="fieldset-legend">Service Areas</legend>
+          <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address.</p>
+          <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
+            <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+              <%= render 'service_area_fields', f: neighbourhood %>
+            <% end %>
+          <% end %>
+        </fieldset>
       </div>
+
+      <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4 mt-8">
+        <legend class="fieldset-legend">Opening Times</legend>
+        <%= render 'opening_times', f: f %>
+      </fieldset>
     </div>
-    <hr>
-    <h2>Online</h2>
-      <%= f.input :url, class: "form-control", label: 'Website address', placeholder: 'https://your-website.org' %>
-      <div class="form-group url optional facebook_link form-group-invalid">
-        <%= f.label :facebook_link %>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">https://facebook.com/</div>
-          </div>
-          <%= f.input_field :facebook_link, class: "form-control", placeholder: 'FacebookPageName' %>
-          <%= f.error :facebook_link, class: 'invalid-feedback' %>
-        </div>
-      </div>
-      <div class="form-group url optional twitter_handle form-group-invalid">
-        <%= f.label :twitter_handle %>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">@</div>
-          </div>
-          <%= f.input_field :twitter_handle, class: "form-control", placeholder: 'TwitterAccount' %>
-          <%= f.error :twitter_handle, class: 'invalid-feedback' %>
-        </div>
-      </div>
-      <div class="form-group url optional twitter_handle form-group-invalid">
-        <%= f.label :instagram_handle %>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">@</div>
-          </div>
-          <%= f.input_field :instagram_handle, class: "form-control", placeholder: 'InstagramAccount' %>
-          <%= f.error :instagram_handle, class: 'invalid-feedback' %>
+
+    <input type="radio" name="partner_tabs" class="tab" aria-label="📞 Contact" data-partner-tabs-target="tab" data-hash="contact" />
+    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="contact">
+      <h2 class="text-lg font-bold mb-1">Online Presence</h2>
+      <p class="text-sm text-base-content/60 mb-6">Website and social media links.</p>
+
+      <div class="grid gap-4 max-w-2xl mb-8">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Website</legend>
+          <%= f.input_field :url, class: 'input input-bordered w-full', placeholder: 'https://your-website.org',
+              'data-validate-url': 'true',
+              'data-validate-url-message': 'Enter a valid URL (including https://)' %>
+        </fieldset>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Facebook</legend>
+            <label class="input input-bordered flex items-center gap-1 pr-1">
+              <span class="text-base-content/50 text-xs shrink-0">facebook.com/</span>
+              <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0 text-sm' %>
+            </label>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">X (Twitter)</legend>
+            <label class="input input-bordered flex items-center gap-1">
+              <span class="text-base-content/50">@</span>
+              <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0 text-sm' %>
+            </label>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Instagram</legend>
+            <label class="input input-bordered flex items-center gap-1">
+              <span class="text-base-content/50">@</span>
+              <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0 text-sm' %>
+            </label>
+          </fieldset>
         </div>
       </div>
 
-    <br>
-    <hr>
-    <h2>Contact Information</h2>
-    <div class="row">
-      <div class="col-md-6">
-        <h3>Public Contact</h3>
-        <p>This is the information that will be shown to the public.</p>
-        <%= f.input :public_name, class: "form-control" %>
-        <%= f.input :public_email, class: "form-control" %>
-        <%= f.input :public_phone, class: "form-control" %>
-      </div>
-      <div class="col-md-6">
-        <h3>Partnership Contact</h3>
-        <p><em>If different from public contact:</em> The contact person for PlaceCal.</p>
-        <%= f.input :partner_name, class: "form-control" %>
-        <%= f.input :partner_email, class: "form-control" %>
-        <%= f.input :partner_phone, class: "form-control" %>
-      </div>
-    </div>
-    <hr>
-    <hr>
-    <div class="row">
-      <div class="col-lg-8 col-md-12">
-        <h2>Opening times</h2>
-        <%= render 'opening_times', f: f %>
-      </div>
-    </div>
-    <hr>
-    <h2>Tags</h2>
-    <p>What other associations does this partner have?</p>
-    <%= render 'partnership_fields', f: f %>
-    <%= f.association :facilities,
-        label: "Facilities",
-        hint: "What infrastructure does this partner provide?",
-        collection: Facility.all,
-        input_html: { class: 'form-check', data: { 
-          controller: 'select2',
-        } } %>
-    <hr>
-    <%= f.association :categories,
-        label: "Categories",
-        hint:"Partners may have up to 3 category tags, the public will be able to filter by these",
-        collection: Category.all,
-        input_html: { class: 'form-check', data: { 
-          controller: 'select2',
-        } } %>
-    <hr>
-    <h2>Event matching</h2>
-    <p>Can events imported from other partner's calendars be listed at this partner if their address matches?</p>
-    <%= f.input :can_be_assigned_events, class: "form-control" %>
-    <hr>
-    <% unless @partner.new_record? %>
-      <% if policy(@partner).permitted_attributes.include? :hidden %>
-        <div class="alert alert-light border" role="alert">
-          <h2 class="alert-heading">Moderation</h2>
-          <p>Hiding a partner is a last resort, and will remove them from all PlaceCal sites, not just yours. This is appropriate if a partner suddenly starts publishing things like spam or hate speech. In such cases, hiding a partner is the right action and we appreciate your help in keeping PlaceCal a safe place to be.</p>
-          <p>Hiding a partner does not delete them. It will notify both the partner and the PlaceCal team, using the information you fill out.</p>
-          <p>Please use the space below to explain the reason for hiding the partner and steps needed to re-instate them.</p>
-          <%= f.input :hidden, class: "form-control" %>
-          <%= f.input :hidden_reason, label: "Explanation for hiding",  class: "form-control" , input_html: { rows: 7 } %>
+      <div class="divider"></div>
+
+      <h2 class="text-lg font-bold mb-1">Contact Information</h2>
+      <p class="text-sm text-base-content/60 mb-6">How people can get in touch.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card bg-base-200/50 border border-base-300">
+          <div class="card-body p-4 gap-3">
+            <h3 class="font-semibold flex items-center gap-2">
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Public Contact
+            </h3>
+            <p class="text-xs text-base-content/60">Shown on PlaceCal to the public.</p>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Name</legend>
+              <%= f.input_field :public_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
+            </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Email</legend>
+              <%= f.input_field :public_email, class: 'input input-bordered input-sm w-full bg-base-100',
+                  'data-validate-email': 'true',
+                  'data-validate-email-message': 'Enter a valid email address' %>
+            </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Phone</legend>
+              <%= f.input_field :public_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
+            </fieldset>
+          </div>
         </div>
-      <% end  %>
-    <% end  %>
-    <br>
-    <div class="row">
-      <div class="col-sm-12">
-        <%= f.submit "Save Partner", class: "btn btn-primary btn-lg" %><br><br><br>
-        <% unless @partner.new_record? %>
-          <% if policy(@partner).destroy? %>
-            <%= link_to "Delete Partner", @partner, method: :delete, class: "btn btn-danger btn-sm", id: 'destroy-partner'  %>
-          <% else %>
-            <p>You do not have permission to delete this partner, please contact <%= mail_to "info@placecal.org", "info@placecal.org" %> if you need to delete this partner.</p>
+
+        <div class="card bg-base-200/50 border border-base-300">
+          <div class="card-body p-4 gap-3">
+            <h3 class="font-semibold flex items-center gap-2">
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              Partnership Contact
+            </h3>
+            <p class="text-xs text-base-content/60">Internal contact for PlaceCal team.</p>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Name</legend>
+              <%= f.input_field :partner_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
+            </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Email</legend>
+              <%= f.input_field :partner_email, class: 'input input-bordered input-sm w-full bg-base-100',
+                  'data-validate-email': 'true',
+                  'data-validate-email-message': 'Enter a valid email address' %>
+            </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Phone</legend>
+              <%= f.input_field :partner_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <input type="radio" name="partner_tabs" class="tab" aria-label="🏷️ Tags" data-partner-tabs-target="tab" data-hash="tags" />
+    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="tags">
+      <h2 class="text-lg font-bold mb-1">Tags & Associations</h2>
+      <p class="text-sm text-base-content/60 mb-6">Categorise this partner and link to partnerships.</p>
+
+      <div class="space-y-6 max-w-2xl">
+        <%= render 'partnership_fields', f: f %>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Facilities</legend>
+          <p class="fieldset-label mb-3">What infrastructure does this partner provide?</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
+            <% Facility.all.each do |facility| %>
+              <label class="label cursor-pointer gap-2 justify-start py-1">
+                <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm checkbox-warning', id: "facility_#{facility.id}" %>
+                <span class="label-text text-sm"><%= facility.name %></span>
+              </label>
+            <% end %>
+          </div>
+          <%= hidden_field_tag "partner[facility_ids][]", "" %>
+        </fieldset>
+
+        <fieldset class="fieldset" data-controller="checkbox-limit" data-checkbox-limit-max-value="<%= Partner::MAX_CATEGORIES %>">
+          <legend class="fieldset-legend">Categories</legend>
+          <p class="fieldset-label mb-3">
+            Partners may have up to <%= Partner::MAX_CATEGORIES %> category tags
+            <span class="badge badge-sm badge-ghost ml-2" data-counter>0 / <%= Partner::MAX_CATEGORIES %></span>
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
+            <% Category.all.each do |category| %>
+              <label class="label cursor-pointer gap-2 justify-start py-1 transition-opacity">
+                <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm checkbox-warning', id: "category_#{category.id}" %>
+                <span class="label-text text-sm"><%= category.name %></span>
+              </label>
+            <% end %>
+          </div>
+          <%= hidden_field_tag "partner[category_ids][]", "" %>
+        </fieldset>
+      </div>
+    </div>
+
+    <% unless @partner.new_record? %>
+      <input type="radio" name="partner_tabs" class="tab" aria-label="📅 Calendars" data-partner-tabs-target="tab" data-hash="calendars" />
+      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="calendars">
+        <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Calendars
+          <span class="badge badge-neutral"><%= @partner.calendars.count %></span>
+        </h2>
+        <p class="text-sm text-base-content/60 mb-6">Event sources connected to this partner.</p>
+
+        <% if @partner.calendars.any? %>
+          <div class="grid gap-3 max-w-2xl">
+            <% @partner.calendars.each do |calendar| %>
+              <div class="card card-compact bg-base-200/50 border border-base-300">
+                <div class="card-body flex-row items-center justify-between">
+                  <div>
+                    <h3 class="font-medium"><%= calendar.name %></h3>
+                    <p class="text-xs text-base-content/60"><%= calendar.source %></p>
+                  </div>
+                  <%= link_to "Edit", edit_admin_calendar_path(calendar), class: "btn btn-ghost btn-sm" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <p class="mt-2 text-base-content/60">No calendars connected yet</p>
+          </div>
+        <% end %>
+
+        <div class="mt-6">
+          <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add Calendar
           <% end %>
+        </div>
+      </div>
+
+      <input type="radio" name="partner_tabs" class="tab" aria-label="👥 Admins" data-partner-tabs-target="tab" data-hash="admins" />
+      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="admins">
+        <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Admins
+          <span class="badge badge-neutral"><%= @partner.users.count %></span>
+        </h2>
+        <p class="text-sm text-base-content/60 mb-6">Users who can manage this partner.</p>
+
+        <% if @partner.users.any? %>
+          <div class="grid gap-3 max-w-2xl">
+            <% @partner.users.each do |p_user| %>
+              <div class="card card-compact bg-base-200/50 border border-base-300">
+                <div class="card-body flex-row items-center justify-between">
+                  <div>
+                    <h3 class="font-medium"><%= p_user.email %></h3>
+                    <p class="text-xs text-base-content/60">Added <%= time_ago_in_words(p_user.created_at) %> ago</p>
+                  </div>
+                  <% if policy(User).update? %>
+                    <%= link_to "Edit", edit_admin_user_path(p_user), class: "btn btn-ghost btn-sm" %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <p class="mt-2 text-base-content/60">No admins assigned yet</p>
+          </div>
+        <% end %>
+
+        <% if policy(User).update? %>
+          <div class="mt-6">
+            <%= link_to new_admin_user_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Admin
+            <% end %>
+          </div>
         <% end %>
       </div>
+
+      <input type="radio" name="partner_tabs" class="tab" aria-label="👁️ Preview" data-partner-tabs-target="tab" data-hash="preview" />
+      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="preview">
+        <h2 class="text-lg font-bold mb-1">Live Site Preview</h2>
+        <p class="text-sm text-base-content/60 mb-6">How this partner appears on PlaceCal.</p>
+
+        <div class="mockup-browser bg-base-300 border border-base-300 max-w-4xl">
+          <div class="mockup-browser-toolbar">
+            <div class="input text-sm">placecal.org/partners/<%= @partner.slug %></div>
+          </div>
+          <div class="bg-base-100">
+            <%# Partner Header %>
+            <div class="bg-neutral text-neutral-content p-6">
+              <h1 class="text-2xl font-bold"><%= @partner.name %></h1>
+              <% if @partner.summary.present? %>
+                <p class="mt-2 text-neutral-content/80"><%= @partner.summary %></p>
+              <% end %>
+            </div>
+
+            <div class="p-6">
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                  <% if @partner.description_html.present? %>
+                    <div class="prose prose-sm max-w-none">
+                      <%= @partner.description_html.to_s.html_safe %>
+                    </div>
+                  <% else %>
+                    <p class="text-base-content/50 italic">No description provided.</p>
+                  <% end %>
+
+                  <% if @partner.accessibility_info.present? %>
+                    <div class="mt-6">
+                      <h3 class="font-semibold mb-2">Accessibility</h3>
+                      <p class="text-sm"><%= @partner.accessibility_info %></p>
+                    </div>
+                  <% end %>
+                </div>
+
+                <div class="space-y-4">
+                  <% if @partner.image.present? %>
+                    <%= image_tag @partner.image.standard.url, class: 'rounded-box w-full' %>
+                  <% else %>
+                    <div class="bg-base-200 rounded-box aspect-square flex items-center justify-center">
+                      <span class="text-base-content/30 text-sm">No image</span>
+                    </div>
+                  <% end %>
+
+                  <div class="card bg-base-200 card-body p-4 text-sm">
+                    <% if @partner.address&.to_s.present? %>
+                      <div class="mb-3">
+                        <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Address</div>
+                        <p><%= @partner.address %></p>
+                      </div>
+                    <% end %>
+
+                    <% if @partner.url.present? %>
+                      <div class="mb-3">
+                        <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Website</div>
+                        <%= link_to @partner.url, @partner.url, target: '_blank', class: 'link text-placecal-orange hover:text-orange-600 break-all' %>
+                      </div>
+                    <% end %>
+
+                    <% if @partner.public_email.present? %>
+                      <div class="mb-3">
+                        <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Email</div>
+                        <%= mail_to @partner.public_email, @partner.public_email, class: 'link text-placecal-orange hover:text-orange-600' %>
+                      </div>
+                    <% end %>
+
+                    <% if @partner.public_phone.present? %>
+                      <div>
+                        <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Phone</div>
+                        <p><%= @partner.public_phone %></p>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider my-8"></div>
+
+        <h3 class="text-lg font-bold mb-1">Upcoming Events</h3>
+        <p class="text-sm text-base-content/60 mb-6">Events in the next 30 days from this partner's calendars.</p>
+
+        <% upcoming_events = @partner.events.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart).limit(20) %>
+        <% if upcoming_events.any? %>
+          <div class="overflow-x-auto">
+            <table class="table table-sm table-zebra">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Date & Time</th>
+                  <th>Calendar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% upcoming_events.each do |event| %>
+                  <tr>
+                    <td>
+                      <div class="font-medium"><%= truncate(event.summary, length: 50) %></div>
+                    </td>
+                    <td class="whitespace-nowrap text-sm">
+                      <%= event.dtstart.strftime('%a %d %b %H:%M') %>
+                    </td>
+                    <td>
+                      <% if event.calendar %>
+                        <%= link_to event.calendar.name, edit_admin_calendar_path(event.calendar), class: "link text-placecal-orange hover:text-orange-600 text-sm" %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <svg class="mx-auto h-10 w-10 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <p class="mt-2 text-base-content/60">No upcoming events in the next 30 days</p>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%# Spacer to push Settings tab right %>
+    <div class="tab flex-1 cursor-default"></div>
+
+    <input type="radio" name="partner_tabs" class="tab" aria-label="⚙ Settings" data-partner-tabs-target="tab" data-hash="settings" />
+    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="settings">
+      <% if policy(@partner).permitted_attributes.include? :slug %>
+        <div class="mb-8">
+          <h2 class="text-lg font-bold mb-1">URL Settings</h2>
+          <p class="text-sm text-base-content/60 mb-4">Customise the URL slug for this partner.</p>
+          <div class="max-w-md">
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">URL Slug</legend>
+              <%= f.input_field :slug, class: 'input input-bordered w-full' %>
+              <p class="fieldset-label">Leave blank to auto-generate from name</p>
+            </fieldset>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="mb-8">
+        <h2 class="text-lg font-bold mb-4">Event Matching</h2>
+
+        <div class="max-w-2xl">
+          <%# Event Matching Toggle Card %>
+          <% is_enabled = @partner.can_be_assigned_events %>
+          <div class="card bg-base-200/50 border-2 border-base-300">
+            <div class="card-body p-5">
+              <div class="flex items-start gap-4">
+                <%# Icon %>
+                <div class="shrink-0 w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                </div>
+
+                <%# Content %>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-4 mb-2">
+                    <h3 class="font-semibold" id="event-matching-title">
+                      <%= is_enabled ? 'Event matching is enabled' : 'Event matching is disabled' %>
+                    </h3>
+                    <div class="flex items-center gap-3">
+                      <span class="label-text text-sm font-medium text-base-content/60">Disabled</span>
+                      <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'partner_can_be_assigned_events', onchange: 'updateEventMatchingTitle(this.checked)' %>
+                      <span class="label-text text-sm font-medium text-success">Enabled</span>
+                    </div>
+                  </div>
+
+                  <p class="text-sm text-base-content/70 mb-3">
+                    Control whether events from other calendars can be automatically listed at this partner's address.
+                  </p>
+
+                  <div class="text-sm text-base-content/70 space-y-2">
+                    <p class="font-medium text-base-content/90">When enabled:</p>
+                    <ul class="list-none space-y-1.5 ml-0">
+                      <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Events at this address from any PlaceCal calendar will appear here</span>
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Visitors see a complete picture of what's happening at this location</span>
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Great for venues, community centres, and shared spaces</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          function updateEventMatchingTitle(isEnabled) {
+            const title = document.getElementById('event-matching-title');
+            title.textContent = isEnabled ? 'Event matching is enabled' : 'Event matching is disabled';
+          }
+        </script>
+      </div>
+
+      <% unless @partner.new_record? %>
+        <% if policy(@partner).permitted_attributes.include? :hidden %>
+          <div class="mb-8">
+            <h2 class="text-lg font-bold mb-4">Moderation</h2>
+
+            <div class="max-w-2xl" data-controller="inverted-toggle">
+              <%# Hidden Toggle Card %>
+              <div class="card border-2 transition-colors" data-inverted-toggle-target="card">
+                <div class="card-body p-5">
+                  <div class="flex items-start gap-4">
+                    <%# Icon %>
+                    <div class="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors" data-inverted-toggle-target="icon">
+                      <svg class="w-6 h-6 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-inverted-toggle-target="iconHidden"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+                      <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-inverted-toggle-target="iconVisible"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    </div>
+
+                    <%# Content %>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between gap-4 mb-2">
+                        <h3 class="font-semibold transition-colors" data-inverted-toggle-target="title" id="partner-visibility-title">
+                          <%= @partner.hidden? ? 'Partner is hidden' : 'Partner is visible' %>
+                        </h3>
+                        <div class="flex items-center gap-3">
+                          <span class="label-text text-sm font-medium text-error">Hidden</span>
+                          <%= f.hidden_field :hidden, value: @partner.hidden? ? '1' : '0', data: { inverted_toggle_target: 'hidden' } %>
+                          <input type="checkbox" id="partner_hidden_toggle" class="toggle toggle-success" data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" onchange="updateVisibilityTitle(this.checked)" />
+                          <span class="label-text text-sm font-medium text-success">Visible</span>
+                        </div>
+                      </div>
+
+                      <p class="text-sm text-error/80 mb-3" data-inverted-toggle-target="status">This partner is not visible to the public.</p>
+
+                      <div class="text-sm text-base-content/70 space-y-2">
+                        <p class="font-medium text-base-content/90">When a partner is hidden:</p>
+                        <ul class="list-none space-y-1.5 ml-0">
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span>Removed from all PlaceCal sites and search results</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span>Events from this partner will not appear on any calendars</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span>The partner page will return a 404 error to visitors</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Admins can still access and edit the partner in this dashboard</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            <span>PlaceCal moderators and the partner admins will be notified</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <%# Reason field - shown when hidden or always for entering reason %>
+                  <div class="mt-4 pt-4 border-t border-base-300/50">
+                    <fieldset class="fieldset">
+                      <legend class="fieldset-legend">Reason for hiding</legend>
+                      <p class="text-xs text-base-content/60 mb-2">This message will be shown to partner admins explaining why their listing was hidden.</p>
+                      <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20 bg-base-100', placeholder: 'e.g., Incomplete information, duplicate listing, or violation of community guidelines...', data: { controller: 'auto-expand' } %>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            function updateVisibilityTitle(isVisible) {
+              const title = document.getElementById('partner-visibility-title');
+              title.textContent = isVisible ? 'Partner is visible' : 'Partner is hidden';
+            }
+          </script>
+        <% end %>
+
+        <div class="mt-8">
+          <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
+          <% if policy(@partner).destroy? %>
+            <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this partner permanently? This cannot be undone." } do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              Delete Partner
+            <% end %>
+          <% else %>
+            <p class="text-sm text-base-content/60">You don't have permission to delete this partner.</p>
+          <% end %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-</div>
+  </div>
+
+  <%# Save Bar %>
+  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]"
+       data-controller="save-bar"
+       data-save-bar-settings-hash-value="settings"
+       data-save-bar-preview-hash-value="preview">
+    <div class="flex items-center justify-between gap-4">
+      <%# Left side - Back button %>
+      <div class="flex items-center gap-4">
+        <button type="submit"
+                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
+                data-save-bar-target="prevButton"
+                data-action="click->save-bar#savePrevious"
+                formnovalidate>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          <span data-save-bar-target="prevText">Back</span>
+        </button>
+
+        <%# Unsaved changes indicator %>
+        <div class="hidden items-center gap-2"
+             data-save-bar-target="indicator">
+          <span class="inline-flex rounded-full" style="width: 8px; height: 8px; min-width: 8px; background: #f59e0b; animation: pulse-dot 1.5s ease-in-out infinite;"></span>
+          <span class="text-sm text-base-content/70">Unsaved changes</span>
+        </div>
+        <style>
+          @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.5); }
+          }
+        </style>
+      </div>
+
+      <%# Right side - Save buttons %>
+      <div class="flex items-center gap-3">
+        <button type="submit"
+                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300"
+                data-save-bar-target="saveButton"
+                data-action="click->save-bar#saveOnly">
+          Save
+        </button>
+
+        <button type="submit"
+                class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
+                data-save-bar-target="continueButton"
+                data-action="click->save-bar#saveContinue">
+          <span data-save-bar-target="continueText">Continue</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>

@@ -11,11 +11,11 @@ Feature: Article Management
   Scenario: Viewing the articles list
     When I go to the "Articles" admin section
     Then I should see "Articles"
-    And I should see "Add New Article"
+    And I should see "Add Article"
 
   Scenario: Creating a new article
     When I go to the "Articles" admin section
-    And I click "Add New Article"
+    And I click "Add Article"
     Then I should see "Create a new Article"
     And I should see "Title"
     And I should see "Body"
@@ -28,7 +28,7 @@ Feature: Article Management
 
   Scenario: Articles can be associated with partners
     When I go to the "Articles" admin section
-    And I click "Add New Article"
+    And I click "Add Article"
     Then I should see "Partner"
 
   Scenario: Articles list shows author information

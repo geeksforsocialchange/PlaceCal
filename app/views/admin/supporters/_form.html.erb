@@ -1,21 +1,51 @@
-<%= simple_form_for [:admin, @supporter] do |f| %>
-  <%= f.input :name %>
-  <%= f.input :url %>
-  <%= f.input :logo %>
-  <div class="card">
-    <%= image_tag f.object.logo.url, class: 'card-img-top' if f.object.logo.url %>
-    <div class="card-title">
-      Current logo
-    </div>
+<%= simple_form_for [:admin, @supporter], html: { class: 'space-y-6' } do |f| %>
+  <%= render(ErrorComponent.new(@supporter)) if @supporter.errors.any? %>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Supporter Details</h3>
+
+    <%= f.input :name, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+    <%= f.input :url, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+    <%= f.input :description, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 } %>
   </div>
-  <br>
-  <%= f.input :description %>
-  <%= f.input :weight %>
-  <%= f.input :is_global %>
-  <%= f.association :sites, as: :check_boxes %>
-  <%= f.button :submit, class: "btn btn-primary " %>
-  <br><br>
-  <% unless @supporter.new_record? %>
-    <%= link_to "Destroy Supporter", admin_supporter_path(@supporter), method: :delete, class: "btn btn-danger" %>
-  <% end %>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Logo</h3>
+    <%= f.input :logo, wrapper: :tw_file %>
+
+    <% if f.object.logo.url %>
+      <div class="mt-4">
+        <%= image_tag f.object.logo.url, class: 'rounded-lg max-w-xs' %>
+        <p class="text-sm text-gray-500 mt-2">Current logo</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Display Settings</h3>
+
+    <%= f.input :weight, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
+                hint: 'Higher weight = appears first' %>
+    <%= f.input :is_global, wrapper: :tw_boolean,
+                hint: 'Show this supporter on all sites' %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Sites</h3>
+    <p class="text-sm text-gray-600">Select which sites this supporter should appear on</p>
+    <%= f.association :sites, as: :check_boxes, wrapper: :tw_collection %>
+  </div>
+
+  <div class="flex items-center gap-4 pt-4">
+    <%= f.button :submit, class: "inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2" %>
+    <% unless @supporter.new_record? %>
+      <%= link_to "Destroy Supporter", admin_supporter_path(@supporter), method: :delete,
+          class: "inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500",
+          data: { confirm: "Are you sure you want to delete this supporter?" } %>
+    <% end %>
+  </div>
 <% end %>

@@ -31,12 +31,14 @@ module PartnersHelper
   def partner_service_area_text(partner)
     neighbourhoods = partner.service_area_neighbourhoods.order(:name).all
 
-    if neighbourhoods.length == 1
+    case neighbourhoods.length
+    when 0
+      'No service area'
+    when 1
       neighbourhoods.first.name
-
     else
       head = neighbourhoods[0..-2]
-      tail = neighbourhoods[-1]
+      tail = neighbourhoods.last
 
       "#{head.map(&:name).join(', ')} and #{tail.name}"
     end
@@ -57,14 +59,14 @@ module PartnersHelper
   end
 
   # Get a String containing a list of <a> tags for each site,
-  # where the name is the Site's name, and the URL is the site's url
+  # where the name is the Site's name, and the URL points directly to the partner's page on that site
   #
   # @return [String] HTML string
   def site_links
-    return if @sites.blank?
+    return if @sites.blank? || @partner.blank?
 
     @sites
-      .map { |site| link_to site.name, site.url, target: '_blank', rel: 'noopener' }
+      .map { |site| link_to site.name, "#{site.url.chomp('/')}/partners/#{@partner.slug}", target: '_blank', rel: 'noopener' }
       .join(', ')
       .html_safe
   end

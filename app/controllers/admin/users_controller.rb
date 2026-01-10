@@ -25,11 +25,11 @@ module Admin
     end
 
     def index
-      @users = policy_scope(User).order({ updated_at: :desc }, :last_name, :first_name)
+      @users = policy_scope(User)
       authorize current_user
 
       respond_to do |format|
-        format.html
+        format.html { @users = @users.order(updated_at: :desc, last_name: :asc, first_name: :asc) }
         format.json do
           render json: UserDatatable.new(
             params,
@@ -102,7 +102,7 @@ module Admin
     def set_user_partners_controller
       @user_partners_controller =
         if current_user.root?
-          'select2'
+          'tom-select'
         else
           'user-partners'
         end

@@ -33,7 +33,12 @@ Rails.application.routes.draw do
       end
     end
     resources :collections
-    resources :neighbourhoods
+    resources :neighbourhoods do
+      collection do
+        get :children
+        get :hierarchy
+      end
+    end
     resources :partners do
       collection do
         get :lookup_name
