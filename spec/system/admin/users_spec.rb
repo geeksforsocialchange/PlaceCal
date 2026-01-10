@@ -39,7 +39,7 @@ RSpec.describe "Admin Users", :slow, type: :system do
       tom_select partnership.name, xpath: tags_node.path
       assert_tom_select_multiple [partnership.name_with_type], tags_node
 
-      click_button "Update"
+      click_button "Save User"
 
       # Return to user to verify data persists
       click_link "Users"

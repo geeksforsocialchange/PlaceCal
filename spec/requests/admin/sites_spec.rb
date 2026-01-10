@@ -55,7 +55,7 @@ RSpec.describe "Admin::Sites", type: :request do
 
         # Basic fields
         expect(response.body).to include("Name")
-        expect(response.body).to include("Place name")
+        expect(response.body).to include("Place Name")
         expect(response.body).to include("Tagline")
         expect(response.body).to include("Url")
         expect(response.body).to include("Slug")
@@ -98,7 +98,7 @@ RSpec.describe "Admin::Sites", type: :request do
 
         # Basic fields visible
         expect(response.body).to include("Name")
-        expect(response.body).to include("Place name")
+        expect(response.body).to include("Place Name")
         expect(response.body).to include("Tagline")
         expect(response.body).to include("Slug")
         expect(response.body).to include("Description")

@@ -25,10 +25,10 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     click_link "Users"
     click_link "Add User"
 
-    # Fill in new user details
-    fill_in "First name", with: "New"
-    fill_in "Last name", with: "User"
-    fill_in "Email", with: invited_user_email
+    # Fill in new user details (using field IDs as labels are in fieldset/legend format)
+    fill_in "user_first_name", with: "New"
+    fill_in "user_last_name", with: "User"
+    fill_in "user_email", with: invited_user_email
     choose "Root: Can do everything"
     click_button "Invite"
 

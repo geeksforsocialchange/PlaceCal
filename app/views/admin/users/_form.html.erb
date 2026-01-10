@@ -88,12 +88,14 @@
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Partnerships</legend>
       <p class="fieldset-label mb-3">Grants access to add or remove partners from partnerships</p>
-      <%= f.input_field :tag_ids,
-                as: :select,
-                collection: options_for_tags,
-                multiple: true,
-                class: 'select select-bordered w-full',
-                data: { controller: "tom-select" } %>
+      <div class="user_tags">
+        <%= f.input_field :tag_ids,
+                  as: :select,
+                  collection: options_for_tags,
+                  multiple: true,
+                  class: 'select select-bordered w-full',
+                  data: { controller: "tom-select" } %>
+      </div>
     </fieldset>
   </div>
 </div>
@@ -109,16 +111,18 @@
         Partners
       </h3>
       <p class="text-sm text-base-content/60 mb-3">Partners this user can edit, as well as their associated calendars.</p>
-      <%= f.input_field :partner_ids,
-                as: :select,
-                collection: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
-                selected: @partners || @user.partners.pluck(:id),
-                multiple: true,
-                class: 'select select-bordered w-full bg-base-100',
-                data: {
-                  controller: @user_partners_controller,
-                  "user-partners-permitted-partners-value": permitted_options_for_partners
-                } %>
+      <div class="user_partners">
+        <%= f.input_field :partner_ids,
+                  as: :select,
+                  collection: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
+                  selected: @partners || @user.partners.pluck(:id),
+                  multiple: true,
+                  class: 'select select-bordered w-full bg-base-100',
+                  data: {
+                    controller: @user_partners_controller,
+                    "user-partners-permitted-partners-value": permitted_options_for_partners
+                  } %>
+      </div>
     </div>
   </div>
 
@@ -130,12 +134,14 @@
       </h3>
       <% if current_user.root? %>
         <p class="text-sm text-base-content/60 mb-3">Grants access to every partner and calendar in these neighbourhoods. Use with care!</p>
-        <%= f.input_field :neighbourhood_ids,
-          as: :select,
-          collection: options_for_user_neighbourhoods(f.object),
-          multiple: true,
-          class: 'select select-bordered w-full bg-base-100',
-          data: { controller: "tom-select" } %>
+        <div class="user_neighbourhoods">
+          <%= f.input_field :neighbourhood_ids,
+            as: :select,
+            collection: options_for_user_neighbourhoods(f.object),
+            multiple: true,
+            class: 'select select-bordered w-full bg-base-100',
+            data: { controller: "tom-select" } %>
+        </div>
       <% else %>
         <p class="text-sm text-base-content/60 mb-3">Neighbourhoods this user has access to.</p>
         <% if @user.neighbourhoods.any? %>

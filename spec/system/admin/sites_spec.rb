@@ -14,14 +14,12 @@ RSpec.describe "Admin Sites", :slow, type: :system do
   end
 
   describe "tom-select inputs on site form" do
-    it "allows selecting site admin, neighbourhoods and tags", :aggregate_failures do
+    it "allows selecting neighbourhoods and tags", :aggregate_failures do
       click_link "Sites"
       click_link "Add Site"
 
-      # Select site admin
-      site_admin_node = tom_select_node("site_site_admin")
-      tom_select admin_user.to_s, xpath: site_admin_node.path
-      assert_tom_select_single admin_user.to_s, site_admin_node
+      # Site admin uses plain select (no Tom Select)
+      select admin_user.admin_name, from: "Site Admin"
 
       # Select primary neighbourhood (only appears when creating a site)
       neighbourhood_main = tom_select_node("site_sites_neighbourhood_neighbourhood_id")
@@ -49,8 +47,8 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link "Sites"
       click_link "Test Site"
 
-      site_admin_node = tom_select_node("site_site_admin")
-      assert_tom_select_single admin_user.to_s, site_admin_node
+      # Site admin is plain select
+      expect(page).to have_select("Site Admin", selected: admin_user.admin_name)
 
       service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
       assert_tom_select_single oldtown_ward.name, service_areas[0]
@@ -68,7 +66,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link site.name
 
       # Wait for the page to load
-      find(:xpath, '//input[@value="Update Site"]', wait: 5)
+      find(:xpath, '//input[@value="Save"]', wait: 5)
 
       # The primary neighbourhood should not appear in the sites_neighbourhoods section
       service_areas = all(:css, ".sites_neighbourhoods .ts-wrapper", wait: 1)
