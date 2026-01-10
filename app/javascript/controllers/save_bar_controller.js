@@ -42,6 +42,23 @@ export default class extends Controller {
 				setTimeout(() => this.updateButtons(), 10);
 			});
 		});
+
+		// Warn before leaving page with unsaved changes
+		this.boundBeforeUnload = this.handleBeforeUnload.bind(this);
+		window.addEventListener("beforeunload", this.boundBeforeUnload);
+	}
+
+	disconnect() {
+		window.removeEventListener("beforeunload", this.boundBeforeUnload);
+	}
+
+	handleBeforeUnload(event) {
+		if (this.dirty) {
+			event.preventDefault();
+			// Modern browsers ignore custom messages but require returnValue
+			event.returnValue = "You have unsaved changes.";
+			return event.returnValue;
+		}
 	}
 
 	buildTabList() {
@@ -100,17 +117,11 @@ export default class extends Controller {
 		if (!this.hasIndicatorTarget) return;
 
 		if (this.dirty) {
-			this.indicatorTarget.classList.remove("opacity-0");
-			this.indicatorTarget.classList.add("opacity-100");
-			if (this.hasIndicatorDotTarget) {
-				this.indicatorDotTarget.classList.add("animate-pulse");
-			}
+			this.indicatorTarget.classList.remove("hidden");
+			this.indicatorTarget.classList.add("flex");
 		} else {
-			this.indicatorTarget.classList.remove("opacity-100");
-			this.indicatorTarget.classList.add("opacity-0");
-			if (this.hasIndicatorDotTarget) {
-				this.indicatorDotTarget.classList.remove("animate-pulse");
-			}
+			this.indicatorTarget.classList.remove("flex");
+			this.indicatorTarget.classList.add("hidden");
 		}
 	}
 

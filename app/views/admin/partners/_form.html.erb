@@ -706,14 +706,17 @@
         </button>
 
         <%# Unsaved changes indicator %>
-        <div class="flex items-center gap-2 text-sm text-warning opacity-0 transition-opacity duration-200"
+        <div class="hidden items-center gap-2.5 px-3 py-1.5 rounded-full bg-warning/15 border border-warning/30"
              data-save-bar-target="indicator">
-          <span class="relative flex h-2.5 w-2.5" data-save-bar-target="indicatorDot">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-warning"></span>
-          </span>
-          <span class="hidden sm:inline text-base-content/60" data-save-bar-target="indicatorText">Unsaved changes</span>
+          <span class="inline-flex h-3 w-3 rounded-full" style="background: #f59e0b; animation: pulse-dot 1.5s ease-in-out infinite;"></span>
+          <span class="text-sm font-medium text-warning">Unsaved changes</span>
         </div>
+        <style>
+          @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.5); }
+          }
+        </style>
       </div>
 
       <%# Right side - Save buttons %>
