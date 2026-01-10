@@ -5,6 +5,7 @@
 
 /* Source paths for content detection */
 @source "../../app/datatables/**/*.rb";
+@source "../javascript/**/*.js";
 
 /*
  * Admin Tailwind CSS
