@@ -687,8 +687,55 @@
   </div>
 
   <%# Save Bar %>
-  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-lg text-right">
-    <%= f.submit "Save", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]"
+       data-controller="save-bar"
+       data-save-bar-settings-hash-value="settings"
+       data-save-bar-preview-hash-value="preview">
+    <div class="flex items-center justify-between gap-4">
+      <%# Left side - Back button %>
+      <div class="flex items-center gap-4">
+        <button type="submit"
+                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
+                data-save-bar-target="prevButton"
+                data-action="click->save-bar#savePrevious"
+                formnovalidate>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          <span data-save-bar-target="prevText">Back</span>
+        </button>
+
+        <%# Unsaved changes indicator %>
+        <div class="flex items-center gap-2 text-sm text-warning opacity-0 transition-opacity duration-200"
+             data-save-bar-target="indicator">
+          <span class="relative flex h-2.5 w-2.5" data-save-bar-target="indicatorDot">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-warning"></span>
+          </span>
+          <span class="hidden sm:inline text-base-content/60" data-save-bar-target="indicatorText">Unsaved changes</span>
+        </div>
+      </div>
+
+      <%# Right side - Save buttons %>
+      <div class="flex items-center gap-3">
+        <button type="submit"
+                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300"
+                data-save-bar-target="saveButton"
+                data-action="click->save-bar#saveOnly">
+          Save
+        </button>
+
+        <button type="submit"
+                class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
+                data-save-bar-target="continueButton"
+                data-action="click->save-bar#saveContinue">
+          <span data-save-bar-target="continueText">Continue</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 <% end %>
 

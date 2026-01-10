@@ -72,3 +72,6 @@ application.register("inverted-toggle", InvertedToggleController);
 
 import LiveValidationController from "./live_validation_controller.js";
 application.register("live-validation", LiveValidationController);
+
+import SaveBarController from "./save_bar_controller.js";
+application.register("save-bar", SaveBarController);
