@@ -14,6 +14,12 @@ RSpec.describe "Admin Sites", :slow, type: :system do
   end
 
   describe "tom-select inputs on site form" do
+    # Helper to click site form tabs (daisyUI radio tab inputs)
+    def click_site_tab(tab_name)
+      find("input.tab[aria-label*='#{tab_name}']", wait: 10).click
+      sleep 0.2
+    end
+
     it "allows selecting neighbourhoods and tags", :aggregate_failures do
       click_link "Sites"
       click_link "Add Site"
@@ -23,7 +29,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       select admin_label, from: "site_site_admin_id"
 
       # Navigate to Neighbourhoods tab
-      click_link_or_button "Neighbourhoods"
+      click_site_tab "Neighbourhoods"
 
       # Select primary neighbourhood (only appears when creating a site)
       neighbourhood_main = tom_select_node("site_sites_neighbourhood_neighbourhood_id")
@@ -37,17 +43,17 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       assert_tom_select_single oldtown_ward.name, service_areas[0]
 
       # Select tags - need to navigate to Partnerships tab
-      click_link_or_button "Partnerships"
+      click_site_tab "Partnerships"
       tags_node = tom_select_node("site_tags")
       tom_select partnership.name, xpath: tags_node.path
       assert_tom_select_multiple [partnership.name_with_type], tags_node
 
       # Navigate back to Basic Info and fill required fields
-      click_link_or_button "Basic Info"
+      click_site_tab "Basic Info"
       fill_in "site_name", with: "Test Site"
 
       # URL and Slug are on Admin tab
-      click_link_or_button "Admin"
+      click_site_tab "Admin"
       fill_in "site_url", with: "https://test.com"
       fill_in "site_slug", with: "test-site"
 
@@ -61,12 +67,12 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       expect(page).to have_select("site_site_admin_id", selected: admin_label)
 
       # Navigate to Neighbourhoods tab to check neighbourhoods
-      click_link_or_button "Neighbourhoods"
+      click_site_tab "Neighbourhoods"
       service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
       assert_tom_select_single oldtown_ward.name, service_areas[0]
 
       # Navigate to Partnerships tab to check tags
-      click_link_or_button "Partnerships"
+      click_site_tab "Partnerships"
       tags_node = tom_select_node("site_tags")
       assert_tom_select_multiple [partnership.name_with_type], tags_node
     end
