@@ -157,6 +157,13 @@ When("I go to the {string} step") do |step_name|
   sleep 0.2
 end
 
+When("I click the {string} tab") do |tab_name|
+  # Find tab by partial aria-label match (handles emoji prefixes)
+  tab = page.find("input.tab[aria-label*='#{tab_name}']", wait: 10)
+  tab.click
+  sleep 0.2
+end
+
 When("I go to form step {int}") do |step_number|
   # Map step numbers to tab labels (1-based for user)
   tab_labels = ["Basic Info", "Location", "Contact", "Tags", "Admins"]

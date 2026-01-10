@@ -17,7 +17,7 @@ Feature: Site Management
     And I click "Add Site"
     Then I should see "Create a new Site"
     And I should see "Name"
-    And I should see "Slug"
+    And I should see "Site Admin"
 
   Scenario: Viewing an existing site
     Given there is a site called "Riverside Calendar"

@@ -24,8 +24,8 @@ Feature: User Administration
   Scenario: New user form shows required fields
     When I go to the "Users" admin section
     And I click "Add User"
-    Then I should see "First name"
-    And I should see "Last name"
+    Then I should see "First Name"
+    And I should see "Last Name"
     And I should see "Email"
 
   # Authentication

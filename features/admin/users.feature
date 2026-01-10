@@ -19,8 +19,8 @@ Feature: User Editing
   Scenario: User form shows contact fields
     Given there is a user called "Contact Test User"
     When I edit the user "Contact Test User"
-    Then I should see "First name"
-    And I should see "Last name"
+    Then I should see "First Name"
+    And I should see "Last Name"
     And I should see "Email"
     And I should see "Phone"
 
@@ -28,22 +28,22 @@ Feature: User Editing
   Scenario: Updating user first name
     Given there is a user called "Name Update User"
     When I edit the user "Name Update User"
-    And I fill in "First name" with "Updated"
-    And I click the "Update" button
+    And I fill in "First Name" with "Updated"
+    And I click the "Save User" button
     Then I should see a success message
 
   Scenario: Updating user last name
     Given there is a user called "Last Name User"
     When I edit the user "Last Name User"
-    And I fill in "Last name" with "NewLastName"
-    And I click the "Update" button
+    And I fill in "Last Name" with "NewLastName"
+    And I click the "Save User" button
     Then I should see a success message
 
   Scenario: Updating user phone
     Given there is a user called "Phone User"
     When I edit the user "Phone User"
     And I fill in "Phone" with "0161 555 0000"
-    And I click the "Update" button
+    And I click the "Save User" button
     Then I should see a success message
 
   # Partner Assignment

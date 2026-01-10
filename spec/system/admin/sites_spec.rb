@@ -18,8 +18,8 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link "Sites"
       click_link "Add Site"
 
-      # Site admin uses plain select (no Tom Select)
-      select admin_user.admin_name, from: "Site Admin"
+      # Site admin uses plain select (no Tom Select) - use field ID for fieldset/legend forms
+      select admin_user.admin_name, from: "site_site_admin_id"
 
       # Select primary neighbourhood (only appears when creating a site)
       neighbourhood_main = tom_select_node("site_sites_neighbourhood_neighbourhood_id")
@@ -32,14 +32,17 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       tom_select oldtown_ward.name, xpath: service_areas[-1].path
       assert_tom_select_single oldtown_ward.name, service_areas[0]
 
-      # Select tags
+      # Select tags - need to navigate to Partnerships tab
+      click_link_or_button "Partnerships"
       tags_node = tom_select_node("site_tags")
       tom_select partnership.name, xpath: tags_node.path
       assert_tom_select_multiple [partnership.name_with_type], tags_node
 
-      fill_in "Name", with: "Test Site"
-      fill_in "Url", with: "https://test.com"
-      fill_in "Slug", with: "test-site"
+      # Navigate back to Basic Info and fill required fields
+      click_link_or_button "Basic Info"
+      fill_in "site_name", with: "Test Site"
+      fill_in "site_url", with: "https://test.com"
+      fill_in "site_slug", with: "test-site"
 
       click_button "Create Site"
 
@@ -47,12 +50,14 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link "Sites"
       click_link "Test Site"
 
-      # Site admin is plain select
-      expect(page).to have_select("Site Admin", selected: admin_user.admin_name)
+      # Site admin is plain select - use field ID
+      expect(page).to have_select("site_site_admin_id", selected: admin_user.admin_name)
 
       service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
       assert_tom_select_single oldtown_ward.name, service_areas[0]
 
+      # Navigate to Partnerships tab to check tags
+      click_link_or_button "Partnerships"
       tags_node = tom_select_node("site_tags")
       assert_tom_select_multiple [partnership.name_with_type], tags_node
     end

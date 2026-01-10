@@ -35,10 +35,10 @@ When("I create a new user with name {string}") do |name|
   click_link "Users"
   await_datatables
   click_link "Add User"
-  fill_in "First name", with: first_name
-  fill_in "Last name", with: last_name
-  fill_in "Email", with: email
-  click_button "Create User"
+  fill_in "user_first_name", with: first_name
+  fill_in "user_last_name", with: last_name
+  fill_in "user_email", with: email
+  click_button "Invite"
 end
 
 Then("I should see the user {string} in the list") do |name|

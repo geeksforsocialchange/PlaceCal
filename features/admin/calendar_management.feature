@@ -38,5 +38,6 @@ Feature: Calendar Administration
   Scenario: Deleting a calendar
     Given there is a calendar called "Temporary Calendar" for partner "Riverside Community Hub"
     When I edit the calendar "Temporary Calendar"
-    And I click "Destroy Calendar"
+    And I click the "Admin" tab
+    And I click "Delete Calendar"
     Then I should see a success message
