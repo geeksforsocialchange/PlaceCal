@@ -194,7 +194,7 @@ RSpec.describe "Admin::Partners", type: :request do
 
       it "has correct page title and heading" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("<title>Editing #{partner.name} | PlaceCal Admin</title>")
+        expect(response.body).to include("<title>Edit Partner: #{partner.name} | PlaceCal Admin</title>")
         expect(response.body).to include("Edit Partner")
         expect(response.body).to include(partner.name)
       end

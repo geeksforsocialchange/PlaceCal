@@ -131,7 +131,7 @@ RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
 
         json = response.parsed_body
         article_data = json["data"].find { |d| d["title"].include?("Render Test") }
-        expect(article_data["author"]).to include("AUTHOR, Test")
+        expect(article_data["author"]).to include("Test Author")
       end
 
       it "renders partners cell with partner name" do

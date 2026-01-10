@@ -57,7 +57,7 @@ RSpec.describe "Admin::Sites", type: :request do
         expect(response.body).to include("Name")
         expect(response.body).to include("Place Name")
         expect(response.body).to include("Tagline")
-        expect(response.body).to include("Url")
+        expect(response.body).to include("URL")
         expect(response.body).to include("Slug")
         expect(response.body).to include("Description")
         expect(response.body).to include("Site Admin")
@@ -65,9 +65,9 @@ RSpec.describe "Admin::Sites", type: :request do
         # Image fields
         expect(response.body).to include("Theme")
         expect(response.body).to include("Logo")
-        expect(response.body).to include("Footer logo")
-        expect(response.body).to include("Hero image")
-        expect(response.body).to include("Hero image credit")
+        expect(response.body).to include("Footer Logo")
+        expect(response.body).to include("Hero Image")
+        expect(response.body).to include("Image Credit")
       end
 
       it "shows all neighbourhoods in secondary neighbourhoods selector" do
@@ -106,9 +106,9 @@ RSpec.describe "Admin::Sites", type: :request do
         # Image fields visible
         expect(response.body).to include("Theme")
         expect(response.body).to include("Logo")
-        expect(response.body).to include("Footer logo")
-        expect(response.body).to include("Hero image")
-        expect(response.body).to include("Hero image credit")
+        expect(response.body).to include("Footer Logo")
+        expect(response.body).to include("Hero Image")
+        expect(response.body).to include("Image Credit")
       end
     end
 

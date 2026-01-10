@@ -18,8 +18,9 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link "Sites"
       click_link "Add Site"
 
-      # Site admin uses plain select (no Tom Select) - use field ID for fieldset/legend forms
-      select admin_user.admin_name, from: "site_site_admin_id"
+      # Site admin uses plain select with "First Last (email)" format
+      admin_label = "#{admin_user.first_name} #{admin_user.last_name} (#{admin_user.email})"
+      select admin_label, from: "site_site_admin_id"
 
       # Select primary neighbourhood (only appears when creating a site)
       neighbourhood_main = tom_select_node("site_sites_neighbourhood_neighbourhood_id")
@@ -50,8 +51,8 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link "Sites"
       click_link "Test Site"
 
-      # Site admin is plain select - use field ID
-      expect(page).to have_select("site_site_admin_id", selected: admin_user.admin_name)
+      # Site admin is plain select with "First Last (email)" format
+      expect(page).to have_select("site_site_admin_id", selected: admin_label)
 
       service_areas = all_nested_form_tom_select_nodes("sites_neighbourhoods")
       assert_tom_select_single oldtown_ward.name, service_areas[0]
