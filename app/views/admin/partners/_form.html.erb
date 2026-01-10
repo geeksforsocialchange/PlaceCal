@@ -526,36 +526,152 @@
             </fieldset>
           </div>
         </div>
-        <div class="divider"></div>
       <% end %>
 
       <div class="mb-8">
-        <h2 class="text-lg font-bold mb-1">Event Matching</h2>
-        <p class="text-sm text-base-content/60 mb-4">Can events from other calendars be listed here if their address matches?</p>
-        <%= f.input :can_be_assigned_events, wrapper: :tw_boolean %>
+        <h2 class="text-lg font-bold mb-4">Event Matching</h2>
+
+        <div class="max-w-2xl">
+          <%# Event Matching Toggle Card %>
+          <% is_enabled = @partner.can_be_assigned_events %>
+          <div class="card bg-base-200/50 border-2 border-base-300">
+            <div class="card-body p-5">
+              <div class="flex items-start gap-4">
+                <%# Icon %>
+                <div class="shrink-0 w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                </div>
+
+                <%# Content %>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-4 mb-2">
+                    <h3 class="font-semibold" id="event-matching-title">
+                      <%= is_enabled ? 'Event matching is enabled' : 'Event matching is disabled' %>
+                    </h3>
+                    <div class="flex items-center gap-3">
+                      <span class="label-text text-sm font-medium text-base-content/60">Disabled</span>
+                      <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'event-matching-toggle', onchange: 'updateEventMatchingTitle(this.checked)' %>
+                      <span class="label-text text-sm font-medium text-success">Enabled</span>
+                    </div>
+                  </div>
+
+                  <p class="text-sm text-base-content/70 mb-3">
+                    Control whether events from other calendars can be automatically listed at this partner's address.
+                  </p>
+
+                  <div class="text-sm text-base-content/70 space-y-2">
+                    <p class="font-medium text-base-content/90">When enabled:</p>
+                    <ul class="list-none space-y-1.5 ml-0">
+                      <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Events at this address from any PlaceCal calendar will appear here</span>
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Visitors see a complete picture of what's happening at this location</span>
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Great for venues, community centres, and shared spaces</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          function updateEventMatchingTitle(isEnabled) {
+            const title = document.getElementById('event-matching-title');
+            title.textContent = isEnabled ? 'Event matching is enabled' : 'Event matching is disabled';
+          }
+        </script>
       </div>
 
       <% unless @partner.new_record? %>
         <% if policy(@partner).permitted_attributes.include? :hidden %>
-          <div class="divider"></div>
           <div class="mb-8">
-            <h2 class="text-lg font-bold mb-1">Moderation</h2>
-            <div role="alert" class="alert alert-warning mb-4 max-w-2xl">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-              <span class="text-sm">Hiding removes this partner from all PlaceCal sites.</span>
-            </div>
-            <div class="max-w-2xl space-y-4">
-              <%= f.input :hidden, wrapper: :tw_boolean %>
-              <fieldset class="fieldset">
-                <legend class="fieldset-legend">Reason for hiding</legend>
-                <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20', data: { controller: 'auto-expand' } %>
-              </fieldset>
+            <h2 class="text-lg font-bold mb-4">Moderation</h2>
+
+            <div class="max-w-2xl" data-controller="inverted-toggle">
+              <%# Hidden Toggle Card %>
+              <div class="card border-2 transition-colors" data-inverted-toggle-target="card">
+                <div class="card-body p-5">
+                  <div class="flex items-start gap-4">
+                    <%# Icon %>
+                    <div class="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors" data-inverted-toggle-target="icon">
+                      <svg class="w-6 h-6 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-inverted-toggle-target="iconHidden"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+                      <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-inverted-toggle-target="iconVisible"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    </div>
+
+                    <%# Content %>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between gap-4 mb-2">
+                        <h3 class="font-semibold transition-colors" data-inverted-toggle-target="title" id="partner-visibility-title">
+                          <%= @partner.hidden? ? 'Partner is hidden' : 'Partner is visible' %>
+                        </h3>
+                        <div class="flex items-center gap-3">
+                          <span class="label-text text-sm font-medium text-error">Hidden</span>
+                          <%= f.hidden_field :hidden, value: @partner.hidden? ? '1' : '0', data: { inverted_toggle_target: 'hidden' } %>
+                          <input type="checkbox" class="toggle toggle-success" data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" onchange="updateVisibilityTitle(this.checked)" />
+                          <span class="label-text text-sm font-medium text-success">Visible</span>
+                        </div>
+                      </div>
+
+                      <p class="text-sm text-error/80 mb-3" data-inverted-toggle-target="status">This partner is not visible to the public.</p>
+
+                      <div class="text-sm text-base-content/70 space-y-2">
+                        <p class="font-medium text-base-content/90">When a partner is hidden:</p>
+                        <ul class="list-none space-y-1.5 ml-0">
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span>Removed from all PlaceCal sites and search results</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span>Events from this partner will not appear on any calendars</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span>The partner page will return a 404 error to visitors</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Admins can still access and edit the partner in this dashboard</span>
+                          </li>
+                          <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            <span>PlaceCal moderators and the partner admins will be notified</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <%# Reason field - shown when hidden or always for entering reason %>
+                  <div class="mt-4 pt-4 border-t border-base-300/50">
+                    <fieldset class="fieldset">
+                      <legend class="fieldset-legend">Reason for hiding</legend>
+                      <p class="text-xs text-base-content/60 mb-2">This message will be shown to partner admins explaining why their listing was hidden.</p>
+                      <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20 bg-base-100', placeholder: 'e.g., Incomplete information, duplicate listing, or violation of community guidelines...', data: { controller: 'auto-expand' } %>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
+          <script>
+            function updateVisibilityTitle(isVisible) {
+              const title = document.getElementById('partner-visibility-title');
+              title.textContent = isVisible ? 'Partner is visible' : 'Partner is hidden';
+            }
+          </script>
         <% end %>
 
-        <div class="divider"></div>
-        <div>
+        <div class="mt-8">
           <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
           <% if policy(@partner).destroy? %>
             <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this partner permanently? This cannot be undone." } do %>
@@ -571,9 +687,8 @@
   </div>
 
   <%# Save Bar %>
-  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 p-4 -mx-4 sm:-mx-6 mt-6 flex justify-end gap-3 shadow-lg">
-    <%= f.submit "Save", class: "btn btn-outline border-placecal-orange text-placecal-orange hover:bg-placecal-orange hover:text-white hover:border-placecal-orange" %>
-    <%= f.submit "Save & Continue", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-lg text-right">
+    <%= f.submit "Save", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
   </div>
 <% end %>
 

@@ -67,5 +67,8 @@ application.register("char-counter", CharCounterController);
 import CheckboxLimitController from "./checkbox_limit_controller.js";
 application.register("checkbox-limit", CheckboxLimitController);
 
+import InvertedToggleController from "./inverted_toggle_controller.js";
+application.register("inverted-toggle", InvertedToggleController);
+
 import LiveValidationController from "./live_validation_controller.js";
 application.register("live-validation", LiveValidationController);
