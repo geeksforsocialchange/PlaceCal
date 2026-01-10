@@ -57,7 +57,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       fill_in "site_url", with: "https://test.com"
       fill_in "site_slug", with: "test-site"
 
-      click_button "Create Site"
+      click_button "Save"
 
       # Verify data persists
       click_link "Sites"
