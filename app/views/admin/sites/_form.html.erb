@@ -200,10 +200,12 @@
               <% end %>
             <% else %>
               <%= sn.hidden_field :relation_type, value: "Primary" %>
-              <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
-                  value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
-                  input_html: { data: { controller: "tom-select" }, class: 'select select-bordered w-full bg-base-100' },
-                  label: '', label_html: { hidden: true }, wrapper: false %>
+              <div class="site_sites_neighbourhood_neighbourhood_id">
+                <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
+                    value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
+                    input_html: { data: { controller: "tom-select" }, class: 'select select-bordered w-full bg-base-100' },
+                    label: '', label_html: { hidden: true }, wrapper: false %>
+              </div>
             <% end %>
           <% end %>
         </fieldset>
