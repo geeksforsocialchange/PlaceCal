@@ -264,22 +264,24 @@
         <fieldset class="fieldset">
           <legend class="fieldset-legend">Partnership Tags</legend>
           <p class="fieldset-label mb-3">If selected, only show partners which are members of these partnerships.</p>
-          <% if policy(@site).permitted_attributes.include? :tags %>
-            <%= f.input_field :tag_ids,
-                  as: :select,
-                  collection: options_for_tags,
-                  multiple: true,
-                  class: 'select select-bordered w-full',
-                  data: { controller: "tom-select" } %>
-          <% else %>
-            <%= f.input_field :tag_ids,
-                  as: :select,
-                  collection: options_for_tags,
-                  multiple: true,
-                  class: 'select select-bordered w-full bg-base-200',
-                  disabled: true,
-                  data: { controller: "tom-select" } %>
-          <% end %>
+          <div class="site_tags">
+            <% if policy(@site).permitted_attributes.include? :tags %>
+              <%= f.input_field :tag_ids,
+                    as: :select,
+                    collection: options_for_tags,
+                    multiple: true,
+                    class: 'select select-bordered w-full',
+                    data: { controller: "tom-select" } %>
+            <% else %>
+              <%= f.input_field :tag_ids,
+                    as: :select,
+                    collection: options_for_tags,
+                    multiple: true,
+                    class: 'select select-bordered w-full bg-base-200',
+                    disabled: true,
+                    data: { controller: "tom-select" } %>
+            <% end %>
+          </div>
         </fieldset>
 
       </div>
