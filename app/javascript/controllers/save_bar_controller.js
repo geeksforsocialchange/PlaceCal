@@ -36,9 +36,19 @@ export default class extends Controller {
 		// Listen for tab changes
 		window.addEventListener("hashchange", () => this.updateButtons());
 
-		// Also listen for radio changes (daisyUI tabs)
+		// Also listen for radio changes (daisyUI tabs) - prompt if unsaved
 		document.querySelectorAll('input[name="partner_tabs"]').forEach((tab) => {
-			tab.addEventListener("change", () => {
+			tab.addEventListener("click", (event) => {
+				if (this.dirty && !this.confirmingTabChange) {
+					const confirmed = confirm(
+						"You have unsaved changes. Are you sure you want to switch tabs?"
+					);
+					if (!confirmed) {
+						event.preventDefault();
+						event.stopPropagation();
+						return;
+					}
+				}
 				setTimeout(() => this.updateButtons(), 10);
 			});
 		});

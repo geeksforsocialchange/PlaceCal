@@ -550,7 +550,7 @@
                     </h3>
                     <div class="flex items-center gap-3">
                       <span class="label-text text-sm font-medium text-base-content/60">Disabled</span>
-                      <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'event-matching-toggle', onchange: 'updateEventMatchingTitle(this.checked)' %>
+                      <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'partner_can_be_assigned_events', onchange: 'updateEventMatchingTitle(this.checked)' %>
                       <span class="label-text text-sm font-medium text-success">Enabled</span>
                     </div>
                   </div>
@@ -615,7 +615,7 @@
                         <div class="flex items-center gap-3">
                           <span class="label-text text-sm font-medium text-error">Hidden</span>
                           <%= f.hidden_field :hidden, value: @partner.hidden? ? '1' : '0', data: { inverted_toggle_target: 'hidden' } %>
-                          <input type="checkbox" class="toggle toggle-success" data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" onchange="updateVisibilityTitle(this.checked)" />
+                          <input type="checkbox" id="partner_hidden_toggle" class="toggle toggle-success" data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" onchange="updateVisibilityTitle(this.checked)" />
                           <span class="label-text text-sm font-medium text-success">Visible</span>
                         </div>
                       </div>
