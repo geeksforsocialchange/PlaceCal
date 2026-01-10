@@ -2,6 +2,8 @@
 
 # app/models/partner.rb
 class Partner < ApplicationRecord
+  MAX_CATEGORIES = 3
+
   after_initialize :set_defaults, unless: :persisted?
   include Validation
 
@@ -494,9 +496,9 @@ class Partner < ApplicationRecord
 
   def three_or_less_category_tags
     # we can't just use categories.count here because of STI, on create they won't exist yet
-    return if category_ids.count < 4
+    return if category_ids.count <= MAX_CATEGORIES
 
-    errors.add :categories, 'Partners can have a maximum of 3 Category tags'
+    errors.add :categories, "Partners can have a maximum of #{MAX_CATEGORIES} Category tags"
   end
 
   def partnership_admins_must_add_partnership

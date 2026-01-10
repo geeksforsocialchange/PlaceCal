@@ -36,6 +36,71 @@ RSpec.describe "Admin Partners", :slow, type: :system do
     end
   end
 
+  describe "category checkbox limit" do
+    # Create specific categories for this test to avoid conflicts
+    let!(:test_categories) do
+      (1..5).map { |n| create(:category, name: "TestCat#{n}") }
+    end
+
+    it "limits category selection to MAX_CATEGORIES", :aggregate_failures do
+      click_link "Partners"
+      await_datatables
+      click_link partner.name
+
+      go_to_tags_tab
+
+      # Wait for checkbox-limit controller to initialize
+      expect(page).to have_css("[data-controller='checkbox-limit']", wait: 10)
+
+      # Counter should show 0 selected initially
+      expect(page).to have_css("[data-counter]", text: "0 / #{Partner::MAX_CATEGORIES}")
+
+      # Select MAX_CATEGORIES categories using find and click to ensure JS triggers
+      Partner::MAX_CATEGORIES.times do |i|
+        find(:checkbox, test_categories[i].name).click
+        sleep 0.1 # Allow JS to process the change
+      end
+
+      # Counter should update to show limit reached
+      expect(page).to have_css("[data-counter]", text: "#{Partner::MAX_CATEGORIES} / #{Partner::MAX_CATEGORIES}", wait: 5)
+
+      # Additional checkboxes should be disabled
+      remaining_checkbox = find(:checkbox, test_categories[Partner::MAX_CATEGORIES].name, disabled: :all)
+      expect(remaining_checkbox).to be_disabled
+
+      # The label should have opacity styling
+      expect(remaining_checkbox.find(:xpath, "./ancestor::label")[:class]).to include("opacity-50")
+
+      # Unchecking one should re-enable the others
+      find(:checkbox, test_categories[0].name).click
+      sleep 0.1
+
+      # Counter should update
+      expect(page).to have_css("[data-counter]", text: "#{Partner::MAX_CATEGORIES - 1} / #{Partner::MAX_CATEGORIES}", wait: 5)
+
+      # Previously disabled checkbox should now be enabled
+      expect(page).to have_field(test_categories[Partner::MAX_CATEGORIES].name, disabled: false, wait: 5)
+    end
+
+    it "initializes counter correctly with pre-selected categories" do
+      # Add some categories to the partner
+      partner.categories << test_categories[0]
+      partner.categories << test_categories[1]
+
+      click_link "Partners"
+      await_datatables
+      click_link partner.name
+
+      go_to_tags_tab
+
+      # Wait for checkbox-limit controller to initialize
+      expect(page).to have_css("[data-controller='checkbox-limit']", wait: 10)
+
+      # Counter should show 2 selected initially
+      expect(page).to have_css("[data-counter]", text: "2 / #{Partner::MAX_CATEGORIES}", wait: 5)
+    end
+  end
+
   describe "image preview on partner form" do
     it "shows preview when uploading an image" do
       click_link "Partners"
