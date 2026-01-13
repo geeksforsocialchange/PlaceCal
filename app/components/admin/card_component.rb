@@ -2,6 +2,8 @@
 
 module Admin
   class CardComponent < ViewComponent::Base
+    include SvgIconsHelper
+
     renders_one :header
     renders_one :header_action
     renders_one :body

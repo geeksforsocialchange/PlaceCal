@@ -2,6 +2,8 @@
 
 module Admin
   class StatCardComponent < ViewComponent::Base
+    include SvgIconsHelper
+
     def initialize(label:, value:, icon: nil, subtitle: nil)
       super
       @label = label

@@ -2,6 +2,8 @@
 
 module Admin
   class AlertComponent < ViewComponent::Base
+    include SvgIconsHelper
+
     TYPES = {
       notice: { class: 'alert-info', icon: :info },
       success: { class: 'alert-success', icon: :check_circle },
