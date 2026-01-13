@@ -335,10 +335,7 @@
               <p class="text-sm text-base-content/60 mt-2">Showing first 50 of <%= site_partners.count %> partners.</p>
             <% end %>
           <% else %>
-            <div class="text-center py-8">
-              <%= icon(:partnership, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
-              <p class="mt-2 text-base-content/60">No partners on this site yet</p>
-            </div>
+            <%= render Admin::EmptyStateComponent.new(icon: :partnership, message: "No partners on this site yet") %>
           <% end %>
         </div>
 
@@ -393,10 +390,7 @@
               <p class="text-sm text-base-content/60 mt-2">Showing first 30 of <%= site_events.count %> events.</p>
             <% end %>
           <% else %>
-            <div class="text-center py-8">
-              <%= icon(:calendar, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
-              <p class="mt-2 text-base-content/60">No upcoming events in the next 30 days</p>
-            </div>
+            <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events in the next 30 days") %>
           <% end %>
         </div>
       </div>
@@ -445,26 +439,13 @@
           <% unless @site.new_record? %>
             <div class="divider"></div>
 
-            <div>
-              <h3 class="text-lg font-bold text-error mb-4">Danger Zone</h3>
-              <div class="card bg-error/5 border border-error/20">
-                <div class="card-body p-4">
-                  <h4 class="font-semibold flex items-center gap-2">
-                    <%= icon(:warning, size: '5', css_class: 'text-error') %>
-                    Delete this site
-                  </h4>
-                  <p class="text-sm text-base-content/70 mt-2">
-                    Permanently remove this site. This action cannot be undone.
-                  </p>
-                  <div class="mt-4">
-                    <%= link_to admin_site_path(@site), method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this site permanently? This cannot be undone." } do %>
-                      <%= icon(:trash, size: '4') %>
-                      Delete Site
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <%= render Admin::DangerZoneComponent.new(
+              title: "Delete this site",
+              description: "Permanently remove this site. This action cannot be undone.",
+              button_text: "Delete Site",
+              button_path: admin_site_path(@site),
+              confirm: "Delete this site permanently? This cannot be undone."
+            ) %>
           <% end %>
         </div>
       </div>

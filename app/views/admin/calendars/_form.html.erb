@@ -187,9 +187,8 @@
             </table>
           </div>
         <% else %>
-          <div class="text-center py-8 mb-8">
-            <%= icon(:calendar, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
-            <p class="mt-2 text-base-content/60">No upcoming events</p>
+          <div class="mb-8">
+            <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events") %>
           </div>
         <% end %>
 
@@ -244,24 +243,13 @@
 
       <input type="radio" name="calendar_tabs" class="tab" aria-label="⚙️ Admin" data-calendar-tabs-target="tab" data-hash="admin" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-calendar-tabs-target="panel" data-section="admin">
-        <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
-        <div class="card bg-error/5 border border-error/20 max-w-xl">
-          <div class="card-body p-4">
-            <h3 class="font-semibold flex items-center gap-2">
-              <%= icon(:warning, size: '5', css_class: 'text-error') %>
-              Delete this calendar
-            </h3>
-            <p class="text-sm text-base-content/70 mt-2">
-              Permanently remove this calendar and all <strong><%= @calendar.events.count %></strong> associated events. This action cannot be undone.
-            </p>
-            <div class="mt-4">
-              <%= link_to admin_calendar_path(@calendar), method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this calendar permanently? All #{@calendar.events.count} associated events will also be deleted. This cannot be undone." } do %>
-                <%= icon(:trash, size: '4') %>
-                Delete Calendar
-              <% end %>
-            </div>
-          </div>
-        </div>
+        <%= render Admin::DangerZoneComponent.new(
+          title: "Delete this calendar",
+          description: "Permanently remove this calendar and all #{@calendar.events.count} associated events. This action cannot be undone.",
+          button_text: "Delete Calendar",
+          button_path: admin_calendar_path(@calendar),
+          confirm: "Delete this calendar permanently? All #{@calendar.events.count} associated events will also be deleted. This cannot be undone."
+        ) %>
       </div>
     <% end %>
   </div>

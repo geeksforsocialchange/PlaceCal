@@ -121,10 +121,7 @@
             </table>
           </div>
         <% else %>
-          <div class="text-center py-12">
-            <%= icon(:calendar, size: '12', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-            <p class="mt-3 text-base-content/60">No upcoming events</p>
-          </div>
+          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events", icon_size: '12', padding: 'py-12') %>
         <% end %>
       </div>
 
@@ -168,10 +165,7 @@
             <p class="text-center text-sm text-base-content/50 mt-4">Showing 50 of <%= @calendar.events.past.count %> past events</p>
           <% end %>
         <% else %>
-          <div class="text-center py-12">
-            <%= icon(:calendar, size: '12', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-            <p class="mt-3 text-base-content/60">No past events</p>
-          </div>
+          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No past events", icon_size: '12', padding: 'py-12') %>
         <% end %>
       </div>
     </div>

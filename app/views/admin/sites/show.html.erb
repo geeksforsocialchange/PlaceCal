@@ -136,11 +136,13 @@
         </table>
       </div>
     <% else %>
-      <div class="text-center py-12">
-        <%= icon(:calendar, size: '12', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-        <p class="mt-3 text-base-content/60"><%= t('admin.sites.show.empty.title') %></p>
-        <p class="text-sm text-base-content/40 mt-1"><%= t('admin.sites.show.empty.hint') %></p>
-      </div>
+      <%= render Admin::EmptyStateComponent.new(
+        icon: :calendar,
+        message: t('admin.sites.show.empty.title'),
+        hint: t('admin.sites.show.empty.hint'),
+        icon_size: '12',
+        padding: 'py-12'
+      ) %>
     <% end %>
   </div>
 </div>

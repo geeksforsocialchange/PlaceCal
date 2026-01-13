@@ -323,10 +323,7 @@
             <% end %>
           </div>
         <% else %>
-          <div class="text-center py-12">
-            <%= icon(:calendar, size: '12', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
-            <p class="mt-2 text-base-content/60">No calendars connected yet</p>
-          </div>
+          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No calendars connected yet", icon_size: '12', padding: 'py-12') %>
         <% end %>
 
         <div class="mt-6">
@@ -363,10 +360,7 @@
             <% end %>
           </div>
         <% else %>
-          <div class="text-center py-12">
-            <%= icon(:user_add, size: '12', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
-            <p class="mt-2 text-base-content/60">No admins assigned yet</p>
-          </div>
+          <%= render Admin::EmptyStateComponent.new(icon: :user_add, message: "No admins assigned yet", icon_size: '12', padding: 'py-12') %>
         <% end %>
 
         <% if policy(User).update? %>
@@ -496,10 +490,7 @@
             </table>
           </div>
         <% else %>
-          <div class="text-center py-8">
-            <%= icon(:calendar, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
-            <p class="mt-2 text-base-content/60">No upcoming events in the next 30 days</p>
-          </div>
+          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events in the next 30 days") %>
         <% end %>
       </div>
     <% end %>

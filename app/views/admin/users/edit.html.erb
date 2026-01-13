@@ -22,29 +22,13 @@
   <% if policy(@user).destroy? && !@user.site_admin? %>
     <div class="divider my-8"></div>
 
-    <div>
-      <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
-      <div class="card bg-error/5 border border-error/20 max-w-xl">
-        <div class="card-body p-4">
-          <h3 class="font-semibold flex items-center gap-2">
-            <%= icon(:warning, size: '5', css_class: 'text-error') %>
-            Delete this user
-          </h3>
-          <p class="text-sm text-base-content/70 mt-2">
-            Permanently remove this user account. This action cannot be undone.
-          </p>
-          <div class="mt-4">
-            <%= link_to admin_user_path(@user),
-                method: :delete,
-                class: "btn btn-error btn-sm",
-                data: { confirm: "Please confirm you want to delete this user.\n\nThis is permanent!" } do %>
-              <%= icon(:trash, size: '4') %>
-              Delete User
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= render Admin::DangerZoneComponent.new(
+      title: "Delete this user",
+      description: "Permanently remove this user account. This action cannot be undone.",
+      button_text: "Delete User",
+      button_path: admin_user_path(@user),
+      confirm: "Please confirm you want to delete this user.\n\nThis is permanent!"
+    ) %>
   <% end %>
 
   <%= render Admin::SaveBarComponent.new do |c| %>

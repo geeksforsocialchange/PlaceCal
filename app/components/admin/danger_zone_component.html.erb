@@ -1,0 +1,18 @@
+<div class="card bg-error/5 border border-error/20">
+  <div class="card-body p-4">
+    <h3 class="font-semibold flex items-center gap-2 text-error">
+      <%= icon(:warning, size: '5') %>
+      <%= title %>
+    </h3>
+    <p class="text-sm text-base-content/70 mt-2"><%= description %></p>
+    <div class="mt-4">
+      <%= link_to button_path,
+                  method: button_method,
+                  data: confirm ? { turbo_confirm: confirm } : {},
+                  class: "btn btn-error btn-sm" do %>
+        <%= icon(:trash, size: '4') %>
+        <%= button_text %>
+      <% end %>
+    </div>
+  </div>
+</div>
