@@ -145,7 +145,7 @@
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
           <legend class="fieldset-legend">Service Areas</legend>
-          <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address. Be as specific as possible: wards will show up in searches for regions and gives people more context to go on.</p>
+          <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address. <br><br>Be as specific as possible: wards will show up in searches for regions and gives people more context to go on.</p>
           <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
             <%= f.simple_fields_for :service_areas do |neighbourhood| %>
               <%= render 'service_area_fields', f: neighbourhood %>
@@ -167,7 +167,7 @@
         <div class="card bg-base-200/50 border border-base-300">
           <div class="card-body p-4 gap-3">
             <h3 class="font-semibold flex items-center gap-2">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
               Online Presence
             </h3>
             <p class="text-xs text-base-content/60">Website and social media links.</p>
@@ -238,20 +238,20 @@
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 Partnership Contact
               </h3>
-              <p class="text-xs text-base-content/60">Internal contact for PlaceCal team.</p>
+              <p class="text-xs text-base-content/60">Internal contact for PlaceCal team. Leave blank to use public contact.</p>
               <fieldset class="fieldset">
                 <legend class="fieldset-legend">Name</legend>
-                <%= f.input_field :partner_name, class: 'input input-bordered w-full bg-base-100' %>
+                <%= f.input_field :partner_name, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_name %>
               </fieldset>
               <fieldset class="fieldset">
                 <legend class="fieldset-legend">Email</legend>
-                <%= f.input_field :partner_email, class: 'input input-bordered w-full bg-base-100',
+                <%= f.input_field :partner_email, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_email,
                     'data-validate-email': 'true',
                     'data-validate-email-message': 'Enter a valid email address' %>
               </fieldset>
               <fieldset class="fieldset">
                 <legend class="fieldset-legend">Phone</legend>
-                <%= f.input_field :partner_phone, class: 'input input-bordered w-full bg-base-100' %>
+                <%= f.input_field :partner_phone, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_phone %>
               </fieldset>
             </div>
           </div>
