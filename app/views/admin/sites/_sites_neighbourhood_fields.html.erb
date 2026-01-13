@@ -1,16 +1,3 @@
-<fieldset class="flex items-center gap-2 nested-fields mb-2">
-    <% if f.object.relation_type != 'Primary'  %>
-        <%# If the sites neighbourhood's relation_type is primary we do not render it %>
-        <%# so it does not submit a primary relation as being a secondary one or remove it %>
-      <%= f.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
-          value_method: ->(obj) { obj[:id] },
-          label_method: ->(obj) { obj[:name] },
-          input_html: { data: { controller: "tom-select" }, class: "flex-1" },
-          label: '', label_html: { hidden: true },
-          wrapper: false %>
-      <div class="flex-shrink-0">
-          <%= f.hidden_field :relation_type, value: 'Secondary' %>
-          <%= nested_form_remove_link(f, 'Remove') %>
-      </div>
-    <% end  %>
-</fieldset>
+<% if f.object.relation_type != 'Primary' %>
+  <%= render CascadingNeighbourhoodFields.new(form: f, relation_type: 'Secondary') %>
+<% end %>
