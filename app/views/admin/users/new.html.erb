@@ -17,8 +17,9 @@
     <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-orange' %>.</span>
   </div>
 
-  <%# Sticky Save Bar %>
-  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 p-4 -mx-4 sm:-mx-6 mt-8 flex justify-end gap-3 shadow-lg">
-    <%= f.submit "Invite User", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-  </div>
+  <%= render Admin::SaveBarComponent.new do |c| %>
+    <% c.with_button do %>
+      <%= f.submit t('admin.users.actions.invite'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+    <% end %>
+  <% end %>
 <% end %>

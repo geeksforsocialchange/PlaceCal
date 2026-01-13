@@ -3,6 +3,11 @@ en:
     components:
       card:
         view_all: "View all"
+      save_bar:
+        back: "Back"
+        save: "Save"
+        continue: "Continue"
+        unsaved_changes: "Unsaved changes"
 
     dashboard:
       title: "Dashboard"
@@ -72,6 +77,11 @@ en:
       supporters: "Supporters"
       import_status: "Import status"
       build: "Build"
+
+    users:
+      actions:
+        save: "Save User"
+        invite: "Invite User"
 
     missing_permissions:
       title: "Missing Permissions"

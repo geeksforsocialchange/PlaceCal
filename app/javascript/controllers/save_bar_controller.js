@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Save bar controller for partner form
+// Save bar controller for multi-step forms
 // Handles tab-aware buttons, unsaved changes tracking, and navigation
+// Works with partner, site, and calendar forms
 export default class extends Controller {
 	static targets = [
 		"indicator",
@@ -16,8 +17,10 @@ export default class extends Controller {
 
 	static values = {
 		tabHashes: { type: Array, default: [] },
+		tabName: { type: String, default: "partner_tabs" },
 		settingsHash: { type: String, default: "settings" },
 		previewHash: { type: String, default: "preview" },
+		storageKey: { type: String, default: "tabAfterSave" },
 	};
 
 	connect() {
@@ -37,21 +40,23 @@ export default class extends Controller {
 		window.addEventListener("hashchange", () => this.updateButtons());
 
 		// Also listen for radio changes (daisyUI tabs) - prompt if unsaved
-		document.querySelectorAll('input[name="partner_tabs"]').forEach((tab) => {
-			tab.addEventListener("click", (event) => {
-				if (this.dirty && !this.confirmingTabChange) {
-					const confirmed = confirm(
-						"You have unsaved changes. Are you sure you want to switch tabs?"
-					);
-					if (!confirmed) {
-						event.preventDefault();
-						event.stopPropagation();
-						return;
+		document
+			.querySelectorAll(`input[name="${this.tabNameValue}"]`)
+			.forEach((tab) => {
+				tab.addEventListener("click", (event) => {
+					if (this.dirty && !this.confirmingTabChange) {
+						const confirmed = confirm(
+							"You have unsaved changes. Are you sure you want to switch tabs?"
+						);
+						if (!confirmed) {
+							event.preventDefault();
+							event.stopPropagation();
+							return;
+						}
 					}
-				}
-				setTimeout(() => this.updateButtons(), 10);
+					setTimeout(() => this.updateButtons(), 10);
+				});
 			});
-		});
 
 		// Warn before leaving page with unsaved changes
 		this.boundBeforeUnload = this.handleBeforeUnload.bind(this);
@@ -73,7 +78,7 @@ export default class extends Controller {
 
 	buildTabList() {
 		const tabs = document.querySelectorAll(
-			'input[name="partner_tabs"][data-hash]'
+			`input[name="${this.tabNameValue}"][data-hash]`
 		);
 		this.tabHashes = Array.from(tabs)
 			.map((t) => t.dataset.hash)
@@ -89,7 +94,7 @@ export default class extends Controller {
 		);
 		inputs.forEach((input) => {
 			// Skip tab radio buttons and hidden system fields
-			if (input.name === "partner_tabs") return;
+			if (input.name === this.tabNameValue) return;
 			if (input.type === "hidden" && input.name === "_method") return;
 			if (input.type === "hidden" && input.name === "authenticity_token")
 				return;
@@ -105,7 +110,7 @@ export default class extends Controller {
 
 		// Track checkboxes specifically
 		this.form.querySelectorAll('input[type="checkbox"]').forEach((input) => {
-			if (input.name === "partner_tabs") return;
+			if (input.name === this.tabNameValue) return;
 			input.addEventListener("click", () => this.markDirty());
 		});
 	}
@@ -154,7 +159,7 @@ export default class extends Controller {
 
 		// Fall back to checked radio
 		const checkedTab = document.querySelector(
-			'input[name="partner_tabs"]:checked'
+			`input[name="${this.tabNameValue}"]:checked`
 		);
 		if (checkedTab && checkedTab.dataset.hash) {
 			return this.tabHashes.indexOf(checkedTab.dataset.hash);
@@ -278,7 +283,7 @@ export default class extends Controller {
 
 	setNextTab(index) {
 		if (index >= 0 && index < this.tabHashes.length) {
-			sessionStorage.setItem("partnerTabAfterSave", this.tabHashes[index]);
+			sessionStorage.setItem(this.storageKeyValue, this.tabHashes[index]);
 		}
 	}
 
@@ -302,7 +307,7 @@ export default class extends Controller {
 
 		// Find and check the tab
 		const tab = document.querySelector(
-			`input[name="partner_tabs"][data-hash="${hash}"]`
+			`input[name="${this.tabNameValue}"][data-hash="${hash}"]`
 		);
 		if (tab) {
 			tab.checked = true;

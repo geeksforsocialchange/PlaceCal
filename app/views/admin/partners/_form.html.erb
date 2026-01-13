@@ -681,56 +681,13 @@
     </div>
   </div>
 
-  <%# Save Bar %>
-  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]"
-       data-controller="save-bar"
-       data-save-bar-settings-hash-value="settings"
-       data-save-bar-preview-hash-value="preview">
-    <div class="flex items-center justify-between gap-4">
-      <%# Left side - Back button %>
-      <div class="flex items-center gap-4">
-        <button type="submit"
-                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
-                data-save-bar-target="prevButton"
-                data-action="click->save-bar#savePrevious"
-                formnovalidate>
-          <%= icon(:chevron_left, size: '5') %>
-          <span data-save-bar-target="prevText">Back</span>
-        </button>
-
-        <%# Unsaved changes indicator %>
-        <div class="hidden items-center gap-2"
-             data-save-bar-target="indicator">
-          <span class="inline-flex rounded-full" style="width: 8px; height: 8px; min-width: 8px; background: #f59e0b; animation: pulse-dot 1.5s ease-in-out infinite;"></span>
-          <span class="text-sm text-base-content/70">Unsaved changes</span>
-        </div>
-        <style>
-          @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.2; transform: scale(0.5); }
-          }
-        </style>
-      </div>
-
-      <%# Right side - Save buttons %>
-      <div class="flex items-center gap-3">
-        <button type="submit"
-                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300"
-                data-save-bar-target="saveButton"
-                data-action="click->save-bar#saveOnly">
-          Save
-        </button>
-
-        <button type="submit"
-                class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
-                data-save-bar-target="continueButton"
-                data-action="click->save-bar#saveContinue">
-          <span data-save-bar-target="continueText">Continue</span>
-          <%= icon(:chevron_right, size: '5') %>
-        </button>
-      </div>
-    </div>
-  </div>
+  <%= render Admin::SaveBarComponent.new(
+    multi_step: true,
+    tab_name: 'partner_tabs',
+    settings_hash: 'settings',
+    preview_hash: 'preview',
+    storage_key: 'partnerTabAfterSave'
+  ) %>
 <% end %>
 
 <div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>

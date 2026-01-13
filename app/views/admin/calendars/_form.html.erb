@@ -266,8 +266,10 @@
     <% end %>
   </div>
 
-  <%# Sticky Save Bar %>
-  <div class="sticky bottom-0 bg-base-200 border-t border-base-300 p-4 -mx-4 sm:-mx-6 mt-6 flex justify-end gap-3 shadow-lg">
-    <%= f.submit "Save Calendar", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-  </div>
+  <%= render Admin::SaveBarComponent.new(
+    multi_step: true,
+    tab_name: 'calendar_tabs',
+    settings_hash: 'admin',
+    storage_key: 'calendarTabAfterSave'
+  ) %>
 <% end %>
