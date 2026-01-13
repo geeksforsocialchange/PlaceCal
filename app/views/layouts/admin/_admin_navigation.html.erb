@@ -1,21 +1,19 @@
 <nav class="flex flex-col">
   <ul class="space-y-1 px-2">
     <%= admin_nav_link('Dashboard', admin_root_path, :home) %>
-    <%= admin_nav_link('Partners', admin_partners_path, :map) if policy(Partner).index? %>
-    <%= admin_nav_link('Calendars', admin_calendars_path, :calendar) if policy(Calendar).index? %>
   </ul>
 
-  <% if has_any_global_admin_links? -%>
-    <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-      Global admin
-    </h6>
-    <ul class="space-y-1 px-2">
-      <%= admin_nav_link('Users', admin_users_path, :users) if policy(User).index? %>
-      <%= admin_nav_link('Sites', admin_sites_path, :site) if policy(Site).index? %>
-      <%= admin_nav_link('Neighbourhoods', admin_neighbourhoods_path, :map_pin) if policy(Neighbourhood).index? %>
-      <%= admin_nav_link('Tags', admin_tags_path, :tag) if policy(Tag).index? %>
-    </ul>
-  <% end -%>
+  <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+    Content types
+  </h6>
+  <ul class="space-y-1 px-2">
+    <%= admin_nav_link('Partners', admin_partners_path, :partner) if policy(Partner).index? %>
+    <%= admin_nav_link('Calendars', admin_calendars_path, :calendar) if policy(Calendar).index? %>
+    <%= admin_nav_link('Users', admin_users_path, :users) if policy(User).index? %>
+    <%= admin_nav_link('Sites', admin_sites_path, :site) if policy(Site).index? %>
+    <%= admin_nav_link('Neighbourhoods', admin_neighbourhoods_path, :neighbourhood) if policy(Neighbourhood).index? %>
+    <%= admin_nav_link('Partnerships', admin_partnerships_path, :partnership) if policy(Partnership).index? %>
+  </ul>
 
   <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
     Get support
@@ -32,15 +30,16 @@
     </li>
   </ul>
 
-  <% if policy(Collection).index? || policy(Supporter).index? %>
+  <% if policy(Article).index? || policy(Tag).index? || policy(Collection).index? || policy(Supporter).index? %>
     <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
       In development
     </h6>
     <ul class="space-y-1 px-2">
-      <%= admin_nav_link('Articles', admin_articles_path, :newspaper) if policy(Article).index? %>
-      <%= admin_nav_link('Collections', admin_collections_path, :list) if policy(Collection).index? %>
-      <%= admin_nav_link('Supporters', admin_supporters_path, :credit_card) if policy(Supporter).index? %>
-      <%= admin_nav_link('Import status', admin_jobs_path, :cog) if current_user.root? %>
+      <%= admin_nav_link('Tags', admin_tags_path, :tag, root_only: true) if policy(Tag).index? %>
+      <%= admin_nav_link('Articles', admin_articles_path, :article) if policy(Article).index? %>
+      <%= admin_nav_link('Collections', admin_collections_path, :list, root_only: true) if policy(Collection).index? %>
+      <%= admin_nav_link('Supporters', admin_supporters_path, :credit_card, root_only: true) if policy(Supporter).index? %>
+      <%= admin_nav_link('Import status', admin_jobs_path, :cog, root_only: true) if current_user.root? %>
     </ul>
   <% end %>
 

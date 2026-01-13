@@ -1,33 +1,23 @@
 <%= render partial: 'layouts/admin/datatable', locals: {
-    title: 'Tags',
-    model: :tags,
+    title: 'Partnerships',
+    model: :partnerships,
     column_titles: [
-      'Tag',
-      'Type',
+      'Partnership',
+      'Admins',
       'Partners',
       'Last Updated',
       ''
     ],
-    columns: %i[name type partners_count updated_at actions],
+    columns: %i[name admins_count partners_count updated_at actions],
     column_config: {
       name: {},
-      type: { fit: true },
+      admins_count: { sortable: false },
       partners_count: { align: :center, sortable: false, fit: true },
       updated_at: { fit: true },
       actions: { sortable: false, fit: true }
     },
     default_sort: { column: 'updated_at', direction: 'desc' },
     filters: [
-      {
-        column: 'type',
-        label: 'Type',
-        width: 'w-36',
-        options: [
-          { value: 'Category', label: 'Category' },
-          { value: 'Partnership', label: 'Partnership' },
-          { value: 'Facility', label: 'Facility' }
-        ]
-      },
       {
         column: 'has_partners',
         label: 'Partners',
@@ -38,8 +28,8 @@
         ]
       }
     ],
-    data: @tags,
-    source: admin_tags_path(format: :json),
-    new_link: (new_admin_tag_path if current_user.role.root?)
+    data: @partnerships,
+    source: admin_partnerships_path(format: :json),
+    new_link: (new_admin_partnership_path if policy(Partnership).create?)
   }
 %>

@@ -1,0 +1,69 @@
+<% if @partnership.system_tag %>
+  <div class="rounded-md bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <%= icon(:warning, size: '5', css_class: 'text-yellow-400') %>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm text-yellow-700 font-medium">
+          WARNING: This partnership is used by the PlaceCal backend so you cannot change the Name or Slug values.
+        </p>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<%= simple_form_for @partnership,
+    as: :partnership,
+    url: (@partnership.new_record? ? admin_partnerships_path : admin_partnership_path),
+    html: { class: 'space-y-6' } do |f| %>
+
+  <%= render(ErrorComponent.new(@partnership)) %>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Basic Information</h3>
+
+    <%= f.input :name, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
+                disabled: @partnership.system_tag %>
+
+    <%= f.input :slug, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
+                disabled: @partnership.system_tag %>
+
+    <%= f.input :description, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 } %>
+
+    <% if current_user.root? -%>
+      <%= f.input :system_tag, wrapper: :tw_boolean,
+          hint: 'This partnership is read only and should not be edited' %>
+    <% end -%>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Tagged Partners</h3>
+    <p class="text-sm text-gray-600">Apply this partnership to the given partners</p>
+    <%= f.association :partners, collection: options_for_partners,
+          wrapper: :tw_vertical_form,
+          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+  </div>
+
+  <% if show_assigned_user_field_for?(f) %>
+    <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+      <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Partnership Admins</h3>
+      <p class="text-sm text-gray-600">Grant permission to manage this partnership</p>
+      <%= f.association :users, collection: options_for_users,
+          wrapper: :tw_vertical_form,
+          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+    </div>
+  <% end %>
+
+  <div class="flex items-center gap-4 pt-4">
+    <%= f.submit "Save", class: "inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2" %>
+    <% if !@partnership.new_record? && policy(@partnership).destroy? %>
+      <%= link_to "Destroy", admin_partnership_path(@partnership), method: :delete,
+          class: "inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2",
+          data: { confirm: "Are you sure you want to delete this partnership?" } %>
+    <% end %>
+  </div>
+<% end %>

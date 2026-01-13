@@ -136,10 +136,10 @@
     </div>
 
     <% unless @calendar.new_record? %>
-      <input type="radio" name="calendar_tabs" class="tab" aria-label="📅 Events" data-calendar-tabs-target="tab" data-hash="events" />
+      <input type="radio" name="calendar_tabs" class="tab" aria-label="🎫 Events" data-calendar-tabs-target="tab" data-hash="events" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-calendar-tabs-target="panel" data-section="events">
         <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
-          <%= icon(:calendar, size: '5') %>
+          <%= icon(:event, size: '5') %>
           Events
           <span class="badge badge-neutral"><%= @calendar.events.count %></span>
         </h2>
@@ -242,7 +242,7 @@
       <%# Spacer to push Admin tab right %>
       <div class="tab flex-1 cursor-default"></div>
 
-      <input type="radio" name="calendar_tabs" class="tab" aria-label="⚙ Admin" data-calendar-tabs-target="tab" data-hash="admin" />
+      <input type="radio" name="calendar_tabs" class="tab" aria-label="⚙️ Admin" data-calendar-tabs-target="tab" data-hash="admin" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-calendar-tabs-target="panel" data-section="admin">
         <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
         <div class="card bg-error/5 border border-error/20 max-w-xl">

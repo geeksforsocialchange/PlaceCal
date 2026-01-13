@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
-class TagDatatable < Datatable
+class PartnershipDatatable < Datatable
   extend Forwardable
+
+  def_delegator :@view, :edit_admin_partnership_path
+  def_delegator :@view, :edit_admin_user_path
 
   # Override to ensure draw is included
   def as_json(*)
@@ -13,11 +16,11 @@ class TagDatatable < Datatable
 
   def view_columns
     @view_columns ||= {
-      name: { source: 'Tag.name', cond: :like, searchable: true },
-      type: { source: 'Tag.type', searchable: false, orderable: true },
-      partners_count: { source: 'Tag.id', searchable: false, orderable: false },
-      updated_at: { source: 'Tag.updated_at', searchable: false, orderable: true },
-      actions: { source: 'Tag.id', searchable: false, orderable: false }
+      name: { source: 'Partnership.name', cond: :like, searchable: true },
+      admins_count: { source: 'Partnership.id', searchable: false, orderable: false },
+      partners_count: { source: 'Partnership.id', searchable: false, orderable: false },
+      updated_at: { source: 'Partnership.updated_at', searchable: false, orderable: true },
+      actions: { source: 'Partnership.id', searchable: false, orderable: false }
     }
   end
 
@@ -25,7 +28,7 @@ class TagDatatable < Datatable
     records.map do |record|
       {
         name: render_name_cell(record),
-        type: render_type_cell(record),
+        admins_count: render_admins_cell(record),
         partners_count: render_count_cell(record.partners.size, 'partner'),
         updated_at: render_relative_time(record.updated_at),
         actions: render_actions(record)
@@ -34,17 +37,12 @@ class TagDatatable < Datatable
   end
 
   def get_raw_records
-    # Use includes for eager loading, but NOT left_joins which causes duplicates
-    # when tags have multiple partners
-    records = options[:tags]
-              .includes(:partners)
+    records = options[:partnerships]
+              .includes(:partners, :users)
               .distinct
 
     # Apply filters from request params
     if params[:filter].present?
-      # Type filter
-      records = records.where(type: params[:filter][:type]) if params[:filter][:type].present?
-
       # System tag filter
       if params[:filter][:system_tag].present?
         if params[:filter][:system_tag] == 'yes'
@@ -68,7 +66,7 @@ class TagDatatable < Datatable
   end
 
   def records_total_count
-    options[:tags].count
+    options[:partnerships].count
   end
 
   def records_filtered_count
@@ -80,36 +78,12 @@ class TagDatatable < Datatable
   def render_name_cell(record)
     <<~HTML.html_safe
       <div class="flex flex-col">
-        <a href="#{edit_admin_tag_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
+        <a href="#{edit_admin_partnership_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
         <span class="text-xs text-gray-400 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
-  end
-
-  def render_type_cell(record)
-    type = record.type || 'Tag'
-    color_class = type_color(type)
-
-    <<~HTML.html_safe
-      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium #{color_class}">
-        #{ERB::Util.html_escape(type)}
-      </span>
-    HTML
-  end
-
-  def type_color(type)
-    case type
-    when 'Category'
-      'bg-blue-100 text-blue-800'
-    when 'Partnership'
-      'bg-purple-100 text-purple-800'
-    when 'Facility'
-      'bg-teal-100 text-teal-800'
-    else
-      'bg-gray-100 text-gray-800'
-    end
   end
 
   def render_description_cell(record)
@@ -134,7 +108,7 @@ class TagDatatable < Datatable
       HTML
     else
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-300" title="User-created tag">
+        <span class="inline-flex items-center text-gray-300" title="User-created">
           #{unlock_icon}
         </span>
       HTML
@@ -153,6 +127,38 @@ class TagDatatable < Datatable
       <<~HTML.html_safe
         <span class="inline-flex items-center text-gray-400" title="No #{label}s">
           #{cross_icon}
+        </span>
+      HTML
+    end
+  end
+
+  def render_admins_cell(record)
+    admins = record.users
+    count = admins.size
+
+    return <<~HTML.html_safe if count.zero?
+      <span class="inline-flex items-center text-gray-400" title="No admins">
+        #{cross_icon}
+      </span>
+    HTML
+
+    links = admins.first(2).map do |user|
+      name = ERB::Util.html_escape(user.email.split('@').first)
+      "<a href=\"#{edit_admin_user_path(user)}\" class=\"text-gray-700 hover:text-orange-600\">#{name}</a>"
+    end
+
+    if count <= 2
+      <<~HTML.html_safe
+        <span class="text-sm">#{links.join(', ')}</span>
+      HTML
+    else
+      remaining = count - 2
+      <<~HTML.html_safe
+        <span class="text-sm">
+          #{links.join(', ')}
+          <a href="#{edit_admin_partnership_path(record)}" class="text-gray-500 hover:text-orange-600">
+            and #{remaining} more...
+          </a>
         </span>
       HTML
     end
@@ -184,7 +190,7 @@ class TagDatatable < Datatable
   def render_actions(record)
     <<~HTML.html_safe
       <div class="flex items-center gap-2">
-        <a href="#{edit_admin_tag_path(record)}"
+        <a href="#{edit_admin_partnership_path(record)}"
            class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
           Edit
         </a>

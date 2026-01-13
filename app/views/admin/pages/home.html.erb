@@ -71,13 +71,13 @@
   </div>
 
   <%# Events this week %>
-  <div class="card bg-gradient-to-br from-placecal-orange/10 to-placecal-orange/5 border border-placecal-orange/20 shadow-sm">
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
     <div class="card-body p-3">
       <div class="flex items-center justify-between">
-        <span class="text-xs text-placecal-orange/80">Events this week</span>
-        <%= icon(:lightning, size: '4', css_class: 'text-placecal-orange/50') %>
+        <span class="text-xs text-base-content/60">Events this week</span>
+        <%= icon(:calendar, size: '4', css_class: 'text-base-content/30') %>
       </div>
-      <div class="text-2xl font-bold text-placecal-orange"><%= @total_events_this_week %></div>
+      <div class="text-2xl font-bold text-base-content"><%= @total_events_this_week %></div>
     </div>
   </div>
 
@@ -176,7 +176,7 @@
     <div class="card-body p-4">
       <div class="flex items-center justify-between mb-3">
         <h2 class="font-bold flex items-center gap-2">
-          <%= icon(:calendar, size: '5', css_class: 'text-placecal-orange') %>
+          <%= icon(:event, size: '5', css_class: 'text-placecal-orange') %>
           Upcoming Events
         </h2>
       </div>

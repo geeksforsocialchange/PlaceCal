@@ -1,16 +1,23 @@
-<nav class="fixed top-0 left-0 right-0 h-14 bg-gray-900 shadow-lg flex items-center justify-between px-4 z-50">
-  <%= link_to 'PlaceCal', admin_root_path, class: "text-white font-bold text-lg hover:text-placecal-orange transition-colors" %>
-  <ul class="flex items-center gap-4">
+<nav class="fixed top-0 left-0 right-0 h-14 bg-gray-900 flex items-center justify-between px-4 z-50">
+  <%= link_to admin_root_path, class: "flex items-center gap-2 font-bold text-lg text-white hover:text-placecal-orange transition-colors" do %>
+    <span class="text-placecal-orange">PlaceCal</span>
+    <span class="text-xs font-normal text-gray-400 hidden sm:inline">Admin</span>
+  <% end %>
+
+  <ul class="flex items-center gap-3">
     <li>
-      <%= link_to admin_profile_path, class: 'text-gray-300 hover:text-white transition-colors flex items-center gap-2' do %>
+      <%= link_to admin_profile_path, class: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-colors' do %>
         <%= icon(:user, size: '4') %>
-        <span><%= @current_user&.email %> <%= "👑" if @current_user&.role == :root %></span>
+        <span class="text-sm"><%= @current_user&.email %></span>
+        <% if @current_user&.role == :root %>
+          <%= icon(:crown, size: '4', css_class: 'text-amber-400') %>
+        <% end %>
       <% end %>
     </li>
     <li>
-      <%= button_to destroy_user_session_path, method: :delete, class: 'text-gray-300 hover:text-white transition-colors flex items-center gap-2', form: { data: { turbo: 'false' } } do %>
+      <%= button_to destroy_user_session_path, method: :delete, class: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-colors', form: { data: { turbo: 'false' } } do %>
         <%= icon(:logout, size: '4') %>
-        <span>Sign out</span>
+        <span class="text-sm">Sign out</span>
       <% end %>
     </li>
   </ul>

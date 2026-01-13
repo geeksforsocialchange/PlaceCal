@@ -48,6 +48,7 @@ Rails.application.routes.draw do
       end
     end
     resources :tags
+    resources :partnerships
     resources :sites
     resources :supporters
     resources :users do

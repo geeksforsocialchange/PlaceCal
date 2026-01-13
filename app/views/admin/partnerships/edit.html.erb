@@ -1,0 +1,18 @@
+<% if @partnership.system_tag && !current_user.root? %>
+  <% content_for :title do %><%= @partnership.name %><% end %>
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-semibold"><%= @partnership.name %></h1>
+      <p class="text-base-content/60 mt-1">System partnership</p>
+    </div>
+    <div class="text-sm text-base-content/50">ID: <%= @partnership.id %></div>
+  </div>
+
+  <div role="alert" class="alert alert-warning">
+    <%= icon(:warning, size: '6', css_class: 'shrink-0 stroke-current') %>
+    <span>This partnership is a <strong>system partnership</strong> meaning that it cannot be edited by non-root admins.</span>
+  </div>
+<% else %>
+  <%= render AdminEdit.new(model: :partnership, title: @partnership.name, id: @partnership.id) %>
+<% end %>

@@ -23,19 +23,16 @@ module ApplicationHelper
     UserPolicy.new(current_user, nil)
   end
 
-  def admin_nav_link(name, path, icon_name = nil)
+  def admin_nav_link(name, path, icon_name = nil, root_only: false)
     content_tag :li do
       base_classes = 'flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors'
       active_classes = 'bg-placecal-orange text-white'
       inactive_classes = 'text-gray-700 hover:bg-gray-200'
       klass = current_page?(path) ? "#{base_classes} #{active_classes}" : "#{base_classes} #{inactive_classes}"
       link_to path, class: klass do
-        if icon_name
-          concat(icon(icon_name.to_sym, size: '4'))
-          concat(content_tag(:span, name))
-        else
-          concat(name)
-        end
+        concat(icon(icon_name.to_sym, size: '4')) if icon_name
+        concat(content_tag(:span, name, class: 'flex-1'))
+        concat(icon(:crown, size: '3', css_class: 'text-amber-500')) if root_only
       end
     end
   end
@@ -64,7 +61,7 @@ module ApplicationHelper
   # Usage: icon_column_header(:calendar, 'Calendars')
   def icon_column_header(icon_name, tooltip)
     # Map legacy icon names to SvgIconsHelper names
-    icon_map = { status: :check, event: :calendar }
+    icon_map = { status: :check }
     mapped_name = icon_map[icon_name.to_sym] || icon_name.to_sym
 
     return tooltip unless SvgIconsHelper::ICONS.key?(mapped_name)
