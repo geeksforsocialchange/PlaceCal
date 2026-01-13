@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	// Use tw- prefix to avoid conflicts with Bootstrap during migration
+	// Legacy v3 config - admin uses v4 CSS-first config in app/tailwind/
 	prefix: "tw-",
 
 	content: [

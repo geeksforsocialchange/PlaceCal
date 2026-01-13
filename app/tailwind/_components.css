@@ -1,0 +1,87 @@
+/* Auto-expanding textareas */
+.field-sizing-content {
+	field-sizing: content;
+}
+
+/* daisyUI tabs-lift radio input fixes */
+@layer components {
+	/* Radio input tabs need appearance:none and content from aria-label */
+	.tabs-lift > input[type="radio"].tab {
+		appearance: none;
+		-webkit-appearance: none;
+	}
+
+	.tabs-lift > input[type="radio"].tab::after {
+		content: attr(aria-label);
+	}
+}
+
+/* Custom admin component styles using @apply */
+@layer components {
+	/* Admin-specific base styles */
+	.feather {
+		width: 16px;
+		height: 16px;
+		vertical-align: text-bottom;
+	}
+
+	.card-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-gap: 1rem;
+	}
+
+	/* Partner page specific styles */
+	.map-marker {
+		height: 300px !important;
+	}
+
+	.breadcrumb .size-patch {
+		box-sizing: border-box;
+		line-height: inherit;
+	}
+
+	.admin-tw-card {
+		@apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
+	}
+
+	.admin-tw-section {
+		@apply mb-6;
+	}
+
+	.admin-tw-heading {
+		@apply text-xl font-semibold text-gray-900 mb-4;
+	}
+
+	.admin-tw-btn-primary {
+		@apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-md shadow-sm;
+		@apply text-white bg-placecal-orange;
+		@apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500;
+	}
+
+	.admin-tw-btn-primary:hover {
+		@apply bg-orange-600;
+	}
+
+	.admin-tw-btn-secondary {
+		@apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-md shadow-sm;
+		@apply text-gray-700 bg-white border border-gray-300;
+		@apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-placecal-teal;
+	}
+
+	.admin-tw-btn-secondary:hover {
+		@apply bg-gray-50;
+	}
+}
+
+/* Custom orange checkboxes for PlaceCal theme */
+.checkbox-warning:checked,
+.checkbox-warning[checked="checked"],
+.checkbox-warning:indeterminate {
+	--chkbg: var(--color-placecal-orange) !important;
+	border-color: var(--color-placecal-orange) !important;
+}
+
+.checkbox-warning {
+	border-color: var(--color-placecal-orange) !important;
+}
