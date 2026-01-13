@@ -2,8 +2,6 @@
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class SiteDatatable < Datatable
-  extend Forwardable
-
   # Override to ensure draw is included
   def as_json(*)
     result = super
@@ -91,14 +89,14 @@ class SiteDatatable < Datatable
     if count.positive?
       <<~HTML.html_safe
         <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
-          #{check_icon}
+          #{icon(:check)}
           <span class="ml-1 text-xs">#{count}</span>
         </span>
       HTML
     else
       <<~HTML.html_safe
         <span class="inline-flex items-center text-gray-400" title="No #{label}s">
-          #{cross_icon}
+          #{icon(:x)}
         </span>
       HTML
     end
@@ -106,33 +104,10 @@ class SiteDatatable < Datatable
 
   def render_site_admin_cell(record)
     admin = record.site_admin
-    return '<span class="text-gray-400">—</span>'.html_safe unless admin
+    return empty_cell unless admin
 
     <<~HTML.html_safe
       <span class="text-gray-600">#{ERB::Util.html_escape([admin.first_name, admin.last_name].compact.join(' '))}</span>
-    HTML
-  end
-
-  def render_relative_time(datetime)
-    return '<span class="text-gray-400">—</span>'.html_safe unless datetime
-
-    days_ago = (Time.current - datetime).to_i / 1.day
-
-    if days_ago.zero?
-      relative = 'Today'
-    elsif days_ago == 1
-      relative = 'Yesterday'
-    elsif days_ago < 7
-      relative = "#{days_ago} days ago"
-    elsif days_ago < 30
-      weeks = days_ago / 7
-      relative = "#{weeks} week#{'s' if weeks != 1} ago"
-    else
-      relative = datetime.strftime('%-d %b %Y')
-    end
-
-    <<~HTML.html_safe
-      <span class="text-gray-500 text-sm whitespace-nowrap" title="#{datetime.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
     HTML
   end
 
@@ -145,14 +120,6 @@ class SiteDatatable < Datatable
         </a>
       </div>
     HTML
-  end
-
-  def check_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-  end
-
-  def cross_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
   end
 end
 # rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

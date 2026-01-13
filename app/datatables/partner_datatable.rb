@@ -2,11 +2,6 @@
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class PartnerDatatable < Datatable
-  extend Forwardable
-
-  def_delegator :@view, :admin_partner_calendars_path
-  def_delegator :@view, :admin_partner_users_path
-
   def view_columns
     # Order must match columns array in index.html.erb
     @view_columns ||= {
@@ -175,7 +170,7 @@ class PartnerDatatable < Datatable
     if calendars.empty?
       <<~HTML.html_safe
         <span class="inline-flex items-center text-gray-400" title="No calendars">
-          #{cross_icon}
+          #{icon(:x)}
         </span>
       HTML
     else
@@ -185,13 +180,13 @@ class PartnerDatatable < Datatable
       if error_calendars.any?
         <<~HTML.html_safe
           <span class="inline-flex items-center text-red-600" title="#{error_calendars.size} calendar#{'s' if error_calendars.size != 1} with errors">
-            #{error_icon}
+            #{icon(:warning)}
           </span>
         HTML
       else
         <<~HTML.html_safe
           <span class="inline-flex items-center text-emerald-600" title="#{count} calendar#{'s' if count != 1} connected">
-            #{check_icon}
+            #{icon(:check)}
           </span>
         HTML
       end
@@ -202,13 +197,13 @@ class PartnerDatatable < Datatable
     if has_items
       <<~HTML.html_safe
         <span class="inline-flex items-center text-emerald-600" title="#{title_yes}">
-          #{check_icon}
+          #{icon(:check)}
         </span>
       HTML
     else
       <<~HTML.html_safe
         <span class="inline-flex items-center text-gray-400" title="#{title_no}">
-          #{cross_icon}
+          #{icon(:x)}
         </span>
       HTML
     end
@@ -218,7 +213,7 @@ class PartnerDatatable < Datatable
     if partnerships.empty?
       <<~HTML.html_safe
         <span class="inline-flex items-center text-gray-400" title="No partnerships">
-          #{cross_icon}
+          #{icon(:x)}
         </span>
       HTML
     else
@@ -252,36 +247,7 @@ class PartnerDatatable < Datatable
   end
 
   def render_updated_at(record)
-    date = record.updated_at
-    return '—' unless date
-
-    # Show relative time for recent updates, absolute for older
-    days_ago = (Time.current - date).to_i / 1.day
-
-    if days_ago.zero?
-      relative = 'Today'
-    elsif days_ago == 1
-      relative = 'Yesterday'
-    elsif days_ago < 7
-      relative = "#{days_ago} days ago"
-    elsif days_ago < 30
-      weeks = days_ago / 7
-      relative = "#{weeks} week#{'s' if weeks != 1} ago"
-    else
-      relative = date.strftime('%-d %b %Y')
-    end
-
-    <<~HTML.html_safe
-      <span class="text-gray-500 text-sm whitespace-nowrap" title="#{date.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
-    HTML
-  end
-
-  def render_date(date)
-    return '—' unless date
-
-    <<~HTML.html_safe
-      <span class="text-gray-500 text-sm">#{date.strftime('%d %b %Y')}</span>
-    HTML
+    render_relative_time(record.updated_at)
   end
 
   def render_actions(record)
@@ -295,7 +261,7 @@ class PartnerDatatable < Datatable
           <button type="button"
                   data-action="click->dropdown#toggle"
                   class="inline-flex items-center px-2 py-1.5 text-xs font-medium rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
-            #{more_icon}
+            #{icon(:more_vertical)}
           </button>
           <div data-dropdown-target="menu"
                class="hidden absolute right-0 z-10 mt-1 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
@@ -313,30 +279,6 @@ class PartnerDatatable < Datatable
         </div>
       </div>
     HTML
-  end
-
-  def calendar_icon
-    '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>'
-  end
-
-  def user_icon
-    '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>'
-  end
-
-  def more_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>'
-  end
-
-  def check_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-  end
-
-  def error_icon
-    '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>'
-  end
-
-  def cross_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
   end
 end
 # rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

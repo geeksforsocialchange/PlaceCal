@@ -2,17 +2,12 @@
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class CalendarDatatable < Datatable
-  extend Forwardable
-
   # Override to ensure draw is included - parent class has issue with draw_id
   def as_json(*)
     result = super
     result[:draw] = params[:draw].to_i if params[:draw].present?
     result
   end
-
-  def_delegator :@view, :edit_admin_calendar_path
-  def_delegator :@view, :edit_admin_partner_path
 
   def view_columns
     @view_columns ||= {
@@ -122,43 +117,27 @@ class CalendarDatatable < Datatable
     when 'idle'
       <<~HTML.html_safe
         <span class="inline-flex items-center text-emerald-600" title="Idle - ready for import">
-          #{check_icon}
+          #{icon(:check)}
         </span>
       HTML
     when 'in_queue', 'in_worker'
       label = state == 'in_queue' ? 'Queued for import' : 'Importing...'
       <<~HTML.html_safe
         <span class="inline-flex items-center text-orange-500" title="#{label}">
-          #{spinner_icon}
+          #{icon(:swap, css_class: 'animate-spin')}
         </span>
       HTML
     when 'error', 'bad_source'
       label = state == 'error' ? 'Import error' : 'Bad source URL'
       <<~HTML.html_safe
         <span class="inline-flex items-center text-red-600" title="#{label}">
-          #{error_icon}
+          #{icon(:warning)}
         </span>
       HTML
     else
       <<~HTML.html_safe
         <span class="inline-flex items-center text-gray-400" title="Unknown state">
-          #{cross_icon}
-        </span>
-      HTML
-    end
-  end
-
-  def render_count_cell(count, label)
-    if count.positive?
-      <<~HTML.html_safe
-        <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
-          #{check_icon}
-        </span>
-      HTML
-    else
-      <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="No #{label}s">
-          #{cross_icon}
+          #{icon(:x)}
         </span>
       HTML
     end
@@ -169,40 +148,17 @@ class CalendarDatatable < Datatable
     if count.positive?
       <<~HTML.html_safe
         <span class="inline-flex items-center text-amber-600" title="#{count} notice#{'s' if count != 1}">
-          #{warning_icon}
+          #{icon(:warning)}
           <span class="ml-1 text-xs">#{count}</span>
         </span>
       HTML
     else
       <<~HTML.html_safe
         <span class="inline-flex items-center text-emerald-600" title="No notices">
-          #{check_icon}
+          #{icon(:check)}
         </span>
       HTML
     end
-  end
-
-  def render_relative_time(datetime)
-    return '<span class="text-gray-400">—</span>'.html_safe unless datetime
-
-    days_ago = (Time.current - datetime).to_i / 1.day
-
-    if days_ago.zero?
-      relative = 'Today'
-    elsif days_ago == 1
-      relative = 'Yesterday'
-    elsif days_ago < 7
-      relative = "#{days_ago} days ago"
-    elsif days_ago < 30
-      weeks = days_ago / 7
-      relative = "#{weeks} week#{'s' if weeks != 1} ago"
-    else
-      relative = datetime.strftime('%-d %b %Y')
-    end
-
-    <<~HTML.html_safe
-      <span class="text-gray-500 text-sm whitespace-nowrap" title="#{datetime.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
-    HTML
   end
 
   def render_actions(record)
@@ -214,26 +170,6 @@ class CalendarDatatable < Datatable
         </a>
       </div>
     HTML
-  end
-
-  def check_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-  end
-
-  def cross_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
-  end
-
-  def error_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>'
-  end
-
-  def warning_icon
-    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>'
-  end
-
-  def spinner_icon
-    '<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>'
   end
 end
 # rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
