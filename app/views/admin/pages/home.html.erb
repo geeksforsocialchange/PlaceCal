@@ -2,9 +2,7 @@
 
 <% if user_has_no_rights?(current_user) -%>
   <div role="alert" class="alert alert-error mb-6">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-    </svg>
+    <%= icon(:warning, size: '6', css_class: 'shrink-0') %>
     <div>
       <h3 class="font-bold">Missing Permissions</h3>
       <p>You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!</p>
@@ -27,9 +25,7 @@
         <%= link_to url_for(controller: model.table_name, action: :new),
                     data: { turbo: false },
                     class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2" do %>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
+          <%= icon(:plus, size: '4') %>
           New <%= model.name.titleize %>
         <% end %>
       <% end %>
@@ -44,7 +40,7 @@
     <div class="card-body p-3">
       <div class="flex items-center justify-between">
         <span class="text-xs text-base-content/60">Partners</span>
-        <svg class="size-4 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <%= icon(:partner, size: '4', css_class: 'text-base-content/30') %>
       </div>
       <div class="text-2xl font-bold text-base-content"><%= @total_partners %></div>
     </div>
@@ -79,7 +75,7 @@
     <div class="card-body p-3">
       <div class="flex items-center justify-between">
         <span class="text-xs text-placecal-orange/80">Events this week</span>
-        <svg class="size-4 text-placecal-orange/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <%= icon(:lightning, size: '4', css_class: 'text-placecal-orange/50') %>
       </div>
       <div class="text-2xl font-bold text-placecal-orange"><%= @total_events_this_week %></div>
     </div>
@@ -90,10 +86,10 @@
     <div class="card-body p-3">
       <div class="flex items-center justify-between">
         <span class="text-xs text-base-content/60 group-hover:text-placecal-orange transition-colors">Need help?</span>
-        <svg class="size-4 text-base-content/30 group-hover:text-placecal-orange/50 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        <%= icon(:external_link, size: '4', css_class: 'text-base-content/30 group-hover:text-placecal-orange/50 transition-colors') %>
       </div>
       <div class="flex items-center gap-2 mt-1">
-        <svg class="size-5 text-base-content/40 group-hover:text-placecal-orange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <%= icon(:book, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm font-medium text-base-content/60 group-hover:text-base-content transition-colors">Handbook</span>
       </div>
     </div>
@@ -111,7 +107,7 @@
       <div class="card-body p-4 relative">
         <div class="flex items-center justify-between mb-3">
           <h2 class="font-bold flex items-center gap-2">
-            <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+            <%= icon(:site, size: '5', css_class: 'text-placecal-orange') %>
             Your Sites
           </h2>
           <%= link_to "View all", admin_sites_path, class: "text-sm text-placecal-orange hover:text-orange-600" %>
@@ -138,21 +134,21 @@
   <div class="card <%= @problem_calendars_count > 0 ? 'bg-error/5 border-error/20' : 'bg-success/5 border-success/20' %> border shadow-sm">
     <div class="card-body p-4">
       <h2 class="font-bold flex items-center gap-2 mb-3">
-        <svg class="size-5 <%= @problem_calendars_count > 0 ? 'text-error' : 'text-success' %>" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <%= icon(:clipboard, size: '5', css_class: @problem_calendars_count > 0 ? 'text-error' : 'text-success') %>
         Action Items
       </h2>
       <% if @errored_calendars.any? || @bad_source_calendars.any? %>
         <div class="space-y-1 max-h-72 overflow-y-auto">
           <% @errored_calendars.take(5).each do |calendar| %>
             <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-2 p-2 rounded-lg bg-error/10 hover:bg-error/20 transition-colors group" do %>
-              <svg class="size-4 text-error flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <%= icon(:warning, size: '4', css_class: 'text-error flex-shrink-0') %>
               <span class="text-sm truncate flex-1"><%= calendar.name %></span>
               <span class="text-xs text-error">Error</span>
             <% end %>
           <% end %>
           <% @bad_source_calendars.take(5).each do |calendar| %>
             <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-2 p-2 rounded-lg bg-warning/10 hover:bg-warning/20 transition-colors group" do %>
-              <svg class="size-4 text-warning flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              <%= icon(:link, size: '4', css_class: 'text-warning flex-shrink-0') %>
               <span class="text-sm truncate flex-1"><%= calendar.name %></span>
               <span class="text-xs text-warning">Bad URL</span>
             <% end %>
@@ -165,7 +161,7 @@
         </div>
       <% else %>
         <div class="flex items-center gap-3 text-success">
-          <svg class="size-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <%= icon(:check, size: '8') %>
           <div>
             <p class="font-medium">All calendars healthy</p>
             <p class="text-xs text-base-content/50">No issues to fix</p>
@@ -180,7 +176,7 @@
     <div class="card-body p-4">
       <div class="flex items-center justify-between mb-3">
         <h2 class="font-bold flex items-center gap-2">
-          <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <%= icon(:calendar, size: '5', css_class: 'text-placecal-orange') %>
           Upcoming Events
         </h2>
       </div>
@@ -204,7 +200,7 @@
         </div>
       <% else %>
         <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
-          <svg class="size-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
           <p class="text-sm">No upcoming events</p>
         </div>
       <% end %>
@@ -216,7 +212,7 @@
     <div class="card-body p-4">
       <div class="flex items-center justify-between mb-3">
         <h2 class="font-bold flex items-center gap-2">
-          <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <%= icon(:partner, size: '5', css_class: 'text-placecal-orange') %>
           Recently Updated
         </h2>
         <%= link_to "All", admin_partners_path, class: "text-sm text-placecal-orange hover:text-orange-600" %>
@@ -229,7 +225,7 @@
                 <%= image_tag partner.image.url, class: "w-9 h-9 rounded-lg object-cover flex-shrink-0" %>
               <% else %>
                 <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-                  <svg class="size-4 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                  <%= icon(:partner, size: '4', css_class: 'text-base-content/30', stroke_width: '1.5') %>
                 </div>
               <% end %>
               <div class="flex-1 min-w-0">
@@ -241,7 +237,7 @@
         </div>
       <% else %>
         <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
-          <svg class="size-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <%= icon(:partner, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
           <p class="text-sm">No partners yet</p>
           <%= link_to "Add your first", new_admin_partner_path, class: "text-xs text-placecal-orange hover:text-orange-600 mt-1" %>
         </div>
@@ -256,7 +252,7 @@
       <div class="card-body p-4 relative">
         <div class="flex items-center justify-between mb-3">
           <h2 class="font-bold flex items-center gap-2">
-            <svg class="size-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <%= icon(:partnership, size: '5', css_class: 'text-purple-500') %>
             Your Partnerships
           </h2>
         </div>
@@ -267,7 +263,7 @@
                 <h4 class="text-sm font-medium text-base-content group-hover:text-purple-600 transition-colors truncate"><%= partnership.name %></h4>
                 <p class="text-xs text-base-content/50 mt-0.5"><%= pluralize(partnership.partners.count, 'partner') %></p>
               </div>
-              <svg class="size-4 text-base-content/30 group-hover:text-purple-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-purple-500 transition-colors flex-shrink-0') %>
             <% end %>
           <% end %>
         </div>
@@ -282,27 +278,27 @@
   <div class="card bg-base-100 border border-base-300 shadow-sm">
     <div class="card-body p-4">
       <h2 class="font-bold flex items-center gap-2 mb-3">
-        <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        <%= icon(:link, size: '5', css_class: 'text-placecal-orange') %>
         Quick Links
       </h2>
       <div class="space-y-1">
         <%= link_to admin_calendars_path, class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-          <svg class="size-5 text-base-content/40 group-hover:text-placecal-orange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <%= icon(:calendar, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
           <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors">All Calendars</span>
         <% end %>
         <%= link_to admin_partners_path, class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-          <svg class="size-5 text-base-content/40 group-hover:text-placecal-orange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <%= icon(:partner, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
           <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors">All Partners</span>
         <% end %>
         <%= link_to "https://handbook.placecal.org/", target: "_blank", class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-          <svg class="size-5 text-base-content/40 group-hover:text-placecal-orange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <%= icon(:book, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
           <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors">Handbook</span>
-          <svg class="size-3 text-base-content/30 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          <%= icon(:external_link, size: '3', css_class: 'text-base-content/30 ml-auto') %>
         <% end %>
         <%= link_to "http://discord.gfsc.studio/", target: "_blank", class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-          <svg class="size-5 text-base-content/40 group-hover:text-placecal-orange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+          <%= icon(:chat, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
           <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors">Discord</span>
-          <svg class="size-3 text-base-content/30 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          <%= icon(:external_link, size: '3', css_class: 'text-base-content/30 ml-auto') %>
         <% end %>
       </div>
     </div>
