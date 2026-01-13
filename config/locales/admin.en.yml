@@ -317,10 +317,15 @@ en:
         accessibility_hint: "Details about accessibility features"
         website_placeholder: "https://your-website.org"
       image:
+        title: "Partner Image"
         choose_file: "Choose file or drag here"
+        replace: "Replace"
         no_image: "No image uploaded"
         upload_hint: "Upload an image above"
         remove_on_save: "Remove image on save"
+      validation:
+        name_required: "Partner name is required"
+        name_min_length: "Name must be at least 5 characters"
       facilities:
         title: "Facilities"
         hint: "What infrastructure does this partner provide?"

@@ -1,42 +1,42 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <div class="lg:col-span-2 space-y-4">
     <%= render Admin::SectionHeaderComponent.new(
-      title: "Basic Information",
-      description: "Enter the core details about your partner organisation.",
+      title: t('admin.sections.basic_information'),
+      description: t('admin.partners.sections.basic_info_description'),
       margin: 4
     ) %>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Partner Name <span class="text-error">*</span></legend>
+      <legend class="fieldset-legend"><%= t('admin.models.partner.one') %> <%= t('admin.fields.name') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <%= f.input_field :name, class: 'input input-bordered w-full',
           'data-controller': "partner-form-validation",
           'data-partner-form-validation-target': 'source',
           'data-action': 'input->partner-form-validation#checkInput',
           'data-validate-required': 'true',
           'data-validate-min': '5',
-          'data-validate-required-message': 'Partner name is required',
-          'data-validate-min-message': 'Name must be at least 5 characters' %>
+          'data-validate-required-message': t('admin.partners.validation.name_required'),
+          'data-validate-min-message': t('admin.partners.validation.name_min_length') %>
     </fieldset>
 
     <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="200">
-      <legend class="fieldset-legend">Summary</legend>
+      <legend class="fieldset-legend"><%= t('admin.fields.summary') %></legend>
       <%= f.input_field :summary, as: :text, class: 'textarea textarea-bordered w-full min-h-16', maxlength: 200, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
       <div class="flex items-center justify-between mt-1">
-        <p class="fieldset-label">A brief one-line summary</p>
+        <p class="fieldset-label"><%= t('admin.partners.fields.summary_hint') %></p>
         <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 200</span>
       </div>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Description</legend>
+      <legend class="fieldset-legend"><%= t('admin.fields.description') %></legend>
       <%= f.input_field :description, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
-      <p class="fieldset-label">Full description of what this partner does</p>
+      <p class="fieldset-label"><%= t('admin.partners.fields.description_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Accessibility Information</legend>
+      <legend class="fieldset-legend"><%= t('admin.partners.fields.accessibility_info') %></legend>
       <%= f.input_field :accessibility_info, class: 'textarea textarea-bordered w-full min-h-20', data: { controller: 'auto-expand' } %>
-      <p class="fieldset-label">Details about accessibility features</p>
+      <p class="fieldset-label"><%= t('admin.partners.fields.accessibility_hint') %></p>
     </fieldset>
   </div>
 
@@ -44,7 +44,7 @@
   <div class="lg:border-l lg:border-base-300 lg:pl-6">
     <h3 class="font-semibold mb-4 flex items-center gap-2">
       <%= icon(:photo, size: '5', css_class: 'text-placecal-orange') %>
-      Partner Image
+      <%= t('admin.partners.image.title') %>
     </h3>
     <div data-controller="image-preview">
       <%# File Input / Dropzone %>
@@ -56,7 +56,7 @@
               <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-base-content">Choose file or drag here</p>
+              <p class="text-sm font-medium text-base-content"><%= t('admin.partners.image.choose_file') %></p>
               <p class="text-xs text-base-content/50"><%= image_uploader_hint(@partner.image) %></p>
             </div>
             <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
@@ -72,7 +72,7 @@
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
               <label class="btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer">
                 <%= icon(:upload, size: '4') %>
-                Replace
+                <%= t('admin.partners.image.replace') %>
                 <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file" } %>
               </label>
             </div>
@@ -82,15 +82,15 @@
             <label class="inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60">
               <%= f.check_box :remove_image, class: 'sr-only' %>
               <%= icon(:trash, size: '3.5') %>
-              Remove image on save
+              <%= t('admin.partners.image.remove_on_save') %>
             </label>
           </div>
         <% else %>
           <div class="aspect-square rounded-lg border border-base-300 bg-base-200/50 flex items-center justify-center" data-image-preview-target="placeholder">
             <div class="text-center text-base-content/30 p-4">
               <%= icon(:photo, size: '16', css_class: 'mx-auto mb-3 opacity-50', stroke_width: '1') %>
-              <p class="text-sm font-medium">No image uploaded</p>
-              <p class="text-xs mt-1">Upload an image above</p>
+              <p class="text-sm font-medium"><%= t('admin.partners.image.no_image') %></p>
+              <p class="text-xs mt-1"><%= t('admin.partners.image.upload_hint') %></p>
             </div>
           </div>
           <%= image_tag "", style: 'display:none;', class: 'w-full h-auto rounded-lg border border-base-300', data: { image_preview_target: "img" } %>
