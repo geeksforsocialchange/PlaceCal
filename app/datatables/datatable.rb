@@ -27,7 +27,39 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
     result
   end
 
+  # Default implementation - subclasses define records_key
+  def records_total_count
+    options[records_key].count
+  end
+
+  # Default implementation - Partner overrides for GROUP BY handling
+  def records_filtered_count
+    filter_records(get_raw_records).except(:limit, :offset, :order).count
+  end
+
   protected
+
+  # Override in subclass to specify the options key (e.g., :calendars, :partners)
+  def records_key
+    raise NotImplementedError, 'Subclass must define records_key (e.g., :calendars)'
+  end
+
+  # Override in subclass to specify the edit path helper
+  def edit_path_for(record)
+    raise NotImplementedError, 'Subclass must define edit_path_for'
+  end
+
+  # Shared actions cell - override for custom behavior
+  def render_actions(record)
+    <<~HTML.html_safe
+      <div class="flex items-center gap-2">
+        <a href="#{edit_path_for(record)}"
+           class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+          Edit
+        </a>
+      </div>
+    HTML
+  end
 
   # Delegate to SvgIconsHelper via view context
   def icon(name, size: '4', css_class: '')
@@ -70,12 +102,13 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
     HTML
   end
 
-  # Shared count cell with checkmark or dash
+  # Shared count cell with checkmark/count or dash
   def render_count_cell(count, label)
     if count.positive?
       <<~HTML.html_safe
         <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
           #{icon(:check)}
+          <span class="ml-1 text-xs">#{count}</span>
         </span>
       HTML
     else

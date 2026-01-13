@@ -61,15 +61,15 @@ class ArticleDatatable < Datatable
     records
   end
 
-  def records_total_count
-    options[:articles].count
-  end
-
-  def records_filtered_count
-    filter_records(get_raw_records).except(:limit, :offset, :order).count
-  end
-
   private
+
+  def records_key
+    :articles
+  end
+
+  def edit_path_for(record)
+    edit_admin_article_path(record)
+  end
 
   def render_title_cell(record)
     <<~HTML.html_safe
@@ -161,17 +161,6 @@ class ArticleDatatable < Datatable
 
     <<~HTML.html_safe
       <span class="text-gray-500 text-sm whitespace-nowrap" title="#{datetime.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
-    HTML
-  end
-
-  def render_actions(record)
-    <<~HTML.html_safe
-      <div class="flex items-center gap-2">
-        <a href="#{edit_admin_article_path(record)}"
-           class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-          Edit
-        </a>
-      </div>
     HTML
   end
 end

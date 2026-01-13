@@ -91,13 +91,7 @@ class PartnerDatatable < Datatable
     records
   end
 
-  # Override count methods to handle GROUP BY correctly
-  # When using GROUP BY, count returns a hash, so we need to count the keys
-  def records_total_count
-    # Total count should be all partners in the base scope (before any filters)
-    options[:partners].count
-  end
-
+  # Override to handle GROUP BY correctly - count returns a hash with GROUP BY
   def records_filtered_count
     # Filtered count includes our custom filters AND the DataTables search
     # We need to keep HAVING clauses since calendar/admin filters use them
@@ -109,6 +103,14 @@ class PartnerDatatable < Datatable
   end
 
   private
+
+  def records_key
+    :partners
+  end
+
+  def edit_path_for(record)
+    edit_admin_partner_path(record)
+  end
 
   def render_name_cell(record)
     <<~HTML.html_safe

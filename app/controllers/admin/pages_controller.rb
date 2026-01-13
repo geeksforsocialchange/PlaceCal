@@ -2,6 +2,8 @@
 
 module Admin
   class PagesController < Admin::ApplicationController
+    before_action :require_root_user, only: [:icons]
+
     def home
       @user = current_user
       @sites = policy_scope([:dashboard, Site]).order(:name)
@@ -31,6 +33,19 @@ module Admin
 
       # User's partnerships (tags they manage)
       @user_partnerships = current_user.partnerships.includes(:partners).order(:name)
+    end
+
+    def icons
+      @icons = SvgIconsHelper::ICONS
+    end
+
+    private
+
+    def require_root_user
+      return if current_user&.root?
+
+      flash[:error] = 'You need to be a root admin to access this page.'
+      redirect_to admin_root_path
     end
   end
 end

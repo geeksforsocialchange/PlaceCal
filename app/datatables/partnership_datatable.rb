@@ -53,15 +53,15 @@ class PartnershipDatatable < Datatable
     records
   end
 
-  def records_total_count
-    options[:partnerships].count
-  end
-
-  def records_filtered_count
-    filter_records(get_raw_records).except(:limit, :offset, :order).count
-  end
-
   private
+
+  def records_key
+    :partnerships
+  end
+
+  def edit_path_for(record)
+    edit_admin_partnership_path(record)
+  end
 
   def render_name_cell(record)
     <<~HTML.html_safe
@@ -103,23 +103,6 @@ class PartnershipDatatable < Datatable
     end
   end
 
-  def render_count_cell(count, label)
-    if count.positive?
-      <<~HTML.html_safe
-        <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
-          #{icon(:check)}
-          <span class="ml-1 text-xs">#{count}</span>
-        </span>
-      HTML
-    else
-      <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="No #{label}s">
-          #{icon(:x)}
-        </span>
-      HTML
-    end
-  end
-
   def render_admins_cell(record)
     admins = record.users
     count = admins.size
@@ -150,17 +133,6 @@ class PartnershipDatatable < Datatable
         </span>
       HTML
     end
-  end
-
-  def render_actions(record)
-    <<~HTML.html_safe
-      <div class="flex items-center gap-2">
-        <a href="#{edit_admin_partnership_path(record)}"
-           class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-          Edit
-        </a>
-      </div>
-    HTML
   end
 end
 # rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

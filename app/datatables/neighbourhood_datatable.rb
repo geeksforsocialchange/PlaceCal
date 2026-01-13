@@ -49,15 +49,15 @@ class NeighbourhoodDatatable < Datatable
     records
   end
 
-  def records_total_count
-    options[:neighbourhoods].count
-  end
-
-  def records_filtered_count
-    filter_records(get_raw_records).except(:limit, :offset, :order).count
-  end
-
   private
+
+  def records_key
+    :neighbourhoods
+  end
+
+  def edit_path_for(record)
+    admin_neighbourhood_path(record)
+  end
 
   def render_name_cell(record)
     subtitle = "##{record.id} · #{ERB::Util.html_escape(record.unit_name || record.unit)}"
