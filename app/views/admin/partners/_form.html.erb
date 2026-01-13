@@ -3,9 +3,7 @@
   <% unless policy(@partner).permitted_attributes.include? :hidden %>
     <% if @partner.hidden %>
       <div role="alert" class="alert alert-error mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
+        <%= icon(:warning, size: '6', css_class: 'shrink-0') %>
         <div>
           <h3 class="font-bold">This partner is hidden</h3>
           <p>Your partner is currently not visible to the public for the following reason:</p>
@@ -62,7 +60,7 @@
         <%# Partner Image - Right column on larger screens %>
         <div class="lg:border-l lg:border-base-300 lg:pl-6">
           <h3 class="font-semibold mb-4 flex items-center gap-2">
-            <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <%= icon(:photo, size: '5', css_class: 'text-placecal-orange') %>
             Partner Image
           </h3>
           <div data-controller="image-preview">
@@ -72,7 +70,7 @@
                    data-image-preview-target="dropzone">
                 <label class="flex items-center gap-3 p-3 cursor-pointer">
                   <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
-                    <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-base-content">Choose file or drag here</p>
@@ -90,7 +88,7 @@
                   <%= image_tag @partner.image.url, class: 'w-full h-auto', data: { image_preview_target: "img" } %>
                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <label class="btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer">
-                      <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                      <%= icon(:upload, size: '4') %>
                       Replace
                       <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file" } %>
                     </label>
@@ -100,14 +98,14 @@
                 <div class="mt-2 flex justify-end">
                   <label class="inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60">
                     <%= f.check_box :remove_image, class: 'sr-only' %>
-                    <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <%= icon(:trash, size: '3.5') %>
                     Remove image on save
                   </label>
                 </div>
               <% else %>
                 <div class="aspect-square rounded-lg border border-base-300 bg-base-200/50 flex items-center justify-center" data-image-preview-target="placeholder">
                   <div class="text-center text-base-content/30 p-4">
-                    <svg class="w-16 h-16 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <%= icon(:photo, size: '16', css_class: 'mx-auto mb-3 opacity-50', stroke_width: '1') %>
                     <p class="text-sm font-medium">No image uploaded</p>
                     <p class="text-xs mt-1">Upload an image above</p>
                   </div>
@@ -131,13 +129,13 @@
           <%= render 'address_fields', form: f, partner: @partner %>
           <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
             <div role="alert" class="alert alert-warning mt-4 text-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
               <span>Outdated neighbourhood. Contact <a href="mailto:support@placecal.org" class="link">support</a> to reassign.</span>
             </div>
           <% end %>
           <% if partner_has_unmappable_postcode?(@partner) %>
             <div role="alert" class="alert alert-warning mt-4 text-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
               <span>Postcode not in our system yet.</span>
             </div>
           <% end %>
@@ -167,7 +165,7 @@
         <div class="card bg-base-200/50 border border-base-300">
           <div class="card-body p-4 gap-3">
             <h3 class="font-semibold flex items-center gap-2">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <%= icon(:desktop, size: '4') %>
               Online Presence
             </h3>
             <p class="text-xs text-base-content/60">Website and social media links.</p>
@@ -210,7 +208,7 @@
           <div class="card bg-base-200/50 border border-base-300">
             <div class="card-body p-4 gap-3">
               <h3 class="font-semibold flex items-center gap-2">
-                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                <%= icon(:website, size: '4') %>
                 Public Contact
               </h3>
               <p class="text-xs text-base-content/60">Shown on PlaceCal to the public.</p>
@@ -235,7 +233,7 @@
           <div class="card bg-base-200/50 border border-base-300">
             <div class="card-body p-4 gap-3">
               <h3 class="font-semibold flex items-center gap-2">
-                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <%= icon(:partnership, size: '4') %>
                 Partnership Contact
               </h3>
               <p class="text-xs text-base-content/60">Internal contact for PlaceCal team. Leave blank to use public contact.</p>
@@ -304,7 +302,7 @@
       <input type="radio" name="partner_tabs" class="tab" aria-label="📅 Calendars" data-partner-tabs-target="tab" data-hash="calendars" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="calendars">
         <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
-          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <%= icon(:calendar, size: '5') %>
           Calendars
           <span class="badge badge-neutral"><%= @partner.calendars.count %></span>
         </h2>
@@ -326,16 +324,14 @@
           </div>
         <% else %>
           <div class="text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
+            <%= icon(:calendar, size: '12', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
             <p class="mt-2 text-base-content/60">No calendars connected yet</p>
           </div>
         <% end %>
 
         <div class="mt-6">
           <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
-            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <%= icon(:plus, size: '4') %>
             Add Calendar
           <% end %>
         </div>
@@ -344,7 +340,7 @@
       <input type="radio" name="partner_tabs" class="tab" aria-label="👥 Admins" data-partner-tabs-target="tab" data-hash="admins" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="admins">
         <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
-          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <%= icon(:user_add, size: '5') %>
           Admins
           <span class="badge badge-neutral"><%= @partner.users.count %></span>
         </h2>
@@ -368,9 +364,7 @@
           </div>
         <% else %>
           <div class="text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
+            <%= icon(:user_add, size: '12', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
             <p class="mt-2 text-base-content/60">No admins assigned yet</p>
           </div>
         <% end %>
@@ -378,7 +372,7 @@
         <% if policy(User).update? %>
           <div class="mt-6">
             <%= link_to new_admin_user_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <%= icon(:plus, size: '4') %>
               Add Admin
             <% end %>
           </div>
@@ -503,9 +497,7 @@
           </div>
         <% else %>
           <div class="text-center py-8">
-            <svg class="mx-auto h-10 w-10 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
+            <%= icon(:calendar, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
             <p class="mt-2 text-base-content/60">No upcoming events in the next 30 days</p>
           </div>
         <% end %>
@@ -542,7 +534,7 @@
               <div class="flex items-start gap-4">
                 <%# Icon %>
                 <div class="shrink-0 w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center">
-                  <svg class="w-6 h-6 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                  <%= icon(:swap, size: '6', css_class: 'text-base-content/40') %>
                 </div>
 
                 <%# Content %>
@@ -566,15 +558,15 @@
                     <p class="font-medium text-base-content/90">When enabled:</p>
                     <ul class="list-none space-y-1.5 ml-0">
                       <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
                         <span>Events at this address from any PlaceCal calendar will appear here</span>
                       </li>
                       <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
                         <span>Visitors see a complete picture of what's happening at this location</span>
                       </li>
                       <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <%= icon(:info, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
                         <span>Great for venues, community centres, and shared spaces</span>
                       </li>
                     </ul>
@@ -605,8 +597,8 @@
                   <div class="flex items-start gap-4">
                     <%# Icon %>
                     <div class="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors" data-inverted-toggle-target="icon">
-                      <svg class="w-6 h-6 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-inverted-toggle-target="iconHidden"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
-                      <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-inverted-toggle-target="iconVisible"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                      <span data-inverted-toggle-target="iconHidden"><%= icon(:eye_off, size: '6', css_class: 'text-error') %></span>
+                      <span data-inverted-toggle-target="iconVisible"><%= icon(:eye, size: '6', css_class: 'text-warning') %></span>
                     </div>
 
                     <%# Content %>
@@ -629,23 +621,23 @@
                         <p class="font-medium text-base-content/90">When a partner is hidden:</p>
                         <ul class="list-none space-y-1.5 ml-0">
                           <li class="flex items-start gap-2">
-                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
                             <span>Removed from all PlaceCal sites and search results</span>
                           </li>
                           <li class="flex items-start gap-2">
-                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
                             <span>Events from this partner will not appear on any calendars</span>
                           </li>
                           <li class="flex items-start gap-2">
-                            <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
                             <span>The partner page will return a 404 error to visitors</span>
                           </li>
                           <li class="flex items-start gap-2">
-                            <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <%= icon(:check, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
                             <span>Admins can still access and edit the partner in this dashboard</span>
                           </li>
                           <li class="flex items-start gap-2">
-                            <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            <%= icon(:bell, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
                             <span>PlaceCal moderators and the partner admins will be notified</span>
                           </li>
                         </ul>
@@ -678,7 +670,7 @@
           <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
           <% if policy(@partner).destroy? %>
             <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this partner permanently? This cannot be undone." } do %>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              <%= icon(:trash, size: '4') %>
               Delete Partner
             <% end %>
           <% else %>
@@ -702,9 +694,7 @@
                 data-save-bar-target="prevButton"
                 data-action="click->save-bar#savePrevious"
                 formnovalidate>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
+          <%= icon(:chevron_left, size: '5') %>
           <span data-save-bar-target="prevText">Back</span>
         </button>
 
@@ -736,9 +726,7 @@
                 data-save-bar-target="continueButton"
                 data-action="click->save-bar#saveContinue">
           <span data-save-bar-target="continueText">Continue</span>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
+          <%= icon(:chevron_right, size: '5') %>
         </button>
       </div>
     </div>

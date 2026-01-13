@@ -5,7 +5,7 @@
   <% if calendar.checksum_updated_at.present? && calendar.last_import_at.present? %>
     <% if calendar.checksum_updated_at < 6.month.ago || calendar.last_import_at < 6.month.ago %>
       <div role="alert" class="alert alert-warning mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
         <span>Potential stale calendar - not updated in over 6 months.</span>
       </div>
     <% end %>
@@ -15,7 +15,7 @@
   <% if calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
     <% retry_button = :error %>
     <div role="alert" class="alert alert-error mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <%= icon(:x_circle, size: '5', css_class: 'shrink-0 stroke-current') %>
       <span><%= calendar.critical_error %></span>
     </div>
   <% end %>
@@ -28,7 +28,7 @@
       <% if calendar.calendar_state.idle? %>
         <% retry_button = :idle %>
         <span class="badge badge-success gap-1">
-          <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <%= icon(:check, size: '3') %>
           Success
         </span>
       <% elsif calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
@@ -38,7 +38,7 @@
         </span>
       <% elsif calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
         <span class="badge badge-error gap-1">
-          <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          <%= icon(:x, size: '3') %>
           Error
         </span>
       <% end %>
@@ -76,7 +76,7 @@
     <div class="collapse collapse-arrow bg-warning/10 border border-warning/30 rounded-lg mt-4">
       <input type="checkbox" />
       <div class="collapse-title font-medium text-warning-content flex items-center gap-2 py-3 min-h-0">
-        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <%= icon(:warning, size: '4') %>
         Import Notices
         <span class="badge badge-warning badge-sm"><%= calendar.notices.count %></span>
       </div>

@@ -3,13 +3,13 @@
   <ul class="flex items-center gap-4">
     <li>
       <%= link_to admin_profile_path, class: 'text-gray-300 hover:text-white transition-colors flex items-center gap-2' do %>
-        <i class='fa fa-user'></i>
+        <%= icon(:user, size: '4') %>
         <span><%= @current_user&.email %> <%= "👑" if @current_user&.role == :root %></span>
       <% end %>
     </li>
     <li>
       <%= button_to destroy_user_session_path, method: :delete, class: 'text-gray-300 hover:text-white transition-colors flex items-center gap-2', form: { data: { turbo: 'false' } } do %>
-        <i class='fa fa-sign-out'></i>
+        <%= icon(:logout, size: '4') %>
         <span>Sign out</span>
       <% end %>
     </li>

@@ -51,7 +51,7 @@
           <div class="card bg-base-200/50 border border-base-300">
             <div class="card-body p-4">
               <h3 class="font-semibold text-sm flex items-center gap-2 mb-2">
-                <svg class="size-4 text-base-content/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <%= icon(:info, size: '4', css_class: 'text-base-content/60') %>
                 Supported Calendar Sources
               </h3>
               <ul class="text-xs text-base-content/70 space-y-1">
@@ -139,7 +139,7 @@
       <input type="radio" name="calendar_tabs" class="tab" aria-label="📅 Events" data-calendar-tabs-target="tab" data-hash="events" />
       <div class="tab-content bg-base-100 border-base-300 p-6" data-calendar-tabs-target="panel" data-section="events">
         <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
-          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <%= icon(:calendar, size: '5') %>
           Events
           <span class="badge badge-neutral"><%= @calendar.events.count %></span>
         </h2>
@@ -188,9 +188,7 @@
           </div>
         <% else %>
           <div class="text-center py-8 mb-8">
-            <svg class="mx-auto h-10 w-10 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
+            <%= icon(:calendar, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
             <p class="mt-2 text-base-content/60">No upcoming events</p>
           </div>
         <% end %>
@@ -250,7 +248,7 @@
         <div class="card bg-error/5 border border-error/20 max-w-xl">
           <div class="card-body p-4">
             <h3 class="font-semibold flex items-center gap-2">
-              <svg class="size-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <%= icon(:warning, size: '5', css_class: 'text-error') %>
               Delete this calendar
             </h3>
             <p class="text-sm text-base-content/70 mt-2">
@@ -258,7 +256,7 @@
             </p>
             <div class="mt-4">
               <%= link_to admin_calendar_path(@calendar), method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this calendar permanently? All #{@calendar.events.count} associated events will also be deleted. This cannot be undone." } do %>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <%= icon(:trash, size: '4') %>
                 Delete Calendar
               <% end %>
             </div>

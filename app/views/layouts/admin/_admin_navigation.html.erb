@@ -1,8 +1,8 @@
 <nav class="flex flex-col">
   <ul class="space-y-1 px-2">
-    <%= admin_nav_link('Dashboard', admin_root_path, 'home') %>
-    <%= admin_nav_link('Partners', admin_partners_path, 'map') if policy(Partner).index? %>
-    <%= admin_nav_link('Calendars', admin_calendars_path, 'calendar') if policy(Calendar).index? %>
+    <%= admin_nav_link('Dashboard', admin_root_path, :home) %>
+    <%= admin_nav_link('Partners', admin_partners_path, :map) if policy(Partner).index? %>
+    <%= admin_nav_link('Calendars', admin_calendars_path, :calendar) if policy(Calendar).index? %>
   </ul>
 
   <% if has_any_global_admin_links? -%>
@@ -10,10 +10,10 @@
       Global admin
     </h6>
     <ul class="space-y-1 px-2">
-      <%= admin_nav_link('Users', admin_users_path, 'users') if policy(User).index? %>
-      <%= admin_nav_link('Sites', admin_sites_path, 'sitemap') if policy(Site).index? %>
-      <%= admin_nav_link('Neighbourhoods', admin_neighbourhoods_path, 'location-arrow') if policy(Neighbourhood).index? %>
-      <%= admin_nav_link('Tags', admin_tags_path, 'tags') if policy(Tag).index? %>
+      <%= admin_nav_link('Users', admin_users_path, :users) if policy(User).index? %>
+      <%= admin_nav_link('Sites', admin_sites_path, :site) if policy(Site).index? %>
+      <%= admin_nav_link('Neighbourhoods', admin_neighbourhoods_path, :map_pin) if policy(Neighbourhood).index? %>
+      <%= admin_nav_link('Tags', admin_tags_path, :tag) if policy(Tag).index? %>
     </ul>
   <% end -%>
 
@@ -21,12 +21,12 @@
     Get support
   </h6>
   <ul class="space-y-1 px-2">
-    <%= admin_nav_link('Handbook', 'https://handbook.placecal.org/', 'book')%>
-    <%= admin_nav_link('Discord', 'http://discord.gfsc.studio/', 'comment')%>
-    <%= admin_nav_link('Report a bug', 'https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md', 'bug')%>
+    <%= admin_nav_link('Handbook', 'https://handbook.placecal.org/', :book) %>
+    <%= admin_nav_link('Discord', 'http://discord.gfsc.studio/', :chat) %>
+    <%= admin_nav_link('Report a bug', 'https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md', :bug) %>
     <li>
       <span class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600">
-        <i class="fa fa-envelope w-4"></i>
+        <%= icon(:mail, size: '4') %>
         support@placecal.org
       </span>
     </li>
@@ -37,15 +37,15 @@
       In development
     </h6>
     <ul class="space-y-1 px-2">
-      <%= admin_nav_link('Articles', admin_articles_path, 'newspaper-o') if policy(Article).index? %>
-      <%= admin_nav_link('Collections', admin_collections_path, 'list') if policy(Collection).index? %>
-      <%= admin_nav_link('Supporters', admin_supporters_path, 'credit-card') if policy(Supporter).index? %>
-      <%= admin_nav_link('Import status', admin_jobs_path, 'gear') if current_user.root? %>
+      <%= admin_nav_link('Articles', admin_articles_path, :newspaper) if policy(Article).index? %>
+      <%= admin_nav_link('Collections', admin_collections_path, :list) if policy(Collection).index? %>
+      <%= admin_nav_link('Supporters', admin_supporters_path, :credit_card) if policy(Supporter).index? %>
+      <%= admin_nav_link('Import status', admin_jobs_path, :cog) if current_user.root? %>
     </ul>
   <% end %>
 
-  <div class="px-4 mt-8 text-xs text-gray-500">
-    <% build = ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'development' %>
-    <i class="fa fa-git"></i> Build: <code class="font-mono"><%= link_to build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}", class: 'text-placecal-teal hover:underline' %></code>
+  <div class="px-4 mt-8 text-xs text-gray-500 flex items-center gap-1">
+    <%= icon(:code, size: '3') %>
+    Build: <code class="font-mono"><%= link_to (ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'dev'), "https://github.com/geeksforsocialchange/PlaceCal/commit/#{ENV['GIT_REV']}", class: 'text-placecal-teal hover:underline' %></code>
   </div>
 </nav>

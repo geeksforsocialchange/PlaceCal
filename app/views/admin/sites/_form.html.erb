@@ -88,7 +88,7 @@
               <div data-controller="image-preview">
                 <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
                   <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
-                    <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium">Choose file</p>
@@ -109,7 +109,7 @@
               <div data-controller="image-preview">
                 <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
                   <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
-                    <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium">Choose file</p>
@@ -138,7 +138,7 @@
         <div data-controller="image-preview">
           <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer bg-base-100 mb-4">
             <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
-              <svg class="size-5 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium">Choose file</p>
@@ -183,7 +183,7 @@
             <% if primary_neighbourhood.present? %>
               <div class="mb-3">
                 <span class="badge badge-lg badge-neutral gap-2">
-                  <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                  <%= icon(:map_pin, size: '4') %>
                   <%= primary_neighbourhood.contextual_name %>
                   <% if primary_neighbourhood.legacy_neighbourhood? %>
                     (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>)
@@ -194,7 +194,7 @@
               <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
               <% if primary_neighbourhood.legacy_neighbourhood? %>
                 <div role="alert" class="alert alert-warning py-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                  <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
                   <span class="text-sm">This neighbourhood is not from the current release. Please contact a PlaceCal admin.</span>
                 </div>
               <% end %>
@@ -297,7 +297,7 @@
         <div class="mb-8">
           <% site_partners = Partner.for_site(@site).order(:name) %>
           <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <%= icon(:partnership, size: '5') %>
             Partners
             <span class="badge badge-neutral"><%= site_partners.count %></span>
           </h3>
@@ -336,9 +336,7 @@
             <% end %>
           <% else %>
             <div class="text-center py-8">
-              <svg class="mx-auto h-10 w-10 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
+              <%= icon(:partnership, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
               <p class="mt-2 text-base-content/60">No partners on this site yet</p>
             </div>
           <% end %>
@@ -350,7 +348,7 @@
         <div>
           <% site_events = Event.for_site(@site).upcoming.where(dtstart: ..30.days.from_now).order(:dtstart) %>
           <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <%= icon(:calendar, size: '5') %>
             Upcoming Events
             <span class="badge badge-neutral"><%= site_events.count %></span>
           </h3>
@@ -396,9 +394,7 @@
             <% end %>
           <% else %>
             <div class="text-center py-8">
-              <svg class="mx-auto h-10 w-10 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
+              <%= icon(:calendar, size: '10', css_class: 'mx-auto text-base-content/30', stroke_width: '1.5') %>
               <p class="mt-2 text-base-content/60">No upcoming events in the next 30 days</p>
             </div>
           <% end %>
@@ -454,7 +450,7 @@
               <div class="card bg-error/5 border border-error/20">
                 <div class="card-body p-4">
                   <h4 class="font-semibold flex items-center gap-2">
-                    <svg class="size-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <%= icon(:warning, size: '5', css_class: 'text-error') %>
                     Delete this site
                   </h4>
                   <p class="text-sm text-base-content/70 mt-2">
@@ -462,7 +458,7 @@
                   </p>
                   <div class="mt-4">
                     <%= link_to admin_site_path(@site), method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this site permanently? This cannot be undone." } do %>
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                      <%= icon(:trash, size: '4') %>
                       Delete Site
                     <% end %>
                   </div>
