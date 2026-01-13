@@ -6,6 +6,8 @@ module Admin
       @user = current_user
       @sites = policy_scope([:dashboard, Site]).order(:name)
       @partners = policy_scope(Partner).order(updated_at: :desc).limit(6)
+      @calendars = policy_scope(Calendar).order(updated_at: :desc).limit(6)
+      @users = policy_scope(User).order(updated_at: :desc).limit(6)
 
       # Calendar states for action items
       @errored_calendars = policy_scope(Calendar).where(calendar_state: :error).order(last_import_at: :desc).limit(5)

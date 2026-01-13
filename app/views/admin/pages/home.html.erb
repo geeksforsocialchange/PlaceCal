@@ -92,23 +92,24 @@
 <%# Bento Grid Dashboard %>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-  <%# Sites Section - spans 1 col, 2-up grid inside %>
+  <%# Sites Section %>
   <% if @sites.any? %>
     <%= render Admin::CardComponent.new(
           title: t('admin.dashboard.cards.your_sites'),
           icon: :site,
-          variant: :orange,
-          decorative_blur: :top_right,
           header_link: admin_sites_path,
           header_link_text: t('admin.components.card.view_all')
         ) do %>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="space-y-2">
         <% @sites.take(4).each do |site| %>
-          <%= link_to edit_admin_site_path(site), class: "group block" do %>
-            <div class="bg-base-100/80 backdrop-blur border border-placecal-orange/20 hover:border-placecal-orange/40 rounded-lg p-4 transition-all hover:shadow-md hover:bg-base-100">
-              <h3 class="font-semibold text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= site.name %></h3>
-              <p class="text-xs text-base-content/50 mt-1"><%= site.slug %>.placecal.org</p>
-              <p class="text-xs mt-2"><span class="font-semibold text-placecal-orange"><%= site.events_this_week %></span> <span class="text-base-content/50"><%= t('admin.dashboard.stats.events_this_week').downcase %></span></p>
+          <%= link_to edit_admin_site_path(site), class: "flex items-center justify-between gap-3 p-3 rounded-lg border border-base-300 hover:border-placecal-orange/30 hover:bg-base-200/50 transition-colors group" do %>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= site.name %></h3>
+              <p class="text-xs text-base-content/50"><%= site.slug %>.placecal.org</p>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <span class="text-sm font-semibold text-placecal-orange"><%= site.events_this_week %></span>
+              <span class="text-xs text-base-content/50 ml-1">events</span>
             </div>
           <% end %>
         <% end %>
@@ -127,16 +128,16 @@
         variant: @problem_calendars_count > 0 ? :error : :success
       ) do %>
     <% if @errored_calendars.any? || @bad_source_calendars.any? %>
-      <div class="space-y-1 max-h-72 overflow-y-auto">
+      <div class="space-y-1">
         <% @errored_calendars.take(5).each do |calendar| %>
-          <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-2 p-2 rounded-lg bg-error/10 hover:bg-error/20 transition-colors group" do %>
+          <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-2 py-2 px-2 rounded-lg bg-error/10 hover:bg-error/20 transition-colors group" do %>
             <%= icon(:warning, size: '4', css_class: 'text-error flex-shrink-0') %>
             <span class="text-sm truncate flex-1"><%= calendar.name %></span>
             <span class="text-xs text-error">Error</span>
           <% end %>
         <% end %>
         <% @bad_source_calendars.take(5).each do |calendar| %>
-          <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-2 p-2 rounded-lg bg-warning/10 hover:bg-warning/20 transition-colors group" do %>
+          <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-2 py-2 px-2 rounded-lg bg-warning/10 hover:bg-warning/20 transition-colors group" do %>
             <%= icon(:link, size: '4', css_class: 'text-warning flex-shrink-0') %>
             <span class="text-sm truncate flex-1"><%= calendar.name %></span>
             <span class="text-xs text-warning">Bad URL</span>
@@ -165,9 +166,9 @@
         icon: :event
       ) do %>
     <% if @upcoming_events.any? %>
-      <div class="space-y-1 max-h-64 overflow-y-auto">
+      <div class="space-y-1">
         <% @upcoming_events.take(6).each do |event| %>
-          <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors">
+          <div class="flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors">
             <div class="flex-shrink-0 w-10 text-center">
               <div class="text-[10px] font-medium text-placecal-orange uppercase"><%= event.dtstart.strftime('%b') %></div>
               <div class="text-lg font-bold text-base-content leading-tight"><%= event.dtstart.strftime('%d') %></div>
@@ -190,17 +191,15 @@
     <% end %>
   <% end %>
 
-  <%# Recently Updated Partners %>
+  <%# Updated Partners %>
   <%= render Admin::CardComponent.new(
-        title: t('admin.dashboard.cards.recently_updated'),
-        icon: :partner,
-        header_link: admin_partners_path,
-        header_link_text: t('admin.navigation.partners')
+        title: t('admin.dashboard.cards.updated_partners'),
+        icon: :partner
       ) do %>
     <% if @partners.any? %>
-      <div class="space-y-1 max-h-64 overflow-y-auto">
+      <div class="space-y-1">
         <% @partners.take(6).each do |partner| %>
-          <%= link_to edit_admin_partner_path(partner), class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+          <%= link_to edit_admin_partner_path(partner), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <% if partner.image.url %>
               <%= image_tag partner.image.url, class: "w-9 h-9 rounded-lg object-cover flex-shrink-0" %>
             <% else %>
@@ -224,28 +223,79 @@
     <% end %>
   <% end %>
 
+  <%# Updated Calendars %>
+  <%= render Admin::CardComponent.new(
+        title: t('admin.dashboard.cards.updated_calendars'),
+        icon: :calendar
+      ) do %>
+    <% if @calendars.any? %>
+      <div class="space-y-1">
+        <% @calendars.take(6).each do |calendar| %>
+          <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+            <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
+              <%= icon(:calendar, size: '4', css_class: 'text-base-content/30', stroke_width: '1.5') %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= calendar.name %></h4>
+              <p class="text-xs text-base-content/50"><%= time_ago_in_words(calendar.updated_at) %> ago</p>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
+        <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <p class="text-sm"><%= t('admin.dashboard.cards.no_calendars') %></p>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%# Updated Users %>
+  <%= render Admin::CardComponent.new(
+        title: t('admin.dashboard.cards.updated_users'),
+        icon: :users
+      ) do %>
+    <% if @users.any? %>
+      <div class="space-y-1">
+        <% @users.take(6).each do |user| %>
+          <%= link_to edit_admin_user_path(user), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+            <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
+              <%= icon(:user, size: '4', css_class: 'text-base-content/30', stroke_width: '1.5') %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= user.full_name.presence || user.email %></h4>
+              <p class="text-xs text-base-content/50"><%= time_ago_in_words(user.updated_at) %> ago</p>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
+        <%= icon(:users, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <p class="text-sm"><%= t('admin.dashboard.cards.no_users') %></p>
+      </div>
+    <% end %>
+  <% end %>
+
   <%# Your Partnerships %>
   <% if @user_partnerships.any? %>
     <%= render Admin::CardComponent.new(
           title: t('admin.dashboard.cards.your_partnerships'),
-          icon: :partnership,
-          icon_class: 'text-purple-500',
-          variant: :purple,
-          decorative_blur: :bottom_left
+          icon: :partnership
         ) do %>
-      <div class="space-y-2 max-h-64 overflow-y-auto">
+      <div class="space-y-1">
         <% @user_partnerships.take(6).each do |partnership| %>
-          <%= link_to edit_admin_tag_path(partnership), class: "flex items-center justify-between gap-3 p-3 rounded-lg bg-base-100/80 border border-purple-500/10 hover:border-purple-500/30 transition-all hover:shadow-sm group" do %>
+          <%= link_to edit_admin_tag_path(partnership), class: "flex items-center justify-between gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-medium text-base-content group-hover:text-purple-600 transition-colors truncate"><%= partnership.name %></h4>
-              <p class="text-xs text-base-content/50 mt-0.5"><%= pluralize(partnership.partners.count, 'partner') %></p>
+              <h4 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= partnership.name %></h4>
+              <p class="text-xs text-base-content/50"><%= pluralize(partnership.partners.count, 'partner') %></p>
             </div>
-            <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-purple-500 transition-colors flex-shrink-0') %>
+            <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-placecal-orange transition-colors flex-shrink-0') %>
           <% end %>
         <% end %>
       </div>
       <% if @user_partnerships.count > 6 %>
-        <%= link_to t('admin.dashboard.cards.view_all_partnerships', count: @user_partnerships.count), admin_tags_path(type: 'Partnership'), class: "text-xs text-purple-500 hover:text-purple-600 mt-3 block text-center" %>
+        <%= link_to t('admin.dashboard.cards.view_all_partnerships', count: @user_partnerships.count), admin_tags_path(type: 'Partnership'), class: "text-xs text-placecal-orange hover:text-orange-600 mt-3 block text-center" %>
       <% end %>
     <% end %>
   <% end %>
@@ -256,20 +306,20 @@
         icon: :link
       ) do %>
     <div class="space-y-1">
-      <%= link_to admin_calendars_path, class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+      <%= link_to admin_calendars_path, class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
         <%= icon(:calendar, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.all_calendars') %></span>
       <% end %>
-      <%= link_to admin_partners_path, class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+      <%= link_to admin_partners_path, class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
         <%= icon(:partner, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.all_partners') %></span>
       <% end %>
-      <%= link_to "https://handbook.placecal.org/", target: "_blank", class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+      <%= link_to "https://handbook.placecal.org/", target: "_blank", class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
         <%= icon(:book, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.handbook') %></span>
         <%= icon(:external_link, size: '3', css_class: 'text-base-content/30 ml-auto') %>
       <% end %>
-      <%= link_to "http://discord.gfsc.studio/", target: "_blank", class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+      <%= link_to "http://discord.gfsc.studio/", target: "_blank", class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
         <%= icon(:chat, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.discord') %></span>
         <%= icon(:external_link, size: '3', css_class: 'text-base-content/30 ml-auto') %>
