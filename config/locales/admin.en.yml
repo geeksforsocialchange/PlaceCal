@@ -358,7 +358,7 @@ en:
         description: "Your partner is currently not visible to the public for the following reason:"
         fix_hint: "Once you have fixed this issue, contact %{email} to make your partner public again."
       warnings:
-        outdated_neighbourhood: "Outdated neighbourhood. Contact %{email} to reassign."
+        outdated_neighbourhood: 'Outdated neighbourhood. Contact <a href="mailto:%{email}" class="link">support</a> to reassign.'
         unmappable_postcode: "Postcode not in our system yet."
       danger_zone:
         no_permission: "You don't have permission to delete this partner."
