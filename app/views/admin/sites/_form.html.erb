@@ -214,14 +214,11 @@
           <legend class="fieldset-legend">Display Level</legend>
           <p class="text-sm text-base-content/60 mb-4">What level of geographical zoom should PlaceCal display in badges next to partners and events?</p>
 
-          <div class="space-y-3">
-            <% Site.badge_zoom_level.values.each do |zoom_value| %>
-              <label class="flex items-start gap-3 p-3 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200/50 cursor-pointer transition-colors has-[:checked]:border-placecal-orange has-[:checked]:bg-orange-50/50">
-                <%= f.radio_button :badge_zoom_level, zoom_value, class: 'radio radio-warning mt-0.5' %>
-                <span class="text-sm leading-relaxed"><%= zoom_value.to_s.titleize %></span>
-              </label>
-            <% end %>
-          </div>
+          <%= render Admin::RadioCardGroupComponent.new(
+            form: f,
+            attribute: :badge_zoom_level,
+            values: Site.badge_zoom_level.values
+          ) %>
         </fieldset>
       </div>
 
@@ -407,13 +404,12 @@
         <div class="max-w-xl space-y-8">
           <fieldset class="fieldset">
             <legend class="fieldset-legend">Publishing Status</legend>
-            <label class="flex items-center gap-3 p-4 rounded-lg border border-base-300 bg-base-100 cursor-pointer transition-colors has-[:checked]:border-success has-[:checked]:bg-success/10">
-              <%= f.check_box :is_published, class: 'checkbox checkbox-success' %>
-              <div>
-                <p class="font-medium">Published</p>
-                <p class="text-sm text-base-content/60">Advertise this site on the PlaceCal homepage</p>
-              </div>
-            </label>
+            <%= render Admin::ToggleCardComponent.new(
+              form: f,
+              attribute: :is_published,
+              title: "Published",
+              description: "Advertise this site on the PlaceCal homepage"
+            ) %>
           </fieldset>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

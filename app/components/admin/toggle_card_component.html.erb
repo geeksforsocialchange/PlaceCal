@@ -1,0 +1,9 @@
+<label class="flex items-center gap-3 p-4 rounded-lg border border-base-300 bg-base-100 cursor-pointer transition-colors <%= checked_border_class %>">
+  <%= form.check_box attribute, class: checkbox_class %>
+  <div>
+    <p class="font-medium"><%= title %></p>
+    <% if description.present? %>
+      <p class="text-sm text-base-content/60"><%= description %></p>
+    <% end %>
+  </div>
+</label>

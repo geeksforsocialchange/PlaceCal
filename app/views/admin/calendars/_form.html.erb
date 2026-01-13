@@ -92,14 +92,12 @@
           <fieldset class="fieldset">
             <legend class="fieldset-legend">Location Strategy</legend>
             <p class="text-sm text-base-content/60 mb-4">Where should location information for this calendar come from?</p>
-            <div class="space-y-3">
-              <% Calendar.strategy.values.each do |strategy_value| %>
-                <label class="flex items-start gap-3 p-3 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200/50 cursor-pointer transition-colors has-[:checked]:border-placecal-orange has-[:checked]:bg-orange-50/50">
-                  <%= f.radio_button :strategy, strategy_value, class: 'radio radio-warning mt-0.5' %>
-                  <span class="text-sm leading-relaxed"><%= strategy_label([nil, strategy_value]) %></span>
-                </label>
-              <% end %>
-            </div>
+            <%= render Admin::RadioCardGroupComponent.new(
+              form: f,
+              attribute: :strategy,
+              values: Calendar.strategy.values,
+              label_method: method(:strategy_label)
+            ) %>
           </fieldset>
 
           <div class="divider"></div>

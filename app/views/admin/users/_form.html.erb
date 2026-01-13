@@ -75,14 +75,12 @@
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Role</legend>
-      <div class="space-y-3">
-        <% User.role.values.each do |role_value| %>
-          <label class="flex items-start gap-3 p-3 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200/50 cursor-pointer transition-colors has-[:checked]:border-placecal-orange has-[:checked]:bg-orange-50/50">
-            <%= f.radio_button :role, role_value, class: 'radio radio-warning mt-0.5' %>
-            <span class="text-sm leading-relaxed"><%= role_label([nil, role_value]) %></span>
-          </label>
-        <% end %>
-      </div>
+      <%= render Admin::RadioCardGroupComponent.new(
+        form: f,
+        attribute: :role,
+        values: User.role.values,
+        label_method: method(:role_label)
+      ) %>
     </fieldset>
 
     <fieldset class="fieldset">
