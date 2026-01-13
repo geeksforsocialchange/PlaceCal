@@ -6,6 +6,11 @@
 /* Source paths for content detection */
 @source "../../app/datatables/**/*.rb";
 @source "../javascript/**/*.js";
+@source "../helpers/**/*.rb";
+@source "../views/**/*.erb";
+
+/* Safelist for dynamically generated icon sizes */
+/* size-3 size-4 size-5 size-6 size-8 size-10 size-12 */
 
 /*
  * Admin Tailwind CSS

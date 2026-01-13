@@ -1,24 +1,53 @@
 <nav class="fixed top-0 left-0 right-0 h-14 bg-gray-900 flex items-center justify-between px-4 z-50">
-  <%= link_to admin_root_path, class: "flex items-center gap-2 font-bold text-lg text-white hover:text-placecal-orange transition-colors" do %>
-    <span class="text-placecal-orange">PlaceCal</span>
-    <span class="text-xs font-normal text-gray-400 hidden sm:inline">Admin</span>
-  <% end %>
+  <%# Left zone: Logo %>
+  <div class="flex items-center gap-6 min-w-[180px]">
+    <%= link_to admin_root_path, class: "flex items-center gap-2 font-bold text-lg text-white hover:text-placecal-orange transition-colors" do %>
+      <span class="text-placecal-orange">PlaceCal</span>
+      <span class="text-xs font-normal text-gray-500">Admin</span>
+    <% end %>
+  </div>
 
-  <ul class="flex items-center gap-3">
-    <li>
-      <%= link_to admin_profile_path, class: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-colors' do %>
+  <%# Center zone: Quick actions %>
+  <div class="flex items-center gap-1">
+    <% if policy(Partner).new? %>
+      <%= link_to new_admin_partner_path, class: 'group flex items-center gap-2 px-3 py-1.5 rounded-full text-gray-400 hover:text-white hover:bg-gray-800/80 transition-all duration-200' do %>
+        <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
+          <%= icon(:plus, size: '3') %>
+        </span>
+        <span class="text-sm font-medium">Partner</span>
+      <% end %>
+    <% end %>
+    <% if policy(Calendar).new? %>
+      <%= link_to new_admin_calendar_path, class: 'group flex items-center gap-2 px-3 py-1.5 rounded-full text-gray-400 hover:text-white hover:bg-gray-800/80 transition-all duration-200' do %>
+        <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
+          <%= icon(:plus, size: '3') %>
+        </span>
+        <span class="text-sm font-medium">Calendar</span>
+      <% end %>
+    <% end %>
+    <% if policy(User).new? %>
+      <%= link_to new_admin_user_path, class: 'group flex items-center gap-2 px-3 py-1.5 rounded-full text-gray-400 hover:text-white hover:bg-gray-800/80 transition-all duration-200' do %>
+        <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
+          <%= icon(:plus, size: '3') %>
+        </span>
+        <span class="text-sm font-medium">User</span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Right zone: User menu %>
+  <div class="flex items-center gap-2 justify-end">
+    <%= link_to admin_profile_path, class: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/80 transition-colors' do %>
+      <span class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700">
         <%= icon(:user, size: '4') %>
-        <span class="text-sm"><%= @current_user&.email %></span>
-        <% if @current_user&.role == :root %>
-          <%= icon(:crown, size: '4', css_class: 'text-amber-400') %>
-        <% end %>
+      </span>
+      <span class="text-sm"><%= @current_user&.email %></span>
+      <% if @current_user&.role == :root %>
+        <%= icon(:crown, size: '4', css_class: 'text-amber-400') %>
       <% end %>
-    </li>
-    <li>
-      <%= button_to destroy_user_session_path, method: :delete, class: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-colors', form: { data: { turbo: 'false' } } do %>
-        <%= icon(:logout, size: '4') %>
-        <span class="text-sm">Sign out</span>
-      <% end %>
-    </li>
-  </ul>
+    <% end %>
+    <%= button_to destroy_user_session_path, method: :delete, class: 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800/80 transition-colors', form: { data: { turbo: 'false' } } do %>
+      <%= icon(:logout, size: '4') %>
+    <% end %>
+  </div>
 </nav>

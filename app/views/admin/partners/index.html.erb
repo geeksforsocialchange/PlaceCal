@@ -48,7 +48,7 @@
     model: :partners,
     column_titles: [
       'Partner',
-      'Ward',
+      'Neighbourhood',
       'Partnerships',
       icon_column_header(:calendar, 'Calendars'),
       icon_column_header(:users, 'Admins'),
@@ -76,7 +76,7 @@
       },
       {
         column: 'ward',
-        label: 'Ward',
+        label: 'Neighbourhood',
         depends_on: 'district',
         options: ward_options
       },

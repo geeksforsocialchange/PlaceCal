@@ -127,26 +127,44 @@ class PartnerDatatable < Datatable
   end
 
   def render_ward_cell(record)
-    neighbourhood = record.address&.neighbourhood
-    neighbourhood ||= record.service_areas.first&.neighbourhood if record.service_areas.any?
+    # Collect all unique neighbourhoods from address and service areas
+    neighbourhoods = []
+    neighbourhoods << record.address.neighbourhood if record.address&.neighbourhood
+    record.service_areas.each do |sa|
+      neighbourhoods << sa.neighbourhood if sa.neighbourhood
+    end
+    neighbourhoods = neighbourhoods.uniq
 
-    if neighbourhood
-      name = neighbourhood.shortname
-      display_name = name.length > 20 ? "#{name[0..18]}…" : name
-
-      <<~HTML.html_safe
-        <button type="button"
-                class="text-gray-600 hover:text-orange-600 hover:underline cursor-pointer text-left"
-                data-action="click->admin-table#filterByValue"
-                data-filter-column="ward"
-                data-filter-value="#{neighbourhood.id}"
-                title="Filter by #{ERB::Util.html_escape(name)}">
-          #{ERB::Util.html_escape(display_name)}
-        </button>
-      HTML
-    else
+    if neighbourhoods.empty?
       <<~HTML.html_safe
         <span class="text-gray-400">—</span>
+      HTML
+    else
+      # Show first 2 wards, with "and X more" for additional
+      visible = neighbourhoods.first(2)
+      remaining = neighbourhoods.size - 2
+
+      buttons = visible.map do |neighbourhood|
+        name = neighbourhood.shortname
+        display_name = name.length > 18 ? "#{name[0..15]}..." : name
+
+        <<~BUTTON.strip
+          <button type="button"
+                  class="block text-left text-gray-600 hover:text-orange-600 hover:underline cursor-pointer truncate max-w-[140px]"
+                  data-action="click->admin-table#filterByValue"
+                  data-filter-column="ward"
+                  data-filter-value="#{neighbourhood.id}"
+                  title="Filter by #{ERB::Util.html_escape(name)}">#{ERB::Util.html_escape(display_name)}</button>
+        BUTTON
+      end
+
+      more_text = remaining.positive? ? "<span class=\"text-gray-500 text-xs\">and #{remaining} more...</span>" : ''
+
+      <<~HTML.html_safe
+        <div class="text-sm space-y-0.5">
+          #{buttons.join("\n")}
+          #{more_text}
+        </div>
       HTML
     end
   end
@@ -204,14 +222,17 @@ class PartnerDatatable < Datatable
         </span>
       HTML
     else
-      # Create clickable buttons for each partnership
-      buttons = partnerships.map do |p|
-        name = p.name
-        display_name = name.length > 25 ? "#{name[0..23]}…" : name
+      # Show first 2 partnerships, abbreviate long names
+      visible = partnerships.first(2)
+      remaining = partnerships.size - 2
 
-        <<~BUTTON
+      buttons = visible.map do |p|
+        name = p.name
+        display_name = name.length > 20 ? "#{name[0..17]}..." : name
+
+        <<~BUTTON.strip
           <button type="button"
-                  class="text-gray-700 hover:text-orange-600 hover:underline cursor-pointer"
+                  class="block text-left text-gray-700 hover:text-orange-600 hover:underline cursor-pointer truncate max-w-[150px]"
                   data-action="click->admin-table#filterByValue"
                   data-filter-column="partnership"
                   data-filter-value="#{p.id}"
@@ -219,11 +240,13 @@ class PartnerDatatable < Datatable
         BUTTON
       end
 
-      separator = partnerships.size >= 2 ? '<br>' : ', '
+      more_text = remaining.positive? ? "<span class=\"text-gray-500 text-xs\">and #{remaining} more...</span>" : ''
+
       <<~HTML.html_safe
-        <span class="text-sm">
-          #{buttons.join(separator)}
-        </span>
+        <div class="text-sm space-y-0.5">
+          #{buttons.join("\n")}
+          #{more_text}
+        </div>
       HTML
     end
   end
