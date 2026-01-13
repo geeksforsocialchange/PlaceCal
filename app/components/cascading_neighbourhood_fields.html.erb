@@ -37,7 +37,7 @@
     <div class="flex items-center gap-1 pb-1">
       <span class="loading loading-spinner loading-xs hidden" data-cascading-neighbourhood-target="loading"></span>
       <% if show_remove %>
-        <%= helpers.nested_form_remove_link(form, trash_icon.html_safe, class: 'btn btn-ghost btn-sm btn-square text-error') %>
+        <%= helpers.nested_form_remove_link(form, icon(:trash, size: '4'), class: 'btn btn-ghost btn-sm btn-square text-error') %>
       <% end %>
     </div>
   </div>
