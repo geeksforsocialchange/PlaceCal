@@ -144,7 +144,7 @@ class UserDatatable < Datatable
     <<~HTML.html_safe
       <div class="flex flex-col">
         #{name_html}
-        <span class="text-xs text-gray-400 font-mono"><i class="fa fa-hashtag mr-1"></i>#{record.id} <i class="fa fa-envelope mr-1"></i>#{ERB::Util.html_escape(record.email)}</span>
+        <span class="text-xs text-gray-400 font-mono">##{record.id} · #{ERB::Util.html_escape(record.email)}</span>
       </div>
     HTML
   end

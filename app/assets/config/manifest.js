@@ -4,7 +4,6 @@
 
 // Site-specific stylesheets (compiled via Sprockets)
 //= link home.css
-//= link font-awesome.css
 //= link_directory ../stylesheets/themes .css
 //= link_directory ../stylesheets/themes/custom .css
 //= link print.css

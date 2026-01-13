@@ -289,8 +289,6 @@ GEM
     fiber-local (1.1.0)
       fiber-storage
     fiber-storage (1.0.1)
-    font-awesome-rails (4.7.0.8)
-      railties (>= 3.2, < 8.0)
     foreman (0.87.2)
     friendly_id (5.3.0)
       activerecord (>= 4.0.0)
@@ -691,7 +689,6 @@ DEPENDENCIES
   eventbrite_sdk
   factory_bot_rails
   faker
-  font-awesome-rails
   foreman
   friendly_id
   geocoder
