@@ -1,0 +1,134 @@
+<% content_for :title do %>Icon Reference<% end %>
+
+<div class="mb-6">
+  <h1 class="text-2xl font-bold">Icon Reference</h1>
+  <p class="text-sm text-base-content/60 mt-1">
+    All <%= SvgIconsHelper::ICONS.count %> icons available via the <code class="bg-base-200 px-1 rounded">icon()</code> helper.
+    Usage: <code class="bg-base-200 px-1 rounded">&lt;%= icon(:name, size: '5', css_class: 'text-red-500') %&gt;</code>
+  </p>
+</div>
+
+<%# Group icons by category based on comments in the helper %>
+<%
+  icon_categories = {
+    'Actions' => %i[trash plus check edit x upload external_link logout cog swap eye eye_off bell],
+    'Navigation' => %i[home chevron_right chevron_left],
+    'Status / Alerts' => %i[warning info lightning check_circle x_circle],
+    'Content Types' => %i[partner calendar site event user photo],
+    'People' => %i[users partnership user_add],
+    'Location' => %i[location map_pin],
+    'Communication' => %i[chat link mail],
+    'Resources' => %i[book clipboard desktop newspaper tag list credit_card bug map code],
+    'Social' => %i[website facebook twitter instagram]
+  }
+%>
+
+<div class="space-y-8">
+  <% icon_categories.each do |category, icon_names| %>
+    <div class="card bg-base-100 border border-base-300">
+      <div class="card-body p-4">
+        <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-placecal-orange"></span>
+          <%= category %>
+          <span class="badge badge-ghost badge-sm"><%= icon_names.count %></span>
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <% icon_names.each do |icon_name| %>
+            <% if SvgIconsHelper::ICONS[icon_name] %>
+              <div class="flex flex-col items-center p-3 rounded-lg bg-base-200/50 hover:bg-base-200 transition-colors group">
+                <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-base-100 border border-base-300 mb-2 group-hover:border-placecal-orange transition-colors">
+                  <%= icon(icon_name, size: '6') %>
+                </div>
+                <code class="text-xs font-mono text-base-content/70 group-hover:text-placecal-orange transition-colors">:<%= icon_name %></code>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="divider my-8"></div>
+
+<%# Size Reference %>
+<div class="card bg-base-100 border border-base-300 mb-8">
+  <div class="card-body p-4">
+    <h2 class="font-bold text-lg mb-4">Size Reference</h2>
+    <p class="text-sm text-base-content/60 mb-4">
+      Use the <code class="bg-base-200 px-1 rounded">size</code> parameter to control icon dimensions.
+      Maps to Tailwind's <code class="bg-base-200 px-1 rounded">size-{n}</code> utility.
+    </p>
+
+    <div class="flex flex-wrap items-end gap-6">
+      <% [3, 4, 5, 6, 8, 10, 12].each do |size| %>
+        <div class="flex flex-col items-center">
+          <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
+            <%= icon(:calendar, size: size.to_s) %>
+          </div>
+          <code class="text-xs font-mono text-base-content/60">size: '<%= size %>'</code>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%# Stroke Width Reference %>
+<div class="card bg-base-100 border border-base-300 mb-8">
+  <div class="card-body p-4">
+    <h2 class="font-bold text-lg mb-4">Stroke Width Reference</h2>
+    <p class="text-sm text-base-content/60 mb-4">
+      Use the <code class="bg-base-200 px-1 rounded">stroke_width</code> parameter to control line thickness.
+      Default is <code class="bg-base-200 px-1 rounded">'2'</code>.
+    </p>
+
+    <div class="flex flex-wrap items-end gap-6">
+      <% ['1', '1.5', '2', '2.5', '3'].each do |sw| %>
+        <div class="flex flex-col items-center">
+          <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
+            <%= icon(:calendar, size: '8', stroke_width: sw) %>
+          </div>
+          <code class="text-xs font-mono text-base-content/60">stroke_width: '<%= sw %>'</code>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%# Color Examples %>
+<div class="card bg-base-100 border border-base-300">
+  <div class="card-body p-4">
+    <h2 class="font-bold text-lg mb-4">Color Examples</h2>
+    <p class="text-sm text-base-content/60 mb-4">
+      Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind color classes.
+      Icons inherit color via <code class="bg-base-200 px-1 rounded">stroke="currentColor"</code>.
+    </p>
+
+    <div class="flex flex-wrap items-end gap-6">
+      <% [
+        ['text-placecal-orange', 'PlaceCal Orange'],
+        ['text-success', 'Success'],
+        ['text-error', 'Error'],
+        ['text-warning', 'Warning'],
+        ['text-info', 'Info'],
+        ['text-base-content/50', '50% opacity']
+      ].each do |css_class, label| %>
+        <div class="flex flex-col items-center">
+          <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
+            <%= icon(:check_circle, size: '8', css_class: css_class) %>
+          </div>
+          <code class="text-xs font-mono text-base-content/60"><%= label %></code>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="mt-8 p-4 bg-base-200/50 rounded-lg">
+  <h3 class="font-semibold mb-2">Helper Location</h3>
+  <p class="text-sm text-base-content/70">
+    Icons are defined in <code class="bg-base-200 px-1 rounded">app/helpers/svg_icons_helper.rb</code>.
+    To add a new icon, add its SVG path data to the <code class="bg-base-200 px-1 rounded">ICONS</code> hash.
+  </p>
+</div>

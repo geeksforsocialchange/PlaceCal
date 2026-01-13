@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     end
     get 'profile' => 'users#profile', as: :profile
     get 'jobs' => 'jobs#index', as: :jobs
+    get 'debug/icons' => 'debug#icons', as: :debug_icons
 
     root 'pages#home'
   end
