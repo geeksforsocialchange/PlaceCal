@@ -267,7 +267,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         name_html = json["data"].first["name"]
         expect(name_html).to include("Render Test")
         expect(name_html).to include("href=")
-        expect(name_html).to include("fa-hashtag")
+        expect(name_html).to include("##{calendar.id}")
       end
 
       it "renders partner cell as clickable filter" do

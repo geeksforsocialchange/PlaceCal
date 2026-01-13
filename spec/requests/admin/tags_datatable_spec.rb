@@ -9,8 +9,6 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
     [
       { data: :name, searchable: true, orderable: true },
       { data: :type, orderable: true },
-      { data: :description },
-      { data: :system_tag, orderable: true },
       { data: :partners_count },
       { data: :updated_at, orderable: true },
       { data: :actions }
@@ -20,7 +18,7 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
   before { sign_in admin_user }
 
   def datatable_request(params = {})
-    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 5)
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 3)
     get admin_tags_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -102,17 +100,6 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
       end
     end
 
-    context "system_tag filter" do
-      let!(:system_tag) { create(:tag, name: "System Tag", system_tag: true) }
-      let!(:user_tag) { create(:tag, name: "User Tag", system_tag: false) }
-
-      it_behaves_like "datatable yes/no filter",
-                      filter_name: "system_tag",
-                      field: :name,
-                      yes_value: "System Tag",
-                      no_value: "User Tag"
-    end
-
     context "has_partners filter" do
       let!(:partner) { create(:partner) }
       let!(:tag_with_partners) do
@@ -154,14 +141,6 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
         tag_data = json["data"].find { |d| d["name"].include?("Render Test") }
         expect(tag_data["type"]).to include("Category")
         expect(tag_data["type"]).to include("bg-blue-100")
-      end
-
-      it "renders description cell" do
-        datatable_request
-
-        json = response.parsed_body
-        tag_data = json["data"].find { |d| d["name"].include?("Render Test") }
-        expect(tag_data["description"]).to include("A test description")
       end
 
       it "renders partners count cell" do

@@ -498,10 +498,8 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
 
         json = response.parsed_body
         name_cell = json["data"].first["name"]
-        expect(name_cell).to include("fa-hashtag")
-        expect(name_cell).to include(partner.id.to_s)
-        expect(name_cell).to include("fa-link")
-        expect(name_cell).to include(partner.slug)
+        expect(name_cell).to include("##{partner.id}")
+        expect(name_cell).to include("/#{partner.slug}")
       end
 
       it "renders ward cell" do
