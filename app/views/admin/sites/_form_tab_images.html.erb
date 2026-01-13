@@ -1,5 +1,7 @@
-<h2 class="text-lg font-bold mb-1">Images & Theme</h2>
-<p class="text-sm text-base-content/60 mb-6">Logos, hero image, and visual theme for the site.</p>
+<%= render Admin::SectionHeaderComponent.new(
+  title: "Images & Theme",
+  description: "Logos, hero image, and visual theme for the site."
+) %>
 
 <% if policy(@site).permitted_attributes.include? :theme %>
   <fieldset class="fieldset max-w-xs mb-8">

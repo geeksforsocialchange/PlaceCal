@@ -1,7 +1,10 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <div class="lg:col-span-2 space-y-4">
-    <h2 class="text-lg font-bold mb-1">Basic Information</h2>
-    <p class="text-sm text-base-content/60 mb-4">Enter the core details about your partner organisation.</p>
+    <%= render Admin::SectionHeaderComponent.new(
+      title: "Basic Information",
+      description: "Enter the core details about your partner organisation.",
+      margin: 4
+    ) %>
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Partner Name <span class="text-error">*</span></legend>

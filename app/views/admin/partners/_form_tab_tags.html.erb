@@ -1,5 +1,7 @@
-<h2 class="text-lg font-bold mb-1">Tags & Associations</h2>
-<p class="text-sm text-base-content/60 mb-6">Categorise this partner and link to partnerships.</p>
+<%= render Admin::SectionHeaderComponent.new(
+  title: "Tags & Associations",
+  description: "Categorise this partner and link to partnerships."
+) %>
 
 <div class="space-y-6 max-w-2xl">
   <%= render 'partnership_fields', f: f %>
