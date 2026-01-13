@@ -1,0 +1,35 @@
+<div class="card <%= variant_classes %> border shadow-sm overflow-hidden relative">
+  <% if @decorative_blur && blur_position_classes && blur_color %>
+    <div class="absolute <%= blur_position_classes %> w-32 h-32 <%= blur_color %> rounded-full blur-2xl"></div>
+  <% end %>
+
+  <div class="card-body p-4 relative">
+    <% if @title || header? || header_action? %>
+      <div class="flex items-center justify-between mb-3">
+        <% if header? %>
+          <%= header %>
+        <% elsif @title %>
+          <h2 class="font-bold flex items-center gap-2">
+            <% if @icon %>
+              <%= icon(@icon, size: '5', css_class: @icon_class) %>
+            <% end %>
+            <%= @title %>
+          </h2>
+        <% end %>
+
+        <% if header_action? %>
+          <%= header_action %>
+        <% elsif @header_link %>
+          <%= link_to @header_link_text || t('admin.components.card.view_all'), @header_link,
+                      class: "text-sm text-placecal-orange hover:text-orange-600" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if body? %>
+      <%= body %>
+    <% else %>
+      <%= content %>
+    <% end %>
+  </div>
+</div>

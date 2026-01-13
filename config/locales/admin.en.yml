@@ -1,0 +1,78 @@
+en:
+  admin:
+    components:
+      card:
+        view_all: "View all"
+
+    dashboard:
+      title: "Dashboard"
+      greeting:
+        morning: "Good morning"
+        afternoon: "Good afternoon"
+        evening: "Good evening"
+      subtitle: "Here's what's happening with your community calendar."
+      stats:
+        partners: "Partners"
+        calendars: "Calendars"
+        calendars_total: "%{count} total"
+        working: "working"
+        queue: "queue"
+        errors: "errors"
+        events_this_week: "Events this week"
+        need_help: "Need help?"
+      cards:
+        your_sites: "Your Sites"
+        view_all_sites: "View all %{count} sites"
+        events_this_week: "%{count} events this week"
+        action_items: "Action Items"
+        all_healthy: "All calendars healthy"
+        no_issues: "No issues to fix"
+        view_all_issues: "View all %{count} issues →"
+        upcoming_events: "Upcoming Events"
+        no_upcoming_events: "No upcoming events"
+        recently_updated: "Recently Updated"
+        no_partners: "No partners yet"
+        add_first_partner: "Add your first"
+        your_partnerships: "Your Partnerships"
+        view_all_partnerships: "View all %{count} partnerships"
+        quick_links: "Quick Links"
+      tooltips:
+        working_calendars: "Calendars successfully importing events"
+        processing_calendars: "Calendars currently being processed"
+        problem_calendars: "%{errors} import errors, %{bad_source} bad source URLs"
+      links:
+        all_calendars: "All Calendars"
+        all_partners: "All Partners"
+        handbook: "Handbook"
+        discord: "Discord"
+
+    topbar:
+      admin: "Admin"
+      new_partner: "Partner"
+      new_calendar: "Calendar"
+      new_user: "User"
+
+    navigation:
+      dashboard: "Dashboard"
+      content_types: "Content types"
+      partners: "Partners"
+      calendars: "Calendars"
+      users: "Users"
+      sites: "Sites"
+      neighbourhoods: "Neighbourhoods"
+      partnerships: "Partnerships"
+      get_support: "Get support"
+      handbook: "Handbook"
+      discord: "Discord"
+      report_bug: "Report a bug"
+      in_development: "In development"
+      tags: "Tags"
+      articles: "Articles"
+      collections: "Collections"
+      supporters: "Supporters"
+      import_status: "Import status"
+      build: "Build"
+
+    missing_permissions:
+      title: "Missing Permissions"
+      message: "You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!"

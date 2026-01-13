@@ -3,7 +3,7 @@
   <div class="flex items-center gap-6 min-w-[180px]">
     <%= link_to admin_root_path, class: "flex items-center gap-2 font-bold text-lg text-white hover:text-placecal-orange transition-colors" do %>
       <span class="text-placecal-orange">PlaceCal</span>
-      <span class="text-xs font-normal text-gray-500">Admin</span>
+      <span class="text-xs font-normal text-gray-500"><%= t('admin.topbar.admin') %></span>
     <% end %>
   </div>
 
@@ -14,7 +14,7 @@
         <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
           <%= icon(:plus, size: '3') %>
         </span>
-        <span class="text-sm font-medium">Partner</span>
+        <span class="text-sm font-medium"><%= t('admin.topbar.new_partner') %></span>
       <% end %>
     <% end %>
     <% if policy(Calendar).new? %>
@@ -22,7 +22,7 @@
         <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
           <%= icon(:plus, size: '3') %>
         </span>
-        <span class="text-sm font-medium">Calendar</span>
+        <span class="text-sm font-medium"><%= t('admin.topbar.new_calendar') %></span>
       <% end %>
     <% end %>
     <% if policy(User).new? %>
@@ -30,7 +30,7 @@
         <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
           <%= icon(:plus, size: '3') %>
         </span>
-        <span class="text-sm font-medium">User</span>
+        <span class="text-sm font-medium"><%= t('admin.topbar.new_user') %></span>
       <% end %>
     <% end %>
   </div>
