@@ -1,71 +1,210 @@
 en:
   admin:
-    # Shared strings used across multiple views
-    shared:
-      actions:
-        save: "Save"
-        delete: "Delete"
-        destroy: "Destroy"
-        edit: "Edit"
-        add: "Add"
-        remove: "Remove"
-        replace: "Replace"
-        cancel: "Cancel"
-        view: "View"
-        view_all: "View all"
-        clear: "Clear"
-        retry: "Retry"
-        close: "Close"
-      labels:
-        id: "ID"
-        name: "Name"
-        email: "Email"
-        phone: "Phone"
-        status: "Status"
-        state: "State"
-        events: "Events"
-        partner: "Partner"
-        calendar: "Calendar"
-        date_time: "Date & Time"
-        location: "Location"
-        required: "*"
-        none: "None"
-        loading: "Loading..."
-        events_count:
-          one: "%{count} event"
-          other: "%{count} events"
-      placeholders:
-        search: "Search..."
-        type_to_filter: "Type to filter..."
-        select: "Select..."
-        select_admin: "Select an admin..."
-      confirmations:
-        delete: "Are you sure you want to delete this %{model}?"
-        delete_permanent: "Delete this %{model} permanently? This cannot be undone."
-        delete_with_events: "Delete this calendar permanently? All %{count} associated events will also be deleted. This cannot be undone."
-      empty_states:
-        no_items: "No %{items} yet"
-        no_results: "No results found"
-        none_assigned: "No %{items} assigned"
-        add_first: "Add your first"
-        no_additional: "No additional %{items}"
-      page_header:
-        new: "New %{model}"
-        edit: "Edit %{model}"
-      sections:
-        danger_zone: "Danger Zone"
-        basic_information: "Basic Information"
-        admin_settings: "Admin Settings"
+    # ============================================
+    # SHARED TOKENS - Use these across all views
+    # ============================================
 
-    # Components
+    # Model names (singular/plural)
+    models:
+      partner:
+        one: "Partner"
+        other: "Partners"
+      calendar:
+        one: "Calendar"
+        other: "Calendars"
+      site:
+        one: "Site"
+        other: "Sites"
+      neighbourhood:
+        one: "Neighbourhood"
+        other: "Neighbourhoods"
+      user:
+        one: "User"
+        other: "Users"
+      event:
+        one: "Event"
+        other: "Events"
+      partnership:
+        one: "Partnership"
+        other: "Partnerships"
+      tag:
+        one: "Tag"
+        other: "Tags"
+      article:
+        one: "Article"
+        other: "Articles"
+      collection:
+        one: "Collection"
+        other: "Collections"
+      supporter:
+        one: "Supporter"
+        other: "Supporters"
+      admin:
+        one: "Admin"
+        other: "Admins"
+
+    # Common field labels
+    fields:
+      name: "Name"
+      email: "Email"
+      phone: "Phone"
+      description: "Description"
+      summary: "Summary"
+      slug: "Slug"
+      url: "URL"
+      website: "Website"
+      address: "Address"
+      city: "City"
+      postcode: "Postcode"
+      status: "Status"
+      state: "State"
+      role: "Role"
+      theme: "Theme"
+      tagline: "Tagline"
+      logo: "Logo"
+      avatar: "Avatar"
+      image: "Image"
+      first_name: "First Name"
+      last_name: "Last Name"
+      street_address: "Street address"
+      street_address_2: "Street address 2"
+      street_address_3: "Street address 3"
+      # Social
+      facebook: "Facebook"
+      twitter: "X (Twitter)"
+      instagram: "Instagram"
+
+    # Common tab labels
+    tabs:
+      basic_info: "Basic Info"
+      settings: "Settings"
+      admin: "Admin"
+      preview: "Preview"
+      events: "Events"
+      location: "Location"
+      contact: "Contact"
+      tags: "Tags"
+      images: "Images"
+      calendars: "Calendars"
+      admins: "Admins"
+      neighbourhoods: "Neighbourhoods"
+      partnerships: "Partnerships"
+
+    # Common section headers
+    sections:
+      basic_information: "Basic Information"
+      danger_zone: "Danger Zone"
+      admin_settings: "Admin Settings"
+      opening_times: "Opening Times"
+      online_presence: "Online Presence"
+      public_contact: "Public Contact"
+      service_areas: "Service Areas"
+      location_settings: "Location Settings"
+      url_settings: "URL Settings"
+
+    # Common table headers
+    table:
+      name: "Name"
+      state: "State"
+      status: "Status"
+      events: "Events"
+      partner: "Partner"
+      calendar: "Calendar"
+      error: "Error"
+      strategy: "Strategy"
+      date_time: "Date & Time"
+      location: "Location"
+      last_import: "Last Import"
+      last_changed: "Last Changed"
+
+    # Common actions
+    actions:
+      save: "Save"
+      delete: "Delete"
+      destroy: "Destroy"
+      edit: "Edit"
+      add: "Add"
+      remove: "Remove"
+      cancel: "Cancel"
+      view: "View"
+      view_all: "View all"
+      clear: "Clear"
+      retry: "Retry"
+      back: "Back"
+      continue: "Continue"
+      add_model: "Add %{model}"
+      edit_model: "Edit %{model}"
+      delete_model: "Delete %{model}"
+      new_model: "New %{model}"
+
+    # Common labels/misc
+    labels:
+      id: "ID"
+      required: "*"
+      none: "None"
+      loading: "Loading..."
+      all: "All"
+      hidden: "Hidden"
+      visible: "Visible"
+      enabled: "Enabled"
+      disabled: "Disabled"
+      healthy: "Healthy"
+      issues: "Issues"
+      working: "working"
+      queue: "queue"
+      errors: "errors"
+      total: "%{count} total"
+
+    # Common placeholders
+    placeholders:
+      search: "Search..."
+      type_to_filter: "Type to filter..."
+      select: "Select..."
+      select_model: "Select %{model}..."
+
+    # Common empty states (parameterized)
+    empty:
+      no_items: "No %{items} yet"
+      no_items_simple: "No %{items}"
+      none_assigned: "No %{items} assigned"
+      none_connected: "No %{items} connected yet"
+      add_first: "Add your first %{item}"
+
+    # Common confirmations
+    confirm:
+      delete: "Are you sure you want to delete this %{model}?"
+      delete_permanent: "Delete this %{model} permanently? This cannot be undone."
+      delete_with_count: "Delete this %{model} permanently? All %{count} associated %{items} will also be deleted. This cannot be undone."
+
+    # Common hints
+    hints:
+      shown_publicly: "Shown on PlaceCal to the public."
+      leave_blank_to_autogenerate: "Leave blank to auto-generate from name"
+      email_validation: "Enter a valid email address"
+      url_validation: "Enter a valid URL (including https://)"
+
+    # Common time phrases
+    time:
+      ago: "%{time} ago"
+      updated_ago: "Updated %{time} ago"
+      added_ago: "Added %{time} ago"
+      events_in_days: "Events in the next %{days} days"
+      no_upcoming_in_days: "No upcoming events in the next %{days} days"
+
+    # Page header titles
+    page_header:
+      new: "New %{model}"
+      edit: "Edit %{model}"
+
+    # ============================================
+    # COMPONENTS
+    # ============================================
     components:
-      card:
-        view_all: "View all"
       save_bar:
-        back: "Back"
-        save: "Save"
-        continue: "Continue"
         unsaved_changes: "Unsaved changes"
+        save: "Save"
+        back: "Back"
+        continue: "Continue"
       error:
         title:
           one: "%{count} error prohibited this %{model} from being saved"
@@ -74,19 +213,39 @@ en:
         region: "Region"
         area: "Area"
         ward: "Ward"
-        loading: "Loading..."
         select_area: "Select area..."
         select_ward: "Select ward..."
 
-    # Datatable
+    # ============================================
+    # DATATABLE
+    # ============================================
     datatable:
       loading: "Loading data..."
-      search: "Search"
-      filter_all: "All"
       clear_filters: "Clear filters"
       reset_sort: "Reset sort"
-      add_model: "Add %{model}"
       showing: "Showing %{start} to %{end} of %{total} entries"
+      add_model: "Add %{model}"
+
+    # ============================================
+    # LAYOUT - Navigation, topbar
+    # ============================================
+    leftbar:
+      dashboard: "Dashboard"
+      content_types: "Content types"
+      get_support: "Get support"
+      handbook: "Handbook"
+      discord: "Discord"
+      report_bug: "Report a bug"
+      in_development: "In development"
+      import_status: "Import status"
+      build: "Build"
+
+    topbar:
+      admin: "Admin"
+
+    # ============================================
+    # PAGES
+    # ============================================
 
     # Dashboard
     dashboard:
@@ -97,35 +256,22 @@ en:
         evening: "Good evening"
       subtitle: "Here's what's happening with your community calendar."
       stats:
-        partners: "Partners"
-        calendars: "Calendars"
-        calendars_total: "%{count} total"
-        working: "working"
-        queue: "queue"
-        errors: "errors"
         events_this_week: "Events this week"
         need_help: "Need help?"
       cards:
         your_sites: "Your Sites"
         view_all_sites: "View all %{count} sites"
-        events_this_week: "%{count} events this week"
         action_items: "Action Items"
         all_healthy: "All calendars healthy"
         no_issues: "No issues to fix"
         view_all_issues: "View all %{count} issues →"
         upcoming_events: "Upcoming Events"
-        no_upcoming_events: "No upcoming events"
         updated_partners: "Updated Partners"
         updated_calendars: "Updated Calendars"
         updated_users: "Updated Users"
-        no_partners: "No partners yet"
-        no_calendars: "No calendars yet"
-        no_users: "No users yet"
-        add_first_partner: "Add your first"
         your_partnerships: "Your Partnerships"
         view_all_partnerships: "View all %{count} partnerships"
         quick_links: "Quick Links"
-        error: "Error"
         bad_url: "Bad URL"
       tooltips:
         working_calendars: "Calendars successfully importing events"
@@ -134,69 +280,24 @@ en:
       links:
         all_calendars: "All Calendars"
         all_partners: "All Partners"
-        handbook: "Handbook"
-        discord: "Discord"
 
-    # Top bar
-    topbar:
-      admin: "Admin"
-      new_partner: "Partner"
-      new_calendar: "Calendar"
-      new_user: "User"
-
-    # Left bar navigation (renamed from navigation)
-    leftbar:
-      dashboard: "Dashboard"
-      content_types: "Content types"
-      partners: "Partners"
-      calendars: "Calendars"
-      users: "Users"
-      sites: "Sites"
-      neighbourhoods: "Neighbourhoods"
-      partnerships: "Partnerships"
-      get_support: "Get support"
-      handbook: "Handbook"
-      discord: "Discord"
-      report_bug: "Report a bug"
-      in_development: "In development"
-      tags: "Tags"
-      articles: "Articles"
-      collections: "Collections"
-      supporters: "Supporters"
-      import_status: "Import status"
-      build: "Build"
-
-    # Missing permissions page
+    # Missing permissions
     missing_permissions:
       title: "Missing Permissions"
       message: "You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!"
 
-    # Partners
+    # ============================================
+    # MODEL-SPECIFIC (only unique strings)
+    # ============================================
+
+    # Partners - unique strings only
     partners:
-      tabs:
-        basic_info: "Basic Info"
-        location: "Location"
-        contact: "Contact"
-        tags: "Tags"
-        calendars: "Calendars"
-        admins: "Admins"
-        preview: "Preview"
-        settings: "Settings"
       sections:
-        basic_information: "Basic Information"
         basic_info_description: "Enter the core details about your partner organisation."
-        partner_image: "Partner Image"
-        location: "Location"
         location_description: "Partners need at least one place - either a fixed address or a service area."
-        address: "Address"
-        service_areas: "Service Areas"
         service_areas_description: "If this partner delivers services outside their address."
         service_areas_hint: "Be as specific as possible: wards will show up in searches for regions and gives people more context to go on."
-        opening_times: "Opening Times"
-        online_presence: "Online Presence"
         online_presence_description: "Website and social media links."
-        public_contact: "Public Contact"
-        public_contact_description: "Shown on PlaceCal to the public."
         partnership_contact: "Partnership Contact"
         partnership_contact_description: "Internal contact for PlaceCal team. Leave blank to use public contact."
         tags_associations: "Tags & Associations"
@@ -205,34 +306,16 @@ en:
         admins_description: "Users who can manage this partner."
         live_preview: "Live Site Preview"
         preview_description: "How this partner appears on PlaceCal."
-        upcoming_events: "Upcoming Events"
         upcoming_events_description: "Events in the next 30 days from this partner's calendars."
-        url_settings: "URL Settings"
         url_settings_description: "Customise the URL slug for this partner."
         event_matching: "Event Matching"
         moderation: "Moderation"
       fields:
-        name: "Partner Name"
-        name_required: "Partner name is required"
-        name_min_length: "Name must be at least 5 characters"
-        summary: "Summary"
         summary_hint: "A brief one-line summary"
-        description: "Description"
         description_hint: "Full description of what this partner does"
         accessibility_info: "Accessibility Information"
         accessibility_hint: "Details about accessibility features"
-        website: "Website"
         website_placeholder: "https://your-website.org"
-        website_validation: "Enter a valid URL (including https://)"
-        facebook: "Facebook"
-        twitter: "X (Twitter)"
-        instagram: "Instagram"
-        public_name: "Name"
-        public_email: "Email"
-        public_phone: "Phone"
-        email_validation: "Enter a valid email address"
-        slug: "URL Slug"
-        slug_hint: "Leave blank to auto-generate from name"
       image:
         choose_file: "Choose file or drag here"
         no_image: "No image uploaded"
@@ -244,37 +327,17 @@ en:
       categories:
         title: "Categories"
         hint: "Partners may have up to %{max} category tags"
-      calendars:
-        no_calendars: "No calendars connected yet"
-        add_calendar: "Add Calendar"
-      admins:
-        no_admins: "No admins assigned yet"
-        add_admin: "Add Admin"
-        added_ago: "Added %{time} ago"
-      preview:
-        no_description: "No description provided."
-        accessibility: "Accessibility"
-        no_image: "No image"
-        address_label: "Address"
-        website_label: "Website"
-        email_label: "Email"
-        phone_label: "Phone"
-        event: "Event"
-        calendar_label: "Calendar"
-        no_upcoming: "No upcoming events in the next 30 days"
       event_matching:
         enabled: "Event matching is enabled"
         disabled: "Event matching is disabled"
-        label_disabled: "Disabled"
-        label_enabled: "Enabled"
         description: "Control whether events from other calendars can be automatically listed at this partner's address."
         when_enabled: "When enabled:"
         benefit_1: "Events at this address from any PlaceCal calendar will appear here"
         benefit_2: "Visitors see a complete picture of what's happening at this location"
         benefit_3: "Great for venues, community centres, and shared spaces"
       moderation:
-        visible: "Partner is visible"
-        hidden: "Partner is hidden"
+        visible_label: "Partner is visible"
+        hidden_label: "Partner is hidden"
         hidden_status: "This partner is not visible to the public."
         when_hidden: "When a partner is hidden:"
         consequence_1: "Removed from all PlaceCal sites and search results"
@@ -293,31 +356,24 @@ en:
         outdated_neighbourhood: "Outdated neighbourhood. Contact %{email} to reassign."
         unmappable_postcode: "Postcode not in our system yet."
       danger_zone:
-        delete_partner: "Delete Partner"
         no_permission: "You don't have permission to delete this partner."
 
-    # Calendars
+    # Calendars - unique strings only
     calendars:
-      tabs:
-        settings: "Settings"
-        events: "Events"
-        admin: "Admin"
+      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange" target="_blank">handbook</a> for setup instructions'
       sections:
-        calendar_details: "Calendar Details"
         details_description: "Basic information about this event source."
-        location_settings: "Location Settings"
         location_description: "How should location information be handled for events?"
-        public_contact: "Public Contact"
         contact_description: 'Shown on event pages in the "Problem with this listing?" link.'
         events_description: "Events imported from this calendar source."
         supported_sources: "Supported Calendar Sources"
         last_imported_using: "Last imported using: %{importer}"
       fields:
-        partner: "Partner Organiser"
+        partner_organiser: "Partner Organiser"
         partner_hint: "Which group organises these events?"
-        name: "Calendar Name"
+        calendar_name: "Calendar Name"
         name_hint: "A simple description to help remember what this calendar is"
-        source: "Source URL"
+        source_url: "Source URL"
         source_placeholder: "https://your-domain.com/events.ics"
         import_mode: "Import Mode"
         default_location: "Default Location"
@@ -328,17 +384,14 @@ en:
         contact_name: "Contact Name"
         contact_email: "Contact Email"
         contact_phone: "Contact Phone"
-      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange" target="_blank">handbook</a> for setup instructions'
       events:
         upcoming: "Upcoming Events"
         past: "Recent Past Events"
-        no_upcoming: "No upcoming events"
         no_location: "No location"
       importer:
-        status: "Status:"
+        status_label: "Status:"
         success: "Success"
         importing: "Importing..."
-        error: "Error"
         source_changed: "Source changed:"
         last_import: "Last import:"
         reimport: "Re-import now"
@@ -347,25 +400,14 @@ en:
       warnings:
         stale: "Potential stale calendar - not updated in over 6 months."
       danger_zone:
-        delete_title: "Delete this calendar"
         delete_description: "Permanently remove this calendar and all %{count} associated events. This action cannot be undone."
-        delete_button: "Delete Calendar"
 
-    # Sites
+    # Sites - unique strings only
     sites:
-      tabs:
-        basic_info: "Basic Info"
-        images: "Images"
-        neighbourhoods: "Neighbourhoods"
-        partnerships: "Partnerships"
-        preview: "Preview"
-        admin: "Admin"
       sections:
-        basic_information: "Basic Information"
         basic_info_description: "Core details about this site."
         images_theme: "Images & Theme"
         images_description: "Logos, hero image, and visual theme for the site."
-        neighbourhoods_title: "Neighbourhoods"
         neighbourhoods_description: "Define the geographical areas this site covers."
         main_neighbourhood: "Main Neighbourhood"
         main_neighbourhood_description: "This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created."
@@ -373,24 +415,16 @@ en:
         display_level_description: "What level of geographical zoom should PlaceCal display in badges next to partners and events?"
         other_neighbourhoods: "Other Neighbourhoods"
         other_neighbourhoods_description: "Information from these neighbourhoods will also be displayed on this site."
-        partnerships_title: "Partnerships"
         partnerships_description: "Filter which partners appear on this site."
         preview_title: "Site Content Preview"
         preview_description: "Partners and events that will appear on this site."
-        admin_settings: "Admin Settings"
         admin_description: "Publishing, URLs, and site management options."
       fields:
-        name: "Site Name"
         site_admin: "Site Admin"
-        admin_display: "Admin:"
         place_name: "Place Name"
         place_name_hint: 'The location this site covers (e.g., "Hulme")'
-        tagline: "Tagline"
         hero_text: "Hero Text"
         hero_text_hint: "Large text for the homepage banner"
-        description: "Description"
-        theme: "Theme"
-        logo: "Logo"
         footer_logo: "Footer Logo"
         hero_image: "Hero Image"
         hero_image_description: "The large image at the top of your site's homepage."
@@ -404,46 +438,26 @@ en:
         publishing_status: "Publishing Status"
         published: "Published"
         published_hint: "Advertise this site on the PlaceCal homepage"
-        url: "URL"
-        slug: "Slug"
       neighbourhoods:
-        add: "Add neighbourhood"
         legacy_warning: "This neighbourhood is not from the current release. Please contact a PlaceCal admin."
       preview:
-        partners: "Partners"
         partners_description: "Partners visible on this site."
-        upcoming_events: "Upcoming Events"
         events_description: "Events in the next 30 days."
-        no_partners: "No partners on this site yet"
-        no_events: "No upcoming events in the next 30 days"
         showing_first: "Showing first %{limit} of %{total} %{items}."
-        hidden_badge: "Hidden"
       show:
         title: "Calendars displayed on this site"
         edit_site: "Edit Site"
-        stats:
-          calendars: "Calendars"
-          healthy: "Healthy"
-          issues: "Issues"
-        table:
-          name: "Name"
-          state: "State"
-          last_import: "Last Import"
-          last_changed: "Last Changed"
         empty:
           title: "No calendars on this site"
           hint: "Add neighbourhoods to this site to include their calendars"
       danger_zone:
-        delete_title: "Delete this site"
         delete_description: "Permanently remove this site. This action cannot be undone."
-        delete_button: "Delete Site"
 
-    # Neighbourhoods
+    # Neighbourhoods - unique strings only
     neighbourhoods:
       form:
         name_title: "Neighbourhood name"
         name_description: "This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too."
-        name: "Name"
         name_abbr: "Abbreviated name"
         official_title: "Official neighbourhood info"
         official_description: "This information is the official designation set by the UK Boundary Commission."
@@ -452,7 +466,6 @@ en:
         contains: "Contains…"
         admins_title: "Neighbourhood admins"
         admins_description: "The list of users with admin rights to this neighbourhood."
-        users: "Users"
       show:
         child_neighbourhoods: "Child Neighbourhoods"
         no_children: "This neighbourhood does not contain any child neighbourhoods"
@@ -460,13 +473,13 @@ en:
           one: "%{count} descendant"
           other: "%{count} descendants"
         address_partners: "Address Partners"
-        no_address_partners: "No address partners"
+        no_address_partners: "No partners with addresses in this neighbourhood"
         service_area_partners: "Service Area Partners"
-        no_service_area_partners: "No service area partners"
+        no_service_area_partners: "No partners serving this neighbourhood"
         sites_title: "Sites"
-        no_sites: "No sites use this neighbourhood"
+        no_sites: "No sites in this neighbourhood"
 
-    # Users
+    # Users - unique strings only
     users:
       sections:
         personal_details: "Personal Details"
@@ -475,32 +488,18 @@ en:
         role_description: "What this user can access and manage."
         partners_neighbourhoods: "Partners & Neighbourhoods"
       fields:
-        first_name: "First Name"
-        last_name: "Last Name"
-        email: "Email"
-        phone: "Phone"
-        avatar: "Avatar"
-        role: "Role"
-        partnerships: "Partnerships"
         partnerships_hint: "Grants access to add or remove partners from partnerships"
-        partners: "Partners"
         partners_hint: "Partners this user can edit, as well as their associated calendars."
-        neighbourhoods: "Neighbourhoods"
         neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
         neighbourhoods_hint: "Neighbourhoods this user has access to."
-        no_neighbourhoods: "No neighbourhoods assigned"
-      actions:
-        save: "Save User"
-        invite: "Invite User"
       profile:
         title: "Your Profile"
 
-    # Partnerships
+    # Partnerships - unique strings only
     partnerships:
       warning:
         system_tag: "WARNING: This partnership is used by the PlaceCal backend so you cannot change the Name or Slug values."
       sections:
-        basic_information: "Basic Information"
         tagged_partners: "Tagged Partners"
         tagged_partners_hint: "Apply this partnership to the given partners"
         partnership_admins: "Partnership Admins"
@@ -517,25 +516,12 @@ en:
       sections:
         error_calendars: "Error Calendars"
         busy_calendars: "Busy Calendars"
-      table:
-        calendar: "Calendar"
-        partner: "Partner"
-        state: "State"
-        error: "Error"
-        events: "Events"
-        strategy: "Strategy"
       empty:
         title: "All Clear"
         description: "No calendars with errors or currently importing."
 
     # Address fields
     address:
-      fields:
-        street_address: "Street address"
-        street_address_2: "Street address 2"
-        street_address_3: "Street address 3"
-        city: "City"
-        postcode: "Postcode"
       neighbourhood_label: "Neighbourhood:"
       clear_address: "Clear Address"
 
@@ -545,12 +531,10 @@ en:
 
     # Opening times
     opening_times:
-      no_times: "No opening times set yet"
       day: "Day"
       opens: "Opens"
       closes: "Closes"
       all_day: "Open all day (24 hours)"
-      add: "Add Opening Time"
       days:
         monday: "Monday"
         tuesday: "Tuesday"
@@ -563,19 +547,3 @@ en:
     # Image upload
     images:
       choose_file: "Choose file"
-
-    # Tags
-    tags:
-      title: "Tags"
-
-    # Articles
-    articles:
-      title: "Articles"
-
-    # Collections
-    collections:
-      title: "Collections"
-
-    # Supporters
-    supporters:
-      title: "Supporters"

@@ -26,7 +26,7 @@
           <%= icon(:calendar, size: '5', css_class: 'text-placecal-orange') %>
         </div>
         <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.sites.show.stats.calendars') %></p>
+          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.models.calendar.other') %></p>
           <p class="font-semibold text-lg"><%= @calendars.count %></p>
         </div>
       </div>
@@ -40,7 +40,7 @@
           <%= icon(:check, size: '5', css_class: 'text-success') %>
         </div>
         <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.sites.show.stats.healthy') %></p>
+          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.labels.healthy') %></p>
           <p class="font-semibold text-lg"><%= @calendars.where(calendar_state: :idle).count %></p>
         </div>
       </div>
@@ -55,7 +55,7 @@
           <%= icon(:warning, size: '5', css_class: error_count > 0 ? 'text-error' : 'text-base-content/30') %>
         </div>
         <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.sites.show.stats.issues') %></p>
+          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.labels.issues') %></p>
           <p class="font-semibold text-lg <%= error_count > 0 ? 'text-error' : '' %>"><%= error_count %></p>
         </div>
       </div>
@@ -79,10 +79,10 @@
         <table class="table table-sm">
           <thead>
             <tr>
-              <th><%= t('admin.sites.show.table.name') %></th>
-              <th><%= t('admin.sites.show.table.state') %></th>
-              <th><%= t('admin.sites.show.table.last_import') %></th>
-              <th><%= t('admin.sites.show.table.last_changed') %></th>
+              <th><%= t('admin.table.name') %></th>
+              <th><%= t('admin.table.state') %></th>
+              <th><%= t('admin.table.last_import') %></th>
+              <th><%= t('admin.table.last_changed') %></th>
             </tr>
           </thead>
           <tbody>
