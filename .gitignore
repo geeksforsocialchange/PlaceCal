@@ -81,3 +81,4 @@ doc/rdoc
 .claude-swarm/
 claude-swarm.log
 spec/examples.txt
+.mcp.json
