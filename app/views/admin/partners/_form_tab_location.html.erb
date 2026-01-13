@@ -1,0 +1,36 @@
+<h2 class="text-lg font-bold mb-1">Location</h2>
+<p class="text-sm text-base-content/60 mb-6">Partners need at least one place - either a fixed address or a service area.</p>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+    <legend class="fieldset-legend">Address</legend>
+    <%= render 'address_fields', form: f, partner: @partner %>
+    <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
+      <div role="alert" class="alert alert-warning mt-4 text-sm">
+        <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+        <span>Outdated neighbourhood. Contact <a href="mailto:support@placecal.org" class="link">support</a> to reassign.</span>
+      </div>
+    <% end %>
+    <% if partner_has_unmappable_postcode?(@partner) %>
+      <div role="alert" class="alert alert-warning mt-4 text-sm">
+        <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+        <span>Postcode not in our system yet.</span>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+    <legend class="fieldset-legend">Service Areas</legend>
+    <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address. <br><br>Be as specific as possible: wards will show up in searches for regions and gives people more context to go on.</p>
+    <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
+      <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+        <%= render 'service_area_fields', f: neighbourhood %>
+      <% end %>
+    <% end %>
+  </fieldset>
+</div>
+
+<fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4 mt-8">
+  <legend class="fieldset-legend">Opening Times</legend>
+  <%= render 'opening_times', f: f %>
+</fieldset>

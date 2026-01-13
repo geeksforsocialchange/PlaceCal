@@ -1,0 +1,31 @@
+<h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+  <%= icon(:calendar, size: '5') %>
+  Calendars
+  <span class="badge badge-neutral"><%= @partner.calendars.count %></span>
+</h2>
+<p class="text-sm text-base-content/60 mb-6">Event sources connected to this partner.</p>
+
+<% if @partner.calendars.any? %>
+  <div class="grid gap-3 max-w-2xl">
+    <% @partner.calendars.each do |calendar| %>
+      <div class="card card-compact bg-base-200/50 border border-base-300">
+        <div class="card-body flex-row items-center justify-between">
+          <div>
+            <h3 class="font-medium"><%= calendar.name %></h3>
+            <p class="text-xs text-base-content/60"><%= calendar.source %></p>
+          </div>
+          <%= link_to "Edit", edit_admin_calendar_path(calendar), class: "btn btn-ghost btn-sm" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No calendars connected yet", icon_size: '12', padding: 'py-12') %>
+<% end %>
+
+<div class="mt-6">
+  <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+    <%= icon(:plus, size: '4') %>
+    Add Calendar
+  <% end %>
+</div>

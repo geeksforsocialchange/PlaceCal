@@ -1,0 +1,103 @@
+<h2 class="text-lg font-bold mb-1">Site Content Preview</h2>
+<p class="text-sm text-base-content/60 mb-6">Partners and events that will appear on this site.</p>
+
+<%# Partners Section %>
+<div class="mb-8">
+  <% site_partners = Partner.for_site(@site).order(:name) %>
+  <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
+    <%= icon(:partnership, size: '5') %>
+    Partners
+    <span class="badge badge-neutral"><%= site_partners.count %></span>
+  </h3>
+  <p class="text-sm text-base-content/60 mb-4">Partners visible on this site.</p>
+
+  <% if site_partners.any? %>
+    <div class="overflow-x-auto">
+      <table class="table table-sm table-zebra">
+        <thead>
+          <tr>
+            <th>Partner</th>
+            <th>Calendars</th>
+            <th>Events</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% site_partners.limit(50).each do |partner| %>
+            <tr>
+              <td>
+                <%= link_to edit_admin_partner_path(partner), class: "link link-hover text-placecal-orange font-medium" do %>
+                  <%= partner.name %>
+                <% end %>
+                <% if partner.hidden %>
+                  <span class="badge badge-error badge-xs ml-1">Hidden</span>
+                <% end %>
+              </td>
+              <td><%= partner.calendars.count %></td>
+              <td><%= partner.events.upcoming.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if site_partners.count > 50 %>
+      <p class="text-sm text-base-content/60 mt-2">Showing first 50 of <%= site_partners.count %> partners.</p>
+    <% end %>
+  <% else %>
+    <%= render Admin::EmptyStateComponent.new(icon: :partnership, message: "No partners on this site yet") %>
+  <% end %>
+</div>
+
+<div class="divider"></div>
+
+<%# Events Section %>
+<div>
+  <% site_events = Event.for_site(@site).upcoming.where(dtstart: ..30.days.from_now).order(:dtstart) %>
+  <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
+    <%= icon(:calendar, size: '5') %>
+    Upcoming Events
+    <span class="badge badge-neutral"><%= site_events.count %></span>
+  </h3>
+  <p class="text-sm text-base-content/60 mb-4">Events in the next 30 days.</p>
+
+  <% if site_events.any? %>
+    <div class="overflow-x-auto">
+      <table class="table table-sm table-zebra">
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Date & Time</th>
+            <th>Partner</th>
+            <th>Calendar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% site_events.limit(30).each do |event| %>
+            <tr>
+              <td>
+                <div class="font-medium"><%= truncate(event.summary, length: 40) %></div>
+              </td>
+              <td class="whitespace-nowrap text-sm">
+                <%= event.dtstart.strftime('%a %d %b %H:%M') %>
+              </td>
+              <td>
+                <% if event.partner %>
+                  <%= link_to truncate(event.partner.name, length: 25), edit_admin_partner_path(event.partner), class: "link text-placecal-orange hover:text-orange-600 text-sm" %>
+                <% end %>
+              </td>
+              <td>
+                <% if event.calendar %>
+                  <%= link_to truncate(event.calendar.name, length: 20), edit_admin_calendar_path(event.calendar), class: "link text-placecal-orange hover:text-orange-600 text-sm" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if site_events.count > 30 %>
+      <p class="text-sm text-base-content/60 mt-2">Showing first 30 of <%= site_events.count %> events.</p>
+    <% end %>
+  <% else %>
+    <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events in the next 30 days") %>
+  <% end %>
+</div>

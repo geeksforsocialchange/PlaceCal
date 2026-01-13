@@ -1,0 +1,80 @@
+<h2 class="text-lg font-bold mb-1">Neighbourhoods</h2>
+<p class="text-sm text-base-content/60 mb-6">Define the geographical areas this site covers.</p>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
+    <legend class="fieldset-legend">Main Neighbourhood</legend>
+    <p class="text-sm text-base-content/60 mb-4">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
+
+    <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
+      <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
+      <% if primary_neighbourhood.present? %>
+        <div class="mb-3">
+          <span class="badge badge-lg badge-neutral gap-2">
+            <%= icon(:map_pin, size: '4') %>
+            <%= primary_neighbourhood.contextual_name %>
+            <% if primary_neighbourhood.legacy_neighbourhood? %>
+              (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>)
+            <% end %>
+          </span>
+        </div>
+        <%= sn.hidden_field :relation_type, value: "Primary" %>
+        <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
+        <% if primary_neighbourhood.legacy_neighbourhood? %>
+          <div role="alert" class="alert alert-warning py-2">
+            <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
+            <span class="text-sm">This neighbourhood is not from the current release. Please contact a PlaceCal admin.</span>
+          </div>
+        <% end %>
+      <% else %>
+        <%= sn.hidden_field :relation_type, value: "Primary" %>
+        <div class="site_sites_neighbourhood_neighbourhood_id">
+          <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
+              value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
+              input_html: { data: { controller: "tom-select" }, class: 'select select-bordered w-full bg-base-100' },
+              label: '', label_html: { hidden: true }, wrapper: false %>
+        </div>
+      <% end %>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
+    <legend class="fieldset-legend">Display Level</legend>
+    <p class="text-sm text-base-content/60 mb-4">What level of geographical zoom should PlaceCal display in badges next to partners and events?</p>
+
+    <%= render Admin::RadioCardGroupComponent.new(
+      form: f,
+      attribute: :badge_zoom_level,
+      values: Site.badge_zoom_level.values
+    ) %>
+  </fieldset>
+</div>
+
+<div class="mt-8">
+  <h3 class="font-semibold mb-2">Other Neighbourhoods</h3>
+  <p class="text-sm text-base-content/60 mb-4">Information from these neighbourhoods will also be displayed on this site.</p>
+
+  <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
+    <div class="space-y-2">
+      <%= nested_form_for(f, :sites_neighbourhoods,
+            add_text: 'Add neighbourhood',
+            add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
+            partial: 'sites_neighbourhood_fields') do %>
+        <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
+          <%= render 'sites_neighbourhood_fields', f: neighbourhood %>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <% secondary_neighbourhoods = @site.sites_neighbourhoods.select { |n| n.relation_type != 'Primary' } %>
+    <% if secondary_neighbourhoods.any? %>
+      <div class="flex flex-wrap gap-2">
+        <% secondary_neighbourhoods.each do |neighbourhood| %>
+          <span class="badge badge-outline"><%= neighbourhood.name %></span>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-base-content/50 italic">No additional neighbourhoods</p>
+    <% end %>
+  <% end %>
+</div>

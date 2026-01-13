@@ -1,0 +1,35 @@
+<h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+  <%= icon(:user_add, size: '5') %>
+  Admins
+  <span class="badge badge-neutral"><%= @partner.users.count %></span>
+</h2>
+<p class="text-sm text-base-content/60 mb-6">Users who can manage this partner.</p>
+
+<% if @partner.users.any? %>
+  <div class="grid gap-3 max-w-2xl">
+    <% @partner.users.each do |p_user| %>
+      <div class="card card-compact bg-base-200/50 border border-base-300">
+        <div class="card-body flex-row items-center justify-between">
+          <div>
+            <h3 class="font-medium"><%= p_user.email %></h3>
+            <p class="text-xs text-base-content/60">Added <%= time_ago_in_words(p_user.created_at) %> ago</p>
+          </div>
+          <% if policy(User).update? %>
+            <%= link_to "Edit", edit_admin_user_path(p_user), class: "btn btn-ghost btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <%= render Admin::EmptyStateComponent.new(icon: :user_add, message: "No admins assigned yet", icon_size: '12', padding: 'py-12') %>
+<% end %>
+
+<% if policy(User).update? %>
+  <div class="mt-6">
+    <%= link_to new_admin_user_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+      <%= icon(:plus, size: '4') %>
+      Add Admin
+    <% end %>
+  </div>
+<% end %>

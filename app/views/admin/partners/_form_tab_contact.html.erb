@@ -1,0 +1,95 @@
+<div class="space-y-6">
+  <%# Online Presence - Full Width Card %>
+  <div class="card bg-base-200/50 border border-base-300">
+    <div class="card-body p-4 gap-3">
+      <h3 class="font-semibold flex items-center gap-2">
+        <%= icon(:desktop, size: '4') %>
+        Online Presence
+      </h3>
+      <p class="text-xs text-base-content/60">Website and social media links.</p>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Website</legend>
+        <%= f.input_field :url, class: 'input input-bordered w-full bg-base-100', placeholder: 'https://your-website.org',
+            'data-validate-url': 'true',
+            'data-validate-url-message': 'Enter a valid URL (including https://)' %>
+      </fieldset>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Facebook</legend>
+          <label class="input input-bordered flex items-center gap-1 pr-1 bg-base-100">
+            <span class="text-base-content/50 text-sm shrink-0">facebook.com/</span>
+            <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+          </label>
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">X (Twitter)</legend>
+          <label class="input input-bordered flex items-center gap-1 bg-base-100">
+            <span class="text-base-content/50">@</span>
+            <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+          </label>
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Instagram</legend>
+          <label class="input input-bordered flex items-center gap-1 bg-base-100">
+            <span class="text-base-content/50">@</span>
+            <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+          </label>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <%# Contact Details - Two Column Row %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <%# Public Contact Card %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:website, size: '4') %>
+          Public Contact
+        </h3>
+        <p class="text-xs text-base-content/60">Shown on PlaceCal to the public.</p>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Name</legend>
+          <%= f.input_field :public_name, class: 'input input-bordered w-full bg-base-100' %>
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Email</legend>
+          <%= f.input_field :public_email, class: 'input input-bordered w-full bg-base-100',
+              'data-validate-email': 'true',
+              'data-validate-email-message': 'Enter a valid email address' %>
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Phone</legend>
+          <%= f.input_field :public_phone, class: 'input input-bordered w-full bg-base-100' %>
+        </fieldset>
+      </div>
+    </div>
+
+    <%# Partnership Contact Card %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:partnership, size: '4') %>
+          Partnership Contact
+        </h3>
+        <p class="text-xs text-base-content/60">Internal contact for PlaceCal team. Leave blank to use public contact.</p>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Name</legend>
+          <%= f.input_field :partner_name, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_name %>
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Email</legend>
+          <%= f.input_field :partner_email, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_email,
+              'data-validate-email': 'true',
+              'data-validate-email-message': 'Enter a valid email address' %>
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Phone</legend>
+          <%= f.input_field :partner_phone, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_phone %>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>

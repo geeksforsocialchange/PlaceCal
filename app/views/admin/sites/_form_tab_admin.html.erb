@@ -1,0 +1,46 @@
+<h2 class="text-lg font-bold mb-1">Admin Settings</h2>
+<p class="text-sm text-base-content/60 mb-6">Publishing, URLs, and site management options.</p>
+
+<div class="max-w-xl space-y-8">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Publishing Status</legend>
+    <%= render Admin::ToggleCardComponent.new(
+      form: f,
+      attribute: :is_published,
+      title: "Published",
+      description: "Advertise this site on the PlaceCal homepage"
+    ) %>
+  </fieldset>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">URL <span class="text-error">*</span></legend>
+      <% if policy(@site).permitted_attributes.include? :url %>
+        <%= f.input_field :url, class: 'input input-bordered w-full font-mono text-sm' %>
+      <% else %>
+        <%= f.input_field :url, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true %>
+      <% end %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Slug <span class="text-error">*</span></legend>
+      <% if policy(@site).permitted_attributes.include? :slug %>
+        <%= f.input_field :slug, class: 'input input-bordered w-full font-mono text-sm' %>
+      <% else %>
+        <%= f.input_field :slug, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true %>
+      <% end %>
+    </fieldset>
+  </div>
+
+  <% unless @site.new_record? %>
+    <div class="divider"></div>
+
+    <%= render Admin::DangerZoneComponent.new(
+      title: "Delete this site",
+      description: "Permanently remove this site. This action cannot be undone.",
+      button_text: "Delete Site",
+      button_path: admin_site_path(@site),
+      confirm: "Delete this site permanently? This cannot be undone."
+    ) %>
+  <% end %>
+</div>

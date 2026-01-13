@@ -1,0 +1,98 @@
+<h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+  <%= icon(:event, size: '5') %>
+  Events
+  <span class="badge badge-neutral"><%= @calendar.events.count %></span>
+</h2>
+<p class="text-sm text-base-content/60 mb-6">Events imported from this calendar source.</p>
+
+<% upcoming_events = @calendar.events.where('dtstart >= ?', Time.current).order(:dtstart).limit(50) %>
+<% past_events = @calendar.events.where('dtstart < ?', Time.current).order(dtstart: :desc).limit(20) %>
+
+<% if upcoming_events.any? %>
+  <h3 class="font-semibold mb-3 flex items-center gap-2">
+    <span class="text-success">●</span>
+    Upcoming Events
+    <span class="badge badge-success badge-sm"><%= upcoming_events.count %></span>
+  </h3>
+  <div class="overflow-x-auto mb-8">
+    <table class="table table-sm table-zebra">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date & Time</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% upcoming_events.each do |event| %>
+          <tr>
+            <td>
+              <div class="font-medium"><%= truncate(event.summary, length: 60) %></div>
+            </td>
+            <td class="whitespace-nowrap text-sm">
+              <%= event.dtstart.strftime('%a %d %b %Y, %H:%M') %>
+            </td>
+            <td class="text-sm text-base-content/70">
+              <% if event.address %>
+                <%= truncate(event.address.to_s, length: 40) %>
+              <% elsif event.partner %>
+                <%= event.partner.name %>
+              <% else %>
+                <span class="text-base-content/40">No location</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="mb-8">
+    <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events") %>
+  </div>
+<% end %>
+
+<% if past_events.any? %>
+  <div class="collapse collapse-arrow bg-base-200/50 border border-base-300 rounded-lg">
+    <input type="checkbox" />
+    <div class="collapse-title font-semibold flex items-center gap-2">
+      <span class="text-base-content/50">●</span>
+      Recent Past Events
+      <span class="badge badge-ghost badge-sm"><%= past_events.count %></span>
+    </div>
+    <div class="collapse-content">
+      <div class="overflow-x-auto">
+        <table class="table table-sm table-zebra">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Date & Time</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% past_events.each do |event| %>
+              <tr class="opacity-70">
+                <td>
+                  <div class="font-medium"><%= truncate(event.summary, length: 60) %></div>
+                </td>
+                <td class="whitespace-nowrap text-sm">
+                  <%= event.dtstart.strftime('%a %d %b %Y, %H:%M') %>
+                </td>
+                <td class="text-sm text-base-content/70">
+                  <% if event.address %>
+                    <%= truncate(event.address.to_s, length: 40) %>
+                  <% elsif event.partner %>
+                    <%= event.partner.name %>
+                  <% else %>
+                    <span class="text-base-content/40">No location</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,98 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 space-y-4">
+    <h2 class="text-lg font-bold mb-1">Basic Information</h2>
+    <p class="text-sm text-base-content/60 mb-4">Enter the core details about your partner organisation.</p>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Partner Name <span class="text-error">*</span></legend>
+      <%= f.input_field :name, class: 'input input-bordered w-full',
+          'data-controller': "partner-form-validation",
+          'data-partner-form-validation-target': 'source',
+          'data-action': 'input->partner-form-validation#checkInput',
+          'data-validate-required': 'true',
+          'data-validate-min': '5',
+          'data-validate-required-message': 'Partner name is required',
+          'data-validate-min-message': 'Name must be at least 5 characters' %>
+    </fieldset>
+
+    <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="200">
+      <legend class="fieldset-legend">Summary</legend>
+      <%= f.input_field :summary, as: :text, class: 'textarea textarea-bordered w-full min-h-16', maxlength: 200, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
+      <div class="flex items-center justify-between mt-1">
+        <p class="fieldset-label">A brief one-line summary</p>
+        <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 200</span>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Description</legend>
+      <%= f.input_field :description, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
+      <p class="fieldset-label">Full description of what this partner does</p>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Accessibility Information</legend>
+      <%= f.input_field :accessibility_info, class: 'textarea textarea-bordered w-full min-h-20', data: { controller: 'auto-expand' } %>
+      <p class="fieldset-label">Details about accessibility features</p>
+    </fieldset>
+  </div>
+
+  <%# Partner Image - Right column on larger screens %>
+  <div class="lg:border-l lg:border-base-300 lg:pl-6">
+    <h3 class="font-semibold mb-4 flex items-center gap-2">
+      <%= icon(:photo, size: '5', css_class: 'text-placecal-orange') %>
+      Partner Image
+    </h3>
+    <div data-controller="image-preview">
+      <%# File Input / Dropzone %>
+      <div class="mb-4">
+        <div class="relative overflow-hidden rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors bg-base-200/50 hover:bg-base-200 cursor-pointer"
+             data-image-preview-target="dropzone">
+          <label class="flex items-center gap-3 p-3 cursor-pointer">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+              <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-base-content">Choose file or drag here</p>
+              <p class="text-xs text-base-content/50"><%= image_uploader_hint(@partner.image) %></p>
+            </div>
+            <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
+          </label>
+        </div>
+      </div>
+
+      <%# Image Preview %>
+      <div class="relative group" data-image-preview-target="wrapper">
+        <% if @partner.image.url %>
+          <div class="relative rounded-lg overflow-hidden border border-base-300 bg-base-200">
+            <%= image_tag @partner.image.url, class: 'w-full h-auto', data: { image_preview_target: "img" } %>
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <label class="btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer">
+                <%= icon(:upload, size: '4') %>
+                Replace
+                <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file" } %>
+              </label>
+            </div>
+          </div>
+          <%# Delete checkbox %>
+          <div class="mt-2 flex justify-end">
+            <label class="inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60">
+              <%= f.check_box :remove_image, class: 'sr-only' %>
+              <%= icon(:trash, size: '3.5') %>
+              Remove image on save
+            </label>
+          </div>
+        <% else %>
+          <div class="aspect-square rounded-lg border border-base-300 bg-base-200/50 flex items-center justify-center" data-image-preview-target="placeholder">
+            <div class="text-center text-base-content/30 p-4">
+              <%= icon(:photo, size: '16', css_class: 'mx-auto mb-3 opacity-50', stroke_width: '1') %>
+              <p class="text-sm font-medium">No image uploaded</p>
+              <p class="text-xs mt-1">Upload an image above</p>
+            </div>
+          </div>
+          <%= image_tag "", style: 'display:none;', class: 'w-full h-auto rounded-lg border border-base-300', data: { image_preview_target: "img" } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

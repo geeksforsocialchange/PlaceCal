@@ -1,0 +1,7 @@
+<%= render Admin::DangerZoneComponent.new(
+  title: "Delete this calendar",
+  description: "Permanently remove this calendar and all #{@calendar.events.count} associated events. This action cannot be undone.",
+  button_text: "Delete Calendar",
+  button_path: admin_calendar_path(@calendar),
+  confirm: "Delete this calendar permanently? All #{@calendar.events.count} associated events will also be deleted. This cannot be undone."
+) %>

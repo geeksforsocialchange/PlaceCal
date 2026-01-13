@@ -1,0 +1,169 @@
+<% if policy(@partner).permitted_attributes.include? :slug %>
+  <div class="mb-8">
+    <h2 class="text-lg font-bold mb-1">URL Settings</h2>
+    <p class="text-sm text-base-content/60 mb-4">Customise the URL slug for this partner.</p>
+    <div class="max-w-md">
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">URL Slug</legend>
+        <%= f.input_field :slug, class: 'input input-bordered w-full' %>
+        <p class="fieldset-label">Leave blank to auto-generate from name</p>
+      </fieldset>
+    </div>
+  </div>
+<% end %>
+
+<div class="mb-8">
+  <h2 class="text-lg font-bold mb-4">Event Matching</h2>
+
+  <div class="max-w-2xl">
+    <%# Event Matching Toggle Card %>
+    <% is_enabled = @partner.can_be_assigned_events %>
+    <div class="card bg-base-200/50 border-2 border-base-300">
+      <div class="card-body p-5">
+        <div class="flex items-start gap-4">
+          <%# Icon %>
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center">
+            <%= icon(:swap, size: '6', css_class: 'text-base-content/40') %>
+          </div>
+
+          <%# Content %>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-4 mb-2">
+              <h3 class="font-semibold" id="event-matching-title">
+                <%= is_enabled ? 'Event matching is enabled' : 'Event matching is disabled' %>
+              </h3>
+              <div class="flex items-center gap-3">
+                <span class="label-text text-sm font-medium text-base-content/60">Disabled</span>
+                <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'partner_can_be_assigned_events', onchange: 'updateEventMatchingTitle(this.checked)' %>
+                <span class="label-text text-sm font-medium text-success">Enabled</span>
+              </div>
+            </div>
+
+            <p class="text-sm text-base-content/70 mb-3">
+              Control whether events from other calendars can be automatically listed at this partner's address.
+            </p>
+
+            <div class="text-sm text-base-content/70 space-y-2">
+              <p class="font-medium text-base-content/90">When enabled:</p>
+              <ul class="list-none space-y-1.5 ml-0">
+                <li class="flex items-start gap-2">
+                  <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
+                  <span>Events at this address from any PlaceCal calendar will appear here</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
+                  <span>Visitors see a complete picture of what's happening at this location</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <%= icon(:info, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
+                  <span>Great for venues, community centres, and shared spaces</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateEventMatchingTitle(isEnabled) {
+      const title = document.getElementById('event-matching-title');
+      title.textContent = isEnabled ? 'Event matching is enabled' : 'Event matching is disabled';
+    }
+  </script>
+</div>
+
+<% unless @partner.new_record? %>
+  <% if policy(@partner).permitted_attributes.include? :hidden %>
+    <div class="mb-8">
+      <h2 class="text-lg font-bold mb-4">Moderation</h2>
+
+      <div class="max-w-2xl" data-controller="inverted-toggle">
+        <%# Hidden Toggle Card %>
+        <div class="card border-2 transition-colors" data-inverted-toggle-target="card">
+          <div class="card-body p-5">
+            <div class="flex items-start gap-4">
+              <%# Icon %>
+              <div class="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors" data-inverted-toggle-target="icon">
+                <span data-inverted-toggle-target="iconHidden"><%= icon(:eye_off, size: '6', css_class: 'text-error') %></span>
+                <span data-inverted-toggle-target="iconVisible"><%= icon(:eye, size: '6', css_class: 'text-warning') %></span>
+              </div>
+
+              <%# Content %>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-4 mb-2">
+                  <h3 class="font-semibold transition-colors" data-inverted-toggle-target="title" id="partner-visibility-title">
+                    <%= @partner.hidden? ? 'Partner is hidden' : 'Partner is visible' %>
+                  </h3>
+                  <div class="flex items-center gap-3">
+                    <span class="label-text text-sm font-medium text-error">Hidden</span>
+                    <%= f.hidden_field :hidden, value: @partner.hidden? ? '1' : '0', data: { inverted_toggle_target: 'hidden' } %>
+                    <input type="checkbox" id="partner_hidden_toggle" class="toggle toggle-success" data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" onchange="updateVisibilityTitle(this.checked)" />
+                    <span class="label-text text-sm font-medium text-success">Visible</span>
+                  </div>
+                </div>
+
+                <p class="text-sm text-error/80 mb-3" data-inverted-toggle-target="status">This partner is not visible to the public.</p>
+
+                <div class="text-sm text-base-content/70 space-y-2">
+                  <p class="font-medium text-base-content/90">When a partner is hidden:</p>
+                  <ul class="list-none space-y-1.5 ml-0">
+                    <li class="flex items-start gap-2">
+                      <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
+                      <span>Removed from all PlaceCal sites and search results</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
+                      <span>Events from this partner will not appear on any calendars</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
+                      <span>The partner page will return a 404 error to visitors</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:check, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
+                      <span>Admins can still access and edit the partner in this dashboard</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:bell, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
+                      <span>PlaceCal moderators and the partner admins will be notified</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <%# Reason field - shown when hidden or always for entering reason %>
+            <div class="mt-4 pt-4 border-t border-base-300/50">
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Reason for hiding</legend>
+                <p class="text-xs text-base-content/60 mb-2">This message will be shown to partner admins explaining why their listing was hidden.</p>
+                <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20 bg-base-100', placeholder: 'e.g., Incomplete information, duplicate listing, or violation of community guidelines...', data: { controller: 'auto-expand' } %>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updateVisibilityTitle(isVisible) {
+        const title = document.getElementById('partner-visibility-title');
+        title.textContent = isVisible ? 'Partner is visible' : 'Partner is hidden';
+      }
+    </script>
+  <% end %>
+
+  <div class="mt-8">
+    <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
+    <% if policy(@partner).destroy? %>
+      <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this partner permanently? This cannot be undone." } do %>
+        <%= icon(:trash, size: '4') %>
+        Delete Partner
+      <% end %>
+    <% else %>
+      <p class="text-sm text-base-content/60">You don't have permission to delete this partner.</p>
+    <% end %>
+  </div>
+<% end %>
