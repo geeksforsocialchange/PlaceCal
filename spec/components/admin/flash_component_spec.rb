@@ -11,12 +11,13 @@ RSpec.describe Admin::FlashComponent, type: :component do
   end
 
   it "renders alerts for flash messages" do
-    flash_hash = { "notice" => "Success!", "alert" => "Error!" }
+    flash_hash = { "notice" => "Success message", "alert" => "Alert message" }
     render_inline(described_class.new(flash: flash_hash))
 
-    expect(page).to have_css(".alert.alert-success")
-    expect(page).to have_css(".alert.alert-error")
-    expect(page).to have_text("Success!")
-    expect(page).to have_text("Error!")
+    # notice maps to alert-info, alert maps to alert-warning
+    expect(page).to have_css(".alert.alert-info")
+    expect(page).to have_css(".alert.alert-warning")
+    expect(page).to have_text("Success message")
+    expect(page).to have_text("Alert message")
   end
 end

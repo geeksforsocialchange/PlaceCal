@@ -1,3 +1,2 @@
-<% content_for :title do %>New Calendar<% end %>
-
-<%= render(AdminNew.new(:calendar)) %>
+<%= render 'layouts/admin/page_header', model_name: 'Calendar', new_record: true %>
+<%= render 'form' %>

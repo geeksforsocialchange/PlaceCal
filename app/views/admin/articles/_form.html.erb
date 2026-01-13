@@ -1,7 +1,7 @@
 <%- disabled_fields = policy(@article).disabled_fields %>
 <%= simple_form_for [:admin, @article], html: { class: 'space-y-6' } do |f| %>
 
-  <%= render(ErrorComponent.new(@article)) %>
+  <%= render(Admin::ErrorComponent.new(@article)) %>
 
   <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
     <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Article Content</h3>

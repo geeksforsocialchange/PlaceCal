@@ -1,5 +1,5 @@
 <%= simple_form_for [:admin, @supporter], html: { class: 'space-y-6' } do |f| %>
-  <%= render(ErrorComponent.new(@supporter)) if @supporter.errors.any? %>
+  <%= render(Admin::ErrorComponent.new(@supporter)) if @supporter.errors.any? %>
 
   <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
     <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Supporter Details</h3>

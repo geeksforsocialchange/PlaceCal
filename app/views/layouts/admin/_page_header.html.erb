@@ -1,0 +1,20 @@
+<%#
+  Page header partial for admin edit/new views
+  Usage:
+    render 'layouts/admin/page_header', model_name: 'Partner', title: @partner.name, id: @partner.id
+    render 'layouts/admin/page_header', model_name: 'Partner', new_record: true
+%>
+<% page_title = local_assigns[:new_record] ? "New #{model_name}" : "Edit #{model_name}: #{title}" %>
+<% content_for :title do %><%= page_title %><% end %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold"><%= local_assigns[:new_record] ? "New #{model_name}" : "Edit #{model_name}" %></h1>
+    <% if local_assigns[:title].present? && !local_assigns[:new_record] %>
+      <p class="text-base-content/60 mt-1"><%= title %></p>
+    <% end %>
+  </div>
+  <% if local_assigns[:id].present? %>
+    <div class="text-sm text-base-content/50">ID: <%= id %></div>
+  <% end %>
+</div>

@@ -23,7 +23,7 @@
         </div>
       </nav>
       <main role="main" class="flex-1 md:ml-56 min-h-screen px-6 py-4">
-        <%= render(AdminFlash.new()) %>
+        <%= render(Admin::FlashComponent.new) %>
         <%= yield %>
 
         <% if Rails.env.development? %>

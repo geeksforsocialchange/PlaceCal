@@ -14,5 +14,6 @@
     <span>This tag is a <strong>system tag</strong> meaning that it cannot be edited by non-root admins.</span>
   </div>
 <% else %>
-  <%= render AdminEdit.new(model: :tag, title: @tag.name, id: @tag.id) %>
+  <%= render 'layouts/admin/page_header', model_name: 'Tag', title: @tag.name, id: @tag.id %>
+  <%= render 'form' %>
 <% end %>

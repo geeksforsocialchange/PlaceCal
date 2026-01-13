@@ -1,5 +1,5 @@
 <%= simple_form_for [:admin, @site], html: { data: { controller: 'site-tabs live-validation' } } do |f| %>
-  <%= render(ErrorComponent.new(@site)) %>
+  <%= render(Admin::ErrorComponent.new(@site)) %>
 
   <%# Radio Tabs - daisyUI tabs-lift %>
   <div role="tablist" class="tabs tabs-lift">

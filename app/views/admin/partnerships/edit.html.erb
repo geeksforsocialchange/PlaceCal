@@ -14,5 +14,6 @@
     <span>This partnership is a <strong>system partnership</strong> meaning that it cannot be edited by non-root admins.</span>
   </div>
 <% else %>
-  <%= render AdminEdit.new(model: :partnership, title: @partnership.name, id: @partnership.id) %>
+  <%= render 'layouts/admin/page_header', model_name: 'Partnership', title: @partnership.name, id: @partnership.id %>
+  <%= render 'form' %>
 <% end %>

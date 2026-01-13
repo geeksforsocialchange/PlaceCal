@@ -1,6 +1,6 @@
 <%= simple_form_for [:admin, @neighbourhood] do |f| %>
 
-  <%= render(ErrorComponent.new(@neighbourhood)) %>
+  <%= render(Admin::ErrorComponent.new(@neighbourhood)) %>
   <h2>Neighbourhood name</h2>
   <p>This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too.</p>
 

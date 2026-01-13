@@ -70,18 +70,20 @@ RSpec.describe "Admin::Sites", type: :request do
         expect(response.body).to include("Image Credit")
       end
 
-      it "shows all neighbourhoods in secondary neighbourhoods selector" do
+      it "shows cascading neighbourhood selectors for secondary neighbourhoods" do
         get edit_admin_site_url(site, host: admin_host)
         expect(response).to be_successful
 
-        # The nested-form template contains the neighbourhood options
+        # The nested-form template now uses cascading neighbourhood component
+        # with region/area/ward dropdowns loaded via Stimulus
         nested_form_template = response.body.match(%r{<template data-nested-form-target="template">(.*?)</template>}m)
         expect(nested_form_template).to be_present
 
-        # Count how many neighbourhoods are shown in the template
         template_content = CGI.unescape_html(nested_form_template[1])
-        neighbourhoods_count = template_content.scan("option value=").size
-        expect(neighbourhoods_count).to eq(Neighbourhood.count)
+        expect(template_content).to include("data-controller=\"cascading-neighbourhood\"")
+        expect(template_content).to include("data-cascading-neighbourhood-target=\"region\"")
+        expect(template_content).to include("data-cascading-neighbourhood-target=\"district\"")
+        expect(template_content).to include("data-cascading-neighbourhood-target=\"ward\"")
       end
     end
 
@@ -119,10 +121,12 @@ RSpec.describe "Admin::Sites", type: :request do
         sign_in site_admin
       end
 
-      it "shows site tags with their type" do
+      it "shows site tags in the partnerships tab" do
         get edit_admin_site_url(site, host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partnership_tag.name_with_type)
+        # Tags are displayed by name in the select, not with their type prefix
+        expect(response.body).to include(partnership_tag.name)
+        expect(response.body).to include("Partnership Tags")
       end
     end
   end

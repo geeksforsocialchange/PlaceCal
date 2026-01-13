@@ -1,6 +1,6 @@
 <% content_for :title do %>Edit Partner: <%= @partner.name %><% end %>
 
-<%= render(ErrorComponent.new(@partner)) %>
+<%= render(Admin::ErrorComponent.new(@partner)) %>
 
 <div class="flex items-center justify-between mb-6">
   <div>

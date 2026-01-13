@@ -1,2 +1,2 @@
 <% can_remove = !f.object.neighbourhood_id || current_user.can_edit_partners_neighbourhood_by_id?(f.object.neighbourhood_id, @partner.id) %>
-<%= render CascadingNeighbourhoodFields.new(form: f, show_remove: can_remove) %>
+<%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: f, show_remove: can_remove) %>

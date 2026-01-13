@@ -1,3 +1,4 @@
 <p class="alert alert-danger" role="alert">Warning: neighbourhoods should not be created here and this page is only left as a placeholder!</p>
 
-<%= render(AdminNew.new(:neighbourhood)) %>
+<%= render 'layouts/admin/page_header', model_name: 'Neighbourhood', new_record: true %>
+<%= render 'form' %>
