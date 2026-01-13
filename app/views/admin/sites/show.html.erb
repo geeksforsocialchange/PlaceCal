@@ -5,13 +5,13 @@
     <div>
       <h1 class="text-2xl font-bold"><%= @site.name %></h1>
       <p class="text-sm text-base-content/60 mt-1">
-        Calendars displayed on this site
+        <%= t('admin.sites.show.title') %>
       </p>
     </div>
     <div class="flex items-center gap-2">
       <%= link_to edit_admin_site_path(@site), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
         <%= icon(:edit, size: '4') %>
-        Edit Site
+        <%= t('admin.sites.show.edit_site') %>
       <% end %>
     </div>
   </div>
@@ -26,7 +26,7 @@
           <%= icon(:calendar, size: '5', css_class: 'text-placecal-orange') %>
         </div>
         <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium">Calendars</p>
+          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.sites.show.stats.calendars') %></p>
           <p class="font-semibold text-lg"><%= @calendars.count %></p>
         </div>
       </div>
@@ -40,7 +40,7 @@
           <%= icon(:check, size: '5', css_class: 'text-success') %>
         </div>
         <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium">Healthy</p>
+          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.sites.show.stats.healthy') %></p>
           <p class="font-semibold text-lg"><%= @calendars.where(calendar_state: :idle).count %></p>
         </div>
       </div>
@@ -55,7 +55,7 @@
           <%= icon(:warning, size: '5', css_class: error_count > 0 ? 'text-error' : 'text-base-content/30') %>
         </div>
         <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium">Issues</p>
+          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.sites.show.stats.issues') %></p>
           <p class="font-semibold text-lg <%= error_count > 0 ? 'text-error' : '' %>"><%= error_count %></p>
         </div>
       </div>
@@ -79,10 +79,10 @@
         <table class="table table-sm">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>State</th>
-              <th>Last Import</th>
-              <th>Last Changed</th>
+              <th><%= t('admin.sites.show.table.name') %></th>
+              <th><%= t('admin.sites.show.table.state') %></th>
+              <th><%= t('admin.sites.show.table.last_import') %></th>
+              <th><%= t('admin.sites.show.table.last_changed') %></th>
             </tr>
           </thead>
           <tbody>
@@ -138,8 +138,8 @@
     <% else %>
       <div class="text-center py-12">
         <%= icon(:calendar, size: '12', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-        <p class="mt-3 text-base-content/60">No calendars on this site</p>
-        <p class="text-sm text-base-content/40 mt-1">Add neighbourhoods to this site to include their calendars</p>
+        <p class="mt-3 text-base-content/60"><%= t('admin.sites.show.empty.title') %></p>
+        <p class="text-sm text-base-content/40 mt-1"><%= t('admin.sites.show.empty.hint') %></p>
       </div>
     <% end %>
   </div>

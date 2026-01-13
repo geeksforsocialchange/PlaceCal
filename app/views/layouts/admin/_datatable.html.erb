@@ -20,7 +20,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h1 class="text-xl font-semibold text-gray-900"><%= title %></h1>
-        <p class="mt-1 text-sm text-gray-500" data-admin-table-target="summary">Loading...</p>
+        <p class="mt-1 text-sm text-gray-500" data-admin-table-target="summary"><%= t('admin.shared.labels.loading') %></p>
       </div>
       <%- if policy(model_name.constantize).create? && defined?(new_link) %>
         <%= link_to new_link, data: { turbo: false },
@@ -28,7 +28,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
-          Add <%= model_name %>
+          <%= t('admin.datatable.add_model', model: model_name) %>
         <% end %>
       <% end %>
     </div>
@@ -49,14 +49,14 @@
       <!-- Search -->
       <% if defined?(search_fieldset) && search_fieldset %>
         <fieldset class="relative flex items-center px-3 py-2 pt-3 border border-gray-300 rounded-lg bg-gray-100">
-          <legend class="font-medium text-gray-400 uppercase tracking-wider px-1 ml-1 bg-gray-50" style="font-size: 9px; line-height: 1;">Search</legend>
+          <legend class="font-medium text-gray-400 uppercase tracking-wider px-1 ml-1 bg-gray-50" style="font-size: 9px; line-height: 1;"><%= t('admin.datatable.search') %></legend>
           <div class="flex items-center gap-2">
             <svg class="h-3.5 w-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <input type="search"
                    class="w-44 bg-transparent text-xs text-gray-700 placeholder-gray-400 focus:outline-none"
-                   placeholder="Type to filter..."
+                   placeholder="<%= t('admin.shared.placeholders.type_to_filter') %>"
                    data-admin-table-target="search"
                    data-action="input->admin-table#search">
           </div>
@@ -70,7 +70,7 @@
           </div>
           <input type="search"
                  class="block w-56 pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                 placeholder="Search..."
+                 placeholder="<%= t('admin.shared.placeholders.search') %>"
                  data-admin-table-target="search"
                  data-action="input->admin-table#search">
         </div>
@@ -108,7 +108,7 @@
                       data-action="click->admin-table#applyRadioFilter"
                       data-filter-value=""
                       data-is-all="true"
-                      class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm">All</button>
+                      class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.datatable.filter_all') %></button>
               <% filter[:options]&.each do |opt| %>
                 <button type="button"
                         data-action="click->admin-table#applyRadioFilter"
@@ -132,7 +132,7 @@
                           data-action="click->admin-table#applyRadioFilter"
                           data-filter-value=""
                           data-is-all="true"
-                          class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm">All</button>
+                          class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.datatable.filter_all') %></button>
                   <% filter[:options]&.each do |opt| %>
                     <button type="button"
                             data-action="click->admin-table#applyRadioFilter"
@@ -153,14 +153,14 @@
                   data-action="click->admin-table#clearFilters"
                   data-admin-table-target="clearFilters"
                   class="hidden px-2 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
-            Clear filters
+            <%= t('admin.datatable.clear_filters') %>
           </button>
         <% end %>
         <button type="button"
                 data-action="click->admin-table#resetSort"
                 data-admin-table-target="clearSort"
                 class="hidden px-2 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
-          Reset sort
+          <%= t('admin.datatable.reset_sort') %>
         </button>
       </div>
     </div>
@@ -203,7 +203,7 @@
                 <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span class="mt-2 text-sm">Loading data...</span>
+              <span class="mt-2 text-sm"><%= t('admin.datatable.loading') %></span>
             </div>
           </td>
         </tr>

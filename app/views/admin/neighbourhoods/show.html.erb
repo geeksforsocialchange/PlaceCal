@@ -43,7 +43,7 @@
       <div class="p-4 border-b border-base-300 flex items-center justify-between">
         <h2 class="font-bold flex items-center gap-2">
           <%= icon(:neighbourhood, size: '5') %>
-          Child Neighbourhoods
+          <%= t('admin.neighbourhoods.show.child_neighbourhoods') %>
           <span class="badge badge-neutral"><%= @neighbourhood.children.count %></span>
         </h2>
       </div>
@@ -65,7 +65,7 @@
               </div>
             </div>
             <% if child.descendants.present? %>
-              <span class="badge badge-sm badge-ghost"><%= child.descendants.count %> descendants</span>
+              <span class="badge badge-sm badge-ghost"><%= t('admin.neighbourhoods.show.descendants', count: child.descendants.count) %></span>
             <% end %>
           </div>
         <% end %>
@@ -76,7 +76,7 @@
   <div class="card bg-base-200/50 border border-base-300 mb-6">
     <div class="card-body p-6 text-center">
       <%= icon(:neighbourhood, size: '10', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-      <p class="mt-3 text-base-content/60">This neighbourhood does not contain any child neighbourhoods</p>
+      <p class="mt-3 text-base-content/60"><%= t('admin.neighbourhoods.show.no_children') %></p>
     </div>
   </div>
 <% end %>
@@ -89,7 +89,7 @@
       <div class="p-4 border-b border-base-300 flex items-center justify-between">
         <h2 class="font-bold flex items-center gap-2">
           <%= icon(:partner, size: '5') %>
-          Address Partners
+          <%= t('admin.neighbourhoods.show.address_partners') %>
           <span class="badge badge-neutral"><%= @neighbourhood.address_partners.count %></span>
         </h2>
       </div>
@@ -114,7 +114,7 @@
       <% else %>
         <div class="p-6 text-center">
           <%= icon(:partner, size: '8', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-          <p class="mt-2 text-sm text-base-content/50">No address partners</p>
+          <p class="mt-2 text-sm text-base-content/50"><%= t('admin.neighbourhoods.show.no_address_partners') %></p>
         </div>
       <% end %>
     </div>
@@ -126,7 +126,7 @@
       <div class="p-4 border-b border-base-300 flex items-center justify-between">
         <h2 class="font-bold flex items-center gap-2">
           <%= icon(:map_pin, size: '5') %>
-          Service Area Partners
+          <%= t('admin.neighbourhoods.show.service_area_partners') %>
           <span class="badge badge-neutral"><%= @neighbourhood.service_area_partners.count %></span>
         </h2>
       </div>
@@ -151,7 +151,7 @@
       <% else %>
         <div class="p-6 text-center">
           <%= icon(:map_pin, size: '8', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-          <p class="mt-2 text-sm text-base-content/50">No service area partners</p>
+          <p class="mt-2 text-sm text-base-content/50"><%= t('admin.neighbourhoods.show.no_service_area_partners') %></p>
         </div>
       <% end %>
     </div>
@@ -165,7 +165,7 @@
       <div class="p-4 border-b border-base-300 flex items-center justify-between">
         <h2 class="font-bold flex items-center gap-2">
           <%= icon(:site, size: '5') %>
-          Sites
+          <%= t('admin.neighbourhoods.show.sites_title') %>
           <span class="badge badge-neutral"><%= @neighbourhood.sites.count %></span>
         </h2>
       </div>
@@ -187,7 +187,7 @@
       <% else %>
         <div class="p-6 text-center">
           <%= icon(:site, size: '8', css_class: 'mx-auto text-base-content/20', stroke_width: '1.5') %>
-          <p class="mt-2 text-sm text-base-content/50">No sites use this neighbourhood</p>
+          <p class="mt-2 text-sm text-base-content/50"><%= t('admin.neighbourhoods.show.no_sites') %></p>
         </div>
       <% end %>
     </div>
