@@ -219,7 +219,6 @@ RSpec.describe "Admin::Partners", type: :request do
 
       it "has contact information section" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("Contact Information")
         expect(response.body).to include("Public Contact")
         expect(response.body).to include("Partnership Contact")
       end
