@@ -2,15 +2,6 @@
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class UserDatatable < Datatable
-  extend Forwardable
-
-  # Override to ensure draw is included
-  def as_json(*)
-    result = super
-    result[:draw] = params[:draw].to_i if params[:draw].present?
-    result
-  end
-
   def view_columns
     # NOTE: name searchable is false because we override filter_records to search
     # across first_name, last_name, and email

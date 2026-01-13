@@ -2,16 +2,7 @@
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class NeighbourhoodDatatable < Datatable
-  extend Forwardable
-
   LATEST_RELEASE_DATE = Neighbourhood::LATEST_RELEASE_DATE
-
-  # Override to ensure draw is included
-  def as_json(*)
-    result = super
-    result[:draw] = params[:draw].to_i if params[:draw].present?
-    result
-  end
 
   def view_columns
     @view_columns ||= {

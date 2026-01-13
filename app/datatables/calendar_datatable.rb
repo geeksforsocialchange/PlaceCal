@@ -2,13 +2,6 @@
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class CalendarDatatable < Datatable
-  # Override to ensure draw is included - parent class has issue with draw_id
-  def as_json(*)
-    result = super
-    result[:draw] = params[:draw].to_i if params[:draw].present?
-    result
-  end
-
   def view_columns
     @view_columns ||= {
       name: { source: 'Calendar.name', cond: :like, searchable: true },

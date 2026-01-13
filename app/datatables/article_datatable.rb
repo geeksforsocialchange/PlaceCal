@@ -2,15 +2,6 @@
 
 # rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class ArticleDatatable < Datatable
-  extend Forwardable
-
-  # Override to ensure draw is included
-  def as_json(*)
-    result = super
-    result[:draw] = params[:draw].to_i if params[:draw].present?
-    result
-  end
-
   def view_columns
     @view_columns ||= {
       title: { source: 'Article.title', cond: :like, searchable: true },

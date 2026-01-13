@@ -20,6 +20,13 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
     super
   end
 
+  # Override to ensure draw is included - parent class has issue with draw_id
+  def as_json(*)
+    result = super
+    result[:draw] = params[:draw].to_i if params[:draw].present?
+    result
+  end
+
   protected
 
   # Delegate to SvgIconsHelper via view context
