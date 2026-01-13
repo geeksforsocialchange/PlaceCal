@@ -3,40 +3,65 @@
 
   <%# Radio Tabs - daisyUI tabs-lift %>
   <div role="tablist" class="tabs tabs-lift">
-    <input type="radio" name="site_tabs" class="tab" aria-label="📋 Basic Info" data-site-tabs-target="tab" data-hash="basic" checked="checked" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-site-tabs-target="panel" data-section="basic">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'site_tabs',
+      label: '📋 Basic Info',
+      hash: 'basic',
+      controller_name: 'site-tabs',
+      checked: true
+    ) do %>
       <%= render 'form_tab_basic', f: f %>
-    </div>
+    <% end %>
 
-    <input type="radio" name="site_tabs" class="tab" aria-label="🖼️ Images" data-site-tabs-target="tab" data-hash="images" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-site-tabs-target="panel" data-section="images">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'site_tabs',
+      label: '🖼️ Images',
+      hash: 'images',
+      controller_name: 'site-tabs'
+    ) do %>
       <%= render 'form_tab_images', f: f %>
-    </div>
+    <% end %>
 
-    <input type="radio" name="site_tabs" class="tab" aria-label="📍 Neighbourhoods" data-site-tabs-target="tab" data-hash="neighbourhoods" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-site-tabs-target="panel" data-section="neighbourhoods">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'site_tabs',
+      label: '📍 Neighbourhoods',
+      hash: 'neighbourhoods',
+      controller_name: 'site-tabs'
+    ) do %>
       <%= render 'form_tab_neighbourhoods', f: f %>
-    </div>
+    <% end %>
 
-    <input type="radio" name="site_tabs" class="tab" aria-label="🏷️ Partnerships" data-site-tabs-target="tab" data-hash="partnerships" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-site-tabs-target="panel" data-section="partnerships">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'site_tabs',
+      label: '🏷️ Partnerships',
+      hash: 'partnerships',
+      controller_name: 'site-tabs'
+    ) do %>
       <%= render 'form_tab_partnerships', f: f %>
-    </div>
+    <% end %>
 
     <% unless @site.new_record? %>
-      <input type="radio" name="site_tabs" class="tab" aria-label="👁️ Preview" data-site-tabs-target="tab" data-hash="preview" />
-      <div class="tab-content bg-base-100 border-base-300 p-6" data-site-tabs-target="panel" data-section="preview">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'site_tabs',
+        label: '👁️ Preview',
+        hash: 'preview',
+        controller_name: 'site-tabs'
+      ) do %>
         <%= render 'form_tab_preview' %>
-      </div>
+      <% end %>
     <% end %>
 
     <%# Spacer to push Admin tab right %>
     <div class="tab flex-1 cursor-default"></div>
 
-    <input type="radio" name="site_tabs" class="tab" aria-label="⚙ Admin" data-site-tabs-target="tab" data-hash="admin" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-site-tabs-target="panel" data-section="admin">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'site_tabs',
+      label: '⚙ Admin',
+      hash: 'admin',
+      controller_name: 'site-tabs'
+    ) do %>
       <%= render 'form_tab_admin', f: f %>
-    </div>
+    <% end %>
   </div>
 
   <%= render Admin::SaveBarComponent.new(

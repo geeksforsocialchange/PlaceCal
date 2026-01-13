@@ -16,50 +16,83 @@
 
   <%# Radio Tabs - daisyUI tabs-lift %>
   <div role="tablist" class="tabs tabs-lift">
-    <input type="radio" name="partner_tabs" class="tab" aria-label="📋 Basic Info" data-partner-tabs-target="tab" data-hash="basic" checked="checked" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="basic">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'partner_tabs',
+      label: '📋 Basic Info',
+      hash: 'basic',
+      controller_name: 'partner-tabs',
+      checked: true
+    ) do %>
       <%= render 'form_tab_basic', f: f %>
-    </div>
+    <% end %>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="📍 Location" data-partner-tabs-target="tab" data-hash="location" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="location">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'partner_tabs',
+      label: '📍 Location',
+      hash: 'location',
+      controller_name: 'partner-tabs'
+    ) do %>
       <%= render 'form_tab_location', f: f %>
-    </div>
+    <% end %>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="📞 Contact" data-partner-tabs-target="tab" data-hash="contact" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="contact">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'partner_tabs',
+      label: '📞 Contact',
+      hash: 'contact',
+      controller_name: 'partner-tabs'
+    ) do %>
       <%= render 'form_tab_contact', f: f %>
-    </div>
+    <% end %>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="🏷️ Tags" data-partner-tabs-target="tab" data-hash="tags" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="tags">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'partner_tabs',
+      label: '🏷️ Tags',
+      hash: 'tags',
+      controller_name: 'partner-tabs'
+    ) do %>
       <%= render 'form_tab_tags', f: f %>
-    </div>
+    <% end %>
 
     <% unless @partner.new_record? %>
-      <input type="radio" name="partner_tabs" class="tab" aria-label="📅 Calendars" data-partner-tabs-target="tab" data-hash="calendars" />
-      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="calendars">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'partner_tabs',
+        label: '📅 Calendars',
+        hash: 'calendars',
+        controller_name: 'partner-tabs'
+      ) do %>
         <%= render 'form_tab_calendars' %>
-      </div>
+      <% end %>
 
-      <input type="radio" name="partner_tabs" class="tab" aria-label="👥 Admins" data-partner-tabs-target="tab" data-hash="admins" />
-      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="admins">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'partner_tabs',
+        label: '👥 Admins',
+        hash: 'admins',
+        controller_name: 'partner-tabs'
+      ) do %>
         <%= render 'form_tab_admins' %>
-      </div>
+      <% end %>
 
-      <input type="radio" name="partner_tabs" class="tab" aria-label="👁️ Preview" data-partner-tabs-target="tab" data-hash="preview" />
-      <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="preview">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'partner_tabs',
+        label: '👁️ Preview',
+        hash: 'preview',
+        controller_name: 'partner-tabs'
+      ) do %>
         <%= render 'form_tab_preview' %>
-      </div>
+      <% end %>
     <% end %>
 
     <%# Spacer to push Settings tab right %>
     <div class="tab flex-1 cursor-default"></div>
 
-    <input type="radio" name="partner_tabs" class="tab" aria-label="⚙️ Settings" data-partner-tabs-target="tab" data-hash="settings" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="settings">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'partner_tabs',
+      label: '⚙️ Settings',
+      hash: 'settings',
+      controller_name: 'partner-tabs'
+    ) do %>
       <%= render 'form_tab_settings', f: f %>
-    </div>
+    <% end %>
   </div>
 
   <%= render Admin::SaveBarComponent.new(
@@ -70,5 +103,3 @@
     storage_key: 'partnerTabAfterSave'
   ) %>
 <% end %>
-
-<div id="map-pin-div" data-url="<%= image_path('icons/map/map-marker.png') %>"></div>

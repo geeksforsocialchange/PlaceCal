@@ -6,24 +6,37 @@
 
   <%# Radio Tabs - daisyUI tabs-lift %>
   <div role="tablist" class="tabs tabs-lift mt-6">
-    <input type="radio" name="calendar_tabs" class="tab" aria-label="📋 Settings" data-calendar-tabs-target="tab" data-hash="settings" checked="checked" />
-    <div class="tab-content bg-base-100 border-base-300 p-6" data-calendar-tabs-target="panel" data-section="settings">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'calendar_tabs',
+      label: '📋 Settings',
+      hash: 'settings',
+      controller_name: 'calendar-tabs',
+      checked: true
+    ) do %>
       <%= render 'form_tab_settings', f: f %>
-    </div>
+    <% end %>
 
     <% unless @calendar.new_record? %>
-      <input type="radio" name="calendar_tabs" class="tab" aria-label="🎫 Events" data-calendar-tabs-target="tab" data-hash="events" />
-      <div class="tab-content bg-base-100 border-base-300 p-6" data-calendar-tabs-target="panel" data-section="events">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'calendar_tabs',
+        label: '🎫 Events',
+        hash: 'events',
+        controller_name: 'calendar-tabs'
+      ) do %>
         <%= render 'form_tab_events' %>
-      </div>
+      <% end %>
 
       <%# Spacer to push Admin tab right %>
       <div class="tab flex-1 cursor-default"></div>
 
-      <input type="radio" name="calendar_tabs" class="tab" aria-label="⚙️ Admin" data-calendar-tabs-target="tab" data-hash="admin" />
-      <div class="tab-content bg-base-100 border-base-300 p-6" data-calendar-tabs-target="panel" data-section="admin">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'calendar_tabs',
+        label: '⚙️ Admin',
+        hash: 'admin',
+        controller_name: 'calendar-tabs'
+      ) do %>
         <%= render 'form_tab_admin' %>
-      </div>
+      <% end %>
     <% end %>
   </div>
 
