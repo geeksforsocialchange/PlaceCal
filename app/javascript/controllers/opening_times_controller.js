@@ -121,7 +121,10 @@ export default class extends Controller {
 					"py-3",
 				]);
 
-				const text = element("span", openingHoursEnglish(openSpec), []);
+				const text = element("span", openingHoursEnglish(openSpec), [
+					"text-base",
+					"font-medium",
+				]);
 
 				const btn = element("button", "", [
 					"btn",

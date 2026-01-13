@@ -1,19 +1,85 @@
 <% if current_user.partnership_admin? || current_user.root? -%>
-  <fieldset class="fieldset">
+  <fieldset class="fieldset"
+            data-controller="partnership-selector"
+            data-partnership-selector-permitted-value="<%= permitted_options_for_partner_tags %>"
+            data-partnership-selector-field-name-value="partner[partnership_ids][]">
+
     <legend class="fieldset-legend">Partnerships</legend>
-    <%= f.association :partnerships,
-        label: false,
-        collection: options_for_partner_partnerships,
-        wrapper: false,
-        input_html: {
-          class: 'w-full',
-          multiple: true,
-          data: {
-            controller: 'partner-tags',
-            "partner-tags-permitted-tags-value": permitted_options_for_partner_tags
-          }
-        }
-    %>
-    <p class="fieldset-label">Which partnerships is this partner in?</p>
+
+    <%# Empty hidden field to ensure array is submitted even when empty %>
+    <input type="hidden" name="partner[partnership_ids][]" value="">
+
+    <%# List of selected partnerships %>
+    <div class="space-y-2 mb-4" data-partnership-selector-target="list">
+      <% @partner.partnerships.each do |partnership| %>
+        <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg group"
+             data-partnership-id="<%= partnership.id %>"
+             data-partnership-name="<%= partnership.name %>">
+          <input type="hidden" name="partner[partnership_ids][]" value="<%= partnership.id %>">
+          <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+          </div>
+          <span class="flex-1 font-medium text-sm"><%= partnership.name %></span>
+          <button type="button"
+                  class="btn btn-ghost btn-sm btn-square text-error/70 hover:text-error hover:bg-error/10"
+                  data-action="click->partnership-selector#remove"
+                  title="Remove partnership">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Empty state %>
+    <div class="text-center py-6 text-base-content/50 <%= @partner.partnerships.any? ? 'hidden' : '' %>"
+         data-partnership-selector-target="empty">
+      <svg class="mx-auto h-8 w-8 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+      <p class="text-sm">No partnerships assigned</p>
+    </div>
+
+    <%# Add partnership dropdown %>
+    <div class="flex items-center gap-2">
+      <select class="select select-bordered select-sm flex-1"
+              data-partnership-selector-target="select"
+              data-action="change->partnership-selector#add">
+        <option value="">Add a partnership...</option>
+        <% options_for_partner_partnerships.each do |name, id| %>
+          <option value="<%= id %>" <%= @partner.partnerships.pluck(:id).include?(id) ? 'disabled' : '' %>>
+            <%= name %>
+          </option>
+        <% end %>
+      </select>
+    </div>
+
+    <p class="fieldset-label mt-2">Which partnerships is this partner in?</p>
+
+    <%# Template for dynamically added items %>
+    <template data-partnership-selector-target="template">
+      <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg group"
+           data-partnership-id="PARTNERSHIP_ID"
+           data-partnership-name="PARTNERSHIP_NAME">
+        <input type="hidden" name="partner[partnership_ids][]" value="PARTNERSHIP_ID">
+        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+          <svg class="w-4 h-4 text-placecal-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <span class="flex-1 font-medium text-sm">PARTNERSHIP_NAME</span>
+        <button type="button"
+                class="btn btn-ghost btn-sm btn-square text-error/70 hover:text-error hover:bg-error/10"
+                data-action="click->partnership-selector#remove"
+                title="Remove partnership">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </button>
+      </div>
+    </template>
   </fieldset>
 <% end -%>

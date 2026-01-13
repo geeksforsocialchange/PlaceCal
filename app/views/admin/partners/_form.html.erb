@@ -145,7 +145,7 @@
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
           <legend class="fieldset-legend">Service Areas</legend>
-          <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address.</p>
+          <p class="text-sm text-base-content/60 mb-4">If this partner delivers services outside their address. Be as specific as possible: wards will show up in searches for regions and gives people more context to go on.</p>
           <%= nested_form_for(f, :service_areas, add_text: 'Add Service Area', add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
             <%= f.simple_fields_for :service_areas do |neighbourhood| %>
               <%= render 'service_area_fields', f: neighbourhood %>
@@ -162,95 +162,98 @@
 
     <input type="radio" name="partner_tabs" class="tab" aria-label="📞 Contact" data-partner-tabs-target="tab" data-hash="contact" />
     <div class="tab-content bg-base-100 border-base-300 p-6" data-partner-tabs-target="panel" data-section="contact">
-      <h2 class="text-lg font-bold mb-1">Online Presence</h2>
-      <p class="text-sm text-base-content/60 mb-6">Website and social media links.</p>
-
-      <div class="grid gap-4 max-w-2xl mb-8">
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Website</legend>
-          <%= f.input_field :url, class: 'input input-bordered w-full', placeholder: 'https://your-website.org',
-              'data-validate-url': 'true',
-              'data-validate-url-message': 'Enter a valid URL (including https://)' %>
-        </fieldset>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Facebook</legend>
-            <label class="input input-bordered flex items-center gap-1 pr-1">
-              <span class="text-base-content/50 text-xs shrink-0">facebook.com/</span>
-              <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0 text-sm' %>
-            </label>
-          </fieldset>
-
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">X (Twitter)</legend>
-            <label class="input input-bordered flex items-center gap-1">
-              <span class="text-base-content/50">@</span>
-              <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0 text-sm' %>
-            </label>
-          </fieldset>
-
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Instagram</legend>
-            <label class="input input-bordered flex items-center gap-1">
-              <span class="text-base-content/50">@</span>
-              <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0 text-sm' %>
-            </label>
-          </fieldset>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <h2 class="text-lg font-bold mb-1">Contact Information</h2>
-      <p class="text-sm text-base-content/60 mb-6">How people can get in touch.</p>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-6">
+        <%# Online Presence - Full Width Card %>
         <div class="card bg-base-200/50 border border-base-300">
           <div class="card-body p-4 gap-3">
             <h3 class="font-semibold flex items-center gap-2">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-              Public Contact
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+              Online Presence
             </h3>
-            <p class="text-xs text-base-content/60">Shown on PlaceCal to the public.</p>
+            <p class="text-xs text-base-content/60">Website and social media links.</p>
+
             <fieldset class="fieldset">
-              <legend class="fieldset-legend">Name</legend>
-              <%= f.input_field :public_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
+              <legend class="fieldset-legend">Website</legend>
+              <%= f.input_field :url, class: 'input input-bordered w-full bg-base-100', placeholder: 'https://your-website.org',
+                  'data-validate-url': 'true',
+                  'data-validate-url-message': 'Enter a valid URL (including https://)' %>
             </fieldset>
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">Email</legend>
-              <%= f.input_field :public_email, class: 'input input-bordered input-sm w-full bg-base-100',
-                  'data-validate-email': 'true',
-                  'data-validate-email-message': 'Enter a valid email address' %>
-            </fieldset>
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">Phone</legend>
-              <%= f.input_field :public_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
-            </fieldset>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Facebook</legend>
+                <label class="input input-bordered flex items-center gap-1 pr-1 bg-base-100">
+                  <span class="text-base-content/50 text-sm shrink-0">facebook.com/</span>
+                  <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">X (Twitter)</legend>
+                <label class="input input-bordered flex items-center gap-1 bg-base-100">
+                  <span class="text-base-content/50">@</span>
+                  <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Instagram</legend>
+                <label class="input input-bordered flex items-center gap-1 bg-base-100">
+                  <span class="text-base-content/50">@</span>
+                  <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
+            </div>
           </div>
         </div>
 
-        <div class="card bg-base-200/50 border border-base-300">
-          <div class="card-body p-4 gap-3">
-            <h3 class="font-semibold flex items-center gap-2">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-              Partnership Contact
-            </h3>
-            <p class="text-xs text-base-content/60">Internal contact for PlaceCal team.</p>
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">Name</legend>
-              <%= f.input_field :partner_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
-            </fieldset>
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">Email</legend>
-              <%= f.input_field :partner_email, class: 'input input-bordered input-sm w-full bg-base-100',
-                  'data-validate-email': 'true',
-                  'data-validate-email-message': 'Enter a valid email address' %>
-            </fieldset>
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">Phone</legend>
-              <%= f.input_field :partner_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
-            </fieldset>
+        <%# Contact Details - Two Column Row %>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <%# Public Contact Card %>
+          <div class="card bg-base-200/50 border border-base-300">
+            <div class="card-body p-4 gap-3">
+              <h3 class="font-semibold flex items-center gap-2">
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                Public Contact
+              </h3>
+              <p class="text-xs text-base-content/60">Shown on PlaceCal to the public.</p>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Name</legend>
+                <%= f.input_field :public_name, class: 'input input-bordered w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Email</legend>
+                <%= f.input_field :public_email, class: 'input input-bordered w-full bg-base-100',
+                    'data-validate-email': 'true',
+                    'data-validate-email-message': 'Enter a valid email address' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Phone</legend>
+                <%= f.input_field :public_phone, class: 'input input-bordered w-full bg-base-100' %>
+              </fieldset>
+            </div>
+          </div>
+
+          <%# Partnership Contact Card %>
+          <div class="card bg-base-200/50 border border-base-300">
+            <div class="card-body p-4 gap-3">
+              <h3 class="font-semibold flex items-center gap-2">
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                Partnership Contact
+              </h3>
+              <p class="text-xs text-base-content/60">Internal contact for PlaceCal team.</p>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Name</legend>
+                <%= f.input_field :partner_name, class: 'input input-bordered w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Email</legend>
+                <%= f.input_field :partner_email, class: 'input input-bordered w-full bg-base-100',
+                    'data-validate-email': 'true',
+                    'data-validate-email-message': 'Enter a valid email address' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Phone</legend>
+                <%= f.input_field :partner_phone, class: 'input input-bordered w-full bg-base-100' %>
+              </fieldset>
+            </div>
           </div>
         </div>
       </div>
