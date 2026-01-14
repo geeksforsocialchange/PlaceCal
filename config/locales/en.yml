@@ -111,6 +111,9 @@ en:
         strategy: "Location Strategy"
         notices: "Import Notices"
         import_mode: "Import Mode"
+        public_contact_name: "Contact Name"
+        public_contact_email: "Contact Email"
+        public_contact_phone: "Contact Phone"
 
       site:
         <<: *default_attrs
@@ -118,8 +121,8 @@ en:
         hero_text: "Hero Text"
         hero_image_alt: "Alt Text"
         hero_image_credit: "Image Credit"
-        footer_logo: "Footer logo"
-        hero_image: "Hero image"
+        footer_logo: "Footer Logo"
+        hero_image: "Hero Image"
 
       user:
         <<: *default_attrs

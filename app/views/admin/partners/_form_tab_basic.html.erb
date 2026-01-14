@@ -34,7 +34,7 @@
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.partners.fields.accessibility_info') %></legend>
+      <legend class="fieldset-legend"><%= attr_label(:partner, :accessibility_info) %></legend>
       <%= f.input_field :accessibility_info, class: 'textarea textarea-bordered w-full min-h-20', data: { controller: 'auto-expand' } %>
       <p class="fieldset-label"><%= t('admin.partners.fields.accessibility_hint') %></p>
     </fieldset>

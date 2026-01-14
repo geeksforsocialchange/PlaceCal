@@ -14,7 +14,7 @@
         <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
           <%= icon(:plus, size: '3') %>
         </span>
-        <span class="text-sm font-medium"><%= t('admin.topbar.new_partner') %></span>
+        <span class="text-sm font-medium"><%= t('admin.actions.new_model', model: Partner.model_name.human) %></span>
       <% end %>
     <% end %>
     <% if policy(Calendar).new? %>
@@ -22,7 +22,7 @@
         <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
           <%= icon(:plus, size: '3') %>
         </span>
-        <span class="text-sm font-medium"><%= t('admin.topbar.new_calendar') %></span>
+        <span class="text-sm font-medium"><%= t('admin.actions.new_model', model: Calendar.model_name.human) %></span>
       <% end %>
     <% end %>
     <% if policy(User).new? %>
@@ -30,7 +30,7 @@
         <span class="w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200">
           <%= icon(:plus, size: '3') %>
         </span>
-        <span class="text-sm font-medium"><%= t('admin.topbar.new_user') %></span>
+        <span class="text-sm font-medium"><%= t('admin.actions.new_model', model: User.model_name.human) %></span>
       <% end %>
     <% end %>
   </div>

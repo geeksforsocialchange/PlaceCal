@@ -152,8 +152,8 @@ RSpec.describe "Admin::Sites", type: :request do
 
         # Form error messages
         expect(response.body).to include("Logo")
-        expect(response.body).to include("Footer logo")
-        expect(response.body).to include("Hero image")
+        expect(response.body).to include("Footer Logo")
+        expect(response.body).to include("Hero Image")
         expect(response.body).to include("not allowed to upload")
         expect(response.body).to include("bmp")
       end
@@ -181,8 +181,8 @@ RSpec.describe "Admin::Sites", type: :request do
 
         # Form error messages
         expect(response.body).to include("Logo")
-        expect(response.body).to include("Footer logo")
-        expect(response.body).to include("Hero image")
+        expect(response.body).to include("Footer Logo")
+        expect(response.body).to include("Hero Image")
         expect(response.body).to include("not allowed to upload")
         expect(response.body).to include("bmp")
       end

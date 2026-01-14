@@ -28,7 +28,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
-          <%= t('admin.datatable.add_model', model: model_name) %>
+          <%= t('admin.actions.add_model', model: model_name) %>
         <% end %>
       <% end %>
     </div>
@@ -108,7 +108,7 @@
                       data-action="click->admin-table#applyRadioFilter"
                       data-filter-value=""
                       data-is-all="true"
-                      class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.datatable.filter_all') %></button>
+                      class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.labels.all') %></button>
               <% filter[:options]&.each do |opt| %>
                 <button type="button"
                         data-action="click->admin-table#applyRadioFilter"
@@ -132,7 +132,7 @@
                           data-action="click->admin-table#applyRadioFilter"
                           data-filter-value=""
                           data-is-all="true"
-                          class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.datatable.filter_all') %></button>
+                          class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.labels.all') %></button>
                   <% filter[:options]&.each do |opt| %>
                     <button type="button"
                             data-action="click->admin-table#applyRadioFilter"

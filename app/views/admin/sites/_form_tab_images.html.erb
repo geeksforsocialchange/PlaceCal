@@ -35,7 +35,7 @@
 
     <div>
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.sites.fields.footer_logo') %></legend>
+        <legend class="fieldset-legend"><%= attr_label(:site, :footer_logo) %></legend>
         <div data-controller="image-preview">
           <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
             <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
@@ -59,7 +59,7 @@
 <% end %>
 
 <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
-  <legend class="fieldset-legend"><%= t('admin.sites.fields.hero_image') %></legend>
+  <legend class="fieldset-legend"><%= attr_label(:site, :hero_image) %></legend>
   <p class="text-sm text-base-content/60 mb-4">
     <%= t('admin.sites.fields.hero_image_description') %>
     <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2" class="link link-hover text-placecal-orange" target="_blank"><%= t('admin.sites.fields.hero_handbook_link') %></a>
@@ -84,13 +84,13 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.sites.fields.image_credit') %></legend>
+      <legend class="fieldset-legend"><%= attr_label(:site, :hero_image_credit) %></legend>
       <%= f.input_field :hero_image_credit, class: 'input input-bordered w-full input-sm bg-base-100' %>
       <p class="fieldset-label"><%= t('admin.sites.fields.image_credit_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.sites.fields.alt_text') %></legend>
+      <legend class="fieldset-legend"><%= attr_label(:site, :hero_image_alt) %></legend>
       <%= f.input_field :hero_alttext, class: 'input input-bordered w-full input-sm bg-base-100' %>
       <p class="fieldset-label"><%= t('admin.sites.fields.alt_text_hint') %></p>
     </fieldset>

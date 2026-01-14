@@ -37,7 +37,7 @@
   <% end %>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= t('admin.sites.fields.place_name') %></legend>
+    <legend class="fieldset-legend"><%= attr_label(:site, :place_name) %></legend>
     <%= f.input_field :place_name, class: 'input input-bordered w-full' %>
     <p class="fieldset-label"><%= t('admin.sites.fields.place_name_hint') %></p>
   </fieldset>
@@ -48,7 +48,7 @@
   </fieldset>
 
   <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="120">
-    <legend class="fieldset-legend"><%= t('admin.sites.fields.hero_text') %></legend>
+    <legend class="fieldset-legend"><%= attr_label(:site, :hero_text) %></legend>
     <%= f.input_field :hero_text, as: :text, class: 'textarea textarea-bordered w-full min-h-20', maxlength: 120, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
     <div class="flex items-center justify-between mt-1">
       <p class="fieldset-label"><%= t('admin.sites.fields.hero_text_hint') %></p>

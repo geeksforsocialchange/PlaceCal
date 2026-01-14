@@ -18,19 +18,19 @@
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.calendars.fields.calendar_name') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <%= f.input_field :name, class: 'input input-bordered w-full' %>
       <p class="fieldset-label"><%= t('admin.calendars.fields.name_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.calendars.fields.source_url') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :source) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <%= f.input_field :source, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.calendars.fields.source_placeholder') %>
       <p class="fieldset-label"><%= t('admin.calendars.handbook_hint_html') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.calendars.fields.import_mode') %></legend>
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :import_mode) %></legend>
       <%= f.input_field :importer_mode,
                         as: :select,
                         collection: options_for_importer,
@@ -80,7 +80,7 @@
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.calendars.fields.location_strategy') %></legend>
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :strategy) %></legend>
       <p class="text-sm text-base-content/60 mb-4"><%= t('admin.calendars.fields.strategy_hint') %></p>
       <%= render Admin::RadioCardGroupComponent.new(
         form: f,
@@ -102,19 +102,19 @@
     <div class="card bg-base-200/50 border border-base-300">
       <div class="card-body p-4 gap-4">
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.calendars.fields.contact_name') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:calendar, :public_contact_name) %></legend>
           <%= f.input_field :public_contact_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
         </fieldset>
 
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.calendars.fields.contact_email') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:calendar, :public_contact_email) %></legend>
           <%= f.input_field :public_contact_email, class: 'input input-bordered input-sm w-full bg-base-100',
               'data-validate-email': 'true',
               'data-validate-email-message': t('admin.hints.email_validation') %>
         </fieldset>
 
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.calendars.fields.contact_phone') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:calendar, :public_contact_phone) %></legend>
           <%= f.input_field :public_contact_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
         </fieldset>
       </div>
