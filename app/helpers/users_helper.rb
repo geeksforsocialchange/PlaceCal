@@ -51,16 +51,4 @@ module UsersHelper
         end
       end
   end
-
-  def role_label(value)
-    role_key = value.second
-    role_name = User.human_attribute_name("role.#{role_key}")
-    description = I18n.t("admin.users.roles.#{role_key}", default: nil)
-
-    if description
-      safe_join([tag.strong(role_name), ': ', description])
-    else
-      value
-    end
-  end
 end
