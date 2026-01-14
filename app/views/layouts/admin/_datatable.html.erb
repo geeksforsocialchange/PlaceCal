@@ -153,9 +153,7 @@
                 data-admin-table-target="clearFilters"
                 style="display: none;"
                 class="btn-clear-filters">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+          <%= icon(:x, size: '3.5') %>
           <%= t('admin.datatable.clear_filters') %>
         </button>
       <% end %>
@@ -163,7 +161,8 @@
               data-action="click->admin-table#resetSort"
               data-admin-table-target="clearSort"
               style="display: none;"
-              class="items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+              class="btn-clear-filters">
+        <%= icon(:x, size: '3.5') %>
         <%= t('admin.datatable.reset_sort') %>
       </button>
     </div>
