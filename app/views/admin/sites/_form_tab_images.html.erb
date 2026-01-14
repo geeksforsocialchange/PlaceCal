@@ -1,6 +1,6 @@
 <%= render Admin::SectionHeaderComponent.new(
-  title: "Images & Theme",
-  description: "Logos, hero image, and visual theme for the site."
+  title: t('admin.sections.images_theme'),
+  description: t('admin.sites.sections.images_description')
 ) %>
 
 <% if policy(@site).permitted_attributes.include? :theme %>

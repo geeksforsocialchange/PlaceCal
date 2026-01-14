@@ -56,7 +56,7 @@
               <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-base-content"><%= t('admin.partners.image.choose_file') %></p>
+              <p class="text-sm font-medium text-base-content"><%= t('admin.images.choose_file_drag') %></p>
               <p class="text-xs text-base-content/50"><%= image_uploader_hint(@partner.image) %></p>
             </div>
             <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
@@ -72,7 +72,7 @@
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
               <label class="btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer">
                 <%= icon(:upload, size: '4') %>
-                <%= t('admin.partners.image.replace') %>
+                <%= t('admin.images.replace') %>
                 <%= f.input_field :image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file" } %>
               </label>
             </div>
@@ -82,15 +82,15 @@
             <label class="inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60">
               <%= f.check_box :remove_image, class: 'sr-only' %>
               <%= icon(:trash, size: '3.5') %>
-              <%= t('admin.partners.image.remove_on_save') %>
+              <%= t('admin.images.remove_on_save') %>
             </label>
           </div>
         <% else %>
           <div class="aspect-square rounded-lg border border-base-300 bg-base-200/50 flex items-center justify-center" data-image-preview-target="placeholder">
             <div class="text-center text-base-content/30 p-4">
               <%= icon(:photo, size: '16', css_class: 'mx-auto mb-3 opacity-50', stroke_width: '1') %>
-              <p class="text-sm font-medium"><%= t('admin.partners.image.no_image') %></p>
-              <p class="text-xs mt-1"><%= t('admin.partners.image.upload_hint') %></p>
+              <p class="text-sm font-medium"><%= t('admin.images.no_image_uploaded') %></p>
+              <p class="text-xs mt-1"><%= t('admin.images.upload_hint') %></p>
             </div>
           </div>
           <%= image_tag "", style: 'display:none;', class: 'w-full h-auto rounded-lg border border-base-300', data: { image_preview_target: "img" } %>

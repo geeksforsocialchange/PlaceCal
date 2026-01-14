@@ -10,7 +10,7 @@
                 data-action="click->save-bar#savePrevious"
                 formnovalidate>
           <%= icon(:chevron_left, size: '5') %>
-          <span data-save-bar-target="prevText"><%= t('admin.components.save_bar.back') %></span>
+          <span data-save-bar-target="prevText"><%= t('admin.actions.back') %></span>
         </button>
 
         <%# Unsaved changes indicator %>
@@ -27,14 +27,14 @@
                 class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300"
                 data-save-bar-target="saveButton"
                 data-action="click->save-bar#saveOnly">
-          <%= t('admin.components.save_bar.save') %>
+          <%= t('admin.actions.save') %>
         </button>
 
         <button type="submit"
                 class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
                 data-save-bar-target="continueButton"
                 data-action="click->save-bar#saveContinue">
-          <span data-save-bar-target="continueText"><%= t('admin.components.save_bar.continue') %></span>
+          <span data-save-bar-target="continueText"><%= t('admin.actions.continue') %></span>
           <%= icon(:chevron_right, size: '5') %>
         </button>
       </div>

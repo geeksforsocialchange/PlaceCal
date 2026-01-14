@@ -29,7 +29,7 @@
 
           <% if @partner.accessibility_info.present? %>
             <div class="mt-6">
-              <h3 class="font-semibold mb-2"><%= t('admin.partners.preview.accessibility') %></h3>
+              <h3 class="font-semibold mb-2"><%= t('admin.sections.accessibility') %></h3>
               <p class="text-sm"><%= @partner.accessibility_info %></p>
             </div>
           <% end %>
@@ -40,7 +40,7 @@
             <%= image_tag @partner.image.standard.url, class: 'rounded-box w-full' %>
           <% else %>
             <div class="bg-base-200 rounded-box aspect-square flex items-center justify-center">
-              <span class="text-base-content/30 text-sm"><%= t('admin.partners.preview.no_image') %></span>
+              <span class="text-base-content/30 text-sm"><%= t('admin.images.no_image') %></span>
             </div>
           <% end %>
 
@@ -82,7 +82,7 @@
 <div class="divider my-8"></div>
 
 <%= render Admin::SectionHeaderComponent.new(
-  title: t('admin.partners.preview.upcoming_events'),
+  title: t('admin.sections.upcoming_events'),
   description: t('admin.partners.sections.upcoming_events_description'),
   tag: :h3
 ) %>

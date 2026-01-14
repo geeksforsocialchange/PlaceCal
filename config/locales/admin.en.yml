@@ -101,6 +101,9 @@ en:
       service_areas: "Service Areas"
       location_settings: "Location Settings"
       url_settings: "URL Settings"
+      upcoming_events: "Upcoming Events"
+      images_theme: "Images & Theme"
+      accessibility: "Accessibility"
 
     # Common table headers
     table:
@@ -202,9 +205,7 @@ en:
     components:
       save_bar:
         unsaved_changes: "Unsaved changes"
-        save: "Save"
-        back: "Back"
-        continue: "Continue"
+        # Note: save/back/continue use actions.save, actions.back, actions.continue
       error:
         title:
           one: "%{count} error prohibited this %{model} from being saved"
@@ -224,7 +225,7 @@ en:
       clear_filters: "Clear filters"
       reset_sort: "Reset sort"
       showing: "Showing %{start} to %{end} of %{total} entries"
-      add_model: "Add %{model}"
+      # Note: add_model uses actions.add_model
 
     # ============================================
     # LAYOUT - Navigation, topbar
@@ -294,9 +295,9 @@ en:
     partners:
       preview:
         no_description: "No description provided."
-        no_image: "No image"
-        accessibility: "Accessibility"
-        upcoming_events: "Upcoming Events"
+        # Note: no_image now in shared images.no_image
+        # Note: accessibility now in shared sections.accessibility
+        # Note: upcoming_events now in shared sections.upcoming_events
       sections:
         basic_info_description: "Enter the core details about your partner organisation."
         location_description: "Partners need at least one place - either a fixed address or a service area."
@@ -323,11 +324,7 @@ en:
         website_placeholder: "https://your-website.org"
       image:
         title: "Partner Image"
-        choose_file: "Choose file or drag here"
-        replace: "Replace"
-        no_image: "No image uploaded"
-        upload_hint: "Upload an image above"
-        remove_on_save: "Remove image on save"
+        # Note: choose_file, replace, no_image, upload_hint, remove_on_save now in shared images.*
       validation:
         name_required: "Partner name is required"
         name_min_length: "Name must be at least 5 characters"
@@ -395,7 +392,7 @@ en:
         contact_email: "Contact Email"
         contact_phone: "Contact Phone"
       events:
-        upcoming: "Upcoming Events"
+        # Note: upcoming now in shared sections.upcoming_events
         past: "Recent Past Events"
         no_location: "No location"
       importer:
@@ -416,7 +413,7 @@ en:
     sites:
       sections:
         basic_info_description: "Core details about this site."
-        images_theme: "Images & Theme"
+        # Note: images_theme now in shared sections.images_theme
         images_description: "Logos, hero image, and visual theme for the site."
         neighbourhoods_description: "Define the geographical areas this site covers."
         main_neighbourhood: "Main Neighbourhood"
@@ -554,6 +551,12 @@ en:
         saturday: "Saturday"
         sunday: "Sunday"
 
-    # Image upload
+    # Image upload (shared across all models)
     images:
       choose_file: "Choose file"
+      choose_file_drag: "Choose file or drag here"
+      replace: "Replace"
+      remove_on_save: "Remove image on save"
+      no_image: "No image"
+      no_image_uploaded: "No image uploaded"
+      upload_hint: "Upload an image above"
