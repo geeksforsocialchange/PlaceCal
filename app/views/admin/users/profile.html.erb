@@ -92,16 +92,18 @@
       ) %>
 
       <% if current_user.root? %>
-        <div role="alert" class="alert bg-amber-50 border-amber-200 text-amber-800">
+        <div role="alert" class="alert bg-amber-50 border-amber-200 text-amber-800 mb-4">
           <%= icon(:crown, size: '5', css_class: 'text-amber-500') %>
           <span>You are a <strong>root</strong> user and can access everything.</span>
         </div>
-      <% elsif user_has_no_rights?(current_user) %>
+      <% end %>
+
+      <% if user_has_no_rights?(current_user) %>
         <div role="alert" class="alert alert-warning no-admin-rights">
           <%= icon(:warning, size: '5') %>
           <span>You have no admin rights. Please contact whoever invited you to set up your account correctly.</span>
         </div>
-      <% else %>
+      <% elsif current_user.partners.any? || current_user.neighbourhoods.any? || current_user.partnership_admin? %>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <%# Partners %>
             <% if current_user.partners.any? %>

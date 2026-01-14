@@ -32,7 +32,7 @@ RSpec.describe "Admin Articles", :slow, type: :system do
       tom_select partnership.name, xpath: tags_node.path
       assert_tom_select_multiple [partnership.name_with_type], tags_node
 
-      click_button "Save Article"
+      click_button "Save"
 
       # Verify data persists
       click_link "Articles"
