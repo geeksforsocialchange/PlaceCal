@@ -23,10 +23,15 @@ module TagsHelper
   end
 
   # Returns partnerships as [name, id] pairs for user assignment
+  # Root users can assign any partnership, others see only their managed partnerships
   def options_for_user_partnerships
-    policy_scope(Partnership)
-      .order(:name)
-      .pluck(:name, :id)
+    if current_user.root?
+      Partnership.order(:name).pluck(:name, :id)
+    else
+      policy_scope(Partnership)
+        .order(:name)
+        .pluck(:name, :id)
+    end
   end
 
   # prevent invisible partner ids from being overwritten when updating a tag

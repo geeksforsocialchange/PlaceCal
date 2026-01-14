@@ -1,18 +1,18 @@
 <%# Permissions Tab %>
-<div class="space-y-8">
+<div class="space-y-6">
   <%# Partnerships %>
-  <section>
-    <div class="flex items-start gap-4 mb-5">
-      <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-amber-100 to-orange-100 flex items-center justify-center shadow-sm">
-        <%= icon(:partnership, size: '6', css_class: 'text-amber-600') %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <div class="flex items-start gap-4 mb-4">
+        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-amber-100 to-orange-100 flex items-center justify-center shadow-sm">
+          <%= icon(:partnership, size: '6', css_class: 'text-amber-600') %>
+        </div>
+        <div>
+          <h3 class="card-title text-lg"><%= Partnership.model_name.human(count: 2) %></h3>
+          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partnerships_hint') %></p>
+        </div>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-base-content"><%= Partnership.model_name.human(count: 2) %></h3>
-        <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partnerships_hint') %></p>
-      </div>
-    </div>
 
-    <div class="max-w-xl pl-15">
       <%= render Admin::StackedListSelectorComponent.new(
         field_name: "user[tag_ids][]",
         items: @user.partnerships.order(:name),
@@ -24,65 +24,65 @@
         add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase)
       ) %>
     </div>
-  </section>
+  </div>
 
   <%# Partners %>
-  <section>
-    <div class="flex items-start gap-4 mb-5">
-      <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
-        <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <div class="flex items-start gap-4 mb-4">
+        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+          <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
+        </div>
+        <div>
+          <h3 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h3>
+          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
+        </div>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-base-content"><%= Partner.model_name.human(count: 2) %></h3>
-        <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
-      </div>
-    </div>
 
-    <div class="max-w-xl pl-15">
       <%= render Admin::StackedListSelectorComponent.new(
         field_name: "user[partner_ids][]",
         items: @user.partners.order(:name),
-        options: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
+        options: options_for_partners(@user),
         permitted_ids: permitted_options_for_partners,
         icon_name: :partner,
         icon_color: "bg-emerald-100 text-emerald-600",
         empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
         add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
-        remove_last_warning: t('admin.users.fields.partners_remove_last_warning'),
-        cannot_remove_message: t('admin.users.fields.partners_cannot_remove')
+        use_tom_select: true
       ) %>
     </div>
-  </section>
+  </div>
 
   <%# Neighbourhoods %>
-  <section>
-    <div class="flex items-start gap-4 mb-5">
-      <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-sky-100 to-blue-100 flex items-center justify-center shadow-sm">
-        <%= icon(:map_pin, size: '6', css_class: 'text-sky-600') %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <div class="flex items-start gap-4 mb-4">
+        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-sky-100 to-blue-100 flex items-center justify-center shadow-sm">
+          <%= icon(:map_pin, size: '6', css_class: 'text-sky-600') %>
+        </div>
+        <div>
+          <h3 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h3>
+          <p class="text-sm text-base-content/60 mt-0.5">
+            <% if current_user.root? %>
+              <%= t('admin.users.fields.neighbourhoods_hint_root') %>
+            <% else %>
+              <%= t('admin.users.fields.neighbourhoods_hint') %>
+            <% end %>
+          </p>
+        </div>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-base-content"><%= Neighbourhood.model_name.human(count: 2) %></h3>
-        <p class="text-sm text-base-content/60 mt-0.5">
-          <% if current_user.root? %>
-            <%= t('admin.users.fields.neighbourhoods_hint_root') %>
-          <% else %>
-            <%= t('admin.users.fields.neighbourhoods_hint') %>
-          <% end %>
-        </p>
-      </div>
-    </div>
 
-    <div class="max-w-xl pl-15">
       <% if current_user.root? %>
         <%= render Admin::StackedListSelectorComponent.new(
           field_name: "user[neighbourhood_ids][]",
           items: @user.neighbourhoods.order(:name),
-          options: options_for_user_neighbourhoods(f.object),
+          options: options_for_user_neighbourhoods(@user),
           permitted_ids: nil,
           icon_name: :map_pin,
           icon_color: "bg-sky-100 text-sky-600",
           empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
-          add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase)
+          add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase),
+          use_tom_select: true
         ) %>
       <% else %>
         <% if @user.neighbourhoods.any? %>
@@ -105,5 +105,5 @@
         <% end %>
       <% end %>
     </div>
-  </section>
+  </div>
 </div>

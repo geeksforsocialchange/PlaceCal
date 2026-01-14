@@ -15,6 +15,7 @@ module Admin
     # @param remove_last_warning [String] Warning when removing last permitted item
     # @param cannot_remove_message [String] Message when trying to remove non-permitted item
     # @param controller [String] Stimulus controller name (default: stacked-list-selector)
+    # @param use_tom_select [Boolean] Use tom-select for searchable dropdown (default: false)
     # rubocop:disable Metrics/ParameterLists
     def initialize(
       field_name:,
@@ -27,7 +28,8 @@ module Admin
       add_placeholder: nil,
       remove_last_warning: nil,
       cannot_remove_message: nil,
-      controller: 'stacked-list-selector'
+      controller: 'stacked-list-selector',
+      use_tom_select: false
     )
       super()
       @field_name = field_name
@@ -41,6 +43,7 @@ module Admin
       @remove_last_warning = remove_last_warning
       @cannot_remove_message = cannot_remove_message
       @controller = controller
+      @use_tom_select = use_tom_select
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -48,7 +51,7 @@ module Admin
 
     attr_reader :field_name, :items, :options, :permitted_ids,
                 :icon_name, :icon_color, :empty_text, :add_placeholder,
-                :remove_last_warning, :cannot_remove_message, :controller
+                :remove_last_warning, :cannot_remove_message, :controller, :use_tom_select
 
     def selected_ids
       items.map(&:id)

@@ -45,9 +45,10 @@
 
   <%# Add dropdown %>
   <div class="relative">
-    <select class="select select-bordered select-sm w-full pl-10 bg-base-100"
+    <select class="w-full"
             data-<%= controller %>-target="select"
-            data-action="change-><%= controller %>#add">
+            data-action="change-><%= controller %>#add"
+            data-controller="tom-select">
       <option value=""><%= add_placeholder %></option>
       <% options.each do |name, id| %>
         <option value="<%= id %>" <%= 'disabled' if option_disabled?(id) %>>
@@ -55,9 +56,6 @@
         </option>
       <% end %>
     </select>
-    <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-base-content/40">
-      <%= icon(:plus, size: '4') %>
-    </div>
   </div>
 
   <%# Template for dynamically added items %>

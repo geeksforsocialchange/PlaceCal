@@ -34,7 +34,7 @@ export default class extends Controller {
 
 		// Check if already selected
 		if (this.isSelected(value)) {
-			select.value = "";
+			this.resetSelect(select);
 			return;
 		}
 
@@ -42,9 +42,17 @@ export default class extends Controller {
 		this.addItem(value, name);
 
 		// Reset the select
-		select.value = "";
+		this.resetSelect(select);
 		this.updateSelectOptions();
 		this.updateEmptyState();
+	}
+
+	resetSelect(select) {
+		select.value = "";
+		// If tom-select is used, reset it as well
+		if (select.tomselect) {
+			select.tomselect.clear();
+		}
 	}
 
 	remove(event) {
@@ -122,6 +130,17 @@ export default class extends Controller {
 			if (option.value) {
 				option.disabled = selectedIds.includes(option.value);
 			}
+		}
+
+		// Sync disabled state with tom-select if present
+		if (this.selectTarget.tomselect) {
+			const ts = this.selectTarget.tomselect;
+			selectedIds.forEach((id) => {
+				if (ts.options[id]) {
+					ts.options[id].disabled = true;
+				}
+			});
+			ts.refreshOptions(false);
 		}
 	}
 

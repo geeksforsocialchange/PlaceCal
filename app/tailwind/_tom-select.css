@@ -25,20 +25,20 @@
 
 /* Control input area */
 .ts-wrapper .ts-control {
-	border: 1px solid oklch(var(--bc) / 0.2) !important;
-	background-color: oklch(var(--b1)) !important;
+	border: 1px solid #d1d5db !important;
+	background-color: #ffffff !important;
 	border-radius: 0.5rem !important;
 	padding: 0.5rem 0.75rem !important;
 	box-shadow: none !important;
 }
 
 .ts-wrapper .ts-control:hover {
-	border-color: oklch(var(--bc) / 0.3) !important;
+	border-color: #9ca3af !important;
 }
 
 .ts-wrapper.focus .ts-control {
 	border-color: var(--color-placecal-orange) !important;
-	outline: 2px solid oklch(from var(--color-placecal-orange) l c h / 0.2) !important;
+	outline: 2px solid rgba(232, 125, 30, 0.2) !important;
 	outline-offset: 0 !important;
 	box-shadow: none !important;
 }
@@ -92,8 +92,8 @@
 }
 
 .ts-dropdown {
-	background: oklch(var(--b1)) !important;
-	border: 1px solid oklch(var(--bc) / 0.2) !important;
+	background: #ffffff !important;
+	border: 1px solid #d1d5db !important;
 	border-radius: 0.5rem !important;
 	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
 		0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
@@ -113,9 +113,7 @@
 
 .ts-dropdown .option:hover,
 .ts-dropdown .active {
-	background-color: oklch(
-		from var(--color-placecal-orange) l c h / 0.1
-	) !important;
+	background-color: rgba(232, 125, 30, 0.1) !important;
 	color: var(--color-placecal-orange) !important;
 }
 
@@ -133,26 +131,26 @@
 
 /* Single select caret */
 .ts-wrapper.single .ts-control:after {
-	border-top-color: oklch(var(--bc) / 0.5) !important;
+	border-top-color: #6b7280 !important;
 }
 
 .ts-wrapper.single.dropdown-active .ts-control:after {
-	border-bottom-color: oklch(var(--bc) / 0.5) !important;
+	border-bottom-color: #6b7280 !important;
 }
 
 /* Input inside control */
 .ts-control > input {
-	color: oklch(var(--bc)) !important;
+	color: #1f2937 !important;
 }
 
 /* Disabled state */
 .ts-wrapper.disabled .ts-control {
-	background-color: oklch(var(--b2)) !important;
+	background-color: #f3f4f6 !important;
 	opacity: 0.6 !important;
 	cursor: not-allowed !important;
 }
 
 .ts-wrapper.multi.disabled .ts-control [data-value] {
-	background: oklch(var(--b3)) !important;
-	color: oklch(var(--bc) / 0.7) !important;
+	background: #e5e7eb !important;
+	color: rgba(31, 41, 55, 0.7) !important;
 }

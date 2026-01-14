@@ -5,10 +5,16 @@ import TomSelect from "tom-select";
 // Supports single and multiple selections based on the select element's "multiple" attribute
 export default class extends Controller {
 	connect() {
+		// Get placeholder from the first empty option
+		const firstOption = this.element.querySelector('option[value=""]');
+		const placeholder = firstOption ? firstOption.textContent.trim() : null;
+
 		this.tomSelect = new TomSelect(this.element, {
 			plugins: this.element.multiple ? ["remove_button"] : [],
-			allowEmptyOption: true,
+			allowEmptyOption: false,
 			closeAfterSelect: !this.element.multiple,
+			placeholder: placeholder,
+			hidePlaceholder: true,
 		});
 	}
 
