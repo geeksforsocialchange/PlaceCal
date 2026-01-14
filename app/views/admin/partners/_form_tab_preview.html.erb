@@ -47,28 +47,28 @@
           <div class="card bg-base-200 card-body p-4 text-sm">
             <% if @partner.address&.to_s.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.address') %></div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :address) %></div>
                 <p><%= @partner.address %></p>
               </div>
             <% end %>
 
             <% if @partner.url.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.website') %></div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :website) %></div>
                 <%= link_to @partner.url, @partner.url, target: '_blank', class: 'link text-placecal-orange hover:text-orange-600 break-all' %>
               </div>
             <% end %>
 
             <% if @partner.public_email.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.email') %></div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :email) %></div>
                 <%= mail_to @partner.public_email, @partner.public_email, class: 'link text-placecal-orange hover:text-orange-600' %>
               </div>
             <% end %>
 
             <% if @partner.public_phone.present? %>
               <div>
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.phone') %></div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :phone) %></div>
                 <p><%= @partner.public_phone %></p>
               </div>
             <% end %>
@@ -93,9 +93,9 @@
     <table class="table table-sm table-zebra">
       <thead>
         <tr>
-          <th><%= t('admin.models.event.one') %></th>
+          <th><%= Event.model_name.human %></th>
           <th><%= t('admin.table.date_time') %></th>
-          <th><%= t('admin.models.calendar.one') %></th>
+          <th><%= Calendar.model_name.human %></th>
         </tr>
       </thead>
       <tbody>

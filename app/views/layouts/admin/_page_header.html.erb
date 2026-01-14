@@ -4,12 +4,12 @@
     render 'layouts/admin/page_header', model_name: 'Partner', title: @partner.name, id: @partner.id
     render 'layouts/admin/page_header', model_name: 'Partner', new_record: true
 %>
-<% page_title = local_assigns[:new_record] ? t('admin.page_header.new', model: model_name) : "#{t('admin.page_header.edit', model: model_name)}: #{title}" %>
+<% page_title = local_assigns[:new_record] ? t('admin.actions.new_model', model: model_name) : "#{t('admin.actions.edit_model', model: model_name)}: #{title}" %>
 <% content_for :title do %><%= page_title %><% end %>
 
 <div class="flex items-center justify-between mb-6">
   <div>
-    <h1 class="text-2xl font-semibold"><%= local_assigns[:new_record] ? t('admin.page_header.new', model: model_name) : t('admin.page_header.edit', model: model_name) %></h1>
+    <h1 class="text-2xl font-semibold"><%= local_assigns[:new_record] ? t('admin.actions.new_model', model: model_name) : t('admin.actions.edit_model', model: model_name) %></h1>
     <% if local_assigns[:title].present? && !local_assigns[:new_record] %>
       <p class="text-base-content/60 mt-1"><%= title %></p>
     <% end %>

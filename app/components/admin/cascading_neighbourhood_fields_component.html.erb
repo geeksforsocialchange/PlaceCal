@@ -5,31 +5,31 @@
   <div class="flex gap-2 items-end">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.components.cascading_neighbourhood.region') %></legend>
+        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.region') %></legend>
         <select class="select select-bordered select-sm w-full"
                 data-cascading-neighbourhood-target="region"
                 data-action="change->cascading-neighbourhood#regionChanged">
-          <option value=""><%= t('admin.components.cascading_neighbourhood.loading') %></option>
+          <option value=""><%= t('admin.cascading_neighbourhood.loading') %></option>
         </select>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.components.cascading_neighbourhood.area') %></legend>
+        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.area') %></legend>
         <select class="select select-bordered select-sm w-full"
                 data-cascading-neighbourhood-target="district"
                 data-action="change->cascading-neighbourhood#districtChanged"
                 disabled>
-          <option value=""><%= t('admin.components.cascading_neighbourhood.select_area') %></option>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_area') %></option>
         </select>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.components.cascading_neighbourhood.ward') %></legend>
+        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.ward') %></legend>
         <select class="select select-bordered select-sm w-full"
                 data-cascading-neighbourhood-target="ward"
                 data-action="change->cascading-neighbourhood#wardChanged"
                 disabled>
-          <option value=""><%= t('admin.components.cascading_neighbourhood.select_ward') %></option>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_ward') %></option>
         </select>
       </fieldset>
     </div>

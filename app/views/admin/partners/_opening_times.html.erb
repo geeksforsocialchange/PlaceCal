@@ -14,32 +14,30 @@
     <%# Add new time - right side %>
     <div class="space-y-3">
       <div class="form-control">
-        <label class="label"><span class="label-text font-medium">Day</span></label>
+        <label class="label"><span class="label-text font-medium"><%= t('admin.opening_times.day') %></span></label>
         <select class="select select-bordered w-full" data-opening-times-target="day">
-          <option value="Monday">Monday</option>
-          <option value="Tuesday">Tuesday</option>
-          <option value="Wednesday">Wednesday</option>
-          <option value="Thursday">Thursday</option>
-          <option value="Friday">Friday</option>
-          <option value="Saturday">Saturday</option>
-          <option value="Sunday">Sunday</option>
+          <% # Rails date.day_names starts with Sunday, reorder for Monday-Sunday %>
+          <% day_names = I18n.t('date.day_names') %>
+          <% [1, 2, 3, 4, 5, 6, 0].each do |i| %>
+            <option value="<%= day_names[i] %>"><%= day_names[i] %></option>
+          <% end %>
         </select>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div class="form-control">
-          <label class="label"><span class="label-text font-medium">Opens</span></label>
+          <label class="label"><span class="label-text font-medium"><%= t('admin.opening_times.opens') %></span></label>
           <input class="input input-bordered w-full" type="time" value="09:00" data-opening-times-target="open">
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text font-medium">Closes</span></label>
+          <label class="label"><span class="label-text font-medium"><%= t('admin.opening_times.closes') %></span></label>
           <input class="input input-bordered w-full" type="time" value="17:00" data-opening-times-target="close">
         </div>
       </div>
 
       <label class="label cursor-pointer justify-start gap-3">
         <input class="checkbox checkbox-warning" type="checkbox" data-opening-times-target="allDay" data-action="change->opening-times#allDay">
-        <span class="label-text">Open all day (24 hours)</span>
+        <span class="label-text"><%= t('admin.opening_times.all_day') %></span>
       </label>
 
       <button data-action="click->opening-times#addOpeningTime" type="button" class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange w-full">

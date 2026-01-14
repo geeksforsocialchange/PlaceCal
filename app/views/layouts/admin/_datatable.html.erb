@@ -20,7 +20,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h1 class="text-xl font-semibold text-gray-900"><%= title %></h1>
-        <p class="mt-1 text-sm text-gray-500" data-admin-table-target="summary"><%= t('admin.shared.labels.loading') %></p>
+        <p class="mt-1 text-sm text-gray-500" data-admin-table-target="summary"><%= t('admin.labels.loading') %></p>
       </div>
       <%- if policy(model_name.constantize).create? && defined?(new_link) %>
         <%= link_to new_link, data: { turbo: false },
@@ -56,7 +56,7 @@
             </svg>
             <input type="search"
                    class="w-44 bg-transparent text-xs text-gray-700 placeholder-gray-400 focus:outline-none"
-                   placeholder="<%= t('admin.shared.placeholders.type_to_filter') %>"
+                   placeholder="<%= t('admin.placeholders.type_to_filter') %>"
                    data-admin-table-target="search"
                    data-action="input->admin-table#search">
           </div>
@@ -70,7 +70,7 @@
           </div>
           <input type="search"
                  class="block w-56 pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                 placeholder="<%= t('admin.shared.placeholders.search') %>"
+                 placeholder="<%= t('admin.placeholders.search') %>"
                  data-admin-table-target="search"
                  data-action="input->admin-table#search">
         </div>

@@ -7,7 +7,7 @@
     ) %>
     <div class="max-w-md">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.fields.url') %> <%= t('admin.fields.slug') %></legend>
+        <legend class="fieldset-legend"><%= attr_label(:partner, :url) %> <%= attr_label(:partner, :slug) %></legend>
         <%= f.input_field :slug, class: 'input input-bordered w-full' %>
         <p class="fieldset-label"><%= t('admin.hints.leave_blank_to_autogenerate') %></p>
       </fieldset>
@@ -161,9 +161,9 @@
   <div class="mt-8">
     <h2 class="text-lg font-bold text-error mb-4"><%= t('admin.sections.danger_zone') %></h2>
     <% if policy(@partner).destroy? %>
-      <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: t('admin.confirm.delete_permanent', model: t('admin.models.partner.one').downcase) } do %>
+      <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: t('admin.confirm.delete_permanent', model: Partner.model_name.human.downcase) } do %>
         <%= icon(:trash, size: '4') %>
-        <%= t('admin.actions.delete_model', model: t('admin.models.partner.one')) %>
+        <%= t('admin.actions.delete_model', model: Partner.model_name.human) %>
       <% end %>
     <% else %>
       <p class="text-sm text-base-content/60"><%= t('admin.partners.danger_zone.no_permission') %></p>

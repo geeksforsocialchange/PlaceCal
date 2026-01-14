@@ -6,7 +6,7 @@
   <% site_partners = Partner.for_site(@site).order(:name) %>
   <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
     <%= icon(:partnership, size: '5') %>
-    <%= t('admin.models.partner.other') %>
+    <%= Partner.model_name.human(count: 2) %>
     <span class="badge badge-neutral"><%= site_partners.count %></span>
   </h3>
   <p class="text-sm text-base-content/60 mb-4"><%= t('admin.sites.preview.partners_description') %></p>
@@ -16,9 +16,9 @@
       <table class="table table-sm table-zebra">
         <thead>
           <tr>
-            <th><%= t('admin.models.partner.one') %></th>
-            <th><%= t('admin.models.calendar.other') %></th>
-            <th><%= t('admin.models.event.other') %></th>
+            <th><%= Partner.model_name.human %></th>
+            <th><%= Calendar.model_name.human(count: 2) %></th>
+            <th><%= Event.model_name.human(count: 2) %></th>
           </tr>
         </thead>
         <tbody>
@@ -40,10 +40,10 @@
       </table>
     </div>
     <% if site_partners.count > 50 %>
-      <p class="text-sm text-base-content/60 mt-2"><%= t('admin.sites.preview.showing_first', limit: 50, total: site_partners.count, items: t('admin.models.partner.other').downcase) %></p>
+      <p class="text-sm text-base-content/60 mt-2"><%= t('admin.sites.preview.showing_first', limit: 50, total: site_partners.count, items: Partner.model_name.human(count: 2).downcase) %></p>
     <% end %>
   <% else %>
-    <%= render Admin::EmptyStateComponent.new(icon: :partnership, message: t('admin.empty.no_items', items: t('admin.models.partner.other').downcase)) %>
+    <%= render Admin::EmptyStateComponent.new(icon: :partnership, message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)) %>
   <% end %>
 </div>
 
@@ -64,10 +64,10 @@
       <table class="table table-sm table-zebra">
         <thead>
           <tr>
-            <th><%= t('admin.models.event.one') %></th>
+            <th><%= Event.model_name.human %></th>
             <th><%= t('admin.table.date_time') %></th>
-            <th><%= t('admin.models.partner.one') %></th>
-            <th><%= t('admin.models.calendar.one') %></th>
+            <th><%= Partner.model_name.human %></th>
+            <th><%= Calendar.model_name.human %></th>
           </tr>
         </thead>
         <tbody>
@@ -95,7 +95,7 @@
       </table>
     </div>
     <% if site_events.count > 30 %>
-      <p class="text-sm text-base-content/60 mt-2"><%= t('admin.sites.preview.showing_first', limit: 30, total: site_events.count, items: t('admin.models.event.other').downcase) %></p>
+      <p class="text-sm text-base-content/60 mt-2"><%= t('admin.sites.preview.showing_first', limit: 30, total: site_events.count, items: Event.model_name.human(count: 2).downcase) %></p>
     <% end %>
   <% else %>
     <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.time.no_upcoming_in_days', days: 30)) %>

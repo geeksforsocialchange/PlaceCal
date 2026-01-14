@@ -87,4 +87,18 @@ module ApplicationHelper
 
     link_to(title, url, options).html_safe
   end
+
+  # Convenience wrapper for humanized model names
+  # Usage: human_model_name(Partner) => "Partner"
+  # Usage: human_model_name(Partner, count: 2) => "Partners"
+  def human_model_name(klass, count: 1)
+    klass.model_name.human(count: count)
+  end
+
+  # Convenience wrapper for attribute labels from activerecord.attributes
+  # Usage: attr_label(:partner, :name) => "Name"
+  # Usage: attr_label(:calendar, :source) => "Source URL"
+  def attr_label(model, attribute)
+    I18n.t("activerecord.attributes.#{model}.#{attribute}", default: attribute.to_s.humanize)
+  end
 end

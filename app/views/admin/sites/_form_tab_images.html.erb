@@ -5,7 +5,7 @@
 
 <% if policy(@site).permitted_attributes.include? :theme %>
   <fieldset class="fieldset max-w-xs mb-8">
-    <legend class="fieldset-legend"><%= t('admin.fields.theme') %></legend>
+    <legend class="fieldset-legend"><%= attr_label(:site, :theme) %></legend>
     <%= f.input_field :theme, as: :select, collection: Site.theme.values.map { |v| [v.to_s.titleize, v] }, class: 'select select-bordered w-full' %>
   </fieldset>
 <% end %>
@@ -14,7 +14,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
     <div>
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.fields.logo') %></legend>
+        <legend class="fieldset-legend"><%= attr_label(:site, :logo) %></legend>
         <div data-controller="image-preview">
           <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
             <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">

@@ -5,7 +5,7 @@
 
 <div class="max-w-2xl space-y-4">
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= t('admin.models.site.one') %> <%= t('admin.fields.name') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+    <legend class="fieldset-legend"><%= Site.model_name.human %> <%= attr_label(:site, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
     <%= f.input_field :name, class: 'input input-bordered w-full' %>
   </fieldset>
 
@@ -43,7 +43,7 @@
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= t('admin.fields.tagline') %></legend>
+    <legend class="fieldset-legend"><%= attr_label(:site, :tagline) %></legend>
     <%= f.input_field :tagline, class: 'input input-bordered w-full' %>
   </fieldset>
 
@@ -57,7 +57,7 @@
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= t('admin.fields.description') %></legend>
+    <legend class="fieldset-legend"><%= attr_label(:site, :description) %></legend>
     <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
   </fieldset>
 </div>

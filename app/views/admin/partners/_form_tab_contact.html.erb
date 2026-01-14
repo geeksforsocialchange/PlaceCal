@@ -9,28 +9,28 @@
       <p class="text-xs text-base-content/60"><%= t('admin.partners.sections.online_presence_description') %></p>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.fields.website') %></legend>
+        <legend class="fieldset-legend"><%= attr_label(:partner, :website) %></legend>
         <%= f.input_field :url, class: 'input input-bordered w-full bg-base-100', placeholder: t('admin.partners.fields.website_placeholder'),
             'data-validate-url': 'true',
             'data-validate-url-message': t('admin.hints.url_validation') %>
       </fieldset>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.facebook') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :facebook) %></legend>
           <label class="input input-bordered flex items-center gap-1 pr-1 bg-base-100">
             <span class="text-base-content/50 text-sm shrink-0">facebook.com/</span>
             <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
           </label>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.twitter') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :twitter) %></legend>
           <label class="input input-bordered flex items-center gap-1 bg-base-100">
             <span class="text-base-content/50">@</span>
             <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
           </label>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.instagram') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :instagram) %></legend>
           <label class="input input-bordered flex items-center gap-1 bg-base-100">
             <span class="text-base-content/50">@</span>
             <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
@@ -51,17 +51,17 @@
         </h3>
         <p class="text-xs text-base-content/60"><%= t('admin.hints.shown_publicly') %></p>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.name') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :name) %></legend>
           <%= f.input_field :public_name, class: 'input input-bordered w-full bg-base-100' %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.email') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :email) %></legend>
           <%= f.input_field :public_email, class: 'input input-bordered w-full bg-base-100',
               'data-validate-email': 'true',
               'data-validate-email-message': t('admin.hints.email_validation') %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.phone') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :phone) %></legend>
           <%= f.input_field :public_phone, class: 'input input-bordered w-full bg-base-100' %>
         </fieldset>
       </div>
@@ -76,17 +76,17 @@
         </h3>
         <p class="text-xs text-base-content/60"><%= t('admin.partners.sections.partnership_contact_description') %></p>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.name') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :name) %></legend>
           <%= f.input_field :partner_name, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_name %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.email') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :email) %></legend>
           <%= f.input_field :partner_email, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_email,
               'data-validate-email': 'true',
               'data-validate-email-message': t('admin.hints.email_validation') %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= t('admin.fields.phone') %></legend>
+          <legend class="fieldset-legend"><%= attr_label(:partner, :phone) %></legend>
           <%= f.input_field :partner_phone, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_phone %>
         </fieldset>
       </div>

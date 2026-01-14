@@ -66,8 +66,8 @@ RSpec.describe "Admin::Users", type: :request do
 
       it "shows form fields for user creation" do
         get new_admin_user_url(host: admin_host)
-        expect(response.body).to include("First Name")
-        expect(response.body).to include("Last Name")
+        expect(response.body).to include("First name")
+        expect(response.body).to include("Last name")
         expect(response.body).to include("Email")
         expect(response.body).to include("Phone")
         expect(response.body).to include("Partners")

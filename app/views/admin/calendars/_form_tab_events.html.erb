@@ -1,6 +1,6 @@
 <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
   <%= icon(:event, size: '5') %>
-  <%= t('admin.models.event.other') %>
+  <%= Event.model_name.human(count: 2) %>
   <span class="badge badge-neutral"><%= @calendar.events.count %></span>
 </h2>
 <p class="text-sm text-base-content/60 mb-6"><%= t('admin.calendars.sections.events_description') %></p>
@@ -18,7 +18,7 @@
     <table class="table table-sm table-zebra">
       <thead>
         <tr>
-          <th><%= t('admin.models.event.one') %></th>
+          <th><%= Event.model_name.human %></th>
           <th><%= t('admin.table.date_time') %></th>
           <th><%= t('admin.table.location') %></th>
         </tr>
@@ -65,7 +65,7 @@
         <table class="table table-sm table-zebra">
           <thead>
             <tr>
-              <th><%= t('admin.models.event.one') %></th>
+              <th><%= Event.model_name.human %></th>
               <th><%= t('admin.table.date_time') %></th>
               <th><%= t('admin.table.location') %></th>
             </tr>

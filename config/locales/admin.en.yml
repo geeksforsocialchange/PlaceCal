@@ -4,75 +4,11 @@ en:
     # SHARED TOKENS - Use these across all views
     # ============================================
 
-    # Model names (singular/plural)
+    # UI-only model names (not Rails models, kept for display purposes)
     models:
-      partner:
-        one: "Partner"
-        other: "Partners"
-      calendar:
-        one: "Calendar"
-        other: "Calendars"
-      site:
-        one: "Site"
-        other: "Sites"
-      neighbourhood:
-        one: "Neighbourhood"
-        other: "Neighbourhoods"
-      user:
-        one: "User"
-        other: "Users"
-      event:
-        one: "Event"
-        other: "Events"
-      partnership:
-        one: "Partnership"
-        other: "Partnerships"
-      tag:
-        one: "Tag"
-        other: "Tags"
-      article:
-        one: "Article"
-        other: "Articles"
-      collection:
-        one: "Collection"
-        other: "Collections"
-      supporter:
-        one: "Supporter"
-        other: "Supporters"
       admin:
         one: "Admin"
         other: "Admins"
-
-    # Common field labels
-    fields:
-      name: "Name"
-      email: "Email"
-      phone: "Phone"
-      description: "Description"
-      summary: "Summary"
-      slug: "Slug"
-      url: "URL"
-      website: "Website"
-      address: "Address"
-      city: "City"
-      postcode: "Postcode"
-      status: "Status"
-      state: "State"
-      role: "Role"
-      theme: "Theme"
-      tagline: "Tagline"
-      logo: "Logo"
-      avatar: "Avatar"
-      image: "Image"
-      first_name: "First Name"
-      last_name: "Last Name"
-      street_address: "Street address"
-      street_address_2: "Street address 2"
-      street_address_3: "Street address 3"
-      # Social
-      facebook: "Facebook"
-      twitter: "X (Twitter)"
-      instagram: "Instagram"
 
     # Common tab labels
     tabs:
@@ -194,38 +130,22 @@ en:
       events_in_days: "Events in the next %{days} days"
       no_upcoming_in_days: "No upcoming events in the next %{days} days"
 
-    # Page header titles
-    page_header:
-      new: "New %{model}"
-      edit: "Edit %{model}"
+    # ============================================
+    # COMPONENT-SPECIFIC
+    # ============================================
 
-    # ============================================
-    # COMPONENTS
-    # ============================================
-    components:
-      save_bar:
-        unsaved_changes: "Unsaved changes"
-        # Note: save/back/continue use actions.save, actions.back, actions.continue
-      error:
-        title:
-          one: "%{count} error prohibited this %{model} from being saved"
-          other: "%{count} errors prohibited this %{model} from being saved"
-      cascading_neighbourhood:
-        region: "Region"
-        area: "Area"
-        ward: "Ward"
-        select_area: "Select area..."
-        select_ward: "Select ward..."
+    # SaveBarComponent
+    save_bar:
+      unsaved_changes: "Unsaved changes"
 
-    # ============================================
-    # SHARED - Aliases for templates using shared.* namespace
-    # ============================================
-    shared:
-      labels:
-        loading: "Loading..."
-      placeholders:
-        search: "Search..."
-        type_to_filter: "Type to filter..."
+    # CascadingNeighbourhoodFieldsComponent
+    cascading_neighbourhood:
+      region: "Region"
+      area: "Area"
+      ward: "Ward"
+      loading: "Loading..."
+      select_area: "Select area..."
+      select_ward: "Select ward..."
 
     # ============================================
     # DATATABLE
@@ -558,14 +478,7 @@ en:
       opens: "Opens"
       closes: "Closes"
       all_day: "Open all day (24 hours)"
-      days:
-        monday: "Monday"
-        tuesday: "Tuesday"
-        wednesday: "Wednesday"
-        thursday: "Thursday"
-        friday: "Friday"
-        saturday: "Saturday"
-        sunday: "Sunday"
+      # Note: Day names use Rails' date.day_names from en.yml
 
     # Image upload (shared across all models)
     images:

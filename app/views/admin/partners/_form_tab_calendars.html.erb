@@ -1,6 +1,6 @@
 <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
   <%= icon(:calendar, size: '5') %>
-  <%= t('admin.models.calendar.other') %>
+  <%= Calendar.model_name.human(count: 2) %>
   <span class="badge badge-neutral"><%= @partner.calendars.count %></span>
 </h2>
 <p class="text-sm text-base-content/60 mb-6"><%= t('admin.partners.sections.calendars_description') %></p>
@@ -20,12 +20,12 @@
     <% end %>
   </div>
 <% else %>
-  <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.empty.none_connected', items: t('admin.models.calendar.other').downcase), icon_size: '12', padding: 'py-12') %>
+  <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.empty.none_connected', items: Calendar.model_name.human(count: 2).downcase), icon_size: '12', padding: 'py-12') %>
 <% end %>
 
 <div class="mt-6">
   <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
     <%= icon(:plus, size: '4') %>
-    <%= t('admin.actions.add_model', model: t('admin.models.calendar.one')) %>
+    <%= t('admin.actions.add_model', model: Calendar.model_name.human) %>
   <% end %>
 </div>

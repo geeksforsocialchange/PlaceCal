@@ -5,7 +5,7 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
   <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-    <legend class="fieldset-legend"><%= t('admin.fields.address') %></legend>
+    <legend class="fieldset-legend"><%= attr_label(:partner, :address) %></legend>
     <%= render 'address_fields', form: f, partner: @partner %>
     <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
       <div role="alert" class="alert alert-warning mt-4 text-sm">

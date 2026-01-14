@@ -1,5 +1,5 @@
 <%= render Admin::SectionHeaderComponent.new(
-  title: t('admin.models.neighbourhood.other'),
+  title: Neighbourhood.model_name.human(count: 2),
   description: t('admin.sites.sections.neighbourhoods_description')
 ) %>
 
@@ -59,7 +59,7 @@
   <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
     <div class="space-y-2">
       <%= nested_form_for(f, :sites_neighbourhoods,
-            add_text: t('admin.actions.add_model', model: t('admin.models.neighbourhood.one').downcase),
+            add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
             add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
             partial: 'sites_neighbourhood_fields') do %>
         <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
@@ -76,7 +76,7 @@
         <% end %>
       </div>
     <% else %>
-      <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.no_items', items: t('admin.models.neighbourhood.other').downcase) %></p>
+      <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.no_items', items: Neighbourhood.model_name.human(count: 2).downcase) %></p>
     <% end %>
   <% end %>
 </div>

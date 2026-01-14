@@ -19,8 +19,8 @@ module Admin
       @object.errors.full_messages
     end
 
-    def object_class_name
-      @object.class.name
+    def model_name
+      @object.class.model_name.human
     end
   end
 end

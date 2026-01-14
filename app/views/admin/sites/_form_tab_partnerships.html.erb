@@ -1,5 +1,5 @@
 <%= render Admin::SectionHeaderComponent.new(
-  title: t('admin.models.partnership.other'),
+  title: Partnership.model_name.human(count: 2),
   description: t('admin.sites.sections.partnerships_description')
 ) %>
 

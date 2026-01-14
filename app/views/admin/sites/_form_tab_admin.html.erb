@@ -16,7 +16,7 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.fields.url') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <legend class="fieldset-legend"><%= attr_label(:site, :url) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <% if policy(@site).permitted_attributes.include? :url %>
         <%= f.input_field :url, class: 'input input-bordered w-full font-mono text-sm' %>
       <% else %>
@@ -25,7 +25,7 @@
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.fields.slug') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <legend class="fieldset-legend"><%= attr_label(:site, :slug) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <% if policy(@site).permitted_attributes.include? :slug %>
         <%= f.input_field :slug, class: 'input input-bordered w-full font-mono text-sm' %>
       <% else %>
@@ -38,11 +38,11 @@
     <div class="divider"></div>
 
     <%= render Admin::DangerZoneComponent.new(
-      title: t('admin.actions.delete_model', model: t('admin.models.site.one').downcase),
+      title: t('admin.actions.delete_model', model: Site.model_name.human.downcase),
       description: t('admin.sites.danger_zone.delete_description'),
-      button_text: t('admin.actions.delete_model', model: t('admin.models.site.one')),
+      button_text: t('admin.actions.delete_model', model: Site.model_name.human),
       button_path: admin_site_path(@site),
-      confirm: t('admin.confirm.delete_permanent', model: t('admin.models.site.one').downcase)
+      confirm: t('admin.confirm.delete_permanent', model: Site.model_name.human.downcase)
     ) %>
   <% end %>
 </div>

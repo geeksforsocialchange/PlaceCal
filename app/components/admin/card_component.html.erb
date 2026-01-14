@@ -20,7 +20,7 @@
         <% if header_action? %>
           <%= header_action %>
         <% elsif @header_link %>
-          <%= link_to @header_link_text || t('admin.components.card.view_all'), @header_link,
+          <%= link_to @header_link_text || t('admin.actions.view_all'), @header_link,
                       class: "text-sm text-placecal-orange hover:text-orange-600" %>
         <% end %>
       </div>

@@ -37,10 +37,134 @@ en:
         other: "Other"
 
   activerecord:
-    attributes:
+    models:
       partner:
+        one: "Partner"
+        other: "Partners"
+      calendar:
+        one: "Calendar"
+        other: "Calendars"
+      site:
+        one: "Site"
+        other: "Sites"
+      neighbourhood:
+        one: "Neighbourhood"
+        other: "Neighbourhoods"
+      user:
+        one: "User"
+        other: "Users"
+      event:
+        one: "Event"
+        other: "Events"
+      partnership:
+        one: "Partnership"
+        other: "Partnerships"
+      tag:
+        one: "Tag"
+        other: "Tags"
+      article:
+        one: "Article"
+        other: "Articles"
+      collection:
+        one: "Collection"
+        other: "Collections"
+      supporter:
+        one: "Supporter"
+        other: "Supporters"
+
+    attributes:
+      # Shared attribute defaults
+      defaults: &default_attrs
+        name: "Name"
+        email: "Email"
+        phone: "Phone"
+        description: "Description"
+        summary: "Summary"
+        slug: "Slug"
+        url: "URL"
+        website: "Website"
+        address: "Address"
+        city: "City"
+        postcode: "Postcode"
+        created_at: "Created"
+        updated_at: "Updated"
+        status: "Status"
+        state: "State"
+        role: "Role"
+        theme: "Theme"
+        tagline: "Tagline"
+        logo: "Logo"
+        image: "Image"
+
+      partner:
+        <<: *default_attrs
         tag_ids: ""
+        accessibility_info: "Accessibility Information"
+        hidden_reason: "Reason for hiding"
+        facebook: "Facebook"
+        twitter: "X (Twitter)"
+        instagram: "Instagram"
+
+      calendar:
+        <<: *default_attrs
+        source: "Source URL"
+        strategy: "Location Strategy"
+        notices: "Import Notices"
+        import_mode: "Import Mode"
+
+      site:
+        <<: *default_attrs
+        place_name: "Place Name"
+        hero_text: "Hero Text"
+        hero_image_alt: "Alt Text"
+        hero_image_credit: "Image Credit"
+        footer_logo: "Footer logo"
+        hero_image: "Hero image"
+
+      user:
+        <<: *default_attrs
+        first_name: "First name"
+        last_name: "Last name"
+        avatar: "Avatar"
+
+      address:
+        <<: *default_attrs
+        street_address: "Street address"
+        street_address_2: "Street address 2"
+        street_address_3: "Street address 3"
+
+      tag:
+        <<: *default_attrs
+        type: "Type"
+        system_tag: "System tag"
+
+      article:
+        <<: *default_attrs
+        title: "Title"
+        body: "Body"
+
+      collection:
+        <<: *default_attrs
+
+      supporter:
+        <<: *default_attrs
+
+      neighbourhood:
+        <<: *default_attrs
+        unit: "Unit"
+        unit_code_key: "Unit code key"
+        unit_code_value: "Unit code value"
+        unit_name: "Unit name"
+        name_abbr: "Abbreviated name"
+
+      partnership:
+        <<: *default_attrs
+
     errors:
+      template:
+        header:
+          one: "%{count} error prohibited this %{model} from being saved"
+          other: "%{count} errors prohibited this %{model} from being saved"
       models:
         partner:
           attributes:

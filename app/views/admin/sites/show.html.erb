@@ -26,7 +26,7 @@
           <%= icon(:calendar, size: '5', css_class: 'text-placecal-orange') %>
         </div>
         <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.models.calendar.other') %></p>
+          <p class="text-xs text-base-content/60 uppercase font-medium"><%= Calendar.model_name.human(count: 2) %></p>
           <p class="font-semibold text-lg"><%= @calendars.count %></p>
         </div>
       </div>

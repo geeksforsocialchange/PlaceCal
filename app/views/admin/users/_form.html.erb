@@ -10,31 +10,31 @@
 
     <div class="grid grid-cols-2 gap-4">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.fields.first_name') %></legend>
+        <legend class="fieldset-legend"><%= attr_label(:user, :first_name) %></legend>
         <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.fields.last_name') %></legend>
+        <legend class="fieldset-legend"><%= attr_label(:user, :last_name) %></legend>
         <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
       </fieldset>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.fields.email') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+        <legend class="fieldset-legend"><%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
         <%= f.input_field :email, class: 'input input-bordered w-full' %>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= t('admin.fields.phone') %></legend>
+        <legend class="fieldset-legend"><%= attr_label(:user, :phone) %></legend>
         <%= f.input_field :phone, class: 'input input-bordered w-full' %>
       </fieldset>
     </div>
 
     <%# Avatar %>
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.fields.avatar') %></legend>
+      <legend class="fieldset-legend"><%= attr_label(:user, :avatar) %></legend>
       <div data-controller="image-preview">
         <div class="flex items-start gap-4">
           <div class="shrink-0">
@@ -74,7 +74,7 @@
     </div>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.fields.role') %></legend>
+      <legend class="fieldset-legend"><%= attr_label(:user, :role) %></legend>
       <%= render Admin::RadioCardGroupComponent.new(
         form: f,
         attribute: :role,
@@ -84,7 +84,7 @@
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.models.partnership.other') %></legend>
+      <legend class="fieldset-legend"><%= Partnership.model_name.human(count: 2) %></legend>
       <p class="fieldset-label mb-3"><%= t('admin.users.fields.partnerships_hint') %></p>
       <div class="user_tags">
         <%= f.input_field :tag_ids,
@@ -107,7 +107,7 @@
     <div class="card-body p-4">
       <h3 class="font-semibold flex items-center gap-2 mb-2">
         <%= icon(:partner, size: '5', css_class: 'text-placecal-orange') %>
-        <%= t('admin.models.partner.other') %>
+        <%= Partner.model_name.human(count: 2) %>
       </h3>
       <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.partners_hint') %></p>
       <div class="user_partners">
@@ -129,7 +129,7 @@
     <div class="card-body p-4">
       <h3 class="font-semibold flex items-center gap-2 mb-2">
         <%= icon(:map_pin, size: '5', css_class: 'text-info') %>
-        <%= t('admin.models.neighbourhood.other') %>
+        <%= Neighbourhood.model_name.human(count: 2) %>
       </h3>
       <% if current_user.root? %>
         <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
@@ -150,7 +150,7 @@
             <% end %>
           </div>
         <% else %>
-          <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.none_assigned', items: t('admin.models.neighbourhood.other').downcase) %></p>
+          <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase) %></p>
         <% end %>
       <% end %>
     </div>
