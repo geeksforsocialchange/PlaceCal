@@ -1,19 +1,22 @@
 <% if policy(@partner).permitted_attributes.include? :slug %>
   <div class="mb-8">
-    <h2 class="text-lg font-bold mb-1">URL Settings</h2>
-    <p class="text-sm text-base-content/60 mb-4">Customise the URL slug for this partner.</p>
+    <%= render Admin::SectionHeaderComponent.new(
+      title: t('admin.sections.url_settings'),
+      description: t('admin.partners.sections.url_settings_description'),
+      margin: 4
+    ) %>
     <div class="max-w-md">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">URL Slug</legend>
+        <legend class="fieldset-legend"><%= t('admin.fields.url') %> <%= t('admin.fields.slug') %></legend>
         <%= f.input_field :slug, class: 'input input-bordered w-full' %>
-        <p class="fieldset-label">Leave blank to auto-generate from name</p>
+        <p class="fieldset-label"><%= t('admin.hints.leave_blank_to_autogenerate') %></p>
       </fieldset>
     </div>
   </div>
 <% end %>
 
 <div class="mb-8">
-  <h2 class="text-lg font-bold mb-4">Event Matching</h2>
+  <h2 class="text-lg font-bold mb-4"><%= t('admin.partners.sections.event_matching') %></h2>
 
   <div class="max-w-2xl">
     <%# Event Matching Toggle Card %>
@@ -30,33 +33,33 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-4 mb-2">
               <h3 class="font-semibold" id="event-matching-title">
-                <%= is_enabled ? 'Event matching is enabled' : 'Event matching is disabled' %>
+                <%= is_enabled ? t('admin.partners.event_matching.enabled') : t('admin.partners.event_matching.disabled') %>
               </h3>
               <div class="flex items-center gap-3">
-                <span class="label-text text-sm font-medium text-base-content/60">Disabled</span>
+                <span class="label-text text-sm font-medium text-base-content/60"><%= t('admin.labels.disabled') %></span>
                 <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'partner_can_be_assigned_events', onchange: 'updateEventMatchingTitle(this.checked)' %>
-                <span class="label-text text-sm font-medium text-success">Enabled</span>
+                <span class="label-text text-sm font-medium text-success"><%= t('admin.labels.enabled') %></span>
               </div>
             </div>
 
             <p class="text-sm text-base-content/70 mb-3">
-              Control whether events from other calendars can be automatically listed at this partner's address.
+              <%= t('admin.partners.event_matching.description') %>
             </p>
 
             <div class="text-sm text-base-content/70 space-y-2">
-              <p class="font-medium text-base-content/90">When enabled:</p>
+              <p class="font-medium text-base-content/90"><%= t('admin.partners.event_matching.when_enabled') %></p>
               <ul class="list-none space-y-1.5 ml-0">
                 <li class="flex items-start gap-2">
                   <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
-                  <span>Events at this address from any PlaceCal calendar will appear here</span>
+                  <span><%= t('admin.partners.event_matching.benefit_1') %></span>
                 </li>
                 <li class="flex items-start gap-2">
                   <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
-                  <span>Visitors see a complete picture of what's happening at this location</span>
+                  <span><%= t('admin.partners.event_matching.benefit_2') %></span>
                 </li>
                 <li class="flex items-start gap-2">
                   <%= icon(:info, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
-                  <span>Great for venues, community centres, and shared spaces</span>
+                  <span><%= t('admin.partners.event_matching.benefit_3') %></span>
                 </li>
               </ul>
             </div>
@@ -69,7 +72,7 @@
   <script>
     function updateEventMatchingTitle(isEnabled) {
       const title = document.getElementById('event-matching-title');
-      title.textContent = isEnabled ? 'Event matching is enabled' : 'Event matching is disabled';
+      title.textContent = isEnabled ? '<%= t('admin.partners.event_matching.enabled') %>' : '<%= t('admin.partners.event_matching.disabled') %>';
     }
   </script>
 </div>
@@ -77,7 +80,7 @@
 <% unless @partner.new_record? %>
   <% if policy(@partner).permitted_attributes.include? :hidden %>
     <div class="mb-8">
-      <h2 class="text-lg font-bold mb-4">Moderation</h2>
+      <h2 class="text-lg font-bold mb-4"><%= t('admin.partners.sections.moderation') %></h2>
 
       <div class="max-w-2xl" data-controller="inverted-toggle">
         <%# Hidden Toggle Card %>
@@ -94,40 +97,40 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between gap-4 mb-2">
                   <h3 class="font-semibold transition-colors" data-inverted-toggle-target="title" id="partner-visibility-title">
-                    <%= @partner.hidden? ? 'Partner is hidden' : 'Partner is visible' %>
+                    <%= @partner.hidden? ? t('admin.partners.moderation.hidden_label') : t('admin.partners.moderation.visible_label') %>
                   </h3>
                   <div class="flex items-center gap-3">
-                    <span class="label-text text-sm font-medium text-error">Hidden</span>
+                    <span class="label-text text-sm font-medium text-error"><%= t('admin.labels.hidden') %></span>
                     <%= f.hidden_field :hidden, value: @partner.hidden? ? '1' : '0', data: { inverted_toggle_target: 'hidden' } %>
                     <input type="checkbox" id="partner_hidden_toggle" class="toggle toggle-success" data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" onchange="updateVisibilityTitle(this.checked)" />
-                    <span class="label-text text-sm font-medium text-success">Visible</span>
+                    <span class="label-text text-sm font-medium text-success"><%= t('admin.labels.visible') %></span>
                   </div>
                 </div>
 
-                <p class="text-sm text-error/80 mb-3" data-inverted-toggle-target="status">This partner is not visible to the public.</p>
+                <p class="text-sm text-error/80 mb-3" data-inverted-toggle-target="status"><%= t('admin.partners.moderation.hidden_status') %></p>
 
                 <div class="text-sm text-base-content/70 space-y-2">
-                  <p class="font-medium text-base-content/90">When a partner is hidden:</p>
+                  <p class="font-medium text-base-content/90"><%= t('admin.partners.moderation.when_hidden') %></p>
                   <ul class="list-none space-y-1.5 ml-0">
                     <li class="flex items-start gap-2">
                       <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
-                      <span>Removed from all PlaceCal sites and search results</span>
+                      <span><%= t('admin.partners.moderation.consequence_1') %></span>
                     </li>
                     <li class="flex items-start gap-2">
                       <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
-                      <span>Events from this partner will not appear on any calendars</span>
+                      <span><%= t('admin.partners.moderation.consequence_2') %></span>
                     </li>
                     <li class="flex items-start gap-2">
                       <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
-                      <span>The partner page will return a 404 error to visitors</span>
+                      <span><%= t('admin.partners.moderation.consequence_3') %></span>
                     </li>
                     <li class="flex items-start gap-2">
                       <%= icon(:check, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
-                      <span>Admins can still access and edit the partner in this dashboard</span>
+                      <span><%= t('admin.partners.moderation.consequence_4') %></span>
                     </li>
                     <li class="flex items-start gap-2">
                       <%= icon(:bell, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
-                      <span>PlaceCal moderators and the partner admins will be notified</span>
+                      <span><%= t('admin.partners.moderation.consequence_5') %></span>
                     </li>
                   </ul>
                 </div>
@@ -137,9 +140,9 @@
             <%# Reason field - shown when hidden or always for entering reason %>
             <div class="mt-4 pt-4 border-t border-base-300/50">
               <fieldset class="fieldset">
-                <legend class="fieldset-legend">Reason for hiding</legend>
-                <p class="text-xs text-base-content/60 mb-2">This message will be shown to partner admins explaining why their listing was hidden.</p>
-                <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20 bg-base-100', placeholder: 'e.g., Incomplete information, duplicate listing, or violation of community guidelines...', data: { controller: 'auto-expand' } %>
+                <legend class="fieldset-legend"><%= t('admin.partners.moderation.reason_label') %></legend>
+                <p class="text-xs text-base-content/60 mb-2"><%= t('admin.partners.moderation.reason_hint') %></p>
+                <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20 bg-base-100', placeholder: t('admin.partners.moderation.reason_placeholder'), data: { controller: 'auto-expand' } %>
               </fieldset>
             </div>
           </div>
@@ -150,20 +153,20 @@
     <script>
       function updateVisibilityTitle(isVisible) {
         const title = document.getElementById('partner-visibility-title');
-        title.textContent = isVisible ? 'Partner is visible' : 'Partner is hidden';
+        title.textContent = isVisible ? '<%= t('admin.partners.moderation.visible_label') %>' : '<%= t('admin.partners.moderation.hidden_label') %>';
       }
     </script>
   <% end %>
 
   <div class="mt-8">
-    <h2 class="text-lg font-bold text-error mb-4">Danger Zone</h2>
+    <h2 class="text-lg font-bold text-error mb-4"><%= t('admin.sections.danger_zone') %></h2>
     <% if policy(@partner).destroy? %>
-      <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: "Delete this partner permanently? This cannot be undone." } do %>
+      <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: t('admin.confirm.delete_permanent', model: t('admin.models.partner.one').downcase) } do %>
         <%= icon(:trash, size: '4') %>
-        Delete Partner
+        <%= t('admin.actions.delete_model', model: t('admin.models.partner.one')) %>
       <% end %>
     <% else %>
-      <p class="text-sm text-base-content/60">You don't have permission to delete this partner.</p>
+      <p class="text-sm text-base-content/60"><%= t('admin.partners.danger_zone.no_permission') %></p>
     <% end %>
   </div>
 <% end %>
