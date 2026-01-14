@@ -30,4 +30,5 @@ import "./src/components/breadcrumb";
 import "./src/components/navigation";
 import "./src/components/paginator";
 
-import "./controllers";
+// Note: Public site does not use Stimulus controllers
+// Admin uses importmap-rails with native ES modules (see admin layout)

@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="/assets/tom-select.css" media="all" data-turbo-track="reload">
     <link rel="stylesheet" href="/assets/admin_tailwind.css" media="all" data-turbo-track="reload">
 
-    <%= javascript_include_tag 'admin', 'data-turbo-track': 'reload', defer: true %>
-    <%# NOTE: Google fonts removed - using self-hosted fonts from Tailwind CSS %>
+    <%# Admin JS loaded via importmap - native ES modules, no build step %>
+    <%# Changes to controllers take effect immediately on browser refresh %>
+    <%= javascript_importmap_tags %>
 
     <%= render "layouts/meta" %>
   </head>

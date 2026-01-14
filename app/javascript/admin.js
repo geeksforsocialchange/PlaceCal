@@ -1,8 +1,13 @@
-require("@rails/ujs").start();
+// Admin interface entrypoint - loaded via importmap (no build step)
+// This replaces the old esbuild bundle for the admin interface
+// See config/importmap.rb for package pins
+
 import "@hotwired/turbo-rails";
 
-// Note: Cocoon removed - now using Stimulus nested_form_controller
-// Note: Select2 removed - now using Tom Select via Stimulus controller
-// Note: DataTables removed - now using Stimulus admin_table_controller
+// Import Stimulus application and load all controllers from importmap
+import { application } from "controllers/application";
+import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading";
 
-import "./controllers";
+// Eager load all controllers defined in the import map under controllers/**/*_controller
+// This parses the importmap and dynamically imports each controller
+eagerLoadControllersFrom("controllers", application);

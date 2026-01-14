@@ -1,5 +1,22 @@
 import { Controller } from "@hotwired/stimulus";
-import _ from "lodash";
+
+/**
+ * Simple debounce utility - waits for pause in calls before executing
+ * @param {Function} func - Function to debounce
+ * @param {number} wait - Milliseconds to wait
+ * @returns {Function} Debounced function
+ */
+function debounce(func, wait) {
+	let timeout;
+	return function executedFunction(...args) {
+		const later = () => {
+			clearTimeout(timeout);
+			func.apply(this, args);
+		};
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+	};
+}
 
 /**
  * Partner Wizard Controller
@@ -28,7 +45,7 @@ export default class extends Controller {
 	};
 
 	connect() {
-		this.checkNameDebounced = _.debounce(this.performNameCheck.bind(this), 400);
+		this.checkNameDebounced = debounce(this.performNameCheck.bind(this), 400);
 		this.updateUI();
 	}
 

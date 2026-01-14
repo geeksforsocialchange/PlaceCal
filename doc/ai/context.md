@@ -32,14 +32,25 @@ When working on this project:
 
 ## Asset Pipeline
 
-This project has a **multi-step asset build process**. Changes to JS or CSS require specific build commands:
+This project uses a **hybrid asset strategy**:
 
-### JavaScript (Stimulus controllers, etc.)
+- **Admin interface**: importmap-rails (native ES modules, no build step)
+- **Public site**: esbuild bundle (jQuery legacy components)
+
+### Admin JavaScript (importmap-rails)
 
 - **Source**: `app/javascript/controllers/*.js`
-- **Output**: `app/assets/builds/admin.js`
+- **Configuration**: `config/importmap.rb`
+- **No build step required** - changes take effect on browser refresh
+- External dependencies (tom-select, leaflet) are loaded from CDN
+- Stimulus controllers are auto-loaded via `eagerLoadControllersFrom()`
+
+### Public Site JavaScript (esbuild)
+
+- **Source**: `app/javascript/application.js`
+- **Output**: `app/assets/builds/application.js`
 - **Build command**: `yarn build`
-- Assets are fingerprinted in production; restart Rails server to pick up changes in development
+- Includes jQuery and legacy components (breadcrumb, navigation, paginator)
 
 ### Tailwind CSS (Admin interface)
 
@@ -63,14 +74,14 @@ yarn build:all  # Runs: yarn build && yarn build:css && yarn build:css:admin-tai
 
 ### Common Issues
 
-1. **JS changes not appearing**: Run `yarn build`, restart Rails server, hard refresh browser
-2. **New Tailwind classes not working**: Run `yarn build:css:admin-tailwind`, hard refresh browser
-3. **Browser caching**: Use `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) for hard refresh
-4. **Asset fingerprinting**: In development, restart Rails server after rebuilding assets
+1. **Admin JS changes not appearing**: Just refresh browser (no build needed)
+2. **Public JS changes not appearing**: Run `yarn build`, restart Rails server, hard refresh browser
+3. **New Tailwind classes not working**: Run `yarn build:css:admin-tailwind`, hard refresh browser
+4. **Browser caching**: Use `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) for hard refresh
 
 ### Development Workflow
 
-When running `bin/dev`, the Procfile.dev starts watchers for both JS and Tailwind CSS automatically. If you're running processes manually, remember to start both watchers.
+When running `bin/dev`, the Procfile.dev starts watchers for public JS and Tailwind CSS. Admin JS doesn't need a watcher since it uses importmap.
 
 ## Tailwind CSS Best Practices
 

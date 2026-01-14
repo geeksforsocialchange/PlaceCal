@@ -14,9 +14,10 @@ gem 'puma'
 gem 'rails', '7.2.3'
 
 # Frontend
-gem 'coffee-rails'
-gem 'jquery-rails'
-gem 'jsbundling-rails'
+gem 'coffee-rails' # DEPRECATED: Legacy CoffeeScript support, remove when all .coffee files converted
+gem 'importmap-rails' # Admin JS - native ES modules, no build step
+gem 'jquery-rails' # DEPRECATED: Public site only, to be replaced with Stimulus controllers
+gem 'jsbundling-rails' # Public site only - esbuild bundle for jQuery legacy components
 gem 'sass-rails', '6.0.0'
 gem 'stimulus-rails'
 gem 'turbo-rails'
