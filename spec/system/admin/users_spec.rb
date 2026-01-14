@@ -14,32 +14,31 @@ RSpec.describe "Admin Users", :slow, type: :system do
   let!(:partner_two) { create(:oldtown_library, address: create(:address, neighbourhood: oldtown_ward)) }
   let!(:partnership) { create(:partnership) }
 
-  describe "tom-select inputs on users form" do
+  describe "stacked list selectors on users form" do
     it "allows selecting partners, neighbourhoods and tags", :aggregate_failures do
       click_link "Users"
       await_datatables
 
-      # Edit a root user (has access to all potential tom-select inputs)
+      # Edit a root user (has access to all potential stacked list selectors)
       # Click on the admin user's full name to edit (datatable shows "FirstName LastName")
       full_name = [admin_user.first_name, admin_user.last_name].compact.join(" ")
       click_link full_name
 
-      # Select partners
-      partners_node = tom_select_node("user_partners")
-      tom_select partner.name, partner_two.name, xpath: partners_node.path
-      assert_tom_select_multiple [partner.name, partner_two.name], partners_node
+      # Navigate to Permissions tab where stacked list selectors are located
+      find('input[data-hash="permissions"]').click
 
-      # Select neighbourhoods (displayed as "Name (Unit)" with titleized unit)
-      neighbourhoods_node = tom_select_node("user_neighbourhoods")
-      tom_select riverside_ward.name, oldtown_ward.name, xpath: neighbourhoods_node.path
-      # UI displays unit titleized: "Riverside (Ward)" not "Riverside (ward)"
-      assert_tom_select_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
-                                  "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
+      # Select partners using stacked list selector
+      stacked_list_select partner.name, partner_two.name, wrapper_class: "user_partners"
+      # Stacked list shows plain names, not formatted dropdown text
+      assert_stacked_list_items [partner.name, partner_two.name], "user_partners"
 
-      # Select tags
-      tags_node = tom_select_node("user_tags")
-      tom_select partnership.name, xpath: tags_node.path
-      assert_tom_select_multiple [partnership.name_with_type], tags_node
+      # Select neighbourhoods (dropdown shows "Name (Unit)" but list shows just name)
+      stacked_list_select riverside_ward.name, oldtown_ward.name, wrapper_class: "user_neighbourhoods"
+      assert_stacked_list_items [riverside_ward.name, oldtown_ward.name], "user_neighbourhoods"
+
+      # Select partnerships (dropdown shows "Type: Name" but list shows just name)
+      stacked_list_select partnership.name, wrapper_class: "user_tags"
+      assert_stacked_list_items [partnership.name], "user_tags"
 
       click_button "Save"
 
@@ -51,15 +50,12 @@ RSpec.describe "Admin Users", :slow, type: :system do
         click_link full_name
       end
 
-      partners_node = tom_select_node("user_partners")
-      assert_tom_select_multiple [partner.name, partner_two.name], partners_node
+      # Navigate to Permissions tab again
+      find('input[data-hash="permissions"]').click
 
-      neighbourhoods_node = tom_select_node("user_neighbourhoods")
-      assert_tom_select_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
-                                  "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
-
-      tags_node = tom_select_node("user_tags")
-      assert_tom_select_multiple [partnership.name_with_type], tags_node
+      assert_stacked_list_items [partner.name, partner_two.name], "user_partners"
+      assert_stacked_list_items [riverside_ward.name, oldtown_ward.name], "user_neighbourhoods"
+      assert_stacked_list_items [partnership.name], "user_tags"
     end
   end
 end

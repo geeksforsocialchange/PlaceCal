@@ -115,3 +115,8 @@
 	background-position: right 0.4rem center;
 	background-size: 0.5rem auto;
 }
+
+/* Ensure hidden class overrides select-filter display */
+.select-filter.hidden {
+	display: none;
+}

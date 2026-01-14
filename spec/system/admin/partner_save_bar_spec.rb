@@ -155,10 +155,12 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to next tab when clicking Continue without changes" do
+      # Wait for Continue button to be visible (shown by Stimulus controller)
+      expect(page).to have_button("Continue", visible: :visible, wait: 5)
       click_button "Continue"
 
-      # Should be on Location tab
-      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
+      # Wait for tab navigation and verify Location tab is checked
+      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all, wait: 5)
     end
 
     it "navigates to previous tab when clicking Back without changes" do

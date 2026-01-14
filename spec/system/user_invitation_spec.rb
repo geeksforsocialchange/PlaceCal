@@ -29,7 +29,10 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     fill_in "user_first_name", with: "New"
     fill_in "user_last_name", with: "User"
     fill_in "user_email", with: invited_user_email
-    choose "Root: Can do everything"
+
+    # Navigate to Admin tab to set role
+    find('input[data-hash="admin"]').click
+    choose "Root: Can do everything - use with care!"
     click_button "Invite"
 
     expect(page).to have_selector("[role='alert']", text: "User has been created! An invite has been sent")

@@ -248,16 +248,18 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "cascading district/ward filter" do
     it "shows ward dropdown only after selecting district" do
-      # Ward dropdown should be hidden initially
+      # Ward dropdown should be hidden initially (check for non-visibility)
       expect(page).to have_css("select[data-filter-column='district']")
-      expect(page).to have_css("select[data-filter-column='ward'].hidden", visible: :hidden)
+      # Check that ward dropdown exists but is not visible
+      expect(page).to have_css("select[data-filter-column='ward']", visible: :all)
+      expect(page).not_to have_css("select[data-filter-column='ward']", visible: :visible)
     end
 
     it "shows ward dropdown after selecting district" do
       select_datatable_filter "Test District", column: "district"
 
       # Ward dropdown should now be visible
-      expect(page).to have_css("select[data-filter-column='ward']:not(.hidden)")
+      expect(page).to have_css("select[data-filter-column='ward']", visible: :visible)
     end
 
     it "ward dropdown only shows wards from selected district" do
@@ -297,7 +299,8 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
       # Clear district selection
       select_datatable_filter "District", column: "district"
 
-      expect(page).to have_css("select[data-filter-column='ward'].hidden", visible: :hidden)
+      # Ward dropdown should be hidden again (not visible)
+      expect(page).not_to have_css("select[data-filter-column='ward']", visible: :visible)
     end
   end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Helpers for Tom Select dropdown interactions in system specs
+# Also includes helpers for StackedListSelectorComponent
+# rubocop:disable Metrics/ModuleLength
 module TomSelectHelpers
   # Wait for Tom Select containers to be ready
   def await_tom_select(time = 30)
@@ -118,6 +120,83 @@ module TomSelectHelpers
     end
   end
 
+  # Find a stacked list selector node by its wrapper class
+  # Returns the wrapper div containing the tom-select dropdown
+  def stacked_list_selector_node(wrapper_class)
+    find_element_with_retry do
+      find(".#{wrapper_class}")
+    end
+  end
+
+  # Select a value using a stacked list selector's tom-select dropdown
+  # Items are added to a separate list container, not kept in tom-select
+  # @param options [Array<String>] The option text(s) to select
+  # @param wrapper_class [String] The CSS class of the stacked list selector wrapper
+  def stacked_list_select(*options, wrapper_class:)
+    wrapper = find(".#{wrapper_class}")
+
+    options.each do |option|
+      scroll_to(wrapper)
+      sleep 0.1
+
+      # Find the tom-select within this wrapper
+      result = page.evaluate_script(<<~JS)
+        (function() {
+          var wrapper = document.querySelector('.#{wrapper_class}');
+          if (!wrapper) return { error: 'Wrapper not found' };
+
+          var select = wrapper.querySelector('select[data-controller*="tom-select"]');
+          if (!select) return { error: 'Select not found in wrapper' };
+          if (!select.tomselect) return { error: 'Tom Select not initialized' };
+
+          var ts = select.tomselect;
+          var opts = [];
+          for (var key in ts.options) {
+            var opt = ts.options[key];
+            opts.push({ value: key, text: opt.text || opt.label || opt.name || key });
+          }
+          return { selectId: select.id, options: opts };
+        })()
+      JS
+
+      raise Capybara::ElementNotFound, "Stacked list select error: #{result['error']}" if result["error"]
+
+      matching_option = result["options"].find { |o| o["text"]&.include?(option) }
+
+      if matching_option.nil?
+        option_texts = result["options"].map { |o| o["text"] }.join(", ")
+        raise Capybara::ElementNotFound,
+              "Option '#{option}' not found. Available: [#{option_texts}]"
+      end
+
+      select_id = result["selectId"]
+      page.execute_script(<<~JS)
+        (function() {
+          var select = document.getElementById('#{select_id}');
+          if (select && select.tomselect) {
+            select.tomselect.addItem('#{matching_option['value']}');
+          }
+        })()
+      JS
+
+      # Wait for item to appear in the stacked list (not in tom-select)
+      expect(wrapper).to have_selector("[data-item-name]", text: option, wait: 15)
+    end
+  end
+
+  # Assert items are selected in a stacked list selector
+  # Items appear as data-item-name divs in the list, not in tom-select
+  def assert_stacked_list_items(options_array, wrapper_class)
+    wrapper = find(".#{wrapper_class}")
+    find_element_with_retry do
+      within(wrapper) do
+        options_array.each do |opt|
+          expect(page).to have_selector("[data-item-name]", text: opt, wait: 10)
+        end
+      end
+    end
+  end
+
   # Retry helper for stale elements
   def find_element_and_retry_if_stale(max_attempts: 3, &)
     find_element_with_retry(max_attempts: max_attempts, &)
@@ -128,6 +207,7 @@ module TomSelectHelpers
     find_element_with_retry(max_attempts: max_attempts, &)
   end
 end
+# rubocop:enable Metrics/ModuleLength
 
 RSpec.configure do |config|
   config.include TomSelectHelpers, type: :system

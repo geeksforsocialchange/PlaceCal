@@ -21,7 +21,8 @@
         icon_name: :partnership,
         icon_color: "bg-amber-100 text-amber-600",
         empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
-        add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase)
+        add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase),
+        wrapper_class: "user_tags"
       ) %>
     </div>
   </div>
@@ -48,7 +49,8 @@
         icon_color: "bg-emerald-100 text-emerald-600",
         empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
         add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
-        use_tom_select: true
+        use_tom_select: true,
+        wrapper_class: "user_partners"
       ) %>
     </div>
   </div>
@@ -82,7 +84,8 @@
           icon_color: "bg-sky-100 text-sky-600",
           empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
           add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase),
-          use_tom_select: true
+          use_tom_select: true,
+          wrapper_class: "user_neighbourhoods"
         ) %>
       <% else %>
         <%= render Admin::ItemBadgeListComponent.new(
