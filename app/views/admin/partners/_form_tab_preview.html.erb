@@ -1,6 +1,6 @@
 <%= render Admin::SectionHeaderComponent.new(
-  title: "Live Site Preview",
-  description: "How this partner appears on PlaceCal."
+  title: t('admin.partners.sections.live_preview'),
+  description: t('admin.partners.sections.preview_description')
 ) %>
 
 <div class="mockup-browser bg-base-300 border border-base-300 max-w-4xl">
@@ -24,12 +24,12 @@
               <%= @partner.description_html.to_s.html_safe %>
             </div>
           <% else %>
-            <p class="text-base-content/50 italic">No description provided.</p>
+            <p class="text-base-content/50 italic"><%= t('admin.partners.preview.no_description') %></p>
           <% end %>
 
           <% if @partner.accessibility_info.present? %>
             <div class="mt-6">
-              <h3 class="font-semibold mb-2">Accessibility</h3>
+              <h3 class="font-semibold mb-2"><%= t('admin.partners.preview.accessibility') %></h3>
               <p class="text-sm"><%= @partner.accessibility_info %></p>
             </div>
           <% end %>
@@ -40,35 +40,35 @@
             <%= image_tag @partner.image.standard.url, class: 'rounded-box w-full' %>
           <% else %>
             <div class="bg-base-200 rounded-box aspect-square flex items-center justify-center">
-              <span class="text-base-content/30 text-sm">No image</span>
+              <span class="text-base-content/30 text-sm"><%= t('admin.partners.preview.no_image') %></span>
             </div>
           <% end %>
 
           <div class="card bg-base-200 card-body p-4 text-sm">
             <% if @partner.address&.to_s.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Address</div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.address') %></div>
                 <p><%= @partner.address %></p>
               </div>
             <% end %>
 
             <% if @partner.url.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Website</div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.website') %></div>
                 <%= link_to @partner.url, @partner.url, target: '_blank', class: 'link text-placecal-orange hover:text-orange-600 break-all' %>
               </div>
             <% end %>
 
             <% if @partner.public_email.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Email</div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.email') %></div>
                 <%= mail_to @partner.public_email, @partner.public_email, class: 'link text-placecal-orange hover:text-orange-600' %>
               </div>
             <% end %>
 
             <% if @partner.public_phone.present? %>
               <div>
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1">Phone</div>
+                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= t('admin.fields.phone') %></div>
                 <p><%= @partner.public_phone %></p>
               </div>
             <% end %>
@@ -82,8 +82,8 @@
 <div class="divider my-8"></div>
 
 <%= render Admin::SectionHeaderComponent.new(
-  title: "Upcoming Events",
-  description: "Events in the next 30 days from this partner's calendars.",
+  title: t('admin.partners.preview.upcoming_events'),
+  description: t('admin.partners.sections.upcoming_events_description'),
   tag: :h3
 ) %>
 
@@ -93,9 +93,9 @@
     <table class="table table-sm table-zebra">
       <thead>
         <tr>
-          <th>Event</th>
-          <th>Date & Time</th>
-          <th>Calendar</th>
+          <th><%= t('admin.models.event.one') %></th>
+          <th><%= t('admin.table.date_time') %></th>
+          <th><%= t('admin.models.calendar.one') %></th>
         </tr>
       </thead>
       <tbody>
@@ -118,5 +118,5 @@
     </table>
   </div>
 <% else %>
-  <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events in the next 30 days") %>
+  <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.time.no_upcoming_in_days', days: 30)) %>
 <% end %>

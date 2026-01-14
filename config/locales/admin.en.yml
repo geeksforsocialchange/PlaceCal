@@ -292,6 +292,11 @@ en:
 
     # Partners - unique strings only
     partners:
+      preview:
+        no_description: "No description provided."
+        no_image: "No image"
+        accessibility: "Accessibility"
+        upcoming_events: "Upcoming Events"
       sections:
         basic_info_description: "Enter the core details about your partner organisation."
         location_description: "Partners need at least one place - either a fixed address or a service area."
