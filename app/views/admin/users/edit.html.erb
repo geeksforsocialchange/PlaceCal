@@ -16,24 +16,12 @@
                      url: admin_user_path(@user),
                      disabled: disabled_fields,
                      display_only: displayable_fields,
-                     html: { data: { controller: 'live-validation' } }) do |f| %>
+                     html: { data: { controller: 'user-tabs live-validation' } }) do |f| %>
   <%= render 'form', f: f %>
 
-  <% if policy(@user).destroy? && !@user.site_admin? %>
-    <div class="divider my-8"></div>
-
-    <%= render Admin::DangerZoneComponent.new(
-      title: "Delete this user",
-      description: "Permanently remove this user account. This action cannot be undone.",
-      button_text: "Delete User",
-      button_path: admin_user_path(@user),
-      confirm: "Please confirm you want to delete this user.\n\nThis is permanent!"
-    ) %>
-  <% end %>
-
-  <%= render Admin::SaveBarComponent.new do |c| %>
-    <% c.with_button do %>
-      <%= f.submit t('admin.users.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-    <% end %>
-  <% end %>
+  <%= render Admin::SaveBarComponent.new(
+    multi_step: true,
+    tab_name: 'user_tabs',
+    storage_key: 'userTabAfterSave'
+  ) %>
 <% end %>

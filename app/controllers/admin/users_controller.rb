@@ -58,7 +58,7 @@ module Admin
 
       if @user.update(permitted_attributes(@user))
         flash[:success] = 'User has been saved'
-        redirect_to admin_users_path
+        redirect_to edit_admin_user_path(@user)
 
       else
         flash.now[:danger] = 'User was not saved'

@@ -45,6 +45,11 @@ en:
       upcoming_events: "Upcoming Events"
       url_settings: "URL Settings"
 
+    # Danger zone (generic, for any model)
+    danger_zone:
+      delete_title: "Delete %{model}"
+      delete_description: "Permanently remove this %{model}. This action cannot be undone."
+
     # Table column headers
     table:
       calendar: "Calendar"
@@ -443,9 +448,6 @@ en:
         empty:
           hint: "Add neighbourhoods to this site to include their calendars"
           title: "No calendars on this site"
-      danger_zone:
-        delete_description: "Permanently remove this site. This action cannot be undone."
-
     # -------------------------------------------------------------------------
     # Users
     # -------------------------------------------------------------------------
@@ -461,5 +463,7 @@ en:
         neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
         partners_hint: "Partners this user can edit, as well as their associated calendars."
         partnerships_hint: "Grants access to add or remove partners from partnerships"
+      danger_zone:
+        site_admin_warning: "This user is a site administrator and cannot be deleted. Remove them as a site admin first."
       profile:
         title: "Your Profile"

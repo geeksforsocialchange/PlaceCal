@@ -1,0 +1,79 @@
+<%# Permissions Tab %>
+<div class="space-y-8">
+  <%# Partnerships %>
+  <div class="max-w-xl">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= Partnership.model_name.human(count: 2) %></legend>
+      <p class="fieldset-label mb-3"><%= t('admin.users.fields.partnerships_hint') %></p>
+      <div class="user_tags">
+        <%= f.input_field :tag_ids,
+                  as: :select,
+                  collection: options_for_tags,
+                  multiple: true,
+                  class: 'select select-bordered w-full',
+                  data: { controller: "tom-select" } %>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="divider"></div>
+
+  <%# Partners & Neighbourhoods %>
+  <h3 class="text-lg font-bold mb-4"><%= t('admin.users.sections.partners_neighbourhoods') %></h3>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <%# Partners %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-5">
+        <h4 class="font-semibold flex items-center gap-2 mb-2">
+          <%= icon(:partner, size: '5', css_class: 'text-placecal-orange') %>
+          <%= Partner.model_name.human(count: 2) %>
+        </h4>
+        <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.partners_hint') %></p>
+        <div class="user_partners">
+          <%= f.input_field :partner_ids,
+                    as: :select,
+                    collection: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
+                    selected: @partners || @user.partners.pluck(:id),
+                    multiple: true,
+                    class: 'select select-bordered w-full bg-base-100',
+                    data: {
+                      controller: @user_partners_controller,
+                      "user-partners-permitted-partners-value": permitted_options_for_partners
+                    } %>
+        </div>
+      </div>
+    </div>
+
+    <%# Neighbourhoods %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-5">
+        <h4 class="font-semibold flex items-center gap-2 mb-2">
+          <%= icon(:map_pin, size: '5', css_class: 'text-info') %>
+          <%= Neighbourhood.model_name.human(count: 2) %>
+        </h4>
+        <% if current_user.root? %>
+          <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
+          <div class="user_neighbourhoods">
+            <%= f.input_field :neighbourhood_ids,
+              as: :select,
+              collection: options_for_user_neighbourhoods(f.object),
+              multiple: true,
+              class: 'select select-bordered w-full bg-base-100',
+              data: { controller: "tom-select" } %>
+          </div>
+        <% else %>
+          <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.neighbourhoods_hint') %></p>
+          <% if @user.neighbourhoods.any? %>
+            <div class="flex flex-wrap gap-2">
+              <% @user.neighbourhoods.order(:name).each do |hood| %>
+                <%= link_to hood.name, admin_neighbourhood_path(hood), class: "badge badge-outline hover:badge-primary" %>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase) %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

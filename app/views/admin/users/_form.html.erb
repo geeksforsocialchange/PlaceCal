@@ -1,158 +1,37 @@
 <%= render(Admin::ErrorComponent.new(f.object)) %>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-  <%# Left Column - Personal Details %>
-  <div class="space-y-6">
-    <div>
-      <h2 class="text-lg font-bold mb-1"><%= t('admin.users.sections.personal_details') %></h2>
-      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.users.sections.personal_description') %></p>
-    </div>
+<%# Radio Tabs - daisyUI tabs-lift %>
+<div role="tablist" class="tabs tabs-lift">
+  <%= render Admin::TabPanelComponent.new(
+    name: 'user_tabs',
+    label: '👤 Personal Details',
+    hash: 'personal',
+    controller_name: 'user-tabs',
+    checked: true
+  ) do %>
+    <%= render 'form_tab_personal', f: f %>
+  <% end %>
 
-    <div class="grid grid-cols-2 gap-4">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :first_name) %></legend>
-        <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
-      </fieldset>
+  <%= render Admin::TabPanelComponent.new(
+    name: 'user_tabs',
+    label: '🔑 Permissions',
+    hash: 'permissions',
+    controller_name: 'user-tabs'
+  ) do %>
+    <%= render 'form_tab_roles', f: f %>
+  <% end %>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :last_name) %></legend>
-        <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
-      </fieldset>
-    </div>
+  <% if policy(@user).permitted_attributes_for_update.include?(:role) || policy(@user).destroy? %>
+    <%# Spacer to push Admin tab right %>
+    <div class="tab flex-1 cursor-default"></div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
-        <%= f.input_field :email, class: 'input input-bordered w-full' %>
-      </fieldset>
-
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :phone) %></legend>
-        <%= f.input_field :phone, class: 'input input-bordered w-full' %>
-      </fieldset>
-    </div>
-
-    <%# Avatar %>
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:user, :avatar) %></legend>
-      <div data-controller="image-preview">
-        <div class="flex items-start gap-4">
-          <div class="shrink-0">
-            <% if f.object.avatar.retina.url %>
-              <div class="relative group">
-                <%= image_tag f.object.avatar.retina.url, class: 'w-20 h-20 rounded-lg object-cover border border-base-300', data: { image_preview_target: "img" } %>
-              </div>
-            <% else %>
-              <div class="w-20 h-20 rounded-lg bg-base-200 flex items-center justify-center border border-base-300" data-image-preview-target="placeholder">
-                <%= icon(:user, size: '8', css_class: 'text-base-content/30', stroke_width: '1.5') %>
-              </div>
-              <%= image_tag "", style: 'display:none;', class: 'w-20 h-20 rounded-lg object-cover border border-base-300', data: { image_preview_target: "img" } %>
-            <% end %>
-          </div>
-          <div class="flex-1">
-            <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer">
-              <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
-                <%= icon(:upload, size: '4', css_class: 'text-placecal-orange') %>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
-                <p class="text-xs text-base-content/50"><%= image_uploader_hint(f.object.avatar) %></p>
-              </div>
-              <%= f.input_field :avatar, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
-            </label>
-          </div>
-        </div>
-      </div>
-    </fieldset>
-  </div>
-
-  <%# Right Column - Role & Access %>
-  <div class="space-y-6">
-    <div>
-      <h2 class="text-lg font-bold mb-1"><%= t('admin.users.sections.role_permissions') %></h2>
-      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.users.sections.role_description') %></p>
-    </div>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:user, :role) %></legend>
-      <%= render Admin::RadioCardGroupComponent.new(
-        form: f,
-        attribute: :role,
-        values: User.role.values,
-        label_method: method(:role_label)
-      ) %>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= Partnership.model_name.human(count: 2) %></legend>
-      <p class="fieldset-label mb-3"><%= t('admin.users.fields.partnerships_hint') %></p>
-      <div class="user_tags">
-        <%= f.input_field :tag_ids,
-                  as: :select,
-                  collection: options_for_tags,
-                  multiple: true,
-                  class: 'select select-bordered w-full',
-                  data: { controller: "tom-select" } %>
-      </div>
-    </fieldset>
-  </div>
-</div>
-
-<div class="divider my-8"></div>
-
-<%# Partners & Neighbourhoods %>
-<h3 class="text-lg font-bold mb-4"><%= t('admin.users.sections.partners_neighbourhoods') %></h3>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <h3 class="font-semibold flex items-center gap-2 mb-2">
-        <%= icon(:partner, size: '5', css_class: 'text-placecal-orange') %>
-        <%= Partner.model_name.human(count: 2) %>
-      </h3>
-      <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.partners_hint') %></p>
-      <div class="user_partners">
-        <%= f.input_field :partner_ids,
-                  as: :select,
-                  collection: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
-                  selected: @partners || @user.partners.pluck(:id),
-                  multiple: true,
-                  class: 'select select-bordered w-full bg-base-100',
-                  data: {
-                    controller: @user_partners_controller,
-                    "user-partners-permitted-partners-value": permitted_options_for_partners
-                  } %>
-      </div>
-    </div>
-  </div>
-
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <h3 class="font-semibold flex items-center gap-2 mb-2">
-        <%= icon(:map_pin, size: '5', css_class: 'text-info') %>
-        <%= Neighbourhood.model_name.human(count: 2) %>
-      </h3>
-      <% if current_user.root? %>
-        <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
-        <div class="user_neighbourhoods">
-          <%= f.input_field :neighbourhood_ids,
-            as: :select,
-            collection: options_for_user_neighbourhoods(f.object),
-            multiple: true,
-            class: 'select select-bordered w-full bg-base-100',
-            data: { controller: "tom-select" } %>
-        </div>
-      <% else %>
-        <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.neighbourhoods_hint') %></p>
-        <% if @user.neighbourhoods.any? %>
-          <div class="flex flex-wrap gap-2">
-            <% @user.neighbourhoods.order(:name).each do |hood| %>
-              <%= link_to hood.name, admin_neighbourhood_path(hood), class: "badge badge-outline hover:badge-primary" %>
-            <% end %>
-          </div>
-        <% else %>
-          <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase) %></p>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
+    <%= render Admin::TabPanelComponent.new(
+      name: 'user_tabs',
+      label: '🔐 Admin',
+      hash: 'admin',
+      controller_name: 'user-tabs'
+    ) do %>
+      <%= render 'form_tab_admin', f: f %>
+    <% end %>
+  <% end %>
 </div>

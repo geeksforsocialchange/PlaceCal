@@ -38,8 +38,8 @@
     <div class="divider"></div>
 
     <%= render Admin::DangerZoneComponent.new(
-      title: t('admin.actions.delete_model', model: Site.model_name.human.downcase),
-      description: t('admin.sites.danger_zone.delete_description'),
+      title: t('admin.danger_zone.delete_title', model: Site.model_name.human),
+      description: t('admin.danger_zone.delete_description', model: Site.model_name.human.downcase),
       button_text: t('admin.actions.delete_model', model: Site.model_name.human),
       button_path: admin_site_path(@site),
       confirm: t('admin.confirm.delete_permanent', model: Site.model_name.human.downcase)
