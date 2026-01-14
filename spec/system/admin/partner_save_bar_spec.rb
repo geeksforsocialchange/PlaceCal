@@ -61,8 +61,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows only Save button on Settings tab" do
-      # Go to Settings tab
-      find('input[aria-label="⚙ Settings"]').click
+      # Go to Settings tab - use data-hash attribute which is more stable than emoji-containing labels
+      find('input.tab[data-hash="settings"]').click
 
       expect(page).to have_button("Save")
       expect(page).not_to have_button("Back", visible: :visible)

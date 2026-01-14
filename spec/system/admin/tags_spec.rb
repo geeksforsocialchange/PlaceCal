@@ -143,7 +143,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/new"
 
-      expect(page).to have_css("h1", text: "Create a new Tag")  # wait for page load
+      expect(page).to have_css("h1", text: "New Tag")  # wait for page load
       expect(page).to have_css("h3", text: "Assigned Users")
     end
 

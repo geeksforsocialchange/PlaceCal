@@ -148,7 +148,8 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         ward_data = datatable.data.find { |d| d[:name].include?("Long Ward Partner") }
-        expect(ward_data[:ward]).to include("…")
+        # Code uses "..." (three dots) for truncation
+        expect(ward_data[:ward]).to include("...")
       end
     end
 
@@ -182,7 +183,7 @@ RSpec.describe PartnerDatatable do
         expect(partnerships_html).to include("data-filter-value=\"#{partnership.id}\"")
       end
 
-      it "separates multiple partnerships with line breaks" do
+      it "renders multiple partnerships as separate buttons" do
         partnership2 = create(:partnership, name: "Another Partnership")
         partner.tags << partnership
         partner.tags << partnership2
@@ -190,7 +191,10 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         partnerships_html = datatable.data.first[:partnerships]
-        expect(partnerships_html).to include("<br>")
+        # Code renders partnerships as buttons in a div with space-y-0.5 CSS spacing
+        expect(partnerships_html).to include("Community Partnership")
+        expect(partnerships_html).to include("Another Partnership")
+        expect(partnerships_html).to include("space-y-0.5")
       end
     end
 
