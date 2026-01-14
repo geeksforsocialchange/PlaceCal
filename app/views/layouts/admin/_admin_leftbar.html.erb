@@ -43,7 +43,7 @@
     </ul>
   <% end %>
 
-  <div class="px-4 mt-8 text-xs text-gray-500 flex items-center gap-1">
+  <div class="px-5 mt-8 text-xs text-gray-500 flex items-center gap-1">
     <%= icon(:code, size: '3') %>
     <%= t('admin.leftbar.build') %>: <code class="font-mono"><%= link_to (ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'dev'), "https://github.com/geeksforsocialchange/PlaceCal/commit/#{ENV['GIT_REV']}", class: 'text-placecal-teal hover:underline' %></code>
   </div>

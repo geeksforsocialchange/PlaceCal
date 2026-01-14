@@ -17,13 +17,13 @@
   <body class="bg-gray-50">
     <%= render "layouts/admin/admin_topbar" %>
 
-    <div class="flex pt-14">
-      <nav class="hidden md:block w-56 fixed h-screen bg-gray-100 border-r border-gray-200">
+    <div class="flex pt-14 min-h-screen">
+      <nav class="hidden md:block w-56 flex-shrink-0 bg-gray-100 border-r border-gray-200">
         <div class="py-4">
           <%= render "layouts/admin/admin_leftbar" %>
         </div>
       </nav>
-      <main role="main" class="flex-1 md:ml-56 min-h-screen px-6 py-4">
+      <main role="main" class="flex-1 min-h-screen px-6 py-4">
         <%= render(Admin::FlashComponent.new) %>
         <%= yield %>
 
