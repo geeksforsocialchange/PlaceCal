@@ -218,6 +218,16 @@ en:
         select_ward: "Select ward..."
 
     # ============================================
+    # SHARED - Aliases for templates using shared.* namespace
+    # ============================================
+    shared:
+      labels:
+        loading: "Loading..."
+      placeholders:
+        search: "Search..."
+        type_to_filter: "Type to filter..."
+
+    # ============================================
     # DATATABLE
     # ============================================
     datatable:
@@ -225,7 +235,9 @@ en:
       clear_filters: "Clear filters"
       reset_sort: "Reset sort"
       showing: "Showing %{start} to %{end} of %{total} entries"
-      # Note: add_model uses actions.add_model
+      add_model: "Add %{model}"
+      search: "Search"
+      filter_all: "All"
 
     # ============================================
     # LAYOUT - Navigation, topbar
