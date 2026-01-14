@@ -17,10 +17,12 @@ RSpec.describe "Admin Users", :slow, type: :system do
   describe "tom-select inputs on users form" do
     it "allows selecting partners, neighbourhoods and tags", :aggregate_failures do
       click_link "Users"
+      await_datatables
 
       # Edit a root user (has access to all potential tom-select inputs)
-      # Click on the admin user's first name to edit
-      click_link admin_user.first_name
+      # Click on the admin user's full name to edit (datatable shows "FirstName LastName")
+      full_name = [admin_user.first_name, admin_user.last_name].compact.join(" ")
+      click_link full_name
 
       # Select partners
       partners_node = tom_select_node("user_partners")
@@ -43,9 +45,10 @@ RSpec.describe "Admin Users", :slow, type: :system do
 
       # Return to user to verify data persists
       click_link "Users"
+      await_datatables
 
       find_element_and_retry_if_stale do
-        click_link admin_user.first_name
+        click_link full_name
       end
 
       partners_node = tom_select_node("user_partners")

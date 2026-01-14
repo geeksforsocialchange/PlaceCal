@@ -168,14 +168,17 @@ end
 When("I click the {string} tab") do |tab_name|
   # Map common tab names to data-hash values
   # Partner form uses: basic, location, contact, tags, calendars, admins, preview, settings
+  # Calendar form uses: settings, events, admin (singular)
   tab_hashes = {
     "Basic Info" => "basic",
     "Location" => "location",
     "Contact" => "contact",
     "Tags" => "tags",
+    "Admin" => "admin",
     "Admins" => "admins",
     "Settings" => "settings",
     "Calendars" => "calendars",
+    "Events" => "events",
     "Preview" => "preview"
   }
 
