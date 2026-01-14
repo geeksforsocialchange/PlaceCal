@@ -48,17 +48,18 @@
       <% end %>
 
       <% if @tag.new_record? %>
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Type</legend>
+        <div class="fieldset">
+          <label for="tag_type" class="fieldset-legend">Type</label>
           <%= f.input_field :type,
               as: :select,
               collection: [['None', ''], ['Category', 'Category'], ['Facility', 'Facility'], ['Partnership', 'Partnership']],
-              class: 'select select-bordered w-full' %>
+              class: 'select select-bordered w-full',
+              id: 'tag_type' %>
           <p class="fieldset-label text-amber-600">
             <%= icon(:warning, size: '4', css_class: 'inline-block mr-1') %>
             Once set, this cannot be changed.
           </p>
-        </fieldset>
+        </div>
       <% end %>
     </div>
   </div>

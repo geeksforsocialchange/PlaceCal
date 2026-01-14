@@ -82,27 +82,26 @@
     </div>
   </div>
 
-  <%# Your Permissions %>
-  <% if current_user.partners.any? || current_user.neighbourhoods.any? || current_user.partnership_admin? || current_user.root? %>
-    <div class="card bg-base-100 border border-base-300 shadow-sm">
-      <div class="card-body p-6">
-        <%= render Admin::SectionHeaderComponent.new(
-          title: "Your Permissions",
-          description: "Resources you can access and manage.",
-          margin: 4
-        ) %>
+  <%# Admin rights %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <%= render Admin::SectionHeaderComponent.new(
+        title: "Admin rights",
+        description: "Resources you can access and manage.",
+        margin: 4
+      ) %>
 
-        <% if current_user.root? %>
-          <div role="alert" class="alert bg-amber-50 border-amber-200 text-amber-800">
-            <%= icon(:crown, size: '5', css_class: 'text-amber-500') %>
-            <span>You are a <strong>root</strong> user and can access everything.</span>
-          </div>
-        <% elsif user_has_no_rights?(current_user) %>
-          <div role="alert" class="alert alert-warning no-admin-rights">
-            <%= icon(:warning, size: '5') %>
-            <span>You have no admin rights. Please contact whoever invited you to set up your account correctly.</span>
-          </div>
-        <% else %>
+      <% if current_user.root? %>
+        <div role="alert" class="alert bg-amber-50 border-amber-200 text-amber-800">
+          <%= icon(:crown, size: '5', css_class: 'text-amber-500') %>
+          <span>You are a <strong>root</strong> user and can access everything.</span>
+        </div>
+      <% elsif user_has_no_rights?(current_user) %>
+        <div role="alert" class="alert alert-warning no-admin-rights">
+          <%= icon(:warning, size: '5') %>
+          <span>You have no admin rights. Please contact whoever invited you to set up your account correctly.</span>
+        </div>
+      <% else %>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <%# Partners %>
             <% if current_user.partners.any? %>
@@ -165,11 +164,10 @@
         <% end %>
       </div>
     </div>
-  <% end %>
 
   <%= render Admin::SaveBarComponent.new do |c| %>
     <% c.with_button do %>
-      <%= f.submit "Update Profile", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+      <%= f.submit "Edit Profile", class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
     <% end %>
   <% end %>
 <% end %>
