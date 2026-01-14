@@ -26,7 +26,9 @@ RSpec.describe Admin::DangerZoneComponent, type: :component do
 
   it "renders delete button with correct path" do
     render_inline(described_class.new(**default_params))
+    # link_to with data: { turbo_method: :delete } creates a link with data-turbo-method
     expect(page).to have_link("Delete", href: "/admin/partners/1")
+    expect(page).to have_css("a[data-turbo-method='delete']")
   end
 
   it "renders button with error styling" do

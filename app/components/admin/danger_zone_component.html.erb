@@ -6,10 +6,9 @@
     </h3>
     <p class="text-sm text-base-content/70 mt-2"><%= description %></p>
     <div class="mt-4">
-      <%= button_to button_path,
-                    method: button_method,
-                    data: confirm ? { turbo_confirm: confirm } : {},
-                    class: "btn btn-error btn-sm" do %>
+      <%= link_to button_path,
+                  data: { turbo_method: button_method }.merge(confirm ? { turbo_confirm: confirm } : {}),
+                  class: "btn btn-error btn-sm" do %>
         <%= icon(:trash, size: '4') %>
         <%= button_text %>
       <% end %>
