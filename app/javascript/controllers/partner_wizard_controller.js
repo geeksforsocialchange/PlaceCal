@@ -1,22 +1,15 @@
 import { Controller } from "@hotwired/stimulus";
-
-/**
- * Simple debounce utility - waits for pause in calls before executing
- * @param {Function} func - Function to debounce
- * @param {number} wait - Milliseconds to wait
- * @returns {Function} Debounced function
- */
-function debounce(func, wait) {
-	let timeout;
-	return function executedFunction(...args) {
-		const later = () => {
-			clearTimeout(timeout);
-			func.apply(this, args);
-		};
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-	};
-}
+import {
+	debounce,
+	escapeHtml,
+	wizardValues,
+	wizardTargets,
+	nextStep,
+	previousStep,
+	updateWizardUI,
+	showInputError,
+	clearInputError,
+} from "./mixins/wizard";
 
 /**
  * Partner Wizard Controller
@@ -24,9 +17,8 @@ function debounce(func, wait) {
  */
 export default class extends Controller {
 	static targets = [
+		...wizardTargets,
 		"form",
-		"step",
-		"stepIndicator",
 		"nameInput",
 		"nameFeedback",
 		"exactMatch",
@@ -34,88 +26,36 @@ export default class extends Controller {
 		"similarSection",
 		"similarList",
 		"nameAvailable",
-		"backButton",
-		"continueButton",
-		"submitButton",
 	];
 
 	static values = {
-		currentStep: { type: Number, default: 1 },
-		totalSteps: { type: Number, default: 3 },
+		...wizardValues,
 	};
 
 	connect() {
 		this.checkNameDebounced = debounce(this.performNameCheck.bind(this), 400);
-		this.updateUI();
+		updateWizardUI(this);
 	}
 
 	// Step navigation
 	nextStep() {
-		if (this.currentStepValue < this.totalStepsValue) {
-			// Validate current step before proceeding
-			if (!this.validateCurrentStep()) {
-				return;
-			}
-			this.currentStepValue++;
-			this.updateUI();
-			this.scrollToTop();
-		}
+		nextStep(this, () => this.validateCurrentStep());
 	}
 
 	previousStep() {
-		if (this.currentStepValue > 1) {
-			this.currentStepValue--;
-			this.updateUI();
-			this.scrollToTop();
-		}
+		previousStep(this);
 	}
 
 	validateCurrentStep() {
 		if (this.currentStepValue === 1) {
 			const name = this.nameInputTarget.value.trim();
 			if (name.length < 5) {
-				this.nameInputTarget.classList.add("input-error");
-				this.nameInputTarget.focus();
+				showInputError(this.nameInputTarget);
 				return false;
 			}
-			this.nameInputTarget.classList.remove("input-error");
+			clearInputError(this.nameInputTarget);
 		}
 		return true;
-	}
-
-	updateUI() {
-		// Update step visibility
-		this.stepTargets.forEach((step) => {
-			const stepNum = parseInt(step.dataset.step, 10);
-			step.classList.toggle("hidden", stepNum !== this.currentStepValue);
-		});
-
-		// Update step indicators
-		this.stepIndicatorTargets.forEach((indicator) => {
-			const stepNum = parseInt(indicator.dataset.step, 10);
-			indicator.classList.toggle(
-				"step-primary",
-				stepNum <= this.currentStepValue
-			);
-		});
-
-		// Update navigation buttons
-		this.backButtonTarget.classList.toggle(
-			"hidden",
-			this.currentStepValue === 1
-		);
-		this.continueButtonTarget.classList.toggle(
-			"hidden",
-			this.currentStepValue === this.totalStepsValue
-		);
-		this.submitButtonTarget.classList.toggle(
-			"hidden",
-			this.currentStepValue !== this.totalStepsValue
-		);
-	}
-
-	scrollToTop() {
-		window.scrollTo({ top: 0, behavior: "smooth" });
 	}
 
 	// Name validation
@@ -174,7 +114,7 @@ export default class extends Controller {
 						<a href="/partners/${partner.id}/edit"
 						   class="flex items-center gap-2 px-3 py-2 rounded-lg bg-base-200 hover:bg-base-300 transition-colors text-sm"
 						   target="_blank">
-							<span class="flex-1">${this.escapeHtml(partner.name)}</span>
+							<span class="flex-1">${escapeHtml(partner.name)}</span>
 							<span class="text-xs text-base-content/50">View →</span>
 						</a>
 					`
@@ -184,11 +124,5 @@ export default class extends Controller {
 		} catch (error) {
 			console.error("Error checking partner name:", error);
 		}
-	}
-
-	escapeHtml(text) {
-		const div = document.createElement("div");
-		div.textContent = text;
-		return div.innerHTML;
 	}
 }

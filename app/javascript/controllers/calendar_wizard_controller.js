@@ -1,19 +1,17 @@
 import { Controller } from "@hotwired/stimulus";
-
-/**
- * Simple debounce utility - waits for pause in calls before executing
- */
-function debounce(func, wait) {
-	let timeout;
-	return function executedFunction(...args) {
-		const later = () => {
-			clearTimeout(timeout);
-			func.apply(this, args);
-		};
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-	};
-}
+import {
+	debounce,
+	getCSRFToken,
+	wizardValues,
+	wizardTargets,
+	nextStep,
+	previousStep,
+	updateWizardUI,
+	showInputError,
+	clearInputError,
+	showInputSuccess,
+	clearInputStyling,
+} from "./mixins/wizard";
 
 /**
  * Calendar Wizard Controller
@@ -21,8 +19,7 @@ function debounce(func, wait) {
  */
 export default class extends Controller {
 	static targets = [
-		"step",
-		"stepIndicator",
+		...wizardTargets,
 		"sourceInput",
 		"importerModeSection",
 		"importerModeSelect",
@@ -41,15 +38,11 @@ export default class extends Controller {
 		"partnerSelect",
 		"nameInput",
 		"placeSelect",
-		"backButton",
-		"continueButton",
 		"continueButtonText",
-		"submitButton",
 	];
 
 	static values = {
-		currentStep: { type: Number, default: 1 },
-		totalSteps: { type: Number, default: 3 },
+		...wizardValues,
 		testUrl: String,
 		sourceValid: { type: Boolean, default: false },
 		detectedFormat: { type: String, default: "" },
@@ -57,7 +50,7 @@ export default class extends Controller {
 
 	connect() {
 		this.testSourceDebounced = debounce(this.performSourceTest.bind(this), 600);
-		this.updateUI();
+		updateWizardUI(this);
 		this.updateContinueButton();
 
 		// Wait for tom-select to initialize on partner dropdown
@@ -69,31 +62,28 @@ export default class extends Controller {
 
 	// Step navigation
 	nextStep() {
-		if (this.currentStepValue < this.totalStepsValue) {
-			if (!this.validateCurrentStep()) {
-				return;
-			}
-			this.currentStepValue++;
-			this.updateUI();
-			this.scrollToTop();
-
-			// Update name suggestion when entering step 2
-			if (this.currentStepValue === 2) {
-				this.updateNameSuggestion();
-			}
-
-			// Auto-select partner as default location when entering step 3
-			if (this.currentStepValue === 3) {
-				this.autoSelectPartnerAsPlace();
-			}
-		}
+		nextStep(
+			this,
+			() => this.validateCurrentStep(),
+			(step) => this.onStepChange(step)
+		);
 	}
 
 	previousStep() {
-		if (this.currentStepValue > 1) {
-			this.currentStepValue--;
-			this.updateUI();
-			this.scrollToTop();
+		previousStep(this, (step) => this.onStepChange(step));
+	}
+
+	onStepChange(step) {
+		this.updateContinueButton();
+
+		// Update name suggestion when entering step 2
+		if (step === 2) {
+			this.updateNameSuggestion();
+		}
+
+		// Auto-select partner as default location when entering step 3
+		if (step === 3) {
+			this.autoSelectPartnerAsPlace();
 		}
 	}
 
@@ -116,8 +106,7 @@ export default class extends Controller {
 		if (this.currentStepValue === 1) {
 			// Step 1: Source URL must be valid
 			if (!this.sourceValidValue) {
-				this.sourceInputTarget.classList.add("input-error");
-				this.sourceInputTarget.focus();
+				showInputError(this.sourceInputTarget);
 				return false;
 			}
 		} else if (this.currentStepValue === 2) {
@@ -130,8 +119,7 @@ export default class extends Controller {
 				return false;
 			}
 			if (nameValue.length < 3) {
-				this.nameInputTarget.classList.add("input-error");
-				this.nameInputTarget.focus();
+				showInputError(this.nameInputTarget);
 				return false;
 			}
 		}
@@ -164,50 +152,12 @@ export default class extends Controller {
 		}
 	}
 
-	updateUI() {
-		// Update step visibility
-		this.stepTargets.forEach((step) => {
-			const stepNum = parseInt(step.dataset.step, 10);
-			step.classList.toggle("hidden", stepNum !== this.currentStepValue);
-		});
-
-		// Update step indicators
-		this.stepIndicatorTargets.forEach((indicator) => {
-			const stepNum = parseInt(indicator.dataset.step, 10);
-			indicator.classList.toggle(
-				"step-primary",
-				stepNum <= this.currentStepValue
-			);
-		});
-
-		// Update navigation buttons
-		this.backButtonTarget.classList.toggle(
-			"hidden",
-			this.currentStepValue === 1
-		);
-		this.continueButtonTarget.classList.toggle(
-			"hidden",
-			this.currentStepValue === this.totalStepsValue
-		);
-		this.submitButtonTarget.classList.toggle(
-			"hidden",
-			this.currentStepValue !== this.totalStepsValue
-		);
-
-		// Update continue button state for new step
-		this.updateContinueButton();
-	}
-
-	scrollToTop() {
-		window.scrollTo({ top: 0, behavior: "smooth" });
-	}
-
 	// Source URL testing
 	sourceChanged() {
 		// Reset validation state when source changes
 		this.sourceValidValue = false;
 		this.hideFeedback();
-		this.sourceInputTarget.classList.remove("input-error", "input-success");
+		clearInputStyling(this.sourceInputTarget);
 		this.resetTestButton();
 		this.updateContinueButton();
 	}
@@ -316,7 +266,7 @@ export default class extends Controller {
 				headers: {
 					"Content-Type": "application/json",
 					Accept: "application/json",
-					"X-CSRF-Token": this.getCSRFToken(),
+					"X-CSRF-Token": getCSRFToken(),
 				},
 				body: JSON.stringify({ source: source }),
 			});
@@ -329,8 +279,7 @@ export default class extends Controller {
 				// Success - show detected format
 				this.sourceValidValue = true;
 				this.sourceSuccessTarget.classList.remove("hidden");
-				this.sourceInputTarget.classList.add("input-success");
-				this.sourceInputTarget.classList.remove("input-error");
+				showInputSuccess(this.sourceInputTarget);
 				this.setTestButtonSuccess();
 
 				// Show the importer mode section
@@ -351,8 +300,7 @@ export default class extends Controller {
 				this.sourceErrorTarget.classList.remove("hidden");
 				this.sourceErrorMessageTarget.textContent =
 					data.error || "Unable to validate this URL";
-				this.sourceInputTarget.classList.add("input-error");
-				this.sourceInputTarget.classList.remove("input-success");
+				showInputError(this.sourceInputTarget);
 				this.setTestButtonError();
 			}
 		} catch (error) {
@@ -362,7 +310,7 @@ export default class extends Controller {
 			this.sourceErrorTarget.classList.remove("hidden");
 			this.sourceErrorMessageTarget.textContent =
 				"Connection error. Please try again.";
-			this.sourceInputTarget.classList.add("input-error");
+			showInputError(this.sourceInputTarget);
 			this.setTestButtonError();
 		} finally {
 			this.testButtonTarget.disabled = false;
@@ -379,11 +327,6 @@ export default class extends Controller {
 		if (this.hasImporterModeSectionTarget) {
 			this.importerModeSectionTarget.classList.add("hidden");
 		}
-	}
-
-	getCSRFToken() {
-		const meta = document.querySelector('meta[name="csrf-token"]');
-		return meta ? meta.getAttribute("content") : "";
 	}
 
 	// Partner selection and name suggestion
@@ -436,13 +379,13 @@ export default class extends Controller {
 			const calendarType = this.detectedFormatValue || "Calendar";
 			const suggestedName = `${partnerName} | ${calendarType}`;
 			this.nameInputTarget.value = suggestedName;
-			this.nameInputTarget.classList.remove("input-error");
+			clearInputError(this.nameInputTarget);
 			this.updateContinueButton();
 		}
 	}
 
 	nameChanged() {
-		this.nameInputTarget.classList.remove("input-error");
+		clearInputError(this.nameInputTarget);
 		this.updateNameSuggestion();
 		this.updateContinueButton();
 	}
