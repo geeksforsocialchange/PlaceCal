@@ -38,9 +38,13 @@
   <%# Right zone: User menu %>
   <div class="flex items-center gap-2 justify-end">
     <%= link_to admin_profile_path, class: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/80 transition-colors' do %>
-      <span class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700">
-        <%= icon(:user, size: '4') %>
-      </span>
+      <% if @current_user&.avatar.present? %>
+        <%= image_tag @current_user.avatar.standard.url, class: 'w-7 h-7 rounded-full object-cover', alt: '' %>
+      <% else %>
+        <span class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700">
+          <%= icon(:user, size: '4') %>
+        </span>
+      <% end %>
       <span class="text-sm"><%= @current_user&.email %></span>
       <% if @current_user&.role == :root %>
         <%= icon(:crown, size: '4', css_class: 'text-amber-400') %>
