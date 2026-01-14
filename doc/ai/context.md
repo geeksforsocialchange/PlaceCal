@@ -67,3 +67,39 @@ yarn build:all  # Runs: yarn build && yarn build:css && yarn build:css:admin-tai
 2. **New Tailwind classes not working**: Run `yarn build:css:admin-tailwind`, hard refresh browser
 3. **Browser caching**: Use `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) for hard refresh
 4. **Asset fingerprinting**: In development, restart Rails server after rebuilding assets
+
+### Development Workflow
+
+When running `bin/dev`, the Procfile.dev starts watchers for both JS and Tailwind CSS automatically. If you're running processes manually, remember to start both watchers.
+
+## Tailwind CSS Best Practices
+
+### Component Classes vs Utility Classes
+
+For reusable UI patterns with hover/focus states, **create component classes** in `app/tailwind/_components.css` instead of relying on JIT-generated utility classes:
+
+```css
+/* Good: Reliable, always generated */
+.btn-clear-filters {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1.5;
+  @apply bg-gray-100 text-gray-600 border border-gray-300;
+}
+.btn-clear-filters:hover {
+  @apply bg-red-50 text-red-600;
+}
+
+/* Avoid: JIT classes may not be generated if not scanned */
+class="hover:bg-red-50 hover:text-red-600"
+```
+
+### Stimulus Controller Visibility Toggling
+
+When toggling element visibility in Stimulus controllers, prefer `style.display` over `classList.toggle("hidden")` when using flexbox:
+
+```javascript
+// Good: Works reliably with inline-flex
+element.style.display = visible ? "inline-flex" : "none";
+
+// Problematic: CSS specificity issues with Tailwind's hidden class
+element.classList.toggle("hidden", !visible);
+```
