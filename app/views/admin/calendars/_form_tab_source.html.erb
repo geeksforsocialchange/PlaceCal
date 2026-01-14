@@ -7,9 +7,9 @@
   <% end %>
 <% end %>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-  <%# Left Column - Calendar Source %>
-  <div class="space-y-4" data-controller="calendar-name-suggest">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <%# Left Column - Calendar Source (2/3 width) %>
+  <div class="lg:col-span-2 space-y-4" data-controller="calendar-name-suggest">
     <fieldset class="fieldset">
       <legend class="fieldset-legend"><%= t('admin.calendars.fields.partner_organiser') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <%= f.input_field :partner_id,
