@@ -5,8 +5,8 @@ module SystemHelpers
   # Navigate to a specific tab in the partner form using daisyUI tabs
   # Uses the aria-label attribute to find the correct tab
   def go_to_partner_tab(tab_label)
-    # Wait for partner-tabs controller to be initialized
-    expect(page).to have_css("[data-controller*='partner-tabs']", wait: 10)
+    # Wait for form-tabs controller to be initialized
+    expect(page).to have_css("[data-controller*='form-tabs']", wait: 10)
 
     # Find and click the tab by its aria-label
     tab = find("input.tab[aria-label='#{tab_label}']", wait: 10)
