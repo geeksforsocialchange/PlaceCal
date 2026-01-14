@@ -100,6 +100,28 @@ end
 
 ## Rails View Components
 
+### ViewComponent Classes
+
+When creating ViewComponents that need helper methods (like `icon`), include the helper module:
+
+```ruby
+module Admin
+  class MyComponent < ViewComponent::Base
+    include SvgIconsHelper  # Required to use icon() helper in template
+
+    def initialize(icon_name:, title:)
+      super()
+      @icon_name = icon_name  # Use icon_name, not icon (avoids conflict with helper)
+      @title = title
+    end
+
+    attr_reader :icon_name, :title
+  end
+end
+```
+
+**Important**: Avoid naming attributes `icon` as this conflicts with the `icon()` helper method. Use `icon_name` instead.
+
 ### Forms
 
 - Use form_with for all forms

@@ -95,12 +95,15 @@ en:
       id: "ID"
       issues: "Issues"
       loading: "Loading..."
+      locked: "Locked"
       none: "None"
       required: "*"
       visible: "Visible"
 
     # Placeholders
     placeholders:
+      add_item: "Add..."
+      add_model: "Add %{model}..."
       search: "Search..."
       select_model: "Select %{model}..."
       type_to_filter: "Type to filter..."
@@ -453,6 +456,7 @@ en:
     # -------------------------------------------------------------------------
     users:
       sections:
+        direct_access_description: "Grant direct editing access to specific partners or neighbourhood-wide permissions."
         partners_neighbourhoods: "Partners & Neighbourhoods"
         personal_description: "Basic information about this user."
         personal_details: "Personal Details"
@@ -462,6 +466,8 @@ en:
         neighbourhoods_hint: "Neighbourhoods this user has access to."
         neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
         partners_hint: "Partners this user can edit, as well as their associated calendars."
+        partners_remove_last_warning: "Removing this partner will remove this user from your view and you will no longer be able to access them. Are you sure?"
+        partners_cannot_remove: "You can only remove partners that you manage from a user."
         partnerships_hint: "Grants access to add or remove partners from partnerships"
         role_hint: "Determines the user's system-wide access level and permissions."
       roles:

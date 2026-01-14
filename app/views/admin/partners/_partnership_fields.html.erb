@@ -1,75 +1,17 @@
 <% if current_user.partnership_admin? || current_user.root? -%>
-  <fieldset class="fieldset"
-            data-controller="partnership-selector"
-            data-partnership-selector-permitted-value="<%= permitted_options_for_partner_tags %>"
-            data-partnership-selector-field-name-value="partner[partnership_ids][]">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend"><%= Partnership.model_name.human(count: 2) %></legend>
+    <p class="fieldset-label mb-3"><%= t('admin.partners.sections.tags_description') %></p>
 
-    <legend class="fieldset-legend">Partnerships</legend>
-
-    <%# Empty hidden field to ensure array is submitted even when empty %>
-    <input type="hidden" name="partner[partnership_ids][]" value="">
-
-    <%# List of selected partnerships %>
-    <div class="space-y-2 mb-4" data-partnership-selector-target="list">
-      <% @partner.partnerships.each do |partnership| %>
-        <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg group"
-             data-partnership-id="<%= partnership.id %>"
-             data-partnership-name="<%= partnership.name %>">
-          <input type="hidden" name="partner[partnership_ids][]" value="<%= partnership.id %>">
-          <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
-            <%= icon(:partnership, size: '4', css_class: 'text-placecal-orange') %>
-          </div>
-          <span class="flex-1 font-medium text-sm"><%= partnership.name %></span>
-          <button type="button"
-                  class="btn btn-ghost btn-sm btn-square text-error/70 hover:text-error hover:bg-error/10"
-                  data-action="click->partnership-selector#remove"
-                  title="Remove partnership">
-            <%= icon(:trash, size: '4') %>
-          </button>
-        </div>
-      <% end %>
-    </div>
-
-    <%# Empty state %>
-    <div class="text-center py-6 text-base-content/50 <%= @partner.partnerships.any? ? 'hidden' : '' %>"
-         data-partnership-selector-target="empty">
-      <%= icon(:partnership, size: '8', css_class: 'mx-auto mb-2 opacity-50', stroke_width: '1.5') %>
-      <p class="text-sm">No partnerships assigned</p>
-    </div>
-
-    <%# Add partnership dropdown %>
-    <div class="flex items-center gap-2">
-      <select class="select select-bordered select-sm flex-1"
-              data-partnership-selector-target="select"
-              data-action="change->partnership-selector#add">
-        <option value="">Add a partnership...</option>
-        <% options_for_partner_partnerships.each do |name, id| %>
-          <option value="<%= id %>" <%= @partner.partnerships.pluck(:id).include?(id) ? 'disabled' : '' %>>
-            <%= name %>
-          </option>
-        <% end %>
-      </select>
-    </div>
-
-    <p class="fieldset-label mt-2">Which partnerships is this partner in?</p>
-
-    <%# Template for dynamically added items %>
-    <template data-partnership-selector-target="template">
-      <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg group"
-           data-partnership-id="PARTNERSHIP_ID"
-           data-partnership-name="PARTNERSHIP_NAME">
-        <input type="hidden" name="partner[partnership_ids][]" value="PARTNERSHIP_ID">
-        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
-          <%= icon(:partnership, size: '4', css_class: 'text-placecal-orange') %>
-        </div>
-        <span class="flex-1 font-medium text-sm">PARTNERSHIP_NAME</span>
-        <button type="button"
-                class="btn btn-ghost btn-sm btn-square text-error/70 hover:text-error hover:bg-error/10"
-                data-action="click->partnership-selector#remove"
-                title="Remove partnership">
-          <%= icon(:trash, size: '4') %>
-        </button>
-      </div>
-    </template>
+    <%= render Admin::StackedListSelectorComponent.new(
+      field_name: "partner[partnership_ids][]",
+      items: @partner.partnerships,
+      options: options_for_partner_partnerships,
+      permitted_ids: permitted_options_for_partner_tags,
+      icon_name: :partnership,
+      icon_color: "bg-placecal-orange/10 text-placecal-orange",
+      empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
+      add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase)
+    ) %>
   </fieldset>
 <% end -%>
