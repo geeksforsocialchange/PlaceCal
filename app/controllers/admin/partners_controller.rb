@@ -141,9 +141,24 @@ module Admin
     end
 
     def lookup_name
-      found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
+      return render json: { name_available: true, similar: [] } if params[:name].blank?
 
-      render json: { name_available: found.nil? }
+      name = params[:name].downcase
+      exact_match = Partner.where('lower(name) = ?', name).first
+
+      # Find similar partners (fuzzy match) - limit to 5 for performance
+      similar = Partner.where('lower(name) LIKE ?', "%#{name}%")
+                       .or(Partner.where('lower(name) LIKE ?', "%#{name.split.first}%"))
+                       .where.not(id: exact_match&.id)
+                       .limit(5)
+                       .pluck(:id, :name)
+                       .map { |id, n| { id: id, name: n } }
+
+      render json: {
+        name_available: exact_match.nil?,
+        exact_match: exact_match&.slice(:id, :name),
+        similar: similar
+      }
     end
 
     private

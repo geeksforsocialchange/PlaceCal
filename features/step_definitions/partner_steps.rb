@@ -31,17 +31,24 @@ When("I create a new partner with name {string}") do |name|
   await_datatables
   click_link "Add Partner"
 
-  # New partner form uses simple_form labels, not fieldset/legend pattern
-  fill_in "Name", with: name
+  # Step 1: Name - wizard form uses partner_wizard controller
+  fill_in "partner_name", with: name
 
-  # Address uses fieldset/legend pattern (from partial)
+  # Wait for name validation debounce to complete
+  sleep 0.5
+  click_button "Continue"
+
+  # Step 2: Location - address fields
+  expect(page).to have_content("Set Location", wait: 5)
   fill_in_fieldset "Street address", with: "123 Main Street"
   fill_in_fieldset "City", with: "Millbrook"
   fill_in_fieldset "Postcode", with: "ZZMB 1RS"
 
-  # Wait for any async validation to complete
-  sleep 0.3
-  click_button "Save and continue..."
+  click_button "Continue"
+
+  # Step 3: Partnerships - just submit the form
+  expect(page).to have_content("Add to Partnerships", wait: 5)
+  click_button "Create Partner"
 end
 
 When("I edit the partner {string}") do |name|

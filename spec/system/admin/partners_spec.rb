@@ -190,12 +190,16 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       await_datatables
       click_link "Add Partner"
 
-      # New Partner form is a single-page layout (not tabbed)
+      # New Partner form is a 3-step wizard: Name -> Location -> Partnerships
+      # Step 1: Name
       fill_in "partner_name", with: "Test Partner"
+      click_button "Continue"
 
-      # Service areas are already visible on the page
+      # Step 2: Location - service areas are visible here
+      expect(page).to have_content("Set Location", wait: 5)
+
       # Add a service area using cascading dropdowns
-      click_link "Add Service Area"
+      click_button "Add Service Area"
 
       # Wait for the cascading neighbourhood controller to initialize
       expect(page).to have_css("[data-controller='cascading-neighbourhood']", wait: 10)

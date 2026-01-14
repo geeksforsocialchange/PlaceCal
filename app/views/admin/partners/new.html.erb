@@ -1,71 +1,191 @@
 <% content_for :title do %>New Partner<% end %>
 
-<h1 class="text-2xl font-semibold text-gray-900 mb-6">New Partner</h1>
+<div class="max-w-4xl mx-auto"
+     data-controller="partner-wizard"
+     data-partner-wizard-current-step-value="1"
+     data-partner-wizard-total-steps-value="3">
 
-<hr class="my-6 border-gray-200" />
-<div class="form">
-  <%= simple_form_for @partner do |f| %>
-  <%= render(Admin::ErrorComponent.new(@partner)) %>
-    <h2 class="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
-    <%= f.input :name,
-	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source', 'data-action': 'input->partner-form-validation#checkInput' },
-	hint: 'Must be at least 5 characters long' %>
-    <p class="text-sm text-red-600 hidden" id="partner-name-feedback">This partner name has already been taken.</p>
+  <%# Header %>
+  <div class="text-center mb-8">
+    <h1 class="text-2xl font-bold text-base-content mb-2">Create a New Partner</h1>
+    <p class="text-base-content/60">Let's get your partner organisation set up in PlaceCal</p>
+  </div>
 
-    <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">Place</h2>
-    <p class="text-gray-600 mb-4">Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District. Keep this information as specific as possible – limited to where this partner actually runs events rather than the geographical spread of the people they are trying to reach.</p>
-    <div id='address'>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
+  <%# Steps indicator %>
+  <ul class="steps steps-horizontal w-full mb-8">
+    <li class="step step-primary" data-partner-wizard-target="stepIndicator" data-step="1">
+      <span class="step-content">Name</span>
+    </li>
+    <li class="step" data-partner-wizard-target="stepIndicator" data-step="2">
+      <span class="step-content">Location</span>
+    </li>
+    <li class="step" data-partner-wizard-target="stepIndicator" data-step="3">
+      <span class="step-content">Partnerships</span>
+    </li>
+  </ul>
 
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Address</h3>
-            <%= render 'address_fields',
-		       form: f,
-		       partner: @partner %>
+  <%= simple_form_for @partner, html: { data: { partner_wizard_target: 'form' } } do |f| %>
+    <%= render(Admin::ErrorComponent.new(@partner)) %>
 
-          <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
-            <p class="text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md mt-4">
-              The address for this partner is assigned to an out of date neighbourhood.
-              You do not need to take any action but if you wish to reassign this to an
-              up to date neighbourhood please contact support at <a href="mailto:support@placecal.org" class="underline">support@placecal.org</a>.
+    <%# Step 1: Name %>
+    <div class="card bg-base-100 shadow-lg border border-base-300" data-partner-wizard-target="step" data-step="1">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:partner, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Name Your Partner</h2>
+            <p class="text-base-content/60 text-sm mt-1">
+              Enter the official name of the organisation. We'll check if it already exists.
             </p>
-          <% end %>
-          <% if partner_has_unmappable_postcode?(@partner) %>
-            <p class="text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md mt-4">
-              The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
-            </p>
-          <% end %>
+          </div>
         </div>
-        <div>
-          <h3 class="text-lg font-medium text-gray-900 mb-4">Service Areas</h3>
-          <p class="text-sm text-gray-600 mb-4">If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
-          <div class="sites_neighbourhoods">
-            <%= nested_form_for(f, :service_areas,
-                  add_text: 'Add Service Area',
-                  add_class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600',
-                  partial: 'service_area_fields') do %>
-              <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-                <%= render 'service_area_fields', f: neighbourhood %>
-              <% end %>
-            <% end %>
+
+        <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+          <legend class="fieldset-legend text-base font-semibold">
+            Partner Name <span class="text-error">*</span>
+          </legend>
+          <%= f.input_field :name,
+              class: 'input input-bordered input-lg w-full text-lg',
+              placeholder: 'e.g. Community Centre Name',
+              autocomplete: 'off',
+              'data-partner-wizard-target': 'nameInput',
+              'data-action': 'input->partner-wizard#checkName' %>
+          <p class="text-sm text-base-content/50 mt-2">
+            Must be at least 5 characters long
+          </p>
+
+          <%# Name validation feedback %>
+          <div class="mt-4 hidden" data-partner-wizard-target="nameFeedback">
+            <%# Exact match warning %>
+            <div class="alert alert-warning text-sm hidden" data-partner-wizard-target="exactMatch">
+              <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+              <div>
+                <p class="font-semibold">A partner with this exact name already exists</p>
+                <p class="text-xs mt-1">You may want to edit the existing partner instead.</p>
+              </div>
+              <a href="#" class="btn btn-sm btn-warning" data-partner-wizard-target="exactMatchLink">View Partner</a>
+            </div>
+
+            <%# Similar partners %>
+            <div class="hidden" data-partner-wizard-target="similarSection">
+              <p class="text-sm font-medium text-base-content/70 mb-2 flex items-center gap-2">
+                <%= icon(:info, size: '4') %>
+                Partners with similar names:
+              </p>
+              <div class="space-y-1" data-partner-wizard-target="similarList"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <%# Name available indicator %>
+        <div class="mt-4 hidden" data-partner-wizard-target="nameAvailable">
+          <div class="alert alert-success text-sm">
+            <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
+            <span>This name is available!</span>
           </div>
         </div>
       </div>
     </div>
 
-    <%= render 'partnership_fields', f: f %>
+    <%# Step 2: Location %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="2">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:location, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Set Location</h2>
+            <p class="text-base-content/60 text-sm mt-1">
+              Where does this partner operate? Add a physical address and/or service areas.
+            </p>
+          </div>
+        </div>
 
-    <hr class="my-8 border-gray-200">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <%# Address %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
+            <legend class="fieldset-legend font-semibold">Physical Address</legend>
+            <p class="text-sm text-base-content/60 mb-4">
+              If this partner has a fixed location, enter it here.
+            </p>
+            <%= render 'address_fields', form: f, partner: @partner %>
+          </fieldset>
 
-    <div class="flex items-center gap-4">
-      <%= f.submit "Save and continue...", class: "inline-flex items-center px-6 py-3 text-base font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600" %>
-      <% unless @partner.new_record? %>
-        <% if policy(@partner).destroy? %>
-          <%= link_to "Delete Partner", @partner, method: :delete, class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700", id: 'destroy-partner' %>
-        <% else %>
-          <p class="text-sm text-gray-600">You do not have permission to delete this partner, please contact <%= mail_to "info@placecal.org", "info@placecal.org" %> if you need to delete this partner.</p>
-        <% end %>
-      <% end %>
+          <%# Service Areas %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
+            <legend class="fieldset-legend font-semibold">Service Areas</legend>
+            <p class="text-sm text-base-content/60 mb-4">
+              If this partner delivers services to wider areas (like outreach or phone support), add them here.
+            </p>
+            <div class="sites_neighbourhoods">
+              <%= nested_form_for(f, :service_areas,
+                    add_text: 'Add Service Area',
+                    add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
+                    partial: 'service_area_fields') do %>
+                <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+                  <%= render 'service_area_fields', f: neighbourhood %>
+                <% end %>
+              <% end %>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 3: Partnerships %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="3">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:partnership, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Add to Partnerships</h2>
+            <p class="text-base-content/60 text-sm mt-1">
+              Which partnerships is this partner a member of?
+            </p>
+          </div>
+        </div>
+
+        <%= render 'partnership_fields', f: f %>
+      </div>
+    </div>
+
+    <%# Save Bar %>
+    <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 -mx-4 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]">
+      <div class="flex items-center justify-between gap-4 max-w-4xl mx-auto">
+        <%# Left side - Back button %>
+        <div>
+          <button type="button"
+                  class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
+                  data-partner-wizard-target="backButton"
+                  data-action="click->partner-wizard#previousStep">
+            <%= icon(:chevron_left, size: '5') %>
+            <span>Back</span>
+          </button>
+        </div>
+
+        <%# Right side - Continue/Save button %>
+        <div class="flex items-center gap-3">
+          <button type="button"
+                  class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2"
+                  data-partner-wizard-target="continueButton"
+                  data-action="click->partner-wizard#nextStep">
+            <span>Continue</span>
+            <%= icon(:chevron_right, size: '5') %>
+          </button>
+
+          <button type="submit"
+                  class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
+                  data-partner-wizard-target="submitButton">
+            <%= icon(:check, size: '5') %>
+            <span>Create Partner</span>
+          </button>
+        </div>
+      </div>
     </div>
   <% end %>
 </div>

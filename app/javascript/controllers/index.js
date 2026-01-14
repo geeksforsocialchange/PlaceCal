@@ -78,3 +78,6 @@ application.register("save-bar", SaveBarController);
 
 import PartnershipSelectorController from "./partnership_selector_controller.js";
 application.register("partnership-selector", PartnershipSelectorController);
+
+import PartnerWizardController from "./partner_wizard_controller.js";
+application.register("partner-wizard", PartnerWizardController);
