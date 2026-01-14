@@ -26,10 +26,6 @@ class CalendarPolicy < ApplicationPolicy
     index?
   end
 
-  def select_page?
-    index?
-  end
-
   def destroy?
     index?
   end

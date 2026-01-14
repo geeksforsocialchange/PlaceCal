@@ -425,10 +425,6 @@ en:
         reason_placeholder: "e.g., Incomplete information, duplicate listing, or violation of community guidelines..."
         visible_label: "Partner is visible"
         when_hidden: "When a partner is hidden:"
-      hidden_alert:
-        description: "Your partner is currently not visible to the public for the following reason:"
-        fix_hint: "Once you have fixed this issue, contact %{email} to make your partner public again."
-        title: "This partner is hidden"
       warnings:
         outdated_neighbourhood: 'Outdated neighbourhood. Contact <a href="mailto:%{email}" class="link">support</a> to reassign.'
         unmappable_postcode: "Postcode not in our system yet."
@@ -514,8 +510,6 @@ en:
         neighbourhoods_hint: "Neighbourhoods this user has access to."
         neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
         partners_hint: "Partners this user can edit, as well as their associated calendars."
-        partners_remove_last_warning: "Removing this partner will remove this user from your view and you will no longer be able to access them. Are you sure?"
-        partners_cannot_remove: "You can only remove partners that you manage from a user."
         partnerships_hint: "Grants access to add or remove partners from partnerships"
         role_hint: "Determines the user's system-wide access level and permissions."
       roles:
