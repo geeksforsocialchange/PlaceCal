@@ -144,7 +144,6 @@ When("I go to the {string} step") do |step_name|
     "place" => "location",
     "tags" => "tags",
     "admins" => "admins",
-    "settings" => "settings",
     "calendars" => "calendars",
     # Calendar form tabs
     "source" => "source",
@@ -155,7 +154,7 @@ When("I go to the {string} step") do |step_name|
     # Shared tab names
     "location" => "location",
     "contact" => "contact",
-    "admin" => "admin",
+    "settings" => "settings",
     "preview" => "preview"
   }
 
@@ -186,7 +185,6 @@ When("I click the {string} tab") do |tab_name|
     "Basic Info" => "basic",
     "Tags" => "tags",
     "Admins" => "admins",
-    "Settings" => "settings",
     "Calendars" => "calendars",
     # Calendar form tabs
     "Source" => "source",
@@ -197,7 +195,7 @@ When("I click the {string} tab") do |tab_name|
     # Shared tabs
     "Location" => "location",
     "Contact" => "contact",
-    "Admin" => "admin",
+    "Settings" => "settings",
     "Preview" => "preview"
   }
 

@@ -1,4 +1,4 @@
-<%= simple_form_for @partner, html: { data: { controller: 'partner-tabs live-validation' } } do |f| %>
+<%= simple_form_for @partner, html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'partnerTabAfterSave' } } do |f| %>
 
   <% unless policy(@partner).permitted_attributes.include? :hidden %>
     <% if @partner.hidden %>
@@ -20,7 +20,7 @@
       name: 'partner_tabs',
       label: '📋 Basic Info',
       hash: 'basic',
-      controller_name: 'partner-tabs',
+      controller_name: 'form-tabs',
       checked: true
     ) do %>
       <%= render 'form_tab_basic', f: f %>
@@ -30,7 +30,7 @@
       name: 'partner_tabs',
       label: '📍 Location',
       hash: 'location',
-      controller_name: 'partner-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_location', f: f %>
     <% end %>
@@ -39,7 +39,7 @@
       name: 'partner_tabs',
       label: '📞 Contact',
       hash: 'contact',
-      controller_name: 'partner-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_contact', f: f %>
     <% end %>
@@ -48,7 +48,7 @@
       name: 'partner_tabs',
       label: '🏷️ Tags',
       hash: 'tags',
-      controller_name: 'partner-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_tags', f: f %>
     <% end %>
@@ -58,7 +58,7 @@
         name: 'partner_tabs',
         label: '📅 Calendars',
         hash: 'calendars',
-        controller_name: 'partner-tabs'
+        controller_name: 'form-tabs'
       ) do %>
         <%= render 'form_tab_calendars' %>
       <% end %>
@@ -67,7 +67,7 @@
         name: 'partner_tabs',
         label: '👥 Admins',
         hash: 'admins',
-        controller_name: 'partner-tabs'
+        controller_name: 'form-tabs'
       ) do %>
         <%= render 'form_tab_admins' %>
       <% end %>
@@ -76,7 +76,7 @@
         name: 'partner_tabs',
         label: '👁️ Preview',
         hash: 'preview',
-        controller_name: 'partner-tabs'
+        controller_name: 'form-tabs'
       ) do %>
         <%= render 'form_tab_preview' %>
       <% end %>
@@ -89,7 +89,7 @@
       name: 'partner_tabs',
       label: '⚙️ Settings',
       hash: 'settings',
-      controller_name: 'partner-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_settings', f: f %>
     <% end %>

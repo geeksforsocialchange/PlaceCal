@@ -189,10 +189,17 @@ export default class extends Controller {
 		return this.getCurrentTabHash() === this.previewHashValue;
 	}
 
+	isTabBeforeSettings() {
+		const currentIndex = this.getCurrentTabIndex();
+		const nextHash = this.tabHashes[currentIndex + 1];
+		return nextHash === this.settingsHashValue;
+	}
+
 	updateButtons() {
 		const isFirst = this.isFirstTab();
 		const isSettings = this.isSettingsTab();
 		const isPreview = this.isPreviewTab();
+		const isBeforeSettings = this.isTabBeforeSettings();
 
 		// Previous button: hidden on first tab and settings tab
 		if (this.hasPrevButtonTarget) {
@@ -203,8 +210,8 @@ export default class extends Controller {
 			}
 		}
 
-		// Continue button: hidden on settings tab and preview tab
-		const continueHidden = isSettings || isPreview;
+		// Continue button: hidden on settings tab, preview tab, or tab immediately before settings
+		const continueHidden = isSettings || isPreview || isBeforeSettings;
 		if (this.hasContinueButtonTarget) {
 			if (continueHidden) {
 				this.continueButtonTarget.classList.add("hidden");

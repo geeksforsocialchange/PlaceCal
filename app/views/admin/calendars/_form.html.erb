@@ -1,4 +1,4 @@
-<%= simple_form_for [:admin, @calendar], html: { data: { controller: 'calendar-tabs live-validation' } } do |f| %>
+<%= simple_form_for [:admin, @calendar], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'calendarTabAfterSave' } } do |f| %>
 
   <% unless @calendar.new_record? %>
     <%= render('importer_overview', calendar: @calendar) %>
@@ -10,7 +10,7 @@
       name: 'calendar_tabs',
       label: '📥 Source',
       hash: 'source',
-      controller_name: 'calendar-tabs',
+      controller_name: 'form-tabs',
       checked: true
     ) do %>
       <%= render 'form_tab_source', f: f %>
@@ -20,7 +20,7 @@
       name: 'calendar_tabs',
       label: '📍 Location',
       hash: 'location',
-      controller_name: 'calendar-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_location', f: f %>
     <% end %>
@@ -29,7 +29,7 @@
       name: 'calendar_tabs',
       label: '📞 Contact',
       hash: 'contact',
-      controller_name: 'calendar-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_contact', f: f %>
     <% end %>
@@ -39,7 +39,7 @@
         name: 'calendar_tabs',
         label: '👁️ Preview',
         hash: 'preview',
-        controller_name: 'calendar-tabs'
+        controller_name: 'form-tabs'
       ) do %>
         <%= render 'form_tab_preview' %>
       <% end %>
@@ -49,11 +49,11 @@
 
       <%= render Admin::TabPanelComponent.new(
         name: 'calendar_tabs',
-        label: '⚙️ Admin',
-        hash: 'admin',
-        controller_name: 'calendar-tabs'
+        label: '⚙️ Settings',
+        hash: 'settings',
+        controller_name: 'form-tabs'
       ) do %>
-        <%= render 'form_tab_admin' %>
+        <%= render 'form_tab_settings' %>
       <% end %>
     <% end %>
   </div>
@@ -61,7 +61,7 @@
   <%= render Admin::SaveBarComponent.new(
     multi_step: true,
     tab_name: 'calendar_tabs',
-    settings_hash: 'admin',
+    settings_hash: 'settings',
     preview_hash: 'preview',
     storage_key: 'calendarTabAfterSave'
   ) %>

@@ -6,7 +6,7 @@
     name: 'user_tabs',
     label: '👤 Personal Details',
     hash: 'personal',
-    controller_name: 'user-tabs',
+    controller_name: 'form-tabs',
     checked: true
   ) do %>
     <%= render 'form_tab_personal', f: f %>
@@ -16,7 +16,7 @@
     name: 'user_tabs',
     label: '🔑 Permissions',
     hash: 'permissions',
-    controller_name: 'user-tabs'
+    controller_name: 'form-tabs'
   ) do %>
     <%= render 'form_tab_roles', f: f %>
   <% end %>
@@ -27,11 +27,11 @@
 
     <%= render Admin::TabPanelComponent.new(
       name: 'user_tabs',
-      label: '🔐 Admin',
-      hash: 'admin',
-      controller_name: 'user-tabs'
+      label: '⚙️ Settings',
+      hash: 'settings',
+      controller_name: 'form-tabs'
     ) do %>
-      <%= render 'form_tab_admin', f: f %>
+      <%= render 'form_tab_settings', f: f %>
     <% end %>
   <% end %>
 </div>

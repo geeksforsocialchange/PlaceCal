@@ -30,8 +30,8 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     fill_in "user_last_name", with: "User"
     fill_in "user_email", with: invited_user_email
 
-    # Navigate to Admin tab to set role
-    find('input[data-hash="admin"]').click
+    # Navigate to Settings tab to set role
+    find('input[data-hash="settings"]').click
     choose "Root: Can do everything - use with care!"
     click_button "Invite"
 

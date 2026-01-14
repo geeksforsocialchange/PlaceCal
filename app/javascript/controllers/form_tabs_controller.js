@@ -1,20 +1,29 @@
 import { Controller } from "@hotwired/stimulus";
 
-// User form tabs controller
-// Handles hash navigation for the user edit form
+// Generic form tabs controller
+// Handles hash navigation and tab restoration for multi-tab forms
+// Used by partner, calendar, site, and user edit forms
 export default class extends Controller {
 	static targets = ["tab", "panel"];
 
+	static values = {
+		storageKey: { type: String, default: "formTabAfterSave" },
+	};
+
 	connect() {
+		// Select tab from URL hash on load
 		this.selectTabFromHash();
 
+		// Listen for hash changes
 		this.boundHashChange = this.handleHashChange.bind(this);
 		window.addEventListener("hashchange", this.boundHashChange);
 
+		// Listen for tab changes to update URL hash
 		this.tabTargets.forEach((tab) => {
 			tab.addEventListener("change", this.handleTabChange.bind(this));
 		});
 
+		// Check for saved tab after form submission
 		this.restoreTabAfterSave();
 	}
 
@@ -44,9 +53,9 @@ export default class extends Controller {
 	}
 
 	restoreTabAfterSave() {
-		const savedHash = sessionStorage.getItem("userTabAfterSave");
+		const savedHash = sessionStorage.getItem(this.storageKeyValue);
 		if (savedHash) {
-			sessionStorage.removeItem("userTabAfterSave");
+			sessionStorage.removeItem(this.storageKeyValue);
 			const tab = this.tabTargets.find((t) => t.dataset.hash === savedHash);
 			if (tab) {
 				tab.checked = true;
@@ -64,7 +73,7 @@ export default class extends Controller {
 		const nextTab = this.tabTargets[currentIndex + 1];
 
 		if (nextTab && nextTab.dataset.hash) {
-			sessionStorage.setItem("userTabAfterSave", nextTab.dataset.hash);
+			sessionStorage.setItem(this.storageKeyValue, nextTab.dataset.hash);
 		}
 	}
 }

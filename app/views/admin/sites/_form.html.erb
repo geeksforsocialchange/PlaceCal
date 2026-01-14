@@ -1,4 +1,4 @@
-<%= simple_form_for [:admin, @site], html: { data: { controller: 'site-tabs live-validation' } } do |f| %>
+<%= simple_form_for [:admin, @site], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'siteTabAfterSave' } } do |f| %>
   <%= render(Admin::ErrorComponent.new(@site)) %>
 
   <%# Radio Tabs - daisyUI tabs-lift %>
@@ -7,7 +7,7 @@
       name: 'site_tabs',
       label: '📋 Basic Info',
       hash: 'basic',
-      controller_name: 'site-tabs',
+      controller_name: 'form-tabs',
       checked: true
     ) do %>
       <%= render 'form_tab_basic', f: f %>
@@ -17,7 +17,7 @@
       name: 'site_tabs',
       label: '🖼️ Images',
       hash: 'images',
-      controller_name: 'site-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_images', f: f %>
     <% end %>
@@ -26,7 +26,7 @@
       name: 'site_tabs',
       label: '📍 Neighbourhoods',
       hash: 'neighbourhoods',
-      controller_name: 'site-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_neighbourhoods', f: f %>
     <% end %>
@@ -35,7 +35,7 @@
       name: 'site_tabs',
       label: '🏷️ Partnerships',
       hash: 'partnerships',
-      controller_name: 'site-tabs'
+      controller_name: 'form-tabs'
     ) do %>
       <%= render 'form_tab_partnerships', f: f %>
     <% end %>
@@ -45,7 +45,7 @@
         name: 'site_tabs',
         label: '👁️ Preview',
         hash: 'preview',
-        controller_name: 'site-tabs'
+        controller_name: 'form-tabs'
       ) do %>
         <%= render 'form_tab_preview' %>
       <% end %>
@@ -56,18 +56,18 @@
 
     <%= render Admin::TabPanelComponent.new(
       name: 'site_tabs',
-      label: '⚙ Admin',
-      hash: 'admin',
-      controller_name: 'site-tabs'
+      label: '⚙️ Settings',
+      hash: 'settings',
+      controller_name: 'form-tabs'
     ) do %>
-      <%= render 'form_tab_admin', f: f %>
+      <%= render 'form_tab_settings', f: f %>
     <% end %>
   </div>
 
   <%= render Admin::SaveBarComponent.new(
     multi_step: true,
     tab_name: 'site_tabs',
-    settings_hash: 'admin',
+    settings_hash: 'settings',
     preview_hash: 'preview',
     storage_key: 'siteTabAfterSave'
   ) %>

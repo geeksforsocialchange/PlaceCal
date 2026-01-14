@@ -15,7 +15,7 @@ Feature: User Editing
     Then I should see "Partners"
     And I should see "Neighbourhoods"
     And I should see "Partnerships"
-    When I go to the "Admin" step
+    When I go to the "Settings" step
     Then I should see "Role"
 
   Scenario: User form shows contact fields
@@ -100,5 +100,5 @@ Feature: User Editing
   Scenario: User form shows role selection
     Given there is a user called "Role Test User"
     When I edit the user "Role Test User"
-    And I go to the "Admin" step
+    And I go to the "Settings" step
     Then I should see "Role"
