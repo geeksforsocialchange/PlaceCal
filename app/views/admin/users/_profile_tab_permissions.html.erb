@@ -20,7 +20,7 @@
           <%= icon(:warning, size: '5') %>
           <span><%= t('admin.users.profile.no_rights_warning') %></span>
         </div>
-      <% elsif current_user.partners.any? || current_user.neighbourhoods.any? || current_user.partnership_admin? %>
+      <% elsif current_user.partners.any? || current_user.neighbourhoods.any? || current_user.partnership_admin? || current_user.sites.any? %>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <%# Partners %>
           <% if current_user.partners.any? %>
@@ -36,7 +36,8 @@
                 icon_name: :partner,
                 icon_color: "bg-emerald-100 text-emerald-600",
                 link_path: :edit_admin_partner_path,
-                empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase)
+                empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
+                vertical: true
               ) %>
             </div>
           <% end %>
@@ -55,7 +56,8 @@
                 icon_name: :map_pin,
                 icon_color: "bg-sky-100 text-sky-600",
                 link_path: :edit_admin_neighbourhood_path,
-                empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase)
+                empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
+                vertical: true
               ) %>
             </div>
           <% end %>
@@ -74,7 +76,28 @@
                 icon_name: :partnership,
                 icon_color: "bg-amber-100 text-amber-600",
                 link_path: :edit_admin_tag_path,
-                empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase)
+                empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
+                vertical: true
+              ) %>
+            </div>
+          <% end %>
+
+          <%# Sites %>
+          <% if current_user.sites.any? %>
+            <div class="bg-base-200/50 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                  <%= icon(:site, size: '4', css_class: 'text-violet-600') %>
+                </div>
+                <h4 class="font-medium"><%= t('admin.users.profile.your_sites') %></h4>
+              </div>
+              <%= render Admin::ItemBadgeListComponent.new(
+                items: current_user.sites.order(:name),
+                icon_name: :site,
+                icon_color: "bg-violet-100 text-violet-600",
+                link_path: :edit_admin_site_path,
+                empty_text: t('admin.empty.none_assigned', items: Site.model_name.human(count: 2).downcase),
+                vertical: true
               ) %>
             </div>
           <% end %>

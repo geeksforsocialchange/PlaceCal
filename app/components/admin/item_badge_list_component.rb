@@ -9,18 +9,26 @@ module Admin
     # @param icon_color [String] Tailwind classes for icon/badge colors (e.g., "bg-emerald-100 text-emerald-600")
     # @param link_path [Symbol] Route helper name for generating links (:edit_admin_partner_path, etc.)
     # @param empty_text [String] Text to show when no items (optional)
-    def initialize(items:, icon_name:, icon_color:, link_path:, empty_text: nil)
+    # @param vertical [Boolean] Stack items vertically instead of wrapping horizontally (default: false)
+    # rubocop:disable Metrics/ParameterLists
+    def initialize(items:, icon_name:, icon_color:, link_path:, empty_text: nil, vertical: false)
       super()
       @items = items
       @icon_name = icon_name
       @icon_color = icon_color
       @link_path = link_path
       @empty_text = empty_text || I18n.t('admin.empty.none_assigned', items: 'items')
+      @vertical = vertical
     end
+    # rubocop:enable Metrics/ParameterLists
 
     private
 
-    attr_reader :items, :icon_name, :icon_color, :link_path, :empty_text
+    attr_reader :items, :icon_name, :icon_color, :link_path, :empty_text, :vertical
+
+    def container_class
+      vertical ? 'flex flex-col gap-2' : 'flex flex-wrap gap-2'
+    end
 
     def item_path(item)
       helpers.send(link_path, item)

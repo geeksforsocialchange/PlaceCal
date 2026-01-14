@@ -112,6 +112,18 @@ export default class extends Controller {
 			}
 		}
 
+		// Password confirmation validation
+		if (input.dataset.validateConfirm && value) {
+			const targetInput = document.getElementById(
+				input.dataset.validateConfirm
+			);
+			if (targetInput && targetInput.value !== value) {
+				errors.push(
+					input.dataset.validateConfirmMessage || "Passwords do not match"
+				);
+			}
+		}
+
 		// Show or clear errors
 		if (errors.length > 0) {
 			this.showError(input, errors[0]);

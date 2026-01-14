@@ -1,5 +1,5 @@
 <% if items.any? %>
-  <div class="flex flex-wrap gap-2">
+  <div class="<%= container_class %>">
     <% items.each do |item| %>
       <%= link_to item_path(item),
           class: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg #{bg_class} #{text_class} text-sm font-medium hover:opacity-80 transition-opacity" do %>

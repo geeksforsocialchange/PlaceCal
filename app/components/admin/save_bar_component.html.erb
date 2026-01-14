@@ -41,10 +41,21 @@
     </div>
   <% else %>
     <%# Simple mode - render custom buttons %>
-    <div class="flex justify-end gap-3">
-      <% buttons.each do |button| %>
-        <%= button %>
+    <div class="flex items-center gap-4">
+      <% if track_changes? %>
+        <%# Unsaved changes indicator %>
+        <div class="hidden items-center gap-2"
+             data-form-dirty-target="indicator">
+          <span class="save-bar-indicator-dot"></span>
+          <span class="text-sm text-base-content/70"><%= t('admin.save_bar.unsaved_changes') %></span>
+        </div>
       <% end %>
+
+      <div class="flex items-center gap-3 ml-auto">
+        <% buttons.each do |button| %>
+          <%= button %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>

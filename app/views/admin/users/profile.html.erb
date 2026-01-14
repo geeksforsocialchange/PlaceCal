@@ -9,7 +9,11 @@
     as: :user,
     method: :patch,
     url: update_profile_admin_user_path(current_user),
-    html: { class: "space-y-6", data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'profileTabAfterSave' } } do |f| %>
+    html: { class: "space-y-6", data: {
+      controller: 'form-tabs live-validation form-dirty',
+      'form-tabs-storage-key-value': 'profileTabAfterSave',
+      'form-dirty-tab-name-value': 'profile_tabs'
+    } } do |f| %>
 
   <%= render(Admin::ErrorComponent.new(current_user)) %>
 
@@ -44,9 +48,12 @@
     <% end %>
   </div>
 
-  <%= render Admin::SaveBarComponent.new do |c| %>
+  <%= render Admin::SaveBarComponent.new(track_changes: true) do |c| %>
     <% c.with_button do %>
-      <%= f.submit t('admin.users.profile.save_button'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+      <%= f.submit t('admin.users.profile.save_button'),
+          class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange btn-disabled opacity-50 cursor-not-allowed",
+          disabled: true,
+          data: { 'form-dirty-target': 'submit' } %>
     <% end %>
   <% end %>
 <% end %>

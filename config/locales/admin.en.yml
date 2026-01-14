@@ -126,6 +126,13 @@ en:
       shown_publicly: "Shown on PlaceCal to the public."
       url_validation: "Enter a valid URL (including https://)"
 
+    # Live validation messages
+    validation:
+      password_min:
+        one: "Password must be at least 1 character"
+        other: "Password must be at least %{count} characters"
+      password_mismatch: "Passwords do not match"
+
     # Time phrases
     time:
       ago: "%{time} ago"
@@ -538,4 +545,4 @@ en:
         your_partners: "Your Partners"
         your_neighbourhoods: "Your Neighbourhoods"
         your_partnerships: "Your Partnerships"
-        partnerships_hint: "These tags will be pre-selected when creating a new partner"
+        your_sites: "Your Sites"

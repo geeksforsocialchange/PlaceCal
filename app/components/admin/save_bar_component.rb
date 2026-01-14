@@ -10,14 +10,17 @@ module Admin
     # Simple mode renders custom buttons passed via the buttons slot
     #
     # @param multi_step [Boolean] Enable multi-step navigation mode (default: false)
+    # @param track_changes [Boolean] Show unsaved indicator in simple mode (default: false)
     # @param tab_name [String] Name of the tab radio input group (e.g., 'partner_tabs')
     # @param settings_hash [String] Hash value for settings tab (multi-step only)
     # @param preview_hash [String] Hash value for preview tab (multi-step only)
     # @param storage_key [String] sessionStorage key for restoring tab after save
     # rubocop:disable Metrics/ParameterLists
-    def initialize(multi_step: false, tab_name: nil, settings_hash: nil, preview_hash: nil, storage_key: nil)
+    def initialize(multi_step: false, track_changes: false, tab_name: nil, settings_hash: nil, preview_hash: nil,
+                   storage_key: nil)
       super()
       @multi_step = multi_step
+      @track_changes = track_changes
       @tab_name = tab_name
       @settings_hash = settings_hash
       @preview_hash = preview_hash
@@ -27,6 +30,10 @@ module Admin
 
     def multi_step?
       @multi_step
+    end
+
+    def track_changes?
+      @track_changes
     end
 
     def stimulus_data_attributes
