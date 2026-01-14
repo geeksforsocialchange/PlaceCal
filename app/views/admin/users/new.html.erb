@@ -46,6 +46,82 @@
     </div>
   </div>
 
+  <%# Partners Section %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <div class="flex items-start gap-4 mb-4">
+        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+          <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
+        </div>
+        <div>
+          <h3 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h3>
+          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
+        </div>
+      </div>
+
+      <%= render Admin::StackedListSelectorComponent.new(
+        field_name: "user[partner_ids][]",
+        items: @user.partners.order(:name),
+        options: options_for_partners(@user),
+        permitted_ids: permitted_options_for_partners,
+        icon_name: :partner,
+        icon_color: "bg-emerald-100 text-emerald-600",
+        empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
+        add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
+        use_tom_select: true,
+        wrapper_class: "user_partners"
+      ) %>
+    </div>
+  </div>
+
+  <%# Neighbourhoods Section - only for root users %>
+  <% if current_user.root? %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-sky-100 to-blue-100 flex items-center justify-center shadow-sm">
+            <%= icon(:map_pin, size: '6', css_class: 'text-sky-600') %>
+          </div>
+          <div>
+            <h3 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h3>
+            <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
+          </div>
+        </div>
+
+        <%= render Admin::StackedListSelectorComponent.new(
+          field_name: "user[neighbourhood_ids][]",
+          items: @user.neighbourhoods.order(:name),
+          options: options_for_user_neighbourhoods(@user),
+          permitted_ids: nil,
+          icon_name: :map_pin,
+          icon_color: "bg-sky-100 text-sky-600",
+          empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
+          add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase),
+          use_tom_select: true,
+          wrapper_class: "user_neighbourhoods"
+        ) %>
+      </div>
+    </div>
+
+    <%# Role Section - only for root users %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render Admin::SectionHeaderComponent.new(
+          title: attr_label(:user, :role),
+          description: t('admin.users.fields.role_hint'),
+          margin: 4
+        ) %>
+
+        <%= render Admin::RadioCardGroupComponent.new(
+          form: f,
+          attribute: :role,
+          values: User.role.values,
+          i18n_scope: 'admin.users.roles'
+        ) %>
+      </div>
+    </div>
+  <% end %>
+
   <div role="alert" class="alert bg-blue-50 border-blue-200 text-blue-800">
     <%= icon(:info, size: '5', css_class: 'text-blue-500') %>
     <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-teal font-medium' %>.</span>
