@@ -15,8 +15,15 @@ RSpec.describe "Admin Sites", :slow, type: :system do
 
   describe "tom-select inputs on site form" do
     # Helper to click site form tabs (daisyUI radio tab inputs)
+    # Accepts any unsaved changes confirmation that may appear
     def click_site_tab(tab_name)
-      find("input.tab[aria-label*='#{tab_name}']", wait: 10).click
+      begin
+        accept_confirm do
+          find("input.tab[aria-label*='#{tab_name}']", wait: 10).click
+        end
+      rescue Capybara::ModalNotFound
+        # No confirmation dialog appeared, which is fine
+      end
       sleep 0.2
     end
 

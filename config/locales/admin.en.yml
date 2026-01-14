@@ -255,6 +255,10 @@ en:
 
     topbar:
       admin: "Admin"
+      new_partner: "New Partner"
+      new_calendar: "New Calendar"
+      new_user: "New User"
+      sign_out: "Sign out"
 
     # ============================================
     # PAGES

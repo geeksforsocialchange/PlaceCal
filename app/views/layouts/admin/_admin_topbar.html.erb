@@ -46,8 +46,9 @@
         <%= icon(:crown, size: '4', css_class: 'text-amber-400') %>
       <% end %>
     <% end %>
-    <%= button_to destroy_user_session_path, method: :delete, class: 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800/80 transition-colors', form: { data: { turbo: 'false' } } do %>
+    <%= button_to destroy_user_session_path, method: :delete, class: 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800/80 transition-colors', title: t('admin.topbar.sign_out'), form: { data: { turbo: 'false' } } do %>
       <%= icon(:logout, size: '4') %>
+      <span class="sr-only"><%= t('admin.topbar.sign_out') %></span>
     <% end %>
   </div>
 </nav>
