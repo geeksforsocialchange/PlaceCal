@@ -68,15 +68,13 @@
       <% end %>
     </div>
   <% else %>
-    <% secondary_neighbourhoods = @site.sites_neighbourhoods.select { |n| n.relation_type != 'Primary' } %>
-    <% if secondary_neighbourhoods.any? %>
-      <div class="flex flex-wrap gap-2">
-        <% secondary_neighbourhoods.each do |neighbourhood| %>
-          <span class="badge badge-outline"><%= neighbourhood.name %></span>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.no_items', items: Neighbourhood.model_name.human(count: 2).downcase) %></p>
-    <% end %>
+    <% secondary_neighbourhoods = @site.sites_neighbourhoods.where.not(relation_type: 'Primary').map(&:neighbourhood) %>
+    <%= render Admin::ItemBadgeListComponent.new(
+      items: secondary_neighbourhoods,
+      icon_name: :map_pin,
+      icon_color: "bg-sky-100 text-sky-600",
+      link_path: :admin_neighbourhood_path,
+      empty_text: t('admin.empty.no_items', items: Neighbourhood.model_name.human(count: 2).downcase)
+    ) %>
   <% end %>
 </div>

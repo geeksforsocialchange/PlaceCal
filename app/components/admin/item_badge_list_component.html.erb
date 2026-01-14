@@ -1,0 +1,18 @@
+<% if items.any? %>
+  <div class="flex flex-wrap gap-2">
+    <% items.each do |item| %>
+      <%= link_to item_path(item),
+          class: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg #{bg_class} #{text_class} text-sm font-medium hover:opacity-80 transition-opacity" do %>
+        <%= icon(icon_name, size: '3.5') %>
+        <%= item_name(item) %>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="text-center py-6">
+    <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-base-200 mb-2">
+      <%= icon(icon_name, size: '6', css_class: 'text-base-content/30') %>
+    </div>
+    <p class="text-sm text-base-content/50"><%= empty_text %></p>
+  </div>
+<% end %>

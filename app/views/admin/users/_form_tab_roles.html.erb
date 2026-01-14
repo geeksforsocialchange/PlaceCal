@@ -85,24 +85,13 @@
           use_tom_select: true
         ) %>
       <% else %>
-        <% if @user.neighbourhoods.any? %>
-          <div class="flex flex-wrap gap-2">
-            <% @user.neighbourhoods.order(:name).each do |hood| %>
-              <%= link_to admin_neighbourhood_path(hood),
-                  class: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 text-sky-700 text-sm font-medium hover:bg-sky-100 transition-colors" do %>
-                <%= icon(:map_pin, size: '3.5') %>
-                <%= hood.name %>
-              <% end %>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="text-center py-6">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-base-200 mb-2">
-              <%= icon(:map_pin, size: '6', css_class: 'text-base-content/30') %>
-            </div>
-            <p class="text-sm text-base-content/50"><%= t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase) %></p>
-          </div>
-        <% end %>
+        <%= render Admin::ItemBadgeListComponent.new(
+          items: @user.neighbourhoods.order(:name),
+          icon_name: :map_pin,
+          icon_color: "bg-sky-100 text-sky-600",
+          link_path: :admin_neighbourhood_path,
+          empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase)
+        ) %>
       <% end %>
     </div>
   </div>

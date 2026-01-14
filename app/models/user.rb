@@ -58,6 +58,7 @@ class User < ApplicationRecord
   end
 
   alias to_s admin_name
+  alias name admin_name
 
   # Admin level checks
   def root?

@@ -264,6 +264,13 @@ en:
         partner_organiser: "Partner Organiser"
         source_placeholder: "https://your-domain.com/events.ics"
         strategy_hint: "Where should location information for this calendar come from?"
+      strategy:
+        event: "Use the address from each event. If an address is invalid or missing, the event will import with no location."
+        event_override: "Use the event address if available, otherwise fall back to the default location."
+        place: "Always use the calendar's default location."
+        room_number: "Use the default location as a base, and append any room number from each event."
+        no_location: "Events from this calendar have no physical location."
+        online_only: "All events are online-only."
       events:
         no_location: "No location"
         past: "Recent Past Events"
@@ -408,6 +415,13 @@ en:
       fields:
         system_tag_hint: "This partnership is read only and should not be edited"
 
+    tags:
+      sections:
+        tagged_partners: "Tagged Partners"
+        tagged_partners_description: "Apply this tag to the given partners"
+        assigned_users: "Assigned Users"
+        assigned_users_description: "Grant permission to assign this tag"
+
     # -------------------------------------------------------------------------
     # Sites
     # -------------------------------------------------------------------------
@@ -478,3 +492,7 @@ en:
         site_admin_warning: "This user is a site administrator and cannot be deleted. Remove them as a site admin first."
       profile:
         title: "Your Profile"
+        your_partners: "Your Partners"
+        your_neighbourhoods: "Your Neighbourhoods"
+        your_partnerships: "Your Partnerships"
+        partnerships_hint: "These tags will be pre-selected when creating a new partner"

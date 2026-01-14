@@ -17,8 +17,11 @@ module PartnersHelper
       end
   end
 
+  # Returns partnerships as [name, id] pairs for partner assignment
+  # Root users can assign any partnership, others see only their managed partnerships
   def options_for_partner_partnerships
-    policy_scope(Partnership)
+    scope = current_user.root? ? Partnership : policy_scope(Partnership)
+    scope
       .select(:name, :type, :id)
       .order(:name)
       .map { |r| [r.name, r.id] }

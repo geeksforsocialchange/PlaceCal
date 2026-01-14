@@ -53,21 +53,57 @@
     <% end %>
   </div>
 
-  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Tagged Partners</h3>
-    <p class="text-sm text-gray-600">Apply this tag to the given partners</p>
-    <%= f.association :partners, collection: options_for_partners,
-          wrapper: :tw_vertical_form,
-          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <div class="flex items-start gap-4 mb-4">
+        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+          <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
+        </div>
+        <div>
+          <h3 class="card-title text-lg"><%= t('admin.tags.sections.tagged_partners') %></h3>
+          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.tags.sections.tagged_partners_description') %></p>
+        </div>
+      </div>
+
+      <%= render Admin::StackedListSelectorComponent.new(
+        field_name: "tag[partner_ids][]",
+        items: @tag.partners.order(:name),
+        options: options_for_partners,
+        permitted_ids: nil,
+        icon_name: :partner,
+        icon_color: "bg-emerald-100 text-emerald-600",
+        empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
+        add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
+        use_tom_select: true
+      ) %>
+    </div>
   </div>
 
   <% if show_assigned_user_field_for?(f) %>
-    <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-      <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Assigned Users</h3>
-      <p class="text-sm text-gray-600">Grant permission to assign this tag</p>
-      <%= f.association :users, collection: options_for_users,
-          wrapper: :tw_vertical_form,
-          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center shadow-sm">
+            <%= icon(:users, size: '6', css_class: 'text-purple-600') %>
+          </div>
+          <div>
+            <h3 class="card-title text-lg"><%= t('admin.tags.sections.assigned_users') %></h3>
+            <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.tags.sections.assigned_users_description') %></p>
+          </div>
+        </div>
+
+        <%= render Admin::StackedListSelectorComponent.new(
+          field_name: "tag[user_ids][]",
+          items: @tag.users.order(:last_name, :first_name),
+          options: options_for_users,
+          permitted_ids: nil,
+          icon_name: :user,
+          icon_color: "bg-purple-100 text-purple-600",
+          empty_text: t('admin.empty.none_assigned', items: User.model_name.human(count: 2).downcase),
+          add_placeholder: t('admin.placeholders.add_model', model: User.model_name.human.downcase),
+          use_tom_select: true
+        ) %>
+      </div>
     </div>
   <% end %>
 
