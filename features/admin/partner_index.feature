@@ -19,7 +19,7 @@ Feature: Partner Index Table
     Given there is a partner called "Community Hub"
     When I go to the "Partners" admin section
     Then I should see the partner table with columns:
-      | Partner | Ward | Partnerships | Updated |
+      | Partner | Neighbourhood | Partnerships | Last Updated |
 
   Scenario: Partner table shows partner with ward from address
     Given there is a partner called "Central Library" in "Central Ward"

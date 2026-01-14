@@ -15,7 +15,7 @@ Feature: Tag Management
   Scenario: Creating a new category tag
     When I go to the "Tags" admin section
     And I click "Add Tag"
-    Then I should see "Create a new Tag"
+    Then I should see "New Tag"
     And I should see "Name"
     And I should see "Type"
 

@@ -15,7 +15,7 @@ Feature: Collection Management
   Scenario: Creating a new collection form
     When I go to the "Collections" admin section
     And I click "Add Collection"
-    Then I should see "Create a new Collection"
+    Then I should see "New Collection"
     And I should see "Name"
 
   Scenario: Viewing an existing collection

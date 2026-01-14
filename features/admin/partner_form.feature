@@ -17,7 +17,7 @@ Feature: Partner Editing
     And I should see "Opening Times"
     When I go to the "Contact" step
     Then I should see "Online Presence"
-    And I should see "Contact Information"
+    And I should see "Public Contact"
     When I go to the "Tags" step
     Then I should see "Tags & Associations"
     When I go to the "Settings" step

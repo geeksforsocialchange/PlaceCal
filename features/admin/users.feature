@@ -29,21 +29,21 @@ Feature: User Editing
     Given there is a user called "Name Update User"
     When I edit the user "Name Update User"
     And I fill in "First Name" with "Updated"
-    And I click the "Save User" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating user last name
     Given there is a user called "Last Name User"
     When I edit the user "Last Name User"
     And I fill in "Last Name" with "NewLastName"
-    And I click the "Save User" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating user phone
     Given there is a user called "Phone User"
     When I edit the user "Phone User"
     And I fill in "Phone" with "0161 555 0000"
-    And I click the "Save User" button
+    And I click the "Save" button
     Then I should see a success message
 
   # Partner Assignment

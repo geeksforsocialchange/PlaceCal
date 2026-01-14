@@ -16,7 +16,7 @@ Feature: Article Management
   Scenario: Creating a new article
     When I go to the "Articles" admin section
     And I click "Add Article"
-    Then I should see "Create a new Article"
+    Then I should see "New Article"
     And I should see "Title"
     And I should see "Body"
 

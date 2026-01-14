@@ -15,7 +15,7 @@ Feature: Site Management
   Scenario: Creating a new site
     When I go to the "Sites" admin section
     And I click "Add Site"
-    Then I should see "Create a new Site"
+    Then I should see "New Site"
     And I should see "Name"
     And I should see "Site Admin"
 

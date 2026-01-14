@@ -35,7 +35,7 @@ Feature: Calendar Editing
     Given there is a calendar called "Old Calendar Name" for partner "Riverside Community Hub"
     When I edit the calendar "Old Calendar Name"
     And I fill in "Name" with "New Calendar Name"
-    And I click the "Save Calendar" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Calendar form shows URL field
@@ -63,21 +63,21 @@ Feature: Calendar Editing
     Given there is a calendar called "Contact Test Calendar" for partner "Riverside Community Hub"
     When I edit the calendar "Contact Test Calendar"
     And I fill in "Contact Name" with "Event Coordinator"
-    And I click the "Save Calendar" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating calendar public contact email
     Given there is a calendar called "Email Test Calendar" for partner "Riverside Community Hub"
     When I edit the calendar "Email Test Calendar"
     And I fill in "Contact Email" with "events@example.org"
-    And I click the "Save Calendar" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating calendar public contact phone
     Given there is a calendar called "Phone Test Calendar" for partner "Riverside Community Hub"
     When I edit the calendar "Phone Test Calendar"
     And I fill in "Contact Phone" with "0161 555 1234"
-    And I click the "Save Calendar" button
+    And I click the "Save" button
     Then I should see a success message
 
   Scenario: Updating all calendar contact fields
@@ -86,5 +86,5 @@ Feature: Calendar Editing
     And I fill in "Contact Name" with "Calendar Manager"
     And I fill in "Contact Email" with "calendar@example.org"
     And I fill in "Contact Phone" with "0161 555 9999"
-    And I click the "Save Calendar" button
+    And I click the "Save" button
     Then I should see a success message

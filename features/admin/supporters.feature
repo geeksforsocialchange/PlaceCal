@@ -15,7 +15,7 @@ Feature: Supporter Management
   Scenario: Creating a new supporter form
     When I go to the "Supporters" admin section
     And I click "Add Supporter"
-    Then I should see "Create a new Supporter"
+    Then I should see "New Supporter"
     And I should see "Name"
     And I should see "Url"
 

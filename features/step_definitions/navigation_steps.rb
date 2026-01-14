@@ -133,44 +133,78 @@ end
 
 # Navigate to a specific tab in the partner form (daisyUI tabs)
 When("I go to the {string} step") do |step_name|
-  # Map step names to their tab aria-labels (with emoji icons)
-  tab_labels = {
-    "basic info" => "📋 Basic Info",
-    "place" => "📍 Location",
-    "location" => "📍 Location",
-    "contact" => "📞 Contact",
-    "tags" => "🏷️ Tags",
-    "admin" => "👥 Admins",
-    "admins" => "👥 Admins",
-    "settings" => "⚙ Settings",
-    "calendars" => "📅 Calendars"
+  # Map step names to their tab data-hash attributes (more reliable than emoji aria-labels)
+  tab_hashes = {
+    "basic info" => "basic",
+    "place" => "place",
+    "location" => "place",
+    "contact" => "contact",
+    "tags" => "tags",
+    "admin" => "users",
+    "admins" => "users",
+    "settings" => "settings",
+    "calendars" => "calendars"
   }
 
-  tab_label = tab_labels[step_name.downcase]
-  raise "Unknown step: #{step_name}" unless tab_label
+  tab_hash = tab_hashes[step_name.downcase]
+  raise "Unknown step: #{step_name}" unless tab_hash
 
-  # Find and click the tab by aria-label attribute
-  tab = page.find("input.tab[aria-label='#{tab_label}']", wait: 10)
-  tab.click
+  # Find and click the tab by data-hash attribute (more reliable than emoji aria-labels)
+  tab = page.find("input.tab[data-hash='#{tab_hash}']", wait: 10)
+
+  # Handle unsaved changes confirmation if it appears
+  begin
+    accept_confirm { tab.click }
+  rescue Capybara::ModalNotFound
+    # No confirmation appeared, which is fine
+  end
 
   # Wait for the tab content to be visible
   sleep 0.2
 end
 
 When("I click the {string} tab") do |tab_name|
-  # Find tab by partial aria-label match (handles emoji prefixes)
-  tab = page.find("input.tab[aria-label*='#{tab_name}']", wait: 10)
-  tab.click
+  # Map common tab names to data-hash values
+  tab_hashes = {
+    "Basic Info" => "basic",
+    "Location" => "place",
+    "Contact" => "contact",
+    "Tags" => "tags",
+    "Admins" => "users",
+    "Settings" => "settings",
+    "Calendars" => "calendars",
+    "Preview" => "preview"
+  }
+
+  # Try data-hash first, fall back to aria-label match
+  tab_hash = tab_hashes[tab_name]
+  tab = if tab_hash
+          page.find("input.tab[data-hash='#{tab_hash}']", wait: 10)
+        else
+          page.find("input.tab[aria-label*='#{tab_name}']", wait: 10)
+        end
+
+  # Handle unsaved changes confirmation if it appears
+  begin
+    accept_confirm { tab.click }
+  rescue Capybara::ModalNotFound
+    # No confirmation appeared, which is fine
+  end
   sleep 0.2
 end
 
 When("I go to form step {int}") do |step_number|
-  # Map step numbers to tab labels (1-based for user)
-  tab_labels = ["Basic Info", "Location", "Contact", "Tags", "Admins"]
-  tab_label = tab_labels[step_number - 1]
-  raise "Invalid step number: #{step_number}" unless tab_label
+  # Map step numbers to data-hash values (1-based for user)
+  tab_hashes = %w[basic place contact tags users]
+  tab_hash = tab_hashes[step_number - 1]
+  raise "Invalid step number: #{step_number}" unless tab_hash
 
-  tab = page.find("input.tab[aria-label='#{tab_label}']", wait: 10)
-  tab.click
+  tab = page.find("input.tab[data-hash='#{tab_hash}']", wait: 10)
+  # Handle unsaved changes confirmation if it appears
+  begin
+    accept_confirm { tab.click }
+  rescue Capybara::ModalNotFound
+    # No confirmation appeared
+  end
   sleep 0.2
 end
