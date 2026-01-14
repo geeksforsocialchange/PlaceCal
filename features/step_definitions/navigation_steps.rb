@@ -133,17 +133,19 @@ end
 
 # Navigate to a specific tab in the partner form (daisyUI tabs)
 When("I go to the {string} step") do |step_name|
-  # Map step names to their tab data-hash attributes (more reliable than emoji aria-labels)
+  # Map step names to their tab data-hash attributes
+  # Partner form uses: basic, location, contact, tags, calendars, admins, preview, settings
   tab_hashes = {
     "basic info" => "basic",
-    "place" => "place",
-    "location" => "place",
+    "place" => "location",
+    "location" => "location",
     "contact" => "contact",
     "tags" => "tags",
-    "admin" => "users",
-    "admins" => "users",
+    "admin" => "admins",
+    "admins" => "admins",
     "settings" => "settings",
-    "calendars" => "calendars"
+    "calendars" => "calendars",
+    "preview" => "preview"
   }
 
   tab_hash = tab_hashes[step_name.downcase]
@@ -165,12 +167,13 @@ end
 
 When("I click the {string} tab") do |tab_name|
   # Map common tab names to data-hash values
+  # Partner form uses: basic, location, contact, tags, calendars, admins, preview, settings
   tab_hashes = {
     "Basic Info" => "basic",
-    "Location" => "place",
+    "Location" => "location",
     "Contact" => "contact",
     "Tags" => "tags",
-    "Admins" => "users",
+    "Admins" => "admins",
     "Settings" => "settings",
     "Calendars" => "calendars",
     "Preview" => "preview"
@@ -195,7 +198,8 @@ end
 
 When("I go to form step {int}") do |step_number|
   # Map step numbers to data-hash values (1-based for user)
-  tab_hashes = %w[basic place contact tags users]
+  # Partner form uses: basic, location, contact, tags, admins
+  tab_hashes = %w[basic location contact tags admins]
   tab_hash = tab_hashes[step_number - 1]
   raise "Invalid step number: #{step_number}" unless tab_hash
 
