@@ -1,47 +1,35 @@
-<%# Personal Details Tab %>
-<div class="space-y-6">
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
-        title: t('admin.users.sections.personal_details'),
-        description: t('admin.users.sections.personal_description'),
-        margin: 4
-      ) %>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="fieldset">
-          <label for="user_first_name" class="fieldset-legend"><%= attr_label(:user, :first_name) %></label>
-          <%= f.input_field :first_name, class: 'input input-bordered w-full', id: 'user_first_name' %>
-        </div>
-
-        <div class="fieldset">
-          <label for="user_last_name" class="fieldset-legend"><%= attr_label(:user, :last_name) %></label>
-          <%= f.input_field :last_name, class: 'input input-bordered w-full', id: 'user_last_name' %>
-        </div>
+<%# Personal Details Tab - Name, Email, Phone, Avatar %>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <%# Form fields - Left column %>
+  <div class="lg:col-span-2 space-y-4">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="fieldset">
+        <label for="user_first_name" class="fieldset-legend"><%= attr_label(:user, :first_name) %></label>
+        <%= f.input_field :first_name, class: 'input input-bordered w-full', id: 'user_first_name' %>
       </div>
 
       <div class="fieldset">
-        <label for="user_email" class="fieldset-legend"><%= attr_label(:user, :email) %></label>
-        <%= f.input_field :email, class: 'input input-bordered w-full', disabled: true, id: 'user_email' %>
-        <p class="fieldset-label">Contact support to change your email address.</p>
+        <label for="user_last_name" class="fieldset-legend"><%= attr_label(:user, :last_name) %></label>
+        <%= f.input_field :last_name, class: 'input input-bordered w-full', id: 'user_last_name' %>
       </div>
+    </div>
 
-      <div class="fieldset">
-        <label for="user_phone" class="fieldset-legend"><%= attr_label(:user, :phone) %></label>
-        <%= f.input_field :phone, class: 'input input-bordered w-full', id: 'user_phone' %>
-      </div>
+    <div class="fieldset">
+      <label for="user_email" class="fieldset-legend"><%= attr_label(:user, :email) %></label>
+      <%= f.input_field :email, class: 'input input-bordered w-full', disabled: true, id: 'user_email' %>
+      <p class="fieldset-label"><%= t('admin.users.profile.email_change_hint') %></p>
+    </div>
+
+    <div class="fieldset">
+      <label for="user_phone" class="fieldset-legend"><%= attr_label(:user, :phone) %></label>
+      <%= f.input_field :phone, class: 'input input-bordered w-full', id: 'user_phone' %>
     </div>
   </div>
 
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <%= render Admin::ImageUploadComponent.new(
-        form: f,
-        attribute: :avatar,
-        title: attr_label(:user, :avatar),
-        description: "Upload a profile picture. Square images work best.",
-        aspect: '1:1'
-      ) %>
-    </div>
-  </div>
+  <%# Avatar - Right column %>
+  <%= render Admin::ImageUploadComponent.new(
+    form: f,
+    attribute: :avatar,
+    rounded: 'rounded-xl'
+  ) %>
 </div>

@@ -523,7 +523,7 @@ en:
         save_button: "Save Profile"
         tabs:
           personal: "Personal Details"
-          password: "Password"
+          password: "Change Password"
           permissions: "My Permissions"
         password_title: "Change Password"
         password_description: "Leave blank to keep your current password."
@@ -531,6 +531,7 @@ en:
         confirm_password: "Confirm New Password"
         current_password: "Current Password"
         current_password_hint: "Required to save any changes."
+        email_change_hint: "Contact support to change your email address."
         permissions_title: "My Permissions"
         permissions_description: "Resources you can access and manage."
         no_rights_warning: "You have no admin rights. Please contact whoever invited you to set up your account correctly."

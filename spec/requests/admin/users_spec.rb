@@ -139,13 +139,12 @@ RSpec.describe "Admin::Users", type: :request do
         expect(response).to be_successful
         expect(response.body).to include("Save Profile")
         expect(response.body).to include("Personal Details")
-        expect(response.body).to include("Password")
+        expect(response.body).to include("Change Password")
         expect(response.body).to include("My Permissions")
       end
 
       it "shows personal details section" do
         get admin_profile_url(host: admin_host)
-        expect(response.body).to include("Basic information")
         expect(response.body).to include("First Name")
         expect(response.body).to include("Last Name")
         expect(response.body).to include("Email")

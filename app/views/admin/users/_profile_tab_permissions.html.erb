@@ -69,7 +69,6 @@
                 </div>
                 <h4 class="font-medium"><%= t('admin.users.profile.your_partnerships') %></h4>
               </div>
-              <p class="text-sm text-base-content/60 mb-2"><%= t('admin.users.profile.partnerships_hint') %></p>
               <%= render Admin::ItemBadgeListComponent.new(
                 items: current_user.tags.order(:name),
                 icon_name: :partnership,

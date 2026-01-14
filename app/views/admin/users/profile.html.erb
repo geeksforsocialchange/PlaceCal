@@ -17,7 +17,7 @@
   <div role="tablist" class="tabs tabs-lift">
     <%= render Admin::TabPanelComponent.new(
       name: 'profile_tabs',
-      label: t('admin.users.profile.tabs.personal'),
+      label: "👤 #{t('admin.users.profile.tabs.personal')}",
       hash: 'personal',
       controller_name: 'form-tabs',
       checked: true
@@ -27,7 +27,7 @@
 
     <%= render Admin::TabPanelComponent.new(
       name: 'profile_tabs',
-      label: t('admin.users.profile.tabs.password'),
+      label: "🔑 #{t('admin.users.profile.tabs.password')}",
       hash: 'password',
       controller_name: 'form-tabs'
     ) do %>
@@ -36,7 +36,7 @@
 
     <%= render Admin::TabPanelComponent.new(
       name: 'profile_tabs',
-      label: t('admin.users.profile.tabs.permissions'),
+      label: "🛡️ #{t('admin.users.profile.tabs.permissions')}",
       hash: 'permissions',
       controller_name: 'form-tabs'
     ) do %>
