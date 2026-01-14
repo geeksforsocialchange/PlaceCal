@@ -17,7 +17,7 @@ Feature: Supporter Management
     And I click "Add Supporter"
     Then I should see "New Supporter"
     And I should see "Name"
-    And I should see "Url"
+    And I should see "URL"
 
   Scenario: Viewing an existing supporter
     Given there is a supporter called "Local Council"

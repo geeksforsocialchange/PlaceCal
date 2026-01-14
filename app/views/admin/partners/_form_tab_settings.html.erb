@@ -158,15 +158,15 @@
     </script>
   <% end %>
 
-  <div class="mt-8">
-    <h2 class="text-lg font-bold text-error mb-4"><%= t('admin.sections.danger_zone') %></h2>
-    <% if policy(@partner).destroy? %>
-      <%= link_to @partner, method: :delete, class: "btn btn-error btn-sm", data: { confirm: t('admin.confirm.delete_permanent', model: Partner.model_name.human.downcase) } do %>
-        <%= icon(:trash, size: '4') %>
-        <%= t('admin.actions.delete_model', model: Partner.model_name.human) %>
-      <% end %>
-    <% else %>
-      <p class="text-sm text-base-content/60"><%= t('admin.partners.danger_zone.no_permission') %></p>
-    <% end %>
-  </div>
+  <% if policy(@partner).destroy? %>
+    <div class="mt-8">
+      <%= render Admin::DangerZoneComponent.new(
+        title: t('admin.actions.delete_model', model: Partner.model_name.human.downcase),
+        description: t('admin.danger_zone.delete_description', model: Partner.model_name.human.downcase),
+        button_text: t('admin.actions.delete_model', model: Partner.model_name.human),
+        button_path: admin_partner_path(@partner),
+        confirm: t('admin.confirm.delete_permanent', model: Partner.model_name.human.downcase)
+      ) %>
+    </div>
+  <% end %>
 <% end %>

@@ -27,12 +27,12 @@ Feature: Calendar Administration
     When I go to the "Calendars" admin section
     Then I should see "Add Calendar"
 
-  Scenario: New calendar form shows required fields
+  Scenario: New calendar form shows wizard with URL field
     When I go to the "Calendars" admin section
     And I click "Add Calendar"
-    Then I should see "Partner Organiser"
-    And I should see "Name"
+    Then I should see "Connect Your Calendar"
     And I should see "URL"
+    And I should see "Supported Calendar Sources"
 
   # Calendar Deletion
   Scenario: Deleting a calendar

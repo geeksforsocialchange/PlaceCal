@@ -131,20 +131,31 @@ When("I uncheck {string}") do |checkbox_label|
   uncheck checkbox_label
 end
 
-# Navigate to a specific tab in the partner form (daisyUI tabs)
+# Navigate to a specific tab in the form (daisyUI tabs)
+# Supports partner, calendar, and user forms
 When("I go to the {string} step") do |step_name|
   # Map step names to their tab data-hash attributes
-  # Partner form uses: basic, location, contact, tags, calendars, admins, preview, settings
+  # Partner form: basic, location, contact, tags, calendars, admins, preview, settings
+  # Calendar form: source, location, contact, preview, admin
+  # User form: personal, permissions, admin
   tab_hashes = {
+    # Partner form tabs
     "basic info" => "basic",
     "place" => "location",
-    "location" => "location",
-    "contact" => "contact",
     "tags" => "tags",
-    "admin" => "admins",
     "admins" => "admins",
     "settings" => "settings",
     "calendars" => "calendars",
+    # Calendar form tabs
+    "source" => "source",
+    # User form tabs
+    "personal" => "personal",
+    "personal details" => "personal",
+    "permissions" => "permissions",
+    # Shared tab names
+    "location" => "location",
+    "contact" => "contact",
+    "admin" => "admin",
     "preview" => "preview"
   }
 
@@ -167,18 +178,26 @@ end
 
 When("I click the {string} tab") do |tab_name|
   # Map common tab names to data-hash values
-  # Partner form uses: basic, location, contact, tags, calendars, admins, preview, settings
-  # Calendar form uses: settings, events, admin (singular)
+  # Partner form: basic, location, contact, tags, calendars, admins, preview, settings
+  # Calendar form: source, location, contact, preview, admin
+  # User form: personal, permissions, admin
   tab_hashes = {
+    # Partner form tabs
     "Basic Info" => "basic",
-    "Location" => "location",
-    "Contact" => "contact",
     "Tags" => "tags",
-    "Admin" => "admin",
     "Admins" => "admins",
     "Settings" => "settings",
     "Calendars" => "calendars",
-    "Events" => "events",
+    # Calendar form tabs
+    "Source" => "source",
+    # User form tabs
+    "Personal" => "personal",
+    "Personal Details" => "personal",
+    "Permissions" => "permissions",
+    # Shared tabs
+    "Location" => "location",
+    "Contact" => "contact",
+    "Admin" => "admin",
     "Preview" => "preview"
   }
 

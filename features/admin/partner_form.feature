@@ -75,7 +75,7 @@ Feature: Partner Editing
     Given there is a partner called "Address Test Partner"
     When I edit the partner "Address Test Partner"
     And I go to the "Place" step
-    Then I should see "Street address"
+    Then I should see "Street Address"
     And I should see "City"
     And I should see "Postcode"
 
