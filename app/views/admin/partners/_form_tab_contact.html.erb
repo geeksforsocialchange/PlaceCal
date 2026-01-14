@@ -4,33 +4,33 @@
     <div class="card-body p-4 gap-3">
       <h3 class="font-semibold flex items-center gap-2">
         <%= icon(:desktop, size: '4') %>
-        Online Presence
+        <%= t('admin.sections.online_presence') %>
       </h3>
-      <p class="text-xs text-base-content/60">Website and social media links.</p>
+      <p class="text-xs text-base-content/60"><%= t('admin.partners.sections.online_presence_description') %></p>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">Website</legend>
-        <%= f.input_field :url, class: 'input input-bordered w-full bg-base-100', placeholder: 'https://your-website.org',
+        <legend class="fieldset-legend"><%= t('admin.fields.website') %></legend>
+        <%= f.input_field :url, class: 'input input-bordered w-full bg-base-100', placeholder: t('admin.partners.fields.website_placeholder'),
             'data-validate-url': 'true',
-            'data-validate-url-message': 'Enter a valid URL (including https://)' %>
+            'data-validate-url-message': t('admin.hints.url_validation') %>
       </fieldset>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Facebook</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.facebook') %></legend>
           <label class="input input-bordered flex items-center gap-1 pr-1 bg-base-100">
             <span class="text-base-content/50 text-sm shrink-0">facebook.com/</span>
             <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
           </label>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">X (Twitter)</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.twitter') %></legend>
           <label class="input input-bordered flex items-center gap-1 bg-base-100">
             <span class="text-base-content/50">@</span>
             <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
           </label>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Instagram</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.instagram') %></legend>
           <label class="input input-bordered flex items-center gap-1 bg-base-100">
             <span class="text-base-content/50">@</span>
             <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
@@ -47,21 +47,21 @@
       <div class="card-body p-4 gap-3">
         <h3 class="font-semibold flex items-center gap-2">
           <%= icon(:website, size: '4') %>
-          Public Contact
+          <%= t('admin.sections.public_contact') %>
         </h3>
-        <p class="text-xs text-base-content/60">Shown on PlaceCal to the public.</p>
+        <p class="text-xs text-base-content/60"><%= t('admin.hints.shown_publicly') %></p>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Name</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.name') %></legend>
           <%= f.input_field :public_name, class: 'input input-bordered w-full bg-base-100' %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Email</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.email') %></legend>
           <%= f.input_field :public_email, class: 'input input-bordered w-full bg-base-100',
               'data-validate-email': 'true',
-              'data-validate-email-message': 'Enter a valid email address' %>
+              'data-validate-email-message': t('admin.hints.email_validation') %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Phone</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.phone') %></legend>
           <%= f.input_field :public_phone, class: 'input input-bordered w-full bg-base-100' %>
         </fieldset>
       </div>
@@ -72,21 +72,21 @@
       <div class="card-body p-4 gap-3">
         <h3 class="font-semibold flex items-center gap-2">
           <%= icon(:partnership, size: '4') %>
-          Partnership Contact
+          <%= t('admin.partners.sections.partnership_contact') %>
         </h3>
-        <p class="text-xs text-base-content/60">Internal contact for PlaceCal team. Leave blank to use public contact.</p>
+        <p class="text-xs text-base-content/60"><%= t('admin.partners.sections.partnership_contact_description') %></p>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Name</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.name') %></legend>
           <%= f.input_field :partner_name, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_name %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Email</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.email') %></legend>
           <%= f.input_field :partner_email, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_email,
               'data-validate-email': 'true',
-              'data-validate-email-message': 'Enter a valid email address' %>
+              'data-validate-email-message': t('admin.hints.email_validation') %>
         </fieldset>
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Phone</legend>
+          <legend class="fieldset-legend"><%= t('admin.fields.phone') %></legend>
           <%= f.input_field :partner_phone, class: 'input input-bordered w-full bg-base-100 placeholder:text-base-content/30', placeholder: @partner.public_phone %>
         </fieldset>
       </div>
