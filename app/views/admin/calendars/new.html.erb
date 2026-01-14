@@ -1,32 +1,34 @@
 <% content_for :title do %>New Calendar<% end %>
 
-<div class="max-w-4xl mx-auto"
-     data-controller="calendar-wizard"
+<div data-controller="calendar-wizard"
      data-calendar-wizard-current-step-value="1"
      data-calendar-wizard-total-steps-value="3"
      data-calendar-wizard-test-url-value="<%= test_source_admin_calendars_path %>">
 
-  <%# Header %>
-  <div class="text-center mb-8">
-    <h1 class="text-2xl font-bold text-base-content mb-2"><%= t('admin.calendars.wizard.title') %></h1>
-    <p class="text-base-content/60"><%= t('admin.calendars.wizard.subtitle') %></p>
+  <div class="max-w-4xl mx-auto">
+    <%# Header %>
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-base-content mb-2"><%= t('admin.calendars.wizard.title') %></h1>
+      <p class="text-base-content/60"><%= t('admin.calendars.wizard.subtitle') %></p>
+    </div>
+
+    <%# Steps indicator %>
+    <ul class="steps steps-horizontal w-full mb-8">
+      <li class="step step-primary" data-calendar-wizard-target="stepIndicator" data-step="1">
+        <span class="step-content"><%= t('admin.calendars.wizard.steps.source') %></span>
+      </li>
+      <li class="step" data-calendar-wizard-target="stepIndicator" data-step="2">
+        <span class="step-content"><%= t('admin.calendars.wizard.steps.organiser') %></span>
+      </li>
+      <li class="step" data-calendar-wizard-target="stepIndicator" data-step="3">
+        <span class="step-content"><%= t('admin.calendars.wizard.steps.location') %></span>
+      </li>
+    </ul>
   </div>
 
-  <%# Steps indicator %>
-  <ul class="steps steps-horizontal w-full mb-8">
-    <li class="step step-primary" data-calendar-wizard-target="stepIndicator" data-step="1">
-      <span class="step-content"><%= t('admin.calendars.wizard.steps.source') %></span>
-    </li>
-    <li class="step" data-calendar-wizard-target="stepIndicator" data-step="2">
-      <span class="step-content"><%= t('admin.calendars.wizard.steps.details') %></span>
-    </li>
-    <li class="step" data-calendar-wizard-target="stepIndicator" data-step="3">
-      <span class="step-content"><%= t('admin.calendars.wizard.steps.location') %></span>
-    </li>
-  </ul>
-
   <%= simple_form_for @calendar, url: admin_calendars_path, html: { data: { turbo: false } } do |f| %>
-    <%= render(Admin::ErrorComponent.new(@calendar)) %>
+    <div class="max-w-4xl mx-auto">
+      <%= render(Admin::ErrorComponent.new(@calendar)) %>
 
     <%# Step 1: Source URL %>
     <div class="card bg-base-100 shadow-lg border border-base-300" data-calendar-wizard-target="step" data-step="1">
@@ -75,7 +77,7 @@
               <%# Success %>
               <div class="alert alert-success text-sm hidden" data-calendar-wizard-target="sourceSuccess">
                 <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
-                <div>
+                <div class="flex-1">
                   <p class="font-semibold"><%= t('admin.calendars.wizard.source.success') %></p>
                   <p class="text-xs mt-1 hidden" data-calendar-wizard-target="detectedFormat">
                     <%= t('admin.calendars.wizard.source.detected_format') %>
@@ -138,9 +140,9 @@
             <%= icon(:partner, size: '6', css_class: 'text-placecal-orange') %>
           </div>
           <div>
-            <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.details.title') %></h2>
+            <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.organiser.title') %></h2>
             <p class="text-base-content/60 text-sm mt-1">
-              <%= t('admin.calendars.wizard.details.description') %>
+              <%= t('admin.calendars.wizard.organiser.description') %>
             </p>
           </div>
         </div>
@@ -169,21 +171,11 @@
               <%= t('admin.calendars.fields.calendar_name') %> <span class="text-error"><%= t('admin.labels.required') %></span>
             </legend>
             <%= f.input_field :name,
-                              class: 'input input-bordered input-lg w-full',
-                              placeholder: t('admin.calendars.wizard.details.name_placeholder'),
+                              class: 'input input-bordered w-full',
+                              placeholder: t('admin.calendars.wizard.organiser.name_placeholder'),
                               'data-calendar-wizard-target': 'nameInput',
                               'data-action': 'input->calendar-wizard#nameChanged' %>
-            <p class="text-sm text-base-content/50 mt-2">
-              <span data-calendar-wizard-target="nameSuggestion" class="hidden">
-                <button type="button"
-                        class="link text-placecal-orange"
-                        data-action="calendar-wizard#applySuggestion">
-                  <%= t('admin.calendars.fields.apply_suggestion') %>
-                </button>
-                <span class="mx-1">|</span>
-              </span>
-              <span><%= t('admin.calendars.fields.name_hint') %></span>
-            </p>
+            <p class="text-sm text-base-content/50 mt-2"><%= t('admin.calendars.fields.name_hint') %></p>
           </fieldset>
         </div>
       </div>
@@ -204,40 +196,44 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <%# Default Location %>
-          <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
-            <legend class="fieldset-legend font-semibold"><%= t('admin.calendars.fields.default_location') %></legend>
-            <p class="text-sm text-base-content/60 mb-4">
-              <%= t('admin.calendars.wizard.location.default_hint') %>
-            </p>
-            <%= f.input_field :place_id,
-                              as: :select,
-                              collection: options_for_location,
-                              include_blank: t('admin.calendars.fields.default_location_blank'),
-                              class: 'select select-bordered w-full bg-base-100',
-                              data: { controller: "tom-select" } %>
-          </fieldset>
-
+        <div class="space-y-6">
           <%# Strategy %>
-          <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
-            <legend class="fieldset-legend font-semibold"><%= attr_label(:calendar, :strategy) %></legend>
-            <p class="text-sm text-base-content/60 mb-4">
-              <%= t('admin.calendars.wizard.location.strategy_hint') %>
-            </p>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold"><%= attr_label(:calendar, :strategy) %></legend>
             <%= render Admin::RadioCardGroupComponent.new(
               form: f,
               attribute: :strategy,
               values: Calendar.strategy.values,
               i18n_scope: 'admin.calendars.strategy'
             ) %>
+            <p class="text-sm text-base-content/50 mt-2">
+              <%= t('admin.calendars.wizard.location.strategy_hint') %>
+            </p>
+          </fieldset>
+
+          <%# Default Location %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold"><%= t('admin.calendars.fields.default_location') %></legend>
+            <%= f.input_field :place_id,
+                              as: :select,
+                              collection: options_for_location,
+                              include_blank: t('admin.calendars.fields.default_location_blank'),
+                              class: 'select select-bordered w-full',
+                              data: {
+                                controller: "tom-select",
+                                'calendar-wizard-target': "placeSelect"
+                              } %>
+            <p class="text-sm text-base-content/50 mt-2">
+              <%= t('admin.calendars.wizard.location.default_hint') %>
+            </p>
           </fieldset>
         </div>
       </div>
     </div>
+    </div>
 
-    <%# Save Bar %>
-    <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 -mx-4 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]">
+    <%# Save Bar - full width %>
+    <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]">
       <div class="flex items-center justify-between gap-4 max-w-4xl mx-auto">
         <%# Left side - Back button %>
         <div>
@@ -256,7 +252,7 @@
                   class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2"
                   data-calendar-wizard-target="continueButton"
                   data-action="click->calendar-wizard#nextStep">
-            <span><%= t('admin.actions.continue') %></span>
+            <span data-calendar-wizard-target="continueButtonText"><%= t('admin.actions.continue') %></span>
             <%= icon(:chevron_right, size: '5') %>
           </button>
 

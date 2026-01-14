@@ -40,9 +40,10 @@ export default class extends Controller {
 		"testButtonText",
 		"partnerSelect",
 		"nameInput",
-		"nameSuggestion",
+		"placeSelect",
 		"backButton",
 		"continueButton",
+		"continueButtonText",
 		"submitButton",
 	];
 
@@ -51,7 +52,7 @@ export default class extends Controller {
 		totalSteps: { type: Number, default: 3 },
 		testUrl: String,
 		sourceValid: { type: Boolean, default: false },
-		nameSuffix: { type: String, default: " Calendar" },
+		detectedFormat: { type: String, default: "" },
 	};
 
 	connect() {
@@ -79,6 +80,11 @@ export default class extends Controller {
 			// Update name suggestion when entering step 2
 			if (this.currentStepValue === 2) {
 				this.updateNameSuggestion();
+			}
+
+			// Auto-select partner as default location when entering step 3
+			if (this.currentStepValue === 3) {
+				this.autoSelectPartnerAsPlace();
 			}
 		}
 	}
@@ -146,6 +152,15 @@ export default class extends Controller {
 		} else {
 			btn.classList.add("btn-disabled", "opacity-50");
 			btn.classList.remove("hover:bg-orange-600");
+		}
+
+		// Update button text based on step and validation state
+		if (this.hasContinueButtonTextTarget) {
+			if (this.currentStepValue === 1 && this.sourceValidValue) {
+				this.continueButtonTextTarget.textContent = "Save & Continue";
+			} else {
+				this.continueButtonTextTarget.textContent = "Continue";
+			}
 		}
 	}
 
@@ -323,11 +338,12 @@ export default class extends Controller {
 					this.importerModeSectionTarget.classList.remove("hidden");
 				}
 
-				// Auto-select the detected importer mode
+				// Auto-select the detected importer mode and store format name
 				if (data.importer_key && data.importer_key !== "auto") {
 					this.importerModeSelectTarget.value = data.importer_key;
 					this.detectedFormatTarget.classList.remove("hidden");
 					this.detectedFormatNameTarget.textContent = data.importer_name;
+					this.detectedFormatValue = data.importer_name;
 				}
 			} else {
 				// Error
@@ -412,30 +428,15 @@ export default class extends Controller {
 	}
 
 	updateNameSuggestion() {
-		if (!this.hasNameSuggestionTarget) return;
-
 		const partnerName = this.getPartnerName();
 		const nameValue = this.nameInputTarget.value.trim();
 
-		// Only show suggestion if name is empty and partner is selected
+		// Auto-fill name when partner is selected and name is empty
 		if (partnerName && !nameValue) {
-			const suggestedName = partnerName + this.nameSuffixValue;
-			this.nameSuggestionTarget.dataset.suggestedName = suggestedName;
-			this.nameSuggestionTarget.classList.remove("hidden");
-		} else {
-			this.nameSuggestionTarget.classList.add("hidden");
-		}
-	}
-
-	applySuggestion() {
-		const suggestedName = this.nameSuggestionTarget.dataset.suggestedName;
-		if (suggestedName) {
+			const calendarType = this.detectedFormatValue || "Calendar";
+			const suggestedName = `${partnerName} | ${calendarType}`;
 			this.nameInputTarget.value = suggestedName;
-			this.nameSuggestionTarget.classList.add("hidden");
 			this.nameInputTarget.classList.remove("input-error");
-			this.nameInputTarget.dispatchEvent(
-				new Event("change", { bubbles: true })
-			);
 			this.updateContinueButton();
 		}
 	}
@@ -446,9 +447,25 @@ export default class extends Controller {
 		this.updateContinueButton();
 	}
 
-	escapeHtml(text) {
-		const div = document.createElement("div");
-		div.textContent = text;
-		return div.innerHTML;
+	// Auto-select the partner as the default location
+	autoSelectPartnerAsPlace() {
+		if (!this.hasPlaceSelectTarget) return;
+
+		const partnerValue = this.getPartnerValue();
+		if (!partnerValue) return;
+
+		// Wait for tom-select to initialize on place dropdown
+		setTimeout(() => {
+			const tomSelect = this.placeSelectTarget.tomselect;
+			if (tomSelect) {
+				// Only set if the option exists and nothing is already selected
+				if (tomSelect.options[partnerValue] && !tomSelect.getValue()) {
+					tomSelect.setValue(partnerValue);
+				}
+			} else if (!this.placeSelectTarget.value) {
+				// Fallback to native select
+				this.placeSelectTarget.value = partnerValue;
+			}
+		}, 100);
 	}
 }

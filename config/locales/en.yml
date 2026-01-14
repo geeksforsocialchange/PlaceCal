@@ -38,6 +38,13 @@ en:
         mac_calendar: "Mac Calendar"
         facebook: "Facebook"
         other: "Other"
+      strategy:
+        place: "Place (default)"
+        event_override: "Event override"
+        event: "Event"
+        room_number: "Room number"
+        no_location: "No location"
+        online_only: "Online only"
 
   # ===========================================================================
   # ACTIVERECORD

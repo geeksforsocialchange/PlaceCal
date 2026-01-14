@@ -254,7 +254,7 @@ en:
         create_button: "Create Calendar"
         steps:
           source: "Source"
-          details: "Details"
+          organiser: "Organiser"
           location: "Location"
         source:
           title: "Connect Your Calendar"
@@ -264,8 +264,8 @@ en:
           error: "Unable to validate this URL"
           detected_format: "Detected format:"
           importer_hint: "Usually auto-detected. Only change if needed."
-        details:
-          title: "Calendar Details"
+        organiser:
+          title: "Organiser"
           description: "Which partner organises these events, and what should we call this calendar?"
           name_placeholder: "e.g. Community Centre Events"
         location:
@@ -299,9 +299,9 @@ en:
         source_placeholder: "https://your-domain.com/events.ics"
         strategy_hint: "Where should location information for this calendar come from?"
       strategy:
-        event: "Use the address from each event. If an address is invalid or missing, the event will import with no location."
+        place: "Always use the calendar's default location (default)."
         event_override: "Use the event address if available, otherwise fall back to the default location."
-        place: "Always use the calendar's default location."
+        event: "Use the address from each event. If an address is invalid or missing, the event will import with no location."
         room_number: "Use the default location as a base, and append any room number from each event."
         no_location: "Events from this calendar have no physical location."
         online_only: "All events are online-only."
