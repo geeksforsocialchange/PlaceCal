@@ -27,10 +27,11 @@ class User < ApplicationRecord
 
   has_many :neighbourhoods_users, dependent: :destroy
   has_many :neighbourhoods, through: :neighbourhoods_users
+  accepts_nested_attributes_for :neighbourhoods_users, allow_destroy: true, reject_if: :all_blank
 
   has_many :tags_users, dependent: :destroy
   has_many :tags, through: :tags_users
-  has_many :partnerships, through: :tags_users, source: :tag, class_name: 'Partnership'
+  has_many :partnerships, -> { where(type: 'Partnership') }, through: :tags_users, source: :tag
 
   auto_strip_attributes :first_name, :last_name, :email, :phone
 
