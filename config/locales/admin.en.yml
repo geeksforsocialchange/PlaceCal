@@ -167,7 +167,6 @@ en:
     leftbar:
       build: "Build"
       content_types: "Content types"
-      dashboard: "Dashboard"
       discord: "Discord"
       get_support: "Get support"
       handbook: "Handbook"
