@@ -48,11 +48,11 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
         expect(response).to be_successful
 
         expect(response.body).to include("Name")
-        expect(response.body).to include("Abbreviated name")
+        expect(response.body).to include("Abbreviated Name")
         expect(response.body).to include("Unit")
-        expect(response.body).to include("Unit code key")
-        expect(response.body).to include("Unit name")
-        expect(response.body).to include("Unit code value")
+        expect(response.body).to include("Unit Code Key")
+        expect(response.body).to include("Unit Name")
+        expect(response.body).to include("Unit Code Value")
         expect(response.body).to include("Users")
         expect(response.body).to include("Save")
         expect(response.body).to include("Destroy")

@@ -1,451 +1,229 @@
+# Admin interface locale for PlaceCal
+# Contains: UI strings, form hints, section headers, and admin-specific text
+# Note: Model names and field labels are in en.yml under activerecord.*
+
 en:
   admin:
-    # ============================================
-    # SHARED TOKENS - Use these across all views
-    # ============================================
+    # =========================================================================
+    # SHARED UI TOKENS
+    # =========================================================================
 
-    # UI-only model names (not Rails models, kept for display purposes)
+    # Non-Rails model names (UI display only)
     models:
       admin:
         one: "Admin"
         other: "Admins"
 
-    # Common tab labels
+    # Tab labels
     tabs:
-      basic_info: "Basic Info"
-      settings: "Settings"
       admin: "Admin"
-      preview: "Preview"
-      events: "Events"
-      location: "Location"
-      contact: "Contact"
-      tags: "Tags"
-      images: "Images"
-      calendars: "Calendars"
       admins: "Admins"
+      basic_info: "Basic Info"
+      calendars: "Calendars"
+      contact: "Contact"
+      events: "Events"
+      images: "Images"
+      location: "Location"
       neighbourhoods: "Neighbourhoods"
       partnerships: "Partnerships"
+      preview: "Preview"
+      settings: "Settings"
+      tags: "Tags"
 
-    # Common section headers
+    # Section headers
     sections:
+      accessibility: "Accessibility"
+      admin_settings: "Admin Settings"
       basic_information: "Basic Information"
       danger_zone: "Danger Zone"
-      admin_settings: "Admin Settings"
-      opening_times: "Opening Times"
+      images_theme: "Images & Theme"
+      location_settings: "Location Settings"
       online_presence: "Online Presence"
+      opening_times: "Opening Times"
       public_contact: "Public Contact"
       service_areas: "Service Areas"
-      location_settings: "Location Settings"
-      url_settings: "URL Settings"
       upcoming_events: "Upcoming Events"
-      images_theme: "Images & Theme"
-      accessibility: "Accessibility"
+      url_settings: "URL Settings"
 
-    # Common table headers
+    # Table column headers
     table:
+      calendar: "Calendar"
+      date_time: "Date & Time"
+      error: "Error"
+      events: "Events"
+      last_changed: "Last Changed"
+      last_import: "Last Import"
+      location: "Location"
       name: "Name"
+      partner: "Partner"
       state: "State"
       status: "Status"
-      events: "Events"
-      partner: "Partner"
-      calendar: "Calendar"
-      error: "Error"
       strategy: "Strategy"
-      date_time: "Date & Time"
-      location: "Location"
-      last_import: "Last Import"
-      last_changed: "Last Changed"
 
-    # Common actions
+    # Action buttons and links
     actions:
-      save: "Save"
+      add: "Add"
+      add_model: "Add %{model}"
+      back: "Back"
+      cancel: "Cancel"
+      clear: "Clear"
+      continue: "Continue"
       delete: "Delete"
+      delete_model: "Delete %{model}"
       destroy: "Destroy"
       edit: "Edit"
-      add: "Add"
+      edit_model: "Edit %{model}"
+      new_model: "New %{model}"
       remove: "Remove"
-      cancel: "Cancel"
+      retry: "Retry"
+      save: "Save"
       view: "View"
       view_all: "View all"
-      clear: "Clear"
-      retry: "Retry"
-      back: "Back"
-      continue: "Continue"
-      add_model: "Add %{model}"
-      edit_model: "Edit %{model}"
-      delete_model: "Delete %{model}"
-      new_model: "New %{model}"
 
-    # Common labels/misc
+    # Labels and status indicators
     labels:
-      id: "ID"
-      required: "*"
-      none: "None"
-      loading: "Loading..."
       all: "All"
-      hidden: "Hidden"
-      visible: "Visible"
-      enabled: "Enabled"
       disabled: "Disabled"
+      enabled: "Enabled"
       healthy: "Healthy"
+      hidden: "Hidden"
+      id: "ID"
       issues: "Issues"
-      working: "working"
-      queue: "queue"
-      errors: "errors"
-      total: "%{count} total"
+      loading: "Loading..."
+      none: "None"
+      required: "*"
+      visible: "Visible"
 
-    # Common placeholders
+    # Placeholders
     placeholders:
       search: "Search..."
-      type_to_filter: "Type to filter..."
-      select: "Select..."
       select_model: "Select %{model}..."
+      type_to_filter: "Type to filter..."
 
-    # Common empty states (parameterized)
+    # Empty states
     empty:
       no_items: "No %{items} yet"
-      no_items_simple: "No %{items}"
       none_assigned: "No %{items} assigned"
       none_connected: "No %{items} connected yet"
-      add_first: "Add your first %{item}"
 
-    # Common confirmations
+    # Confirmation dialogs
     confirm:
-      delete: "Are you sure you want to delete this %{model}?"
       delete_permanent: "Delete this %{model} permanently? This cannot be undone."
       delete_with_count: "Delete this %{model} permanently? All %{count} associated %{items} will also be deleted. This cannot be undone."
 
-    # Common hints
+    # Form hints
     hints:
-      shown_publicly: "Shown on PlaceCal to the public."
-      leave_blank_to_autogenerate: "Leave blank to auto-generate from name"
       email_validation: "Enter a valid email address"
+      leave_blank_to_autogenerate: "Leave blank to auto-generate from name"
+      shown_publicly: "Shown on PlaceCal to the public."
       url_validation: "Enter a valid URL (including https://)"
 
-    # Common time phrases
+    # Time phrases
     time:
       ago: "%{time} ago"
-      updated_ago: "Updated %{time} ago"
       added_ago: "Added %{time} ago"
       events_in_days: "Events in the next %{days} days"
       no_upcoming_in_days: "No upcoming events in the next %{days} days"
+      updated_ago: "Updated %{time} ago"
 
-    # ============================================
-    # COMPONENT-SPECIFIC
-    # ============================================
+    # =========================================================================
+    # COMPONENTS
+    # =========================================================================
 
-    # SaveBarComponent
     save_bar:
       unsaved_changes: "Unsaved changes"
 
-    # CascadingNeighbourhoodFieldsComponent
     cascading_neighbourhood:
-      region: "Region"
       area: "Area"
-      ward: "Ward"
+      region: "Region"
       select_area: "Select area..."
       select_ward: "Select ward..."
+      ward: "Ward"
 
-    # ============================================
-    # DATATABLE
-    # ============================================
     datatable:
-      loading: "Loading data..."
       clear_filters: "Clear filters"
+      loading: "Loading data..."
       reset_sort: "Reset sort"
-      showing: "Showing %{start} to %{end} of %{total} entries"
       search: "Search"
+      showing: "Showing %{start} to %{end} of %{total} entries"
 
-    # ============================================
-    # LAYOUT - Navigation, topbar
-    # ============================================
-    leftbar:
-      dashboard: "Dashboard"
-      content_types: "Content types"
-      get_support: "Get support"
-      handbook: "Handbook"
-      discord: "Discord"
-      report_bug: "Report a bug"
-      in_development: "In development"
-      import_status: "Import status"
-      build: "Build"
+    images:
+      choose_file: "Choose file"
+      choose_file_drag: "Choose file or drag here"
+      no_image: "No image"
+      no_image_uploaded: "No image uploaded"
+      remove_on_save: "Remove image on save"
+      replace: "Replace"
+      upload_hint: "Upload an image above"
+
+    # =========================================================================
+    # LAYOUT
+    # =========================================================================
 
     topbar:
       admin: "Admin"
       sign_out: "Sign out"
 
-    # ============================================
-    # PAGES
-    # ============================================
+    leftbar:
+      build: "Build"
+      content_types: "Content types"
+      dashboard: "Dashboard"
+      discord: "Discord"
+      get_support: "Get support"
+      handbook: "Handbook"
+      import_status: "Import status"
+      in_development: "In development"
+      report_bug: "Report a bug"
 
-    # Dashboard
+    # =========================================================================
+    # PAGES
+    # =========================================================================
+
     dashboard:
       title: "Dashboard"
+      subtitle: "Here's what's happening with your community calendar."
       greeting:
         morning: "Good morning"
         afternoon: "Good afternoon"
         evening: "Good evening"
-      subtitle: "Here's what's happening with your community calendar."
       stats:
         events_this_week: "Events this week"
         need_help: "Need help?"
       cards:
-        your_sites: "Your Sites"
-        view_all_sites: "View all %{count} sites"
         action_items: "Action Items"
         all_healthy: "All calendars healthy"
-        no_issues: "No issues to fix"
-        view_all_issues: "View all %{count} issues →"
-        upcoming_events: "Upcoming Events"
-        updated_partners: "Updated Partners"
-        updated_calendars: "Updated Calendars"
-        updated_users: "Updated Users"
-        your_partnerships: "Your Partnerships"
-        view_all_partnerships: "View all %{count} partnerships"
-        quick_links: "Quick Links"
         bad_url: "Bad URL"
+        no_issues: "No issues to fix"
+        quick_links: "Quick Links"
+        upcoming_events: "Upcoming Events"
+        updated_calendars: "Updated Calendars"
+        updated_partners: "Updated Partners"
+        updated_users: "Updated Users"
+        view_all_issues: "View all %{count} issues →"
+        view_all_partnerships: "View all %{count} partnerships"
+        view_all_sites: "View all %{count} sites"
+        your_partnerships: "Your Partnerships"
+        your_sites: "Your Sites"
       tooltips:
-        working_calendars: "Calendars successfully importing events"
-        processing_calendars: "Calendars currently being processed"
         problem_calendars: "%{errors} import errors, %{bad_source} bad source URLs"
+        processing_calendars: "Calendars currently being processed"
+        working_calendars: "Calendars successfully importing events"
       links:
         all_calendars: "All Calendars"
         all_partners: "All Partners"
 
-    # Missing permissions
     missing_permissions:
       title: "Missing Permissions"
       message: "You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!"
 
-    # ============================================
-    # MODEL-SPECIFIC (only unique strings)
-    # ============================================
-
-    # Partners - unique strings only
-    partners:
-      preview:
-        no_description: "No description provided."
-        # Note: no_image now in shared images.no_image
-        # Note: accessibility now in shared sections.accessibility
-        # Note: upcoming_events now in shared sections.upcoming_events
-      sections:
-        basic_info_description: "Enter the core details about your partner organisation."
-        location_description: "Partners need at least one place - either a fixed address or a service area."
-        service_areas_description: "If this partner delivers services outside their address."
-        service_areas_hint: "Be as specific as possible: wards will show up in searches for regions and gives people more context to go on."
-        online_presence_description: "Website and social media links."
-        partnership_contact: "Partnership Contact"
-        partnership_contact_description: "Internal contact for PlaceCal team. Leave blank to use public contact."
-        tags_associations: "Tags & Associations"
-        tags_description: "Categorise this partner and link to partnerships."
-        calendars_description: "Event sources connected to this partner."
-        admins_description: "Users who can manage this partner."
-        live_preview: "Live Site Preview"
-        preview_description: "How this partner appears on PlaceCal."
-        upcoming_events_description: "Events in the next 30 days from this partner's calendars."
-        url_settings_description: "Customise the URL slug for this partner."
-        event_matching: "Event Matching"
-        moderation: "Moderation"
-      fields:
-        summary_hint: "A brief one-line summary"
-        description_hint: "Full description of what this partner does"
-        accessibility_hint: "Details about accessibility features"
-        website_placeholder: "https://your-website.org"
-      image:
-        title: "Partner Image"
-        # Note: choose_file, replace, no_image, upload_hint, remove_on_save now in shared images.*
-      validation:
-        name_required: "Partner name is required"
-        name_min_length: "Name must be at least 5 characters"
-      facilities:
-        title: "Facilities"
-        hint: "What infrastructure does this partner provide?"
-      categories:
-        title: "Categories"
-        hint: "Partners may have up to %{max} category tags"
-      event_matching:
-        enabled: "Event matching is enabled"
-        disabled: "Event matching is disabled"
-        description: "Control whether events from other calendars can be automatically listed at this partner's address."
-        when_enabled: "When enabled:"
-        benefit_1: "Events at this address from any PlaceCal calendar will appear here"
-        benefit_2: "Visitors see a complete picture of what's happening at this location"
-        benefit_3: "Great for venues, community centres, and shared spaces"
-      moderation:
-        visible_label: "Partner is visible"
-        hidden_label: "Partner is hidden"
-        hidden_status: "This partner is not visible to the public."
-        when_hidden: "When a partner is hidden:"
-        consequence_1: "Removed from all PlaceCal sites and search results"
-        consequence_2: "Events from this partner will not appear on any calendars"
-        consequence_3: "The partner page will return a 404 error to visitors"
-        consequence_4: "Admins can still access and edit the partner in this dashboard"
-        consequence_5: "PlaceCal moderators and the partner admins will be notified"
-        reason_label: "Reason for hiding"
-        reason_hint: "This message will be shown to partner admins explaining why their listing was hidden."
-        reason_placeholder: "e.g., Incomplete information, duplicate listing, or violation of community guidelines..."
-      hidden_alert:
-        title: "This partner is hidden"
-        description: "Your partner is currently not visible to the public for the following reason:"
-        fix_hint: "Once you have fixed this issue, contact %{email} to make your partner public again."
-      warnings:
-        outdated_neighbourhood: 'Outdated neighbourhood. Contact <a href="mailto:%{email}" class="link">support</a> to reassign.'
-        unmappable_postcode: "Postcode not in our system yet."
-      danger_zone:
-        no_permission: "You don't have permission to delete this partner."
-
-    # Calendars - unique strings only
-    calendars:
-      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange" target="_blank">handbook</a> for setup instructions'
-      sections:
-        details_description: "Basic information about this event source."
-        location_description: "How should location information be handled for events?"
-        contact_description: 'Shown on event pages in the "Problem with this listing?" link.'
-        events_description: "Events imported from this calendar source."
-        supported_sources: "Supported Calendar Sources"
-        last_imported_using: "Last imported using: %{importer}"
-      fields:
-        partner_organiser: "Partner Organiser"
-        partner_hint: "Which group organises these events?"
-        name_hint: "A simple description to help remember what this calendar is"
-        source_placeholder: "https://your-domain.com/events.ics"
-        default_location: "Default Location"
-        default_location_blank: "(No default location)"
-        default_location_hint: "Used when strategy requires a fallback location"
-        strategy_hint: "Where should location information for this calendar come from?"
-      events:
-        # Note: upcoming now in shared sections.upcoming_events
-        past: "Recent Past Events"
-        no_location: "No location"
-      importer:
-        status_label: "Status:"
-        success: "Success"
-        importing: "Importing..."
-        source_changed: "Source changed:"
-        last_import: "Last import:"
-        reimport: "Re-import now"
-        retry_import: "Retry Import"
-        notices: "Import Notices"
-      warnings:
-        stale: "Potential stale calendar - not updated in over 6 months."
-      danger_zone:
-        delete_description: "Permanently remove this calendar and all %{count} associated events. This action cannot be undone."
-
-    # Sites - unique strings only
-    sites:
-      sections:
-        basic_info_description: "Core details about this site."
-        # Note: images_theme now in shared sections.images_theme
-        images_description: "Logos, hero image, and visual theme for the site."
-        neighbourhoods_description: "Define the geographical areas this site covers."
-        main_neighbourhood: "Main Neighbourhood"
-        main_neighbourhood_description: "This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created."
-        display_level: "Display Level"
-        display_level_description: "What level of geographical zoom should PlaceCal display in badges next to partners and events?"
-        other_neighbourhoods: "Other Neighbourhoods"
-        other_neighbourhoods_description: "Information from these neighbourhoods will also be displayed on this site."
-        partnerships_description: "Filter which partners appear on this site."
-        preview_title: "Site Content Preview"
-        preview_description: "Partners and events that will appear on this site."
-        admin_description: "Publishing, URLs, and site management options."
-      fields:
-        site_admin: "Site Admin"
-        place_name_hint: 'The location this site covers (e.g., "Hulme")'
-        hero_text_hint: "Large text for the homepage banner"
-        hero_image_description: "The large image at the top of your site's homepage."
-        hero_handbook_link: "See handbook for guidance"
-        image_credit_hint: "Who took this photo?"
-        alt_text_hint: "How should a screen reader describe this image?"
-        partnership_tags: "Partnership Tags"
-        partnership_tags_hint: "If selected, only show partners which are members of these partnerships."
-        publishing_status: "Publishing Status"
-        published: "Published"
-        published_hint: "Advertise this site on the PlaceCal homepage"
-      neighbourhoods:
-        legacy_warning: "This neighbourhood is not from the current release. Please contact a PlaceCal admin."
-      preview:
-        partners_description: "Partners visible on this site."
-        events_description: "Events in the next 30 days."
-        showing_first: "Showing first %{limit} of %{total} %{items}."
-      show:
-        title: "Calendars displayed on this site"
-        edit_site: "Edit Site"
-        empty:
-          title: "No calendars on this site"
-          hint: "Add neighbourhoods to this site to include their calendars"
-      danger_zone:
-        delete_description: "Permanently remove this site. This action cannot be undone."
-
-    # Neighbourhoods - unique strings only
-    neighbourhoods:
-      form:
-        name_title: "Neighbourhood name"
-        name_description: "This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too."
-        official_title: "Official neighbourhood info"
-        official_description: "This information is the official designation set by the UK Boundary Commission."
-        geography_title: "Geography"
-        is_part_of: "Is a part of…"
-        contains: "Contains…"
-        admins_title: "Neighbourhood admins"
-        admins_description: "The list of users with admin rights to this neighbourhood."
-      show:
-        child_neighbourhoods: "Child Neighbourhoods"
-        no_children: "This neighbourhood does not contain any child neighbourhoods"
-        descendants:
-          one: "%{count} descendant"
-          other: "%{count} descendants"
-        address_partners: "Address Partners"
-        no_address_partners: "No partners with addresses in this neighbourhood"
-        service_area_partners: "Service Area Partners"
-        no_service_area_partners: "No partners serving this neighbourhood"
-        sites_title: "Sites"
-        no_sites: "No sites in this neighbourhood"
-
-    # Users - unique strings only
-    users:
-      sections:
-        personal_details: "Personal Details"
-        personal_description: "Basic information about this user."
-        role_permissions: "Role & Permissions"
-        role_description: "What this user can access and manage."
-        partners_neighbourhoods: "Partners & Neighbourhoods"
-      fields:
-        partnerships_hint: "Grants access to add or remove partners from partnerships"
-        partners_hint: "Partners this user can edit, as well as their associated calendars."
-        neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
-        neighbourhoods_hint: "Neighbourhoods this user has access to."
-      profile:
-        title: "Your Profile"
-
-    # Partnerships - unique strings only
-    partnerships:
-      warning:
-        system_tag: "WARNING: This partnership is used by the PlaceCal backend so you cannot change the Name or Slug values."
-      sections:
-        tagged_partners: "Tagged Partners"
-        tagged_partners_hint: "Apply this partnership to the given partners"
-        partnership_admins: "Partnership Admins"
-        partnership_admins_hint: "Grant permission to manage this partnership"
-      fields:
-        system_tag_hint: "This partnership is read only and should not be edited"
-
-    # Jobs / Import Status
-    jobs:
-      title: "Calendar Importer Status"
-      description: "Overview of all calendar import jobs and their current state."
-      stats:
-        jobs: "Jobs"
-      sections:
-        error_calendars: "Error Calendars"
-        busy_calendars: "Busy Calendars"
-      empty:
-        title: "All Clear"
-        description: "No calendars with errors or currently importing."
+    # =========================================================================
+    # RESOURCE-SPECIFIC STRINGS
+    # =========================================================================
 
     # Address fields
     address:
-      neighbourhood_label: "Neighbourhood:"
       clear_address: "Clear Address"
+      neighbourhood_label: "Neighbourhood:"
 
     # Service areas
     service_areas:
@@ -453,18 +231,236 @@ en:
 
     # Opening times
     opening_times:
+      all_day: "Open all day (24 hours)"
+      closes: "Closes"
       day: "Day"
       opens: "Opens"
-      closes: "Closes"
-      all_day: "Open all day (24 hours)"
-      # Note: Day names use Rails' date.day_names from en.yml
 
-    # Image upload (shared across all models)
-    images:
-      choose_file: "Choose file"
-      choose_file_drag: "Choose file or drag here"
-      replace: "Replace"
-      remove_on_save: "Remove image on save"
-      no_image: "No image"
-      no_image_uploaded: "No image uploaded"
-      upload_hint: "Upload an image above"
+    # -------------------------------------------------------------------------
+    # Calendars
+    # -------------------------------------------------------------------------
+    calendars:
+      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange" target="_blank">handbook</a> for setup instructions'
+      sections:
+        contact_description: 'Shown on event pages in the "Problem with this listing?" link.'
+        details_description: "Basic information about this event source."
+        events_description: "Events imported from this calendar source."
+        last_imported_using: "Last imported using: %{importer}"
+        location_description: "How should location information be handled for events?"
+        supported_sources: "Supported Calendar Sources"
+      fields:
+        default_location: "Default Location"
+        default_location_blank: "(No default location)"
+        default_location_hint: "Used when strategy requires a fallback location"
+        name_hint: "A simple description to help remember what this calendar is"
+        partner_hint: "Which group organises these events?"
+        partner_organiser: "Partner Organiser"
+        source_placeholder: "https://your-domain.com/events.ics"
+        strategy_hint: "Where should location information for this calendar come from?"
+      events:
+        no_location: "No location"
+        past: "Recent Past Events"
+      importer:
+        importing: "Importing..."
+        last_import: "Last import:"
+        notices: "Import Notices"
+        reimport: "Re-import now"
+        retry_import: "Retry Import"
+        source_changed: "Source changed:"
+        status_label: "Status:"
+        success: "Success"
+      warnings:
+        stale: "Potential stale calendar - not updated in over 6 months."
+      danger_zone:
+        delete_description: "Permanently remove this calendar and all %{count} associated events. This action cannot be undone."
+
+    # -------------------------------------------------------------------------
+    # Jobs / Import Status
+    # -------------------------------------------------------------------------
+    jobs:
+      title: "Calendar Importer Status"
+      description: "Overview of all calendar import jobs and their current state."
+      stats:
+        jobs: "Jobs"
+      sections:
+        busy_calendars: "Busy Calendars"
+        error_calendars: "Error Calendars"
+      empty:
+        title: "All Clear"
+        description: "No calendars with errors or currently importing."
+
+    # -------------------------------------------------------------------------
+    # Neighbourhoods
+    # -------------------------------------------------------------------------
+    neighbourhoods:
+      form:
+        admins_description: "The list of users with admin rights to this neighbourhood."
+        admins_title: "Neighbourhood admins"
+        contains: "Contains…"
+        geography_title: "Geography"
+        is_part_of: "Is a part of…"
+        name_description: "This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too."
+        name_title: "Neighbourhood name"
+        official_description: "This information is the official designation set by the UK Boundary Commission."
+        official_title: "Official neighbourhood info"
+      show:
+        address_partners: "Address Partners"
+        child_neighbourhoods: "Child Neighbourhoods"
+        descendants:
+          one: "%{count} descendant"
+          other: "%{count} descendants"
+        no_address_partners: "No partners with addresses in this neighbourhood"
+        no_children: "This neighbourhood does not contain any child neighbourhoods"
+        no_service_area_partners: "No partners serving this neighbourhood"
+        no_sites: "No sites in this neighbourhood"
+        service_area_partners: "Service Area Partners"
+        sites_title: "Sites"
+
+    # -------------------------------------------------------------------------
+    # Partners
+    # -------------------------------------------------------------------------
+    partners:
+      sections:
+        admins_description: "Users who can manage this partner."
+        basic_info_description: "Enter the core details about your partner organisation."
+        calendars_description: "Event sources connected to this partner."
+        event_matching: "Event Matching"
+        live_preview: "Live Site Preview"
+        location_description: "Partners need at least one place - either a fixed address or a service area."
+        moderation: "Moderation"
+        online_presence_description: "Website and social media links."
+        partnership_contact: "Partnership Contact"
+        partnership_contact_description: "Internal contact for PlaceCal team. Leave blank to use public contact."
+        preview_description: "How this partner appears on PlaceCal."
+        service_areas_description: "If this partner delivers services outside their address."
+        service_areas_hint: "Be as specific as possible: wards will show up in searches for regions and gives people more context to go on."
+        tags_associations: "Tags & Associations"
+        tags_description: "Categorise this partner and link to partnerships."
+        upcoming_events_description: "Events in the next 30 days from this partner's calendars."
+        url_settings_description: "Customise the URL slug for this partner."
+      fields:
+        accessibility_hint: "Details about accessibility features"
+        description_hint: "Full description of what this partner does"
+        summary_hint: "A brief one-line summary"
+        website_placeholder: "https://your-website.org"
+      image:
+        title: "Partner Image"
+      validation:
+        name_min_length: "Name must be at least 5 characters"
+        name_required: "Partner name is required"
+      preview:
+        no_description: "No description provided."
+      facilities:
+        hint: "What infrastructure does this partner provide?"
+        title: "Facilities"
+      categories:
+        hint: "Partners may have up to %{max} category tags"
+        title: "Categories"
+      event_matching:
+        benefit_1: "Events at this address from any PlaceCal calendar will appear here"
+        benefit_2: "Visitors see a complete picture of what's happening at this location"
+        benefit_3: "Great for venues, community centres, and shared spaces"
+        description: "Control whether events from other calendars can be automatically listed at this partner's address."
+        disabled: "Event matching is disabled"
+        enabled: "Event matching is enabled"
+        when_enabled: "When enabled:"
+      moderation:
+        consequence_1: "Removed from all PlaceCal sites and search results"
+        consequence_2: "Events from this partner will not appear on any calendars"
+        consequence_3: "The partner page will return a 404 error to visitors"
+        consequence_4: "Admins can still access and edit the partner in this dashboard"
+        consequence_5: "PlaceCal moderators and the partner admins will be notified"
+        hidden_label: "Partner is hidden"
+        hidden_status: "This partner is not visible to the public."
+        reason_hint: "This message will be shown to partner admins explaining why their listing was hidden."
+        reason_label: "Reason for hiding"
+        reason_placeholder: "e.g., Incomplete information, duplicate listing, or violation of community guidelines..."
+        visible_label: "Partner is visible"
+        when_hidden: "When a partner is hidden:"
+      hidden_alert:
+        description: "Your partner is currently not visible to the public for the following reason:"
+        fix_hint: "Once you have fixed this issue, contact %{email} to make your partner public again."
+        title: "This partner is hidden"
+      warnings:
+        outdated_neighbourhood: 'Outdated neighbourhood. Contact <a href="mailto:%{email}" class="link">support</a> to reassign.'
+        unmappable_postcode: "Postcode not in our system yet."
+      danger_zone:
+        no_permission: "You don't have permission to delete this partner."
+
+    # -------------------------------------------------------------------------
+    # Partnerships
+    # -------------------------------------------------------------------------
+    partnerships:
+      warning:
+        system_tag: "WARNING: This partnership is used by the PlaceCal backend so you cannot change the Name or Slug values."
+      sections:
+        partnership_admins: "Partnership Admins"
+        partnership_admins_hint: "Grant permission to manage this partnership"
+        tagged_partners: "Tagged Partners"
+        tagged_partners_hint: "Apply this partnership to the given partners"
+      fields:
+        system_tag_hint: "This partnership is read only and should not be edited"
+
+    # -------------------------------------------------------------------------
+    # Sites
+    # -------------------------------------------------------------------------
+    sites:
+      sections:
+        admin_description: "Publishing, URLs, and site management options."
+        basic_info_description: "Core details about this site."
+        display_level: "Display Level"
+        display_level_description: "What level of geographical zoom should PlaceCal display in badges next to partners and events?"
+        images_description: "Logos, hero image, and visual theme for the site."
+        main_neighbourhood: "Main Neighbourhood"
+        main_neighbourhood_description: "This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created."
+        neighbourhoods_description: "Define the geographical areas this site covers."
+        other_neighbourhoods: "Other Neighbourhoods"
+        other_neighbourhoods_description: "Information from these neighbourhoods will also be displayed on this site."
+        partnerships_description: "Filter which partners appear on this site."
+        preview_description: "Partners and events that will appear on this site."
+        preview_title: "Site Content Preview"
+      fields:
+        alt_text_hint: "How should a screen reader describe this image?"
+        hero_handbook_link: "See handbook for guidance"
+        hero_image_description: "The large image at the top of your site's homepage."
+        hero_text_hint: "Large text for the homepage banner"
+        image_credit_hint: "Who took this photo?"
+        partnership_tags: "Partnership Tags"
+        partnership_tags_hint: "If selected, only show partners which are members of these partnerships."
+        place_name_hint: 'The location this site covers (e.g., "Hulme")'
+        published: "Published"
+        published_hint: "Advertise this site on the PlaceCal homepage"
+        publishing_status: "Publishing Status"
+        site_admin: "Site Admin"
+      neighbourhoods:
+        legacy_warning: "This neighbourhood is not from the current release. Please contact a PlaceCal admin."
+      preview:
+        events_description: "Events in the next 30 days."
+        partners_description: "Partners visible on this site."
+        showing_first: "Showing first %{limit} of %{total} %{items}."
+      show:
+        edit_site: "Edit Site"
+        title: "Calendars displayed on this site"
+        empty:
+          hint: "Add neighbourhoods to this site to include their calendars"
+          title: "No calendars on this site"
+      danger_zone:
+        delete_description: "Permanently remove this site. This action cannot be undone."
+
+    # -------------------------------------------------------------------------
+    # Users
+    # -------------------------------------------------------------------------
+    users:
+      sections:
+        partners_neighbourhoods: "Partners & Neighbourhoods"
+        personal_description: "Basic information about this user."
+        personal_details: "Personal Details"
+        role_description: "What this user can access and manage."
+        role_permissions: "Role & Permissions"
+      fields:
+        neighbourhoods_hint: "Neighbourhoods this user has access to."
+        neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
+        partners_hint: "Partners this user can edit, as well as their associated calendars."
+        partnerships_hint: "Grants access to add or remove partners from partnerships"
+      profile:
+        title: "Your Profile"

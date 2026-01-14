@@ -6,7 +6,7 @@
     <% if calendar.checksum_updated_at < 6.month.ago || calendar.last_import_at < 6.month.ago %>
       <div role="alert" class="alert alert-warning mb-4">
         <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
-        <span>Potential stale calendar - not updated in over 6 months.</span>
+        <span><%= t('admin.calendars.warnings.stale') %></span>
       </div>
     <% end %>
   <% end %>
@@ -24,37 +24,37 @@
   <div class="flex flex-wrap items-center gap-x-6 gap-y-2 p-4 bg-base-200/50 border border-base-300 rounded-lg">
     <%# Status Badge %>
     <div class="flex items-center gap-2">
-      <span class="text-sm font-medium text-base-content/60">Status:</span>
+      <span class="text-sm font-medium text-base-content/60"><%= t('admin.calendars.importer.status_label') %></span>
       <% if calendar.calendar_state.idle? %>
         <% retry_button = :idle %>
         <span class="badge badge-success gap-1">
           <%= icon(:check, size: '3') %>
-          Success
+          <%= t('admin.calendars.importer.success') %>
         </span>
       <% elsif calendar.calendar_state.in_queue? || calendar.calendar_state.in_worker? %>
         <span class="badge badge-info gap-1">
           <span class="loading loading-spinner loading-xs"></span>
-          Importing...
+          <%= t('admin.calendars.importer.importing') %>
         </span>
       <% elsif calendar.calendar_state.error? || calendar.calendar_state.bad_source? %>
         <span class="badge badge-error gap-1">
           <%= icon(:x, size: '3') %>
-          Error
+          <%= t('admin.table.error') %>
         </span>
       <% end %>
     </div>
 
     <% if calendar.checksum_updated_at.present? %>
       <div class="flex items-center gap-2 text-sm">
-        <span class="text-base-content/60">Source changed:</span>
-        <span class="font-medium"><%= time_ago_in_words(calendar.checksum_updated_at) %> ago</span>
+        <span class="text-base-content/60"><%= t('admin.calendars.importer.source_changed') %></span>
+        <span class="font-medium"><%= t('admin.time.ago', time: time_ago_in_words(calendar.checksum_updated_at)) %></span>
       </div>
     <% end %>
 
     <% if calendar.last_import_at.present? %>
       <div class="flex items-center gap-2 text-sm">
-        <span class="text-base-content/60">Last import:</span>
-        <span class="font-medium"><%= time_ago_in_words(calendar.last_import_at) %> ago</span>
+        <span class="text-base-content/60"><%= t('admin.calendars.importer.last_import') %></span>
+        <span class="font-medium"><%= t('admin.time.ago', time: time_ago_in_words(calendar.last_import_at)) %></span>
       </div>
     <% end %>
 
@@ -62,9 +62,9 @@
       <div class="ml-auto">
         <%= simple_form_for :import, { url: import_admin_calendar_path(calendar) } do |f| %>
           <% if retry_button == :idle %>
-            <%= f.submit 'Re-import now', class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange' %>
+            <%= f.submit t('admin.calendars.importer.reimport'), class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange' %>
           <% elsif retry_button == :error %>
-            <%= f.submit 'Retry Import', class: 'btn btn-sm btn-error' %>
+            <%= f.submit t('admin.calendars.importer.retry_import'), class: 'btn btn-sm btn-error' %>
           <% end %>
         <% end %>
       </div>
@@ -77,7 +77,7 @@
       <input type="checkbox" />
       <div class="collapse-title font-medium text-warning-content flex items-center gap-2 py-3 min-h-0">
         <%= icon(:warning, size: '4') %>
-        Import Notices
+        <%= t('admin.calendars.importer.notices') %>
         <span class="badge badge-warning badge-sm"><%= calendar.notices.count %></span>
       </div>
       <div class="collapse-content">

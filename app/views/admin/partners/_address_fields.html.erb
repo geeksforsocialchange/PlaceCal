@@ -6,27 +6,27 @@
 
   <div class="grid gap-1">
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Street address</legend>
+      <legend class="fieldset-legend"><%= attr_label(:address, :street_address) %></legend>
       <%= address_form.input_field :street_address, class: 'input input-bordered w-full address_field' %>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Street address 2</legend>
+      <legend class="fieldset-legend"><%= attr_label(:address, :street_address_2) %></legend>
       <%= address_form.input_field :street_address2, class: 'input input-bordered w-full address_field' %>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Street address 3</legend>
+      <legend class="fieldset-legend"><%= attr_label(:address, :street_address_3) %></legend>
       <%= address_form.input_field :street_address3, class: 'input input-bordered w-full address_field' %>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">City</legend>
+      <legend class="fieldset-legend"><%= attr_label(:address, :city) %></legend>
       <%= address_form.input_field :city, class: 'input input-bordered w-full address_field' %>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Postcode</legend>
+      <legend class="fieldset-legend"><%= attr_label(:address, :postcode) %></legend>
       <%= address_form.input_field :postcode, class: 'input input-bordered w-full address_field' %>
     </fieldset>
   </div>
@@ -35,11 +35,11 @@
     <% if partner.address&.neighbourhood.present? %>
       <div class="alert alert-info text-sm">
         <%= icon(:map_pin, size: '4', css_class: 'shrink-0') %>
-        <span>Neighbourhood: <strong><%= link_to_neighbourhood(partner.address.neighbourhood) %></strong></span>
+        <span><%= t('admin.address.neighbourhood_label') %> <strong><%= link_to_neighbourhood(partner.address.neighbourhood) %></strong></span>
       </div>
     <% end %>
     <% if partner.can_clear_address?(current_user) %>
-      <%= link_to 'Clear Address', '#', class: "btn btn-ghost btn-xs mt-2", data: { action: "click->partner-address#do_clear_address" } %>
+      <%= link_to t('admin.address.clear_address'), '#', class: "btn btn-ghost btn-xs mt-2", data: { action: "click->partner-address#do_clear_address" } %>
     <% end %>
   </div>
 </div>

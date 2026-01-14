@@ -212,7 +212,7 @@ RSpec.describe "Admin::Partners", type: :request do
       it "has address section with required labels" do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response.body).to include("Address")
-        expect(response.body).to include("Street address")
+        expect(response.body).to include("Street Address")
         expect(response.body).to include("City")
         expect(response.body).to include("Postcode")
       end

@@ -1,8 +1,8 @@
 <%= simple_form_for [:admin, @neighbourhood] do |f| %>
 
   <%= render(Admin::ErrorComponent.new(@neighbourhood)) %>
-  <h2>Neighbourhood name</h2>
-  <p>This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too.</p>
+  <h2><%= t('admin.neighbourhoods.form.name_title') %></h2>
+  <p><%= t('admin.neighbourhoods.form.name_description') %></p>
 
   <div class="row">
     <div class="col-md-6">
@@ -13,14 +13,14 @@
     </div>
   </div>
 
-  <h2>Official neighbourhood info</h2>
-  <p>This information is the official designation set by the UK Boundary Commission.</p>
+  <h2><%= t('admin.neighbourhoods.form.official_title') %></h2>
+  <p><%= t('admin.neighbourhoods.form.official_description') %></p>
 
   <div class="row">
     <div class="col-md-6">
       <%= f.input :unit, readonly: true  %>
       <%= f.input :unit_name, readonly: true  %>
-      
+
     </div>
     <div class="col-md-6">
       <%= f.input :unit_code_key, readonly: true  %>
@@ -30,10 +30,10 @@
   </div>
 
   <% unless @neighbourhood.new_record? %>
-    <h2>Geography</h2>
+    <h2><%= t('admin.neighbourhoods.form.geography_title') %></h2>
     <div class="row">
       <div class="col-md-6">
-        <h3>Is a part of&hellip;</h3>
+        <h3><%= t('admin.neighbourhoods.form.is_part_of') %></h3>
         <ul>
           <% @neighbourhood.ancestors.each do |parent| %>
             <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
@@ -41,7 +41,7 @@
         </ul>
       </div>
       <div class="col-md-6">
-        <h3>Contains&hellip;</h3>
+        <h3><%= t('admin.neighbourhoods.form.contains') %></h3>
         <ul>
           <% @neighbourhood.children.each do |parent| %>
             <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
@@ -52,15 +52,15 @@
   <% end %>
 
   <% if policy(@neighbourhood).set_users? %>
-    <h2>Neighbourhood admins</h2>
-    <p>The list of users with admin rights to this neighbourhood.</p>
+    <h2><%= t('admin.neighbourhoods.form.admins_title') %></h2>
+    <p><%= t('admin.neighbourhoods.form.admins_description') %></p>
 
-    <%= f.association :users, label: "Users", collection: options_for_users, input_html: { class: "form-control", data: { controller: "tom-select"}} %>
+    <%= f.association :users, label: User.model_name.human(count: 2), collection: options_for_users, input_html: { class: "form-control", data: { controller: "tom-select"}} %>
   <% end %>
 
-  <%= f.submit "Save", class: "btn btn-primary" %>
+  <%= f.submit t('admin.actions.save'), class: "btn btn-primary" %>
   <% if !@neighbourhood.new_record? && policy(@neighbourhood).destroy? %>
-    <%= link_to "Destroy", admin_neighbourhood_path(@neighbourhood), method: :delete, class: "ml-3 btn btn-danger" %>
+    <%= link_to t('admin.actions.destroy'), admin_neighbourhood_path(@neighbourhood), method: :delete, class: "ml-3 btn btn-danger" %>
   <% end %>
   <br><br>
 <% end %>
