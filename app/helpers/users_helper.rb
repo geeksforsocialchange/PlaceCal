@@ -53,14 +53,12 @@ module UsersHelper
   end
 
   def role_label(value)
-    case value.second
-    when 'root'
-      '<strong>Root</strong>: Can do everything - use with care!'.html_safe
-    when 'editor'
-      '<strong>Editor</strong>: Can edit all news articles'.html_safe
-    when 'citizen'
-      '<strong>Citizen</strong>: ' \
-      'Can only edit assigned entities'.html_safe
+    role_key = value.second
+    role_name = User.human_attribute_name("role.#{role_key}")
+    description = I18n.t("admin.users.roles.#{role_key}", default: nil)
+
+    if description
+      safe_join([tag.strong(role_name), ': ', description])
     else
       value
     end

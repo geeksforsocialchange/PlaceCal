@@ -464,6 +464,10 @@ en:
         partners_hint: "Partners this user can edit, as well as their associated calendars."
         partnerships_hint: "Grants access to add or remove partners from partnerships"
         role_hint: "Determines the user's system-wide access level and permissions."
+      roles:
+        root: "Can do everything - use with care!"
+        editor: "Can edit all news articles"
+        citizen: "Can only edit assigned entities"
       danger_zone:
         site_admin_warning: "This user is a site administrator and cannot be deleted. Remove them as a site admin first."
       profile:
