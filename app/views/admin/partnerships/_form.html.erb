@@ -1,69 +1,115 @@
 <% if @partnership.system_tag %>
-  <div class="rounded-md bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-    <div class="flex">
-      <div class="flex-shrink-0">
-        <%= icon(:warning, size: '5', css_class: 'text-yellow-400') %>
-      </div>
-      <div class="ml-3">
-        <p class="text-sm text-yellow-700 font-medium">
-          <%= t('admin.partnerships.warning.system_tag') %>
-        </p>
-      </div>
-    </div>
+  <div role="alert" class="alert bg-yellow-50 border-yellow-200 text-yellow-800 mb-6">
+    <%= icon(:warning, size: '5', css_class: 'text-yellow-500') %>
+    <span><%= t('admin.partnerships.warning.system_tag') %></span>
   </div>
 <% end %>
 
 <%= simple_form_for @partnership,
     as: :partnership,
     url: (@partnership.new_record? ? admin_partnerships_path : admin_partnership_path),
-    html: { class: 'space-y-6' } do |f| %>
+    html: { class: 'space-y-6', data: { controller: 'live-validation' } } do |f| %>
 
   <%= render(Admin::ErrorComponent.new(@partnership)) %>
 
-  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2"><%= t('admin.sections.basic_information') %></h3>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <%= render Admin::SectionHeaderComponent.new(
+        title: t('admin.sections.basic_information'),
+        margin: 4
+      ) %>
 
-    <%= f.input :name, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
-                disabled: @partnership.system_tag %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:partnership, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+        <%= f.input_field :name, class: 'input input-bordered w-full', disabled: @partnership.system_tag %>
+      </fieldset>
 
-    <%= f.input :slug, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
-                disabled: @partnership.system_tag %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:partnership, :slug) %></legend>
+        <%= f.input_field :slug, class: 'input input-bordered w-full', disabled: @partnership.system_tag %>
+        <p class="fieldset-label"><%= t('admin.hints.leave_blank_to_autogenerate') %></p>
+      </fieldset>
 
-    <%= f.input :description, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 } %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:partnership, :description) %></legend>
+        <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-24', data: { controller: 'auto-expand' } %>
+      </fieldset>
 
-    <% if current_user.root? -%>
-      <%= f.input :system_tag, wrapper: :tw_boolean,
-          hint: t('admin.partnerships.fields.system_tag_hint') %>
-    <% end -%>
+      <% if current_user.root? %>
+        <fieldset class="fieldset">
+          <%= f.input :system_tag, wrapper: :tw_boolean, hint: t('admin.partnerships.fields.system_tag_hint') %>
+        </fieldset>
+      <% end %>
+    </div>
   </div>
 
-  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2"><%= t('admin.partnerships.sections.tagged_partners') %></h3>
-    <p class="text-sm text-gray-600"><%= t('admin.partnerships.sections.tagged_partners_hint') %></p>
-    <%= f.association :partners, collection: options_for_partners,
-          wrapper: :tw_vertical_form,
-          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <div class="flex items-start gap-4 mb-4">
+        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+          <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
+        </div>
+        <div>
+          <h3 class="card-title text-lg"><%= t('admin.partnerships.sections.tagged_partners') %></h3>
+          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.partnerships.sections.tagged_partners_hint') %></p>
+        </div>
+      </div>
+
+      <%= render Admin::StackedListSelectorComponent.new(
+        field_name: "partnership[partner_ids][]",
+        items: @partnership.partners.order(:name),
+        options: options_for_partners,
+        permitted_ids: nil,
+        icon_name: :partner,
+        icon_color: "bg-emerald-100 text-emerald-600",
+        empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
+        add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
+        use_tom_select: true
+      ) %>
+    </div>
   </div>
 
   <% if show_assigned_user_field_for?(f) %>
-    <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-      <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2"><%= t('admin.partnerships.sections.partnership_admins') %></h3>
-      <p class="text-sm text-gray-600"><%= t('admin.partnerships.sections.partnership_admins_hint') %></p>
-      <%= f.association :users, collection: options_for_users,
-          wrapper: :tw_vertical_form,
-          input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center shadow-sm">
+            <%= icon(:users, size: '6', css_class: 'text-purple-600') %>
+          </div>
+          <div>
+            <h3 class="card-title text-lg"><%= t('admin.partnerships.sections.partnership_admins') %></h3>
+            <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.partnerships.sections.partnership_admins_hint') %></p>
+          </div>
+        </div>
+
+        <%= render Admin::StackedListSelectorComponent.new(
+          field_name: "partnership[user_ids][]",
+          items: @partnership.users.order(:last_name, :first_name),
+          options: options_for_users,
+          permitted_ids: nil,
+          icon_name: :user,
+          icon_color: "bg-purple-100 text-purple-600",
+          empty_text: t('admin.empty.none_assigned', items: User.model_name.human(count: 2).downcase),
+          add_placeholder: t('admin.placeholders.add_model', model: User.model_name.human.downcase),
+          use_tom_select: true
+        ) %>
+      </div>
     </div>
   <% end %>
 
-  <div class="flex items-center gap-4 pt-4">
-    <%= f.submit t('admin.actions.save'), class: "inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2" %>
-    <% if !@partnership.new_record? && policy(@partnership).destroy? %>
-      <%= link_to t('admin.actions.destroy'), admin_partnership_path(@partnership), method: :delete,
-          class: "inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2",
-          data: { confirm: t('admin.confirm.delete_permanent', model: Partnership.model_name.human) } %>
+  <% if !@partnership.new_record? && policy(@partnership).destroy? %>
+    <%= render Admin::DangerZoneComponent.new(
+      title: t('admin.actions.delete_model', model: Partnership.model_name.human),
+      description: t('admin.danger_zone.delete_description', model: Partnership.model_name.human.downcase),
+      button_text: t('admin.actions.delete_model', model: Partnership.model_name.human),
+      button_path: admin_partnership_path(@partnership),
+      confirm: t('admin.confirm.delete_permanent', model: Partnership.model_name.human.downcase)
+    ) %>
+  <% end %>
+
+  <%= render Admin::SaveBarComponent.new do |c| %>
+    <% c.with_button do %>
+      <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
     <% end %>
-  </div>
+  <% end %>
 <% end %>

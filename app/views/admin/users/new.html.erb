@@ -1,20 +1,54 @@
 <% content_for :title do %>New User<% end %>
 
 <div class="mb-6">
-  <h1 class="text-2xl font-bold">New User</h1>
-  <p class="text-sm text-base-content/60 mt-1">Invite a new user to PlaceCal.</p>
+  <h1 class="text-2xl font-semibold">New User</h1>
+  <p class="text-base-content/60 mt-1">Invite a new user to PlaceCal.</p>
 </div>
 
 <%- display_fields = policy(@current_user).permitted_attributes_for_create %>
 
 <%= filtered_form_for([:admin, @user],
                       display_only: display_fields,
-                      html: { data: { controller: 'live-validation' } }) do |f| %>
-  <%= render 'form', f: f %>
+                      html: { class: 'space-y-6', data: { controller: 'live-validation' } }) do |f| %>
 
-  <div role="alert" class="alert mt-6 max-w-2xl">
-    <%= icon(:info, size: '6', css_class: 'stroke-info shrink-0') %>
-    <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-orange' %>.</span>
+  <%= render(Admin::ErrorComponent.new(@user)) %>
+
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <%= render Admin::SectionHeaderComponent.new(
+        title: t('admin.users.sections.personal_details'),
+        description: "Enter the basic information for this user.",
+        margin: 4
+      ) %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend"><%= attr_label(:user, :first_name) %></legend>
+          <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend"><%= attr_label(:user, :last_name) %></legend>
+          <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
+        </fieldset>
+      </div>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+        <%= f.input_field :email, class: 'input input-bordered w-full' %>
+        <p class="fieldset-label">An invitation email will be sent to this address.</p>
+      </fieldset>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:user, :phone) %></legend>
+        <%= f.input_field :phone, class: 'input input-bordered w-full' %>
+      </fieldset>
+    </div>
+  </div>
+
+  <div role="alert" class="alert bg-blue-50 border-blue-200 text-blue-800">
+    <%= icon(:info, size: '5', css_class: 'text-blue-500') %>
+    <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-teal font-medium' %>.</span>
   </div>
 
   <%= render Admin::SaveBarComponent.new do |c| %>

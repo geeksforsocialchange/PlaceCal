@@ -1,56 +1,66 @@
-<% if !@tag.new_record? %>
-  <p class="text-sm text-gray-600 mb-4">A tag of type <em class="font-medium"><%= @tag.class %></em>.</p>
+<% unless @tag.new_record? %>
+  <p class="text-sm text-base-content/60 mb-4">
+    Tag type: <span class="badge badge-ghost"><%= @tag.class %></span>
+  </p>
 <% end %>
 
 <% if @tag.system_tag %>
-  <div class="rounded-md bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-    <div class="flex">
-      <div class="flex-shrink-0">
-        <%= icon(:warning, size: '5', css_class: 'text-yellow-400') %>
-      </div>
-      <div class="ml-3">
-        <p class="text-sm text-yellow-700 font-medium">
-          WARNING: This tag is used by the PlaceCal backend so you cannot change the Name or Slug values.
-        </p>
-      </div>
-    </div>
+  <div role="alert" class="alert bg-yellow-50 border-yellow-200 text-yellow-800 mb-6">
+    <%= icon(:warning, size: '5', css_class: 'text-yellow-500') %>
+    <span>This tag is used by the PlaceCal backend so you cannot change the Name or Slug values.</span>
   </div>
 <% end %>
 
 <%= simple_form_for @tag,
     as: :tag,
     url: (@tag.new_record? ? admin_tags_path : admin_tag_path),
-    html: { class: 'space-y-6' } do |f| %>
+    html: { class: 'space-y-6', data: { controller: 'live-validation' } } do |f| %>
 
   <%= render(Admin::ErrorComponent.new(@tag)) %>
 
-  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
-    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Basic Information</h3>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <%= render Admin::SectionHeaderComponent.new(
+        title: t('admin.sections.basic_information'),
+        margin: 4
+      ) %>
 
-    <%= f.input :name, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
-                disabled: @tag.system_tag %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:tag, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+        <%= f.input_field :name, class: 'input input-bordered w-full', disabled: @tag.system_tag %>
+      </fieldset>
 
-    <%= f.input :slug, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
-                disabled: @tag.system_tag %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:tag, :slug) %></legend>
+        <%= f.input_field :slug, class: 'input input-bordered w-full', disabled: @tag.system_tag %>
+        <p class="fieldset-label"><%= t('admin.hints.leave_blank_to_autogenerate') %></p>
+      </fieldset>
 
-    <%= f.input :description, wrapper: :tw_vertical_form,
-                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 } %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:tag, :description) %></legend>
+        <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-24', data: { controller: 'auto-expand' } %>
+      </fieldset>
 
-    <% if current_user.root? -%>
-      <%= f.input :system_tag, wrapper: :tw_boolean,
-          hint: 'This tag is read only and should not be edited' %>
-    <% end -%>
+      <% if current_user.root? %>
+        <fieldset class="fieldset">
+          <%= f.input :system_tag, wrapper: :tw_boolean, hint: t('admin.partnerships.fields.system_tag_hint') %>
+        </fieldset>
+      <% end %>
 
-    <% if @tag.new_record? %>
-      <%= f.input :type,
-          collection: { 'None': '', 'Category': 'Category', 'Facility': 'Facility', 'Partnership': 'Partnership' },
-          default: 'None',
-          wrapper: :tw_vertical_form,
-          input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
-      <p class="text-sm text-amber-600"><em>Be careful!</em> Once set this cannot be changed.</p>
-    <% end %>
+      <% if @tag.new_record? %>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Type</legend>
+          <%= f.input_field :type,
+              as: :select,
+              collection: [['None', ''], ['Category', 'Category'], ['Facility', 'Facility'], ['Partnership', 'Partnership']],
+              class: 'select select-bordered w-full' %>
+          <p class="fieldset-label text-amber-600">
+            <%= icon(:warning, size: '4', css_class: 'inline-block mr-1') %>
+            Once set, this cannot be changed.
+          </p>
+        </fieldset>
+      <% end %>
+    </div>
   </div>
 
   <div class="card bg-base-100 border border-base-300 shadow-sm">
@@ -107,12 +117,19 @@
     </div>
   <% end %>
 
-  <div class="flex items-center gap-4 pt-4">
-    <%= f.submit "Save", class: "inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2" %>
-    <% if !@tag.new_record? && policy(@tag).destroy? %>
-      <%= link_to "Destroy", admin_tag_path(@tag), method: :delete,
-          class: "inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2",
-          data: { confirm: "Are you sure you want to delete this tag?" } %>
+  <% if !@tag.new_record? && policy(@tag).destroy? %>
+    <%= render Admin::DangerZoneComponent.new(
+      title: t('admin.actions.delete_model', model: Tag.model_name.human),
+      description: t('admin.danger_zone.delete_description', model: Tag.model_name.human.downcase),
+      button_text: t('admin.actions.delete_model', model: Tag.model_name.human),
+      button_path: admin_tag_path(@tag),
+      confirm: t('admin.confirm.delete_permanent', model: Tag.model_name.human.downcase)
+    ) %>
+  <% end %>
+
+  <%= render Admin::SaveBarComponent.new do |c| %>
+    <% c.with_button do %>
+      <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
     <% end %>
-  </div>
+  <% end %>
 <% end %>
