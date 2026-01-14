@@ -1,0 +1,86 @@
+<%# My Permissions Tab %>
+<div class="space-y-6">
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-6">
+      <%= render Admin::SectionHeaderComponent.new(
+        title: t('admin.users.profile.permissions_title'),
+        description: t('admin.users.profile.permissions_description'),
+        margin: 4
+      ) %>
+
+      <% if current_user.root? %>
+        <div role="alert" class="alert bg-amber-50 border-amber-200 text-amber-800 mb-4">
+          <%= icon(:crown, size: '5', css_class: 'text-amber-500') %>
+          <span>You are a <strong>root</strong> user and can access everything.</span>
+        </div>
+      <% end %>
+
+      <% if user_has_no_rights?(current_user) %>
+        <div role="alert" class="alert alert-warning no-admin-rights">
+          <%= icon(:warning, size: '5') %>
+          <span><%= t('admin.users.profile.no_rights_warning') %></span>
+        </div>
+      <% elsif current_user.partners.any? || current_user.neighbourhoods.any? || current_user.partnership_admin? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <%# Partners %>
+          <% if current_user.partners.any? %>
+            <div class="bg-base-200/50 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <%= icon(:partner, size: '4', css_class: 'text-emerald-600') %>
+                </div>
+                <h4 class="font-medium"><%= t('admin.users.profile.your_partners') %></h4>
+              </div>
+              <%= render Admin::ItemBadgeListComponent.new(
+                items: current_user.partners.order(:name),
+                icon_name: :partner,
+                icon_color: "bg-emerald-100 text-emerald-600",
+                link_path: :edit_admin_partner_path,
+                empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase)
+              ) %>
+            </div>
+          <% end %>
+
+          <%# Neighbourhoods %>
+          <% if current_user.neighbourhoods.any? %>
+            <div class="bg-base-200/50 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 flex items-center justify-center">
+                  <%= icon(:map_pin, size: '4', css_class: 'text-sky-600') %>
+                </div>
+                <h4 class="font-medium"><%= t('admin.users.profile.your_neighbourhoods') %></h4>
+              </div>
+              <%= render Admin::ItemBadgeListComponent.new(
+                items: current_user.neighbourhoods.order(:name),
+                icon_name: :map_pin,
+                icon_color: "bg-sky-100 text-sky-600",
+                link_path: :edit_admin_neighbourhood_path,
+                empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase)
+              ) %>
+            </div>
+          <% end %>
+
+          <%# Partnerships/Tags %>
+          <% if current_user.partnership_admin? %>
+            <div class="bg-base-200/50 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <%= icon(:partnership, size: '4', css_class: 'text-amber-600') %>
+                </div>
+                <h4 class="font-medium"><%= t('admin.users.profile.your_partnerships') %></h4>
+              </div>
+              <p class="text-sm text-base-content/60 mb-2"><%= t('admin.users.profile.partnerships_hint') %></p>
+              <%= render Admin::ItemBadgeListComponent.new(
+                items: current_user.tags.order(:name),
+                icon_name: :partnership,
+                icon_color: "bg-amber-100 text-amber-600",
+                link_path: :edit_admin_tag_path,
+                empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase)
+              ) %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
