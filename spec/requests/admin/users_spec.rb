@@ -77,10 +77,10 @@ RSpec.describe "Admin::Users", type: :request do
 
       it "preselects partner when partner_id provided" do
         partner = create(:partner)
-        user.partners << partner
         get new_admin_user_url(host: admin_host, params: { partner_id: partner.id })
         expect(response).to be_successful
-        expect(response.body).to include("selected")
+        # Partner should appear in the selected items list
+        expect(response.body).to include(partner.name)
       end
     end
 

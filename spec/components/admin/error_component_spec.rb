@@ -62,10 +62,10 @@ RSpec.describe Admin::ErrorComponent, type: :component do
     end
   end
 
-  describe "#object_class_name" do
+  describe "#model_name" do
     it "returns the class name of the object" do
       component = described_class.new(partner)
-      expect(component.object_class_name).to eq("Partner")
+      expect(component.model_name).to eq("Partner")
     end
   end
 end

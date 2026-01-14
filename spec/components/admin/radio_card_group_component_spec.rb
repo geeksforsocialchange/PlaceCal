@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe Admin::RadioCardGroupComponent, type: :component do
-  let(:model) { Struct.new(:strategy).new("event_override") }
+  let(:calendar) { Calendar.new(strategy: "event_override") }
   let(:template) { ActionView::Base.empty }
   let(:form) do
-    ActionView::Helpers::FormBuilder.new(:calendar, model, template, {})
+    ActionView::Helpers::FormBuilder.new(:calendar, calendar, template, {})
   end
 
   it "renders radio buttons for each value" do
@@ -15,29 +15,34 @@ RSpec.describe Admin::RadioCardGroupComponent, type: :component do
   end
 
   it "renders labels for each value" do
-    render_inline(described_class.new(form: form, attribute: :strategy, values: %w[online room_number]))
-    expect(page).to have_text("Online")
-    expect(page).to have_text("Room Number")
-  end
-
-  it "uses custom label method when provided" do
-    label_method = ->(pair) { "Custom: #{pair[1]}" }
     render_inline(described_class.new(
                     form: form,
                     attribute: :strategy,
-                    values: %w[test],
-                    label_method: label_method
+                    values: %w[online_only room_number],
+                    i18n_scope: "admin.calendars.strategy"
                   ))
-    expect(page).to have_text("Custom: test")
+    expect(page).to have_text("Online only")
+    expect(page).to have_text("Room number")
+  end
+
+  it "renders with i18n_scope descriptions" do
+    render_inline(described_class.new(
+                    form: form,
+                    attribute: :strategy,
+                    values: %w[place],
+                    i18n_scope: "admin.calendars.strategy"
+                  ))
+    expect(page).to have_text("Place")
+    expect(page).to have_text("default location")
   end
 
   it "renders with card styling" do
-    render_inline(described_class.new(form: form, attribute: :strategy, values: %w[one]))
+    render_inline(described_class.new(form: form, attribute: :strategy, values: %w[place]))
     expect(page).to have_css("label.rounded-lg.border.border-base-300")
   end
 
   it "has checked state styling" do
-    render_inline(described_class.new(form: form, attribute: :strategy, values: %w[one]))
+    render_inline(described_class.new(form: form, attribute: :strategy, values: %w[place]))
     expect(page).to have_css("label[class*='has-[:checked]:border-placecal-orange']")
   end
 

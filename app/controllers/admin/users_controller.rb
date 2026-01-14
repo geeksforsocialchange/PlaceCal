@@ -44,6 +44,8 @@ module Admin
       @partners = collect_partners
 
       @user = User.new
+      # Preselect partners for new user (needed for StackedListSelectorComponent)
+      @user.partners = Partner.where(id: @partners) if @partners.present?
       authorize @user
     end
 

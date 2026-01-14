@@ -19,8 +19,8 @@
     </div>
   </div>
 
-  <%# Danger Zone %>
-  <% if policy(@user).destroy? %>
+  <%# Danger Zone - only show for existing users %>
+  <% if @user.persisted? && policy(@user).destroy? %>
     <div>
       <h3 class="text-lg font-bold flex items-center gap-2 text-error/80 mb-4">
         <%= icon(:warning, size: '5') %>
