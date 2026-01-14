@@ -18,9 +18,16 @@
 	height: auto !important;
 }
 
-/* Main wrapper */
+/* Main wrapper - overflow visible is critical to show dropdown */
 .ts-wrapper {
 	min-height: 2.5rem;
+	overflow: visible !important;
+}
+
+/* When dropdown is active, wrapper needs high z-index to be above sibling elements */
+.ts-wrapper.dropdown-active {
+	z-index: 9999 !important;
+	position: relative !important;
 }
 
 /* Control input area */
@@ -99,7 +106,8 @@
 		0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
 	margin-top: 0.25rem !important;
 	overflow: visible !important;
-	z-index: 1000 !important;
+	z-index: 9999 !important;
+	position: absolute !important;
 }
 
 .ts-dropdown .option {

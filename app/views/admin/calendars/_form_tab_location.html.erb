@@ -1,0 +1,38 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: t('admin.calendars.tabs.location'),
+  description: t('admin.calendars.sections.location_description')
+) do |c| %>
+  <% c.with_icon do %>
+    <%= icon(:map_pin, size: '5') %>
+  <% end %>
+<% end %>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <%# Left Column - Default Location %>
+  <div class="space-y-6">
+    <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.default_location') %></legend>
+      <%= f.input_field :place_id,
+                        as: :select,
+                        collection: options_for_location,
+                        include_blank: t('admin.calendars.fields.default_location_blank'),
+                        class: 'select select-bordered w-full bg-base-100',
+                        data: { controller: "tom-select" } %>
+      <p class="fieldset-label mt-2"><%= t('admin.calendars.fields.default_location_hint') %></p>
+    </fieldset>
+  </div>
+
+  <%# Right Column - Strategy %>
+  <div class="space-y-6">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :strategy) %></legend>
+      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.calendars.fields.strategy_hint') %></p>
+      <%= render Admin::RadioCardGroupComponent.new(
+        form: f,
+        attribute: :strategy,
+        values: Calendar.strategy.values,
+        i18n_scope: 'admin.calendars.strategy'
+      ) %>
+    </fieldset>
+  </div>
+</div>

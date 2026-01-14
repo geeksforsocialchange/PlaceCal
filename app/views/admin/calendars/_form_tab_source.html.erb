@@ -1,0 +1,86 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: t('admin.calendars.tabs.source'),
+  description: t('admin.calendars.sections.source_description')
+) do |c| %>
+  <% c.with_icon do %>
+    <%= icon(:calendar, size: '5') %>
+  <% end %>
+<% end %>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <%# Left Column - Calendar Source %>
+  <div class="space-y-4" data-controller="calendar-name-suggest">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.partner_organiser') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <%= f.input_field :partner_id,
+                        as: :select,
+                        collection: options_for_organiser,
+                        include_blank: t('admin.placeholders.select_model', model: Partner.model_name.human.downcase),
+                        selected: (@partner&.id || @calendar.partner_id).to_s,
+                        class: 'select select-bordered w-full',
+                        data: {
+                          controller: "tom-select",
+                          calendar_name_suggest_target: "partner",
+                          action: "change->calendar-name-suggest#partnerChanged"
+                        } %>
+      <p class="fieldset-label"><%= t('admin.calendars.fields.partner_hint') %></p>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :source) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <%= f.input_field :source, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.calendars.fields.source_placeholder') %>
+      <p class="fieldset-label"><%= t('admin.calendars.handbook_hint_html') %></p>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.calendar_type') %></legend>
+      <%= f.input_field :importer_mode,
+                        as: :select,
+                        collection: options_for_importer,
+                        selected: @calendar.importer_mode || 'auto',
+                        class: 'select select-bordered w-full' %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.calendar_name') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <%= f.input_field :name,
+                        class: 'input input-bordered w-full',
+                        data: { calendar_name_suggest_target: "name" } %>
+      <p class="fieldset-label">
+        <span data-calendar-name-suggest-target="suggestion" class="hidden">
+          <button type="button"
+                  class="link text-placecal-orange text-xs"
+                  data-action="calendar-name-suggest#applySuggestion">
+            <%= t('admin.calendars.fields.apply_suggestion') %>
+          </button>
+        </span>
+        <span><%= t('admin.calendars.fields.name_hint') %></span>
+      </p>
+    </fieldset>
+  </div>
+
+  <%# Right Column - Supported Sources Info %>
+  <div>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4">
+        <h3 class="font-semibold text-sm flex items-center gap-2 mb-2">
+          <%= icon(:info, size: '4', css_class: 'text-base-content/60') %>
+          <%= t('admin.calendars.sections.supported_sources') %>
+        </h3>
+        <ul class="text-xs text-base-content/70 space-y-1">
+          <% calendar_import_sources do |name, domains| %>
+            <li class="flex items-start gap-2">
+              <span class="text-placecal-orange">•</span>
+              <span><strong><%= name %></strong> <span class="text-base-content/50">(<%= domains.join(', ') %>)</span></span>
+            </li>
+          <% end %>
+        </ul>
+        <% if @calendar.importer_used.present? %>
+          <p class="text-xs text-base-content/50 mt-3 pt-3 border-t border-base-300">
+            <%= t('admin.calendars.sections.last_imported_using', importer: @calendar.importer_used) %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

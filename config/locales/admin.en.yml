@@ -248,14 +248,23 @@ en:
     # -------------------------------------------------------------------------
     calendars:
       handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange" target="_blank">handbook</a> for setup instructions'
+      tabs:
+        source: "Source"
+        location: "Location"
+        contact: "Contact"
+        preview: "Preview"
       sections:
         contact_description: 'Shown on event pages in the "Problem with this listing?" link.'
         details_description: "Basic information about this event source."
         events_description: "Events imported from this calendar source."
         last_imported_using: "Last imported using: %{importer}"
         location_description: "How should location information be handled for events?"
+        source_description: "Configure where this calendar imports events from."
         supported_sources: "Supported Calendar Sources"
       fields:
+        apply_suggestion: "Use suggested name"
+        calendar_name: "Calendar Name"
+        calendar_type: "Calendar Type"
         default_location: "Default Location"
         default_location_blank: "(No default location)"
         default_location_hint: "Used when strategy requires a fallback location"
