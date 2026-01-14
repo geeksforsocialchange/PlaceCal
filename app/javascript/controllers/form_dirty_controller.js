@@ -1,6 +1,12 @@
 import { Controller } from "@hotwired/stimulus";
+import {
+	setupFormTracking,
+	teardownFormTracking,
+	isDirty,
+	updateIndicator,
+} from "./mixins/form_tracking";
 
-// Tracks form changes and updates UI accordingly
+// Simple form dirty tracking controller
 // - Shows/hides unsaved changes indicator
 // - Enables/disables submit button until changes are made
 // - Warns before leaving page with unsaved changes
@@ -19,98 +25,32 @@ export default class extends Controller {
 	};
 
 	connect() {
-		this.dirty = false;
-		this.initialValues = new Map();
-
-		// Store initial values
-		this.trackableInputs.forEach((input) => {
-			this.initialValues.set(input, this.getInputValue(input));
+		// Setup shared form tracking with initial value tracking (for revert detection)
+		setupFormTracking(this, {
+			tabName: this.tabNameValue,
+			form: this.element,
+			trackInitialValues: true,
+			onDirtyChange: (dirty) => this.updateUI(dirty),
 		});
-
-		// Bind change listeners
-		this.trackableInputs.forEach((input) => {
-			input.addEventListener("input", this.checkDirty.bind(this));
-			input.addEventListener("change", this.checkDirty.bind(this));
-		});
-
-		// Track file inputs separately (they can only be "changed", not reverted)
-		this.element.querySelectorAll('input[type="file"]').forEach((input) => {
-			input.addEventListener("change", () => this.markDirty());
-		});
-
-		// Warn before leaving with unsaved changes
-		this.boundBeforeUnload = this.handleBeforeUnload.bind(this);
-		window.addEventListener("beforeunload", this.boundBeforeUnload);
 
 		// Initial UI state
-		this.updateUI();
+		this.updateUI(false);
 	}
 
 	disconnect() {
-		window.removeEventListener("beforeunload", this.boundBeforeUnload);
+		teardownFormTracking(this);
 	}
 
-	get trackableInputs() {
-		return Array.from(
-			this.element.querySelectorAll(
-				"input:not([type=hidden]):not([type=file]), textarea, select"
-			)
-		).filter((input) => {
-			// Exclude tab radios
-			if (this.tabNameValue && input.name === this.tabNameValue) return false;
-			// Exclude hidden system fields
-			if (input.type === "hidden") return false;
-			return true;
-		});
-	}
-
-	getInputValue(input) {
-		if (input.type === "checkbox" || input.type === "radio") {
-			return input.checked;
-		}
-		return input.value;
-	}
-
-	checkDirty() {
-		let hasChanges = false;
-
-		this.trackableInputs.forEach((input) => {
-			const initial = this.initialValues.get(input);
-			const current = this.getInputValue(input);
-			if (initial !== current) {
-				hasChanges = true;
-			}
-		});
-
-		if (hasChanges !== this.dirty) {
-			this.dirty = hasChanges;
-			this.updateUI();
-		}
-	}
-
-	markDirty() {
-		if (!this.dirty) {
-			this.dirty = true;
-			this.updateUI();
-		}
-	}
-
-	updateUI() {
+	updateUI(dirty) {
 		// Update indicator visibility
 		if (this.hasIndicatorTarget) {
-			if (this.dirty) {
-				this.indicatorTarget.classList.remove("hidden");
-				this.indicatorTarget.classList.add("flex");
-			} else {
-				this.indicatorTarget.classList.add("hidden");
-				this.indicatorTarget.classList.remove("flex");
-			}
+			updateIndicator(this.indicatorTarget, dirty);
 		}
 
 		// Update submit button state
 		if (this.hasSubmitTarget) {
-			this.submitTarget.disabled = !this.dirty;
-			if (this.dirty) {
+			this.submitTarget.disabled = !dirty;
+			if (dirty) {
 				this.submitTarget.classList.remove(
 					"btn-disabled",
 					"opacity-50",
@@ -123,14 +63,6 @@ export default class extends Controller {
 					"cursor-not-allowed"
 				);
 			}
-		}
-	}
-
-	handleBeforeUnload(event) {
-		if (this.dirty) {
-			event.preventDefault();
-			event.returnValue = "You have unsaved changes.";
-			return event.returnValue;
 		}
 	}
 }

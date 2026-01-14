@@ -1,4 +1,12 @@
 import { Controller } from "@hotwired/stimulus";
+import {
+	setupFormTracking,
+	teardownFormTracking,
+	markDirty,
+	markClean,
+	isDirty,
+	updateIndicator,
+} from "./mixins/form_tracking";
 
 // Save bar controller for multi-step forms
 // Handles tab-aware buttons, unsaved changes tracking, and navigation
@@ -24,14 +32,17 @@ export default class extends Controller {
 	};
 
 	connect() {
-		this.dirty = false;
 		this.form = this.element.closest("form");
+
+		// Setup shared form tracking
+		setupFormTracking(this, {
+			tabName: this.tabNameValue,
+			form: this.form,
+			onDirtyChange: (dirty) => this.handleDirtyChange(dirty),
+		});
 
 		// Build tab hash list from actual tabs
 		this.buildTabList();
-
-		// Track form changes
-		this.bindFormChanges();
 
 		// Update buttons based on current tab
 		this.updateButtons();
@@ -44,7 +55,7 @@ export default class extends Controller {
 			.querySelectorAll(`input[name="${this.tabNameValue}"]`)
 			.forEach((tab) => {
 				tab.addEventListener("click", (event) => {
-					if (this.dirty && !this.confirmingTabChange) {
+					if (isDirty(this) && !this.confirmingTabChange) {
 						const confirmed = confirm(
 							"You have unsaved changes. Are you sure you want to switch tabs?"
 						);
@@ -57,23 +68,27 @@ export default class extends Controller {
 					setTimeout(() => this.updateButtons(), 10);
 				});
 			});
-
-		// Warn before leaving page with unsaved changes
-		this.boundBeforeUnload = this.handleBeforeUnload.bind(this);
-		window.addEventListener("beforeunload", this.boundBeforeUnload);
 	}
 
 	disconnect() {
-		window.removeEventListener("beforeunload", this.boundBeforeUnload);
+		teardownFormTracking(this);
 	}
 
-	handleBeforeUnload(event) {
-		if (this.dirty) {
-			event.preventDefault();
-			// Modern browsers ignore custom messages but require returnValue
-			event.returnValue = "You have unsaved changes.";
-			return event.returnValue;
-		}
+	get dirty() {
+		return isDirty(this);
+	}
+
+	handleDirtyChange() {
+		this.updateIndicatorDisplay();
+		this.updateButtonTexts();
+	}
+
+	markDirty() {
+		markDirty(this);
+	}
+
+	markClean() {
+		markClean(this);
 	}
 
 	buildTabList() {
@@ -85,67 +100,19 @@ export default class extends Controller {
 			.filter(Boolean);
 	}
 
-	bindFormChanges() {
-		if (!this.form) return;
-
-		// Track all form inputs for changes
-		const inputs = this.form.querySelectorAll(
-			"input, textarea, select, [contenteditable]"
-		);
-		inputs.forEach((input) => {
-			// Skip tab radio buttons and hidden system fields
-			if (input.name === this.tabNameValue) return;
-			if (input.type === "hidden" && input.name === "_method") return;
-			if (input.type === "hidden" && input.name === "authenticity_token")
-				return;
-
-			input.addEventListener("input", () => this.markDirty());
-			input.addEventListener("change", () => this.markDirty());
-		});
-
-		// Track file inputs
-		this.form.querySelectorAll('input[type="file"]').forEach((input) => {
-			input.addEventListener("change", () => this.markDirty());
-		});
-
-		// Track checkboxes specifically
-		this.form.querySelectorAll('input[type="checkbox"]').forEach((input) => {
-			if (input.name === this.tabNameValue) return;
-			input.addEventListener("click", () => this.markDirty());
-		});
-	}
-
-	markDirty() {
-		if (this.dirty) return;
-		this.dirty = true;
-		this.updateIndicator();
-		this.updateButtonTexts();
-	}
-
-	markClean() {
-		this.dirty = false;
-		this.updateIndicator();
-		this.updateButtonTexts();
-	}
-
-	updateIndicator() {
-		if (!this.hasIndicatorTarget) return;
-
-		if (this.dirty) {
-			this.indicatorTarget.classList.remove("hidden");
-			this.indicatorTarget.classList.add("flex");
-		} else {
-			this.indicatorTarget.classList.remove("flex");
-			this.indicatorTarget.classList.add("hidden");
+	updateIndicatorDisplay() {
+		if (this.hasIndicatorTarget) {
+			updateIndicator(this.indicatorTarget, isDirty(this));
 		}
 	}
 
 	updateButtonTexts() {
+		const dirty = isDirty(this);
 		if (this.hasPrevTextTarget) {
-			this.prevTextTarget.textContent = this.dirty ? "Save & Back" : "Back";
+			this.prevTextTarget.textContent = dirty ? "Save & Back" : "Back";
 		}
 		if (this.hasContinueTextTarget) {
-			this.continueTextTarget.textContent = this.dirty
+			this.continueTextTarget.textContent = dirty
 				? "Save & Continue"
 				: "Continue";
 		}
@@ -259,7 +226,7 @@ export default class extends Controller {
 
 	// Actions for buttons
 	savePrevious(event) {
-		if (this.dirty) {
+		if (isDirty(this)) {
 			// Save and go to previous tab
 			this.setNextTab(this.getCurrentTabIndex() - 1);
 			// Form will submit normally
@@ -270,14 +237,14 @@ export default class extends Controller {
 		}
 	}
 
-	saveOnly(event) {
+	saveOnly() {
 		// Stay on current tab after save
 		this.setNextTab(this.getCurrentTabIndex());
 		// Form submits normally
 	}
 
 	saveContinue(event) {
-		if (this.dirty) {
+		if (isDirty(this)) {
 			// Save and go to next tab
 			this.setNextTab(this.getCurrentTabIndex() + 1);
 			// Form will submit normally
