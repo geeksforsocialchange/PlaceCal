@@ -76,7 +76,10 @@ export default class extends Controller {
 			const isDefaultSort =
 				this.sortColumn === (this.defaultSortColumnValue || null) &&
 				this.sortDirection === (this.defaultSortDirectionValue || "desc");
-			this.clearSortTarget.classList.toggle("hidden", isDefaultSort);
+
+			this.clearSortTarget.style.display = isDefaultSort
+				? "none"
+				: "inline-flex";
 		}
 	}
 
@@ -249,7 +252,9 @@ export default class extends Controller {
 	updateClearFiltersButton() {
 		if (this.hasClearFiltersTarget) {
 			const hasFilters = Object.keys(this.filters).length > 0;
-			this.clearFiltersTarget.classList.toggle("hidden", !hasFilters);
+			this.clearFiltersTarget.style.display = hasFilters
+				? "inline-flex"
+				: "none";
 		}
 	}
 

@@ -85,3 +85,22 @@
 .checkbox-warning {
 	border-color: var(--color-placecal-orange) !important;
 }
+
+/* Clear filters button with red hover state */
+.btn-clear-filters {
+	@apply inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md;
+	@apply bg-gray-100 text-gray-600 border border-gray-300;
+	@apply transition-colors cursor-pointer;
+}
+
+.btn-clear-filters:hover {
+	@apply bg-red-50 text-red-600 border-red-200;
+}
+
+.btn-clear-filters svg {
+	@apply transition-transform duration-200;
+}
+
+.btn-clear-filters:hover svg {
+	transform: rotate(90deg);
+}
