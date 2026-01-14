@@ -72,7 +72,7 @@ end
 
 # Helper methods for Tom Select interactions
 module TomSelectHelpers
-  # Select an option from a Tom Select dropdown
+  # Select an option from a Tom Select dropdown or regular select
   def tom_select_select(option, from:)
     # Try finding by label first (standard form), then by legend (daisyUI fieldset)
     form_group = nil
@@ -89,38 +89,48 @@ module TomSelectHelpers
       form_group = fieldset
     end
 
-    # Wait for Tom Select to initialize
-    container = form_group.find(".ts-wrapper", match: :first, wait: 5)
+    # Check if this is a Tom Select or a regular select (e.g., partnership-selector)
+    if form_group.has_css?(".ts-wrapper", wait: 2)
+      # Tom Select - use the special handling
+      container = form_group.find(".ts-wrapper", match: :first, wait: 5)
 
-    # Click the control to open the dropdown
-    control = container.find(".ts-control")
-    control.click
+      # Click the control to open the dropdown
+      control = container.find(".ts-control")
+      control.click
 
-    # Wait a moment for dropdown to render
-    sleep 0.5
+      # Wait a moment for dropdown to render
+      sleep 0.5
 
-    # First try finding dropdown with standard visibility check
-    # Then fall back to visible: :all since Capybara's visibility detection
-    # can have issues with dynamically shown elements
-    dropdown = nil
-    begin
-      dropdown = page.find(".ts-dropdown", visible: true, wait: 2)
-    rescue Capybara::ElementNotFound
-      # Capybara visibility detection can be unreliable for dynamically styled elements
-      # If the dropdown has active styles, find it with visible: :all
-      dropdowns = page.all(".ts-dropdown", visible: :all)
-      dropdown = dropdowns.find { |d| d[:style]&.include?("display: block") }
-    end
+      # First try finding dropdown with standard visibility check
+      # Then fall back to visible: :all since Capybara's visibility detection
+      # can have issues with dynamically shown elements
+      dropdown = nil
+      begin
+        dropdown = page.find(".ts-dropdown", visible: true, wait: 2)
+      rescue Capybara::ElementNotFound
+        # Capybara visibility detection can be unreliable for dynamically styled elements
+        # If the dropdown has active styles, find it with visible: :all
+        dropdowns = page.all(".ts-dropdown", visible: :all)
+        dropdown = dropdowns.find { |d| d[:style]&.include?("display: block") }
+      end
 
-    raise "Tom Select dropdown not found" unless dropdown
+      raise "Tom Select dropdown not found" unless dropdown
 
-    within(dropdown) do
-      # Find option with visible: :all for same reason
-      opt = all(".option", text: option, visible: :all, wait: 2).first
-      raise "Option '#{option}' not found in dropdown" unless opt
+      within(dropdown) do
+        # Find option with visible: :all for same reason
+        opt = all(".option", text: option, visible: :all, wait: 2).first
+        raise "Option '#{option}' not found in dropdown" unless opt
 
-      # Use JS click to avoid interactability issues with dynamically positioned elements
-      page.execute_script("arguments[0].click()", opt)
+        # Use JS click to avoid interactability issues with dynamically positioned elements
+        page.execute_script("arguments[0].click()", opt)
+      end
+    elsif form_group.has_css?("select", wait: 2)
+      # Regular select element (partnership-selector uses plain select with Stimulus)
+      within(form_group) do
+        find("select", match: :first).select(option)
+      end
+    else
+      raise "Could not find select element in form group for '#{from}'"
     end
   end
 
