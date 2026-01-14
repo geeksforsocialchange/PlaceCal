@@ -22,6 +22,13 @@ module TagsHelper
       .map { |r| [r.name_with_type, r.id] }
   end
 
+  # Returns partnerships as [name, id] pairs for user assignment
+  def options_for_user_partnerships
+    policy_scope(Partnership)
+      .order(:name)
+      .pluck(:name, :id)
+  end
+
   # prevent invisible partner ids from being overwritten when updating a tag
   def all_partners_for(tag, attributes)
     editable_partners = current_user.partners.pluck(:id)

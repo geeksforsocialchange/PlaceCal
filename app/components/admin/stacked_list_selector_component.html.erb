@@ -16,7 +16,7 @@
            data-item-id="<%= item.id %>"
            data-item-name="<%= item.name %>">
         <input type="hidden" name="<%= field_name %>" value="<%= item.id %>">
-        <div class="flex-shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
+        <div class="shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
           <%= icon(icon_name, size: '5') %>
         </div>
         <span class="flex-1 font-medium text-sm text-base-content/90"><%= item.name %></span>
@@ -66,7 +66,7 @@
          data-item-id="ITEM_ID"
          data-item-name="ITEM_NAME">
       <input type="hidden" name="<%= field_name %>" value="ITEM_ID">
-      <div class="flex-shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
+      <div class="shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
         <%= icon(icon_name, size: '5') %>
       </div>
       <span class="flex-1 font-medium text-sm text-base-content/90">ITEM_NAME</span>
