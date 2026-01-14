@@ -248,6 +248,31 @@ en:
     # -------------------------------------------------------------------------
     calendars:
       handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange" target="_blank">handbook</a> for setup instructions'
+      wizard:
+        title: "Create a New Calendar"
+        subtitle: "Connect an event source to start importing events into PlaceCal"
+        create_button: "Create Calendar"
+        steps:
+          source: "Source"
+          details: "Details"
+          location: "Location"
+        source:
+          title: "Connect Your Calendar"
+          description: "Paste the URL of your calendar feed. We'll automatically detect the format."
+          test_button: "Test"
+          success: "This URL is valid and ready to import!"
+          error: "Unable to validate this URL"
+          detected_format: "Detected format:"
+          importer_hint: "Usually auto-detected. Only change if needed."
+        details:
+          title: "Calendar Details"
+          description: "Which partner organises these events, and what should we call this calendar?"
+          name_placeholder: "e.g. Community Centre Events"
+        location:
+          title: "Location Settings"
+          description: "Configure how location information is handled for imported events."
+          default_hint: "Select a partner to use as the default location for events."
+          strategy_hint: "Where should location data come from?"
       tabs:
         source: "Source"
         location: "Location"

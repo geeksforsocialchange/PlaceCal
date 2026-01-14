@@ -81,6 +81,40 @@ module Admin
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
+    # Test a calendar source URL and detect the importer type
+    def test_source
+      authorize Calendar, :create?
+
+      source = params[:source].to_s.strip
+
+      return render json: { valid: false, error: 'Please enter a URL' } if source.blank?
+
+      return render json: { valid: false, error: 'Please enter a valid URL' } unless Calendar::CALENDAR_REGEX.match?(source)
+
+      # Try to detect the importer
+      temp_calendar = Calendar.new(source: source, importer_mode: 'auto')
+      begin
+        importer = CalendarImporter::CalendarImporter.new(temp_calendar)
+        parser = importer.parser
+
+        if parser
+          render json: {
+            valid: true,
+            importer_key: parser::KEY,
+            importer_name: parser::NAME
+          }
+        else
+          render json: { valid: false, error: 'Unable to detect calendar format' }
+        end
+      rescue CalendarImporter::Exceptions::InaccessibleFeed,
+             CalendarImporter::Exceptions::UnsupportedFeed => e
+        render json: { valid: false, error: e.message }
+      rescue StandardError => e
+        Rails.logger.error("Calendar test_source error: #{e.message}")
+        render json: { valid: false, error: 'Unable to validate this URL' }
+      end
+    end
+
     private
 
     def preselect_partner

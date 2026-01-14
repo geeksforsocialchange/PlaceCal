@@ -28,6 +28,9 @@ Rails.application.routes.draw do
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :articles
     resources :calendars do
+      collection do
+        post :test_source
+      end
       member do
         post :import
       end
