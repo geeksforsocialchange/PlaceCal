@@ -57,8 +57,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
   end
 
   describe "tag editing" do
-    # This test is flaky in CI - flash message timing issue
-    it "allows root users to modify tags", skip: ENV.fetch("CI", nil) do
+    it "allows root users to modify tags" do
       login_as(root_user)
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
@@ -70,29 +69,28 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       expect(page).to have_content("A new tag name")
     end
 
-    # This test is flaky in CI - flash message timing issue
-    it "allows root users to toggle system tag on and off", skip: ENV.fetch("CI", nil) do
+    it "allows root users to toggle system tag on and off" do
       login_as(root_user)
       port = Capybara.current_session.server.port
 
       # Toggle on
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      check "System tag"
+      check "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
       # Check is toggled
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      expect(page).to have_css('input[name="tag[system_tag]"][checked="checked"]', visible: :all)
+      expect(page).to have_checked_field("System Tag", visible: :all)
 
       # Toggle off
-      uncheck "System tag"
+      uncheck "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
       # Check is NOT toggled
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      expect(page).not_to have_css('input[name="tag[system_tag]"][checked="checked"]', visible: :all)
+      expect(page).to have_unchecked_field("System Tag", visible: :all)
     end
   end
 
