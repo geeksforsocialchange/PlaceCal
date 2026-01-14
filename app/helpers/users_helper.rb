@@ -55,12 +55,12 @@ module UsersHelper
   def role_label(value)
     case value.second
     when 'root'
-      '<strong>Root</strong>: Can do everything'.html_safe
+      '<strong>Root</strong>: Can do everything - use with care!'.html_safe
     when 'editor'
-      '<strong>Editor</strong>: Can edit news articles'.html_safe
+      '<strong>Editor</strong>: Can edit all news articles'.html_safe
     when 'citizen'
       '<strong>Citizen</strong>: ' \
-      'Can only edit entities listed on this page'.html_safe
+      'Can only edit assigned entities'.html_safe
     else
       value
     end

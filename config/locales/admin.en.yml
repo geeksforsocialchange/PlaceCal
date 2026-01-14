@@ -463,6 +463,7 @@ en:
         neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
         partners_hint: "Partners this user can edit, as well as their associated calendars."
         partnerships_hint: "Grants access to add or remove partners from partnerships"
+        role_hint: "Determines the user's system-wide access level and permissions."
       danger_zone:
         site_admin_warning: "This user is a site administrator and cannot be deleted. Remove them as a site admin first."
       profile:

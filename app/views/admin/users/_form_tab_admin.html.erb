@@ -1,28 +1,37 @@
 <%# Admin Tab - Role and Danger Zone %>
 <div class="space-y-8">
   <%# Role Selection %>
-  <div class="max-w-xl">
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:user, :role) %></legend>
+  <div class="card bg-base-200/50 border border-base-300">
+    <div class="card-body p-5">
+      <h3 class="font-semibold flex items-center gap-2 mb-2">
+        <%= icon(:lock, size: '5', css_class: 'text-info') %>
+        <%= attr_label(:user, :role) %>
+      </h3>
+      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.users.fields.role_hint') %></p>
       <%= render Admin::RadioCardGroupComponent.new(
         form: f,
         attribute: :role,
         values: User.role.values,
         label_method: method(:role_label)
       ) %>
-    </fieldset>
+    </div>
   </div>
 
   <%# Danger Zone %>
   <% if policy(@user).destroy? %>
+    <h3 class="text-lg font-bold flex items-center gap-2 text-error/80">
+      <%= icon(:warning, size: '5') %>
+      <%= t('admin.sections.danger_zone') %>
+    </h3>
+
     <% if @user.site_admin? %>
       <div class="card bg-base-200/50 border border-base-300">
-        <div class="card-body p-4">
-          <h3 class="font-semibold flex items-center gap-2 text-base-content/70">
-            <%= icon(:warning, size: '5') %>
+        <div class="card-body p-5">
+          <h4 class="font-semibold flex items-center gap-2 mb-2 text-base-content/70">
+            <%= icon(:trash, size: '5') %>
             <%= t('admin.danger_zone.delete_title', model: User.model_name.human) %>
-          </h3>
-          <p class="text-sm text-base-content/60 mt-2"><%= t('admin.users.danger_zone.site_admin_warning') %></p>
+          </h4>
+          <p class="text-sm text-base-content/60"><%= t('admin.users.danger_zone.site_admin_warning') %></p>
         </div>
       </div>
     <% else %>
