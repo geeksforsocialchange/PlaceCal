@@ -5,7 +5,7 @@
 
 <% if policy(@site).permitted_attributes.include? :theme %>
   <fieldset class="fieldset max-w-xs mb-8">
-    <legend class="fieldset-legend">Theme</legend>
+    <legend class="fieldset-legend"><%= t('admin.fields.theme') %></legend>
     <%= f.input_field :theme, as: :select, collection: Site.theme.values.map { |v| [v.to_s.titleize, v] }, class: 'select select-bordered w-full' %>
   </fieldset>
 <% end %>
@@ -14,14 +14,14 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
     <div>
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">Logo</legend>
+        <legend class="fieldset-legend"><%= t('admin.fields.logo') %></legend>
         <div data-controller="image-preview">
           <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
             <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
               <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium">Choose file</p>
+              <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
               <p class="text-xs text-base-content/50"><%= image_uploader_hint(@site.logo) %></p>
             </div>
             <%= f.input_field :logo, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
@@ -35,14 +35,14 @@
 
     <div>
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">Footer Logo</legend>
+        <legend class="fieldset-legend"><%= t('admin.sites.fields.footer_logo') %></legend>
         <div data-controller="image-preview">
           <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
             <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
               <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium">Choose file</p>
+              <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
               <p class="text-xs text-base-content/50"><%= image_uploader_hint(@site.footer_logo) %></p>
             </div>
             <%= f.input_field :footer_logo, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
@@ -59,10 +59,10 @@
 <% end %>
 
 <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
-  <legend class="fieldset-legend">Hero Image</legend>
+  <legend class="fieldset-legend"><%= t('admin.sites.fields.hero_image') %></legend>
   <p class="text-sm text-base-content/60 mb-4">
-    The large image at the top of your site's homepage.
-    <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2" class="link link-hover text-placecal-orange" target="_blank">See handbook for guidance</a>
+    <%= t('admin.sites.fields.hero_image_description') %>
+    <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2" class="link link-hover text-placecal-orange" target="_blank"><%= t('admin.sites.fields.hero_handbook_link') %></a>
   </p>
 
   <div data-controller="image-preview">
@@ -71,7 +71,7 @@
         <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium">Choose file</p>
+        <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
         <p class="text-xs text-base-content/50"><%= image_uploader_hint(@site.hero_image) %></p>
       </div>
       <%= f.input_field :hero_image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
@@ -84,15 +84,15 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Image Credit</legend>
+      <legend class="fieldset-legend"><%= t('admin.sites.fields.image_credit') %></legend>
       <%= f.input_field :hero_image_credit, class: 'input input-bordered w-full input-sm bg-base-100' %>
-      <p class="fieldset-label">Who took this photo?</p>
+      <p class="fieldset-label"><%= t('admin.sites.fields.image_credit_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Alt Text</legend>
+      <legend class="fieldset-legend"><%= t('admin.sites.fields.alt_text') %></legend>
       <%= f.input_field :hero_alttext, class: 'input input-bordered w-full input-sm bg-base-100' %>
-      <p class="fieldset-label">How should a screen reader describe this image?</p>
+      <p class="fieldset-label"><%= t('admin.sites.fields.alt_text_hint') %></p>
     </fieldset>
   </div>
 </fieldset>

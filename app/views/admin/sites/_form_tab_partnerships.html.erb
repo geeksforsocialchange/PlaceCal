@@ -1,12 +1,12 @@
 <%= render Admin::SectionHeaderComponent.new(
-  title: "Partnerships",
-  description: "Filter which partners appear on this site."
+  title: t('admin.models.partnership.other'),
+  description: t('admin.sites.sections.partnerships_description')
 ) %>
 
 <div class="max-w-xl">
   <fieldset class="fieldset">
-    <legend class="fieldset-legend">Partnership Tags</legend>
-    <p class="fieldset-label mb-3">If selected, only show partners which are members of these partnerships.</p>
+    <legend class="fieldset-legend"><%= t('admin.sites.fields.partnership_tags') %></legend>
+    <p class="fieldset-label mb-3"><%= t('admin.sites.fields.partnership_tags_hint') %></p>
     <div class="site_tags">
       <% if policy(@site).permitted_attributes.include? :tags %>
         <%= f.input_field :tag_ids,

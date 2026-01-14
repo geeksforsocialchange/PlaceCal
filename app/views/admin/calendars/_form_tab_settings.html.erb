@@ -2,35 +2,35 @@
   <%# Left Column - Details %>
   <div class="space-y-6">
     <div>
-      <h2 class="text-lg font-bold mb-1">Calendar Details</h2>
-      <p class="text-sm text-base-content/60 mb-4">Basic information about this event source.</p>
+      <h2 class="text-lg font-bold mb-1"><%= t('admin.models.calendar.one') %> Details</h2>
+      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.calendars.sections.details_description') %></p>
     </div>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Partner Organiser <span class="text-error">*</span></legend>
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.partner_organiser') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <%= f.input_field :partner_id,
                         as: :select,
                         collection: options_for_organiser,
                         selected: (@partner&.id || @calendar.partner_id).to_s,
                         class: 'select select-bordered w-full',
                         data: { controller: "tom-select" } %>
-      <p class="fieldset-label">Which group organises these events?</p>
+      <p class="fieldset-label"><%= t('admin.calendars.fields.partner_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Calendar Name <span class="text-error">*</span></legend>
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.calendar_name') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
       <%= f.input_field :name, class: 'input input-bordered w-full' %>
-      <p class="fieldset-label">A simple description to help remember what this calendar is</p>
+      <p class="fieldset-label"><%= t('admin.calendars.fields.name_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Source URL <span class="text-error">*</span></legend>
-      <%= f.input_field :source, class: 'input input-bordered w-full font-mono text-sm', placeholder: 'https://your-domain.com/events.ics' %>
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.source_url') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <%= f.input_field :source, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.calendars.fields.source_placeholder') %>
       <p class="fieldset-label"><%= t('admin.calendars.handbook_hint_html') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Import Mode</legend>
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.import_mode') %></legend>
       <%= f.input_field :importer_mode,
                         as: :select,
                         collection: options_for_importer,
@@ -42,7 +42,7 @@
       <div class="card-body p-4">
         <h3 class="font-semibold text-sm flex items-center gap-2 mb-2">
           <%= icon(:info, size: '4', css_class: 'text-base-content/60') %>
-          Supported Calendar Sources
+          <%= t('admin.calendars.sections.supported_sources') %>
         </h3>
         <ul class="text-xs text-base-content/70 space-y-1">
           <% calendar_import_sources do |name, domains| %>
@@ -54,7 +54,7 @@
         </ul>
         <% if @calendar.importer_used.present? %>
           <p class="text-xs text-base-content/50 mt-3 pt-3 border-t border-base-300">
-            Last imported using: <span class="font-medium"><%= @calendar.importer_used %></span>
+            <%= t('admin.calendars.sections.last_imported_using', importer: @calendar.importer_used) %>
           </p>
         <% end %>
       </div>
@@ -64,24 +64,24 @@
   <%# Right Column - Location & Contact %>
   <div class="space-y-6">
     <div>
-      <h2 class="text-lg font-bold mb-1">Location Settings</h2>
-      <p class="text-sm text-base-content/60 mb-4">How should location information be handled for events?</p>
+      <h2 class="text-lg font-bold mb-1"><%= t('admin.sections.location_settings') %></h2>
+      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.calendars.sections.location_description') %></p>
     </div>
 
     <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
-      <legend class="fieldset-legend">Default Location</legend>
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.default_location') %></legend>
       <%= f.input_field :place_id,
                         as: :select,
                         collection: options_for_location,
-                        include_blank: '(No default location)',
+                        include_blank: t('admin.calendars.fields.default_location_blank'),
                         class: 'select select-bordered w-full bg-base-100',
                         data: { controller: "tom-select" } %>
-      <p class="fieldset-label mt-2">Used when strategy requires a fallback location</p>
+      <p class="fieldset-label mt-2"><%= t('admin.calendars.fields.default_location_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Location Strategy</legend>
-      <p class="text-sm text-base-content/60 mb-4">Where should location information for this calendar come from?</p>
+      <legend class="fieldset-legend"><%= t('admin.calendars.fields.location_strategy') %></legend>
+      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.calendars.fields.strategy_hint') %></p>
       <%= render Admin::RadioCardGroupComponent.new(
         form: f,
         attribute: :strategy,
@@ -93,28 +93,28 @@
     <div class="divider"></div>
 
     <div>
-      <h2 class="text-lg font-bold mb-1">Public Contact</h2>
+      <h2 class="text-lg font-bold mb-1"><%= t('admin.sections.public_contact') %></h2>
       <p class="text-sm text-base-content/60 mb-4">
-        Shown on event pages in the "Problem with this listing?" link.
+        <%= t('admin.calendars.sections.contact_description') %>
       </p>
     </div>
 
     <div class="card bg-base-200/50 border border-base-300">
       <div class="card-body p-4 gap-4">
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Contact Name</legend>
+          <legend class="fieldset-legend"><%= t('admin.calendars.fields.contact_name') %></legend>
           <%= f.input_field :public_contact_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
         </fieldset>
 
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Contact Email</legend>
+          <legend class="fieldset-legend"><%= t('admin.calendars.fields.contact_email') %></legend>
           <%= f.input_field :public_contact_email, class: 'input input-bordered input-sm w-full bg-base-100',
               'data-validate-email': 'true',
-              'data-validate-email-message': 'Enter a valid email address' %>
+              'data-validate-email-message': t('admin.hints.email_validation') %>
         </fieldset>
 
         <fieldset class="fieldset">
-          <legend class="fieldset-legend">Contact Phone</legend>
+          <legend class="fieldset-legend"><%= t('admin.calendars.fields.contact_phone') %></legend>
           <%= f.input_field :public_contact_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
         </fieldset>
       </div>

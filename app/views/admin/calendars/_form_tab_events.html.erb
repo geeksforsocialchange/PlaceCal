@@ -1,9 +1,9 @@
 <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
   <%= icon(:event, size: '5') %>
-  Events
+  <%= t('admin.models.event.other') %>
   <span class="badge badge-neutral"><%= @calendar.events.count %></span>
 </h2>
-<p class="text-sm text-base-content/60 mb-6">Events imported from this calendar source.</p>
+<p class="text-sm text-base-content/60 mb-6"><%= t('admin.calendars.sections.events_description') %></p>
 
 <% upcoming_events = @calendar.events.where('dtstart >= ?', Time.current).order(:dtstart).limit(50) %>
 <% past_events = @calendar.events.where('dtstart < ?', Time.current).order(dtstart: :desc).limit(20) %>
@@ -11,16 +11,16 @@
 <% if upcoming_events.any? %>
   <h3 class="font-semibold mb-3 flex items-center gap-2">
     <span class="text-success">●</span>
-    Upcoming Events
+    <%= t('admin.sections.upcoming_events') %>
     <span class="badge badge-success badge-sm"><%= upcoming_events.count %></span>
   </h3>
   <div class="overflow-x-auto mb-8">
     <table class="table table-sm table-zebra">
       <thead>
         <tr>
-          <th>Event</th>
-          <th>Date & Time</th>
-          <th>Location</th>
+          <th><%= t('admin.models.event.one') %></th>
+          <th><%= t('admin.table.date_time') %></th>
+          <th><%= t('admin.table.location') %></th>
         </tr>
       </thead>
       <tbody>
@@ -38,7 +38,7 @@
               <% elsif event.partner %>
                 <%= event.partner.name %>
               <% else %>
-                <span class="text-base-content/40">No location</span>
+                <span class="text-base-content/40"><%= t('admin.calendars.events.no_location') %></span>
               <% end %>
             </td>
           </tr>
@@ -48,7 +48,7 @@
   </div>
 <% else %>
   <div class="mb-8">
-    <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events") %>
+    <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.empty.no_items', items: t('admin.sections.upcoming_events').downcase)) %>
   </div>
 <% end %>
 
@@ -57,7 +57,7 @@
     <input type="checkbox" />
     <div class="collapse-title font-semibold flex items-center gap-2">
       <span class="text-base-content/50">●</span>
-      Recent Past Events
+      <%= t('admin.calendars.events.past') %>
       <span class="badge badge-ghost badge-sm"><%= past_events.count %></span>
     </div>
     <div class="collapse-content">
@@ -65,9 +65,9 @@
         <table class="table table-sm table-zebra">
           <thead>
             <tr>
-              <th>Event</th>
-              <th>Date & Time</th>
-              <th>Location</th>
+              <th><%= t('admin.models.event.one') %></th>
+              <th><%= t('admin.table.date_time') %></th>
+              <th><%= t('admin.table.location') %></th>
             </tr>
           </thead>
           <tbody>
@@ -85,7 +85,7 @@
                   <% elsif event.partner %>
                     <%= event.partner.name %>
                   <% else %>
-                    <span class="text-base-content/40">No location</span>
+                    <span class="text-base-content/40"><%= t('admin.calendars.events.no_location') %></span>
                   <% end %>
                 </td>
               </tr>

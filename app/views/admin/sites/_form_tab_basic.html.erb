@@ -1,24 +1,24 @@
 <%= render Admin::SectionHeaderComponent.new(
-  title: "Basic Information",
-  description: "Core details about this site."
+  title: t('admin.sections.basic_information'),
+  description: t('admin.sites.sections.basic_info_description')
 ) %>
 
 <div class="max-w-2xl space-y-4">
   <fieldset class="fieldset">
-    <legend class="fieldset-legend">Site Name <span class="text-error">*</span></legend>
+    <legend class="fieldset-legend"><%= t('admin.models.site.one') %> <%= t('admin.fields.name') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
     <%= f.input_field :name, class: 'input input-bordered w-full' %>
   </fieldset>
 
   <% if policy(@site).permitted_attributes.include? :site_admin_id %>
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Site Admin</legend>
+      <legend class="fieldset-legend"><%= t('admin.sites.fields.site_admin') %></legend>
       <%= f.select :site_admin_id,
             User.order(:last_name, :first_name).map { |u|
               full_name = [u.first_name, u.last_name].compact.join(' ').presence
               label = full_name ? "#{full_name} (#{u.email})" : u.email
               [label, u.id]
             },
-            { include_blank: 'Select an admin...' },
+            { include_blank: t('admin.placeholders.select_model', model: t('admin.models.admin.one').downcase) },
             { class: 'select select-bordered w-full' } %>
     </fieldset>
   <% else %>
@@ -28,36 +28,36 @@
         full_name = [admin.first_name, admin.last_name].compact.join(' ').presence
         full_name ? "#{full_name} (#{admin.email})" : admin.email
       else
-        'None'
+        t('admin.labels.none')
       end
     %>
     <div class="card bg-base-200/50 border border-base-300 p-3">
-      <p class="text-sm"><strong>Admin:</strong> <%= admin_display %></p>
+      <p class="text-sm"><strong><%= t('admin.models.admin.one') %>:</strong> <%= admin_display %></p>
     </div>
   <% end %>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend">Place Name</legend>
+    <legend class="fieldset-legend"><%= t('admin.sites.fields.place_name') %></legend>
     <%= f.input_field :place_name, class: 'input input-bordered w-full' %>
-    <p class="fieldset-label">The location this site covers (e.g., "Hulme")</p>
+    <p class="fieldset-label"><%= t('admin.sites.fields.place_name_hint') %></p>
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend">Tagline</legend>
+    <legend class="fieldset-legend"><%= t('admin.fields.tagline') %></legend>
     <%= f.input_field :tagline, class: 'input input-bordered w-full' %>
   </fieldset>
 
   <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="120">
-    <legend class="fieldset-legend">Hero Text</legend>
+    <legend class="fieldset-legend"><%= t('admin.sites.fields.hero_text') %></legend>
     <%= f.input_field :hero_text, as: :text, class: 'textarea textarea-bordered w-full min-h-20', maxlength: 120, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
     <div class="flex items-center justify-between mt-1">
-      <p class="fieldset-label">Large text for the homepage banner</p>
+      <p class="fieldset-label"><%= t('admin.sites.fields.hero_text_hint') %></p>
       <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 120</span>
     </div>
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend">Description</legend>
+    <legend class="fieldset-legend"><%= t('admin.fields.description') %></legend>
     <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
   </fieldset>
 </div>

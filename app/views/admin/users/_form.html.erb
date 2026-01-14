@@ -4,37 +4,37 @@
   <%# Left Column - Personal Details %>
   <div class="space-y-6">
     <div>
-      <h2 class="text-lg font-bold mb-1">Personal Details</h2>
-      <p class="text-sm text-base-content/60 mb-4">Basic information about this user.</p>
+      <h2 class="text-lg font-bold mb-1"><%= t('admin.users.sections.personal_details') %></h2>
+      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.users.sections.personal_description') %></p>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">First Name</legend>
+        <legend class="fieldset-legend"><%= t('admin.fields.first_name') %></legend>
         <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">Last Name</legend>
+        <legend class="fieldset-legend"><%= t('admin.fields.last_name') %></legend>
         <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
       </fieldset>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">Email <span class="text-error">*</span></legend>
+        <legend class="fieldset-legend"><%= t('admin.fields.email') %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
         <%= f.input_field :email, class: 'input input-bordered w-full' %>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend">Phone</legend>
+        <legend class="fieldset-legend"><%= t('admin.fields.phone') %></legend>
         <%= f.input_field :phone, class: 'input input-bordered w-full' %>
       </fieldset>
     </div>
 
     <%# Avatar %>
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Avatar</legend>
+      <legend class="fieldset-legend"><%= t('admin.fields.avatar') %></legend>
       <div data-controller="image-preview">
         <div class="flex items-start gap-4">
           <div class="shrink-0">
@@ -55,7 +55,7 @@
                 <%= icon(:upload, size: '4', css_class: 'text-placecal-orange') %>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium">Choose file</p>
+                <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
                 <p class="text-xs text-base-content/50"><%= image_uploader_hint(f.object.avatar) %></p>
               </div>
               <%= f.input_field :avatar, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
@@ -69,12 +69,12 @@
   <%# Right Column - Role & Access %>
   <div class="space-y-6">
     <div>
-      <h2 class="text-lg font-bold mb-1">Role & Permissions</h2>
-      <p class="text-sm text-base-content/60 mb-4">What this user can access and manage.</p>
+      <h2 class="text-lg font-bold mb-1"><%= t('admin.users.sections.role_permissions') %></h2>
+      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.users.sections.role_description') %></p>
     </div>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Role</legend>
+      <legend class="fieldset-legend"><%= t('admin.fields.role') %></legend>
       <%= render Admin::RadioCardGroupComponent.new(
         form: f,
         attribute: :role,
@@ -84,8 +84,8 @@
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend">Partnerships</legend>
-      <p class="fieldset-label mb-3">Grants access to add or remove partners from partnerships</p>
+      <legend class="fieldset-legend"><%= t('admin.models.partnership.other') %></legend>
+      <p class="fieldset-label mb-3"><%= t('admin.users.fields.partnerships_hint') %></p>
       <div class="user_tags">
         <%= f.input_field :tag_ids,
                   as: :select,
@@ -101,14 +101,15 @@
 <div class="divider my-8"></div>
 
 <%# Partners & Neighbourhoods %>
+<h3 class="text-lg font-bold mb-4"><%= t('admin.users.sections.partners_neighbourhoods') %></h3>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
   <div class="card bg-base-200/50 border border-base-300">
     <div class="card-body p-4">
       <h3 class="font-semibold flex items-center gap-2 mb-2">
         <%= icon(:partner, size: '5', css_class: 'text-placecal-orange') %>
-        Partners
+        <%= t('admin.models.partner.other') %>
       </h3>
-      <p class="text-sm text-base-content/60 mb-3">Partners this user can edit, as well as their associated calendars.</p>
+      <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.partners_hint') %></p>
       <div class="user_partners">
         <%= f.input_field :partner_ids,
                   as: :select,
@@ -128,10 +129,10 @@
     <div class="card-body p-4">
       <h3 class="font-semibold flex items-center gap-2 mb-2">
         <%= icon(:map_pin, size: '5', css_class: 'text-info') %>
-        Neighbourhoods
+        <%= t('admin.models.neighbourhood.other') %>
       </h3>
       <% if current_user.root? %>
-        <p class="text-sm text-base-content/60 mb-3">Grants access to every partner and calendar in these neighbourhoods. Use with care!</p>
+        <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
         <div class="user_neighbourhoods">
           <%= f.input_field :neighbourhood_ids,
             as: :select,
@@ -141,7 +142,7 @@
             data: { controller: "tom-select" } %>
         </div>
       <% else %>
-        <p class="text-sm text-base-content/60 mb-3">Neighbourhoods this user has access to.</p>
+        <p class="text-sm text-base-content/60 mb-3"><%= t('admin.users.fields.neighbourhoods_hint') %></p>
         <% if @user.neighbourhoods.any? %>
           <div class="flex flex-wrap gap-2">
             <% @user.neighbourhoods.order(:name).each do |hood| %>
@@ -149,7 +150,7 @@
             <% end %>
           </div>
         <% else %>
-          <p class="text-sm text-base-content/50 italic">No neighbourhoods assigned</p>
+          <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.none_assigned', items: t('admin.models.neighbourhood.other').downcase) %></p>
         <% end %>
       <% end %>
     </div>

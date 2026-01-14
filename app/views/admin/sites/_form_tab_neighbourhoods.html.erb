@@ -1,12 +1,12 @@
 <%= render Admin::SectionHeaderComponent.new(
-  title: "Neighbourhoods",
-  description: "Define the geographical areas this site covers."
+  title: t('admin.models.neighbourhood.other'),
+  description: t('admin.sites.sections.neighbourhoods_description')
 ) %>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
   <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
-    <legend class="fieldset-legend">Main Neighbourhood</legend>
-    <p class="text-sm text-base-content/60 mb-4">This neighbourhood will be listed in the main PlaceCal directory. It cannot be changed after the site is created.</p>
+    <legend class="fieldset-legend"><%= t('admin.sites.sections.main_neighbourhood') %></legend>
+    <p class="text-sm text-base-content/60 mb-4"><%= t('admin.sites.sections.main_neighbourhood_description') %></p>
 
     <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
       <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
@@ -25,7 +25,7 @@
         <% if primary_neighbourhood.legacy_neighbourhood? %>
           <div role="alert" class="alert alert-warning py-2">
             <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
-            <span class="text-sm">This neighbourhood is not from the current release. Please contact a PlaceCal admin.</span>
+            <span class="text-sm"><%= t('admin.sites.neighbourhoods.legacy_warning') %></span>
           </div>
         <% end %>
       <% else %>
@@ -41,8 +41,8 @@
   </fieldset>
 
   <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
-    <legend class="fieldset-legend">Display Level</legend>
-    <p class="text-sm text-base-content/60 mb-4">What level of geographical zoom should PlaceCal display in badges next to partners and events?</p>
+    <legend class="fieldset-legend"><%= t('admin.sites.sections.display_level') %></legend>
+    <p class="text-sm text-base-content/60 mb-4"><%= t('admin.sites.sections.display_level_description') %></p>
 
     <%= render Admin::RadioCardGroupComponent.new(
       form: f,
@@ -53,13 +53,13 @@
 </div>
 
 <div class="mt-8">
-  <h3 class="font-semibold mb-2">Other Neighbourhoods</h3>
-  <p class="text-sm text-base-content/60 mb-4">Information from these neighbourhoods will also be displayed on this site.</p>
+  <h3 class="font-semibold mb-2"><%= t('admin.sites.sections.other_neighbourhoods') %></h3>
+  <p class="text-sm text-base-content/60 mb-4"><%= t('admin.sites.sections.other_neighbourhoods_description') %></p>
 
   <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
     <div class="space-y-2">
       <%= nested_form_for(f, :sites_neighbourhoods,
-            add_text: 'Add neighbourhood',
+            add_text: t('admin.actions.add_model', model: t('admin.models.neighbourhood.one').downcase),
             add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
             partial: 'sites_neighbourhood_fields') do %>
         <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
@@ -76,7 +76,7 @@
         <% end %>
       </div>
     <% else %>
-      <p class="text-sm text-base-content/50 italic">No additional neighbourhoods</p>
+      <p class="text-sm text-base-content/50 italic"><%= t('admin.empty.no_items', items: t('admin.models.neighbourhood.other').downcase) %></p>
     <% end %>
   <% end %>
 </div>
