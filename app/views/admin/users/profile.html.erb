@@ -98,7 +98,7 @@
             <span>You are a <strong>root</strong> user and can access everything.</span>
           </div>
         <% elsif user_has_no_rights?(current_user) %>
-          <div role="alert" class="alert alert-warning">
+          <div role="alert" class="alert alert-warning no-admin-rights">
             <%= icon(:warning, size: '5') %>
             <span>You have no admin rights. Please contact whoever invited you to set up your account correctly.</span>
           </div>

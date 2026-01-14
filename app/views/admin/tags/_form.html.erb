@@ -25,21 +25,21 @@
         margin: 4
       ) %>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:tag, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
-        <%= f.input_field :name, class: 'input input-bordered w-full', disabled: @tag.system_tag %>
-      </fieldset>
+      <div class="fieldset">
+        <label for="tag_name" class="fieldset-legend"><%= attr_label(:tag, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
+        <%= f.input_field :name, class: 'input input-bordered w-full', disabled: @tag.system_tag, id: 'tag_name' %>
+      </div>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:tag, :slug) %></legend>
-        <%= f.input_field :slug, class: 'input input-bordered w-full', disabled: @tag.system_tag %>
+      <div class="fieldset">
+        <label for="tag_slug" class="fieldset-legend"><%= attr_label(:tag, :slug) %></label>
+        <%= f.input_field :slug, class: 'input input-bordered w-full', disabled: @tag.system_tag, id: 'tag_slug' %>
         <p class="fieldset-label"><%= t('admin.hints.leave_blank_to_autogenerate') %></p>
-      </fieldset>
+      </div>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:tag, :description) %></legend>
-        <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-24', data: { controller: 'auto-expand' } %>
-      </fieldset>
+      <div class="fieldset">
+        <label for="tag_description" class="fieldset-legend"><%= attr_label(:tag, :description) %></label>
+        <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-24', data: { controller: 'auto-expand' }, id: 'tag_description' %>
+      </div>
 
       <% if current_user.root? %>
         <fieldset class="fieldset">
