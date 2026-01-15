@@ -13,7 +13,16 @@
           ) %>
     </div>
   </div>
-  <div class="text-sm text-base-content/50"><%= t('admin.labels.id') %>: <%= @neighbourhood.id %></div>
+  <div class="text-right">
+    <div class="text-sm text-base-content/50"><%= t('admin.labels.id') %>: <%= @neighbourhood.id %></div>
+    <% if current_user.root? %>
+      <%= link_to edit_admin_neighbourhood_path(@neighbourhood),
+          class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-1 mt-2" do %>
+        <%= icon(:edit, size: '3') %>
+        <%= t('admin.actions.edit') %>
+      <% end %>
+    <% end %>
+  </div>
 </div>
 
 <%# Stats Row %>
@@ -298,13 +307,3 @@
   <% end %>
 </div>
 
-<%# Edit Button for root users %>
-<% if current_user.root? %>
-  <div class="mt-8 flex justify-end">
-    <%= link_to edit_admin_neighbourhood_path(@neighbourhood),
-        class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2" do %>
-      <%= icon(:edit, size: '4') %>
-      <%= t('admin.actions.edit') %>
-    <% end %>
-  </div>
-<% end %>
