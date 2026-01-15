@@ -364,17 +364,24 @@ en:
         official_description: "This information is the official designation set by the UK Boundary Commission."
         official_title: "Official neighbourhood info"
       show:
-        address_partners: "Address Partners"
-        child_neighbourhoods: "Child Neighbourhoods"
+        child_neighbourhoods: "Children"
         descendants:
           one: "%{count} descendant"
           other: "%{count} descendants"
-        no_address_partners: "No partners with addresses in this neighbourhood"
-        no_children: "This neighbourhood does not contain any child neighbourhoods"
-        no_service_area_partners: "No partners serving this neighbourhood"
+        is_root: "This is a root neighbourhood"
+        neighbourhood_admins: "Neighbourhood Admins"
+        no_admins: "No users assigned to this neighbourhood"
+        no_children: "This neighbourhood has no child neighbourhoods"
+        no_partners: "No partners in this neighbourhood"
         no_sites: "No sites in this neighbourhood"
-        service_area_partners: "Service Area Partners"
-        sites_title: "Sites"
+        parent_hierarchy: "Parents"
+        showing_of_total: "Showing %{shown} of %{total}"
+        stats:
+          partners: "Partners"
+          level: "Level"
+          children: "Child Neighbourhoods"
+          sites: "Sites"
+          ons_code: "ONS Code"
 
     # -------------------------------------------------------------------------
     # Partners

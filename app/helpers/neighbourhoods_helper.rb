@@ -29,6 +29,20 @@ module NeighbourhoodsHelper
     "[untitled #{neighbourhood.id}]"
   end
 
+  # Render a stylized level badge that looks like an icon
+  # Circular, compact, with the level number prominent
+  def level_badge(level, size: :default)
+    size_classes = {
+      small: 'w-5 h-5 text-[10px]',
+      default: 'w-6 h-6 text-xs',
+      large: 'w-7 h-7 text-sm'
+    }.fetch(size, 'w-6 h-6 text-xs')
+
+    colour = LEVEL_COLOURS[level] || DEFAULT_COLOUR
+
+    content_tag(:span, "L#{level}", class: "inline-flex items-center justify-center #{size_classes} rounded-full font-bold #{colour}")
+  end
+
   def link_to_neighbourhood(neighbourhood)
     text = neighbourhood.name
     text += " - (#{neighbourhood.release_date.year}/#{neighbourhood.release_date.month})" if neighbourhood.legacy_neighbourhood?

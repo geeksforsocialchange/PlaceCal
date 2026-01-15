@@ -5,6 +5,7 @@ module Admin
   # Example output: "England / South East / East Sussex / Wealden / Uckfield North"
   class NeighbourhoodHierarchyBadgeComponent < ViewComponent::Base
     include SvgIconsHelper
+    include NeighbourhoodsHelper
 
     # @param neighbourhood [Neighbourhood] The neighbourhood to display
     # @param options [Hash] Display options
