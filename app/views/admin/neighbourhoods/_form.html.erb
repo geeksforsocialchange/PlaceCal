@@ -1,10 +1,11 @@
 <%= simple_form_for [:admin, @neighbourhood], html: { data: { controller: 'form-dirty' } } do |f| %>
   <%= render(Admin::ErrorComponent.new(@neighbourhood)) %>
 
-  <%# Two-column layout: Name (2/3) + ONS Info (1/3) %>
+  <%# Two-column layout: Name + Admins (2/3) | ONS Info (1/3) %>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <%# Neighbourhood Name - 2/3 width %>
-    <div class="lg:col-span-2">
+    <%# Left column - 2/3 width %>
+    <div class="lg:col-span-2 space-y-6">
+      <%# Neighbourhood Name %>
       <%= render Admin::CardComponent.new(
             title: t('admin.neighbourhoods.form.name_title'),
             icon: :edit
@@ -23,9 +24,39 @@
           </fieldset>
         </div>
       <% end %>
+
+      <%# Neighbourhood Admins (root users only) %>
+      <% if policy(@neighbourhood).set_users? %>
+        <div class="card bg-base-100 border border-base-300 shadow-sm">
+          <div class="card-body p-6">
+            <div class="flex items-start gap-4 mb-4">
+              <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+                <%= icon(:users, size: '6', css_class: 'text-emerald-600') %>
+              </div>
+              <div>
+                <h3 class="card-title text-lg"><%= t('admin.neighbourhoods.form.admins_title') %></h3>
+                <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.neighbourhoods.form.admins_description') %></p>
+              </div>
+            </div>
+
+            <%= render Admin::StackedListSelectorComponent.new(
+              field_name: "neighbourhood[user_ids][]",
+              items: @neighbourhood.users.order(:last_name),
+              options: options_for_users,
+              permitted_ids: nil,
+              icon_name: :user,
+              icon_color: "bg-emerald-100 text-emerald-600",
+              empty_text: t('admin.neighbourhoods.show.no_admins'),
+              add_placeholder: t('admin.placeholders.add_model', model: User.model_name.human.downcase),
+              use_tom_select: true,
+              wrapper_class: "neighbourhood_users"
+            ) %>
+          </div>
+        </div>
+      <% end %>
     </div>
 
-    <%# Official ONS Data - 1/3 width %>
+    <%# Right column - Official ONS Data - 1/3 width %>
     <div class="lg:col-span-1">
       <% is_current = !@neighbourhood.legacy_neighbourhood? %>
       <%= render Admin::CardComponent.new(
@@ -71,36 +102,6 @@
       <% end %>
     </div>
   </div>
-
-  <%# Section 3: Neighbourhood Admins (root users only) %>
-  <% if policy(@neighbourhood).set_users? %>
-    <div class="card bg-base-100 border border-base-300 shadow-sm mb-8">
-      <div class="card-body p-6">
-        <div class="flex items-start gap-4 mb-4">
-          <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
-            <%= icon(:users, size: '6', css_class: 'text-emerald-600') %>
-          </div>
-          <div>
-            <h3 class="card-title text-lg"><%= t('admin.neighbourhoods.form.admins_title') %></h3>
-            <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.neighbourhoods.form.admins_description') %></p>
-          </div>
-        </div>
-
-        <%= render Admin::StackedListSelectorComponent.new(
-          field_name: "neighbourhood[user_ids][]",
-          items: @neighbourhood.users.order(:last_name),
-          options: options_for_users,
-          permitted_ids: nil,
-          icon_name: :user,
-          icon_color: "bg-emerald-100 text-emerald-600",
-          empty_text: t('admin.neighbourhoods.show.no_admins'),
-          add_placeholder: t('admin.placeholders.add_model', model: User.model_name.human.downcase),
-          use_tom_select: true,
-          wrapper_class: "neighbourhood_users"
-        ) %>
-      </div>
-    </div>
-  <% end %>
 
   <%# Save Bar %>
   <%= render Admin::SaveBarComponent.new(track_changes: true) do |save_bar| %>
