@@ -5,68 +5,51 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <div class="space-y-6">
-    <%# Address Card %>
-    <div class="card bg-base-200/50 border border-base-300">
-      <div class="card-body p-4 gap-3">
-        <h3 class="font-semibold flex items-center gap-2">
-          <%= icon(:map, size: '4') %>
-          <%= attr_label(:partner, :address) %>
-        </h3>
-        <%= render 'address_fields', form: f, partner: @partner %>
-        <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
-          <div role="alert" class="alert alert-warning text-sm">
-            <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
-            <span><%= t('admin.partners.warnings.outdated_neighbourhood', email: 'support@placecal.org').html_safe %></span>
-          </div>
-        <% end %>
-        <% if partner_has_unmappable_postcode?(@partner) %>
-          <div role="alert" class="alert alert-warning text-sm">
-            <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
-            <span><%= t('admin.partners.warnings.unmappable_postcode') %></span>
-          </div>
-        <% end %>
-        <%# Neighbourhood display within address card %>
-        <% if @partner.address&.neighbourhood.present? %>
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend flex items-center gap-1">
-              <%= icon(:neighbourhood, size: '4') %>
-              <%= t('admin.address.neighbourhood_label') %>
-            </legend>
-            <%= render Admin::NeighbourhoodCardComponent.new(
-                  neighbourhood: @partner.address.neighbourhood,
-                  show_header: false
-                ) %>
-          </fieldset>
-        <% end %>
-      </div>
-    </div>
+    <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
+      <%= render 'address_fields', form: f, partner: @partner %>
+      <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
+        <div role="alert" class="alert alert-warning text-sm">
+          <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+          <span><%= t('admin.partners.warnings.outdated_neighbourhood', email: 'support@placecal.org').html_safe %></span>
+        </div>
+      <% end %>
+      <% if partner_has_unmappable_postcode?(@partner) %>
+        <div role="alert" class="alert alert-warning text-sm">
+          <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+          <span><%= t('admin.partners.warnings.unmappable_postcode') %></span>
+        </div>
+      <% end %>
+      <% if @partner.address&.neighbourhood.present? %>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend flex items-center gap-1">
+            <%= icon(:neighbourhood, size: '4') %>
+            <%= t('admin.address.neighbourhood_label') %>
+          </legend>
+          <%= render Admin::NeighbourhoodCardComponent.new(
+                neighbourhood: @partner.address.neighbourhood,
+                show_header: false
+              ) %>
+        </fieldset>
+      <% end %>
+    <% end %>
   </div>
 
-  <%# Service Areas Card %>
-  <div class="card bg-base-200/50 border border-base-300 h-fit">
-    <div class="card-body p-4 gap-3">
-      <h3 class="font-semibold flex items-center gap-2">
-        <%= icon(:car, size: '4') %>
-        <%= t('admin.sections.service_areas') %>
-      </h3>
-      <p class="text-xs text-base-content/60"><%= t('admin.partners.sections.service_areas_description') %></p>
-      <p class="text-xs text-base-content/60"><%= t('admin.partners.sections.service_areas_hint') %></p>
-      <%= nested_form_for(f, :service_areas, add_text: t('admin.service_areas.add'), add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
-        <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-          <%= render 'service_area_fields', f: neighbourhood %>
-        <% end %>
+  <%= render Admin::FormCardComponent.new(
+    icon: :car,
+    title: t('admin.sections.service_areas'),
+    description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
+    fit_height: true
+  ) do %>
+    <%= nested_form_for(f, :service_areas, add_text: t('admin.service_areas.add'), add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
+      <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+        <%= render 'service_area_fields', f: neighbourhood %>
       <% end %>
-    </div>
-  </div>
+    <% end %>
+  <% end %>
 </div>
 
-<%# Opening Times Card %>
-<div class="card bg-base-200/50 border border-base-300 mt-6">
-  <div class="card-body p-4 gap-3">
-    <h3 class="font-semibold flex items-center gap-2">
-      <%= icon(:clock, size: '4') %>
-      <%= t('admin.sections.opening_times') %>
-    </h3>
+<div class="mt-6">
+  <%= render Admin::FormCardComponent.new(icon: :clock, title: t('admin.sections.opening_times')) do %>
     <%= render 'opening_times', f: f %>
-  </div>
+  <% end %>
 </div>

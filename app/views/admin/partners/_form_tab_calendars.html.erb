@@ -5,23 +5,13 @@
 </h2>
 <p class="text-sm text-base-content/60 mb-6"><%= t('admin.partners.sections.calendars_description') %></p>
 
-<% if @partner.calendars.any? %>
-  <div class="grid gap-3 max-w-2xl">
-    <% @partner.calendars.each do |calendar| %>
-      <div class="card card-compact bg-base-200/50 border border-base-300">
-        <div class="card-body flex-row items-center justify-between">
-          <div>
-            <h3 class="font-medium"><%= calendar.name %></h3>
-            <p class="text-xs text-base-content/60"><%= calendar.source %></p>
-          </div>
-          <%= link_to t('admin.actions.edit'), edit_admin_calendar_path(calendar), class: "btn btn-ghost btn-sm" %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-<% else %>
-  <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.empty.none_connected', items: Calendar.model_name.human(count: 2).downcase), icon_size: '12', padding: 'py-12') %>
-<% end %>
+<%= render Admin::RelatedItemsListComponent.new(
+  items: @partner.calendars,
+  title_attr: :name,
+  subtitle_attr: :source,
+  edit_path: ->(item) { edit_admin_calendar_path(item) },
+  empty_message: t('admin.empty.none_connected', items: Calendar.model_name.human(count: 2).downcase)
+) %>
 
 <div class="mt-6">
   <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>

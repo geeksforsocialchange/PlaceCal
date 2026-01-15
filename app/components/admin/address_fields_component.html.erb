@@ -1,0 +1,40 @@
+<%= form.fields_for :address, address do |address_form| %>
+  <div class="nested-fields"
+       data-controller="partner-address"
+       data-partner-address-partner-id-value="<%= partner.id %>"
+       data-partner-address-warn-of-delisting-value="<%= warn_of_delisting_value %>">
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:address, :street_address) %></legend>
+      <%= address_form.input_field :street_address, class: 'input input-bordered w-full bg-base-100 address_field' %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:address, :street_address_2) %></legend>
+      <%= address_form.input_field :street_address2, class: 'input input-bordered w-full bg-base-100 address_field' %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:address, :street_address_3) %></legend>
+      <%= address_form.input_field :street_address3, class: 'input input-bordered w-full bg-base-100 address_field' %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:address, :city) %></legend>
+      <%= address_form.input_field :city, class: 'input input-bordered w-full bg-base-100 address_field' %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:address, :postcode) %></legend>
+      <%= address_form.input_field :postcode, class: 'input input-bordered w-full bg-base-100 address_field' %>
+    </fieldset>
+
+    <div data-partner-address-target="addressInfoArea" class="mt-4">
+      <% if can_clear_address? %>
+        <%= link_to t('admin.address.clear_address'), '#',
+            class: "btn btn-ghost btn-xs",
+            data: { action: "click->partner-address#do_clear_address" } %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

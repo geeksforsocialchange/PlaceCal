@@ -17,50 +17,28 @@
   </div>
 </div>
 
-<%# Stats Cards %>
+<% error_count = @calendars.where(calendar_state: [:error, :bad_source]).count %>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center shrink-0">
-          <%= icon(:calendar, size: '5', css_class: 'text-placecal-orange') %>
-        </div>
-        <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium"><%= Calendar.model_name.human(count: 2) %></p>
-          <p class="font-semibold text-lg"><%= @calendars.count %></p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render Admin::InfoCardComponent.new(
+    icon: :calendar,
+    label: Calendar.model_name.human(count: 2),
+    value: @calendars.count,
+    color: :orange
+  ) %>
 
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
-          <%= icon(:check, size: '5', css_class: 'text-success') %>
-        </div>
-        <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.labels.healthy') %></p>
-          <p class="font-semibold text-lg"><%= @calendars.where(calendar_state: :idle).count %></p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render Admin::InfoCardComponent.new(
+    icon: :check,
+    label: t('admin.labels.healthy'),
+    value: @calendars.where(calendar_state: :idle).count,
+    color: :success
+  ) %>
 
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <div class="flex items-center gap-3">
-        <% error_count = @calendars.where(calendar_state: [:error, :bad_source]).count %>
-        <div class="w-10 h-10 rounded-lg <%= error_count > 0 ? 'bg-error/10' : 'bg-base-300' %> flex items-center justify-center shrink-0">
-          <%= icon(:warning, size: '5', css_class: error_count > 0 ? 'text-error' : 'text-base-content/30') %>
-        </div>
-        <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium"><%= t('admin.labels.issues') %></p>
-          <p class="font-semibold text-lg <%= error_count > 0 ? 'text-error' : '' %>"><%= error_count %></p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render Admin::InfoCardComponent.new(
+    icon: :warning,
+    label: t('admin.labels.issues'),
+    value: error_count,
+    color: error_count > 0 ? :error : :neutral
+  ) %>
 </div>
 
 <%# Calendars Table %>

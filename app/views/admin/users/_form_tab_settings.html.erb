@@ -1,22 +1,17 @@
-<%# Admin Tab - Role and Danger Zone %>
 <div class="space-y-8">
-  <%# Role Selection %>
   <div class="max-w-2xl">
-    <div class="card bg-base-200/50 border border-base-300">
-      <div class="card-body p-5">
-        <h3 class="font-semibold flex items-center gap-2 mb-2">
-          <%= icon(:lock, size: '5', css_class: 'text-info') %>
-          <%= attr_label(:user, :role) %>
-        </h3>
-        <p class="text-sm text-base-content/60 mb-4"><%= t('admin.users.fields.role_hint') %></p>
-        <%= render Admin::RadioCardGroupComponent.new(
-          form: f,
-          attribute: :role,
-          values: User.role.values,
-          i18n_scope: 'admin.users.roles'
-        ) %>
-      </div>
-    </div>
+    <%= render Admin::FormCardComponent.new(
+      icon: :lock,
+      title: attr_label(:user, :role),
+      description: t('admin.users.fields.role_hint')
+    ) do %>
+      <%= render Admin::RadioCardGroupComponent.new(
+        form: f,
+        attribute: :role,
+        values: User.role.values,
+        i18n_scope: 'admin.users.roles'
+      ) %>
+    <% end %>
   </div>
 
   <%# Danger Zone - only show for existing users %>

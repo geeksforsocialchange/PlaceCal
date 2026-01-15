@@ -1,0 +1,21 @@
+<% if items.any? %>
+  <div class="grid gap-3 max-w-2xl">
+    <% items.each do |item| %>
+      <div class="card card-compact bg-base-200/50 border border-base-300">
+        <div class="card-body flex-row items-center justify-between">
+          <div>
+            <h3 class="font-medium"><%= item_title(item) %></h3>
+            <% if item_subtitle(item) %>
+              <p class="text-xs text-base-content/60"><%= item_subtitle(item) %></p>
+            <% end %>
+          </div>
+          <%= link_to t('admin.actions.edit'), item_edit_path(item), class: "btn btn-ghost btn-sm" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="text-center py-8">
+    <p class="text-sm text-base-content/50"><%= empty_message %></p>
+  </div>
+<% end %>

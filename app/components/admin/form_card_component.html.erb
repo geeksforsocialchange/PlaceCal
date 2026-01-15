@@ -1,0 +1,12 @@
+<div class="<%= card_classes %>">
+  <div class="card-body p-4 gap-3">
+    <h3 class="font-semibold flex items-center gap-2">
+      <%= icon(icon, size: '4') %>
+      <%= title %>
+    </h3>
+    <% if description.present? %>
+      <p class="text-xs text-base-content/60"><%= description %></p>
+    <% end %>
+    <%= content %>
+  </div>
+</div>

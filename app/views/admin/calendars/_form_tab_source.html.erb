@@ -59,28 +59,21 @@
     </fieldset>
   </div>
 
-  <%# Right Column - Supported Sources Info %>
   <div>
-    <div class="card bg-base-200/50 border border-base-300">
-      <div class="card-body p-4">
-        <h3 class="font-semibold text-sm flex items-center gap-2 mb-2">
-          <%= icon(:info, size: '4', css_class: 'text-base-content/60') %>
-          <%= t('admin.calendars.sections.supported_sources') %>
-        </h3>
-        <ul class="text-xs text-base-content/70 space-y-1">
-          <% calendar_import_sources do |name, domains| %>
-            <li class="flex items-start gap-2">
-              <span class="text-placecal-orange">•</span>
-              <span><strong><%= name %></strong> <span class="text-base-content/50">(<%= domains.join(', ') %>)</span></span>
-            </li>
-          <% end %>
-        </ul>
-        <% if @calendar.importer_used.present? %>
-          <p class="text-xs text-base-content/50 mt-3 pt-3 border-t border-base-300">
-            <%= t('admin.calendars.sections.last_imported_using', importer: @calendar.importer_used) %>
-          </p>
+    <%= render Admin::FormCardComponent.new(icon: :info, title: t('admin.calendars.sections.supported_sources')) do %>
+      <ul class="text-xs text-base-content/70 space-y-1">
+        <% calendar_import_sources do |name, domains| %>
+          <li class="flex items-start gap-2">
+            <span class="text-placecal-orange">•</span>
+            <span><strong><%= name %></strong> <span class="text-base-content/50">(<%= domains.join(', ') %>)</span></span>
+          </li>
         <% end %>
-      </div>
-    </div>
+      </ul>
+      <% if @calendar.importer_used.present? %>
+        <p class="text-xs text-base-content/50 mt-3 pt-3 border-t border-base-300">
+          <%= t('admin.calendars.sections.last_imported_using', importer: @calendar.importer_used) %>
+        </p>
+      <% end %>
+    <% end %>
   </div>
 </div>

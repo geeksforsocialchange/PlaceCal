@@ -1,0 +1,19 @@
+<div class="card bg-base-200/50 border border-base-300">
+  <div class="card-body p-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg <%= icon_bg_class %> flex items-center justify-center shrink-0">
+        <%= icon(icon, size: '5', css_class: icon_text_class) %>
+      </div>
+      <div>
+        <p class="text-xs text-base-content/60 uppercase font-medium"><%= label %></p>
+        <% if content.present? %>
+          <%= content %>
+        <% elsif value.present? %>
+          <p class="font-semibold text-lg"><%= value %></p>
+        <% else %>
+          <p class="text-base-content/50 italic">Not set</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -20,53 +20,23 @@
 
 <div class="divider my-6"></div>
 
-<%# Info Cards %>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center shrink-0">
-          <%= icon(:partner, size: '5', css_class: 'text-placecal-orange') %>
-        </div>
-        <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium">Partner</p>
-          <%= link_to @calendar.partner.name, edit_admin_partner_path(@calendar.partner), class: "font-semibold link link-hover text-placecal-orange" %>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render Admin::InfoCardComponent.new(icon: :partner, label: "Partner", color: :orange) do %>
+    <%= link_to @calendar.partner.name, edit_admin_partner_path(@calendar.partner), class: "font-semibold link link-hover text-placecal-orange" %>
+  <% end %>
 
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center shrink-0">
-          <%= icon(:cog, size: '5', css_class: 'text-info') %>
-        </div>
-        <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium">Strategy</p>
-          <p class="font-semibold"><%= @calendar.strategy.to_s.titleize %></p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render Admin::InfoCardComponent.new(
+    icon: :cog,
+    label: "Strategy",
+    value: @calendar.strategy.to_s.titleize,
+    color: :info
+  ) %>
 
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
-          <%= icon(:map_pin, size: '5', css_class: 'text-success') %>
-        </div>
-        <div>
-          <p class="text-xs text-base-content/60 uppercase font-medium">Default Location</p>
-          <% if @calendar.place %>
-            <%= link_to @calendar.place.name, edit_admin_partner_path(@calendar.place), class: "font-semibold link link-hover text-placecal-orange" %>
-          <% else %>
-            <p class="text-base-content/50 italic">Not set</p>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render Admin::InfoCardComponent.new(icon: :map_pin, label: "Default Location", color: :success) do %>
+    <% if @calendar.place %>
+      <%= link_to @calendar.place.name, edit_admin_partner_path(@calendar.place), class: "font-semibold link link-hover text-placecal-orange" %>
+    <% end %>
+  <% end %>
 </div>
 
 <%# Events Section %>
@@ -84,7 +54,7 @@
     <% past_events = @calendar.events.past.limit(50) %>
 
     <div role="tablist" class="tabs tabs-bordered px-4 pt-2">
-      <input type="radio" name="events_tabs" role="tab" class="tab" aria-label="Upcoming (<%= upcoming_events.count %>)" checked="checked" />
+      <input type="radio" name="events_tabs" role="tab" class="tab" aria-label="Upcoming (<%= upcoming_events.count %>)" checked>
       <div role="tabpanel" class="tab-content py-4">
         <% if upcoming_events.any? %>
           <div class="overflow-x-auto">
@@ -125,7 +95,7 @@
         <% end %>
       </div>
 
-      <input type="radio" name="events_tabs" role="tab" class="tab" aria-label="Past (<%= past_events.count %>)" />
+      <input type="radio" name="events_tabs" role="tab" class="tab" aria-label="Past (<%= past_events.count %>)">
       <div role="tabpanel" class="tab-content py-4">
         <% if past_events.any? %>
           <div class="overflow-x-auto">
