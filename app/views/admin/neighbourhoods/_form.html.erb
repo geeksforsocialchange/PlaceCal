@@ -20,45 +20,80 @@
     </fieldset>
   </div>
 
-  <%# Section 2: Official ONS Data (readonly) %>
+  <%# Section 2: Official ONS Data (readonly) - Dashboard style %>
   <%= render Admin::SectionHeaderComponent.new(
     title: t('admin.neighbourhoods.form.official_title'),
     description: t('admin.neighbourhoods.form.official_description')
   ) %>
 
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :unit) %></legend>
-      <input type="text" value="<%= @neighbourhood.unit&.titleize %>" class="input input-bordered w-full bg-base-200" readonly disabled>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :unit_name) %></legend>
-      <input type="text" value="<%= @neighbourhood.unit_name %>" class="input input-bordered w-full bg-base-200" readonly disabled>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :unit_code_key) %></legend>
-      <input type="text" value="<%= @neighbourhood.unit_code_key %>" class="input input-bordered w-full bg-base-200 font-mono text-sm" readonly disabled>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :unit_code_value) %></legend>
-      <input type="text" value="<%= @neighbourhood.unit_code_value %>" class="input input-bordered w-full bg-base-200 font-mono text-sm" readonly disabled>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :release_date) %></legend>
-      <input type="text" value="<%= @neighbourhood.release_date&.strftime('%B %Y') %>" class="input input-bordered w-full bg-base-200" readonly disabled>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.neighbourhoods.form.level') %></legend>
-      <div class="flex items-center gap-2 h-12">
-        <%= level_badge(@neighbourhood.level) %>
-        <span class="text-base-content"><%= @neighbourhood.unit&.titleize %></span>
+  <% is_current = !@neighbourhood.legacy_neighbourhood? %>
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+    <%# Level card %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-base-content/60"><%= t('admin.neighbourhoods.show.stats.level') %></span>
+          <%= level_badge(@neighbourhood.level, size: :small) %>
+        </div>
+        <div class="text-xl font-bold text-base-content"><%= @neighbourhood.unit&.titleize || '—' %></div>
       </div>
-    </fieldset>
+    </div>
+
+    <%# Unit Name card %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-base-content/60"><%= attr_label(:neighbourhood, :unit_name) %></span>
+        </div>
+        <div class="text-lg font-bold text-base-content truncate"><%= @neighbourhood.unit_name || '—' %></div>
+      </div>
+    </div>
+
+    <%# Unit Code Key card %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-base-content/60"><%= attr_label(:neighbourhood, :unit_code_key) %></span>
+        </div>
+        <div class="text-lg font-mono font-bold text-base-content"><%= @neighbourhood.unit_code_key || '—' %></div>
+      </div>
+    </div>
+
+    <%# ONS Code card %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-base-content/60"><%= t('admin.neighbourhoods.show.stats.ons_code') %></span>
+          <span class="text-xs text-base-content/30 font-serif">§</span>
+        </div>
+        <div class="text-lg font-mono font-bold text-base-content"><%= @neighbourhood.unit_code_value || '—' %></div>
+      </div>
+    </div>
+
+    <%# ONS Dataset card %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-base-content/60"><%= t('admin.neighbourhoods.show.stats.ons_dataset') %></span>
+          <% if is_current %>
+            <span class="badge badge-xs badge-success"><%= t('admin.neighbourhoods.show.stats.current') %></span>
+          <% else %>
+            <span class="badge badge-xs badge-warning"><%= t('admin.neighbourhoods.show.stats.legacy') %></span>
+          <% end %>
+        </div>
+        <div class="text-lg font-bold text-base-content"><%= @neighbourhood.release_date&.strftime('%b %Y') || '—' %></div>
+      </div>
+    </div>
+
+    <%# Release Date card (full date) %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-base-content/60"><%= attr_label(:neighbourhood, :release_date) %></span>
+        </div>
+        <div class="text-lg font-bold text-base-content"><%= @neighbourhood.release_date&.strftime('%B %Y') || '—' %></div>
+      </div>
+    </div>
   </div>
 
   <%# Section 3: Geography (for existing records only) %>
