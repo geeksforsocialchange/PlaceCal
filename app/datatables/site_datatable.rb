@@ -6,8 +6,8 @@ class SiteDatatable < Datatable
     @view_columns ||= {
       name: { source: 'Site.name', cond: :like, searchable: true },
       primary_neighbourhood: { source: 'Site.id', searchable: false, orderable: false },
-      partners_count: { source: 'Site.id', searchable: false, orderable: false },
-      events_count: { source: 'Site.id', searchable: false, orderable: false },
+      partners_count: { source: 'Site.partners_count', searchable: false, orderable: true },
+      events_count: { source: 'Site.events_count', searchable: false, orderable: true },
       site_admin: { source: 'Site.site_admin_id', searchable: false, orderable: false },
       updated_at: { source: 'Site.updated_at', searchable: false, orderable: true },
       actions: { source: 'Site.id', searchable: false, orderable: false }
