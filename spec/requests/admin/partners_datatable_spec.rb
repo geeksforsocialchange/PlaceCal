@@ -309,10 +309,10 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       end
     end
 
-    context "district filter" do
-      let!(:district) { create(:neighbourhood, name: "Test District", unit: "district") }
-      let!(:ward_in_district) { create(:neighbourhood, name: "Test Ward", unit: "ward", parent: district) }
-      let!(:other_ward) { create(:neighbourhood, name: "Other Ward", unit: "ward") }
+    context "district_id filter" do
+      let!(:district) { create(:neighbourhood, name: "Test District", unit: "district", level: 2) }
+      let!(:ward_in_district) { create(:neighbourhood, name: "Test Ward", unit: "ward", level: 1, parent: district) }
+      let!(:other_ward) { create(:neighbourhood, name: "Other Ward", unit: "ward", level: 1) }
 
       let!(:partner_in_district) do
         address = create(:address, neighbourhood: ward_in_district)
@@ -325,7 +325,7 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       end
 
       it "filters partners by district (includes all wards in district)" do
-        datatable_request("filter" => { "district" => district.id.to_s })
+        datatable_request("filter" => { "district_id" => district.id.to_s })
 
         json = response.parsed_body
         expect(json["recordsFiltered"]).to eq(1)
