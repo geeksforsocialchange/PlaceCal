@@ -20,7 +20,11 @@
         <div class="shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
           <%= icon(icon_name, size: '5') %>
         </div>
-        <span class="flex-1 font-medium text-sm text-base-content/90"><%= item.name %></span>
+        <% if item_link(item) %>
+          <%= link_to item.name, item_link(item), class: "flex-1 font-medium text-sm text-base-content/90 hover:text-orange-600 hover:underline" %>
+        <% else %>
+          <span class="flex-1 font-medium text-sm text-base-content/90"><%= item.name %></span>
+        <% end %>
         <% if item_removable?(item) %>
           <button type="button"
                   class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 text-base-content/40 hover:text-error hover:bg-error/10 transition-all"

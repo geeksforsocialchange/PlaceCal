@@ -17,6 +17,7 @@ module Admin
     # @param controller [String] Stimulus controller name (default: stacked-list-selector)
     # @param use_tom_select [Boolean] Use tom-select for searchable dropdown (default: false)
     # @param wrapper_class [String] CSS class for test selectors (e.g., "user_partners")
+    # @param link_path [Symbol] Path helper method for item links (e.g., :edit_admin_partner_path)
     # rubocop:disable Metrics/ParameterLists
     def initialize(
       field_name:,
@@ -31,7 +32,8 @@ module Admin
       cannot_remove_message: nil,
       controller: 'stacked-list-selector',
       use_tom_select: false,
-      wrapper_class: nil
+      wrapper_class: nil,
+      link_path: nil
     )
       super()
       @field_name = field_name
@@ -47,6 +49,7 @@ module Admin
       @controller = controller
       @use_tom_select = use_tom_select
       @wrapper_class = wrapper_class
+      @link_path = link_path
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -55,7 +58,13 @@ module Admin
     attr_reader :field_name, :items, :options, :permitted_ids,
                 :icon_name, :icon_color, :empty_text, :add_placeholder,
                 :remove_last_warning, :cannot_remove_message, :controller, :use_tom_select,
-                :wrapper_class
+                :wrapper_class, :link_path
+
+    def item_link(item)
+      return nil unless link_path
+
+      helpers.public_send(link_path, item)
+    end
 
     def selected_ids
       items.map(&:id)
