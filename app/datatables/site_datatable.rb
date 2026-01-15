@@ -79,7 +79,7 @@ class SiteDatatable < Datatable
                   end
 
     <<~HTML.html_safe
-      <div class="flex flex-col">
+      <div class="flex flex-col gap-0.5">
         <a href="#{edit_admin_site_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
