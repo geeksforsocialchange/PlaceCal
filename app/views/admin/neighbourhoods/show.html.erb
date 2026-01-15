@@ -22,7 +22,7 @@
   children_count = @neighbourhood.descendants.count
   sites_count = @neighbourhood.sites.count
 %>
-<div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
   <%= render Admin::StatCardComponent.new(
         label: t('admin.neighbourhoods.show.stats.partners'),
         value: partners_count,
@@ -36,7 +36,7 @@
         <span class="text-xs text-base-content/60"><%= t('admin.neighbourhoods.show.stats.level') %></span>
         <%= level_badge(@neighbourhood.level, size: :small) %>
       </div>
-      <div class="text-xl font-bold text-base-content"><%= @neighbourhood.unit&.titleize %></div>
+      <div class="text-2xl font-bold text-base-content"><%= @neighbourhood.unit&.titleize %></div>
     </div>
   </div>
 
@@ -59,7 +59,23 @@
         <span class="text-xs text-base-content/60"><%= t('admin.neighbourhoods.show.stats.ons_code') %></span>
         <span class="text-base-content/30 text-lg font-serif">§</span>
       </div>
-      <div class="text-lg font-mono font-bold text-base-content"><%= @neighbourhood.unit_code_value || '—' %></div>
+      <div class="text-2xl font-mono font-bold text-base-content"><%= @neighbourhood.unit_code_value || '—' %></div>
+    </div>
+  </div>
+
+  <%# ONS Dataset card %>
+  <% is_current = !@neighbourhood.legacy_neighbourhood? %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-base-content/60"><%= t('admin.neighbourhoods.show.stats.ons_dataset') %></span>
+        <% if is_current %>
+          <span class="badge badge-xs badge-success"><%= t('admin.neighbourhoods.show.stats.current') %></span>
+        <% else %>
+          <span class="badge badge-xs badge-warning"><%= t('admin.neighbourhoods.show.stats.legacy') %></span>
+        <% end %>
+      </div>
+      <div class="text-2xl font-bold text-base-content"><%= @neighbourhood.release_date&.strftime('%b %Y') || '—' %></div>
     </div>
   </div>
 </div>

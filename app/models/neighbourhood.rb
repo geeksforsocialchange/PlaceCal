@@ -164,6 +164,8 @@ class Neighbourhood < ApplicationRecord
 
   # Refresh cached partners_count for this neighbourhood
   def refresh_partners_count!
+    return unless persisted?
+
     # Use the same logic as partners method to avoid double-counting
     count = partners.count
     update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
