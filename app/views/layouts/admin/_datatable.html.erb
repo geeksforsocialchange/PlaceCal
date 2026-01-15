@@ -83,15 +83,17 @@
           <%
             is_dependent = filter[:depends_on].present?
             target_name = is_dependent ? "dependentFilter" : "filter"
+            has_default = filter[:default].present?
           %>
           <select data-admin-table-target="<%= target_name %>"
                   data-filter-column="<%= filter[:column] %>"
                   <% if is_dependent %>data-filter-depends-on="<%= filter[:depends_on] %>"<% end %>
+                  <% if has_default %>data-filter-default="<%= filter[:default] %>"<% end %>
                   data-action="change->admin-table#applyFilter"
                   class="select-filter <%= 'hidden' if is_dependent %> <%= filter[:width] %>">
             <option value=""><%= filter[:label] %></option>
             <% filter[:options]&.each do |opt| %>
-              <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %>><%= opt[:label] %></option>
+              <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %> <% if has_default && filter[:default].to_s == opt[:value].to_s %>selected<% end %>><%= opt[:label] %></option>
             <% end %>
           </select>
         <% end %>

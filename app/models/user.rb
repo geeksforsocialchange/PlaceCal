@@ -8,8 +8,12 @@ class User < ApplicationRecord
   attr_accessor :skip_password_validation, :current_password
 
   # Site-wide roles
+  # - root: Can do everything
+  # - uk_admin: UK-wide neighbourhood admin (can manage all UK neighbourhoods)
+  # - editor: Can edit all news articles
+  # - citizen: Can only edit assigned entities
   enumerize :role,
-            in: %i[root editor citizen],
+            in: %i[root uk_admin editor citizen],
             default: :citizen
 
   # Include default devise modules. Others available are:
@@ -73,12 +77,24 @@ class User < ApplicationRecord
     role == :editor
   end
 
+  def uk_admin?
+    role == :uk_admin
+  end
+
   def owned_neighbourhoods
-    neighbourhoods.collect(&:subtree).flatten
+    if uk_admin?
+      Neighbourhood.all.to_a
+    else
+      neighbourhoods.collect(&:subtree).flatten
+    end
   end
 
   def owned_neighbourhood_ids
-    owned_neighbourhoods.collect(&:id)
+    if uk_admin?
+      Neighbourhood.pluck(:id)
+    else
+      owned_neighbourhoods.collect(&:id)
+    end
   end
 
   def admin_for_partner?(partner_id)
@@ -140,7 +156,7 @@ class User < ApplicationRecord
   end
 
   def neighbourhood_admin?
-    neighbourhoods.any?
+    uk_admin? || neighbourhoods.any?
   end
 
   def partner_admin?
@@ -155,8 +171,9 @@ class User < ApplicationRecord
     types = []
 
     types << 'root' if root?
+    types << 'uk_admin' if uk_admin?
     types << 'editor' if editor?
-    types << 'neighbourhood_admin' if neighbourhood_admin?
+    types << 'neighbourhood_admin' if neighbourhood_admin? && !uk_admin?
     types << 'partner_admin' if partner_admin?
     types << 'partnership_admin' if partnership_admin?
     types << 'site_admin' if site_admin?

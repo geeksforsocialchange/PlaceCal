@@ -4,25 +4,36 @@ module Admin
   class NeighbourhoodsController < Admin::ApplicationController
     before_action :set_neighbourhood, only: %i[show edit update destroy]
 
-    # GET /admin/neighbourhoods/children?parent_id=123&unit=district
-    # Returns JSON array of neighbourhoods that are children of the given parent
+    # GET /admin/neighbourhoods/children?parent_id=123&level=4
+    # GET /admin/neighbourhoods/children?level=5 (for countries, no parent)
+    # Returns JSON array of neighbourhoods that are children of the given parent at the specified level
     def children
       authorize Neighbourhood, :index?
 
-      parent = Neighbourhood.find(params[:parent_id])
-      unit = params[:unit]
+      level = params[:level].to_i
 
-      # For "district" level, include both counties and districts
-      units = unit == 'district' ? %w[county district] : [unit]
+      children = if params[:parent_id].present?
+                   parent = Neighbourhood.find(params[:parent_id])
+                   parent.children.at_level(level)
+                 else
+                   # Top level (countries) - no parent needed
+                   Neighbourhood.roots.at_level(level)
+                 end
 
-      # Get children at the specified unit level(s)
-      children = parent.descendants
-                       .where(unit: units)
-                       .where.not(name: [nil, ''])
-                       .latest_release
-                       .order(:name)
+      children = children
+                 .where.not(name: [nil, ''])
+                 .latest_release
+                 .order(:name)
 
-      render json: children.map { |n| { id: n.id, name: n.name, unit: n.unit } }
+      render json: children.map { |n|
+        {
+          id: n.id,
+          name: n.name,
+          level: n.level,
+          unit: n.unit,
+          has_children: n.populated_children?
+        }
+      }
     end
 
     # GET /admin/neighbourhoods/hierarchy?neighbourhood_id=123
@@ -31,24 +42,16 @@ module Admin
       authorize Neighbourhood, :index?
 
       neighbourhood = Neighbourhood.find(params[:ward_id] || params[:neighbourhood_id])
-
-      # Find the region (direct ancestor or self if it's a region)
-      region = neighbourhood.unit == 'region' ? neighbourhood : neighbourhood.region
-
-      # Determine which dropdown each level maps to based on neighbourhood unit
-      district_level =
-        case neighbourhood.unit
-        when 'ward'
-          neighbourhood.ancestors.where(unit: %w[county district]).order(:id).last
-        when 'county', 'district'
-          neighbourhood
-        end
+      ancestors = neighbourhood.ancestors.order(:ancestry)
 
       render json: {
-        region_id: region&.id,
-        district_id: district_level&.id,
         neighbourhood_id: neighbourhood.id,
-        neighbourhood_unit: neighbourhood.unit
+        neighbourhood_level: neighbourhood.level,
+        hierarchy: ancestors.map { |a| { id: a.id, level: a.level, name: a.name } },
+        country_id: ancestors.find { |a| a.level == 5 }&.id,
+        region_id: ancestors.find { |a| a.level == 4 }&.id,
+        county_id: ancestors.find { |a| a.level == 3 }&.id,
+        district_id: ancestors.find { |a| a.level == 2 }&.id
       }
     end
 

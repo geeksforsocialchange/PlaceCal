@@ -9,8 +9,8 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
     [
       { data: :name, searchable: true, orderable: true },
       { data: :unit, orderable: true },
-      { data: :parent_name, orderable: true },
-      { data: :unit_code_value },
+      { data: :hierarchy },
+      { data: :partners_count, orderable: true },
       { data: :release_date, orderable: true },
       { data: :actions }
     ]
@@ -131,13 +131,13 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
 
       before { admin_user.neighbourhoods << neighbourhood }
 
-      it "renders neighbourhood name cell with unit subtitle" do
+      it "renders neighbourhood name cell with ID" do
         datatable_request
 
         json = response.parsed_body
         neighbourhood_data = json["data"].find { |d| d["name"].include?("Render Test Ward") }
         expect(neighbourhood_data["name"]).to include("Render Test Ward")
-        expect(neighbourhood_data["name"]).to include("Electoral Ward")
+        expect(neighbourhood_data["name"]).to include("##{neighbourhood.id}")
         expect(neighbourhood_data["name"]).to include("href=")
       end
 
@@ -147,24 +147,41 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
         json = response.parsed_body
         neighbourhood_data = json["data"].find { |d| d["name"].include?("Render Test Ward") }
         expect(neighbourhood_data["unit"]).to include("Ward")
-        expect(neighbourhood_data["unit"]).to include("bg-blue-100")
+        expect(neighbourhood_data["unit"]).to include("bg-violet-100")
       end
 
-      it "renders parent cell" do
+      it "renders hierarchy cell with parent info" do
         datatable_request
 
         json = response.parsed_body
         neighbourhood_data = json["data"].find { |d| d["name"].include?("Render Test Ward") }
-        expect(neighbourhood_data["parent_name"]).to include("Manchester")
+        # Hierarchy cell should contain the neighbourhood's path rendered as badges
+        expect(neighbourhood_data["hierarchy"]).to include("Render Test Ward")
       end
 
-      it "renders unit code cell in monospace" do
+      it "renders partners count with badge when partners exist" do
+        # Create an address and force neighbourhood association (bypassing geocoding)
+        address = create(:address)
+        address.update_column(:neighbourhood_id, neighbourhood.id) # rubocop:disable Rails/SkipsModelValidations
+        # Create partner and force address association
+        partner = create(:partner)
+        partner.update_column(:address_id, address.id) # rubocop:disable Rails/SkipsModelValidations
+        # Refresh count (after_commit callbacks don't fire in transactional tests)
+        neighbourhood.refresh_partners_count!
         datatable_request
 
         json = response.parsed_body
         neighbourhood_data = json["data"].find { |d| d["name"].include?("Render Test Ward") }
-        expect(neighbourhood_data["unit_code_value"]).to include("E05012345")
-        expect(neighbourhood_data["unit_code_value"]).to include("font-mono")
+        expect(neighbourhood_data["partners_count"]).to include("1")
+        expect(neighbourhood_data["partners_count"]).to include("bg-emerald-100")
+      end
+
+      it "renders dash when no partners" do
+        datatable_request
+
+        json = response.parsed_body
+        neighbourhood_data = json["data"].find { |d| d["name"].include?("Render Test Ward") }
+        expect(neighbourhood_data["partners_count"]).to include("—")
       end
 
       it "renders release date with Current badge" do
@@ -178,7 +195,7 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
 
       it "renders release date with Legacy badge for old releases" do
         neighbourhood.update!(release_date: Date.new(2020, 1, 1))
-        datatable_request
+        datatable_request("filter" => { "release" => "legacy" })
 
         json = response.parsed_body
         neighbourhood_data = json["data"].find { |d| d["name"].include?("Render Test Ward") }

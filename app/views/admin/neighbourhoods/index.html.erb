@@ -4,22 +4,30 @@
     column_titles: [
       'Neighbourhood',
       'Type',
-      'Parent',
-      'Code',
+      'Hierarchy',
+      'Partners',
       'Release',
       ''
     ],
-    columns: %i[name unit parent_name unit_code_value release_date actions],
+    columns: %i[name unit hierarchy partners_count release_date actions],
     column_config: {
       name: {},
       unit: { fit: true },
-      parent_name: {},
-      unit_code_value: { fit: true },
+      hierarchy: { sortable: false },
+      partners_count: { fit: true },
       release_date: { fit: true },
       actions: { sortable: false, fit: true }
     },
-    default_sort: { column: 'name', direction: 'asc' },
+    default_sort: { column: 'partners_count', direction: 'desc' },
     filters: [
+      {
+        column: 'country_id',
+        label: 'Country',
+        width: 'w-40',
+        options: Neighbourhood.countries.latest_release.order(:name).map { |n|
+          { value: n.id, label: n.name }
+        }
+      },
       {
         column: 'unit',
         label: 'Type',
@@ -36,6 +44,7 @@
         column: 'release',
         label: 'Release',
         width: 'w-32',
+        default: 'current',
         options: [
           { value: 'current', label: 'Current' },
           { value: 'legacy', label: 'Legacy' }

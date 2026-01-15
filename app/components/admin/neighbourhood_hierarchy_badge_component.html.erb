@@ -1,0 +1,29 @@
+<div class="inline-flex flex-wrap items-center gap-1">
+  <% if truncated? %>
+    <span class="text-gray-400 text-sm">...</span>
+    <span class="text-gray-300">/</span>
+  <% end %>
+
+  <% hierarchy_items.each_with_index do |item, index| %>
+    <% if index > 0 %>
+      <span class="text-gray-300">/</span>
+    <% end %>
+
+    <% if link_each %>
+      <%= link_to helpers.admin_neighbourhood_path(item),
+          class: "inline-flex items-center gap-1 #{badge_size_classes} rounded #{level_colour(item.level)} hover:opacity-80 transition-opacity" do %>
+        <% if show_icons %>
+          <%= icon(level_icon(item.level), size: icon_size) %>
+        <% end %>
+        <%= item.shortname %>
+      <% end %>
+    <% else %>
+      <span class="inline-flex items-center gap-1 <%= badge_size_classes %> rounded <%= level_colour(item.level) %>">
+        <% if show_icons %>
+          <%= icon(level_icon(item.level), size: icon_size) %>
+        <% end %>
+        <%= item.shortname %>
+      </span>
+    <% end %>
+  <% end %>
+</div>

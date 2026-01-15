@@ -35,7 +35,22 @@ export default class extends Controller {
 		this.filters = {};
 		this.searchDebounceTimer = null;
 
+		// Apply default filter values
+		this.applyDefaultFilters();
+
 		this.loadData();
+	}
+
+	applyDefaultFilters() {
+		// Apply defaults from dropdown filters
+		this.filterTargets.forEach((select) => {
+			const defaultValue = select.dataset.filterDefault;
+			if (defaultValue) {
+				const column = select.dataset.filterColumn;
+				this.filters[column] = defaultValue;
+				// The selected attribute is already set in the template
+			}
+		});
 	}
 
 	search(event) {
@@ -175,8 +190,15 @@ export default class extends Controller {
 
 	clearFilters() {
 		this.filters = {};
+		// Reset dropdown filters to default or empty
 		this.filterTargets.forEach((select) => {
-			select.value = "";
+			const defaultValue = select.dataset.filterDefault;
+			if (defaultValue) {
+				select.value = defaultValue;
+				this.filters[select.dataset.filterColumn] = defaultValue;
+			} else {
+				select.value = "";
+			}
 		});
 		// Also reset and hide dependent filters
 		this.dependentFilterTargets.forEach((select) => {
@@ -251,11 +273,43 @@ export default class extends Controller {
 
 	updateClearFiltersButton() {
 		if (this.hasClearFiltersTarget) {
-			const hasFilters = Object.keys(this.filters).length > 0;
-			this.clearFiltersTarget.style.display = hasFilters
+			// Check if current filters differ from defaults
+			const hasNonDefaultFilters = this.hasNonDefaultFilters();
+			this.clearFiltersTarget.style.display = hasNonDefaultFilters
 				? "inline-flex"
 				: "none";
 		}
+	}
+
+	hasNonDefaultFilters() {
+		// Build object of default filter values
+		const defaults = {};
+		this.filterTargets.forEach((select) => {
+			const defaultValue = select.dataset.filterDefault;
+			if (defaultValue) {
+				defaults[select.dataset.filterColumn] = defaultValue;
+			}
+		});
+
+		// Check if current filters differ from defaults
+		const currentKeys = Object.keys(this.filters);
+		const defaultKeys = Object.keys(defaults);
+
+		// If we have filters that aren't defaults, show button
+		for (const key of currentKeys) {
+			if (!(key in defaults) || this.filters[key] !== defaults[key]) {
+				return true;
+			}
+		}
+
+		// If we're missing a default filter, show button
+		for (const key of defaultKeys) {
+			if (!(key in this.filters) || this.filters[key] !== defaults[key]) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	goToPage(event) {

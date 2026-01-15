@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_07_165602) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_15_154606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -171,7 +171,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_07_165602) do
     t.string "unit_name"
     t.string "parent_name"
     t.datetime "release_date", precision: nil
+    t.integer "level"
+    t.integer "partners_count", default: 0, null: false
     t.index ["ancestry"], name: "index_neighbourhoods_on_ancestry"
+    t.index ["level"], name: "index_neighbourhoods_on_level"
+    t.index ["partners_count"], name: "index_neighbourhoods_on_partners_count"
   end
 
   create_table "neighbourhoods_users", force: :cascade do |t|

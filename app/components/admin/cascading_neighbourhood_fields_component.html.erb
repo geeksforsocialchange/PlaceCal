@@ -1,18 +1,42 @@
 <div class="nested-fields py-3 bg-base-200 rounded-lg mb-2"
      data-controller="cascading-neighbourhood"
-     data-cascading-neighbourhood-country-value="9402">
+     data-cascading-neighbourhood-selected-id-value="<%= form.object&.neighbourhood_id %>">
 
   <div class="flex gap-2 items-end">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1">
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 flex-1">
+      <%# Country selector (level 5) %>
       <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.region') %></legend>
+        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.country') %></legend>
         <select class="select select-bordered select-sm w-full"
-                data-cascading-neighbourhood-target="region"
-                data-action="change->cascading-neighbourhood#regionChanged">
+                data-cascading-neighbourhood-target="country"
+                data-action="change->cascading-neighbourhood#countryChanged">
           <option value=""><%= t('admin.labels.loading') %></option>
         </select>
       </fieldset>
 
+      <%# Region selector (level 4) %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.region') %></legend>
+        <select class="select select-bordered select-sm w-full"
+                data-cascading-neighbourhood-target="region"
+                data-action="change->cascading-neighbourhood#regionChanged"
+                disabled>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_region') %></option>
+        </select>
+      </fieldset>
+
+      <%# County selector (level 3) %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.county') %></legend>
+        <select class="select select-bordered select-sm w-full"
+                data-cascading-neighbourhood-target="county"
+                data-action="change->cascading-neighbourhood#countyChanged"
+                disabled>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_county') %></option>
+        </select>
+      </fieldset>
+
+      <%# District selector (level 2) %>
       <fieldset class="fieldset">
         <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.area') %></legend>
         <select class="select select-bordered select-sm w-full"
@@ -23,6 +47,7 @@
         </select>
       </fieldset>
 
+      <%# Ward selector (level 1) %>
       <fieldset class="fieldset">
         <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.ward') %></legend>
         <select class="select select-bordered select-sm w-full"

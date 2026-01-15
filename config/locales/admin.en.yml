@@ -149,11 +149,16 @@ en:
       unsaved_changes: "Unsaved changes"
 
     cascading_neighbourhood:
-      area: "Area"
+      country: "Country"
       region: "Region"
-      select_area: "Select area..."
-      select_ward: "Select ward..."
+      county: "County"
+      area: "District"
       ward: "Ward"
+      select_country: "Select country..."
+      select_region: "Select region..."
+      select_county: "Select county..."
+      select_area: "Select district..."
+      select_ward: "Select ward (optional)..."
 
     datatable:
       clear_filters: "Clear filters"
@@ -521,6 +526,7 @@ en:
         role_hint: "Determines the user's system-wide access level and permissions."
       roles:
         root: "Can do everything - use with care!"
+        uk_admin: "UK-wide neighbourhood admin - can manage all UK neighbourhoods"
         editor: "Can edit all news articles"
         citizen: "Can only edit assigned entities"
       danger_zone:

@@ -5,6 +5,18 @@ class Neighbourhood < ApplicationRecord
   #    see /lib/tasks/neighbourhoods.rake
   LATEST_RELEASE_DATE = DateTime.new(2023, 5).freeze
 
+  # Level constants (1=ward, 5=country)
+  # Used for generic level abstraction across different locales
+  LEVELS = {
+    ward: 1,
+    district: 2,
+    county: 3,
+    region: 4,
+    country: 5
+  }.freeze
+
+  LEVEL_NAMES = LEVELS.invert.freeze
+
   has_ancestry
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :sites, through: :sites_neighbourhoods
@@ -34,6 +46,12 @@ class Neighbourhood < ApplicationRecord
   before_update :inject_parent_name_field
 
   scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
+  scope :at_level, ->(level) { where(level: level) }
+  scope :countries, -> { where(level: 5) }
+  scope :regions, -> { where(level: 4) }
+  scope :counties, -> { where(level: 3) }
+  scope :districts, -> { where(level: 2) }
+  scope :wards, -> { where(level: 1) }
 
   def partners
     (service_area_partners + address_partners).uniq
@@ -121,10 +139,59 @@ class Neighbourhood < ApplicationRecord
     badge_zoom_level == 'district' ? district&.shortname : shortname
   end
 
+  # Returns the localized name for this level (e.g., "Ward", "District")
+  def level_name
+    LEVEL_NAMES[level]&.to_s
+  end
+
+  # Full hierarchy path as array of ancestors (from country down to self)
+  def hierarchy_path
+    [*ancestors.order(:ancestry), self]
+  end
+
+  # Full hierarchy as formatted string
+  # @param separator [String] separator between levels (default: ', ')
+  # @return [String] e.g., "England, South East, East Sussex, Wealden, Uckfield North"
+  def full_hierarchy_name(separator: ', ')
+    hierarchy_path.map(&:shortname).join(separator)
+  end
+
+  # Check if this neighbourhood has children with actual data
+  # Used for smart-skip in cascading pickers
+  def populated_children?
+    children.where.not(name: [nil, '']).latest_release.exists?
+  end
+
+  # Refresh cached partners_count for this neighbourhood
+  def refresh_partners_count!
+    # Use the same logic as partners method to avoid double-counting
+    count = partners.count
+    update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
+  end
+
   class << self
     def find_from_postcodesio_response(res)
       ons_id = res['codes']['admin_ward']
       Neighbourhood.where(unit_code_value: ons_id).first
+    end
+
+    # Refresh cached partners_count for all neighbourhoods
+    # Run periodically or after bulk partner changes
+    def refresh_partners_count!
+      connection.execute(<<-SQL.squish)
+        UPDATE neighbourhoods SET partners_count = (
+          SELECT COUNT(*) FROM (
+            SELECT DISTINCT p.id
+            FROM addresses a
+            JOIN partners p ON p.address_id = a.id
+            WHERE a.neighbourhood_id = neighbourhoods.id
+            UNION
+            SELECT DISTINCT sa.partner_id
+            FROM service_areas sa
+            WHERE sa.neighbourhood_id = neighbourhoods.id
+          ) AS unique_partners
+        )
+      SQL
     end
 
     def find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(scope, legacy_neighbourhoods)
