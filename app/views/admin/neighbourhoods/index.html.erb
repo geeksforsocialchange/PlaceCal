@@ -3,7 +3,7 @@
     model: :neighbourhoods,
     column_titles: [
       'Neighbourhood',
-      'Type',
+      'Level',
       'Hierarchy',
       'Partners',
       'Release',
@@ -15,29 +15,21 @@
       unit: { fit: true },
       hierarchy: { sortable: false },
       partners_count: { fit: true },
-      release_date: { fit: true },
+      release_date: { fit: true, sortable: false },
       actions: { sortable: false, fit: true }
     },
     default_sort: { column: 'partners_count', direction: 'desc' },
     filters: [
       {
-        column: 'country_id',
-        label: 'Country',
-        width: 'w-40',
-        options: Neighbourhood.countries.latest_release.order(:name).map { |n|
-          { value: n.id, label: n.name }
-        }
-      },
-      {
         column: 'unit',
-        label: 'Type',
+        label: 'Level',
         width: 'w-32',
         options: [
-          { value: 'ward', label: 'Ward' },
-          { value: 'district', label: 'District' },
-          { value: 'county', label: 'County' },
-          { value: 'region', label: 'Region' },
-          { value: 'country', label: 'Country' }
+          { value: 'ward', label: 'Ward (L1)' },
+          { value: 'district', label: 'District (L2)' },
+          { value: 'county', label: 'County (L3)' },
+          { value: 'region', label: 'Region (L4)' },
+          { value: 'country', label: 'Country (L5)' }
         ]
       },
       {
@@ -49,6 +41,46 @@
           { value: 'current', label: 'Current' },
           { value: 'legacy', label: 'Legacy' }
         ]
+      }
+    ],
+    secondary_filters: [
+      {
+        column: 'country_id',
+        label: 'Country (L5)',
+        width: 'min-w-40',
+        type: :hierarchical,
+        level: 5,
+        endpoint: children_admin_neighbourhoods_path(format: :json),
+        options: Neighbourhood.countries.latest_release.order(:name).map { |n|
+          { value: n.id, label: n.name }
+        }
+      },
+      {
+        column: 'region_id',
+        label: 'Region (L4)',
+        width: 'min-w-48',
+        type: :hierarchical,
+        level: 4,
+        parent_filter: 'country_id',
+        endpoint: children_admin_neighbourhoods_path(format: :json)
+      },
+      {
+        column: 'county_id',
+        label: 'County (L3)',
+        width: 'min-w-48',
+        type: :hierarchical,
+        level: 3,
+        parent_filter: 'region_id',
+        endpoint: children_admin_neighbourhoods_path(format: :json)
+      },
+      {
+        column: 'district_id',
+        label: 'District (L2)',
+        width: 'min-w-48',
+        type: :hierarchical,
+        level: 2,
+        parent_filter: 'county_id',
+        endpoint: children_admin_neighbourhoods_path(format: :json)
       }
     ],
     data: @neighbourhoods,

@@ -34,10 +34,19 @@ class NeighbourhoodDatatable < Datatable
 
     # Apply filters from request params
     if params[:filter].present?
-      # Country filter (hierarchical drilldown)
-      if params[:filter][:country_id].present?
-        country = Neighbourhood.find_by(id: params[:filter][:country_id])
-        records = records.where(id: country.subtree_ids) if country
+      # Hierarchical filters - use the most specific one selected
+      # Priority: district > county > region > country
+      hierarchy_filter_id = nil
+      %i[district_id county_id region_id country_id].each do |key|
+        if params[:filter][key].present?
+          hierarchy_filter_id = params[:filter][key]
+          break
+        end
+      end
+
+      if hierarchy_filter_id
+        parent = Neighbourhood.find_by(id: hierarchy_filter_id)
+        records = records.where(id: parent.subtree_ids) if parent
       end
 
       # Unit type filter

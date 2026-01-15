@@ -16,6 +16,7 @@ export default class extends Controller {
 		"clearSort",
 		"sortIcon",
 		"dependentFilter",
+		"hierarchicalFilter",
 	];
 	static values = {
 		source: String,
@@ -39,6 +40,9 @@ export default class extends Controller {
 		this.applyDefaultFilters();
 
 		this.loadData();
+
+		// Show sort indicator for default sort column
+		this.updateSortIndicators();
 	}
 
 	applyDefaultFilters() {
@@ -119,6 +123,9 @@ export default class extends Controller {
 			this.updateDependentFilters(column, value);
 		}
 
+		// Check if this is a hierarchical filter - load children for child filters
+		this.updateHierarchicalFilters(column, value);
+
 		this.currentPage = 0;
 		this.loadData();
 		this.updateClearFiltersButton();
@@ -188,6 +195,123 @@ export default class extends Controller {
 		});
 	}
 
+	// Update hierarchical filter dropdowns when parent filter changes
+	updateHierarchicalFilters(parentColumn, parentValue) {
+		// Query DOM directly to ensure we get all hierarchical filters
+		const hierarchicalFilters = this.element.querySelectorAll(
+			'[data-admin-table-target="hierarchicalFilter"]'
+		);
+		hierarchicalFilters.forEach((select) => {
+			if (select.dataset.filterParent === parentColumn) {
+				const childColumn = select.dataset.filterColumn;
+				const endpoint = select.dataset.filterEndpoint;
+				const level = select.dataset.filterLevel;
+
+				// Clear the child filter value and all downstream filters
+				select.value = "";
+				delete this.filters[childColumn];
+				this.clearDownstreamHierarchicalFilters(childColumn);
+
+				if (parentValue && endpoint) {
+					// Load children from endpoint
+					this.loadHierarchicalOptions(select, endpoint, parentValue, level);
+				} else {
+					// Hide the select and clear options
+					select.classList.add("hidden");
+					this.clearSelectOptions(select);
+				}
+			}
+		});
+	}
+
+	// Clear all hierarchical filters that are downstream of the given column
+	clearDownstreamHierarchicalFilters(parentColumn) {
+		const hierarchicalFilters = this.element.querySelectorAll(
+			'[data-admin-table-target="hierarchicalFilter"]'
+		);
+		hierarchicalFilters.forEach((select) => {
+			if (select.dataset.filterParent === parentColumn) {
+				const childColumn = select.dataset.filterColumn;
+				select.value = "";
+				select.classList.add("hidden");
+				this.clearSelectOptions(select);
+				delete this.filters[childColumn];
+				// Recursively clear downstream filters
+				this.clearDownstreamHierarchicalFilters(childColumn);
+			}
+		});
+	}
+
+	// Clear options from a select, keeping only the first (label) option
+	clearSelectOptions(select) {
+		const firstOption = select.querySelector("option");
+		const label = firstOption ? firstOption.textContent : "";
+		select.innerHTML = `<option value="">${label}</option>`;
+	}
+
+	// Load options for a hierarchical filter from the endpoint
+	async loadHierarchicalOptions(select, endpoint, parentId, level) {
+		try {
+			const url = new URL(endpoint, window.location.origin);
+			url.searchParams.set("parent_id", parentId);
+			url.searchParams.set("level", level);
+
+			const response = await fetch(url);
+			const data = await response.json();
+
+			// Get the label from the first option
+			const firstOption = select.querySelector("option");
+			const label = firstOption ? firstOption.textContent : "Select...";
+
+			// Build new options with level indicator
+			let optionsHtml = `<option value="">${label}</option>`;
+			data.forEach((item) => {
+				const levelLabel = item.level ? ` (L${item.level})` : "";
+				optionsHtml += `<option value="${item.id}">${item.name}${levelLabel}</option>`;
+			});
+
+			select.innerHTML = optionsHtml;
+
+			// Show the select if there are options
+			if (data.length > 0) {
+				select.classList.remove("hidden");
+			} else {
+				// Smart-skip: if no options at this level, try to load the next level down
+				select.classList.add("hidden");
+				this.smartSkipToNextLevel(select, endpoint, parentId);
+			}
+		} catch (error) {
+			console.error("Error loading hierarchical options:", error);
+			select.classList.add("hidden");
+		}
+	}
+
+	// Smart-skip: when a level has no options, try to load the next level
+	smartSkipToNextLevel(currentSelect, endpoint, parentId) {
+		const currentColumn = currentSelect.dataset.filterColumn;
+
+		// Find the next level filter that depends on this one
+		const hierarchicalFilters = this.element.querySelectorAll(
+			'[data-admin-table-target="hierarchicalFilter"]'
+		);
+		hierarchicalFilters.forEach((select) => {
+			if (select.dataset.filterParent === currentColumn) {
+				const nextLevel = select.dataset.filterLevel;
+				const nextEndpoint = select.dataset.filterEndpoint;
+
+				if (nextEndpoint) {
+					// Load the next level using the same parent ID (skipping the empty level)
+					this.loadHierarchicalOptions(
+						select,
+						nextEndpoint,
+						parentId,
+						nextLevel
+					);
+				}
+			}
+		});
+	}
+
 	clearFilters() {
 		this.filters = {};
 		// Reset dropdown filters to default or empty
@@ -204,6 +328,15 @@ export default class extends Controller {
 		this.dependentFilterTargets.forEach((select) => {
 			select.value = "";
 			select.classList.add("hidden");
+		});
+		// Reset hierarchical filters (hide child filters, keep root visible)
+		this.hierarchicalFilterTargets.forEach((select) => {
+			select.value = "";
+			if (select.dataset.filterParent) {
+				// This is a child filter - hide it and clear options
+				select.classList.add("hidden");
+				this.clearSelectOptions(select);
+			}
 		});
 		// Reset radio button filters to "All"
 		this.radioFilterTargets.forEach((container) => {

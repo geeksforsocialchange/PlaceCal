@@ -6,7 +6,8 @@ module Admin
 
     # GET /admin/neighbourhoods/children?parent_id=123&level=4
     # GET /admin/neighbourhoods/children?level=5 (for countries, no parent)
-    # Returns JSON array of neighbourhoods that are children of the given parent at the specified level
+    # Returns JSON array of neighbourhoods that are descendants of the given parent at the specified level
+    # Uses subtree to support smart-skip (finding descendants at any level, not just direct children)
     def children
       authorize Neighbourhood, :index?
 
@@ -14,7 +15,8 @@ module Admin
 
       children = if params[:parent_id].present?
                    parent = Neighbourhood.find(params[:parent_id])
-                   parent.children.at_level(level)
+                   # Use subtree to find descendants at any level (supports smart-skip)
+                   parent.subtree.at_level(level).where.not(id: parent.id)
                  else
                    # Top level (countries) - no parent needed
                    Neighbourhood.roots.at_level(level)

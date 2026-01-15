@@ -92,6 +92,51 @@ RSpec.describe "Admin::Neighbourhoods Datatable JSON API", type: :request do
       end
     end
 
+    context "hierarchical filters" do
+      let(:current_date) { Neighbourhood::LATEST_RELEASE_DATE }
+      let!(:country) { create(:neighbourhood, name: "England", unit: "country", release_date: current_date) }
+      let!(:region) { create(:neighbourhood, name: "South East", unit: "region", parent: country, release_date: current_date) }
+      let!(:county) { create(:neighbourhood, name: "East Sussex", unit: "county", parent: region, release_date: current_date) }
+      let!(:district) { create(:neighbourhood, name: "Wealden", unit: "district", parent: county, release_date: current_date) }
+      let!(:ward) { create(:neighbourhood, name: "Uckfield", unit: "ward", parent: district, release_date: current_date) }
+      let!(:other_ward) { create(:neighbourhood, name: "Other Ward", unit: "ward", release_date: current_date) }
+
+      it "filters by country_id to show all descendants" do
+        datatable_request("filter" => { "country_id" => country.id.to_s })
+
+        json = response.parsed_body
+        names = json["data"].map { |d| d["name"] }
+        expect(names.join).to include("England")
+        expect(names.join).to include("Uckfield")
+        expect(names.join).not_to include("Other Ward")
+      end
+
+      it "filters by region_id to show region and descendants" do
+        datatable_request("filter" => { "country_id" => country.id.to_s, "region_id" => region.id.to_s })
+
+        json = response.parsed_body
+        names = json["data"].map { |d| d["name"] }
+        expect(names.join).to include("South East")
+        expect(names.join).to include("Uckfield")
+        expect(names.join).not_to include("England") # Parent not included
+        expect(names.join).not_to include("Other Ward")
+      end
+
+      it "uses most specific filter when multiple hierarchy levels selected" do
+        datatable_request("filter" => {
+                            "country_id" => country.id.to_s,
+                            "region_id" => region.id.to_s,
+                            "district_id" => district.id.to_s
+                          })
+
+        json = response.parsed_body
+        names = json["data"].map { |d| d["name"] }
+        expect(names.join).to include("Wealden")
+        expect(names.join).to include("Uckfield")
+        expect(names.join).not_to include("East Sussex") # County not included
+      end
+    end
+
     context "release filter" do
       let(:current_date) { Neighbourhood::LATEST_RELEASE_DATE }
       let(:legacy_date) { Date.new(2020, 1, 1) }
