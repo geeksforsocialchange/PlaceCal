@@ -15,12 +15,17 @@ class SiteDatatable < Datatable
   end
 
   def data
+    # Precompute counts for all visible records to avoid N+1 queries
+    site_ids = records.map(&:id)
+    partner_counts = precompute_partner_counts(site_ids)
+    event_counts = precompute_event_counts(site_ids)
+
     records.map do |record|
       {
         name: render_name_cell(record),
         primary_neighbourhood: render_primary_neighbourhood_cell(record),
-        partners_count: render_count_cell(partners_count_for(record), 'partner'),
-        events_count: render_count_cell(record.events_this_week, 'event'),
+        partners_count: render_count_cell(partner_counts[record.id] || 0, 'partner'),
+        events_count: render_count_cell(event_counts[record.id] || 0, 'event'),
         site_admin: render_site_admin_cell(record),
         updated_at: render_relative_time(record.updated_at),
         actions: render_actions(record)
@@ -63,8 +68,32 @@ class SiteDatatable < Datatable
     edit_admin_site_path(record)
   end
 
-  def partners_count_for(record)
-    Partner.for_site(record).count
+  # Precompute partner counts for all sites with caching
+  # Partner.for_site is complex (neighbourhood/tag filtering) so we cache for 5 minutes
+  def precompute_partner_counts(site_ids)
+    return {} if site_ids.empty?
+
+    counts = {}
+    Site.where(id: site_ids).includes(:neighbourhoods, :tags).find_each do |site|
+      counts[site.id] = Rails.cache.fetch("site_partners_count/#{site.id}", expires_in: 5.minutes) do
+        Partner.for_site(site).count
+      end
+    end
+    counts
+  end
+
+  # Precompute event counts for all sites (events this week) with caching
+  # Cache expires in 5 minutes since event counts can change
+  def precompute_event_counts(site_ids)
+    return {} if site_ids.empty?
+
+    counts = {}
+    Site.where(id: site_ids).includes(:neighbourhoods, :tags).find_each do |site|
+      counts[site.id] = Rails.cache.fetch("site_events_week_count/#{site.id}", expires_in: 5.minutes) do
+        Event.for_site(site).find_by_week(Time.zone.now).count
+      end
+    end
+    counts
   end
 
   def render_name_cell(record)
