@@ -246,63 +246,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
   end
 
-  describe "cascading district/ward filter" do
-    it "shows ward dropdown only after selecting district" do
-      # Ward dropdown should be hidden initially (check for non-visibility)
-      expect(page).to have_css("select[data-filter-column='district']")
-      # Check that ward dropdown exists but is not visible
-      expect(page).to have_css("select[data-filter-column='ward']", visible: :all)
-      expect(page).not_to have_css("select[data-filter-column='ward']", visible: :visible)
-    end
-
-    it "shows ward dropdown after selecting district" do
-      select_datatable_filter "Test District", column: "district"
-
-      # Ward dropdown should now be visible
-      expect(page).to have_css("select[data-filter-column='ward']", visible: :visible)
-    end
-
-    it "ward dropdown only shows wards from selected district" do
-      select_datatable_filter "Test District", column: "district"
-
-      ward_select = find("select[data-filter-column='ward']")
-      expect(ward_select).to have_css("option", text: "Ward Alpha")
-      expect(ward_select).to have_css("option", text: "Ward Beta")
-    end
-
-    it "selecting district filters partners" do
-      select_datatable_filter "Test District", column: "district"
-      wait_for_datatable
-
-      # All partners are in this district's wards
-      expect(datatable_row_count).to eq(3)
-    end
-
-    it "selecting ward further filters partners" do
-      select_datatable_filter "Test District", column: "district"
-      wait_for_datatable
-
-      select_datatable_filter "Ward Alpha", column: "ward"
-      wait_for_datatable
-
-      expect(datatable_row_count).to eq(2)
-      datatable_contains("Alpha Community Centre")
-      datatable_contains("Gamma Sports Hall")
-      datatable_does_not_contain("Beta Youth Club")
-    end
-
-    it "changing district clears ward selection" do
-      select_datatable_filter "Test District", column: "district"
-      select_datatable_filter "Ward Alpha", column: "ward"
-      wait_for_datatable
-
-      # Clear district selection
-      select_datatable_filter "District", column: "district"
-
-      # Ward dropdown should be hidden again (not visible)
-      expect(page).not_to have_css("select[data-filter-column='ward']", visible: :visible)
-    end
-  end
+  # NOTE: The old cascading district/ward filter tests were removed as we now use
+  # hierarchical neighbourhood filters (country_id, region_id, county_id, district_id, ward_id)
+  # which are tested in the unit tests (spec/datatables/partner_datatable_spec.rb)
 
   describe "multiple filters combined" do
     it "applies multiple filters simultaneously" do
