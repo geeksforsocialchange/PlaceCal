@@ -4,39 +4,73 @@
 ) %>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <%# Main Neighbourhood Card %>
-  <div class="card bg-base-200/50 border border-base-300">
-    <div class="card-body p-4 gap-3">
-      <h3 class="font-semibold flex items-center gap-2">
-        <%= icon(:neighbourhood, size: '4') %>
-        <%= t('admin.sites.sections.main_neighbourhood') %>
-      </h3>
-      <p class="text-xs text-base-content/60"><%= t('admin.sites.sections.main_neighbourhood_description') %></p>
+  <%# Left column: Main + Other Neighbourhoods %>
+  <div class="space-y-6">
+    <%# Main Neighbourhood Card %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:neighbourhood, size: '4') %>
+          <%= t('admin.sites.sections.main_neighbourhood') %>
+        </h3>
+        <p class="text-xs text-base-content/60"><%= t('admin.sites.sections.main_neighbourhood_description') %></p>
 
-      <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
-        <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
-        <% if primary_neighbourhood.present? %>
-          <%= render Admin::NeighbourhoodCardComponent.new(
-                neighbourhood: primary_neighbourhood,
-                show_header: false,
-                show_remove: false
-              ) %>
-          <%= sn.hidden_field :relation_type, value: "Primary" %>
-          <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
-          <% if primary_neighbourhood.legacy_neighbourhood? %>
-            <div role="alert" class="alert alert-warning py-2 mt-3">
-              <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
-              <span class="text-sm"><%= t('admin.sites.neighbourhoods.legacy_warning') %></span>
-            </div>
+        <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
+          <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
+          <% if primary_neighbourhood.present? %>
+            <%= render Admin::NeighbourhoodCardComponent.new(
+                  neighbourhood: primary_neighbourhood,
+                  show_header: false,
+                  show_remove: false
+                ) %>
+            <%= sn.hidden_field :relation_type, value: "Primary" %>
+            <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
+            <% if primary_neighbourhood.legacy_neighbourhood? %>
+              <div role="alert" class="alert alert-warning py-2 mt-3">
+                <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
+                <span class="text-sm"><%= t('admin.sites.neighbourhoods.legacy_warning') %></span>
+              </div>
+            <% end %>
+          <% else %>
+            <%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: sn, relation_type: 'Primary', show_remove: false) %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Other Neighbourhoods Card %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:map_pin, size: '4') %>
+          <%= t('admin.sites.sections.other_neighbourhoods') %>
+        </h3>
+        <p class="text-xs text-base-content/60"><%= t('admin.sites.sections.other_neighbourhoods_description') %></p>
+
+        <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
+          <%= nested_form_for(f, :sites_neighbourhoods,
+                add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
+                add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
+                partial: 'sites_neighbourhood_fields') do %>
+            <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
+              <%= render 'sites_neighbourhood_fields', f: neighbourhood %>
+            <% end %>
           <% end %>
         <% else %>
-          <%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: sn, relation_type: 'Primary', show_remove: false) %>
+          <% secondary_neighbourhoods = @site.sites_neighbourhoods.where.not(relation_type: 'Primary').map(&:neighbourhood) %>
+          <%= render Admin::ItemBadgeListComponent.new(
+            items: secondary_neighbourhoods,
+            icon_name: :map_pin,
+            icon_color: "bg-sky-100 text-sky-600",
+            link_path: :admin_neighbourhood_path,
+            empty_text: t('admin.empty.no_items', items: Neighbourhood.model_name.human(count: 2).downcase)
+          ) %>
         <% end %>
-      <% end %>
+      </div>
     </div>
   </div>
 
-  <%# Display Level Card %>
+  <%# Right column: Display Level %>
   <div class="card bg-base-200/50 border border-base-300 h-fit">
     <div class="card-body p-4 gap-3">
       <h3 class="font-semibold flex items-center gap-2">
@@ -51,36 +85,5 @@
         values: Site.badge_zoom_level.values
       ) %>
     </div>
-  </div>
-</div>
-
-<%# Other Neighbourhoods Card %>
-<div class="card bg-base-200/50 border border-base-300 mt-6">
-  <div class="card-body p-4 gap-3">
-    <h3 class="font-semibold flex items-center gap-2">
-      <%= icon(:map_pin, size: '4') %>
-      <%= t('admin.sites.sections.other_neighbourhoods') %>
-    </h3>
-    <p class="text-xs text-base-content/60"><%= t('admin.sites.sections.other_neighbourhoods_description') %></p>
-
-    <% if policy(@site).permitted_attributes.include? :sites_neighbourhoods %>
-      <%= nested_form_for(f, :sites_neighbourhoods,
-            add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
-            add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
-            partial: 'sites_neighbourhood_fields') do %>
-        <%= f.simple_fields_for :sites_neighbourhoods do |neighbourhood| %>
-          <%= render 'sites_neighbourhood_fields', f: neighbourhood %>
-        <% end %>
-      <% end %>
-    <% else %>
-      <% secondary_neighbourhoods = @site.sites_neighbourhoods.where.not(relation_type: 'Primary').map(&:neighbourhood) %>
-      <%= render Admin::ItemBadgeListComponent.new(
-        items: secondary_neighbourhoods,
-        icon_name: :map_pin,
-        icon_color: "bg-sky-100 text-sky-600",
-        link_path: :admin_neighbourhood_path,
-        empty_text: t('admin.empty.no_items', items: Neighbourhood.model_name.human(count: 2).downcase)
-      ) %>
-    <% end %>
   </div>
 </div>
