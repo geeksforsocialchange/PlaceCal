@@ -60,7 +60,6 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
         # User assignment and actions
         expect(response.body).to include("Users")
         expect(response.body).to include("Save")
-        expect(response.body).to include("Delete")
       end
     end
   end

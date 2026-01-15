@@ -72,86 +72,7 @@
     </div>
   </div>
 
-  <%# Section 3: Geography (for existing records only) %>
-  <% unless @neighbourhood.new_record? %>
-    <%= render Admin::SectionHeaderComponent.new(
-      title: t('admin.neighbourhoods.form.geography_title')
-    ) %>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <%# Parents Card %>
-      <%= render Admin::CardComponent.new(
-            title: t('admin.neighbourhoods.form.is_part_of'),
-            icon: :arrow_up
-          ) do %>
-        <% ancestors = @neighbourhood.ancestors.order(:ancestry) %>
-        <% if ancestors.any? %>
-          <div class="space-y-1">
-            <% ancestors.reverse.each do |ancestor| %>
-              <%= link_to edit_admin_neighbourhood_path(ancestor),
-                  class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-                <%= level_badge(ancestor.level) %>
-                <div class="flex-1 min-w-0">
-                  <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate block">
-                    <%= safe_neighbourhood_name(ancestor) %>
-                  </span>
-                  <span class="text-xs text-base-content/50"><%= ancestor.unit&.titleize %></span>
-                </div>
-                <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-placecal-orange transition-colors') %>
-              <% end %>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="flex items-center gap-3 py-4 text-base-content/40">
-            <%= icon(:globe, size: '6', stroke_width: '1.5') %>
-            <span class="text-sm"><%= t('admin.neighbourhoods.show.is_root') %></span>
-          </div>
-        <% end %>
-      <% end %>
-
-      <%# Children Card %>
-      <%= render Admin::CardComponent.new(
-            title: t('admin.neighbourhoods.form.contains'),
-            icon: :arrow_down
-          ) do %>
-        <% children = @neighbourhood.children.order(:name) %>
-        <% if children.any? %>
-          <div class="space-y-1 max-h-64 overflow-y-auto">
-            <% children.each do |child| %>
-              <%= link_to edit_admin_neighbourhood_path(child),
-                  class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-                <%= level_badge(child.level) %>
-                <div class="flex-1 min-w-0">
-                  <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate block">
-                    <%= safe_neighbourhood_name(child) %>
-                  </span>
-                  <span class="text-xs text-base-content/50"><%= child.unit&.titleize %></span>
-                </div>
-                <% if child.descendants.any? %>
-                  <span class="badge badge-sm badge-ghost"><%= child.descendants.count %></span>
-                <% end %>
-                <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-placecal-orange transition-colors') %>
-              <% end %>
-            <% end %>
-          </div>
-          <% if children.count > 10 %>
-            <p class="text-xs text-base-content/50 mt-3 text-center">
-              <%= t('admin.neighbourhoods.show.descendants', count: children.count) %>
-            </p>
-          <% end %>
-        <% else %>
-          <%= render Admin::EmptyStateComponent.new(
-                icon: :neighbourhood,
-                message: t('admin.neighbourhoods.show.no_children'),
-                icon_size: '8',
-                padding: 'py-6'
-              ) %>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
-
-  <%# Section 4: Neighbourhood Admins (root users only) %>
+  <%# Section 3: Neighbourhood Admins (root users only) %>
   <% if policy(@neighbourhood).set_users? %>
     <%= render Admin::SectionHeaderComponent.new(
       title: t('admin.neighbourhoods.form.admins_title'),
@@ -176,15 +97,6 @@
   <%= render Admin::SaveBarComponent.new(track_changes: true) do |save_bar| %>
     <% save_bar.with_button do %>
       <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-    <% end %>
-    <% if !@neighbourhood.new_record? && policy(@neighbourhood).destroy? %>
-      <% save_bar.with_button do %>
-        <%= link_to t('admin.actions.delete'),
-            admin_neighbourhood_path(@neighbourhood),
-            method: :delete,
-            data: { confirm: t('admin.confirm.delete_permanent', model: 'neighbourhood') },
-            class: "btn btn-outline btn-error" %>
-      <% end %>
     <% end %>
   <% end %>
 <% end %>
