@@ -74,22 +74,31 @@
 
   <%# Section 3: Neighbourhood Admins (root users only) %>
   <% if policy(@neighbourhood).set_users? %>
-    <%= render Admin::SectionHeaderComponent.new(
-      title: t('admin.neighbourhoods.form.admins_title'),
-      description: t('admin.neighbourhoods.form.admins_description')
-    ) %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm mb-8">
+      <div class="card-body p-6">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+            <%= icon(:users, size: '6', css_class: 'text-emerald-600') %>
+          </div>
+          <div>
+            <h3 class="card-title text-lg"><%= t('admin.neighbourhoods.form.admins_title') %></h3>
+            <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.neighbourhoods.form.admins_description') %></p>
+          </div>
+        </div>
 
-    <div class="mb-8">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= User.model_name.human(count: 2) %></legend>
-        <%= f.association :users,
-            label: false,
-            collection: options_for_users,
-            input_html: {
-              class: "w-full",
-              data: { controller: "tom-select" }
-            } %>
-      </fieldset>
+        <%= render Admin::StackedListSelectorComponent.new(
+          field_name: "neighbourhood[user_ids][]",
+          items: @neighbourhood.users.order(:last_name),
+          options: options_for_users,
+          permitted_ids: nil,
+          icon_name: :user,
+          icon_color: "bg-emerald-100 text-emerald-600",
+          empty_text: t('admin.neighbourhoods.show.no_admins'),
+          add_placeholder: t('admin.placeholders.add_model', model: User.model_name.human.downcase),
+          use_tom_select: true,
+          wrapper_class: "neighbourhood_users"
+        ) %>
+      </div>
     </div>
   <% end %>
 
