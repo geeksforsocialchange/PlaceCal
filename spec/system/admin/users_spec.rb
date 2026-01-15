@@ -55,7 +55,7 @@ RSpec.describe "Admin Users", :slow, type: :system do
   end
 
   describe "cascading neighbourhood picker on users form" do
-    it "allows adding neighbourhoods via cascading picker", :aggregate_failures, pending: "TODO: Fix cascading neighbourhood AJAX test setup" do
+    it "allows adding neighbourhoods via cascading picker", :aggregate_failures do
       click_link "Users"
       await_datatables
 
@@ -68,8 +68,13 @@ RSpec.describe "Admin Users", :slow, type: :system do
       # Click Add neighbourhood button
       click_link "Add neighbourhood"
 
-      # Should see cascading dropdowns
-      expect(page).to have_css('[data-cascading-dropdown-target="selects"]')
+      # Should see cascading neighbourhood controller initialized
+      expect(page).to have_css('[data-controller="cascading-neighbourhood"]', wait: 10)
+
+      # The country selector should be present and populated
+      within(all('[data-controller="cascading-neighbourhood"]').last) do
+        expect(page).to have_css('[data-cascading-neighbourhood-target="country"]')
+      end
     end
   end
 end

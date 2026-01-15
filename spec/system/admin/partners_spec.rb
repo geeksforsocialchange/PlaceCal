@@ -164,7 +164,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
     end
   end
 
-  describe "service areas", skip: "TODO: Fix cascading neighbourhood AJAX test setup" do
+  describe "service areas" do
     it "allows adding service areas to existing partner" do
       click_link "Partners"
       await_datatables

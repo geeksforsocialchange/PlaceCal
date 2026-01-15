@@ -16,19 +16,7 @@ en:
 
     # Tab labels
     tabs:
-      admin: "Admin"
-      admins: "Admins"
-      basic_info: "Basic Info"
-      calendars: "Calendars"
-      contact: "Contact"
-      events: "Events"
-      images: "Images"
       location: "Location"
-      neighbourhoods: "Neighbourhoods"
-      partnerships: "Partnerships"
-      preview: "Preview"
-      settings: "Settings"
-      tags: "Tags"
 
     # Section headers
     sections:
