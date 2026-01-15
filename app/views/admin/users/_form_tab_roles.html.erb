@@ -97,13 +97,28 @@
         </h3>
         <p class="text-xs text-base-content/60"><%= t('admin.users.fields.sites_hint', default: 'Sites where this user is assigned as admin') %></p>
 
-        <%= render Admin::ItemBadgeListComponent.new(
-          items: @user.sites.order(:name),
-          icon_name: :site,
-          icon_color: "bg-purple-100 text-purple-600",
-          link_path: :edit_admin_site_path,
-          empty_text: t('admin.empty.none_assigned', items: Site.model_name.human(count: 2).downcase)
-        ) %>
+        <% sites = @user.sites.order(:name) %>
+        <% if sites.any? %>
+          <div class="space-y-2">
+            <% sites.each do |site| %>
+              <%= link_to edit_admin_site_path(site),
+                  class: "group flex items-center gap-3 p-3 bg-base-200/80 rounded-xl border border-base-300/50 hover:border-base-300 transition-all" do %>
+                <div class="shrink-0 w-9 h-9 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+                  <%= icon(:site, size: '5') %>
+                </div>
+                <span class="flex-1 font-medium text-sm text-base-content/90"><%= site.name %></span>
+                <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-base-content/50') %>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-base-200 mb-2">
+              <%= icon(:site, size: '6', css_class: 'text-base-content/30') %>
+            </div>
+            <p class="text-sm text-base-content/50"><%= t('admin.empty.none_assigned', items: Site.model_name.human(count: 2).downcase) %></p>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
