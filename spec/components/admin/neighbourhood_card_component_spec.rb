@@ -85,13 +85,13 @@ RSpec.describe Admin::NeighbourhoodCardComponent, type: :component do
 
     it "shows remove button when show_remove is true and form is provided" do
       render_inline(described_class.new(neighbourhood: ward, show_remove: true, form: form))
-      # The trash icon is rendered with text-error class
-      expect(page).to have_css(".text-error")
+      # The remove button is rendered with btn-ghost class
+      expect(page).to have_css(".btn-ghost.btn-square")
     end
 
     it "hides remove button when show_remove is false" do
       render_inline(described_class.new(neighbourhood: ward, show_remove: false, form: form))
-      expect(page).not_to have_css(".text-error")
+      expect(page).not_to have_css(".btn-ghost.btn-square")
     end
   end
 
