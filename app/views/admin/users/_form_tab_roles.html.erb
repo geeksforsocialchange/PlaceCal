@@ -1,101 +1,110 @@
 <%# Permissions Tab %>
-<div class="space-y-6">
-  <%# Partnerships %>
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <div class="flex items-start gap-4 mb-4">
-        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-amber-100 to-orange-100 flex items-center justify-center shadow-sm">
-          <%= icon(:partnership, size: '6', css_class: 'text-amber-600') %>
-        </div>
-        <div>
-          <h3 class="card-title text-lg"><%= Partnership.model_name.human(count: 2) %></h3>
-          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partnerships_hint') %></p>
-        </div>
-      </div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <%# Left column: Partnerships and Neighbourhoods %>
+  <div class="space-y-6">
+    <%# Partnerships %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:partnership, size: '4') %>
+          <%= Partnership.model_name.human(count: 2) %>
+        </h3>
+        <p class="text-xs text-base-content/60"><%= t('admin.users.fields.partnerships_hint') %></p>
 
-      <%= render Admin::StackedListSelectorComponent.new(
-        field_name: "user[tag_ids][]",
-        items: @user.partnerships.order(:name),
-        options: options_for_user_partnerships,
-        permitted_ids: nil,
-        icon_name: :partnership,
-        icon_color: "bg-amber-100 text-amber-600",
-        empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
-        add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase),
-        wrapper_class: "user_tags"
-      ) %>
-    </div>
-  </div>
-
-  <%# Partners %>
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <div class="flex items-start gap-4 mb-4">
-        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
-          <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
-        </div>
-        <div>
-          <h3 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h3>
-          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
-        </div>
-      </div>
-
-      <%= render Admin::StackedListSelectorComponent.new(
-        field_name: "user[partner_ids][]",
-        items: @user.partners.order(:name),
-        options: options_for_partners(@user),
-        permitted_ids: permitted_options_for_partners,
-        icon_name: :partner,
-        icon_color: "bg-emerald-100 text-emerald-600",
-        empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
-        add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
-        use_tom_select: true,
-        wrapper_class: "user_partners"
-      ) %>
-    </div>
-  </div>
-
-  <%# Neighbourhoods %>
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <div class="flex items-start gap-4 mb-4">
-        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-sky-100 to-blue-100 flex items-center justify-center shadow-sm">
-          <%= icon(:map_pin, size: '6', css_class: 'text-sky-600') %>
-        </div>
-        <div>
-          <h3 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h3>
-          <p class="text-sm text-base-content/60 mt-0.5">
-            <% if current_user.root? %>
-              <%= t('admin.users.fields.neighbourhoods_hint_root') %>
-            <% else %>
-              <%= t('admin.users.fields.neighbourhoods_hint') %>
-            <% end %>
-          </p>
-        </div>
-      </div>
-
-      <% if current_user.root? %>
         <%= render Admin::StackedListSelectorComponent.new(
-          field_name: "user[neighbourhood_ids][]",
-          items: @user.neighbourhoods.order(:name),
-          options: options_for_user_neighbourhoods(@user),
+          field_name: "user[tag_ids][]",
+          items: @user.partnerships.order(:name),
+          options: options_for_user_partnerships,
           permitted_ids: nil,
-          icon_name: :map_pin,
-          icon_color: "bg-sky-100 text-sky-600",
-          empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
-          add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase),
+          icon_name: :partnership,
+          icon_color: "bg-amber-100 text-amber-600",
+          empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
+          add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase),
+          wrapper_class: "user_tags"
+        ) %>
+      </div>
+    </div>
+
+    <%# Neighbourhoods %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:map_pin, size: '4') %>
+          <%= Neighbourhood.model_name.human(count: 2) %>
+        </h3>
+        <p class="text-xs text-base-content/60">
+          <% if current_user.root? %>
+            <%= t('admin.users.fields.neighbourhoods_hint_root') %>
+          <% else %>
+            <%= t('admin.users.fields.neighbourhoods_hint') %>
+          <% end %>
+        </p>
+
+        <% if current_user.root? %>
+          <%= nested_form_for(f, :neighbourhoods_users,
+                add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
+                add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange mt-2',
+                partial: 'neighbourhoods_user_fields') do %>
+            <%= f.simple_fields_for :neighbourhoods_users do |nuf| %>
+              <%= render 'neighbourhoods_user_fields', f: nuf %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <%= render Admin::ItemBadgeListComponent.new(
+            items: @user.neighbourhoods.order(:name),
+            icon_name: :map_pin,
+            icon_color: "bg-sky-100 text-sky-600",
+            link_path: :admin_neighbourhood_path,
+            empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase)
+          ) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Right column: Partners and Sites %>
+  <div class="space-y-6">
+    <%# Partners %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:partner, size: '4') %>
+          <%= Partner.model_name.human(count: 2) %>
+        </h3>
+        <p class="text-xs text-base-content/60"><%= t('admin.users.fields.partners_hint') %></p>
+
+        <%= render Admin::StackedListSelectorComponent.new(
+          field_name: "user[partner_ids][]",
+          items: @user.partners.order(:name),
+          options: options_for_partners(@user),
+          permitted_ids: permitted_options_for_partners,
+          icon_name: :partner,
+          icon_color: "bg-emerald-100 text-emerald-600",
+          empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
+          add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
           use_tom_select: true,
-          wrapper_class: "user_neighbourhoods"
+          wrapper_class: "user_partners"
         ) %>
-      <% else %>
+      </div>
+    </div>
+
+    <%# Sites (read-only display) %>
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body p-4 gap-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <%= icon(:site, size: '4') %>
+          <%= Site.model_name.human(count: 2) %>
+        </h3>
+        <p class="text-xs text-base-content/60"><%= t('admin.users.fields.sites_hint', default: 'Sites where this user is assigned as admin') %></p>
+
         <%= render Admin::ItemBadgeListComponent.new(
-          items: @user.neighbourhoods.order(:name),
-          icon_name: :map_pin,
-          icon_color: "bg-sky-100 text-sky-600",
-          link_path: :admin_neighbourhood_path,
-          empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase)
+          items: @user.sites.order(:name),
+          icon_name: :site,
+          icon_color: "bg-purple-100 text-purple-600",
+          link_path: :edit_admin_site_path,
+          empty_text: t('admin.empty.none_assigned', items: Site.model_name.human(count: 2).downcase)
         ) %>
-      <% end %>
+      </div>
     </div>
   </div>
 </div>
