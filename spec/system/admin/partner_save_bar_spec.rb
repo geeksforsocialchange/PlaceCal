@@ -30,6 +30,15 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     expect(page).to have_css('input[aria-label="📋 Basic Info"]', wait: 10)
   end
 
+  # Helper to modify form fields in a way that triggers JavaScript input events
+  # Capybara's fill_in doesn't always trigger native events properly in headless Chrome
+  def modify_field(selector, value)
+    input = find(selector)
+    input.click
+    input.native.clear
+    input.send_keys(value)
+  end
+
   describe "tab-aware buttons" do
     before do
       login_as(root_user)
@@ -81,7 +90,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows indicator when form field is modified" do
-      fill_in "partner[name]", with: "Modified Partner Name"
+      modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
       expect(page).to have_text("Unsaved changes", wait: 5)
     end
@@ -96,7 +105,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
       # Go back to basic and modify
       find('input[aria-label="📋 Basic Info"]').click
-      fill_in "partner[name]", with: "Modified Partner Name"
+      modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
       # Go to location tab again
       # Accept the confirmation dialog
@@ -117,7 +126,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "prompts when switching tabs with unsaved changes" do
-      fill_in "partner[name]", with: "Modified Partner Name"
+      modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
       # Try to switch tabs - should prompt
       dismiss_confirm do
@@ -129,7 +138,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "allows tab switch when confirmed" do
-      fill_in "partner[name]", with: "Modified Partner Name"
+      modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
       accept_confirm do
         find('input[aria-label="📍 Location"]').click

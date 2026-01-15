@@ -27,3 +27,6 @@ pin 'lodash/orderBy', to: 'https://esm.sh/lodash-es@4.17.21/orderBy'
 
 # Stimulus controllers - pinned from app/javascript/controllers
 pin_all_from 'app/javascript/controllers', under: 'controllers'
+
+# Controller mixins - shared utilities for controllers
+pin_all_from 'app/javascript/controllers/mixins', under: 'controllers/mixins'
