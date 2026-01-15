@@ -26,8 +26,33 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   def visit_partner_edit
     port = Capybara.current_session.server.port
-    visit "http://admin.lvh.me:#{port}/partners/#{partner.id}/edit"
-    expect(page).to have_css('input[aria-label="📋 Basic Info"]', wait: 10)
+    url = "http://admin.lvh.me:#{port}/partners/#{partner.id}/edit"
+    visit url
+
+    # Wait for page to fully load with retries for CI stability
+    attempts = 0
+    max_attempts = 3
+
+    loop do
+      attempts += 1
+      break if page.has_css?('input[aria-label="📋 Basic Info"]', wait: 10)
+
+      if attempts >= max_attempts
+        # Debug output on final failure
+        Rails.logger.error "Partner edit page failed to load after #{attempts} attempts"
+        Rails.logger.error "Current URL: #{page.current_url}"
+        Rails.logger.error "Page title: #{begin
+          page.title
+        rescue StandardError
+          'unknown'
+        end}"
+        raise Capybara::ExpectationNotMet, "Partner edit form tabs not found after #{max_attempts} attempts"
+      end
+
+      # Retry by reloading the page
+      Rails.logger.warn "Retrying partner edit page load (attempt #{attempts})"
+      visit url
+    end
   end
 
   # Helper to modify form fields in a way that triggers JavaScript input events

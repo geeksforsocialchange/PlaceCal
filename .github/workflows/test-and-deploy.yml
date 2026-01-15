@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [unit, system, cucumber-1, cucumber-2]
+        suite: [unit, system, cucumber-admin, cucumber-public]
 
     services:
       postgres:
@@ -112,36 +112,16 @@ jobs:
         env:
           BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
-      # Cucumber split into 2 parallel jobs for faster CI
-      # cucumber-1: Heavy admin features (~55 scenarios)
-      # cucumber-2: Light admin + public features (~55 scenarios)
-      - name: Run Cucumber features (part 1)
-        if: matrix.suite == 'cucumber-1'
-        run: |
-          bundle exec cucumber --tags "not @wip" \
-            features/admin/partner_form.feature \
-            features/admin/partner_index.feature \
-            features/admin/users.feature \
-            features/admin/calendars.feature
+      # Cucumber split into 2 parallel jobs by directory for faster CI
+      - name: Run Cucumber features (admin)
+        if: matrix.suite == 'cucumber-admin'
+        run: bundle exec cucumber --tags "not @wip" features/admin
         env:
           BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
-      - name: Run Cucumber features (part 2)
-        if: matrix.suite == 'cucumber-2'
-        run: |
-          bundle exec cucumber --tags "not @wip" \
-            features/admin/partner_crud.feature \
-            features/admin/calendar_management.feature \
-            features/admin/tags.feature \
-            features/admin/articles.feature \
-            features/admin/sites.feature \
-            features/admin/user_management.feature \
-            features/admin/supporters.feature \
-            features/admin/neighbourhoods.feature \
-            features/admin/collections.feature \
-            features/admin/dashboard.feature \
-            features/public \
-            features/authentication.feature
+      - name: Run Cucumber features (public)
+        if: matrix.suite == 'cucumber-public'
+        run: bundle exec cucumber --tags "not @wip" features/public features/authentication.feature
         env:
           BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
