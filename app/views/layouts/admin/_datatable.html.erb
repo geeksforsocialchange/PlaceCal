@@ -216,8 +216,12 @@
               width_class = fit_content ? 'w-px whitespace-nowrap' : (col_config&.dig(:width) || '')
               align_class = col_config&.dig(:align) == :center ? 'text-center' : 'text-left'
             %>
+            <%
+              sort_default_dir = col_config&.dig(:sort_default)
+            %>
             <th data-column="<%= columns[index] %>"
                 <% if sortable %>data-action="click->admin-table#sort"<% end %>
+                <% if sort_default_dir %>data-sort-default="<%= sort_default_dir %>"<% end %>
                 class="px-4 py-3 <%= align_class %> text-xs font-semibold text-gray-600 uppercase tracking-wider <%= width_class %> <%= 'cursor-pointer hover:bg-gray-100 select-none' if sortable %>">
               <div class="flex items-center gap-1 <%= 'justify-center' if col_config&.dig(:align) == :center %>">
                 <%= col_title %>

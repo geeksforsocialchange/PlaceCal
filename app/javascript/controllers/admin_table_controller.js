@@ -73,7 +73,9 @@ export default class extends Controller {
 			this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
 		} else {
 			this.sortColumn = column;
-			this.sortDirection = "asc";
+			// Use column's default sort direction if specified, otherwise "asc"
+			const columnDefaultDir = event.currentTarget.dataset.sortDefault;
+			this.sortDirection = columnDefaultDir || "asc";
 		}
 		this.currentPage = 0;
 		this.loadData();
