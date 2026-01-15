@@ -11,31 +11,21 @@
     <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
       <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
       <% if primary_neighbourhood.present? %>
-        <div class="mb-3">
-          <span class="badge badge-lg badge-neutral gap-2">
-            <%= icon(:map_pin, size: '4') %>
-            <%= primary_neighbourhood.contextual_name %>
-            <% if primary_neighbourhood.legacy_neighbourhood? %>
-              (<%= primary_neighbourhood.release_date.year %>/<%= primary_neighbourhood.release_date.month %>)
-            <% end %>
-          </span>
-        </div>
+        <%= render Admin::NeighbourhoodCardComponent.new(
+              neighbourhood: primary_neighbourhood,
+              show_header: false,
+              show_remove: false
+            ) %>
         <%= sn.hidden_field :relation_type, value: "Primary" %>
         <%= sn.hidden_field :neighbourhood_id, value: primary_neighbourhood.id %>
         <% if primary_neighbourhood.legacy_neighbourhood? %>
-          <div role="alert" class="alert alert-warning py-2">
+          <div role="alert" class="alert alert-warning py-2 mt-3">
             <%= icon(:warning, size: '5', css_class: 'shrink-0 stroke-current') %>
             <span class="text-sm"><%= t('admin.sites.neighbourhoods.legacy_warning') %></span>
           </div>
         <% end %>
       <% else %>
-        <%= sn.hidden_field :relation_type, value: "Primary" %>
-        <div class="site_sites_neighbourhood_neighbourhood_id">
-          <%= sn.input :neighbourhood_id, collection: options_for_sites_neighbourhoods(@site), include_blank: false,
-              value_method: ->(obj) { obj[:id] }, label_method: ->(obj) { obj[:name] },
-              input_html: { data: { controller: "tom-select" }, class: 'select select-bordered w-full bg-base-100' },
-              label: '', label_html: { hidden: true }, wrapper: false %>
-        </div>
+        <%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: sn, relation_type: 'Primary', show_remove: false) %>
       <% end %>
     <% end %>
   </fieldset>

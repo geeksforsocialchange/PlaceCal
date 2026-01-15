@@ -1,3 +1,12 @@
 <% if f.object.relation_type != 'Primary' %>
-  <%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: f, relation_type: 'Secondary') %>
+  <% if f.object.neighbourhood.present? %>
+    <%= render Admin::NeighbourhoodCardComponent.new(
+          neighbourhood: f.object.neighbourhood,
+          show_header: false,
+          show_remove: true,
+          form: f
+        ) %>
+  <% else %>
+    <%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: f, relation_type: 'Secondary', show_remove: true) %>
+  <% end %>
 <% end %>
