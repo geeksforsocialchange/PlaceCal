@@ -97,7 +97,7 @@
                   <% if is_hierarchical %>data-filter-level="<%= filter[:level] %>"<% end %>
                   <% if filter[:endpoint] %>data-filter-endpoint="<%= filter[:endpoint] %>"<% end %>
                   data-action="change->admin-table#applyFilter"
-                  class="select-filter <%= 'hidden' if is_dependent && !has_options %> <%= filter[:width] %>">
+                  class="select-filter <%= 'hidden' if is_dependent %> <%= filter[:width] %>">
             <option value=""><%= filter[:label] %></option>
             <% filter[:options]&.each do |opt| %>
               <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %> <% if has_default && filter[:default].to_s == opt[:value].to_s %>selected<% end %>><%= opt[:label] %></option>
@@ -191,7 +191,7 @@
                   <% if is_hierarchical %>data-filter-level="<%= filter[:level] %>"<% end %>
                   <% if filter[:endpoint] %>data-filter-endpoint="<%= filter[:endpoint] %>"<% end %>
                   data-action="change->admin-table#applyFilter"
-                  class="select-filter <%= 'hidden' if is_dependent && !has_options %> <%= filter[:width] %>">
+                  class="select-filter <%= 'hidden' if is_dependent %> <%= filter[:width] %>">
             <option value=""><%= filter[:label] %></option>
             <% filter[:options]&.each do |opt| %>
               <option value="<%= opt[:value] %>"><%= opt[:label] %></option>

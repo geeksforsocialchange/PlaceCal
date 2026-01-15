@@ -8,7 +8,7 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
   let!(:neighbourhood_admin) { create(:neighbourhood_admin) }
   let!(:riverside_ward) { create(:riverside_ward) }
 
-  describe "tom-select inputs on neighbourhood form" do
+  describe "stacked list selector on neighbourhood form" do
     it "allows selecting users", :aggregate_failures do
       click_link "Neighbourhoods"
       await_datatables
@@ -20,10 +20,20 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
 
       click_link "Edit"
 
-      # Select users
-      users_node = tom_select_node("neighbourhood_users")
-      tom_select admin_user.to_s, neighbourhood_admin.to_s, xpath: users_node.path
-      assert_tom_select_multiple [admin_user.to_s, neighbourhood_admin.to_s], users_node
+      # Find the stacked list selector and its tom-select dropdown
+      within ".neighbourhood_users" do
+        # Add users via the tom-select dropdown (click on ts-control, not the hidden select)
+        find(".ts-control").click
+        find(".ts-dropdown .option", text: admin_user.to_s).click
+
+        find(".ts-control").click
+        find(".ts-dropdown .option", text: neighbourhood_admin.to_s).click
+
+        # Verify users appear in the stacked list
+        expect(page).to have_selector("[data-item-name]", count: 2)
+        expect(page).to have_selector("[data-item-name='#{admin_user.name}']")
+        expect(page).to have_selector("[data-item-name='#{neighbourhood_admin.name}']")
+      end
 
       click_button "Save"
 
@@ -40,9 +50,10 @@ RSpec.describe "Admin Neighbourhoods", :slow, type: :system do
       end
 
       find_element_and_retry_if_stale do
-        find_element_and_retry_if_not_found do
-          users_node = tom_select_node("neighbourhood_users")
-          assert_tom_select_multiple [admin_user.to_s, neighbourhood_admin.to_s], users_node
+        within ".neighbourhood_users" do
+          expect(page).to have_selector("[data-item-name]", count: 2)
+          expect(page).to have_selector("[data-item-name='#{admin_user.name}']")
+          expect(page).to have_selector("[data-item-name='#{neighbourhood_admin.name}']")
         end
       end
     end
