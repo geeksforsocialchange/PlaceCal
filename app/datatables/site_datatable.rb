@@ -5,7 +5,9 @@ class SiteDatatable < Datatable
   def view_columns
     @view_columns ||= {
       name: { source: 'Site.name', cond: :like, searchable: true },
-      neighbourhoods: { source: 'Site.id', searchable: false, orderable: false },
+      primary_neighbourhood: { source: 'Site.id', searchable: false, orderable: false },
+      partners_count: { source: 'Site.id', searchable: false, orderable: false },
+      events_count: { source: 'Site.id', searchable: false, orderable: false },
       site_admin: { source: 'Site.site_admin_id', searchable: false, orderable: false },
       updated_at: { source: 'Site.updated_at', searchable: false, orderable: true },
       actions: { source: 'Site.id', searchable: false, orderable: false }
@@ -14,11 +16,11 @@ class SiteDatatable < Datatable
 
   def data
     records.map do |record|
-      neighbourhoods_count = record.neighbourhoods.size
-
       {
         name: render_name_cell(record),
-        neighbourhoods: render_count_cell(neighbourhoods_count, 'neighbourhood'),
+        primary_neighbourhood: render_primary_neighbourhood_cell(record),
+        partners_count: render_count_cell(partners_count_for(record), 'partner'),
+        events_count: render_count_cell(record.events_this_week, 'event'),
         site_admin: render_site_admin_cell(record),
         updated_at: render_relative_time(record.updated_at),
         actions: render_actions(record)
@@ -30,7 +32,7 @@ class SiteDatatable < Datatable
     # Use includes for eager loading, but NOT left_joins which causes duplicates
     # when sites have multiple neighbourhoods
     records = options[:sites]
-              .includes(:neighbourhoods, :site_admin)
+              .includes(:neighbourhoods, :primary_neighbourhood, :site_admin)
               .distinct
 
     # Apply filters from request params
@@ -44,14 +46,8 @@ class SiteDatatable < Datatable
         end
       end
 
-      # Has site admin filter
-      if params[:filter][:has_admin].present?
-        if params[:filter][:has_admin] == 'yes'
-          records = records.where.not(site_admin_id: nil)
-        elsif params[:filter][:has_admin] == 'no'
-          records = records.where(site_admin_id: nil)
-        end
-      end
+      # Site admin filter by user ID
+      records = records.where(site_admin_id: params[:filter][:site_admin_id]) if params[:filter][:site_admin_id].present?
     end
 
     records
@@ -67,14 +63,43 @@ class SiteDatatable < Datatable
     edit_admin_site_path(record)
   end
 
+  def partners_count_for(record)
+    Partner.for_site(record).count
+  end
+
   def render_name_cell(record)
+    site_url = record.url.presence
+    url_display = if site_url
+                    # Show just the domain part for cleaner display
+                    domain = site_url.gsub(%r{^https?://}, '').chomp('/')
+                    <<~URL_HTML
+                      <a href="#{ERB::Util.html_escape(site_url)}" target="_blank" class="text-xs text-gray-400 font-mono hover:text-orange-600 flex items-center gap-1">
+                        #{ERB::Util.html_escape(domain)}
+                        #{icon(:external_link, size: '3')}
+                      </a>
+                    URL_HTML
+                  else
+                    "<span class=\"text-xs text-gray-400 font-mono\">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>"
+                  end
+
     <<~HTML.html_safe
       <div class="flex flex-col">
         <a href="#{edit_admin_site_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
+        #{url_display}
       </div>
+    HTML
+  end
+
+  def render_primary_neighbourhood_cell(record)
+    neighbourhood = record.primary_neighbourhood
+    return empty_cell unless neighbourhood
+
+    <<~HTML.html_safe
+      <a href="#{admin_neighbourhood_path(neighbourhood)}" class="text-gray-600 hover:text-orange-600 hover:underline">
+        #{ERB::Util.html_escape(neighbourhood.shortname)}
+      </a>
     HTML
   end
 
@@ -100,7 +125,14 @@ class SiteDatatable < Datatable
     return empty_cell unless admin
 
     <<~HTML.html_safe
-      <span class="text-gray-600">#{ERB::Util.html_escape([admin.first_name, admin.last_name].compact.join(' '))}</span>
+      <button type="button"
+              class="text-gray-600 hover:text-orange-600 hover:underline cursor-pointer"
+              data-action="click->admin-table#filterByValue"
+              data-filter-column="site_admin_id"
+              data-filter-value="#{admin.id}"
+              title="Filter by #{ERB::Util.html_escape([admin.first_name, admin.last_name].compact.join(' '))}">
+        #{ERB::Util.html_escape([admin.first_name, admin.last_name].compact.join(' '))}
+      </button>
     HTML
   end
 end
