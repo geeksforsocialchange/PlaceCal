@@ -8,7 +8,9 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
   let(:datatable_columns) do
     [
       { data: :name, searchable: true, orderable: true },
-      { data: :neighbourhoods },
+      { data: :primary_neighbourhood },
+      { data: :partners_count, orderable: true },
+      { data: :events_count, orderable: true },
       { data: :site_admin },
       { data: :updated_at, orderable: true },
       { data: :actions }
@@ -18,7 +20,7 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
   before { sign_in admin_user }
 
   def datatable_request(params = {})
-    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 3)
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 5)
     get admin_sites_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -82,16 +84,19 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
                       no_value: "Without Neighbourhood"
     end
 
-    context "has_admin filter" do
+    context "site_admin_id filter" do
       let!(:site_admin) { create(:user, first_name: "Admin", last_name: "User") }
       let!(:site_with_admin) { create(:site, name: "Site With Admin", site_admin: site_admin) }
       let!(:site_without_admin) { create(:site, name: "Site Without Admin") }
 
-      it_behaves_like "datatable yes/no filter",
-                      filter_name: "has_admin",
-                      field: :name,
-                      yes_value: "With Admin",
-                      no_value: "Without Admin"
+      it "filters by site_admin_id" do
+        datatable_request(filter: { site_admin_id: site_admin.id })
+
+        json = response.parsed_body
+        names = json["data"].map { |d| d["name"] }
+        expect(names.join).to include("With Admin")
+        expect(names.join).not_to include("Without Admin")
+      end
     end
 
     context "data rendering" do
@@ -99,7 +104,7 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
       let!(:site_admin) { create(:user, first_name: "Test", last_name: "Admin") }
       let!(:site) do
         site = create(:site, name: "Render Test", slug: "render-test", site_admin: site_admin)
-        site.neighbourhoods << neighbourhood
+        site.sites_neighbourhoods.create!(neighbourhood: neighbourhood, relation_type: "Primary")
         site
       end
 
@@ -113,13 +118,12 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
         expect(site_data["name"]).to include("href=")
       end
 
-      it "renders neighbourhoods count cell" do
+      it "renders primary neighbourhood cell" do
         datatable_request
 
         json = response.parsed_body
         site_data = json["data"].find { |d| d["name"].include?("Render Test") }
-        expect(site_data["neighbourhoods"]).to include("1")
-        expect(site_data["neighbourhoods"]).to include("text-emerald-600")
+        expect(site_data["primary_neighbourhood"]).to include(neighbourhood.shortname)
       end
 
       it "renders site admin cell" do
