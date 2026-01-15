@@ -54,6 +54,9 @@ export default class extends Controller {
 
 		// Dispatch custom event for any listeners
 		this.dispatch("added", { detail: { item: insertedItem } });
+
+		// Notify form of change (for unsaved changes detection)
+		this.notifyFormChange();
 	}
 
 	remove(event) {
@@ -75,6 +78,9 @@ export default class extends Controller {
 		}
 
 		this.dispatch("removed", { detail: { item } });
+
+		// Notify form of change (for unsaved changes detection)
+		this.notifyFormChange();
 	}
 
 	// Reinitialize Stimulus controllers on dynamically added content
@@ -88,5 +94,13 @@ export default class extends Controller {
 				el.setAttribute("data-controller", controllerValue);
 			});
 		});
+	}
+
+	// Notify the form that something changed (for unsaved changes detection)
+	notifyFormChange() {
+		const form = this.element.closest("form");
+		if (form) {
+			form.dispatchEvent(new Event("change", { bubbles: true }));
+		}
 	}
 }

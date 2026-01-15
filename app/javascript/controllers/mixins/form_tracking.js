@@ -177,6 +177,14 @@ function bindFormChangeListeners(controller) {
 			: () => markDirty(controller);
 		input.addEventListener("click", handler);
 	});
+
+	// Listen for form-level change events (dispatched by nested-form and stacked-list-selector controllers)
+	form.addEventListener("change", (event) => {
+		// Only handle if event target is the form itself (not bubbled from inputs)
+		if (event.target === form) {
+			markDirty(controller);
+		}
+	});
 }
 
 function handleBeforeUnload(event) {

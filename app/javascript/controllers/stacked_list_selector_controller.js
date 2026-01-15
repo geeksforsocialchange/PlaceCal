@@ -91,6 +91,7 @@ export default class extends Controller {
 		item.remove();
 		this.updateSelectOptions();
 		this.updateEmptyState();
+		this.notifyFormChange();
 	}
 
 	addItem(id, name) {
@@ -98,6 +99,7 @@ export default class extends Controller {
 		const html = template.replace(/ITEM_ID/g, id).replace(/ITEM_NAME/g, name);
 
 		this.listTarget.insertAdjacentHTML("beforeend", html);
+		this.notifyFormChange();
 	}
 
 	isSelected(id) {
@@ -148,6 +150,14 @@ export default class extends Controller {
 		const hasItems = this.listTarget.children.length > 0;
 		if (this.hasEmptyTarget) {
 			this.emptyTarget.classList.toggle("hidden", hasItems);
+		}
+	}
+
+	// Notify the form that something changed (for unsaved changes detection)
+	notifyFormChange() {
+		const form = this.element.closest("form");
+		if (form) {
+			form.dispatchEvent(new Event("change", { bubbles: true }));
 		}
 	}
 }
