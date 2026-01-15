@@ -2,23 +2,24 @@
   <%= render(Admin::ErrorComponent.new(@neighbourhood)) %>
 
   <%# Section 1: Neighbourhood Name %>
-  <%= render Admin::SectionHeaderComponent.new(
-    title: t('admin.neighbourhoods.form.name_title'),
-    description: t('admin.neighbourhoods.form.name_description')
-  ) %>
+  <%= render Admin::CardComponent.new(
+        title: t('admin.neighbourhoods.form.name_title'),
+        icon: :edit
+      ) do %>
+    <p class="text-sm text-base-content/60 mb-4"><%= t('admin.neighbourhoods.form.name_description') %></p>
+    <div class="space-y-4">
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :name) %></legend>
+        <%= f.input_field :name, class: 'input input-bordered w-full' %>
+      </fieldset>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :name) %></legend>
-      <%= f.input_field :name, class: 'input input-bordered w-full' %>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :name_abbr) %></legend>
-      <%= f.input_field :name_abbr, class: 'input input-bordered w-full' %>
-      <p class="fieldset-label mt-1"><%= t('admin.neighbourhoods.form.name_abbr_hint') %></p>
-    </fieldset>
-  </div>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :name_abbr) %></legend>
+        <%= f.input_field :name_abbr, class: 'input input-bordered w-full' %>
+        <p class="fieldset-label mt-1"><%= t('admin.neighbourhoods.form.name_abbr_hint') %></p>
+      </fieldset>
+    </div>
+  <% end %>
 
   <%# Section 2: Official ONS Data (readonly) - Dashboard style %>
   <%= render Admin::SectionHeaderComponent.new(
