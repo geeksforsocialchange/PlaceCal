@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_15_154606) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_15_223402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -293,7 +293,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_15_154606) do
     t.string "description_html"
     t.string "hero_text"
     t.string "hero_alttext"
+    t.integer "partners_count", default: 0, null: false
+    t.integer "events_count", default: 0, null: false
+    t.index ["events_count"], name: "index_sites_on_events_count"
     t.index ["is_published"], name: "index_sites_is_published"
+    t.index ["partners_count"], name: "index_sites_on_partners_count"
     t.index ["slug"], name: "index_sites_slug", unique: true
     t.index ["url"], name: "index_sites_url"
   end
