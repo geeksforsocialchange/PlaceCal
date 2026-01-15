@@ -359,6 +359,8 @@ en:
         contains: "Contains…"
         geography_title: "Geography"
         is_part_of: "Is a part of…"
+        level: "Level"
+        name_abbr_hint: "Optional short version for display in compact layouts"
         name_description: "This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too."
         name_title: "Neighbourhood name"
         official_description: "This information is the official designation set by the UK Boundary Commission."

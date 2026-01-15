@@ -1,2 +1,12 @@
 <%= render 'layouts/admin/page_header', model_name: 'Neighbourhood', title: @neighbourhood.name, id: @neighbourhood.id %>
+
+<%# Hierarchy breadcrumb - matching show page %>
+<div class="mb-6">
+  <%= render Admin::NeighbourhoodHierarchyBadgeComponent.new(
+        neighbourhood: @neighbourhood,
+        link_each: true,
+        show_icons: true
+      ) %>
+</div>
+
 <%= render 'form' %>
