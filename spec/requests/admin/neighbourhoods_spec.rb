@@ -51,10 +51,9 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
         expect(response.body).to include("Name")
         expect(response.body).to include("Abbreviated Name")
 
-        # Dashboard-style ONS info cards
+        # ONS info card (compact display)
         expect(response.body).to include("Level")
         expect(response.body).to include("Unit Name")
-        expect(response.body).to include("Unit Code Key")
         expect(response.body).to include("ONS Code")
         expect(response.body).to include("ONS Dataset")
 
