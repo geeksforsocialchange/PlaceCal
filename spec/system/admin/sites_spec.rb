@@ -96,14 +96,20 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       # Wait for the page to load
       find("button", text: "Save", wait: 5)
 
-      # The primary neighbourhood should not appear in the sites_neighbourhoods section
-      service_areas = all(:css, ".sites_neighbourhoods .ts-wrapper", wait: 1)
+      # Navigate to Neighbourhoods tab
+      find("input.tab[aria-label*='Neighbourhoods']", wait: 10).click
 
-      expect(service_areas.length).to be_zero,
-                                      "@site should only have a primary neighbourhood, " \
-                                      "if this fails either this is now rendering where " \
-                                      "it shouldn't or another neighborhood has been added " \
-                                      "at setup and the test should be adjusted"
+      # The site has a primary neighbourhood (sites_neighbourhood created in setup)
+      # Check that the nested form for additional neighbourhoods only has the "Add" button,
+      # not any existing neighbourhood cards (since @site only has a primary neighbourhood)
+      other_neighbourhoods_section = find(:xpath, "//h3[contains(., 'Other Neighbourhoods')]/ancestor::div[contains(@class, 'card')][1]")
+
+      # Should have the "Add neighbourhood" button
+      expect(other_neighbourhoods_section).to have_link("Add neighbourhood")
+
+      # Should NOT have any neighbourhood cards in the "Other neighbourhoods" section
+      # (neighbourhood cards have the .nested-fields class)
+      expect(other_neighbourhoods_section).not_to have_css(".nested-fields.card")
     end
   end
 end
