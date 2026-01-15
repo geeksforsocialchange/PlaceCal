@@ -1,69 +1,79 @@
-<div class="nested-fields py-3 bg-base-200 rounded-lg mb-2"
+<div class="nested-fields card bg-base-100 border border-base-300 mb-2"
      data-controller="cascading-neighbourhood"
-     data-cascading-neighbourhood-selected-id-value="<%= form.object&.neighbourhood_id %>">
+     data-cascading-neighbourhood-selected-id-value="<%= form.object&.neighbourhood_id %>"
+     data-cascading-neighbourhood-placeholder-country-value="<%= t('admin.cascading_neighbourhood.select_country') %>"
+     data-cascading-neighbourhood-placeholder-region-value="<%= t('admin.cascading_neighbourhood.select_region') %>"
+     data-cascading-neighbourhood-placeholder-county-value="<%= t('admin.cascading_neighbourhood.select_county') %>"
+     data-cascading-neighbourhood-placeholder-district-value="<%= t('admin.cascading_neighbourhood.select_area') %>"
+     data-cascading-neighbourhood-placeholder-ward-value="<%= t('admin.cascading_neighbourhood.select_ward') %>">
+  <div class="card-body p-4 gap-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <%= icon(:neighbourhood, size: '4', css_class: 'text-base-content/50') %>
+        <span class="text-sm font-medium text-base-content/70"><%= t('admin.service_areas.new_area') %></span>
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="loading loading-spinner loading-xs hidden" data-cascading-neighbourhood-target="loading"></span>
+        <% if show_remove %>
+          <%= helpers.nested_form_remove_link(form, icon(:trash, size: '4'), class: 'btn btn-ghost btn-sm btn-square text-error') %>
+        <% end %>
+      </div>
+    </div>
 
-  <div class="flex gap-2 items-end">
-    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 flex-1">
+    <div class="space-y-2">
       <%# Country selector (level 5) %>
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.country') %></legend>
-        <select class="select select-bordered select-sm w-full"
+      <div class="flex items-center gap-3">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.country') %></label>
+        <select class="select select-bordered select-sm bg-base-100 flex-1"
                 data-cascading-neighbourhood-target="country"
                 data-action="change->cascading-neighbourhood#countryChanged">
           <option value=""><%= t('admin.labels.loading') %></option>
         </select>
-      </fieldset>
+      </div>
 
       <%# Region selector (level 4) %>
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.region') %></legend>
-        <select class="select select-bordered select-sm w-full"
+      <div class="flex items-center gap-3">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.region') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
                 data-cascading-neighbourhood-target="region"
                 data-action="change->cascading-neighbourhood#regionChanged"
                 disabled>
           <option value=""><%= t('admin.cascading_neighbourhood.select_region') %></option>
         </select>
-      </fieldset>
+      </div>
 
-      <%# County selector (level 3) %>
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.county') %></legend>
-        <select class="select select-bordered select-sm w-full"
+      <%# County selector (level 3) - hidden initially %>
+      <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="countyRow">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.county') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
                 data-cascading-neighbourhood-target="county"
                 data-action="change->cascading-neighbourhood#countyChanged"
                 disabled>
           <option value=""><%= t('admin.cascading_neighbourhood.select_county') %></option>
         </select>
-      </fieldset>
+      </div>
 
-      <%# District selector (level 2) %>
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.area') %></legend>
-        <select class="select select-bordered select-sm w-full"
+      <%# District selector (level 2) - hidden initially %>
+      <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="districtRow">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.area') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
                 data-cascading-neighbourhood-target="district"
                 data-action="change->cascading-neighbourhood#districtChanged"
                 disabled>
           <option value=""><%= t('admin.cascading_neighbourhood.select_area') %></option>
         </select>
-      </fieldset>
+      </div>
 
-      <%# Ward selector (level 1) %>
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend text-xs"><%= t('admin.cascading_neighbourhood.ward') %></legend>
-        <select class="select select-bordered select-sm w-full"
+      <%# Ward selector (level 1) - hidden initially %>
+      <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="wardRow">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.ward') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
                 data-cascading-neighbourhood-target="ward"
                 data-action="change->cascading-neighbourhood#wardChanged"
                 disabled>
           <option value=""><%= t('admin.cascading_neighbourhood.select_ward') %></option>
         </select>
-      </fieldset>
-    </div>
-
-    <div class="flex items-center gap-1 pb-1">
-      <span class="loading loading-spinner loading-xs hidden" data-cascading-neighbourhood-target="loading"></span>
-      <% if show_remove %>
-        <%= helpers.nested_form_remove_link(form, icon(:trash, size: '4'), class: 'btn btn-ghost btn-sm btn-square text-error') %>
-      <% end %>
+      </div>
     </div>
   </div>
 

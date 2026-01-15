@@ -9,14 +9,25 @@ export default class extends Controller {
 		"country",
 		"region",
 		"county",
+		"countyRow",
 		"district",
+		"districtRow",
 		"ward",
+		"wardRow",
 		"output",
 		"loading",
 	];
 
 	static values = {
 		selectedId: { type: Number, default: 0 },
+		placeholderCountry: { type: String, default: "Select country..." },
+		placeholderRegion: { type: String, default: "Select region (optional)..." },
+		placeholderCounty: { type: String, default: "Select county (optional)..." },
+		placeholderDistrict: {
+			type: String,
+			default: "Select district (optional)...",
+		},
+		placeholderWard: { type: String, default: "Select ward (optional)..." },
 	};
 
 	// Map of level numbers to target names
@@ -88,16 +99,15 @@ export default class extends Controller {
 	}
 
 	// Get placeholder text for a level
-	getPlaceholder(level, optional = false) {
+	getPlaceholder(level) {
 		const placeholders = {
-			5: "Select country...",
-			4: "Select region...",
-			3: "Select county...",
-			2: "Select district...",
-			1: "Select ward...",
+			5: this.placeholderCountryValue,
+			4: this.placeholderRegionValue,
+			3: this.placeholderCountyValue,
+			2: this.placeholderDistrictValue,
+			1: this.placeholderWardValue,
 		};
-		const base = placeholders[level] || "Select...";
-		return optional ? base.replace("...", " (optional)...") : base;
+		return placeholders[level] || "Select...";
 	}
 
 	// Generic level loader with smart-skip
@@ -148,13 +158,7 @@ export default class extends Controller {
 				// Multiple options: show the dropdown
 				this.showSelect(target);
 				target.parentElement.classList.remove("opacity-60");
-				// Make ward optional since it's the final level
-				const isOptional = level === 1;
-				this.populateSelect(
-					target,
-					data,
-					this.getPlaceholder(level, isOptional)
-				);
+				this.populateSelect(target, data, this.getPlaceholder(level));
 				this.clearLevelsBelow(level);
 			}
 		} catch (error) {
@@ -248,31 +252,53 @@ export default class extends Controller {
 	}
 
 	// Clear all levels below the given level
+	// Shows the next level down (greyed out) but hides anything below that
 	clearLevelsBelow(level) {
 		for (let l = level - 1; l >= 1; l--) {
 			const target = this.getTargetForLevel(l);
 			if (target) {
-				this.clearSelect(target, this.getPlaceholder(l, l === 1));
+				this.clearSelect(target, this.getPlaceholder(l));
+				if (l === level - 1) {
+					// Show the immediate next level (greyed out)
+					this.showSelect(target);
+				} else {
+					// Hide levels further down
+					this.hideSelect(target);
+				}
 			}
 		}
 	}
 
-	// Show a select's fieldset
+	// Show a select row
 	showSelect(select) {
-		const fieldset = select.closest("fieldset");
-		if (fieldset) {
-			fieldset.classList.remove("hidden");
+		const row = this.getRowTargetForSelect(select);
+		if (row) {
+			row.classList.remove("hidden");
 		}
 	}
 
-	// Hide a select's fieldset
+	// Hide a select row
 	hideSelect(select) {
-		const fieldset = select.closest("fieldset");
-		if (fieldset) {
-			fieldset.classList.add("hidden");
-		}
 		select.value = "";
 		select.disabled = true;
+		const row = this.getRowTargetForSelect(select);
+		if (row) {
+			row.classList.add("hidden");
+		}
+	}
+
+	// Get the row target for a given select
+	getRowTargetForSelect(select) {
+		if (select === this.countyTarget && this.hasCountyRowTarget) {
+			return this.countyRowTarget;
+		}
+		if (select === this.districtTarget && this.hasDistrictRowTarget) {
+			return this.districtRowTarget;
+		}
+		if (select === this.wardTarget && this.hasWardRowTarget) {
+			return this.wardRowTarget;
+		}
+		return null;
 	}
 
 	// Update the hidden output field
@@ -380,12 +406,7 @@ export default class extends Controller {
 				this.hideSelect(target);
 			} else {
 				this.showSelect(target);
-				const isOptional = level === 1;
-				this.populateSelect(
-					target,
-					data,
-					this.getPlaceholder(level, isOptional)
-				);
+				this.populateSelect(target, data, this.getPlaceholder(level));
 
 				if (valueToSelect) {
 					target.value = valueToSelect;

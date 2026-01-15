@@ -155,9 +155,9 @@ en:
       area: "District"
       ward: "Ward"
       select_country: "Select country..."
-      select_region: "Select region..."
-      select_county: "Select county..."
-      select_area: "Select district..."
+      select_region: "Select region (optional)..."
+      select_county: "Select county (optional)..."
+      select_area: "Select district (optional)..."
       select_ward: "Select ward (optional)..."
 
     datatable:
@@ -247,6 +247,7 @@ en:
     # Service areas
     service_areas:
       add: "Add Service Area"
+      new_area: "New Service Area"
 
     # Opening times
     opening_times:
