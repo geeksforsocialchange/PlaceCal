@@ -54,7 +54,7 @@ module Admin
       authorize @site
       if @site.update(permitted_attributes(@site))
         flash[:success] = 'Site was saved successfully'
-        redirect_to admin_sites_path
+        redirect_to edit_admin_site_path(@site)
 
       else
         flash.now[:danger] = 'Site was not saved'
