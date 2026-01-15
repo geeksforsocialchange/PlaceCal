@@ -104,8 +104,7 @@ module Admin
       authorize @neighbourhood
       if @neighbourhood.update(permitted_attributes(@neighbourhood))
         flash[:success] = 'Neighbourhood was saved'
-        redirect_to admin_neighbourhoods_path
-
+        redirect_to admin_neighbourhood_path(@neighbourhood)
       else
         flash.now[:danger] = 'Neighbourhood was not saved'
         render 'edit', status: :unprocessable_entity
