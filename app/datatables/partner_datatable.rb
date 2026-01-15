@@ -63,16 +63,10 @@ class PartnerDatatable < Datatable
         records = records.having('COUNT(DISTINCT users.id) = 0')
       end
 
-      # District filter - filter by all wards within a district
-      if params[:filter][:district].present?
-        district = Neighbourhood.find_by(id: params[:filter][:district])
-        if district
-          ward_ids = district.descendants.where(unit: 'ward').pluck(:id)
-          records = records.where(ward_neighbourhoods: { id: ward_ids })
-        end
-      end
+      # Hierarchical neighbourhood filters - find partners within selected area
+      records = apply_neighbourhood_filter(records, params[:filter])
 
-      # Ward/neighbourhood filter
+      # Legacy ward filter (for backwards compatibility with existing ward column clicks)
       records = records.where(ward_neighbourhoods: { id: params[:filter][:ward] }) if params[:filter][:ward].present?
 
       # Partnership filter
@@ -106,6 +100,29 @@ class PartnerDatatable < Datatable
 
   def records_key
     :partners
+  end
+
+  # Apply hierarchical neighbourhood filter (country/region/county/district/ward)
+  # Returns records filtered to partners within the selected area
+  def apply_neighbourhood_filter(records, filter)
+    # Check from most specific to least specific
+    neighbourhood_filter_id = filter[:ward_id].presence ||
+                              filter[:district_id].presence ||
+                              filter[:county_id].presence ||
+                              filter[:region_id].presence ||
+                              filter[:country_id].presence
+
+    return records if neighbourhood_filter_id.blank?
+
+    neighbourhood = Neighbourhood.find_by(id: neighbourhood_filter_id)
+    return records unless neighbourhood
+
+    # Get all ward IDs that are descendants of this neighbourhood (or the neighbourhood itself if it's a ward)
+    ward_ids = neighbourhood.unit == 'ward' ? [neighbourhood.id] : neighbourhood.descendants.where(unit: 'ward').pluck(:id)
+
+    return records if ward_ids.empty?
+
+    records.where(ward_neighbourhoods: { id: ward_ids })
   end
 
   def edit_path_for(record)

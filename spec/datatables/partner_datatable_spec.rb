@@ -407,11 +407,14 @@ RSpec.describe PartnerDatatable do
       end
     end
 
-    context "district filter" do
-      let!(:district) { create(:neighbourhood, name: "Test District", unit: "district") }
-      let!(:ward1) { create(:neighbourhood, name: "Ward 1", unit: "ward", parent: district) }
-      let!(:ward2) { create(:neighbourhood, name: "Ward 2", unit: "ward", parent: district) }
-      let!(:other_ward) { create(:neighbourhood, name: "Other Ward", unit: "ward") }
+    context "hierarchical neighbourhood filters" do
+      let!(:country) { create(:neighbourhood, name: "Test Country", unit: "country", level: 5) }
+      let!(:region) { create(:neighbourhood, name: "Test Region", unit: "region", level: 4, parent: country) }
+      let!(:county) { create(:neighbourhood, name: "Test County", unit: "county", level: 3, parent: region) }
+      let!(:district) { create(:neighbourhood, name: "Test District", unit: "district", level: 2, parent: county) }
+      let!(:ward1) { create(:neighbourhood, name: "Ward 1", unit: "ward", level: 1, parent: district) }
+      let!(:ward2) { create(:neighbourhood, name: "Ward 2", unit: "ward", level: 1, parent: district) }
+      let!(:other_ward) { create(:neighbourhood, name: "Other Ward", unit: "ward", level: 1) }
 
       let!(:partner_in_ward1) do
         create(:partner, name: "In Ward 1", address: create(:address, neighbourhood: ward1))
@@ -423,14 +426,44 @@ RSpec.describe PartnerDatatable do
         create(:partner, name: "Outside", address: create(:address, neighbourhood: other_ward))
       end
 
-      it "includes partners from all wards in the district" do
-        datatable = create_datatable("filter" => { "district" => district.id.to_s })
+      it "filters by district_id to include partners from all wards in the district" do
+        datatable = create_datatable("filter" => { "district_id" => district.id.to_s })
 
         records = datatable.send(:get_raw_records)
         names = records.to_a.map(&:name)
         expect(names).to include("In Ward 1")
         expect(names).to include("In Ward 2")
         expect(names).not_to include("Outside")
+      end
+
+      it "filters by county_id to include partners from all wards in the county" do
+        datatable = create_datatable("filter" => { "county_id" => county.id.to_s })
+
+        records = datatable.send(:get_raw_records)
+        names = records.to_a.map(&:name)
+        expect(names).to include("In Ward 1")
+        expect(names).to include("In Ward 2")
+        expect(names).not_to include("Outside")
+      end
+
+      it "filters by ward_id to include only partners in that specific ward" do
+        datatable = create_datatable("filter" => { "ward_id" => ward1.id.to_s })
+
+        records = datatable.send(:get_raw_records)
+        names = records.to_a.map(&:name)
+        expect(names).to include("In Ward 1")
+        expect(names).not_to include("In Ward 2")
+        expect(names).not_to include("Outside")
+      end
+
+      it "uses most specific filter when multiple are provided" do
+        # ward_id should take precedence over district_id
+        datatable = create_datatable("filter" => { "district_id" => district.id.to_s, "ward_id" => ward1.id.to_s })
+
+        records = datatable.send(:get_raw_records)
+        names = records.to_a.map(&:name)
+        expect(names).to include("In Ward 1")
+        expect(names).not_to include("In Ward 2")
       end
     end
 
