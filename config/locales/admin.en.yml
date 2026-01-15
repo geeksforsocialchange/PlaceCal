@@ -242,7 +242,7 @@ en:
     # Address fields
     address:
       clear_address: "Clear Address"
-      neighbourhood_label: "Neighbourhood:"
+      neighbourhood_label: "Neighbourhood"
 
     # Service areas
     service_areas:
