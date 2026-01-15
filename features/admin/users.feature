@@ -73,12 +73,11 @@ Feature: User Editing
     Then I should see "Neighbourhoods"
     And I should see "Grants access to every partner"
 
-  Scenario: User form shows neighbourhood drop down
+  Scenario: User form shows add neighbourhood button
     Given there is a user called "Ward User"
-    And there is a neighbourhood called "Riverside Ward"
     When I edit the user "Ward User"
     And I go to the "Permissions" step
-    Then I should see "Riverside Ward"
+    Then I should see "Add neighbourhood"
 
   # Partnership/Tag Assignment
   Scenario: User form shows partnership assignment
