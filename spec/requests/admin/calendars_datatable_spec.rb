@@ -302,7 +302,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         json = response.parsed_body
         notices_html = json["data"].first["notices"]
         expect(notices_html).to include("3")
-        expect(notices_html).to include("text-amber-600")
+        expect(notices_html).to include("text-amber-700")
       end
 
       it_behaves_like "datatable renders relative time", field: :last_import_at

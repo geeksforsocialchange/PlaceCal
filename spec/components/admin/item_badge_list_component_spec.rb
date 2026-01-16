@@ -95,7 +95,7 @@ RSpec.describe Admin::ItemBadgeListComponent, type: :component do
                     link_path: :edit_admin_partner_path
                   ))
 
-    expect(page).to have_css(".text-base-content\\/50")
+    expect(page).to have_css(".text-gray-600")
   end
 
   it "applies correct background color class" do

@@ -171,7 +171,7 @@ RSpec.describe CalendarDatatable do
 
         notices_html = datatable.data.first[:notices]
         expect(notices_html).to include("5")
-        expect(notices_html).to include("text-amber-600")
+        expect(notices_html).to include("text-amber-700")
       end
 
       it "shows green check when no notices" do
@@ -196,7 +196,7 @@ RSpec.describe CalendarDatatable do
         datatable = create_datatable
 
         events_html = datatable.data.first[:events]
-        expect(events_html).to include("text-gray-400")
+        expect(events_html).to include("text-gray-500")
       end
     end
 

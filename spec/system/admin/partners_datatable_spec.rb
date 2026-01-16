@@ -395,7 +395,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "shows cross icon for partner without calendar" do
       within("[data-admin-table-target='tbody'] tr", text: "Beta Youth Club") do
         # Calendar column should have gray cross
-        expect(page).to have_css(".text-gray-400 svg")
+        expect(page).to have_css(".text-gray-500 svg")
       end
     end
   end
