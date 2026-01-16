@@ -83,5 +83,13 @@ module Admin
 
       permitted_ids.include?(item.id)
     end
+
+    def item_display_name(item)
+      if item.respond_to?(:display_name)
+        item.display_name
+      else
+        item.name
+      end
+    end
   end
 end

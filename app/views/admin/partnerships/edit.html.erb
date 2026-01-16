@@ -1,12 +1,14 @@
-<% if @partnership.system_tag && !current_user.root? %>
-  <% content_for :title do %><%= @partnership.name %><% end %>
+<% @tag = @partnership %>
+
+<% if @tag.system_tag && !current_user.root? %>
+  <% content_for :title do %><%= @tag.name %><% end %>
 
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-2xl font-semibold"><%= @partnership.name %></h1>
+      <h1 class="text-2xl font-semibold"><%= @tag.name %></h1>
       <p class="text-base-content/60 mt-1">System partnership</p>
     </div>
-    <div class="text-sm text-base-content/50">ID: <%= @partnership.id %></div>
+    <div class="text-sm text-base-content/50">ID: <%= @tag.id %></div>
   </div>
 
   <div role="alert" class="alert alert-warning">
@@ -14,6 +16,6 @@
     <span>This partnership is a <strong>system partnership</strong> meaning that it cannot be edited by non-root admins.</span>
   </div>
 <% else %>
-  <%= render 'layouts/admin/page_header', model_name: 'Partnership', title: @partnership.name, id: @partnership.id %>
-  <%= render 'form' %>
+  <%= render 'layouts/admin/page_header', model_name: 'Partnership', title: @tag.name, id: @tag.id %>
+  <%= render 'admin/tags/form' %>
 <% end %>

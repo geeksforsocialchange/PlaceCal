@@ -15,15 +15,15 @@
     <% items.each do |item| %>
       <div class="group flex items-center gap-3 p-3 bg-base-200/80 rounded-xl border border-base-300/50 hover:border-base-300 transition-all"
            data-item-id="<%= item.id %>"
-           data-item-name="<%= item.name %>">
+           data-item-name="<%= item_display_name(item) %>">
         <input type="hidden" name="<%= field_name %>" value="<%= item.id %>">
         <div class="shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
           <%= icon(icon_name, size: '5') %>
         </div>
         <% if item_link(item) %>
-          <%= link_to item.name, item_link(item), class: "flex-1 font-medium text-sm text-base-content/90 hover:text-orange-600 hover:underline" %>
+          <%= link_to item_display_name(item), item_link(item), class: "flex-1 font-medium text-sm text-base-content/90 hover:text-orange-600 hover:underline" %>
         <% else %>
-          <span class="flex-1 font-medium text-sm text-base-content/90"><%= item.name %></span>
+          <span class="flex-1 font-medium text-sm text-base-content/90"><%= item_display_name(item) %></span>
         <% end %>
         <% if item_removable?(item) %>
           <button type="button"

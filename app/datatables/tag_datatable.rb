@@ -69,10 +69,12 @@ class TagDatatable < Datatable
   end
 
   def render_name_cell(record)
+    system_icon = record.system_tag? ? %(<span class="text-amber-500 ml-1" title="System tag">#{icon(:lock, size: '3')}</span>) : ''
+
     <<~HTML.html_safe
       <div class="flex flex-col">
-        <a href="#{edit_admin_tag_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
-          #{ERB::Util.html_escape(record.name)}
+        <a href="#{edit_admin_tag_path(record)}" class="font-medium text-gray-900 hover:text-orange-600 inline-flex items-center">
+          #{ERB::Util.html_escape(record.name)}#{system_icon}
         </a>
         <span class="text-xs text-gray-400 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
       </div>

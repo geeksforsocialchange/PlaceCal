@@ -1,3 +1,5 @@
+<% tag_type_name = @tag.class == Tag ? 'Tag' : "#{@tag.class.name} Tag" %>
+
 <% if @tag.system_tag && !current_user.root? %>
   <% content_for :title do %><%= @tag.name %><% end %>
 
@@ -14,6 +16,6 @@
     <span>This tag is a <strong>system tag</strong> meaning that it cannot be edited by non-root admins.</span>
   </div>
 <% else %>
-  <%= render 'layouts/admin/page_header', model_name: 'Tag', title: @tag.name, id: @tag.id %>
+  <%= render 'layouts/admin/page_header', model_name: tag_type_name, title: @tag.name, id: @tag.id %>
   <%= render 'form' %>
 <% end %>

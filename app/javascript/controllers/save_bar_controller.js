@@ -34,10 +34,11 @@ export default class extends Controller {
 	connect() {
 		this.form = this.element.closest("form");
 
-		// Setup shared form tracking
+		// Setup shared form tracking with initial value tracking (for revert detection)
 		setupFormTracking(this, {
 			tabName: this.tabNameValue,
 			form: this.form,
+			trackInitialValues: true,
 			onDirtyChange: (dirty) => this.handleDirtyChange(dirty),
 		});
 

@@ -111,6 +111,7 @@ en:
     hints:
       email_validation: "Enter a valid email address"
       leave_blank_to_autogenerate: "Leave blank to auto-generate from name"
+      select_to_add: "Select to add to this tag"
       shown_publicly: "Shown on PlaceCal to the public."
       url_validation: "Enter a valid URL (including https://)"
 
@@ -460,8 +461,8 @@ en:
 
     tags:
       sections:
-        tagged_partners: "Tagged Partners"
-        tagged_partners_description: "Apply this tag to the given partners"
+        tagged_partners: "Partners with this tag"
+        tagged_partners_description: ""
         assigned_users: "Assigned Users"
         assigned_users_description: "Grant permission to assign this tag"
 

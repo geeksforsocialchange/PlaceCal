@@ -66,7 +66,7 @@ module Admin
 
       if @tag.update(attributes)
         flash[:success] = 'Tag was saved successfully'
-        redirect_to admin_tags_path
+        redirect_to edit_admin_tag_path(@tag)
 
       else
         flash.now[:danger] = 'Tag was not saved'

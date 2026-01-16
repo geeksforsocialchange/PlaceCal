@@ -54,11 +54,17 @@ class User < ApplicationRecord
     [first_name, last_name].compact_blank.join(' ')
   end
 
-  # Shows in admin interfaces
+  # Shows in admin interfaces (legacy format)
   def admin_name
     name = [last_name&.upcase, first_name].compact_blank.join(', ')
 
     "#{name} <#{email}>".strip
+  end
+
+  # Friendly display format: "Firstname Lastname (email)"
+  def display_name
+    name = full_name.presence || email.split('@').first
+    "#{name} (#{email})"
   end
 
   alias to_s admin_name

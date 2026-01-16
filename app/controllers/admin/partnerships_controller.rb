@@ -52,7 +52,10 @@ module Admin
 
     def update
       authorize @partnership
-      attributes = params.require(:partnership).permit(policy(@partnership).permitted_attributes)
+
+      # Accept either :tag or :partnership params (form uses :tag for shared tag form)
+      param_key = params.key?(:tag) ? :tag : :partnership
+      attributes = params.require(param_key).permit(policy(@partnership).permitted_attributes)
 
       if current_user.partner_admin?
         attributes[:partner_ids] =
