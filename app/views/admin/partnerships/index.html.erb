@@ -1,3 +1,13 @@
+<%
+  # Get partnership admins for tom-select filter
+  admin_ids = TagsUser.where(tag_id: Partnership.ids).distinct.pluck(:user_id)
+  admin_options = User.where(id: admin_ids).order(:first_name, :last_name).map do |u|
+    name = [u.first_name, u.last_name].compact.join(' ')
+    name = u.email.split('@').first if name.blank?
+    { value: u.id.to_s, label: name }
+  end
+%>
+
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Partnerships',
     model: :partnerships,
@@ -18,6 +28,13 @@
     },
     default_sort: { column: 'updated_at', direction: 'desc' },
     filters: [
+      {
+        column: 'admin_id',
+        label: 'Admin',
+        width: 'w-48',
+        tom_select: true,
+        options: admin_options
+      },
       {
         column: 'has_partners',
         label: 'Partners',

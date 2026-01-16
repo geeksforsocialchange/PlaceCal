@@ -16,11 +16,22 @@ export default class extends Controller {
 			placeholder: placeholder,
 			hidePlaceholder: true,
 		});
+
+		// Store reference on element for external access
+		this.element.tomSelectInstance = this.tomSelect;
 	}
 
 	disconnect() {
 		if (this.tomSelect) {
 			this.tomSelect.destroy();
+			this.element.tomSelectInstance = null;
+		}
+	}
+
+	// Action to clear the selection
+	clear() {
+		if (this.tomSelect) {
+			this.tomSelect.clear();
 		}
 	}
 }

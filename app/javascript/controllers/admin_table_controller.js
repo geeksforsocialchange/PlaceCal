@@ -325,6 +325,10 @@ export default class extends Controller {
 			} else {
 				select.value = "";
 			}
+			// Also clear tom-select instance if present
+			if (select.tomSelectInstance) {
+				select.tomSelectInstance.clear();
+			}
 		});
 		// Also reset and hide dependent filters
 		this.dependentFilterTargets.forEach((select) => {

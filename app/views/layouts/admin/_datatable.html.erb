@@ -85,24 +85,39 @@
           <%
             is_hierarchical = filter[:type] == :hierarchical
             is_dependent = filter[:depends_on].present? || filter[:parent_filter].present?
+            is_tom_select = filter[:tom_select] == true
             target_name = is_hierarchical ? "hierarchicalFilter" : (is_dependent ? "dependentFilter" : "filter")
             has_default = filter[:default].present?
             has_options = filter[:options].present?
           %>
-          <select data-admin-table-target="<%= target_name %>"
-                  data-filter-column="<%= filter[:column] %>"
-                  <% if filter[:parent_filter] %>data-filter-parent="<%= filter[:parent_filter] %>"<% end %>
-                  <% if filter[:depends_on] %>data-filter-depends-on="<%= filter[:depends_on] %>"<% end %>
-                  <% if has_default %>data-filter-default="<%= filter[:default] %>"<% end %>
-                  <% if is_hierarchical %>data-filter-level="<%= filter[:level] %>"<% end %>
-                  <% if filter[:endpoint] %>data-filter-endpoint="<%= filter[:endpoint] %>"<% end %>
-                  data-action="change->admin-table#applyFilter"
-                  class="select-filter <%= 'hidden' if is_dependent %> <%= filter[:width] %>">
-            <option value=""><%= filter[:label] %></option>
-            <% filter[:options]&.each do |opt| %>
-              <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %> <% if has_default && filter[:default].to_s == opt[:value].to_s %>selected<% end %>><%= opt[:label] %></option>
-            <% end %>
-          </select>
+          <% if is_tom_select %>
+            <div class="ts-filter <%= filter[:width] %>">
+              <select data-controller="tom-select"
+                      data-admin-table-target="filter"
+                      data-filter-column="<%= filter[:column] %>"
+                      data-action="change->admin-table#applyFilter">
+                <option value=""><%= filter[:label] %></option>
+                <% filter[:options]&.each do |opt| %>
+                  <option value="<%= opt[:value] %>"><%= opt[:label] %></option>
+                <% end %>
+              </select>
+            </div>
+          <% else %>
+            <select data-admin-table-target="<%= target_name %>"
+                    data-filter-column="<%= filter[:column] %>"
+                    <% if filter[:parent_filter] %>data-filter-parent="<%= filter[:parent_filter] %>"<% end %>
+                    <% if filter[:depends_on] %>data-filter-depends-on="<%= filter[:depends_on] %>"<% end %>
+                    <% if has_default %>data-filter-default="<%= filter[:default] %>"<% end %>
+                    <% if is_hierarchical %>data-filter-level="<%= filter[:level] %>"<% end %>
+                    <% if filter[:endpoint] %>data-filter-endpoint="<%= filter[:endpoint] %>"<% end %>
+                    data-action="change->admin-table#applyFilter"
+                    class="select-filter <%= 'hidden' if is_dependent %> <%= filter[:width] %>">
+              <option value=""><%= filter[:label] %></option>
+              <% filter[:options]&.each do |opt| %>
+                <option value="<%= opt[:value] %>" <% if opt[:parent] %>data-parent="<%= opt[:parent] %>"<% end %> <% if has_default && filter[:default].to_s == opt[:value].to_s %>selected<% end %>><%= opt[:label] %></option>
+              <% end %>
+            </select>
+          <% end %>
         <% end %>
       <% end %>
 
