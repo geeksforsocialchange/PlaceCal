@@ -2,6 +2,8 @@
 
 module Admin
   class ErrorComponent < ViewComponent::Base
+    include SvgIconsHelper
+
     def initialize(object)
       super()
       @object = object

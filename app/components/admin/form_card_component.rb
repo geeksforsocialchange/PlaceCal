@@ -27,7 +27,7 @@ module Admin
     # @param fit_height [Boolean] If true, card won't stretch to fill container (h-fit)
     def initialize(icon:, title:, description: nil, fit_height: false)
       super()
-      @icon = icon
+      @icon_name = icon
       @title = title
       @description = description
       @fit_height = fit_height
@@ -35,7 +35,7 @@ module Admin
 
     private
 
-    attr_reader :icon, :title, :description, :fit_height
+    attr_reader :icon_name, :title, :description, :fit_height
 
     def card_classes
       classes = 'card bg-base-200/50 border border-base-300'

@@ -39,7 +39,7 @@ module Admin
     # @param color [Symbol] Color theme (:orange, :info, :success, :error, :warning, :neutral)
     def initialize(icon:, label:, value: nil, color: :orange)
       super()
-      @icon = icon
+      @icon_name = icon
       @label = label
       @value = value
       @color = color
@@ -47,7 +47,7 @@ module Admin
 
     private
 
-    attr_reader :icon, :label, :value, :color
+    attr_reader :icon_name, :label, :value, :color
 
     def icon_bg_class
       COLORS.dig(color, :bg) || COLORS[:orange][:bg]

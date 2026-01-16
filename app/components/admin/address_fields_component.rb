@@ -8,6 +8,8 @@ module Admin
   #   <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
   #
   class AddressFieldsComponent < ViewComponent::Base
+    include ApplicationHelper
+
     # @param form [ActionView::Helpers::FormBuilder] The parent form builder
     # @param partner [Partner] The partner being edited
     # @param current_user [User] The current logged-in user
@@ -32,6 +34,16 @@ module Admin
 
     def can_clear_address?
       partner.can_clear_address?(current_user)
+    end
+
+    def address_fields
+      [
+        { field: :street_address, label_key: :street_address },
+        { field: :street_address2, label_key: :street_address_2 },
+        { field: :street_address3, label_key: :street_address_3 },
+        { field: :city, label_key: :city },
+        { field: :postcode, label_key: :postcode }
+      ]
     end
   end
 end
