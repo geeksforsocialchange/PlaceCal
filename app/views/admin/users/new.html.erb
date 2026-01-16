@@ -23,24 +23,26 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= attr_label(:user, :first_name) %></legend>
+          <%= f.label :first_name, attr_label(:user, :first_name), class: 'fieldset-legend' %>
           <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
         </fieldset>
 
         <fieldset class="fieldset">
-          <legend class="fieldset-legend"><%= attr_label(:user, :last_name) %></legend>
+          <%= f.label :last_name, attr_label(:user, :last_name), class: 'fieldset-legend' %>
           <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
         </fieldset>
       </div>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+        <%= f.label :email, class: 'fieldset-legend' do %>
+          <%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+        <% end %>
         <%= f.input_field :email, class: 'input input-bordered w-full' %>
         <p class="fieldset-label">An invitation email will be sent to this address.</p>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :phone) %></legend>
+        <%= f.label :phone, attr_label(:user, :phone), class: 'fieldset-legend' %>
         <%= f.input_field :phone, class: 'input input-bordered w-full' %>
       </fieldset>
     </div>
@@ -54,7 +56,7 @@
           <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
         </div>
         <div>
-          <h3 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h3>
+          <h2 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h2>
           <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
         </div>
       </div>
@@ -83,7 +85,7 @@
             <%= icon(:map_pin, size: '6', css_class: 'text-sky-600') %>
           </div>
           <div>
-            <h3 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h3>
+            <h2 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h2>
             <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
           </div>
         </div>

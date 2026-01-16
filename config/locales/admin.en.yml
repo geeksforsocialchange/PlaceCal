@@ -250,7 +250,7 @@ en:
     # Calendars
     # -------------------------------------------------------------------------
     calendars:
-      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange-dark" target="_blank">handbook</a> for setup instructions'
+      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link underline hover:no-underline text-placecal-orange-dark" target="_blank">handbook</a> for setup instructions'
       wizard:
         title: "Create a New Calendar"
         subtitle: "Connect an event source to start importing events into PlaceCal"
@@ -532,6 +532,8 @@ en:
         uk_admin: "UK-wide neighbourhood admin - can manage all UK neighbourhoods"
         editor: "Can edit all news articles"
         citizen: "Can only edit assigned entities"
+      actions:
+        invite: "Invite User"
       danger_zone:
         site_admin_warning: "This user is a site administrator and cannot be deleted. Remove them as a site admin first."
       profile:

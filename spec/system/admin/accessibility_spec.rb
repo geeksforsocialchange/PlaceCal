@@ -138,5 +138,15 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
       visit admin_url("/tags/new")
       expect(page).to be_axe_clean
     end
+
+    it "new user form has no accessibility violations" do
+      visit admin_url("/users/new")
+      expect(page).to be_axe_clean
+    end
+
+    it "new calendar form has no accessibility violations" do
+      visit admin_url("/calendars/new")
+      expect(page).to be_axe_clean
+    end
   end
 end
