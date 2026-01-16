@@ -6,7 +6,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <div class="space-y-6">
     <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
-      <%= render 'address_fields', form: f, partner: @partner %>
+      <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
       <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
         <div role="alert" class="alert alert-warning text-sm">
           <%= icon(:warning, size: '5', css_class: 'shrink-0') %>

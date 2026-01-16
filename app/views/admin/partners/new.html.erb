@@ -111,7 +111,7 @@
             <p class="text-sm text-gray-600 mb-4">
               If this partner has a fixed location, enter it here.
             </p>
-            <%= render 'address_fields', form: f, partner: @partner %>
+            <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
           </fieldset>
 
           <%# Service Areas %>
