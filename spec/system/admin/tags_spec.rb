@@ -66,6 +66,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
+      # Navigate to Basic Info tab (tab state may be stored from previous tests)
+      find('input[aria-label*="Basic"]').click
+
       fill_in "Name", with: "A new tag name"
       click_button "Save"
 
