@@ -114,8 +114,9 @@ class PartnershipDatatable < Datatable
     HTML
 
     links = admins.first(2).map do |user|
-      name = ERB::Util.html_escape(user.email.split('@').first)
-      "<a href=\"#{edit_admin_user_path(user)}\" class=\"text-gray-700 hover:text-orange-600\">#{name}</a>"
+      name = [user.first_name, user.last_name].compact.join(' ')
+      name = user.email.split('@').first if name.blank?
+      "<a href=\"#{edit_admin_user_path(user)}\" class=\"text-gray-700 hover:text-orange-600\">#{ERB::Util.html_escape(name)}</a>"
     end
 
     if count <= 2
