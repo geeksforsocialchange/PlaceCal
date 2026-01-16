@@ -50,6 +50,6 @@
 
 <div class="mt-6">
   <%= render Admin::FormCardComponent.new(icon: :clock, title: t('admin.sections.opening_times')) do %>
-    <%= render 'opening_times', f: f %>
+    <%= render Admin::OpeningTimesComponent.new(form: f, partner: @partner) %>
   <% end %>
 </div>
