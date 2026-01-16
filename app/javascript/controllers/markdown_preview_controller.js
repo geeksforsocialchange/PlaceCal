@@ -20,6 +20,10 @@ export default class extends Controller {
 		// Bind resize handlers
 		this.handleResize = this.handleResize.bind(this);
 		this.stopResize = this.stopResize.bind(this);
+
+		// Initialize undo stack for toolbar actions
+		this.undoStack = [];
+		this.redoStack = [];
 	}
 
 	disconnect() {
@@ -89,6 +93,21 @@ export default class extends Controller {
 		} else if ((event.ctrlKey || event.metaKey) && event.key === "k") {
 			event.preventDefault();
 			this.insertLink();
+		} else if ((event.ctrlKey || event.metaKey) && event.key === "z") {
+			if (event.shiftKey) {
+				// Cmd+Shift+Z = Redo
+				if (this.redoStack.length > 0) {
+					event.preventDefault();
+					this.redo();
+				}
+			} else {
+				// Cmd+Z = Undo
+				if (this.undoStack.length > 0) {
+					event.preventDefault();
+					this.undo();
+				}
+				// If no toolbar actions to undo, let browser handle native undo
+			}
 		}
 	}
 
@@ -169,28 +188,85 @@ export default class extends Controller {
 	}
 
 	replaceSelection(text) {
-		const start = this.inputTarget.selectionStart;
-		const end = this.inputTarget.selectionEnd;
-		const value = this.inputTarget.value;
+		const input = this.inputTarget;
+		const start = input.selectionStart;
+		const end = input.selectionEnd;
+		const value = input.value;
 
-		this.inputTarget.value =
-			value.substring(0, start) + text + value.substring(end);
+		// Save state for undo
+		this.undoStack.push({
+			value: value,
+			selectionStart: start,
+			selectionEnd: end,
+		});
+		this.redoStack = []; // Clear redo stack on new action
 
-		// Move cursor to end of inserted text
-		const newPosition = start + text.length;
-		this.inputTarget.selectionStart = newPosition;
-		this.inputTarget.selectionEnd = newPosition;
+		// Perform the replacement
+		input.value = value.substring(0, start) + text + value.substring(end);
+
+		// Position cursor after inserted text
+		const newPos = start + text.length;
+		input.setSelectionRange(newPos, newPos);
 
 		// Trigger preview update
 		this.updatePreview();
+	}
 
-		// Dispatch input event for form tracking
-		this.inputTarget.dispatchEvent(new Event("input", { bubbles: true }));
+	undo() {
+		if (this.undoStack.length === 0) return;
+
+		const input = this.inputTarget;
+
+		// Save current state for redo
+		this.redoStack.push({
+			value: input.value,
+			selectionStart: input.selectionStart,
+			selectionEnd: input.selectionEnd,
+		});
+
+		// Restore previous state
+		const state = this.undoStack.pop();
+		input.value = state.value;
+		input.setSelectionRange(state.selectionStart, state.selectionEnd);
+		input.focus();
+
+		this.updatePreview();
+	}
+
+	redo() {
+		if (this.redoStack.length === 0) return;
+
+		const input = this.inputTarget;
+
+		// Save current state for undo
+		this.undoStack.push({
+			value: input.value,
+			selectionStart: input.selectionStart,
+			selectionEnd: input.selectionEnd,
+		});
+
+		// Restore redo state
+		const state = this.redoStack.pop();
+		input.value = state.value;
+		input.setSelectionRange(state.selectionStart, state.selectionEnd);
+		input.focus();
+
+		this.updatePreview();
 	}
 
 	insertAtLineStart(prefix, placeholder) {
-		const start = this.inputTarget.selectionStart;
-		const value = this.inputTarget.value;
+		const input = this.inputTarget;
+		const start = input.selectionStart;
+		const end = input.selectionEnd;
+		const value = input.value;
+
+		// Save state for undo
+		this.undoStack.push({
+			value: value,
+			selectionStart: start,
+			selectionEnd: end,
+		});
+		this.redoStack = []; // Clear redo stack on new action
 
 		// Find the start of the current line
 		let lineStart = start;
@@ -200,25 +276,19 @@ export default class extends Controller {
 
 		const selection = this.getSelection();
 		const text = selection || placeholder;
+		const insertText = prefix + text;
 
-		// Check if we need a newline before
-		const needsNewlineBefore = lineStart > 0 && value[lineStart - 1] !== "\n";
-		const insertText = (needsNewlineBefore ? "\n" : "") + prefix + text;
+		// Perform the replacement
+		input.value =
+			value.substring(0, lineStart) + insertText + value.substring(end);
 
-		// Replace from line start to selection end
-		this.inputTarget.value =
-			value.substring(0, lineStart) +
-			insertText +
-			value.substring(this.inputTarget.selectionEnd);
-
-		// Position cursor
-		const newStart = lineStart + (needsNewlineBefore ? 1 : 0) + prefix.length;
+		// Position cursor to select the text portion
+		const newStart = lineStart + prefix.length;
 		const newEnd = newStart + text.length;
-		this.inputTarget.setSelectionRange(newStart, newEnd);
-		this.inputTarget.focus();
+		input.setSelectionRange(newStart, newEnd);
+		input.focus();
 
 		this.updatePreview();
-		this.inputTarget.dispatchEvent(new Event("input", { bubbles: true }));
 	}
 
 	renderPreview() {
