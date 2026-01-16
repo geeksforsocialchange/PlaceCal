@@ -1,11 +1,13 @@
 <%- disabled_fields = policy(@article).disabled_fields %>
 
 <div class="space-y-6">
-  <%# Title, Author, and Publication date in a card %>
-  <%= render Admin::FormCardComponent.new(
-    icon: :edit,
-    title: "Article Details"
-  ) do %>
+  <%# Title, Author, and Publication date %>
+  <div class="space-y-3">
+    <h3 class="font-semibold flex items-center gap-2">
+      <%= icon(:edit, size: '4') %>
+      Article Details
+    </h3>
+
     <div class="space-y-4">
       <%# Title field %>
       <fieldset class="fieldset">
@@ -22,11 +24,7 @@
             <div class="text-base-content font-medium"><%= @article.author&.admin_name || 'Unknown' %></div>
           <% else %>
             <%= f.select :author_id,
-                  User.order(:last_name, :first_name).map { |u|
-                    full_name = [u.first_name, u.last_name].compact.join(' ').presence
-                    label = full_name ? "#{full_name} (#{u.email})" : u.email
-                    [label, u.id]
-                  },
+                  User.order(:last_name, :first_name).map { |u| [u.admin_name, u.id] },
                   { include_blank: t('admin.placeholders.select_model', model: attr_label(:article, :author).downcase) },
                   { class: 'select select-bordered w-full', id: 'article_author_id', data: { controller: 'tom-select' } } %>
           <% end %>
@@ -49,7 +47,7 @@
         <% end %>
       </div>
     </div>
-  <% end %>
+  </div>
 
   <%# Body with side-by-side markdown preview %>
   <div data-controller="markdown-preview">
