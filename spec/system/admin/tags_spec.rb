@@ -171,7 +171,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/#{partnership_tag.id}/edit"
 
       # Assigned Users is on the Basic Info tab (default)
-      expect(page).to have_css("h3", text: "Assigned Users")
+      expect(page).to have_css("h2", text: "Assigned Users")
     end
 
     it "hides assigned users field on Edit of non-Partnership tag" do
@@ -181,7 +181,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/#{facility_tag.id}/edit"
 
       # Assigned Users should not show for non-Partnership tags
-      expect(page).not_to have_css("h3", text: "Assigned Users")
+      expect(page).not_to have_css("h2", text: "Assigned Users")
     end
   end
 end

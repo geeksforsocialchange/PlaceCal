@@ -74,7 +74,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       # The site has a primary neighbourhood (sites_neighbourhood created in setup)
       # Check that the nested form for additional neighbourhoods only has the "Add" button,
       # not any existing neighbourhood cards (since @site only has a primary neighbourhood)
-      other_neighbourhoods_section = find(:xpath, "//h3[contains(., 'Other Neighbourhoods')]/ancestor::div[contains(@class, 'card')][1]")
+      other_neighbourhoods_section = find(:xpath, "//h2[contains(., 'Other Neighbourhoods')]/ancestor::div[contains(@class, 'card')][1]")
 
       # Should have the "Add neighbourhood" button
       expect(other_neighbourhoods_section).to have_link("Add neighbourhood")
