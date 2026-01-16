@@ -199,7 +199,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       expect(page).to have_content("Set Location", wait: 5)
 
       # Add a service area using cascading dropdowns
-      click_button "Add Service Area"
+      click_link "Add Service Area"
 
       # Wait for the cascading neighbourhood controller to initialize
       expect(page).to have_css("[data-controller='cascading-neighbourhood']", wait: 10)
