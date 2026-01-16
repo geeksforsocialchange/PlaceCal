@@ -50,7 +50,7 @@ module Admin
 
       if @article.update(permitted_attributes(@article))
         flash[:success] = 'Article was saved successfully'
-        redirect_to admin_articles_path
+        redirect_to edit_admin_article_path(@article)
       else
         flash.now[:danger] = 'Article was not saved'
         render :edit, status: :unprocessable_entity

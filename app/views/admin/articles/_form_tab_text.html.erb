@@ -30,30 +30,76 @@
 
   <%# Body with side-by-side markdown preview %>
   <div data-controller="markdown-preview">
-    <div class="flex items-center justify-between mb-2">
-      <label for="article_body" class="fieldset-legend mb-0"><%= attr_label(:article, :body) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
-    </div>
+    <label for="article_body" class="fieldset-legend"><%= attr_label(:article, :body) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
     <p class="text-sm text-base-content/60 mb-3">
       This field accepts <a href="https://www.markdownguide.org/basic-syntax/" class="link link-hover text-placecal-teal" target="_blank">Markdown syntax</a>.
     </p>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <%# Editor %>
-      <div>
-        <div class="text-xs font-medium text-base-content/50 mb-2 flex items-center gap-1">
+    <%# Header row with Write/Preview labels and toolbar %>
+    <div class="flex items-center gap-0 mb-2" data-markdown-preview-target="container">
+      <div class="flex-1 min-w-64 flex items-center justify-between" data-markdown-preview-target="editorPane">
+        <div class="text-xs font-medium text-base-content/50 flex items-center gap-1">
           <%= icon(:edit, size: '3') %>
           Write
         </div>
-        <%= f.input_field :body, as: :text, class: 'textarea textarea-bordered w-full min-h-96 font-mono text-sm', data: { controller: 'auto-expand', markdown_preview_target: 'input', action: 'input->markdown-preview#updatePreview' }, id: 'article_body' %>
+        <%# Markdown toolbar %>
+        <div class="flex items-center gap-0.5" data-markdown-preview-target="toolbar">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBold" title="Bold (Ctrl+B)">
+            <strong>B</strong>
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertItalic" title="Italic (Ctrl+I)">
+            <em>I</em>
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertLink" title="Link">
+            <%= icon(:link, size: '4') %>
+          </button>
+          <div class="divider divider-horizontal mx-0.5 h-4"></div>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH2" title="Heading 2">
+            H2
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH3" title="Heading 3">
+            H3
+          </button>
+          <div class="divider divider-horizontal mx-0.5 h-4"></div>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBulletList" title="Bullet list">
+            <%= icon(:list, size: '4') %>
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBlockquote" title="Blockquote">
+            &ldquo;
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertCode" title="Code">
+            <code class="text-xs">&lt;/&gt;</code>
+          </button>
+        </div>
       </div>
 
-      <%# Preview %>
-      <div>
-        <div class="text-xs font-medium text-base-content/50 mb-2 flex items-center gap-1">
+      <div class="hidden lg:block w-4"></div>
+
+      <div class="hidden lg:flex flex-1 min-w-64 items-center" data-markdown-preview-target="previewPane">
+        <div class="text-xs font-medium text-base-content/50 flex items-center gap-1">
           <%= icon(:eye, size: '3') %>
           Preview
         </div>
-        <div class="border border-base-300 rounded-lg p-6 min-h-96 bg-base-100 overflow-y-auto">
+      </div>
+    </div>
+
+    <%# Content row with textarea, resizer, and preview %>
+    <div class="flex gap-0" data-markdown-preview-target="contentContainer">
+      <%# Editor %>
+      <div class="flex-1 min-w-64" data-markdown-preview-target="editorContent">
+        <%= f.input_field :body, as: :text, class: 'textarea textarea-bordered w-full min-h-96 font-mono text-sm resize-none', data: { controller: 'auto-expand', markdown_preview_target: 'input', action: 'input->markdown-preview#updatePreview keydown->markdown-preview#handleKeydown' }, id: 'article_body' %>
+      </div>
+
+      <%# Resizer handle %>
+      <div class="hidden lg:flex w-4 cursor-col-resize items-center justify-center group hover:bg-base-200 transition-colors"
+           data-markdown-preview-target="resizer"
+           data-action="mousedown->markdown-preview#startResize">
+        <div class="w-1 h-8 rounded-full bg-base-300 group-hover:bg-placecal-orange transition-colors"></div>
+      </div>
+
+      <%# Preview %>
+      <div class="hidden lg:block flex-1 min-w-64" data-markdown-preview-target="previewContent">
+        <div class="border border-base-300 rounded-lg px-6 py-2 min-h-96 bg-base-100 overflow-y-auto">
           <div data-markdown-preview-target="output" class="markdown-preview">
             <p class="text-base-content/50 italic">Start typing to see preview...</p>
           </div>

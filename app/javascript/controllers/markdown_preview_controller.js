@@ -1,17 +1,224 @@
 import { Controller } from "@hotwired/stimulus";
 
 // Markdown preview controller for article body editing
-// Provides live side-by-side markdown preview
+// Provides live side-by-side markdown preview with formatting toolbar
 export default class extends Controller {
-	static targets = ["input", "output"];
+	static targets = [
+		"input",
+		"output",
+		"toolbar",
+		"container",
+		"editorPane",
+		"previewPane",
+		"resizer",
+	];
 
 	connect() {
 		// Render initial preview if there's content
 		this.renderPreview();
+
+		// Bind resize handlers
+		this.handleResize = this.handleResize.bind(this);
+		this.stopResize = this.stopResize.bind(this);
+	}
+
+	disconnect() {
+		// Clean up resize listeners
+		document.removeEventListener("mousemove", this.handleResize);
+		document.removeEventListener("mouseup", this.stopResize);
+	}
+
+	// Resizable panes
+	startResize(event) {
+		event.preventDefault();
+		this.isResizing = true;
+		this.startX = event.clientX;
+		this.startEditorWidth = this.editorPaneTarget.offsetWidth;
+		this.containerWidth = this.containerTarget.offsetWidth;
+
+		document.addEventListener("mousemove", this.handleResize);
+		document.addEventListener("mouseup", this.stopResize);
+
+		// Prevent text selection while resizing
+		document.body.style.userSelect = "none";
+		document.body.style.cursor = "col-resize";
+	}
+
+	handleResize(event) {
+		if (!this.isResizing) return;
+
+		const delta = event.clientX - this.startX;
+		const newEditorWidth = this.startEditorWidth + delta;
+
+		// Calculate percentage (accounting for resizer width of 16px)
+		const availableWidth = this.containerWidth - 16;
+		const minWidth = 256; // min-w-64 = 16rem = 256px
+
+		// Clamp the editor width
+		const clampedWidth = Math.max(
+			minWidth,
+			Math.min(newEditorWidth, availableWidth - minWidth)
+		);
+		const editorPercent = (clampedWidth / availableWidth) * 100;
+
+		this.editorPaneTarget.style.flex = `0 0 ${editorPercent}%`;
+		this.previewPaneTarget.style.flex = `0 0 ${100 - editorPercent}%`;
+	}
+
+	stopResize() {
+		this.isResizing = false;
+		document.removeEventListener("mousemove", this.handleResize);
+		document.removeEventListener("mouseup", this.stopResize);
+
+		document.body.style.userSelect = "";
+		document.body.style.cursor = "";
 	}
 
 	updatePreview() {
 		this.renderPreview();
+	}
+
+	// Keyboard shortcuts
+	handleKeydown(event) {
+		if ((event.ctrlKey || event.metaKey) && event.key === "b") {
+			event.preventDefault();
+			this.insertBold();
+		} else if ((event.ctrlKey || event.metaKey) && event.key === "i") {
+			event.preventDefault();
+			this.insertItalic();
+		} else if ((event.ctrlKey || event.metaKey) && event.key === "k") {
+			event.preventDefault();
+			this.insertLink();
+		}
+	}
+
+	// Toolbar actions
+	insertBold() {
+		this.wrapSelection("**", "**", "bold text");
+	}
+
+	insertItalic() {
+		this.wrapSelection("*", "*", "italic text");
+	}
+
+	insertLink() {
+		const selection = this.getSelection();
+		const url = "https://";
+		if (selection) {
+			this.replaceSelection(`[${selection}](${url})`);
+			// Position cursor inside the URL
+			const start = this.inputTarget.selectionStart - url.length - 1;
+			this.inputTarget.setSelectionRange(start, start + url.length);
+		} else {
+			this.replaceSelection(`[link text](${url})`);
+			// Select "link text" for easy replacement
+			const end = this.inputTarget.selectionStart;
+			const start = end - `[link text](${url})`.length + 1;
+			this.inputTarget.setSelectionRange(start, start + 9);
+		}
+		this.inputTarget.focus();
+	}
+
+	insertH2() {
+		this.insertAtLineStart("## ", "Heading");
+	}
+
+	insertH3() {
+		this.insertAtLineStart("### ", "Heading");
+	}
+
+	insertBulletList() {
+		this.insertAtLineStart("- ", "List item");
+	}
+
+	insertBlockquote() {
+		this.insertAtLineStart("> ", "Quote");
+	}
+
+	insertCode() {
+		const selection = this.getSelection();
+		if (selection && selection.includes("\n")) {
+			// Multi-line: use code fence
+			this.wrapSelection("```\n", "\n```", "code");
+		} else {
+			// Single line: use inline code
+			this.wrapSelection("`", "`", "code");
+		}
+	}
+
+	// Helper methods
+	getSelection() {
+		const start = this.inputTarget.selectionStart;
+		const end = this.inputTarget.selectionEnd;
+		return this.inputTarget.value.substring(start, end);
+	}
+
+	wrapSelection(before, after, placeholder) {
+		const start = this.inputTarget.selectionStart;
+		const end = this.inputTarget.selectionEnd;
+		const selection = this.inputTarget.value.substring(start, end);
+		const text = selection || placeholder;
+
+		this.replaceSelection(`${before}${text}${after}`);
+
+		// Select the text (not the wrapper)
+		const newStart = start + before.length;
+		const newEnd = newStart + text.length;
+		this.inputTarget.setSelectionRange(newStart, newEnd);
+		this.inputTarget.focus();
+	}
+
+	replaceSelection(text) {
+		const start = this.inputTarget.selectionStart;
+		const end = this.inputTarget.selectionEnd;
+		const value = this.inputTarget.value;
+
+		this.inputTarget.value =
+			value.substring(0, start) + text + value.substring(end);
+
+		// Move cursor to end of inserted text
+		const newPosition = start + text.length;
+		this.inputTarget.selectionStart = newPosition;
+		this.inputTarget.selectionEnd = newPosition;
+
+		// Trigger preview update
+		this.updatePreview();
+
+		// Dispatch input event for form tracking
+		this.inputTarget.dispatchEvent(new Event("input", { bubbles: true }));
+	}
+
+	insertAtLineStart(prefix, placeholder) {
+		const start = this.inputTarget.selectionStart;
+		const value = this.inputTarget.value;
+
+		// Find the start of the current line
+		let lineStart = start;
+		while (lineStart > 0 && value[lineStart - 1] !== "\n") {
+			lineStart--;
+		}
+
+		const selection = this.getSelection();
+		const text = selection || placeholder;
+
+		// Check if we need a newline before
+		const needsNewlineBefore = lineStart > 0 && value[lineStart - 1] !== "\n";
+		const insertText = (needsNewlineBefore ? "\n" : "") + prefix + text;
+
+		// Replace from line start to selection end
+		this.inputTarget.value =
+			value.substring(0, lineStart) +
+			insertText +
+			value.substring(this.inputTarget.selectionEnd);
+
+		// Position cursor
+		const newStart = lineStart + (needsNewlineBefore ? 1 : 0) + prefix.length;
+		const newEnd = newStart + text.length;
+		this.inputTarget.setSelectionRange(newStart, newEnd);
+		this.inputTarget.focus();
+
+		this.updatePreview();
+		this.inputTarget.dispatchEvent(new Event("input", { bubbles: true }));
 	}
 
 	renderPreview() {
