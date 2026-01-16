@@ -5,13 +5,13 @@
         <%= icon(icon_name, size: '5', css_class: icon_text_class) %>
       </div>
       <div>
-        <p class="text-xs text-base-content/60 uppercase font-medium"><%= label %></p>
+        <p class="text-xs text-gray-600 uppercase font-medium"><%= label %></p>
         <% if content.present? %>
           <%= content %>
         <% elsif value.present? %>
           <p class="font-semibold text-lg"><%= value %></p>
         <% else %>
-          <p class="text-base-content/50 italic">Not set</p>
+          <p class="text-gray-600 italic">Not set</p>
         <% end %>
       </div>
     </div>

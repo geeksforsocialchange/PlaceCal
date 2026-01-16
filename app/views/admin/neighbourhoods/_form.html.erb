@@ -10,15 +10,15 @@
             title: t('admin.neighbourhoods.form.name_title'),
             icon: :edit
           ) do %>
-        <p class="text-sm text-base-content/60 mb-4"><%= t('admin.neighbourhoods.form.name_description') %></p>
+        <p class="text-sm text-gray-600 mb-4"><%= t('admin.neighbourhoods.form.name_description') %></p>
         <div class="space-y-4">
           <fieldset class="fieldset">
-            <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :name) %></legend>
+            <%= f.label :name, attr_label(:neighbourhood, :name), class: 'fieldset-legend' %>
             <%= f.input_field :name, class: 'input input-bordered w-full' %>
           </fieldset>
 
           <fieldset class="fieldset">
-            <legend class="fieldset-legend"><%= attr_label(:neighbourhood, :name_abbr) %></legend>
+            <%= f.label :name_abbr, attr_label(:neighbourhood, :name_abbr), class: 'fieldset-legend' %>
             <%= f.input_field :name_abbr, class: 'input input-bordered w-full' %>
             <p class="fieldset-label mt-1"><%= t('admin.neighbourhoods.form.name_abbr_hint') %></p>
           </fieldset>
@@ -35,7 +35,7 @@
               </div>
               <div>
                 <h3 class="card-title text-lg"><%= t('admin.neighbourhoods.form.admins_title') %></h3>
-                <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.neighbourhoods.form.admins_description') %></p>
+                <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.neighbourhoods.form.admins_description') %></p>
               </div>
             </div>
 
@@ -63,11 +63,11 @@
             title: t('admin.neighbourhoods.form.official_title'),
             icon: :globe
           ) do %>
-        <p class="text-sm text-base-content/60 mb-4"><%= t('admin.neighbourhoods.form.official_description') %></p>
+        <p class="text-sm text-gray-600 mb-4"><%= t('admin.neighbourhoods.form.official_description') %></p>
         <div class="space-y-3">
           <%# Level %>
           <div class="flex items-center justify-between py-2 border-b border-base-200">
-            <span class="text-sm text-base-content/60"><%= t('admin.neighbourhoods.show.stats.level') %></span>
+            <span class="text-sm text-gray-600"><%= t('admin.neighbourhoods.show.stats.level') %></span>
             <div class="flex items-center gap-2">
               <%= level_badge(@neighbourhood.level, size: :small) %>
               <span class="font-medium"><%= @neighbourhood.unit&.titleize || '—' %></span>
@@ -76,19 +76,19 @@
 
           <%# Unit Name %>
           <div class="flex items-center justify-between py-2 border-b border-base-200">
-            <span class="text-sm text-base-content/60"><%= attr_label(:neighbourhood, :unit_name) %></span>
+            <span class="text-sm text-gray-600"><%= attr_label(:neighbourhood, :unit_name) %></span>
             <span class="font-medium truncate ml-2"><%= @neighbourhood.unit_name || '—' %></span>
           </div>
 
           <%# ONS Code %>
           <div class="flex items-center justify-between py-2 border-b border-base-200">
-            <span class="text-sm text-base-content/60"><%= t('admin.neighbourhoods.show.stats.ons_code') %></span>
+            <span class="text-sm text-gray-600"><%= t('admin.neighbourhoods.show.stats.ons_code') %></span>
             <span class="font-mono font-medium"><%= @neighbourhood.unit_code_value || '—' %></span>
           </div>
 
           <%# ONS Dataset %>
           <div class="flex items-center justify-between py-2">
-            <span class="text-sm text-base-content/60"><%= t('admin.neighbourhoods.show.stats.ons_dataset') %></span>
+            <span class="text-sm text-gray-600"><%= t('admin.neighbourhoods.show.stats.ons_dataset') %></span>
             <div class="flex items-center gap-2">
               <span class="font-medium"><%= @neighbourhood.release_date&.strftime('%b %Y') || '—' %></span>
               <% if is_current %>

@@ -77,19 +77,19 @@ class ArticleDatatable < Datatable
         <a href="#{edit_admin_article_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.title)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
+        <span class="text-xs text-gray-500 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
   end
 
   def render_author_cell(record)
-    return '<span class="text-gray-400">—</span>'.html_safe unless record.author
+    return '<span class="text-gray-500">—</span>'.html_safe unless record.author
 
     author = record.author
     display_name = author.full_name.presence || author.email
 
     <<~HTML.html_safe
-      <a href="#{edit_admin_user_path(author)}" class="link link-hover text-placecal-orange">
+      <a href="#{edit_admin_user_path(author)}" class="link link-hover text-placecal-orange-dark">
         #{ERB::Util.html_escape(display_name)}
       </a>
     HTML
@@ -97,7 +97,7 @@ class ArticleDatatable < Datatable
 
   def render_partners_cell(record)
     partners = record.partners
-    return '<span class="text-gray-400">—</span>'.html_safe if partners.empty?
+    return '<span class="text-gray-500">—</span>'.html_safe if partners.empty?
 
     if partners.size == 1
       partner = partners.first
@@ -116,7 +116,7 @@ class ArticleDatatable < Datatable
   end
 
   def render_published_at_cell(record)
-    return '<span class="text-gray-400">—</span>'.html_safe unless record.published_at
+    return '<span class="text-gray-500">—</span>'.html_safe unless record.published_at
 
     <<~HTML.html_safe
       <span class="text-gray-600 text-sm whitespace-nowrap">
@@ -142,7 +142,7 @@ class ArticleDatatable < Datatable
   end
 
   def render_relative_time(datetime)
-    return '<span class="text-gray-400">—</span>'.html_safe unless datetime
+    return '<span class="text-gray-500">—</span>'.html_safe unless datetime
 
     days_ago = (Time.current - datetime).to_i / 1.day
 

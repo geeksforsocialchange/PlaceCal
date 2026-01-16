@@ -17,7 +17,7 @@
             <span class="text-base font-semibold text-base-content group-hover:text-placecal-orange transition-colors">
               <%= neighbourhood.shortname %>
             </span>
-            <span class="text-xs text-base-content/50 ml-1"><%= neighbourhood.unit&.titleize %></span>
+            <span class="text-xs text-gray-600 ml-1"><%= neighbourhood.unit&.titleize %></span>
           </div>
         <% end %>
 
@@ -38,7 +38,7 @@
       </div>
 
       <% if show_remove && form %>
-        <%= helpers.nested_form_remove_link(form, icon(:x, size: '4'), class: 'btn btn-ghost btn-sm btn-square text-base-content/40 hover:text-error hover:bg-error/10') %>
+        <%= helpers.nested_form_remove_link(form, icon(:x, size: '4'), class: 'btn btn-ghost btn-sm btn-square text-gray-500 hover:text-error hover:bg-error/10') %>
       <% end %>
     </div>
   </div>

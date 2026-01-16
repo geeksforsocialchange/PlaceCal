@@ -6,7 +6,7 @@
           <div>
             <h3 class="font-medium"><%= item_title(item) %></h3>
             <% if item_subtitle(item) %>
-              <p class="text-xs text-base-content/60"><%= item_subtitle(item) %></p>
+              <p class="text-xs text-gray-600"><%= item_subtitle(item) %></p>
             <% end %>
           </div>
           <%= link_to t('admin.actions.edit'), item_edit_path(item), class: "btn btn-ghost btn-sm" %>
@@ -16,6 +16,6 @@
   </div>
 <% else %>
   <div class="text-center py-8">
-    <p class="text-sm text-base-content/50"><%= empty_message %></p>
+    <p class="text-sm text-gray-600"><%= empty_message %></p>
   </div>
 <% end %>

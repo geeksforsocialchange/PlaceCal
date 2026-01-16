@@ -3,7 +3,7 @@
     <%= admin_nav_link(t('admin.dashboard.title'), admin_root_path, :home) %>
   </ul>
 
-  <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+  <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
     <%= t('admin.leftbar.content_types') %>
   </h6>
   <ul class="space-y-1 px-2">
@@ -15,7 +15,7 @@
     <%= admin_nav_link(t('admin.leftbar.partnerships'), admin_partnerships_path, :partnership) if policy(Partnership).index? %>
   </ul>
 
-  <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+  <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
     <%= t('admin.leftbar.get_support') %>
   </h6>
   <ul class="space-y-1 px-2">
@@ -31,7 +31,7 @@
   </ul>
 
   <% if policy(Article).index? || policy(Tag).index? || policy(Collection).index? || policy(Supporter).index? %>
-    <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+    <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
       <%= t('admin.leftbar.in_development') %>
     </h6>
     <ul class="space-y-1 px-2">
@@ -43,8 +43,8 @@
     </ul>
   <% end %>
 
-  <div class="px-5 mt-8 text-xs text-gray-500 flex items-center gap-1">
+  <div class="px-5 mt-8 text-xs text-gray-600 flex items-center gap-1">
     <%= icon(:code, size: '3') %>
-    <%= t('admin.leftbar.build') %>: <code class="font-mono"><%= link_to (ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'dev'), "https://github.com/geeksforsocialchange/PlaceCal/commit/#{ENV['GIT_REV']}", class: 'text-placecal-teal hover:underline' %></code>
+    <%= t('admin.leftbar.build') %>: <code class="font-mono"><%= link_to (ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'dev'), "https://github.com/geeksforsocialchange/PlaceCal/commit/#{ENV['GIT_REV']}", class: 'text-placecal-teal-dark underline hover:no-underline' %></code>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <div class="mb-4">
   <% if policy(Supporter).create? %>
     <%= link_to new_admin_supporter_path, data: { turbo: false },
-        class: "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-white bg-orange-500 hover:bg-orange-600 transition-colors shadow-sm" do %>
+        class: "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-white bg-orange-700 hover:bg-orange-800 transition-colors shadow-sm" do %>
       <%= icon(:plus, size: '4') %>
       Add Supporter
     <% end %>
@@ -38,7 +38,7 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= supporter.is_global ? 'Yes' : 'No' %></td>
           <td class="px-6 py-4 whitespace-nowrap text-sm">
             <%= link_to "Edit", edit_admin_supporter_path(supporter), data: { turbo: false },
-                class: "text-placecal-orange hover:underline" %>
+                class: "text-placecal-orange-dark hover:underline" %>
           </td>
         </tr>
       <% end %>

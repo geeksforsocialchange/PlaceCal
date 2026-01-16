@@ -3,7 +3,7 @@
   <%= Calendar.model_name.human(count: 2) %>
   <span class="badge badge-neutral"><%= @partner.calendars.count %></span>
 </h2>
-<p class="text-sm text-base-content/60 mb-6"><%= t('admin.partners.sections.calendars_description') %></p>
+<p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.calendars_description') %></p>
 
 <%= render Admin::RelatedItemsListComponent.new(
   items: @partner.calendars,

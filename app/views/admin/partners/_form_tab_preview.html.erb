@@ -24,7 +24,7 @@
               <%= @partner.description_html.to_s.html_safe %>
             </div>
           <% else %>
-            <p class="text-base-content/50 italic"><%= t('admin.partners.preview.no_description') %></p>
+            <p class="text-gray-600 italic"><%= t('admin.partners.preview.no_description') %></p>
           <% end %>
 
           <% if @partner.accessibility_info.present? %>
@@ -40,35 +40,35 @@
             <%= image_tag @partner.image.standard.url, class: 'rounded-box w-full' %>
           <% else %>
             <div class="bg-base-200 rounded-box aspect-square flex items-center justify-center">
-              <span class="text-base-content/30 text-sm"><%= t('admin.images.no_image') %></span>
+              <span class="text-gray-400 text-sm"><%= t('admin.images.no_image') %></span>
             </div>
           <% end %>
 
           <div class="card bg-base-200 card-body p-4 text-sm">
             <% if @partner.address&.to_s.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :address) %></div>
+                <div class="font-semibold text-xs uppercase text-gray-600 mb-1"><%= attr_label(:partner, :address) %></div>
                 <p><%= @partner.address %></p>
               </div>
             <% end %>
 
             <% if @partner.url.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :website) %></div>
+                <div class="font-semibold text-xs uppercase text-gray-600 mb-1"><%= attr_label(:partner, :website) %></div>
                 <%= link_to @partner.url, @partner.url, target: '_blank', class: 'link text-placecal-orange hover:text-orange-600 break-all' %>
               </div>
             <% end %>
 
             <% if @partner.public_email.present? %>
               <div class="mb-3">
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :email) %></div>
+                <div class="font-semibold text-xs uppercase text-gray-600 mb-1"><%= attr_label(:partner, :email) %></div>
                 <%= mail_to @partner.public_email, @partner.public_email, class: 'link text-placecal-orange hover:text-orange-600' %>
               </div>
             <% end %>
 
             <% if @partner.public_phone.present? %>
               <div>
-                <div class="font-semibold text-xs uppercase text-base-content/60 mb-1"><%= attr_label(:partner, :phone) %></div>
+                <div class="font-semibold text-xs uppercase text-gray-600 mb-1"><%= attr_label(:partner, :phone) %></div>
                 <p><%= @partner.public_phone %></p>
               </div>
             <% end %>

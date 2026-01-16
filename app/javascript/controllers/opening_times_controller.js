@@ -131,7 +131,7 @@ export default class extends Controller {
 					"btn-ghost",
 					"btn-sm",
 					"btn-square",
-					"text-base-content/40",
+					"text-gray-500",
 					"hover:text-error",
 					"hover:bg-error/10",
 				]);

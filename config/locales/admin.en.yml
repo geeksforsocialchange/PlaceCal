@@ -250,7 +250,7 @@ en:
     # Calendars
     # -------------------------------------------------------------------------
     calendars:
-      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange" target="_blank">handbook</a> for setup instructions'
+      handbook_hint_html: 'See the <a href="https://handbook.placecal.org" class="link link-hover text-placecal-orange-dark" target="_blank">handbook</a> for setup instructions'
       wizard:
         title: "Create a New Calendar"
         subtitle: "Connect an event source to start importing events into PlaceCal"

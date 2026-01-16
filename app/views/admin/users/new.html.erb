@@ -2,7 +2,7 @@
 
 <div class="mb-6">
   <h1 class="text-2xl font-semibold">New User</h1>
-  <p class="text-base-content/60 mt-1">Invite a new user to PlaceCal.</p>
+  <p class="text-gray-600 mt-1">Invite a new user to PlaceCal.</p>
 </div>
 
 <%- display_fields = policy(@current_user).permitted_attributes_for_create %>
@@ -55,7 +55,7 @@
         </div>
         <div>
           <h3 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h3>
-          <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
+          <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
         </div>
       </div>
 
@@ -84,7 +84,7 @@
           </div>
           <div>
             <h3 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h3>
-            <p class="text-sm text-base-content/60 mt-0.5"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
+            <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
           </div>
         </div>
 

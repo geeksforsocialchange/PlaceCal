@@ -17,10 +17,10 @@
   <%# Danger Zone - only show for existing users %>
   <% if @user.persisted? && policy(@user).destroy? %>
     <div>
-      <h3 class="text-lg font-bold flex items-center gap-2 text-error/80 mb-4">
+      <h2 class="text-lg font-bold flex items-center gap-2 text-error/80 mb-4">
         <%= icon(:warning, size: '5') %>
         <%= t('admin.sections.danger_zone') %>
-      </h3>
+      </h2>
 
       <div class="max-w-2xl">
         <% if @user.site_admin? %>
@@ -30,7 +30,7 @@
                 <%= icon(:trash, size: '5') %>
                 <%= t('admin.danger_zone.delete_title', model: User.model_name.human) %>
               </h4>
-              <p class="text-sm text-base-content/60"><%= t('admin.users.danger_zone.site_admin_warning') %></p>
+              <p class="text-sm text-gray-600"><%= t('admin.users.danger_zone.site_admin_warning') %></p>
             </div>
           </div>
         <% else %>

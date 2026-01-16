@@ -120,3 +120,14 @@
 .select-filter.hidden {
 	display: none;
 }
+
+/* Accessible muted text - replaces text-base-content/50 for WCAG compliance */
+/* Gray-600 on white has 5.74:1 contrast ratio (passes AA) */
+.text-muted {
+	@apply text-gray-600;
+}
+
+/* For hints and helper text on forms */
+.text-hint {
+	@apply text-gray-500;
+}

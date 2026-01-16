@@ -26,7 +26,7 @@
         <div class="flex items-start gap-4">
           <%# Icon %>
           <div class="shrink-0 w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center">
-            <%= icon(:swap, size: '6', css_class: 'text-base-content/40') %>
+            <%= icon(:swap, size: '6', css_class: 'text-gray-500') %>
           </div>
 
           <%# Content %>
@@ -36,7 +36,7 @@
                 <%= is_enabled ? t('admin.partners.event_matching.enabled') : t('admin.partners.event_matching.disabled') %>
               </h3>
               <div class="flex items-center gap-3">
-                <span class="label-text text-sm font-medium text-base-content/60"><%= t('admin.labels.disabled') %></span>
+                <span class="label-text text-sm font-medium text-gray-600"><%= t('admin.labels.disabled') %></span>
                 <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'partner_can_be_assigned_events', onchange: 'updateEventMatchingTitle(this.checked)' %>
                 <span class="label-text text-sm font-medium text-success"><%= t('admin.labels.enabled') %></span>
               </div>
@@ -141,7 +141,7 @@
             <div class="mt-4 pt-4 border-t border-base-300/50">
               <fieldset class="fieldset">
                 <legend class="fieldset-legend"><%= t('admin.partners.moderation.reason_label') %></legend>
-                <p class="text-xs text-base-content/60 mb-2"><%= t('admin.partners.moderation.reason_hint') %></p>
+                <p class="text-xs text-gray-600 mb-2"><%= t('admin.partners.moderation.reason_hint') %></p>
                 <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20 bg-base-100', placeholder: t('admin.partners.moderation.reason_placeholder'), data: { controller: 'auto-expand' } %>
               </fieldset>
             </div>

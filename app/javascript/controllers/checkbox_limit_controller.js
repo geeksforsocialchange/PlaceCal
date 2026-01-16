@@ -39,7 +39,7 @@ export default class extends Controller {
 
 			// Visual feedback when at limit
 			this.counter.classList.remove(
-				"text-base-content/60",
+				"text-gray-600",
 				"text-warning",
 				"font-medium"
 			);
@@ -47,7 +47,7 @@ export default class extends Controller {
 			if (atLimit) {
 				this.counter.classList.add("text-warning", "font-medium");
 			} else {
-				this.counter.classList.add("text-base-content/60");
+				this.counter.classList.add("text-gray-600");
 			}
 		}
 

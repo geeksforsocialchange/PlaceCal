@@ -8,7 +8,7 @@
   <%# Header %>
   <div class="text-center mb-8">
     <h1 class="text-2xl font-bold text-base-content mb-2">Create a New Partner</h1>
-    <p class="text-base-content/60">Let's get your partner organisation set up in PlaceCal</p>
+    <p class="text-gray-600">Let's get your partner organisation set up in PlaceCal</p>
   </div>
 
   <%# Steps indicator %>
@@ -36,7 +36,7 @@
           </div>
           <div>
             <h2 class="card-title text-xl">Name Your Partner</h2>
-            <p class="text-base-content/60 text-sm mt-1">
+            <p class="text-gray-600 text-sm mt-1">
               Enter the official name of the organisation. We'll check if it already exists.
             </p>
           </div>
@@ -52,7 +52,7 @@
               autocomplete: 'off',
               'data-partner-wizard-target': 'nameInput',
               'data-action': 'input->partner-wizard#checkName' %>
-          <p class="text-sm text-base-content/50 mt-2">
+          <p class="text-sm text-gray-600 mt-2">
             Must be at least 5 characters long
           </p>
 
@@ -98,7 +98,7 @@
           </div>
           <div>
             <h2 class="card-title text-xl">Set Location</h2>
-            <p class="text-base-content/60 text-sm mt-1">
+            <p class="text-gray-600 text-sm mt-1">
               Where does this partner operate? Add a physical address and/or service areas.
             </p>
           </div>
@@ -108,7 +108,7 @@
           <%# Address %>
           <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
             <legend class="fieldset-legend font-semibold">Physical Address</legend>
-            <p class="text-sm text-base-content/60 mb-4">
+            <p class="text-sm text-gray-600 mb-4">
               If this partner has a fixed location, enter it here.
             </p>
             <%= render 'address_fields', form: f, partner: @partner %>
@@ -117,7 +117,7 @@
           <%# Service Areas %>
           <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
             <legend class="fieldset-legend font-semibold">Service Areas</legend>
-            <p class="text-sm text-base-content/60 mb-4">
+            <p class="text-sm text-gray-600 mb-4">
               If this partner delivers services to wider areas (like outreach or phone support), add them here.
             </p>
             <div class="sites_neighbourhoods">
@@ -144,7 +144,7 @@
           </div>
           <div>
             <h2 class="card-title text-xl">Add to Partnerships</h2>
-            <p class="text-base-content/60 text-sm mt-1">
+            <p class="text-gray-600 text-sm mt-1">
               Which partnerships is this partner a member of?
             </p>
           </div>

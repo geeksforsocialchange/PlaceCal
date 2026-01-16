@@ -76,7 +76,7 @@ class TagDatatable < Datatable
         <a href="#{edit_admin_tag_path(record)}" class="font-medium text-gray-900 hover:text-orange-600 inline-flex items-center">
           #{ERB::Util.html_escape(record.name)}#{system_icon}
         </a>
-        <span class="text-xs text-gray-400 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
+        <span class="text-xs text-gray-500 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
   end
@@ -106,7 +106,7 @@ class TagDatatable < Datatable
   end
 
   def render_description_cell(record)
-    return '<span class="text-gray-400">—</span>'.html_safe if record.description.blank?
+    return '<span class="text-gray-500">—</span>'.html_safe if record.description.blank?
 
     truncated = record.description.truncate(50)
     tooltip = ERB::Util.html_escape(record.description)
@@ -121,7 +121,7 @@ class TagDatatable < Datatable
   def render_system_tag_cell(record)
     if record.system_tag?
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-amber-600" title="System tag">
+        <span class="inline-flex items-center text-amber-700" title="System tag">
           #{icon(:lock)}
         </span>
       HTML

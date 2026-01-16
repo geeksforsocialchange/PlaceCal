@@ -5,13 +5,15 @@
 
 <div class="max-w-2xl space-y-4">
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= Site.model_name.human %> <%= attr_label(:site, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+    <%= f.label :name, class: 'fieldset-legend' do %>
+      <%= Site.model_name.human %> <%= attr_label(:site, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+    <% end %>
     <%= f.input_field :name, class: 'input input-bordered w-full' %>
   </fieldset>
 
   <% if policy(@site).permitted_attributes.include? :site_admin_id %>
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= t('admin.sites.fields.site_admin') %></legend>
+      <%= f.label :site_admin_id, t('admin.sites.fields.site_admin'), class: 'fieldset-legend' %>
       <%= f.select :site_admin_id,
             User.order(:last_name, :first_name).map { |u|
               full_name = [u.first_name, u.last_name].compact.join(' ').presence
@@ -37,18 +39,18 @@
   <% end %>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= attr_label(:site, :place_name) %></legend>
+    <%= f.label :place_name, attr_label(:site, :place_name), class: 'fieldset-legend' %>
     <%= f.input_field :place_name, class: 'input input-bordered w-full' %>
     <p class="fieldset-label"><%= t('admin.sites.fields.place_name_hint') %></p>
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= attr_label(:site, :tagline) %></legend>
+    <%= f.label :tagline, attr_label(:site, :tagline), class: 'fieldset-legend' %>
     <%= f.input_field :tagline, class: 'input input-bordered w-full' %>
   </fieldset>
 
   <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="120">
-    <legend class="fieldset-legend"><%= attr_label(:site, :hero_text) %></legend>
+    <%= f.label :hero_text, attr_label(:site, :hero_text), class: 'fieldset-legend' %>
     <%= f.input_field :hero_text, as: :text, class: 'textarea textarea-bordered w-full min-h-20', maxlength: 120, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
     <div class="flex items-center justify-between mt-1">
       <p class="fieldset-label"><%= t('admin.sites.fields.hero_text_hint') %></p>
@@ -57,7 +59,7 @@
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend"><%= attr_label(:site, :description) %></legend>
+    <%= f.label :description, attr_label(:site, :description), class: 'fieldset-legend' %>
     <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
   </fieldset>
 </div>

@@ -5,7 +5,7 @@
     <%= t('admin.tags.sections.tagged_partners') %>
     <span class="inline-flex items-center justify-center h-6 px-2 text-xs rounded-full font-bold bg-emerald-100 text-emerald-700"><%= tag_partners.count %></span>
   </h3>
-  <p class="text-sm text-base-content/60 mb-4"><%= t('admin.tags.sections.tagged_partners_description') %></p>
+  <p class="text-sm text-gray-600 mb-4"><%= t('admin.tags.sections.tagged_partners_description') %></p>
 
   <% if tag_partners.any? %>
     <div class="overflow-x-auto">
@@ -36,7 +36,7 @@
       </table>
     </div>
     <% if tag_partners.count > 50 %>
-      <p class="text-sm text-base-content/60 mt-2"><%= t('admin.sites.preview.showing_first', limit: 50, total: tag_partners.count, items: Partner.model_name.human(count: 2).downcase) %></p>
+      <p class="text-sm text-gray-600 mt-2"><%= t('admin.sites.preview.showing_first', limit: 50, total: tag_partners.count, items: Partner.model_name.human(count: 2).downcase) %></p>
     <% end %>
   <% else %>
     <%= render Admin::EmptyStateComponent.new(icon: :partner, message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)) %>

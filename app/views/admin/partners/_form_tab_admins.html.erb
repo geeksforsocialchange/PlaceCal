@@ -3,7 +3,7 @@
   <%= t('admin.models.admin.other') %>
   <span class="badge badge-neutral"><%= @partner.users.count %></span>
 </h2>
-<p class="text-sm text-base-content/60 mb-6"><%= t('admin.partners.sections.admins_description') %></p>
+<p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.admins_description') %></p>
 
 <% if @partner.users.any? %>
   <div class="grid gap-3 max-w-2xl">
@@ -12,7 +12,7 @@
         <div class="card-body flex-row items-center justify-between">
           <div>
             <h3 class="font-medium"><%= p_user.email %></h3>
-            <p class="text-xs text-base-content/60"><%= t('admin.time.added_ago', time: time_ago_in_words(p_user.created_at)) %></p>
+            <p class="text-xs text-gray-600"><%= t('admin.time.added_ago', time: time_ago_in_words(p_user.created_at)) %></p>
           </div>
           <% if policy(User).update? %>
             <%= link_to t('admin.actions.edit'), edit_admin_user_path(p_user), class: "btn btn-ghost btn-sm" %>

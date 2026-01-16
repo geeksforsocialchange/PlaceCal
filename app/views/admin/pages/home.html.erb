@@ -20,7 +20,7 @@
     <h1 class="text-2xl font-bold text-base-content">
       <%= t("admin.dashboard.greeting.#{greeting_key}") %><% if @user.first_name.present? %>, <%= @user.first_name %><% end %>
     </h1>
-    <p class="text-base-content/60 mt-1"><%= t('admin.dashboard.subtitle') %></p>
+    <p class="text-gray-600 mt-1"><%= t('admin.dashboard.subtitle') %></p>
   </div>
   <div class="flex flex-wrap gap-2">
     <% [Partner, Calendar, User].each do |model| %>
@@ -54,15 +54,15 @@
     <div class="flex items-baseline gap-3">
       <div class="tooltip tooltip-bottom" data-tip="<%= t('admin.dashboard.tooltips.working_calendars') %>">
         <span class="text-lg font-bold text-success"><%= @working_calendars_count %></span>
-        <span class="text-[10px] text-base-content/50 ml-0.5"><%= t('admin.dashboard.stats.working') %></span>
+        <span class="text-[10px] text-gray-600 ml-0.5"><%= t('admin.dashboard.stats.working') %></span>
       </div>
       <div class="tooltip tooltip-bottom" data-tip="<%= t('admin.dashboard.tooltips.processing_calendars') %>">
         <span class="text-lg font-bold text-info"><%= @processing_calendars_count %></span>
-        <span class="text-[10px] text-base-content/50 ml-0.5"><%= t('admin.dashboard.stats.queue') %></span>
+        <span class="text-[10px] text-gray-600 ml-0.5"><%= t('admin.dashboard.stats.queue') %></span>
       </div>
       <div class="tooltip tooltip-bottom" data-tip="<%= t('admin.dashboard.tooltips.problem_calendars', errors: @errored_calendars_count, bad_source: @bad_source_calendars_count) %>">
-        <span class="text-lg font-bold <%= @problem_calendars_count > 0 ? 'text-error' : 'text-base-content/30' %>"><%= @problem_calendars_count %></span>
-        <span class="text-[10px] text-base-content/50 ml-0.5"><%= t('admin.dashboard.stats.errors') %></span>
+        <span class="text-lg font-bold <%= @problem_calendars_count > 0 ? 'text-error' : 'text-gray-400' %>"><%= @problem_calendars_count %></span>
+        <span class="text-[10px] text-gray-600 ml-0.5"><%= t('admin.dashboard.stats.errors') %></span>
       </div>
     </div>
   <% end %>
@@ -78,12 +78,12 @@
   <%= link_to "https://handbook.placecal.org/", target: "_blank", class: "card bg-base-100 border border-base-300 shadow-sm hover:border-placecal-orange/30 transition-all group" do %>
     <div class="card-body p-3">
       <div class="flex items-center justify-between">
-        <span class="text-xs text-base-content/60 group-hover:text-placecal-orange transition-colors"><%= t('admin.dashboard.stats.need_help') %></span>
-        <%= icon(:external_link, size: '4', css_class: 'text-base-content/30 group-hover:text-placecal-orange/50 transition-colors') %>
+        <span class="text-xs text-gray-600 group-hover:text-placecal-orange transition-colors"><%= t('admin.dashboard.stats.need_help') %></span>
+        <%= icon(:external_link, size: '4', css_class: 'text-gray-400 group-hover:text-placecal-orange/50 transition-colors') %>
       </div>
       <div class="flex items-center gap-2 mt-1">
-        <%= icon(:book, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
-        <span class="text-sm font-medium text-base-content/60 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.handbook') %></span>
+        <%= icon(:book, size: '5', css_class: 'text-gray-500 group-hover:text-placecal-orange transition-colors') %>
+        <span class="text-sm font-medium text-gray-600 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.handbook') %></span>
       </div>
     </div>
   <% end %>
@@ -105,11 +105,11 @@
           <%= link_to edit_admin_site_path(site), class: "flex items-center justify-between gap-3 p-3 rounded-lg border border-base-300 hover:border-placecal-orange/30 hover:bg-base-200/50 transition-colors group" do %>
             <div class="flex-1 min-w-0">
               <h3 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= site.name %></h3>
-              <p class="text-xs text-base-content/50"><%= site.slug %>.placecal.org</p>
+              <p class="text-xs text-gray-600"><%= site.slug %>.placecal.org</p>
             </div>
             <div class="text-right flex-shrink-0">
               <span class="text-sm font-semibold text-placecal-orange"><%= site.events_this_week %></span>
-              <span class="text-xs text-base-content/50 ml-1">events</span>
+              <span class="text-xs text-gray-600 ml-1">events</span>
             </div>
           <% end %>
         <% end %>
@@ -144,17 +144,17 @@
           <% end %>
         <% end %>
         <% if (@errored_calendars.count + @bad_source_calendars.count) > 10 %>
-          <%= link_to admin_calendars_path(filter: 'problems'), class: "text-xs text-base-content/60 hover:text-placecal-orange mt-2 block" do %>
+          <%= link_to admin_calendars_path(filter: 'problems'), class: "text-xs text-gray-600 hover:text-placecal-orange mt-2 block" do %>
             <%= t('admin.dashboard.cards.view_all_issues', count: @errored_calendars.count + @bad_source_calendars.count) %>
           <% end %>
         <% end %>
       </div>
     <% else %>
-      <div class="flex items-center gap-3 text-success">
-        <%= icon(:check, size: '8') %>
+      <div class="flex items-center gap-3">
+        <%= icon(:check, size: '8', css_class: 'text-success') %>
         <div>
-          <p class="font-medium"><%= t('admin.dashboard.cards.all_healthy') %></p>
-          <p class="text-xs text-base-content/50"><%= t('admin.dashboard.cards.no_issues') %></p>
+          <p class="font-medium text-green-700"><%= t('admin.dashboard.cards.all_healthy') %></p>
+          <p class="text-xs text-gray-600"><%= t('admin.dashboard.cards.no_issues') %></p>
         </div>
       </div>
     <% end %>
@@ -174,8 +174,8 @@
               <div class="text-lg font-bold text-base-content leading-tight"><%= event.dtstart.strftime('%d') %></div>
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-medium text-base-content truncate"><%= event.summary %></h4>
-              <p class="text-xs text-base-content/50 truncate">
+              <span class="text-sm font-medium text-base-content truncate"><%= event.summary %></span>
+              <p class="text-xs text-gray-600 truncate">
                 <%= event.dtstart.strftime('%H:%M') %>
                 <% if event.partner %>· <%= event.partner.name %><% end %>
               </p>
@@ -184,7 +184,7 @@
         <% end %>
       </div>
     <% else %>
-      <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
+      <div class="flex flex-col items-center justify-center py-6 text-gray-500">
         <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_upcoming_events') %></p>
       </div>
@@ -204,18 +204,18 @@
               <%= image_tag partner.image.url, class: "w-9 h-9 rounded-lg object-cover flex-shrink-0" %>
             <% else %>
               <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-                <%= icon(:partner, size: '4', css_class: 'text-base-content/30', stroke_width: '1.5') %>
+                <%= icon(:partner, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
               </div>
             <% end %>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= partner.name %></h4>
-              <p class="text-xs text-base-content/50"><%= time_ago_in_words(partner.updated_at) %> ago</p>
+              <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= partner.name %></span>
+              <p class="text-xs text-gray-600"><%= time_ago_in_words(partner.updated_at) %> ago</p>
             </div>
           <% end %>
         <% end %>
       </div>
     <% else %>
-      <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
+      <div class="flex flex-col items-center justify-center py-6 text-gray-500">
         <%= icon(:partner, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_partners') %></p>
         <%= link_to t('admin.dashboard.cards.add_first_partner'), new_admin_partner_path, class: "text-xs text-placecal-orange hover:text-orange-600 mt-1" %>
@@ -233,17 +233,17 @@
         <% @calendars.take(6).each do |calendar| %>
           <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-              <%= icon(:calendar, size: '4', css_class: 'text-base-content/30', stroke_width: '1.5') %>
+              <%= icon(:calendar, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= calendar.name %></h4>
-              <p class="text-xs text-base-content/50"><%= time_ago_in_words(calendar.updated_at) %> ago</p>
+              <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= calendar.name %></span>
+              <p class="text-xs text-gray-600"><%= time_ago_in_words(calendar.updated_at) %> ago</p>
             </div>
           <% end %>
         <% end %>
       </div>
     <% else %>
-      <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
+      <div class="flex flex-col items-center justify-center py-6 text-gray-500">
         <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_calendars') %></p>
       </div>
@@ -260,17 +260,17 @@
         <% @users.take(6).each do |user| %>
           <%= link_to edit_admin_user_path(user), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-              <%= icon(:user, size: '4', css_class: 'text-base-content/30', stroke_width: '1.5') %>
+              <%= icon(:user, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= user.full_name.presence || user.email %></h4>
-              <p class="text-xs text-base-content/50"><%= time_ago_in_words(user.updated_at) %> ago</p>
+              <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= user.full_name.presence || user.email %></span>
+              <p class="text-xs text-gray-600"><%= time_ago_in_words(user.updated_at) %> ago</p>
             </div>
           <% end %>
         <% end %>
       </div>
     <% else %>
-      <div class="flex flex-col items-center justify-center py-6 text-base-content/40">
+      <div class="flex flex-col items-center justify-center py-6 text-gray-500">
         <%= icon(:users, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_users') %></p>
       </div>
@@ -287,10 +287,10 @@
         <% @user_partnerships.take(6).each do |partnership| %>
           <%= link_to edit_admin_tag_path(partnership), class: "flex items-center justify-between gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= partnership.name %></h4>
-              <p class="text-xs text-base-content/50"><%= pluralize(partnership.partners.count, 'partner') %></p>
+              <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= partnership.name %></span>
+              <p class="text-xs text-gray-600"><%= pluralize(partnership.partners.count, 'partner') %></p>
             </div>
-            <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-placecal-orange transition-colors flex-shrink-0') %>
+            <%= icon(:chevron_right, size: '4', css_class: 'text-gray-400 group-hover:text-placecal-orange transition-colors flex-shrink-0') %>
           <% end %>
         <% end %>
       </div>
@@ -307,22 +307,22 @@
       ) do %>
     <div class="space-y-1">
       <%= link_to admin_calendars_path, class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-        <%= icon(:calendar, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
+        <%= icon(:calendar, size: '5', css_class: 'text-gray-500 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.all_calendars') %></span>
       <% end %>
       <%= link_to admin_partners_path, class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-        <%= icon(:partner, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
+        <%= icon(:partner, size: '5', css_class: 'text-gray-500 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.all_partners') %></span>
       <% end %>
       <%= link_to "https://handbook.placecal.org/", target: "_blank", class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-        <%= icon(:book, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
+        <%= icon(:book, size: '5', css_class: 'text-gray-500 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.handbook') %></span>
-        <%= icon(:external_link, size: '3', css_class: 'text-base-content/30 ml-auto') %>
+        <%= icon(:external_link, size: '3', css_class: 'text-gray-400 ml-auto') %>
       <% end %>
       <%= link_to "http://discord.gfsc.studio/", target: "_blank", class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
-        <%= icon(:chat, size: '5', css_class: 'text-base-content/40 group-hover:text-placecal-orange transition-colors') %>
+        <%= icon(:chat, size: '5', css_class: 'text-gray-500 group-hover:text-placecal-orange transition-colors') %>
         <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors"><%= t('admin.dashboard.links.discord') %></span>
-        <%= icon(:external_link, size: '3', css_class: 'text-base-content/30 ml-auto') %>
+        <%= icon(:external_link, size: '3', css_class: 'text-gray-400 ml-auto') %>
       <% end %>
     </div>
   <% end %>

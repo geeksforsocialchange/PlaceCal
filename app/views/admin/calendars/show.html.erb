@@ -2,7 +2,7 @@
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <h1 class="text-2xl font-bold"><%= @calendar.name %></h1>
-      <p class="text-sm text-base-content/60 mt-1">
+      <p class="text-sm text-gray-600 mt-1">
         Calendar for <%= link_to @calendar.partner.name, edit_admin_partner_path(@calendar.partner), class: "link link-hover text-placecal-orange" %>
       </p>
     </div>
@@ -53,7 +53,7 @@
     <% upcoming_events = @calendar.events.upcoming %>
     <% past_events = @calendar.events.past.limit(50) %>
 
-    <div role="tablist" class="tabs tabs-bordered px-4 pt-2">
+    <div class="tabs tabs-bordered px-4 pt-2">
       <input type="radio" name="events_tabs" role="tab" class="tab" aria-label="Upcoming (<%= upcoming_events.count %>)" checked>
       <div role="tabpanel" class="tab-content py-4">
         <% if upcoming_events.any? %>
@@ -71,7 +71,7 @@
                   <tr class="hover">
                     <td class="whitespace-nowrap">
                       <div class="font-semibold text-sm"><%= event.dtstart.strftime('%d %b') %></div>
-                      <div class="text-xs text-base-content/60"><%= event.dtstart.strftime('%H:%M') %></div>
+                      <div class="text-xs text-gray-600"><%= event.dtstart.strftime('%H:%M') %></div>
                     </td>
                     <td>
                       <div class="font-medium"><%= truncate(event.summary, length: 70) %></div>
@@ -82,7 +82,7 @@
                       <% elsif event.partner %>
                         <%= event.partner.name %>
                       <% else %>
-                        <span class="text-base-content/40">—</span>
+                        <span class="text-gray-500">—</span>
                       <% end %>
                     </td>
                   </tr>
@@ -112,7 +112,7 @@
                   <tr class="hover opacity-70">
                     <td class="whitespace-nowrap">
                       <div class="font-semibold text-sm"><%= event.dtstart.strftime('%d %b') %></div>
-                      <div class="text-xs text-base-content/60"><%= event.dtstart.strftime('%Y') %></div>
+                      <div class="text-xs text-gray-600"><%= event.dtstart.strftime('%Y') %></div>
                     </td>
                     <td>
                       <div class="font-medium"><%= truncate(event.summary, length: 70) %></div>
@@ -123,7 +123,7 @@
                       <% elsif event.partner %>
                         <%= event.partner.name %>
                       <% else %>
-                        <span class="text-base-content/40">—</span>
+                        <span class="text-gray-500">—</span>
                       <% end %>
                     </td>
                   </tr>
@@ -132,7 +132,7 @@
             </table>
           </div>
           <% if @calendar.events.past.count > 50 %>
-            <p class="text-center text-sm text-base-content/50 mt-4">Showing 50 of <%= @calendar.events.past.count %> past events</p>
+            <p class="text-center text-sm text-gray-600 mt-4">Showing 50 of <%= @calendar.events.past.count %> past events</p>
           <% end %>
         <% else %>
           <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No past events", icon_size: '12', padding: 'py-12') %>

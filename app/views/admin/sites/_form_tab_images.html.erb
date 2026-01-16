@@ -22,7 +22,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
-              <p class="text-xs text-base-content/50"><%= image_uploader_hint(@site.logo) %></p>
+              <p class="text-xs text-gray-600"><%= image_uploader_hint(@site.logo) %></p>
             </div>
             <%= f.input_field :logo, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
           </label>
@@ -43,7 +43,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
-              <p class="text-xs text-base-content/50"><%= image_uploader_hint(@site.footer_logo) %></p>
+              <p class="text-xs text-gray-600"><%= image_uploader_hint(@site.footer_logo) %></p>
             </div>
             <%= f.input_field :footer_logo, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
           </label>
@@ -60,7 +60,7 @@
 
 <fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
   <legend class="fieldset-legend"><%= attr_label(:site, :hero_image) %></legend>
-  <p class="text-sm text-base-content/60 mb-4">
+  <p class="text-sm text-gray-600 mb-4">
     <%= t('admin.sites.fields.hero_image_description') %>
     <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2" class="link link-hover text-placecal-orange" target="_blank"><%= t('admin.sites.fields.hero_handbook_link') %></a>
   </p>
@@ -72,7 +72,7 @@
       </div>
       <div class="flex-1 min-w-0">
         <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
-        <p class="text-xs text-base-content/50"><%= image_uploader_hint(@site.hero_image) %></p>
+        <p class="text-xs text-gray-600"><%= image_uploader_hint(@site.hero_image) %></p>
       </div>
       <%= f.input_field :hero_image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
     </label>

@@ -8,17 +8,17 @@
         <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
       </div>
       <div>
-        <h3 class="text-lg font-semibold"><%= Partner.model_name.human(count: 2) %></h3>
-        <p class="text-sm text-base-content/60 mt-0.5">Link this article to one or more partners.</p>
+        <h2 class="text-lg font-semibold"><%= Partner.model_name.human(count: 2) %></h2>
+        <p class="text-sm text-gray-600 mt-0.5">Link this article to one or more partners.</p>
       </div>
     </div>
 
     <% if disabled_fields.include?(:partner_ids) %>
       <%= f.association :partners, collection: options_for_partners, label: false,
-          input_html: { class: 'w-full', data: { controller: "tom-select" }, disabled: true } %>
+          input_html: { class: 'w-full', 'aria-label': Partner.model_name.human(count: 2), data: { controller: "tom-select" }, disabled: true } %>
     <% else %>
       <%= f.association :partners, collection: options_for_partners, label: false,
-          input_html: { class: 'w-full', data: { controller: "tom-select" } } %>
+          input_html: { class: 'w-full', 'aria-label': Partner.model_name.human(count: 2), data: { controller: "tom-select" } } %>
     <% end %>
   </div>
 
@@ -29,17 +29,17 @@
         <%= icon(:partnership, size: '6', css_class: 'text-purple-600') %>
       </div>
       <div>
-        <h3 class="text-lg font-semibold"><%= Partnership.model_name.human(count: 2) %></h3>
-        <p class="text-sm text-base-content/60 mt-0.5">Link this article to partnerships for filtering and organization.</p>
+        <h2 class="text-lg font-semibold"><%= Partnership.model_name.human(count: 2) %></h2>
+        <p class="text-sm text-gray-600 mt-0.5">Link this article to partnerships for filtering and organization.</p>
       </div>
     </div>
 
     <% if disabled_fields.include?(:tag_ids) %>
       <%= f.association :tags, collection: options_for_tags, label: false,
-          input_html: { class: 'w-full', data: { controller: "tom-select" }, disabled: true } %>
+          input_html: { class: 'w-full', 'aria-label': Partnership.model_name.human(count: 2), data: { controller: "tom-select" }, disabled: true } %>
     <% else %>
       <%= f.association :tags, collection: options_for_tags, label: false,
-          input_html: { class: 'w-full', data: { controller: "tom-select" } } %>
+          input_html: { class: 'w-full', 'aria-label': Partnership.model_name.human(count: 2), data: { controller: "tom-select" } } %>
     <% end %>
   </div>
 </div>

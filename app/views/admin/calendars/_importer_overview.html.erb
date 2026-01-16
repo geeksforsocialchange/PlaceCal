@@ -24,7 +24,7 @@
   <div class="flex flex-wrap items-center gap-x-6 gap-y-2 p-4 bg-base-200/50 border border-base-300 rounded-lg">
     <%# Status Badge %>
     <div class="flex items-center gap-2">
-      <span class="text-sm font-medium text-base-content/60"><%= t('admin.calendars.importer.status_label') %></span>
+      <span class="text-sm font-medium text-gray-600"><%= t('admin.calendars.importer.status_label') %></span>
       <% if calendar.calendar_state.idle? %>
         <% retry_button = :idle %>
         <span class="badge badge-success gap-1">
@@ -46,14 +46,14 @@
 
     <% if calendar.checksum_updated_at.present? %>
       <div class="flex items-center gap-2 text-sm">
-        <span class="text-base-content/60"><%= t('admin.calendars.importer.source_changed') %></span>
+        <span class="text-gray-600"><%= t('admin.calendars.importer.source_changed') %></span>
         <span class="font-medium"><%= t('admin.time.ago', time: time_ago_in_words(calendar.checksum_updated_at)) %></span>
       </div>
     <% end %>
 
     <% if calendar.last_import_at.present? %>
       <div class="flex items-center gap-2 text-sm">
-        <span class="text-base-content/60"><%= t('admin.calendars.importer.last_import') %></span>
+        <span class="text-gray-600"><%= t('admin.calendars.importer.last_import') %></span>
         <span class="font-medium"><%= t('admin.time.ago', time: time_ago_in_words(calendar.last_import_at)) %></span>
       </div>
     <% end %>

@@ -92,7 +92,7 @@
 
 <div class="bg-white shadow-sm rounded-lg p-4">
   <% Neighbourhood.roots.order(:name).each do |root| %>
-    <p class="mb-2"><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root), class: "text-placecal-orange hover:underline" %></p>
+    <p class="mb-2"><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root), class: "text-placecal-orange-dark hover:underline" %></p>
   <% end %>
 </div>
 

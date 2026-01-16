@@ -39,7 +39,7 @@
     <% end %>
   <% else %>
     <%# Existing record - tabbed interface %>
-    <div role="tablist" class="tabs tabs-lift">
+    <div class="tabs tabs-lift">
       <%= render Admin::TabPanelComponent.new(
         name: 'article_tabs',
         label: '📝 Text',

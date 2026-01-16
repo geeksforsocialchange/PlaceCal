@@ -3,15 +3,17 @@
 <div class="space-y-6">
   <%# Title, Author, and Publication date %>
   <div class="space-y-3">
-    <h3 class="font-semibold flex items-center gap-2">
+    <h2 class="text-base font-semibold flex items-center gap-2">
       <%= icon(:edit, size: '4') %>
       Article Details
-    </h3>
+    </h2>
 
     <div class="space-y-4">
       <%# Title field %>
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+        <%= f.label :title, class: 'fieldset-legend' do %>
+          <%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+        <% end %>
         <%= f.input_field :title, as: :string, class: 'input input-bordered w-full text-xl font-semibold', id: 'article_title', placeholder: 'Enter article title...' %>
       </fieldset>
 
@@ -19,14 +21,14 @@
       <div class="flex flex-col sm:flex-row gap-4">
         <%# Author field %>
         <fieldset class="fieldset min-w-64 article_author">
-          <legend class="fieldset-legend"><%= attr_label(:article, :author) %></legend>
+          <%= f.label :author_id, attr_label(:article, :author), class: 'fieldset-legend' %>
           <% if disabled_fields.include?(:author_id) %>
             <div class="text-base-content font-medium"><%= @article.author&.admin_name || 'Unknown' %></div>
           <% else %>
             <%= f.select :author_id,
                   User.order(:last_name, :first_name).map { |u| [u.admin_name, u.id] },
                   { include_blank: t('admin.placeholders.select_model', model: attr_label(:article, :author).downcase) },
-                  { class: 'select select-bordered w-full', id: 'article_author_id', data: { controller: 'tom-select' } } %>
+                  { class: 'select select-bordered w-full', id: 'article_author_id', 'aria-label': attr_label(:article, :author), data: { controller: 'tom-select' } } %>
           <% end %>
         </fieldset>
 
@@ -35,12 +37,12 @@
           <fieldset class="fieldset w-auto">
             <legend class="fieldset-legend">Published</legend>
             <div class="input input-bordered h-9 flex items-center gap-2 bg-base-200/50 cursor-default">
-              <%= icon(:calendar, size: '4', css_class: 'text-base-content/50') %>
+              <%= icon(:calendar, size: '4', css_class: 'text-gray-600') %>
               <% if @article.published_at.present? %>
                 <span class="text-base-content"><%= @article.published_at.strftime('%d %b %Y') %></span>
-                <span class="text-base-content/50 text-sm">(<%= time_ago_in_words(@article.published_at) %> ago)</span>
+                <span class="text-gray-600 text-sm">(<%= time_ago_in_words(@article.published_at) %> ago)</span>
               <% else %>
-                <span class="text-base-content/50 italic">Not published</span>
+                <span class="text-gray-600 italic">Not published</span>
               <% end %>
             </div>
           </fieldset>
@@ -51,15 +53,17 @@
 
   <%# Body with side-by-side markdown preview %>
   <div data-controller="markdown-preview">
-    <label for="article_body" class="fieldset-legend"><%= attr_label(:article, :body) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
-    <p class="text-sm text-base-content/60 mb-3">
-      This field accepts <a href="https://www.markdownguide.org/basic-syntax/" class="link link-hover text-placecal-teal" target="_blank">Markdown syntax</a>.
+    <%= f.label :body, class: 'fieldset-legend' do %>
+      <%= attr_label(:article, :body) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+    <% end %>
+    <p class="text-sm text-gray-600 mb-3">
+      This field accepts <a href="https://www.markdownguide.org/basic-syntax/" class="link underline text-placecal-teal-dark hover:no-underline" target="_blank">Markdown syntax</a>.
     </p>
 
     <%# Header row with Write/Preview labels and toolbar %>
     <div class="flex items-center gap-0 mb-2" data-markdown-preview-target="container">
       <div class="flex-1 min-w-64 flex items-center justify-between" data-markdown-preview-target="editorPane">
-        <div class="text-xs font-medium text-base-content/50 flex items-center gap-1">
+        <div class="text-xs font-medium text-gray-600 flex items-center gap-1">
           <%= icon(:edit, size: '3') %>
           Write
         </div>
@@ -97,7 +101,7 @@
       <div class="hidden lg:block w-4"></div>
 
       <div class="hidden lg:flex flex-1 min-w-64 items-center" data-markdown-preview-target="previewPane">
-        <div class="text-xs font-medium text-base-content/50 flex items-center gap-1">
+        <div class="text-xs font-medium text-gray-600 flex items-center gap-1">
           <%= icon(:eye, size: '3') %>
           Preview
         </div>
@@ -122,7 +126,7 @@
       <div class="hidden lg:block flex-1 min-w-64" data-markdown-preview-target="previewContent">
         <div class="border border-base-300 rounded-lg px-6 py-2 min-h-96 bg-base-100 overflow-y-auto">
           <div data-markdown-preview-target="output" class="markdown-preview">
-            <p class="text-base-content/50 italic">Start typing to see preview...</p>
+            <p class="text-gray-500 italic">Start typing to see preview...</p>
           </div>
         </div>
       </div>

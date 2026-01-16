@@ -68,7 +68,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
 
   # Shared relative time formatting for datatable cells
   def render_relative_time(datetime)
-    return '<span class="text-gray-400">—</span>'.html_safe unless datetime
+    return '<span class="text-gray-500">—</span>'.html_safe unless datetime
 
     days_ago = (Time.current - datetime).to_i / 1.day
 
@@ -113,7 +113,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
       HTML
     else
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="No #{label}s">
+        <span class="inline-flex items-center text-gray-500" title="No #{label}s">
           #{icon(:x)}
         </span>
       HTML
@@ -122,7 +122,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
 
   # Empty cell placeholder
   def empty_cell
-    '<span class="text-gray-400">—</span>'.html_safe
+    '<span class="text-gray-500">—</span>'.html_safe
   end
 
   private
@@ -130,11 +130,11 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
   def status_icon_config(status)
     {
       success: { icon: :check, color: 'text-emerald-600', tooltip: 'Success' },
-      warning: { icon: :warning, color: 'text-amber-600', tooltip: 'Warning' },
+      warning: { icon: :warning, color: 'text-amber-700', tooltip: 'Warning' },
       error: { icon: :warning, color: 'text-red-600', tooltip: 'Error' },
-      pending: { icon: :x, color: 'text-gray-400', tooltip: 'Pending' },
+      pending: { icon: :x, color: 'text-gray-500', tooltip: 'Pending' },
       loading: { icon: :swap, color: 'text-orange-500', tooltip: 'Loading' }
-    }.fetch(status.to_sym, { icon: :x, color: 'text-gray-400', tooltip: 'Unknown' })
+    }.fetch(status.to_sym, { icon: :x, color: 'text-gray-500', tooltip: 'Unknown' })
   end
 end
 # rubocop:enable Rails/OutputSafety

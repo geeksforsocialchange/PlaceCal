@@ -1,12 +1,12 @@
 <div class="mb-6">
   <h1 class="text-2xl font-bold"><%= t('admin.jobs.title') %></h1>
-  <p class="text-sm text-base-content/60 mt-1"><%= t('admin.jobs.description') %></p>
+  <p class="text-sm text-gray-600 mt-1"><%= t('admin.jobs.description') %></p>
 </div>
 
 <%# Stats Cards %>
 <div class="flex flex-wrap gap-2 mb-8">
   <div class="badge badge-lg badge-outline gap-1">
-    <span class="text-base-content/60"><%= t('admin.jobs.stats.jobs') %>:</span>
+    <span class="text-gray-600"><%= t('admin.jobs.stats.jobs') %>:</span>
     <span class="font-bold"><%= @job_count %></span>
   </div>
   <% states = Calendar::ALLOWED_STATES %>
@@ -101,6 +101,6 @@
   <div class="text-center py-12">
     <%= icon(:check_circle, size: '12', css_class: 'mx-auto text-success/40', stroke_width: '1.5') %>
     <p class="mt-3 font-medium text-success"><%= t('admin.jobs.empty.title') %></p>
-    <p class="text-sm text-base-content/60"><%= t('admin.jobs.empty.description') %></p>
+    <p class="text-sm text-gray-600"><%= t('admin.jobs.empty.description') %></p>
   </div>
 <% end %>

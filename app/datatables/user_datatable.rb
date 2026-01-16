@@ -129,13 +129,13 @@ class UserDatatable < Datatable
     name_html = if full_name
                   "<a href=\"#{edit_admin_user_path(record)}\" class=\"font-medium text-gray-900 hover:text-orange-600\">#{ERB::Util.html_escape(full_name)}</a>"
                 else
-                  "<a href=\"#{edit_admin_user_path(record)}\" class=\"italic text-gray-400 hover:text-orange-600\">No name</a>"
+                  "<a href=\"#{edit_admin_user_path(record)}\" class=\"italic text-gray-500 hover:text-orange-600\">No name</a>"
                 end
 
     <<~HTML.html_safe
       <div class="flex flex-col">
         #{name_html}
-        <span class="text-xs text-gray-400 font-mono">##{record.id} · #{ERB::Util.html_escape(record.email)}</span>
+        <span class="text-xs text-gray-500 font-mono">##{record.id} · #{ERB::Util.html_escape(record.email)}</span>
       </div>
     HTML
   end
@@ -157,7 +157,7 @@ class UserDatatable < Datatable
     roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800">Partnership Admin</span>' if record.partnership_admin?
     roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Site Admin</span>' if record.site_admin?
 
-    return '<span class="text-gray-400">—</span>'.html_safe if roles.empty?
+    return '<span class="text-gray-500">—</span>'.html_safe if roles.empty?
 
     <<~HTML.html_safe
       <div class="flex flex-wrap gap-1">
@@ -167,7 +167,7 @@ class UserDatatable < Datatable
   end
 
   def render_relative_time(datetime)
-    return '<span class="text-gray-400">—</span>'.html_safe unless datetime
+    return '<span class="text-gray-500">—</span>'.html_safe unless datetime
 
     days_ago = (Time.current - datetime).to_i / 1.day
 

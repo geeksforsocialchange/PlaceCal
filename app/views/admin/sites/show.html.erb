@@ -4,7 +4,7 @@
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <h1 class="text-2xl font-bold"><%= @site.name %></h1>
-      <p class="text-sm text-base-content/60 mt-1">
+      <p class="text-sm text-gray-600 mt-1">
         <%= t('admin.sites.show.title') %>
       </p>
     </div>
@@ -69,7 +69,7 @@
                 <td>
                   <div class="flex flex-col">
                     <%= link_to calendar.name, edit_admin_calendar_path(calendar), class: "font-medium text-base-content hover:text-placecal-orange" %>
-                    <span class="text-xs text-base-content/50 font-mono">#<%= calendar.id %></span>
+                    <span class="text-xs text-gray-600 font-mono">#<%= calendar.id %></span>
                   </div>
                 </td>
                 <td>
@@ -87,7 +87,7 @@
                       <%= icon(:warning, size: '4') %>
                     </span>
                   <% else %>
-                    <span class="text-base-content/40">—</span>
+                    <span class="text-gray-500">—</span>
                   <% end %>
                 </td>
                 <td class="whitespace-nowrap">
@@ -96,7 +96,7 @@
                       <%= time_ago_in_words(calendar.last_import_at) %> ago
                     </span>
                   <% else %>
-                    <span class="text-base-content/40">—</span>
+                    <span class="text-gray-500">—</span>
                   <% end %>
                 </td>
                 <td class="whitespace-nowrap">
@@ -105,7 +105,7 @@
                       <%= time_ago_in_words(calendar.checksum_updated_at) %> ago
                     </span>
                   <% else %>
-                    <span class="text-base-content/40">—</span>
+                    <span class="text-gray-500">—</span>
                   <% end %>
                 </td>
               </tr>

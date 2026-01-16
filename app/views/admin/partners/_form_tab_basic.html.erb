@@ -7,7 +7,9 @@
     ) %>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= Partner.model_name.human %> <%= attr_label(:partner, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <%= f.label :name, class: 'fieldset-legend' do %>
+        <%= Partner.model_name.human %> <%= attr_label(:partner, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+      <% end %>
       <%= f.input_field :name, class: 'input input-bordered w-full',
           'data-controller': "partner-form-validation",
           'data-partner-form-validation-target': 'source',
@@ -19,7 +21,7 @@
     </fieldset>
 
     <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="200">
-      <legend class="fieldset-legend"><%= attr_label(:partner, :summary) %></legend>
+      <%= f.label :summary, attr_label(:partner, :summary), class: 'fieldset-legend' %>
       <%= f.input_field :summary, as: :text, class: 'textarea textarea-bordered w-full min-h-16', maxlength: 200, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
       <div class="flex items-center justify-between mt-1">
         <p class="fieldset-label"><%= t('admin.partners.fields.summary_hint') %></p>
@@ -28,13 +30,13 @@
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:partner, :description) %></legend>
+      <%= f.label :description, attr_label(:partner, :description), class: 'fieldset-legend' %>
       <%= f.input_field :description, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
       <p class="fieldset-label"><%= t('admin.partners.fields.description_hint') %></p>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:partner, :accessibility_info) %></legend>
+      <%= f.label :accessibility_info, attr_label(:partner, :accessibility_info), class: 'fieldset-legend' %>
       <%= f.input_field :accessibility_info, class: 'textarea textarea-bordered w-full min-h-20', data: { controller: 'auto-expand' } %>
       <p class="fieldset-label"><%= t('admin.partners.fields.accessibility_hint') %></p>
     </fieldset>

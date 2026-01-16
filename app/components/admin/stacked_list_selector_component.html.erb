@@ -27,7 +27,7 @@
         <% end %>
         <% if item_removable?(item) %>
           <button type="button"
-                  class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 text-base-content/40 hover:text-error hover:bg-error/10 transition-all"
+                  class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 text-gray-500 hover:text-error hover:bg-error/10 transition-all"
                   data-action="click-><%= controller %>#remove"
                   aria-label="<%= t('admin.actions.remove') %>">
             <%= icon(:x, size: '4') %>
@@ -43,14 +43,15 @@
   <div class="text-center py-8 <%= items.any? ? 'hidden' : '' %>"
        data-<%= controller %>-target="empty">
     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-base-200 mb-3">
-      <%= icon(icon_name, size: '7', css_class: 'text-base-content/30') %>
+      <%= icon(icon_name, size: '7', css_class: 'text-gray-400') %>
     </div>
-    <p class="text-sm text-base-content/50"><%= empty_text %></p>
+    <p class="text-sm text-gray-600"><%= empty_text %></p>
   </div>
 
   <%# Add dropdown %>
   <div class="relative">
     <select class="w-full"
+            aria-label="<%= add_placeholder %>"
             data-<%= controller %>-target="select"
             data-action="change-><%= controller %>#add"
             data-controller="tom-select">
@@ -74,7 +75,7 @@
       </div>
       <span class="flex-1 font-medium text-sm text-base-content/90">ITEM_NAME</span>
       <button type="button"
-              class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 text-base-content/40 hover:text-error hover:bg-error/10 transition-all"
+              class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 text-gray-500 hover:text-error hover:bg-error/10 transition-all"
               data-action="click-><%= controller %>#remove"
               aria-label="<%= t('admin.actions.remove') %>">
         <%= icon(:x, size: '4') %>

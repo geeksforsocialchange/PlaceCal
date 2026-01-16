@@ -11,7 +11,7 @@
         options: options_for_user_partnerships,
         permitted_ids: nil,
         icon_name: :partnership,
-        icon_color: "bg-amber-100 text-amber-600",
+        icon_color: "bg-amber-100 text-amber-700",
         empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
         add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase),
         wrapper_class: "user_tags"
@@ -61,16 +61,16 @@
                 <%= icon(:site, size: '5') %>
               </div>
               <span class="flex-1 font-medium text-sm text-base-content/90"><%= site.name %></span>
-              <%= icon(:chevron_right, size: '4', css_class: 'text-base-content/30 group-hover:text-base-content/50') %>
+              <%= icon(:chevron_right, size: '4', css_class: 'text-gray-400 group-hover:text-gray-600') %>
             <% end %>
           <% end %>
         </div>
       <% else %>
         <div class="text-center py-6">
           <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-base-200 mb-2">
-            <%= icon(:site, size: '6', css_class: 'text-base-content/30') %>
+            <%= icon(:site, size: '6', css_class: 'text-gray-400') %>
           </div>
-          <p class="text-sm text-base-content/50"><%= t('admin.empty.none_assigned', items: Site.model_name.human(count: 2).downcase) %></p>
+          <p class="text-sm text-gray-600"><%= t('admin.empty.none_assigned', items: Site.model_name.human(count: 2).downcase) %></p>
         </div>
       <% end %>
     <% end %>

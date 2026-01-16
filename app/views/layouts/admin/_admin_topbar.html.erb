@@ -1,9 +1,9 @@
-<nav class="fixed top-0 left-0 right-0 h-14 bg-gray-900 flex items-center justify-between px-4 z-50">
+<nav aria-label="Top bar" class="fixed top-0 left-0 right-0 h-14 bg-gray-900 flex items-center justify-between px-4 z-50">
   <%# Left zone: Logo %>
   <div class="flex items-center gap-6 min-w-[180px]">
     <%= link_to admin_root_path, class: "flex items-center gap-2 font-bold text-lg text-white hover:text-placecal-orange transition-colors" do %>
       <span class="text-placecal-orange">PlaceCal</span>
-      <span class="text-xs font-normal text-gray-500"><%= t('admin.topbar.admin') %></span>
+      <span class="text-xs font-normal text-gray-400"><%= t('admin.topbar.admin') %></span>
     <% end %>
   </div>
 

@@ -9,6 +9,9 @@ export default class extends Controller {
 		const firstOption = this.element.querySelector('option[value=""]');
 		const placeholder = firstOption ? firstOption.textContent.trim() : null;
 
+		// Get aria-label from original element for accessibility
+		const ariaLabel = this.element.getAttribute("aria-label");
+
 		this.tomSelect = new TomSelect(this.element, {
 			plugins: this.element.multiple ? ["remove_button"] : [],
 			allowEmptyOption: false,
@@ -16,6 +19,11 @@ export default class extends Controller {
 			placeholder: placeholder,
 			hidePlaceholder: true,
 		});
+
+		// Copy aria-label to the generated control input for accessibility
+		if (ariaLabel && this.tomSelect.control_input) {
+			this.tomSelect.control_input.setAttribute("aria-label", ariaLabel);
+		}
 
 		// Store reference on element for external access
 		this.element.tomSelectInstance = this.tomSelect;

@@ -2,7 +2,7 @@
 
 <div class="mb-6">
   <h1 class="text-2xl font-bold">Icon Reference</h1>
-  <p class="text-sm text-base-content/60 mt-1">
+  <p class="text-sm text-gray-600 mt-1">
     All <%= SvgIconsHelper::ICONS.count %> icons available via the <code class="bg-base-200 px-1 rounded">icon()</code> helper.
     Usage: <code class="bg-base-200 px-1 rounded">&lt;%= icon(:name, size: '5', css_class: 'text-red-500') %&gt;</code>
   </p>
@@ -56,7 +56,7 @@
 <div class="card bg-base-100 border border-base-300 mb-8">
   <div class="card-body p-4">
     <h2 class="font-bold text-lg mb-4">Size Reference</h2>
-    <p class="text-sm text-base-content/60 mb-4">
+    <p class="text-sm text-gray-600 mb-4">
       Use the <code class="bg-base-200 px-1 rounded">size</code> parameter to control icon dimensions.
       Maps to Tailwind's <code class="bg-base-200 px-1 rounded">size-{n}</code> utility.
     </p>
@@ -67,7 +67,7 @@
           <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
             <%= icon(:calendar, size: size.to_s) %>
           </div>
-          <code class="text-xs font-mono text-base-content/60">size: '<%= size %>'</code>
+          <code class="text-xs font-mono text-gray-600">size: '<%= size %>'</code>
         </div>
       <% end %>
     </div>
@@ -78,7 +78,7 @@
 <div class="card bg-base-100 border border-base-300 mb-8">
   <div class="card-body p-4">
     <h2 class="font-bold text-lg mb-4">Stroke Width Reference</h2>
-    <p class="text-sm text-base-content/60 mb-4">
+    <p class="text-sm text-gray-600 mb-4">
       Use the <code class="bg-base-200 px-1 rounded">stroke_width</code> parameter to control line thickness.
       Default is <code class="bg-base-200 px-1 rounded">'2'</code>.
     </p>
@@ -89,7 +89,7 @@
           <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
             <%= icon(:calendar, size: '8', stroke_width: sw) %>
           </div>
-          <code class="text-xs font-mono text-base-content/60">stroke_width: '<%= sw %>'</code>
+          <code class="text-xs font-mono text-gray-600">stroke_width: '<%= sw %>'</code>
         </div>
       <% end %>
     </div>
@@ -100,7 +100,7 @@
 <div class="card bg-base-100 border border-base-300">
   <div class="card-body p-4">
     <h2 class="font-bold text-lg mb-4">Color Examples</h2>
-    <p class="text-sm text-base-content/60 mb-4">
+    <p class="text-sm text-gray-600 mb-4">
       Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind color classes.
       Icons inherit color via <code class="bg-base-200 px-1 rounded">stroke="currentColor"</code>.
     </p>
@@ -112,13 +112,13 @@
         ['text-error', 'Error'],
         ['text-warning', 'Warning'],
         ['text-info', 'Info'],
-        ['text-base-content/50', '50% opacity']
+        ['text-gray-600', '50% opacity']
       ].each do |css_class, label| %>
         <div class="flex flex-col items-center">
           <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
             <%= icon(:check_circle, size: '8', css_class: css_class) %>
           </div>
-          <code class="text-xs font-mono text-base-content/60"><%= label %></code>
+          <code class="text-xs font-mono text-gray-600"><%= label %></code>
         </div>
       <% end %>
     </div>

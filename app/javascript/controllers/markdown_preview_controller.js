@@ -296,7 +296,7 @@ export default class extends Controller {
 
 		if (!markdown.trim()) {
 			this.outputTarget.innerHTML =
-				'<p class="text-base-content/50 italic">Start typing to see preview...</p>';
+				'<p class="text-gray-500 italic">Start typing to see preview...</p>';
 			return;
 		}
 
@@ -352,13 +352,13 @@ export default class extends Controller {
 		// Markdown links
 		html = html.replace(
 			/\[([^\]]+)\]\(([^)]+)\)/g,
-			'<a href="$2" target="_blank" rel="noopener" class="link text-placecal-teal">$1</a>'
+			'<a href="$2" target="_blank" rel="noopener" class="link underline text-placecal-teal-dark">$1</a>'
 		);
 
 		// Auto-link bare URLs (not already in a tag)
 		html = html.replace(
 			/(?<!href="|">)(https?:\/\/[^\s<]+)/g,
-			'<a href="$1" target="_blank" rel="noopener" class="link text-placecal-teal">$1</a>'
+			'<a href="$1" target="_blank" rel="noopener" class="link underline text-placecal-teal-dark">$1</a>'
 		);
 
 		// Blockquotes

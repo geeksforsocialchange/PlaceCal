@@ -3,9 +3,9 @@
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-2xl font-semibold">Edit User</h1>
-    <p class="text-base-content/60 mt-1"><%= @user.full_name.presence || @user.email %></p>
+    <p class="text-gray-600 mt-1"><%= @user.full_name.presence || @user.email %></p>
   </div>
-  <div class="text-sm text-base-content/50">ID: <%= @user.id %></div>
+  <div class="text-sm text-gray-600">ID: <%= @user.id %></div>
 </div>
 
 <%- disabled_fields = policy(@user).disabled_attributes_for_update %>

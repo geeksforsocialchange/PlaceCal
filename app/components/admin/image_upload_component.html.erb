@@ -1,8 +1,8 @@
 <div class="lg:border-l lg:border-base-300 lg:pl-6">
-  <h3 class="font-semibold mb-4 flex items-center gap-2">
+  <h2 class="font-semibold mb-4 flex items-center gap-2 text-base">
     <%= icon(header_icon, size: '5', css_class: 'text-placecal-orange') %>
     <%= title || object.class.human_attribute_name(attribute) %>
-  </h3>
+  </h2>
   <div data-controller="image-preview">
     <%# File Input / Dropzone %>
     <div class="mb-4">
@@ -14,7 +14,7 @@
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-base-content"><%= t('admin.images.choose_file_drag') %></p>
-            <p class="text-xs text-base-content/50"><%= helpers.image_uploader_hint(uploader) %></p>
+            <p class="text-xs text-gray-600"><%= helpers.image_uploader_hint(uploader) %></p>
           </div>
           <%= form.input_field attribute, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
         </label>
@@ -44,7 +44,7 @@
         </div>
       <% else %>
         <div class="<%= aspect %> <%= rounded %> border border-base-300 bg-base-200/50 flex items-center justify-center" data-image-preview-target="placeholder">
-          <div class="text-center text-base-content/30 p-4">
+          <div class="text-center text-gray-500 p-4">
             <%= icon(placeholder_icon, size: '16', css_class: 'mx-auto mb-3 opacity-50', stroke_width: '1') %>
             <p class="text-sm font-medium"><%= t('admin.images.no_image_uploaded') %></p>
             <p class="text-xs mt-1"><%= t('admin.images.upload_hint') %></p>

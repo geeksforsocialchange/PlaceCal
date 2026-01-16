@@ -9,7 +9,7 @@
   <div class="card-body p-4 gap-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <%= icon(:neighbourhood, size: '4', css_class: 'text-base-content/50') %>
+        <%= icon(:neighbourhood, size: '4', css_class: 'text-gray-600') %>
         <span class="text-sm font-medium text-base-content/70"><%= t('admin.service_areas.new_area') %></span>
       </div>
       <div class="flex items-center gap-1">
@@ -34,7 +34,7 @@
       <%# Region selector (level 4) %>
       <div class="flex items-center gap-3">
         <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.region') %></label>
-        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
                 data-cascading-neighbourhood-target="region"
                 data-action="change->cascading-neighbourhood#regionChanged"
                 disabled>
@@ -45,7 +45,7 @@
       <%# County selector (level 3) - hidden initially %>
       <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="countyRow">
         <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.county') %></label>
-        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
                 data-cascading-neighbourhood-target="county"
                 data-action="change->cascading-neighbourhood#countyChanged"
                 disabled>
@@ -56,7 +56,7 @@
       <%# District selector (level 2) - hidden initially %>
       <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="districtRow">
         <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.area') %></label>
-        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
                 data-cascading-neighbourhood-target="district"
                 data-action="change->cascading-neighbourhood#districtChanged"
                 disabled>
@@ -67,7 +67,7 @@
       <%# Ward selector (level 1) - hidden initially %>
       <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="wardRow">
         <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.ward') %></label>
-        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-base-content/30 flex-1"
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
                 data-cascading-neighbourhood-target="ward"
                 data-action="change->cascading-neighbourhood#wardChanged"
                 disabled>

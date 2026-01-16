@@ -111,6 +111,7 @@ group :development do
 end
 
 group :test do
+  gem 'axe-core-rspec', '~> 4.8'
   gem 'capybara'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'

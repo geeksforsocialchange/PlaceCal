@@ -86,14 +86,14 @@ class NeighbourhoodDatatable < Datatable
           <a href="#{admin_neighbourhood_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
             #{ERB::Util.html_escape(record.name)}
           </a>
-          <span class="text-xs text-gray-400 font-mono">#{subtitle}</span>
+          <span class="text-xs text-gray-500 font-mono">#{subtitle}</span>
         </div>
       HTML
     else
       <<~HTML.html_safe
         <div class="flex flex-col">
           <span class="font-medium text-gray-900">#{ERB::Util.html_escape(record.name)}</span>
-          <span class="text-xs text-gray-400 font-mono">#{subtitle}</span>
+          <span class="text-xs text-gray-500 font-mono">#{subtitle}</span>
         </div>
       HTML
     end
@@ -137,12 +137,12 @@ class NeighbourhoodDatatable < Datatable
         </span>
       HTML
     else
-      '<span class="text-gray-400">—</span>'.html_safe
+      '<span class="text-gray-500">—</span>'.html_safe
     end
   end
 
   def render_release_cell(record)
-    return '<span class="text-gray-400">—</span>'.html_safe unless record.release_date
+    return '<span class="text-gray-500">—</span>'.html_safe unless record.release_date
 
     is_current = record.release_date == LATEST_RELEASE_DATE
     badge_class = is_current ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'
@@ -169,7 +169,7 @@ class NeighbourhoodDatatable < Datatable
         </div>
       HTML
     else
-      '<span class="text-gray-400">—</span>'.html_safe
+      '<span class="text-gray-500">—</span>'.html_safe
     end
   end
 

@@ -4,23 +4,25 @@
   <div class="lg:col-span-2 space-y-4">
     <div class="grid grid-cols-2 gap-4">
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :first_name) %></legend>
+        <%= f.label :first_name, attr_label(:user, :first_name), class: 'fieldset-legend' %>
         <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
       </fieldset>
 
       <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:user, :last_name) %></legend>
+        <%= f.label :last_name, attr_label(:user, :last_name), class: 'fieldset-legend' %>
         <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
       </fieldset>
     </div>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <%= f.label :email, class: 'fieldset-legend' do %>
+        <%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+      <% end %>
       <%= f.input_field :email, class: 'input input-bordered w-full' %>
     </fieldset>
 
     <fieldset class="fieldset">
-      <legend class="fieldset-legend"><%= attr_label(:user, :phone) %></legend>
+      <%= f.label :phone, attr_label(:user, :phone), class: 'fieldset-legend' %>
       <%= f.input_field :phone, class: 'input input-bordered w-full' %>
     </fieldset>
   </div>

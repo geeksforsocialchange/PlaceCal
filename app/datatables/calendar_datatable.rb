@@ -83,14 +83,14 @@ class CalendarDatatable < Datatable
         <a href="#{edit_admin_calendar_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">##{record.id}</span>
+        <span class="text-xs text-gray-500 font-mono">##{record.id}</span>
       </div>
     HTML
   end
 
   def render_partner_cell(record)
     partner = record.partner
-    return '<span class="text-gray-400">—</span>'.html_safe unless partner
+    return '<span class="text-gray-500">—</span>'.html_safe unless partner
 
     <<~HTML.html_safe
       <button type="button"
@@ -129,7 +129,7 @@ class CalendarDatatable < Datatable
       HTML
     else
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="Unknown state">
+        <span class="inline-flex items-center text-gray-500" title="Unknown state">
           #{icon(:x)}
         </span>
       HTML
@@ -140,7 +140,7 @@ class CalendarDatatable < Datatable
     count = record.notice_count || 0
     if count.positive?
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-amber-600" title="#{count} notice#{'s' if count != 1}">
+        <span class="inline-flex items-center text-amber-700" title="#{count} notice#{'s' if count != 1}">
           #{icon(:warning)}
           <span class="ml-1 text-xs">#{count}</span>
         </span>

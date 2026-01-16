@@ -26,7 +26,7 @@
   <div class="space-y-6">
     <fieldset class="fieldset">
       <legend class="fieldset-legend"><%= attr_label(:calendar, :strategy) %></legend>
-      <p class="text-sm text-base-content/60 mb-4"><%= t('admin.calendars.fields.strategy_hint') %></p>
+      <p class="text-sm text-gray-600 mb-4"><%= t('admin.calendars.fields.strategy_hint') %></p>
       <%= render Admin::RadioCardGroupComponent.new(
         form: f,
         attribute: :strategy,

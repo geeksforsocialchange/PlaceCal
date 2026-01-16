@@ -67,14 +67,14 @@
             <div class="bg-base-200/50 rounded-lg p-4">
               <div class="flex items-center gap-2 mb-3">
                 <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <%= icon(:partnership, size: '4', css_class: 'text-amber-600') %>
+                  <%= icon(:partnership, size: '4', css_class: 'text-amber-700') %>
                 </div>
                 <h4 class="font-medium"><%= t('admin.users.profile.your_partnerships') %></h4>
               </div>
               <%= render Admin::ItemBadgeListComponent.new(
                 items: current_user.tags.order(:name),
                 icon_name: :partnership,
-                icon_color: "bg-amber-100 text-amber-600",
+                icon_color: "bg-amber-100 text-amber-700",
                 link_path: :edit_admin_tag_path,
                 empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
                 vertical: true

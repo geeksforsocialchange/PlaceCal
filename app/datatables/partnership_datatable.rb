@@ -72,13 +72,13 @@ class PartnershipDatatable < Datatable
         <a href="#{edit_admin_partnership_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">##{record.id} · #{ERB::Util.html_escape(record.slug)}</span>
+        <span class="text-xs text-gray-500 font-mono">##{record.id} · #{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
   end
 
   def render_description_cell(record)
-    return '<span class="text-gray-400">—</span>'.html_safe if record.description.blank?
+    return '<span class="text-gray-500">—</span>'.html_safe if record.description.blank?
 
     truncated = record.description.truncate(50)
     tooltip = ERB::Util.html_escape(record.description)
@@ -93,7 +93,7 @@ class PartnershipDatatable < Datatable
   def render_system_tag_cell(record)
     if record.system_tag?
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-amber-600" title="System tag">
+        <span class="inline-flex items-center text-amber-700" title="System tag">
           #{icon(:lock)}
         </span>
       HTML
@@ -111,7 +111,7 @@ class PartnershipDatatable < Datatable
     count = admins.size
 
     return <<~HTML.html_safe if count.zero?
-      <span class="inline-flex items-center text-gray-400" title="No admins">
+      <span class="inline-flex items-center text-gray-500" title="No admins">
         #{icon(:x)}
       </span>
     HTML

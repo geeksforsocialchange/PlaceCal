@@ -69,13 +69,13 @@ class SiteDatatable < Datatable
                     # Show just the domain part for cleaner display
                     domain = site_url.gsub(%r{^https?://}, '').chomp('/')
                     <<~URL_HTML
-                      <a href="#{ERB::Util.html_escape(site_url)}" target="_blank" class="text-xs text-gray-400 font-mono hover:text-orange-600 flex items-center gap-1">
+                      <a href="#{ERB::Util.html_escape(site_url)}" target="_blank" class="text-xs text-gray-500 font-mono hover:text-orange-600 flex items-center gap-1">
                         #{ERB::Util.html_escape(domain)}
                         #{icon(:external_link, size: '3')}
                       </a>
                     URL_HTML
                   else
-                    "<span class=\"text-xs text-gray-400 font-mono\">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>"
+                    "<span class=\"text-xs text-gray-500 font-mono\">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>"
                   end
 
     <<~HTML.html_safe
@@ -109,7 +109,7 @@ class SiteDatatable < Datatable
       HTML
     else
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="No #{label}s">
+        <span class="inline-flex items-center text-gray-500" title="No #{label}s">
           #{icon(:x)}
         </span>
       HTML

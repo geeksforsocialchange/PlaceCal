@@ -9,7 +9,7 @@
     <%# Header %>
     <div class="text-center mb-8">
       <h1 class="text-2xl font-bold text-base-content mb-2"><%= t('admin.calendars.wizard.title') %></h1>
-      <p class="text-base-content/60"><%= t('admin.calendars.wizard.subtitle') %></p>
+      <p class="text-gray-600"><%= t('admin.calendars.wizard.subtitle') %></p>
     </div>
 
     <%# Steps indicator %>
@@ -39,7 +39,7 @@
           </div>
           <div>
             <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.source.title') %></h2>
-            <p class="text-base-content/60 text-sm mt-1">
+            <p class="text-gray-600 text-sm mt-1">
               <%= t('admin.calendars.wizard.source.description') %>
             </p>
           </div>
@@ -68,7 +68,7 @@
                 <span data-calendar-wizard-target="testButtonText"><%= t('admin.calendars.wizard.source.test_button') %></span>
               </button>
             </div>
-            <p class="text-sm text-base-content/50 mt-2">
+            <p class="text-sm text-gray-600 mt-2">
               <%= t('admin.calendars.handbook_hint_html') %>
             </p>
 
@@ -106,7 +106,7 @@
                               selected: 'auto',
                               class: 'select select-bordered w-full',
                               data: { 'calendar-wizard-target': 'importerModeSelect' } %>
-            <p class="text-sm text-base-content/50 mt-2">
+            <p class="text-sm text-gray-600 mt-2">
               <%= t('admin.calendars.wizard.source.importer_hint') %>
             </p>
           </fieldset>
@@ -114,7 +114,7 @@
           <%# Supported sources info %>
           <details class="collapse collapse-arrow bg-base-200/50 border border-base-300 rounded-box">
             <summary class="collapse-title text-sm font-medium">
-              <%= icon(:info, size: '4', css_class: 'inline mr-2 text-base-content/60') %>
+              <%= icon(:info, size: '4', css_class: 'inline mr-2 text-gray-600') %>
               <%= t('admin.calendars.sections.supported_sources') %>
             </summary>
             <div class="collapse-content">
@@ -122,7 +122,7 @@
                 <% calendar_import_sources do |name, domains| %>
                   <li class="flex items-start gap-2">
                     <span class="text-placecal-orange">•</span>
-                    <span><strong><%= name %></strong> <span class="text-base-content/50">(<%= domains.join(', ') %>)</span></span>
+                    <span><strong><%= name %></strong> <span class="text-gray-600">(<%= domains.join(', ') %>)</span></span>
                   </li>
                 <% end %>
               </ul>
@@ -141,7 +141,7 @@
           </div>
           <div>
             <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.organiser.title') %></h2>
-            <p class="text-base-content/60 text-sm mt-1">
+            <p class="text-gray-600 text-sm mt-1">
               <%= t('admin.calendars.wizard.organiser.description') %>
             </p>
           </div>
@@ -163,7 +163,7 @@
                                 'calendar-wizard-target': "partnerSelect",
                                 action: "change->calendar-wizard#partnerChanged"
                               } %>
-            <p class="text-sm text-base-content/50 mt-2"><%= t('admin.calendars.fields.partner_hint') %></p>
+            <p class="text-sm text-gray-600 mt-2"><%= t('admin.calendars.fields.partner_hint') %></p>
           </fieldset>
 
           <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
@@ -175,7 +175,7 @@
                               placeholder: t('admin.calendars.wizard.organiser.name_placeholder'),
                               'data-calendar-wizard-target': 'nameInput',
                               'data-action': 'input->calendar-wizard#nameChanged' %>
-            <p class="text-sm text-base-content/50 mt-2"><%= t('admin.calendars.fields.name_hint') %></p>
+            <p class="text-sm text-gray-600 mt-2"><%= t('admin.calendars.fields.name_hint') %></p>
           </fieldset>
         </div>
       </div>
@@ -190,7 +190,7 @@
           </div>
           <div>
             <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.location.title') %></h2>
-            <p class="text-base-content/60 text-sm mt-1">
+            <p class="text-gray-600 text-sm mt-1">
               <%= t('admin.calendars.wizard.location.description') %>
             </p>
           </div>
@@ -206,7 +206,7 @@
               values: Calendar.strategy.values,
               i18n_scope: 'admin.calendars.strategy'
             ) %>
-            <p class="text-sm text-base-content/50 mt-2">
+            <p class="text-sm text-gray-600 mt-2">
               <%= t('admin.calendars.wizard.location.strategy_hint') %>
             </p>
           </fieldset>
@@ -223,7 +223,7 @@
                                 controller: "tom-select",
                                 'calendar-wizard-target': "placeSelect"
                               } %>
-            <p class="text-sm text-base-content/50 mt-2">
+            <p class="text-sm text-gray-600 mt-2">
               <%= t('admin.calendars.wizard.location.default_hint') %>
             </p>
           </fieldset>

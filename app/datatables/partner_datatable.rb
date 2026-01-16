@@ -135,7 +135,7 @@ class PartnerDatatable < Datatable
         <a href="#{edit_admin_partner_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
+        <span class="text-xs text-gray-500 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
   end
@@ -151,7 +151,7 @@ class PartnerDatatable < Datatable
 
     if neighbourhoods.empty?
       <<~HTML.html_safe
-        <span class="text-gray-400">—</span>
+        <span class="text-gray-500">—</span>
       HTML
     else
       # Show first 2 wards, with "and X more" for additional
@@ -188,7 +188,7 @@ class PartnerDatatable < Datatable
 
     if calendars.empty?
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="No calendars">
+        <span class="inline-flex items-center text-gray-500" title="No calendars">
           #{icon(:x)}
         </span>
       HTML
@@ -221,7 +221,7 @@ class PartnerDatatable < Datatable
       HTML
     else
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="#{title_no}">
+        <span class="inline-flex items-center text-gray-500" title="#{title_no}">
           #{icon(:x)}
         </span>
       HTML
@@ -231,7 +231,7 @@ class PartnerDatatable < Datatable
   def render_partnerships(partnerships)
     if partnerships.empty?
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-gray-400" title="No partnerships">
+        <span class="inline-flex items-center text-gray-500" title="No partnerships">
           #{icon(:x)}
         </span>
       HTML
@@ -279,6 +279,7 @@ class PartnerDatatable < Datatable
         <div class="relative" data-controller="dropdown">
           <button type="button"
                   data-action="click->dropdown#toggle"
+                  aria-label="More actions"
                   class="inline-flex items-center px-2 py-1.5 text-xs font-medium rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
             #{icon(:more_vertical)}
           </button>
