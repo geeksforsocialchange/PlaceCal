@@ -1,32 +1,55 @@
 <%- disabled_fields = policy(@article).disabled_fields %>
 
 <div class="space-y-6">
-  <%# Publication date at top for existing articles %>
-  <% unless @article.new_record? %>
-    <div class="flex items-center gap-4 text-sm text-base-content/60">
-      <% if @article.published_at.present? %>
-        <span>Published <%= time_ago_in_words(@article.published_at) %> ago</span>
-        <span class="text-base-content/30">·</span>
-      <% end %>
-      <span>Last updated <%= time_ago_in_words(@article.updated_at) %> ago</span>
+  <%# Title, Author, and Publication date in a card %>
+  <%= render Admin::FormCardComponent.new(
+    icon: :edit,
+    title: "Article Details"
+  ) do %>
+    <div class="space-y-4">
+      <%# Title field %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+        <%= f.input_field :title, as: :string, class: 'input input-bordered w-full text-xl font-semibold', id: 'article_title', placeholder: 'Enter article title...' %>
+      </fieldset>
+
+      <%# Author and Publication date side by side %>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <%# Author field %>
+        <fieldset class="fieldset min-w-64">
+          <legend class="fieldset-legend"><%= attr_label(:article, :author) %></legend>
+          <% if disabled_fields.include?(:author_id) %>
+            <div class="text-base-content font-medium"><%= @article.author&.admin_name || 'Unknown' %></div>
+          <% else %>
+            <%= f.select :author_id,
+                  User.order(:last_name, :first_name).map { |u|
+                    full_name = [u.first_name, u.last_name].compact.join(' ').presence
+                    label = full_name ? "#{full_name} (#{u.email})" : u.email
+                    [label, u.id]
+                  },
+                  { include_blank: t('admin.placeholders.select_model', model: attr_label(:article, :author).downcase) },
+                  { class: 'select select-bordered w-full', id: 'article_author_id', data: { controller: 'tom-select' } } %>
+          <% end %>
+        </fieldset>
+
+        <%# Publication date (read-only display) %>
+        <% unless @article.new_record? %>
+          <fieldset class="fieldset w-auto">
+            <legend class="fieldset-legend">Published</legend>
+            <div class="input input-bordered h-9 flex items-center gap-2 bg-base-200/50 cursor-default">
+              <%= icon(:calendar, size: '4', css_class: 'text-base-content/50') %>
+              <% if @article.published_at.present? %>
+                <span class="text-base-content"><%= @article.published_at.strftime('%d %b %Y') %></span>
+                <span class="text-base-content/50 text-sm">(<%= time_ago_in_words(@article.published_at) %> ago)</span>
+              <% else %>
+                <span class="text-base-content/50 italic">Not published</span>
+              <% end %>
+            </div>
+          </fieldset>
+        <% end %>
+      </div>
     </div>
   <% end %>
-
-  <%# Title field - large and prominent at top %>
-  <div class="fieldset max-w-4xl">
-    <label for="article_title" class="fieldset-legend"><%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
-    <%= f.input_field :title, as: :string, class: 'input input-bordered w-full text-2xl font-semibold h-14', id: 'article_title', placeholder: 'Enter article title...' %>
-  </div>
-
-  <%# Author field %>
-  <div class="fieldset max-w-md">
-    <label for="article_author_id" class="fieldset-legend"><%= attr_label(:article, :author) %></label>
-    <% if disabled_fields.include?(:author_id) %>
-      <div class="text-base-content font-medium"><%= @article.author&.admin_name || 'Unknown' %></div>
-    <% else %>
-      <%= f.association :author, as: :select, label: false, input_html: { class: 'select select-bordered w-full', id: 'article_author_id', data: { controller: "tom-select" } } %>
-    <% end %>
-  </div>
 
   <%# Body with side-by-side markdown preview %>
   <div data-controller="markdown-preview">
