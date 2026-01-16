@@ -129,10 +129,18 @@
     </div>
   <% end %>
 
-  <%= render Admin::SaveBarComponent.new(
-    multi_step: !@tag.new_record?,
-    tab_name: 'tag_tabs',
-    settings_hash: 'settings',
-    storage_key: 'tagTabAfterSave'
-  ) %>
+  <% if @tag.new_record? %>
+    <%= render Admin::SaveBarComponent.new do |c| %>
+      <% c.with_button do %>
+        <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= render Admin::SaveBarComponent.new(
+      multi_step: true,
+      tab_name: 'tag_tabs',
+      settings_hash: 'settings',
+      storage_key: 'tagTabAfterSave'
+    ) %>
+  <% end %>
 <% end %>

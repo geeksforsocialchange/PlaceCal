@@ -44,6 +44,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
+      # system_tag is on the Settings tab for existing tags
+      find('input[aria-label*="Settings"]').click
       expect(page).to have_css("input#tag_system_tag")
     end
 
@@ -52,6 +54,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
+      # Navigate to Settings tab if visible, then check system_tag is not present
+      find('input[aria-label*="Settings"]').click if page.has_css?('input[aria-label*="Settings"]', wait: 2)
       expect(page).not_to have_css("input#tag_system_tag")
     end
   end
@@ -73,14 +77,16 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       login_as(root_user)
       port = Capybara.current_session.server.port
 
-      # Toggle on
+      # Toggle on - navigate to Settings tab first
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      find('input[aria-label*="Settings"]').click
       check "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
-      # Check is toggled
+      # Check is toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      find('input[aria-label*="Settings"]').click
       expect(page).to have_checked_field("System Tag", visible: :all)
 
       # Toggle off
@@ -88,8 +94,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
-      # Check is NOT toggled
+      # Check is NOT toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      find('input[aria-label*="Settings"]').click
       expect(page).to have_unchecked_field("System Tag", visible: :all)
     end
   end
@@ -117,22 +124,30 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       # Should not be able to choose type on update
       expect(page).not_to have_css('select[name="tag[type]"]')
 
+      # Name is on Basic Info tab (default)
       expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility"]')
-      expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility"]')
 
-      # Change values
+      # Change name and description on Basic Info tab
       fill_in "Name", with: "AlphaFacility 2"
-      fill_in "Slug", with: "alpha-facility-2"
       fill_in "Description", with: "The description has changed."
       click_button "Save"
 
       assert_has_flash(:success, "Tag was saved successfully")
 
-      # Tag should save okay
-      click_link Tag.last.name
+      # After save, we stay on the edit page - navigate to Settings tab
+      find('input[aria-label*="Settings"]').click
+      expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility"]')
+      fill_in "Slug", with: "alpha-facility-2"
+      click_button "Save"
 
-      expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility 2"]')
+      assert_has_flash(:success, "Tag was saved successfully")
+
+      # Tag should save okay - verify slug persisted (we're already on Settings tab after save)
       expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility-2"]')
+
+      # Verify name on Basic Info tab
+      find('input[aria-label*="Basic"]').click
+      expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility 2"]')
     end
   end
 

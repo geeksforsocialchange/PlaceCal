@@ -17,10 +17,15 @@ RSpec.describe "Admin Articles", :slow, type: :system do
 
       click_link article.title
 
-      # Select author
+      # Select author (on Text tab, which is default)
       author_node = tom_select_node("article_author")
       tom_select admin_user.to_s, xpath: author_node.path
       assert_tom_select_single admin_user.to_s, author_node
+
+      # Navigate to References tab for partners and tags
+      accept_confirm do
+        find('input[aria-label*="References"]').click
+      end
 
       # Select partners (multiple)
       partners_node = tom_select_node("article_partners")
@@ -39,8 +44,14 @@ RSpec.describe "Admin Articles", :slow, type: :system do
       await_datatables
       click_link article.title
 
+      # Ensure we're on the Text tab (tab state may be stored)
+      find('input[aria-label*="Text"]').click
+
       author_node = tom_select_node("article_author")
       assert_tom_select_single admin_user.to_s, author_node
+
+      # Navigate to References tab to verify partners and tags
+      find('input[aria-label*="References"]').click
 
       partners_node = tom_select_node("article_partners")
       assert_tom_select_multiple [partner.name, partner_two.name], partners_node

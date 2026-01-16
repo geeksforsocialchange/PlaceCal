@@ -4,7 +4,8 @@
     title: attr_label(:tag, :slug),
     description: t('admin.hints.leave_blank_to_autogenerate')
   ) do %>
-    <%= f.input_field :slug, class: 'input input-bordered w-full', disabled: @tag.system_tag %>
+    <label for="tag_slug" class="sr-only"><%= attr_label(:tag, :slug) %></label>
+    <%= f.input_field :slug, class: 'input input-bordered w-full', disabled: @tag.system_tag, id: 'tag_slug' %>
   <% end %>
 </div>
 
