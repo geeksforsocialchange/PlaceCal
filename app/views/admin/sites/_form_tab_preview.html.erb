@@ -7,7 +7,7 @@
   <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
     <%= icon(:partnership, size: '5') %>
     <%= Partner.model_name.human(count: 2) %>
-    <span class="badge badge-neutral"><%= site_partners.count %></span>
+    <span class="inline-flex items-center justify-center h-6 px-2 text-xs rounded-full font-bold bg-emerald-100 text-emerald-700"><%= site_partners.count %></span>
   </h3>
   <p class="text-sm text-base-content/60 mb-4"><%= t('admin.sites.preview.partners_description') %></p>
 
@@ -55,7 +55,7 @@
   <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
     <%= icon(:calendar, size: '5') %>
     <%= t('admin.sections.upcoming_events') %>
-    <span class="badge badge-neutral"><%= site_events.count %></span>
+    <span class="inline-flex items-center justify-center h-6 px-2 text-xs rounded-full font-bold bg-sky-100 text-sky-700"><%= site_events.count %></span>
   </h3>
   <p class="text-sm text-base-content/60 mb-4"><%= t('admin.sites.preview.events_description') %></p>
 
