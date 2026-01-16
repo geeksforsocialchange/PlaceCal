@@ -1,0 +1,52 @@
+<%
+  # Get partnership admins for tom-select filter
+  admin_ids = TagsUser.where(tag_id: Partnership.ids).distinct.pluck(:user_id)
+  admin_options = User.where(id: admin_ids).order(:first_name, :last_name).map do |u|
+    name = [u.first_name, u.last_name].compact.join(' ')
+    name = u.email.split('@').first if name.blank?
+    { value: u.id.to_s, label: name }
+  end
+%>
+
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Partnerships',
+    model: :partnerships,
+    column_titles: [
+      'Partnership',
+      'Admins',
+      'Partners',
+      'Last Updated',
+      ''
+    ],
+    columns: %i[name admins_count partners_count updated_at actions],
+    column_config: {
+      name: {},
+      admins_count: { sortable: false },
+      partners_count: { align: :center, sortable: false, fit: true },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'updated_at', direction: 'desc' },
+    filters: [
+      {
+        column: 'admin_id',
+        label: 'Admin',
+        width: 'w-48',
+        tom_select: true,
+        options: admin_options
+      },
+      {
+        column: 'has_partners',
+        label: 'Partners',
+        width: 'w-36',
+        options: [
+          { value: 'yes', label: 'Has partners' },
+          { value: 'no', label: 'No partners' }
+        ]
+      }
+    ],
+    data: @partnerships,
+    source: admin_partnerships_path(format: :json),
+    new_link: (new_admin_partnership_path if policy(Partnership).create?)
+  }
+%>

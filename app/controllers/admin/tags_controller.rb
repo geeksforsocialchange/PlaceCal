@@ -5,15 +5,11 @@ module Admin
     before_action :set_tag, only: %i[show edit update destroy]
 
     def index
-      @tags = policy_scope(Tag).order(:name)
+      @tags = policy_scope(Tag)
       authorize @tags
 
       respond_to do |format|
-        format.html do
-          @filter = TagFilter.new(params)
-          render :index
-        end
-
+        format.html { @tags = @tags.order(updated_at: :desc, name: :asc) }
         format.json do
           render json: TagDatatable.new(
             params,
@@ -70,7 +66,7 @@ module Admin
 
       if @tag.update(attributes)
         flash[:success] = 'Tag was saved successfully'
-        redirect_to admin_tags_path
+        redirect_to edit_admin_tag_path(@tag)
 
       else
         flash.now[:danger] = 'Tag was not saved'

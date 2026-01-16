@@ -1,3 +1,2 @@
-<% content_for :title do %>New Article<% end %>
-
-<%= render(AdminNew.new(:article)) %>
+<%= render 'layouts/admin/page_header', model_name: 'Article', new_record: true %>
+<%= render 'form' %>

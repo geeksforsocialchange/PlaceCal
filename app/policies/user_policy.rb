@@ -52,7 +52,8 @@ class UserPolicy < ApplicationPolicy
     root_attrs = [
       :role,
       { tag_ids: [],
-        neighbourhood_ids: [] }
+        neighbourhood_ids: [],
+        neighbourhoods_users_attributes: %i[id neighbourhood_id _destroy] }
     ]
 
     user.root? ? attrs + root_attrs : attrs
@@ -87,7 +88,8 @@ class UserPolicy < ApplicationPolicy
     root_attrs = [
       :role,
       { tag_ids: [],
-        neighbourhood_ids: [] }
+        neighbourhood_ids: [],
+        neighbourhoods_users_attributes: %i[id neighbourhood_id _destroy] }
     ]
 
     user.root? ? attrs + root_attrs : attrs

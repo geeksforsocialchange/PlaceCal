@@ -2,12 +2,7 @@
 
 module CalendarsHelper
   def options_for_organiser
-    org_opts = policy_scope(Partner)
-               .order(:name)
-               .collect { |opt| [opt.name, opt.id] }
-
-    # [{ name: '', id: ''}] + org_opts
-    [['(No Partner)', '', { disabled: true }]] + org_opts
+    policy_scope(Partner).order(:name)
   end
 
   def options_for_location

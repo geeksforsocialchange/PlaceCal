@@ -7,6 +7,8 @@ class Address < ApplicationRecord
   # (do this first)
   validate :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
 
+  after_commit :refresh_neighbourhood_partners_count, if: :neighbourhood_id_previously_changed?
+
   validates :street_address, :country_code, presence: true
   validates :postcode, presence: true, postcode: true
 
@@ -118,5 +120,18 @@ class Address < ApplicationRecord
       )
       address.save ? address : nil
     end
+  end
+
+  private
+
+  def refresh_neighbourhood_partners_count
+    # Refresh current neighbourhood
+    neighbourhood&.refresh_partners_count!
+
+    # Refresh old neighbourhood if it changed
+    old_neighbourhood_id = previous_changes.dig('neighbourhood_id', 0)
+    return unless old_neighbourhood_id
+
+    Neighbourhood.find_by(id: old_neighbourhood_id)&.refresh_partners_count!
   end
 end

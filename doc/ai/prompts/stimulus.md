@@ -101,7 +101,7 @@ export default class extends Controller {
   </div>
 
   <%= turbo_frame_tag "pagination", src: posts_path(page: @page), loading: :lazy do %>
-    <div class="loading">Loading more posts...</div>
+    <div class="loading"><%= t('admin.labels.loading') %></div>
   <% end %>
 </turbo-frame>
 ```
@@ -176,7 +176,7 @@ class Post < ApplicationRecord
       action: "dispatch",
       event: "notification:show",
       detail: {
-        message: "Post #{title} was updated",
+        message: I18n.t('posts.notifications.updated', title: title),
         type: "success"
       }
     )
@@ -339,6 +339,51 @@ export function debounce(func, wait) {
 		clearTimeout(timeout);
 		timeout = setTimeout(later, wait);
 	};
+}
+```
+
+## Internationalization (i18n)
+
+**NEVER hardcode user-facing strings in JavaScript.** Use data attributes to pass localized strings from Rails:
+
+### Passing Locale Strings via Data Attributes
+
+```erb
+<%# In your view - pass localized strings to JavaScript %>
+<div data-controller="search"
+     data-search-loading-text-value="<%= t('admin.labels.loading') %>"
+     data-search-no-results-text-value="<%= t('admin.empty.no_items', items: 'results') %>">
+</div>
+```
+
+```javascript
+// In your controller - use the values
+export default class extends Controller {
+	static values = {
+		loadingText: String,
+		noResultsText: String,
+	};
+
+	showLoading() {
+		this.element.textContent = this.loadingTextValue;
+	}
+}
+```
+
+### For Dynamic Content
+
+When JavaScript needs to construct messages dynamically, pass templates:
+
+```erb
+<div data-controller="notification"
+     data-notification-created-template-value="<%= t('notifications.created', item: '%{item}') %>">
+</div>
+```
+
+```javascript
+showCreated(itemName) {
+  const message = this.createdTemplateValue.replace('%{item}', itemName)
+  this.show(message)
 }
 ```
 

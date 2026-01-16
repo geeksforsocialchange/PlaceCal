@@ -1,0 +1,44 @@
+<div class="max-w-4xl">
+  <% tag_partners = @tag.partners.order(:name) %>
+  <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
+    <%= icon(:partner, size: '5') %>
+    <%= t('admin.tags.sections.tagged_partners') %>
+    <span class="inline-flex items-center justify-center h-6 px-2 text-xs rounded-full font-bold bg-emerald-100 text-emerald-700"><%= tag_partners.count %></span>
+  </h3>
+  <p class="text-sm text-gray-600 mb-4"><%= t('admin.tags.sections.tagged_partners_description') %></p>
+
+  <% if tag_partners.any? %>
+    <div class="overflow-x-auto">
+      <table class="table table-sm table-zebra">
+        <thead>
+          <tr>
+            <th><%= Partner.model_name.human %></th>
+            <th><%= Calendar.model_name.human(count: 2) %></th>
+            <th><%= Event.model_name.human(count: 2) %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tag_partners.limit(50).each do |partner| %>
+            <tr>
+              <td>
+                <%= link_to edit_admin_partner_path(partner), class: "link link-hover text-placecal-orange font-medium" do %>
+                  <%= partner.name %>
+                <% end %>
+                <% if partner.hidden %>
+                  <span class="badge badge-error badge-xs ml-1"><%= t('admin.labels.hidden') %></span>
+                <% end %>
+              </td>
+              <td><%= partner.calendars.count %></td>
+              <td><%= partner.events.upcoming.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if tag_partners.count > 50 %>
+      <p class="text-sm text-gray-600 mt-2"><%= t('admin.sites.preview.showing_first', limit: 50, total: tag_partners.count, items: Partner.model_name.human(count: 2).downcase) %></p>
+    <% end %>
+  <% else %>
+    <%= render Admin::EmptyStateComponent.new(icon: :partner, message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)) %>
+  <% end %>
+</div>

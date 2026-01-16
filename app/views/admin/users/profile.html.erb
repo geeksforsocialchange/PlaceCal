@@ -1,89 +1,59 @@
-<h1 class="page-header">Edit Profile</h1>
+<% content_for :title do %><%= t('admin.users.profile.title') %><% end %>
 
-<% if current_user.root? -%>
-  <p>To modify neighbourhoods, tags and partners go to the <%= link_to 'user edit page', edit_admin_user_path(current_user) %>.</p>
-<% end -%>
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold"><%= t('admin.users.profile.title') %></h1>
+  <p class="text-gray-600 mt-1"><%= current_user.email %></p>
+</div>
 
-<%= simple_form_for current_user, as: :user, method: :patch, url: update_profile_admin_user_path(current_user), html: { class: "form-horizontal" } do |f| %>
-  <div class="row mt-4">
-    <%= render(ErrorComponent.new(current_user)) %>
-    <div class="col-md-12">
-      <h2>Basic information</h2>
-      <%= render "contact", f: f %>
-    </div>
+<%= simple_form_for current_user,
+    as: :user,
+    method: :patch,
+    url: update_profile_admin_user_path(current_user),
+    html: { class: "space-y-6", data: {
+      controller: 'form-tabs live-validation form-dirty',
+      'form-tabs-storage-key-value': 'profileTabAfterSave',
+      'form-dirty-tab-name-value': 'profile_tabs'
+    } } do |f| %>
+
+  <%= render(Admin::ErrorComponent.new(current_user)) %>
+
+  <%# Radio Tabs - daisyUI tabs-lift %>
+  <div class="tabs tabs-lift">
+    <%= render Admin::TabPanelComponent.new(
+      name: 'profile_tabs',
+      label: "👤 #{t('admin.users.profile.tabs.personal')}",
+      hash: 'personal',
+      controller_name: 'form-tabs',
+      checked: true
+    ) do %>
+      <%= render 'profile_tab_personal', f: f %>
+    <% end %>
+
+    <%= render Admin::TabPanelComponent.new(
+      name: 'profile_tabs',
+      label: "🔑 #{t('admin.users.profile.tabs.password')}",
+      hash: 'password',
+      controller_name: 'form-tabs'
+    ) do %>
+      <%= render 'profile_tab_password', f: f %>
+    <% end %>
+
+    <%= render Admin::TabPanelComponent.new(
+      name: 'profile_tabs',
+      label: "🛡️ #{t('admin.users.profile.tabs.permissions')}",
+      hash: 'permissions',
+      controller_name: 'form-tabs'
+    ) do %>
+      <%= render 'profile_tab_permissions', f: f %>
+    <% end %>
   </div>
 
-  <div class="row mt-4">
-    <div class="col-md-6">
-      <h2>Password</h2>
-      <p>Leave this blank if you don't want to change your password.</p>
-      <%= f.input :password, autocomplete: "off" %>
-      <% if @minimum_password_length %>
-        <br>
-        <em><%= @minimum_password_length %> characters minimum</em>
-      <% end %>
-      <%= f.input :password_confirmation, autocomplete: "off" %>
-
-      <%= f.input :current_password, autocomplete: "off", hint: 'Enter your current password if you want to change it' %>
-    </div>
-  </div>
-
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <h2>Admin rights</h2>
-      <% if current_user.root? %>
-        <div class="profile__is-root">
-          <p>You are a <strong>root</strong> user and can do everything! be careful!</p>
-        </div>
-      <% else %>
-        <% if user_has_no_rights?(current_user) -%>
-          <p class='has-no-admin-rights-warning'>You have no admin rights. This probably means someone didn't set up your account correctly - please ask whoever invited you!</p>
-        <% end -%>
-      <% end %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <% if current_user.partners.any? %>
-        <h3>Your partners</h3>
-        <ul>
-          <% current_user.partners.each do |partner| %>
-            <li>
-              <%= link_to partner.name, edit_admin_partner_path(partner) %>
-            </li>
-          <% end %>
-        </ul>
-      <% end %>
-    </div>
-    <div class="col-md-6">
-      <% if current_user.neighbourhoods.any? %>
-        <h3>Your neighbourhoods</h3>
-        <ul>
-          <% current_user.neighbourhoods.each do |neighbourhood| %>
-            <li>
-              <%= link_to neighbourhood.contextual_name, edit_admin_neighbourhood_path(neighbourhood) %>
-            </li>
-          <% end %>
-        </ul>
-      <% end %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <% if current_user.partnership_admin? %>
-        <h3>Your assigned tags</h3>
-        <p>Please note these tags will be pre-selected when creating a new partner<p>
-        <ul>
-          <% current_user.tags.each do |tag| %>
-            <li>
-              <%= link_to tag.name, edit_admin_tag_path(tag) %>
-            </li>
-          <% end %>
-        </ul>
-      <% end %>
-    </div>
-  </div>
-
-  <br><br>
-  <%= f.submit "Update", class: "btn btn-primary " %>
+  <%= render Admin::SaveBarComponent.new(track_changes: true) do |c| %>
+    <% c.with_button do %>
+      <%= f.submit t('admin.users.profile.save_button'),
+          class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange btn-disabled opacity-50 cursor-not-allowed",
+          disabled: true,
+          data: { 'form-dirty-target': 'submit' } %>
+    <% end %>
+  <% end %>
 <% end %>

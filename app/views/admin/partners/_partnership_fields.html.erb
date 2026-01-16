@@ -1,14 +1,17 @@
 <% if current_user.partnership_admin? || current_user.root? -%>
-<h2>Partnerships</h2>
-<%= f.association :partnerships,
-    label: "Partnerships",
-    hint: "Which partnerships is this partner in?",
-    collection: options_for_partner_partnerships,
-    input_html: { 
-      class: 'form-check', data: { 
-        controller: 'partner-tags',
-        "partner-tags-permitted-tags-value": permitted_options_for_partner_tags 
-      } 
-    } 
-%>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend"><%= Partnership.model_name.human(count: 2) %></legend>
+    <p class="fieldset-label mb-3"><%= t('admin.partners.sections.tags_description') %></p>
+
+    <%= render Admin::StackedListSelectorComponent.new(
+      field_name: "partner[partnership_ids][]",
+      items: @partner.partnerships,
+      options: options_for_partner_partnerships,
+      permitted_ids: current_user.root? ? nil : permitted_options_for_partner_tags,
+      icon_name: :partnership,
+      icon_color: "bg-placecal-orange/10 text-placecal-orange",
+      empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
+      add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase)
+    ) %>
+  </fieldset>
 <% end -%>

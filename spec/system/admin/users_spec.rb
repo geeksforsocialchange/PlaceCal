@@ -14,49 +14,67 @@ RSpec.describe "Admin Users", :slow, type: :system do
   let!(:partner_two) { create(:oldtown_library, address: create(:address, neighbourhood: oldtown_ward)) }
   let!(:partnership) { create(:partnership) }
 
-  describe "select2 inputs on users form" do
-    it "allows selecting partners, neighbourhoods and tags", :aggregate_failures do
+  describe "stacked list selectors on users form" do
+    it "allows selecting partners and partnerships", :aggregate_failures do
       click_link "Users"
+      await_datatables
 
-      # Edit a root user (has access to all potential select2 inputs)
-      # Click on the admin user's first name to edit
-      click_link admin_user.first_name
+      # Edit a root user (has access to all potential stacked list selectors)
+      # Click on the admin user's full name to edit (datatable shows "FirstName LastName")
+      full_name = [admin_user.first_name, admin_user.last_name].compact.join(" ")
+      click_link full_name
 
-      # Select partners
-      partners_node = select2_node("user_partners")
-      select2 partner.name, partner_two.name, xpath: partners_node.path
-      assert_select2_multiple [partner.name, partner_two.name], partners_node
+      # Navigate to Permissions tab where stacked list selectors are located
+      find('input[data-hash="permissions"]').click
 
-      # Select neighbourhoods (displayed as "Name (Unit)" with titleized unit)
-      neighbourhoods_node = select2_node("user_neighbourhoods")
-      select2 riverside_ward.name, oldtown_ward.name, xpath: neighbourhoods_node.path
-      # UI displays unit titleized: "Riverside (Ward)" not "Riverside (ward)"
-      assert_select2_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
-                               "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
+      # Select partners using stacked list selector
+      stacked_list_select partner.name, partner_two.name, wrapper_class: "user_partners"
+      # Stacked list shows plain names, not formatted dropdown text
+      assert_stacked_list_items [partner.name, partner_two.name], "user_partners"
 
-      # Select tags
-      tags_node = select2_node("user_tags")
-      select2 partnership.name, xpath: tags_node.path
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      # Select partnerships (dropdown shows "Type: Name" but list shows just name)
+      stacked_list_select partnership.name, wrapper_class: "user_tags"
+      assert_stacked_list_items [partnership.name], "user_tags"
 
-      click_button "Update"
+      click_button "Save"
 
       # Return to user to verify data persists
       click_link "Users"
+      await_datatables
 
       find_element_and_retry_if_stale do
-        click_link admin_user.first_name
+        click_link full_name
       end
 
-      partners_node = select2_node("user_partners")
-      assert_select2_multiple [partner.name, partner_two.name], partners_node
+      # Navigate to Permissions tab again
+      find('input[data-hash="permissions"]').click
 
-      neighbourhoods_node = select2_node("user_neighbourhoods")
-      assert_select2_multiple ["#{riverside_ward.name} (#{riverside_ward.unit.titleize})",
-                               "#{oldtown_ward.name} (#{oldtown_ward.unit.titleize})"], neighbourhoods_node
+      assert_stacked_list_items [partner.name, partner_two.name], "user_partners"
+      assert_stacked_list_items [partnership.name], "user_tags"
+    end
+  end
 
-      tags_node = select2_node("user_tags")
-      assert_select2_multiple [partnership.name_with_type], tags_node
+  describe "cascading neighbourhood picker on users form" do
+    it "allows adding neighbourhoods via cascading picker", :aggregate_failures do
+      click_link "Users"
+      await_datatables
+
+      full_name = [admin_user.first_name, admin_user.last_name].compact.join(" ")
+      click_link full_name
+
+      # Navigate to Permissions tab
+      find('input[data-hash="permissions"]').click
+
+      # Click Add neighbourhood button
+      click_link "Add neighbourhood"
+
+      # Should see cascading neighbourhood controller initialized
+      expect(page).to have_css('[data-controller="cascading-neighbourhood"]', wait: 10)
+
+      # The country selector should be present and populated
+      within(all('[data-controller="cascading-neighbourhood"]').last) do
+        expect(page).to have_css('[data-cascading-neighbourhood-target="country"]')
+      end
     end
   end
 end

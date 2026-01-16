@@ -9,9 +9,8 @@ export default class extends Controller {
 		const inputDebouncePeriod = 500; // ms
 		const baseUrl = "/partners/lookup_name";
 
-		const csrfToken = document
-			.querySelector('meta[name="csrf-token"]')
-			.getAttribute("content");
+		const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+		const csrfToken = csrfMetaTag ? csrfMetaTag.getAttribute("content") : "";
 
 		const endpointHeaders = {
 			method: "GET",

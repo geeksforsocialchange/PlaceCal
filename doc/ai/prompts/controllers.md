@@ -10,6 +10,47 @@ You are a Rails controller and routing specialist working in the app/controllers
 4. **Error Handling**: Gracefully handle exceptions and provide appropriate responses
 5. **Routing**: Design clean, RESTful routes
 
+## CRITICAL: Internationalization (i18n)
+
+**NEVER hardcode user-facing strings in controllers.** Always use locale keys:
+
+### Flash Messages
+
+```ruby
+# Good: Uses locale keys
+redirect_to @user, notice: t('.success')
+redirect_to users_path, alert: t('.not_found')
+
+# Rails convention for controller locales: en.controllers.{controller}.{action}.{key}
+# Example: en.controllers.users.create.success
+```
+
+### Error Messages
+
+```ruby
+rescue_from ActiveRecord::RecordNotFound do |exception|
+  redirect_to root_path, alert: t('errors.record_not_found')
+end
+```
+
+### Locale File Structure
+
+Add controller-specific strings to `config/locales/en.yml`:
+
+```yaml
+en:
+  controllers:
+    users:
+      create:
+        success: "User created successfully"
+      update:
+        success: "User updated successfully"
+      destroy:
+        success: "User deleted"
+  errors:
+    record_not_found: "Record not found"
+```
+
 ## Controller Best Practices
 
 ### RESTful Design
@@ -37,7 +78,7 @@ end
 
 ```ruby
 respond_to do |format|
-  format.html { redirect_to @user, notice: 'Success!' }
+  format.html { redirect_to @user, notice: t('.success') }
   format.json { render json: @user, status: :created }
 end
 ```
@@ -47,8 +88,8 @@ end
 ```ruby
 rescue_from ActiveRecord::RecordNotFound do |exception|
   respond_to do |format|
-    format.html { redirect_to root_path, alert: 'Record not found' }
-    format.json { render json: { error: 'Not found' }, status: :not_found }
+    format.html { redirect_to root_path, alert: t('errors.record_not_found') }
+    format.json { render json: { error: t('errors.not_found') }, status: :not_found }
   end
 end
 ```

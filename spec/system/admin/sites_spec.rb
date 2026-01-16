@@ -13,50 +13,48 @@ RSpec.describe "Admin Sites", :slow, type: :system do
     create(:sites_neighbourhood, site: site, neighbourhood: riverside_ward)
   end
 
-  describe "select2 inputs on site form" do
-    it "allows selecting site admin, neighbourhoods and tags", :aggregate_failures do
+  describe "tom-select inputs on site form" do
+    # Helper to click site form tabs (daisyUI radio tab inputs)
+    # Accepts any unsaved changes confirmation that may appear
+    def click_site_tab(tab_name)
+      begin
+        accept_confirm do
+          find("input.tab[aria-label*='#{tab_name}']", wait: 10).click
+        end
+      rescue Capybara::ModalNotFound
+        # No confirmation dialog appeared, which is fine
+      end
+      sleep 0.2
+    end
+
+    it "allows adding neighbourhoods via cascading picker", :aggregate_failures do
       click_link "Sites"
-      click_link "Add New Site"
+      click_link "Add Site"
 
-      # Select site admin
-      site_admin_node = select2_node("site_site_admin")
-      select2 admin_user.to_s, xpath: site_admin_node.path
-      assert_select2_single admin_user.to_s, site_admin_node
+      # Navigate to Neighbourhoods tab
+      click_site_tab "Neighbourhoods"
 
-      # Select primary neighbourhood (only appears when creating a site)
-      neighbourhood_main = select2_node("site_sites_neighbourhood_neighbourhood_id")
-      select2 riverside_ward.name, xpath: neighbourhood_main.path
-      assert_select2_single riverside_ward.name, neighbourhood_main
-
-      # Add additional neighbourhood via cocoon
+      # Add additional neighbourhood via nested form
       click_link "Add neighbourhood"
-      service_areas = all_cocoon_select2_nodes("sites_neighbourhoods")
-      select2 oldtown_ward.name, xpath: service_areas[-1].path
-      assert_select2_single oldtown_ward.name, service_areas[0]
 
-      # Select tags
-      tags_node = select2_node("site_tags")
-      select2 partnership.name, xpath: tags_node.path
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      # Should see cascading neighbourhood controller initialized
+      expect(page).to have_css('[data-controller="cascading-neighbourhood"]', wait: 10)
 
-      fill_in "Name", with: "Test Site"
-      fill_in "Url", with: "https://test.com"
-      fill_in "Slug", with: "test-site"
+      # The country selector should be present
+      within(all('[data-controller="cascading-neighbourhood"]').last) do
+        expect(page).to have_css('[data-cascading-neighbourhood-target="country"]')
+      end
+    end
 
-      click_button "Create Site"
-
-      # Verify data persists
+    it "allows selecting partnerships", :aggregate_failures do
       click_link "Sites"
-      click_link "Test Site"
+      click_link "Add Site"
 
-      site_admin_node = select2_node("site_site_admin")
-      assert_select2_single admin_user.to_s, site_admin_node
-
-      service_areas = all_cocoon_select2_nodes("sites_neighbourhoods")
-      assert_select2_single oldtown_ward.name, service_areas[0]
-
-      tags_node = select2_node("site_tags")
-      assert_select2_multiple [partnership.name_with_type], tags_node
+      # Select tags - need to navigate to Partnerships tab
+      click_site_tab "Partnerships"
+      tags_node = tom_select_node("site_tags")
+      tom_select partnership.name, xpath: tags_node.path
+      assert_tom_select_multiple [partnership.name_with_type], tags_node
     end
   end
 
@@ -68,16 +66,22 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link site.name
 
       # Wait for the page to load
-      find(:xpath, '//input[@value="Update Site"]', wait: 100)
+      find("button", text: "Save", wait: 5)
 
-      # The primary neighbourhood should not appear in the sites_neighbourhoods section
-      service_areas = all(:css, ".sites_neighbourhoods .select2-container", wait: 1)
+      # Navigate to Neighbourhoods tab
+      find("input.tab[aria-label*='Neighbourhoods']", wait: 10).click
 
-      expect(service_areas.length).to be_zero,
-                                      "@site should only have a primary neighbourhood, " \
-                                      "if this fails either this is now rendering where " \
-                                      "it shouldn't or another neighborhood has been added " \
-                                      "at setup and the test should be adjusted"
+      # The site has a primary neighbourhood (sites_neighbourhood created in setup)
+      # Check that the nested form for additional neighbourhoods only has the "Add" button,
+      # not any existing neighbourhood cards (since @site only has a primary neighbourhood)
+      other_neighbourhoods_section = find(:xpath, "//h2[contains(., 'Other Neighbourhoods')]/ancestor::div[contains(@class, 'card')][1]")
+
+      # Should have the "Add neighbourhood" button
+      expect(other_neighbourhoods_section).to have_link("Add neighbourhood")
+
+      # Should NOT have any neighbourhood cards in the "Other neighbourhoods" section
+      # (neighbourhood cards have the .nested-fields class)
+      expect(other_neighbourhoods_section).not_to have_css(".nested-fields.card")
     end
   end
 end

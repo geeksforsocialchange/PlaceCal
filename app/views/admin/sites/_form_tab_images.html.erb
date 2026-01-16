@@ -1,0 +1,98 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: t('admin.sections.images_theme'),
+  description: t('admin.sites.sections.images_description')
+) %>
+
+<% if policy(@site).permitted_attributes.include? :theme %>
+  <fieldset class="fieldset max-w-xs mb-8">
+    <legend class="fieldset-legend"><%= attr_label(:site, :theme) %></legend>
+    <%= f.input_field :theme, as: :select, collection: Site.theme.values.map { |v| [v.to_s.titleize, v] }, class: 'select select-bordered w-full' %>
+  </fieldset>
+<% end %>
+
+<% if policy(@site).permitted_attributes.include? :logo %>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <div>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:site, :logo) %></legend>
+        <div data-controller="image-preview">
+          <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+              <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
+              <p class="text-xs text-gray-600"><%= image_uploader_hint(@site.logo) %></p>
+            </div>
+            <%= f.input_field :logo, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
+          </label>
+          <% if f.object.logo.url %>
+            <%= image_tag f.object.logo.url, class: 'max-w-full max-h-32 rounded-lg border border-base-300', data: { image_preview_target: "img" } %>
+          <% end %>
+        </div>
+      </fieldset>
+    </div>
+
+    <div>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:site, :footer_logo) %></legend>
+        <div data-controller="image-preview">
+          <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+              <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
+              <p class="text-xs text-gray-600"><%= image_uploader_hint(@site.footer_logo) %></p>
+            </div>
+            <%= f.input_field :footer_logo, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
+          </label>
+          <% if f.object.footer_logo.url %>
+            <div class="bg-neutral p-4 rounded-lg inline-block">
+              <%= image_tag f.object.footer_logo.url, class: 'max-w-full max-h-24', data: { image_preview_target: "img" } %>
+            </div>
+          <% end %>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+<% end %>
+
+<fieldset class="fieldset bg-base-200/50 border border-base-300 rounded-box p-4">
+  <legend class="fieldset-legend"><%= attr_label(:site, :hero_image) %></legend>
+  <p class="text-sm text-gray-600 mb-4">
+    <%= t('admin.sites.fields.hero_image_description') %>
+    <a href="https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2" class="link link-hover text-placecal-orange" target="_blank"><%= t('admin.sites.fields.hero_handbook_link') %></a>
+  </p>
+
+  <div data-controller="image-preview">
+    <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer bg-base-100 mb-4">
+      <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+        <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium"><%= t('admin.images.choose_file') %></p>
+        <p class="text-xs text-gray-600"><%= image_uploader_hint(@site.hero_image) %></p>
+      </div>
+      <%= f.input_field :hero_image, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
+    </label>
+
+    <% if f.object.hero_image.url %>
+      <%= image_tag f.object.hero_image.url, class: 'max-w-md rounded-lg border border-base-300 mb-4', data: { image_preview_target: "img" } %>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:site, :hero_image_credit) %></legend>
+      <%= f.input_field :hero_image_credit, class: 'input input-bordered w-full input-sm bg-base-100' %>
+      <p class="fieldset-label"><%= t('admin.sites.fields.image_credit_hint') %></p>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:site, :hero_image_alt) %></legend>
+      <%= f.input_field :hero_alttext, class: 'input input-bordered w-full input-sm bg-base-100' %>
+      <p class="fieldset-label"><%= t('admin.sites.fields.alt_text_hint') %></p>
+    </fieldset>
+  </div>
+</fieldset>

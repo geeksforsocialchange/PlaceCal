@@ -33,7 +33,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
   end
 
   def assert_has_flash(type, message)
-    expect(page).to have_css(".flashes .alert-#{type}", text: message)
+    # Support daisyUI alert classes
+    alert_class = type == :success ? "alert-success" : "alert-error"
+    expect(page).to have_css("[role='alert'].#{alert_class}, .flashes .alert-#{type}", text: message, wait: 5)
   end
 
   describe "system tag visibility" do
@@ -42,6 +44,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
+      # system_tag is on the Settings tab for existing tags
+      find('input[aria-label*="Settings"]').click
       expect(page).to have_css("input#tag_system_tag")
     end
 
@@ -50,6 +54,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
+      # Navigate to Settings tab if visible, then check system_tag is not present
+      find('input[aria-label*="Settings"]').click if page.has_css?('input[aria-label*="Settings"]', wait: 2)
       expect(page).not_to have_css("input#tag_system_tag")
     end
   end
@@ -59,6 +65,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       login_as(root_user)
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+
+      # Navigate to Basic Info tab (tab state may be stored from previous tests)
+      find('input[aria-label*="Basic"]').click
 
       fill_in "Name", with: "A new tag name"
       click_button "Save"
@@ -71,24 +80,27 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       login_as(root_user)
       port = Capybara.current_session.server.port
 
-      # Toggle on
+      # Toggle on - navigate to Settings tab first
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      check "System tag"
+      find('input[aria-label*="Settings"]').click
+      check "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
-      # Check is toggled
+      # Check is toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      expect(page).to have_css('input[name="tag[system_tag]"][checked="checked"]', visible: :all)
+      find('input[aria-label*="Settings"]').click
+      expect(page).to have_checked_field("System Tag", visible: :all)
 
       # Toggle off
-      uncheck "System tag"
+      uncheck "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
-      # Check is NOT toggled
+      # Check is NOT toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      expect(page).not_to have_css('input[name="tag[system_tag]"][checked="checked"]', visible: :all)
+      find('input[aria-label*="Settings"]').click
+      expect(page).to have_unchecked_field("System Tag", visible: :all)
     end
   end
 
@@ -97,7 +109,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       login_as(root_user)
 
       click_link "Tags"
-      click_link "Add New Tag"
+      click_link "Add Tag"
 
       # Should see type selector
       expect(page).to have_css('select[name="tag[type]"]')
@@ -115,22 +127,30 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       # Should not be able to choose type on update
       expect(page).not_to have_css('select[name="tag[type]"]')
 
+      # Name is on Basic Info tab (default)
       expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility"]')
-      expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility"]')
 
-      # Change values
+      # Change name and description on Basic Info tab
       fill_in "Name", with: "AlphaFacility 2"
-      fill_in "Slug", with: "alpha-facility-2"
       fill_in "Description", with: "The description has changed."
       click_button "Save"
 
       assert_has_flash(:success, "Tag was saved successfully")
 
-      # Tag should save okay
-      click_link Tag.last.name
+      # After save, we stay on the edit page - navigate to Settings tab
+      find('input[aria-label*="Settings"]').click
+      expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility"]')
+      fill_in "Slug", with: "alpha-facility-2"
+      click_button "Save"
 
-      expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility 2"]')
+      assert_has_flash(:success, "Tag was saved successfully")
+
+      # Tag should save okay - verify slug persisted (we're already on Settings tab after save)
       expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility-2"]')
+
+      # Verify name on Basic Info tab
+      find('input[aria-label*="Basic"]').click
+      expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility 2"]')
     end
   end
 
@@ -140,8 +160,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/new"
 
-      expect(page).to have_css("h1", text: "Create a new Tag")  # wait for page load
-      expect(page).to have_css("h2", text: "Assigned Users")
+      expect(page).to have_css("h1", text: "New Tag")  # wait for page load
+      expect(page).to have_css("h3", text: "Assigned Users")
     end
 
     it "shows assigned users field on Edit of Partnership tag" do
@@ -150,6 +170,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{partnership_tag.id}/edit"
 
+      # Assigned Users is on the Basic Info tab (default)
       expect(page).to have_css("h2", text: "Assigned Users")
     end
 
@@ -159,6 +180,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{facility_tag.id}/edit"
 
+      # Assigned Users should not show for non-Partnership tags
       expect(page).not_to have_css("h2", text: "Assigned Users")
     end
   end

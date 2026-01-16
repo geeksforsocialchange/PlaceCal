@@ -1,78 +1,309 @@
-<ol class="breadcrumb">
-  <% @neighbourhood.ancestors.each do |parent| %>
-  <li class="breadcrumb-item"><%= link_to(safe_neighbourhood_name(parent), admin_neighbourhood_path(parent)) %></li>
-  <% end %>
-  <li class="breadcrumb-item active"><%= safe_neighbourhood_name(@neighbourhood) %></li>
-</ol>
+<%# Neighbourhood Show - Refined admin view with hierarchy and bento layout %>
+<% content_for :title do %><%= safe_neighbourhood_name(@neighbourhood) %><% end %>
 
-<h1><%= safe_neighbourhood_name(@neighbourhood) %></h1>
-
-<% if current_user.root? %>
-  <p><%= link_to 'Edit', edit_admin_neighbourhood_path(@neighbourhood), class: 'btn btn-primary mb-3' %></p>
-<% end %>
-
-<% if @neighbourhood.children.present? %>
-  <ul class="list-group">
-    <% @neighbourhood.children.order(:name).each do |child| %>
-      <li class="list-group-item d-flex justify-content-between ">
-        <% if child.descendants.present? || current_user.can_view_neighbourhood_by_id?(child.id) %>
-          <%= link_to(safe_neighbourhood_name(child), admin_neighbourhood_path(child)) %>
-        <% else %>
-          <%= safe_neighbourhood_name(child) %>
-        <% end %>
-        <% if child.descendants.present? %>
-          <span title="descendants" class="badge badge-primary badge-pill"><%= child.descendants.count %></span>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>This neighbourhood does not contain any other neighbourhoods.</p>
-<% end %>
-
-<hr>
-<h2>Address Partners</h2>
-<p>Found <%= @neighbourhood.address_partners.count %>.</p>
-<% if @neighbourhood.address_partners.present? %>
-  <ul class="list-group">
-    <% @neighbourhood.address_partners.order(:name).each do |partner| %>
-      <li class="list-group-item">
-        <% if policy(partner).update? -%>
-          <%= link_to partner.name, edit_admin_partner_path(partner) %>
-        <% else %>
-          <%= partner.name %>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% end %>
-
-<hr>
-<h2>Service Area Partners</h2>
-<p>Found <%= @neighbourhood.service_area_partners.count %>.</p>
-<% if @neighbourhood.service_area_partners.present? %>
-  <ul class="list-group">
-    <% @neighbourhood.service_area_partners.order(:name).each do |partner| %>
-      <li class="list-group-item">
-        <% if policy(partner).update? -%>
-          <%= link_to partner.name, edit_admin_partner_path(partner) %>
-        <% else %>
-          <%= partner.name %>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% end %>
-
-<% if policy(Site).update? || policy(Neighbourhood).update? %>
-  <hr>
-  <h2>Sites</h2>
-  <p>Found <%= @neighbourhood.sites.count %>.</p>
-  <% if @neighbourhood.sites.present? %>
-    <ul class="list-group">
-      <% @neighbourhood.sites.order(:name).each do |site| %>
-      <li class="list-group-item"><%= link_to site.name, edit_admin_site_path(site) %></li>
+<%# Header with breadcrumb as subtitle %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold"><%= safe_neighbourhood_name(@neighbourhood) %></h1>
+    <div class="mt-1">
+      <%= render Admin::NeighbourhoodHierarchyBadgeComponent.new(
+            neighbourhood: @neighbourhood,
+            link_each: true,
+            show_icons: true
+          ) %>
+    </div>
+  </div>
+  <div class="text-right">
+    <div class="text-sm text-gray-600"><%= t('admin.labels.id') %>: <%= @neighbourhood.id %></div>
+    <% if current_user.root? %>
+      <%= link_to edit_admin_neighbourhood_path(@neighbourhood),
+          class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-1 mt-2" do %>
+        <%= icon(:edit, size: '3') %>
+        <%= t('admin.actions.edit') %>
       <% end %>
-    </ul>
+    <% end %>
+  </div>
+</div>
+
+<%# Stats Row %>
+<%
+  partners_count = @neighbourhood.partners.count
+  children_count = @neighbourhood.descendants.count
+  sites_count = @neighbourhood.sites.count
+%>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+  <%= render Admin::StatCardComponent.new(
+        label: t('admin.neighbourhoods.show.stats.partners'),
+        value: partners_count,
+        icon: :partner
+      ) %>
+
+  <%# Level card %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-gray-600"><%= t('admin.neighbourhoods.show.stats.level') %></span>
+        <%= level_badge(@neighbourhood.level, size: :small) %>
+      </div>
+      <div class="text-xl font-bold text-base-content"><%= @neighbourhood.unit&.titleize %></div>
+    </div>
+  </div>
+
+  <%= render Admin::StatCardComponent.new(
+        label: t('admin.neighbourhoods.show.stats.children'),
+        value: children_count,
+        icon: :arrow_down
+      ) %>
+
+  <%= render Admin::StatCardComponent.new(
+        label: t('admin.neighbourhoods.show.stats.sites'),
+        value: sites_count,
+        icon: :site
+      ) %>
+
+  <%# ONS Code card %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-gray-600"><%= t('admin.neighbourhoods.show.stats.ons_code') %></span>
+        <span class="text-xs text-gray-400 font-serif">§</span>
+      </div>
+      <div class="text-lg font-mono font-bold text-base-content"><%= @neighbourhood.unit_code_value || '—' %></div>
+    </div>
+  </div>
+
+  <%# ONS Dataset card %>
+  <% is_current = !@neighbourhood.legacy_neighbourhood? %>
+  <div class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body p-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-gray-600"><%= t('admin.neighbourhoods.show.stats.ons_dataset') %></span>
+        <% if is_current %>
+          <span class="badge badge-xs badge-success"><%= t('admin.neighbourhoods.show.stats.current') %></span>
+        <% else %>
+          <span class="badge badge-xs badge-warning"><%= t('admin.neighbourhoods.show.stats.legacy') %></span>
+        <% end %>
+      </div>
+      <div class="text-lg font-bold text-base-content"><%= @neighbourhood.release_date&.strftime('%b %Y') || '—' %></div>
+    </div>
+  </div>
+</div>
+
+<%# Two-Column Hierarchy Section %>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <%# Parent Hierarchy (Ancestors) %>
+  <%= render Admin::CardComponent.new(
+        title: t('admin.neighbourhoods.show.parent_hierarchy'),
+        icon: :arrow_up
+      ) do %>
+    <% ancestors = @neighbourhood.ancestors.order(:ancestry) %>
+    <% if ancestors.any? %>
+      <div class="space-y-1">
+        <% ancestors.reverse.each_with_index do |ancestor, index| %>
+          <%= link_to admin_neighbourhood_path(ancestor),
+              class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+            <%= level_badge(ancestor.level) %>
+            <div class="flex-1 min-w-0">
+              <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate block">
+                <%= safe_neighbourhood_name(ancestor) %>
+              </span>
+              <span class="text-xs text-gray-600"><%= ancestor.unit&.titleize %></span>
+            </div>
+            <%= icon(:chevron_right, size: '4', css_class: 'text-gray-400 group-hover:text-placecal-orange transition-colors') %>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="flex items-center gap-3 py-4 text-gray-500">
+        <%= icon(:globe, size: '6', stroke_width: '1.5') %>
+        <span class="text-sm"><%= t('admin.neighbourhoods.show.is_root') %></span>
+      </div>
+    <% end %>
   <% end %>
-<% end %>
+
+  <%# Child Neighbourhoods %>
+  <%= render Admin::CardComponent.new(
+        title: t('admin.neighbourhoods.show.child_neighbourhoods'),
+        icon: :arrow_down
+      ) do %>
+    <% children = @neighbourhood.children.order(:name) %>
+    <% if children.any? %>
+      <div class="space-y-1 max-h-96 overflow-y-auto">
+        <% children.each do |child| %>
+          <% can_view = child.descendants.present? || current_user.can_view_neighbourhood_by_id?(child.id) %>
+          <% if can_view %>
+            <%= link_to admin_neighbourhood_path(child),
+                class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+              <%= level_badge(child.level) %>
+              <div class="flex-1 min-w-0">
+                <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate block">
+                  <%= safe_neighbourhood_name(child) %>
+                </span>
+                <span class="text-xs text-gray-600"><%= child.unit&.titleize %></span>
+              </div>
+              <% if child.descendants.any? %>
+                <span class="badge badge-sm badge-ghost"><%= child.descendants.count %></span>
+              <% end %>
+              <%= icon(:chevron_right, size: '4', css_class: 'text-gray-400 group-hover:text-placecal-orange transition-colors') %>
+            <% end %>
+          <% else %>
+            <div class="flex items-center gap-3 p-2 text-gray-600">
+              <%= level_badge(child.level) %>
+              <div class="flex-1 min-w-0">
+                <span class="text-sm truncate block"><%= safe_neighbourhood_name(child) %></span>
+                <span class="text-xs text-gray-600"><%= child.unit&.titleize %></span>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      <% if children.count > 10 %>
+        <p class="text-xs text-gray-600 mt-3 text-center">
+          <%= t('admin.neighbourhoods.show.descendants', count: children.count) %>
+        </p>
+      <% end %>
+    <% else %>
+      <%= render Admin::EmptyStateComponent.new(
+            icon: :neighbourhood,
+            message: t('admin.neighbourhoods.show.no_children'),
+            icon_size: '8',
+            padding: 'py-6'
+          ) %>
+    <% end %>
+  <% end %>
+</div>
+
+<%# Bento Grid: Partners, Sites, Admins %>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <%# Partners Card %>
+  <%
+    all_partners = @neighbourhood.partners.sort_by(&:name)
+    partners_count = all_partners.count
+    display_partners = all_partners.first(10)
+  %>
+  <%= render Admin::CardComponent.new(
+        title: Partner.model_name.human(count: 2),
+        icon: :partner,
+        header_link: partners_count > 10 ? admin_partners_path : nil,
+        header_link_text: partners_count > 10 ? t('admin.actions.view_all') : nil
+      ) do %>
+    <% if display_partners.any? %>
+      <div class="space-y-1">
+        <% display_partners.each do |partner| %>
+          <% can_edit = policy(partner).update? %>
+          <% if can_edit %>
+            <%= link_to edit_admin_partner_path(partner),
+                class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+              <div class="w-8 h-8 rounded-lg bg-placecal-orange/10 flex items-center justify-center shrink-0">
+                <%= icon(:partner, size: '4', css_class: 'text-placecal-orange') %>
+              </div>
+              <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate flex-1">
+                <%= partner.name %>
+              </span>
+            <% end %>
+          <% else %>
+            <div class="flex items-center gap-3 p-2 text-gray-600">
+              <div class="w-8 h-8 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
+                <%= icon(:partner, size: '4', css_class: 'text-gray-500') %>
+              </div>
+              <span class="text-sm truncate flex-1"><%= partner.name %></span>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      <% if partners_count > 10 %>
+        <p class="text-xs text-gray-600 mt-3 text-center">
+          <%= t('admin.neighbourhoods.show.showing_of_total', shown: 10, total: partners_count) %>
+        </p>
+      <% end %>
+    <% else %>
+      <%= render Admin::EmptyStateComponent.new(
+            icon: :partner,
+            message: t('admin.neighbourhoods.show.no_partners'),
+            icon_size: '8',
+            padding: 'py-6'
+          ) %>
+    <% end %>
+  <% end %>
+
+  <%# Sites Card %>
+  <% if policy(Site).index? %>
+    <%= render Admin::CardComponent.new(
+          title: Site.model_name.human(count: 2),
+          icon: :site
+        ) do %>
+      <% sites = @neighbourhood.sites.order(:name) %>
+      <% if sites.any? %>
+        <div class="space-y-1">
+          <% sites.each do |site| %>
+            <%= link_to edit_admin_site_path(site),
+                class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+              <div class="w-8 h-8 rounded-lg bg-info/10 flex items-center justify-center shrink-0">
+                <%= icon(:site, size: '4', css_class: 'text-info') %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate block">
+                  <%= site.name %>
+                </span>
+                <span class="text-xs text-gray-600"><%= site.slug %>.placecal.org</span>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <%= render Admin::EmptyStateComponent.new(
+              icon: :site,
+              message: t('admin.neighbourhoods.show.no_sites'),
+              icon_size: '8',
+              padding: 'py-6'
+            ) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%# Admins Card %>
+  <%= render Admin::CardComponent.new(
+        title: t('admin.neighbourhoods.show.neighbourhood_admins'),
+        icon: :users
+      ) do %>
+    <% admins = @neighbourhood.users.order(:email) %>
+    <% if admins.any? %>
+      <div class="space-y-1">
+        <% admins.each do |admin| %>
+          <% can_edit = policy(admin).update? %>
+          <% if can_edit %>
+            <%= link_to edit_admin_user_path(admin),
+                class: "flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
+              <div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+                <%= icon(:user, size: '4', css_class: 'text-success') %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate block">
+                  <%= admin.full_name.presence || admin.email %>
+                </span>
+                <% if admin.full_name.present? %>
+                  <span class="text-xs text-gray-600"><%= admin.email %></span>
+                <% end %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="flex items-center gap-3 p-2 text-gray-600">
+              <div class="w-8 h-8 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
+                <%= icon(:user, size: '4', css_class: 'text-gray-500') %>
+              </div>
+              <span class="text-sm truncate flex-1"><%= admin.full_name.presence || admin.email %></span>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render Admin::EmptyStateComponent.new(
+            icon: :users,
+            message: t('admin.neighbourhoods.show.no_admins'),
+            icon_size: '8',
+            padding: 'py-6'
+          ) %>
+    <% end %>
+  <% end %>
+</div>
+

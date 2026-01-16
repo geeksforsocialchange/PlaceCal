@@ -10,14 +10,14 @@ Feature: Site Management
   Scenario: Viewing the sites list
     When I go to the "Sites" admin section
     Then I should see "Sites"
-    And I should see "Add New Site"
+    And I should see "Add Site"
 
   Scenario: Creating a new site
     When I go to the "Sites" admin section
-    And I click "Add New Site"
-    Then I should see "Create a new Site"
+    And I click "Add Site"
+    Then I should see "New Site"
     And I should see "Name"
-    And I should see "Slug"
+    And I should see "Site Admin"
 
   Scenario: Viewing an existing site
     Given there is a site called "Riverside Calendar"

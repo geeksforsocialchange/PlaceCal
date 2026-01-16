@@ -1,0 +1,84 @@
+<div class="nested-fields card bg-base-100 border border-base-300 mb-2"
+     data-controller="cascading-neighbourhood"
+     data-cascading-neighbourhood-selected-id-value="<%= form.object&.neighbourhood_id %>"
+     data-cascading-neighbourhood-placeholder-country-value="<%= t('admin.cascading_neighbourhood.select_country') %>"
+     data-cascading-neighbourhood-placeholder-region-value="<%= t('admin.cascading_neighbourhood.select_region') %>"
+     data-cascading-neighbourhood-placeholder-county-value="<%= t('admin.cascading_neighbourhood.select_county') %>"
+     data-cascading-neighbourhood-placeholder-district-value="<%= t('admin.cascading_neighbourhood.select_area') %>"
+     data-cascading-neighbourhood-placeholder-ward-value="<%= t('admin.cascading_neighbourhood.select_ward') %>">
+  <div class="card-body p-4 gap-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <%= icon(:neighbourhood, size: '4', css_class: 'text-gray-600') %>
+        <span class="text-sm font-medium text-base-content/70"><%= t('admin.service_areas.new_area') %></span>
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="loading loading-spinner loading-xs hidden" data-cascading-neighbourhood-target="loading"></span>
+        <% if show_remove %>
+          <%= helpers.nested_form_remove_link(form, icon(:trash, size: '4'), class: 'btn btn-ghost btn-sm btn-square text-error') %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <%# Country selector (level 5) %>
+      <div class="flex items-center gap-3">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.country') %></label>
+        <select class="select select-bordered select-sm bg-base-100 flex-1"
+                data-cascading-neighbourhood-target="country"
+                data-action="change->cascading-neighbourhood#countryChanged">
+          <option value=""><%= t('admin.labels.loading') %></option>
+        </select>
+      </div>
+
+      <%# Region selector (level 4) %>
+      <div class="flex items-center gap-3">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.region') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
+                data-cascading-neighbourhood-target="region"
+                data-action="change->cascading-neighbourhood#regionChanged"
+                disabled>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_region') %></option>
+        </select>
+      </div>
+
+      <%# County selector (level 3) - hidden initially %>
+      <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="countyRow">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.county') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
+                data-cascading-neighbourhood-target="county"
+                data-action="change->cascading-neighbourhood#countyChanged"
+                disabled>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_county') %></option>
+        </select>
+      </div>
+
+      <%# District selector (level 2) - hidden initially %>
+      <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="districtRow">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.area') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
+                data-cascading-neighbourhood-target="district"
+                data-action="change->cascading-neighbourhood#districtChanged"
+                disabled>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_area') %></option>
+        </select>
+      </div>
+
+      <%# Ward selector (level 1) - hidden initially %>
+      <div class="flex items-center gap-3 hidden" data-cascading-neighbourhood-target="wardRow">
+        <label class="text-sm text-base-content/70 w-16 shrink-0"><%= t('admin.cascading_neighbourhood.ward') %></label>
+        <select class="select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1"
+                data-cascading-neighbourhood-target="ward"
+                data-action="change->cascading-neighbourhood#wardChanged"
+                disabled>
+          <option value=""><%= t('admin.cascading_neighbourhood.select_ward') %></option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <% if relation_type.present? %>
+    <%= form.hidden_field :relation_type, value: relation_type %>
+  <% end %>
+  <%= form.hidden_field :neighbourhood_id, data: { cascading_neighbourhood_target: "output" } %>
+</div>

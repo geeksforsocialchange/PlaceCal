@@ -1,12 +1,20 @@
-@admin @wip
-Feature: Calendar Management
-  As an administrator
-  I want to manage calendars that import events
-  So that events are automatically synced from external sources
+@admin @javascript
+Feature: Calendar Administration
+  As a root administrator
+  I want to manage all calendars in the system
+  So that I can oversee event imports from external sources
 
   Background:
     Given I am logged in as a root user
     And there is a partner called "Riverside Community Hub"
+
+  # Calendar Index and Navigation
+  Scenario: Viewing calendar list
+    Given there is a calendar called "Weekly Activities" for partner "Riverside Community Hub"
+    And there is a calendar called "Special Events" for partner "Riverside Community Hub"
+    When I go to the "Calendars" admin section
+    Then I should see "Weekly Activities"
+    And I should see "Special Events"
 
   Scenario: Viewing a calendar
     Given there is a calendar called "Community Events" for partner "Riverside Community Hub"
@@ -14,9 +22,22 @@ Feature: Calendar Management
     Then I should see "Community Events"
     And I should see "Riverside Community Hub"
 
-  Scenario: Calendar list shows all calendars
-    Given there is a calendar called "Weekly Activities" for partner "Riverside Community Hub"
-    And there is a calendar called "Special Events" for partner "Riverside Community Hub"
+  # Calendar Creation
+  Scenario: Add new calendar button is visible
     When I go to the "Calendars" admin section
-    Then I should see "Weekly Activities"
-    And I should see "Special Events"
+    Then I should see "Add Calendar"
+
+  Scenario: New calendar form shows wizard with URL field
+    When I go to the "Calendars" admin section
+    And I click "Add Calendar"
+    Then I should see "Connect Your Calendar"
+    And I should see "URL"
+    And I should see "Supported Calendar Sources"
+
+  # Calendar Deletion
+  Scenario: Deleting a calendar
+    Given there is a calendar called "Temporary Calendar" for partner "Riverside Community Hub"
+    When I edit the calendar "Temporary Calendar"
+    And I click the "Settings" tab
+    And I click "Delete Calendar" and confirm
+    Then I should see a success message

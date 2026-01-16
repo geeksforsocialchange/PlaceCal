@@ -104,13 +104,14 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 15
 
-# Offense count: 7
+# Offense count: 8
 Naming/AccessorMethodName:
   Exclude:
     - 'app/datatables/article_datatable.rb'
     - 'app/datatables/calendar_datatable.rb'
     - 'app/datatables/neighbourhood_datatable.rb'
     - 'app/datatables/partner_datatable.rb'
+    - 'app/datatables/partnership_datatable.rb'
     - 'app/datatables/site_datatable.rb'
     - 'app/datatables/tag_datatable.rb'
     - 'app/datatables/user_datatable.rb'

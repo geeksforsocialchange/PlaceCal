@@ -52,21 +52,17 @@ RSpec.describe PartnersHelper, type: :helper do
     end
 
     context "as root user" do
-      it "returns all allowed partnerships with no partner" do
-        allow(helper).to receive(:policy_scope) do |_scope|
-          Pundit.policy_scope!(root, Partnership)
-        end
+      before do
+        allow(helper).to receive(:current_user).and_return(root)
+      end
 
+      it "returns all allowed partnerships with no partner" do
         expected = Partnership.order(:name).select(:name, :type, :id).map { |r| [r.name, r.id] }
 
         expect(helper.options_for_partner_partnerships).to eq(expected)
       end
 
       it "returns all allowed partnerships with partner" do
-        allow(helper).to receive(:policy_scope) do |_scope|
-          Pundit.policy_scope!(root, Partnership)
-        end
-
         expected = Partnership.order(:name).select(:name, :type, :id).map { |r| [r.name, r.id] }
 
         expect(helper.options_for_partner_partnerships).to eq(expected)
@@ -74,21 +70,20 @@ RSpec.describe PartnersHelper, type: :helper do
     end
 
     context "as partnership admin user" do
-      it "returns neighbourhood partnerships with no partner" do
+      before do
+        allow(helper).to receive(:current_user).and_return(partnership_admin)
         allow(helper).to receive(:policy_scope) do |_scope|
           Pundit.policy_scope!(partnership_admin, Partnership)
         end
+      end
 
+      it "returns neighbourhood partnerships with no partner" do
         expected = [partnership_tag].map { |r| [r.name, r.id] }
 
         expect(helper.options_for_partner_partnerships.sort).to eq(expected.sort)
       end
 
       it "returns neighbourhood partnerships with partner" do
-        allow(helper).to receive(:policy_scope) do |_scope|
-          Pundit.policy_scope!(partnership_admin, Partnership)
-        end
-
         expected = [partnership_tag].map { |r| [r.name, r.id] }
 
         expect(helper.options_for_partner_partnerships.sort).to eq(expected.sort)

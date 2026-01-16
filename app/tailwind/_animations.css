@@ -1,0 +1,32 @@
+/* Spin animation for loading spinners */
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Pulse animation for save bar unsaved changes indicator */
+@keyframes pulse-dot {
+	0%,
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.2;
+		transform: scale(0.5);
+	}
+}
+
+.save-bar-indicator-dot {
+	display: inline-flex;
+	width: 8px;
+	height: 8px;
+	min-width: 8px;
+	background: #f59e0b;
+	border-radius: 9999px;
+	animation: pulse-dot 1.5s ease-in-out infinite;
+}

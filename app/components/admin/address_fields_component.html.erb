@@ -1,0 +1,22 @@
+<%= form.fields_for :address, address do |address_form| %>
+  <div class="nested-fields"
+       data-controller="partner-address"
+       data-partner-address-partner-id-value="<%= partner.id %>"
+       data-partner-address-warn-of-delisting-value="<%= warn_of_delisting_value %>">
+
+    <% address_fields.each do |field_config| %>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:address, field_config[:label_key]) %></legend>
+        <%= address_form.input_field field_config[:field], class: 'input input-bordered w-full bg-base-100 address_field' %>
+      </fieldset>
+    <% end %>
+
+    <div data-partner-address-target="addressInfoArea" class="mt-4">
+      <% if can_clear_address? %>
+        <%= link_to t('admin.address.clear_address'), '#',
+            class: "btn btn-ghost btn-xs",
+            data: { action: "click->partner-address#do_clear_address" } %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

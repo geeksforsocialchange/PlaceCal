@@ -1,0 +1,61 @@
+<div data-controller="opening-times" data-opening-times-data-value="<%= opening_times_json %>">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-base-200 rounded-lg p-4 min-h-40">
+      <div data-opening-times-target="list" class="space-y-2"></div>
+      <p data-opening-times-target="empty"
+         class="text-gray-600 italic text-center py-6 <%= 'hidden' if opening_times? %>">
+        No opening times set yet
+      </p>
+    </div>
+
+    <div class="space-y-3">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-medium"><%= t('admin.opening_times.day') %></span>
+        </label>
+        <select class="select select-bordered w-full" data-opening-times-target="day">
+          <% ordered_day_names.each do |day_name| %>
+            <option value="<%= day_name %>"><%= day_name %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium"><%= t('admin.opening_times.opens') %></span>
+          </label>
+          <input class="input input-bordered w-full"
+                 type="time"
+                 value="09:00"
+                 data-opening-times-target="open">
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium"><%= t('admin.opening_times.closes') %></span>
+          </label>
+          <input class="input input-bordered w-full"
+                 type="time"
+                 value="17:00"
+                 data-opening-times-target="close">
+        </div>
+      </div>
+
+      <label class="label cursor-pointer justify-start gap-3">
+        <input class="checkbox checkbox-warning"
+               type="checkbox"
+               data-opening-times-target="allDay"
+               data-action="change->opening-times#allDay">
+        <span class="label-text"><%= t('admin.opening_times.all_day') %></span>
+      </label>
+
+      <button data-action="click->opening-times#addOpeningTime"
+              type="button"
+              class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange w-full">
+        Add Opening Time
+      </button>
+    </div>
+  </div>
+
+  <%= form.text_area :opening_times, data: { opening_times_target: "textarea" }, hidden: true %>
+</div>

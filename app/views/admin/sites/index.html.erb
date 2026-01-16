@@ -1,17 +1,52 @@
-<script>
-var columns = [
-    {"data": "id"},
-    {"data": "name"},
-    {"data": "slug"},
-    {"data": "updated_at"}
-  ]
-</script>
+<%
+  # Get site admins for tom-select filter
+  site_admin_ids = Site.where.not(site_admin_id: nil).distinct.pluck(:site_admin_id)
+  site_admin_options = User.where(id: site_admin_ids).order(:first_name, :last_name).map do |u|
+    { value: u.id.to_s, label: [u.first_name, u.last_name].compact.join(' ') }
+  end
+%>
 
-<%= render partial: "layouts/admin/datatable", locals: {
-    title: "Sites",
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Sites',
     model: :sites,
-    column_titles: ['ID', 'Name', 'Slug', 'Last updated'],
-    columns: %i[id name slug updated_at],
+    column_titles: [
+      'Site',
+      'Neighbourhood',
+      icon_column_header(:partner, 'Partners'),
+      icon_column_header(:calendar, 'Events'),
+      'Site Admin',
+      'Last Updated',
+      ''
+    ],
+    columns: %i[name primary_neighbourhood partners_count events_count site_admin updated_at actions],
+    column_config: {
+      name: {},
+      primary_neighbourhood: { sortable: false },
+      partners_count: { align: :center, fit: true, sort_default: 'desc' },
+      events_count: { align: :center, fit: true, sort_default: 'desc' },
+      site_admin: { sortable: false },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'updated_at', direction: 'desc' },
+    filters: [
+      {
+        column: 'has_neighbourhoods',
+        label: 'Neighbourhoods',
+        width: 'w-40',
+        options: [
+          { value: 'yes', label: 'Has neighbourhoods' },
+          { value: 'no', label: 'No neighbourhoods' }
+        ]
+      },
+      {
+        column: 'site_admin_id',
+        label: 'Site Admin',
+        width: 'w-48',
+        tom_select: true,
+        options: site_admin_options
+      }
+    ],
     data: @sites,
     source: admin_sites_path(format: :json),
     new_link: new_admin_site_path

@@ -3,7 +3,9 @@
 class PartnershipPolicy < TagPolicy
   class Scope < Scope
     def resolve
-      Partnership.users_partnerships(user)
+      return Partnership.all if user.root?
+
+      user.partnerships
     end
   end
 end

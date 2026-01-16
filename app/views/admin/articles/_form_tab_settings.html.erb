@@ -1,0 +1,40 @@
+<%- disabled_fields = policy(@article).disabled_fields %>
+
+<div class="max-w-2xl space-y-8">
+  <%# Publishing %>
+  <div class="mb-8">
+    <%= render Admin::FormCardComponent.new(
+      icon: :newspaper,
+      title: t('admin.sections.publishing'),
+      description: "Control when and if this article is visible on PlaceCal."
+    ) do %>
+      <fieldset class="fieldset">
+        <%= f.input :is_draft, wrapper: :tw_boolean,
+            as: :boolean,
+            checked_value: false,
+            unchecked_value: true,
+            label: "Publish this article" %>
+      </fieldset>
+
+      <% unless @article.new_record? %>
+        <% unless disabled_fields.include?(:published_at) %>
+          <fieldset class="fieldset mt-4">
+            <legend class="fieldset-legend">Publication Date</legend>
+            <%= f.input_field :published_at, class: 'input input-bordered w-full max-w-xs' %>
+          </fieldset>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Danger Zone %>
+  <% if !@article.new_record? && policy(@article).destroy? %>
+    <%= render Admin::DangerZoneComponent.new(
+      title: t('admin.actions.delete_model', model: Article.model_name.human),
+      description: t('admin.danger_zone.delete_description', model: Article.model_name.human.downcase),
+      button_text: t('admin.actions.delete_model', model: Article.model_name.human),
+      button_path: admin_article_path(@article),
+      confirm: t('admin.confirm.delete_permanent', model: Article.model_name.human.downcase)
+    ) %>
+  <% end %>
+</div>

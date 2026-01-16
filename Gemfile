@@ -14,9 +14,9 @@ gem 'puma'
 gem 'rails', '7.2.3'
 
 # Frontend
-gem 'coffee-rails'
-gem 'jquery-rails'
-gem 'jsbundling-rails'
+gem 'importmap-rails' # Admin JS - native ES modules, no build step
+gem 'jquery-rails' # DEPRECATED: Public site only, to be replaced with Stimulus controllers
+gem 'jsbundling-rails' # Public site only - esbuild bundle for jQuery legacy components
 gem 'sass-rails', '6.0.0'
 gem 'stimulus-rails'
 gem 'turbo-rails'
@@ -39,10 +39,6 @@ gem 'carrierwave'
 gem 'image_processing'
 
 # Admin
-gem 'bootstrap'
-gem 'cocoon'
-gem 'font-awesome-rails'
-gem 'select2-rails'
 gem 'simple_form'
 
 # Users, login, permissions
@@ -115,14 +111,15 @@ group :development do
 end
 
 group :test do
+  gem 'axe-core-rspec', '~> 4.8'
   gem 'capybara'
-  gem 'capybara-select-2'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'graphql-client'
   gem 'json_matchers'
+  gem 'parallel_tests'
   gem 'pundit-matchers', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 7.0'

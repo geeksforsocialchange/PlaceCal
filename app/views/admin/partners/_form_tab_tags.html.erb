@@ -1,0 +1,39 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: t('admin.partners.sections.tags_associations'),
+  description: t('admin.partners.sections.tags_description')
+) %>
+
+<div class="space-y-6 max-w-2xl">
+  <%= render 'partnership_fields', f: f %>
+
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend"><%= t('admin.partners.facilities.title') %></legend>
+    <p class="fieldset-label mb-3"><%= t('admin.partners.facilities.hint') %></p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
+      <% Facility.all.each do |facility| %>
+        <label class="label cursor-pointer gap-2 justify-start py-1">
+          <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm checkbox-warning', id: "facility_#{facility.id}" %>
+          <span class="label-text text-sm"><%= facility.name %></span>
+        </label>
+      <% end %>
+    </div>
+    <%= hidden_field_tag "partner[facility_ids][]", "" %>
+  </fieldset>
+
+  <fieldset class="fieldset" data-controller="checkbox-limit" data-checkbox-limit-max-value="<%= Partner::MAX_CATEGORIES %>">
+    <legend class="fieldset-legend"><%= t('admin.partners.categories.title') %></legend>
+    <p class="fieldset-label mb-3">
+      <%= t('admin.partners.categories.hint', max: Partner::MAX_CATEGORIES) %>
+      <span class="badge badge-sm badge-ghost ml-2" data-counter>0 / <%= Partner::MAX_CATEGORIES %></span>
+    </p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
+      <% Category.all.each do |category| %>
+        <label class="label cursor-pointer gap-2 justify-start py-1 transition-opacity">
+          <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm checkbox-warning', id: "category_#{category.id}" %>
+          <span class="label-text text-sm"><%= category.name %></span>
+        </label>
+      <% end %>
+    </div>
+    <%= hidden_field_tag "partner[category_ids][]", "" %>
+  </fieldset>
+</div>

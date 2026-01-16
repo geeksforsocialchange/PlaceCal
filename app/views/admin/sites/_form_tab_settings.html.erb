@@ -1,0 +1,48 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: t('admin.sections.admin_settings'),
+  description: t('admin.sites.sections.admin_description')
+) %>
+
+<div class="max-w-xl space-y-8">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend"><%= t('admin.sites.fields.publishing_status') %></legend>
+    <%= render Admin::ToggleCardComponent.new(
+      form: f,
+      attribute: :is_published,
+      title: t('admin.sites.fields.published'),
+      description: t('admin.sites.fields.published_hint')
+    ) %>
+  </fieldset>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:site, :url) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <% if policy(@site).permitted_attributes.include? :url %>
+        <%= f.input_field :url, class: 'input input-bordered w-full font-mono text-sm' %>
+      <% else %>
+        <%= f.input_field :url, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true %>
+      <% end %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:site, :slug) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
+      <% if policy(@site).permitted_attributes.include? :slug %>
+        <%= f.input_field :slug, class: 'input input-bordered w-full font-mono text-sm' %>
+      <% else %>
+        <%= f.input_field :slug, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true %>
+      <% end %>
+    </fieldset>
+  </div>
+
+  <% unless @site.new_record? %>
+    <div class="divider"></div>
+
+    <%= render Admin::DangerZoneComponent.new(
+      title: t('admin.danger_zone.delete_title', model: Site.model_name.human),
+      description: t('admin.danger_zone.delete_description', model: Site.model_name.human.downcase),
+      button_text: t('admin.actions.delete_model', model: Site.model_name.human),
+      button_path: admin_site_path(@site),
+      confirm: t('admin.confirm.delete_permanent', model: Site.model_name.human.downcase)
+    ) %>
+  <% end %>
+</div>

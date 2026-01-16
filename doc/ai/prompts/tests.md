@@ -62,13 +62,13 @@ RSpec.describe 'User Registration', type: :system do
   it 'allows a user to sign up' do
     visit new_user_registration_path
 
-    fill_in 'Email', with: 'test@example.com'
-    fill_in 'Password', with: 'password123'
-    fill_in 'Password confirmation', with: 'password123'
+    fill_in User.human_attribute_name(:email), with: 'test@example.com'
+    fill_in User.human_attribute_name(:password), with: 'password123'
+    fill_in User.human_attribute_name(:password_confirmation), with: 'password123'
 
-    click_button 'Sign up'
+    click_button I18n.t('devise.registrations.new.sign_up')
 
-    expect(page).to have_content('Welcome!')
+    expect(page).to have_content(I18n.t('devise.registrations.signed_up'))
     expect(User.last.email).to eq('test@example.com')
   end
 end
@@ -116,6 +116,27 @@ end
 ```
 
 <% end %>
+
+## Testing Localized Content (i18n)
+
+When testing UI text, use locale keys rather than hardcoded strings:
+
+```ruby
+# Good: Uses locale key - won't break if text changes
+expect(page).to have_content(I18n.t('users.registration.welcome'))
+
+# Acceptable: Uses model name helper
+expect(page).to have_content(User.model_name.human(count: 2))
+
+# Avoid: Hardcoded string - brittle, breaks on text changes
+expect(page).to have_content('Welcome!')
+```
+
+For flash messages, test the locale key content:
+
+```ruby
+expect(page).to have_content(I18n.t('controllers.users.create.success'))
+```
 
 ## Testing Patterns
 

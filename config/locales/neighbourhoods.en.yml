@@ -1,0 +1,47 @@
+# Neighbourhood hierarchy locale
+# Provides generic level abstraction for internationalization
+# Level numbering: 1=most local (ward), 5=highest (country)
+
+en:
+  neighbourhoods:
+    # Generic level names (for code abstraction)
+    # Can be overridden for non-UK locales
+    levels:
+      level_1: "Ward"
+      level_2: "District"
+      level_3: "County"
+      level_4: "Region"
+      level_5: "Country"
+
+    # UK-specific display names (reference for locale mapping)
+    uk:
+      country: "Country"
+      region: "Region"
+      county: "County"
+      district: "District"
+      ward: "Ward"
+
+    # Cascading picker UI strings
+    picker:
+      select_level_5: "Select country..."
+      select_level_4: "Select region..."
+      select_level_3: "Select county..."
+      select_level_2: "Select district..."
+      select_level_1: "Select ward (optional)..."
+      loading: "Loading..."
+      no_options: "No options available"
+      optional: "(optional)"
+      skip_level: "N/A for this area"
+
+    # Badge/hierarchy display
+    badge:
+      separator: ", "
+      truncate_indicator: "..."
+
+    # Unit type labels for datatables
+    units:
+      ward: "Ward"
+      district: "District"
+      county: "County"
+      region: "Region"
+      country: "Country"

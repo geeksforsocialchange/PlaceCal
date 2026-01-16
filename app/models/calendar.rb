@@ -36,7 +36,7 @@ class Calendar < ApplicationRecord
   # @attr [Enumerable<Symbol>] :strategy
   enumerize(
     :strategy,
-    in: %i[event_override event place room_number no_location online_only],
+    in: %i[place event_override event room_number no_location online_only],
     default: :place,
     scope: true
   )

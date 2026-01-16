@@ -1,0 +1,103 @@
+<h2 class="text-lg font-bold mb-1"><%= t('admin.sites.sections.preview_title') %></h2>
+<p class="text-sm text-gray-600 mb-6"><%= t('admin.sites.sections.preview_description') %></p>
+
+<%# Partners Section %>
+<div class="mb-8">
+  <% site_partners = Partner.for_site(@site).order(:name) %>
+  <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
+    <%= icon(:partnership, size: '5') %>
+    <%= Partner.model_name.human(count: 2) %>
+    <span class="inline-flex items-center justify-center h-6 px-2 text-xs rounded-full font-bold bg-emerald-100 text-emerald-700"><%= site_partners.count %></span>
+  </h3>
+  <p class="text-sm text-gray-600 mb-4"><%= t('admin.sites.preview.partners_description') %></p>
+
+  <% if site_partners.any? %>
+    <div class="overflow-x-auto">
+      <table class="table table-sm table-zebra">
+        <thead>
+          <tr>
+            <th><%= Partner.model_name.human %></th>
+            <th><%= Calendar.model_name.human(count: 2) %></th>
+            <th><%= Event.model_name.human(count: 2) %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% site_partners.limit(50).each do |partner| %>
+            <tr>
+              <td>
+                <%= link_to edit_admin_partner_path(partner), class: "link link-hover text-placecal-orange font-medium" do %>
+                  <%= partner.name %>
+                <% end %>
+                <% if partner.hidden %>
+                  <span class="badge badge-error badge-xs ml-1"><%= t('admin.labels.hidden') %></span>
+                <% end %>
+              </td>
+              <td><%= partner.calendars.count %></td>
+              <td><%= partner.events.upcoming.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if site_partners.count > 50 %>
+      <p class="text-sm text-gray-600 mt-2"><%= t('admin.sites.preview.showing_first', limit: 50, total: site_partners.count, items: Partner.model_name.human(count: 2).downcase) %></p>
+    <% end %>
+  <% else %>
+    <%= render Admin::EmptyStateComponent.new(icon: :partnership, message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)) %>
+  <% end %>
+</div>
+
+<div class="divider"></div>
+
+<%# Events Section %>
+<div>
+  <% site_events = Event.for_site(@site).upcoming.where(dtstart: ..30.days.from_now).order(:dtstart) %>
+  <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
+    <%= icon(:calendar, size: '5') %>
+    <%= t('admin.sections.upcoming_events') %>
+    <span class="inline-flex items-center justify-center h-6 px-2 text-xs rounded-full font-bold bg-sky-100 text-sky-700"><%= site_events.count %></span>
+  </h3>
+  <p class="text-sm text-gray-600 mb-4"><%= t('admin.sites.preview.events_description') %></p>
+
+  <% if site_events.any? %>
+    <div class="overflow-x-auto">
+      <table class="table table-sm table-zebra">
+        <thead>
+          <tr>
+            <th><%= Event.model_name.human %></th>
+            <th><%= t('admin.table.date_time') %></th>
+            <th><%= Partner.model_name.human %></th>
+            <th><%= Calendar.model_name.human %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% site_events.limit(30).each do |event| %>
+            <tr>
+              <td>
+                <div class="font-medium"><%= truncate(event.summary, length: 40) %></div>
+              </td>
+              <td class="whitespace-nowrap text-sm">
+                <%= event.dtstart.strftime('%a %d %b %H:%M') %>
+              </td>
+              <td>
+                <% if event.partner %>
+                  <%= link_to truncate(event.partner.name, length: 25), edit_admin_partner_path(event.partner), class: "link text-placecal-orange hover:text-orange-600 text-sm" %>
+                <% end %>
+              </td>
+              <td>
+                <% if event.calendar %>
+                  <%= link_to truncate(event.calendar.name, length: 20), edit_admin_calendar_path(event.calendar), class: "link text-placecal-orange hover:text-orange-600 text-sm" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if site_events.count > 30 %>
+      <p class="text-sm text-gray-600 mt-2"><%= t('admin.sites.preview.showing_first', limit: 30, total: site_events.count, items: Event.model_name.human(count: 2).downcase) %></p>
+    <% end %>
+  <% else %>
+    <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.time.no_upcoming_in_days', days: 30)) %>
+  <% end %>
+</div>

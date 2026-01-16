@@ -5,11 +5,11 @@ module Admin
     before_action :set_article, only: %i[edit update destroy]
 
     def index
-      @articles = policy_scope(Article).order({ updated_at: :desc }, :title)
+      @articles = policy_scope(Article)
       authorize @articles
 
       respond_to do |format|
-        format.html
+        format.html { @articles = @articles.order(updated_at: :desc, title: :asc) }
         format.json do
           render json: ArticleDatatable.new(
             params,
@@ -50,7 +50,7 @@ module Admin
 
       if @article.update(permitted_attributes(@article))
         flash[:success] = 'Article was saved successfully'
-        redirect_to admin_articles_path
+        redirect_to edit_admin_article_path(@article)
       else
         flash.now[:danger] = 'Article was not saved'
         render :edit, status: :unprocessable_entity

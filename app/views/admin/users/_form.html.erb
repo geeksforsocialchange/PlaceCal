@@ -1,66 +1,37 @@
-<%= render(ErrorComponent.new(f.object)) %>
-<div class="form-group">
-  <%= render "contact", f: f %>
+<%= render(Admin::ErrorComponent.new(f.object)) %>
 
-  <br>
-  <hr>
+<%# Radio Tabs - daisyUI tabs-lift %>
+<div class="tabs tabs-lift">
+  <%= render Admin::TabPanelComponent.new(
+    name: 'user_tabs',
+    label: '👤 Personal Details',
+    hash: 'personal',
+    controller_name: 'form-tabs',
+    checked: true
+  ) do %>
+    <%= render 'form_tab_personal', f: f %>
+  <% end %>
 
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Partners</h3>
-      <p>Partners this user can edit, as well as their associated calendars</p>
-      <%= f.association :partners,
-                        label: false,
-                        collection: options_for_partners(params[:id] ? User.find(params[:id]) : nil),
-                        selected: @partners || @user.partners.pluck(:id),
-                        input_html: { 
-                          class: 'form-control',
-                          data: { 
-                            controller: @user_partners_controller, 
-                            "user-partners-permitted-partners-value": permitted_options_for_partners
-                          } 
-                        } %>
-    </div>
+  <%= render Admin::TabPanelComponent.new(
+    name: 'user_tabs',
+    label: '🔑 Permissions',
+    hash: 'permissions',
+    controller_name: 'form-tabs'
+  ) do %>
+    <%= render 'form_tab_roles', f: f %>
+  <% end %>
 
-    <div class="col-md-6">
-      <h3>Neighbourhoods</h3>
+  <% if policy(@user).permitted_attributes_for_update.include?(:role) || policy(@user).destroy? %>
+    <%# Spacer to push Admin tab right %>
+    <div class="tab flex-1 cursor-default"></div>
 
-      <% if current_user.root? %>
-        <p>Grants access to every partner and calendar in these neighbourhoods. Use with care!</p>
-
-        <%= f.association :neighbourhoods,
-          label: false,
-          collection: options_for_user_neighbourhoods(f.object),
-          input_html: { class: 'form-control', data: { controller: "select2" } } %>
-
-      <% else %>
-        <ul class='neighbourhood-list'>
-          <% @user.neighbourhoods.order(:name).each do |hood| -%>
-            <li><%= link_to hood.name, admin_neighbourhood_path(hood) %></li>
-          <% end -%>
-        </ul>
-      <% end %>
-
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Partnerships</h3>
-      <p>Grants access to add or remove partners from partnerships</p>
-      <%= f.association :tags,
-                        label: false,
-                        collection: options_for_tags,
-                        input_html: { class: 'form-control', data: { controller: "select2" } } %>
-    </div>
-    <div class="col-md-6">
-      <h3>Role</h3>
-      <%= f.input :role,
-                  as: :radio_buttons,
-                  label_method: ->(val){ role_label(val) } %>
-    </div>
-  </div>
-
-  <br>
-  <hr>
-
+    <%= render Admin::TabPanelComponent.new(
+      name: 'user_tabs',
+      label: '⚙️ Settings',
+      hash: 'settings',
+      controller_name: 'form-tabs'
+    ) do %>
+      <%= render 'form_tab_settings', f: f %>
+    <% end %>
+  <% end %>
 </div>

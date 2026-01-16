@@ -1,0 +1,52 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 space-y-4">
+    <%= render Admin::SectionHeaderComponent.new(
+      title: t('admin.sections.basic_information'),
+      description: t('admin.partners.sections.basic_info_description'),
+      margin: 4
+    ) %>
+
+    <fieldset class="fieldset">
+      <%= f.label :name, class: 'fieldset-legend' do %>
+        <%= Partner.model_name.human %> <%= attr_label(:partner, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+      <% end %>
+      <%= f.input_field :name, class: 'input input-bordered w-full',
+          'data-controller': "partner-form-validation",
+          'data-partner-form-validation-target': 'source',
+          'data-action': 'input->partner-form-validation#checkInput',
+          'data-validate-required': 'true',
+          'data-validate-min': '5',
+          'data-validate-required-message': t('admin.partners.validation.name_required'),
+          'data-validate-min-message': t('admin.partners.validation.name_min_length') %>
+    </fieldset>
+
+    <fieldset class="fieldset" data-controller="char-counter" data-char-counter-max-value="200">
+      <%= f.label :summary, attr_label(:partner, :summary), class: 'fieldset-legend' %>
+      <%= f.input_field :summary, as: :text, class: 'textarea textarea-bordered w-full min-h-16', maxlength: 200, data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
+      <div class="flex items-center justify-between mt-1">
+        <p class="fieldset-label"><%= t('admin.partners.fields.summary_hint') %></p>
+        <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 200</span>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <%= f.label :description, attr_label(:partner, :description), class: 'fieldset-legend' %>
+      <%= f.input_field :description, class: 'textarea textarea-bordered w-full min-h-32', data: { controller: 'auto-expand' } %>
+      <p class="fieldset-label"><%= t('admin.partners.fields.description_hint') %></p>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <%= f.label :accessibility_info, attr_label(:partner, :accessibility_info), class: 'fieldset-legend' %>
+      <%= f.input_field :accessibility_info, class: 'textarea textarea-bordered w-full min-h-20', data: { controller: 'auto-expand' } %>
+      <p class="fieldset-label"><%= t('admin.partners.fields.accessibility_hint') %></p>
+    </fieldset>
+  </div>
+
+  <%# Partner Image - Right column on larger screens %>
+  <%= render Admin::ImageUploadComponent.new(
+    form: f,
+    attribute: :image,
+    title: t('admin.partners.image.title'),
+    aspect: ''
+  ) %>
+</div>

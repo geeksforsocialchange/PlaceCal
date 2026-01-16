@@ -11,12 +11,38 @@ on:
       - production
 
 jobs:
-  test-and-deploy:
+  lint:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          cache-version: 3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - run: yarn install --immutable
+
+      - name: Run linters
+        run: |
+          bin/yarn run format:check
+          bundle exec rubocop
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [unit, system, cucumber-admin, cucumber-public]
 
     services:
       postgres:
-        image: postgres:13.4 # Same version as on the server
+        image: postgres:13.4
         env:
           POSTGRES_PORT: 5432
           POSTGRES_DB: placecal_test
@@ -36,9 +62,10 @@ jobs:
       POSTGRES_USER: postgres
       PGPASSWORD: foobar
       RAILS_ENV: test
+      CI: true
 
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -52,17 +79,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y imagemagick
 
-      - name: Install Chrome for system tests
+      - name: Install Chrome for browser tests
+        if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
         uses: browser-actions/setup-chrome@latest
+        id: setup-chrome
         with:
           chrome-version: stable
 
-      - uses: nodenv/actions/setup-nodenv@v2
-      - uses: nodenv/actions/node-version@v2
-        id: nodenv
-      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ steps.nodenv.outputs.node-version }}
+          node-version-file: ".node-version"
           cache: yarn
       - run: yarn install --immutable
 
@@ -70,30 +96,74 @@ jobs:
         run: bin/rails db:test:prepare
 
       - name: Build assets
-        run: bin/yarn run build
+        run: bin/yarn run build:all
 
-      - name: Run RSpec tests (including system tests)
-        run: RUN_SLOW_TESTS=true bundle exec rspec
+      - name: Precompile Rails assets
+        if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
+        run: RAILS_ENV=test bin/rails assets:precompile
 
-      - name: Run Cucumber features
-        run: bundle exec cucumber --tags "not @wip"
+      - name: Run RSpec unit tests
+        if: matrix.suite == 'unit'
+        run: bundle exec rspec --exclude-pattern 'spec/system/**/*'
 
-      - name: Run linters
-        run: |
-          bin/yarn run format:check
-          bundle exec rubocop
+      - name: Run RSpec system tests
+        if: matrix.suite == 'system'
+        run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+
+      # Cucumber split into 2 parallel jobs by directory for faster CI
+      - name: Run Cucumber features (admin)
+        if: matrix.suite == 'cucumber-admin'
+        run: bundle exec cucumber --tags "not @wip" features/admin
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+
+      - name: Run Cucumber features (public)
+        if: matrix.suite == 'cucumber-public'
+        run: bundle exec cucumber --tags "not @wip" features/public features/authentication.feature
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Check database consistency
+        if: matrix.suite == 'unit'
         run: RAILS_ENV=test bundle exec database_consistency
+
       - if: failure()
         name: Upload test screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: test-screenshots
+          name: test-screenshots-${{ matrix.suite }}
           path: tmp/capybara/
           if-no-files-found: ignore
 
-      - if: github.ref == 'refs/heads/main' && github.repository == 'geeksforsocialchange/PlaceCal'
+  # This job provides a single status check for branch protection rules
+  # It runs on all PRs and pushes, unlike deploy which only runs on main/production
+  ci:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ]; then
+            echo "lint result: ${{ needs.lint.result }}"
+            echo "test result: ${{ needs.test.result }}"
+            exit 1
+          fi
+          echo "All checks passed!"
+
+  deploy:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: github.repository == 'geeksforsocialchange/PlaceCal' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production')
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - if: github.ref == 'refs/heads/main'
         name: Deploy to placecal-staging.org
         uses: dokku/github-action@823c08b33e974704528c7c7f3d3d8002426e7634 # v1.9.0
         with:
@@ -102,7 +172,7 @@ jobs:
           git_remote_url: "ssh://dokku@placecal-staging.org:666/placecal"
           ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
 
-      - if: github.ref == 'refs/heads/production' && github.repository == 'geeksforsocialchange/PlaceCal'
+      - if: github.ref == 'refs/heads/production'
         name: Deploy to placecal.org
         uses: dokku/github-action@823c08b33e974704528c7c7f3d3d8002426e7634 # v1.9.0
         with:

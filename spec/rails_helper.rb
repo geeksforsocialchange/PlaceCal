@@ -63,11 +63,16 @@ RSpec.configure do |config|
     Timecop.return
   end
 
-  # Database cleaner for system/feature specs (truncation strategy)
-  # Only use DatabaseCleaner for system/feature specs that need JS
+  # Disable transactional fixtures for system/feature tests
+  # System tests run in separate threads from the browser - transactions
+  # would cause the browser to see uncommitted data, leading to hangs
   config.before(:each, type: :system) do
-    DatabaseCleaner.strategy = :truncation
+    self.use_transactional_tests = false
+    DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
+    # Use Selenium with headless Chrome - Rails' default and most stable for CI
+    # Cuprite causes hangs in CI but Selenium works reliably
+    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
   end
 
   config.after(:each, type: :system) do
@@ -75,7 +80,8 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :feature) do
-    DatabaseCleaner.strategy = :truncation
+    self.use_transactional_tests = false
+    DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
   end
 

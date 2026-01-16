@@ -117,6 +117,28 @@ class Site < ApplicationRecord
     Event.for_site(self).find_by_week(Time.now - 1.week).count
   end
 
+  # Refresh cached partners_count for this site
+  def refresh_partners_count!
+    return unless persisted?
+
+    count = Partner.for_site(self).count
+    update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
+  end
+
+  # Refresh cached events_count for this site (events this week)
+  def refresh_events_count!
+    return unless persisted?
+
+    count = Event.for_site(self).find_by_week(Time.zone.now).count
+    update_column(:events_count, count) # rubocop:disable Rails/SkipsModelValidations
+  end
+
+  # Refresh both cached counts
+  def refresh_counts!
+    refresh_partners_count!
+    refresh_events_count!
+  end
+
   def stylesheet_link
     return 'home' if default_site?
 
@@ -150,6 +172,12 @@ class Site < ApplicationRecord
   end
 
   class << self
+    # Refresh cached counts for all sites
+    # Run periodically or after bulk partner/event changes
+    def refresh_all_counts!
+      find_each(&:refresh_counts!)
+    end
+
     # Find any sites with URLs that match the specified domain
     #
     # [QAD 2025-10-21] This a band-aid to work around the implementation in

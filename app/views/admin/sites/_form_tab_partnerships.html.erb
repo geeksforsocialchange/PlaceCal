@@ -1,0 +1,29 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: Partnership.model_name.human(count: 2),
+  description: t('admin.sites.sections.partnerships_description')
+) %>
+
+<div class="max-w-xl">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend"><%= t('admin.sites.fields.partnership_tags') %></legend>
+    <p class="fieldset-label mb-3"><%= t('admin.sites.fields.partnership_tags_hint') %></p>
+    <div class="site_tags">
+      <% if policy(@site).permitted_attributes.include? :tags %>
+        <%= f.input_field :tag_ids,
+              as: :select,
+              collection: options_for_tags,
+              multiple: true,
+              class: 'select select-bordered w-full',
+              data: { controller: "tom-select" } %>
+      <% else %>
+        <%= f.input_field :tag_ids,
+              as: :select,
+              collection: options_for_tags,
+              multiple: true,
+              class: 'select select-bordered w-full bg-base-200',
+              disabled: true,
+              data: { controller: "tom-select" } %>
+      <% end %>
+    </div>
+  </fieldset>
+</div>

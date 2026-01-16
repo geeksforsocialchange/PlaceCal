@@ -10,10 +10,10 @@ module Admin
     before_action :set_partner_tags_controller, only: %i[create new edit update]
 
     def index
-      @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
+      @partners = policy_scope(Partner).includes(:address)
 
       respond_to do |format|
-        format.html
+        format.html { @partners = @partners.order(updated_at: :desc, name: :asc) }
         format.json do
           render json: PartnerDatatable.new(params,
                                             view_context: view_context,
@@ -141,9 +141,24 @@ module Admin
     end
 
     def lookup_name
-      found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
+      return render json: { name_available: true, similar: [] } if params[:name].blank?
 
-      render json: { name_available: found.nil? }
+      name = params[:name].downcase
+      exact_match = Partner.where('lower(name) = ?', name).first
+
+      # Find similar partners (fuzzy match) - limit to 5 for performance
+      similar = Partner.where('lower(name) LIKE ?', "%#{name}%")
+                       .or(Partner.where('lower(name) LIKE ?', "%#{name.split.first}%"))
+                       .where.not(id: exact_match&.id)
+                       .limit(5)
+                       .pluck(:id, :name)
+                       .map { |id, n| { id: id, name: n } }
+
+      render json: {
+        name_available: exact_match.nil?,
+        exact_match: exact_match&.slice(:id, :name),
+        similar: similar
+      }
     end
 
     private
@@ -151,7 +166,7 @@ module Admin
     def set_partner_tags_controller
       @partner_tags_controller =
         if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
-          'select2'
+          'tom-select'
         else
           'partner-tags'
         end

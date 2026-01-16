@@ -1,0 +1,79 @@
+/* Markdown preview styling for article editor */
+.markdown-preview {
+	@apply text-base leading-relaxed;
+}
+
+.markdown-preview p {
+	@apply mb-4;
+}
+
+.markdown-preview p:last-child {
+	@apply mb-0;
+}
+
+.markdown-preview h1 {
+	@apply text-2xl font-bold mb-4 mt-6;
+}
+
+.markdown-preview h2 {
+	@apply text-xl font-bold mb-3 mt-5;
+}
+
+.markdown-preview h3 {
+	@apply text-lg font-bold mb-2 mt-4;
+}
+
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+	@apply text-base font-bold mb-2 mt-3;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+	@apply mb-4 pl-6;
+}
+
+.markdown-preview ul {
+	@apply list-disc;
+}
+
+.markdown-preview ol {
+	@apply list-decimal;
+}
+
+.markdown-preview li {
+	@apply mb-1;
+}
+
+.markdown-preview blockquote {
+	@apply border-l-4 border-base-300 pl-4 italic text-base-content/70 my-4;
+}
+
+.markdown-preview pre {
+	@apply bg-base-200 rounded-lg p-4 overflow-x-auto my-4;
+}
+
+.markdown-preview code {
+	@apply bg-base-200 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.markdown-preview pre code {
+	@apply bg-transparent p-0;
+}
+
+.markdown-preview hr {
+	@apply border-base-300 my-6;
+}
+
+.markdown-preview a {
+	@apply text-placecal-teal underline;
+}
+
+.markdown-preview a:hover {
+	@apply text-teal-700;
+}
+
+.markdown-preview img {
+	@apply max-w-full rounded-lg my-4;
+}

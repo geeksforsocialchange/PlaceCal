@@ -66,8 +66,8 @@ RSpec.describe "Admin::Users", type: :request do
 
       it "shows form fields for user creation" do
         get new_admin_user_url(host: admin_host)
-        expect(response.body).to include("First name")
-        expect(response.body).to include("Last name")
+        expect(response.body).to include("First Name")
+        expect(response.body).to include("Last Name")
         expect(response.body).to include("Email")
         expect(response.body).to include("Phone")
         expect(response.body).to include("Partners")
@@ -77,10 +77,10 @@ RSpec.describe "Admin::Users", type: :request do
 
       it "preselects partner when partner_id provided" do
         partner = create(:partner)
-        user.partners << partner
         get new_admin_user_url(host: admin_host, params: { partner_id: partner.id })
         expect(response).to be_successful
-        expect(response.body).to include("selected")
+        # Partner should appear in the selected items list
+        expect(response.body).to include(partner.name)
       end
     end
 
@@ -134,28 +134,31 @@ RSpec.describe "Admin::Users", type: :request do
         sign_in user
       end
 
-      it "shows profile page" do
+      it "shows profile page with tabs" do
         get admin_profile_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include("Edit Profile")
+        expect(response.body).to include("Save Profile")
+        expect(response.body).to include("Personal Details")
+        expect(response.body).to include("Change Password")
+        expect(response.body).to include("My Permissions")
       end
 
-      it "shows basic information section" do
+      it "shows personal details section" do
         get admin_profile_url(host: admin_host)
-        expect(response.body).to include("Basic information")
-        expect(response.body).to include("First name")
-        expect(response.body).to include("Last name")
+        expect(response.body).to include("First Name")
+        expect(response.body).to include("Last Name")
         expect(response.body).to include("Email")
       end
 
       it "shows password section" do
         get admin_profile_url(host: admin_host)
         expect(response.body).to include("Password")
+        expect(response.body).to include("Current Password")
       end
 
-      it "shows admin rights section" do
+      it "shows permissions section with user's partners" do
         get admin_profile_url(host: admin_host)
-        expect(response.body).to include("Admin rights")
+        expect(response.body).to include("My Permissions")
         expect(response.body).to include(partner.name)
       end
     end

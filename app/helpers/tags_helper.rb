@@ -7,7 +7,7 @@ module TagsHelper
   end
 
   def options_for_users
-    User.all.order(:last_name).collect { |e| [e.admin_name, e.id] }
+    User.all.order(:last_name).collect { |e| [e.display_name, e.id] }
   end
 
   def show_assigned_user_field_for?(form)
@@ -20,6 +20,18 @@ module TagsHelper
       .where(type: 'Partnership')
       .order(:name)
       .map { |r| [r.name_with_type, r.id] }
+  end
+
+  # Returns partnerships as [name, id] pairs for user assignment
+  # Root users can assign any partnership, others see only their managed partnerships
+  def options_for_user_partnerships
+    if current_user.root?
+      Partnership.order(:name).pluck(:name, :id)
+    else
+      policy_scope(Partnership)
+        .order(:name)
+        .pluck(:name, :id)
+    end
   end
 
   # prevent invisible partner ids from being overwritten when updating a tag

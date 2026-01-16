@@ -1,0 +1,201 @@
+/*
+ * Tom Select custom theme - PlaceCal orange
+ * Note: NOT in @layer to ensure these override the default tom-select.css
+ */
+
+/* Prevent tab-content overflow from clipping dropdowns */
+.tab-content:has(.ts-wrapper) {
+	overflow: visible !important;
+}
+
+/* Reset any daisyUI select styles that may conflict */
+.ts-wrapper.select,
+.ts-wrapper.select-bordered {
+	background-image: none !important;
+	border: none !important;
+	padding: 0 !important;
+	min-height: auto !important;
+	height: auto !important;
+}
+
+/* Main wrapper - overflow visible is critical to show dropdown */
+.ts-wrapper {
+	min-height: 2.5rem;
+	overflow: visible !important;
+}
+
+/* When dropdown is active, wrapper needs high z-index to be above sibling elements */
+.ts-wrapper.dropdown-active {
+	z-index: 9999 !important;
+	position: relative !important;
+}
+
+/* Control input area */
+.ts-wrapper .ts-control {
+	border: 1px solid #d1d5db !important;
+	background-color: #ffffff !important;
+	border-radius: 0.5rem !important;
+	padding: 0.5rem 0.75rem !important;
+	box-shadow: none !important;
+}
+
+.ts-wrapper .ts-control:hover {
+	border-color: #9ca3af !important;
+}
+
+.ts-wrapper.focus .ts-control {
+	border-color: var(--color-placecal-orange) !important;
+	outline: 2px solid rgba(232, 125, 30, 0.2) !important;
+	outline-offset: 0 !important;
+	box-shadow: none !important;
+}
+
+/* Selected items (tags) */
+.ts-wrapper.multi .ts-control > div,
+.ts-wrapper.multi .ts-control [data-value] {
+	background: var(--color-placecal-orange) !important;
+	background-image: none !important;
+	color: white !important;
+	border: 0 !important;
+	border-radius: 0.375rem !important;
+	padding: 0.25rem 0.625rem !important;
+	font-size: 0.875rem !important;
+	font-weight: 500 !important;
+	text-shadow: none !important;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+	margin: 2px 4px 2px 0 !important;
+}
+
+.ts-wrapper.multi .ts-control > div.active,
+.ts-wrapper.multi .ts-control [data-value].active {
+	background: #ea580c !important;
+	background-image: none !important;
+}
+
+/* Remove button on tags */
+.ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
+	border-left: 1px solid rgba(255, 255, 255, 0.3) !important;
+	margin-left: 0.5rem !important;
+	padding: 0 0.375rem !important;
+	color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.ts-wrapper.plugin-remove_button:not(.rtl) .item .remove:hover {
+	color: white !important;
+	background: #c2410c !important;
+}
+
+.ts-wrapper.plugin-remove_button.rtl .item .remove {
+	border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+	margin-right: 0.5rem !important;
+	padding: 0 0.375rem !important;
+	color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Dropdown - ensure it shows when active */
+.ts-wrapper.dropdown-active .ts-dropdown {
+	display: block !important;
+	visibility: visible !important;
+}
+
+.ts-dropdown {
+	background: #ffffff !important;
+	border: 1px solid #d1d5db !important;
+	border-radius: 0.5rem !important;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+		0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+	margin-top: 0.25rem !important;
+	overflow: visible !important;
+	z-index: 9999 !important;
+	position: absolute !important;
+}
+
+.ts-dropdown .option {
+	display: block !important;
+	visibility: visible !important;
+	opacity: 1 !important;
+	padding: 0.5rem 0.75rem !important;
+	font-size: 0.875rem !important;
+	cursor: pointer !important;
+}
+
+.ts-dropdown .option:hover,
+.ts-dropdown .active {
+	background-color: rgba(232, 125, 30, 0.1) !important;
+	color: var(--color-placecal-orange) !important;
+}
+
+.ts-dropdown .option.selected {
+	background: var(--color-placecal-orange) !important;
+	color: white !important;
+}
+
+/* Dropdown content scroll */
+.ts-dropdown-content {
+	max-height: 15rem !important;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+}
+
+/* Single select caret */
+.ts-wrapper.single .ts-control:after {
+	border-top-color: #6b7280 !important;
+}
+
+.ts-wrapper.single.dropdown-active .ts-control:after {
+	border-bottom-color: #6b7280 !important;
+}
+
+/* Input inside control */
+.ts-control > input {
+	color: #1f2937 !important;
+}
+
+/* Disabled state */
+.ts-wrapper.disabled .ts-control {
+	background-color: #f3f4f6 !important;
+	opacity: 0.6 !important;
+	cursor: not-allowed !important;
+}
+
+.ts-wrapper.multi.disabled .ts-control [data-value] {
+	background: #e5e7eb !important;
+	color: rgba(31, 41, 55, 0.7) !important;
+}
+
+/* Compact filter variant for datatable filters */
+.ts-filter .ts-wrapper {
+	min-height: auto !important;
+}
+
+.ts-filter .ts-wrapper .ts-control {
+	padding: 0.375rem 0.75rem !important;
+	font-size: 0.75rem !important;
+	min-height: auto !important;
+	border-radius: 0.375rem !important;
+	flex-wrap: nowrap !important;
+}
+
+.ts-filter .ts-wrapper .ts-control > input {
+	font-size: 0.75rem !important;
+}
+
+/* Single select: show selected item inline, not as a tag */
+.ts-filter .ts-wrapper.single .ts-control > .item {
+	background: transparent !important;
+	color: #374151 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	border: none !important;
+	box-shadow: none !important;
+	font-size: 0.75rem !important;
+	max-width: calc(100% - 1.5rem) !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
+}
+
+.ts-filter .ts-dropdown .option {
+	padding: 0.375rem 0.75rem !important;
+	font-size: 0.75rem !important;
+}

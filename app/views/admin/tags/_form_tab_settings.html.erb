@@ -1,0 +1,34 @@
+<div class="mb-8">
+  <%= render Admin::FormCardComponent.new(
+    icon: :link,
+    title: attr_label(:tag, :slug),
+    description: t('admin.hints.leave_blank_to_autogenerate')
+  ) do %>
+    <label for="tag_slug" class="sr-only"><%= attr_label(:tag, :slug) %></label>
+    <%= f.input_field :slug, class: 'input input-bordered w-full', disabled: @tag.system_tag, id: 'tag_slug' %>
+  <% end %>
+</div>
+
+<% if current_user.root? && !@tag.is_a?(Partnership) %>
+  <div class="mb-8">
+    <%= render Admin::FormCardComponent.new(
+      icon: :lock,
+      title: t('admin.sections.advanced')
+    ) do %>
+      <fieldset class="fieldset">
+        <%= f.input :system_tag, wrapper: :tw_boolean, hint: t('admin.partnerships.fields.system_tag_hint') %>
+      </fieldset>
+    <% end %>
+  </div>
+<% end %>
+
+<% if policy(@tag).destroy? %>
+  <% delete_path = @tag.is_a?(Partnership) ? admin_partnership_path(@tag) : admin_tag_path(@tag) %>
+  <%= render Admin::DangerZoneComponent.new(
+    title: t('admin.actions.delete_model', model: @tag.class.model_name.human),
+    description: t('admin.danger_zone.delete_description', model: @tag.class.model_name.human.downcase),
+    button_text: t('admin.actions.delete_model', model: @tag.class.model_name.human),
+    button_path: delete_path,
+    confirm: t('admin.confirm.delete_permanent', model: @tag.class.model_name.human.downcase)
+  ) %>
+<% end %>

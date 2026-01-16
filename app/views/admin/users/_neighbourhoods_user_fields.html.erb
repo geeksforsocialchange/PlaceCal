@@ -1,0 +1,10 @@
+<% if f.object.neighbourhood.present? %>
+  <%= render Admin::NeighbourhoodCardComponent.new(
+        neighbourhood: f.object.neighbourhood,
+        show_header: false,
+        show_remove: true,
+        form: f
+      ) %>
+<% else %>
+  <%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: f, show_remove: true, relation_type: nil) %>
+<% end %>

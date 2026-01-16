@@ -1,32 +1,35 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
+# Core English locale for PlaceCal
+# Contains: ActiveRecord models/attributes, site metadata, and shared strings
 
 en:
+  # ===========================================================================
+  # SITE METADATA
+  # ===========================================================================
+
+  meta:
+    description: "%{site} is a community events calendar where you can find out everything that's happening, all in one place."
+
   colophon:
     year: "© 2019-%{year}"
     copyright: "GFSC Community Interest Company"
     company: "Registered in England and Wales #12135472"
     address: "5 Ribston Street, Manchester, M15 5RH"
+
   contact:
     email: "support@placecal.org"
+
+  # ===========================================================================
+  # DATE & TIME FORMATS
+  # ===========================================================================
+
+  date:
+    formats:
+      datetime: "%b %-d, %Y %l:%M"
+
+  # ===========================================================================
+  # ENUMERIZE (Calendar types)
+  # ===========================================================================
+
   enumerize:
     calendar:
       type:
@@ -35,22 +38,161 @@ en:
         mac_calendar: "Mac Calendar"
         facebook: "Facebook"
         other: "Other"
+      strategy:
+        place: "Place (default)"
+        event_override: "Event override"
+        event: "Event"
+        room_number: "Room number"
+        no_location: "No location"
+        online_only: "Online only"
+
+  # ===========================================================================
+  # ACTIVERECORD
+  # ===========================================================================
 
   activerecord:
-    attributes:
+    # -------------------------------------------------------------------------
+    # Model names (singular/plural)
+    # -------------------------------------------------------------------------
+    models:
+      article:
+        one: "Article"
+        other: "Articles"
+      calendar:
+        one: "Calendar"
+        other: "Calendars"
+      collection:
+        one: "Collection"
+        other: "Collections"
+      event:
+        one: "Event"
+        other: "Events"
+      neighbourhood:
+        one: "Neighbourhood"
+        other: "Neighbourhoods"
       partner:
+        one: "Partner"
+        other: "Partners"
+      partnership:
+        one: "Partnership"
+        other: "Partnerships"
+      site:
+        one: "Site"
+        other: "Sites"
+      supporter:
+        one: "Supporter"
+        other: "Supporters"
+      tag:
+        one: "Tag"
+        other: "Tags"
+      user:
+        one: "User"
+        other: "Users"
+
+    # -------------------------------------------------------------------------
+    # Attributes (field labels)
+    # -------------------------------------------------------------------------
+    attributes:
+      # Shared defaults - inherited by all models via YAML anchor
+      defaults: &default_attrs
+        name: "Name"
+        email: "Email"
+        phone: "Phone"
+        description: "Description"
+        summary: "Summary"
+        slug: "Slug"
+        url: "URL"
+        website: "Website"
+        address: "Address"
+        city: "City"
+        postcode: "Postcode"
+        created_at: "Created"
+        updated_at: "Updated"
+        status: "Status"
+        state: "State"
+        role: "Role"
+        theme: "Theme"
+        tagline: "Tagline"
+        logo: "Logo"
+        image: "Image"
+
+      address:
+        <<: *default_attrs
+        street_address: "Street Address"
+        street_address_2: "Street Address 2"
+        street_address_3: "Street Address 3"
+
+      article:
+        <<: *default_attrs
+        title: "Title"
+        body: "Body"
+
+      calendar:
+        <<: *default_attrs
+        source: "Source URL"
+        strategy: "Location Strategy"
+        notices: "Import Notices"
+        import_mode: "Import Mode"
+        public_contact_name: "Contact Name"
+        public_contact_email: "Contact Email"
+        public_contact_phone: "Contact Phone"
+
+      collection:
+        <<: *default_attrs
+
+      neighbourhood:
+        <<: *default_attrs
+        name_abbr: "Abbreviated Name"
+        unit: "Unit"
+        unit_name: "Unit Name"
+        unit_code_key: "Unit Code Key"
+        unit_code_value: "Unit Code Value"
+
+      partner:
+        <<: *default_attrs
         tag_ids: ""
+        accessibility_info: "Accessibility Information"
+        hidden_reason: "Reason for Hiding"
+        facebook: "Facebook"
+        twitter: "X (Twitter)"
+        instagram: "Instagram"
+
+      partnership:
+        <<: *default_attrs
+
+      site:
+        <<: *default_attrs
+        place_name: "Place Name"
+        hero_text: "Hero Text"
+        hero_image: "Hero Image"
+        hero_image_alt: "Alt Text"
+        hero_image_credit: "Image Credit"
+        footer_logo: "Footer Logo"
+
+      supporter:
+        <<: *default_attrs
+
+      tag:
+        <<: *default_attrs
+        type: "Type"
+        system_tag: "System Tag"
+
+      user:
+        <<: *default_attrs
+        first_name: "First Name"
+        last_name: "Last Name"
+        avatar: "Avatar"
+
+    # -------------------------------------------------------------------------
+    # Validation errors
+    # -------------------------------------------------------------------------
     errors:
+      template:
+        header:
+          one: "%{count} error prohibited this %{model} from being saved"
+          other: "%{count} errors prohibited this %{model} from being saved"
       models:
         partner:
           attributes:
             tag_ids:
               blank: "Select at least one Tag"
-  admin:
-    calendars:
-      handbook_hint_html: "The source URL for your calendar feed. See the <a href='https://handbook.placecal.org/reference/supported-calendar-sources'>PlaceCal Handbook</a> if you need help."
-  date:
-    formats:
-      datetime: "%b %-d, %Y %l:%M"
-  meta:
-    description: "%{site} is a community events calendar where you can find out everything that's happening, all in one place."

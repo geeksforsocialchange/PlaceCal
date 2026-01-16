@@ -1,1 +1,2 @@
-<%= render AdminEdit.new(model: :collection, title: @collection.name) %>
+<%= render 'layouts/admin/page_header', model_name: 'Collection', title: @collection.name, id: @collection.id %>
+<%= render 'form' %>
