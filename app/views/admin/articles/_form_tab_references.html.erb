@@ -1,0 +1,45 @@
+<%- disabled_fields = policy(@article).disabled_fields %>
+
+<div class="max-w-2xl space-y-8">
+  <%# Partners %>
+  <div>
+    <div class="flex items-start gap-4 mb-4">
+      <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+        <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold"><%= Partner.model_name.human(count: 2) %></h3>
+        <p class="text-sm text-base-content/60 mt-0.5">Link this article to one or more partners.</p>
+      </div>
+    </div>
+
+    <% if disabled_fields.include?(:partner_ids) %>
+      <%= f.association :partners, collection: options_for_partners, label: false,
+          input_html: { class: 'w-full', data: { controller: "tom-select" }, disabled: true } %>
+    <% else %>
+      <%= f.association :partners, collection: options_for_partners, label: false,
+          input_html: { class: 'w-full', data: { controller: "tom-select" } } %>
+    <% end %>
+  </div>
+
+  <%# Partnerships/Tags %>
+  <div>
+    <div class="flex items-start gap-4 mb-4">
+      <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center shadow-sm">
+        <%= icon(:partnership, size: '6', css_class: 'text-purple-600') %>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold"><%= Partnership.model_name.human(count: 2) %></h3>
+        <p class="text-sm text-base-content/60 mt-0.5">Link this article to partnerships for filtering and organization.</p>
+      </div>
+    </div>
+
+    <% if disabled_fields.include?(:tag_ids) %>
+      <%= f.association :tags, collection: options_for_tags, label: false,
+          input_html: { class: 'w-full', data: { controller: "tom-select" }, disabled: true } %>
+    <% else %>
+      <%= f.association :tags, collection: options_for_tags, label: false,
+          input_html: { class: 'w-full', data: { controller: "tom-select" } } %>
+    <% end %>
+  </div>
+</div>

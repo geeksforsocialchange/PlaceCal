@@ -1,132 +1,91 @@
-<%- disabled_fields = policy(@article).disabled_fields %>
-<%= simple_form_for [:admin, @article], html: { class: 'space-y-6', data: { controller: 'live-validation' } } do |f| %>
+<%= simple_form_for [:admin, @article], html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } } do |f| %>
 
   <%= render(Admin::ErrorComponent.new(@article)) %>
 
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
-        title: "Article Content",
-        margin: 4
-      ) %>
-
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span></legend>
-        <%= f.input_field :title, class: 'input input-bordered w-full' %>
-      </fieldset>
-
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:article, :author) %></legend>
-        <%= f.association :author, as: :select, label: false, input_html: { class: 'select select-bordered w-full', data: { controller: "tom-select" } } %>
-      </fieldset>
-
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend"><%= attr_label(:article, :body) %></legend>
-        <%= f.input_field :body, as: :text, class: 'textarea textarea-bordered w-full min-h-80 font-mono text-sm', data: { controller: 'auto-expand' } %>
-        <p class="fieldset-label">
-          This field accepts <a href="https://www.markdownguide.org/basic-syntax/" class="link link-hover text-placecal-teal" target="_blank">Markdown syntax</a>.
-        </p>
-      </fieldset>
-    </div>
-  </div>
-
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
-        title: "Image",
-        description: "Image will be cropped to 16:9 ratio.",
-        margin: 4
-      ) %>
-
-      <%= render Admin::ImageUploadComponent.new(
-        form: f,
-        attribute: :article_image,
-        title: "",
-        aspect: '16:9',
-        disabled: disabled_fields.include?(:article_image)
-      ) %>
-    </div>
-  </div>
-
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
-        title: "Connected Entities",
-        description: "Link this article to partners and partnerships.",
-        margin: 4
-      ) %>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Partners</legend>
-          <% if disabled_fields.include?(:partner_ids) %>
-            <%= f.association :partners, collection: options_for_partners, label: false,
-                input_html: { class: 'w-full', data: { controller: "tom-select" }, disabled: true } %>
-          <% else %>
-            <%= f.association :partners, collection: options_for_partners, label: false,
-                input_html: { class: 'w-full', data: { controller: "tom-select" } } %>
-          <% end %>
-        </fieldset>
-
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Partnerships</legend>
-          <% if disabled_fields.include?(:tag_ids) %>
-            <%= f.association :tags, collection: options_for_tags, label: false,
-                input_html: { class: 'w-full', data: { controller: "tom-select" }, disabled: true } %>
-          <% else %>
-            <%= f.association :tags, collection: options_for_tags, label: false,
-                input_html: { class: 'w-full', data: { controller: "tom-select" } } %>
-          <% end %>
-        </fieldset>
+  <% if @article.new_record? %>
+    <%# New record - single page layout %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render 'admin/articles/form_tab_text', f: f %>
       </div>
     </div>
-  </div>
 
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
-        title: "Publishing",
-        description: "Control when and if this article is visible on PlaceCal.",
-        margin: 4
-      ) %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render Admin::SectionHeaderComponent.new(
+          title: "Image",
+          description: "Image will be cropped to 16:9 ratio.",
+          margin: 4
+        ) %>
+        <%= render 'admin/articles/form_tab_image', f: f %>
+      </div>
+    </div>
 
-      <fieldset class="fieldset">
-        <%= f.input :is_draft, wrapper: :tw_boolean,
-            as: :boolean,
-            checked_value: false,
-            unchecked_value: true,
-            label: "Publish this article" %>
-      </fieldset>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render Admin::SectionHeaderComponent.new(
+          title: "References",
+          description: "Link this article to partners and partnerships.",
+          margin: 4
+        ) %>
+        <%= render 'admin/articles/form_tab_references', f: f %>
+      </div>
+    </div>
 
-      <% unless @article.new_record? %>
-        <% if disabled_fields.include?(:published_at) %>
-          <p class="text-sm text-base-content/60">
-            Published <%= time_ago_in_words(@article.published_at) %> ago.<br>
-            Last updated <%= time_ago_in_words(@article.updated_at) %> ago.
-          </p>
-        <% else %>
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Publication Date</legend>
-            <%= f.input_field :published_at, class: 'input input-bordered w-full max-w-xs' %>
-          </fieldset>
-        <% end %>
+    <%= render Admin::SaveBarComponent.new do |c| %>
+      <% c.with_button do %>
+        <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%# Existing record - tabbed interface %>
+    <div role="tablist" class="tabs tabs-lift">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'article_tabs',
+        label: '📝 Text',
+        hash: 'text',
+        controller_name: 'form-tabs',
+        checked: true
+      ) do %>
+        <%= render 'admin/articles/form_tab_text', f: f %>
+      <% end %>
+
+      <%= render Admin::TabPanelComponent.new(
+        name: 'article_tabs',
+        label: '🖼️ Image',
+        hash: 'image',
+        controller_name: 'form-tabs'
+      ) do %>
+        <%= render 'admin/articles/form_tab_image', f: f %>
+      <% end %>
+
+      <%= render Admin::TabPanelComponent.new(
+        name: 'article_tabs',
+        label: '🔗 References',
+        hash: 'references',
+        controller_name: 'form-tabs'
+      ) do %>
+        <%= render 'admin/articles/form_tab_references', f: f %>
+      <% end %>
+
+      <%# Spacer to push Settings tab right %>
+      <div class="tab flex-1 cursor-default"></div>
+
+      <%= render Admin::TabPanelComponent.new(
+        name: 'article_tabs',
+        label: '⚙️ Settings',
+        hash: 'settings',
+        controller_name: 'form-tabs'
+      ) do %>
+        <%= render 'admin/articles/form_tab_settings', f: f %>
       <% end %>
     </div>
-  </div>
 
-  <% if !@article.new_record? && policy(@article).destroy? %>
-    <%= render Admin::DangerZoneComponent.new(
-      title: t('admin.actions.delete_model', model: Article.model_name.human),
-      description: t('admin.danger_zone.delete_description', model: Article.model_name.human.downcase),
-      button_text: t('admin.actions.delete_model', model: Article.model_name.human),
-      button_path: admin_article_path(@article),
-      confirm: t('admin.confirm.delete_permanent', model: Article.model_name.human.downcase)
+    <%= render Admin::SaveBarComponent.new(
+      multi_step: true,
+      tab_name: 'article_tabs',
+      settings_hash: 'settings',
+      storage_key: 'articleTabAfterSave'
     ) %>
-  <% end %>
-
-  <%= render Admin::SaveBarComponent.new do |c| %>
-    <% c.with_button do %>
-      <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-    <% end %>
   <% end %>
 <% end %>

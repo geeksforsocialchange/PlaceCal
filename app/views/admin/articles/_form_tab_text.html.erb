@@ -1,0 +1,64 @@
+<%- disabled_fields = policy(@article).disabled_fields %>
+
+<div class="space-y-6">
+  <%# Publication date at top for existing articles %>
+  <% unless @article.new_record? %>
+    <div class="flex items-center gap-4 text-sm text-base-content/60">
+      <% if @article.published_at.present? %>
+        <span>Published <%= time_ago_in_words(@article.published_at) %> ago</span>
+        <span class="text-base-content/30">·</span>
+      <% end %>
+      <span>Last updated <%= time_ago_in_words(@article.updated_at) %> ago</span>
+    </div>
+  <% end %>
+
+  <%# Title field - large and prominent at top %>
+  <div class="fieldset max-w-4xl">
+    <label for="article_title" class="fieldset-legend"><%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
+    <%= f.input_field :title, as: :string, class: 'input input-bordered w-full text-2xl font-semibold h-14', id: 'article_title', placeholder: 'Enter article title...' %>
+  </div>
+
+  <%# Author field %>
+  <div class="fieldset max-w-md">
+    <label for="article_author_id" class="fieldset-legend"><%= attr_label(:article, :author) %></label>
+    <% if disabled_fields.include?(:author_id) %>
+      <div class="text-base-content font-medium"><%= @article.author&.admin_name || 'Unknown' %></div>
+    <% else %>
+      <%= f.association :author, as: :select, label: false, input_html: { class: 'select select-bordered w-full', id: 'article_author_id', data: { controller: "tom-select" } } %>
+    <% end %>
+  </div>
+
+  <%# Body with side-by-side markdown preview %>
+  <div data-controller="markdown-preview">
+    <div class="flex items-center justify-between mb-2">
+      <label for="article_body" class="fieldset-legend mb-0"><%= attr_label(:article, :body) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
+    </div>
+    <p class="text-sm text-base-content/60 mb-3">
+      This field accepts <a href="https://www.markdownguide.org/basic-syntax/" class="link link-hover text-placecal-teal" target="_blank">Markdown syntax</a>.
+    </p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <%# Editor %>
+      <div>
+        <div class="text-xs font-medium text-base-content/50 mb-2 flex items-center gap-1">
+          <%= icon(:edit, size: '3') %>
+          Write
+        </div>
+        <%= f.input_field :body, as: :text, class: 'textarea textarea-bordered w-full min-h-96 font-mono text-sm', data: { controller: 'auto-expand', markdown_preview_target: 'input', action: 'input->markdown-preview#updatePreview' }, id: 'article_body' %>
+      </div>
+
+      <%# Preview %>
+      <div>
+        <div class="text-xs font-medium text-base-content/50 mb-2 flex items-center gap-1">
+          <%= icon(:eye, size: '3') %>
+          Preview
+        </div>
+        <div class="border border-base-300 rounded-lg p-6 min-h-96 bg-base-100 overflow-y-auto">
+          <div data-markdown-preview-target="output" class="markdown-preview">
+            <p class="text-base-content/50 italic">Start typing to see preview...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

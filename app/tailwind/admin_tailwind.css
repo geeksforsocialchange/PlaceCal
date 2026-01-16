@@ -34,4 +34,5 @@
 /* Admin CSS partials */
 @import "./_animations.css";
 @import "./_components.css";
+@import "./_markdown-preview.css";
 @import "./_tom-select.css";
