@@ -69,7 +69,7 @@ class PartnershipDatatable < Datatable
         <a href="#{edit_admin_partnership_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
-        <span class="text-xs text-gray-400 font-mono">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>
+        <span class="text-xs text-gray-400 font-mono">##{record.id} · 🏷#{ERB::Util.html_escape(record.slug)}</span>
       </div>
     HTML
   end
