@@ -5,7 +5,7 @@
   <div class="space-y-3">
     <h2 class="text-base font-semibold flex items-center gap-2">
       <%= icon(:edit, size: '4') %>
-      Article Details
+      <%= t('admin.articles.sections.details') %>
     </h2>
 
     <div class="space-y-4">
@@ -14,7 +14,7 @@
         <%= f.label :title, class: 'fieldset-legend' do %>
           <%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span>
         <% end %>
-        <%= f.input_field :title, as: :string, class: 'input input-bordered w-full text-xl font-semibold', id: 'article_title', placeholder: 'Enter article title...' %>
+        <%= f.input_field :title, as: :string, class: 'input input-bordered w-full text-xl font-semibold', id: 'article_title', placeholder: t('admin.articles.fields.title_placeholder') %>
       </fieldset>
 
       <%# Author and Publication date side by side %>
@@ -35,14 +35,14 @@
         <%# Publication date (read-only display) %>
         <% unless @article.new_record? %>
           <fieldset class="fieldset w-auto">
-            <legend class="fieldset-legend">Published</legend>
+            <legend class="fieldset-legend"><%= t('admin.articles.fields.published') %></legend>
             <div class="input input-bordered h-9 flex items-center gap-2 bg-base-200/50 cursor-default">
               <%= icon(:calendar, size: '4', css_class: 'text-gray-600') %>
               <% if @article.published_at.present? %>
                 <span class="text-base-content"><%= @article.published_at.strftime('%d %b %Y') %></span>
-                <span class="text-gray-600 text-sm">(<%= time_ago_in_words(@article.published_at) %> ago)</span>
+                <span class="text-gray-600 text-sm">(<%= t('admin.time.ago', time: time_ago_in_words(@article.published_at)) %>)</span>
               <% else %>
-                <span class="text-gray-600 italic">Not published</span>
+                <span class="text-gray-600 italic"><%= t('admin.articles.fields.not_published') %></span>
               <% end %>
             </div>
           </fieldset>
@@ -65,34 +65,34 @@
       <div class="flex-1 min-w-64 flex items-center justify-between" data-markdown-preview-target="editorPane">
         <div class="text-xs font-medium text-gray-600 flex items-center gap-1">
           <%= icon(:edit, size: '3') %>
-          Write
+          <%= t('admin.articles.markdown.write') %>
         </div>
         <%# Markdown toolbar %>
         <div class="flex items-center gap-0.5" data-markdown-preview-target="toolbar">
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBold" title="Bold (Ctrl+B)">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBold" title="<%= t('admin.articles.markdown.toolbar.bold') %>">
             <strong>B</strong>
           </button>
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertItalic" title="Italic (Ctrl+I)">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertItalic" title="<%= t('admin.articles.markdown.toolbar.italic') %>">
             <em>I</em>
           </button>
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertLink" title="Link">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertLink" title="<%= t('admin.articles.markdown.toolbar.link') %>">
             <%= icon(:link, size: '4') %>
           </button>
           <div class="divider divider-horizontal mx-0.5 h-4"></div>
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH2" title="Heading 2">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH2" title="<%= t('admin.articles.markdown.toolbar.h2') %>">
             H2
           </button>
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH3" title="Heading 3">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH3" title="<%= t('admin.articles.markdown.toolbar.h3') %>">
             H3
           </button>
           <div class="divider divider-horizontal mx-0.5 h-4"></div>
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBulletList" title="Bullet list">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBulletList" title="<%= t('admin.articles.markdown.toolbar.bullet_list') %>">
             <%= icon(:list, size: '4') %>
           </button>
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBlockquote" title="Blockquote">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBlockquote" title="<%= t('admin.articles.markdown.toolbar.blockquote') %>">
             &ldquo;
           </button>
-          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertCode" title="Code">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertCode" title="<%= t('admin.articles.markdown.toolbar.code') %>">
             <code class="text-xs">&lt;/&gt;</code>
           </button>
         </div>
@@ -103,7 +103,7 @@
       <div class="hidden lg:flex flex-1 min-w-64 items-center" data-markdown-preview-target="previewPane">
         <div class="text-xs font-medium text-gray-600 flex items-center gap-1">
           <%= icon(:eye, size: '3') %>
-          Preview
+          <%= t('admin.articles.markdown.preview') %>
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@
       <div class="hidden lg:block flex-1 min-w-64" data-markdown-preview-target="previewContent">
         <div class="border border-base-300 rounded-lg px-6 py-2 min-h-96 bg-base-100 overflow-y-auto">
           <div data-markdown-preview-target="output" class="markdown-preview">
-            <p class="text-gray-500 italic">Start typing to see preview...</p>
+            <p class="text-gray-500 italic"><%= t('admin.articles.markdown.preview_placeholder') %></p>
           </div>
         </div>
       </div>

@@ -1,12 +1,12 @@
 <%= render partial: 'layouts/admin/datatable', locals: {
-    title: 'Neighbourhoods',
+    title: t('admin.neighbourhoods.index.title'),
     model: :neighbourhoods,
     column_titles: [
-      'Neighbourhood',
-      'Level',
-      'Hierarchy',
-      'Partners',
-      'Release',
+      t('admin.neighbourhoods.index.columns.neighbourhood'),
+      t('admin.neighbourhoods.index.columns.level'),
+      t('admin.neighbourhoods.index.columns.hierarchy'),
+      t('admin.neighbourhoods.index.columns.partners'),
+      t('admin.neighbourhoods.index.columns.release'),
       ''
     ],
     columns: %i[name unit hierarchy partners_count release_date actions],
@@ -22,31 +22,31 @@
     filters: [
       {
         column: 'unit',
-        label: 'Level',
+        label: t('admin.neighbourhoods.index.columns.level'),
         width: 'w-32',
         options: [
-          { value: 'ward', label: 'Ward (L1)' },
-          { value: 'district', label: 'District (L2)' },
-          { value: 'county', label: 'County (L3)' },
-          { value: 'region', label: 'Region (L4)' },
-          { value: 'country', label: 'Country (L5)' }
+          { value: 'ward', label: t('admin.neighbourhoods.index.levels.ward') },
+          { value: 'district', label: t('admin.neighbourhoods.index.levels.district') },
+          { value: 'county', label: t('admin.neighbourhoods.index.levels.county') },
+          { value: 'region', label: t('admin.neighbourhoods.index.levels.region') },
+          { value: 'country', label: t('admin.neighbourhoods.index.levels.country') }
         ]
       },
       {
         column: 'release',
-        label: 'Release',
+        label: t('admin.neighbourhoods.index.columns.release'),
         width: 'w-32',
         default: 'current',
         options: [
-          { value: 'current', label: 'Current' },
-          { value: 'legacy', label: 'Legacy' }
+          { value: 'current', label: t('admin.neighbourhoods.index.release.current') },
+          { value: 'legacy', label: t('admin.neighbourhoods.index.release.legacy') }
         ]
       }
     ],
     secondary_filters: [
       {
         column: 'country_id',
-        label: 'Country (L5)',
+        label: t('admin.neighbourhoods.index.levels.country'),
         width: 'min-w-40',
         type: :hierarchical,
         level: 5,
@@ -57,7 +57,7 @@
       },
       {
         column: 'region_id',
-        label: 'Region (L4)',
+        label: t('admin.neighbourhoods.index.levels.region'),
         width: 'min-w-48',
         type: :hierarchical,
         level: 4,
@@ -66,7 +66,7 @@
       },
       {
         column: 'county_id',
-        label: 'County (L3)',
+        label: t('admin.neighbourhoods.index.levels.county'),
         width: 'min-w-48',
         type: :hierarchical,
         level: 3,
@@ -75,7 +75,7 @@
       },
       {
         column: 'district_id',
-        label: 'District (L2)',
+        label: t('admin.neighbourhoods.index.levels.district'),
         width: 'min-w-48',
         type: :hierarchical,
         level: 2,
@@ -88,7 +88,7 @@
   }
 %>
 
-<h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">Neighbourhood Roots</h2>
+<h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4"><%= t('admin.neighbourhoods.index.roots_title') %></h2>
 
 <div class="bg-white shadow-sm rounded-lg p-4">
   <% Neighbourhood.roots.order(:name).each do |root| %>
@@ -96,4 +96,4 @@
   <% end %>
 </div>
 
-<p class="text-sm text-gray-500 mt-4">ONS Latest Release Date Loaded: <%= Neighbourhood::LATEST_RELEASE_DATE %></p>
+<p class="text-sm text-gray-500 mt-4"><%= t('admin.neighbourhoods.index.ons_release', date: Neighbourhood::LATEST_RELEASE_DATE) %></p>
