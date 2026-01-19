@@ -45,6 +45,8 @@ module Admin
 
       respond_to do |format|
         if @partner.save
+          invite_partner_admin(@partner) if invited_admin_params[:email].present?
+
           format.html do
             flash[:success] = 'Partner was successfully created.'
             redirect_to after_create_redirect_path(@partner)
@@ -169,6 +171,40 @@ module Admin
         new_admin_calendar_path(partner_id: partner.id)
       else
         edit_admin_partner_path(partner)
+      end
+    end
+
+    def invited_admin_params
+      params.dig(:partner, :invited_admin) || {}
+    end
+
+    def invite_partner_admin(partner)
+      admin_params = invited_admin_params
+      email = admin_params[:email]&.strip&.downcase
+      return if email.blank?
+
+      user = User.find_by(email: email)
+
+      if user
+        # Existing user - just add as partner admin
+        user.partners << partner unless user.partners.include?(partner)
+      else
+        # New user - create and invite
+        user = User.new(
+          email: email,
+          first_name: admin_params[:first_name],
+          last_name: admin_params[:last_name],
+          phone: admin_params[:phone],
+          role: 'citizen'
+        )
+        user.skip_password_validation = true
+        user.partners << partner
+
+        if user.valid?
+          user.invite!
+        else
+          Rails.logger.warn "Failed to invite partner admin: #{user.errors.full_messages.join(', ')}"
+        end
       end
     end
 

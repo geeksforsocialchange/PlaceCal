@@ -120,8 +120,7 @@ module Admin
     def preselect_partner
       return if params[:partner_id].blank?
 
-      # TODO: better calendar-to-user scoping
-      @partner = current_user.partners.where(id: params[:partner_id]).first
+      @partner = policy_scope(Partner).find_by(id: params[:partner_id])
     end
 
     def set_calendar
