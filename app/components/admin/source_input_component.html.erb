@@ -1,8 +1,8 @@
 <div data-controller="source-validator" data-source-validator-test-url-value="<%= test_url %>">
   <fieldset class="fieldset">
-    <%= form.label :source, class: 'fieldset-legend' do %>
+    <label for="calendar_source" class="fieldset-legend">
       <%= I18n.t('activerecord.attributes.calendar.source') %> <span class="text-error"><%= I18n.t('admin.labels.required') %></span>
-    <% end %>
+    </label>
     <div class="flex gap-2">
       <%= form.input_field :source,
           class: 'input input-bordered flex-1 font-mono text-sm',
