@@ -214,6 +214,12 @@
           <%# Default Location %>
           <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
             <legend class="fieldset-legend text-base font-semibold"><%= t('admin.calendars.fields.default_location') %></legend>
+            <% if @partner_missing_address %>
+              <div class="alert alert-warning mb-4">
+                <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+                <span><%= t('admin.calendars.wizard.location.partner_no_address', partner: @partner.name) %></span>
+              </div>
+            <% end %>
             <%= f.input_field :place_id,
                               as: :select,
                               collection: options_for_location,

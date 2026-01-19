@@ -24,6 +24,8 @@ module Admin
 
     def new
       @calendar = Calendar.new
+      @calendar.place_id = @partner&.id if @partner&.address_id.present?
+      @partner_missing_address = @partner.present? && @partner.address_id.blank?
       authorize @calendar
     end
 

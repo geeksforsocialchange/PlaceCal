@@ -275,6 +275,7 @@ en:
           title: "Location Settings"
           description: "Configure how location information is handled for imported events."
           default_hint: "Select a partner to use as the default location for events."
+          partner_no_address: '"%{partner}" doesn''t have an address, so it can''t be used as a default location.'
           strategy_hint: "Where should location data come from?"
       tabs:
         source: "Source"
