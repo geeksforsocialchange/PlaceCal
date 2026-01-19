@@ -23,6 +23,7 @@ export default class extends Controller {
 		"form",
 		// Step 1: Name
 		"nameInput",
+		"nameMinLengthHint",
 		"nameFeedback",
 		"exactMatch",
 		"exactMatchLink",
@@ -148,6 +149,11 @@ export default class extends Controller {
 
 	async performNameCheck() {
 		const name = this.nameInputTarget.value.trim();
+
+		// Show/hide min length hint
+		if (this.hasNameMinLengthHintTarget) {
+			this.nameMinLengthHintTarget.classList.toggle("hidden", name.length >= 5);
+		}
 
 		// Reset UI state
 		this.nameFeedbackTarget.classList.add("hidden");
