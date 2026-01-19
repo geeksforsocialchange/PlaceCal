@@ -122,7 +122,7 @@ class SiteDatatable < Datatable
 
     <<~HTML.html_safe
       <button type="button"
-              class="text-gray-600 hover:text-orange-600 hover:underline cursor-pointer"
+              class="text-left text-gray-600 hover:text-orange-600 hover:underline cursor-pointer"
               data-action="click->admin-table#filterByValue"
               data-filter-column="site_admin_id"
               data-filter-value="#{admin.id}"

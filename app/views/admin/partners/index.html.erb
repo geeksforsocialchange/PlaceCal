@@ -62,15 +62,15 @@
           { value: 'yes', label: t('admin.labels.yes') },
           { value: 'no', label: t('admin.labels.no') }
         ]
-      },
-      {
-        column: 'category',
-        label: 'Category',
-        width: 'w-28',
-        options: category_options
       }
     ],
     secondary_filters: [
+      {
+        column: 'category',
+        label: 'Category',
+        width: 'w-40',
+        options: category_options
+      },
       {
         column: 'country_id',
         label: 'Country (L5)',
