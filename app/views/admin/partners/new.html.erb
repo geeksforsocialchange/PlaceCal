@@ -63,7 +63,7 @@
               autocomplete: 'off',
               'data-partner-wizard-target': 'nameInput',
               'data-action': 'input->partner-wizard#checkName' %>
-          <p class="text-sm text-error mt-2" data-partner-wizard-target="nameMinLengthHint">
+          <p class="text-sm text-red-700 mt-2" data-partner-wizard-target="nameMinLengthHint">
             Must be at least 5 characters long
           </p>
 
@@ -97,30 +97,32 @@
         </fieldset>
 
         <%# Summary %>
-        <fieldset class="fieldset bg-base-200/50 rounded-xl p-6 mt-6" data-controller="char-counter" data-char-counter-max-value="200">
-          <legend class="fieldset-legend text-base font-semibold">
+        <div class="fieldset bg-base-200/50 rounded-xl p-6 mt-6" data-controller="char-counter" data-char-counter-max-value="200">
+          <label for="partner_summary" class="fieldset-legend text-base font-semibold">
             <%= attr_label(:partner, :summary) %>
-          </legend>
+          </label>
           <%= f.input_field :summary, as: :text,
               class: 'textarea textarea-bordered w-full bg-base-100 min-h-16',
               maxlength: 200,
+              id: 'partner_summary',
               data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
           <div class="flex items-center justify-between mt-2">
             <p class="text-sm text-gray-600"><%= t('admin.partners.fields.summary_hint') %></p>
             <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 200</span>
           </div>
-        </fieldset>
+        </div>
 
         <%# Description %>
-        <fieldset class="fieldset bg-base-200/50 rounded-xl p-6 mt-6">
-          <legend class="fieldset-legend text-base font-semibold">
+        <div class="fieldset bg-base-200/50 rounded-xl p-6 mt-6">
+          <label for="partner_description" class="fieldset-legend text-base font-semibold">
             <%= attr_label(:partner, :description) %>
-          </legend>
+          </label>
           <%= f.input_field :description,
               class: 'textarea textarea-bordered w-full bg-base-100 min-h-32',
+              id: 'partner_description',
               data: { controller: 'auto-expand' } %>
           <p class="text-sm text-gray-600 mt-2"><%= t('admin.partners.fields.description_hint') %></p>
-        </fieldset>
+        </div>
       </div>
     </div>
 
@@ -139,7 +141,7 @@
           </div>
         </div>
 
-        <p class="text-sm text-error mb-4" data-partner-wizard-target="locationHint">
+        <p class="text-sm text-red-700 mb-4" data-partner-wizard-target="locationHint">
           <%= t('admin.partners.validation.location_required') %>
         </p>
 

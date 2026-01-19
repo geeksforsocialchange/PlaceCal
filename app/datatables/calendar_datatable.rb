@@ -177,7 +177,7 @@ class CalendarDatatable < Datatable
 
   def render_importer_cell(record)
     importer = record.importer_used.presence
-    return "<span class=\"text-gray-400 text-xs italic\">#{I18n.t('admin.calendars.importer.pending')}</span>".html_safe if importer.nil?
+    return "<span class=\"text-gray-500 text-xs italic\">#{I18n.t('admin.calendars.importer.pending')}</span>".html_safe if importer.nil?
 
     # Get human-readable name from parser
     parser = CalendarImporter::CalendarImporter::PARSERS.find { |p| p::KEY == importer }

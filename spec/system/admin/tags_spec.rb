@@ -44,8 +44,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
-      # system_tag is on the Settings tab for existing tags
-      find('input[aria-label*="Settings"]').click
+      # Wait for tabs to be present, then click Settings
+      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      find('input.tab[data-hash="settings"]').click
       expect(page).to have_css("input#tag_system_tag")
     end
 
@@ -54,8 +55,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
-      # Navigate to Settings tab if visible, then check system_tag is not present
-      find('input[aria-label*="Settings"]').click if page.has_css?('input[aria-label*="Settings"]', wait: 2)
+      # Wait for tabs, navigate to Settings tab if visible
+      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      find('input.tab[data-hash="settings"]').click if page.has_css?('input.tab[data-hash="settings"]', wait: 2)
       expect(page).not_to have_css("input#tag_system_tag")
     end
   end
@@ -66,8 +68,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
-      # Navigate to Basic Info tab (tab state may be stored from previous tests)
-      find('input[aria-label*="Basic"]').click
+      # Wait for tabs, navigate to Basic Info tab (tab state may be stored from previous tests)
+      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      find('input.tab[data-hash="basic"]').click
 
       fill_in "Name", with: "A new tag name"
       click_button "Save"
@@ -82,14 +85,16 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
       # Toggle on - navigate to Settings tab first
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      find('input[aria-label*="Settings"]').click
+      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      find('input.tab[data-hash="settings"]').click
       check "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
       # Check is toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      find('input[aria-label*="Settings"]').click
+      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      find('input.tab[data-hash="settings"]').click
       expect(page).to have_checked_field("System Tag", visible: :all)
 
       # Toggle off
@@ -99,7 +104,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
       # Check is NOT toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      find('input[aria-label*="Settings"]').click
+      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      find('input.tab[data-hash="settings"]').click
       expect(page).to have_unchecked_field("System Tag", visible: :all)
     end
   end
@@ -138,7 +144,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       assert_has_flash(:success, "Tag was saved successfully")
 
       # After save, we stay on the edit page - navigate to Settings tab
-      find('input[aria-label*="Settings"]').click
+      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      find('input.tab[data-hash="settings"]').click
       expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility"]')
       fill_in "Slug", with: "alpha-facility-2"
       click_button "Save"
@@ -149,7 +156,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility-2"]')
 
       # Verify name on Basic Info tab
-      find('input[aria-label*="Basic"]').click
+      find('input.tab[data-hash="basic"]').click
       expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility 2"]')
     end
   end
