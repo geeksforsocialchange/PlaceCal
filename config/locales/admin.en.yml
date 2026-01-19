@@ -56,22 +56,16 @@ en:
 
     # Action buttons and links
     actions:
-      add: "Add"
       add_model: "Add %{model}"
       back: "Back"
-      cancel: "Cancel"
-      clear: "Clear"
       continue: "Continue"
-      delete: "Delete"
+      create: "Create"
       delete_model: "Delete %{model}"
-      destroy: "Destroy"
       edit: "Edit"
       edit_model: "Edit %{model}"
       new_model: "New %{model}"
       remove: "Remove"
-      retry: "Retry"
       save: "Save"
-      view: "View"
       view_all: "View all"
 
     # Labels and status indicators
