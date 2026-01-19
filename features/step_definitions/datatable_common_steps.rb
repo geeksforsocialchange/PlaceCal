@@ -17,14 +17,14 @@ end
 
 Then("I should see {string} in the admin table") do |content|
   await_datatables
-  within('[data-controller="admin-table"]') do
+  within('[data-controller="admin-table"] tbody') do
     expect(page).to have_content(content)
   end
 end
 
 Then("I should not see {string} in the admin table") do |content|
   await_datatables
-  within('[data-controller="admin-table"]') do
+  within('[data-controller="admin-table"] tbody') do
     expect(page).not_to have_content(content)
   end
 end

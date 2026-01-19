@@ -50,16 +50,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       expect(page).to have_css("input#tag_system_tag")
     end
 
-    it "hides system_tag option for citizen users" do
-      login_as(citizen_user)
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-
-      # Wait for tabs, navigate to Settings tab if visible
-      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
-      find('input.tab[data-hash="settings"]').click if page.has_css?('input.tab[data-hash="settings"]', wait: 2)
-      expect(page).not_to have_css("input#tag_system_tag")
-    end
+    # NOTE: Citizen users cannot access the tag edit page at all (TagPolicy#edit? requires root)
+    # so there's no need to test that system_tag is hidden for them - they can't see the page.
   end
 
   describe "tag editing" do

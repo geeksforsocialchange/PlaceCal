@@ -190,11 +190,12 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       await_datatables
       click_link "Add Partner"
 
-      # New Partner form is a 3-step wizard: Name -> Location -> Partnerships
+      # New Partner form is a 6-step wizard: Name -> Location -> Tags -> Contact -> Invite -> Confirm
       # Step 1: Name
       fill_in "partner_name", with: "Test Partner For Service Areas"
-      # Wait for name availability check to complete (shows green success message)
-      expect(page).to have_css(".alert-success", text: "available", wait: 5)
+      # Wait for name availability check to complete (debounced 400ms + API call)
+      # The nameAvailable alert is hidden by default and shown by JS after validation
+      expect(page).to have_css("[data-partner-wizard-target='nameAvailable']", text: "available", visible: true, wait: 10)
       click_button "Continue"
 
       # Step 2: Location - service areas are visible here
