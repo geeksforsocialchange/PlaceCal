@@ -46,8 +46,20 @@ When("I create a new partner with name {string}") do |name|
 
   click_button "Continue"
 
-  # Step 3: Partnerships - just submit the form
-  expect(page).to have_content("Add to Partnerships", wait: 5)
+  # Step 3: Tags & Categories
+  expect(page).to have_content("Tags & Categories", wait: 5)
+  click_button "Continue"
+
+  # Step 4: Contact Information
+  expect(page).to have_content("Contact Information", wait: 5)
+  click_button "Continue"
+
+  # Step 5: Invite a Partner Admin (optional)
+  expect(page).to have_content("Invite a Partner Admin", wait: 5)
+  click_button "Continue"
+
+  # Step 6: Confirm & Create
+  expect(page).to have_content("Partner will be created", wait: 5)
   click_button "Create Partner"
 end
 
