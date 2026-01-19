@@ -164,28 +164,36 @@
     </div>
 
     <% if secondary_filters_defined %>
-      <!-- Secondary Filters Row (Hierarchical) -->
+      <!-- Secondary Filters Row -->
       <div class="flex flex-wrap items-center gap-3 mt-3">
         <% secondary_filters.each do |filter| %>
-          <%
-            is_hierarchical = filter[:type] == :hierarchical
-            is_dependent = filter[:parent_filter].present?
-            target_name = is_hierarchical ? "hierarchicalFilter" : "filter"
-            has_options = filter[:options].present?
-          %>
-          <select data-admin-table-target="<%= target_name %>"
-                  data-filter-column="<%= filter[:column] %>"
-                  <% if filter[:parent_filter] %>data-filter-parent="<%= filter[:parent_filter] %>"<% end %>
-                  <% if is_hierarchical %>data-filter-level="<%= filter[:level] %>"<% end %>
-                  <% if filter[:endpoint] %>data-filter-endpoint="<%= filter[:endpoint] %>"<% end %>
-                  aria-label="<%= filter[:label] %>"
-                  data-action="change->admin-table#applyFilter"
-                  class="select-filter <%= 'hidden' if is_dependent %> <%= filter[:width] %>">
-            <option value=""><%= filter[:label] %></option>
-            <% filter[:options]&.each do |opt| %>
-              <option value="<%= opt[:value] %>"><%= opt[:label] %></option>
-            <% end %>
-          </select>
+          <% if filter[:type] == :radio %>
+            <%= render Admin::RadioFilterComponent.new(
+              column: filter[:column],
+              label: filter[:label],
+              options: filter[:options] || []
+            ) %>
+          <% else %>
+            <%
+              is_hierarchical = filter[:type] == :hierarchical
+              is_dependent = filter[:parent_filter].present?
+              target_name = is_hierarchical ? "hierarchicalFilter" : "filter"
+              has_options = filter[:options].present?
+            %>
+            <select data-admin-table-target="<%= target_name %>"
+                    data-filter-column="<%= filter[:column] %>"
+                    <% if filter[:parent_filter] %>data-filter-parent="<%= filter[:parent_filter] %>"<% end %>
+                    <% if is_hierarchical %>data-filter-level="<%= filter[:level] %>"<% end %>
+                    <% if filter[:endpoint] %>data-filter-endpoint="<%= filter[:endpoint] %>"<% end %>
+                    aria-label="<%= filter[:label] %>"
+                    data-action="change->admin-table#applyFilter"
+                    class="select-filter <%= 'hidden' if is_dependent %> <%= filter[:width] %>">
+              <option value=""><%= filter[:label] %></option>
+              <% filter[:options]&.each do |opt| %>
+                <option value="<%= opt[:value] %>"><%= opt[:label] %></option>
+              <% end %>
+            </select>
+          <% end %>
         <% end %>
       </div>
     <% end %>
