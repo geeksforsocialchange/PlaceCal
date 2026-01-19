@@ -29,22 +29,10 @@
       <p class="fieldset-label"><%= t('admin.calendars.fields.partner_hint') %></p>
     </fieldset>
 
-    <fieldset class="fieldset">
-      <%= f.label :source, class: 'fieldset-legend' do %>
-        <%= attr_label(:calendar, :source) %> <span class="text-error"><%= t('admin.labels.required') %></span>
-      <% end %>
-      <%= f.input_field :source, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.calendars.fields.source_placeholder') %>
-      <p class="fieldset-label"><%= t('admin.calendars.handbook_hint_html') %></p>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <%= f.label :importer_mode, t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend' %>
-      <%= f.input_field :importer_mode,
-                        as: :select,
-                        collection: options_for_importer,
-                        selected: @calendar.importer_mode || 'auto',
-                        class: 'select select-bordered w-full' %>
-    </fieldset>
+    <%= render Admin::SourceInputComponent.new(
+      form: f,
+      test_url: test_source_admin_calendars_path
+    ) %>
 
     <fieldset class="fieldset">
       <%= f.label :name, class: 'fieldset-legend' do %>
