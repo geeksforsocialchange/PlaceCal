@@ -108,31 +108,26 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <%# Address %>
-          <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
-            <legend class="fieldset-legend font-semibold">Physical Address</legend>
-            <p class="text-sm text-gray-600 mb-4">
-              If this partner has a fixed location, enter it here.
-            </p>
+          <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
             <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
-          </fieldset>
+          <% end %>
 
           <%# Service Areas %>
-          <fieldset class="fieldset bg-base-200/50 rounded-xl p-5">
-            <legend class="fieldset-legend font-semibold">Service Areas</legend>
-            <p class="text-sm text-gray-600 mb-4">
-              If this partner delivers services to wider areas (like outreach or phone support), add them here.
-            </p>
-            <div class="sites_neighbourhoods">
-              <%= nested_form_for(f, :service_areas,
-                    add_text: 'Add Service Area',
-                    add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
-                    partial: 'service_area_fields') do %>
-                <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-                  <%= render 'service_area_fields', f: neighbourhood %>
-                <% end %>
+          <%= render Admin::FormCardComponent.new(
+            icon: :car,
+            title: t('admin.sections.service_areas'),
+            description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
+            fit_height: true
+          ) do %>
+            <%= nested_form_for(f, :service_areas,
+                  add_text: t('admin.service_areas.add'),
+                  add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
+                  partial: 'service_area_fields') do %>
+              <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+                <%= render 'service_area_fields', f: neighbourhood %>
               <% end %>
-            </div>
-          </fieldset>
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>
