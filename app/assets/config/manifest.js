@@ -1,7 +1,10 @@
 //= link_tree ../fonts
 //= link_tree ../images
 
-// Built CSS from sass (for public site)
+// Public site CSS (compiled by Sprockets from SCSS)
+//= link application.css
+
+// Built CSS from sass (for public site) - when using yarn build
 //= link_directory ../builds .css
 
 // Site-specific stylesheets (compiled via Sprockets)
