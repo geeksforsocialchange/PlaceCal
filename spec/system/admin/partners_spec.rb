@@ -194,8 +194,8 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       # Step 1: Name
       fill_in "partner_name", with: "Test Partner For Service Areas"
       # Wait for name availability check to complete (debounced 400ms + API call)
-      # The nameAvailable alert is hidden by default and shown by JS after validation
-      expect(page).to have_css("[data-partner-wizard-target='nameAvailable']", text: "available", visible: true, wait: 10)
+      # The Continue button becomes enabled when name validation passes
+      expect(page).to have_button("Continue", disabled: false, wait: 10)
       click_button "Continue"
 
       # Step 2: Location - service areas are visible here
