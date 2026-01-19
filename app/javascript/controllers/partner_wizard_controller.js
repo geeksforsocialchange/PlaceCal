@@ -128,13 +128,18 @@ export default class extends Controller {
 	}
 
 	hasAddressOrServiceArea() {
-		// Check if address has postcode (required if using address)
+		// Check if address has both street address AND postcode
 		let hasValidAddress = false;
 		if (this.hasAddressFieldsTarget) {
+			const streetInput = this.addressFieldsTarget.querySelector(
+				"input[name*='street_address']"
+			);
 			const postcodeInput = this.addressFieldsTarget.querySelector(
 				"input[name*='postcode']"
 			);
-			hasValidAddress = postcodeInput && postcodeInput.value.trim() !== "";
+			const hasStreet = streetInput && streetInput.value.trim() !== "";
+			const hasPostcode = postcodeInput && postcodeInput.value.trim() !== "";
+			hasValidAddress = hasStreet && hasPostcode;
 		}
 
 		// Check if any service areas exist (nested fields that aren't hidden/destroyed)
