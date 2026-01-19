@@ -158,7 +158,7 @@
             description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
             fit_height: true
           ) do %>
-            <div data-partner-wizard-target="serviceAreasContainer" data-action="nested-form:added->partner-wizard#updateContinueButton nested-form:removed->partner-wizard#updateContinueButton">
+            <div data-partner-wizard-target="serviceAreasContainer" data-action="nested-form:added->partner-wizard#updateContinueButton nested-form:removed->partner-wizard#updateContinueButton change->partner-wizard#updateContinueButton">
               <%= nested_form_for(f, :service_areas,
                     add_text: t('admin.service_areas.add'),
                     add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',

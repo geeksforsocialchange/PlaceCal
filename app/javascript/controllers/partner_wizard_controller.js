@@ -142,15 +142,19 @@ export default class extends Controller {
 			hasValidAddress = hasStreet && hasPostcode;
 		}
 
-		// Check if any service areas exist (nested fields that aren't hidden/destroyed)
+		// Check if any service areas have a selected neighbourhood
 		let hasServiceArea = false;
 		if (this.hasServiceAreasContainerTarget) {
 			const serviceAreas =
 				this.serviceAreasContainerTarget.querySelectorAll(".nested-fields");
-			// Filter out hidden ones (marked for destruction)
-			hasServiceArea = Array.from(serviceAreas).some(
-				(el) => el.style.display !== "none"
-			);
+			// Check for visible service areas with a selected neighbourhood_id
+			hasServiceArea = Array.from(serviceAreas).some((el) => {
+				if (el.style.display === "none") return false;
+				const neighbourhoodInput = el.querySelector(
+					"input[name*='neighbourhood_id']"
+				);
+				return neighbourhoodInput && neighbourhoodInput.value.trim() !== "";
+			});
 		}
 
 		const isValid = hasValidAddress || hasServiceArea;
