@@ -97,6 +97,7 @@ Metrics/ClassLength:
   Exclude:
     - "spec/**/*.rb"
     - "app/models/partner.rb"
+    - "app/controllers/admin/partners_controller.rb"
 
 Metrics/CyclomaticComplexity:
   Exclude:

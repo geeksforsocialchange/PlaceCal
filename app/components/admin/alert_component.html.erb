@@ -1,4 +1,4 @@
 <div role="alert" class="alert <%= alert_class %> shadow-md">
   <%= icon(icon_name, size: '6', css_class: 'shrink-0') %>
-  <span><%= @message %></span>
+  <span><%= @message.html_safe %></span>
 </div>

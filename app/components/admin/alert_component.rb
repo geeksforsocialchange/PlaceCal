@@ -8,7 +8,8 @@ module Admin
       notice: { class: 'alert-info', icon: :info },
       success: { class: 'alert-success', icon: :check_circle },
       alert: { class: 'alert-warning', icon: :warning },
-      error: { class: 'alert-error', icon: :x_circle }
+      error: { class: 'alert-error', icon: :x_circle },
+      danger: { class: 'alert-error', icon: :x_circle }
     }.freeze
 
     def initialize(type:, message:)

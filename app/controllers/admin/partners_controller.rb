@@ -45,10 +45,10 @@ module Admin
 
       respond_to do |format|
         if @partner.save
-          invite_partner_admin(@partner) if invited_admin_params[:email].present?
+          invitation_result = invite_partner_admin(@partner) if invited_admin_params[:email].present?
 
           format.html do
-            flash[:success] = 'Partner was successfully created.'
+            flash[:success] = build_success_flash(invitation_result)
             redirect_to after_create_redirect_path(@partner)
           end
 
@@ -181,13 +181,14 @@ module Admin
     def invite_partner_admin(partner)
       admin_params = invited_admin_params
       email = admin_params[:email]&.strip&.downcase
-      return if email.blank?
+      return { status: :skipped } if email.blank?
 
       user = User.find_by(email: email)
 
       if user
         # Existing user - just add as partner admin
         user.partners << partner unless user.partners.include?(partner)
+        { status: :existing_user, email: email }
       else
         # New user - create and invite
         user = User.new(
@@ -201,11 +202,35 @@ module Admin
         user.partners << partner
 
         if user.valid?
+          # In development, skip sending email so Letter Opener doesn't interrupt the flow
+          # Instead, we'll show the invitation link in the flash message
+          user.skip_invitation = Rails.env.development?
           user.invite!
+          invitation_url = accept_user_invitation_url(invitation_token: user.raw_invitation_token)
+          { status: :invited, email: email, invitation_url: invitation_url }
         else
           Rails.logger.warn "Failed to invite partner admin: #{user.errors.full_messages.join(', ')}"
+          { status: :failed, email: email, errors: user.errors.full_messages }
         end
       end
+    end
+
+    def build_success_flash(invitation_result)
+      message = 'Partner was successfully created.'
+      return message unless invitation_result
+
+      message + case invitation_result[:status]
+                when :invited then invitation_flash(invitation_result)
+                when :existing_user then " #{invitation_result[:email]} has been added as an admin."
+                when :failed then " However, the admin invitation failed: #{invitation_result[:errors].join(', ')}"
+                else ''
+                end
+    end
+
+    def invitation_flash(result)
+      msg = " Invitation sent to #{result[:email]}."
+      msg += " <a href=\"#{result[:invitation_url]}\" target=\"_blank\" class=\"underline\">View invitation</a>" if Rails.env.development? && result[:invitation_url]
+      msg
     end
 
     def set_partner_tags_controller
