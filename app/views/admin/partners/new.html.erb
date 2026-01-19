@@ -29,7 +29,7 @@
         <span class="step-content">Invite</span>
       </li>
       <li class="step" data-partner-wizard-target="stepIndicator" data-step="6">
-        <span class="step-content">Done!</span>
+        <span class="step-content">Confirm</span>
       </li>
     </ul>
   </div>
@@ -414,7 +414,7 @@
       </div>
     </div>
 
-    <%# Step 6: Done! %>
+    <%# Step 6: Confirm %>
     <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="6">
       <div class="card-body">
         <div class="flex items-start gap-4 mb-6">
@@ -422,15 +422,36 @@
             <%= icon(:check_circle, size: '6', css_class: 'text-emerald-600') %>
           </div>
           <div>
-            <h2 class="card-title text-xl">Ready to Create Partner</h2>
+            <h2 class="card-title text-xl">Confirm & Create</h2>
             <p class="text-gray-600 text-sm mt-1">
-              Click "Create Partner" below to save. What would you like to do next?
+              Review what will be created, then click "Create Partner" below.
             </p>
           </div>
         </div>
 
-        <%# What's next options %>
         <div class="space-y-4">
+          <%# Partner will be created %>
+          <div class="alert bg-blue-50 border border-blue-200 text-blue-800">
+            <%= icon(:partner, size: '5', css_class: 'shrink-0') %>
+            <div>
+              <p class="font-semibold">Partner will be created</p>
+              <p class="text-sm" data-partner-wizard-target="confirmPartnerName">-</p>
+            </div>
+          </div>
+
+          <%# User will be invited (only shown if admin email provided) %>
+          <div class="alert bg-purple-50 border border-purple-200 text-purple-800 hidden" data-partner-wizard-target="confirmAdminBox">
+            <%= icon(:user_add, size: '5', css_class: 'shrink-0') %>
+            <div>
+              <p class="font-semibold">Admin will be invited</p>
+              <p class="text-sm" data-partner-wizard-target="confirmAdminDetails">-</p>
+            </div>
+          </div>
+        </div>
+
+        <%# What's next options %>
+        <div class="space-y-4 mt-6">
+          <h3 class="font-semibold text-sm text-gray-600">After creating, I want to:</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label class="cursor-pointer">
               <input type="radio" name="after_create" value="edit" class="peer sr-only" checked>

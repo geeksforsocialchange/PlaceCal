@@ -45,6 +45,10 @@ export default class extends Controller {
 		"adminEmailAvailable",
 		"adminEmailTaken",
 		"adminEmailInvalid",
+		// Step 6: Confirm
+		"confirmPartnerName",
+		"confirmAdminBox",
+		"confirmAdminDetails",
 	];
 
 	static values = {
@@ -84,6 +88,11 @@ export default class extends Controller {
 		// Auto-copy contact info when entering step 5 (Invite)
 		if (step === 5) {
 			this.copyFromContact();
+		}
+
+		// Update confirmation summary when entering step 6
+		if (step === 6) {
+			this.updateConfirmation();
 		}
 	}
 
@@ -377,6 +386,48 @@ export default class extends Controller {
 		}
 		if (this.hasAdminEmailInvalidTarget) {
 			this.adminEmailInvalidTarget.classList.remove("hidden");
+		}
+	}
+
+	// ==================
+	// Step 6: Confirmation
+	// ==================
+	updateConfirmation() {
+		// Update partner name
+		if (this.hasConfirmPartnerNameTarget && this.hasNameInputTarget) {
+			this.confirmPartnerNameTarget.textContent =
+				this.nameInputTarget.value.trim() || "-";
+		}
+
+		// Update admin info
+		if (this.hasConfirmAdminBoxTarget) {
+			const email = this.hasAdminEmailTarget
+				? this.adminEmailTarget.value.trim()
+				: "";
+
+			if (email && !this.adminSkippedValue) {
+				// Show admin box
+				this.confirmAdminBoxTarget.classList.remove("hidden");
+
+				// Build admin details text
+				const firstName = this.hasAdminFirstNameTarget
+					? this.adminFirstNameTarget.value.trim()
+					: "";
+				const lastName = this.hasAdminLastNameTarget
+					? this.adminLastNameTarget.value.trim()
+					: "";
+				const name =
+					firstName || lastName ? `${firstName} ${lastName}`.trim() : "";
+
+				if (this.hasConfirmAdminDetailsTarget) {
+					this.confirmAdminDetailsTarget.textContent = name
+						? `${name} (${email})`
+						: email;
+				}
+			} else {
+				// Hide admin box
+				this.confirmAdminBoxTarget.classList.add("hidden");
+			}
 		}
 	}
 }
