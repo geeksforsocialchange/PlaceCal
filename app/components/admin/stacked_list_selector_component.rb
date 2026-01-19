@@ -6,7 +6,7 @@ module Admin
 
     # @param field_name [String] Form field name (e.g., "partner[partnership_ids][]")
     # @param items [Array<Object>] Currently selected items (must respond to :id and :name)
-    # @param options [Array<Array>] Available options as [name, id] pairs
+    # @param options [Array<Array>] Available options as [name, id] pairs (not needed if read_only)
     # @param permitted_ids [Array<Integer>] IDs the user is allowed to modify (nil = all)
     # @param icon_name [Symbol] Icon to show for each item (default: :partnership)
     # @param icon_color [String] Tailwind color class for icon background
@@ -18,11 +18,12 @@ module Admin
     # @param use_tom_select [Boolean] Use tom-select for searchable dropdown (default: false)
     # @param wrapper_class [String] CSS class for test selectors (e.g., "user_partners")
     # @param link_path [Symbol] Path helper method for item links (e.g., :edit_admin_partner_path)
+    # @param read_only [Boolean] Display items in read-only mode without add/remove (default: false)
     # rubocop:disable Metrics/ParameterLists
     def initialize(
       field_name:,
       items:,
-      options:,
+      options: [],
       permitted_ids: nil,
       icon_name: :partnership,
       icon_color: 'bg-placecal-orange/10 text-placecal-orange',
@@ -33,7 +34,8 @@ module Admin
       controller: 'stacked-list-selector',
       use_tom_select: false,
       wrapper_class: nil,
-      link_path: nil
+      link_path: nil,
+      read_only: false
     )
       super()
       @field_name = field_name
@@ -50,8 +52,13 @@ module Admin
       @use_tom_select = use_tom_select
       @wrapper_class = wrapper_class
       @link_path = link_path
+      @read_only = read_only
     end
     # rubocop:enable Metrics/ParameterLists
+
+    def read_only?
+      @read_only
+    end
 
     private
 

@@ -39,53 +39,18 @@
     <% end %>
   <% else %>
     <%# Existing record - tabbed interface %>
-    <div class="tabs tabs-lift">
-      <%= render Admin::TabPanelComponent.new(
-        name: 'article_tabs',
-        label: '📝 Text',
-        hash: 'text',
-        controller_name: 'form-tabs',
-        checked: true
-      ) do %>
-        <%= render 'admin/articles/form_tab_text', f: f %>
-      <% end %>
-
-      <%= render Admin::TabPanelComponent.new(
-        name: 'article_tabs',
-        label: '🖼️ Image',
-        hash: 'image',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'admin/articles/form_tab_image', f: f %>
-      <% end %>
-
-      <%= render Admin::TabPanelComponent.new(
-        name: 'article_tabs',
-        label: '🔗 References',
-        hash: 'references',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'admin/articles/form_tab_references', f: f %>
-      <% end %>
-
-      <%# Spacer to push Settings tab right %>
-      <div class="tab flex-1 cursor-default"></div>
-
-      <%= render Admin::TabPanelComponent.new(
-        name: 'article_tabs',
-        label: '⚙️ Settings',
-        hash: 'settings',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'admin/articles/form_tab_settings', f: f %>
-      <% end %>
-    </div>
-
-    <%= render Admin::SaveBarComponent.new(
-      multi_step: true,
+    <%= render Admin::TabFormComponent.new(
+      tabs: [
+        { label: '📝 Text', hash: 'text', partial: 'admin/articles/form_tab_text' },
+        { label: '🖼️ Image', hash: 'image', partial: 'admin/articles/form_tab_image' },
+        { label: '🔗 References', hash: 'references', partial: 'admin/articles/form_tab_references' },
+        { label: '⚙️ Settings', hash: 'settings', partial: 'admin/articles/form_tab_settings', spacer_before: true }
+      ],
       tab_name: 'article_tabs',
+      storage_key: 'articleTabAfterSave',
       settings_hash: 'settings',
-      storage_key: 'articleTabAfterSave'
+      form: f,
+      record: @article
     ) %>
   <% end %>
 <% end %>

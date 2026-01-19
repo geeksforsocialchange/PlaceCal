@@ -1,74 +1,20 @@
 <%= simple_form_for [:admin, @site], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'siteTabAfterSave' } } do |f| %>
   <%= render(Admin::ErrorComponent.new(@site)) %>
 
-  <%# Radio Tabs - daisyUI tabs-lift %>
-  <div class="tabs tabs-lift">
-    <%= render Admin::TabPanelComponent.new(
-      name: 'site_tabs',
-      label: '📋 Basic Info',
-      hash: 'basic',
-      controller_name: 'form-tabs',
-      checked: true
-    ) do %>
-      <%= render 'form_tab_basic', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'site_tabs',
-      label: '🖼️ Images',
-      hash: 'images',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_images', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'site_tabs',
-      label: '📍 Neighbourhoods',
-      hash: 'neighbourhoods',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_neighbourhoods', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'site_tabs',
-      label: '🏷️ Partnerships',
-      hash: 'partnerships',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_partnerships', f: f %>
-    <% end %>
-
-    <% unless @site.new_record? %>
-      <%= render Admin::TabPanelComponent.new(
-        name: 'site_tabs',
-        label: '👁️ Preview',
-        hash: 'preview',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'form_tab_preview' %>
-      <% end %>
-    <% end %>
-
-    <%# Spacer to push Admin tab right %>
-    <div class="tab flex-1 cursor-default"></div>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'site_tabs',
-      label: '⚙️ Settings',
-      hash: 'settings',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_settings', f: f %>
-    <% end %>
-  </div>
-
-  <%= render Admin::SaveBarComponent.new(
-    multi_step: true,
+  <%= render Admin::TabFormComponent.new(
+    tabs: [
+      { label: '📋 Basic Info', hash: 'basic', partial: 'form_tab_basic' },
+      { label: '🖼️ Images', hash: 'images', partial: 'form_tab_images' },
+      { label: '📍 Neighbourhoods', hash: 'neighbourhoods', partial: 'form_tab_neighbourhoods' },
+      { label: '🏷️ Partnerships', hash: 'partnerships', partial: 'form_tab_partnerships' },
+      { label: '👁️ Preview', hash: 'preview', partial: 'form_tab_preview', persisted_only: true },
+      { label: '⚙️ Settings', hash: 'settings', partial: 'form_tab_settings', spacer_before: true }
+    ],
     tab_name: 'site_tabs',
+    storage_key: 'siteTabAfterSave',
     settings_hash: 'settings',
     preview_hash: 'preview',
-    storage_key: 'siteTabAfterSave'
+    form: f,
+    record: @site
   ) %>
 <% end %>

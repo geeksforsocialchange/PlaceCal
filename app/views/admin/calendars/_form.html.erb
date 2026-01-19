@@ -4,65 +4,21 @@
     <%= render('importer_overview', calendar: @calendar) %>
   <% end %>
 
-  <%# Radio Tabs - daisyUI tabs-lift %>
-  <div class="tabs tabs-lift mt-6">
-    <%= render Admin::TabPanelComponent.new(
-      name: 'calendar_tabs',
-      label: '📥 Source',
-      hash: 'source',
-      controller_name: 'form-tabs',
-      checked: true
-    ) do %>
-      <%= render 'form_tab_source', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'calendar_tabs',
-      label: '📍 Location',
-      hash: 'location',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_location', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'calendar_tabs',
-      label: '📞 Contact',
-      hash: 'contact',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_contact', f: f %>
-    <% end %>
-
-    <% unless @calendar.new_record? %>
-      <%= render Admin::TabPanelComponent.new(
-        name: 'calendar_tabs',
-        label: '👁️ Preview',
-        hash: 'preview',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'form_tab_preview' %>
-      <% end %>
-
-      <%# Spacer to push Admin tab right %>
-      <div class="tab flex-1 cursor-default"></div>
-
-      <%= render Admin::TabPanelComponent.new(
-        name: 'calendar_tabs',
-        label: '⚙️ Settings',
-        hash: 'settings',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'form_tab_settings' %>
-      <% end %>
-    <% end %>
+  <div class="mt-6">
+    <%= render Admin::TabFormComponent.new(
+      tabs: [
+        { label: '📥 Source', hash: 'source', partial: 'form_tab_source' },
+        { label: '📍 Location', hash: 'location', partial: 'form_tab_location' },
+        { label: '📞 Contact', hash: 'contact', partial: 'form_tab_contact' },
+        { label: '👁️ Preview', hash: 'preview', partial: 'form_tab_preview', persisted_only: true },
+        { label: '⚙️ Settings', hash: 'settings', partial: 'form_tab_settings', persisted_only: true, spacer_before: true }
+      ],
+      tab_name: 'calendar_tabs',
+      storage_key: 'calendarTabAfterSave',
+      settings_hash: 'settings',
+      preview_hash: 'preview',
+      form: f,
+      record: @calendar
+    ) %>
   </div>
-
-  <%= render Admin::SaveBarComponent.new(
-    multi_step: true,
-    tab_name: 'calendar_tabs',
-    settings_hash: 'settings',
-    preview_hash: 'preview',
-    storage_key: 'calendarTabAfterSave'
-  ) %>
 <% end %>

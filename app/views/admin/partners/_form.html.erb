@@ -14,92 +14,22 @@
     <% end %>
   <% end %>
 
-  <%# Radio Tabs - daisyUI tabs-lift %>
-  <div class="tabs tabs-lift">
-    <%= render Admin::TabPanelComponent.new(
-      name: 'partner_tabs',
-      label: '📋 Basic Info',
-      hash: 'basic',
-      controller_name: 'form-tabs',
-      checked: true
-    ) do %>
-      <%= render 'form_tab_basic', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'partner_tabs',
-      label: '📍 Location',
-      hash: 'location',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_location', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'partner_tabs',
-      label: '📞 Contact',
-      hash: 'contact',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_contact', f: f %>
-    <% end %>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'partner_tabs',
-      label: '🏷️ Tags',
-      hash: 'tags',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_tags', f: f %>
-    <% end %>
-
-    <% unless @partner.new_record? %>
-      <%= render Admin::TabPanelComponent.new(
-        name: 'partner_tabs',
-        label: '📅 Calendars',
-        hash: 'calendars',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'form_tab_calendars' %>
-      <% end %>
-
-      <%= render Admin::TabPanelComponent.new(
-        name: 'partner_tabs',
-        label: '👥 Admins',
-        hash: 'admins',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'form_tab_admins' %>
-      <% end %>
-
-      <%= render Admin::TabPanelComponent.new(
-        name: 'partner_tabs',
-        label: '👁️ Preview',
-        hash: 'preview',
-        controller_name: 'form-tabs'
-      ) do %>
-        <%= render 'form_tab_preview' %>
-      <% end %>
-    <% end %>
-
-    <%# Spacer to push Settings tab right %>
-    <div class="tab flex-1 cursor-default"></div>
-
-    <%= render Admin::TabPanelComponent.new(
-      name: 'partner_tabs',
-      label: '⚙️ Settings',
-      hash: 'settings',
-      controller_name: 'form-tabs'
-    ) do %>
-      <%= render 'form_tab_settings', f: f %>
-    <% end %>
-  </div>
-
-  <%= render Admin::SaveBarComponent.new(
-    multi_step: true,
+  <%= render Admin::TabFormComponent.new(
+    tabs: [
+      { label: '📋 Basic Info', hash: 'basic', partial: 'form_tab_basic' },
+      { label: '📍 Location', hash: 'location', partial: 'form_tab_location' },
+      { label: '📞 Contact', hash: 'contact', partial: 'form_tab_contact' },
+      { label: '🏷️ Tags', hash: 'tags', partial: 'form_tab_tags' },
+      { label: '📅 Calendars', hash: 'calendars', partial: 'form_tab_calendars', persisted_only: true },
+      { label: '👥 Admins', hash: 'admins', partial: 'form_tab_admins', persisted_only: true },
+      { label: '👁️ Preview', hash: 'preview', partial: 'form_tab_preview', persisted_only: true },
+      { label: '⚙️ Settings', hash: 'settings', partial: 'form_tab_settings', spacer_before: true }
+    ],
     tab_name: 'partner_tabs',
+    storage_key: 'partnerTabAfterSave',
     settings_hash: 'settings',
     preview_hash: 'preview',
-    storage_key: 'partnerTabAfterSave'
+    form: f,
+    record: @partner
   ) %>
 <% end %>
