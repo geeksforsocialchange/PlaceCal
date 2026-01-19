@@ -23,11 +23,12 @@ RSpec.describe CalendarDatatable do
         "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
         "1" => { "data" => "partner", "name" => "partner", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
         "2" => { "data" => "state", "name" => "state", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "3" => { "data" => "events", "name" => "events", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "4" => { "data" => "notices", "name" => "notices", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "5" => { "data" => "last_import_at", "name" => "last_import_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "6" => { "data" => "checksum_updated_at", "name" => "checksum_updated_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "7" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
+        "3" => { "data" => "importer", "name" => "importer", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
+        "4" => { "data" => "events", "name" => "events", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
+        "5" => { "data" => "notices", "name" => "notices", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
+        "6" => { "data" => "last_import_at", "name" => "last_import_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
+        "7" => { "data" => "checksum_updated_at", "name" => "checksum_updated_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
+        "8" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
       },
       "order" => { "0" => { "column" => "0", "dir" => "asc" } }
     }.deep_merge(params))
@@ -41,7 +42,7 @@ RSpec.describe CalendarDatatable do
 
       columns = datatable.view_columns
       expect(columns.keys).to contain_exactly(
-        :name, :partner, :state, :events, :notices, :last_import_at, :checksum_updated_at, :actions
+        :name, :partner, :state, :importer, :events, :notices, :last_import_at, :checksum_updated_at, :actions
       )
     end
 
@@ -91,7 +92,7 @@ RSpec.describe CalendarDatatable do
       data = datatable.data
       expect(data).to be_an(Array)
       expect(data.first.keys).to contain_exactly(
-        :name, :partner, :state, :events, :notices, :last_import_at, :checksum_updated_at, :actions
+        :name, :partner, :state, :importer, :events, :notices, :last_import_at, :checksum_updated_at, :actions
       )
     end
 

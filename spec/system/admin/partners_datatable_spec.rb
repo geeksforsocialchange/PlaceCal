@@ -182,7 +182,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "calendar status filter" do
     it "filters to show only partners with calendars" do
-      select_datatable_filter "Connected", column: "calendar_status"
+      click_radio_filter "Yes", column: "calendar_status"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -190,7 +190,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "filters to show only partners without calendars" do
-      select_datatable_filter "No calendar", column: "calendar_status"
+      click_radio_filter "No", column: "calendar_status"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(2)
@@ -200,7 +200,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "admin users filter" do
     it "filters to show only partners with admins" do
-      select_datatable_filter "Has admins", column: "has_admins"
+      click_radio_filter "Yes", column: "has_admins"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -208,7 +208,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "filters to show only partners without admins" do
-      select_datatable_filter "No admins", column: "has_admins"
+      click_radio_filter "No", column: "has_admins"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(2)
@@ -252,7 +252,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "multiple filters combined" do
     it "applies multiple filters simultaneously" do
-      select_datatable_filter "Has admins", column: "has_admins"
+      click_radio_filter "Yes", column: "has_admins"
       select_datatable_filter "Health Services", column: "category"
       wait_for_datatable
 
@@ -263,14 +263,14 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "shows clear filters button when filters are active" do
       expect(page).not_to have_button("Clear filters")
 
-      select_datatable_filter "Has admins", column: "has_admins"
+      click_radio_filter "Yes", column: "has_admins"
       wait_for_datatable
 
       expect(page).to have_button("Clear filters")
     end
 
     it "clears all filters when clicking clear button" do
-      select_datatable_filter "Has admins", column: "has_admins"
+      click_radio_filter "Yes", column: "has_admins"
       select_datatable_filter "Health Services", column: "category"
       wait_for_datatable
 
@@ -294,7 +294,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "clear filters does not clear search" do
-      select_datatable_filter "Has admins", column: "has_admins"
+      click_radio_filter "Yes", column: "has_admins"
       fill_in "Search...", with: "Alpha"
       sleep 0.3
       wait_for_datatable
@@ -402,7 +402,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "summary display updates" do
     it "updates summary when filter reduces results" do
-      select_datatable_filter "Has admins", column: "has_admins"
+      click_radio_filter "Yes", column: "has_admins"
       wait_for_datatable
 
       within("[data-admin-table-target='summary']") do
@@ -421,7 +421,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "reverts summary when filters cleared" do
-      select_datatable_filter "Has admins", column: "has_admins"
+      click_radio_filter "Yes", column: "has_admins"
       wait_for_datatable
 
       click_button "Clear filters"

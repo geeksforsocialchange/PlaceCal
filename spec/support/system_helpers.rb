@@ -95,6 +95,15 @@ module SystemHelpers
     sleep 0.1
   end
 
+  # Click a radio filter button by its data-filter-column and value
+  # This works with the datatable radio button filters (Yes/No style)
+  def click_radio_filter(value, column:)
+    within("[data-filter-column='#{column}']") do
+      click_button value
+    end
+    sleep 0.1
+  end
+
   # Wait for admin-table datatable to finish loading after filter/search
   def wait_for_admin_table_load(timeout: 10)
     # Wait for loading spinner to disappear (if shown) and content to load
