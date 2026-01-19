@@ -28,7 +28,7 @@
 
   <%= simple_form_for @calendar, url: admin_calendars_path, html: { data: { turbo: false } } do |f| %>
     <div class="max-w-4xl mx-auto">
-      <%= render(Admin::ErrorComponent.new(@calendar)) %>
+    <%= render(Admin::ErrorComponent.new(@calendar)) %>
 
     <%# Step 1: Source URL %>
     <div class="card bg-base-100 shadow-lg border border-base-300" data-calendar-wizard-target="step" data-step="1">

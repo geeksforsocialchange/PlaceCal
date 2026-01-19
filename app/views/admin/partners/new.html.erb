@@ -1,31 +1,33 @@
 <% content_for :title do %>New Partner<% end %>
 
-<div class="max-w-4xl mx-auto"
-     data-controller="partner-wizard"
+<div data-controller="partner-wizard"
      data-partner-wizard-current-step-value="1"
      data-partner-wizard-total-steps-value="3">
 
-  <%# Header %>
-  <div class="text-center mb-8">
-    <h1 class="text-2xl font-bold text-base-content mb-2">Create a New Partner</h1>
-    <p class="text-gray-600">Let's get your partner organisation set up in PlaceCal</p>
+  <div class="max-w-4xl mx-auto">
+    <%# Header %>
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-base-content mb-2">Create a New Partner</h1>
+      <p class="text-gray-600">Let's get your partner organisation set up in PlaceCal</p>
+    </div>
+
+    <%# Steps indicator %>
+    <ul class="steps steps-horizontal w-full mb-8">
+      <li class="step step-primary" data-partner-wizard-target="stepIndicator" data-step="1">
+        <span class="step-content">Name</span>
+      </li>
+      <li class="step" data-partner-wizard-target="stepIndicator" data-step="2">
+        <span class="step-content">Location</span>
+      </li>
+      <li class="step" data-partner-wizard-target="stepIndicator" data-step="3">
+        <span class="step-content">Partnerships</span>
+      </li>
+    </ul>
   </div>
 
-  <%# Steps indicator %>
-  <ul class="steps steps-horizontal w-full mb-8">
-    <li class="step step-primary" data-partner-wizard-target="stepIndicator" data-step="1">
-      <span class="step-content">Name</span>
-    </li>
-    <li class="step" data-partner-wizard-target="stepIndicator" data-step="2">
-      <span class="step-content">Location</span>
-    </li>
-    <li class="step" data-partner-wizard-target="stepIndicator" data-step="3">
-      <span class="step-content">Partnerships</span>
-    </li>
-  </ul>
-
   <%= simple_form_for @partner, html: { data: { partner_wizard_target: 'form' } } do |f| %>
-    <%= render(Admin::ErrorComponent.new(@partner)) %>
+    <div class="max-w-4xl mx-auto">
+      <%= render(Admin::ErrorComponent.new(@partner)) %>
 
     <%# Step 1: Name %>
     <div class="card bg-base-100 shadow-lg border border-base-300" data-partner-wizard-target="step" data-step="1">
@@ -153,6 +155,7 @@
         <%= render 'partnership_fields', f: f %>
       </div>
     </div>
+    </div><%# Close max-w-4xl wrapper %>
 
     <%# Save Bar %>
     <%= render Admin::SaveBarComponent.new(
