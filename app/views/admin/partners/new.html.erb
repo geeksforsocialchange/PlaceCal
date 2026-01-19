@@ -140,7 +140,7 @@
         </div>
 
         <p class="text-sm text-error mb-4" data-partner-wizard-target="locationHint">
-          Please provide either an address or at least one service area.
+          Please provide either an address (with postcode) or at least one service area.
         </p>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -158,7 +158,7 @@
             description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
             fit_height: true
           ) do %>
-            <div data-partner-wizard-target="serviceAreasContainer" data-action="cocoon:after-insert->partner-wizard#updateContinueButton cocoon:after-remove->partner-wizard#updateContinueButton">
+            <div data-partner-wizard-target="serviceAreasContainer" data-action="nested-form:added->partner-wizard#updateContinueButton nested-form:removed->partner-wizard#updateContinueButton">
               <%= nested_form_for(f, :service_areas,
                     add_text: t('admin.service_areas.add'),
                     add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',

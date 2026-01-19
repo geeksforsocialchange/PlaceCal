@@ -128,27 +128,27 @@ export default class extends Controller {
 	}
 
 	hasAddressOrServiceArea() {
-		// Check if any address field has a value
-		let hasAddress = false;
+		// Check if address has postcode (required if using address)
+		let hasValidAddress = false;
 		if (this.hasAddressFieldsTarget) {
-			const inputs = this.addressFieldsTarget.querySelectorAll(
-				"input.address_field"
+			const postcodeInput = this.addressFieldsTarget.querySelector(
+				"input[name*='postcode']"
 			);
-			hasAddress = Array.from(inputs).some(
-				(input) => input.value.trim() !== ""
-			);
+			hasValidAddress = postcodeInput && postcodeInput.value.trim() !== "";
 		}
 
-		// Check if any service areas exist (nested fields that aren't marked for destruction)
+		// Check if any service areas exist (nested fields that aren't hidden/destroyed)
 		let hasServiceArea = false;
 		if (this.hasServiceAreasContainerTarget) {
-			const serviceAreas = this.serviceAreasContainerTarget.querySelectorAll(
-				".nested-fields:not(.hidden)"
+			const serviceAreas =
+				this.serviceAreasContainerTarget.querySelectorAll(".nested-fields");
+			// Filter out hidden ones (marked for destruction)
+			hasServiceArea = Array.from(serviceAreas).some(
+				(el) => el.style.display !== "none"
 			);
-			hasServiceArea = serviceAreas.length > 0;
 		}
 
-		const isValid = hasAddress || hasServiceArea;
+		const isValid = hasValidAddress || hasServiceArea;
 
 		// Show/hide location hint
 		if (this.hasLocationHintTarget) {
