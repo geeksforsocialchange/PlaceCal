@@ -9,6 +9,9 @@
 
     <%# Admin JS loaded via importmap - native ES modules, no build step %>
     <%# Changes to controllers take effect immediately on browser refresh %>
+    <%# ES Module Shims - polyfill for import maps in older browsers (Chrome 63+, Firefox 67+, Safari 11.1+) %>
+    <%# Only activates when needed (~6% of browsers), zero overhead for modern browsers %>
+    <script async src="https://ga.jspm.io/npm:es-module-shims@2.0.0/dist/es-module-shims.js"></script>
     <%= javascript_importmap_tags %>
 
     <%= render "layouts/meta" %>
