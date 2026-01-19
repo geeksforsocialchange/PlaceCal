@@ -46,12 +46,12 @@ Feature: Partner Index Table
     When I go to the "Partners" admin section
     Then I should see an admin indicator for "Partner With Admin"
 
-  # Filtering by Dropdown
+  # Filtering by Radio Buttons
   Scenario: Filter partners by calendar status - connected
     Given there is a partner called "Has Calendar" with a calendar
     And there is a partner called "No Calendar"
     When I go to the "Partners" admin section
-    And I filter by "Calendar" with value "Connected"
+    And I click "Yes" in the "Has Calendar?" radio filter
     Then I should see "Has Calendar" in the partner table
     And I should not see "No Calendar" in the partner table
 
@@ -59,7 +59,7 @@ Feature: Partner Index Table
     Given there is a partner called "Has Calendar" with a calendar
     And there is a partner called "No Calendar"
     When I go to the "Partners" admin section
-    And I filter by "Calendar" with value "No calendar"
+    And I click "No" in the "Has Calendar?" radio filter
     Then I should see "No Calendar" in the partner table
     And I should not see "Has Calendar" in the partner table
 
@@ -68,7 +68,7 @@ Feature: Partner Index Table
     And the partner "With Admin" has an admin user
     And there is a partner called "Without Admin"
     When I go to the "Partners" admin section
-    And I filter by "Admins" with value "Has admins"
+    And I click "Yes" in the "Has Admin?" radio filter
     Then I should see "With Admin" in the partner table
     And I should not see "Without Admin" in the partner table
 
@@ -77,7 +77,7 @@ Feature: Partner Index Table
     And the partner "With Admin" has an admin user
     And there is a partner called "Without Admin"
     When I go to the "Partners" admin section
-    And I filter by "Admins" with value "No admins"
+    And I click "No" in the "Has Admin?" radio filter
     Then I should see "Without Admin" in the partner table
     And I should not see "With Admin" in the partner table
 
@@ -108,14 +108,14 @@ Feature: Partner Index Table
     Given there is a partner called "Test Partner"
     When I go to the "Partners" admin section
     Then I should not see "Clear filters"
-    When I filter by "Calendar" with value "Connected"
+    When I click "Yes" in the "Has Calendar?" radio filter
     Then I should see "Clear filters"
 
   Scenario: Clear filters resets all active filters
     Given there is a partner called "Has Calendar" with a calendar
     And there is a partner called "No Calendar"
     When I go to the "Partners" admin section
-    And I filter by "Calendar" with value "Connected"
+    And I click "Yes" in the "Has Calendar?" radio filter
     Then I should not see "No Calendar" in the partner table
     When I click "Clear filters"
     Then I should see "Has Calendar" in the partner table

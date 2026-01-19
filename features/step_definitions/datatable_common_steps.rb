@@ -59,6 +59,20 @@ When("I filter by {string} with value {string}") do |filter_label, value|
   await_datatables
 end
 
+When("I click {string} in the {string} radio filter") do |button_text, filter_label|
+  await_datatables
+
+  # Find the radio filter fieldset by its label text
+  fieldset = find('fieldset[data-admin-table-target="radioFilter"]', text: filter_label)
+  within(fieldset) do
+    click_button button_text
+  end
+
+  # Wait for the table to reload
+  sleep 0.3
+  await_datatables
+end
+
 When("I filter the {string} dropdown to {string}") do |filter_label, value|
   await_datatables
 

@@ -79,11 +79,11 @@ en:
       issues: "Issues"
       loading: "Loading..."
       locked: "Locked"
-      no: "No"
+      "no": "No"
       none: "None"
       required: "*"
       visible: "Visible"
-      yes: "Yes"
+      "yes": "Yes"
 
     # Placeholders
     placeholders:
