@@ -186,3 +186,26 @@ export function clearInputStyling(input) {
 		input.classList.remove("input-error", "input-success");
 	}
 }
+
+/**
+ * Enable or disable the continue button with appropriate styling
+ * @param {HTMLElement} button - Continue button element
+ * @param {boolean} enabled - Whether button should be enabled
+ */
+export function setContinueButtonEnabled(button, enabled) {
+	if (!button) return;
+
+	if (enabled) {
+		button.classList.remove("btn-disabled", "opacity-50");
+		button.classList.add(
+			"bg-placecal-orange",
+			"hover:bg-orange-600",
+			"text-white"
+		);
+		button.disabled = false;
+	} else {
+		button.classList.add("btn-disabled", "opacity-50");
+		button.classList.remove("hover:bg-orange-600");
+		button.disabled = true;
+	}
+}

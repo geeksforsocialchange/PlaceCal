@@ -10,6 +10,7 @@ import {
 	showInputError,
 	showInputSuccess,
 	clearInputStyling,
+	setContinueButtonEnabled,
 } from "./mixins/wizard";
 
 /**
@@ -37,15 +38,29 @@ export default class extends Controller {
 	connect() {
 		this.checkEmailDebounced = debounce(this.performEmailCheck.bind(this), 400);
 		updateWizardUI(this);
+		this.updateContinueButton();
 	}
 
 	// Step navigation
 	nextStep() {
-		nextStep(this, () => this.validateCurrentStep());
+		nextStep(
+			this,
+			() => this.validateCurrentStep(),
+			() => this.updateContinueButton()
+		);
 	}
 
 	previousStep() {
-		previousStep(this);
+		previousStep(this, () => this.updateContinueButton());
+	}
+
+	// Check if current step is valid (without showing errors)
+	isCurrentStepValid() {
+		if (this.currentStepValue === 1) {
+			return this.emailValidValue && this.emailAvailableValue;
+		}
+		// Step 2 (permissions) has no required fields
+		return true;
 	}
 
 	validateCurrentStep() {
@@ -57,6 +72,15 @@ export default class extends Controller {
 			}
 		}
 		return true;
+	}
+
+	updateContinueButton() {
+		if (this.hasContinueButtonTarget) {
+			setContinueButtonEnabled(
+				this.continueButtonTarget,
+				this.isCurrentStepValid()
+			);
+		}
 	}
 
 	// Email validation
@@ -72,6 +96,7 @@ export default class extends Controller {
 		clearInputStyling(this.emailInputTarget);
 		this.emailValidValue = false;
 		this.emailAvailableValue = false;
+		this.updateContinueButton();
 
 		if (!email) {
 			return;
@@ -113,6 +138,8 @@ export default class extends Controller {
 			}
 		} catch (error) {
 			console.error("Error checking email:", error);
+		} finally {
+			this.updateContinueButton();
 		}
 	}
 

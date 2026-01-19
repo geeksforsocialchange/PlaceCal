@@ -11,6 +11,7 @@ import {
 	clearInputError,
 	showInputSuccess,
 	clearInputStyling,
+	setContinueButtonEnabled,
 } from "./mixins/wizard";
 
 /**
@@ -127,19 +128,11 @@ export default class extends Controller {
 	}
 
 	updateContinueButton() {
-		const isValid = this.isCurrentStepValid();
-		const btn = this.continueButtonTarget;
-
-		if (isValid) {
-			btn.classList.remove("btn-disabled", "opacity-50");
-			btn.classList.add(
-				"bg-placecal-orange",
-				"hover:bg-orange-600",
-				"text-white"
+		if (this.hasContinueButtonTarget) {
+			setContinueButtonEnabled(
+				this.continueButtonTarget,
+				this.isCurrentStepValid()
 			);
-		} else {
-			btn.classList.add("btn-disabled", "opacity-50");
-			btn.classList.remove("hover:bg-orange-600");
 		}
 
 		// Update button text based on step and validation state

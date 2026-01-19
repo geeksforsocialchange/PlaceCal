@@ -9,6 +9,7 @@ import {
 	updateWizardUI,
 	showInputError,
 	clearInputError,
+	setContinueButtonEnabled,
 } from "./mixins/wizard";
 
 /**
@@ -30,32 +31,60 @@ export default class extends Controller {
 
 	static values = {
 		...wizardValues,
+		nameAvailable: { type: Boolean, default: false },
 	};
 
 	connect() {
 		this.checkNameDebounced = debounce(this.performNameCheck.bind(this), 400);
 		updateWizardUI(this);
+		this.updateContinueButton();
 	}
 
 	// Step navigation
 	nextStep() {
-		nextStep(this, () => this.validateCurrentStep());
+		nextStep(
+			this,
+			() => this.validateCurrentStep(),
+			() => this.updateContinueButton()
+		);
 	}
 
 	previousStep() {
-		previousStep(this);
+		previousStep(this, () => this.updateContinueButton());
+	}
+
+	// Check if current step is valid (without showing errors)
+	isCurrentStepValid() {
+		if (this.currentStepValue === 1) {
+			const name = this.hasNameInputTarget
+				? this.nameInputTarget.value.trim()
+				: "";
+			// Name must be at least 5 chars and not an exact match
+			return name.length >= 5 && this.nameAvailableValue;
+		}
+		// Steps 2 and 3 have no required fields
+		return true;
 	}
 
 	validateCurrentStep() {
 		if (this.currentStepValue === 1) {
 			const name = this.nameInputTarget.value.trim();
-			if (name.length < 5) {
+			if (name.length < 5 || !this.nameAvailableValue) {
 				showInputError(this.nameInputTarget);
 				return false;
 			}
 			clearInputError(this.nameInputTarget);
 		}
 		return true;
+	}
+
+	updateContinueButton() {
+		if (this.hasContinueButtonTarget) {
+			setContinueButtonEnabled(
+				this.continueButtonTarget,
+				this.isCurrentStepValid()
+			);
+		}
 	}
 
 	// Name validation
@@ -72,6 +101,8 @@ export default class extends Controller {
 		this.similarSectionTarget.classList.add("hidden");
 		this.nameAvailableTarget.classList.add("hidden");
 		this.nameInputTarget.classList.remove("input-error", "input-success");
+		this.nameAvailableValue = false;
+		this.updateContinueButton();
 
 		if (name.length < 5) {
 			return;
@@ -99,10 +130,12 @@ export default class extends Controller {
 				this.exactMatchTarget.classList.remove("hidden");
 				this.exactMatchLinkTarget.href = `/partners/${data.exact_match.id}/edit`;
 				this.nameInputTarget.classList.add("input-error");
+				this.nameAvailableValue = false;
 			} else if (data.name_available) {
 				// Name is available
 				this.nameAvailableTarget.classList.remove("hidden");
 				this.nameInputTarget.classList.add("input-success");
+				this.nameAvailableValue = true;
 			}
 
 			// Show similar partners if any
@@ -123,6 +156,8 @@ export default class extends Controller {
 			}
 		} catch (error) {
 			console.error("Error checking partner name:", error);
+		} finally {
+			this.updateContinueButton();
 		}
 	}
 }

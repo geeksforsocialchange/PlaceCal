@@ -2,26 +2,27 @@
 
 <%- display_fields = policy(@current_user).permitted_attributes_for_create %>
 
-<div class="max-w-4xl mx-auto"
-     data-controller="user-wizard"
+<div data-controller="user-wizard"
      data-user-wizard-current-step-value="1"
      data-user-wizard-total-steps-value="2">
 
-  <%# Header %>
-  <div class="text-center mb-8">
-    <h1 class="text-2xl font-bold text-base-content mb-2">Invite a New User</h1>
-    <p class="text-gray-600">Add a new user to PlaceCal and set their permissions</p>
-  </div>
+  <div class="max-w-4xl mx-auto">
+    <%# Header %>
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-base-content mb-2">Invite a New User</h1>
+      <p class="text-gray-600">Add a new user to PlaceCal and set their permissions</p>
+    </div>
 
-  <%# Steps indicator %>
-  <ul class="steps steps-horizontal w-full mb-8">
-    <li class="step step-primary" data-user-wizard-target="stepIndicator" data-step="1">
-      <span class="step-content">Personal Details</span>
-    </li>
-    <li class="step" data-user-wizard-target="stepIndicator" data-step="2">
-      <span class="step-content">Permissions</span>
-    </li>
-  </ul>
+    <%# Steps indicator %>
+    <ul class="steps steps-horizontal w-full mb-8">
+      <li class="step step-primary" data-user-wizard-target="stepIndicator" data-step="1">
+        <span class="step-content">Personal Details</span>
+      </li>
+      <li class="step" data-user-wizard-target="stepIndicator" data-step="2">
+        <span class="step-content">Permissions</span>
+      </li>
+    </ul>
+  </div>
 
   <%= filtered_form_for([:admin, @user],
                         display_only: display_fields,
@@ -29,6 +30,7 @@
 
     <%= render(Admin::ErrorComponent.new(@user)) %>
 
+    <div class="max-w-4xl mx-auto">
     <%# Step 1: Personal Details %>
     <div data-user-wizard-target="step" data-step="1">
       <div class="card bg-base-100 shadow-lg border border-base-300">
@@ -231,6 +233,7 @@
         <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-teal font-medium' %>.</span>
       </div>
     </div>
+    </div><%# Close max-w-4xl wrapper %>
 
     <%# Save Bar %>
     <%= render Admin::SaveBarComponent.new(
