@@ -10,16 +10,18 @@ import {
 	showInputError,
 	clearInputError,
 	setContinueButtonEnabled,
+	clearInputStyling,
 } from "./mixins/wizard";
 
 /**
  * Partner Wizard Controller
- * Handles step navigation and name validation for the new partner form
+ * Handles step navigation, name validation, admin invitation, and completion flow
  */
 export default class extends Controller {
 	static targets = [
 		...wizardTargets,
 		"form",
+		// Step 1: Name
 		"nameInput",
 		"nameFeedback",
 		"exactMatch",
@@ -27,15 +29,43 @@ export default class extends Controller {
 		"similarSection",
 		"similarList",
 		"nameAvailable",
+		// Step 4: Contact
+		"publicName",
+		"publicEmail",
+		"publicPhone",
+		// Step 5: Admin
+		"skipAdminCheckbox",
+		"adminFields",
+		"adminFirstName",
+		"adminLastName",
+		"adminEmail",
+		"adminPhone",
+		"adminEmailFeedback",
+		"adminEmailAvailable",
+		"adminEmailTaken",
+		"adminEmailInvalid",
+		// Step 6: Complete
+		"summaryName",
+		"summaryAdmin",
+		"summaryAdminRow",
+		"afterCreateEdit",
+		"afterCreateCalendar",
 	];
 
 	static values = {
 		...wizardValues,
 		nameAvailable: { type: Boolean, default: false },
+		adminEmailValid: { type: Boolean, default: false },
+		adminSkipped: { type: Boolean, default: false },
+		existingUserId: { type: Number, default: 0 },
 	};
 
 	connect() {
 		this.checkNameDebounced = debounce(this.performNameCheck.bind(this), 400);
+		this.checkAdminEmailDebounced = debounce(
+			this.performAdminEmailCheck.bind(this),
+			400
+		);
 		updateWizardUI(this);
 		this.updateContinueButton();
 	}
@@ -45,12 +75,21 @@ export default class extends Controller {
 		nextStep(
 			this,
 			() => this.validateCurrentStep(),
-			() => this.updateContinueButton()
+			(step) => this.onStepChange(step)
 		);
 	}
 
 	previousStep() {
-		previousStep(this, () => this.updateContinueButton());
+		previousStep(this, (step) => this.onStepChange(step));
+	}
+
+	onStepChange(step) {
+		this.updateContinueButton();
+
+		// Update summary when entering step 6
+		if (step === 6) {
+			this.updateSummary();
+		}
 	}
 
 	// Check if current step is valid (without showing errors)
@@ -59,10 +98,20 @@ export default class extends Controller {
 			const name = this.hasNameInputTarget
 				? this.nameInputTarget.value.trim()
 				: "";
-			// Name must be at least 5 chars and not an exact match
 			return name.length >= 5 && this.nameAvailableValue;
 		}
-		// Steps 2 and 3 have no required fields
+		if (this.currentStepValue === 5) {
+			// Admin step - valid if skipped OR if email is provided and valid
+			if (this.adminSkippedValue) return true;
+			const email = this.hasAdminEmailTarget
+				? this.adminEmailTarget.value.trim()
+				: "";
+			// If no email entered, it's valid (optional)
+			if (!email) return true;
+			// If email entered, it must be valid format
+			return this.adminEmailValidValue;
+		}
+		// Other steps have no required fields
 		return true;
 	}
 
@@ -74,6 +123,15 @@ export default class extends Controller {
 				return false;
 			}
 			clearInputError(this.nameInputTarget);
+		}
+		if (this.currentStepValue === 5 && !this.adminSkippedValue) {
+			const email = this.hasAdminEmailTarget
+				? this.adminEmailTarget.value.trim()
+				: "";
+			if (email && !this.adminEmailValidValue) {
+				showInputError(this.adminEmailTarget);
+				return false;
+			}
 		}
 		return true;
 	}
@@ -87,7 +145,9 @@ export default class extends Controller {
 		}
 	}
 
-	// Name validation
+	// ==================
+	// Step 1: Name validation
+	// ==================
 	checkName() {
 		this.checkNameDebounced();
 	}
@@ -158,6 +218,211 @@ export default class extends Controller {
 			console.error("Error checking partner name:", error);
 		} finally {
 			this.updateContinueButton();
+		}
+	}
+
+	// ==================
+	// Step 5: Admin invitation
+	// ==================
+	toggleAdminFields() {
+		const skipped = this.skipAdminCheckboxTarget.checked;
+		this.adminSkippedValue = skipped;
+
+		if (this.hasAdminFieldsTarget) {
+			this.adminFieldsTarget.classList.toggle("hidden", skipped);
+			this.adminFieldsTarget.classList.toggle("opacity-50", skipped);
+			if (skipped) {
+				// Disable inputs when skipped
+				this.adminFieldsTarget
+					.querySelectorAll("input")
+					.forEach((input) => (input.disabled = true));
+			} else {
+				this.adminFieldsTarget
+					.querySelectorAll("input")
+					.forEach((input) => (input.disabled = false));
+			}
+		}
+
+		this.updateContinueButton();
+	}
+
+	copyFromContact() {
+		// Copy public contact info to admin fields
+		if (this.hasPublicNameTarget && this.hasAdminFirstNameTarget) {
+			// Try to split name into first/last
+			const fullName = this.publicNameTarget.value.trim();
+			const parts = fullName.split(" ");
+			if (parts.length >= 2) {
+				this.adminFirstNameTarget.value = parts[0];
+				this.adminLastNameTarget.value = parts.slice(1).join(" ");
+			} else if (parts.length === 1) {
+				this.adminFirstNameTarget.value = parts[0];
+			}
+		}
+
+		if (this.hasPublicEmailTarget && this.hasAdminEmailTarget) {
+			this.adminEmailTarget.value = this.publicEmailTarget.value;
+			// Trigger email validation
+			this.checkAdminEmail();
+		}
+
+		if (this.hasPublicPhoneTarget && this.hasAdminPhoneTarget) {
+			this.adminPhoneTarget.value = this.publicPhoneTarget.value;
+		}
+	}
+
+	checkAdminEmail() {
+		this.checkAdminEmailDebounced();
+	}
+
+	async performAdminEmailCheck() {
+		const email = this.adminEmailTarget.value.trim();
+
+		// Reset UI state
+		this.hideAdminEmailFeedback();
+		clearInputStyling(this.adminEmailTarget);
+		this.adminEmailValidValue = false;
+		this.existingUserIdValue = 0;
+		this.updateContinueButton();
+
+		if (!email) {
+			return;
+		}
+
+		// Basic client-side format validation
+		if (!this.isValidEmailFormat(email)) {
+			this.showAdminEmailInvalid();
+			return;
+		}
+
+		try {
+			const response = await fetch(
+				`/users/lookup_email?email=${encodeURIComponent(email)}`,
+				{
+					method: "GET",
+					credentials: "same-origin",
+					headers: {
+						Accept: "application/json",
+					},
+				}
+			);
+
+			const data = await response.json();
+
+			if (!data.valid) {
+				this.showAdminEmailInvalid();
+				return;
+			}
+
+			this.adminEmailValidValue = true;
+
+			if (data.available) {
+				this.showAdminEmailAvailable();
+			} else {
+				// User exists - we can still add them as admin
+				this.existingUserIdValue = data.existing_user?.id || 0;
+				this.showAdminEmailTaken();
+			}
+		} catch (error) {
+			console.error("Error checking admin email:", error);
+		} finally {
+			this.updateContinueButton();
+		}
+	}
+
+	isValidEmailFormat(email) {
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+	}
+
+	hideAdminEmailFeedback() {
+		if (this.hasAdminEmailFeedbackTarget) {
+			this.adminEmailFeedbackTarget.classList.add("hidden");
+		}
+		if (this.hasAdminEmailAvailableTarget) {
+			this.adminEmailAvailableTarget.classList.add("hidden");
+		}
+		if (this.hasAdminEmailTakenTarget) {
+			this.adminEmailTakenTarget.classList.add("hidden");
+		}
+		if (this.hasAdminEmailInvalidTarget) {
+			this.adminEmailInvalidTarget.classList.add("hidden");
+		}
+	}
+
+	showAdminEmailAvailable() {
+		this.adminEmailTarget.classList.add("input-success");
+		if (this.hasAdminEmailFeedbackTarget) {
+			this.adminEmailFeedbackTarget.classList.remove("hidden");
+		}
+		if (this.hasAdminEmailAvailableTarget) {
+			this.adminEmailAvailableTarget.classList.remove("hidden");
+		}
+	}
+
+	showAdminEmailTaken() {
+		// Not an error - we can add existing users as admins
+		this.adminEmailTarget.classList.add("input-warning");
+		if (this.hasAdminEmailFeedbackTarget) {
+			this.adminEmailFeedbackTarget.classList.remove("hidden");
+		}
+		if (this.hasAdminEmailTakenTarget) {
+			this.adminEmailTakenTarget.classList.remove("hidden");
+		}
+	}
+
+	showAdminEmailInvalid() {
+		this.adminEmailTarget.classList.add("input-error");
+		if (this.hasAdminEmailFeedbackTarget) {
+			this.adminEmailFeedbackTarget.classList.remove("hidden");
+		}
+		if (this.hasAdminEmailInvalidTarget) {
+			this.adminEmailInvalidTarget.classList.remove("hidden");
+		}
+	}
+
+	// ==================
+	// Step 6: Summary
+	// ==================
+	updateSummary() {
+		// Update partner name
+		if (this.hasSummaryNameTarget && this.hasNameInputTarget) {
+			this.summaryNameTarget.textContent =
+				this.nameInputTarget.value.trim() || "-";
+		}
+
+		// Update admin info
+		if (this.hasSummaryAdminTarget) {
+			if (this.adminSkippedValue) {
+				this.summaryAdminTarget.textContent = "Skipped";
+				this.summaryAdminTarget.classList.add("text-gray-500", "italic");
+			} else {
+				const email = this.hasAdminEmailTarget
+					? this.adminEmailTarget.value.trim()
+					: "";
+				if (email) {
+					const firstName = this.hasAdminFirstNameTarget
+						? this.adminFirstNameTarget.value.trim()
+						: "";
+					const lastName = this.hasAdminLastNameTarget
+						? this.adminLastNameTarget.value.trim()
+						: "";
+					const name =
+						firstName || lastName ? `${firstName} ${lastName}`.trim() : "";
+					this.summaryAdminTarget.textContent = name
+						? `${name} (${email})`
+						: email;
+					this.summaryAdminTarget.classList.remove("text-gray-500", "italic");
+
+					if (this.existingUserIdValue) {
+						this.summaryAdminTarget.textContent += " - existing user";
+					} else {
+						this.summaryAdminTarget.textContent += " - will be invited";
+					}
+				} else {
+					this.summaryAdminTarget.textContent = "None";
+					this.summaryAdminTarget.classList.add("text-gray-500", "italic");
+				}
+			}
 		}
 	}
 }
