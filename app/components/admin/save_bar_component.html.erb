@@ -1,8 +1,8 @@
-<div class="sticky bottom-0 z-40 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)] <%= wizard? ? 'left-0 right-0 -mx-[calc(50vw-50%)] px-[calc(50vw-50%+1rem)] sm:px-[calc(50vw-50%+1.5rem)]' : '-mx-4 sm:-mx-6' %>"
+<div class="sticky bottom-0 z-40 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]"
      <%= tag.attributes(data: stimulus_data_attributes) %>>
   <% if wizard? %>
     <%# Wizard mode - client-side step navigation %>
-    <div class="flex items-center justify-between gap-4 max-w-4xl mx-auto">
+    <div class="flex items-center justify-between gap-4">
       <%# Left side - Back button %>
       <div>
         <button type="button"
