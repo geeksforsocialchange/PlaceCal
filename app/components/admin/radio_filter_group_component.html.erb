@@ -1,0 +1,27 @@
+<fieldset class="relative flex items-center gap-2 pl-3 pr-3 py-1 border border-gray-300 rounded-lg bg-white/50">
+  <span class="text-xs font-medium text-gray-500"><%= group_label %></span>
+  <% filters.each_with_index do |filter, idx| %>
+    <% is_last = idx == filters.length - 1 %>
+    <div class="flex items-center gap-2"
+         data-admin-table-target="radioFilter"
+         data-filter-column="<%= filter[:column] %>">
+      <span class="text-xs font-medium text-gray-600"><%= filter[:label] %></span>
+      <div class="inline-flex rounded-md bg-gray-100 p-0.5">
+        <% if show_all %>
+          <button type="button"
+                  data-action="click->admin-table#applyRadioFilter"
+                  data-filter-value=""
+                  data-is-all="true"
+                  class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.labels.all') %></button>
+        <% end %>
+        <% filter[:options]&.each do |opt| %>
+          <button type="button"
+                  data-action="click->admin-table#applyRadioFilter"
+                  data-filter-value="<%= opt[:value] %>"
+                  class="filter-btn px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 text-gray-500 hover:text-gray-900"><%= opt[:label] %></button>
+        <% end %>
+      </div>
+    </div>
+    <% unless is_last %><span class="text-gray-300 text-xs">|</span><% end %>
+  <% end %>
+</fieldset>

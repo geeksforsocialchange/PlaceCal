@@ -78,6 +78,25 @@
         </div>
       <% end %>
 
+      <% if has_radio_filters %>
+        <%# Render ungrouped radio filters (each in its own fieldset) %>
+        <% ungrouped_filters.each do |filter| %>
+          <%= render Admin::RadioFilterComponent.new(
+            column: filter[:column],
+            label: filter[:label],
+            options: filter[:options] || []
+          ) %>
+        <% end %>
+
+        <%# Render grouped radio filters %>
+        <% grouped_filters.each do |group_name, group_filters| %>
+          <%= render Admin::RadioFilterGroupComponent.new(
+            group_label: group_name,
+            filters: group_filters
+          ) %>
+        <% end %>
+      <% end %>
+
       <% if has_dropdown_filters %>
         <!-- Dropdown Filters -->
         <% filters.each do |filter| %>
@@ -120,54 +139,6 @@
               <% end %>
             </select>
           <% end %>
-        <% end %>
-      <% end %>
-
-      <% if has_radio_filters %>
-        <%# Render ungrouped filters (each in its own fieldset) %>
-        <% ungrouped_filters.each do |filter| %>
-          <fieldset class="relative flex items-center gap-3 pl-3 pr-5 py-1.5 pt-2.5 border border-gray-300 rounded-lg bg-white/50" data-admin-table-target="radioFilter" data-filter-column="<%= filter[:column] %>">
-            <legend class="font-medium text-gray-400 uppercase tracking-wider px-1 ml-1 bg-gray-50" style="font-size: 9px; line-height: 1;"><%= filter[:label] %></legend>
-            <div class="inline-flex rounded-md bg-gray-100 p-0.5 mr-1">
-              <button type="button"
-                      data-action="click->admin-table#applyRadioFilter"
-                      data-filter-value=""
-                      data-is-all="true"
-                      class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.labels.all') %></button>
-              <% filter[:options]&.each do |opt| %>
-                <button type="button"
-                        data-action="click->admin-table#applyRadioFilter"
-                        data-filter-value="<%= opt[:value] %>"
-                        class="filter-btn filter-btn-option px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 text-gray-600 hover:text-gray-800"><%= opt[:label] %></button>
-              <% end %>
-            </div>
-          </fieldset>
-        <% end %>
-
-        <%# Render grouped filters %>
-        <% grouped_filters.each do |group_name, group_filters| %>
-          <fieldset class="relative flex items-center gap-3 pl-3 pr-3 py-1.5 pt-2.5 border border-gray-300 rounded-lg bg-white/50">
-            <legend class="font-medium text-gray-400 uppercase tracking-wider px-1 ml-1 bg-gray-50" style="font-size: 9px; line-height: 1;"><%= group_name %></legend>
-            <% group_filters.each_with_index do |filter, idx| %>
-              <% is_last = idx == group_filters.length - 1 %>
-              <div class="flex items-center gap-2" data-admin-table-target="radioFilter" data-filter-column="<%= filter[:column] %>">
-                <span class="text-xs font-medium text-gray-600"><%= filter[:label] %></span>
-                <div class="inline-flex rounded-md bg-gray-100 p-0.5 <%= 'mr-1' if is_last %>">
-                  <button type="button"
-                          data-action="click->admin-table#applyRadioFilter"
-                          data-filter-value=""
-                          data-is-all="true"
-                          class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.labels.all') %></button>
-                  <% filter[:options]&.each do |opt| %>
-                    <button type="button"
-                            data-action="click->admin-table#applyRadioFilter"
-                            data-filter-value="<%= opt[:value] %>"
-                            class="filter-btn filter-btn-option px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 text-gray-600 hover:text-gray-800"><%= opt[:label] %></button>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-          </fieldset>
         <% end %>
       <% end %>
 

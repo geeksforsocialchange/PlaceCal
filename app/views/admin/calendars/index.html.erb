@@ -43,6 +43,24 @@
     default_sort: { column: 'last_import_at', direction: 'desc' },
     filters: [
       {
+        type: :radio,
+        column: 'has_events',
+        label: 'Events',
+        options: [
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
+        ]
+      },
+      {
+        type: :radio,
+        column: 'has_notices',
+        label: 'Notices',
+        options: [
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
+        ]
+      },
+      {
         column: 'state',
         label: 'Status',
         width: 'w-32',
@@ -58,24 +76,6 @@
         column: 'partner',
         label: 'Partner',
         options: partner_options
-      },
-      {
-        column: 'has_events',
-        label: 'Events',
-        width: 'w-28',
-        options: [
-          { value: 'yes', label: 'Has events' },
-          { value: 'no', label: 'No events' }
-        ]
-      },
-      {
-        column: 'has_notices',
-        label: 'Notices',
-        width: 'w-28',
-        options: [
-          { value: 'yes', label: 'Has notices' },
-          { value: 'no', label: 'No notices' }
-        ]
       },
       {
         column: 'importer',
