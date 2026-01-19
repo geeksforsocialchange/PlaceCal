@@ -26,10 +26,10 @@
         <span class="step-content">Contact</span>
       </li>
       <li class="step" data-partner-wizard-target="stepIndicator" data-step="5">
-        <span class="step-content">Admin</span>
+        <span class="step-content">Invite</span>
       </li>
       <li class="step" data-partner-wizard-target="stepIndicator" data-step="6">
-        <span class="step-content">Done</span>
+        <span class="step-content">Done!</span>
       </li>
     </ul>
   </div>
@@ -87,16 +87,14 @@
               </p>
               <div class="space-y-1" data-partner-wizard-target="similarList"></div>
             </div>
+
+            <%# Name available indicator %>
+            <div class="alert alert-success text-sm hidden" data-partner-wizard-target="nameAvailable">
+              <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
+              <span>This name is available!</span>
+            </div>
           </div>
         </fieldset>
-
-        <%# Name available indicator %>
-        <div class="mt-4 hidden" data-partner-wizard-target="nameAvailable">
-          <div class="alert alert-success text-sm">
-            <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
-            <span>This name is available!</span>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -354,7 +352,7 @@
       </div>
     </div>
 
-    <%# Step 6: Complete %>
+    <%# Step 6: Done! %>
     <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="6">
       <div class="card-body">
         <div class="flex items-start gap-4 mb-6">
@@ -362,39 +360,18 @@
             <%= icon(:check_circle, size: '6', css_class: 'text-emerald-600') %>
           </div>
           <div>
-            <h2 class="card-title text-xl">Almost Done!</h2>
+            <h2 class="card-title text-xl">Ready to Create Partner</h2>
             <p class="text-gray-600 text-sm mt-1">
-              Review your partner details and choose what to do next.
+              Click "Create Partner" below to save. What would you like to do next?
             </p>
           </div>
         </div>
 
-        <%# Summary %>
-        <div class="bg-base-200/50 rounded-xl p-6 mb-6">
-          <h3 class="font-semibold mb-4 flex items-center gap-2">
-            <%= icon(:partner, size: '5') %>
-            Partner Summary
-          </h3>
-          <dl class="space-y-2 text-sm">
-            <div class="flex gap-2">
-              <dt class="text-gray-600 w-24">Name:</dt>
-              <dd class="font-medium" data-partner-wizard-target="summaryName">-</dd>
-            </div>
-            <div class="flex gap-2" data-partner-wizard-target="summaryAdminRow">
-              <dt class="text-gray-600 w-24">Admin:</dt>
-              <dd data-partner-wizard-target="summaryAdmin">-</dd>
-            </div>
-          </dl>
-        </div>
-
         <%# What's next options %>
         <div class="space-y-4">
-          <h3 class="font-semibold">What would you like to do after creating this partner?</h3>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label class="cursor-pointer">
-              <input type="radio" name="partner[after_create]" value="edit" class="peer sr-only" checked
-                     data-partner-wizard-target="afterCreateEdit">
+              <input type="radio" name="after_create" value="edit" class="peer sr-only" checked>
               <div class="card bg-base-100 border-2 border-base-300 peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors">
                 <div class="card-body p-4">
                   <div class="flex items-center gap-3">
@@ -411,8 +388,7 @@
             </label>
 
             <label class="cursor-pointer">
-              <input type="radio" name="partner[after_create]" value="add_calendar" class="peer sr-only"
-                     data-partner-wizard-target="afterCreateCalendar">
+              <input type="radio" name="after_create" value="add_calendar" class="peer sr-only">
               <div class="card bg-base-100 border-2 border-base-300 peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors">
                 <div class="card-body p-4">
                   <div class="flex items-center gap-3">

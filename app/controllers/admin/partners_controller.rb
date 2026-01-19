@@ -47,7 +47,7 @@ module Admin
         if @partner.save
           format.html do
             flash[:success] = 'Partner was successfully created.'
-            redirect_to edit_admin_partner_path(@partner)
+            redirect_to after_create_redirect_path(@partner)
           end
 
           format.json { render :show, status: :created, location: @partner }
@@ -162,6 +162,15 @@ module Admin
     end
 
     private
+
+    def after_create_redirect_path(partner)
+      case params[:after_create]
+      when 'add_calendar'
+        new_admin_calendar_path(partner_id: partner.id)
+      else
+        edit_admin_partner_path(partner)
+      end
+    end
 
     def set_partner_tags_controller
       @partner_tags_controller =

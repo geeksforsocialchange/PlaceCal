@@ -44,12 +44,6 @@ export default class extends Controller {
 		"adminEmailAvailable",
 		"adminEmailTaken",
 		"adminEmailInvalid",
-		// Step 6: Complete
-		"summaryName",
-		"summaryAdmin",
-		"summaryAdminRow",
-		"afterCreateEdit",
-		"afterCreateCalendar",
 	];
 
 	static values = {
@@ -86,9 +80,9 @@ export default class extends Controller {
 	onStepChange(step) {
 		this.updateContinueButton();
 
-		// Update summary when entering step 6
-		if (step === 6) {
-			this.updateSummary();
+		// Auto-copy contact info when entering step 5 (Invite)
+		if (step === 5) {
+			this.copyFromContact();
 		}
 	}
 
@@ -377,52 +371,6 @@ export default class extends Controller {
 		}
 		if (this.hasAdminEmailInvalidTarget) {
 			this.adminEmailInvalidTarget.classList.remove("hidden");
-		}
-	}
-
-	// ==================
-	// Step 6: Summary
-	// ==================
-	updateSummary() {
-		// Update partner name
-		if (this.hasSummaryNameTarget && this.hasNameInputTarget) {
-			this.summaryNameTarget.textContent =
-				this.nameInputTarget.value.trim() || "-";
-		}
-
-		// Update admin info
-		if (this.hasSummaryAdminTarget) {
-			if (this.adminSkippedValue) {
-				this.summaryAdminTarget.textContent = "Skipped";
-				this.summaryAdminTarget.classList.add("text-gray-500", "italic");
-			} else {
-				const email = this.hasAdminEmailTarget
-					? this.adminEmailTarget.value.trim()
-					: "";
-				if (email) {
-					const firstName = this.hasAdminFirstNameTarget
-						? this.adminFirstNameTarget.value.trim()
-						: "";
-					const lastName = this.hasAdminLastNameTarget
-						? this.adminLastNameTarget.value.trim()
-						: "";
-					const name =
-						firstName || lastName ? `${firstName} ${lastName}`.trim() : "";
-					this.summaryAdminTarget.textContent = name
-						? `${name} (${email})`
-						: email;
-					this.summaryAdminTarget.classList.remove("text-gray-500", "italic");
-
-					if (this.existingUserIdValue) {
-						this.summaryAdminTarget.textContent += " - existing user";
-					} else {
-						this.summaryAdminTarget.textContent += " - will be invited";
-					}
-				} else {
-					this.summaryAdminTarget.textContent = "None";
-					this.summaryAdminTarget.classList.add("text-gray-500", "italic");
-				}
-			}
 		}
 	}
 }
