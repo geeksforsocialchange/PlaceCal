@@ -390,6 +390,9 @@ en:
       filters:
         has_calendar: "Has Calendar?"
         has_admin: "Has Admin?"
+      admins:
+        add_existing: "Add existing user..."
+        add_new: "Invite new admin"
       sections:
         admins_description: "Users who can manage this partner."
         basic_info_description: "Enter the core details about your partner organisation."

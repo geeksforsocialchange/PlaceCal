@@ -5,31 +5,23 @@
 </h2>
 <p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.admins_description') %></p>
 
-<% if @partner.users.any? %>
-  <div class="grid gap-3 max-w-2xl">
-    <% @partner.users.each do |p_user| %>
-      <div class="card card-compact bg-base-200/50 border border-base-300">
-        <div class="card-body flex-row items-center justify-between">
-          <div>
-            <h3 class="font-medium"><%= p_user.email %></h3>
-            <p class="text-xs text-gray-600"><%= t('admin.time.added_ago', time: time_ago_in_words(p_user.created_at)) %></p>
-          </div>
-          <% if policy(User).update? %>
-            <%= link_to t('admin.actions.edit'), edit_admin_user_path(p_user), class: "btn btn-ghost btn-sm" %>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-<% else %>
-  <%= render Admin::EmptyStateComponent.new(icon: :user_add, message: t('admin.empty.none_assigned', items: t('admin.models.admin.other').downcase), icon_size: '12', padding: 'py-12') %>
-<% end %>
+<%= render Admin::StackedListSelectorComponent.new(
+  field_name: "partner[user_ids][]",
+  items: @partner.users,
+  options: options_for_partner_users(@partner),
+  icon_name: :user,
+  icon_color: "bg-blue-100 text-blue-600",
+  empty_text: t('admin.empty.none_assigned', items: t('admin.models.admin.other').downcase),
+  add_placeholder: t('admin.partners.admins.add_existing'),
+  use_tom_select: true,
+  link_path: :edit_admin_user_path
+) %>
 
-<% if policy(User).update? %>
+<% if policy(User).create? %>
   <div class="mt-6">
     <%= link_to new_admin_user_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
       <%= icon(:plus, size: '4') %>
-      <%= t('admin.actions.add_model', model: t('admin.models.admin.one')) %>
+      <%= t('admin.partners.admins.add_new') %>
     <% end %>
   </div>
 <% end %>

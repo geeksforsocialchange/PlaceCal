@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module PartnersHelper
+  # Returns users as [display_name, id] pairs for partner admin assignment
+  # Excludes users already assigned to the partner
+  def options_for_partner_users(partner)
+    existing_ids = partner.user_ids
+    User.where.not(id: existing_ids)
+        .order(:email)
+        .map { |u| [u.email, u.id] }
+  end
+
   def options_for_service_area_neighbourhoods(for_partner)
     legacy_neighbourhoods = for_partner.service_area_neighbourhoods.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
 
