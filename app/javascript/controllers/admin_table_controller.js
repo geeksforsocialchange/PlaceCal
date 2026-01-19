@@ -620,7 +620,9 @@ export default class extends Controller {
 						.filter((col) => !col.hidden)
 						.map(
 							(col) =>
-								`<td class="px-4 py-4 text-sm">${row[col.data] ?? ""}</td>`
+								`<td class="px-4 py-4 text-sm${
+									col.align === "center" ? " text-center" : ""
+								}">${row[col.data] ?? ""}</td>`
 						)
 						.join("")}
         </tr>

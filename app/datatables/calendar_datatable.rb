@@ -7,6 +7,7 @@ class CalendarDatatable < Datatable
       name: { source: 'Calendar.name', cond: :like, searchable: true },
       partner: { source: 'partners.name', searchable: false, orderable: false },
       state: { source: 'Calendar.calendar_state', searchable: false, orderable: false },
+      importer: { source: 'Calendar.importer_used', searchable: false, orderable: true },
       events: { source: 'Calendar.id', searchable: false, orderable: false },
       notices: { source: 'Calendar.notice_count', searchable: false, orderable: true },
       last_import_at: { source: 'Calendar.last_import_at', searchable: false, orderable: true },
@@ -22,6 +23,7 @@ class CalendarDatatable < Datatable
         name: render_name_cell(record),
         partner: render_partner_cell(record),
         state: render_state_cell(record),
+        importer: render_importer_cell(record),
         events: render_count_cell(events_count, 'event'),
         notices: render_notices_cell(record),
         last_import_at: render_relative_time(record.last_import_at),
@@ -61,6 +63,15 @@ class CalendarDatatable < Datatable
         elsif params[:filter][:has_notices] == 'no'
           records = records.where('calendars.notice_count = 0 OR calendars.notice_count IS NULL')
         end
+      end
+
+      # Importer filter
+      if params[:filter][:importer].present?
+        records = if params[:filter][:importer] == 'pending'
+                    records.where(importer_used: [nil, ''])
+                  else
+                    records.where(importer_used: params[:filter][:importer])
+                  end
       end
     end
 
@@ -162,6 +173,26 @@ class CalendarDatatable < Datatable
         </span>
       HTML
     end
+  end
+
+  def render_importer_cell(record)
+    importer = record.importer_used.presence
+    return "<span class=\"text-gray-400 text-xs italic\">#{I18n.t('admin.calendars.importer.pending')}</span>".html_safe if importer.nil?
+
+    # Get human-readable name from parser
+    parser = CalendarImporter::CalendarImporter::PARSERS.find { |p| p::KEY == importer }
+    label = parser ? parser::NAME : importer.titleize
+
+    <<~HTML.html_safe
+      <button type="button"
+              class="text-gray-600 hover:text-orange-600 hover:underline cursor-pointer text-left text-xs"
+              data-action="click->admin-table#filterByValue"
+              data-filter-column="importer"
+              data-filter-value="#{importer}"
+              title="Filter by #{ERB::Util.html_escape(label)}">
+        #{ERB::Util.html_escape(label)}
+      </button>
+    HTML
   end
 end
 # rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

@@ -315,9 +315,10 @@ en:
       importer:
         importing: "Importing..."
         last_import: "Last import:"
-        notices: "Import Notices"
+        notices: "Import notices"
+        pending: "Pending import"
         reimport: "Re-import now"
-        retry_import: "Retry Import"
+        retry_import: "Retry import"
         source_changed: "Source changed:"
         status_label: "Status:"
         success: "Success"

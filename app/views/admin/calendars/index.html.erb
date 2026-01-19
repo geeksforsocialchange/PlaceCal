@@ -4,6 +4,14 @@
   partner_options = Partner.where(id: partner_ids_with_calendars).order(:name).map do |p|
     { value: p.id.to_s, label: p.name.truncate(40) }
   end
+
+  # Build importer options for filter dropdown
+  # Map importer keys to human-readable names from parsers
+  importer_names = CalendarImporter::CalendarImporter::PARSERS.to_h { |p| [p::KEY, p::NAME] }
+  importer_options = [{ value: 'pending', label: t('admin.calendars.importer.pending') }] +
+    Calendar.distinct.pluck(:importer_used).compact.reject(&:blank?).sort.map do |i|
+      { value: i, label: importer_names[i] || i.titleize }
+    end
 %>
 
 <%= render partial: 'layouts/admin/datatable', locals: {
@@ -12,18 +20,20 @@
     column_titles: [
       'Calendar',
       'Partner',
-      icon_column_header(:status, 'Status'),
+      icon_column_header(:import, 'Status'),
       icon_column_header(:event, 'Events'),
-      icon_column_header(:warning, 'Notices'),
+      icon_column_header(:search_alert, 'Notices'),
+      'Importer',
       'Last Import',
       'Source Updated',
       ''
     ],
-    columns: %i[name partner state events notices last_import_at checksum_updated_at actions],
+    columns: %i[name partner state events notices importer last_import_at checksum_updated_at actions],
     column_config: {
       name: {},
       partner: { sortable: false },
       state: { align: :center, sortable: false, fit: true },
+      importer: { fit: true },
       events: { align: :center, sortable: false, fit: true },
       notices: { align: :center, fit: true },
       last_import_at: { fit: true },
@@ -66,6 +76,12 @@
           { value: 'yes', label: 'Has notices' },
           { value: 'no', label: 'No notices' }
         ]
+      },
+      {
+        column: 'importer',
+        label: 'Importer',
+        width: 'w-36',
+        options: importer_options
       }
     ],
     data: @calendars,

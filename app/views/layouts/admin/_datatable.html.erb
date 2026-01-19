@@ -12,7 +12,7 @@
 <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200"
      data-controller="admin-table"
      data-admin-table-source-value="<%= source %>"
-     data-admin-table-columns-value="<%= columns.map { |c| { data: c.to_s, hidden: column_config&.dig(c, :hidden) || false } }.to_json %>"
+     data-admin-table-columns-value="<%= columns.map { |c| { data: c.to_s, hidden: column_config&.dig(c, :hidden) || false, align: column_config&.dig(c, :align)&.to_s } }.to_json %>"
      data-admin-table-page-length-value="25"
      data-admin-table-default-sort-column-value="<%= default_sort_col %>"
      data-admin-table-default-sort-direction-value="<%= default_sort_dir %>">

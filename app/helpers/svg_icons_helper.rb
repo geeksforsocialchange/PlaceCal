@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+# SVG Icons Helper
+#
+# Icons sourced from Lucide (https://lucide.dev)
+# License: ISC License (https://github.com/lucide-icons/lucide/blob/main/LICENSE)
+#
+# Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022
+# as part of Feather (MIT). All other copyright (c) for Lucide are held
+# by Lucide Contributors 2022.
+
 module SvgIconsHelper
   # rubocop:disable Layout/LineLength
   ICONS = {
@@ -20,6 +29,7 @@ module SvgIconsHelper
     loader: 'M21 12a9 9 0 11-6.219-8.56',
     swap: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
     trash: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
+    import: 'M12 3v12m0 0l4-4m-4 4l-4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17',
     upload: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12',
     x: 'M6 18L18 6M6 6l12 12',
     zoom: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7',
@@ -85,6 +95,7 @@ module SvgIconsHelper
     lightning: 'M13 10V3L4 14h7v7l9-11h-7z',
     lock: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
     unlock: 'M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z',
+    search_alert: 'M15.75 16.5a7.5 7.5 0 1 0-5.25 2.13M21 21l-4.35-4.35M11 8v2m0 4h.01',
     warning: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
     x_circle: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
   }.freeze
