@@ -25,14 +25,22 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     click_link "Users"
     click_link "Add User"
 
-    # Fill in new user details (using field IDs as labels are in fieldset/legend format)
+    # Step 1: Fill in personal details
     fill_in "user_first_name", with: "New"
     fill_in "user_last_name", with: "User"
     fill_in "user_email", with: invited_user_email
 
-    # Set role (new user form is now single page, no tabs)
+    # Wait for email validation to complete
+    expect(page).to have_selector("[data-user-wizard-target='emailAvailable']", visible: true, wait: 5)
+
+    # Set role (only visible to root users)
     choose "Root: Can do everything - use with care!"
-    click_button "Invite"
+
+    # Continue to step 2
+    click_button "Continue"
+
+    # Step 2: Permissions - just submit
+    click_button "Invite User"
 
     expect(page).to have_selector("[role='alert']", text: "User has been created! An invite has been sent")
 

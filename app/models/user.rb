@@ -9,11 +9,11 @@ class User < ApplicationRecord
 
   # Site-wide roles
   # - root: Can do everything
-  # - uk_admin: UK-wide neighbourhood admin (can manage all UK neighbourhoods)
+  # - national_admin: Can manage all partners unless restricted to partnerships
   # - editor: Can edit all news articles
   # - citizen: Can only edit assigned entities
   enumerize :role,
-            in: %i[root uk_admin editor citizen],
+            in: %i[root national_admin editor citizen],
             default: :citizen
 
   # Include default devise modules. Others available are:
@@ -83,12 +83,12 @@ class User < ApplicationRecord
     role == :editor
   end
 
-  def uk_admin?
-    role == :uk_admin
+  def national_admin?
+    role == :national_admin
   end
 
   def owned_neighbourhoods
-    if uk_admin?
+    if national_admin?
       Neighbourhood.all.to_a
     else
       neighbourhoods.collect(&:subtree).flatten
@@ -96,7 +96,7 @@ class User < ApplicationRecord
   end
 
   def owned_neighbourhood_ids
-    if uk_admin?
+    if national_admin?
       Neighbourhood.pluck(:id)
     else
       owned_neighbourhoods.collect(&:id)
@@ -162,7 +162,7 @@ class User < ApplicationRecord
   end
 
   def neighbourhood_admin?
-    uk_admin? || neighbourhoods.any?
+    national_admin? || neighbourhoods.any?
   end
 
   def partner_admin?
@@ -177,9 +177,9 @@ class User < ApplicationRecord
     types = []
 
     types << 'root' if root?
-    types << 'uk_admin' if uk_admin?
+    types << 'national_admin' if national_admin?
     types << 'editor' if editor?
-    types << 'neighbourhood_admin' if neighbourhood_admin? && !uk_admin?
+    types << 'neighbourhood_admin' if neighbourhood_admin? && !national_admin?
     types << 'partner_admin' if partner_admin?
     types << 'partnership_admin' if partnership_admin?
     types << 'site_admin' if site_admin?

@@ -1,137 +1,243 @@
 <% content_for :title do %>New User<% end %>
 
-<div class="mb-6">
-  <h1 class="text-2xl font-semibold">New User</h1>
-  <p class="text-gray-600 mt-1">Invite a new user to PlaceCal.</p>
-</div>
-
 <%- display_fields = policy(@current_user).permitted_attributes_for_create %>
 
-<%= filtered_form_for([:admin, @user],
-                      display_only: display_fields,
-                      html: { class: 'space-y-6', data: { controller: 'live-validation' } }) do |f| %>
+<div class="max-w-4xl mx-auto"
+     data-controller="user-wizard"
+     data-user-wizard-current-step-value="1"
+     data-user-wizard-total-steps-value="2">
 
-  <%= render(Admin::ErrorComponent.new(@user)) %>
-
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
-        title: t('admin.users.sections.personal_details'),
-        description: "Enter the basic information for this user.",
-        margin: 4
-      ) %>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <fieldset class="fieldset">
-          <%= f.label :first_name, attr_label(:user, :first_name), class: 'fieldset-legend' %>
-          <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
-        </fieldset>
-
-        <fieldset class="fieldset">
-          <%= f.label :last_name, attr_label(:user, :last_name), class: 'fieldset-legend' %>
-          <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
-        </fieldset>
-      </div>
-
-      <fieldset class="fieldset">
-        <%= f.label :email, class: 'fieldset-legend' do %>
-          <%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span>
-        <% end %>
-        <%= f.input_field :email, class: 'input input-bordered w-full' %>
-        <p class="fieldset-label">An invitation email will be sent to this address.</p>
-      </fieldset>
-
-      <fieldset class="fieldset">
-        <%= f.label :phone, attr_label(:user, :phone), class: 'fieldset-legend' %>
-        <%= f.input_field :phone, class: 'input input-bordered w-full' %>
-      </fieldset>
-    </div>
+  <%# Header %>
+  <div class="text-center mb-8">
+    <h1 class="text-2xl font-bold text-base-content mb-2">Invite a New User</h1>
+    <p class="text-gray-600">Add a new user to PlaceCal and set their permissions</p>
   </div>
 
-  <%# Partners Section %>
-  <div class="card bg-base-100 border border-base-300 shadow-sm">
-    <div class="card-body p-6">
-      <div class="flex items-start gap-4 mb-4">
-        <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
-          <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
-        </div>
-        <div>
-          <h2 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h2>
-          <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
-        </div>
-      </div>
+  <%# Steps indicator %>
+  <ul class="steps steps-horizontal w-full mb-8">
+    <li class="step step-primary" data-user-wizard-target="stepIndicator" data-step="1">
+      <span class="step-content">Personal Details</span>
+    </li>
+    <li class="step" data-user-wizard-target="stepIndicator" data-step="2">
+      <span class="step-content">Permissions</span>
+    </li>
+  </ul>
 
-      <%= render Admin::StackedListSelectorComponent.new(
-        field_name: "user[partner_ids][]",
-        items: @user.partners.order(:name),
-        options: options_for_partners(@user),
-        permitted_ids: permitted_options_for_partners,
-        icon_name: :partner,
-        icon_color: "bg-emerald-100 text-emerald-600",
-        empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
-        add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
-        use_tom_select: true,
-        wrapper_class: "user_partners"
-      ) %>
-    </div>
-  </div>
+  <%= filtered_form_for([:admin, @user],
+                        display_only: display_fields,
+                        html: { class: 'space-y-6', data: { controller: 'live-validation', user_wizard_target: 'form' } }) do |f| %>
 
-  <%# Neighbourhoods Section - only for root users %>
-  <% if current_user.root? %>
-    <div class="card bg-base-100 border border-base-300 shadow-sm">
-      <div class="card-body p-6">
-        <div class="flex items-start gap-4 mb-4">
-          <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-sky-100 to-blue-100 flex items-center justify-center shadow-sm">
-            <%= icon(:map_pin, size: '6', css_class: 'text-sky-600') %>
+    <%= render(Admin::ErrorComponent.new(@user)) %>
+
+    <%# Step 1: Personal Details %>
+    <div data-user-wizard-target="step" data-step="1">
+      <div class="card bg-base-100 shadow-lg border border-base-300">
+        <div class="card-body">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+              <%= icon(:user, size: '6', css_class: 'text-placecal-orange') %>
+            </div>
+            <div>
+              <h2 class="card-title text-xl">Personal Details</h2>
+              <p class="text-gray-600 text-sm mt-1">
+                Enter the basic information for this user. An invitation will be sent to their email.
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h2>
-            <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.neighbourhoods_hint_root') %></p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <fieldset class="fieldset bg-base-200/50 rounded-xl p-4">
+              <%= f.label :first_name, attr_label(:user, :first_name), class: 'fieldset-legend font-semibold' %>
+              <%= f.input_field :first_name, class: 'input input-bordered w-full' %>
+            </fieldset>
+
+            <fieldset class="fieldset bg-base-200/50 rounded-xl p-4">
+              <%= f.label :last_name, attr_label(:user, :last_name), class: 'fieldset-legend font-semibold' %>
+              <%= f.input_field :last_name, class: 'input input-bordered w-full' %>
+            </fieldset>
+          </div>
+
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-4">
+            <%= f.label :email, class: 'fieldset-legend font-semibold' do %>
+              <%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+            <% end %>
+            <%= f.input_field :email,
+                class: 'input input-bordered w-full',
+                autocomplete: 'off',
+                data: {
+                  user_wizard_target: 'emailInput',
+                  action: 'input->user-wizard#checkEmail'
+                } %>
+            <p class="text-sm text-gray-600 mt-2">An invitation email will be sent to this address.</p>
+
+            <%# Email validation feedback %>
+            <div class="mt-3 hidden" data-user-wizard-target="emailFeedback">
+              <%# Email available %>
+              <div class="alert alert-success text-sm hidden" data-user-wizard-target="emailAvailable">
+                <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
+                <span>This email address is available.</span>
+              </div>
+
+              <%# Email already taken %>
+              <div class="alert alert-warning text-sm hidden" data-user-wizard-target="emailTaken">
+                <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+                <div class="flex-1">
+                  <p class="font-semibold">A user with this email already exists</p>
+                  <p class="text-xs mt-1">You may want to edit the existing user instead.</p>
+                </div>
+                <a href="#" class="btn btn-sm btn-warning" data-user-wizard-target="emailTakenLink">View User</a>
+              </div>
+
+              <%# Invalid email format %>
+              <div class="alert alert-error text-sm hidden" data-user-wizard-target="emailInvalid">
+                <%= icon(:x_circle, size: '5', css_class: 'shrink-0') %>
+                <span>Please enter a valid email address.</span>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-4">
+            <%= f.label :phone, attr_label(:user, :phone), class: 'fieldset-legend font-semibold' %>
+            <%= f.input_field :phone, class: 'input input-bordered w-full' %>
+          </fieldset>
+        </div>
+      </div>
+
+      <% if current_user.root? %>
+        <%# Role Section - only for root users %>
+        <div class="card bg-base-100 shadow-lg border border-base-300 mt-6">
+          <div class="card-body">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+                <%= icon(:crown, size: '6', css_class: 'text-placecal-orange') %>
+              </div>
+              <div>
+                <h2 class="card-title text-xl"><%= attr_label(:user, :role) %></h2>
+                <p class="text-gray-600 text-sm mt-1"><%= t('admin.users.fields.role_hint') %></p>
+              </div>
+            </div>
+
+            <%= render Admin::RadioCardGroupComponent.new(
+              form: f,
+              attribute: :role,
+              values: User.role.values,
+              i18n_scope: 'admin.users.roles'
+            ) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Step 2: Permissions %>
+    <div class="hidden" data-user-wizard-target="step" data-step="2">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <%# Partners %>
+        <div class="card bg-base-100 shadow-lg border border-base-300">
+          <div class="card-body">
+            <div class="flex items-start gap-4 mb-4">
+              <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+                <%= icon(:partner, size: '6', css_class: 'text-emerald-600') %>
+              </div>
+              <div>
+                <h2 class="card-title text-lg"><%= Partner.model_name.human(count: 2) %></h2>
+                <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.partners_hint') %></p>
+              </div>
+            </div>
+
+            <%= render Admin::StackedListSelectorComponent.new(
+              field_name: "user[partner_ids][]",
+              items: @user.partners.order(:name),
+              options: options_for_partners(@user),
+              permitted_ids: permitted_options_for_partners,
+              icon_name: :partner,
+              icon_color: "bg-emerald-100 text-emerald-600",
+              empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
+              add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
+              use_tom_select: true,
+              wrapper_class: "user_partners"
+            ) %>
           </div>
         </div>
 
-        <%= render Admin::StackedListSelectorComponent.new(
-          field_name: "user[neighbourhood_ids][]",
-          items: @user.neighbourhoods.order(:name),
-          options: options_for_user_neighbourhoods(@user),
-          permitted_ids: nil,
-          icon_name: :map_pin,
-          icon_color: "bg-sky-100 text-sky-600",
-          empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
-          add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase),
-          use_tom_select: true,
-          wrapper_class: "user_neighbourhoods"
-        ) %>
+        <%# Partnerships %>
+        <div class="card bg-base-100 shadow-lg border border-base-300">
+          <div class="card-body">
+            <div class="flex items-start gap-4 mb-4">
+              <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-amber-100 to-orange-100 flex items-center justify-center shadow-sm">
+                <%= icon(:partnership, size: '6', css_class: 'text-amber-700') %>
+              </div>
+              <div>
+                <h2 class="card-title text-lg"><%= Partnership.model_name.human(count: 2) %></h2>
+                <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.users.fields.partnerships_hint') %></p>
+              </div>
+            </div>
+
+            <%= render Admin::StackedListSelectorComponent.new(
+              field_name: "user[tag_ids][]",
+              items: @user.partnerships.order(:name),
+              options: options_for_user_partnerships,
+              permitted_ids: nil,
+              icon_name: :partnership,
+              icon_color: "bg-amber-100 text-amber-700",
+              empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
+              add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase),
+              wrapper_class: "user_partnerships"
+            ) %>
+          </div>
+        </div>
+
+        <%# Neighbourhoods %>
+        <div class="card bg-base-100 shadow-lg border border-base-300 lg:col-span-2">
+          <div class="card-body">
+            <div class="flex items-start gap-4 mb-4">
+              <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-sky-100 to-blue-100 flex items-center justify-center shadow-sm">
+                <%= icon(:map_pin, size: '6', css_class: 'text-sky-600') %>
+              </div>
+              <div>
+                <% neighbourhoods_hint = current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint') %>
+                <h2 class="card-title text-lg"><%= Neighbourhood.model_name.human(count: 2) %></h2>
+                <p class="text-sm text-gray-600 mt-0.5"><%= neighbourhoods_hint %></p>
+              </div>
+            </div>
+
+            <% if current_user.root? %>
+              <%= render Admin::StackedListSelectorComponent.new(
+                field_name: "user[neighbourhood_ids][]",
+                items: @user.neighbourhoods.order(:name),
+                options: options_for_user_neighbourhoods(@user),
+                permitted_ids: nil,
+                icon_name: :map_pin,
+                icon_color: "bg-sky-100 text-sky-600",
+                empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
+                add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase),
+                use_tom_select: true,
+                wrapper_class: "user_neighbourhoods"
+              ) %>
+            <% else %>
+              <%= render Admin::ItemBadgeListComponent.new(
+                items: @user.neighbourhoods.order(:name),
+                icon_name: :map_pin,
+                icon_color: "bg-sky-100 text-sky-600",
+                link_path: :admin_neighbourhood_path,
+                empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase)
+              ) %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div role="alert" class="alert bg-blue-50 border-blue-200 text-blue-800 mt-6">
+        <%= icon(:info, size: '5', css_class: 'text-blue-500') %>
+        <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-teal font-medium' %>.</span>
       </div>
     </div>
 
-    <%# Role Section - only for root users %>
-    <div class="card bg-base-100 border border-base-300 shadow-sm">
-      <div class="card-body p-6">
-        <%= render Admin::SectionHeaderComponent.new(
-          title: attr_label(:user, :role),
-          description: t('admin.users.fields.role_hint'),
-          margin: 4
-        ) %>
-
-        <%= render Admin::RadioCardGroupComponent.new(
-          form: f,
-          attribute: :role,
-          values: User.role.values,
-          i18n_scope: 'admin.users.roles'
-        ) %>
-      </div>
-    </div>
+    <%# Save Bar %>
+    <%= render Admin::SaveBarComponent.new(
+      wizard: true,
+      wizard_controller: 'user-wizard',
+      submit_label: t('admin.users.actions.invite'),
+      submit_icon: :mail
+    ) %>
   <% end %>
-
-  <div role="alert" class="alert bg-blue-50 border-blue-200 text-blue-800">
-    <%= icon(:info, size: '5', css_class: 'text-blue-500') %>
-    <span>Inviting a user will require their acceptance of the PlaceCal <%= link_to 'Terms of Use', terms_of_use_path, class: 'link link-hover text-placecal-teal font-medium' %>.</span>
-  </div>
-
-  <%= render Admin::SaveBarComponent.new do |c| %>
-    <% c.with_button do %>
-      <%= f.submit t('admin.users.actions.invite'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-    <% end %>
-  <% end %>
-<% end %>
+</div>

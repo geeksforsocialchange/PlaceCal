@@ -155,37 +155,10 @@
     </div>
 
     <%# Save Bar %>
-    <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 -mx-4 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]">
-      <div class="flex items-center justify-between gap-4 max-w-4xl mx-auto">
-        <%# Left side - Back button %>
-        <div>
-          <button type="button"
-                  class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
-                  data-partner-wizard-target="backButton"
-                  data-action="click->partner-wizard#previousStep">
-            <%= icon(:chevron_left, size: '5') %>
-            <span>Back</span>
-          </button>
-        </div>
-
-        <%# Right side - Continue/Save button %>
-        <div class="flex items-center gap-3">
-          <button type="button"
-                  class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2"
-                  data-partner-wizard-target="continueButton"
-                  data-action="click->partner-wizard#nextStep">
-            <span>Continue</span>
-            <%= icon(:chevron_right, size: '5') %>
-          </button>
-
-          <button type="submit"
-                  class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
-                  data-partner-wizard-target="submitButton">
-            <%= icon(:check, size: '5') %>
-            <span>Create Partner</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <%= render Admin::SaveBarComponent.new(
+      wizard: true,
+      wizard_controller: 'partner-wizard',
+      submit_label: t('admin.partners.actions.create')
+    ) %>
   <% end %>
 </div>

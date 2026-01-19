@@ -78,7 +78,7 @@ module Admin
       if @user.valid?
         @user.invite!
         flash[:success] = 'User has been created! An invite has been sent'
-        redirect_to admin_users_path
+        redirect_to edit_admin_user_path(@user)
       else
         @partners = collect_partners
         flash.now[:danger] = 'User was not created'
@@ -97,6 +97,26 @@ module Admin
 
         format.json { head :no_content }
       end
+    end
+
+    def lookup_email
+      authorize User, :new?
+
+      email = params[:email].to_s.strip.downcase
+      return render json: { valid: false, available: false } if email.blank?
+
+      # Check format validity
+      valid_format = email.match?(/\A[^\s@]+@[^\s@]+\.[^\s@]+\z/)
+      return render json: { valid: false, available: false } unless valid_format
+
+      # Check if email is already taken
+      existing_user = User.find_by('lower(email) = ?', email)
+
+      render json: {
+        valid: true,
+        available: existing_user.nil?,
+        existing_user: existing_user&.slice(:id, :first_name, :last_name)
+      }
     end
 
     private

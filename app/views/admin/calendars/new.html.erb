@@ -232,38 +232,12 @@
     </div>
     </div>
 
-    <%# Save Bar - full width %>
-    <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]">
-      <div class="flex items-center justify-between gap-4 max-w-4xl mx-auto">
-        <%# Left side - Back button %>
-        <div>
-          <button type="button"
-                  class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
-                  data-calendar-wizard-target="backButton"
-                  data-action="click->calendar-wizard#previousStep">
-            <%= icon(:chevron_left, size: '5') %>
-            <span><%= t('admin.actions.back') %></span>
-          </button>
-        </div>
-
-        <%# Right side - Continue/Save button %>
-        <div class="flex items-center gap-3">
-          <button type="button"
-                  class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2"
-                  data-calendar-wizard-target="continueButton"
-                  data-action="click->calendar-wizard#nextStep">
-            <span data-calendar-wizard-target="continueButtonText"><%= t('admin.actions.continue') %></span>
-            <%= icon(:chevron_right, size: '5') %>
-          </button>
-
-          <button type="submit"
-                  class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
-                  data-calendar-wizard-target="submitButton">
-            <%= icon(:check, size: '5') %>
-            <span><%= t('admin.calendars.wizard.create_button') %></span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <%# Save Bar %>
+    <%= render Admin::SaveBarComponent.new(
+      wizard: true,
+      wizard_controller: 'calendar-wizard',
+      submit_label: t('admin.calendars.wizard.create_button'),
+      continue_text_target: true
+    ) %>
   <% end %>
 </div>

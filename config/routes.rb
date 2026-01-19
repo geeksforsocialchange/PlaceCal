@@ -55,6 +55,9 @@ Rails.application.routes.draw do
     resources :sites
     resources :supporters
     resources :users do
+      collection do
+        get :lookup_email
+      end
       member do
         patch :update_profile
       end

@@ -529,7 +529,7 @@ en:
         role_hint: "Determines the user's system-wide access level and permissions."
       roles:
         root: "Can do everything - use with care!"
-        uk_admin: "UK-wide neighbourhood admin - can manage all UK neighbourhoods"
+        national_admin: "Can manage all partners unless restricted to partnerships"
         editor: "Can edit all news articles"
         citizen: "Can only edit assigned entities"
       actions:
