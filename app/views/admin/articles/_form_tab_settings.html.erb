@@ -20,7 +20,7 @@
         <% unless disabled_fields.include?(:published_at) %>
           <fieldset class="fieldset mt-4">
             <legend class="fieldset-legend">Publication Date</legend>
-            <%= f.input_field :published_at, class: 'input input-bordered w-full max-w-xs' %>
+            <%= f.date_field :published_at, class: 'input input-bordered w-full max-w-xs' %>
           </fieldset>
         <% end %>
       <% end %>

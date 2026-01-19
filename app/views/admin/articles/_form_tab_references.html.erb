@@ -1,6 +1,6 @@
 <%- disabled_fields = policy(@article).disabled_fields %>
 
-<div class="max-w-2xl space-y-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
   <%# Partners %>
   <div>
     <div class="flex items-start gap-4 mb-4">
@@ -14,11 +14,38 @@
     </div>
 
     <% if disabled_fields.include?(:partner_ids) %>
-      <%= f.association :partners, collection: options_for_partners, label: false,
-          input_html: { class: 'w-full', 'aria-label': Partner.model_name.human(count: 2), data: { controller: "tom-select" }, disabled: true } %>
+      <%# Read-only display when disabled %>
+      <% if @article.partners.any? %>
+        <div class="space-y-2">
+          <% @article.partners.each do |partner| %>
+            <div class="flex items-center gap-3 p-3 bg-base-200/50 rounded-xl border border-base-300/50">
+              <div class="shrink-0 w-9 h-9 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                <%= icon(:partner, size: '5') %>
+              </div>
+              <span class="flex-1 font-medium text-sm text-base-content/90"><%= partner.name %></span>
+              <span class="badge badge-ghost badge-sm"><%= t('admin.labels.locked') %></span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-base-200 mb-3">
+            <%= icon(:partner, size: '7', css_class: 'text-gray-400') %>
+          </div>
+          <p class="text-sm text-gray-600"><%= t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase) %></p>
+        </div>
+      <% end %>
     <% else %>
-      <%= f.association :partners, collection: options_for_partners, label: false,
-          input_html: { class: 'w-full', 'aria-label': Partner.model_name.human(count: 2), data: { controller: "tom-select" } } %>
+      <%= render Admin::StackedListSelectorComponent.new(
+        field_name: "article[partner_ids][]",
+        items: @article.partners,
+        options: options_for_partners,
+        icon_name: :partner,
+        icon_color: "bg-emerald-100 text-emerald-600",
+        empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),
+        add_placeholder: t('admin.placeholders.add_model', model: Partner.model_name.human.downcase),
+        wrapper_class: "article_partners"
+      ) %>
     <% end %>
   </div>
 
@@ -35,11 +62,38 @@
     </div>
 
     <% if disabled_fields.include?(:tag_ids) %>
-      <%= f.association :tags, collection: options_for_tags, label: false,
-          input_html: { class: 'w-full', 'aria-label': Partnership.model_name.human(count: 2), data: { controller: "tom-select" }, disabled: true } %>
+      <%# Read-only display when disabled %>
+      <% if @article.tags.any? %>
+        <div class="space-y-2">
+          <% @article.tags.each do |tag| %>
+            <div class="flex items-center gap-3 p-3 bg-base-200/50 rounded-xl border border-base-300/50">
+              <div class="shrink-0 w-9 h-9 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+                <%= icon(:partnership, size: '5') %>
+              </div>
+              <span class="flex-1 font-medium text-sm text-base-content/90"><%= tag.name %></span>
+              <span class="badge badge-ghost badge-sm"><%= t('admin.labels.locked') %></span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-base-200 mb-3">
+            <%= icon(:partnership, size: '7', css_class: 'text-gray-400') %>
+          </div>
+          <p class="text-sm text-gray-600"><%= t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase) %></p>
+        </div>
+      <% end %>
     <% else %>
-      <%= f.association :tags, collection: options_for_tags, label: false,
-          input_html: { class: 'w-full', 'aria-label': Partnership.model_name.human(count: 2), data: { controller: "tom-select" } } %>
+      <%= render Admin::StackedListSelectorComponent.new(
+        field_name: "article[tag_ids][]",
+        items: @article.tags,
+        options: options_for_tags,
+        icon_name: :partnership,
+        icon_color: "bg-purple-100 text-purple-600",
+        empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),
+        add_placeholder: t('admin.placeholders.add_model', model: Partnership.model_name.human.downcase),
+        wrapper_class: "article_tags"
+      ) %>
     <% end %>
   </div>
 </div>

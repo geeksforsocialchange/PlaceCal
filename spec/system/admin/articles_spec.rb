@@ -10,7 +10,7 @@ RSpec.describe "Admin Articles", :slow, type: :system do
   let!(:partnership) { create(:partnership) }
   let!(:article) { create(:article) }
 
-  describe "tom-select inputs on article form" do
+  describe "article form inputs" do
     it "allows selecting author, partners and tags", :aggregate_failures do
       click_link "Articles"
       await_datatables
@@ -27,15 +27,13 @@ RSpec.describe "Admin Articles", :slow, type: :system do
         find('input[aria-label*="References"]').click
       end
 
-      # Select partners (multiple)
-      partners_node = tom_select_node("article_partners")
-      tom_select partner.name, partner_two.name, xpath: partners_node.path
-      assert_tom_select_multiple [partner.name, partner_two.name], partners_node
+      # Select partners using stacked list selector
+      stacked_list_select partner.name, partner_two.name, wrapper_class: "article_partners"
+      assert_stacked_list_items [partner.name, partner_two.name], "article_partners"
 
-      # Select tags
-      tags_node = tom_select_node("article_tags")
-      tom_select partnership.name, xpath: tags_node.path
-      assert_tom_select_multiple [partnership.name_with_type], tags_node
+      # Select tags using stacked list selector
+      stacked_list_select partnership.name, wrapper_class: "article_tags"
+      assert_stacked_list_items [partnership.name], "article_tags"
 
       click_button "Save"
 
@@ -53,11 +51,8 @@ RSpec.describe "Admin Articles", :slow, type: :system do
       # Navigate to References tab to verify partners and tags
       find('input[aria-label*="References"]').click
 
-      partners_node = tom_select_node("article_partners")
-      assert_tom_select_multiple [partner.name, partner_two.name], partners_node
-
-      tags_node = tom_select_node("article_tags")
-      assert_tom_select_multiple [partnership.name_with_type], tags_node
+      assert_stacked_list_items [partner.name, partner_two.name], "article_partners"
+      assert_stacked_list_items [partnership.name], "article_tags"
     end
   end
 end

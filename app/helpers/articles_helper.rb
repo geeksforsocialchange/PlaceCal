@@ -3,7 +3,7 @@
 # app/helpers/articles_helper.rb
 module ArticlesHelper
   def options_for_partners
-    policy_scope(Partner).all.order(:name).pluck(:id, :name)
+    policy_scope(Partner).all.order(:name).pluck(:name, :id)
   end
 
   def article_partner_links(article)

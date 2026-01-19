@@ -18,7 +18,7 @@
       </fieldset>
 
       <%# Author and Publication date side by side %>
-      <div class="flex flex-col sm:flex-row gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-end gap-4">
         <%# Author field %>
         <fieldset class="fieldset min-w-64 article_author">
           <%= f.label :author_id, attr_label(:article, :author), class: 'fieldset-legend' %>
