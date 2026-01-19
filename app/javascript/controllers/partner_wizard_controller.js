@@ -30,6 +30,10 @@ export default class extends Controller {
 		"similarSection",
 		"similarList",
 		"nameAvailable",
+		// Step 2: Location
+		"addressFields",
+		"serviceAreasContainer",
+		"locationHint",
 		// Step 4: Contact
 		"publicName",
 		"publicEmail",
@@ -104,6 +108,10 @@ export default class extends Controller {
 				: "";
 			return name.length >= 5 && this.nameAvailableValue;
 		}
+		if (this.currentStepValue === 2) {
+			// Location step - need either address or service area
+			return this.hasAddressOrServiceArea();
+		}
 		if (this.currentStepValue === 5) {
 			// Admin step - valid if skipped OR if email is provided and valid
 			if (this.adminSkippedValue) return true;
@@ -117,6 +125,37 @@ export default class extends Controller {
 		}
 		// Other steps have no required fields
 		return true;
+	}
+
+	hasAddressOrServiceArea() {
+		// Check if any address field has a value
+		let hasAddress = false;
+		if (this.hasAddressFieldsTarget) {
+			const inputs = this.addressFieldsTarget.querySelectorAll(
+				"input.address_field"
+			);
+			hasAddress = Array.from(inputs).some(
+				(input) => input.value.trim() !== ""
+			);
+		}
+
+		// Check if any service areas exist (nested fields that aren't marked for destruction)
+		let hasServiceArea = false;
+		if (this.hasServiceAreasContainerTarget) {
+			const serviceAreas = this.serviceAreasContainerTarget.querySelectorAll(
+				".nested-fields:not(.hidden)"
+			);
+			hasServiceArea = serviceAreas.length > 0;
+		}
+
+		const isValid = hasAddress || hasServiceArea;
+
+		// Show/hide location hint
+		if (this.hasLocationHintTarget) {
+			this.locationHintTarget.classList.toggle("hidden", isValid);
+		}
+
+		return isValid;
 	}
 
 	validateCurrentStep() {

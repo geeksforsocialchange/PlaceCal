@@ -139,10 +139,16 @@
           </div>
         </div>
 
+        <p class="text-sm text-error mb-4" data-partner-wizard-target="locationHint">
+          Please provide either an address or at least one service area.
+        </p>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <%# Address %>
           <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
-            <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
+            <div data-partner-wizard-target="addressFields" data-action="input->partner-wizard#updateContinueButton">
+              <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
+            </div>
           <% end %>
 
           <%# Service Areas %>
@@ -152,14 +158,16 @@
             description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
             fit_height: true
           ) do %>
-            <%= nested_form_for(f, :service_areas,
-                  add_text: t('admin.service_areas.add'),
-                  add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
-                  partial: 'service_area_fields') do %>
-              <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-                <%= render 'service_area_fields', f: neighbourhood %>
+            <div data-partner-wizard-target="serviceAreasContainer" data-action="cocoon:after-insert->partner-wizard#updateContinueButton cocoon:after-remove->partner-wizard#updateContinueButton">
+              <%= nested_form_for(f, :service_areas,
+                    add_text: t('admin.service_areas.add'),
+                    add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
+                    partial: 'service_area_fields') do %>
+                <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+                  <%= render 'service_area_fields', f: neighbourhood %>
+                <% end %>
               <% end %>
-            <% end %>
+            </div>
           <% end %>
         </div>
       </div>
