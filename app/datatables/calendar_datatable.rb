@@ -113,18 +113,28 @@ class CalendarDatatable < Datatable
           #{icon(:check)}
         </span>
       HTML
-    when 'in_queue', 'in_worker'
-      label = state == 'in_queue' ? 'Queued for import' : 'Importing...'
+    when 'in_queue'
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-orange-500" title="#{label}">
-          #{icon(:swap, css_class: 'animate-spin')}
+        <span class="inline-flex items-center text-orange-500" title="Queued for import">
+          <span class="dots-loading"><span></span><span></span><span></span></span>
         </span>
       HTML
-    when 'error', 'bad_source'
-      label = state == 'error' ? 'Import error' : 'Bad source URL'
+    when 'in_worker'
       <<~HTML.html_safe
-        <span class="inline-flex items-center text-red-600" title="#{label}">
+        <span class="inline-flex items-center text-orange-500" title="Importing...">
+          #{icon(:loader, css_class: 'animate-spin')}
+        </span>
+      HTML
+    when 'error'
+      <<~HTML.html_safe
+        <span class="inline-flex items-center text-red-600" title="Import error">
           #{icon(:warning)}
+        </span>
+      HTML
+    when 'bad_source'
+      <<~HTML.html_safe
+        <span class="inline-flex items-center text-red-600" title="Bad source URL">
+          #{icon(:link_off)}
         </span>
       HTML
     else

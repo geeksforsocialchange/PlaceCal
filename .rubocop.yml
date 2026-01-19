@@ -106,6 +106,7 @@ Metrics/CyclomaticComplexity:
 Metrics/ModuleLength:
   Exclude:
     - "lib/normal_island.rb"
+    - "app/helpers/svg_icons_helper.rb"
 
 Metrics/PerceivedComplexity:
   Exclude:
