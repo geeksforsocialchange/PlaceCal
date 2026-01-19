@@ -194,8 +194,9 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       # Step 1: Name
       fill_in "partner_name", with: "Test Partner For Service Areas"
       # Wait for name availability check to complete (debounced 400ms + API call)
-      # The Continue button becomes enabled when name validation passes
-      expect(page).to have_button("Continue", disabled: false, wait: 10)
+      # The name available indicator appears when validation passes
+      expect(page).to have_content("This name is available!", wait: 10)
+      expect(page).to have_button("Continue", disabled: false)
       click_button "Continue"
 
       # Step 2: Location - service areas are visible here
