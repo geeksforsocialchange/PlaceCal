@@ -34,6 +34,7 @@ export default class extends Controller {
 		"addressFields",
 		"serviceAreasContainer",
 		"locationHint",
+		"addressIncompleteHint",
 		// Step 4: Contact
 		"publicName",
 		"publicEmail",
@@ -130,6 +131,7 @@ export default class extends Controller {
 	hasAddressOrServiceArea() {
 		// Check if address has both street address AND postcode
 		let hasValidAddress = false;
+		let hasPartialAddress = false;
 		if (this.hasAddressFieldsTarget) {
 			const streetInput = this.addressFieldsTarget.querySelector(
 				"input[name*='street_address']"
@@ -140,6 +142,8 @@ export default class extends Controller {
 			const hasStreet = streetInput && streetInput.value.trim() !== "";
 			const hasPostcode = postcodeInput && postcodeInput.value.trim() !== "";
 			hasValidAddress = hasStreet && hasPostcode;
+			// Partial address = has one but not both
+			hasPartialAddress = (hasStreet || hasPostcode) && !hasValidAddress;
 		}
 
 		// Check if any service areas have a selected neighbourhood
@@ -157,11 +161,24 @@ export default class extends Controller {
 			});
 		}
 
-		const isValid = hasValidAddress || hasServiceArea;
+		// Valid if: (valid address OR service area) AND no partial address
+		// If address is partially filled, block advancement regardless of service area
+		const isValid = (hasValidAddress || hasServiceArea) && !hasPartialAddress;
 
-		// Show/hide location hint
+		// Show/hide location hint (general requirement message)
+		// Show when neither valid address nor service area
 		if (this.hasLocationHintTarget) {
-			this.locationHintTarget.classList.toggle("hidden", isValid);
+			const needsLocationHint =
+				!hasValidAddress && !hasServiceArea && !hasPartialAddress;
+			this.locationHintTarget.classList.toggle("hidden", !needsLocationHint);
+		}
+
+		// Show/hide address incomplete hint (specific to partial address)
+		if (this.hasAddressIncompleteHintTarget) {
+			this.addressIncompleteHintTarget.classList.toggle(
+				"hidden",
+				!hasPartialAddress
+			);
 		}
 
 		return isValid;

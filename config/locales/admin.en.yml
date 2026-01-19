@@ -411,6 +411,8 @@ en:
       validation:
         name_min_length: "Name must be at least 5 characters"
         name_required: "Partner name is required"
+        location_required: "Please provide either an address (street address and postcode) or at least one service area."
+        address_incomplete: "Address requires both street address and postcode to be saved."
       preview:
         no_description: "No description provided."
       facilities:

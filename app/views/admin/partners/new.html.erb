@@ -140,7 +140,7 @@
         </div>
 
         <p class="text-sm text-error mb-4" data-partner-wizard-target="locationHint">
-          Please provide either an address (street address and postcode) or at least one service area.
+          <%= t('admin.partners.validation.location_required') %>
         </p>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -148,6 +148,10 @@
           <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
             <div data-partner-wizard-target="addressFields" data-action="input->partner-wizard#updateContinueButton">
               <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
+              <div class="alert alert-warning mt-4 hidden" data-partner-wizard-target="addressIncompleteHint">
+                <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+                <span><%= t('admin.partners.validation.address_incomplete') %></span>
+              </div>
             </div>
           <% end %>
 
