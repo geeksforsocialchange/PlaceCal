@@ -48,19 +48,19 @@
       {
         type: :radio,
         column: 'calendar_status',
-        label: 'Calendar',
+        label: t('admin.partners.filters.has_calendar'),
         options: [
-          { value: 'connected', label: 'Yes' },
-          { value: 'none', label: 'No' }
+          { value: 'connected', label: t('admin.labels.yes') },
+          { value: 'none', label: t('admin.labels.no') }
         ]
       },
       {
         type: :radio,
         column: 'has_admins',
-        label: 'Admins',
+        label: t('admin.partners.filters.has_admin'),
         options: [
-          { value: 'yes', label: 'Yes' },
-          { value: 'no', label: 'No' }
+          { value: 'yes', label: t('admin.labels.yes') },
+          { value: 'no', label: t('admin.labels.no') }
         ]
       },
       {

@@ -85,9 +85,11 @@ en:
       issues: "Issues"
       loading: "Loading..."
       locked: "Locked"
+      no: "No"
       none: "None"
       required: "*"
       visible: "Visible"
+      yes: "Yes"
 
     # Placeholders
     placeholders:
@@ -385,6 +387,9 @@ en:
     # Partners
     # -------------------------------------------------------------------------
     partners:
+      filters:
+        has_calendar: "Has Calendar?"
+        has_admin: "Has Admin?"
       sections:
         admins_description: "Users who can manage this partner."
         basic_info_description: "Enter the core details about your partner organisation."
