@@ -1,7 +1,7 @@
 <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
   <%= icon(:calendar, size: '5') %>
   <%= Calendar.model_name.human(count: 2) %>
-  <span class="badge badge-neutral"><%= @partner.calendars.count %></span>
+  <span class="badge badge-sm badge-ghost"><%= @partner.calendars.count %></span>
 </h2>
 <p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.calendars_description') %></p>
 
