@@ -41,24 +41,26 @@
       {
         column: 'partnership',
         label: 'Partnership',
+        tom_select: true,
+        width: 'w-48',
         options: partnership_options
       },
       {
+        type: :radio,
         column: 'calendar_status',
         label: 'Calendar',
-        width: 'w-28',
         options: [
-          { value: 'connected', label: 'Connected' },
-          { value: 'none', label: 'No calendar' }
+          { value: 'connected', label: 'Yes' },
+          { value: 'none', label: 'No' }
         ]
       },
       {
+        type: :radio,
         column: 'has_admins',
         label: 'Admins',
-        width: 'w-28',
         options: [
-          { value: 'yes', label: 'Has admins' },
-          { value: 'no', label: 'No admins' }
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
         ]
       },
       {
