@@ -13,6 +13,7 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::ResidentAdvisor,
     CalendarImporter::Parsers::Squarespace,
     CalendarImporter::Parsers::Ticketsolve,
+    CalendarImporter::Parsers::Wix,
 
     # leave this last as its detection algorithm downloads and parses the
     # data from the URL, which is slow
