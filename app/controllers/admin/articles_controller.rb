@@ -41,7 +41,7 @@ module Admin
         redirect_to admin_articles_path
       else
         flash.now[:danger] = 'Article has not been created'
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
@@ -53,7 +53,7 @@ module Admin
         redirect_to edit_admin_article_path(@article)
       else
         flash.now[:danger] = 'Article was not saved'
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 

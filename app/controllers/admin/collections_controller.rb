@@ -29,7 +29,7 @@ module Admin
         redirect_to admin_collections_path
       else
         flash.now[:danger] = 'Collection did not save'
-        render 'new', status: :unprocessable_entity
+        render 'new', status: :unprocessable_content
       end
     end
 
@@ -40,7 +40,7 @@ module Admin
         render 'edit'
       else
         flash.now[:danger] = 'Collection did not save'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 

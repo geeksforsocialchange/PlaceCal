@@ -44,10 +44,10 @@ module Admin
         else
           format.html do
             flash.now[:danger] = 'Tag was not created'
-            render :new, status: :unprocessable_entity
+            render :new, status: :unprocessable_content
           end
 
-          format.json { render json: @tag.errors, status: :unprocessable_entity }
+          format.json { render json: @tag.errors, status: :unprocessable_content }
         end
       end
     end
@@ -70,7 +70,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Tag was not saved'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 

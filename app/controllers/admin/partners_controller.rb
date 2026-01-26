@@ -57,9 +57,9 @@ module Admin
           format.html do
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
-            render :new, status: :unprocessable_entity
+            render :new, status: :unprocessable_content
           end
-          format.json { render json: @partner.errors, status: :unprocessable_entity }
+          format.json { render json: @partner.errors, status: :unprocessable_content }
         end
       end
     end
@@ -113,7 +113,7 @@ module Admin
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 
@@ -138,7 +138,7 @@ module Admin
 
       else
         render json: { message: 'Could not clear address' },
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
     end
 
