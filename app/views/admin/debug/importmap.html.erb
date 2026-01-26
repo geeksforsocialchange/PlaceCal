@@ -1,0 +1,35 @@
+<div class="p-8">
+  <h1 class="text-2xl font-bold mb-4">Importmap Debug Info</h1>
+
+  <div class="space-y-4">
+    <div>
+      <h2 class="font-bold">path_to_asset('controllers/dropdown_controller.js'):</h2>
+      <pre class="bg-gray-100 p-2 rounded"><%= @debug_info[:path_to_asset] %></pre>
+    </div>
+
+    <div>
+      <h2 class="font-bold">compute_asset_path('controllers/dropdown_controller.js'):</h2>
+      <pre class="bg-gray-100 p-2 rounded"><%= @debug_info[:compute_asset_path] %></pre>
+    </div>
+
+    <div>
+      <h2 class="font-bold">assets.resolve_with:</h2>
+      <pre class="bg-gray-100 p-2 rounded"><%= @debug_info[:resolve_with].inspect %></pre>
+    </div>
+
+    <div>
+      <h2 class="font-bold">assets.digest:</h2>
+      <pre class="bg-gray-100 p-2 rounded"><%= @debug_info[:digest].inspect %></pre>
+    </div>
+
+    <div>
+      <h2 class="font-bold">Manifest path:</h2>
+      <pre class="bg-gray-100 p-2 rounded"><%= @debug_info[:manifest_path] %></pre>
+    </div>
+
+    <div>
+      <h2 class="font-bold">Importmap JSON (first 1000 chars):</h2>
+      <pre class="bg-gray-100 p-2 rounded text-xs overflow-auto"><%= @debug_info[:importmap_json] %></pre>
+    </div>
+  </div>
+</div>
