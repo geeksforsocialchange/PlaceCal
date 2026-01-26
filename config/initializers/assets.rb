@@ -10,6 +10,7 @@ Rails.application.config.assets.paths << Rails.root.join('app', 'javascripts')
 Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'pdfs')
 Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
 Rails.application.config.assets.paths << Rails.root.join('node_modules')
+Rails.application.config.assets.paths << Rails.root.join('app', 'components')
 # Rails.application.config.assets.paths << Emoji.images_path
 
 # Precompile additional assets.
