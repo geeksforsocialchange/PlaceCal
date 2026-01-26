@@ -171,14 +171,24 @@ en:
       sign_out: "Sign out"
 
     leftbar:
+      articles: "Articles"
       build: "Build"
+      calendars: "Calendars"
+      collections: "Collections"
       content_types: "Content types"
       discord: "Discord"
       get_support: "Get support"
       handbook: "Handbook"
       import_status: "Import status"
       in_development: "In development"
+      neighbourhoods: "Neighbourhoods"
+      partners: "Partners"
+      partnerships: "Partnerships"
       report_bug: "Report a bug"
+      sites: "Sites"
+      supporters: "Supporters"
+      tags: "Tags"
+      users: "Users"
 
     # =========================================================================
     # PAGES
