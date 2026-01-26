@@ -1,0 +1,55 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: t('admin.tabs.location'),
+  description: t('admin.partners.sections.location_description')
+) %>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="space-y-6">
+    <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
+      <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
+      <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
+        <div role="alert" class="alert alert-warning text-sm">
+          <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+          <span><%= t('admin.partners.warnings.outdated_neighbourhood', email: 'support@placecal.org').html_safe %></span>
+        </div>
+      <% end %>
+      <% if partner_has_unmappable_postcode?(@partner) %>
+        <div role="alert" class="alert alert-warning text-sm">
+          <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+          <span><%= t('admin.partners.warnings.unmappable_postcode') %></span>
+        </div>
+      <% end %>
+      <% if @partner.address&.neighbourhood.present? %>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend flex items-center gap-1">
+            <%= icon(:neighbourhood, size: '4') %>
+            <%= t('admin.address.neighbourhood_label') %>
+          </legend>
+          <%= render Admin::NeighbourhoodCardComponent.new(
+                neighbourhood: @partner.address.neighbourhood,
+                show_header: false
+              ) %>
+        </fieldset>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= render Admin::FormCardComponent.new(
+    icon: :car,
+    title: t('admin.sections.service_areas'),
+    description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
+    fit_height: true
+  ) do %>
+    <%= nested_form_for(f, :service_areas, add_text: t('admin.service_areas.add'), add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange', partial: 'service_area_fields') do %>
+      <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+        <%= render 'service_area_fields', f: neighbourhood %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="mt-6">
+  <%= render Admin::FormCardComponent.new(icon: :clock, title: t('admin.sections.opening_times')) do %>
+    <%= render Admin::OpeningTimesComponent.new(form: f, partner: @partner) %>
+  <% end %>
+</div>

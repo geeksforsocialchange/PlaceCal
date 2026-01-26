@@ -1,0 +1,21 @@
+<h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+  <%= icon(:calendar, size: '5') %>
+  <%= Calendar.model_name.human(count: 2) %>
+  <span class="badge badge-sm badge-ghost"><%= @partner.calendars.count %></span>
+</h2>
+<p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.calendars_description') %></p>
+
+<%= render Admin::RelatedItemsListComponent.new(
+  items: @partner.calendars,
+  title_attr: :name,
+  subtitle_attr: :source,
+  edit_path: ->(item) { edit_admin_calendar_path(item) },
+  empty_message: t('admin.empty.none_connected', items: Calendar.model_name.human(count: 2).downcase)
+) %>
+
+<div class="mt-6">
+  <%= link_to new_admin_calendar_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+    <%= icon(:plus, size: '4') %>
+    <%= t('admin.actions.add_model', model: Calendar.model_name.human) %>
+  <% end %>
+</div>

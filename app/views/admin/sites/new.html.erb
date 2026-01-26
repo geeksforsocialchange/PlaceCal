@@ -1,3 +1,2 @@
-<% content_for :title do %>New Site<% end %>
-
-<%= render(AdminNew.new(:site)) %>
+<%= render 'layouts/admin/page_header', model_name: 'Site', new_record: true %>
+<%= render 'form' %>
