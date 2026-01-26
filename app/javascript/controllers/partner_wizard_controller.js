@@ -11,7 +11,7 @@ import {
 	clearInputError,
 	setContinueButtonEnabled,
 	clearInputStyling,
-} from "./mixins/wizard";
+} from "controllers/mixins/wizard";
 
 /**
  * Partner Wizard Controller

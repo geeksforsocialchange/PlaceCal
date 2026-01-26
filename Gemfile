@@ -50,8 +50,7 @@ gem 'pundit'
 gem 'geocoder'
 gem 'leaflet-rails'
 
-# Styleguide
-gem 'mountain_view'
+# Components
 gem 'view_component'
 
 # Helpers to group by time period

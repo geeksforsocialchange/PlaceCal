@@ -4,7 +4,7 @@ import {
 	teardownFormTracking,
 	isDirty,
 	updateIndicator,
-} from "./mixins/form_tracking";
+} from "controllers/mixins/form_tracking";
 
 // Simple form dirty tracking controller
 // - Shows/hides unsaved changes indicator

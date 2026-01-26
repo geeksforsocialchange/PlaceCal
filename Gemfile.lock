@@ -397,8 +397,6 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.26.2)
-    mountain_view (0.14.0)
-      rails (>= 3.2.0)
     msgpack (1.5.2)
     multi_json (1.15.0)
     multi_test (1.1.0)
@@ -730,7 +728,6 @@ DEPENDENCIES
   kramdown
   leaflet-rails
   letter_opener
-  mountain_view
   mutex_m
   net-imap
   net-pop

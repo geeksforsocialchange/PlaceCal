@@ -6,7 +6,7 @@ import {
 	markClean,
 	isDirty,
 	updateIndicator,
-} from "./mixins/form_tracking";
+} from "controllers/mixins/form_tracking";
 
 // Save bar controller for multi-step forms
 // Handles tab-aware buttons, unsaved changes tracking, and navigation
