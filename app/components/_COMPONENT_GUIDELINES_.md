@@ -8,7 +8,7 @@ In case you find something unclear, inaccurate or out of date, please feel to cr
 
 ## Technical Details
 
-PlaceCal currently uses [ViewComponent](https://viewcomponent.org/) for all new components. Previously the gem [`mountain_view`](https://github.com/devnacho/mountain_view) was used but has since been deprecated and is in the process of being removed (see [this issue](https://github.com/geeksforsocialchange/PlaceCal/issues/2270))
+PlaceCal uses [ViewComponent](https://viewcomponent.org/) for all components.
 
 ### Creating a new component
 

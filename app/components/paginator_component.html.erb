@@ -1,0 +1,72 @@
+<div class="paginator" id="paginator">
+  <div class="paginator__context">
+    <% if show_breadcrumb %>
+      <%= render(BreadcrumbComponent.new(trail: [['Events', events_path]], site_name: site_name)) do %>
+        <div class="breadcrumb__filters filters">
+          <%= form_tag('', method: :get, class: 'filters__form js-filters-form', enforce_utf8: false) do %>
+            <div class="js-filters-toggle filters__toggle">
+                <a href="#" data-turbo="false"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></a>
+            </div>
+            <div class="filters__dropdown filters__dropdown--hidden js-filters-dropdown">
+              <!-- Date or time sort -->
+              <div class="filters__group">
+                <div class="filters__option">
+                  <%= radio_button_tag(:sort, "time", sort == 'time') %>
+                  <%= label_tag(:sort_time, "Sort by date") %>
+                </div>
+                <div class="filters__option">
+                  <%= radio_button_tag(:sort, "summary", sort == 'summary') %>
+                  <%= label_tag(:sort_summary, "Sort by name") %>
+                </div>
+              </div>
+              <hr>
+              <!-- Day or week view -->
+              <div class="filters__group">
+                <div class="filters__option">
+                  <%= radio_button_tag(:period, "day", period == 'day') %>
+                  <%= label_tag(:period_day, "Daily view") %>
+                </div>
+                <div class="filters__option">
+                  <%= radio_button_tag(:period, "week", period == 'week') %>
+                  <%= label_tag(:period_week, "Weekly view") %>
+                </div>
+                <div class="filters__option">
+                  <%= radio_button_tag(:period, "future" , period == 'future') %>
+                  <%= label_tag(:period_future, "Show all") %>
+                </div>
+              </div>
+              <hr>
+              <!-- Show or hide repeating events -->
+              <div class="filters__group">
+                <div class="filters__option">
+                  <%= radio_button_tag(:repeating, "on", repeating == 'on') %>
+                  <%= label_tag(:repeating_on, "Show repeats") %>
+                </div>
+                <div class="filters__option">
+                    <%= radio_button_tag(:repeating, "last", repeating == 'last') %>
+                    <%= label_tag(:repeating_last, "Show repeats last") %>
+                  </div>
+                <div class="filters__option">
+                  <%= radio_button_tag(:repeating, "off", repeating == 'off') %>
+                  <%= label_tag(:repeating_off, "Hide repeats") %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @period == 'day' || @period == 'week' %>
+    <ol class="paginator__buttons paginator__buttons--day">
+      <% paginator.each do |page| %>
+        <li class="<%= page[:css] %>">
+          <%= link_to page[:text], page[:link] %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+
+  <hr>
+</div>

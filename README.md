@@ -150,7 +150,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   │   ├── fonts
 │   │   ├── images
 │   │   └── stylesheets
-│   ├── components              # A mix of mountain_view and view_component components (the latter have the `_component` suffix).
+│   ├── components              # ViewComponent components for reusable UI elements
 │   ├── constraints             # Directs to correct site based on subdomain
 │   ├── controllers             # Public app controllers
 │   │   ├── admin               # Admin area controllers
@@ -177,7 +177,6 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │       ├── joins               # "Join PlaceCal" form page
 │       ├── layouts             # Page templates
 │       ├── moderation_mailer   # Templates for when partners get moderated
-│       ├── mountain_view       # Deprecated - views for the mountain_view stylesheet page showing all the components
 │       ├── news                # News article templates - half implemented
 │       ├── pages               # Static pages mostly used on homepage. Some pages here are not linked anywhere currently
 │       ├── partners            # Partner indexes and show pages
