@@ -16,7 +16,6 @@ class FlashComponent < ViewComponent::Base
 
   def alert_class(key)
     case key.to_sym
-    when :success, :notice then 'alert-success'
     when :danger, :alert, :error then 'alert-danger'
     else 'alert-success'
     end
