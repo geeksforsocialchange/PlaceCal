@@ -181,6 +181,23 @@ RSpec.describe CalendarImporter::CalendarImporter do
         end
       end
     end
+
+    context "with ticketsource calendars" do
+      let(:url) { "https://www.ticketsource.co.uk/fairfield-house" }
+
+      it "imports ticketsource calendars" do
+        VCR.use_cassette("ticketsource_fairfield_house", allow_playback_repeats: true) do
+          calendar = create(:calendar, name: "Fairfield House", source: url)
+
+          parser_class = described_class.new(calendar).parser
+          output = parser_class.new(calendar).calendar_to_events
+          events = output.events
+
+          expect(events.count).to eq(8)
+          expect(events.first.summary).to eq("Guided Tour of Fairfield House")
+        end
+      end
+    end
   end
 
   describe "checksum handling" do
