@@ -22,6 +22,11 @@ class PagesController < ApplicationController
   def terms_of_use; end
 
   def robots
-    render plain: current_site.robots
+    if current_site
+      render plain: current_site.robots
+    else
+      # Admin subdomain or no site found - disallow all indexing
+      render plain: "User-agent: *\nDisallow: /"
+    end
   end
 end
