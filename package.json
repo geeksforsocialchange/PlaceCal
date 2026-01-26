@@ -25,9 +25,8 @@
 		"prettier": "2.8.1"
 	},
 	"scripts": {
-		"build": "esbuild app/javascript/public.js --bundle --sourcemap --outfile=app/assets/builds/application.js",
+		"build": "esbuild app/javascript/public.js --bundle --sourcemap --outfile=app/assets/builds/application.js && yarn css-admin",
 		"css-admin": "./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./app/assets/builds/admin_tailwind.css --minify",
-		"build:all": "yarn build && yarn css-admin",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"prepare": "husky install"
