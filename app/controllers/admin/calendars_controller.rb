@@ -48,7 +48,7 @@ module Admin
         flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'new', status: :unprocessable_entity
+        render 'new', status: :unprocessable_content
       end
     end
 
@@ -58,7 +58,7 @@ module Admin
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 

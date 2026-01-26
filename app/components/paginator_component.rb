@@ -6,7 +6,7 @@ class PaginatorComponent < ViewComponent::Base
   # rubocop:disable Metrics/ParameterLists
   def initialize(pointer:, period:, sort: nil, repeating: nil, path: nil, steps: nil, show_breadcrumb: true, site_name: nil)
     # rubocop:enable Metrics/ParameterLists
-    super
+    super()
     @raw_pointer = pointer
     @period = period
     @raw_sort = sort

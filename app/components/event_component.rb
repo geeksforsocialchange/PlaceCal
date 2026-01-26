@@ -7,7 +7,7 @@ class EventComponent < ViewComponent::Base
   # rubocop:disable Metrics/ParameterLists
   def initialize(context:, event:, primary_neighbourhood: nil, show_neighbourhoods: false, badge_zoom_level: nil, site_tagline: nil)
     # rubocop:enable Metrics/ParameterLists
-    super
+    super()
     @context = context
     @event = event
     @primary_neighbourhood = primary_neighbourhood

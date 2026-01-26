@@ -2,7 +2,7 @@
 
 class AudienceIntroComponent < ViewComponent::Base
   def initialize(title:, subtitle:, image:, image_alt:)
-    super
+    super()
     @title = title
     @subtitle = subtitle
     @image = image

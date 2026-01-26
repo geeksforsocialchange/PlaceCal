@@ -96,7 +96,7 @@ module Admin
         redirect_to admin_neighbourhoods_path
       else
         flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'new', status: :unprocessable_entity
+        render 'new', status: :unprocessable_content
       end
     end
 
@@ -107,7 +107,7 @@ module Admin
         redirect_to admin_neighbourhood_path(@neighbourhood)
       else
         flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 

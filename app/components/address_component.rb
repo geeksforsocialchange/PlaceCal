@@ -2,7 +2,7 @@
 
 class AddressComponent < ViewComponent::Base
   def initialize(address:, raw_location: nil)
-    super
+    super()
     @address = address
     @raw_location = raw_location
   end

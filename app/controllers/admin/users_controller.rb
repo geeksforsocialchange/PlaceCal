@@ -20,7 +20,7 @@ module Admin
 
       else
         flash.now[:danger] = 'User profile was not updated'
-        render 'profile', status: :unprocessable_entity
+        render 'profile', status: :unprocessable_content
       end
     end
 
@@ -64,7 +64,7 @@ module Admin
 
       else
         flash.now[:danger] = 'User was not saved'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 
@@ -82,7 +82,7 @@ module Admin
       else
         @partners = collect_partners
         flash.now[:danger] = 'User was not created'
-        render 'new', status: :unprocessable_entity
+        render 'new', status: :unprocessable_content
       end
     end
 
@@ -166,7 +166,7 @@ module Admin
       # we're about to refresh the page so save the users input
       @user = User.new(permitted_attributes(User))
       flash.now[:danger] = 'User was not created: You must assign a Partner to the User or you will not be able to access it after creation'
-      render 'new', status: :unprocessable_entity
+      render 'new', status: :unprocessable_content
     end
   end
 end

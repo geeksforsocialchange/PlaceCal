@@ -7,7 +7,7 @@ class EventListComponent < ViewComponent::Base
                  primary_neighbourhood: nil, show_neighbourhoods: false,
                  badge_zoom_level: nil, next_date: nil, site_tagline: nil)
     # rubocop:enable Metrics/ParameterLists
-    super
+    super()
     @events = events
     @pointer = pointer
     @period = period

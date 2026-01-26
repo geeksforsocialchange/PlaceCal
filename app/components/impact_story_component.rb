@@ -2,7 +2,7 @@
 
 class ImpactStoryComponent < ViewComponent::Base
   def initialize(title:, image:, image_caption:)
-    super
+    super()
     @title = title
     @image = image
     @image_caption = image_caption

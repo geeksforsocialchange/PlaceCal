@@ -2,7 +2,7 @@
 
 class PartnershipCardComponent < ViewComponent::Base
   def initialize(site:)
-    super
+    super()
     url_concatenator = site.url[-1] == '/' ? '' : '/'
     @site_name = site.name
     @site_tagline = site.tagline

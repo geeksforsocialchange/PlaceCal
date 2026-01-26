@@ -2,7 +2,7 @@
 
 class FourColGridComponent < ViewComponent::Base
   def initialize(options = { partnershipCards: false })
-    super
+    super()
     @class = options[:partnershipCards] ? 'four_col_grid--larger' : 'four_col_grid'
   end
 end
