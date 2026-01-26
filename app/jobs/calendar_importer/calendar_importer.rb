@@ -7,6 +7,7 @@ class CalendarImporter::CalendarImporter
   PARSERS = [
     CalendarImporter::Parsers::Eventbrite,
     CalendarImporter::Parsers::Ics,
+    CalendarImporter::Parsers::Ticketsource,
     CalendarImporter::Parsers::ManchesterUni,
     CalendarImporter::Parsers::Meetup,
     CalendarImporter::Parsers::Outsavvy,
