@@ -25,7 +25,7 @@
   <div class="c c--narrow first-ele-h3-serif">
     <%= @site.description_html.to_s.html_safe %>
     <% if @site.site_admin.present? %>
-      <%= render_component 'profile', user: @site.site_admin %>
+      <%= render(ProfileComponent.new(user: @site.site_admin)) %>
     <% end %>
   </div>
 </section>

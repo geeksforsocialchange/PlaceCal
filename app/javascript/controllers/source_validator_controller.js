@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import { debounce, getCSRFToken } from "./mixins/wizard";
+import { debounce, getCSRFToken } from "controllers/mixins/wizard";
 
 /**
  * Source Validator Controller
