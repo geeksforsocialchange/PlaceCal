@@ -32,56 +32,40 @@ When working on this project:
 
 ## Asset Pipeline
 
-This project uses a **hybrid asset strategy**:
+### JavaScript (importmap-rails)
 
-- **Admin interface**: importmap-rails (native ES modules, no build step)
-- **Public site**: esbuild bundle (jQuery legacy components)
+Both admin and public interfaces use **importmap-rails** with native ES modules (no build step required).
 
-### Admin JavaScript (importmap-rails)
-
-- **Source**: `app/javascript/controllers/*.js`
+- **Controllers**: `app/javascript/controllers/*.js`
 - **Configuration**: `config/importmap.rb`
-- **No build step required** - changes take effect on browser refresh
-- External dependencies (tom-select, leaflet) are loaded from CDN
-- Stimulus controllers are auto-loaded via `eagerLoadControllersFrom()`
-
-### Public Site JavaScript (esbuild)
-
-- **Source**: `app/javascript/application.js`
-- **Output**: `app/assets/builds/application.js`
-- **Build command**: `yarn build`
-- Includes jQuery and legacy components (breadcrumb, navigation, paginator)
+- **Admin entrypoint**: `app/javascript/admin.js`
+- **Public entrypoint**: `app/javascript/public.js`
+- Changes take effect on browser refresh (no build needed)
+- External dependencies (tom-select, leaflet, turbo) are loaded from CDN
+- Stimulus controllers are shared between admin and public sites
 
 ### Tailwind CSS (Admin interface)
 
 - **Source**: `app/tailwind/admin_tailwind.css`
 - **Output**: `public/assets/admin_tailwind.css`
-- **Build command**: `yarn build:css:admin-tailwind`
+- **Build command**: `yarn build` (or `yarn css-admin`)
 - Referenced directly via `<link>` tag in `app/views/layouts/admin/application.html.erb`
 - New Tailwind classes only work after rebuilding CSS (Tailwind scans templates)
 
 ### SCSS (Public site)
 
 - **Source**: `app/assets/stylesheets/application.scss`
-- **Output**: `app/assets/builds/application.css`
-- **Build command**: `yarn build:css`
-
-### Rebuilding Everything
-
-```bash
-yarn build:all  # Runs: yarn build && yarn build:css && yarn build:css:admin-tailwind
-```
+- Processed by Sprockets (no separate build command)
 
 ### Common Issues
 
-1. **Admin JS changes not appearing**: Just refresh browser (no build needed)
-2. **Public JS changes not appearing**: Run `yarn build`, restart Rails server, hard refresh browser
-3. **New Tailwind classes not working**: Run `yarn build:css:admin-tailwind`, hard refresh browser
-4. **Browser caching**: Use `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) for hard refresh
+1. **JS changes not appearing**: Just refresh browser (no build needed for JS)
+2. **New Tailwind classes not working**: Run `yarn build`, hard refresh browser
+3. **Browser caching**: Use `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) for hard refresh
 
 ### Development Workflow
 
-When running `bin/dev`, the Procfile.dev starts watchers for public JS and Tailwind CSS. Admin JS doesn't need a watcher since it uses importmap.
+When running `bin/dev`, the Procfile.dev starts a watcher for Tailwind CSS. JavaScript doesn't need a watcher since it uses importmap.
 
 ## Tailwind CSS Best Practices
 

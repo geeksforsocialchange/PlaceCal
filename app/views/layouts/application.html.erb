@@ -9,7 +9,8 @@
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload' %>
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_include_tag "es-module-shims", async: true %>
+    <%= javascript_importmap_tags "public" %>
     <meta name="turbo-refresh-method" content="morph">
   </head>
 

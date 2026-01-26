@@ -24,17 +24,20 @@ class PaginatorComponent < ViewComponent::Base
     pages = []
     pages << { text: back_arrow,
                link: create_event_url(pointer - step),
-               css: 'paginator__arrow paginator__arrow--back js-back' }
+               css: 'paginator__arrow paginator__arrow--back',
+               data: {} }
     (0..steps).each do |i|
       day = pointer + (step * i)
-      css = active?(day) ? 'active js-button' : 'js-button'
+      css = active?(day) ? 'active' : ''
       pages << { text: format_date(day),
                  link: create_event_url(day),
-                 css: css }
+                 css: css,
+                 data: { paginator_target: 'button' } }
     end
     pages << { text: forward_arrow,
                link: create_event_url(pointer + step),
-               css: 'paginator__arrow paginator__arrow--forwards js-forwards' }
+               css: 'paginator__arrow paginator__arrow--forwards',
+               data: { paginator_target: 'forward' } }
   end
 
   def title

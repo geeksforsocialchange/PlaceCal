@@ -13,13 +13,10 @@
 //= link_directory ../stylesheets/themes/custom .css
 //= link print.css
 
-// JavaScript for public site (esbuild bundle from app/assets/builds)
-// NOTE: This resolves to app/assets/builds/application.js first due to asset path order
-//= link application.js
-
-// JavaScript files for importmap (admin interface)
+// JavaScript files for importmap
 // These are served directly via Sprockets as ES modules
 //= link admin.js
+//= link public.js
 //= link_tree ../../javascript/controllers .js
 
 // Vendor JavaScript for importmap

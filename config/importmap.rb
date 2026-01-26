@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 # Pin npm packages by running ./bin/importmap
-# This importmap is used by the ADMIN interface only
-# Public site uses esbuild bundle (see app/javascript/application.js)
+# Both admin and public interfaces use importmap-rails
 
-# Application entrypoint
+# Application entrypoints
 pin 'application', to: 'admin.js'
+pin 'public', to: 'public.js'
 
 # Hotwired packages
 # stimulus and stimulus-loading are provided by stimulus-rails gem assets
