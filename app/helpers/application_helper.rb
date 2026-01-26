@@ -26,7 +26,7 @@ module ApplicationHelper
   def admin_nav_link(name, path, icon_name = nil, root_only: false)
     content_tag :li do
       base_classes = 'flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors'
-      active_classes = 'bg-orange-700 text-white'
+      active_classes = 'bg-placecal-orange text-white'
       inactive_classes = 'text-gray-700 hover:bg-gray-200'
       klass = current_page?(path) ? "#{base_classes} #{active_classes}" : "#{base_classes} #{inactive_classes}"
       link_to path, class: klass do

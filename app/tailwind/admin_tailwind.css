@@ -33,8 +33,11 @@
 /* Leaflet map styles */
 @import "leaflet/dist/leaflet.css";
 
+/* Tom Select - base styles then custom overrides */
+@import "tom-select/dist/css/tom-select.default.css";
+@import "./_tom-select.css";
+
 /* Admin CSS partials */
 @import "./_animations.css";
 @import "./_components.css";
 @import "./_markdown-preview.css";
-@import "./_tom-select.css";
