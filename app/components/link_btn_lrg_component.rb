@@ -2,7 +2,7 @@
 
 class LinkBtnLrgComponent < ViewComponent::Base
   def initialize(link_url:, color:)
-    super
+    super()
     @link_url = link_url
     @color =
       case color

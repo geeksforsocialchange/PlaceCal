@@ -5,7 +5,7 @@ class ContactDetails < ViewComponent::Base
   # rubocop:disable Metrics/ParameterLists
   def initialize(partner: Partner, email: nil, phone: nil, url: nil)
     # rubocop:enable Metrics/ParameterLists
-    super
+    super()
     @name = partner.name
     @phone = phone || partner.public_phone
     @url = url || partner.url

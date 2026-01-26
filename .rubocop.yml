@@ -165,6 +165,10 @@ Rails/RedundantActiveRecordAllMethod:
 Rails/RootPathnameMethods:
   Enabled: false
 
+# TODO: Migrate to params.expect() syntax (Rails 8 feature)
+Rails/StrongParametersExpect:
+  Enabled: false
+
 Rails/ThreeStateBooleanColumn:
   Enabled: false
 

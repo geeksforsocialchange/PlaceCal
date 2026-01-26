@@ -11,7 +11,7 @@ end
 # Core
 gem 'pg'
 gem 'puma'
-gem 'rails', '7.2.3'
+gem 'rails', '~> 8.0'
 
 # Frontend
 gem 'importmap-rails' # Admin JS - native ES modules, no build step

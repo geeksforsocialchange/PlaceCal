@@ -12,6 +12,9 @@ VCR.configure do |c|
 
   # Ignore lvh.me requests (used for subdomain testing in system specs)
   c.ignore_hosts "lvh.me", "admin.lvh.me", "default-site.lvh.me"
+
+  # Ignore schema.org requests (JSON-LD context loading)
+  c.ignore_hosts "schema.org", "www.schema.org"
 end
 
-WebMock.disable_net_connect!(allow_localhost: true, allow: [/lvh\.me/])
+WebMock.disable_net_connect!(allow_localhost: true, allow: [/lvh\.me/, /schema\.org/])

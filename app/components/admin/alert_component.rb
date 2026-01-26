@@ -13,7 +13,7 @@ module Admin
     }.freeze
 
     def initialize(type:, message:)
-      super
+      super()
       @type = type.to_sym
       @message = message
     end

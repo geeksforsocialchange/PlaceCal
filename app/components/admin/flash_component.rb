@@ -3,7 +3,7 @@
 module Admin
   class FlashComponent < ViewComponent::Base
     def initialize(flash: nil)
-      super
+      super()
       @flash = flash
     end
 

@@ -5,7 +5,7 @@ module Admin
     include SvgIconsHelper
 
     def initialize(label:, value:, icon: nil, subtitle: nil)
-      super
+      super()
       @label = label
       @icon = icon
       @value = value

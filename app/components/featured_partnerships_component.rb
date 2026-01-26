@@ -2,7 +2,7 @@
 
 class FeaturedPartnershipsComponent < ViewComponent::Base
   def initialize(sites:)
-    super
+    super()
     @sites = sites
   end
 end

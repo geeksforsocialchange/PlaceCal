@@ -2,7 +2,7 @@
 
 class HeroSectionComponent < ViewComponent::Base
   def initialize(image_path:, image_credit:, title:, alttext:)
-    super
+    super()
     @title = title.presence || I18n.t('meta.description', site: 'PlaceCal')
     @image_path = image_path
     @alttext = alttext

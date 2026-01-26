@@ -43,9 +43,9 @@ module Admin
         else
           format.html do
             flash.now[:danger] = 'Partnership was not created'
-            render :new, status: :unprocessable_entity
+            render :new, status: :unprocessable_content
           end
-          format.json { render json: @partnership.errors, status: :unprocessable_entity }
+          format.json { render json: @partnership.errors, status: :unprocessable_content }
         end
       end
     end
@@ -67,7 +67,7 @@ module Admin
         redirect_to admin_partnerships_path
       else
         flash.now[:danger] = 'Partnership was not saved'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 

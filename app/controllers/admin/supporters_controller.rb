@@ -30,7 +30,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Supporter not created'
-        render 'new', status: :unprocessable_entity
+        render 'new', status: :unprocessable_content
       end
     end
 
@@ -42,7 +42,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Supporter was not updated'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 
