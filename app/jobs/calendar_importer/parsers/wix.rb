@@ -36,6 +36,14 @@ module CalendarImporter
         "#{uri.scheme}://#{uri.host}"
       end
 
+      # Extracts Wix event data from page HTML.
+      #
+      # Wix embeds event data in <script type="application/json"> tags rather than
+      # exposing traditional feeds (iCal, RSS). This method parses the HTML, finds
+      # all JSON script tags, and searches each one for Wix event structures.
+      #
+      # @param html [String] Raw HTML content from the Wix page
+      # @return [Array<Hash>] Array of event hashes, or empty array if none found
       def extract_wix_events(html)
         doc = Nokogiri::HTML(html)
 
@@ -56,19 +64,31 @@ module CalendarImporter
         nil
       end
 
+      # Recursively searches through nested JSON to find a Wix events array.
+      #
+      # Wix's JSON structure varies and events can be deeply nested within the
+      # page data. This method traverses the structure looking for an "events"
+      # key containing an array of valid Wix event objects.
+      #
+      # @param json [Hash, Array] The JSON structure to search
+      # @param depth [Integer] Current recursion depth (max 15 to prevent stack overflow)
+      # @return [Array<Hash>, nil] The events array if found, nil otherwise
       def find_events_array(json, depth = 0)
+        # Depth limit prevents stack overflow on malformed or circular-like structures
         return nil if depth > 15
 
         case json
         when Hash
-          # Direct events array with Wix event structure
+          # Check if this hash has an "events" key with valid Wix events
           return json['events'] if json['events'].is_a?(Array) && wix_event?(json['events'].first)
 
+          # Otherwise, recursively search all values
           json.each_value do |value|
             result = find_events_array(value, depth + 1)
             return result if result.present?
           end
         when Array
+          # Search each item in the array
           json.each do |item|
             result = find_events_array(item, depth + 1)
             return result if result.present?
@@ -78,6 +98,16 @@ module CalendarImporter
         nil
       end
 
+      # Checks if a hash matches the Wix event signature.
+      #
+      # Wix events have a specific structure with required fields. This method
+      # identifies valid events by checking for the presence of:
+      # - id: unique event identifier
+      # - title: event name
+      # - scheduling.config.startDate: event start time
+      #
+      # @param hash [Hash] The hash to check
+      # @return [Boolean] true if hash appears to be a Wix event
       def wix_event?(hash)
         return false unless hash.is_a?(Hash)
 
