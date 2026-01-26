@@ -4,10 +4,6 @@
 
 import "@hotwired/turbo-rails";
 
-// Import Stimulus application and load all controllers from importmap
-import { application } from "controllers/application";
-import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading";
-
-// Eager load all controllers defined in the import map under controllers/**/*_controller
-// This parses the importmap and dynamically imports each controller
-eagerLoadControllersFrom("controllers", application);
+// Import Stimulus application and all controllers
+// The index.js file explicitly registers all controllers
+import "controllers";
