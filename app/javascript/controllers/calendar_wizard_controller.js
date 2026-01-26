@@ -12,7 +12,7 @@ import {
 	showInputSuccess,
 	clearInputStyling,
 	setContinueButtonEnabled,
-} from "./mixins/wizard";
+} from "controllers/mixins/wizard";
 
 /**
  * Calendar Wizard Controller
