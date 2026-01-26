@@ -1,6 +1,5 @@
 @import "variables/fonts";
 @import "globals";
-// mountain_view is handled separately by the styleguide layout
 
 :root {
 	// Main site colour
@@ -58,13 +57,8 @@
 @import "components/resource_not_found";
 @import "components/steps_component";
 
-// Sidecar component stylesheets (from app/components/)
-// These were previously auto-loaded by mountain_view gem
-@import "navigation/navigation";
-@import "dashboard_card/dashboard_card";
-@import "event_list/event_list";
-@import "event/event";
-@import "impact_story/impact_story";
-@import "paginator/paginator";
-@import "place/place";
-@import "profile/profile";
+@import "components/navigation_component";
+@import "components/event_list_component";
+@import "components/event_component";
+@import "components/paginator_component";
+@import "components/profile_component";

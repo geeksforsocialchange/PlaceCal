@@ -16,7 +16,7 @@
   <body>
     <div class="background">
       <header>
-        <%= render_component "navigation", navigation: @navigation %>
+        <%= render(NavigationComponent.new(navigation: @navigation)) %>
       </header>
       <main>
         <%= render(Admin::FlashComponent.new) %>

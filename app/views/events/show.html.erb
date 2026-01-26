@@ -2,7 +2,7 @@
 <% content_for :image, @site.og_image %>
 <% content_for :description, html_to_plaintext(@event.description_html) %>
 
-<%= render_component "event", context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood %>
+<%= render(EventComponent.new(context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood, site_tagline: @site.tagline)) %>
 
 <div class="c c--narrowish c--space-after event__fullinfo">
   <%= @event.description_html.to_s.html_safe %>
