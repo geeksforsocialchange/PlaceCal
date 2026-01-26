@@ -1,0 +1,22 @@
+<div class="space-y-2 max-w-md">
+  <% %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday].each_with_index do |day, i| %>
+    <div class="flex items-center gap-3 p-2 rounded hover:bg-base-200/50">
+      <span class="w-24 font-medium text-sm"><%= day %></span>
+      <% if i < 5 %>
+        <div class="flex items-center gap-2 flex-1">
+          <input type="time" value="09:00" class="input input-bordered input-sm w-28">
+          <span class="text-base-content/50">to</span>
+          <input type="time" value="17:00" class="input input-bordered input-sm w-28">
+          <button type="button" class="btn btn-ghost btn-sm btn-circle text-error">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      <% else %>
+        <span class="text-sm text-base-content/50">Closed</span>
+        <button type="button" class="btn btn-ghost btn-xs text-primary ml-auto">+ Add hours</button>
+      <% end %>
+    </div>
+  <% end %>
+</div>

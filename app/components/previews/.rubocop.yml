@@ -1,0 +1,19 @@
+# Previews use OpenStruct for mocking component dependencies
+Style/OpenStructUse:
+  Enabled: false
+
+# html_safe is acceptable in preview files for demo content
+Rails/OutputSafety:
+  Enabled: false
+
+# Preview classes are self-documenting via Lookbook annotations
+Style/Documentation:
+  Enabled: false
+
+# Compact class style (Admin::FooPreview) is standard for previews
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# Preview methods can be longer due to mock data setup
+Metrics/MethodLength:
+  Enabled: false

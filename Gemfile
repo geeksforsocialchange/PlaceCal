@@ -95,6 +95,7 @@ group :development do
   gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
+  gem 'lookbook'
   gem 'rails-erd'
   gem 'rdoc'
   gem 'rubocop', '1.82.1', require: false

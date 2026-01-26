@@ -1,0 +1,35 @@
+<div class="max-w-xl space-y-4">
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text font-medium">Calendar URL</span>
+    </label>
+    <div class="flex gap-2">
+      <input type="url" class="input input-bordered flex-1" placeholder="https://calendar.google.com/..." value="https://calendar.google.com/calendar/ical/example%40group.calendar.google.com/public/basic.ics">
+      <button type="button" class="btn btn-outline">
+        <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Test URL
+      </button>
+    </div>
+    <label class="label">
+      <span class="label-text-alt text-base-content/60">Enter the URL of your calendar feed (iCal, Google Calendar, Eventbrite, etc.)</span>
+    </label>
+  </div>
+
+  <div class="collapse collapse-arrow bg-base-200/50 border border-base-300">
+    <input type="checkbox">
+    <div class="collapse-title font-medium">
+      Supported Calendar Sources
+    </div>
+    <div class="collapse-content">
+      <ul class="list-disc list-inside text-sm space-y-1">
+        <li>Google Calendar (public iCal link)</li>
+        <li>Microsoft Outlook</li>
+        <li>Apple iCloud Calendar</li>
+        <li>Eventbrite</li>
+        <li>Any standard iCal/ICS feed</li>
+      </ul>
+    </div>
+  </div>
+</div>

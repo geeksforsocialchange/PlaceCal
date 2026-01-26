@@ -1,0 +1,48 @@
+<div class="max-w-2xl">
+  <!-- Tab Navigation -->
+  <div role="tablist" class="tabs tabs-bordered mb-6">
+    <a role="tab" class="tab tab-active">Basic Info</a>
+    <a role="tab" class="tab">Location</a>
+    <a role="tab" class="tab">Contact</a>
+    <a role="tab" class="tab">Tags</a>
+    <a role="tab" class="tab">Settings</a>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="space-y-6">
+    <div class="card bg-base-200/50 border border-base-300">
+      <div class="card-body">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="p-2 bg-placecal-orange/10 rounded-lg">
+            <svg class="w-5 h-5 text-placecal-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Basic Information</h3>
+            <p class="text-sm text-base-content/60">Essential details about this partner</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="form-control">
+            <label class="label"><span class="label-text">Name</span></label>
+            <input type="text" class="input input-bordered" value="Riverside Community Hub">
+          </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text">Summary</span></label>
+            <textarea class="textarea textarea-bordered" rows="3">A welcoming community centre serving the local area.</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Bar -->
+  <div class="fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 p-4">
+    <div class="max-w-2xl mx-auto flex justify-end gap-2">
+      <button type="button" class="btn btn-ghost">Cancel</button>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+  </div>
+</div>
