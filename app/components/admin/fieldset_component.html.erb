@@ -1,0 +1,19 @@
+<fieldset class="fieldset" <%= "data-controller='char-counter' data-char-counter-max-value='#{char_counter}'".html_safe if char_counter? %>>
+  <legend class="fieldset-legend">
+    <%= label %>
+    <% if required? %>
+      <span class="text-error">*</span>
+    <% end %>
+    <% if char_counter? %>
+      <span class="text-gray-600 font-normal ml-2" data-char-counter-target="display">0/<%= char_counter %></span>
+    <% end %>
+  </legend>
+  <% if input? %>
+    <%= input %>
+  <% else %>
+    <%= content %>
+  <% end %>
+  <% if hint.present? %>
+    <p class="fieldset-label"><%= hint %></p>
+  <% end %>
+</fieldset>

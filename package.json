@@ -5,27 +5,29 @@
 	"dependencies": {
 		"@hotwired/stimulus": "3.2.2",
 		"@hotwired/turbo-rails": "7.3.0",
-		"@nathanvda/cocoon": "1.2.14",
 		"@rails/ujs": "6.1.710",
-		"bootstrap": "4.6.2",
-		"datatables.net-bs4": "1.13.11",
+		"@tailwindcss/cli": "^4.1.18",
+		"autoprefixer": "^10.4.23",
 		"esbuild": "0.27.2",
 		"esbuild-rails": "1.0.7",
 		"jquery": "3.7.1",
 		"leaflet": "1.9.4",
 		"lodash": "4.17.21",
-		"popper.js": "1.16.1",
+		"postcss": "^8.5.6",
 		"sass": "1.97.1",
-		"select2": "4.0.13"
+		"tailwindcss": "^4.1.18",
+		"tom-select": "^2.4.3"
 	},
 	"devDependencies": {
+		"daisyui": "^5.5.14",
 		"husky": "8.0.3",
 		"lint-staged": "13.3.0",
 		"prettier": "2.8.1"
 	},
 	"scripts": {
-		"build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
-		"build:css": "sass ./app/assets/stylesheets/application.sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+		"build": "esbuild app/javascript/public.js --bundle --sourcemap --outfile=app/assets/builds/application.js",
+		"css-admin": "./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./app/assets/builds/admin_tailwind.css --minify",
+		"build:all": "yarn build && yarn css-admin",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"prepare": "husky install"

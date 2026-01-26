@@ -1,0 +1,57 @@
+<div class="lg:border-l lg:border-base-300 lg:pl-6">
+  <h2 class="font-semibold mb-4 flex items-center gap-2 text-base">
+    <%= icon(header_icon, size: '5', css_class: 'text-placecal-orange') %>
+    <%= title || object.class.human_attribute_name(attribute) %>
+  </h2>
+  <div data-controller="image-preview">
+    <%# File Input / Dropzone %>
+    <div class="mb-4">
+      <div class="relative overflow-hidden <%= rounded %> border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors bg-base-200/50 hover:bg-base-200 cursor-pointer"
+           data-image-preview-target="dropzone">
+        <label class="flex items-center gap-3 p-3 cursor-pointer">
+          <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:upload, size: '5', css_class: 'text-placecal-orange') %>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-base-content"><%= t('admin.images.choose_file_drag') %></p>
+            <p class="text-xs text-gray-600"><%= helpers.image_uploader_hint(uploader) %></p>
+          </div>
+          <%= form.input_field attribute, as: :file, class: 'sr-only', data: { action: "change->image-preview#file", image_preview_target: "input" } %>
+        </label>
+      </div>
+    </div>
+
+    <%# Image Preview %>
+    <div class="relative group" data-image-preview-target="wrapper">
+      <% if image? %>
+        <div class="relative <%= rounded %> overflow-hidden border border-base-300 bg-base-200">
+          <%= image_tag image_url, class: "w-full h-auto #{aspect} object-cover", data: { image_preview_target: "img" } %>
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+            <label class="btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer">
+              <%= icon(:upload, size: '4') %>
+              <%= t('admin.images.replace') %>
+              <%= form.input_field attribute, as: :file, class: 'sr-only', data: { action: "change->image-preview#file" } %>
+            </label>
+          </div>
+        </div>
+        <%# Delete checkbox %>
+        <div class="mt-2 flex justify-end">
+          <label class="inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60">
+            <%= form.check_box remove_attribute, class: 'sr-only' %>
+            <%= icon(:trash, size: '3.5') %>
+            <%= t('admin.images.remove_on_save') %>
+          </label>
+        </div>
+      <% else %>
+        <div class="<%= aspect %> <%= rounded %> border border-base-300 bg-base-200/50 flex items-center justify-center" data-image-preview-target="placeholder">
+          <div class="text-center text-gray-500 p-4">
+            <%= icon(placeholder_icon, size: '16', css_class: 'mx-auto mb-3 opacity-50', stroke_width: '1') %>
+            <p class="text-sm font-medium"><%= t('admin.images.no_image_uploaded') %></p>
+            <p class="text-xs mt-1"><%= t('admin.images.upload_hint') %></p>
+          </div>
+        </div>
+        <%= image_tag "", style: 'display:none;', class: "w-full h-auto #{aspect} object-cover #{rounded} border border-base-300", data: { image_preview_target: "img" } %>
+      <% end %>
+    </div>
+  </div>
+</div>

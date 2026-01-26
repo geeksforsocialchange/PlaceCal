@@ -1,5 +1,2 @@
-<script>
-  const currentInfo = <%= @calendar.to_json.html_safe %>
-</script>
-
-<%= render AdminEdit.new(model: :calendar, title: @calendar.name) %>
+<%= render 'layouts/admin/page_header', model_name: 'Calendar', title: @calendar.name, id: @calendar.id %>
+<%= render 'form' %>

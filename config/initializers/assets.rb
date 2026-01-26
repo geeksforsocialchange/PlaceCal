@@ -23,10 +23,15 @@ end
 
 Rails.application.config.assets.precompile += %w[
   print.css
-  admin.css
   sites/hulme.css
   sites/moss-side.css
   sites/rusholme.css
   sites/moston.css
   sites/mossley.css
+  es-module-shims.js
 ]
+
+# NOTE: admin.css removed - admin now uses admin_tailwind.css built by Tailwind CLI
+
+# NOTE: admin_tailwind.css is pre-built by Tailwind CLI into app/assets/builds/
+# and picked up automatically by Rails - no need to add to precompile list

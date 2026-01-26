@@ -1,66 +1,146 @@
-<% if !@tag.new_record? %>
-<p>A tag of type <em><%= @tag.class %></em>.</p>
-<% end %>
-
 <% if @tag.system_tag %>
-  <div class="card text-black bg-warning mb-3">
-    <div class="card-header">
-      <h6>WARNING: This tag is used by the PlaceCal backend so you cannot change the Name or Slug values.</h6>
-    </div>
+  <div role="alert" class="alert bg-yellow-50 border-yellow-200 text-yellow-800 mb-6">
+    <%= icon(:warning, size: '5', css_class: 'text-yellow-500') %>
+    <span>This tag is used by the PlaceCal backend so you cannot change the Name or Slug values.</span>
   </div>
 <% end %>
 
+<% form_url = if @tag.new_record?
+                admin_tags_path
+              elsif @tag.is_a?(Partnership)
+                admin_partnership_path(@tag)
+              else
+                admin_tag_path(@tag)
+              end %>
+
 <%= simple_form_for @tag,
     as: :tag,
-    url: (@tag.new_record? ? admin_tags_path : admin_tag_path) do |f| %>
+    url: form_url,
+    html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'tagTabAfterSave' } } do |f| %>
 
-  <%= render(ErrorComponent.new(@tag)) %>
-
-  <%= f.input :name, class: 'form-control',
-              disabled: @tag.system_tag %>
-
-  <%= f.input :slug, class: 'form-control',
-              disabled:  @tag.system_tag %>
-
-  <%= f.input :description, class: 'form-control' %>
-
-  <% if current_user.root? -%>
-    <%= f.input :system_tag, class: 'form-control',
-      hint: 'This tag is read only and should not be edited' %>
-  <% end -%>
+  <%= render(Admin::ErrorComponent.new(@tag)) %>
 
   <% if @tag.new_record? %>
-  <%= f.input :type,
-      collection: {
-      'None': '',
-      'Category': 'Category',
-      'Facility': 'Facility',
-      'Partnership': 'Partnership' },
-      default: 'None',
-      class: 'form-control' %>
-  <p><em>Be careful!</em> Once set this cannot be changed.</p>
-  <br>
-  <% end %>
+    <%# New record - single card, no tabs %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render Admin::SectionHeaderComponent.new(
+          title: t('admin.sections.basic_information'),
+          margin: 4
+        ) %>
 
-  <h2>Tagged Partners</h2>
-  <p>Apply this tag to the given partners</p>
-  <%= f.association :partners, collection: options_for_partners,
-        input_html: { class: 'form-control', data: { controller: "select2" } } %>
+        <div class="fieldset">
+          <label for="tag_name" class="fieldset-legend"><%= attr_label(:tag, :name) %> <span class="text-error"><%= t('admin.labels.required') %></span></label>
+          <%= f.input_field :name, class: 'input input-bordered w-full', id: 'tag_name' %>
+        </div>
 
-  <% if show_assigned_user_field_for?(f) %>
-    <h2>Assigned Users</h2>
-    <p>Grant permission to assign this tag</p>
-    <%= f.association :users, collection: options_for_users,
-        input_html: { class: 'form-control', data: { controller: "select2" } } %>
-  <% end %>
+        <div class="fieldset">
+          <label for="tag_slug" class="fieldset-legend"><%= attr_label(:tag, :slug) %></label>
+          <%= f.input_field :slug, class: 'input input-bordered w-full', id: 'tag_slug' %>
+          <p class="fieldset-label"><%= t('admin.hints.leave_blank_to_autogenerate') %></p>
+        </div>
 
-  <span>
-    <br>
-    <br>
-    <%= f.submit "Save", class: "btn btn-primary" %>
-    <% if !@tag.new_record? && policy(@tag).destroy? %>
-      <%= link_to "Destroy", admin_tag_path(@tag), method: :delete, class: "ml-3 btn btn-danger" %>
+        <div class="fieldset">
+          <label for="tag_description" class="fieldset-legend"><%= attr_label(:tag, :description) %></label>
+          <%= f.input_field :description, as: :text, class: 'textarea textarea-bordered w-full min-h-24', data: { controller: 'auto-expand' }, id: 'tag_description' %>
+        </div>
+
+        <% if current_user.root? %>
+          <fieldset class="fieldset">
+            <%= f.input :system_tag, wrapper: :tw_boolean, hint: t('admin.partnerships.fields.system_tag_hint') %>
+          </fieldset>
+        <% end %>
+
+        <div class="fieldset">
+          <label for="tag_type" class="fieldset-legend">Type</label>
+          <%= f.input_field :type,
+              as: :select,
+              collection: [['None', ''], ['Category', 'Category'], ['Facility', 'Facility'], ['Partnership', 'Partnership']],
+              class: 'select select-bordered w-full',
+              id: 'tag_type' %>
+          <p class="fieldset-label text-amber-700">
+            <%= icon(:warning, size: '4', css_class: 'inline-block mr-1') %>
+            Once set, this cannot be changed.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <% if show_assigned_user_field_for?(f) %>
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-6">
+          <div class="flex items-start gap-4 mb-4">
+            <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center shadow-sm">
+              <%= icon(:users, size: '6', css_class: 'text-purple-600') %>
+            </div>
+            <div>
+              <h3 class="card-title text-lg"><%= t('admin.tags.sections.assigned_users') %></h3>
+              <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.tags.sections.assigned_users_description') %></p>
+            </div>
+          </div>
+
+          <%= render Admin::StackedListSelectorComponent.new(
+            field_name: "tag[user_ids][]",
+            items: @tag.users.order(:last_name, :first_name),
+            options: options_for_users,
+            permitted_ids: nil,
+            icon_name: :user,
+            icon_color: "bg-purple-100 text-purple-600",
+            empty_text: t('admin.empty.none_assigned', items: User.model_name.human(count: 2).downcase),
+            add_placeholder: t('admin.placeholders.add_model', model: User.model_name.human.downcase),
+            use_tom_select: true
+          ) %>
+        </div>
+      </div>
     <% end %>
-  </span>
-  <br>
+  <% else %>
+    <%# Existing record - tabbed interface %>
+    <div class="tabs tabs-lift">
+      <%= render Admin::TabPanelComponent.new(
+        name: 'tag_tabs',
+        label: '📋 Basic Info',
+        hash: 'basic',
+        controller_name: 'form-tabs',
+        checked: true
+      ) do %>
+        <%= render 'admin/tags/form_tab_basic', f: f %>
+      <% end %>
+
+      <%= render Admin::TabPanelComponent.new(
+        name: 'tag_tabs',
+        label: '🏢 Partners',
+        hash: 'partners',
+        controller_name: 'form-tabs'
+      ) do %>
+        <%= render 'admin/tags/form_tab_partners', f: f %>
+      <% end %>
+
+      <%# Spacer to push Settings tab right %>
+      <div class="tab flex-1 cursor-default"></div>
+
+      <%= render Admin::TabPanelComponent.new(
+        name: 'tag_tabs',
+        label: '⚙️ Settings',
+        hash: 'settings',
+        controller_name: 'form-tabs'
+      ) do %>
+        <%= render 'admin/tags/form_tab_settings', f: f %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @tag.new_record? %>
+    <%= render Admin::SaveBarComponent.new do |c| %>
+      <% c.with_button do %>
+        <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= render Admin::SaveBarComponent.new(
+      multi_step: true,
+      tab_name: 'tag_tabs',
+      settings_hash: 'settings',
+      storage_key: 'tagTabAfterSave'
+    ) %>
+  <% end %>
 <% end %>

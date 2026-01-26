@@ -24,7 +24,9 @@ Given("I am logged in") do
   fill_in "Email", with: @current_user.email
   fill_in "Password", with: "password"
   click_button "Log in"
-  expect(page).to have_content("Signed in successfully")
+  # After successful login, wait for page to load and verify we can see admin content
+  # The flash message may be hidden depending on CSS, so check for nav or Sign out button
+  expect(page).to have_button("Sign out", wait: 10)
 end
 
 Given("I am logged in as a root user") do

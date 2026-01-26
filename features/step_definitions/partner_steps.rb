@@ -24,11 +24,43 @@ When("I visit the partners page") do
 end
 
 When("I create a new partner with name {string}") do |name|
+  # Ensure we have neighbourhoods for the geocoder
+  create(:riverside_ward) unless Neighbourhood.exists?(name: "Riverside")
+
   click_link "Partners"
   await_datatables
-  click_link "Add New Partner"
-  fill_in "Name", with: name
-  click_button "Save and continue..."
+  click_link "Add Partner"
+
+  # Step 1: Name - wizard form uses partner_wizard controller
+  fill_in "partner_name", with: name
+
+  # Wait for name validation debounce to complete
+  sleep 0.5
+  click_button "Continue"
+
+  # Step 2: Location - address fields
+  expect(page).to have_content("Set Location", wait: 5)
+  fill_in_fieldset "Street address", with: "123 Main Street"
+  fill_in_fieldset "City", with: "Millbrook"
+  fill_in_fieldset "Postcode", with: "ZZMB 1RS"
+
+  click_button "Continue"
+
+  # Step 3: Tags & Categories
+  expect(page).to have_content("Tags & Categories", wait: 5)
+  click_button "Continue"
+
+  # Step 4: Contact Information
+  expect(page).to have_content("Contact Information", wait: 5)
+  click_button "Continue"
+
+  # Step 5: Invite a Partner Admin (optional)
+  expect(page).to have_content("Invite a Partner Admin", wait: 5)
+  click_button "Continue"
+
+  # Step 6: Confirm & Create
+  expect(page).to have_content("Partner will be created", wait: 5)
+  click_button "Create Partner"
 end
 
 When("I edit the partner {string}") do |name|
@@ -38,8 +70,11 @@ When("I edit the partner {string}") do |name|
 end
 
 When("I update the partner summary to {string}") do |summary|
-  fill_in "Summary", with: summary
-  click_button "Save Partner"
+  # Find summary field by fieldset legend (daisyUI pattern)
+  fieldset = page.find("fieldset", text: "Summary")
+  input = fieldset.find("textarea")
+  input.set(summary)
+  click_button "Save"
 end
 
 Then("I should see the partner {string} in the list") do |name|

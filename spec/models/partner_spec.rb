@@ -195,14 +195,14 @@ RSpec.describe Partner, type: :model do
       expect(partner.partnerships.count).to eq(1)
     end
 
-    it "limits Category tags to 3" do
-      4.times { |n| partner.categories << create(:category_tag, name: "Category #{n}") }
+    it "limits Category tags to MAX_CATEGORIES" do
+      (Partner::MAX_CATEGORIES + 1).times { |n| partner.categories << create(:category_tag, name: "Category #{n}") }
       partner.save
-      expect(partner.errors[:categories]).to include("Partners can have a maximum of 3 Category tags")
+      expect(partner.errors[:categories]).to include("Partners can have a maximum of #{Partner::MAX_CATEGORIES} Category tags")
     end
 
-    it "allows up to 3 Category tags" do
-      3.times { |n| partner.categories << create(:category_tag, name: "Category #{n}") }
+    it "allows up to MAX_CATEGORIES Category tags" do
+      Partner::MAX_CATEGORIES.times { |n| partner.categories << create(:category_tag, name: "Category #{n}") }
       partner.save
       expect(partner).to be_valid
     end
