@@ -30,7 +30,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
     fill_in "Email", with: user.email
     fill_in "Password", with: "password"
     click_button "Log in"
-    expect(page).to have_css("h1", text: "Your sites") # wait for login redirect
+    expect(page).to have_css("h1", text: /Good (morning|afternoon|evening)/) # wait for login redirect
   end
 
   def assert_has_flash(type, message)

@@ -23,7 +23,7 @@ module CalendarImporter::Events
 
     def description
       text = @event.description
-      text = text.join(' ') if text.is_a?(Icalendar::Values::Array)
+      text = text.join(' ') if text.is_a?(::Array)
 
       text.to_s # .gsub(/\A(\n)+\z/, '').strip
     end
