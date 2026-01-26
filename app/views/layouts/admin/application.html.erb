@@ -4,7 +4,7 @@
     <title><%= "#{yield(:title)} | " if content_for?(:title) %>PlaceCal Admin</title>
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag "admin_tailwind", media: "all", "data-turbo-track": "reload" %>
+    <link rel="stylesheet" href="/assets/admin_tailwind.css" media="all" data-turbo-track="reload">
 
     <%# ES Module Shims - polyfill for import maps in older browsers (Chrome 63+, Firefox 67+, Safari 11.1+) %>
     <%# Only activates when needed (~6% of browsers), zero overhead for modern browsers %>
