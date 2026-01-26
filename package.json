@@ -26,6 +26,7 @@
 	},
 	"scripts": {
 		"build": "esbuild app/javascript/public.js --bundle --sourcemap --outfile=app/assets/builds/application.js && yarn css-admin",
+		"build:all": "yarn build",
 		"css-admin": "./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./app/assets/builds/admin_tailwind.css --minify",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
