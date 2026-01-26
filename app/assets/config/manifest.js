@@ -4,8 +4,8 @@
 // Public site CSS (compiled by Sprockets from SCSS)
 //= link application.css
 
-// Built CSS from sass (for public site) - when using yarn build
-//= link_directory ../builds .css
+// NOTE: admin_tailwind.css is built directly to public/assets/ by Tailwind CLI
+// to bypass Sprockets/Sass processing (which fails on modern CSS syntax)
 
 // Site-specific stylesheets (compiled via Sprockets)
 //= link home.css

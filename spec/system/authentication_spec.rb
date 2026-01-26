@@ -23,8 +23,8 @@ RSpec.describe "Authentication", :slow, type: :system do
       fill_in "Password", with: "password"
       click_button "Log in"
 
-      # Should redirect to admin site
-      expect(current_url).to eq("http://admin.lvh.me:#{port}/")
+      # Wait for redirect to admin site (Capybara will retry until URL matches or timeout)
+      expect(page).to have_current_path("http://admin.lvh.me:#{port}/", url: true)
     end
   end
 

@@ -19,7 +19,7 @@
         <%= render(NavigationComponent.new(navigation: @navigation, site: @site)) %>
       </header>
       <main>
-        <%= render(Admin::FlashComponent.new) %>
+        <%= render(FlashComponent.new) %>
         <%= yield %>
       </main>
       <footer>
