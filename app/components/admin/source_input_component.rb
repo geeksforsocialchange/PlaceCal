@@ -5,7 +5,7 @@ module Admin
     include SvgIconsHelper
 
     def initialize(form:, test_url:, show_importer: true)
-      super
+      super()
       @form = form
       @test_url = test_url
       @show_importer = show_importer

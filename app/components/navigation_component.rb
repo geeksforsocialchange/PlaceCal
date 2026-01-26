@@ -4,7 +4,7 @@ class NavigationComponent < ViewComponent::Base
   include ApplicationHelper
 
   def initialize(navigation:, site: nil)
-    super
+    super()
     @navigation = navigation
     @site = site
   end

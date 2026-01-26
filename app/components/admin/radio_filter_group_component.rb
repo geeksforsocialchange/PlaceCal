@@ -18,7 +18,7 @@ module Admin
     # @param filters [Array<Hash>] Array of filter hashes with :column, :label, :options keys
     # @param show_all [Boolean] Whether to show "All" buttons (default: true)
     def initialize(group_label:, filters:, show_all: true)
-      super
+      super()
       @group_label = group_label
       @filters = filters
       @show_all = show_all

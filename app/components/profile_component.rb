@@ -2,7 +2,7 @@
 
 class ProfileComponent < ViewComponent::Base
   def initialize(user:)
-    super
+    super()
     @user = user
   end
 

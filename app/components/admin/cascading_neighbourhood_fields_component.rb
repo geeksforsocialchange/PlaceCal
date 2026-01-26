@@ -5,7 +5,7 @@ module Admin
     include SvgIconsHelper
 
     def initialize(form:, show_remove: true, relation_type: nil)
-      super
+      super()
       @form = form
       @show_remove = show_remove
       @relation_type = relation_type

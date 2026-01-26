@@ -19,7 +19,7 @@ module Admin
     # @param options [Array<Hash>] Array of { value:, label: } hashes for filter options
     # @param show_all [Boolean] Whether to show an "All" button (default: true)
     def initialize(column:, label:, options:, show_all: true)
-      super
+      super()
       @column = column
       @label = label
       @options = options
