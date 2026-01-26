@@ -19,20 +19,30 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     fill_in "Password", with: "password"
     click_button "Log in"
 
-    expect(page).to have_selector(".alert-success", text: "Signed in successfully.")
+    expect(page).to have_selector("[role='alert']", text: "Signed in successfully.")
 
     # Navigate to create user
     click_link "Users"
-    click_link "Add New User"
+    click_link "Add User"
 
-    # Fill in new user details
-    fill_in "First name", with: "New"
-    fill_in "Last name", with: "User"
-    fill_in "Email", with: invited_user_email
-    choose "Root: Can do everything"
-    click_button "Invite"
+    # Step 1: Fill in personal details
+    fill_in "user_first_name", with: "New"
+    fill_in "user_last_name", with: "User"
+    fill_in "user_email", with: invited_user_email
 
-    expect(page).to have_selector(".alert-success", text: "User has been created! An invite has been sent")
+    # Wait for email validation to complete
+    expect(page).to have_selector("[data-user-wizard-target='emailAvailable']", visible: true, wait: 5)
+
+    # Set role (only visible to root users)
+    choose "Root: Can do everything - use with care!"
+
+    # Continue to step 2
+    click_button "Continue"
+
+    # Step 2: Permissions - just submit
+    click_button "Invite User"
+
+    expect(page).to have_selector("[role='alert']", text: "User has been created! An invite has been sent")
 
     click_button "Sign out"
 
@@ -58,6 +68,6 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     fill_in "Repeat password", with: "password123"
     click_button "Set password"
 
-    expect(page).to have_selector(".alert-success", text: "Your password was set successfully. You are now signed in")
+    expect(page).to have_selector("[role='alert']", text: "Your password was set successfully. You are now signed in")
   end
 end

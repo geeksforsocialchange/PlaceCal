@@ -1,0 +1,20 @@
+<fieldset class="relative flex items-center gap-2 pl-3 pr-3 py-1 border border-gray-300 rounded-lg bg-white/50"
+          data-admin-table-target="radioFilter"
+          data-filter-column="<%= column %>">
+  <span class="text-xs font-medium text-gray-500"><%= label %></span>
+  <div class="inline-flex rounded-md bg-gray-100 p-0.5">
+    <% if show_all %>
+      <button type="button"
+              data-action="click->admin-table#applyRadioFilter"
+              data-filter-value=""
+              data-is-all="true"
+              class="filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm"><%= t('admin.labels.all') %></button>
+    <% end %>
+    <% options.each do |opt| %>
+      <button type="button"
+              data-action="click->admin-table#applyRadioFilter"
+              data-filter-value="<%= opt[:value] %>"
+              class="filter-btn px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 text-gray-600 hover:text-gray-900"><%= opt[:label] %></button>
+    <% end %>
+  </div>
+</fieldset>

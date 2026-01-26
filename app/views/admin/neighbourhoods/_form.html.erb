@@ -1,66 +1,112 @@
-<%= simple_form_for [:admin, @neighbourhood] do |f| %>
+<%= simple_form_for [:admin, @neighbourhood], html: { data: { controller: 'form-dirty' } } do |f| %>
+  <%= render(Admin::ErrorComponent.new(@neighbourhood)) %>
 
-  <%= render(ErrorComponent.new(@neighbourhood)) %>
-  <h2>Neighbourhood name</h2>
-  <p>This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too.</p>
+  <%# Two-column layout: Name + Admins (2/3) | ONS Info (1/3) %>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <%# Left column - 2/3 width %>
+    <div class="lg:col-span-2 space-y-6">
+      <%# Neighbourhood Name %>
+      <%= render Admin::CardComponent.new(
+            title: t('admin.neighbourhoods.form.name_title'),
+            icon: :edit
+          ) do %>
+        <p class="text-sm text-gray-600 mb-4"><%= t('admin.neighbourhoods.form.name_description') %></p>
+        <div class="space-y-4">
+          <fieldset class="fieldset">
+            <%= f.label :name, attr_label(:neighbourhood, :name), class: 'fieldset-legend' %>
+            <%= f.input_field :name, class: 'input input-bordered w-full' %>
+          </fieldset>
 
-  <div class="row">
-    <div class="col-md-6">
-      <%= f.input :name, label: 'Name' %>
+          <fieldset class="fieldset">
+            <%= f.label :name_abbr, attr_label(:neighbourhood, :name_abbr), class: 'fieldset-legend' %>
+            <%= f.input_field :name_abbr, class: 'input input-bordered w-full' %>
+            <p class="fieldset-label mt-1"><%= t('admin.neighbourhoods.form.name_abbr_hint') %></p>
+          </fieldset>
+        </div>
+      <% end %>
+
+      <%# Neighbourhood Admins (root users only) %>
+      <% if policy(@neighbourhood).set_users? %>
+        <div class="card bg-base-100 border border-base-300 shadow-sm">
+          <div class="card-body p-6">
+            <div class="flex items-start gap-4 mb-4">
+              <div class="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-emerald-100 to-teal-100 flex items-center justify-center shadow-sm">
+                <%= icon(:users, size: '6', css_class: 'text-emerald-600') %>
+              </div>
+              <div>
+                <h3 class="card-title text-lg"><%= t('admin.neighbourhoods.form.admins_title') %></h3>
+                <p class="text-sm text-gray-600 mt-0.5"><%= t('admin.neighbourhoods.form.admins_description') %></p>
+              </div>
+            </div>
+
+            <%= render Admin::StackedListSelectorComponent.new(
+              field_name: "neighbourhood[user_ids][]",
+              items: @neighbourhood.users.order(:last_name),
+              options: options_for_users,
+              permitted_ids: nil,
+              icon_name: :user,
+              icon_color: "bg-emerald-100 text-emerald-600",
+              empty_text: t('admin.neighbourhoods.show.no_admins'),
+              add_placeholder: t('admin.placeholders.add_model', model: User.model_name.human.downcase),
+              use_tom_select: true,
+              wrapper_class: "neighbourhood_users"
+            ) %>
+          </div>
+        </div>
+      <% end %>
     </div>
-    <div class="col-md-6">
-      <%= f.input :name_abbr, label: 'Abbreviated name' %>
+
+    <%# Right column - Official ONS Data - 1/3 width %>
+    <div class="lg:col-span-1">
+      <% is_current = !@neighbourhood.legacy_neighbourhood? %>
+      <%= render Admin::CardComponent.new(
+            title: t('admin.neighbourhoods.form.official_title'),
+            icon: :globe
+          ) do %>
+        <p class="text-sm text-gray-600 mb-4"><%= t('admin.neighbourhoods.form.official_description') %></p>
+        <div class="space-y-3">
+          <%# Level %>
+          <div class="flex items-center justify-between py-2 border-b border-base-200">
+            <span class="text-sm text-gray-600"><%= t('admin.neighbourhoods.show.stats.level') %></span>
+            <div class="flex items-center gap-2">
+              <%= level_badge(@neighbourhood.level, size: :small) %>
+              <span class="font-medium"><%= @neighbourhood.unit&.titleize || '—' %></span>
+            </div>
+          </div>
+
+          <%# Unit Name %>
+          <div class="flex items-center justify-between py-2 border-b border-base-200">
+            <span class="text-sm text-gray-600"><%= attr_label(:neighbourhood, :unit_name) %></span>
+            <span class="font-medium truncate ml-2"><%= @neighbourhood.unit_name || '—' %></span>
+          </div>
+
+          <%# ONS Code %>
+          <div class="flex items-center justify-between py-2 border-b border-base-200">
+            <span class="text-sm text-gray-600"><%= t('admin.neighbourhoods.show.stats.ons_code') %></span>
+            <span class="font-mono font-medium"><%= @neighbourhood.unit_code_value || '—' %></span>
+          </div>
+
+          <%# ONS Dataset %>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-sm text-gray-600"><%= t('admin.neighbourhoods.show.stats.ons_dataset') %></span>
+            <div class="flex items-center gap-2">
+              <span class="font-medium"><%= @neighbourhood.release_date&.strftime('%b %Y') || '—' %></span>
+              <% if is_current %>
+                <span class="badge badge-xs badge-success"><%= t('admin.neighbourhoods.show.stats.current') %></span>
+              <% else %>
+                <span class="badge badge-xs badge-warning"><%= t('admin.neighbourhoods.show.stats.legacy') %></span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 
-  <h2>Official neighbourhood info</h2>
-  <p>This information is the official designation set by the UK Boundary Commission.</p>
-
-  <div class="row">
-    <div class="col-md-6">
-      <%= f.input :unit, readonly: true  %>
-      <%= f.input :unit_name, readonly: true  %>
-      
-    </div>
-    <div class="col-md-6">
-      <%= f.input :unit_code_key, readonly: true  %>
-      <%= f.input :unit_code_value, readonly: true  %>
-      <%= f.input :release_date, readonly: true  %>
-    </div>
-  </div>
-
-  <% unless @neighbourhood.new_record? %>
-    <h2>Geography</h2>
-    <div class="row">
-      <div class="col-md-6">
-        <h3>Is a part of&hellip;</h3>
-        <ul>
-          <% @neighbourhood.ancestors.each do |parent| %>
-            <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
-          <% end %>
-        </ul>
-      </div>
-      <div class="col-md-6">
-        <h3>Contains&hellip;</h3>
-        <ul>
-          <% @neighbourhood.children.each do |parent| %>
-            <li><%= link_to(parent, edit_admin_neighbourhood_path(parent)) if parent.to_s.length > 0 %></li>
-          <% end %>
-        </ul>
-      </div>
-    </div>
+  <%# Save Bar %>
+  <%= render Admin::SaveBarComponent.new(track_changes: true) do |save_bar| %>
+    <% save_bar.with_button do %>
+      <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
+    <% end %>
   <% end %>
-
-  <% if policy(@neighbourhood).set_users? %>
-    <h2>Neighbourhood admins</h2>
-    <p>The list of users with admin rights to this neighbourhood.</p>
-
-    <%= f.association :users, label: "Users", collection: options_for_users, input_html: { class: "form-control", data: { controller: "select2"}} %>
-  <% end %>
-
-  <%= f.submit "Save", class: "btn btn-primary" %>
-  <% if !@neighbourhood.new_record? && policy(@neighbourhood).destroy? %>
-    <%= link_to "Destroy", admin_neighbourhood_path(@neighbourhood), method: :delete, class: "ml-3 btn btn-danger" %>
-  <% end %>
-  <br><br>
 <% end %>

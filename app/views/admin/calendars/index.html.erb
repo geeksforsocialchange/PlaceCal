@@ -1,31 +1,91 @@
-<script>
-var columns = [
-    {"data": "name"},
-    {"data": "partner"},
-    {"data": "notice_count"},
-    {"data": "events"},
-    {"data": "state"},
-    {"data": "last_import_at",
-     "render": function (data, type, row) {
-         date = JSON.parse(data.replace(/&quot;/g, '"'));
-         return (type == "display") ? date.strtime : date.unixtime;
-     }
-    },
-    {"data": "checksum_updated_at",
-     "render": function (data, type, row) {
-         date = JSON.parse(data.replace(/&quot;/g, '"'));
-         return (type == "display") ? date.strtime : date.unixtime;
-     }
-    },
-  ]
-</script>
+<%
+  # Build partner options for filter dropdown
+  partner_ids_with_calendars = Calendar.distinct.pluck(:partner_id).compact
+  partner_options = Partner.where(id: partner_ids_with_calendars).order(:name).map do |p|
+    { value: p.id.to_s, label: p.name.truncate(40) }
+  end
 
-<%# A weird bug in the datatables template means that we have to apply the margin for each link, rather than for the container span. %>
+  # Build importer options for filter dropdown
+  # Map importer keys to human-readable names from parsers
+  importer_names = CalendarImporter::CalendarImporter::PARSERS.to_h { |p| [p::KEY, p::NAME] }
+  importer_options = [{ value: 'pending', label: t('admin.calendars.importer.pending') }] +
+    Calendar.distinct.pluck(:importer_used).compact.reject(&:blank?).sort.map do |i|
+      { value: i, label: importer_names[i] || i.titleize }
+    end
+%>
+
 <%= render partial: 'layouts/admin/datatable', locals: {
     title: 'Calendars',
     model: :calendars,
-    column_titles: ['Name', 'Partners', 'Notices', 'Events', 'Status', 'Last imported', 'Source updated'],
-    columns: %i[name partner notice_count events calendar_state last_import_at checksum_updated_at],
+    column_titles: [
+      'Calendar',
+      'Partner',
+      icon_column_header(:import, 'Status'),
+      icon_column_header(:event, 'Events'),
+      icon_column_header(:search_alert, 'Notices'),
+      'Importer',
+      'Last Import',
+      'Source Updated',
+      ''
+    ],
+    columns: %i[name partner state events notices importer last_import_at checksum_updated_at actions],
+    column_config: {
+      name: {},
+      partner: { sortable: false },
+      state: { align: :center, sortable: false, fit: true },
+      importer: { fit: true },
+      events: { align: :center, sortable: false, fit: true },
+      notices: { align: :center, fit: true },
+      last_import_at: { fit: true },
+      checksum_updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'last_import_at', direction: 'desc' },
+    filters: [
+      {
+        type: :radio,
+        column: 'has_events',
+        label: 'Events',
+        options: [
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
+        ]
+      },
+      {
+        type: :radio,
+        column: 'has_notices',
+        label: 'Notices',
+        options: [
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
+        ]
+      },
+      {
+        column: 'state',
+        label: 'Status',
+        width: 'w-32',
+        options: [
+          { value: 'idle', label: 'Idle' },
+          { value: 'in_queue', label: 'In Queue' },
+          { value: 'in_worker', label: 'Importing' },
+          { value: 'error', label: 'Error' },
+          { value: 'bad_source', label: 'Bad Source' }
+        ]
+      },
+      {
+        column: 'partner',
+        label: 'Partner',
+        tom_select: true,
+        width: 'w-48',
+        options: partner_options
+      },
+      {
+        column: 'importer',
+        label: 'Importer',
+        width: 'w-36',
+        options: importer_options
+      }
+    ],
     data: @calendars,
     source: admin_calendars_path(format: :json),
     new_link: new_admin_calendar_path

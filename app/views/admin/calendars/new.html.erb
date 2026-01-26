@@ -1,3 +1,249 @@
 <% content_for :title do %>New Calendar<% end %>
 
-<%= render(AdminNew.new(:calendar)) %>
+<div data-controller="calendar-wizard"
+     data-calendar-wizard-current-step-value="1"
+     data-calendar-wizard-total-steps-value="3"
+     data-calendar-wizard-test-url-value="<%= test_source_admin_calendars_path %>">
+
+  <div class="max-w-4xl mx-auto">
+    <%# Header %>
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-base-content mb-2"><%= t('admin.calendars.wizard.title') %></h1>
+      <p class="text-gray-600"><%= t('admin.calendars.wizard.subtitle') %></p>
+    </div>
+
+    <%# Steps indicator %>
+    <ul class="steps steps-horizontal w-full mb-8">
+      <li class="step step-primary" data-calendar-wizard-target="stepIndicator" data-step="1">
+        <span class="step-content"><%= t('admin.calendars.wizard.steps.source') %></span>
+      </li>
+      <li class="step" data-calendar-wizard-target="stepIndicator" data-step="2">
+        <span class="step-content"><%= t('admin.calendars.wizard.steps.organiser') %></span>
+      </li>
+      <li class="step" data-calendar-wizard-target="stepIndicator" data-step="3">
+        <span class="step-content"><%= t('admin.calendars.wizard.steps.location') %></span>
+      </li>
+    </ul>
+  </div>
+
+  <%= simple_form_for @calendar, url: admin_calendars_path, html: { data: { turbo: false } } do |f| %>
+    <div class="max-w-4xl mx-auto">
+    <%= render(Admin::ErrorComponent.new(@calendar)) %>
+
+    <%# Step 1: Source URL %>
+    <div class="card bg-base-100 shadow-lg border border-base-300" data-calendar-wizard-target="step" data-step="1">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:link, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.source.title') %></h2>
+            <p class="text-gray-600 text-sm mt-1">
+              <%= t('admin.calendars.wizard.source.description') %>
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold">
+              <%= attr_label(:calendar, :source) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+            </legend>
+            <div class="flex gap-2">
+              <%= f.input_field :source,
+                  class: 'input input-bordered input-lg flex-1 font-mono text-sm',
+                  placeholder: t('admin.calendars.fields.source_placeholder'),
+                  autocomplete: 'off',
+                  'data-calendar-wizard-target': 'sourceInput',
+                  'data-action': 'input->calendar-wizard#sourceChanged' %>
+              <button type="button"
+                      class="btn btn-lg bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2"
+                      data-calendar-wizard-target="testButton"
+                      data-action="click->calendar-wizard#testSource">
+                <span class="loading loading-spinner loading-sm hidden" data-calendar-wizard-target="testSpinner"></span>
+                <span data-calendar-wizard-target="testIconNeutral"><%= icon(:lightning, size: '5') %></span>
+                <span data-calendar-wizard-target="testIconSuccess" class="hidden"><%= icon(:check_circle, size: '5') %></span>
+                <span data-calendar-wizard-target="testIconError" class="hidden"><%= icon(:x_circle, size: '5') %></span>
+                <span data-calendar-wizard-target="testButtonText"><%= t('admin.calendars.wizard.source.test_button') %></span>
+              </button>
+            </div>
+            <p class="text-sm text-gray-600 mt-2">
+              <%= t('admin.calendars.handbook_hint_html') %>
+            </p>
+
+            <%# Source validation feedback %>
+            <div class="mt-4 hidden" data-calendar-wizard-target="sourceFeedback">
+              <%# Success %>
+              <div class="alert alert-success text-sm hidden" data-calendar-wizard-target="sourceSuccess">
+                <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
+                <div class="flex-1">
+                  <p class="font-semibold"><%= t('admin.calendars.wizard.source.success') %></p>
+                  <p class="text-xs mt-1 hidden" data-calendar-wizard-target="detectedFormat">
+                    <%= t('admin.calendars.wizard.source.detected_format') %>
+                    <span class="font-medium" data-calendar-wizard-target="detectedFormatName"></span>
+                  </p>
+                </div>
+              </div>
+
+              <%# Error %>
+              <div class="alert alert-error text-sm hidden" data-calendar-wizard-target="sourceError">
+                <%= icon(:x_circle, size: '5', css_class: 'shrink-0') %>
+                <div>
+                  <p class="font-semibold"><%= t('admin.calendars.wizard.source.error') %></p>
+                  <p class="text-xs mt-1" data-calendar-wizard-target="sourceErrorMessage"></p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <%# Importer mode (usually auto-detected, shown after successful test) %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6 hidden" data-calendar-wizard-target="importerModeSection">
+            <legend class="fieldset-legend text-base font-semibold"><%= t('admin.calendars.fields.calendar_type') %></legend>
+            <%= f.input_field :importer_mode,
+                              as: :select,
+                              collection: options_for_importer,
+                              selected: 'auto',
+                              class: 'select select-bordered w-full',
+                              data: { 'calendar-wizard-target': 'importerModeSelect' } %>
+            <p class="text-sm text-gray-600 mt-2">
+              <%= t('admin.calendars.wizard.source.importer_hint') %>
+            </p>
+          </fieldset>
+
+          <%# Supported sources info %>
+          <details class="collapse collapse-arrow bg-base-200/50 border border-base-300 rounded-box">
+            <summary class="collapse-title text-sm font-medium">
+              <%= icon(:info, size: '4', css_class: 'inline mr-2 text-gray-600') %>
+              <%= t('admin.calendars.sections.supported_sources') %>
+            </summary>
+            <div class="collapse-content">
+              <ul class="text-xs text-base-content/70 space-y-1 pt-2">
+                <% calendar_import_sources do |name, domains| %>
+                  <li class="flex items-start gap-2">
+                    <span class="text-placecal-orange">•</span>
+                    <span><strong><%= name %></strong> <span class="text-gray-600">(<%= domains.join(', ') %>)</span></span>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 2: Partner & Name %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-calendar-wizard-target="step" data-step="2">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:partner, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.organiser.title') %></h2>
+            <p class="text-gray-600 text-sm mt-1">
+              <%= t('admin.calendars.wizard.organiser.description') %>
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold">
+              <%= t('admin.calendars.fields.partner_organiser') %> <span class="text-error"><%= t('admin.labels.required') %></span>
+            </legend>
+            <%= f.input_field :partner_id,
+                              as: :select,
+                              collection: options_for_organiser,
+                              include_blank: t('admin.placeholders.select_model', model: Partner.model_name.human.downcase),
+                              selected: @partner&.id.to_s,
+                              class: 'select select-bordered w-full',
+                              data: {
+                                controller: "tom-select",
+                                'calendar-wizard-target': "partnerSelect",
+                                action: "change->calendar-wizard#partnerChanged"
+                              } %>
+            <p class="text-sm text-gray-600 mt-2"><%= t('admin.calendars.fields.partner_hint') %></p>
+          </fieldset>
+
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold">
+              <%= t('admin.calendars.fields.calendar_name') %> <span class="text-error"><%= t('admin.labels.required') %></span>
+            </legend>
+            <%= f.input_field :name,
+                              class: 'input input-bordered w-full',
+                              placeholder: t('admin.calendars.wizard.organiser.name_placeholder'),
+                              'data-calendar-wizard-target': 'nameInput',
+                              'data-action': 'input->calendar-wizard#nameChanged' %>
+            <p class="text-sm text-gray-600 mt-2"><%= t('admin.calendars.fields.name_hint') %></p>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 3: Location %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-calendar-wizard-target="step" data-step="3">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:map_pin, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl"><%= t('admin.calendars.wizard.location.title') %></h2>
+            <p class="text-gray-600 text-sm mt-1">
+              <%= t('admin.calendars.wizard.location.description') %>
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <%# Strategy %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold"><%= attr_label(:calendar, :strategy) %></legend>
+            <%= render Admin::RadioCardGroupComponent.new(
+              form: f,
+              attribute: :strategy,
+              values: Calendar.strategy.values,
+              i18n_scope: 'admin.calendars.strategy'
+            ) %>
+            <p class="text-sm text-gray-600 mt-2">
+              <%= t('admin.calendars.wizard.location.strategy_hint') %>
+            </p>
+          </fieldset>
+
+          <%# Default Location %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold"><%= t('admin.calendars.fields.default_location') %></legend>
+            <% if @partner_missing_address %>
+              <div class="alert alert-warning mb-4">
+                <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+                <span><%= t('admin.calendars.wizard.location.partner_no_address', partner: @partner.name) %></span>
+              </div>
+            <% end %>
+            <%= f.input_field :place_id,
+                              as: :select,
+                              collection: options_for_location,
+                              include_blank: t('admin.calendars.fields.default_location_blank'),
+                              class: 'select select-bordered w-full',
+                              data: {
+                                controller: "tom-select",
+                                'calendar-wizard-target': "placeSelect"
+                              } %>
+            <p class="text-sm text-gray-600 mt-2">
+              <%= t('admin.calendars.wizard.location.default_hint') %>
+            </p>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <%# Save Bar %>
+    <%= render Admin::SaveBarComponent.new(
+      wizard: true,
+      wizard_controller: 'calendar-wizard',
+      submit_label: t('admin.calendars.wizard.create_button'),
+      continue_text_target: true
+    ) %>
+  <% end %>
+</div>

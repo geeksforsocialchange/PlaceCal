@@ -1,25 +1,42 @@
-<%= simple_form_for [:admin, @collection] do |f| %>
-  <%= render(ErrorComponent.new(@collection)) %>
-  <%= f.input :name, id: :collection_name %>
-  <%= f.input :route %>
-  <%= f.input :description %>
+<%= simple_form_for [:admin, @collection], html: { class: 'space-y-6' } do |f| %>
+  <%= render(Admin::ErrorComponent.new(@collection)) %>
 
-  <%= f.association :events, collection: options_for_events, input_html: { class: 'select2' } %>
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Collection Details</h3>
 
-  <%= f.input :image %>
+    <%= f.input :name, id: :collection_name, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+    <%= f.input :route, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' } %>
+    <%= f.input :description, wrapper: :tw_vertical_form,
+                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 } %>
+  </div>
 
-  <% if f.object.image.size.positive? %>
-    <div class="card">
-      <%= image_tag f.object.image.url, class: 'card-img-top', style: 'max-width: 200px' if f.object.image.url %>
-      <div class="card-title">
-        Current image
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Events</h3>
+    <%= f.association :events, collection: options_for_events,
+                      wrapper: :tw_vertical_form,
+                      input_html: { class: 'block w-full', data: { controller: "tom-select" } } %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Image</h3>
+    <%= f.input :image, wrapper: :tw_file %>
+
+    <% if f.object.image.size.positive? %>
+      <div class="mt-4">
+        <%= image_tag f.object.image.url, class: 'rounded-lg max-w-xs' if f.object.image.url %>
+        <p class="text-sm text-gray-500 mt-2">Current image</p>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 
-  <%= f.button :submit, class: "btn btn-primary" %>
-
-  <% unless @collection.new_record? %>
-    <%= link_to "Destroy Collection", admin_collection_path(@collection), method: :delete, class: "btn btn-danger" %>
-  <% end %>
+  <div class="flex items-center gap-4 pt-4">
+    <%= f.button :submit, class: "inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2" %>
+    <% unless @collection.new_record? %>
+      <%= link_to "Destroy Collection", admin_collection_path(@collection), method: :delete,
+          class: "inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500",
+          data: { confirm: "Are you sure you want to delete this collection?" } %>
+    <% end %>
+  </div>
 <% end %>

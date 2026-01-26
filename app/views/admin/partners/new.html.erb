@@ -1,74 +1,516 @@
 <% content_for :title do %>New Partner<% end %>
 
-<h1 class="page-header">New Partner</h1>
+<div data-controller="partner-wizard"
+     data-partner-wizard-current-step-value="1"
+     data-partner-wizard-total-steps-value="6">
 
-<hr />
-<div class="form">
-  <%= simple_form_for @partner do |f| %>
-  <%= render(ErrorComponent.new(@partner)) %>
-    <h2>Basic Information</h2>
-    <%= f.input :name,
-	class: "form-control",
-	input_html: { 'data-controller': "partner-form-validation", 'data-partner-form-validation-target': 'source', 'data-action': 'input->partner-form-validation#checkInput' },
-	hint: 'Must be at least 5 characters long' %>
-    <p class="invalid-feedback" id="partner-name-feedback">This partner name has already been taken.</p>
+  <div class="max-w-4xl mx-auto">
+    <%# Header %>
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-base-content mb-2">Create a New Partner</h1>
+      <p class="text-gray-600">Let's get your partner organisation set up in PlaceCal</p>
+    </div>
 
-    <h2>Place</h2>
-    <p>Partners need to be associated with at least one place. This can be a fixed address if they usually operate from one location, or a service area which can be a Ward or District. Keep this information as specific as possible – limited to where this partner actually runs events rather than the geographical spread of the people they are trying to reach.</p>
-    <div id='address'>
-      <div class="row">
-        <div class="col-md-6">
+    <%# Steps indicator %>
+    <ul class="steps steps-horizontal w-full mb-8 text-xs">
+      <li class="step step-primary" data-partner-wizard-target="stepIndicator" data-step="1">
+        <span class="step-content">Name</span>
+      </li>
+      <li class="step" data-partner-wizard-target="stepIndicator" data-step="2">
+        <span class="step-content">Location</span>
+      </li>
+      <li class="step" data-partner-wizard-target="stepIndicator" data-step="3">
+        <span class="step-content">Tags</span>
+      </li>
+      <li class="step" data-partner-wizard-target="stepIndicator" data-step="4">
+        <span class="step-content">Contact</span>
+      </li>
+      <li class="step" data-partner-wizard-target="stepIndicator" data-step="5">
+        <span class="step-content">Invite</span>
+      </li>
+      <li class="step" data-partner-wizard-target="stepIndicator" data-step="6">
+        <span class="step-content">Confirm</span>
+      </li>
+    </ul>
+  </div>
 
-    <h3>Address</h3>
-            <%= render 'address_fields',
-		       form: f,
-		       partner: @partner %>
+  <%= simple_form_for @partner, html: { data: { partner_wizard_target: 'form' } } do |f| %>
+    <div class="max-w-4xl mx-auto">
+      <%= render(Admin::ErrorComponent.new(@partner)) %>
 
-          <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
-            <p>
-              The address for this partner is assigned to an out of date neighbourhood.
-              You do not need to take any action but if you wish to reassign this to an
-              up to date neighbourhood please contact support at <a href="mailto:support@placecal.org">support@placecal.org</a>.
+    <%# Step 1: Name %>
+    <div class="card bg-base-100 shadow-lg border border-base-300" data-partner-wizard-target="step" data-step="1">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:partner, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Name Your Partner</h2>
+            <p class="text-gray-600 text-sm mt-1">
+              Enter the official name of the organisation. We'll check if it already exists.
             </p>
+          </div>
+        </div>
+
+        <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+          <legend class="fieldset-legend text-base font-semibold">
+            Partner Name <span class="text-error">*</span>
+          </legend>
+          <%= f.input_field :name,
+              class: 'input input-bordered input-lg w-full text-lg',
+              placeholder: 'e.g. Community Centre Name',
+              autocomplete: 'off',
+              'data-partner-wizard-target': 'nameInput',
+              'data-action': 'input->partner-wizard#checkName' %>
+          <p class="text-sm text-red-700 mt-2" data-partner-wizard-target="nameMinLengthHint">
+            Must be at least 5 characters long
+          </p>
+
+          <%# Name validation feedback %>
+          <div class="mt-4 hidden" data-partner-wizard-target="nameFeedback">
+            <%# Exact match warning %>
+            <div class="alert alert-warning text-sm hidden" data-partner-wizard-target="exactMatch">
+              <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+              <div>
+                <p class="font-semibold">A partner with this exact name already exists</p>
+                <p class="text-xs mt-1">You may want to edit the existing partner instead.</p>
+              </div>
+              <a href="#" class="btn btn-sm btn-warning" data-partner-wizard-target="exactMatchLink">View Partner</a>
+            </div>
+
+            <%# Similar partners %>
+            <div class="hidden" data-partner-wizard-target="similarSection">
+              <p class="text-sm font-medium text-base-content/70 mb-2 flex items-center gap-2">
+                <%= icon(:info, size: '4') %>
+                Partners with similar names:
+              </p>
+              <div class="space-y-1" data-partner-wizard-target="similarList"></div>
+            </div>
+
+            <%# Name available indicator %>
+            <div class="alert alert-success text-sm hidden" data-partner-wizard-target="nameAvailable">
+              <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
+              <span>This name is available!</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <%# Summary %>
+        <div class="fieldset bg-base-200/50 rounded-xl p-6 mt-6" data-controller="char-counter" data-char-counter-max-value="200">
+          <label for="partner_summary" class="fieldset-legend text-base font-semibold">
+            <%= attr_label(:partner, :summary) %>
+          </label>
+          <%= f.input_field :summary, as: :text,
+              class: 'textarea textarea-bordered w-full bg-base-100 min-h-16',
+              maxlength: 200,
+              id: 'partner_summary',
+              data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' } %>
+          <div class="flex items-center justify-between mt-2">
+            <p class="text-sm text-gray-600"><%= t('admin.partners.fields.summary_hint') %></p>
+            <span class="text-xs tabular-nums transition-colors" data-char-counter-target="counter">0 / 200</span>
+          </div>
+        </div>
+
+        <%# Description %>
+        <div class="fieldset bg-base-200/50 rounded-xl p-6 mt-6">
+          <label for="partner_description" class="fieldset-legend text-base font-semibold">
+            <%= attr_label(:partner, :description) %>
+          </label>
+          <%= f.input_field :description,
+              class: 'textarea textarea-bordered w-full bg-base-100 min-h-32',
+              id: 'partner_description',
+              data: { controller: 'auto-expand' } %>
+          <p class="text-sm text-gray-600 mt-2"><%= t('admin.partners.fields.description_hint') %></p>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 2: Location %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="2">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:location, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Set Location</h2>
+            <p class="text-gray-600 text-sm mt-1">
+              Where does this partner operate? Add a physical address and/or service areas.
+            </p>
+          </div>
+        </div>
+
+        <p class="text-sm text-red-700 mb-4" data-partner-wizard-target="locationHint">
+          <%= t('admin.partners.validation.location_required') %>
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <%# Address %>
+          <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
+            <div data-partner-wizard-target="addressFields" data-action="input->partner-wizard#updateContinueButton">
+              <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
+              <div class="alert alert-warning mt-4 hidden" data-partner-wizard-target="addressIncompleteHint">
+                <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+                <span><%= t('admin.partners.validation.address_incomplete') %></span>
+              </div>
+            </div>
           <% end %>
-          <% if partner_has_unmappable_postcode?(@partner) %>
-            <p>
-              The Postcode you were trying to lookup has not been added to our system yet. Please contact us for further assistance.
-            </p>
+
+          <%# Service Areas %>
+          <%= render Admin::FormCardComponent.new(
+            icon: :car,
+            title: t('admin.sections.service_areas'),
+            description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
+            fit_height: true
+          ) do %>
+            <div data-partner-wizard-target="serviceAreasContainer" data-action="nested-form:added->partner-wizard#updateContinueButton nested-form:removed->partner-wizard#updateContinueButton change->partner-wizard#updateContinueButton">
+              <%= nested_form_for(f, :service_areas,
+                    add_text: t('admin.service_areas.add'),
+                    add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
+                    partial: 'service_area_fields') do %>
+                <%= f.simple_fields_for :service_areas do |neighbourhood| %>
+                  <%= render 'service_area_fields', f: neighbourhood %>
+                <% end %>
+              <% end %>
+            </div>
           <% end %>
         </div>
-        <div class="col-md-6">
-          <h3>Service Areas</h3>
-          <p>If this partner delivers services outside the above address, such as a phone support line or outreach service, select them here.</p>
-          <div class="sites_neighbourhoods">
-            <%= f.simple_fields_for :service_areas do |neighbourhood| %>
-              <%= render 'service_area_fields', :f => neighbourhood %>
-            <% end %>
-            <div class="links">
-              <%= link_to_add_association 'Add Service Area', f, :service_areas, class: "btn btn-primary btn-sm" %>
+      </div>
+    </div>
+
+    <%# Step 3: Tags (Partnerships, Categories) %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="3">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:tag, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Tags & Categories</h2>
+            <p class="text-gray-600 text-sm mt-1">
+              Add partnerships and categories for this partner.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <%# Partnerships %>
+          <%= render 'partnership_fields', f: f %>
+
+          <%# Categories %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6" data-controller="checkbox-limit" data-checkbox-limit-max-value="<%= Partner::MAX_CATEGORIES %>">
+            <legend class="fieldset-legend text-base font-semibold"><%= t('admin.partners.categories.title') %></legend>
+            <p class="text-sm text-gray-600 mb-3">
+              <%= t('admin.partners.categories.hint', max: Partner::MAX_CATEGORIES) %>
+              <span class="badge badge-sm badge-ghost ml-2" data-counter>0 / <%= Partner::MAX_CATEGORIES %></span>
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2">
+              <% Category.all.each do |category| %>
+                <label class="label cursor-pointer gap-2 justify-start py-1 transition-opacity">
+                  <%= check_box_tag "partner[category_ids][]", category.id, @partner.categories.include?(category), class: 'checkbox checkbox-sm checkbox-warning', id: "category_#{category.id}" %>
+                  <span class="label-text text-sm"><%= category.name %></span>
+                </label>
+              <% end %>
             </div>
-            <br>
+            <%= hidden_field_tag "partner[category_ids][]", "" %>
+          </fieldset>
+
+          <%# Facilities %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
+            <legend class="fieldset-legend text-base font-semibold"><%= t('admin.partners.facilities.title') %></legend>
+            <p class="text-sm text-gray-600 mb-3"><%= t('admin.partners.facilities.hint') %></p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2">
+              <% Facility.all.each do |facility| %>
+                <label class="label cursor-pointer gap-2 justify-start py-1">
+                  <%= check_box_tag "partner[facility_ids][]", facility.id, @partner.facilities.include?(facility), class: 'checkbox checkbox-sm checkbox-warning', id: "facility_#{facility.id}" %>
+                  <span class="label-text text-sm"><%= facility.name %></span>
+                </label>
+              <% end %>
+            </div>
+            <%= hidden_field_tag "partner[facility_ids][]", "" %>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <%# Step 4: Contact Info %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="4">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:phone, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Contact Information</h2>
+            <p class="text-gray-600 text-sm mt-1">
+              How can people get in touch with this partner?
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <%# Online Presence %>
+          <%= render Admin::FormCardComponent.new(
+            icon: :desktop,
+            title: t('admin.sections.online_presence'),
+            description: t('admin.partners.sections.online_presence_description')
+          ) do %>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend"><%= attr_label(:partner, :website) %></legend>
+              <%= f.input_field :url, class: 'input input-bordered w-full bg-base-100', placeholder: t('admin.partners.fields.website_placeholder') %>
+            </fieldset>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :facebook) %></legend>
+                <label class="input input-bordered flex items-center gap-1 pr-1 bg-base-100">
+                  <span class="text-gray-600 text-sm shrink-0">facebook.com/</span>
+                  <%= f.input_field :facebook_link, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :twitter) %></legend>
+                <label class="input input-bordered flex items-center gap-1 bg-base-100">
+                  <span class="text-gray-600">@</span>
+                  <%= f.input_field :twitter_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :instagram) %></legend>
+                <label class="input input-bordered flex items-center gap-1 bg-base-100">
+                  <span class="text-gray-600">@</span>
+                  <%= f.input_field :instagram_handle, class: 'grow bg-transparent border-0 focus:outline-none min-w-0' %>
+                </label>
+              </fieldset>
+            </div>
+          <% end %>
+
+          <%# Public Contact %>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <%= render Admin::FormCardComponent.new(
+              icon: :website,
+              title: t('admin.sections.public_contact'),
+              description: t('admin.hints.shown_publicly')
+            ) do %>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :name) %></legend>
+                <%= f.input_field :public_name,
+                    class: 'input input-bordered w-full bg-base-100',
+                    data: { 'partner-wizard-target': 'publicName' } %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :email) %></legend>
+                <%= f.input_field :public_email,
+                    class: 'input input-bordered w-full bg-base-100',
+                    data: { 'partner-wizard-target': 'publicEmail' } %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :phone) %></legend>
+                <%= f.input_field :public_phone,
+                    class: 'input input-bordered w-full bg-base-100',
+                    data: { 'partner-wizard-target': 'publicPhone' } %>
+              </fieldset>
+            <% end %>
+
+            <%= render Admin::FormCardComponent.new(
+              icon: :partnership,
+              title: t('admin.partners.sections.partnership_contact'),
+              description: t('admin.partners.sections.partnership_contact_description')
+            ) do %>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :name) %></legend>
+                <%= f.input_field :partner_name, class: 'input input-bordered w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :email) %></legend>
+                <%= f.input_field :partner_email, class: 'input input-bordered w-full bg-base-100' %>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:partner, :phone) %></legend>
+                <%= f.input_field :partner_phone, class: 'input input-bordered w-full bg-base-100' %>
+              </fieldset>
+            <% end %>
           </div>
         </div>
       </div>
     </div>
 
-    <%= render 'partnership_fields', f: f %>
+    <%# Step 5: Invite Admin %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="5">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-placecal-orange/10 flex items-center justify-center">
+            <%= icon(:user_add, size: '6', css_class: 'text-placecal-orange') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Invite a Partner Admin</h2>
+            <p class="text-gray-600 text-sm mt-1">
+              Optionally invite someone to manage this partner. They'll receive an email invitation.
+            </p>
+          </div>
+        </div>
 
-    <hr>
-    
-    <br>
-    <div class="row">
-      <div class="col-sm-12">
-        <%= f.submit "Save and continue...", class: "btn btn-primary btn-lg" %><br><br><br>
-        <% unless @partner.new_record? %>
-          <% if policy(@partner).destroy? %>
-            <%= link_to "Delete Partner", @partner, method: :delete, class: "btn btn-danger btn-sm", id: 'destroy-partner'  %>
-          <% else %>
-            <p>You do not have permission to delete this partner, please contact <%= mail_to "info@placecal.org", "info@placecal.org" %> if you need to delete this partner.</p>
-          <% end %>
-        <% end %>
+        <div class="space-y-6">
+          <%# Skip option %>
+          <div class="flex items-center gap-3 p-4 bg-base-200/50 rounded-xl">
+            <input type="checkbox" class="checkbox checkbox-sm"
+                   data-partner-wizard-target="skipAdminCheckbox"
+                   data-action="change->partner-wizard#toggleAdminFields">
+            <label class="text-sm">Skip this step - I'll add admins later</label>
+          </div>
+
+          <div data-partner-wizard-target="adminFields">
+            <%= render Admin::FormCardComponent.new(
+              icon: :user,
+              title: 'Admin Details',
+              description: 'Enter the details for the person who will manage this partner.'
+            ) do %>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <fieldset class="fieldset">
+                  <legend class="fieldset-legend"><%= attr_label(:user, :first_name) %></legend>
+                  <input type="text" name="partner[invited_admin][first_name]"
+                         class="input input-bordered w-full bg-base-100"
+                         data-partner-wizard-target="adminFirstName">
+                </fieldset>
+                <fieldset class="fieldset">
+                  <legend class="fieldset-legend"><%= attr_label(:user, :last_name) %></legend>
+                  <input type="text" name="partner[invited_admin][last_name]"
+                         class="input input-bordered w-full bg-base-100"
+                         data-partner-wizard-target="adminLastName">
+                </fieldset>
+              </div>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">
+                  <%= attr_label(:user, :email) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+                </legend>
+                <input type="email" name="partner[invited_admin][email]"
+                       class="input input-bordered w-full bg-base-100"
+                       data-partner-wizard-target="adminEmail"
+                       data-action="input->partner-wizard#checkAdminEmail">
+                <p class="text-sm text-gray-600 mt-2">An invitation email will be sent to this address.</p>
+
+                <%# Email validation feedback %>
+                <div class="mt-3 hidden" data-partner-wizard-target="adminEmailFeedback">
+                  <div class="alert alert-success text-sm hidden" data-partner-wizard-target="adminEmailAvailable">
+                    <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
+                    <span>This email address is available.</span>
+                  </div>
+                  <div class="alert alert-warning text-sm hidden" data-partner-wizard-target="adminEmailTaken">
+                    <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
+                    <div class="flex-1">
+                      <p class="font-semibold">A user with this email already exists</p>
+                      <p class="text-xs mt-1">They will be added as an admin for this partner.</p>
+                    </div>
+                  </div>
+                  <div class="alert alert-error text-sm hidden" data-partner-wizard-target="adminEmailInvalid">
+                    <%= icon(:x_circle, size: '5', css_class: 'shrink-0') %>
+                    <span>Please enter a valid email address.</span>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= attr_label(:user, :phone) %></legend>
+                <input type="tel" name="partner[invited_admin][phone]"
+                       class="input input-bordered w-full bg-base-100"
+                       data-partner-wizard-target="adminPhone">
+              </fieldset>
+
+              <%# Copy from contact button %>
+              <button type="button"
+                      class="btn btn-sm btn-ghost gap-2 mt-2"
+                      data-action="click->partner-wizard#copyFromContact">
+                <%= icon(:clipboard, size: '4') %>
+                Copy from partner contact info
+              </button>
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
+
+    <%# Step 6: Confirm %>
+    <div class="card bg-base-100 shadow-lg border border-base-300 hidden" data-partner-wizard-target="step" data-step="6">
+      <div class="card-body">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+            <%= icon(:check_circle, size: '6', css_class: 'text-emerald-600') %>
+          </div>
+          <div>
+            <h2 class="card-title text-xl">Confirm & Create</h2>
+            <p class="text-gray-600 text-sm mt-1">
+              Review what will be created, then click "Create Partner" below.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <%# Partner will be created %>
+          <div class="alert bg-blue-50 border border-blue-200 text-blue-800">
+            <%= icon(:partner, size: '5', css_class: 'shrink-0') %>
+            <div>
+              <p class="font-semibold">Partner will be created</p>
+              <p class="text-sm" data-partner-wizard-target="confirmPartnerName">-</p>
+            </div>
+          </div>
+
+          <%# User will be invited (only shown if admin email provided) %>
+          <div class="alert bg-purple-50 border border-purple-200 text-purple-800 hidden" data-partner-wizard-target="confirmAdminBox">
+            <%= icon(:user_add, size: '5', css_class: 'shrink-0') %>
+            <div>
+              <p class="font-semibold">Admin will be invited</p>
+              <p class="text-sm" data-partner-wizard-target="confirmAdminDetails">-</p>
+            </div>
+          </div>
+        </div>
+
+        <%# What's next options %>
+        <div class="space-y-4 mt-6">
+          <h3 class="font-semibold text-sm text-gray-600">After creating, I want to:</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="cursor-pointer">
+              <input type="radio" name="after_create" value="edit" class="peer sr-only" checked>
+              <div class="card bg-base-100 border-2 border-base-300 peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors">
+                <div class="card-body p-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                      <%= icon(:partner, size: '5', css_class: 'text-blue-600') %>
+                    </div>
+                    <div>
+                      <p class="font-semibold">Edit Partner</p>
+                      <p class="text-xs text-gray-600">Add more details, images, opening times</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </label>
+
+            <label class="cursor-pointer">
+              <input type="radio" name="after_create" value="add_calendar" class="peer sr-only">
+              <div class="card bg-base-100 border-2 border-base-300 peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors">
+                <div class="card-body p-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                      <%= icon(:calendar, size: '5', css_class: 'text-emerald-600') %>
+                    </div>
+                    <div>
+                      <p class="font-semibold">Add Calendar</p>
+                      <p class="text-xs text-gray-600">Import events from a calendar feed</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div><%# Close max-w-4xl wrapper %>
+
+    <%# Save Bar %>
+    <%= render Admin::SaveBarComponent.new(
+      wizard: true,
+      wizard_controller: 'partner-wizard',
+      submit_label: "Create Partner"
+    ) %>
   <% end %>
 </div>

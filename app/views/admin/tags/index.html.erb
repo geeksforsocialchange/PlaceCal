@@ -1,70 +1,45 @@
-<h1>Tags</h1>
-
-<% if current_user.role.root? %>
-<%= link_to "Add New Tag", new_admin_tag_path, class: "btn btn-primary mb-3" %>
-<% end %>
-
-<%= form_tag admin_tags_path, method: :get do %>
-<div class="form-row align-items-end">
-  <div class="col-auto my-1">
-    <%= label_tag 'type', 'Type', class: "mr-sm-2" %>
-    <%= select_tag 'type',
-	@filter.options_for_type(self),
-	class: "custom-select mr-sm-2" %>
-  </div>
-
-  <div class="col-auto my-1">
-    <%= label_tag 'per_page', 'Per Page', class: "mr-sm-2" %>
-    <%= select_tag 'per_page',
-	@filter.options_for_per_page(self),
-	class: "custom-select mr-sm-2" %>
-  </div>
-
-  <div class="col-auto my-1">
-    <%= label_tag 'name', 'Name', class: "mr-sm-2" %>
-    <%= text_field_tag 'name',
-	@filter.name_value,
-	class: "form-control" %>
-  </div>
-
-  <div class="col-auto my-1">
-    <%= submit_tag 'Apply Filter', class: "btn btn-secondary" %>
-  </div>
-
-  <div class="col-auto my-1">
-    <%= link_to 'Reset', admin_tags_path, class: "btn" %>
-  </div>
-</div>
-<% end %>
-
-<br>
-<%
-  scope_tags = @filter.with_scope(@tags)
-  window_tags = @filter.with_window(scope_tags)
-  %>
-
-<p><%= scope_tags.count %> tags found</p>
-
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th class="text-right">ID</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% window_tags.each do |tag| %>
-    <tr>
-      <td><%= link_to tag.name, edit_admin_tag_path(tag) %></td>
-      <td><%= tag.class %></td>
-      <td class="text-right"><%= tag.id %></td>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<p>
-  <%= @filter.prev_page_link(self, window_tags) %>
-  <%= @filter.next_page_link(self, window_tags) %>
-</p>
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Tags',
+    model: :tags,
+    column_titles: [
+      'Tag',
+      'Type',
+      'Partners',
+      'Last Updated',
+      ''
+    ],
+    columns: %i[name type partners_count updated_at actions],
+    column_config: {
+      name: {},
+      type: { fit: true },
+      partners_count: { align: :center, sortable: false, fit: true },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'updated_at', direction: 'desc' },
+    filters: [
+      {
+        column: 'type',
+        label: 'Type',
+        width: 'w-36',
+        options: [
+          { value: 'Category', label: 'Category' },
+          { value: 'Partnership', label: 'Partnership' },
+          { value: 'Facility', label: 'Facility' }
+        ]
+      },
+      {
+        column: 'has_partners',
+        label: 'Partners',
+        width: 'w-36',
+        options: [
+          { value: 'yes', label: 'Has partners' },
+          { value: 'no', label: 'No partners' }
+        ]
+      }
+    ],
+    data: @tags,
+    source: admin_tags_path(format: :json),
+    new_link: (new_admin_tag_path if current_user.role.root?)
+  }
+%>

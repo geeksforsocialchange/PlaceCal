@@ -1,0 +1,45 @@
+<div class="nested-fields card bg-base-200/50 border border-base-300">
+  <div class="card-body p-4 gap-3">
+    <% if show_header %>
+      <h3 class="font-semibold flex items-center gap-2">
+        <%= icon(:neighbourhood, size: '4') %>
+        <%= t('admin.address.neighbourhood_label') %>
+      </h3>
+    <% end %>
+
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex-1">
+        <%# Current neighbourhood - displayed prominently %>
+        <%= link_to helpers.admin_neighbourhood_path(neighbourhood),
+            class: "flex items-center gap-2 py-2 pr-2 rounded-lg hover:bg-base-300/50 transition-colors group" do %>
+          <%= level_badge(neighbourhood.level) %>
+          <div>
+            <span class="text-base font-semibold text-base-content group-hover:text-placecal-orange transition-colors">
+              <%= neighbourhood.shortname %>
+            </span>
+            <span class="text-xs text-gray-600 ml-1"><%= neighbourhood.unit&.titleize %></span>
+          </div>
+        <% end %>
+
+        <%# Parent hierarchy - smaller, beneath %>
+        <% if ancestors.any? %>
+          <div class="flex flex-wrap items-center gap-1">
+            <% ancestors.each_with_index do |ancestor, index| %>
+              <% if index > 0 %>
+                <span class="text-gray-300">/</span>
+              <% end %>
+              <%= link_to helpers.admin_neighbourhood_path(ancestor),
+                  class: "inline-flex items-center gap-1 px-1.5 py-0.5 text-xs rounded #{neighbourhood_colour(ancestor.level)} hover:opacity-80 transition-opacity" do %>
+                <%= ancestor.shortname %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <% if show_remove && form %>
+        <%= helpers.nested_form_remove_link(form, icon(:x, size: '4'), class: 'btn btn-ghost btn-sm btn-square text-gray-500 hover:text-error hover:bg-error/10') %>
+      <% end %>
+    </div>
+  </div>
+</div>

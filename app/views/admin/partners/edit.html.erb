@@ -1,72 +1,13 @@
-<% content_for :title do %>Editing <%= @partner.name %><% end %>
-<h1 class="page-header">Edit Partner: <em><%= @partner.name %></em></h1>
+<% content_for :title do %>Edit Partner: <%= @partner.name %><% end %>
 
-<p>ID: <%= @partner.id %></p>
-<%# Show the Neighbourhood the partner is related to via Address %>
-<% if @partner.address&.neighbourhood&.present? -%>
-    <p>Address in neighbourhood <%= link_to_neighbourhood(@partner.address.neighbourhood) %>.</p>
-<% end -%>
+<%= render(Admin::ErrorComponent.new(@partner)) %>
 
-<%# Show a list of Service Areas that the partner is related to %>
-<% if @partner.service_areas.any? -%>
-    <p>In service areas <%= service_area_links(@partner) %>.</p>
-<% end -%>
-
-<%# Show a list of sites that the partner is related to %>
-<span id="partner-sites">
-    <% partners_sites_links = site_links %>
-    <% if partners_sites_links.present? %>
-	    <p>View this partner on: <%= site_links %> (opens in new tab).</p>
-    <% else %>
-	    <p class="text-danger">
-        This partner does not appear on any PlaceCal sites. It could be missing a partnership tag, or based in a location that falls outside of any site's neighbourhoods. Contact your PlaceCal organiser or <a href='mailto:support@placecal.org'>support@placecal.org</a> to help fix this.</p>
-    <% end %>
-</span>
-
-<br>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Edit Partner</h1>
+    <p class="text-gray-600 mt-1"><%= @partner.name %></p>
+  </div>
+  <div class="text-sm text-gray-600">ID: <%= @partner.id %></div>
+</div>
 
 <%= render 'form', model: :partner %>
-
-<br><hr><br>
-
-<div >
-  <h2>Connected entities</h2>
-  <p>What other things is this Partner connected to? <em>Please save your changes above before adding connections!</em></p>
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Calendars</h3>
-      <p><%= @partner.calendars.count -%> connected <%= "calendar".pluralize(@partner.calendars.count) -%> found</p>
-      <ul>
-        <% @partner.calendars.each do |calendar| -%>
-          <li><%= link_to calendar.name, edit_admin_calendar_path(calendar) %></li>
-        <% end -%>
-      </ul>
-      <p>
-        <%= link_to 'Add a new calendar',
-                    new_admin_calendar_path(partner_id: @partner.id),
-                    class: "btn btn-primary mb-3 mr-2 btn-sm" %>
-      </p>
-    </div>
-    <div class="col-md-6">
-      <h3>Partner admins</h3>
-      <p><%= @partner.users.count %> <%= "user".pluralize(@partner.users.count) -%> can edit this partner</p>
-      <ul>
-        <% @partner.users.each do |p_user| -%>
-          <li>
-          <% if policy(User).update? %>
-            <%= link_to p_user.email, edit_admin_user_path(p_user) %></li>
-          <% else %>
-            <%= p_user.email %></li>
-          <% end %>
-        <% end -%>
-      </ul>
-      <% if policy(User).update? %>
-        <p><%= link_to 'Add new partner admin',
-                        new_admin_user_path(partner_id: @partner.id),
-                        class: "btn btn-primary mb-3 mr-2 btn-sm" %>
-        </p>
-      <% end %>
-    </div>
-  </div>
-  <br>
-</div>
