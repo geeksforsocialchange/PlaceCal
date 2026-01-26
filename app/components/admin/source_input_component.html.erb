@@ -1,0 +1,62 @@
+<div data-controller="source-validator" data-source-validator-test-url-value="<%= test_url %>">
+  <fieldset class="fieldset">
+    <label for="calendar_source" class="fieldset-legend">
+      <%= I18n.t('activerecord.attributes.calendar.source') %> <span class="text-error"><%= I18n.t('admin.labels.required') %></span>
+    </label>
+    <div class="flex gap-2">
+      <%= form.input_field :source,
+          class: 'input input-bordered flex-1 font-mono text-sm',
+          placeholder: I18n.t('admin.calendars.fields.source_placeholder'),
+          autocomplete: 'off',
+          'data-source-validator-target': 'input',
+          'data-action': 'input->source-validator#sourceChanged' %>
+      <button type="button"
+              class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2"
+              data-source-validator-target="testButton"
+              data-action="click->source-validator#testSource">
+        <span class="loading loading-spinner loading-sm hidden" data-source-validator-target="testSpinner"></span>
+        <span data-source-validator-target="testIconNeutral"><%= icon(:lightning, size: '5') %></span>
+        <span data-source-validator-target="testIconSuccess" class="hidden"><%= icon(:check_circle, size: '5') %></span>
+        <span data-source-validator-target="testIconError" class="hidden"><%= icon(:x_circle, size: '5') %></span>
+        <span data-source-validator-target="testButtonText"><%= I18n.t('admin.calendars.wizard.source.test_button') %></span>
+      </button>
+    </div>
+    <p class="fieldset-label"><%= I18n.t('admin.calendars.handbook_hint_html').html_safe %></p>
+
+    <%# Validation feedback %>
+    <div class="mt-3 hidden" data-source-validator-target="feedback">
+      <%# Success %>
+      <div class="alert alert-success text-sm hidden" data-source-validator-target="success">
+        <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
+        <div class="flex-1">
+          <p class="font-semibold"><%= I18n.t('admin.calendars.wizard.source.success') %></p>
+          <p class="text-xs mt-1 hidden" data-source-validator-target="detectedFormat">
+            <%= I18n.t('admin.calendars.wizard.source.detected_format') %>
+            <span class="font-medium" data-source-validator-target="detectedFormatName"></span>
+          </p>
+        </div>
+      </div>
+
+      <%# Error %>
+      <div class="alert alert-error text-sm hidden" data-source-validator-target="error">
+        <%= icon(:x_circle, size: '5', css_class: 'shrink-0') %>
+        <div>
+          <p class="font-semibold"><%= I18n.t('admin.calendars.wizard.source.error') %></p>
+          <p class="text-xs mt-1" data-source-validator-target="errorMessage"></p>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <% if show_importer %>
+    <fieldset class="fieldset mt-4">
+      <%= form.label :importer_mode, I18n.t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend' %>
+      <%= form.input_field :importer_mode,
+                          as: :select,
+                          collection: helpers.options_for_importer,
+                          selected: form.object.importer_mode || 'auto',
+                          class: 'select select-bordered w-full',
+                          data: { 'source-validator-target': 'importerModeSelect' } %>
+    </fieldset>
+  <% end %>
+</div>

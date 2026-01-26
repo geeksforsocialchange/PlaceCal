@@ -1,29 +1,99 @@
-<script>
-var columns = [
-    {"data": "id"},
-    {"data": "name"},
-    {"data": "unit_name"},
-    {"data": "unit_code_key"},
-    {"data": "unit_code_value"},
-    {"data": "release_date"},
-  ]
-</script>
-
-
-<%= render partial: "layouts/admin/datatable", locals: {
-    title: "Neighbourhoods",
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: t('admin.neighbourhoods.index.title'),
     model: :neighbourhoods,
-    column_titles: ['ID', 'Our name', 'Official name', 'Official key', 'Official value', 'Release date'],
-    columns: %i[id name unit_name unit_code_key unit_code_value release_date],
-    data: @neighbourhoods.limit(15),
+    column_titles: [
+      t('admin.neighbourhoods.index.columns.neighbourhood'),
+      t('admin.neighbourhoods.index.columns.level'),
+      t('admin.neighbourhoods.index.columns.hierarchy'),
+      t('admin.neighbourhoods.index.columns.partners'),
+      t('admin.neighbourhoods.index.columns.release'),
+      ''
+    ],
+    columns: %i[name unit hierarchy partners_count release_date actions],
+    column_config: {
+      name: {},
+      unit: { fit: true },
+      hierarchy: { sortable: false },
+      partners_count: { fit: true },
+      release_date: { fit: true, sortable: false },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'partners_count', direction: 'desc' },
+    filters: [
+      {
+        column: 'unit',
+        label: t('admin.neighbourhoods.index.columns.level'),
+        width: 'w-32',
+        options: [
+          { value: 'ward', label: t('admin.neighbourhoods.index.levels.ward') },
+          { value: 'district', label: t('admin.neighbourhoods.index.levels.district') },
+          { value: 'county', label: t('admin.neighbourhoods.index.levels.county') },
+          { value: 'region', label: t('admin.neighbourhoods.index.levels.region') },
+          { value: 'country', label: t('admin.neighbourhoods.index.levels.country') }
+        ]
+      },
+      {
+        column: 'release',
+        label: t('admin.neighbourhoods.index.columns.release'),
+        width: 'w-32',
+        default: 'current',
+        options: [
+          { value: 'current', label: t('admin.neighbourhoods.index.release.current') },
+          { value: 'legacy', label: t('admin.neighbourhoods.index.release.legacy') }
+        ]
+      }
+    ],
+    secondary_filters: [
+      {
+        column: 'country_id',
+        label: t('admin.neighbourhoods.index.levels.country'),
+        width: 'min-w-40',
+        type: :hierarchical,
+        level: 5,
+        endpoint: children_admin_neighbourhoods_path(format: :json),
+        options: Neighbourhood.countries.latest_release.order(:name).map { |n|
+          { value: n.id, label: n.name }
+        }
+      },
+      {
+        column: 'region_id',
+        label: t('admin.neighbourhoods.index.levels.region'),
+        width: 'min-w-48',
+        type: :hierarchical,
+        level: 4,
+        parent_filter: 'country_id',
+        endpoint: children_admin_neighbourhoods_path(format: :json)
+      },
+      {
+        column: 'county_id',
+        label: t('admin.neighbourhoods.index.levels.county'),
+        width: 'min-w-48',
+        type: :hierarchical,
+        level: 3,
+        parent_filter: 'region_id',
+        endpoint: children_admin_neighbourhoods_path(format: :json)
+      },
+      {
+        column: 'district_id',
+        label: t('admin.neighbourhoods.index.levels.district'),
+        width: 'min-w-48',
+        type: :hierarchical,
+        level: 2,
+        parent_filter: 'county_id',
+        endpoint: children_admin_neighbourhoods_path(format: :json)
+      }
+    ],
+    data: @neighbourhoods,
     source: admin_neighbourhoods_path(current_user: @current_user, format: :json)
   }
 %>
 
-<h2>Neighbourhood Roots</h2>
+<h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4"><%= t('admin.neighbourhoods.index.roots_title') %></h2>
 
-<% Neighbourhood.roots.order(:name).each do |root| %>
-<p><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root) %></p>
-<% end %>
+<div class="bg-white shadow-sm rounded-lg p-4">
+  <% Neighbourhood.roots.order(:name).each do |root| %>
+    <p class="mb-2"><%= link_to safe_neighbourhood_name(root), admin_neighbourhood_path(root), class: "text-placecal-orange-dark hover:underline" %></p>
+  <% end %>
+</div>
 
-<h5>ONS Latest Release Date Loaded: <%= Neighbourhood::LATEST_RELEASE_DATE %></h5>
+<p class="text-sm text-gray-500 mt-4"><%= t('admin.neighbourhoods.index.ons_release', date: Neighbourhood::LATEST_RELEASE_DATE) %></p>

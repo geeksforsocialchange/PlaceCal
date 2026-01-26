@@ -1,0 +1,27 @@
+<h2 class="text-lg font-bold mb-1 flex items-center gap-2">
+  <%= icon(:user_add, size: '5') %>
+  <%= t('admin.models.admin.other') %>
+  <span class="badge badge-sm badge-ghost"><%= @partner.users.count %></span>
+</h2>
+<p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.admins_description') %></p>
+
+<%= render Admin::StackedListSelectorComponent.new(
+  field_name: "partner[user_ids][]",
+  items: @partner.users,
+  options: options_for_partner_users(@partner),
+  icon_name: :user,
+  icon_color: "bg-blue-100 text-blue-600",
+  empty_text: t('admin.empty.none_assigned', items: t('admin.models.admin.other').downcase),
+  add_placeholder: t('admin.partners.admins.add_existing'),
+  use_tom_select: true,
+  link_path: :edit_admin_user_path
+) %>
+
+<% if policy(User).create? %>
+  <div class="mt-6">
+    <%= link_to new_admin_user_path(partner_id: @partner.id), class: "btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+      <%= icon(:plus, size: '4') %>
+      <%= t('admin.partners.admins.add_new') %>
+    <% end %>
+  </div>
+<% end %>

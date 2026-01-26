@@ -17,17 +17,23 @@ class StrongParametersFormBuilder < SimpleForm::FormBuilder
 end
 
 module ApplicationHelper
+  include SvgIconsHelper
+
   def user_policy
     UserPolicy.new(current_user, nil)
   end
 
-  def admin_nav_link(name, path, icon = false)
-    content_tag :li, class: 'nav-item' do
-      klass = current_page?(path) ? 'nav-link active' : 'nav-link'
-      if icon
-        link_to "<i class='fa fa-#{icon} feather'></i> #{name}".html_safe, path, class: klass
-      else
-        link_to name, path, class: klass
+  def admin_nav_link(name, path, icon_name = nil, root_only: false)
+    content_tag :li do
+      base_classes = 'flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors'
+      # Use placecal-orange-dark for active state - provides 4.98:1 contrast ratio (WCAG AA compliant)
+      active_classes = 'bg-placecal-orange-dark text-white'
+      inactive_classes = 'text-gray-700 hover:bg-gray-200'
+      klass = current_page?(path) ? "#{base_classes} #{active_classes}" : "#{base_classes} #{inactive_classes}"
+      link_to path, class: klass do
+        concat(icon(icon_name.to_sym, size: '4')) if icon_name
+        concat(content_tag(:span, name, class: 'flex-1'))
+        concat(icon(:crown, size: '3', css_class: 'text-amber-500')) if root_only
       end
     end
   end
@@ -52,6 +58,20 @@ module ApplicationHelper
     )
   end
 
+  # Icon column header for datatables
+  # Usage: icon_column_header(:calendar, 'Calendars')
+  def icon_column_header(icon_name, tooltip)
+    # Map legacy icon names to SvgIconsHelper names
+    icon_map = { status: :check }
+    mapped_name = icon_map[icon_name.to_sym] || icon_name.to_sym
+
+    return tooltip unless SvgIconsHelper::ICONS.key?(mapped_name)
+
+    content_tag(:span, title: tooltip) do
+      icon(mapped_name, size: '4')
+    end
+  end
+
   # ported from https://github.com/comfy/active_link_to/blob/master/lib/active_link_to/active_link_to.rb
   def active_link_to(title, url, data: nil)
     current_path = request.original_fullpath
@@ -67,5 +87,19 @@ module ApplicationHelper
     end
 
     link_to(title, url, options).html_safe
+  end
+
+  # Convenience wrapper for humanized model names
+  # Usage: human_model_name(Partner) => "Partner"
+  # Usage: human_model_name(Partner, count: 2) => "Partners"
+  def human_model_name(klass, count: 1)
+    klass.model_name.human(count: count)
+  end
+
+  # Convenience wrapper for attribute labels from activerecord.attributes
+  # Usage: attr_label(:partner, :name) => "Name"
+  # Usage: attr_label(:calendar, :source) => "Source URL"
+  def attr_label(model, attribute)
+    I18n.t("activerecord.attributes.#{model}.#{attribute}", default: attribute.to_s.humanize)
   end
 end

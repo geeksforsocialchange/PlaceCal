@@ -1,0 +1,27 @@
+<%# Radio Tabs - daisyUI tabs-lift %>
+<div class="tabs tabs-lift">
+  <% visible_tabs.each_with_index do |tab, index| %>
+    <% if tab[:spacer_before] %>
+      <%# Spacer to push subsequent tabs right %>
+      <div class="tab flex-1 cursor-default"></div>
+    <% end %>
+
+    <%= render Admin::TabPanelComponent.new(
+      name: tab_name,
+      label: tab[:label],
+      hash: tab[:hash],
+      controller_name: 'form-tabs',
+      checked: index == 0
+    ) do %>
+      <%= render tab[:partial], f: form %>
+    <% end %>
+  <% end %>
+</div>
+
+<%= render Admin::SaveBarComponent.new(
+  multi_step: true,
+  tab_name: tab_name,
+  settings_hash: settings_hash,
+  preview_hash: preview_hash,
+  storage_key: storage_key
+) %>
