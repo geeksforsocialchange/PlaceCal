@@ -7,13 +7,14 @@ class CalendarImporter::CalendarImporter
   PARSERS = [
     CalendarImporter::Parsers::Eventbrite,
     CalendarImporter::Parsers::Ics,
+    CalendarImporter::Parsers::Ticketsource,
     CalendarImporter::Parsers::ManchesterUni,
     CalendarImporter::Parsers::Meetup,
     CalendarImporter::Parsers::Outsavvy,
     CalendarImporter::Parsers::ResidentAdvisor,
     CalendarImporter::Parsers::Squarespace,
     CalendarImporter::Parsers::Ticketsolve,
-    CalendarImporter::Parsers::Ticketsource,
+    CalendarImporter::Parsers::Wix,
 
     # leave this last as its detection algorithm downloads and parses the
     # data from the URL, which is slow
