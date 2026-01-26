@@ -26,11 +26,6 @@ Rails.application.routes.draw do
   get 'culture-tourism', to: 'pages#culture_tourism'
 
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
-    # Temporary debug route - remove after fixing importmap issue
-    # rubocop:disable Rails/UnknownEnv
-    get 'debug_importmap' => 'debug#importmap' if Rails.env.staging?
-    # rubocop:enable Rails/UnknownEnv
-
     resources :articles
     resources :calendars do
       collection do
