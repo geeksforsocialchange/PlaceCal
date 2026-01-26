@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import "leaflet";
+import maplibregl from "maplibre-gl";
+import "@maplibre/maplibre-gl-leaflet";
 
 // Connects to data-controller="leaflet"
 // Its important to use single quotes in the template when declaring the args values
@@ -7,7 +9,7 @@ import "leaflet";
 // If not you will get strange unicode values which will break parsing
 export default class extends Controller {
 	static values = { args: Object };
-	// {center, iconUrl, markers, shadowUrl, styleClass, tilesetUrl, zoom}
+	// {center, iconUrl, markers, shadowUrl, styleClass, styleUrl, zoom}
 
 	connect() {
 		this.element.classList.add("map");
@@ -28,10 +30,14 @@ export default class extends Controller {
 	createMap() {
 		this.map = L.map(this.element);
 		this.map.scrollWheelZoom.disable();
-		L.tileLayer(this.argsValue.tilesetUrl, {
-			attribution: "PlaceCal",
-			maxZoom: 18,
+
+		// Use MapLibre GL for vector tile rendering with custom themed styles
+		L.maplibreGL({
+			style: this.argsValue.styleUrl,
+			attribution:
+				'&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 		}).addTo(this.map);
+
 		this.map.invalidateSize(true);
 
 		const mapIcon = L.icon({
