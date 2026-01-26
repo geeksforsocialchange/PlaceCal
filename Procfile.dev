@@ -1,4 +1,5 @@
 web: bin/rails server -p 3000 -b 0.0.0.0
-js: yarn build --watch
+js: ./node_modules/.bin/esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --watch=forever
+css: ./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./public/assets/admin_tailwind.css --watch=always
 job_worker: bin/rails jobs:work
 yard: yard server --reload

@@ -1,0 +1,50 @@
+<nav class="flex flex-col">
+  <ul class="space-y-1 px-2">
+    <%= admin_nav_link(t('admin.dashboard.title'), admin_root_path, :home) %>
+  </ul>
+
+  <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+    <%= t('admin.leftbar.content_types') %>
+  </h6>
+  <ul class="space-y-1 px-2">
+    <%= admin_nav_link(human_model_name(Partner, count: 2), admin_partners_path, :partner) if policy(Partner).index? %>
+    <%= admin_nav_link(human_model_name(Calendar, count: 2), admin_calendars_path, :calendar) if policy(Calendar).index? %>
+    <%= admin_nav_link(human_model_name(User, count: 2), admin_users_path, :users) if policy(User).index? %>
+    <%= admin_nav_link(human_model_name(Site, count: 2), admin_sites_path, :site) if policy(Site).index? %>
+    <%= admin_nav_link(human_model_name(Neighbourhood, count: 2), admin_neighbourhoods_path, :neighbourhood) if policy(Neighbourhood).index? %>
+    <%= admin_nav_link(human_model_name(Partnership, count: 2), admin_partnerships_path, :partnership) if policy(Partnership).index? %>
+  </ul>
+
+  <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+    <%= t('admin.leftbar.get_support') %>
+  </h6>
+  <ul class="space-y-1 px-2">
+    <%= admin_nav_link(t('admin.leftbar.handbook'), 'https://handbook.placecal.org/', :book) %>
+    <%= admin_nav_link(t('admin.leftbar.discord'), 'http://discord.gfsc.studio/', :chat) %>
+    <%= admin_nav_link(t('admin.leftbar.report_bug'), 'https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md', :bug) %>
+    <li>
+      <span class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600">
+        <%= icon(:mail, size: '4') %>
+        <%= t('contact.email') %>
+      </span>
+    </li>
+  </ul>
+
+  <% if policy(Article).index? || policy(Tag).index? || policy(Collection).index? || policy(Supporter).index? %>
+    <h6 class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+      <%= t('admin.leftbar.in_development') %>
+    </h6>
+    <ul class="space-y-1 px-2">
+      <%= admin_nav_link(human_model_name(Tag, count: 2), admin_tags_path, :tag, root_only: true) if policy(Tag).index? %>
+      <%= admin_nav_link(human_model_name(Article, count: 2), admin_articles_path, :article) if policy(Article).index? %>
+      <%= admin_nav_link(human_model_name(Collection, count: 2), admin_collections_path, :list, root_only: true) if policy(Collection).index? %>
+      <%= admin_nav_link(human_model_name(Supporter, count: 2), admin_supporters_path, :credit_card, root_only: true) if policy(Supporter).index? %>
+      <%= admin_nav_link(t('admin.leftbar.import_status'), admin_jobs_path, :cog, root_only: true) if current_user.root? %>
+    </ul>
+  <% end %>
+
+  <div class="px-5 mt-8 text-xs text-gray-600 flex items-center gap-1">
+    <%= icon(:code, size: '3') %>
+    <%= t('admin.leftbar.build') %>: <code class="font-mono"><%= link_to (ENV['GIT_REV'] ? ENV['GIT_REV'][0,7] : 'dev'), "https://github.com/geeksforsocialchange/PlaceCal/commit/#{ENV['GIT_REV']}", class: 'text-placecal-teal-dark underline hover:no-underline' %></code>
+  </div>
+</nav>

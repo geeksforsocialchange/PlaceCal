@@ -1,0 +1,172 @@
+<% if policy(@partner).permitted_attributes.include? :slug %>
+  <div class="mb-8">
+    <%= render Admin::SectionHeaderComponent.new(
+      title: t('admin.sections.url_settings'),
+      description: t('admin.partners.sections.url_settings_description'),
+      margin: 4
+    ) %>
+    <div class="max-w-md">
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend"><%= attr_label(:partner, :url) %> <%= attr_label(:partner, :slug) %></legend>
+        <%= f.input_field :slug, class: 'input input-bordered w-full' %>
+        <p class="fieldset-label"><%= t('admin.hints.leave_blank_to_autogenerate') %></p>
+      </fieldset>
+    </div>
+  </div>
+<% end %>
+
+<div class="mb-8">
+  <h2 class="text-lg font-bold mb-4"><%= t('admin.partners.sections.event_matching') %></h2>
+
+  <div class="max-w-2xl">
+    <%# Event Matching Toggle Card %>
+    <% is_enabled = @partner.can_be_assigned_events %>
+    <div class="card bg-base-200/50 border-2 border-base-300">
+      <div class="card-body p-5">
+        <div class="flex items-start gap-4">
+          <%# Icon %>
+          <div class="shrink-0 w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center">
+            <%= icon(:swap, size: '6', css_class: 'text-gray-500') %>
+          </div>
+
+          <%# Content %>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-4 mb-2">
+              <h3 class="font-semibold" id="event-matching-title">
+                <%= is_enabled ? t('admin.partners.event_matching.enabled') : t('admin.partners.event_matching.disabled') %>
+              </h3>
+              <div class="flex items-center gap-3">
+                <span class="label-text text-sm font-medium text-gray-600"><%= t('admin.labels.disabled') %></span>
+                <%= f.check_box :can_be_assigned_events, class: 'toggle toggle-success', id: 'partner_can_be_assigned_events', onchange: 'updateEventMatchingTitle(this.checked)' %>
+                <span class="label-text text-sm font-medium text-success"><%= t('admin.labels.enabled') %></span>
+              </div>
+            </div>
+
+            <p class="text-sm text-base-content/70 mb-3">
+              <%= t('admin.partners.event_matching.description') %>
+            </p>
+
+            <div class="text-sm text-base-content/70 space-y-2">
+              <p class="font-medium text-base-content/90"><%= t('admin.partners.event_matching.when_enabled') %></p>
+              <ul class="list-none space-y-1.5 ml-0">
+                <li class="flex items-start gap-2">
+                  <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
+                  <span><%= t('admin.partners.event_matching.benefit_1') %></span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <%= icon(:check, size: '4', css_class: 'text-success shrink-0 mt-0.5') %>
+                  <span><%= t('admin.partners.event_matching.benefit_2') %></span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <%= icon(:info, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
+                  <span><%= t('admin.partners.event_matching.benefit_3') %></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateEventMatchingTitle(isEnabled) {
+      const title = document.getElementById('event-matching-title');
+      title.textContent = isEnabled ? '<%= t('admin.partners.event_matching.enabled') %>' : '<%= t('admin.partners.event_matching.disabled') %>';
+    }
+  </script>
+</div>
+
+<% unless @partner.new_record? %>
+  <% if policy(@partner).permitted_attributes.include? :hidden %>
+    <div class="mb-8">
+      <h2 class="text-lg font-bold mb-4"><%= t('admin.partners.sections.moderation') %></h2>
+
+      <div class="max-w-2xl" data-controller="inverted-toggle">
+        <%# Hidden Toggle Card %>
+        <div class="card border-2 transition-colors" data-inverted-toggle-target="card">
+          <div class="card-body p-5">
+            <div class="flex items-start gap-4">
+              <%# Icon %>
+              <div class="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors" data-inverted-toggle-target="icon">
+                <span data-inverted-toggle-target="iconHidden"><%= icon(:eye_off, size: '6', css_class: 'text-error') %></span>
+                <span data-inverted-toggle-target="iconVisible"><%= icon(:eye, size: '6', css_class: 'text-warning') %></span>
+              </div>
+
+              <%# Content %>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-4 mb-2">
+                  <h3 class="font-semibold transition-colors" data-inverted-toggle-target="title" id="partner-visibility-title">
+                    <%= @partner.hidden? ? t('admin.partners.moderation.hidden_label') : t('admin.partners.moderation.visible_label') %>
+                  </h3>
+                  <div class="flex items-center gap-3">
+                    <span class="label-text text-sm font-medium text-error"><%= t('admin.labels.hidden') %></span>
+                    <%= f.hidden_field :hidden, value: @partner.hidden? ? '1' : '0', data: { inverted_toggle_target: 'hidden' } %>
+                    <input type="checkbox" id="partner_hidden_toggle" class="toggle toggle-success" data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" onchange="updateVisibilityTitle(this.checked)" />
+                    <span class="label-text text-sm font-medium text-success"><%= t('admin.labels.visible') %></span>
+                  </div>
+                </div>
+
+                <p class="text-sm text-error/80 mb-3" data-inverted-toggle-target="status"><%= t('admin.partners.moderation.hidden_status') %></p>
+
+                <div class="text-sm text-base-content/70 space-y-2">
+                  <p class="font-medium text-base-content/90"><%= t('admin.partners.moderation.when_hidden') %></p>
+                  <ul class="list-none space-y-1.5 ml-0">
+                    <li class="flex items-start gap-2">
+                      <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
+                      <span><%= t('admin.partners.moderation.consequence_1') %></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
+                      <span><%= t('admin.partners.moderation.consequence_2') %></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:x, size: '4', css_class: 'text-warning shrink-0 mt-0.5') %>
+                      <span><%= t('admin.partners.moderation.consequence_3') %></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:check, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
+                      <span><%= t('admin.partners.moderation.consequence_4') %></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <%= icon(:bell, size: '4', css_class: 'text-info shrink-0 mt-0.5') %>
+                      <span><%= t('admin.partners.moderation.consequence_5') %></span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <%# Reason field - shown when hidden or always for entering reason %>
+            <div class="mt-4 pt-4 border-t border-base-300/50">
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend"><%= t('admin.partners.moderation.reason_label') %></legend>
+                <p class="text-xs text-gray-600 mb-2"><%= t('admin.partners.moderation.reason_hint') %></p>
+                <%= f.input_field :hidden_reason, class: 'textarea textarea-bordered w-full min-h-20 bg-base-100', placeholder: t('admin.partners.moderation.reason_placeholder'), data: { controller: 'auto-expand' } %>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updateVisibilityTitle(isVisible) {
+        const title = document.getElementById('partner-visibility-title');
+        title.textContent = isVisible ? '<%= t('admin.partners.moderation.visible_label') %>' : '<%= t('admin.partners.moderation.hidden_label') %>';
+      }
+    </script>
+  <% end %>
+
+  <% if policy(@partner).destroy? %>
+    <div class="mt-8">
+      <%= render Admin::DangerZoneComponent.new(
+        title: t('admin.actions.delete_model', model: Partner.model_name.human.downcase),
+        description: t('admin.danger_zone.delete_description', model: Partner.model_name.human.downcase),
+        button_text: t('admin.actions.delete_model', model: Partner.model_name.human),
+        button_path: admin_partner_path(@partner),
+        confirm: t('admin.confirm.delete_permanent', model: Partner.model_name.human.downcase)
+      ) %>
+    </div>
+  <% end %>
+<% end %>

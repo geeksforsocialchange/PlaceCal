@@ -30,16 +30,17 @@ RSpec.describe "Admin::Partners", type: :request do
 
       before { sign_in user }
 
-      it "shows all partners" do
+      it "shows partners index page with datatable" do
         get admin_partners_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partner1.name)
-        expect(response.body).to include(partner2.name)
+        expect(response.body).to include("Partners") # Page title
+        expect(response.body).to include("data-controller=\"admin-table\"") # Datatable
+        expect(response.body).to include(admin_partners_path(format: :json)) # JSON source
       end
 
       it "includes add new partner button" do
         get admin_partners_url(host: admin_host)
-        expect(response.body).to include("Add New Partner")
+        expect(response.body).to include("Add Partner")
       end
     end
 
@@ -50,11 +51,11 @@ RSpec.describe "Admin::Partners", type: :request do
 
       before { sign_in user }
 
-      it "shows only their partner" do
+      it "shows partners index page with datatable" do
         get admin_partners_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partner.name)
-        expect(response.body).not_to include(other_partner.name)
+        expect(response.body).to include("data-controller=\"admin-table\"")
+        expect(response.body).to include(admin_partners_path(format: :json)) # JSON source
       end
     end
 
@@ -73,10 +74,11 @@ RSpec.describe "Admin::Partners", type: :request do
 
       before { sign_in user }
 
-      it "shows partners in their neighbourhood" do
+      it "shows partners index page with datatable" do
         get admin_partners_url(host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include(partner_in_neighbourhood.name)
+        expect(response.body).to include("data-controller=\"admin-table\"")
+        expect(response.body).to include(admin_partners_path(format: :json)) # JSON source
       end
     end
   end
@@ -192,45 +194,37 @@ RSpec.describe "Admin::Partners", type: :request do
 
       it "has correct page title and heading" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("<title>Editing #{partner.name} | PlaceCal Admin</title>")
-        expect(response.body).to include("Edit Partner: <em>#{partner.name}</em>")
+        expect(response.body).to include("<title>Edit Partner: #{partner.name} | PlaceCal Admin</title>")
+        expect(response.body).to include("Edit Partner")
+        expect(response.body).to include(partner.name)
       end
 
       it "has basic information section with required labels" do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response.body).to include("Basic Information")
-        expect(response.body).to include("Name")
+        expect(response.body).to include("Partner Name")
         expect(response.body).to include("Summary")
         expect(response.body).to include("Description")
-        expect(response.body).to include("Image")
-        expect(response.body).to include("Website address")
-        expect(response.body).to include("Twitter handle")
+        expect(response.body).to include("Partner Image")
+        expect(response.body).to include("Website")
       end
 
       it "has address section with required labels" do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response.body).to include("Address")
-        expect(response.body).to include("Street address")
+        expect(response.body).to include("Street Address")
         expect(response.body).to include("City")
         expect(response.body).to include("Postcode")
       end
 
       it "has contact information section" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("Contact Information")
         expect(response.body).to include("Public Contact")
-        expect(response.body).to include("Public name")
-        expect(response.body).to include("Public email")
-        expect(response.body).to include("Public phone")
         expect(response.body).to include("Partnership Contact")
-        expect(response.body).to include("Partner name")
-        expect(response.body).to include("Partner email")
-        expect(response.body).to include("Partner phone")
       end
 
       it "has delete button for root users" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("destroy-partner")
         expect(response.body).to include("Delete Partner")
       end
     end
@@ -247,7 +241,6 @@ RSpec.describe "Admin::Partners", type: :request do
 
       it "shows delete button" do
         get edit_admin_partner_url(partner, host: admin_host)
-        expect(response.body).to include("destroy-partner")
         expect(response.body).to include("Delete Partner")
       end
     end
@@ -266,7 +259,7 @@ RSpec.describe "Admin::Partners", type: :request do
       it "shows hidden reason to partner admin" do
         get edit_admin_partner_url(partner, host: admin_host)
         expect(response).to be_successful
-        expect(response.body).to include("hidden-reason")
+        expect(response.body).to include("This partner is hidden")
         expect(response.body).to include(reason)
       end
     end

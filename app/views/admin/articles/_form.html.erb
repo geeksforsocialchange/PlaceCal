@@ -1,90 +1,56 @@
-<%- disabled_fields = policy(@article).disabled_fields %>
-<%= simple_form_for [:admin, @article] do |f| %>
+<%= simple_form_for [:admin, @article], html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } } do |f| %>
 
-  <%= render(ErrorComponent.new(@article)) %>
+  <%= render(Admin::ErrorComponent.new(@article)) %>
 
-  <%= f.input :title, id: :article_title, as: :string, input_html: { class: 'special' } %>
-
-  <%= f.association :author, input_html: { class: 'form-control', data: { controller: "select2"} } %>
-
-  <%= f.input :body, input_html: { rows: 20 } %>
-  <p>This field accepts <a href="https://www.markdownguide.org/basic-syntax/">Markdown syntax</a>.</p>
-
-  <h3>Image</h3>
-  <p>Image will be cropped to 16:9 ratio.<p>
-
-  <%= f.input :article_image,
-      disabled: disabled_fields.include?(:article_image),
-      label: false,
-      hint: image_uploader_hint(@article.article_image) %>
-
-  <%= image_tag f.object.article_image.highres.url,
-                class: 'card-img-top' if f.object.article_image.highres.url %>
-
-  <br><hr><br>
-  <h2>Connected entities</h2>
-  <p>What other things is this article linked to?</p>
-  <div class='row'>
-    <div class="col-md-6">
-      <h4>Partners</h4>
-      <% if disabled_fields.include?(:partner_ids) %>
-        <%# # Create a dummy field, because f.assoc disappears %>
-        <%= f.input :partners, collection: options_for_partners,
-            input_html: { class: 'form-control', data: { controller: "select2"} },
-            disabled: true %>
-      <% else %>
-        <%= f.association :partners, collection: options_for_partners,
-                          input_html: { class: 'form-control', data: { controller: "select2"} },
-                          label: false %>
-      <% end %>
+  <% if @article.new_record? %>
+    <%# New record - single page layout %>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render 'admin/articles/form_tab_text', f: f %>
+      </div>
     </div>
-    <div class="col-md-6">
-      <h4>Partnerships</h4>
-      <% if disabled_fields.include?(:tag_ids) %>
-        <%# # Create a dummy field, because f.assoc disappears %>
-        <%= f.input :tags, collection: options_for_tags,
-            input_html: { class: 'form-control', data: { controller: "select2"} }, disabled: true %>
-      <% else %>
-        <%= f.association :tags, collection: options_for_tags,
-                          input_html: { class: 'form-control', data: { controller: "select2"} },
-                          label: false %>
-      <% end %>
+
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render Admin::SectionHeaderComponent.new(
+          title: "Image",
+          description: "Image will be cropped to 16:9 ratio.",
+          margin: 4
+        ) %>
+        <%= render 'admin/articles/form_tab_image', f: f %>
+      </div>
     </div>
-  </div>
 
-  <hr>
+    <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card-body p-6">
+        <%= render Admin::SectionHeaderComponent.new(
+          title: "References",
+          description: "Link this article to partners and partnerships.",
+          margin: 4
+        ) %>
+        <%= render 'admin/articles/form_tab_references', f: f %>
+      </div>
+    </div>
 
-  <h2>Publish</h2>
-  <div class='row'>
-    <div class="col-md-6">
-    <p>This box must be checked for the article to show up on the PlaceCal frontend and API feed.</p>
-    <%= f.input :is_draft,
-                as: :boolean,
-                checked_value: false,
-                unchecked_value: true,
-                label: "Publish this article!" %>
-    <% unless @article.new_record? %>
-      <% if disabled_fields.include?(:published_at) %>
-        Published <%= @article.published_at %>.<br>
-        Last updated <%= @article.updated_at %>.
-      <% else %>
-        <%= f.input :published_at,
-                    label: 'Publication date' %>
+    <%= render Admin::SaveBarComponent.new do |c| %>
+      <% c.with_button do %>
+        <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
       <% end %>
     <% end %>
-    </div>
-  </div>
-
-  <hr>
-
-
-  <span>
-    <br>
-    <%= f.submit 'Save Article', class: "btn btn-primary btn-lg" %><br><br><br>
-    <% if !@article.new_record? && policy(@article).destroy? %>
-      <%= link_to "Delete Article", admin_article_path(@article), method: :delete, class: "btn btn-danger btn-sm" %>
-    <% end %>
-  </span>
+  <% else %>
+    <%# Existing record - tabbed interface %>
+    <%= render Admin::TabFormComponent.new(
+      tabs: [
+        { label: '📝 Text', hash: 'text', partial: 'admin/articles/form_tab_text' },
+        { label: '🖼️ Image', hash: 'image', partial: 'admin/articles/form_tab_image' },
+        { label: '🔗 References', hash: 'references', partial: 'admin/articles/form_tab_references' },
+        { label: '⚙️ Settings', hash: 'settings', partial: 'admin/articles/form_tab_settings', spacer_before: true }
+      ],
+      tab_name: 'article_tabs',
+      storage_key: 'articleTabAfterSave',
+      settings_hash: 'settings',
+      form: f,
+      record: @article
+    ) %>
+  <% end %>
 <% end %>
-
-<br><br><br><br><br>

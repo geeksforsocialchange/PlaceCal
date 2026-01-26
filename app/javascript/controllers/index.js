@@ -4,11 +4,59 @@
 
 import { application } from "./application";
 
+import AdminTableController from "./admin_table_controller.js";
+application.register("admin-table", AdminTableController);
+
+import AutoExpandController from "./auto_expand_controller.js";
+application.register("auto-expand", AutoExpandController);
+
+import CalendarNameSuggestController from "./calendar_name_suggest_controller.js";
+application.register("calendar-name-suggest", CalendarNameSuggestController);
+
+import CalendarWizardController from "./calendar_wizard_controller.js";
+application.register("calendar-wizard", CalendarWizardController);
+
+import CascadingNeighbourhoodController from "./cascading_neighbourhood_controller.js";
+application.register(
+	"cascading-neighbourhood",
+	CascadingNeighbourhoodController
+);
+
+import CharCounterController from "./char_counter_controller.js";
+application.register("char-counter", CharCounterController);
+
+import CheckboxLimitController from "./checkbox_limit_controller.js";
+application.register("checkbox-limit", CheckboxLimitController);
+
+import DropdownController from "./dropdown_controller.js";
+application.register("dropdown", DropdownController);
+
+import FormDirtyController from "./form_dirty_controller.js";
+application.register("form-dirty", FormDirtyController);
+
+import FormTabsController from "./form_tabs_controller.js";
+application.register("form-tabs", FormTabsController);
+
 import ImagePreviewController from "./image_preview_controller.js";
 application.register("image-preview", ImagePreviewController);
 
+import InvertedToggleController from "./inverted_toggle_controller.js";
+application.register("inverted-toggle", InvertedToggleController);
+
 import LeafletController from "./leaflet_controller.js";
 application.register("leaflet", LeafletController);
+
+import LiveValidationController from "./live_validation_controller.js";
+application.register("live-validation", LiveValidationController);
+
+import MarkdownPreviewController from "./markdown_preview_controller.js";
+application.register("markdown-preview", MarkdownPreviewController);
+
+import MultiStepFormController from "./multi_step_form_controller.js";
+application.register("multi-step-form", MultiStepFormController);
+
+import NestedFormController from "./nested_form_controller.js";
+application.register("nested-form", NestedFormController);
 
 import OpeningTimesController from "./opening_times_controller.js";
 application.register("opening-times", OpeningTimesController);
@@ -31,8 +79,26 @@ application.register(
 import PartnerTagsController from "./partner_tags_controller.js";
 application.register("partner-tags", PartnerTagsController);
 
-import Select2Controller from "./select2_controller.js";
-application.register("select2", Select2Controller);
+import PartnerWizardController from "./partner_wizard_controller.js";
+application.register("partner-wizard", PartnerWizardController);
+
+import PartnershipSelectorController from "./partnership_selector_controller.js";
+application.register("partnership-selector", PartnershipSelectorController);
+
+import SaveBarController from "./save_bar_controller.js";
+application.register("save-bar", SaveBarController);
+
+import SourceValidatorController from "./source_validator_controller.js";
+application.register("source-validator", SourceValidatorController);
+
+import StackedListSelectorController from "./stacked_list_selector_controller.js";
+application.register("stacked-list-selector", StackedListSelectorController);
+
+import TomSelectController from "./tom_select_controller.js";
+application.register("tom-select", TomSelectController);
 
 import UserPartnersController from "./user_partners_controller.js";
 application.register("user-partners", UserPartnersController);
+
+import UserWizardController from "./user_wizard_controller.js";
+application.register("user-wizard", UserWizardController);

@@ -47,15 +47,19 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
         get edit_admin_neighbourhood_url(neighbourhood, host: admin_host)
         expect(response).to be_successful
 
+        # Editable fields
         expect(response.body).to include("Name")
-        expect(response.body).to include("Abbreviated name")
-        expect(response.body).to include("Unit")
-        expect(response.body).to include("Unit code key")
-        expect(response.body).to include("Unit name")
-        expect(response.body).to include("Unit code value")
+        expect(response.body).to include("Abbreviated Name")
+
+        # ONS info card (compact display)
+        expect(response.body).to include("Level")
+        expect(response.body).to include("Unit Name")
+        expect(response.body).to include("ONS Code")
+        expect(response.body).to include("ONS Dataset")
+
+        # User assignment and actions
         expect(response.body).to include("Users")
         expect(response.body).to include("Save")
-        expect(response.body).to include("Destroy")
       end
     end
   end

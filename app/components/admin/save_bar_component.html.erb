@@ -1,0 +1,92 @@
+<div class="sticky bottom-0 z-40 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]"
+     <%= tag.attributes(data: stimulus_data_attributes) %>>
+  <% if wizard? %>
+    <%# Wizard mode - client-side step navigation %>
+    <div class="flex items-center justify-between gap-4">
+      <%# Left side - Back button %>
+      <div>
+        <button type="button"
+                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
+                <%= tag.attributes(data: wizard_target('backButton').merge(wizard_action('click', 'previousStep'))) %>>
+          <%= icon(:chevron_left, size: '5') %>
+          <span><%= t('admin.actions.back') %></span>
+        </button>
+      </div>
+
+      <%# Right side - Continue/Submit buttons %>
+      <div class="flex items-center gap-3">
+        <button type="button"
+                class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2"
+                <%= tag.attributes(data: wizard_target('continueButton').merge(wizard_action('click', 'nextStep'))) %>>
+          <span <%= tag.attributes(data: continue_text_target? ? wizard_target('continueButtonText') : {}) %>><%= t('admin.actions.continue') %></span>
+          <%= icon(:chevron_right, size: '5') %>
+        </button>
+
+        <button type="submit"
+                class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
+                <%= tag.attributes(data: wizard_target('submitButton')) %>>
+          <%= icon(submit_icon, size: '5') %>
+          <span><%= submit_label || t('admin.actions.create') %></span>
+        </button>
+      </div>
+    </div>
+  <% elsif multi_step? %>
+    <%# Multi-step mode - server-side tab navigation %>
+    <div class="flex items-center justify-between gap-4">
+      <%# Left side - Back button and unsaved indicator %>
+      <div class="flex items-center gap-4">
+        <button type="submit"
+                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300 gap-2 hidden"
+                data-save-bar-target="prevButton"
+                data-action="click->save-bar#savePrevious"
+                formnovalidate>
+          <%= icon(:chevron_left, size: '5') %>
+          <span data-save-bar-target="prevText"><%= t('admin.actions.back') %></span>
+        </button>
+
+        <%# Unsaved changes indicator %>
+        <div class="hidden items-center gap-2"
+             data-save-bar-target="indicator">
+          <span class="save-bar-indicator-dot"></span>
+          <span class="text-sm text-base-content/70"><%= t('admin.save_bar.unsaved_changes') %></span>
+        </div>
+      </div>
+
+      <%# Right side - Save buttons %>
+      <div class="flex items-center gap-3">
+        <button type="submit"
+                class="btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300"
+                data-save-bar-target="saveButton"
+                data-action="click->save-bar#saveOnly">
+          <%= t('admin.actions.save') %>
+        </button>
+
+        <button type="submit"
+                class="btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2 hidden"
+                data-save-bar-target="continueButton"
+                data-action="click->save-bar#saveContinue">
+          <span data-save-bar-target="continueText"><%= t('admin.actions.continue') %></span>
+          <%= icon(:chevron_right, size: '5') %>
+        </button>
+      </div>
+    </div>
+  <% else %>
+    <%# Simple mode - render custom buttons %>
+    <div class="flex items-center gap-4">
+      <% if track_changes? %>
+        <%# Unsaved changes indicator %>
+        <div class="hidden items-center gap-2"
+             data-form-dirty-target="indicator">
+          <span class="save-bar-indicator-dot"></span>
+          <span class="text-sm text-base-content/70"><%= t('admin.save_bar.unsaved_changes') %></span>
+        </div>
+      <% end %>
+
+      <div class="flex items-center gap-3 ml-auto">
+        <% buttons.each do |button| %>
+          <%= button %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
