@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
 // Filters Controller - Toggle filter dropdowns and auto-submit on change
-// Used by the public site paginator component
+// Used by the events browser filters component
+// Works with Turbo Frames for seamless updates
 export default class extends Controller {
 	static targets = ["dropdown", "form"];
 
@@ -14,7 +15,9 @@ export default class extends Controller {
 
 	submit() {
 		if (this.hasFormTarget) {
-			this.formTarget.submit();
+			// Use requestSubmit() for Turbo compatibility
+			// This triggers the submit event which Turbo intercepts
+			this.formTarget.requestSubmit();
 		}
 	}
 }

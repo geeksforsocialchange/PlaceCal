@@ -102,20 +102,13 @@
 
     <hr>
 
-    <% if @events.any? || @paginator %>
-<%= render(EventListComponent.new(
+    <% if @events.any? %>
+      <%= render(EventListComponent.new(
         events: @events,
-        pointer: @current_day,
         period: @period,
-        sort: @sort,
-        path: "partners/#{@partner.id}/events",
-        show_breadcrumb: false,
-        show_paginator: @paginator,
-        site_name: @site.name,
         primary_neighbourhood: @primary_neighbourhood,
         show_neighbourhoods: @current_site.show_neighbourhoods?,
         badge_zoom_level: @current_site.badge_zoom_level,
-        next_date: @next,
         site_tagline: @site.tagline
       )) %>
     <% else %>

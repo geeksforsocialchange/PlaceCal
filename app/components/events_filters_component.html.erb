@@ -1,0 +1,51 @@
+<div class="paginator__context">
+  <%= render(BreadcrumbComponent.new(trail: [['Events', helpers.events_path]], site_name: site_name)) do %>
+    <div class="breadcrumb__filters filters" data-controller="filters">
+      <%= form_tag(form_action, method: :get, class: 'filters__form', enforce_utf8: false,
+                   data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form' }) do %>
+        <div class="filters__toggle">
+          <a href="#" data-turbo="false" data-action="click->filters#toggle">
+            <span class="icon icon--arrow-down">&#8595;</span>
+            <span class="filters__link">Filter and sort</span>
+          </a>
+        </div>
+
+        <div class="filters__dropdown filters__dropdown--hidden" data-filters-target="dropdown">
+          <div class="filters__group">
+            <% sort_options.each do |option| %>
+              <div class="filters__option">
+                <%= radio_button_tag(:sort, option[:value], option[:checked],
+                                     data: { action: 'change->filters#submit' }) %>
+                <%= label_tag("sort_#{option[:value]}", option[:label]) %>
+              </div>
+            <% end %>
+          </div>
+
+          <hr>
+
+          <div class="filters__group">
+            <% period_options.each do |option| %>
+              <div class="filters__option">
+                <%= radio_button_tag(:period, option[:value], option[:checked],
+                                     data: { action: 'change->filters#submit' }) %>
+                <%= label_tag("period_#{option[:value]}", option[:label]) %>
+              </div>
+            <% end %>
+          </div>
+
+          <hr>
+
+          <div class="filters__group">
+            <% repeating_options.each do |option| %>
+              <div class="filters__option">
+                <%= radio_button_tag(:repeating, option[:value], option[:checked],
+                                     data: { action: 'change->filters#submit' }) %>
+                <%= label_tag("repeating_#{option[:value]}", option[:label]) %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

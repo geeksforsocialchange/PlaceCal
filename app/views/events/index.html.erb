@@ -5,17 +5,17 @@
 <%= render(HeroComponent.new("Events & activities", @site.tagline)) %>
 
 <div class="c c--lg-space-after">
-<%= render(EventListComponent.new(
+  <%= render(EventsBrowserComponent.new(
     events: @events,
-    pointer: @current_day,
+    current_day: @current_day,
     period: @period,
     sort: @sort,
     repeating: @repeating,
-    site_name: @site.name,
+    site: @site,
+    next_date: @next_date,
     primary_neighbourhood: @primary_neighbourhood,
     show_neighbourhoods: @current_site.show_neighbourhoods?,
     badge_zoom_level: @current_site.badge_zoom_level,
-    next_date: @next,
     site_tagline: @site.tagline
   )) %>
 </div>
