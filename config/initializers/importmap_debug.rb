@@ -12,5 +12,22 @@ if Rails.env.staging?
     Rails.logger.info "Manifest path: #{Rails.application.assets_manifest&.path}"
     Rails.logger.info '=== END ==='
   end
+
+  # Debug at request time - intercept javascript_importmap_tags
+  module ImportmapRequestDebug
+    def javascript_importmap_tags(entry_point = 'application', shim: true)
+      # Log what path_to_asset returns for a controller
+      test_path = path_to_asset('controllers/dropdown_controller.js')
+      Rails.logger.info '=== IMPORTMAP REQUEST DEBUG ==='
+      Rails.logger.info "path_to_asset('controllers/dropdown_controller.js') = #{test_path}"
+      Rails.logger.info "compute_asset_path result: #{compute_asset_path('controllers/dropdown_controller.js')}"
+      Rails.logger.info '=== END REQUEST DEBUG ==='
+      super
+    end
+  end
+
+  ActiveSupport.on_load(:action_view) do
+    prepend ImportmapRequestDebug
+  end
 end
 # rubocop:enable Rails/UnknownEnv
