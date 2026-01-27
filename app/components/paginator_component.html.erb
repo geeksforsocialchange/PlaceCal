@@ -1,6 +1,6 @@
 <div class="paginator" id="paginator" data-controller="paginator">
+  <% if show_breadcrumb %>
   <div class="paginator__context">
-    <% if show_breadcrumb %>
       <%= render(BreadcrumbComponent.new(trail: [['Events', events_path]], site_name: site_name)) do %>
         <div class="breadcrumb__actions">
           <div class="breadcrumb__date-picker" data-controller="date-picker">
@@ -73,8 +73,8 @@
           </div>
         </div>
       <% end %>
-    <% end %>
   </div>
+  <% end %>
 
   <% if @period == 'day' || @period == 'week' %>
     <ol class="paginator__buttons paginator__buttons--day">
@@ -86,5 +86,73 @@
     </ol>
   <% end %>
 
-  <hr>
+  <% unless show_breadcrumb %>
+    <div class="paginator__actions">
+      <div class="breadcrumb__date-picker" data-controller="date-picker">
+        <% unless today? %>
+          <%= link_to 'Today', today_url, class: 'breadcrumb__today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
+        <% end %>
+        <a href="#" data-turbo="false" data-action="click->date-picker#toggle" class="breadcrumb__date-picker-toggle">
+          <span class="icon icon--arrow-down">↓</span> <span class="breadcrumb__date-picker-label">Go to date</span>
+        </a>
+        <div class="breadcrumb__date-picker-dropdown breadcrumb__date-picker-dropdown--hidden" data-date-picker-target="dropdown">
+          <%= form_tag('', method: :get, class: 'date-picker__form', data: { turbo_frame: 'events-browser', turbo_action: 'advance', action: 'change->date-picker#submit' }) do %>
+            <%= date_field_tag :date, pointer, data: { date_picker_target: 'input' } %>
+            <%= hidden_field_tag :period, period %>
+            <%= hidden_field_tag :sort, sort %>
+            <%= hidden_field_tag :repeating, repeating %>
+          <% end %>
+        </div>
+      </div>
+      <div class="breadcrumb__filters filters" data-controller="filters">
+        <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do %>
+          <div class="filters__toggle">
+            <a href="#" data-turbo="false" data-action="click->filters#toggle"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></a>
+          </div>
+          <div class="filters__dropdown filters__dropdown--hidden" data-filters-target="dropdown">
+            <div class="filters__group">
+              <div class="filters__option">
+                <%= radio_button_tag(:sort, "time", sort == 'time') %>
+                <%= label_tag(:sort_time, "Sort by date") %>
+              </div>
+              <div class="filters__option">
+                <%= radio_button_tag(:sort, "summary", sort == 'summary') %>
+                <%= label_tag(:sort_summary, "Sort by name") %>
+              </div>
+            </div>
+            <hr>
+            <div class="filters__group">
+              <div class="filters__option">
+                <%= radio_button_tag(:period, "day", period == 'day') %>
+                <%= label_tag(:period_day, "Daily view") %>
+              </div>
+              <div class="filters__option">
+                <%= radio_button_tag(:period, "week", period == 'week') %>
+                <%= label_tag(:period_week, "Weekly view") %>
+              </div>
+              <div class="filters__option">
+                <%= radio_button_tag(:period, "future", period == 'future') %>
+                <%= label_tag(:period_future, "Show all") %>
+              </div>
+            </div>
+            <hr>
+            <div class="filters__group">
+              <div class="filters__option">
+                <%= radio_button_tag(:repeating, "on", repeating == 'on') %>
+                <%= label_tag(:repeating_on, "Show repeats") %>
+              </div>
+              <div class="filters__option">
+                <%= radio_button_tag(:repeating, "last", repeating == 'last') %>
+                <%= label_tag(:repeating_last, "Show repeats last") %>
+              </div>
+              <div class="filters__option">
+                <%= radio_button_tag(:repeating, "off", repeating == 'off') %>
+                <%= label_tag(:repeating_off, "Hide repeats") %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>

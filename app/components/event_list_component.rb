@@ -4,14 +4,14 @@ class EventListComponent < ViewComponent::Base
   include Turbo::FramesHelper
 
   # rubocop:disable Metrics/ParameterLists
-  def initialize(events:, pointer:, period:, sort: nil, path: nil, repeating: nil,
+  def initialize(events:, period:, pointer: nil, sort: nil, path: nil, repeating: nil,
                  show_breadcrumb: true, show_paginator: true, site_name: nil,
                  primary_neighbourhood: nil, show_neighbourhoods: false,
                  badge_zoom_level: nil, next_date: nil, site_tagline: nil)
     # rubocop:enable Metrics/ParameterLists
     super()
     @events = events
-    @pointer = pointer
+    @pointer = pointer || Time.zone.today
     @period = period
     @sort = sort
     @path = path

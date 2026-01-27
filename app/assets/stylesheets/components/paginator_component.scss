@@ -98,4 +98,48 @@
 		width: 0.5277777rem;
 		height: 1.05555556rem;
 	}
+
+	// Actions bar (shown when breadcrumb is hidden)
+	&__actions {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+		justify-content: flex-end;
+		font-size: $small-font-size;
+		padding-top: 0.25rem;
+		margin-bottom: 0.5rem;
+
+		a {
+			border-bottom-style: solid;
+			border-bottom-color: $base-rules-dark;
+			border-bottom-width: 2px;
+			text-decoration: none;
+		}
+
+		.filters__toggle a {
+			border-bottom-color: transparent;
+		}
+
+		.filters__link {
+			border-bottom-style: solid;
+			border-bottom-color: $base-rules-dark;
+			border-bottom-width: 2px;
+		}
+
+		.breadcrumb__today {
+			border-bottom-style: solid;
+			border-bottom-color: $base-rules-dark;
+			border-bottom-width: 2px;
+		}
+
+		.breadcrumb__date-picker-toggle {
+			border-bottom-color: transparent !important;
+		}
+
+		.breadcrumb__date-picker-label {
+			border-bottom-style: solid;
+			border-bottom-color: $base-rules-dark;
+			border-bottom-width: 2px;
+		}
+	}
 }

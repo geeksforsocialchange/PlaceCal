@@ -9,6 +9,9 @@
       show_breadcrumb: show_breadcrumb,
       site_name: site_name
     )) %>
+    <% if show_breadcrumb %>
+      <hr>
+    <% end %>
   <% end %>
   <% if events.any? %>
     <% events.each do |day, day_events| %>
