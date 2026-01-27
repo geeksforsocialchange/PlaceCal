@@ -87,13 +87,22 @@
 	gap: 0.75rem;
 	align-items: center;
 
-	&__today,
-	&__go-to-date {
-		font-size: $small-font-size;
+	&__today {
 		border-bottom-style: solid;
 		border-bottom-color: $base-rules-dark;
 		border-bottom-width: 2px;
 		text-decoration: none;
+	}
+
+	&__go-to-date {
+		border-bottom-color: transparent;
+		text-decoration: none;
+	}
+
+	&__go-to-date-label {
+		border-bottom-style: solid;
+		border-bottom-color: $base-rules-dark;
+		border-bottom-width: 2px;
 	}
 
 	&__date-input {
