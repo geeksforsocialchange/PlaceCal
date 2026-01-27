@@ -15,8 +15,7 @@
 
 // JavaScript files for importmap
 // These are served directly via Sprockets as ES modules
-//= link admin.js
-//= link public.js
+//= link application.js
 //= link_tree ../../javascript/controllers .js
 
 // Vendor JavaScript for importmap

@@ -14,6 +14,7 @@
 	// Day chooser
 	&__buttons {
 		@include flexbox;
+		flex-wrap: wrap;
 
 		list-style-type: none;
 		margin: 0;
@@ -22,7 +23,6 @@
 		// Creates a context for the "next" arrow button
 		position: relative;
 		font-weight: $bold;
-		overflow: hidden;
 
 		a {
 			text-decoration: none;

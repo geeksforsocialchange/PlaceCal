@@ -3,9 +3,8 @@
 # Pin npm packages by running ./bin/importmap
 # Both admin and public interfaces use importmap-rails
 
-# Application entrypoints
-pin 'application', to: 'admin.js'
-pin 'public', to: 'public.js'
+# Single application entrypoint for both admin and public
+pin 'application'
 
 # Hotwired packages
 # stimulus and stimulus-loading are provided by stimulus-rails gem assets

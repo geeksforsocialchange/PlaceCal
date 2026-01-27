@@ -23,7 +23,8 @@
 		position: absolute;
 		top: 2rem;
 		z-index: 500;
-		text-align: center;
+		text-align: left;
+		white-space: nowrap;
 
 		&--category {
 			left: -1rem;

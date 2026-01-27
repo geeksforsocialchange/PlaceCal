@@ -27,7 +27,7 @@ class PaginatorComponent < ViewComponent::Base
                css: 'paginator__arrow paginator__arrow--back',
                data: {} }
     (0..steps).each do |i|
-      day = pointer + (step * i)
+      day = window_start + (step * i)
       css = active?(day) ? 'active' : ''
       pages << { text: format_date(day),
                  link: create_event_url(day),
@@ -38,6 +38,27 @@ class PaginatorComponent < ViewComponent::Base
                link: create_event_url(pointer + step),
                css: 'paginator__arrow paginator__arrow--forwards',
                data: { paginator_target: 'forward' } }
+  end
+
+  # The start of the visible window of dates
+  # For weeks: start from current week, but shift window when pointer exceeds visible range
+  # For days: start from pointer (original behavior)
+  def window_start
+    if step == 1.week
+      today_week = Time.zone.today.beginning_of_week
+      window_end = today_week + (steps * step)
+
+      if pointer > window_end
+        # Pointer is beyond visible window, shift window so pointer is at the end
+        pointer - (steps * step)
+      else
+        # Pointer is within or before visible window
+        # Use earliest of pointer or today_week as window start
+        [pointer, today_week].min
+      end
+    else
+      pointer
+    end
   end
 
   def title
