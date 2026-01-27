@@ -16,14 +16,18 @@ export default class extends Controller {
 			const date = this.inputTarget.value;
 			if (date) {
 				const [year, month, day] = date.split("-");
-				// Get current URL params from hidden fields or URL
-				const url = new URL(window.location.href);
-				const period = url.searchParams.get("period") || "week";
-				const sort = url.searchParams.get("sort") || "time";
-				const repeating = url.searchParams.get("repeating") || "on";
+				// Get current filter values from hidden fields in the form (most accurate)
+				const form = this.inputTarget.closest("form");
+				const period =
+					form?.querySelector('input[name="period"]')?.value || "week";
+				const sort = form?.querySelector('input[name="sort"]')?.value || "time";
+				const repeating =
+					form?.querySelector('input[name="repeating"]')?.value || "on";
 
 				// Build the URL for the selected date
-				const newUrl = `/events/${year}/${parseInt(month)}/${parseInt(
+				// Determine base path from existing paginator links or current URL
+				const basePath = this.getBasePath();
+				const newUrl = `${basePath}/${year}/${parseInt(month)}/${parseInt(
 					day
 				)}?period=${period}&sort=${sort}&repeating=${repeating}#paginator`;
 
@@ -42,5 +46,29 @@ export default class extends Controller {
 				});
 			}
 		}
+	}
+
+	getBasePath() {
+		// Try to extract base path from an existing paginator link
+		const paginatorLink = document.querySelector(".paginator__buttons a[href]");
+		if (paginatorLink) {
+			const href = paginatorLink.getAttribute("href");
+			// Extract path before the year (e.g., /partners/slug/events or /events)
+			const match = href.match(/^(.*\/events)\/\d{4}/);
+			if (match) {
+				return match[1];
+			}
+		}
+
+		// Fallback: check current URL path
+		const path = window.location.pathname;
+		// If we're on a partner page, construct partner events path
+		const partnerMatch = path.match(/^(\/partners\/[^/]+)/);
+		if (partnerMatch) {
+			return `${partnerMatch[1]}/events`;
+		}
+
+		// Default to /events
+		return "/events";
 	}
 }
