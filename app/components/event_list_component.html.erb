@@ -1,36 +1,20 @@
-<%= turbo_frame_tag "events-browser", data: { turbo_action: "advance" } do %>
-  <% if show_paginator %>
-    <%= render(PaginatorComponent.new(
-      pointer: pointer,
-      period: period,
-      sort: sort,
-      repeating: repeating,
-      path: path,
-      show_breadcrumb: show_breadcrumb,
-      site_name: site_name
-    )) %>
-    <% if show_breadcrumb %>
-      <hr>
-    <% end %>
+<% if events.any? %>
+  <% events.each do |day, day_events| %>
+    <h2 class="udl udl--fw"><%= day.strftime('%A %e %B') %></h2>
+    <ol class="events reset">
+      <% day_events.each do |event| %>
+        <li>
+          <%= render(EventComponent.new(context: period,
+                                        event: event,
+                                        primary_neighbourhood: primary_neighbourhood,
+                                        show_neighbourhoods: show_neighbourhoods,
+                                        badge_zoom_level: badge_zoom_level,
+                                        site_tagline: site_tagline)) %>
+        </li>
+      <% end %>
+    </ol>
   <% end %>
-  <% if events.any? %>
-    <% events.each do |day, day_events| %>
-      <h2 class="udl udl--fw"><%= day.strftime('%A %e %B') %></h2>
-      <ol class="events reset">
-        <% day_events.each do |event| %>
-          <li>
-            <%= render(EventComponent.new(context: period,
-                                          event: event,
-                                          primary_neighbourhood: primary_neighbourhood,
-                                          show_neighbourhoods: show_neighbourhoods,
-                                          badge_zoom_level: badge_zoom_level,
-                                          site_tagline: site_tagline)) %>
-          </li>
-        <% end %>
-      </ol>
-    <% end %>
-  <% else %>
-    <p>No events with this selection.</p>
-    <p><%= link_to 'Skip to next date with events.', helpers.next_url(next_date) if next_date.present? %></p>
-  <% end %>
+<% else %>
+  <p>No events with this selection.</p>
+  <p><%= link_to 'Skip to next date with events.', helpers.next_url(next_date) if next_date.present? %></p>
 <% end %>
