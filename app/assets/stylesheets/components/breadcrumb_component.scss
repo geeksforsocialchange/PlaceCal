@@ -30,10 +30,6 @@
 			border-bottom-style: solid;
 			border-bottom-color: $base-rules-dark;
 			border-bottom-width: 2px;
-
-			&--today {
-				margin-right: 0.5rem;
-			}
 		}
 	}
 
@@ -92,4 +88,12 @@
 	width: 0;
 	height: 0;
 	pointer-events: none;
+}
+
+.filters__link--today {
+	margin-right: 0.5rem;
+	border-bottom-style: solid;
+	border-bottom-color: $base-rules-dark;
+	border-bottom-width: 2px;
+	text-decoration: none;
 }
