@@ -39,8 +39,10 @@ class PartnersController < ApplicationController
         neighbourhood_partners
       end
 
-    # show only partners with no service_areas
-    @map = get_map_markers(@partners, true) if @partners.detect(&:address)
+    # When no filters active, show only partners with physical addresses (no service_areas)
+    # When filters are active, show all filtered partners that have addresses
+    addresses_only = @selected_category.blank? && @selected_neighbourhood.blank?
+    @map = get_map_markers(@partners, addresses_only) if @partners.detect(&:address)
   end
 
   # GET /partners/1

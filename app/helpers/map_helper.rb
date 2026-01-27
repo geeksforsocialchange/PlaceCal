@@ -5,7 +5,7 @@ module MapHelper
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
       {}.tap do |pin|
         pin[:position] = [mrkr[:lat], mrkr[:lon]]
-        pin[:anchor] = link_to(mrkr[:name], partner_path(mrkr[:id]), data: { turbo_frame: '_top' }) if mrkr[:id]
+        pin[:anchor] = link_to(mrkr[:name], partner_path(mrkr[:id]), data: { turbo_frame: '_top', turbo_action: 'replace' }) if mrkr[:id]
       end
     end
 
