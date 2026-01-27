@@ -19,7 +19,7 @@ module CalendarImporter
       end
 
       def download_calendar
-        venue_html = Base.read_http_source(@url)
+        venue_html = fetch_with_browser_headers(@url)
         event_urls = extract_event_urls(venue_html)
 
         events_data = []
@@ -56,13 +56,33 @@ module CalendarImporter
         end
       end
 
+      # Browser-like headers to avoid Cloudflare blocking
+      BROWSER_HEADERS = {
+        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' \
+                        '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language' => 'en-GB,en;q=0.9'
+      }.freeze
+
       private
 
       def fetch_page_safely(url)
-        Base.read_http_source(url)
+        fetch_with_browser_headers(url)
       rescue StandardError => e
         Rails.logger.warn "TicketSource: Failed to fetch #{url}: #{e.message}"
         nil
+      end
+
+      def fetch_with_browser_headers(url)
+        response = HTTParty.get(
+          url,
+          headers: BROWSER_HEADERS,
+          ssl_version: :TLSv1_2
+        )
+        return response.body if response.success?
+
+        raise CalendarImporter::Exceptions::InaccessibleFeed,
+              "The source URL could not be read (code=#{response.code})"
       end
 
       def extract_event_urls(html)
