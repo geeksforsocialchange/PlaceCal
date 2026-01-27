@@ -494,7 +494,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.5.2)
       activesupport (>= 3.0.0)
-    pundit-matchers (3.1.2)
+    pundit-matchers (4.0.0)
       rspec-core (~> 3.12)
       rspec-expectations (~> 3.12)
       rspec-mocks (~> 3.12)
@@ -588,10 +588,10 @@ GEM
     rspec-mocks (3.13.7)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-rails (7.1.1)
-      actionpack (>= 7.0)
-      activesupport (>= 7.0)
-      railties (>= 7.0)
+    rspec-rails (8.0.2)
+      actionpack (>= 7.2)
+      activesupport (>= 7.2)
+      railties (>= 7.2)
       rspec-core (~> 3.13)
       rspec-expectations (~> 3.13)
       rspec-mocks (~> 3.13)
@@ -804,13 +804,13 @@ DEPENDENCIES
   pg
   puma
   pundit
-  pundit-matchers (~> 3.0)
+  pundit-matchers (~> 4.0)
   rack-cors
   rails (~> 8.0)
   rails-controller-testing
   rails-erd
   rdoc
-  rspec-rails (~> 7.0)
+  rspec-rails (~> 8.0)
   rubocop (= 1.82.1)
   rubocop-graphql (= 1.5.6)
   rubocop-performance (= 1.26.1)

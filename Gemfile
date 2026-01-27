@@ -119,9 +119,9 @@ group :test do
   gem 'graphql-client'
   gem 'json_matchers'
   gem 'parallel_tests'
-  gem 'pundit-matchers', '~> 3.0'
+  gem 'pundit-matchers', '~> 4.0'
   gem 'rails-controller-testing'
-  gem 'rspec-rails', '~> 7.0'
+  gem 'rspec-rails', '~> 8.0'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov', require: false
