@@ -3,7 +3,7 @@
     <% if show_breadcrumb %>
       <%= render(BreadcrumbComponent.new(trail: [['Events', events_path]], site_name: site_name)) do %>
         <div class="breadcrumb__filters filters" data-controller="filters">
-          <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { filters_target: 'form', action: 'change->filters#submit' }) do %>
+          <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do %>
             <div class="filters__toggle">
                 <a href="#" data-turbo="false" data-action="click->filters#toggle"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></a>
             </div>
@@ -62,7 +62,7 @@
     <ol class="paginator__buttons paginator__buttons--day">
       <% paginator.each do |page| %>
         <li class="<%= page[:css] %>" <%= page[:data].map { |k, v| "data-#{k.to_s.dasherize}=\"#{v}\"" }.join(' ').html_safe %>>
-          <%= link_to page[:text], page[:link] %>
+          <%= link_to page[:text], page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
         </li>
       <% end %>
     </ol>

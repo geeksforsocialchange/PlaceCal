@@ -13,13 +13,13 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @period = params[:period] || default_period
     @repeating = params[:repeating] || 'on'
     @sort = params[:sort] || 'time'
+    @query = EventsQuery.new(site: current_site, day: @current_day)
+    @period = params[:period] || default_period
 
-    query = EventsQuery.new(site: current_site, day: @current_day)
-    @events = query.call(period: @period, repeating: @repeating, sort: @sort)
-    @next_date = query.next_event_after(@current_day)
+    @events = @query.call(period: @period, repeating: @repeating, sort: @sort)
+    @next_date = @query.next_event_after(@current_day)
     @title = current_site.name
 
     respond_to do |format|
@@ -65,8 +65,7 @@ class EventsController < ApplicationController
   def default_period
     return params[:period] if params[:period].present?
 
-    query = EventsQuery.new(site: current_site, day: @current_day)
-    query.future_count > 50 ? 'week' : 'future'
+    @query.future_count > 50 ? 'week' : 'future'
   end
 
   def render_ical
