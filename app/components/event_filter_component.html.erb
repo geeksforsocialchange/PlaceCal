@@ -1,6 +1,6 @@
 <div class="filters__toggle" data-controller="date-picker">
   <% unless today? %>
-    <%= link_to 'Today', today_url, data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
+    <%= link_to 'Today', today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
   <% end %>
   <a href="#" data-turbo="false" data-action="click->date-picker#open"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Go to date</span></a>
   <%= date_field_tag :date, pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' } %>

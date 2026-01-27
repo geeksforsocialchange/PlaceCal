@@ -30,6 +30,10 @@
 			border-bottom-style: solid;
 			border-bottom-color: $base-rules-dark;
 			border-bottom-width: 2px;
+
+			&--today {
+				margin-right: 0.5rem;
+			}
 		}
 	}
 
