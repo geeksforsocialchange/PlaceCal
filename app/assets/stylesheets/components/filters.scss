@@ -8,16 +8,13 @@
 	&__toggle {
 		a {
 			text-decoration: none;
-
-			.filters__link {
-				border-bottom: none;
-			}
 		}
 
 		button {
 			border: none;
 			background: none;
 			font-family: $sans-serif;
+			cursor: pointer;
 		}
 	}
 

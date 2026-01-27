@@ -2,6 +2,12 @@
 
 This file configures AI coding assistants for PlaceCal. Review the context file at @doc/ai/context.md
 
+## Verification Rules
+
+- **Never claim a fix worked until you've actually verified it** - Take a screenshot, look at it carefully, and compare before/after.
+- **When the user says something is wrong, believe them** - Trust the user over your assumptions.
+- **Debug properly** - If a fix doesn't work, investigate why rather than assuming it did.
+
 ## Development URLs
 
 The admin interface uses a subdomain. Access it at:
