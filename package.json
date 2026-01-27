@@ -8,8 +8,10 @@
 	"devDependencies": {
 		"daisyui": "^5.5.14",
 		"husky": "8.0.3",
+		"leaflet": "^1.9.4",
 		"lint-staged": "13.3.0",
-		"prettier": "2.8.1"
+		"prettier": "2.8.1",
+		"tom-select": "^2.4.3"
 	},
 	"scripts": {
 		"build": "yarn css-admin",
