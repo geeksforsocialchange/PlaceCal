@@ -1,5 +1,21 @@
 @import "../variables_mixins";
 
+// Loading state for Turbo Frame - uses aria-busy attribute set by Turbo
+turbo-frame[aria-busy="true"],
+turbo-frame[busy] {
+	.partners,
+	#map {
+		opacity: 0.4;
+		pointer-events: none;
+		transition: opacity 0.1s ease-out;
+	}
+}
+
+// Ensure turbo-frame displays as block
+turbo-frame {
+	display: block;
+}
+
 .preview {
 	h3 {
 		margin-bottom: 0;
