@@ -37,7 +37,6 @@
 		@include flex(1 0 auto);
 		@include border-highlight;
 
-		padding: 0.3rem 1rem;
 		text-align: center;
 		margin-right: 0.25rem;
 
@@ -45,8 +44,13 @@
 			margin: 0 0.25rem;
 		}
 
+		a {
+			padding: 0.3rem 1rem;
+			display: block;
+		}
+
 		&.active,
-		&:hover {
+		&:has(a:hover) {
 			background-color: $base-primary;
 			background-color: var(--base-primary);
 		}
