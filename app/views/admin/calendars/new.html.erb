@@ -73,7 +73,7 @@
             </p>
 
             <%# Source validation feedback %>
-            <div class="mt-4 hidden" data-calendar-wizard-target="sourceFeedback">
+            <div class="mt-2 hidden" data-calendar-wizard-target="sourceFeedback">
               <%# Success %>
               <div class="alert alert-success text-sm hidden" data-calendar-wizard-target="sourceSuccess">
                 <%= icon(:check_circle, size: '5', css_class: 'shrink-0') %>
@@ -97,15 +97,18 @@
             </div>
           </fieldset>
 
-          <%# Importer mode (usually auto-detected, shown after successful test) %>
-          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6 hidden" data-calendar-wizard-target="importerModeSection">
+          <%# Importer mode (usually auto-detected, shown after successful test or when manual selection needed) %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0" data-calendar-wizard-target="importerModeSection">
             <legend class="fieldset-legend text-base font-semibold"><%= t('admin.calendars.fields.calendar_type') %></legend>
             <%= f.input_field :importer_mode,
                               as: :select,
                               collection: options_for_importer,
                               selected: 'auto',
                               class: 'select select-bordered w-full',
-                              data: { 'calendar-wizard-target': 'importerModeSelect' } %>
+                              data: {
+                                'calendar-wizard-target': 'importerModeSelect',
+                                action: 'change->calendar-wizard#importerModeChanged'
+                              } %>
             <p class="text-sm text-gray-600 mt-2">
               <%= t('admin.calendars.wizard.source.importer_hint') %>
             </p>

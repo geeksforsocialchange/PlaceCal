@@ -7,9 +7,74 @@ module CalendarImporter
       KEY = 'wix'
       DOMAINS = %w[wixsite.com].freeze
 
-      # NOTE: Wix sites often use custom domains, so this pattern
-      # primarily catches wixsite.com subdomains. Custom domain
-      # Wix sites should use importer_mode = 'wix' explicitly.
+      # Detects Wix sites by:
+      # 1. URL pattern for wixsite.com subdomains
+      # 2. Checking page content for Wix generator meta tag (for custom domains)
+      def self.handles_url?(calendar)
+        url = calendar.source
+        return true if url.match?(%r{^https://[^.]+\.wixsite\.com/}i)
+
+        # For custom domains, check if page has Wix meta tag and events
+        wix_site?(url)
+      rescue StandardError
+        false
+      end
+
+      def self.wix_site?(url)
+        response_body = Base.read_http_source(url)
+        doc = Nokogiri::HTML(response_body)
+
+        # Check for Wix generator meta tag
+        generator = doc.at('meta[name="generator"]')&.attr('content')
+        return false unless generator&.include?('Wix')
+
+        # Also verify there are events on the page
+        wix_events?(response_body)
+      end
+
+      def self.wix_events?(html)
+        doc = Nokogiri::HTML(html)
+        doc.xpath('//script[@type="application/json"]').any? do |script|
+          json = begin
+            JSON.parse(script.inner_html)
+          rescue StandardError
+            nil
+          end
+          next unless json
+
+          find_events_in_json(json).present?
+        end
+      end
+
+      def self.find_events_in_json(json, depth = 0)
+        return nil if depth > 15
+
+        case json
+        when Hash
+          return json['events'] if json['events'].is_a?(Array) && wix_event_signature?(json['events'].first)
+
+          json.each_value do |value|
+            result = find_events_in_json(value, depth + 1)
+            return result if result.present?
+          end
+        when Array
+          json.each do |item|
+            result = find_events_in_json(item, depth + 1)
+            return result if result.present?
+          end
+        end
+        nil
+      end
+
+      def self.wix_event_signature?(hash)
+        return false unless hash.is_a?(Hash)
+
+        hash['id'].present? &&
+          hash['title'].present? &&
+          hash.dig('scheduling', 'config', 'startDate').present?
+      end
+
+      # Keep for backwards compatibility, but handles_url? now does custom detection
       def self.allowlist_pattern
         %r{^https://[^.]+\.wixsite\.com/}i
       end

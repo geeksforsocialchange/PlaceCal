@@ -108,9 +108,12 @@ module Admin
         else
           render json: { valid: false, error: 'Unable to detect calendar format' }
         end
-      rescue CalendarImporter::Exceptions::InaccessibleFeed,
-             CalendarImporter::Exceptions::UnsupportedFeed => e
+      rescue CalendarImporter::Exceptions::InaccessibleFeed => e
         render json: { valid: false, error: e.message }
+      rescue CalendarImporter::Exceptions::UnsupportedFeed
+        # URL is reachable but format couldn't be auto-detected
+        # Allow user to manually select
+        render json: { valid: false, needs_manual_selection: true }
       rescue StandardError => e
         Rails.logger.error("Calendar test_source error: #{e.message}")
         render json: { valid: false, error: 'Unable to validate this URL' }
