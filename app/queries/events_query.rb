@@ -31,6 +31,11 @@ class EventsQuery
     base_scope.future(@day).count
   end
 
+  # Returns the count of events in the next 7 days
+  def next_7_days_count
+    base_scope.find_next_7_days(@day).count
+  end
+
   # Returns the next event after the given day
   def next_event_after(day)
     base_scope.future(day).first
@@ -53,7 +58,7 @@ class EventsQuery
     when 'future'
       events.future(@day)
     when 'week'
-      events.find_by_week(@day)
+      events.find_next_7_days(@day)
     else
       events.find_by_day(@day)
     end

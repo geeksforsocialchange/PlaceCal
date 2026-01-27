@@ -98,6 +98,7 @@
 		}
 
 		&-dropdown {
+			background-color: $base-background;
 			box-shadow: 7px 7px 20px 0px rgba(153, 134, 117, 0.83);
 			padding: 0.8rem;
 			position: absolute;
@@ -115,7 +116,6 @@
 				padding: 0.25rem 0.5rem;
 				border: 2px solid $base-rules-dark;
 				border-radius: 3px;
-				background-color: transparent;
 			}
 		}
 	}

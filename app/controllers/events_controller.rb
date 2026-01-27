@@ -61,11 +61,18 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
   end
 
-  # Auto-select period based on event count
+  # Auto-select period based on event density
+  # - Few events total: show all (future)
+  # - Moderate density: show week view
+  # - High density: show day view
   def default_period
     return params[:period] if params[:period].present?
 
-    @query.future_count > 50 ? 'week' : 'future'
+    future_count = @query.future_count
+    return 'future' if future_count < 20
+
+    week_count = @query.next_7_days_count
+    week_count > 20 ? 'day' : 'week'
   end
 
   def render_ical

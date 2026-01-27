@@ -35,11 +35,18 @@ class Event < ApplicationRecord
           day_end, day_start)
   }
 
-  # Find by week
+  # Find by week (Monday to Sunday)
   scope :find_by_week, lambda { |day|
     week_start = day.beginning_of_week
     week_end = day.end_of_week
     where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', week_start, week_end)
+  }
+
+  # Find next 7 days from given day
+  scope :find_next_7_days, lambda { |day|
+    day_start = day.to_date
+    day_end = day_start + 6.days
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, day_end)
   }
 
   # Find by day onwards
