@@ -4,20 +4,12 @@ This project optionally supports AI coding assistants with specialized agents fo
 
 ## Project Information
 
-- **Rails Version**: 7.2.3
+- **Rails Version**: 8.x
 - **Ruby Version**: 3.3.6
 - **Project Type**: Full-stack Rails
 - **Test Framework**: RSpec
 - **GraphQL**: Enabled
 - **Turbo/Stimulus**: Enabled
-
-## Swarm Configuration
-
-The agents-swarm.yml file defines specialized agents for different aspects of Rails development:
-
-- Each agent has specific expertise and works in designated directories
-- Agents collaborate to implement features across all layers
-- The architect agent coordinates the team
 
 ## Development Guidelines
 
@@ -27,7 +19,7 @@ When working on this project:
 - Write tests for all new functionality
 - Use strong parameters in controllers
 - Keep models focused with single responsibilities
-- Extract complex business logic to service objects
+- Extract complex business logic to service objects (e.g., `app/queries/`)
 - Ensure proper database indexing for foreign keys and queries
 
 ## Asset Pipeline
@@ -36,13 +28,18 @@ When working on this project:
 
 Both admin and public interfaces use **importmap-rails** with native ES modules (no build step required).
 
+- **Entrypoint**: `app/javascript/application.js`
 - **Controllers**: `app/javascript/controllers/*.js`
+- **Controller mixins**: `app/javascript/controllers/mixins/*.js`
 - **Configuration**: `config/importmap.rb`
-- **Admin entrypoint**: `app/javascript/admin.js`
-- **Public entrypoint**: `app/javascript/public.js`
 - Changes take effect on browser refresh (no build needed)
-- External dependencies (tom-select, leaflet, turbo) are loaded from CDN
+- External dependencies loaded from CDN (esm.sh, jsdelivr):
+  - `tom-select` - Enhanced select inputs
+  - `leaflet` - Map rendering
+  - `maplibre-gl` - Vector tile map styling
+  - `@hotwired/turbo-rails` - Turbo Drive/Frames/Streams
 - Stimulus controllers are shared between admin and public sites
+- No lodash or jQuery - use native JS instead
 
 ### Tailwind CSS (Admin interface)
 
@@ -55,6 +52,7 @@ Both admin and public interfaces use **importmap-rails** with native ES modules 
 ### SCSS (Public site)
 
 - **Source**: `app/assets/stylesheets/application.scss`
+- **Vendor CSS**: `vendor/assets/stylesheets/` (e.g., maplibre-gl.css)
 - Processed by Sprockets (no separate build command)
 
 ### Common Issues
