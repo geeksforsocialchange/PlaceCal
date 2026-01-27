@@ -108,6 +108,8 @@
 		font-size: $small-font-size;
 		padding-top: 0.25rem;
 		margin-bottom: 0.5rem;
+		position: relative;
+		z-index: 10; // Ensure dropdowns appear above paginator__buttons
 
 		a {
 			border-bottom-style: solid;
