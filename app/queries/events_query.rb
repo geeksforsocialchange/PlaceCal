@@ -5,7 +5,7 @@
 class EventsQuery
   DEFAULT_REPEATING = 'on'
   DEFAULT_SORT = 'time'
-  FUTURE_LIMIT = 100
+  FUTURE_LIMIT = 50
 
   def initialize(site:, day: Time.zone.today)
     @site = site
