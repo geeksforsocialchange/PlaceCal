@@ -41,6 +41,7 @@
 			flex-direction: row;
 			gap: 1rem;
 			justify-content: flex-end;
+			margin-right: 0;
 
 			@include flex(1 1 auto);
 			@include for-tablet-portrait-up {
@@ -59,7 +60,7 @@
 	&__actions {
 		display: flex;
 		flex-direction: row;
-		gap: 1rem;
+		gap: 0.5rem;
 		align-items: center;
 	}
 
