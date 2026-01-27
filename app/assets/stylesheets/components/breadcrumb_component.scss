@@ -88,15 +88,11 @@
 	align-items: center;
 
 	&__today {
-		border-bottom-style: solid;
-		border-bottom-color: $base-rules-dark;
-		border-bottom-width: 2px;
-		text-decoration: none;
+		// Inherits border-bottom from .breadcrumb a
 	}
 
 	&__go-to-date {
 		border-bottom-color: transparent;
-		text-decoration: none;
 	}
 
 	&__go-to-date-label {
