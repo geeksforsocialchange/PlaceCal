@@ -76,16 +76,6 @@
   </div>
   <% end %>
 
-  <% if @period == 'day' || @period == 'week' %>
-    <ol class="paginator__buttons paginator__buttons--day">
-      <% paginator.each do |page| %>
-        <li class="<%= page[:css] %>" <%= page[:data].map { |k, v| "data-#{k.to_s.dasherize}=\"#{v}\"" }.join(' ').html_safe %>>
-          <%= link_to page[:text], page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
-        </li>
-      <% end %>
-    </ol>
-  <% end %>
-
   <% unless show_breadcrumb %>
     <div class="paginator__actions">
       <div class="breadcrumb__date-picker" data-controller="date-picker">
@@ -154,5 +144,15 @@
         <% end %>
       </div>
     </div>
+  <% end %>
+
+  <% if @period == 'day' || @period == 'week' %>
+    <ol class="paginator__buttons paginator__buttons--day">
+      <% paginator.each do |page| %>
+        <li class="<%= page[:css] %>" <%= page[:data].map { |k, v| "data-#{k.to_s.dasherize}=\"#{v}\"" }.join(' ').html_safe %>>
+          <%= link_to page[:text], page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
+        </li>
+      <% end %>
+    </ol>
   <% end %>
 </div>
