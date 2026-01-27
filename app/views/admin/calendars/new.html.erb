@@ -98,7 +98,7 @@
           </fieldset>
 
           <%# Importer mode (usually auto-detected, shown after successful test or when manual selection needed) %>
-          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6 hidden" data-calendar-wizard-target="importerModeSection">
+          <fieldset class="fieldset bg-base-200/50 rounded-xl p-6 hidden !mt-0" data-calendar-wizard-target="importerModeSection">
             <legend class="fieldset-legend text-base font-semibold"><%= t('admin.calendars.fields.calendar_type') %></legend>
             <%= f.input_field :importer_mode,
                               as: :select,
