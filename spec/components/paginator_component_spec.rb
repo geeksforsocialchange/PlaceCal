@@ -178,14 +178,14 @@ RSpec.describe PaginatorComponent, type: :component do
     context "when pointer is today" do
       it "does not render Today link in actions" do
         render_inline(described_class.new(pointer: Time.zone.today, period: "day", show_breadcrumb: false))
-        expect(page).not_to have_css(".paginator__actions .breadcrumb__today")
+        expect(page).not_to have_css(".paginator__actions .filters__link--today")
       end
     end
 
     context "when pointer is not today" do
       it "renders Today link in actions" do
         render_inline(described_class.new(pointer: Time.zone.today + 5.days, period: "day", show_breadcrumb: false))
-        expect(page).to have_css(".paginator__actions .breadcrumb__today", text: "Today")
+        expect(page).to have_css(".paginator__actions .filters__link--today", text: "Today")
       end
     end
   end
