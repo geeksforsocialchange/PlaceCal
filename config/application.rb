@@ -22,7 +22,6 @@ module PlaceCal
 
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
-    config.autoload_paths += [Rails.root.join('app', 'queries')]
 
     # Configure Zeitwerk to properly namespace Admin components
     # ViewComponent treats subdirectories as sidecar roots, but we want admin/

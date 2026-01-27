@@ -1,5 +1,12 @@
 import { Controller } from "@hotwired/stimulus";
-import _ from "lodash";
+
+function debounce(fn, delay) {
+	let timeoutId;
+	return (...args) => {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => fn(...args), delay);
+	};
+}
 
 // PartnerFormValidationController
 export default class extends Controller {
@@ -28,7 +35,7 @@ export default class extends Controller {
 		const nameField = this.sourceTarget;
 		const originalValue = nameField.value;
 
-		this.inputFunction = _.debounce(() => {
+		this.inputFunction = debounce(() => {
 			nameField.classList.remove("is-invalid");
 			nameProblemFeedbackElement.style.display = "none";
 

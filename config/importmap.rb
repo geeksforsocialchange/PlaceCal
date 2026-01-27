@@ -23,11 +23,6 @@ pin 'leaflet', to: 'https://esm.sh/leaflet@1.9.4'
 pin 'maplibre-gl', to: 'https://esm.sh/maplibre-gl@4.7.1'
 pin '@maplibre/maplibre-gl-leaflet', to: 'https://esm.sh/@maplibre/maplibre-gl-leaflet@0.0.22'
 
-# Lodash (ES module version) - used by opening_times, partner_form_validation controllers
-pin 'lodash', to: 'https://esm.sh/lodash-es@4.17.21'
-pin 'lodash/isEqual', to: 'https://esm.sh/lodash-es@4.17.21/isEqual'
-pin 'lodash/orderBy', to: 'https://esm.sh/lodash-es@4.17.21/orderBy'
-
 # Stimulus controllers - pinned from app/javascript/controllers
 pin_all_from 'app/javascript/controllers', under: 'controllers'
 
