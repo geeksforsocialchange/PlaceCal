@@ -2,7 +2,7 @@
   <% unless today? %>
     <%= link_to 'Today', today_url, class: 'event-filters__today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
   <% end %>
-  <a href="#" class="event-filters__go-to-date" data-action="click->date-picker#open">Go to date</a>
+  <a href="#" class="event-filters__go-to-date" data-action="click->date-picker#open"><span class="icon icon--arrow-down">↓</span> Go to date</a>
   <%= date_field_tag :date, pointer, class: 'event-filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' } %>
   <%= hidden_field_tag :period, period, data: { date_picker_target: 'period' } %>
   <%= hidden_field_tag :sort, sort, data: { date_picker_target: 'sort' } %>
