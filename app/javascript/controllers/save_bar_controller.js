@@ -82,6 +82,7 @@ export default class extends Controller {
 	handleDirtyChange() {
 		this.updateIndicatorDisplay();
 		this.updateButtonTexts();
+		this.updateSaveButtonStyle();
 	}
 
 	markDirty() {
@@ -117,6 +118,67 @@ export default class extends Controller {
 				? "Save & Continue"
 				: "Continue";
 		}
+	}
+
+	updateSaveButtonStyle() {
+		if (!this.hasSaveButtonTarget) return;
+
+		const dirty = isDirty(this);
+		const isMainAction = this.isSaveButtonMainAction();
+
+		if (dirty) {
+			// Active state - orange button
+			this.saveButtonTarget.classList.remove(
+				"bg-base-300",
+				"hover:bg-base-content/20",
+				"text-base-content",
+				"border-base-300",
+				"opacity-50",
+			);
+			this.saveButtonTarget.classList.add(
+				"bg-placecal-orange",
+				"hover:bg-orange-600",
+				"text-white",
+				"border-placecal-orange",
+			);
+		} else if (isMainAction) {
+			// Clean state but main action - looks disabled but clickable
+			this.saveButtonTarget.classList.remove(
+				"bg-base-300",
+				"hover:bg-base-content/20",
+				"text-base-content",
+				"border-base-300",
+			);
+			this.saveButtonTarget.classList.add(
+				"bg-placecal-orange",
+				"hover:bg-orange-600",
+				"text-white",
+				"border-placecal-orange",
+				"opacity-50",
+			);
+		} else {
+			// Clean state and secondary - gray and faded
+			this.saveButtonTarget.classList.remove(
+				"bg-placecal-orange",
+				"hover:bg-orange-600",
+				"text-white",
+				"border-placecal-orange",
+			);
+			this.saveButtonTarget.classList.add(
+				"bg-base-300",
+				"hover:bg-base-content/20",
+				"text-base-content",
+				"border-base-300",
+				"opacity-50",
+			);
+		}
+	}
+
+	isSaveButtonMainAction() {
+		const isSettings = this.isSettingsTab();
+		const isPreview = this.isPreviewTab();
+		const isBeforeSettings = this.isTabBeforeSettings();
+		return isSettings || isPreview || isBeforeSettings;
 	}
 
 	getCurrentTabIndex() {
@@ -188,38 +250,8 @@ export default class extends Controller {
 			}
 		}
 
-		// Save button: primary style when it's the main action (no Continue visible)
-		if (this.hasSaveButtonTarget) {
-			if (continueHidden) {
-				// Make Save button primary
-				this.saveButtonTarget.classList.remove(
-					"bg-base-300",
-					"hover:bg-base-content/20",
-					"text-base-content",
-					"border-base-300",
-				);
-				this.saveButtonTarget.classList.add(
-					"bg-placecal-orange",
-					"hover:bg-orange-600",
-					"text-white",
-					"border-placecal-orange",
-				);
-			} else {
-				// Make Save button secondary
-				this.saveButtonTarget.classList.remove(
-					"bg-placecal-orange",
-					"hover:bg-orange-600",
-					"text-white",
-					"border-placecal-orange",
-				);
-				this.saveButtonTarget.classList.add(
-					"bg-base-300",
-					"hover:bg-base-content/20",
-					"text-base-content",
-					"border-base-300",
-				);
-			}
-		}
+		// Update save button style based on dirty state and position
+		this.updateSaveButtonStyle();
 
 		// Update texts based on dirty state
 		this.updateButtonTexts();
