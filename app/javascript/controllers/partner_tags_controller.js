@@ -1,53 +1,54 @@
 import { Controller } from "@hotwired/stimulus";
+import TomSelect from "tom-select";
 
 export default class extends Controller {
 	static values = { permittedTags: [String] };
 
 	connect() {
-		const getSelectValues = (select) => {
-			return [...(select && select.options)].reduce((accumulator, option) => {
-				if (option.selected) {
-					return [...accumulator, Number(option.value || option.text)];
-				}
-				return accumulator;
-			}, []);
-		};
+		this.tomSelect = new TomSelect(this.element, {
+			plugins: ["remove_button"],
+			allowEmptyOption: true,
+			onItemRemove: (value) => {
+				const permittedValues = this.permittedTagsValue.map(Number);
+				const numValue = Number(value);
 
-		$(this.element).select2();
+				// Get current selected values
+				const selectedValues = this.tomSelect.items.map(Number);
 
-		$(this.element).on("select2:unselecting", (event) => {
-			const selectedValues = getSelectValues(this.element);
-			const permittedValues = this.permittedTagsValue;
-
-			const selectedPermittedValues = permittedValues.filter((x) =>
-				selectedValues.includes(x)
-			);
-
-			if (
-				selectedPermittedValues.length <= 1 &&
-				permittedValues.includes(Number(event.params.args.data.id))
-			) {
-				if (
-					!confirm(
-						"Removing this tag will remove this partner from your partnership and you will no longer be able to access them, or any users that are partner admins for this partner, if they are not partner admins for anyone else in your partnership.\n\n Are you sure you want to remove it?"
-					)
-				) {
-					event.preventDefault();
-				}
-			}
-
-			if (!permittedValues.includes(Number(event.params.args.data.id))) {
-				alert(
-					"You can only remove partnership tags for partnerships that you manage."
+				// Count how many permitted values are selected (excluding the one being removed)
+				const selectedPermittedValues = permittedValues.filter((x) =>
+					selectedValues.includes(x),
 				);
-				event.preventDefault();
-			}
-		});
 
-		$(this.element).select2("close");
+				if (
+					selectedPermittedValues.length <= 1 &&
+					permittedValues.includes(numValue)
+				) {
+					if (
+						!confirm(
+							"Removing this tag will remove this partner from your partnership and you will no longer be able to access them, or any users that are partner admins for this partner, if they are not partner admins for anyone else in your partnership.\n\n Are you sure you want to remove it?",
+						)
+					) {
+						// Re-add the item since we can't prevent the removal
+						this.tomSelect.addItem(value, true);
+						return;
+					}
+				}
+
+				if (!permittedValues.includes(numValue)) {
+					alert(
+						"You can only remove partnership tags for partnerships that you manage.",
+					);
+					// Re-add the item since we can't prevent the removal
+					this.tomSelect.addItem(value, true);
+				}
+			},
+		});
 	}
 
 	disconnect() {
-		$(this.element).select2("destroy");
+		if (this.tomSelect) {
+			this.tomSelect.destroy();
+		}
 	}
 }

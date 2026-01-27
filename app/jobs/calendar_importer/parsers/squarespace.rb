@@ -16,6 +16,39 @@ module CalendarImporter
         %r{^https://.*\.squarespace\.com/[^/]*/?$}
       end
 
+      def self.handles_url?(calendar)
+        url = calendar.source
+        return true if url.match?(%r{^https://[^.]+\.squarespace\.com/}i)
+
+        # For custom domains, check if page has Squarespace marker and events JSON
+        squarespace_site?(url)
+      rescue StandardError
+        false
+      end
+
+      def self.squarespace_site?(url)
+        response_body = Base.read_http_source(url)
+        return false unless squarespace_page?(response_body)
+
+        # Verify the JSON endpoint returns events
+        squarespace_events?(url)
+      end
+
+      def self.squarespace_page?(html)
+        # Check for Squarespace markers - either the comment or the CDN preconnect link
+        html.include?('<!-- This is Squarespace. -->') ||
+          html.include?('href="https://images.squarespace-cdn.com"')
+      end
+
+      def self.squarespace_events?(url)
+        json_url = url.include?('?') ? "#{url}&format=json" : "#{url}?format=json"
+        response_body = Base.read_http_source(json_url)
+        json = Base.safely_parse_json(response_body)
+        json.is_a?(Hash) && (json['upcoming'].present? || json['past'].present?)
+      rescue StandardError
+        false
+      end
+
       def download_calendar
         json_url = @url
         json_url += '?format=json' unless json_url.ends_with?('?format=json')

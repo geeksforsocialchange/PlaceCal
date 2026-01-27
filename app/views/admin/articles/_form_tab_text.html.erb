@@ -1,0 +1,135 @@
+<%- disabled_fields = policy(@article).disabled_fields %>
+
+<div class="space-y-6">
+  <%# Title, Author, and Publication date %>
+  <div class="space-y-3">
+    <h2 class="text-base font-semibold flex items-center gap-2">
+      <%= icon(:edit, size: '4') %>
+      <%= t('admin.articles.sections.details') %>
+    </h2>
+
+    <div class="space-y-4">
+      <%# Title field %>
+      <fieldset class="fieldset">
+        <%= f.label :title, class: 'fieldset-legend' do %>
+          <%= attr_label(:article, :title) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+        <% end %>
+        <%= f.input_field :title, as: :string, class: 'input input-bordered w-full text-xl font-semibold', id: 'article_title', placeholder: t('admin.articles.fields.title_placeholder') %>
+      </fieldset>
+
+      <%# Author and Publication date side by side %>
+      <div class="flex flex-col sm:flex-row sm:items-end gap-4">
+        <%# Author field %>
+        <fieldset class="fieldset min-w-64 article_author">
+          <%= f.label :author_id, attr_label(:article, :author), class: 'fieldset-legend' %>
+          <% if disabled_fields.include?(:author_id) %>
+            <div class="text-base-content font-medium"><%= @article.author&.admin_name || 'Unknown' %></div>
+          <% else %>
+            <%= f.select :author_id,
+                  User.order(:last_name, :first_name).map { |u| [u.admin_name, u.id] },
+                  { include_blank: t('admin.placeholders.select_model', model: attr_label(:article, :author).downcase) },
+                  { class: 'select select-bordered w-full', id: 'article_author_id', 'aria-label': attr_label(:article, :author), data: { controller: 'tom-select' } } %>
+          <% end %>
+        </fieldset>
+
+        <%# Publication date (read-only display) %>
+        <% unless @article.new_record? %>
+          <fieldset class="fieldset w-auto">
+            <legend class="fieldset-legend"><%= t('admin.articles.fields.published') %></legend>
+            <div class="input input-bordered h-9 flex items-center gap-2 bg-base-200/50 cursor-default">
+              <%= icon(:calendar, size: '4', css_class: 'text-gray-600') %>
+              <% if @article.published_at.present? %>
+                <span class="text-base-content"><%= @article.published_at.strftime('%d %b %Y') %></span>
+                <span class="text-gray-600 text-sm">(<%= t('admin.time.ago', time: time_ago_in_words(@article.published_at)) %>)</span>
+              <% else %>
+                <span class="text-gray-600 italic"><%= t('admin.articles.fields.not_published') %></span>
+              <% end %>
+            </div>
+          </fieldset>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Body with side-by-side markdown preview %>
+  <div data-controller="markdown-preview">
+    <%= f.label :body, class: 'fieldset-legend' do %>
+      <%= attr_label(:article, :body) %> <span class="text-error"><%= t('admin.labels.required') %></span>
+    <% end %>
+    <p class="text-sm text-gray-600 mb-3">
+      This field accepts <a href="https://www.markdownguide.org/basic-syntax/" class="link underline text-placecal-teal-dark hover:no-underline" target="_blank">Markdown syntax</a>.
+    </p>
+
+    <%# Header row with Write/Preview labels and toolbar %>
+    <div class="flex items-center gap-0 mb-2" data-markdown-preview-target="container">
+      <div class="flex-1 min-w-64 flex items-center justify-between" data-markdown-preview-target="editorPane">
+        <div class="text-xs font-medium text-gray-600 flex items-center gap-1">
+          <%= icon(:edit, size: '3') %>
+          <%= t('admin.articles.markdown.write') %>
+        </div>
+        <%# Markdown toolbar %>
+        <div class="flex items-center gap-0.5" data-markdown-preview-target="toolbar">
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBold" title="<%= t('admin.articles.markdown.toolbar.bold') %>">
+            <strong>B</strong>
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertItalic" title="<%= t('admin.articles.markdown.toolbar.italic') %>">
+            <em>I</em>
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertLink" title="<%= t('admin.articles.markdown.toolbar.link') %>">
+            <%= icon(:link, size: '4') %>
+          </button>
+          <div class="divider divider-horizontal mx-0.5 h-4"></div>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH2" title="<%= t('admin.articles.markdown.toolbar.h2') %>">
+            H2
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertH3" title="<%= t('admin.articles.markdown.toolbar.h3') %>">
+            H3
+          </button>
+          <div class="divider divider-horizontal mx-0.5 h-4"></div>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBulletList" title="<%= t('admin.articles.markdown.toolbar.bullet_list') %>">
+            <%= icon(:list, size: '4') %>
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertBlockquote" title="<%= t('admin.articles.markdown.toolbar.blockquote') %>">
+            &ldquo;
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs px-2" data-action="click->markdown-preview#insertCode" title="<%= t('admin.articles.markdown.toolbar.code') %>">
+            <code class="text-xs">&lt;/&gt;</code>
+          </button>
+        </div>
+      </div>
+
+      <div class="hidden lg:block w-4"></div>
+
+      <div class="hidden lg:flex flex-1 min-w-64 items-center" data-markdown-preview-target="previewPane">
+        <div class="text-xs font-medium text-gray-600 flex items-center gap-1">
+          <%= icon(:eye, size: '3') %>
+          <%= t('admin.articles.markdown.preview') %>
+        </div>
+      </div>
+    </div>
+
+    <%# Content row with textarea, resizer, and preview %>
+    <div class="flex gap-0" data-markdown-preview-target="contentContainer">
+      <%# Editor %>
+      <div class="flex-1 min-w-64" data-markdown-preview-target="editorContent">
+        <%= f.input_field :body, as: :text, class: 'textarea textarea-bordered w-full min-h-96 font-mono text-sm resize-none', data: { controller: 'auto-expand', markdown_preview_target: 'input', action: 'input->markdown-preview#updatePreview keydown->markdown-preview#handleKeydown' }, id: 'article_body' %>
+      </div>
+
+      <%# Resizer handle %>
+      <div class="hidden lg:flex w-4 cursor-col-resize items-center justify-center group hover:bg-base-200 transition-colors"
+           data-markdown-preview-target="resizer"
+           data-action="mousedown->markdown-preview#startResize">
+        <div class="w-1 h-8 rounded-full bg-base-300 group-hover:bg-placecal-orange transition-colors"></div>
+      </div>
+
+      <%# Preview %>
+      <div class="hidden lg:block flex-1 min-w-64" data-markdown-preview-target="previewContent">
+        <div class="border border-base-300 rounded-lg px-6 py-2 min-h-96 bg-base-100 overflow-y-auto">
+          <div data-markdown-preview-target="output" class="markdown-preview">
+            <p class="text-gray-500 italic"><%= t('admin.articles.markdown.preview_placeholder') %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

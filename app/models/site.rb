@@ -25,9 +25,10 @@ class Site < ApplicationRecord
   has_many :sites_tag, dependent: :destroy
   has_many :tags, through: :sites_tag
 
+  has_many :sites_supporters, dependent: :destroy
   has_and_belongs_to_many :supporters
 
-  belongs_to :site_admin, class_name: 'User', optional: true
+  belongs_to :site_admin, class_name: 'User', inverse_of: :sites, optional: true
 
   accepts_nested_attributes_for :sites_neighbourhood
   accepts_nested_attributes_for :sites_neighbourhoods, reject_if: lambda { |c|
@@ -35,6 +36,7 @@ class Site < ApplicationRecord
                                                                   }, allow_destroy: true
 
   validates :name, :slug, :url, presence: true
+  validates :slug, uniqueness: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
 
@@ -115,6 +117,28 @@ class Site < ApplicationRecord
     Event.for_site(self).find_by_week(Time.now - 1.week).count
   end
 
+  # Refresh cached partners_count for this site
+  def refresh_partners_count!
+    return unless persisted?
+
+    count = Partner.for_site(self).count
+    update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
+  end
+
+  # Refresh cached events_count for this site (events this week)
+  def refresh_events_count!
+    return unless persisted?
+
+    count = Event.for_site(self).find_by_week(Time.zone.now).count
+    update_column(:events_count, count) # rubocop:disable Rails/SkipsModelValidations
+  end
+
+  # Refresh both cached counts
+  def refresh_counts!
+    refresh_partners_count!
+    refresh_events_count!
+  end
+
   def stylesheet_link
     return 'home' if default_site?
 
@@ -148,6 +172,12 @@ class Site < ApplicationRecord
   end
 
   class << self
+    # Refresh cached counts for all sites
+    # Run periodically or after bulk partner/event changes
+    def refresh_all_counts!
+      find_each(&:refresh_counts!)
+    end
+
     # Find any sites with URLs that match the specified domain
     #
     # [QAD 2025-10-21] This a band-aid to work around the implementation in

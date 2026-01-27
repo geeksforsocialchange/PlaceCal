@@ -1,4 +1,4 @@
-@import "variables_mixins";
+@import "../../variables_mixins";
 
 .our_story {
 	&__intro {
@@ -13,9 +13,12 @@
 		@include for-desktop-up {
 			padding-left: $text-spacing-desktop;
 			padding-right: $text-spacing-desktop;
-			background-image: image-url("home/our_story/patterns/intro_tl.svg"),
+			background-image:
+				image-url("home/our_story/patterns/intro_tl.svg"),
 				image-url("home/our_story/patterns/intro_br.svg");
-			background-position: top left, bottom right;
+			background-position:
+				top left,
+				bottom right;
 			background-repeat: no-repeat;
 		}
 	}
@@ -32,11 +35,16 @@
 		}
 
 		@include for-desktop-up {
-			background-image: image-url("home/our_story/patterns/fix_tl.svg"),
+			background-image:
+				image-url("home/our_story/patterns/fix_tl.svg"),
 				image-url("home/our_story/patterns/fix_br.svg");
-			background-size: 275px 480px, 300px 480px;
+			background-size:
+				275px 480px,
+				300px 480px;
 			background-repeat: no-repeat;
-			background-position: top left, bottom right;
+			background-position:
+				top left,
+				bottom right;
 			padding-left: 20rem;
 			padding-right: 20rem;
 		}

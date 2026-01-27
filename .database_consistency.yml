@@ -1,0 +1,53 @@
+# Database Consistency Configuration
+# https://github.com/djezzzl/database_consistency
+
+# Exclude models that don't have corresponding tables (HABTM join tables)
+CollectionEvent:
+  enabled: false # This is a HABTM join table (collections_events), not a standalone model
+
+SitesSupporter:
+  enabled: false # This is a HABTM join table (sites_supporters), not a standalone model
+
+# OrganisationRelationship table exists but has no model - may be legacy/unused
+OrganisationRelationship:
+  enabled: false
+
+# User model - Devise manages these token uniqueness constraints
+User:
+  index_users_on_invitation_token:
+    UniqueIndexChecker:
+      enabled: false # Managed by Devise Invitable
+  index_users_on_reset_password_token:
+    UniqueIndexChecker:
+      enabled: false # Managed by Devise Recoverable
+  # The sites association uses site_admin_id foreign key
+  sites:
+    enabled: false # Legacy schema, skip all checks for this association
+  articles:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+
+# Site model - sites_neighbourhood is the join table, not a direct association
+Site:
+  sites_neighbourhood:
+    enabled: false # This is a join table, indexed properly
+
+# Neighbourhood model - addresses can exist without a neighbourhood
+Neighbourhood:
+  addresses:
+    enabled: false # Intentional: addresses should persist if neighbourhood is deleted
+
+# Foreign key cascade checks - we use model-level dependent options,
+# not database-level cascades, for safer application-level control
+OnlineAddress:
+  events:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+
+Address:
+  events:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+  partners:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify

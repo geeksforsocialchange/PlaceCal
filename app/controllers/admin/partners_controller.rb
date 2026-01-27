@@ -10,10 +10,10 @@ module Admin
     before_action :set_partner_tags_controller, only: %i[create new edit update]
 
     def index
-      @partners = policy_scope(Partner).order({ updated_at: :desc }, :name).includes(:address)
+      @partners = policy_scope(Partner).includes(:address)
 
       respond_to do |format|
-        format.html
+        format.html { @partners = @partners.order(updated_at: :desc, name: :asc) }
         format.json do
           render json: PartnerDatatable.new(params,
                                             view_context: view_context,
@@ -45,9 +45,11 @@ module Admin
 
       respond_to do |format|
         if @partner.save
+          invitation_result = invite_partner_admin(@partner) if invited_admin_params[:email].present?
+
           format.html do
-            flash[:success] = 'Partner was successfully created.'
-            redirect_to edit_admin_partner_path(@partner)
+            flash[:success] = build_success_flash(invitation_result)
+            redirect_to after_create_redirect_path(@partner)
           end
 
           format.json { render :show, status: :created, location: @partner }
@@ -55,9 +57,9 @@ module Admin
           format.html do
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
-            render :new, status: :unprocessable_entity
+            render :new, status: :unprocessable_content
           end
-          format.json { render json: @partner.errors, status: :unprocessable_entity }
+          format.json { render json: @partner.errors, status: :unprocessable_content }
         end
       end
     end
@@ -111,7 +113,7 @@ module Admin
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 
@@ -136,22 +138,105 @@ module Admin
 
       else
         render json: { message: 'Could not clear address' },
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
     end
 
     def lookup_name
-      found = params[:name].present? && Partner.where('lower(name) = ?', params[:name].downcase).first
+      return render json: { name_available: true, similar: [] } if params[:name].blank?
 
-      render json: { name_available: found.nil? }
+      name = params[:name].downcase
+      exact_match = Partner.where('lower(name) = ?', name).first
+
+      # Find similar partners (fuzzy match) - limit to 5 for performance
+      similar = Partner.where('lower(name) LIKE ?', "%#{name}%")
+                       .or(Partner.where('lower(name) LIKE ?', "%#{name.split.first}%"))
+                       .where.not(id: exact_match&.id)
+                       .limit(5)
+                       .pluck(:id, :name)
+                       .map { |id, n| { id: id, name: n } }
+
+      render json: {
+        name_available: exact_match.nil?,
+        exact_match: exact_match&.slice(:id, :name),
+        similar: similar
+      }
     end
 
     private
 
+    def after_create_redirect_path(partner)
+      case params[:after_create]
+      when 'add_calendar'
+        new_admin_calendar_path(partner_id: partner.id)
+      else
+        edit_admin_partner_path(partner)
+      end
+    end
+
+    def invited_admin_params
+      params.dig(:partner, :invited_admin) || {}
+    end
+
+    def invite_partner_admin(partner)
+      admin_params = invited_admin_params
+      email = admin_params[:email]&.strip&.downcase
+      return { status: :skipped } if email.blank?
+
+      user = User.find_by(email: email)
+
+      if user
+        # Existing user - just add as partner admin
+        user.partners << partner unless user.partners.include?(partner)
+        { status: :existing_user, email: email }
+      else
+        # New user - create and invite
+        user = User.new(
+          email: email,
+          first_name: admin_params[:first_name],
+          last_name: admin_params[:last_name],
+          phone: admin_params[:phone],
+          role: 'citizen'
+        )
+        user.skip_password_validation = true
+        user.partners << partner
+
+        if user.valid?
+          # In development, skip sending email so Letter Opener doesn't interrupt the flow
+          # Instead, we'll show the invitation link in the flash message
+          user.skip_invitation = Rails.env.development?
+          user.invite!
+          invitation_url = accept_user_invitation_url(invitation_token: user.raw_invitation_token)
+          { status: :invited, email: email, invitation_url: invitation_url }
+        else
+          Rails.logger.warn "Failed to invite partner admin: #{user.errors.full_messages.join(', ')}"
+          { status: :failed, email: email, errors: user.errors.full_messages }
+        end
+      end
+    end
+
+    def build_success_flash(invitation_result)
+      message = 'Partner was successfully created.'
+      return message unless invitation_result
+
+      message + case invitation_result[:status]
+                when :invited then invitation_flash(invitation_result)
+                when :existing_user then " #{invitation_result[:email]} has been added as an admin."
+                when :failed then " However, the admin invitation failed: #{invitation_result[:errors].join(', ')}"
+                else ''
+                end
+    end
+
+    def invitation_flash(result)
+      msg = " Invitation sent to #{result[:email]}."
+      msg += " <a href=\"#{result[:invitation_url]}\" target=\"_blank\" class=\"underline\">View invitation</a>" if Rails.env.development? && result[:invitation_url]
+      msg
+    end
+
     def set_partner_tags_controller
       @partner_tags_controller =
         if current_user.root? || (@partner.present? && current_user.admin_for_partner?(@partner.id))
-          'select2'
+          'tom-select'
         else
           'partner-tags'
         end

@@ -9,15 +9,14 @@ git_source(:github) do |repo_name|
 end
 
 # Core
-gem 'minitest-rails'
 gem 'pg'
 gem 'puma'
-gem 'rails', '7.2.3'
+gem 'rails', '~> 8.0'
 
 # Frontend
-gem 'coffee-rails'
-gem 'jquery-rails'
-gem 'jsbundling-rails'
+gem 'importmap-rails' # Admin JS - native ES modules, no build step
+gem 'jquery-rails' # DEPRECATED: Public site only, to be replaced with Stimulus controllers
+gem 'jsbundling-rails' # Public site only - esbuild bundle for jQuery legacy components
 gem 'sass-rails', '6.0.0'
 gem 'stimulus-rails'
 gem 'turbo-rails'
@@ -40,10 +39,6 @@ gem 'carrierwave'
 gem 'image_processing'
 
 # Admin
-gem 'bootstrap'
-gem 'cocoon'
-gem 'font-awesome-rails'
-gem 'select2-rails'
 gem 'simple_form'
 
 # Users, login, permissions
@@ -55,8 +50,7 @@ gem 'pundit'
 gem 'geocoder'
 gem 'leaflet-rails'
 
-# Styleguide
-gem 'mountain_view'
+# Components
 gem 'view_component'
 
 # Helpers to group by time period
@@ -81,6 +75,7 @@ gem 'enumerize'
 gem 'friendly_id'
 # gem 'listen' # needed?
 gem 'invisible_captcha'
+gem 'mutex_m' # Fixes an warning with the spring gemspec - can remove later
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'net-smtp', require: false
@@ -91,25 +86,23 @@ gem 'uk_postcode'
 group :development, :test do
   gem 'byebug'
   gem 'dotenv-rails'
-  gem 'factory_bot_rails'
-  gem 'timecop'
 end
 
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'database_consistency', require: false
   gem 'foreman'
   gem 'graphiql-rails'
   gem 'letter_opener'
-  gem 'mutex_m'
   gem 'rails-erd'
   gem 'rdoc'
-  gem 'rubocop', '1.81.7', require: false
+  gem 'rubocop', '1.82.1', require: false
   gem 'rubocop-graphql', '1.5.6', require: false
-  gem 'rubocop-minitest', '0.38.2', require: false
   gem 'rubocop-performance', '1.26.1', require: false
-  gem 'rubocop-rails', '2.34.0', require: false
+  gem 'rubocop-rails', '2.34.3', require: false
   gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
   gem 'spring'
   # gem 'spring-watcher-listen'
   gem 'web-console'
@@ -117,17 +110,29 @@ group :development do
 end
 
 group :test do
-  # gem 'simplecov', require: false
-  gem 'capybara-select-2'
+  gem 'axe-core-rspec', '~> 4.8'
+  gem 'capybara'
+  gem 'cucumber-rails', require: false
   gem 'database_cleaner-active_record'
+  gem 'factory_bot_rails'
+  gem 'faker'
   gem 'graphql-client'
   gem 'json_matchers'
-  gem 'minitest-rails-capybara'
-  gem 'minitest-reporters'
+  gem 'parallel_tests'
+  gem 'pundit-matchers', '~> 4.0'
   gem 'rails-controller-testing'
+  gem 'rspec-rails', '~> 8.0'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers', '~> 7.0'
+  gem 'simplecov', require: false
+  gem 'timecop'
   gem 'vcr'
   gem 'webmock' # used by VCR
+end
+
+# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
+group :ai, optional: true do
+  gem 'claude-on-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

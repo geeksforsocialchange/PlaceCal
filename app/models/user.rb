@@ -8,8 +8,12 @@ class User < ApplicationRecord
   attr_accessor :skip_password_validation, :current_password
 
   # Site-wide roles
+  # - root: Can do everything
+  # - national_admin: Can manage all partners unless restricted to partnerships
+  # - editor: Can edit all news articles
+  # - citizen: Can only edit assigned entities
   enumerize :role,
-            in: %i[root editor citizen],
+            in: %i[root national_admin editor citizen],
             default: :citizen
 
   # Include default devise modules. Others available are:
@@ -22,14 +26,16 @@ class User < ApplicationRecord
   # has_many :partners, through: :partners_users
 
   has_and_belongs_to_many :partners
-  has_many :sites, foreign_key: :site_admin
+  has_many :sites, foreign_key: :site_admin_id, inverse_of: :site_admin, dependent: :nullify
+  has_many :articles, foreign_key: :author_id, inverse_of: :author, dependent: :nullify
 
   has_many :neighbourhoods_users, dependent: :destroy
   has_many :neighbourhoods, through: :neighbourhoods_users
+  accepts_nested_attributes_for :neighbourhoods_users, allow_destroy: true, reject_if: :all_blank
 
   has_many :tags_users, dependent: :destroy
   has_many :tags, through: :tags_users
-  has_many :partnerships, through: :tags_users, source: :tag, class_name: 'Partnership'
+  has_many :partnerships, -> { where(type: 'Partnership') }, through: :tags_users, source: :tag
 
   auto_strip_attributes :first_name, :last_name, :email, :phone
 
@@ -48,14 +54,21 @@ class User < ApplicationRecord
     [first_name, last_name].compact_blank.join(' ')
   end
 
-  # Shows in admin interfaces
+  # Shows in admin interfaces (legacy format)
   def admin_name
     name = [last_name&.upcase, first_name].compact_blank.join(', ')
 
     "#{name} <#{email}>".strip
   end
 
+  # Friendly display format: "Firstname Lastname (email)"
+  def display_name
+    name = full_name.presence || email.split('@').first
+    "#{name} (#{email})"
+  end
+
   alias to_s admin_name
+  alias name admin_name
 
   # Admin level checks
   def root?
@@ -70,12 +83,24 @@ class User < ApplicationRecord
     role == :editor
   end
 
+  def national_admin?
+    role == :national_admin
+  end
+
   def owned_neighbourhoods
-    neighbourhoods.collect(&:subtree).flatten
+    if national_admin?
+      Neighbourhood.all.to_a
+    else
+      neighbourhoods.collect(&:subtree).flatten
+    end
   end
 
   def owned_neighbourhood_ids
-    owned_neighbourhoods.collect(&:id)
+    if national_admin?
+      Neighbourhood.pluck(:id)
+    else
+      owned_neighbourhoods.collect(&:id)
+    end
   end
 
   def admin_for_partner?(partner_id)
@@ -137,7 +162,7 @@ class User < ApplicationRecord
   end
 
   def neighbourhood_admin?
-    neighbourhoods.any?
+    national_admin? || neighbourhoods.any?
   end
 
   def partner_admin?
@@ -152,8 +177,9 @@ class User < ApplicationRecord
     types = []
 
     types << 'root' if root?
+    types << 'national_admin' if national_admin?
     types << 'editor' if editor?
-    types << 'neighbourhood_admin' if neighbourhood_admin?
+    types << 'neighbourhood_admin' if neighbourhood_admin? && !national_admin?
     types << 'partner_admin' if partner_admin?
     types << 'partnership_admin' if partnership_admin?
     types << 'site_admin' if site_admin?

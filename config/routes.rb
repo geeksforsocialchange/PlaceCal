@@ -28,12 +28,20 @@ Rails.application.routes.draw do
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :articles
     resources :calendars do
+      collection do
+        post :test_source
+      end
       member do
         post :import
       end
     end
     resources :collections
-    resources :neighbourhoods
+    resources :neighbourhoods do
+      collection do
+        get :children
+        get :hierarchy
+      end
+    end
     resources :partners do
       collection do
         get :lookup_name
@@ -43,15 +51,20 @@ Rails.application.routes.draw do
       end
     end
     resources :tags
+    resources :partnerships
     resources :sites
     resources :supporters
     resources :users do
+      collection do
+        get :lookup_email
+      end
       member do
         patch :update_profile
       end
     end
     get 'profile' => 'users#profile', as: :profile
     get 'jobs' => 'jobs#index', as: :jobs
+    get 'icons' => 'pages#icons', as: :icons
 
     root 'pages#home'
   end

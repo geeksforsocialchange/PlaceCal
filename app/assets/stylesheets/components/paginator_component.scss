@@ -1,0 +1,122 @@
+@import "variables_mixins.scss";
+
+@mixin border-highlight {
+	border-color: $base-primary;
+	border-color: var(--base-primary);
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 3rem;
+}
+
+.paginator {
+	line-height: 1.3;
+
+	// Day chooser
+	&__buttons {
+		@include flexbox;
+		flex-wrap: wrap;
+
+		list-style-type: none;
+		margin: 0;
+		padding: 0 2.5rem 0.5rem 0;
+
+		// Creates a context for the "next" arrow button
+		position: relative;
+		font-weight: $bold;
+
+		a {
+			text-decoration: none;
+			border-bottom-width: 0;
+			display: inline-block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	li {
+		@include flex(1 0 auto);
+		@include border-highlight;
+
+		text-align: center;
+		margin-right: 0.25rem;
+
+		@include for-tablet-portrait-up {
+			margin: 0 0.25rem;
+		}
+
+		a {
+			padding: 0.3rem 1rem;
+			display: block;
+		}
+
+		&.active,
+		&:has(a:hover) {
+			background-color: $base-primary;
+			background-color: var(--base-primary);
+		}
+	}
+
+	li.paginator__arrow {
+		@include flex(0 0 2.2222222rem);
+
+		padding: 0;
+		height: 2.2222222rem;
+		background-color: $base-primary;
+		background-color: var(--base-primary);
+		border-width: 0;
+
+		a {
+			padding: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+		}
+
+		&:hover {
+			background-color: $base-text;
+			border-color: $base-text;
+		}
+
+		&--back a {
+			padding-right: 0.15rem;
+		}
+
+		&--forwards {
+			width: 2.2222222rem;
+			position: absolute;
+			margin-right: 0;
+			right: 0;
+			top: 0;
+
+			a {
+				padding-left: 0.15rem;
+			}
+		}
+	}
+
+	// Title
+	h2 {
+		border-bottom: 4px solid $base-rules;
+		padding-bottom: 0.5em;
+	}
+
+	// Icon custom size
+	.icon {
+		width: 0.5277777rem;
+		height: 1.05555556rem;
+	}
+
+	// Actions bar (shown when breadcrumb is hidden)
+	&__actions {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+		justify-content: flex-end;
+		font-size: $small-font-size;
+		padding-top: 0.25rem;
+		margin-bottom: 0.5rem;
+		position: relative;
+		z-index: 10; // Ensure dropdowns appear above paginator__buttons
+	}
+}

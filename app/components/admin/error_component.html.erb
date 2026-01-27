@@ -1,0 +1,13 @@
+<% if errors_present? %>
+  <div id="form-errors" role="alert" class="alert alert-error mb-3 shadow-lg items-start">
+    <%= icon(:warning, size: '6', css_class: 'shrink-0 mt-0.5') %>
+    <div>
+      <h3 class="font-bold"><%= t('activerecord.errors.template.header', count: error_count, model: model_name) %></h3>
+      <ul class="mt-2 ml-3 text-sm list-disc list-inside space-y-0.5">
+        <% error_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>

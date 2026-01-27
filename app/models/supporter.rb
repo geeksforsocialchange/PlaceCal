@@ -2,6 +2,7 @@
 
 # app/models/supporter.rb
 class Supporter < ApplicationRecord
+  has_many :sites_supporters, dependent: :destroy
   has_and_belongs_to_many :sites
 
   validates :name, presence: true

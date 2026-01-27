@@ -1,4 +1,4 @@
-@import "variables_mixins";
+@import "../variables_mixins";
 
 .breadcrumb {
 	@include flexbox;
@@ -21,18 +21,6 @@
 		text-decoration: none;
 	}
 
-	.filters__toggle {
-		a {
-			border-bottom-color: transparent;
-		}
-
-		.filters__link {
-			border-bottom-style: solid;
-			border-bottom-color: $base-rules-dark;
-			border-bottom-width: 2px;
-		}
-	}
-
 	@include for-phone-only {
 		&__tagline {
 			display: none;
@@ -53,6 +41,7 @@
 			flex-direction: row;
 			gap: 1rem;
 			justify-content: flex-end;
+			margin-right: 0;
 
 			@include flex(1 1 auto);
 			@include for-tablet-portrait-up {
@@ -66,5 +55,18 @@
 		flex-direction: row;
 		gap: 1rem;
 		justify-content: flex-end;
+	}
+
+	&__actions {
+		display: flex;
+		flex-direction: row;
+		gap: 0.5rem;
+		align-items: center;
+	}
+
+	&__today {
+		border-bottom-style: solid;
+		border-bottom-color: $base-rules-dark;
+		border-bottom-width: 2px;
 	}
 }

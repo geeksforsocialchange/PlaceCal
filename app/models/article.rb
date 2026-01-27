@@ -10,6 +10,7 @@ class Article < ApplicationRecord
   friendly_id :slug_candidates, use: :slugged
 
   validates :title, :body, presence: true
+  validates :slug, uniqueness: true
 
   before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
 
@@ -19,7 +20,7 @@ class Article < ApplicationRecord
   has_many :article_tags, dependent: :destroy
   has_many :tags, through: :article_tags
 
-  belongs_to :author, class_name: 'User'
+  belongs_to :author, class_name: 'User', inverse_of: :articles
 
   mount_uploader :article_image, ArticleImageUploader
 

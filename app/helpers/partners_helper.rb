@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module PartnersHelper
+  # Returns users as [display_name, id] pairs for partner admin assignment
+  # Excludes users already assigned to the partner
+  def options_for_partner_users(partner)
+    existing_ids = partner.user_ids
+    User.where.not(id: existing_ids)
+        .order(:email)
+        .map { |u| [u.email, u.id] }
+  end
+
   def options_for_service_area_neighbourhoods(for_partner)
     legacy_neighbourhoods = for_partner.service_area_neighbourhoods.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
 
@@ -17,8 +26,11 @@ module PartnersHelper
       end
   end
 
+  # Returns partnerships as [name, id] pairs for partner assignment
+  # Root users can assign any partnership, others see only their managed partnerships
   def options_for_partner_partnerships
-    policy_scope(Partnership)
+    scope = current_user.root? ? Partnership : policy_scope(Partnership)
+    scope
       .select(:name, :type, :id)
       .order(:name)
       .map { |r| [r.name, r.id] }
@@ -31,12 +43,14 @@ module PartnersHelper
   def partner_service_area_text(partner)
     neighbourhoods = partner.service_area_neighbourhoods.order(:name).all
 
-    if neighbourhoods.length == 1
+    case neighbourhoods.length
+    when 0
+      'No service area'
+    when 1
       neighbourhoods.first.name
-
     else
       head = neighbourhoods[0..-2]
-      tail = neighbourhoods[-1]
+      tail = neighbourhoods.last
 
       "#{head.map(&:name).join(', ')} and #{tail.name}"
     end
@@ -57,14 +71,14 @@ module PartnersHelper
   end
 
   # Get a String containing a list of <a> tags for each site,
-  # where the name is the Site's name, and the URL is the site's url
+  # where the name is the Site's name, and the URL points directly to the partner's page on that site
   #
   # @return [String] HTML string
   def site_links
-    return if @sites.blank?
+    return if @sites.blank? || @partner.blank?
 
     @sites
-      .map { |site| link_to site.name, site.url, target: '_blank', rel: 'noopener' }
+      .map { |site| link_to site.name, "#{site.url.chomp('/')}/partners/#{@partner.slug}", target: '_blank', rel: 'noopener' }
       .join(', ')
       .html_safe
   end

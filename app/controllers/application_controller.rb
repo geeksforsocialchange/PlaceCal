@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
       if period == 'future'
         events.future(@today).includes(:place)
       elsif period == 'week'
-        events.find_by_week(@current_day).includes(:place)
+        events.find_next_7_days(@current_day).includes(:place)
       else
         events.find_by_day(@current_day).includes(:place)
       end

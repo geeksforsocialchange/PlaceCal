@@ -6,6 +6,10 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # Configure 'rails notes' to inspect Cucumber files
+  config.annotations.register_directories('features')
+  config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
+
   routes.default_url_options = {
     host: ENV.fetch('SITE_DOMAIN', 'lvh.me'),
     port: 3000,
@@ -59,4 +63,8 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.assets.paths << Rails.root.join('app/javascript')
+
+  # Disable CSS/JS compression in test to avoid SassC compressor issues with asset paths
+  config.assets.css_compressor = nil
+  config.assets.js_compressor = nil
 end

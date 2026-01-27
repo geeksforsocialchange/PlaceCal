@@ -1,0 +1,39 @@
+<div class="paginator" id="paginator" data-controller="paginator">
+  <% if show_breadcrumb %>
+    <div class="paginator__context">
+      <%= render(BreadcrumbComponent.new(trail: [['Events', events_path]], site_name: site_name)) do %>
+        <div class="breadcrumb__actions">
+          <%= render(EventFilterComponent.new(
+            pointer: pointer,
+            period: period,
+            sort: sort,
+            repeating: repeating,
+            today_url: today_url,
+            today: today?
+          )) %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="paginator__actions">
+      <%= render(EventFilterComponent.new(
+        pointer: pointer,
+        period: period,
+        sort: sort,
+        repeating: repeating,
+        today_url: today_url,
+        today: today?
+      )) %>
+    </div>
+  <% end %>
+
+  <% if @period == 'day' || @period == 'week' %>
+    <ol class="paginator__buttons paginator__buttons--day">
+      <% paginator.each do |page| %>
+        <li class="<%= page[:css] %>" <%= page[:data].map { |k, v| "data-#{k.to_s.dasherize}=\"#{v}\"" }.join(' ').html_safe %>>
+          <%= link_to page[:text], page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</div>

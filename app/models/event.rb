@@ -24,22 +24,23 @@ class Event < ApplicationRecord
 
   # has_many :service_areas, through: :partner
 
-  # Find by day
+  # Find events that start on a given day
   scope :find_by_day, lambda { |day|
-    # This is simple single-axis bounding box collision logic :)
-    # the x+w is event_end/day_end and the x is event_start/day_start
-    # day_end >= event_start AND day_start <= event_end
-    day_start = day.midnight
-    day_end = (day.midnight + 1.day)
-    where('((?) >= dtstart AND ((?) <= dtend))',
-          day_end, day_start)
+    where('DATE(dtstart) = ?', day.to_date)
   }
 
-  # Find by week
+  # Find by week (Monday to Sunday)
   scope :find_by_week, lambda { |day|
     week_start = day.beginning_of_week
     week_end = day.end_of_week
     where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', week_start, week_end)
+  }
+
+  # Find next 7 days from given day
+  scope :find_next_7_days, lambda { |day|
+    day_start = day.to_date
+    day_end = day_start + 6.days
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, day_end)
   }
 
   # Find by day onwards

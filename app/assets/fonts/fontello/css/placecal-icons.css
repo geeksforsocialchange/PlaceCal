@@ -1,8 +1,8 @@
 @font-face {
 	font-family: "placecal-icons";
 	src: url("../font/placecal-icons.eot?39775298");
-	src: url("../font/placecal-icons.eot?39775298#iefix")
-			format("embedded-opentype"),
+	src:
+		url("../font/placecal-icons.eot?39775298#iefix") format("embedded-opentype"),
 		url("../font/placecal-icons.woff2?39775298") format("woff2"),
 		url("../font/placecal-icons.woff?39775298") format("woff"),
 		url("../font/placecal-icons.ttf?39775298") format("truetype"),

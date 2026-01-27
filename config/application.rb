@@ -14,7 +14,7 @@ module PlaceCal
     # -- all .rb files in that directory are automatically loaded.
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 8.1
 
     config.active_job.queue_adapter = :delayed_job
 
@@ -22,6 +22,18 @@ module PlaceCal
 
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+
+    # Configure Zeitwerk to properly namespace Admin components
+    # ViewComponent treats subdirectories as sidecar roots, but we want admin/
+    # to be a namespace so Admin::AlertComponent lives in admin/alert_component.rb
+    initializer 'placecal.admin_components_namespace', before: :set_autoload_paths do
+      # Define Admin module if not already defined (it will be, via controllers)
+      Object.const_set(:Admin, Module.new) unless Object.const_defined?(:Admin)
+      Rails.autoloaders.main.push_dir(
+        Rails.root.join('app/components/admin'),
+        namespace: Admin
+      )
+    end
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do

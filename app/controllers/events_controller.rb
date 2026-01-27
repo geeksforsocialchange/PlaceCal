@@ -6,7 +6,6 @@ class EventsController < ApplicationController
 
   before_action :set_event, only: %i[show]
   before_action :set_day, only: :index
-  before_action :set_sort, only: :index
   before_action :set_primary_neighbourhood, only: :index
   before_action :set_site
   before_action :redirect_from_default_site
@@ -14,36 +13,15 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    # Duration to view - default to future view
-    @period = params[:period] || 'future'
     @repeating = params[:repeating] || 'on'
-    @events = filter_events(@period, repeating: @repeating, site: current_site)
-    # Duration to view - default to day view if there are too many future events
-    if params[:period].to_s == '' && @events.count > 50
-      @period = 'week'
-      @events = filter_events(@period, repeating: @repeating, site: current_site)
-    end
-    @title = current_site.name
-    # Sort criteria
-    @events = sort_events(@events, @sort)
-    @multiple_days = true
+    @sort = params[:sort] || 'time'
+    @query = EventsQuery.new(site: current_site, day: @current_day)
+    @period = params[:period] || default_period
 
-    @next = if params[:year].present?
-              date = begin
-                Date.new(params[:year].to_i,
-                         params[:month].to_i,
-                         params[:day].to_i)
-              rescue Date::Error
-                Time.zone.today
-              end
-              Event.for_site(current_site).future(
-                date
-              ).first
-            else
-              Event.for_site(current_site).future(
-                Time.zone.today
-              ).first
-            end
+    @events = @query.call(period: @period, repeating: @repeating, sort: @sort)
+    @truncated = @query.truncated
+    @next_date = @query.next_event_after(@current_day)
+    @title = current_site.name
 
     respond_to do |format|
       format.html do
@@ -54,15 +32,7 @@ class EventsController < ApplicationController
         end
       end
       format.text
-      format.ics do
-        events = Event.all
-        events = events.for_site(@site) if @site
-        # TODO: Add caching maybe Rails.cache.fetch(:ics, expires_in: 1.hour)?
-        ics_listing = events.ical_feed
-        cal = create_calendar(ics_listing)
-        cal.publish
-        render plain: cal.to_ical
-      end
+      format.ics { render_ical }
     end
   end
 
@@ -88,8 +58,30 @@ class EventsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_event
     @event = Event.find(params[:id])
+  end
+
+  # Auto-select period based on event density
+  # - Few events total: show all (future)
+  # - Moderate density: show week view
+  # - High density: show day view
+  def default_period
+    return params[:period] if params[:period].present?
+
+    future_count = @query.future_count
+    return 'future' if future_count < 20
+
+    week_count = @query.next_7_days_count
+    week_count > 20 ? 'day' : 'week'
+  end
+
+  def render_ical
+    events = Event.all
+    events = events.for_site(@site) if @site
+    ics_listing = events.ical_feed
+    cal = create_calendar(ics_listing)
+    cal.publish
+    render plain: cal.to_ical
   end
 end

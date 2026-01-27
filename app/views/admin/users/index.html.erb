@@ -1,19 +1,63 @@
-<script>
-var columns = [
-    {"data": "id"},
-    {"data": "first_name"},
-    {"data": "last_name"},
-    {"data": "admin_roles"},
-    {"data": "email"},
-    {"data": "updated_at"}
-  ]
-</script>
-
-<%= render partial: "layouts/admin/datatable", locals: {
-    title: "Users",
+<%= render partial: 'layouts/admin/datatable', locals: {
+    title: 'Users',
     model: :users,
-    column_titles: ['ID', 'First name', 'Last name', 'Roles', 'Email', 'Last updated'],
-    columns: %i[id first_name last_name admin_roles email updated_at],
+    column_titles: [
+      'User',
+      'Roles',
+      'Last Login',
+      'Last Updated',
+      ''
+    ],
+    columns: %i[name roles last_sign_in_at updated_at actions],
+    column_config: {
+      name: {},
+      roles: { sortable: false },
+      last_sign_in_at: { fit: true },
+      updated_at: { fit: true },
+      actions: { sortable: false, fit: true }
+    },
+    default_sort: { column: 'updated_at', direction: 'desc' },
+    filters: [
+      {
+        type: :radio,
+        column: 'role',
+        label: 'Role',
+        options: [
+          { value: 'root', label: 'Root' },
+          { value: 'editor', label: 'Editor' },
+          { value: 'citizen', label: 'Citizen' }
+        ]
+      }
+    ],
+    secondary_filters: [
+      {
+        type: :radio,
+        column: 'is_site_admin',
+        label: 'Site Admin',
+        options: [
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
+        ]
+      },
+      {
+        type: :radio,
+        column: 'has_neighbourhoods',
+        label: 'Neighbourhood Admin',
+        options: [
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
+        ]
+      },
+      {
+        type: :radio,
+        column: 'has_partners',
+        label: 'Partner Admin',
+        options: [
+          { value: 'yes', label: 'Yes' },
+          { value: 'no', label: 'No' }
+        ]
+      }
+    ],
     data: @users,
     source: admin_users_path(format: :json),
     new_link: new_admin_user_path

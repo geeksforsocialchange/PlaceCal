@@ -2,7 +2,11 @@
 
 # app/models/partner.rb
 class Partner < ApplicationRecord
+  MAX_CATEGORIES = 3
+
   after_initialize :set_defaults, unless: :persisted?
+  after_commit :refresh_neighbourhood_partners_count
+
   include Validation
 
   extend FriendlyId
@@ -19,7 +23,7 @@ class Partner < ApplicationRecord
   # Associations
   has_and_belongs_to_many :users
   has_many :calendars, dependent: :destroy
-  has_many :events
+  has_many :events, dependent: :destroy
   belongs_to :address, optional: true, dependent: :destroy
 
   has_many :partner_tags, dependent: :destroy
@@ -105,6 +109,7 @@ class Partner < ApplicationRecord
   validates :public_email, :partner_email,
             format: { with: EMAIL_REGEX, message: 'invalid email address' },
             allow_blank: true
+  validates :slug, uniqueness: true
 
   validate :check_neighbourhood_access
 
@@ -405,6 +410,20 @@ class Partner < ApplicationRecord
 
   private
 
+  def refresh_neighbourhood_partners_count
+    # Refresh count for current neighbourhood (via address)
+    address&.neighbourhood&.refresh_partners_count!
+
+    # If address_id changed, also refresh the old neighbourhood
+    if previous_changes.key?('address_id')
+      old_address_id = previous_changes['address_id'].first
+      if old_address_id
+        old_address = Address.find_by(id: old_address_id)
+        old_address&.neighbourhood&.refresh_partners_count!
+      end
+    end
+  end
+
   def neighbourhood_admin_address_access
     # we trust that the user who last updated the address has been vetted
     return if address.nil? || (address.present? && !address.changed?)
@@ -493,9 +512,9 @@ class Partner < ApplicationRecord
 
   def three_or_less_category_tags
     # we can't just use categories.count here because of STI, on create they won't exist yet
-    return if category_ids.count < 4
+    return if category_ids.count <= MAX_CATEGORIES
 
-    errors.add :categories, 'Partners can have a maximum of 3 Category tags'
+    errors.add :categories, "Partners can have a maximum of #{MAX_CATEGORIES} Category tags"
   end
 
   def partnership_admins_must_add_partnership

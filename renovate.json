@@ -10,9 +10,6 @@
 	"lockFileMaintenance": {
 		"enabled": true
 	},
-	"major": {
-		"dependencyDashboardApproval": true
-	},
 	"rangeStrategy": "pin",
 	"timezone": "Europe/London",
 	"vulnerabilityAlerts": {
@@ -39,6 +36,10 @@
 			"matchPackageNames": ["postgres"],
 			"matchCurrentVersion": "13.4",
 			"allowedVersions": "13.4"
+		},
+		{
+			"matchManagers": ["npm", "rubygems"],
+			"minimumReleaseAge": "7 days"
 		}
 	]
 }

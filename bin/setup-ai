@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Setting up AI coding assistant support..."
+
+# Enable the :ai group in bundler
+bundle config set --local with ai
+
+# Install gems including the AI group
+bundle install
+
+echo ""
+echo "AI tooling installed successfully!"
+echo ""
+echo "Usage:"
+echo "  - The agents-swarm.yml configures specialized AI agents"
+echo "  - Agent prompts are in doc/ai/prompts/"
+echo "  - AGENTS.md provides context to AI assistants"
+echo ""
+echo "To disable AI tooling later:"
+echo "  bundle config unset --local with"
+echo "  bundle install"

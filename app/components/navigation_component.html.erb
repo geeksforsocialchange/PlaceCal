@@ -1,0 +1,37 @@
+<div class="header" data-controller="mobile-menu">
+  <% if @site&.logo&.present? %>
+    <div class="header__branding header__branding--<%= @site.slug %>"
+         style="background-image: url(<%= image_url @site.logo %>)"
+         role="banner">
+  <% else %>
+    <div class="header__branding" role="banner">
+  <% end %>
+    <%= link_to root_path do %>
+      <% if @site&.default_site? %>
+        <% if request.path == '/' %>
+          <h1>PlaceCal</h1>
+        <% else %>
+          <h2>PlaceCal</h2>
+        <% end %>
+      <% else %>
+        <h2><%= @site&.name %></h2>
+        <p>The Community Calendar</p>
+      <% end %>
+    <% end %>
+  </div>
+  <nav class="nav header__menu" data-mobile-menu-target="menu" role="navigation">
+    <ul>
+      <li><%= active_link_to "Home", root_path %></li>
+      <% navigation.each do |link_text, link_path| %>
+        <li><%= active_link_to link_text, link_path, data: { turbolinks: false } %></li>
+      <% end %>
+    </ul>
+  </nav>
+  <a href="#" class="header__toggle" data-action="click->mobile-menu#toggle" data-turbo="false">
+    <svg viewBox="0 0 33 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <polygon class="svg__primary" points="0 5 33 5 33 0 0 0"></polygon>
+      <polygon class="svg__primary" points="0 18 33 18 33 13 0 13"></polygon>
+      <polygon class="svg__primary" points="0 31 33 31 33 26 0 26"></polygon>
+    </svg>
+  </a>
+</div>

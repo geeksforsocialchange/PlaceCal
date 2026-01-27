@@ -1,5 +1,0 @@
-<% if page? %>
-  <%= render(HeroComponent.new(@title, "The Community Calendar")) %>
-<% else %>
-  <h3><%= link_to properties[:name], partner_path(properties[:id]) %></h3>
-<% end %>

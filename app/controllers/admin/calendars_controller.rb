@@ -7,11 +7,11 @@ module Admin
     before_action :preselect_partner, only: %i[new create]
 
     def index
-      @calendars = policy_scope(Calendar).order(updated_at: :desc).order(:name)
+      @calendars = policy_scope(Calendar)
       authorize Calendar
 
       respond_to do |format|
-        format.html
+        format.html { @calendars = @calendars.order(updated_at: :desc, name: :asc) }
         format.json do
           render json: CalendarDatatable.new(
             params,
@@ -24,6 +24,8 @@ module Admin
 
     def new
       @calendar = Calendar.new
+      @calendar.place_id = @partner&.id if @partner&.address_id.present?
+      @partner_missing_address = @partner.present? && @partner.address_id.blank?
       authorize @calendar
     end
 
@@ -46,7 +48,7 @@ module Admin
         flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'new', status: :unprocessable_entity
+        render 'new', status: :unprocessable_content
       end
     end
 
@@ -56,7 +58,7 @@ module Admin
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'edit', status: :unprocessable_entity
+        render 'edit', status: :unprocessable_content
       end
     end
 
@@ -81,13 +83,49 @@ module Admin
       redirect_to edit_admin_calendar_path(@calendar)
     end
 
+    # Test a calendar source URL and detect the importer type
+    def test_source
+      authorize Calendar, :create?
+
+      source = params[:source].to_s.strip
+
+      return render json: { valid: false, error: 'Please enter a URL' } if source.blank?
+
+      return render json: { valid: false, error: 'Please enter a valid URL' } unless Calendar::CALENDAR_REGEX.match?(source)
+
+      # Try to detect the importer
+      temp_calendar = Calendar.new(source: source, importer_mode: 'auto')
+      begin
+        importer = CalendarImporter::CalendarImporter.new(temp_calendar)
+        parser = importer.parser
+
+        if parser
+          render json: {
+            valid: true,
+            importer_key: parser::KEY,
+            importer_name: parser::NAME
+          }
+        else
+          render json: { valid: false, error: 'Unable to detect calendar format' }
+        end
+      rescue CalendarImporter::Exceptions::InaccessibleFeed => e
+        render json: { valid: false, error: e.message }
+      rescue CalendarImporter::Exceptions::UnsupportedFeed
+        # URL is reachable but format couldn't be auto-detected
+        # Allow user to manually select
+        render json: { valid: false, needs_manual_selection: true }
+      rescue StandardError => e
+        Rails.logger.error("Calendar test_source error: #{e.message}")
+        render json: { valid: false, error: 'Unable to validate this URL' }
+      end
+    end
+
     private
 
     def preselect_partner
       return if params[:partner_id].blank?
 
-      # TODO: better calendar-to-user scoping
-      @partner = current_user.partners.where(id: params[:partner_id]).first
+      @partner = policy_scope(Partner).find_by(id: params[:partner_id])
     end
 
     def set_calendar

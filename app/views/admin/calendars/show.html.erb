@@ -1,36 +1,143 @@
-<h1><%= @calendar.name %></h1>
-<p><%= link_to "Edit this calendar", edit_admin_calendar_path(@calendar.id), class: "btn btn-primary btn-sm" %></p>
+<div class="mb-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold"><%= @calendar.name %></h1>
+      <p class="text-sm text-gray-600 mt-1">
+        Calendar for <%= link_to @calendar.partner.name, edit_admin_partner_path(@calendar.partner), class: "link link-hover text-placecal-orange" %>
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      <%= link_to edit_admin_calendar_path(@calendar.id), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" do %>
+        <%= icon(:edit, size: '4') %>
+        Edit Calendar
+      <% end %>
+    </div>
+  </div>
+</div>
 
+<%# Import Status Bar %>
 <%= render 'importer_overview', calendar: @calendar %>
-<hr>
 
-<p>Published by <%= link_to @calendar.partner, edit_admin_partner_path(@calendar.partner) %>. Using <%= content_tag :tt, @calendar.strategy %> strategy to import <%= content_tag :tt, @calendar.events.count %> events. <%= calendar_last_imported(@calendar) %>.</p>
+<div class="divider my-6"></div>
 
-<p>
-  <% if @calendar.place %>
-    This calendar's default location is <%= link_to @calendar.place, edit_admin_partner_path(@calendar.place) %>.
-  <% else %>
-    This calendar does not have a default location set.
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <%= render Admin::InfoCardComponent.new(icon: :partner, label: "Partner", color: :orange) do %>
+    <%= link_to @calendar.partner.name, edit_admin_partner_path(@calendar.partner), class: "font-semibold link link-hover text-placecal-orange" %>
   <% end %>
-</p>
 
+  <%= render Admin::InfoCardComponent.new(
+    icon: :cog,
+    label: "Strategy",
+    value: @calendar.strategy.to_s.titleize,
+    color: :info
+  ) %>
 
-<div class="row">
-  <div class="col-md-6">
-    <h2>Events</h2>
+  <%= render Admin::InfoCardComponent.new(icon: :map_pin, label: "Default Location", color: :success) do %>
+    <% if @calendar.place %>
+      <%= link_to @calendar.place.name, edit_admin_partner_path(@calendar.place), class: "font-semibold link link-hover text-placecal-orange" %>
+    <% end %>
+  <% end %>
+</div>
 
-    <h3>Upcoming</h3>
-    <ol class="pl-3">
-      <% @calendar.events.upcoming.each do |event| %>
-        <li><%= content_tag :strong, event.date_year %>. <%= event.summary %></li>
-      <% end %>
-    </ol>
+<%# Events Section %>
+<div class="card bg-base-100 border border-base-300">
+  <div class="card-body p-0">
+    <div class="p-4 border-b border-base-300 flex items-center justify-between">
+      <h2 class="font-bold flex items-center gap-2">
+        <%= icon(:event, size: '5') %>
+        Events
+        <span class="badge badge-neutral"><%= @calendar.events.count %></span>
+      </h2>
+    </div>
 
-    <h3>Past</h3>
-    <ol class="pl-3">
-      <% @calendar.events.past.limit(50).each do |event| %>
-        <li><%= content_tag :strong, event.date_year %>. <%= event.summary %></li>
-      <% end %>
-    </ol>
+    <% upcoming_events = @calendar.events.upcoming %>
+    <% past_events = @calendar.events.past.limit(50) %>
+
+    <div class="tabs tabs-bordered px-4 pt-2">
+      <input type="radio" name="events_tabs" role="tab" class="tab" aria-label="Upcoming (<%= upcoming_events.count %>)" checked>
+      <div role="tabpanel" class="tab-content py-4">
+        <% if upcoming_events.any? %>
+          <div class="overflow-x-auto">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th class="w-24">Date</th>
+                  <th>Event</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% upcoming_events.each do |event| %>
+                  <tr class="hover">
+                    <td class="whitespace-nowrap">
+                      <div class="font-semibold text-sm"><%= event.dtstart.strftime('%d %b') %></div>
+                      <div class="text-xs text-gray-600"><%= event.dtstart.strftime('%H:%M') %></div>
+                    </td>
+                    <td>
+                      <div class="font-medium"><%= truncate(event.summary, length: 70) %></div>
+                    </td>
+                    <td class="text-sm text-base-content/70">
+                      <% if event.address %>
+                        <%= truncate(event.address.to_s, length: 50) %>
+                      <% elsif event.partner %>
+                        <%= event.partner.name %>
+                      <% else %>
+                        <span class="text-gray-500">—</span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events", icon_size: '12', padding: 'py-12') %>
+        <% end %>
+      </div>
+
+      <input type="radio" name="events_tabs" role="tab" class="tab" aria-label="Past (<%= past_events.count %>)">
+      <div role="tabpanel" class="tab-content py-4">
+        <% if past_events.any? %>
+          <div class="overflow-x-auto">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th class="w-24">Date</th>
+                  <th>Event</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% past_events.each do |event| %>
+                  <tr class="hover opacity-70">
+                    <td class="whitespace-nowrap">
+                      <div class="font-semibold text-sm"><%= event.dtstart.strftime('%d %b') %></div>
+                      <div class="text-xs text-gray-600"><%= event.dtstart.strftime('%Y') %></div>
+                    </td>
+                    <td>
+                      <div class="font-medium"><%= truncate(event.summary, length: 70) %></div>
+                    </td>
+                    <td class="text-sm text-base-content/70">
+                      <% if event.address %>
+                        <%= truncate(event.address.to_s, length: 50) %>
+                      <% elsif event.partner %>
+                        <%= event.partner.name %>
+                      <% else %>
+                        <span class="text-gray-500">—</span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <% if @calendar.events.past.count > 50 %>
+            <p class="text-center text-sm text-gray-600 mt-4">Showing 50 of <%= @calendar.events.past.count %> past events</p>
+          <% end %>
+        <% else %>
+          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No past events", icon_size: '12', padding: 'py-12') %>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>

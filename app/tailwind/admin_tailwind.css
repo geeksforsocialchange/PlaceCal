@@ -1,0 +1,45 @@
+/*
+ * Admin Tailwind CSS
+ *
+ * Tailwind v4 uses CSS-first configuration.
+ */
+
+@import "tailwindcss";
+@plugin "daisyui" {
+	themes:
+		light --default,
+		corporate;
+}
+
+/* Source paths for content detection */
+@source "../../app/datatables/**/*.rb";
+@source "../javascript/**/*.js";
+@source "../helpers/**/*.rb";
+@source "../views/**/*.erb";
+
+/* Safelist for dynamically generated icon sizes */
+/* size-3 size-4 size-5 size-6 size-8 size-10 size-12 */
+
+/* PlaceCal brand colors as CSS custom properties */
+@theme {
+	--color-placecal-brown: #5b4e46;
+	--color-placecal-cream: #f5f1eb;
+	--color-placecal-orange: #e87d1e;
+	--color-placecal-orange-dark: #b35500; /* WCAG AA compliant for text on white (5.0:1) */
+	--color-placecal-teal: #00a9a5;
+	--color-placecal-teal-dark: #007a77; /* WCAG AA compliant for text on white (4.7:1) */
+	--color-placecal-pink: #e91e63;
+	--color-placecal-purple: #9c27b0;
+}
+
+/* Leaflet map styles */
+@import "leaflet/dist/leaflet.css";
+
+/* Tom Select - base styles then custom overrides */
+@import "tom-select/dist/css/tom-select.default.css";
+@import "./_tom-select.css";
+
+/* Admin CSS partials */
+@import "./_animations.css";
+@import "./_components.css";
+@import "./_markdown-preview.css";

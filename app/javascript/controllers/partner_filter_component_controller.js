@@ -17,48 +17,70 @@ export default class extends Controller {
 	}
 
 	submitCategory() {
+		this.updateLabels();
+		this.hideDropdown(this.categoryDropdownTarget);
 		this.submitForm();
 	}
 
 	submitNeighbourhood() {
+		this.updateLabels();
+		this.hideDropdown(this.neighbourhoodDropdownTarget);
 		this.submitForm();
 	}
 
 	resetCategory() {
 		this.selectedCategory.checked = false;
+		this.hideDropdown(this.categoryDropdownTarget);
 		this.submitForm();
 	}
 
 	resetNeighbourhood() {
 		this.selectedNeighbourhood.checked = false;
+		this.hideDropdown(this.neighbourhoodDropdownTarget);
 		this.submitForm();
 	}
 
 	toggleCategory() {
 		this.categoryDropdownTarget.classList.toggle("filters__dropdown--hidden");
+		// Close other dropdown
+		if (this.hasNeighbourhoodDropdownTarget) {
+			this.neighbourhoodDropdownTarget.classList.add(
+				"filters__dropdown--hidden",
+			);
+		}
 	}
 
 	toggleNeighbourhood() {
 		this.neighbourhoodDropdownTarget.classList.toggle(
-			"filters__dropdown--hidden"
+			"filters__dropdown--hidden",
 		);
+		// Close other dropdown
+		if (this.hasCategoryDropdownTarget) {
+			this.categoryDropdownTarget.classList.add("filters__dropdown--hidden");
+		}
+	}
+
+	hideDropdown(dropdown) {
+		if (dropdown) {
+			dropdown.classList.add("filters__dropdown--hidden");
+		}
 	}
 
 	updateLabels() {
 		// Find the associated label for each selected param and get the text contents
 		// If params are selected, they show up instead of "Category" and "Neighbourhood" text
-		if (this.selectedCategory) {
+		if (this.hasCategoryTextTarget && this.selectedCategory) {
 			this.categoryTextTarget.innerHTML =
 				this.selectedCategory.labels[0].textContent;
 		}
-		if (this.selectedNeighbourhood) {
+		if (this.hasNeighbourhoodTextTarget && this.selectedNeighbourhood) {
 			this.neighbourhoodTextTarget.innerHTML =
 				this.selectedNeighbourhood.labels[0].textContent;
 		}
 	}
+
 	submitForm() {
 		this.formTarget.requestSubmit();
-		this.updateLabels();
 	}
 
 	get selectedCategory() {

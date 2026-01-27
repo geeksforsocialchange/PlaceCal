@@ -1,4 +1,4 @@
-@import "variables_mixins";
+@import "../../variables_mixins";
 
 $mossley-primary: #28a9e1;
 $mossley-primary-dark: #5775b9;
@@ -235,27 +235,37 @@ a {
 }
 
 .hero {
-	background-image: image-url("regions/mossley/hero-bg@1x.png"),
+	background-image:
+		image-url("regions/mossley/hero-bg@1x.png"),
 		image-url("regions/mossley/hero-bg@1x.png");
-	background-position: (-7.5rem) 1.5rem, right -9.5rem top 2.5rem;
+	background-position:
+		(-7.5rem) 1.5rem,
+		right -9.5rem top 2.5rem;
 
 	@include for-retina {
-		background-image: image-url("regions/mossley/hero-bg@2x.png"),
+		background-image:
+			image-url("regions/mossley/hero-bg@2x.png"),
 			image-url("regions/mossley/hero-bg@2x.png");
 		background-size: 246px 199px;
 	}
 
 	@include for-tablet-portrait-up {
-		background-position: (-4.5rem) 1.5rem, right -4.5rem top 2.5rem;
+		background-position:
+			(-4.5rem) 1.5rem,
+			right -4.5rem top 2.5rem;
 	}
 
 	@include for-tablet-landscape-up {
-		background-image: image-url("regions/mossley/hero-bg-landscape@1x.png"),
+		background-image:
+			image-url("regions/mossley/hero-bg-landscape@1x.png"),
 			image-url("regions/mossley/hero-bg-landscape@1x.png");
-		background-position: (-2.5rem) 0rem, right -3.5rem top 1rem;
+		background-position:
+			(-2.5rem) 0rem,
+			right -3.5rem top 1rem;
 
 		@include for-retina {
-			background-image: image-url("regions/mossley/hero-bg-landscape@2x.png"),
+			background-image:
+				image-url("regions/mossley/hero-bg-landscape@2x.png"),
 				image-url("regions/mossley/hero-bg-landscape@2x.png");
 			background-size: 400px 327px;
 		}

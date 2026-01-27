@@ -3,7 +3,7 @@
 class OnlineAddress < ApplicationRecord
   extend Enumerize
 
-  has_many :events
+  has_many :events, dependent: :nullify
 
   enumerize :link_type,
             in: %i[direct indirect],

@@ -1,4 +1,4 @@
-@import "variables_mixins";
+@import "../variables_mixins";
 
 .hero {
 	background-color: $base-primary;
@@ -7,19 +7,25 @@
 	padding: 2rem 0 1rem;
 
 	// Background graphics
-	background-image: image-url("patterns/mobile-l.svg"),
-		image-url("patterns/mobile-r.svg");
-	background-position: (-2.5rem) 1.5rem, right -2.5rem top 1.5rem;
+	background-image:
+		image-url("patterns/mobile-l.svg"), image-url("patterns/mobile-r.svg");
+	background-position:
+		(-2.5rem) 1.5rem,
+		right -2.5rem top 1.5rem;
 	background-repeat: no-repeat, no-repeat;
 
 	@include for-tablet-portrait-up {
-		background-image: image-url("patterns/tablet-l.svg"),
-			image-url("patterns/tablet-r.svg");
-		background-position: (-6.5rem) -1rem, right -6.5rem top -1rem;
+		background-image:
+			image-url("patterns/tablet-l.svg"), image-url("patterns/tablet-r.svg");
+		background-position:
+			(-6.5rem) -1rem,
+			right -6.5rem top -1rem;
 	}
 
 	@include for-tablet-landscape-up {
-		background-position: 5% -1rem, right 5% top -1rem;
+		background-position:
+			5% -1rem,
+			right 5% top -1rem;
 	}
 
 	// Headers

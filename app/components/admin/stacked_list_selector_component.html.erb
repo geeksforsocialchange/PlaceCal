@@ -1,0 +1,116 @@
+<% if read_only? %>
+  <%# Read-only display mode %>
+  <div class="<%= wrapper_class %>">
+    <% if items.any? %>
+      <div class="space-y-2">
+        <% items.each do |item| %>
+          <div class="flex items-center gap-3 p-3 bg-base-200/50 rounded-xl border border-base-300/50">
+            <div class="shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
+              <%= icon(icon_name, size: '5') %>
+            </div>
+            <% if item_link(item) %>
+              <%= link_to item_display_name(item), item_link(item), class: "flex-1 font-medium text-sm text-base-content/90 hover:text-orange-600 hover:underline" %>
+            <% else %>
+              <span class="flex-1 font-medium text-sm text-base-content/90"><%= item_display_name(item) %></span>
+            <% end %>
+            <span class="badge badge-ghost badge-sm"><%= t('admin.labels.locked') %></span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-base-200 mb-3">
+          <%= icon(icon_name, size: '7', css_class: 'text-gray-400') %>
+        </div>
+        <p class="text-sm text-gray-600"><%= empty_text %></p>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <%# Interactive mode %>
+  <div class="<%= wrapper_class %>"
+       data-controller="<%= controller %>"
+       data-<%= controller %>-permitted-value="<%= permitted_json %>"
+       data-<%= controller %>-field-name-value="<%= field_name %>"
+       data-<%= controller %>-icon-value="<%= icon_name %>"
+       data-<%= controller %>-icon-color-value="<%= icon_color %>"
+       <% if remove_last_warning.present? %>data-<%= controller %>-remove-last-warning-value="<%= remove_last_warning %>"<% end %>
+       <% if cannot_remove_message.present? %>data-<%= controller %>-cannot-remove-message-value="<%= cannot_remove_message %>"<% end %>>
+
+    <%# Empty hidden field to ensure array is submitted even when empty %>
+    <input type="hidden" name="<%= field_name %>" value="">
+
+    <%# List of selected items %>
+    <div class="space-y-2 mb-4" data-<%= controller %>-target="list">
+      <% items.each do |item| %>
+        <div class="group flex items-center gap-3 p-3 bg-base-200/80 rounded-xl border border-base-300/50 hover:border-base-300 transition-all"
+             data-item-id="<%= item.id %>"
+             data-item-name="<%= item_display_name(item) %>">
+          <input type="hidden" name="<%= field_name %>" value="<%= item.id %>">
+          <div class="shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
+            <%= icon(icon_name, size: '5') %>
+          </div>
+          <% if item_link(item) %>
+            <%= link_to item_display_name(item), item_link(item), class: "flex-1 font-medium text-sm text-base-content/90 hover:text-orange-600 hover:underline" %>
+          <% else %>
+            <span class="flex-1 font-medium text-sm text-base-content/90"><%= item_display_name(item) %></span>
+          <% end %>
+          <% if item_removable?(item) %>
+            <button type="button"
+                    class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 text-gray-500 hover:text-error hover:bg-error/10 transition-all"
+                    data-action="click-><%= controller %>#remove"
+                    aria-label="<%= t('admin.actions.remove') %>">
+              <%= icon(:x, size: '4') %>
+            </button>
+          <% else %>
+            <span class="badge badge-ghost badge-sm"><%= t('admin.labels.locked') %></span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Empty state %>
+    <div class="text-center py-8 <%= items.any? ? 'hidden' : '' %>"
+         data-<%= controller %>-target="empty">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-base-200 mb-3">
+        <%= icon(icon_name, size: '7', css_class: 'text-gray-400') %>
+      </div>
+      <p class="text-sm text-gray-600"><%= empty_text %></p>
+    </div>
+
+    <%# Add dropdown %>
+    <div class="relative">
+      <select class="w-full"
+              aria-label="<%= add_placeholder %>"
+              data-<%= controller %>-target="select"
+              data-action="change-><%= controller %>#add"
+              data-controller="tom-select">
+        <option value=""><%= add_placeholder %></option>
+        <% options.each do |name, id| %>
+          <option value="<%= id %>" <%= 'disabled' if option_disabled?(id) %>>
+            <%= name %>
+          </option>
+        <% end %>
+      </select>
+    </div>
+
+    <%# Template for dynamically added items %>
+    <template data-<%= controller %>-target="template">
+      <div class="group flex items-center gap-3 p-3 bg-base-200/80 rounded-xl border border-base-300/50 hover:border-base-300 transition-all"
+           data-item-id="ITEM_ID"
+           data-item-name="ITEM_NAME">
+        <input type="hidden" name="<%= field_name %>" value="ITEM_ID">
+        <div class="shrink-0 w-9 h-9 rounded-lg <%= icon_color %> flex items-center justify-center">
+          <%= icon(icon_name, size: '5') %>
+        </div>
+        <span class="flex-1 font-medium text-sm text-base-content/90">ITEM_NAME</span>
+        <button type="button"
+                class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 text-gray-500 hover:text-error hover:bg-error/10 transition-all"
+                data-action="click-><%= controller %>#remove"
+                aria-label="<%= t('admin.actions.remove') %>">
+          <%= icon(:x, size: '4') %>
+        </button>
+      </div>
+    </template>
+  </div>
+<% end %>

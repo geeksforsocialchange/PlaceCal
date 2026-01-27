@@ -3,23 +3,25 @@
   <head>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+    <link rel="stylesheet" href="/vendor/maplibre-gl.css" media="all" data-turbo-track="reload">
     <% if @site&.stylesheet_link %>
       <%= stylesheet_link_tag @site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' %>
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload' %>
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_include_tag "es-module-shims", async: true %>
+    <%= javascript_importmap_tags %>
     <meta name="turbo-refresh-method" content="morph">
   </head>
 
   <body>
     <div class="background">
       <header>
-        <%= render_component "navigation", navigation: @navigation %>
+        <%= render(NavigationComponent.new(navigation: @navigation, site: @site)) %>
       </header>
       <main>
-        <%= render(AdminFlash.new()) %>
+        <%= render(FlashComponent.new) %>
         <%= yield %>
       </main>
       <footer>

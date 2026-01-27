@@ -1,39 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= "#{yield(:title)} | " if content_for?(:title) %>PlaceCal Admin</title>
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag 'admin', 'https://fonts.googleapis.com/css?family=Raleway:500,700,800|Trocchi', media: 'all', 'data-turbo-track': 'reload' %>
-    
-    <%= javascript_include_tag 'admin', 'data-turbo-track': 'reload', defer: true %>
-    <%= stylesheet_link_tag 'admin', 'data-turbo-track': 'reload' %>
+    <link rel="stylesheet" href="/assets/admin_tailwind.css" media="all" data-turbo-track="reload">
+
+    <%# ES Module Shims - polyfill for import maps in older browsers (Chrome 63+, Firefox 67+, Safari 11.1+) %>
+    <%# Only activates when needed (~6% of browsers), zero overhead for modern browsers %>
+    <%= javascript_include_tag "es-module-shims", async: true %>
+    <%= javascript_importmap_tags %>
 
     <%= render "layouts/meta" %>
   </head>
 
-  <body>
+  <body class="bg-gray-50">
     <%= render "layouts/admin/admin_topbar" %>
 
-    <div class="container-fluid">
-      <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-          <div class="sidebar-sticky">
-            <%= render "layouts/admin/admin_navigation" %>
-          </div>
-        </nav>
-        <main role="main" class="col-md-9 mt-3 ml-sm-auto col-lg-10 px-4">
-          <%= render(AdminFlash.new()) %>
-          <%= yield %>
+    <div class="flex pt-14 min-h-screen">
+      <nav aria-label="Main navigation" class="hidden md:block w-56 flex-shrink-0 bg-gray-100 border-r border-gray-200">
+        <div class="py-4">
+          <%= render "layouts/admin/admin_leftbar" %>
+        </div>
+      </nav>
+      <main role="main" class="flex-1 min-h-screen px-6 py-6">
+        <%= render(Admin::FlashComponent.new) %>
+        <%= yield %>
 
-          <% if Rails.env.development? %>
-            <div class="text-monospace text-muted mt-5">
-              <%= debug(params) %>
-              <%# console %>
-            </div>
-          <% end %>
-        </main>
-      </div>
+        <% if Rails.env.development? %>
+          <div class="font-mono text-gray-500 mt-8 text-sm">
+            <%= debug(params) %>
+          </div>
+        <% end %>
+      </main>
     </div>
   </body>
 </html>

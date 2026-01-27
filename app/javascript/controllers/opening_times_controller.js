@@ -1,6 +1,4 @@
 import { Controller } from "@hotwired/stimulus";
-import isEqual from "lodash/isEqual";
-import orderBy from "lodash/orderBy";
 
 const dayOrder = [
 	"Monday",
@@ -21,16 +19,20 @@ const openingHoursSpec = (day, open, close) => ({
 });
 
 const openingHoursObj = (openSpec) => ({
-	day: openSpec.dayOfWeek.split("/").filter((str) => str.includes("day"))[0],
+	// Get last segment of URL (e.g., "Monday" from "http://schema.org/Monday")
+	day: openSpec.dayOfWeek.split("/").pop(),
 	open: openSpec.opens.slice(0, 5),
 	close: openSpec.closes.slice(0, 5),
 });
 
 const sortedOpeningHours = (openSpecArray) =>
-	orderBy(openSpecArray, [
-		(el) => dayOrder.indexOf(openingHoursObj(el).day),
-		(el) => parseFloat(openingHoursObj(el).open.replace(":", ".")),
-	]);
+	[...openSpecArray].sort((a, b) => {
+		const aObj = openingHoursObj(a);
+		const bObj = openingHoursObj(b);
+		const dayDiff = dayOrder.indexOf(aObj.day) - dayOrder.indexOf(bObj.day);
+		if (dayDiff !== 0) return dayDiff;
+		return aObj.open.localeCompare(bObj.open);
+	});
 
 const nextDay = (day) => {
 	const index =
@@ -57,11 +59,21 @@ const element = (type, content = "", classes = []) => {
 // Connects to data-controller="opening-times"
 export default class extends Controller {
 	static values = { data: Array };
-	static targets = ["textarea", "list", "day", "allDay", "open", "close"];
+	static targets = [
+		"textarea",
+		"list",
+		"day",
+		"allDay",
+		"open",
+		"close",
+		"empty",
+	];
 
 	connect() {
 		this.dataValue = sortedOpeningHours(this.dataValue);
 		this.resetForm();
+		// Ensure empty state is correct on initial load
+		this.updateEmptyState();
 	}
 
 	disconnect() {
@@ -70,7 +82,7 @@ export default class extends Controller {
 		this.listTarget.replaceChildren();
 	}
 
-	resetForm(day = "Monday", open = "00:00", close = "00:00") {
+	resetForm(day = "Monday", open = "09:00", close = "17:00") {
 		const allDay = open === "00:00" && close === "23:59";
 		this.dayTarget.value = day;
 		this.allDayTarget.checked = allDay;
@@ -83,36 +95,59 @@ export default class extends Controller {
 	dataValueChanged() {
 		this.updateTextarea();
 		this.updateList();
+		this.updateEmptyState();
 	}
 
 	updateTextarea() {
 		this.textareaTarget.value = JSON.stringify(this.dataValue);
 	}
 
+	updateEmptyState() {
+		if (this.hasEmptyTarget) {
+			this.emptyTarget.classList.toggle("hidden", this.dataValue.length > 0);
+		}
+	}
+
 	updateList() {
 		this.listTarget.replaceChildren(
-			// This function takes separate params so we map and spread the data array.
 			...this.dataValue.map((openSpec) => {
-				const li = element("li", openingHoursEnglish(openSpec), [
-					"list-group-item",
-					"d-flex",
-					"align-items-center",
-					"justify-content-between",
+				// Create a clean row for each opening time
+				const row = element("div", "", [
+					"flex",
+					"items-center",
+					"justify-between",
+					"bg-base-100",
+					"rounded-lg",
+					"px-4",
+					"py-3",
 				]);
-				const btn = element("button", "Remove", [
+
+				const text = element("span", openingHoursEnglish(openSpec), [
+					"text-base",
+					"font-medium",
+				]);
+
+				const btn = element("button", "", [
 					"btn",
-					"btn-danger",
+					"btn-ghost",
 					"btn-sm",
+					"btn-square",
+					"text-gray-500",
+					"hover:text-error",
+					"hover:bg-error/10",
 				]);
+				btn.type = "button";
+				btn.innerHTML = `<svg class="size-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v11a2 2 0 01-2 2H9a2 2 0 01-2-2V7h10z"/></svg>`;
 				btn.onclick = () => {
-					// remove opening time
 					this.dataValue = [...this.dataValue].filter(
-						(el) => !isEqual(el, openSpec)
+						(el) => JSON.stringify(el) !== JSON.stringify(openSpec),
 					);
 				};
-				li.appendChild(btn);
-				return li;
-			})
+
+				row.appendChild(text);
+				row.appendChild(btn);
+				return row;
+			}),
 		);
 	}
 

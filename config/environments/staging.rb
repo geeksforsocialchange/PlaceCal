@@ -23,12 +23,18 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
-  # Compress JavaScripts and CSS.
-  # config.assets.js_compressor = Uglifier.new(harmony: true)
-  # config.assets.css_compressor = :sass
+  # Compress CSS using a preprocessor.
+  config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
+
+  # Explicitly use manifest for asset resolution (required for importmap digested paths)
+  config.assets.resolve_with = [:manifest]
+
+  # Raise errors instead of silently falling back to non-digested paths
+  # This helps debug asset resolution issues
+  config.assets.unknown_asset_fallback = false
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 

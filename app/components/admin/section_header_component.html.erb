@@ -1,0 +1,7 @@
+<%= content_tag tag, class: header_classes do %>
+  <%= icon if icon? %>
+  <%= title %>
+<% end %>
+<% if description.present? %>
+  <p class="<%= description_classes %>"><%= description %></p>
+<% end %>

@@ -1,0 +1,29 @@
+<%= render Admin::SectionHeaderComponent.new(
+  title: t('admin.calendars.tabs.contact'),
+  description: t('admin.calendars.sections.contact_description')
+) do |c| %>
+  <% c.with_icon do %>
+    <%= icon(:phone, size: '5') %>
+  <% end %>
+<% end %>
+
+<div class="max-w-xl">
+  <%= render Admin::FormCardComponent.new(icon: :phone, title: t('admin.sections.public_contact')) do %>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :public_contact_name) %></legend>
+      <%= f.input_field :public_contact_name, class: 'input input-bordered input-sm w-full bg-base-100' %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :public_contact_email) %></legend>
+      <%= f.input_field :public_contact_email, class: 'input input-bordered input-sm w-full bg-base-100',
+          'data-validate-email': 'true',
+          'data-validate-email-message': t('admin.hints.email_validation') %>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= attr_label(:calendar, :public_contact_phone) %></legend>
+      <%= f.input_field :public_contact_phone, class: 'input input-bordered input-sm w-full bg-base-100' %>
+    </fieldset>
+  <% end %>
+</div>
