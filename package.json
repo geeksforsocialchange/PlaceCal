@@ -3,8 +3,7 @@
 	"version": "3.0.0",
 	"private": true,
 	"dependencies": {
-		"@tailwindcss/cli": "^4.1.18",
-		"tailwindcss": "^4.1.18"
+		"@tailwindcss/cli": "^4.1.18"
 	},
 	"devDependencies": {
 		"daisyui": "^5.5.14",
