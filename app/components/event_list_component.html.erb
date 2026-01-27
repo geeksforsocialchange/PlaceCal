@@ -14,6 +14,9 @@
       <% end %>
     </ol>
   <% end %>
+  <% if truncated %>
+    <p class="event-list__truncated">Showing first 100 events. Use the date picker to see more.</p>
+  <% end %>
 <% else %>
   <p>No events with this selection.</p>
   <p><%= link_to 'Skip to next date with events.', helpers.next_url(next_date) if next_date.present? %></p>

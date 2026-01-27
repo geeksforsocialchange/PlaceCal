@@ -5,11 +5,15 @@
 class EventsQuery
   DEFAULT_REPEATING = 'on'
   DEFAULT_SORT = 'time'
+  FUTURE_LIMIT = 100
 
   def initialize(site:, day: Time.zone.today)
     @site = site
     @day = day
+    @truncated = false
   end
+
+  attr_reader :truncated
 
   # Returns events filtered and sorted according to parameters
   # @param period [String] 'day', 'week', or 'future'
@@ -56,7 +60,9 @@ class EventsQuery
   def apply_period_filter(events, period)
     case period
     when 'future'
-      events.future(@day)
+      future_events = events.future(@day)
+      @truncated = future_events.count > FUTURE_LIMIT
+      future_events.limit(FUTURE_LIMIT)
     when 'week'
       events.find_next_7_days(@day)
     else

@@ -19,6 +19,7 @@ class EventsController < ApplicationController
     @period = params[:period] || default_period
 
     @events = @query.call(period: @period, repeating: @repeating, sort: @sort)
+    @truncated = @query.truncated
     @next_date = @query.next_event_after(@current_day)
     @title = current_site.name
 
