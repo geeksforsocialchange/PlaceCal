@@ -1,9 +1,8 @@
+<% unless @calendar.new_record? %>
+  <%= render('importer_overview', calendar: @calendar) %>
+<% end %>
+
 <%= simple_form_for [:admin, @calendar], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'calendarTabAfterSave' } } do |f| %>
-
-  <% unless @calendar.new_record? %>
-    <%= render('importer_overview', calendar: @calendar) %>
-  <% end %>
-
   <div class="mt-6">
     <%= render Admin::TabFormComponent.new(
       tabs: [
