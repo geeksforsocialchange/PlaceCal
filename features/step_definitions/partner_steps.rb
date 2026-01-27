@@ -87,3 +87,27 @@ Then("the partner {string} should have summary {string}") do |name, summary|
   partner = Partner.find_by(name: name)
   expect(partner.summary).to eq(summary)
 end
+
+# Partner page paginator steps
+
+Given("the partner has {int} upcoming events") do |count|
+  count.times do |i|
+    date = Time.current + (i % 28).days + 1.day
+    create(:event, partner: @partner, dtstart: date, dtend: date + 2.hours)
+  end
+end
+
+When("I visit the partner page for {string}") do |name|
+  create_default_site
+  partner = Partner.find_by(name: name)
+  visit "/partners/#{partner.slug}"
+end
+
+Then("I should see a paginator") do
+  expect(page).to have_css(".paginator")
+end
+
+Then("I should still be on the partner page for {string}") do |name|
+  partner = Partner.find_by(name: name)
+  expect(current_path).to include("/partners/#{partner.slug}")
+end
