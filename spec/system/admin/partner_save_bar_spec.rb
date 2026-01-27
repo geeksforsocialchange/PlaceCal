@@ -80,7 +80,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       # Go to Location tab
       find('input[aria-label="📍 Location"]').click
 
-      expect(page).to have_button("Back")
+      # Wait for button visibility to update (JavaScript runs on setTimeout)
+      expect(page).to have_button("Back", wait: 5)
       expect(page).to have_button("Save")
       expect(page).to have_button("Continue", visible: :all)
     end
