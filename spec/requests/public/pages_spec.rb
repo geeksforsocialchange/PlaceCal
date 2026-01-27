@@ -71,4 +71,19 @@ RSpec.describe "Public Pages", type: :request do
       expect(response).to have_http_status(:not_found).or have_http_status(:redirect)
     end
   end
+
+  describe "GET /robots.txt" do
+    it "returns robots.txt for a site" do
+      get "/robots.txt", headers: { "Host" => "#{site.slug}.lvh.me" }
+      expect(response).to be_successful
+      expect(response.content_type).to include("text/plain")
+    end
+
+    it "returns disallow-all robots.txt for admin subdomain" do
+      get "/robots.txt", headers: { "Host" => "admin.lvh.me" }
+      expect(response).to be_successful
+      expect(response.body).to include("User-agent: *")
+      expect(response.body).to include("Disallow: /")
+    end
+  end
 end
