@@ -4,6 +4,13 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
 	static targets = ["input", "period", "sort", "repeating"];
 
+	open(event) {
+		event.preventDefault();
+		if (this.hasInputTarget) {
+			this.inputTarget.showPicker();
+		}
+	}
+
 	submit() {
 		if (!this.hasInputTarget) return;
 
