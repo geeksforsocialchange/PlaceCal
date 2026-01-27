@@ -82,31 +82,10 @@
 	}
 }
 
-.event-filters {
-	display: flex;
-	gap: 0.75rem;
-	align-items: center;
-
-	&__today {
-		// Inherits border-bottom from .breadcrumb a
-	}
-
-	&__go-to-date {
-		border-bottom-color: transparent;
-	}
-
-	&__go-to-date-label {
-		border-bottom-style: solid;
-		border-bottom-color: $base-rules-dark;
-		border-bottom-width: 2px;
-	}
-
-	&__date-input {
-		// Hide the input but keep it in the DOM for showPicker()
-		position: absolute;
-		opacity: 0;
-		width: 0;
-		height: 0;
-		pointer-events: none;
-	}
+.filters__date-input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	pointer-events: none;
 }
