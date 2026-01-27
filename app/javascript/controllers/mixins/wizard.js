@@ -126,14 +126,14 @@ export function updateWizardUI(controller) {
 	if (controller.hasContinueButtonTarget) {
 		controller.continueButtonTarget.classList.toggle(
 			"hidden",
-			currentStep === totalSteps
+			currentStep === totalSteps,
 		);
 	}
 
 	if (controller.hasSubmitButtonTarget) {
 		controller.submitButtonTarget.classList.toggle(
 			"hidden",
-			currentStep !== totalSteps
+			currentStep !== totalSteps,
 		);
 	}
 }
@@ -200,7 +200,7 @@ export function setContinueButtonEnabled(button, enabled) {
 		button.classList.add(
 			"bg-placecal-orange",
 			"hover:bg-orange-600",
-			"text-white"
+			"text-white",
 		);
 		button.disabled = false;
 	} else {

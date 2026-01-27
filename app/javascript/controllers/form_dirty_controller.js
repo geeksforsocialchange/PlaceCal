@@ -54,13 +54,13 @@ export default class extends Controller {
 				this.submitTarget.classList.remove(
 					"btn-disabled",
 					"opacity-50",
-					"cursor-not-allowed"
+					"cursor-not-allowed",
 				);
 			} else {
 				this.submitTarget.classList.add(
 					"btn-disabled",
 					"opacity-50",
-					"cursor-not-allowed"
+					"cursor-not-allowed",
 				);
 			}
 		}

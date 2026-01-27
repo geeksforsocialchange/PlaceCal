@@ -169,13 +169,13 @@ export default class extends Controller {
 			"bg-error",
 			"hover:bg-error",
 			"text-error-content",
-			"border-error"
+			"border-error",
 		);
 		btn.classList.add(
 			"bg-placecal-orange",
 			"hover:bg-orange-600",
 			"text-white",
-			"border-placecal-orange"
+			"border-placecal-orange",
 		);
 
 		if (this.hasTestIconNeutralTarget)
@@ -200,13 +200,13 @@ export default class extends Controller {
 			"bg-error",
 			"hover:bg-error",
 			"text-error-content",
-			"border-error"
+			"border-error",
 		);
 		btn.classList.add(
 			"bg-success",
 			"hover:bg-success",
 			"text-success-content",
-			"border-success"
+			"border-success",
 		);
 
 		if (this.hasTestIconNeutralTarget)
@@ -231,13 +231,13 @@ export default class extends Controller {
 			"bg-success",
 			"hover:bg-success",
 			"text-success-content",
-			"border-success"
+			"border-success",
 		);
 		btn.classList.add(
 			"bg-error",
 			"hover:bg-error",
 			"text-error-content",
-			"border-error"
+			"border-error",
 		);
 
 		if (this.hasTestIconNeutralTarget)

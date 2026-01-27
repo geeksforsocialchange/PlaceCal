@@ -210,33 +210,33 @@ export default class extends Controller {
 
 ```javascript
 // app/javascript/controllers/form_validation_controller.js
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["input", "error", "submit"]
+	static targets = ["input", "error", "submit"];
 
-  validate(event) {
-    const input = event.target
-    const errorTarget = this.errorTargets.find(
-      target => target.dataset.field === input.name
-    )
+	validate(event) {
+		const input = event.target;
+		const errorTarget = this.errorTargets.find(
+			(target) => target.dataset.field === input.name,
+		);
 
-    if (input.validity.valid) {
-      errorTarget?.classList.add("hidden")
-      input.classList.remove("error")
-    } else {
-      errorTarget?.classList.remove("hidden")
-      errorTarget?.textContent = input.validationMessage
-      input.classList.add("error")
-    }
+		if (input.validity.valid) {
+			errorTarget?.classList.add("hidden");
+			input.classList.remove("error");
+		} else {
+			errorTarget?.classList.remove("hidden");
+			errorTarget?.textContent = input.validationMessage;
+			input.classList.add("error");
+		}
 
-    this.updateSubmitButton()
-  }
+		this.updateSubmitButton();
+	}
 
-  updateSubmitButton() {
-    const isValid = this.inputTargets.every(input => input.validity.valid)
-    this.submitTarget.disabled = !isValid
-  }
+	updateSubmitButton() {
+		const isValid = this.inputTargets.every((input) => input.validity.valid);
+		this.submitTarget.disabled = !isValid;
+	}
 }
 ```
 
@@ -264,7 +264,7 @@ export default class extends Controller {
 					this.messagesTarget.insertAdjacentHTML("beforeend", data.message);
 					this.scrollToBottom();
 				},
-			}
+			},
 		);
 	}
 
@@ -309,7 +309,7 @@ export default class extends Controller {
 					}
 				});
 			},
-			{ threshold: 0.1 }
+			{ threshold: 0.1 },
 		);
 
 		observer.observe(this.element);

@@ -5,21 +5,27 @@
 	text-align: center;
 
 	blockquote {
-		background-image: image-url("home/icons/ldquo.svg"),
-			image-url("home/icons/rdquo.svg");
+		background-image:
+			image-url("home/icons/ldquo.svg"), image-url("home/icons/rdquo.svg");
 		background-repeat: no-repeat;
-		background-position: 50% 0, 50% 100%;
+		background-position:
+			50% 0,
+			50% 100%;
 		background-size: 43px auto;
 		padding: 2rem 0;
 		margin: 0 0.5rem 1rem;
 
 		@include for-tablet-portrait-up {
-			background-position: 0 50%, 100% 50%;
+			background-position:
+				0 50%,
+				100% 50%;
 			padding: 1rem 4rem 0rem;
 		}
 
 		@include for-desktop-up {
-			background-position: 2.5% 50%, 97.5% 50%;
+			background-position:
+				2.5% 50%,
+				97.5% 50%;
 			margin-left: 2rem;
 			margin-right: 2rem;
 		}

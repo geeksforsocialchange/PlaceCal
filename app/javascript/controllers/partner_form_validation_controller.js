@@ -29,7 +29,7 @@ export default class extends Controller {
 		};
 
 		const nameProblemFeedbackElement = document.getElementById(
-			"partner-name-feedback"
+			"partner-name-feedback",
 		);
 
 		const nameField = this.sourceTarget;

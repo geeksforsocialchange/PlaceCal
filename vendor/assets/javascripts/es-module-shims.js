@@ -8,7 +8,7 @@
 		!e ||
 		r.shimMode ||
 		document.querySelectorAll(
-			"script[type=module-shim],script[type=importmap-shim],link[rel=modulepreload-shim]"
+			"script[type=module-shim],script[type=importmap-shim],link[rel=modulepreload-shim]",
 		).length > 0;
 	const n = globalHook(s && r.onimport);
 	const i = globalHook(s && r.resolve);
@@ -39,9 +39,9 @@
 		: () => {
 				console.log(
 					"%c^^ Module error above is polyfilled and can be ignored ^^",
-					"font-weight:900;color:#391"
+					"font-weight:900;color:#391",
 				);
-		  };
+			};
 	const ge =
 		!navigator.userAgentData && !!navigator.userAgent.match(/Edge\/\d+\.\d+/);
 	const ye = e
@@ -50,7 +50,7 @@
 				location.pathname.includes("/")
 					? location.pathname.slice(0, location.pathname.lastIndexOf("/") + 1)
 					: location.pathname
-		  }`;
+			}`;
 	const createBlob = (e, t = "text/javascript") =>
 		URL.createObjectURL(new Blob([e], { type: t }));
 	let { skip: ve } = r;
@@ -65,7 +65,7 @@
 	const dispatchError = (e) =>
 		self.dispatchEvent(Object.assign(new Event("error"), { error: e }));
 	const throwError = (e) => {
-		(self.reportError || dispatchError)(e), void oe(e);
+		((self.reportError || dispatchError)(e), void oe(e));
 	};
 	function fromParent(e) {
 		return e ? ` imported from ${e}` : "";
@@ -99,7 +99,7 @@
 			const r = t.slice(0, t.indexOf(":") + 1);
 			if (r === "blob:")
 				throw new TypeError(
-					`Failed to resolve module specifier "${e}". Invalid relative url or base scheme isn't hierarchical.`
+					`Failed to resolve module specifier "${e}". Invalid relative url or base scheme isn't hierarchical.`,
 				);
 			let s;
 			if (t[r.length + 1] === "/")
@@ -149,7 +149,7 @@
 					e.scopes[n],
 					s.scopes[i] || (s.scopes[i] = {}),
 					t,
-					r
+					r,
 				);
 			}
 		e.integrity && resolveAndComposeIntegrity(e.integrity, s.integrity, t);
@@ -185,7 +185,7 @@
 			const a = resolveIfNotPlainOrUrl(i, r) || i;
 			if ((!s || !f) && t[a] && t[a] !== e[a]) {
 				console.warn(
-					`es-module-shims: Rejected map override "${a}" from ${t[a]} to ${e[a]}.`
+					`es-module-shims: Rejected map override "${a}" from ${t[a]} to ${e[a]}.`,
 				);
 				continue;
 			}
@@ -195,8 +195,8 @@
 			ne
 				? (t[a] = ne)
 				: console.warn(
-						`es-module-shims: Mapping "${i}" -> "${e[i]}" does not resolve`
-				  );
+						`es-module-shims: Mapping "${i}" -> "${e[i]}" does not resolve`,
+					);
 		}
 	}
 	function resolveAndComposeIntegrity(e, t, r) {
@@ -206,7 +206,7 @@
 				!t[i] ||
 				t[i] === e[i] ||
 				console.warn(
-					`es-module-shims: Rejected map integrity override "${i}" from ${t[i]} to ${e[i]}.`
+					`es-module-shims: Rejected map integrity override "${i}" from ${t[i]} to ${e[i]}.`,
 				);
 			t[i] = e[n];
 		}
@@ -246,8 +246,8 @@
 										(!(a instanceof Event) && a) ||
 											(e && e.error) ||
 											new Error(
-												`Error loading ${(r && r.errUrl) || t} (${i.src}).`
-											)
+												`Error loading ${(r && r.errUrl) || t} (${i.src}).`,
+											),
 									);
 									e = void 0;
 								}
@@ -302,14 +302,14 @@
 						},${
 							he
 								? `b(\`import"\${b(new Uint8Array(${JSON.stringify(
-										je
-								  )}),'application/wasm')}"\`)`
+										je,
+									)}),'application/wasm')}"\`)`
 								: "false"
 						},${
 							he && ke
 								? `b(\`import source x from "\${b(new Uint8Array(${JSON.stringify(
-										je
-								  )}),'application/wasm')}"\`)`
+										je,
+									)}),'application/wasm')}"\`)`
 								: "false"
 						}].map(x =>typeof x==='string'?import(x).then(()=>true,()=>false):x)).then(a=>parent.postMessage(['esms'].concat(a),'*'))<\/script>`;
 						let s = false,
@@ -332,29 +332,29 @@
 						s = true;
 						"srcdoc" in t ? (t.srcdoc = r) : t.contentDocument.write(r);
 						n && doOnload();
-				  })
+					})
 				: Promise.all([
 						xe || Se(createBlob("import.meta")).then(() => (Me = true), noop),
 						me &&
 							Se(
 								createBlob(
-									`import"${createBlob("", "text/css")}"with{type:"css"}`
-								)
+									`import"${createBlob("", "text/css")}"with{type:"css"}`,
+								),
 							).then(() => (Ce = true), noop),
 						be &&
 							Se(
 								createBlob(
-									`import"${createBlob("{}", "text/json")}"with{type:"json"}`
-								)
+									`import"${createBlob("{}", "text/json")}"with{type:"json"}`,
+								),
 							).then(() => (Le = true), noop),
 						he &&
 							Se(
 								createBlob(
 									`import"${createBlob(
 										new Uint8Array(je),
-										"application/wasm"
-									)}"`
-								)
+										"application/wasm",
+									)}"`,
+								),
 							).then(() => (Pe = true), noop),
 						he &&
 							ke &&
@@ -362,11 +362,11 @@
 								createBlob(
 									`import source x from"${createBlob(
 										new Uint8Array(je),
-										"application/wasm"
-									)}"`
-								)
+										"application/wasm",
+									)}"`,
+								),
 							).then(() => (Ee = true), noop),
-				  ]);
+					]);
 	});
 	let Re,
 		Ne,
@@ -378,7 +378,7 @@
 						const r = e.length;
 						let s = 0;
 						for (; s < r; ) t[s] = e.charCodeAt(s++);
-				  }
+					}
 				: function (e, t) {
 						const r = e.length;
 						let s = 0;
@@ -386,16 +386,16 @@
 							const r = e.charCodeAt(s);
 							t[s++] = ((255 & r) << 8) | (r >>> 8);
 						}
-				  },
+					},
 		qe =
 			"xportmportlassforetaourceromsyncunctionssertvoyiedelecontininstantybreareturdebuggeawaithrwhileifcatcfinallels";
 	let Fe, Je, Be;
 	function parse(e, t = "@") {
-		(Fe = e), (Je = t);
+		((Fe = e), (Je = t));
 		const r = 2 * Fe.length + (2 << 18);
 		if (r > He || !Re) {
 			for (; r > He; ) He *= 2;
-			(Ne = new ArrayBuffer(He)),
+			((Ne = new ArrayBuffer(He)),
 				We(qe, new Uint16Array(Ne, 16, 110)),
 				(Re = (function (e, t, r) {
 					"use asm";
@@ -585,7 +585,7 @@
 													(a << 16) >> 16 != 0
 														? (i[((i[70] | 0) + ((r & 65535) << 3)) >> 2] |
 																0) ==
-														  5
+															5
 														: 0
 												) {
 													t = i[((i[71] | 0) + ((t + -1) << 2)) >> 2] | 0;
@@ -678,7 +678,7 @@
 																						((r & 65535) << 3) +
 																						4) >>
 																						2
-																				] | 0
+																				] | 0,
 																			) | 0
 																		)
 																	)
@@ -718,8 +718,8 @@
 																if (
 																	(r << 16) >> 16 != 0
 																		? ((c = i[70] | 0),
-																		  (ne = ((r & 65535) + -1) | 0),
-																		  (t << 16) >> 16 == 102
+																			(ne = ((r & 65535) + -1) | 0),
+																			(t << 16) >> 16 == 102
 																				? (i[(c + (ne << 3)) >> 2] | 0) == 1
 																				: 0)
 																		: 0
@@ -729,8 +729,8 @@
 																			? $(
 																					i[(c + (ne << 3) + 4) >> 2] | 0,
 																					44,
-																					3
-																			  ) | 0
+																					3,
+																				) | 0
 																			: 0
 																	)
 																		break;
@@ -955,13 +955,13 @@
 																(
 																	(m((t + 2) | 0, 36, 8) | 0) == 0
 																		? ((a = (t + 10) | 0),
-																		  (be = n[a >> 1] | 0),
-																		  V(be) | 0 | ((be << 16) >> 16 == 123))
+																			(be = n[a >> 1] | 0),
+																			V(be) | 0 | ((be << 16) >> 16 == 123))
 																		: 0
 																)
 																	? ((i[72] = a),
-																	  (f = w(1) | 0),
-																	  (f << 16) >> 16 != 123)
+																		(f = w(1) | 0),
+																		(f << 16) >> 16 != 123)
 																	: 0
 															) {
 																pe = f;
@@ -976,7 +976,7 @@
 														if (
 															(me | 0) == 22
 																? ((ne = i[72] | 0),
-																  (m((ne + 2) | 0, 80, 14) | 0) == 0)
+																	(m((ne + 2) | 0, 80, 14) | 0) == 0)
 																: 0
 														) {
 															r = (ne + 16) | 0;
@@ -1004,9 +1004,9 @@
 													if (
 														(me | 0) == 31
 															? ((ue = i[72] | 0),
-															  q(pe) | 0,
-															  (de = i[72] | 0),
-															  de >>> 0 > ue >>> 0)
+																q(pe) | 0,
+																(de = i[72] | 0),
+																de >>> 0 > ue >>> 0)
 															: 0
 													) {
 														O(e, oe, ue, de);
@@ -2385,13 +2385,13 @@
 						ss: X,
 					};
 				})("undefined" != typeof self ? self : global, {}, Ne)),
-				(_e = Re.su(He - (2 << 17)));
+				(_e = Re.su(He - (2 << 17))));
 		}
 		const s = Fe.length + 1;
-		Re.ses(_e),
+		(Re.ses(_e),
 			Re.sa(s - 1),
 			We(Fe, new Uint16Array(Ne, _e, s)),
-			Re.p() || ((Be = Re.e()), o());
+			Re.p() || ((Be = Re.e()), o()));
 		const n = [],
 			i = [];
 		for (; Re.ri(); ) {
@@ -2403,9 +2403,9 @@
 				a = Re.se(),
 				c = Re.it();
 			let f;
-			Re.ip() &&
+			(Re.ip() &&
 				(f = b(-1 === s ? e : e + 1, Fe.charCodeAt(-1 === s ? e - 1 : e))),
-				n.push({ t: c, n: f, s: e, e: t, ss: i, se: a, d: s, a: r });
+				n.push({ t: c, n: f, s: e, e: t, ss: i, se: a, d: s, a: r }));
 		}
 		for (; Re.re(); ) {
 			const e = Re.es(),
@@ -2438,7 +2438,7 @@
 				? ((r += Fe.slice(s, Be)), (r += k()), (s = Be))
 				: (8232 === e || 8233 === e || (u(e) && o()), ++Be);
 		}
-		return (r += Fe.slice(s, Be++)), r;
+		return ((r += Fe.slice(s, Be++)), r);
 	}
 	function k() {
 		let e = Fe.charCodeAt(++Be);
@@ -2455,14 +2455,14 @@
 					let t;
 					123 === e
 						? (++Be,
-						  (t = l(Fe.indexOf("}", Be) - Be)),
-						  ++Be,
-						  t > 1114111 && o())
+							(t = l(Fe.indexOf("}", Be) - Be)),
+							++Be,
+							t > 1114111 && o())
 						: (t = l(4));
 					return t <= 65535
 						? String.fromCharCode(t)
 						: ((t -= 65536),
-						  String.fromCharCode(55296 + (t >> 10), 56320 + (1023 & t)));
+							String.fromCharCode(55296 + (t >> 10), 56320 + (1023 & t)));
 				})();
 			case 116:
 				return "\t";
@@ -2509,10 +2509,10 @@
 					e = n - 48;
 				}
 				if (e >= 16) break;
-				(s = n), (r = 16 * r + e);
-			} else (95 !== s && 0 !== t) || o(), (s = n);
+				((s = n), (r = 16 * r + e));
+			} else ((95 !== s && 0 !== t) || o(), (s = n));
 		}
-		return (95 !== s && Be - t === e) || o(), r;
+		return ((95 !== s && Be - t === e) || o(), r);
 	}
 	function u(e) {
 		return 13 === e || 10 === e;
@@ -2522,9 +2522,9 @@
 			Error(
 				`Parse error ${Je}:${Fe.slice(0, Be).split("\n").length}:${
 					Be - Fe.lastIndexOf("\n", Be - 1)
-				}`
+				}`,
 			),
-			{ idx: Be }
+			{ idx: Be },
 		);
 	}
 	async function _resolve(e, t) {
@@ -2546,7 +2546,7 @@
 		? (e, t) => {
 				const r = i(e, t, defaultResolve);
 				return r ? { r: r, n: true, N: true } : _resolve(e, t);
-		  }
+			}
 		: _resolve;
 	async function importHandler(t, ...r) {
 		let i = r[r.length - 1];
@@ -2609,7 +2609,7 @@
 		await Promise.all(
 			e.d.map(({ l: e, s: r }) => {
 				if (!e.b && !t[e.u]) return r ? e.f : loadAll(e, t);
-			})
+			}),
 		);
 		e.n || (e.n = e.d.some((e) => e.l.n));
 	}
@@ -2653,11 +2653,11 @@
 				Object.assign(function Module(...e) {
 					return brand(new n(...e));
 				}, n),
-				AbstractModuleSource
+				AbstractModuleSource,
 			);
 			WebAssembly.Module.prototype = Object.setPrototypeOf(
 				n.prototype,
-				AbstractModuleSource.prototype
+				AbstractModuleSource.prototype,
 			);
 			WebAssembly.compile = function compile(...e) {
 				return i(...e).then(brand);
@@ -2800,7 +2800,7 @@
 				f = s + 14;
 				pushStringTo(t - 1);
 				a += `/*${i.slice(t - 1, n)}*/'${createBlob(
-					`export default importShim._s[${urlJsString(r.r)}]`
+					`export default importShim._s[${urlJsString(r.r)}]`,
 				)}'`;
 				f = n;
 			} else if (le === -1) {
@@ -2824,7 +2824,7 @@
 										: ""
 								}export {${r.a[1]
 									.map(({ s: e, e: t }, s) => `e$_${s} as ${r.S.slice(e, t)}`)
-									.join(",")}}\n//# sourceURL=${r.r}?cycle`
+									.join(",")}}\n//# sourceURL=${r.r}?cycle`,
 							)));
 				pushStringTo(t - 1);
 				a += `/*${i.slice(t - 1, n)}*/'${s}'`;
@@ -2904,7 +2904,7 @@
 		} catch (t) {
 			t.message =
 				`Unable to fetch ${e}${fromParent(
-					r
+					r,
 				)} - see network log for details.\n` + t.message;
 			throw t;
 		} finally {
@@ -2912,7 +2912,7 @@
 		}
 		if (!n.ok) {
 			const e = new TypeError(
-				`${n.status} ${n.statusText} ${n.url}${fromParent(r)}`
+				`${n.status} ${n.statusText} ${n.url}${fromParent(r)}`,
 			);
 			e.response = n;
 			throw e;
@@ -2924,7 +2924,7 @@
 		const n = await doFetch(
 			e,
 			s && !t.integrity ? Object.assign({}, t, { integrity: s }) : t,
-			r
+			r,
 		);
 		const i = n.url;
 		const a = n.headers.get("content-type");
@@ -2942,7 +2942,7 @@
 			}
 			r = 0;
 			t += `const instance = await WebAssembly.instantiate(importShim._s[${urlJsString(
-				i
+				i,
 			)}], {${s}});\n`;
 			for (const r of WebAssembly.Module.exports(e))
 				t += `export const ${r.name} = instance.exports['${r.name}'];\n`;
@@ -2961,16 +2961,16 @@
 				s: `var s=new CSSStyleSheet();s.replaceSync(${JSON.stringify(
 					(await n.text()).replace(
 						ft,
-						(t, r = "", s, n) => `url(${r}${resolveUrl(s || n, e)}${r})`
-					)
+						(t, r = "", s, n) => `url(${r}${resolveUrl(s || n, e)}${r})`,
+					),
 				)});export default s;`,
 				ss: null,
 				t: "css",
 			};
 		throw Error(
 			`Unsupported Content-Type "${a}" loading ${e}${fromParent(
-				r
-			)}. Modules must be served with a valid MIME type like application/javascript.`
+				r,
+			)}. Modules must be served with a valid MIME type like application/javascript.`,
 		);
 	}
 	function getOrCreateLoad(e, t, r, n) {
@@ -3025,7 +3025,7 @@
 	}
 	const featErr = (e) =>
 		Error(
-			`${e} feature must be enabled via <script type="esms-options">{ "polyfillEnable": ["${e}"] }<\/script>`
+			`${e} feature must be enabled via <script type="esms-options">{ "polyfillEnable": ["${e}"] }<\/script>`,
 		);
 	function linkLoad(e, t) {
 		e.L ||
@@ -3048,14 +3048,14 @@
 							const f = { l: getOrCreateLoad(c.r, r, e.r, null), s: a };
 							f.s || linkLoad(f.l, t);
 							return f;
-						})
+						}),
 					)
 				).filter((e) => e);
 			}));
 	}
 	function processScriptsAndPreloads() {
 		for (const e of document.querySelectorAll(
-			s ? "link[rel=modulepreload-shim]" : "link[rel=modulepreload]"
+			s ? "link[rel=modulepreload-shim]" : "link[rel=modulepreload]",
 		))
 			e.ep || processPreload(e);
 		for (const e of document.querySelectorAll("script[type]"))
@@ -3074,8 +3074,8 @@
 		e.crossOrigin === "use-credentials"
 			? (t.credentials = "include")
 			: e.crossOrigin === "anonymous"
-			? (t.credentials = "omit")
-			: (t.credentials = "same-origin");
+				? (t.credentials = "omit")
+				: (t.credentials = "same-origin");
 		return t;
 	}
 	let pt = Promise.resolve();
@@ -3127,7 +3127,7 @@
 							? await (await doFetch(t.src, getFetchOpts(t))).json()
 							: JSON.parse(t.innerHTML),
 						t.src || ye,
-						Qe
+						Qe,
 					);
 				})
 				.catch((e) => {
@@ -3136,7 +3136,7 @@
 						(e = new Error(
 							`Unable to parse import map ${e.message} in: ${
 								t.src || t.innerHTML
-							}`
+							}`,
 						));
 					throwError(e);
 				});
@@ -3164,7 +3164,7 @@
 			getFetchOpts(e),
 			!e.src && e.innerHTML,
 			!s,
-			r && pt
+			r && pt,
 		).catch(throwError);
 		ue || a.then(() => e.dispatchEvent(new Event("load")));
 		r && (pt = a.then(readyStateCompleteCheck));

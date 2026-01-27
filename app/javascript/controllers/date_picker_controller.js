@@ -26,7 +26,7 @@ export default class extends Controller {
 
 		const basePath = this.getBasePath();
 		const newUrl = `${basePath}/${year}/${parseInt(month)}/${parseInt(
-			day
+			day,
 		)}?period=${period}&sort=${sort}&repeating=${repeating}#paginator`;
 
 		const frame = document.querySelector("turbo-frame#events-browser");

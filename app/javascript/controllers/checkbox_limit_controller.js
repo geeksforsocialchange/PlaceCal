@@ -41,7 +41,7 @@ export default class extends Controller {
 			this.counter.classList.remove(
 				"text-gray-600",
 				"text-warning",
-				"font-medium"
+				"font-medium",
 			);
 
 			if (atLimit) {

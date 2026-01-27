@@ -132,14 +132,14 @@ export default class extends Controller {
 			if (data.length === 0 && level > 1) {
 				// Smart-skip: no items at this level, hide it and try next level down
 				console.log(
-					`CascadingNeighbourhood: Skipping level ${level} (no data)`
+					`CascadingNeighbourhood: Skipping level ${level} (no data)`,
 				);
 				this.hideSelect(target);
 				await this.loadLevel(level - 1, parentId);
 			} else if (data.length === 1 && level > 1) {
 				// Single option: auto-select and move to next level
 				console.log(
-					`CascadingNeighbourhood: Auto-selecting single option at level ${level}`
+					`CascadingNeighbourhood: Auto-selecting single option at level ${level}`,
 				);
 				this.showSelect(target);
 				this.populateSelect(target, data, this.getPlaceholder(level));
@@ -164,7 +164,7 @@ export default class extends Controller {
 		} catch (error) {
 			console.error(
 				`CascadingNeighbourhood: Error loading level ${level}:`,
-				error
+				error,
 			);
 		} finally {
 			this.hideLoading();
@@ -306,7 +306,7 @@ export default class extends Controller {
 		if (this.hasOutputTarget) {
 			this.outputTarget.value = neighbourhoodId || "";
 			console.log(
-				`CascadingNeighbourhood: Output updated to ${neighbourhoodId}`
+				`CascadingNeighbourhood: Output updated to ${neighbourhoodId}`,
 			);
 		}
 	}
@@ -330,20 +330,20 @@ export default class extends Controller {
 		if (!neighbourhoodId) return;
 
 		console.log(
-			`CascadingNeighbourhood: Loading hierarchy for neighbourhood ${neighbourhoodId}`
+			`CascadingNeighbourhood: Loading hierarchy for neighbourhood ${neighbourhoodId}`,
 		);
 		this.showLoading();
 
 		try {
 			// Get the hierarchy data for this neighbourhood
 			const data = await this.fetchJSON(
-				`/neighbourhoods/hierarchy?neighbourhood_id=${neighbourhoodId}`
+				`/neighbourhoods/hierarchy?neighbourhood_id=${neighbourhoodId}`,
 			);
 			console.log("CascadingNeighbourhood: hierarchy data", data);
 
 			// Load countries first (level 5)
 			const countriesData = await this.fetchJSON(
-				`/neighbourhoods/children?level=5`
+				`/neighbourhoods/children?level=5`,
 			);
 			const countryTarget = this.getTargetForLevel(5);
 			if (countryTarget) {
@@ -351,7 +351,7 @@ export default class extends Controller {
 				this.populateSelect(
 					countryTarget,
 					countriesData,
-					this.getPlaceholder(5)
+					this.getPlaceholder(5),
 				);
 
 				if (data.country_id) {
@@ -370,7 +370,7 @@ export default class extends Controller {
 							await this.loadAndSelectLevel(
 								2,
 								countyOrRegionId,
-								data.district_id
+								data.district_id,
 							);
 
 							const districtId = data.district_id || countyOrRegionId;
@@ -398,7 +398,7 @@ export default class extends Controller {
 
 		try {
 			const data = await this.fetchJSON(
-				`/neighbourhoods/children?parent_id=${parentId}&level=${level}`
+				`/neighbourhoods/children?parent_id=${parentId}&level=${level}`,
 			);
 
 			if (data.length === 0) {
@@ -415,7 +415,7 @@ export default class extends Controller {
 		} catch (error) {
 			console.error(
 				`CascadingNeighbourhood: Error loading level ${level}:`,
-				error
+				error,
 			);
 			this.hideSelect(target);
 		}

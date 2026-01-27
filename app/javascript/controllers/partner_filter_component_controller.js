@@ -45,14 +45,14 @@ export default class extends Controller {
 		// Close other dropdown
 		if (this.hasNeighbourhoodDropdownTarget) {
 			this.neighbourhoodDropdownTarget.classList.add(
-				"filters__dropdown--hidden"
+				"filters__dropdown--hidden",
 			);
 		}
 	}
 
 	toggleNeighbourhood() {
 		this.neighbourhoodDropdownTarget.classList.toggle(
-			"filters__dropdown--hidden"
+			"filters__dropdown--hidden",
 		);
 		// Close other dropdown
 		if (this.hasCategoryDropdownTarget) {

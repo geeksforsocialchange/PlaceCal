@@ -46,7 +46,7 @@ export default class extends Controller {
 		nextStep(
 			this,
 			() => this.validateCurrentStep(),
-			() => this.updateContinueButton()
+			() => this.updateContinueButton(),
 		);
 	}
 
@@ -78,7 +78,7 @@ export default class extends Controller {
 		if (this.hasContinueButtonTarget) {
 			setContinueButtonEnabled(
 				this.continueButtonTarget,
-				this.isCurrentStepValid()
+				this.isCurrentStepValid(),
 			);
 		}
 	}
@@ -117,7 +117,7 @@ export default class extends Controller {
 					headers: {
 						Accept: "application/json",
 					},
-				}
+				},
 			);
 
 			const data = await response.json();
@@ -196,8 +196,8 @@ export default class extends Controller {
 						? escapeHtml(
 								`${existingUser.first_name || ""} ${
 									existingUser.last_name || ""
-								}`.trim()
-						  )
+								}`.trim(),
+							)
 						: "this user";
 				this.emailTakenLinkTarget.textContent = `View ${name}`;
 			}

@@ -113,7 +113,7 @@ export default class extends Controller {
 
 	getSelectedIds() {
 		return Array.from(this.listTarget.querySelectorAll("[data-item-id]")).map(
-			(el) => el.dataset.itemId
+			(el) => el.dataset.itemId,
 		);
 	}
 

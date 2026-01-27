@@ -140,14 +140,14 @@ export default class extends Controller {
 				btn.innerHTML = `<svg class="size-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v11a2 2 0 01-2 2H9a2 2 0 01-2-2V7h10z"/></svg>`;
 				btn.onclick = () => {
 					this.dataValue = [...this.dataValue].filter(
-						(el) => JSON.stringify(el) !== JSON.stringify(openSpec)
+						(el) => JSON.stringify(el) !== JSON.stringify(openSpec),
 					);
 				};
 
 				row.appendChild(text);
 				row.appendChild(btn);
 				return row;
-			})
+			}),
 		);
 	}
 

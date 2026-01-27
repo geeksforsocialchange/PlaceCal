@@ -15,7 +15,7 @@ export default class extends Controller {
 			? this.containerTarget
 			: this.element;
 		const nestedFields = container.querySelectorAll(
-			".nested-fields:not([data-nested-form-target])"
+			".nested-fields:not([data-nested-form-target])",
 		);
 		nestedFields.forEach((field) => {
 			field.setAttribute("data-nested-form-target", "item");
