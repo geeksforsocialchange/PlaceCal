@@ -61,7 +61,7 @@ export default class extends Controller {
 		// Clamp the editor width
 		const clampedWidth = Math.max(
 			minWidth,
-			Math.min(newEditorWidth, availableWidth - minWidth)
+			Math.min(newEditorWidth, availableWidth - minWidth),
 		);
 		const editorPercent = (clampedWidth / availableWidth) * 100;
 
@@ -317,7 +317,7 @@ export default class extends Controller {
 		// Code blocks (fenced) - do this early to protect content
 		html = html.replace(
 			/```(\w*)\n([\s\S]*?)```/g,
-			'<pre><code class="language-$1">$2</code></pre>'
+			'<pre><code class="language-$1">$2</code></pre>',
 		);
 
 		// Inline code - protect from other processing
@@ -346,19 +346,19 @@ export default class extends Controller {
 		// Images (before links to avoid conflicts)
 		html = html.replace(
 			/!\[([^\]]*)\]\(([^)]+)\)/g,
-			'<img src="$2" alt="$1" class="max-w-full">'
+			'<img src="$2" alt="$1" class="max-w-full">',
 		);
 
 		// Markdown links
 		html = html.replace(
 			/\[([^\]]+)\]\(([^)]+)\)/g,
-			'<a href="$2" target="_blank" rel="noopener" class="link underline text-placecal-teal-dark">$1</a>'
+			'<a href="$2" target="_blank" rel="noopener" class="link underline text-placecal-teal-dark">$1</a>',
 		);
 
 		// Auto-link bare URLs (not already in a tag)
 		html = html.replace(
 			/(?<!href="|">)(https?:\/\/[^\s<]+)/g,
-			'<a href="$1" target="_blank" rel="noopener" class="link underline text-placecal-teal-dark">$1</a>'
+			'<a href="$1" target="_blank" rel="noopener" class="link underline text-placecal-teal-dark">$1</a>',
 		);
 
 		// Blockquotes
@@ -383,7 +383,7 @@ export default class extends Controller {
 			(match) =>
 				"<ol>" +
 				match.replace(/<\/?oli>/g, (m) => m.replace("oli", "li")) +
-				"</ol>"
+				"</ol>",
 		);
 		html = html.replace(/<\/?oli>/g, (m) => m.replace("oli", "li"));
 

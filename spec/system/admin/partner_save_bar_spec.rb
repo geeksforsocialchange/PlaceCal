@@ -204,7 +204,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       click_button "Back"
 
       # Should be back on Basic Info tab
-      expect(page).to have_css('input[aria-label="📋 Basic Info"]:checked', visible: :all)
+      expect(page).to have_css('input[aria-label="📋 Basic Info"]:checked', visible: :all, wait: 5)
     end
   end
 end

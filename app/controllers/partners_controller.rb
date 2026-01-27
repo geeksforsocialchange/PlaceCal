@@ -39,8 +39,10 @@ class PartnersController < ApplicationController
         neighbourhood_partners
       end
 
-    # show only partners with no service_areas
-    @map = get_map_markers(@partners, true) if @partners.detect(&:address)
+    # When no filters active, show only partners with physical addresses (no service_areas)
+    # When filters are active, show all filtered partners that have addresses
+    addresses_only = @selected_category.blank? && @selected_neighbourhood.blank?
+    @map = get_map_markers(@partners, addresses_only) if @partners.detect(&:address)
   end
 
   # GET /partners/1
@@ -60,9 +62,9 @@ class PartnersController < ApplicationController
     else
       # If a lot, show a paginator by week
       @period = params[:period] || 'week'
-      @events = filter_events(@period, partner_or_place: @partner)
-      # Sort criteria
       @sort = params[:sort] || 'time'
+      @repeating = params[:repeating] || 'on'
+      @events = filter_events(@period, partner_or_place: @partner)
       @events = sort_events(@events, @sort)
       @paginator = true
     end

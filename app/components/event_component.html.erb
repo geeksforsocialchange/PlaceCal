@@ -5,7 +5,7 @@
         <div class="c">
     <% else %>
       <div class="event__header">
-        <h3 itemprop="name"><%= link_to summary, event_path(id) %></h3>
+        <h3 itemprop="name"><%= link_to summary, event_path(id), data: { turbo_frame: '_top' } %></h3>
         <% if neighbourhood_name && show_neighbourhoods %>
           <div class="neighbourhood <%= primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary' %> event__neighbourhood">
             <span><%= neighbourhood_name %></span>
@@ -38,7 +38,7 @@
         <div class="event__detail event__location">
           <span class="icon-font icon-place"></span>
           <% if partner_at_location %>
-            <%= link_to partner_at_location, partner_path(partner_at_location) %>
+            <%= link_to partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' } %>
           <% elsif first_address_line %>
             <%= first_address_line %>
           <% end %>

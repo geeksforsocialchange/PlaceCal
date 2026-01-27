@@ -38,3 +38,45 @@ end
 Then("I should see {int} events") do |count|
   expect(page).to have_selector(".event", count: count)
 end
+
+# Paginator steps
+
+Given("there are {int} events in the next month") do |count|
+  partner = @partner || create(:partner)
+  count.times do |i|
+    date = Time.current + (i % 28).days + 1.day
+    create(:event, partner: partner, dtstart: date, dtend: date + 2.hours)
+  end
+end
+
+Then("I should see {string} in the paginator") do |text|
+  within(".paginator") do
+    expect(page).to have_content(text)
+  end
+end
+
+When("I click the forward arrow") do
+  find(".paginator__arrow--forwards a").click
+end
+
+Then("I should see a {string} button") do |text|
+  expect(page).to have_link(text)
+end
+
+Then("I should see {string} as active in the paginator") do |text|
+  within(".paginator__buttons li.active") do
+    expect(page).to have_content(text)
+  end
+end
+
+Then("I should not see {string} as active in the paginator") do |text|
+  within(".paginator__buttons li.active") do
+    expect(page).not_to have_content(text)
+  end
+end
+
+When("I select the date {string}") do |date_str|
+  within(".breadcrumb__date-picker-dropdown") do
+    fill_in "date", with: date_str
+  end
+end

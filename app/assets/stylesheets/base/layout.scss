@@ -8,9 +8,10 @@ body {
 	margin: 0;
 
 	@include for-desktop-up {
-		background-image: image-url("patterns/widescreen.svg"),
-			image-url("patterns/widescreen.svg");
-		background-position: calc(50% - #{$bg-offset}) $bg-top,
+		background-image:
+			image-url("patterns/widescreen.svg"), image-url("patterns/widescreen.svg");
+		background-position:
+			calc(50% - #{$bg-offset}) $bg-top,
 			calc(50% + #{$bg-offset}) $bg-top;
 		background-repeat: no-repeat, no-repeat;
 	}

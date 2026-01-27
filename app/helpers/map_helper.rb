@@ -5,7 +5,7 @@ module MapHelper
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
       {}.tap do |pin|
         pin[:position] = [mrkr[:lat], mrkr[:lon]]
-        pin[:anchor] = link_to(mrkr[:name], partner_path(mrkr[:id])) if mrkr[:id]
+        pin[:anchor] = link_to(mrkr[:name], partner_path(mrkr[:id]), data: { turbo_frame: '_top', turbo_action: 'replace' }) if mrkr[:id]
       end
     end
 
@@ -16,7 +16,7 @@ module MapHelper
       iconUrl: image_path('icons/map/map-marker.png'),
       shadowUrl: image_path('icons/map/map-shadow.png'),
       markers: data_for_markers,
-      tilesetUrl: tileset_for_site_url(site),
+      styleUrl: style_url_for_site(site),
       styleClass: map_style_class(data_for_markers, style_mode, compact_mode)
     }.to_json.html_safe
   end
@@ -47,25 +47,25 @@ module MapHelper
     ]
   end
 
-  def api_token
-    return '' if Rails.env.test?
+  # Returns the URL to a themed MapLibre style JSON file
+  # Uses OpenFreeMap vector tiles with custom colors matching site themes
+  def style_url_for_site(site)
+    # site can be a Site object or a slug string
+    site_record = site.is_a?(Site) ? site : Site.find_by(slug: site)
 
-    token = ENV.fetch('MAPBOX_TOKEN', nil)
-    return token if token
+    style_name = if site_record.nil?
+                   'pink'
+                 elsif site_record.theme.to_s == 'custom'
+                   # Custom themed sites use their slug (e.g., 'mossley')
+                   site_record.slug
+                 else
+                   site_record.theme.to_s
+                 end
 
-    raise 'MAPBOX_TOKEN is missing from ENV, please see .env.example'
-  end
+    # Fall back to pink if style file doesn't exist
+    style_path = Rails.public_path.join('map-styles', "#{style_name}.json")
+    style_name = 'pink' unless File.exist?(style_path)
 
-  def tileset_for_site_url(site)
-    tileset = case site
-              when 'moston'
-                'cjwj3cf3m07wo1codspw72dnm'
-              when 'mossley'
-                'cjmw2kdvt70g82snxpa2gqdza'
-              else
-                'cjmw2khle4d6q2sl7sqsvak2x'
-              end
-
-    "https://api.mapbox.com/styles/v1/placecal/#{tileset}/tiles/256/{z}/{x}/{y}@2x?access_token=#{api_token}"
+    "/map-styles/#{style_name}.json"
   end
 end

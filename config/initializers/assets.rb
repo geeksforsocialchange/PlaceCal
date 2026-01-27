@@ -6,7 +6,6 @@
 Rails.application.config.assets.version = '1.0'
 
 # Add additional assets to the asset load path
-Rails.application.config.assets.paths << Rails.root.join('app', 'javascripts')
 Rails.application.config.assets.paths << Rails.root.join('app', 'javascript')
 Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'pdfs')
 Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
@@ -31,6 +30,7 @@ Rails.application.config.assets.precompile += %w[
   sites/moston.css
   sites/mossley.css
   es-module-shims.js
+  maplibre-gl.css
 ]
 
 # NOTE: admin.css removed - admin now uses admin_tailwind.css built by Tailwind CLI

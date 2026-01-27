@@ -8,11 +8,11 @@ export default class extends Controller {
 		if (this.hasDropzoneTarget) {
 			this.dropzoneTarget.addEventListener(
 				"dragover",
-				this.dragOver.bind(this)
+				this.dragOver.bind(this),
 			);
 			this.dropzoneTarget.addEventListener(
 				"dragleave",
-				this.dragLeave.bind(this)
+				this.dragLeave.bind(this),
 			);
 			this.dropzoneTarget.addEventListener("drop", this.drop.bind(this));
 		}
@@ -22,11 +22,11 @@ export default class extends Controller {
 		if (this.hasDropzoneTarget) {
 			this.dropzoneTarget.removeEventListener(
 				"dragover",
-				this.dragOver.bind(this)
+				this.dragOver.bind(this),
 			);
 			this.dropzoneTarget.removeEventListener(
 				"dragleave",
-				this.dragLeave.bind(this)
+				this.dragLeave.bind(this),
 			);
 			this.dropzoneTarget.removeEventListener("drop", this.drop.bind(this));
 		}
@@ -37,7 +37,7 @@ export default class extends Controller {
 		event.stopPropagation();
 		this.dropzoneTarget.classList.add(
 			"border-placecal-orange",
-			"bg-placecal-orange/5"
+			"bg-placecal-orange/5",
 		);
 		this.dropzoneTarget.classList.remove("border-base-300");
 	}
@@ -47,7 +47,7 @@ export default class extends Controller {
 		event.stopPropagation();
 		this.dropzoneTarget.classList.remove(
 			"border-placecal-orange",
-			"bg-placecal-orange/5"
+			"bg-placecal-orange/5",
 		);
 		this.dropzoneTarget.classList.add("border-base-300");
 	}
@@ -57,7 +57,7 @@ export default class extends Controller {
 		event.stopPropagation();
 		this.dropzoneTarget.classList.remove(
 			"border-placecal-orange",
-			"bg-placecal-orange/5"
+			"bg-placecal-orange/5",
 		);
 		this.dropzoneTarget.classList.add("border-base-300");
 

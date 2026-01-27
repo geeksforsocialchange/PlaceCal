@@ -99,6 +99,65 @@ RSpec.describe Event, type: :model do
       end
     end
 
+    describe ".find_next_7_days" do
+      let(:today) { Time.current.to_date }
+      let!(:event_today) do
+        create(:event,
+               partner: partner,
+               dtstart: today.to_datetime + 10.hours,
+               dtend: today.to_datetime + 12.hours)
+      end
+      let!(:event_in_3_days) do
+        create(:event,
+               partner: partner,
+               dtstart: (today + 3.days).to_datetime + 10.hours,
+               dtend: (today + 3.days).to_datetime + 12.hours)
+      end
+      let!(:event_in_6_days) do
+        create(:event,
+               partner: partner,
+               dtstart: (today + 6.days).to_datetime + 10.hours,
+               dtend: (today + 6.days).to_datetime + 12.hours)
+      end
+      let!(:event_in_7_days) do
+        create(:event,
+               partner: partner,
+               dtstart: (today + 7.days).to_datetime + 10.hours,
+               dtend: (today + 7.days).to_datetime + 12.hours)
+      end
+      let!(:event_yesterday) do
+        create(:event,
+               partner: partner,
+               dtstart: (today - 1.day).to_datetime + 10.hours,
+               dtend: (today - 1.day).to_datetime + 12.hours)
+      end
+
+      it "returns events from the specified day through 6 days later" do
+        result = described_class.find_next_7_days(today)
+        expect(result).to include(event_today)
+        expect(result).to include(event_in_3_days)
+        expect(result).to include(event_in_6_days)
+      end
+
+      it "does not include events on day 7" do
+        result = described_class.find_next_7_days(today)
+        expect(result).not_to include(event_in_7_days)
+      end
+
+      it "does not include events before the specified day" do
+        result = described_class.find_next_7_days(today)
+        expect(result).not_to include(event_yesterday)
+      end
+
+      it "works when starting from a day other than today" do
+        result = described_class.find_next_7_days(today + 2.days)
+        expect(result).not_to include(event_today)
+        expect(result).to include(event_in_3_days)
+        expect(result).to include(event_in_6_days)
+        expect(result).to include(event_in_7_days) # This is now within the 7 day window
+      end
+    end
+
     describe ".future" do
       let!(:past_event) do
         create(:event, partner: partner, dtstart: 1.day.ago, dtend: 1.day.ago + 2.hours)

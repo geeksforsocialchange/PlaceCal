@@ -28,7 +28,7 @@ export default class extends Controller {
 				"text-gray-500",
 				"text-placecal-orange",
 				"text-error",
-				"font-medium"
+				"font-medium",
 			);
 
 			if (percent >= this.dangerAtValue) {
@@ -47,7 +47,7 @@ export default class extends Controller {
 			this.barTarget.classList.remove(
 				"bg-base-300",
 				"bg-placecal-orange",
-				"bg-error"
+				"bg-error",
 			);
 
 			if (percent >= this.dangerAtValue) {

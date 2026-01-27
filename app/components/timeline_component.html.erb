@@ -1,0 +1,7 @@
+<ol class="paginator__buttons paginator__buttons--day" data-controller="paginator">
+  <% buttons.each do |btn| %>
+    <li class="<%= btn[:css] %>" <%= btn[:data].map { |k, v| "data-#{k.to_s.dasherize}=\"#{v}\"" }.join(' ').html_safe %>>
+      <%= link_to btn[:text], btn[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
+    </li>
+  <% end %>
+</ol>

@@ -4,20 +4,12 @@ This project optionally supports AI coding assistants with specialized agents fo
 
 ## Project Information
 
-- **Rails Version**: 7.2.3
+- **Rails Version**: 8.x
 - **Ruby Version**: 3.3.6
 - **Project Type**: Full-stack Rails
 - **Test Framework**: RSpec
 - **GraphQL**: Enabled
 - **Turbo/Stimulus**: Enabled
-
-## Swarm Configuration
-
-The agents-swarm.yml file defines specialized agents for different aspects of Rails development:
-
-- Each agent has specific expertise and works in designated directories
-- Agents collaborate to implement features across all layers
-- The architect agent coordinates the team
 
 ## Development Guidelines
 
@@ -27,61 +19,51 @@ When working on this project:
 - Write tests for all new functionality
 - Use strong parameters in controllers
 - Keep models focused with single responsibilities
-- Extract complex business logic to service objects
+- Extract complex business logic to service objects (e.g., `app/queries/`)
 - Ensure proper database indexing for foreign keys and queries
 
 ## Asset Pipeline
 
-This project uses a **hybrid asset strategy**:
+### JavaScript (importmap-rails)
 
-- **Admin interface**: importmap-rails (native ES modules, no build step)
-- **Public site**: esbuild bundle (jQuery legacy components)
+Both admin and public interfaces use **importmap-rails** with native ES modules (no build step required).
 
-### Admin JavaScript (importmap-rails)
-
-- **Source**: `app/javascript/controllers/*.js`
+- **Entrypoint**: `app/javascript/application.js`
+- **Controllers**: `app/javascript/controllers/*.js`
+- **Controller mixins**: `app/javascript/controllers/mixins/*.js`
 - **Configuration**: `config/importmap.rb`
-- **No build step required** - changes take effect on browser refresh
-- External dependencies (tom-select, leaflet) are loaded from CDN
-- Stimulus controllers are auto-loaded via `eagerLoadControllersFrom()`
-
-### Public Site JavaScript (esbuild)
-
-- **Source**: `app/javascript/application.js`
-- **Output**: `app/assets/builds/application.js`
-- **Build command**: `yarn build`
-- Includes jQuery and legacy components (breadcrumb, navigation, paginator)
+- Changes take effect on browser refresh (no build needed)
+- External dependencies loaded from CDN (esm.sh, jsdelivr):
+  - `tom-select` - Enhanced select inputs
+  - `leaflet` - Map rendering
+  - `maplibre-gl` - Vector tile map styling
+  - `@hotwired/turbo-rails` - Turbo Drive/Frames/Streams
+- Stimulus controllers are shared between admin and public sites
+- No lodash or jQuery - use native JS instead
 
 ### Tailwind CSS (Admin interface)
 
 - **Source**: `app/tailwind/admin_tailwind.css`
 - **Output**: `public/assets/admin_tailwind.css`
-- **Build command**: `yarn build:css:admin-tailwind`
+- **Build command**: `yarn build` (or `yarn css-admin`)
 - Referenced directly via `<link>` tag in `app/views/layouts/admin/application.html.erb`
 - New Tailwind classes only work after rebuilding CSS (Tailwind scans templates)
 
 ### SCSS (Public site)
 
 - **Source**: `app/assets/stylesheets/application.scss`
-- **Output**: `app/assets/builds/application.css`
-- **Build command**: `yarn build:css`
-
-### Rebuilding Everything
-
-```bash
-yarn build:all  # Runs: yarn build && yarn build:css && yarn build:css:admin-tailwind
-```
+- **Vendor CSS**: `vendor/assets/stylesheets/` (e.g., maplibre-gl.css)
+- Processed by Sprockets (no separate build command)
 
 ### Common Issues
 
-1. **Admin JS changes not appearing**: Just refresh browser (no build needed)
-2. **Public JS changes not appearing**: Run `yarn build`, restart Rails server, hard refresh browser
-3. **New Tailwind classes not working**: Run `yarn build:css:admin-tailwind`, hard refresh browser
-4. **Browser caching**: Use `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) for hard refresh
+1. **JS changes not appearing**: Just refresh browser (no build needed for JS)
+2. **New Tailwind classes not working**: Run `yarn build`, hard refresh browser
+3. **Browser caching**: Use `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) for hard refresh
 
 ### Development Workflow
 
-When running `bin/dev`, the Procfile.dev starts watchers for public JS and Tailwind CSS. Admin JS doesn't need a watcher since it uses importmap.
+When running `bin/dev`, the Procfile.dev starts a watcher for Tailwind CSS. JavaScript doesn't need a watcher since it uses importmap.
 
 ## Tailwind CSS Best Practices
 

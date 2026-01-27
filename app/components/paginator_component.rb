@@ -24,17 +24,39 @@ class PaginatorComponent < ViewComponent::Base
     pages = []
     pages << { text: back_arrow,
                link: create_event_url(pointer - step),
-               css: 'paginator__arrow paginator__arrow--back js-back' }
+               css: 'paginator__arrow paginator__arrow--back',
+               data: {} }
     (0..steps).each do |i|
-      day = pointer + (step * i)
-      css = active?(day) ? 'active js-button' : 'js-button'
+      day = window_start + (step * i)
+      css = active?(day) ? 'active' : ''
       pages << { text: format_date(day),
                  link: create_event_url(day),
-                 css: css }
+                 css: css,
+                 data: { paginator_target: 'button' } }
     end
     pages << { text: forward_arrow,
                link: create_event_url(pointer + step),
-               css: 'paginator__arrow paginator__arrow--forwards js-forwards' }
+               css: 'paginator__arrow paginator__arrow--forwards',
+               data: { paginator_target: 'forward' } }
+  end
+
+  # The start of the visible window of dates
+  # Initially today is on the left, but after navigating far enough right,
+  # the selection becomes centered in the window
+  def window_start
+    today = Time.zone.today
+    center_offset = steps / 2
+
+    if pointer <= today
+      # At or before today: show today on left, pointer will be at or before left edge
+      [pointer, today].min
+    elsif pointer <= today + (center_offset * step)
+      # Close to today: keep today on left so selection moves right
+      today
+    else
+      # Far from today: center the selection in the window
+      pointer - (center_offset * step)
+    end
   end
 
   def title
@@ -64,11 +86,16 @@ class PaginatorComponent < ViewComponent::Base
   end
 
   def pointer
-    if step == 1.week
-      @raw_pointer.beginning_of_week
-    else
-      @raw_pointer
-    end
+    @raw_pointer
+  end
+
+  def today?
+    pointer == Time.zone.today
+  end
+
+  def today_url
+    today = Time.zone.today
+    "/#{path}/#{today.year}/#{today.month}/#{today.day}#{url_suffix}#paginator"
   end
 
   private
@@ -96,15 +123,14 @@ class PaginatorComponent < ViewComponent::Base
   def weekify(date)
     today = Time.zone.today
     end_date = date + step - 1.day
-    date_fmt = if date.month == end_date.month
-                 "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
-               else
-                 "#{date.strftime('%e %b')} – #{end_date.strftime('%e %b')}"
-               end
-    if date == today.beginning_of_week
-      'This week'
+
+    # Show "Next 7 days" for the period starting today
+    if date == today
+      'Next 7 days'
+    elsif date.month == end_date.month
+      "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
     else
-      date_fmt
+      "#{date.strftime('%e %b')} – #{end_date.strftime('%e %b')}"
     end
   end
 

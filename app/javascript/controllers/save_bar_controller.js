@@ -58,7 +58,7 @@ export default class extends Controller {
 				tab.addEventListener("click", (event) => {
 					if (isDirty(this) && !this.confirmingTabChange) {
 						const confirmed = confirm(
-							"You have unsaved changes. Are you sure you want to switch tabs?"
+							"You have unsaved changes. Are you sure you want to switch tabs?",
 						);
 						if (!confirmed) {
 							event.preventDefault();
@@ -94,7 +94,7 @@ export default class extends Controller {
 
 	buildTabList() {
 		const tabs = document.querySelectorAll(
-			`input[name="${this.tabNameValue}"][data-hash]`
+			`input[name="${this.tabNameValue}"][data-hash]`,
 		);
 		this.tabHashes = Array.from(tabs)
 			.map((t) => t.dataset.hash)
@@ -127,7 +127,7 @@ export default class extends Controller {
 
 		// Fall back to checked radio
 		const checkedTab = document.querySelector(
-			`input[name="${this.tabNameValue}"]:checked`
+			`input[name="${this.tabNameValue}"]:checked`,
 		);
 		if (checkedTab && checkedTab.dataset.hash) {
 			return this.tabHashes.indexOf(checkedTab.dataset.hash);
@@ -196,13 +196,13 @@ export default class extends Controller {
 					"bg-base-300",
 					"hover:bg-base-content/20",
 					"text-base-content",
-					"border-base-300"
+					"border-base-300",
 				);
 				this.saveButtonTarget.classList.add(
 					"bg-placecal-orange",
 					"hover:bg-orange-600",
 					"text-white",
-					"border-placecal-orange"
+					"border-placecal-orange",
 				);
 			} else {
 				// Make Save button secondary
@@ -210,13 +210,13 @@ export default class extends Controller {
 					"bg-placecal-orange",
 					"hover:bg-orange-600",
 					"text-white",
-					"border-placecal-orange"
+					"border-placecal-orange",
 				);
 				this.saveButtonTarget.classList.add(
 					"bg-base-300",
 					"hover:bg-base-content/20",
 					"text-base-content",
-					"border-base-300"
+					"border-base-300",
 				);
 			}
 		}
@@ -282,7 +282,7 @@ export default class extends Controller {
 
 		// Find and check the tab
 		const tab = document.querySelector(
-			`input[name="${this.tabNameValue}"][data-hash="${hash}"]`
+			`input[name="${this.tabNameValue}"][data-hash="${hash}"]`,
 		);
 		if (tab) {
 			tab.checked = true;

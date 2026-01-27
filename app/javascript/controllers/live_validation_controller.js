@@ -22,7 +22,7 @@ export default class extends Controller {
 		this.boundHandleSubmit = this.handleSubmit.bind(this);
 
 		this.inputs = this.element.querySelectorAll(
-			"input:not([type=hidden]):not([type=radio]):not([type=checkbox]), textarea, select"
+			"input:not([type=hidden]):not([type=radio]):not([type=checkbox]), textarea, select",
 		);
 
 		this.inputs.forEach((input) => {
@@ -64,7 +64,7 @@ export default class extends Controller {
 		// Required validation
 		if (input.dataset.validateRequired === "true" && !value) {
 			errors.push(
-				input.dataset.validateRequiredMessage || "This field is required"
+				input.dataset.validateRequiredMessage || "This field is required",
 			);
 		}
 
@@ -74,7 +74,7 @@ export default class extends Controller {
 			if (value.length < min) {
 				errors.push(
 					input.dataset.validateMinMessage ||
-						`Must be at least ${min} characters`
+						`Must be at least ${min} characters`,
 				);
 			}
 		}
@@ -85,7 +85,7 @@ export default class extends Controller {
 			if (value.length > max) {
 				errors.push(
 					input.dataset.validateMaxMessage ||
-						`Must be no more than ${max} characters`
+						`Must be no more than ${max} characters`,
 				);
 			}
 		}
@@ -95,7 +95,7 @@ export default class extends Controller {
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			if (!emailRegex.test(value)) {
 				errors.push(
-					input.dataset.validateEmailMessage || "Enter a valid email address"
+					input.dataset.validateEmailMessage || "Enter a valid email address",
 				);
 			}
 		}
@@ -107,7 +107,7 @@ export default class extends Controller {
 			} catch {
 				errors.push(
 					input.dataset.validateUrlMessage ||
-						"Enter a valid URL (including https://)"
+						"Enter a valid URL (including https://)",
 				);
 			}
 		}
@@ -115,11 +115,11 @@ export default class extends Controller {
 		// Password confirmation validation
 		if (input.dataset.validateConfirm && value) {
 			const targetInput = document.getElementById(
-				input.dataset.validateConfirm
+				input.dataset.validateConfirm,
 			);
 			if (targetInput && targetInput.value !== value) {
 				errors.push(
-					input.dataset.validateConfirmMessage || "Passwords do not match"
+					input.dataset.validateConfirmMessage || "Passwords do not match",
 				);
 			}
 		}
@@ -182,7 +182,7 @@ export default class extends Controller {
 			event.preventDefault();
 			// Scroll to first error
 			const firstError = this.element.querySelector(
-				".input-error, .textarea-error, .select-error"
+				".input-error, .textarea-error, .select-error",
 			);
 			if (firstError) {
 				firstError.scrollIntoView({ behavior: "smooth", block: "center" });

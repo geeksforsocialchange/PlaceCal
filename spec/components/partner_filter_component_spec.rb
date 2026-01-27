@@ -32,21 +32,28 @@ RSpec.describe PartnerFilterComponent, type: :component do
   end
 
   describe "with partners with categories" do
+    let(:site_with_neighbourhood) { create(:ashdale_site) }
+    let(:category) { create(:category_tag) }
     let(:partners) do
       create_list(:partner, 3) do |partner|
-        partner.categories << create(:category_tag)
+        partner.categories << category
+        # Associate partner with site via service area
+        partner.service_areas << create(:service_area, neighbourhood: site_with_neighbourhood.primary_neighbourhood)
       end
     end
 
     it "shows category filter dropdown" do
+      # Ensure partners are created and associated
+      partners
+
       render_inline(described_class.new(
                       partners: partners,
-                      site: site,
+                      site: site_with_neighbourhood,
                       selected_category: nil,
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).to have_selector("span.filters__link", text: "Category")
+      expect(page).to have_selector("button span.filters__link", text: "Category")
     end
   end
 

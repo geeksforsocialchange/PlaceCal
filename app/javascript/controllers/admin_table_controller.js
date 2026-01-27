@@ -147,7 +147,7 @@ export default class extends Controller {
 				"bg-orange-500",
 				"text-gray-900",
 				"text-white",
-				"shadow-sm"
+				"shadow-sm",
 			);
 			btn.classList.add("text-gray-500", "hover:text-gray-700");
 		});
@@ -201,7 +201,7 @@ export default class extends Controller {
 	updateHierarchicalFilters(parentColumn, parentValue) {
 		// Query DOM directly to ensure we get all hierarchical filters
 		const hierarchicalFilters = this.element.querySelectorAll(
-			'[data-admin-table-target="hierarchicalFilter"]'
+			'[data-admin-table-target="hierarchicalFilter"]',
 		);
 		hierarchicalFilters.forEach((select) => {
 			if (select.dataset.filterParent === parentColumn) {
@@ -229,7 +229,7 @@ export default class extends Controller {
 	// Clear all hierarchical filters that are downstream of the given column
 	clearDownstreamHierarchicalFilters(parentColumn) {
 		const hierarchicalFilters = this.element.querySelectorAll(
-			'[data-admin-table-target="hierarchicalFilter"]'
+			'[data-admin-table-target="hierarchicalFilter"]',
 		);
 		hierarchicalFilters.forEach((select) => {
 			if (select.dataset.filterParent === parentColumn) {
@@ -294,7 +294,7 @@ export default class extends Controller {
 
 		// Find the next level filter that depends on this one
 		const hierarchicalFilters = this.element.querySelectorAll(
-			'[data-admin-table-target="hierarchicalFilter"]'
+			'[data-admin-table-target="hierarchicalFilter"]',
 		);
 		hierarchicalFilters.forEach((select) => {
 			if (select.dataset.filterParent === currentColumn) {
@@ -307,7 +307,7 @@ export default class extends Controller {
 						select,
 						nextEndpoint,
 						parentId,
-						nextLevel
+						nextLevel,
 					);
 				}
 			}
@@ -352,7 +352,7 @@ export default class extends Controller {
 					"bg-orange-500",
 					"text-gray-900",
 					"text-white",
-					"shadow-sm"
+					"shadow-sm",
 				);
 				btn.classList.add("text-gray-500", "hover:text-gray-700");
 			});
@@ -390,12 +390,12 @@ export default class extends Controller {
 							"bg-orange-500",
 							"text-gray-900",
 							"text-white",
-							"shadow-sm"
+							"shadow-sm",
 						);
 						btn.classList.add("text-gray-500", "hover:text-gray-700");
 					});
 					const btn = container.querySelector(
-						`button[data-filter-value="${value}"]`
+						`button[data-filter-value="${value}"]`,
 					);
 					if (btn) {
 						btn.classList.remove("text-gray-500", "hover:text-gray-700");
@@ -503,11 +503,11 @@ export default class extends Controller {
 			params.append(`columns[${i}][name]`, col.data);
 			params.append(
 				`columns[${i}][searchable]`,
-				col.searchable !== false ? "true" : "false"
+				col.searchable !== false ? "true" : "false",
 			);
 			params.append(
 				`columns[${i}][orderable]`,
-				col.orderable !== false ? "true" : "false"
+				col.orderable !== false ? "true" : "false",
 			);
 			params.append(`columns[${i}][search][value]`, "");
 			params.append(`columns[${i}][search][regex]`, "false");
@@ -622,7 +622,7 @@ export default class extends Controller {
 							(col) =>
 								`<td class="px-4 py-4 text-sm${
 									col.align === "center" ? " text-center" : ""
-								}">${row[col.data] ?? ""}</td>`
+								}">${row[col.data] ?? ""}</td>`,
 						)
 						.join("")}
         </tr>
@@ -643,7 +643,7 @@ export default class extends Controller {
 		const maxVisiblePages = 5;
 		let startPage = Math.max(
 			0,
-			this.currentPage - Math.floor(maxVisiblePages / 2)
+			this.currentPage - Math.floor(maxVisiblePages / 2),
 		);
 		let endPage = Math.min(this.totalPages, startPage + maxVisiblePages);
 
@@ -661,10 +661,10 @@ export default class extends Controller {
 		pages.push(`
       <li>
         <a class="${btnBase} ${
-			this.currentPage === 0 ? btnDisabled : btnEnabled
-		}" href="#" data-action="admin-table#previousPage" ${
-			this.currentPage === 0 ? 'tabindex="-1"' : ""
-		}>
+					this.currentPage === 0 ? btnDisabled : btnEnabled
+				}" href="#" data-action="admin-table#previousPage" ${
+					this.currentPage === 0 ? 'tabindex="-1"' : ""
+				}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -677,10 +677,10 @@ export default class extends Controller {
 			pages.push(`
         <li>
           <a class="${btnBase} ${
-				i === this.currentPage ? btnActive : btnEnabled
-			}" href="#" data-action="admin-table#goToPage" data-page="${i}">${
-				i + 1
-			}</a>
+						i === this.currentPage ? btnActive : btnEnabled
+					}" href="#" data-action="admin-table#goToPage" data-page="${i}">${
+						i + 1
+					}</a>
         </li>
       `);
 		}
@@ -689,10 +689,10 @@ export default class extends Controller {
 		pages.push(`
       <li>
         <a class="${btnBase} ${
-			this.currentPage >= this.totalPages - 1 ? btnDisabled : btnEnabled
-		}" href="#" data-action="admin-table#nextPage" ${
-			this.currentPage >= this.totalPages - 1 ? 'tabindex="-1"' : ""
-		}>
+					this.currentPage >= this.totalPages - 1 ? btnDisabled : btnEnabled
+				}" href="#" data-action="admin-table#nextPage" ${
+					this.currentPage >= this.totalPages - 1 ? 'tabindex="-1"' : ""
+				}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
@@ -712,7 +712,7 @@ export default class extends Controller {
 				: 0;
 		const end = Math.min(
 			(this.currentPage + 1) * this.pageLengthValue,
-			this.filteredRecords
+			this.filteredRecords,
 		);
 
 		if (this.filteredRecords === 0) {

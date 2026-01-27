@@ -1,21 +1,10 @@
-<% if show_paginator %>
-  <%= render(PaginatorComponent.new(
-    pointer: pointer,
-    period: period,
-    sort: sort,
-    repeating: repeating,
-    path: path,
-    show_breadcrumb: show_breadcrumb,
-    site_name: site_name
-  )) %>
-<% end %>
 <% if events.any? %>
   <% events.each do |day, day_events| %>
     <h2 class="udl udl--fw"><%= day.strftime('%A %e %B') %></h2>
     <ol class="events reset">
       <% day_events.each do |event| %>
         <li>
-<%= render(EventComponent.new(context: period,
+          <%= render(EventComponent.new(context: period,
                                         event: event,
                                         primary_neighbourhood: primary_neighbourhood,
                                         show_neighbourhoods: show_neighbourhoods,
@@ -24,6 +13,9 @@
         </li>
       <% end %>
     </ol>
+  <% end %>
+  <% if truncated %>
+    <p class="event-list__truncated">Showing first 50 events. Use the date picker to see more.</p>
   <% end %>
 <% else %>
   <p>No events with this selection.</p>

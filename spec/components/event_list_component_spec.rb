@@ -25,10 +25,7 @@ RSpec.describe EventListComponent, type: :component do
   let(:attrs) do
     {
       events: events,
-      pointer: Date.new(2024, 1, 15),
       period: "day",
-      show_paginator: false,
-      show_breadcrumb: false,
       show_neighbourhoods: false
     }
   end
@@ -50,10 +47,7 @@ RSpec.describe EventListComponent, type: :component do
     let(:attrs) do
       {
         events: {},
-        pointer: Date.new(2024, 1, 15),
-        period: "day",
-        show_paginator: false,
-        show_breadcrumb: false
+        period: "day"
       }
     end
 
@@ -66,18 +60,13 @@ RSpec.describe EventListComponent, type: :component do
 
   context "with next_date provided" do
     let(:next_event) do
-      double(
-        dtstart: Time.zone.parse("2024-01-20 10:00")
-      )
+      double(dtstart: Time.zone.parse("2024-01-20 10:00"))
     end
 
     let(:attrs) do
       {
         events: {},
-        pointer: Date.new(2024, 1, 15),
         period: "day",
-        show_paginator: false,
-        show_breadcrumb: false,
         next_date: next_event
       }
     end
@@ -86,25 +75,6 @@ RSpec.describe EventListComponent, type: :component do
       render_inline(described_class.new(**attrs))
 
       expect(page).to have_text("Skip to next date with events")
-    end
-  end
-
-  context "with show_paginator true" do
-    let(:attrs) do
-      {
-        events: events,
-        pointer: Date.new(2024, 1, 15),
-        period: "day",
-        show_paginator: true,
-        show_breadcrumb: false,
-        show_neighbourhoods: false
-      }
-    end
-
-    it "renders paginator component" do
-      render_inline(described_class.new(**attrs))
-
-      expect(page).to have_css(".paginator")
     end
   end
 end

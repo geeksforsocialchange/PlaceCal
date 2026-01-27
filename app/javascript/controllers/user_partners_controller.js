@@ -20,7 +20,7 @@ export default class extends Controller {
 				const permittedValues = this.permittedPartnersValue.map(Number);
 				const currentValues = this.tomSelect.items.map(Number);
 				const selectedPermittedValues = permittedValues.filter((x) =>
-					currentValues.includes(x)
+					currentValues.includes(x),
 				);
 
 				// Check if user is trying to remove a non-permitted partner

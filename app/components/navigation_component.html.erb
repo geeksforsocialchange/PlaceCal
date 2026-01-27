@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header" data-controller="mobile-menu">
   <% if @site&.logo&.present? %>
     <div class="header__branding header__branding--<%= @site.slug %>"
          style="background-image: url(<%= image_url @site.logo %>)"
@@ -19,7 +19,7 @@
       <% end %>
     <% end %>
   </div>
-  <nav class="nav header__menu js-menu" role="navigation">
+  <nav class="nav header__menu" data-mobile-menu-target="menu" role="navigation">
     <ul>
       <li><%= active_link_to "Home", root_path %></li>
       <% navigation.each do |link_text, link_path| %>
@@ -27,7 +27,7 @@
       <% end %>
     </ul>
   </nav>
-  <a href="#" class="header__toggle js-menu-toggle" data-turbo="false">
+  <a href="#" class="header__toggle" data-action="click->mobile-menu#toggle" data-turbo="false">
     <svg viewBox="0 0 33 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <polygon class="svg__primary" points="0 5 33 5 33 0 0 0"></polygon>
       <polygon class="svg__primary" points="0 18 33 18 33 13 0 13"></polygon>

@@ -1,0 +1,59 @@
+<div class="filters__toggle" data-controller="date-picker">
+  <% unless today? %>
+    <%= link_to 'Today', today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
+  <% end %>
+  <button type="button" data-action="click->date-picker#open"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Go to date</span></button>
+  <%= date_field_tag :date, pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' } %>
+  <%= hidden_field_tag :period, period, data: { date_picker_target: 'period' } %>
+  <%= hidden_field_tag :sort, sort, data: { date_picker_target: 'sort' } %>
+  <%= hidden_field_tag :repeating, repeating, data: { date_picker_target: 'repeating' } %>
+</div>
+<div class="filters" data-controller="filters">
+  <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do %>
+    <div class="filters__toggle">
+      <button type="button" data-action="click->filters#toggle"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></button>
+    </div>
+    <div class="filters__dropdown filters__dropdown--hidden" data-filters-target="dropdown">
+      <div class="filters__group">
+        <div class="filters__option">
+          <%= radio_button_tag(:sort, "time", sort == 'time') %>
+          <%= label_tag(:sort_time, "Sort by date") %>
+        </div>
+        <div class="filters__option">
+          <%= radio_button_tag(:sort, "summary", sort == 'summary') %>
+          <%= label_tag(:sort_summary, "Sort by name") %>
+        </div>
+      </div>
+      <hr>
+      <div class="filters__group">
+        <div class="filters__option">
+          <%= radio_button_tag(:period, "day", period == 'day') %>
+          <%= label_tag(:period_day, "Daily view") %>
+        </div>
+        <div class="filters__option">
+          <%= radio_button_tag(:period, "week", period == 'week') %>
+          <%= label_tag(:period_week, "Weekly view") %>
+        </div>
+        <div class="filters__option">
+          <%= radio_button_tag(:period, "future", period == 'future') %>
+          <%= label_tag(:period_future, "Show all") %>
+        </div>
+      </div>
+      <hr>
+      <div class="filters__group">
+        <div class="filters__option">
+          <%= radio_button_tag(:repeating, "on", repeating == 'on') %>
+          <%= label_tag(:repeating_on, "Show repeats") %>
+        </div>
+        <div class="filters__option">
+          <%= radio_button_tag(:repeating, "last", repeating == 'last') %>
+          <%= label_tag(:repeating_last, "Show repeats last") %>
+        </div>
+        <div class="filters__option">
+          <%= radio_button_tag(:repeating, "off", repeating == 'off') %>
+          <%= label_tag(:repeating_off, "Hide repeats") %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

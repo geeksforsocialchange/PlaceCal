@@ -68,7 +68,7 @@ export default class extends Controller {
 		this.checkNameDebounced = debounce(this.performNameCheck.bind(this), 400);
 		this.checkAdminEmailDebounced = debounce(
 			this.performAdminEmailCheck.bind(this),
-			400
+			400,
 		);
 		updateWizardUI(this);
 		this.updateContinueButton();
@@ -79,7 +79,7 @@ export default class extends Controller {
 		nextStep(
 			this,
 			() => this.validateCurrentStep(),
-			(step) => this.onStepChange(step)
+			(step) => this.onStepChange(step),
 		);
 	}
 
@@ -134,10 +134,10 @@ export default class extends Controller {
 		let hasPartialAddress = false;
 		if (this.hasAddressFieldsTarget) {
 			const streetInput = this.addressFieldsTarget.querySelector(
-				"input[name*='street_address']"
+				"input[name*='street_address']",
 			);
 			const postcodeInput = this.addressFieldsTarget.querySelector(
-				"input[name*='postcode']"
+				"input[name*='postcode']",
 			);
 			const hasStreet = streetInput && streetInput.value.trim() !== "";
 			const hasPostcode = postcodeInput && postcodeInput.value.trim() !== "";
@@ -155,7 +155,7 @@ export default class extends Controller {
 			hasServiceArea = Array.from(serviceAreas).some((el) => {
 				if (el.style.display === "none") return false;
 				const neighbourhoodInput = el.querySelector(
-					"input[name*='neighbourhood_id']"
+					"input[name*='neighbourhood_id']",
 				);
 				return neighbourhoodInput && neighbourhoodInput.value.trim() !== "";
 			});
@@ -177,7 +177,7 @@ export default class extends Controller {
 		if (this.hasAddressIncompleteHintTarget) {
 			this.addressIncompleteHintTarget.classList.toggle(
 				"hidden",
-				!hasPartialAddress
+				!hasPartialAddress,
 			);
 		}
 
@@ -209,7 +209,7 @@ export default class extends Controller {
 		if (this.hasContinueButtonTarget) {
 			setContinueButtonEnabled(
 				this.continueButtonTarget,
-				this.isCurrentStepValid()
+				this.isCurrentStepValid(),
 			);
 		}
 	}
@@ -251,7 +251,7 @@ export default class extends Controller {
 					headers: {
 						Accept: "application/json",
 					},
-				}
+				},
 			);
 
 			const data = await response.json();
@@ -284,7 +284,7 @@ export default class extends Controller {
 							<span class="flex-1">${escapeHtml(partner.name)}</span>
 							<span class="text-xs text-gray-600">View →</span>
 						</a>
-					`
+					`,
 					)
 					.join("");
 			}
@@ -378,7 +378,7 @@ export default class extends Controller {
 					headers: {
 						Accept: "application/json",
 					},
-				}
+				},
 			);
 
 			const data = await response.json();

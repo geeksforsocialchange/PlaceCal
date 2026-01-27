@@ -50,7 +50,7 @@ export default class extends Controller {
 		if (isPermitted && selectedPermitted <= 1) {
 			if (
 				!confirm(
-					"Removing this partnership will remove this partner from your partnership and you will no longer be able to access them.\n\nAre you sure you want to remove it?"
+					"Removing this partnership will remove this partner from your partnership and you will no longer be able to access them.\n\nAre you sure you want to remove it?",
 				)
 			) {
 				return;
@@ -83,7 +83,7 @@ export default class extends Controller {
 
 	getSelectedIds() {
 		return Array.from(
-			this.listTarget.querySelectorAll("[data-partnership-id]")
+			this.listTarget.querySelectorAll("[data-partnership-id]"),
 		).map((el) => el.dataset.partnershipId);
 	}
 

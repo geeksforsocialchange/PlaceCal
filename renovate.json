@@ -10,9 +10,6 @@
 	"lockFileMaintenance": {
 		"enabled": true
 	},
-	"major": {
-		"dependencyDashboardApproval": true
-	},
 	"rangeStrategy": "pin",
 	"timezone": "Europe/London",
 	"vulnerabilityAlerts": {

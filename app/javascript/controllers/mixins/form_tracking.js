@@ -127,8 +127,8 @@ export function updateIndicator(indicator, dirty) {
 function getTrackableInputs(form, tabName) {
 	return Array.from(
 		form.querySelectorAll(
-			"input:not([type=hidden]):not([type=file]), textarea, select"
-		)
+			"input:not([type=hidden]):not([type=file]), textarea, select",
+		),
 	).filter((input) => {
 		if (tabName && input.name === tabName) return false;
 		if (input.type === "hidden") return false;
@@ -147,7 +147,7 @@ function bindFormChangeListeners(controller) {
 	const { form, tabName, trackInitialValues } = controller._formTracking;
 
 	const inputs = form.querySelectorAll(
-		"input, textarea, select, [contenteditable]"
+		"input, textarea, select, [contenteditable]",
 	);
 
 	inputs.forEach((input) => {

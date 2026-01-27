@@ -3,13 +3,15 @@
   <head>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+    <%= stylesheet_link_tag 'maplibre-gl', media: 'all', 'data-turbo-track': 'reload' %>
     <% if @site&.stylesheet_link %>
       <%= stylesheet_link_tag @site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' %>
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload' %>
     <%= render "layouts/meta" %>
     <%= render "layouts/plausible" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_include_tag "es-module-shims", async: true %>
+    <%= javascript_importmap_tags %>
     <meta name="turbo-refresh-method" content="morph">
   </head>
 

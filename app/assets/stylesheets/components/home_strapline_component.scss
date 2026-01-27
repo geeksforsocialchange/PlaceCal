@@ -7,10 +7,13 @@
 	font-family: $serif;
 
 	@include for-tablet-landscape-up {
-		background-image: image-url("home/site_title/landscape_left.svg"),
+		background-image:
+			image-url("home/site_title/landscape_left.svg"),
 			image-url("home/site_title/landscape_right.svg");
 		background-repeat: no-repeat;
-		background-position: 0 50%, 100% 50%;
+		background-position:
+			0 50%,
+			100% 50%;
 		background-size: auto 100%;
 		border-width: 1rem;
 		border-style: solid;
@@ -20,7 +23,8 @@
 	}
 
 	@include for-desktop-up {
-		background-image: image-url("home/site_title/desktop_left.svg"),
+		background-image:
+			image-url("home/site_title/desktop_left.svg"),
 			image-url("home/site_title/desktop_right.svg");
 		min-height: 477px;
 	}
@@ -33,11 +37,16 @@
 	text-align: center;
 
 	@include for-phone-and-tablet-only {
-		background-image: image-url("home/site_title/mobile_top.svg"),
+		background-image:
+			image-url("home/site_title/mobile_top.svg"),
 			image-url("home/site_title/mobile_bottom.svg");
 		background-repeat: no-repeat;
-		background-position: 50% 0, 50% 100%;
-		background-size: 241px 48px, 261px 98px;
+		background-position:
+			50% 0,
+			50% 100%;
+		background-size:
+			241px 48px,
+			261px 98px;
 		border-width: 1rem 0;
 		border-style: solid;
 		border-color: transparent;
