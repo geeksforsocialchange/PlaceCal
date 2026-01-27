@@ -110,8 +110,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       port = Capybara.current_session.server.port
       visit "http://admin.lvh.me:#{port}/tags/new"
 
-      # Should see type selector (wait for page to load)
-      expect(page).to have_css('select[name="tag[type]"]', wait: 10)
+      # Wait for form to be fully loaded
+      expect(page).to have_css("input#tag_name", wait: 5)
 
       fill_in "Name", with: "AlphaFacility"
       fill_in "Slug", with: "alpha-facility"
