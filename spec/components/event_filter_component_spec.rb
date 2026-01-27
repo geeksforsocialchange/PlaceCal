@@ -44,10 +44,10 @@ RSpec.describe EventFilterComponent, type: :component do
   end
 
   describe "Go to date picker" do
-    it "renders Go to date link" do
+    it "renders Go to date button" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_link("Go to date")
+      expect(page).to have_button("Go to date")
     end
 
     it "renders with down arrow icon" do
@@ -99,7 +99,7 @@ RSpec.describe EventFilterComponent, type: :component do
     it "renders Filter and sort toggle" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_link("Filter and sort")
+      expect(page).to have_button("Filter and sort")
     end
 
     it "connects to filters Stimulus controller" do
