@@ -30,7 +30,6 @@ Rails.application.config.assets.precompile += %w[
   sites/moston.css
   sites/mossley.css
   es-module-shims.js
-  maplibre-gl.css
 ]
 
 # NOTE: admin.css removed - admin now uses admin_tailwind.css built by Tailwind CLI
