@@ -67,4 +67,56 @@
 		gap: 1rem;
 		justify-content: flex-end;
 	}
+
+	&__actions {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	&__today {
+		border-bottom-style: solid;
+		border-bottom-color: $base-rules-dark;
+		border-bottom-width: 2px;
+	}
+
+	&__date-picker {
+		position: relative;
+		display: flex;
+		gap: 0.75rem;
+		align-items: center;
+
+		&-toggle {
+			border-bottom-color: transparent !important;
+		}
+
+		&-label {
+			border-bottom-style: solid;
+			border-bottom-color: $base-rules-dark;
+			border-bottom-width: 2px;
+		}
+
+		&-dropdown {
+			box-shadow: 7px 7px 20px 0px rgba(153, 134, 117, 0.83);
+			padding: 0.8rem;
+			position: absolute;
+			top: 2rem;
+			right: 0;
+			z-index: 500;
+
+			&--hidden {
+				display: none;
+			}
+
+			input[type="date"] {
+				font-family: $sans-serif;
+				font-size: $small-font-size;
+				padding: 0.25rem 0.5rem;
+				border: 2px solid $base-rules-dark;
+				border-radius: 3px;
+				background-color: transparent;
+			}
+		}
+	}
 }

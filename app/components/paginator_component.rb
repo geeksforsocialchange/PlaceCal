@@ -41,23 +41,21 @@ class PaginatorComponent < ViewComponent::Base
   end
 
   # The start of the visible window of dates
-  # For weeks: start from current week, but shift window when pointer exceeds visible range
-  # For days: start from pointer (original behavior)
+  # Initially today is on the left, but after navigating far enough right,
+  # the selection becomes centered in the window
   def window_start
-    if step == 1.week
-      today_week = Time.zone.today.beginning_of_week
-      window_end = today_week + (steps * step)
+    today = Time.zone.today
+    center_offset = steps / 2
 
-      if pointer > window_end
-        # Pointer is beyond visible window, shift window so pointer is at the end
-        pointer - (steps * step)
-      else
-        # Pointer is within or before visible window
-        # Use earliest of pointer or today_week as window start
-        [pointer, today_week].min
-      end
+    if pointer <= today
+      # At or before today: show today on left, pointer will be at or before left edge
+      [pointer, today].min
+    elsif pointer <= today + (center_offset * step)
+      # Close to today: keep today on left so selection moves right
+      today
     else
-      pointer
+      # Far from today: center the selection in the window
+      pointer - (center_offset * step)
     end
   end
 
@@ -88,11 +86,16 @@ class PaginatorComponent < ViewComponent::Base
   end
 
   def pointer
-    if step == 1.week
-      @raw_pointer.beginning_of_week
-    else
-      @raw_pointer
-    end
+    @raw_pointer
+  end
+
+  def today?
+    pointer == Time.zone.today
+  end
+
+  def today_url
+    today = Time.zone.today
+    "/#{path}/#{today.year}/#{today.month}/#{today.day}#{url_suffix}#paginator"
   end
 
   private
@@ -120,15 +123,14 @@ class PaginatorComponent < ViewComponent::Base
   def weekify(date)
     today = Time.zone.today
     end_date = date + step - 1.day
-    date_fmt = if date.month == end_date.month
-                 "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
-               else
-                 "#{date.strftime('%e %b')} – #{end_date.strftime('%e %b')}"
-               end
-    if date == today.beginning_of_week
-      'This week'
+
+    # Show "Next 7 days" for the period starting today
+    if date == today
+      'Next 7 days'
+    elsif date.month == end_date.month
+      "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
     else
-      date_fmt
+      "#{date.strftime('%e %b')} – #{end_date.strftime('%e %b')}"
     end
   end
 
