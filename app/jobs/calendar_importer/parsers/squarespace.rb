@@ -28,10 +28,16 @@ module CalendarImporter
 
       def self.squarespace_site?(url)
         response_body = Base.read_http_source(url)
-        return false unless response_body.include?('<!-- This is Squarespace. -->')
+        return false unless squarespace_page?(response_body)
 
         # Verify the JSON endpoint returns events
         squarespace_events?(url)
+      end
+
+      def self.squarespace_page?(html)
+        # Check for Squarespace markers - either the comment or the CDN preconnect link
+        html.include?('<!-- This is Squarespace. -->') ||
+          html.include?('href="https://images.squarespace-cdn.com"')
       end
 
       def self.squarespace_events?(url)

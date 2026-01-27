@@ -110,11 +110,33 @@ RSpec.describe CalendarImporter::Parsers::Squarespace do
   end
 
   describe ".squarespace_site?" do
-    it "returns true for pages with Squarespace marker and events" do
+    it "returns true for pages with Squarespace comment marker and events" do
       html = <<~HTML
         <html>
           <head>
             <!-- This is Squarespace. -->
+          </head>
+          <body></body>
+        </html>
+      HTML
+
+      json_response = { "upcoming" => [{ "id" => "123" }] }.to_json
+
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+        .with("https://example.com/events")
+        .and_return(html)
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+        .with("https://example.com/events?format=json")
+        .and_return(json_response)
+
+      expect(described_class.squarespace_site?("https://example.com/events")).to be true
+    end
+
+    it "returns true for pages with Squarespace CDN preconnect link and events" do
+      html = <<~HTML
+        <html>
+          <head>
+            <link rel="preconnect" href="https://images.squarespace-cdn.com">
           </head>
           <body></body>
         </html>
@@ -137,6 +159,23 @@ RSpec.describe CalendarImporter::Parsers::Squarespace do
       allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(html)
 
       expect(described_class.squarespace_site?("https://example.com")).to be false
+    end
+  end
+
+  describe ".squarespace_page?" do
+    it "returns true for HTML with Squarespace comment" do
+      html = "<html><!-- This is Squarespace. --><head></head></html>"
+      expect(described_class.squarespace_page?(html)).to be true
+    end
+
+    it "returns true for HTML with Squarespace CDN preconnect link" do
+      html = '<html><head><link rel="preconnect" href="https://images.squarespace-cdn.com"></head></html>'
+      expect(described_class.squarespace_page?(html)).to be true
+    end
+
+    it "returns false for non-Squarespace HTML" do
+      html = "<html><head></head><body></body></html>"
+      expect(described_class.squarespace_page?(html)).to be false
     end
   end
 
