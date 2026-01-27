@@ -58,12 +58,16 @@ RSpec.describe EventListComponent, type: :component do
     end
   end
 
-  context "with next_url provided" do
+  context "with next_date provided" do
+    let(:next_event) do
+      double(dtstart: Time.zone.parse("2024-01-20 10:00"))
+    end
+
     let(:attrs) do
       {
         events: {},
         period: "day",
-        next_url: "/events/2024/1/20?period=day"
+        next_date: next_event
       }
     end
 
@@ -71,7 +75,6 @@ RSpec.describe EventListComponent, type: :component do
       render_inline(described_class.new(**attrs))
 
       expect(page).to have_text("Skip to next date with events")
-      expect(page).to have_link("Skip to next date with events", href: "/events/2024/1/20?period=day")
     end
   end
 end
