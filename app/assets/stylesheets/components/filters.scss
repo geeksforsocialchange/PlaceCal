@@ -5,10 +5,32 @@
 		position: relative;
 	}
 
-	&__toggle button {
-		border: none;
-		background: none;
-		font-family: $sans-serif;
+	&__toggle {
+		a {
+			text-decoration: none;
+		}
+
+		button {
+			border: none;
+			background: none;
+			font-family: $sans-serif;
+		}
+	}
+
+	&__link {
+		border-bottom: 2px solid $base-rules-dark;
+
+		&--today {
+			margin-right: 0.5rem;
+		}
+	}
+
+	&__date-input {
+		position: absolute;
+		opacity: 0;
+		width: 0;
+		height: 0;
+		pointer-events: none;
 	}
 
 	&__label {
@@ -43,9 +65,6 @@
 		padding: 0.25rem 0;
 		display: grid;
 		grid-template-columns: auto 1fr;
-	}
-
-	&__reset {
 	}
 
 	input {

@@ -110,38 +110,5 @@
 		margin-bottom: 0.5rem;
 		position: relative;
 		z-index: 10; // Ensure dropdowns appear above paginator__buttons
-
-		a {
-			border-bottom-style: solid;
-			border-bottom-color: $base-rules-dark;
-			border-bottom-width: 2px;
-			text-decoration: none;
-		}
-
-		.filters__toggle a {
-			border-bottom-color: transparent;
-		}
-
-		.filters__link {
-			border-bottom-style: solid;
-			border-bottom-color: $base-rules-dark;
-			border-bottom-width: 2px;
-		}
-
-		.breadcrumb__today {
-			border-bottom-style: solid;
-			border-bottom-color: $base-rules-dark;
-			border-bottom-width: 2px;
-		}
-
-		.breadcrumb__date-picker-toggle {
-			border-bottom-color: transparent !important;
-		}
-
-		.breadcrumb__date-picker-label {
-			border-bottom-style: solid;
-			border-bottom-color: $base-rules-dark;
-			border-bottom-width: 2px;
-		}
 	}
 }

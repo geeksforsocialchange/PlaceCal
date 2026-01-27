@@ -21,18 +21,6 @@
 		text-decoration: none;
 	}
 
-	.filters__toggle {
-		a {
-			border-bottom-color: transparent;
-		}
-
-		.filters__link {
-			border-bottom-style: solid;
-			border-bottom-color: $base-rules-dark;
-			border-bottom-width: 2px;
-		}
-	}
-
 	@include for-phone-only {
 		&__tagline {
 			display: none;
@@ -80,20 +68,4 @@
 		border-bottom-color: $base-rules-dark;
 		border-bottom-width: 2px;
 	}
-}
-
-.filters__date-input {
-	position: absolute;
-	opacity: 0;
-	width: 0;
-	height: 0;
-	pointer-events: none;
-}
-
-.filters__link--today {
-	margin-right: 0.5rem;
-	border-bottom-style: solid;
-	border-bottom-color: $base-rules-dark;
-	border-bottom-width: 2px;
-	text-decoration: none;
 }
