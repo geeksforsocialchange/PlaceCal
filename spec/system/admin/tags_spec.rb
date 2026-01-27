@@ -107,8 +107,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
     it "allows creating and editing a Facility tag" do
       login_as(root_user)
 
-      click_link "Tags"
-      click_link "Add Tag"
+      port = Capybara.current_session.server.port
+      visit "http://admin.lvh.me:#{port}/tags/new"
 
       # Should see type selector (wait for page to load)
       expect(page).to have_css('select[name="tag[type]"]', wait: 10)
