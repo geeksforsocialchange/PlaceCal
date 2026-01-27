@@ -62,15 +62,16 @@ export default class extends Controller {
 
 		const markerGroup = L.featureGroup(markers);
 		if (markers.length === 1) {
-			// Single marker: use setView to keep zoom level, no fitBounds needed
+			// Single marker: use setView to keep zoom level
 			this.map.setView(this.argsValue.center, this.argsValue.zoom);
 		} else {
-			// Multiple markers: fit bounds with padding for marker icons
-			this.map.fitBounds(markerGroup.getBounds(), {
-				maxZoom: this.argsValue.zoom,
-				paddingTopLeft: [20, 20],
-				paddingBottomRight: [20, 60],
-			});
+			// Multiple markers: fit bounds to show all markers
+			// Extend bounds slightly south to account for marker icon height
+			const bounds = markerGroup.getBounds();
+			const south = bounds.getSouth();
+			const offset = (bounds.getNorth() - south) * 0.08; // 8% extra at bottom
+			bounds.extend([south - offset, bounds.getWest()]);
+			this.map.fitBounds(bounds);
 		}
 	}
 }
