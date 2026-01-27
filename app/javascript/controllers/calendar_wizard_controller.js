@@ -287,8 +287,23 @@ export default class extends Controller {
 					this.detectedFormatNameTarget.textContent = data.importer_name;
 					this.detectedFormatValue = data.importer_name;
 				}
+			} else if (data.needs_manual_selection) {
+				// URL is reachable but format couldn't be auto-detected
+				// Allow user to manually select the format
+				this.sourceValidValue = false;
+				this.sourceErrorTarget.classList.remove("hidden");
+				this.sourceErrorMessageTarget.textContent =
+					"Could not auto-detect format. Please select the calendar type below.";
+				this.setTestButtonError();
+
+				// Show the importer mode section so user can manually select
+				if (this.hasImporterModeSectionTarget) {
+					this.importerModeSectionTarget.classList.remove("hidden");
+					// Reset to auto so user must make a choice
+					this.importerModeSelectTarget.value = "auto";
+				}
 			} else {
-				// Error
+				// Error - URL is invalid or unreachable
 				this.sourceValidValue = false;
 				this.sourceErrorTarget.classList.remove("hidden");
 				this.sourceErrorMessageTarget.textContent =
@@ -319,6 +334,27 @@ export default class extends Controller {
 		this.detectedFormatTarget.classList.add("hidden");
 		if (this.hasImporterModeSectionTarget) {
 			this.importerModeSectionTarget.classList.add("hidden");
+		}
+	}
+
+	// Called when user manually selects an importer mode
+	importerModeChanged() {
+		const selectedMode = this.importerModeSelectTarget.value;
+
+		// If URL is entered and user has manually selected a non-auto mode, mark as valid
+		if (
+			selectedMode &&
+			selectedMode !== "auto" &&
+			this.sourceInputTarget.value.trim()
+		) {
+			this.sourceValidValue = true;
+			// Update UI to show success state
+			this.sourceErrorTarget.classList.add("hidden");
+			this.sourceSuccessTarget.classList.remove("hidden");
+			clearInputError(this.sourceInputTarget);
+			showInputSuccess(this.sourceInputTarget);
+			this.setTestButtonSuccess();
+			this.updateContinueButton();
 		}
 	}
 

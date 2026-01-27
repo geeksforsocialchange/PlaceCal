@@ -18,6 +18,97 @@ RSpec.describe CalendarImporter::Parsers::Wix do
     end
   end
 
+  describe ".handles_url?" do
+    it "returns true for wixsite.com URLs" do
+      calendar = build(:calendar, source: "https://user123.wixsite.com/mysite/events")
+      expect(described_class.handles_url?(calendar)).to be true
+    end
+
+    it "returns true for custom domain Wix sites with events" do
+      valid_wix_event = {
+        "id" => "event-123",
+        "title" => "Test Event",
+        "scheduling" => { "config" => { "startDate" => "2026-01-17T19:00:00.000Z" } }
+      }
+
+      html = <<~HTML
+        <html>
+          <head>
+            <meta name="generator" content="Wix.com Website Builder"/>
+          </head>
+          <body>
+            <script type="application/json">{"events": [#{valid_wix_event.to_json}]}</script>
+          </body>
+        </html>
+      HTML
+
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(html)
+      calendar = build(:calendar, source: "https://www.example-wix-site.com/events")
+      expect(described_class.handles_url?(calendar)).to be true
+    end
+
+    it "returns false for non-Wix sites" do
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(
+        '<html><head><meta name="generator" content="WordPress"></head></html>'
+      )
+      calendar = build(:calendar, source: "https://example.com/events")
+      expect(described_class.handles_url?(calendar)).to be false
+    end
+
+    it "returns false when HTTP request fails" do
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+        .and_raise(CalendarImporter::Exceptions::InaccessibleFeed, "Not found")
+      calendar = build(:calendar, source: "https://example.com/events")
+      expect(described_class.handles_url?(calendar)).to be false
+    end
+  end
+
+  describe ".wix_site?" do
+    it "returns true for pages with Wix generator meta tag and events" do
+      valid_wix_event = {
+        "id" => "event-123",
+        "title" => "Test Event",
+        "scheduling" => { "config" => { "startDate" => "2026-01-17T19:00:00.000Z" } }
+      }
+
+      html = <<~HTML
+        <html>
+          <head>
+            <meta name="generator" content="Wix.com Website Builder"/>
+          </head>
+          <body>
+            <script type="application/json">{"events": [#{valid_wix_event.to_json}]}</script>
+          </body>
+        </html>
+      HTML
+
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(html)
+      expect(described_class.wix_site?("https://example.com")).to be true
+    end
+
+    it "returns false for pages with Wix meta tag but no events" do
+      html = <<~HTML
+        <html>
+          <head>
+            <meta name="generator" content="Wix.com Website Builder"/>
+          </head>
+          <body>
+            <script type="application/json">{"noEvents": true}</script>
+          </body>
+        </html>
+      HTML
+
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(html)
+      expect(described_class.wix_site?("https://example.com")).to be false
+    end
+
+    it "returns false for non-Wix pages" do
+      html = '<html><head><meta name="generator" content="WordPress"></head></html>'
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(html)
+      expect(described_class.wix_site?("https://example.com")).to be false
+    end
+  end
+
   describe "#download_calendar" do
     it "extracts events from Wix page HTML" do
       wix_url = "https://www.socialrefuge.com/event-list"
