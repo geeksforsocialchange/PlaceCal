@@ -107,21 +107,25 @@ class Site < ApplicationRecord
     end
   end
 
+  def events_query
+    EventsQuery.new(site: self)
+  end
+
   # Get a count of all the events this week
   def events_this_week
-    Event.for_site(self).find_by_week(Time.now).count
+    events_query.count_for_period('week')
   end
 
   # Get a count of all the events last week
   def events_last_week
-    Event.for_site(self).find_by_week(Time.now - 1.week).count
+    EventsQuery.new(site: self, day: Time.zone.today - 1.week).count_for_period('week')
   end
 
   # Refresh cached partners_count for this site
   def refresh_partners_count!
     return unless persisted?
 
-    count = Partner.for_site(self).count
+    count = PartnersQuery.new(site: self).call.count
     update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
   end
 
@@ -129,7 +133,7 @@ class Site < ApplicationRecord
   def refresh_events_count!
     return unless persisted?
 
-    count = Event.for_site(self).find_by_week(Time.zone.now).count
+    count = events_query.count_for_period('week')
     update_column(:events_count, count) # rubocop:disable Rails/SkipsModelValidations
   end
 
@@ -222,7 +226,7 @@ class Site < ApplicationRecord
       sites = Site.all.order(:name)
       site_partners = []
       sites.each do |site|
-        partner_ids = Partner.for_site(site).pluck(:id)
+        partner_ids = PartnersQuery.new(site: site).call.pluck(:id)
         site_partners.push({ site: site, partner_ids: partner_ids })
       end
       site_partners.select { |sp| sp[:partner_ids].include? partner.id }

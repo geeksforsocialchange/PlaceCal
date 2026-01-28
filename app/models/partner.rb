@@ -185,21 +185,6 @@ class Partner < ApplicationRecord
       .distinct
   }
 
-  # Get a list of Partners that have the given tags
-  #
-  # @param tags [Array<Tag>] A list of tags
-  # @return [ActiveRecord::Relation<Partner>]
-  scope :with_tags, lambda { |tag_ids|
-    joins(:tags).where('tags.id in (?)', tag_ids)
-  }
-
-  scope :with_neighbourhoods, lambda { |neighbourhood_ids|
-    joins(:address, :service_areas).where(
-      '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-      neighbourhood_ids: neighbourhood_ids
-    )
-  }
-
   # only select partners that have addresses
   scope :with_address, lambda {
     where.not(address_id: nil)
@@ -387,25 +372,6 @@ class Partner < ApplicationRecord
                postcode: address.postcode.downcase
              )
     end
-  end
-
-  def self.neighbourhood_names_for_site(current_site, badge_zoom_level)
-    partners = Partner.for_site(current_site)
-                      .includes(:service_areas, :address)
-    partner_names = []
-    partners.each do |partner|
-      name = partner.neighbourhood_name_for_site(badge_zoom_level)
-      partner_names << name if name.present?
-    end
-    partner_names.uniq.sort
-  end
-
-  def self.for_neighbourhood_name_filter(partners, badge_zoom_level, neighbourhood_name)
-    partners_with_name = []
-    partners.each do |partner|
-      partners_with_name << partner if partner.neighbourhood_name_for_site(badge_zoom_level) == neighbourhood_name
-    end
-    partners_with_name.sort_by(&:name)
   end
 
   private

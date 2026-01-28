@@ -57,9 +57,24 @@ class EventsQuery
     group_and_sort(events, sort)
   end
 
+  # Returns the base scope as a flat relation for further chaining
+  #
+  # @return [ActiveRecord::Relation<Event>]
+  def scope
+    base_scope
+  end
+
   # Returns events as a flat relation for iCal feeds (no grouping)
   def for_ical
     base_scope.ical_feed
+  end
+
+  # Efficient count for a period (no grouping or sorting)
+  #
+  # @param period [String] 'day', 'week', or 'future'
+  # @return [Integer]
+  def count_for_period(period)
+    apply_period(base_scope, period).count
   end
 
   # Count methods for determining default period
@@ -99,7 +114,22 @@ class EventsQuery
   # ===================
 
   def base_scope
-    @base_scope ||= @site ? Event.for_site(@site).includes(:place, :partner) : Event.includes(:place, :partner)
+    @base_scope ||= @site ? events_for_site.includes(:place, :partner) : Event.includes(:place, :partner)
+  end
+
+  # Inline of Event.for_site - finds events belonging to partners in this site
+  # or whose address is in the site's neighbourhoods
+  def events_for_site
+    partner_ids = PartnersQuery.new(site: @site).call.reorder(nil).pluck(:id)
+    site_neighbourhood_ids = @site.owned_neighbourhood_ids
+
+    Event
+      .left_joins(:address)
+      .where(
+        'partner_id IN (:partner_ids) OR addresses.neighbourhood_id IN (:neighbourhood_ids)',
+        partner_ids: partner_ids,
+        neighbourhood_ids: site_neighbourhood_ids
+      )
   end
 
   # ===================
