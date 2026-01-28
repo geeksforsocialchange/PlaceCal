@@ -8,8 +8,8 @@
   <%= hidden_field_tag :sort, sort, data: { date_picker_target: 'sort' } %>
   <%= hidden_field_tag :repeating, repeating, data: { date_picker_target: 'repeating' } %>
 </div>
-<div class="filters" data-controller="filters">
-  <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do %>
+<div class="filters" data-controller="filters event-filter">
+  <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', "event-filter-target": 'form', action: 'change->filters#submit' }) do %>
     <div class="filters__toggle">
       <button type="button" data-action="click->filters#toggle"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></button>
     </div>
@@ -54,6 +54,41 @@
           <%= label_tag(:repeating_off, "Hide repeats") %>
         </div>
       </div>
+    </div>
+  <% end %>
+
+  <% if show_neighbourhood_filter? %>
+    <div class="filters__toggle">
+      <button type="button" data-action="click->event-filter#toggleNeighbourhood">
+        <span class="icon icon--arrow-down">↓</span>
+        <span class="filters__link" data-event-filter-target="neighbourhoodText">
+          <%= neighbourhood_filter_active? ? "Ward selected" : "Filter by ward" %>
+        </span>
+      </button>
+    </div>
+    <div class="filters__dropdown filters__dropdown--hidden" data-event-filter-target="neighbourhoodDropdown">
+      <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do %>
+        <%= hidden_field_tag :period, period %>
+        <%= hidden_field_tag :sort, sort %>
+        <%= hidden_field_tag :repeating, repeating %>
+        <div class="filters__group">
+          <% neighbourhoods.each do |item| %>
+            <div class="filters__option">
+              <%= radio_button_tag "neighbourhood",
+                                    item[:neighbourhood].id,
+                                    neighbourhood_selected?(item[:neighbourhood].id),
+                                    data: { action: "change->event-filter#submitNeighbourhood" },
+                                    class: "tag__button" %>
+              <%= label_tag "neighbourhood_#{item[:neighbourhood].id}",
+                            "#{item[:neighbourhood].name} (#{item[:count]})",
+                            class: "filters__label" %>
+            </div>
+          <% end %>
+        </div>
+        <% if neighbourhood_filter_active? %>
+          <button type="button" data-action="click->event-filter#resetNeighbourhood" class="btn size-patch filter__reset">Reset</button>
+        <% end %>
+      <% end %>
     </div>
   <% end %>
 </div>

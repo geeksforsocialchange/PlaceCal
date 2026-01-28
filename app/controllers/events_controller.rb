@@ -15,10 +15,16 @@ class EventsController < ApplicationController
   def index
     @repeating = params[:repeating] || 'on'
     @sort = params[:sort] || 'time'
+    @selected_neighbourhood = params[:neighbourhood]
     @query = EventsQuery.new(site: current_site, day: @current_day)
     @period = params[:period] || default_period
 
-    @events = @query.call(period: @period, repeating: @repeating, sort: @sort)
+    @events = @query.call(
+      period: @period,
+      repeating: @repeating,
+      sort: @sort,
+      neighbourhood_id: @selected_neighbourhood
+    )
     @truncated = @query.truncated
     @next_date = @query.next_event_after(@current_day)
     @title = current_site.name

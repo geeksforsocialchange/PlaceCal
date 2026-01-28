@@ -15,29 +15,14 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    # Set filter values
     @selected_category = params[:category]
     @selected_neighbourhood = params[:neighbourhood]
 
-    # Get all partners based in the neighbourhoods associated with this site.
-    neighbourhood_partners =
-      if @selected_neighbourhood
-        Neighbourhood
-          .find(@selected_neighbourhood)
-          .partners
-      else
-        Partner
-          .for_site(current_site)
-          .order(:name)
-      end
-
-    @partners =
-      if @selected_category
-        category_partners = Partner.with_tags(@selected_category)
-        [neighbourhood_partners, category_partners].reduce(:&)
-      else
-        neighbourhood_partners
-      end
+    query = PartnersQuery.new(site: current_site)
+    @partners = query.call(
+      neighbourhood_id: @selected_neighbourhood,
+      tag_id: @selected_category
+    )
 
     # When no filters active, show only partners with physical addresses (no service_areas)
     # When filters are active, show all filtered partners that have addresses
