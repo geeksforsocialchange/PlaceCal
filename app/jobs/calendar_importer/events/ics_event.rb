@@ -44,10 +44,18 @@ module CalendarImporter::Events
 
     delegate :occurrences_between, to: :@event
 
+    # The iCal URL property links to more info about the event (its webpage),
+    # not to an online meeting. Use this for publisher_url, not online detection.
+    def publisher_url
+      url = @event.url
+      url = url.first if url.is_a?(Array)
+      url.to_s.presence
+    end
+
     def online_event_id
-      # Either return the google conference value, or find the link in the description
-      link = @event.url
-      link ||= @event.custom_properties['x_google_conference']
+      # Check for actual online meeting links - NOT the event URL property
+      # which is just a link to more info about the event
+      link = @event.custom_properties['x_google_conference']
       link ||= maybe_location_is_link
       link ||= find_event_link
 

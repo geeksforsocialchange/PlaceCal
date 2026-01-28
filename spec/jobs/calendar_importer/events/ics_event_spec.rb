@@ -7,6 +7,8 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
 
   let(:start_date) { DateTime.parse("2026-01-17T19:00:00Z") }
   let(:end_date) { DateTime.parse("2026-01-17T21:00:00Z") }
+  let(:location) { nil }
+  let(:event_url) { nil }
 
   # Create a minimal mock iCal event
   let(:ical_event) do
@@ -18,13 +20,47 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
       location: location,
       rrule: nil,
       last_modified: nil,
-      url: nil,
+      url: event_url,
       custom_properties: {}
     )
     event
   end
 
-  describe "#maybe_location_is_link (via online_event_id)" do
+  describe "#publisher_url" do
+    context "when event has a URL property" do
+      let(:event_url) { "https://example.com/events/my-event" }
+
+      it "returns the URL as publisher_url" do
+        expect(ics_event.publisher_url).to eq("https://example.com/events/my-event")
+      end
+    end
+
+    context "when event URL is an array" do
+      let(:event_url) { ["https://example.com/events/my-event"] }
+
+      it "returns the first URL" do
+        expect(ics_event.publisher_url).to eq("https://example.com/events/my-event")
+      end
+    end
+
+    context "when event has no URL" do
+      let(:event_url) { nil }
+
+      it "returns nil" do
+        expect(ics_event.publisher_url).to be_nil
+      end
+    end
+  end
+
+  describe "#online_event_id" do
+    context "when event has a URL property (webpage link)" do
+      let(:event_url) { "https://example.com/events/my-event" }
+
+      it "does NOT treat it as an online event (URL is for event info, not online meeting)" do
+        expect(ics_event.online_event_id).to be_nil
+      end
+    end
+
     context "when location is a plain place name" do
       let(:location) { "Community Hall, Manchester" }
 
