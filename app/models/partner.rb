@@ -135,56 +135,6 @@ class Partner < ApplicationRecord
 
   scope :recently_updated, -> { order(updated_at: desc) }
 
-  # Takes in a list of neighbourhood ids, and returns a list of Partners
-  # that 'own' those neighbourhoods, either as Service Areas or as Addresses
-  #
-  # @param ids [Array<Int>] A list of neighbourhood ids
-  # @return [ActiveRecord::Relation<Partner>]
-  scope :from_neighbourhoods_and_service_areas, lambda { |ids|
-    left_joins(:address, :service_areas)
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
-             ids, ids)
-  }
-
-  #   In its basic mode (without tags) it looks for partners by address
-  #   or service area and returns a distinct set (as a partner can
-  #   have many service areas or an address that overlaps).
-  #   If the site has tags present then the filter is constrained to
-  #   only allow partners that have had that tag applied (and then the
-  #   same rule applies as above).
-  #   If no site tags exist then skip that part of the query. If no
-  #   site neighbourhoods exist then return an empty scope
-  #
-  # @param site [Site] The site we want partners for.
-  # @return [ActiveRecord::Relation<Partner>]
-  scope :for_site, lambda { |site, filter = false|
-    query = Partner
-
-    # if site has tags show only partners WITH those tags
-    site_tag_ids = site.tags.map(&:id)
-    site_tag_ids << filter if filter
-    if site_tag_ids.any?
-      query = query
-              .joins(:tags)
-              .where('tags.id in (?)', site_tag_ids)
-    end
-
-    # now look for addresses and service areas
-    site_neighbourhood_ids = site.owned_neighbourhood_ids
-
-    # skip everything if site has no neighbourhoods
-    return none if site_neighbourhood_ids.empty?
-
-    query
-      .visible
-      .left_joins(:address, :service_areas)
-      .where(
-        '(service_areas.neighbourhood_id in (:neighbourhood_ids) OR addresses.neighbourhood_id in (:neighbourhood_ids))',
-        neighbourhood_ids: site_neighbourhood_ids
-      )
-      .distinct
-  }
-
   # only select partners that have addresses
   scope :with_address, lambda {
     where.not(address_id: nil)
