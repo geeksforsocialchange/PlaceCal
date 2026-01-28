@@ -66,8 +66,11 @@ module CalendarImporter::Events
     def maybe_location_is_link
       return if location.blank?
 
-      URI.parse(location).to_s
+      uri = URI.parse(location)
+      # Only accept http/https URLs - URI.parse accepts any string as a relative path
+      return unless uri.scheme&.match?(/\Ahttps?\z/i)
 
+      uri.to_s
     rescue URI::InvalidURIError
       # no URL found
     end
