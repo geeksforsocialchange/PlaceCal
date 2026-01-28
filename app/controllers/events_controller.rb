@@ -83,10 +83,8 @@ class EventsController < ApplicationController
   end
 
   def render_ical
-    events = Event.all
-    events = events.for_site(@site) if @site
-    ics_listing = events.ical_feed
-    cal = create_calendar(ics_listing)
+    query = EventsQuery.new(site: @site)
+    cal = create_calendar(query.for_ical)
     cal.publish
     render plain: cal.to_ical
   end

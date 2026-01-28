@@ -42,15 +42,21 @@ class PartnersController < ApplicationController
       @no_event_message = no_upcoming_events_reason(@partner)
     elsif upcoming_events.length < PAGINATION_THRESHOLD
       # If only a few, show them all with no pagination
-      @events = sort_events(upcoming_events, 'time')
+      query = EventsQuery.new(site: nil, day: @current_day)
+      @events = query.call(period: 'future', partner_or_place: @partner, sort: 'time')
       @paginator = false
     else
       # If a lot, show a paginator by week
       @period = params[:period] || 'week'
       @sort = params[:sort] || 'time'
       @repeating = params[:repeating] || 'on'
-      @events = filter_events(@period, partner_or_place: @partner)
-      @events = sort_events(@events, @sort)
+      query = EventsQuery.new(site: nil, day: @current_day)
+      @events = query.call(
+        period: @period,
+        partner_or_place: @partner,
+        repeating: @repeating,
+        sort: @sort
+      )
       @paginator = true
     end
 
@@ -71,9 +77,9 @@ class PartnersController < ApplicationController
 
   def embed
     period = params[:period] || 'week'
-    limit = params[:limit] || '10'
-    @events = filter_events(period, place: @partner, limit: limit)
-    @events = sort_events(@events, 'time')
+    limit = params[:limit]&.to_i || 10
+    query = EventsQuery.new(site: nil, day: @current_day)
+    @events = query.call(period: period, place: @partner, sort: 'time', limit: limit)
     response.headers.except! 'X-Frame-Options'
     render layout: false
   end

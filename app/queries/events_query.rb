@@ -12,6 +12,13 @@
 #     sort: 'time'
 #   )
 #
+# @example For a partner's events (used on partner show page)
+#   EventsQuery.new(site: nil, day: Date.today).call(
+#     period: 'week',
+#     partner_or_place: partner,
+#     sort: 'time'
+#   )
+#
 class EventsQuery
   DEFAULT_REPEATING = 'on'
   DEFAULT_SORT = 'time'
@@ -27,15 +34,22 @@ class EventsQuery
 
   # Returns events filtered and sorted according to parameters
   # rubocop:disable Metrics/ParameterLists
-  def call(period:, repeating: DEFAULT_REPEATING, sort: DEFAULT_SORT, partner: nil, place: nil, neighbourhood_id: nil)
+  def call(period:, repeating: DEFAULT_REPEATING, sort: DEFAULT_SORT, partner: nil, place: nil,
+           partner_or_place: nil, neighbourhood_id: nil, limit: nil)
     # rubocop:enable Metrics/ParameterLists
     events = base_scope
     events = events.by_partner(partner) if partner
     events = events.in_place(place) if place
+    events = events.by_partner_or_place(partner_or_place) if partner_or_place
     events = filter_by_neighbourhood(events, neighbourhood_id) if neighbourhood_id.present?
     events = filter_by_repeating(events, repeating)
-    events = filter_by_period(events, period)
+    events = filter_by_period(events, period, limit)
     apply_sort(events, sort)
+  end
+
+  # Returns filtered events as a flat relation (no grouping), useful for iCal feeds
+  def for_ical
+    base_scope.ical_feed
   end
 
   def future_count
@@ -66,7 +80,11 @@ class EventsQuery
   private
 
   def base_scope
-    @base_scope ||= Event.for_site(@site).includes(:place, :partner)
+    @base_scope ||= if @site
+                      Event.for_site(@site).includes(:place, :partner)
+                    else
+                      Event.includes(:place, :partner)
+                    end
   end
 
   # Filter events by neighbourhood based on where the event physically takes place:
@@ -84,17 +102,19 @@ class EventsQuery
       .distinct
   end
 
-  def filter_by_period(events, period)
-    case period
-    when 'future'
-      future_events = events.future(@day)
-      @truncated = future_events.count > FUTURE_LIMIT
-      future_events.limit(FUTURE_LIMIT)
-    when 'week'
-      events.find_next_7_days(@day)
-    else
-      events.find_by_day(@day)
-    end
+  def filter_by_period(events, period, limit = nil)
+    events = case period
+             when 'future'
+               future_events = events.future(@day)
+               @truncated = future_events.count > FUTURE_LIMIT
+               future_events.limit(FUTURE_LIMIT)
+             when 'week'
+               events.find_next_7_days(@day)
+             else
+               events.find_by_day(@day)
+             end
+
+    limit ? events.limit(limit) : events
   end
 
   def filter_by_repeating(events, repeating)
