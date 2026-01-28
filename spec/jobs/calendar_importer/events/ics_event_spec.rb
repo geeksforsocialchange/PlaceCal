@@ -10,7 +10,6 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
   let(:location) { nil }
   let(:event_url) { nil }
 
-  # Create a minimal mock iCal event
   let(:ical_event) do
     event = double("Icalendar::Event")
     allow(event).to receive_messages(
@@ -44,8 +43,6 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
     end
 
     context "when event has no URL" do
-      let(:event_url) { nil }
-
       it "returns nil" do
         expect(ics_event.publisher_url).to be_nil
       end
@@ -53,176 +50,76 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
   end
 
   describe "#online_event_id" do
-    context "when event has a URL property (webpage link)" do
-      let(:event_url) { "https://example.com/events/my-event" }
+    # Things that should NOT be detected as online
+    [
+      ["event URL property (webpage link)", { event_url: "https://example.com/events/my-event" }],
+      ["plain place name", { location: "Community Hall, Manchester" }],
+      ["single word location", { location: "Norfolk" }],
+      ["'Online' text (no actual link)", { location: "Online" }],
+      ["'Zoom' text (no actual link)", { location: "Zoom" }],
+      ["blank location", { location: "" }],
+      ["nil location", { location: nil }]
+    ].each do |description, attrs|
+      context "when #{description}" do
+        let(:location) { attrs[:location] }
+        let(:event_url) { attrs[:event_url] }
 
-      it "does NOT treat it as an online event (URL is for event info, not online meeting)" do
-        expect(ics_event.online_event_id).to be_nil
+        it "does not treat it as an online event" do
+          expect(ics_event.online_event_id).to be_nil
+        end
       end
     end
 
-    context "when location is a plain place name" do
-      let(:location) { "Community Hall, Manchester" }
+    # Generic URLs should be indirect
+    %w[
+      https://example.com/meeting
+      http://example.com/meeting
+    ].each do |url|
+      context "when location is generic URL #{url}" do
+        let(:location) { url }
 
-      it "does not treat it as an online event" do
-        expect(ics_event.online_event_id).to be_nil
+        it "treats it as an indirect online event" do
+          expect(ics_event.online_event_id).not_to be_nil
+          online_address = OnlineAddress.find(ics_event.online_event_id)
+          expect(online_address.url).to eq(url)
+          expect(online_address.link_type).to eq("indirect")
+        end
       end
     end
 
-    context "when location is just a single word" do
-      let(:location) { "Norfolk" }
+    # Known platforms should be direct
+    # Video conferencing, live streaming, and webinar platforms
+    %w[
+      https://us04web.zoom.us/j/123456789
+      https://meet.google.com/abc-defg-hij
+      https://meet.jit.si/MyMeetingRoom
+      https://teams.microsoft.com/l/meetup-join/abc123
+      https://meet.webex.com/meet/abc123
+      https://gotomeet.me/abc123
+      https://www.gotomeeting.com/join/abc123
+      https://discord.gg/abc123
+      https://discord.com/invite/abc123
+      https://www.youtube.com/watch?v=dQw4w9WgXcQ
+      https://youtu.be/dQw4w9WgXcQ
+      https://www.twitch.tv/somechannel
+      https://vimeo.com/123456789
+      https://www.facebook.com/events/123456789
+      https://fb.watch/abc123
+      https://www.instagram.com/somechannel/live
+      https://www.linkedin.com/video/live/urn:li:ugcPost:123456789
+      https://www.crowdcast.io/e/my-event
+      https://streamyard.com/watch/abc123
+      https://hopin.com/events/my-event
+    ].each do |url|
+      context "when location is #{url}" do
+        let(:location) { url }
 
-      it "does not treat it as an online event" do
-        expect(ics_event.online_event_id).to be_nil
-      end
-    end
-
-    context "when location is 'Online'" do
-      let(:location) { "Online" }
-
-      it "does not treat it as an online event" do
-        expect(ics_event.online_event_id).to be_nil
-      end
-    end
-
-    context "when location is 'Zoom'" do
-      let(:location) { "Zoom" }
-
-      it "does not treat it as an online event" do
-        expect(ics_event.online_event_id).to be_nil
-      end
-    end
-
-    context "when location is a valid https URL" do
-      let(:location) { "https://example.com/meeting" }
-
-      it "treats it as an online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        expect(OnlineAddress.find(ics_event.online_event_id).url).to eq("https://example.com/meeting")
-      end
-    end
-
-    context "when location is a valid http URL" do
-      let(:location) { "http://example.com/meeting" }
-
-      it "treats it as an online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        expect(OnlineAddress.find(ics_event.online_event_id).url).to eq("http://example.com/meeting")
-      end
-    end
-
-    context "when location is a Zoom meeting link" do
-      let(:location) { "https://us04web.zoom.us/j/123456789" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://us04web.zoom.us/j/123456789")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a YouTube link" do
-      let(:location) { "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a YouTube short link" do
-      let(:location) { "https://youtu.be/dQw4w9WgXcQ" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://youtu.be/dQw4w9WgXcQ")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a Twitch link" do
-      let(:location) { "https://www.twitch.tv/somechannel" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://www.twitch.tv/somechannel")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a Microsoft Teams link" do
-      let(:location) { "https://teams.microsoft.com/l/meetup-join/abc123" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://teams.microsoft.com/l/meetup-join/abc123")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a Webex link" do
-      let(:location) { "https://meet.webex.com/meet/abc123" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://meet.webex.com/meet/abc123")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a Discord invite link" do
-      let(:location) { "https://discord.gg/abc123" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://discord.gg/abc123")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a Vimeo link" do
-      let(:location) { "https://vimeo.com/123456789" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://vimeo.com/123456789")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is a Facebook link" do
-      let(:location) { "https://www.facebook.com/events/123456789" }
-
-      it "treats it as a direct online event" do
-        expect(ics_event.online_event_id).not_to be_nil
-        online_address = OnlineAddress.find(ics_event.online_event_id)
-        expect(online_address.url).to eq("https://www.facebook.com/events/123456789")
-        expect(online_address.link_type).to eq("direct")
-      end
-    end
-
-    context "when location is blank" do
-      let(:location) { "" }
-
-      it "does not treat it as an online event" do
-        expect(ics_event.online_event_id).to be_nil
-      end
-    end
-
-    context "when location is nil" do
-      let(:location) { nil }
-
-      it "does not treat it as an online event" do
-        expect(ics_event.online_event_id).to be_nil
+        it "treats it as a direct online event" do
+          expect(ics_event.online_event_id).not_to be_nil
+          online_address = OnlineAddress.find(ics_event.online_event_id)
+          expect(online_address.url).to eq(url)
+          expect(online_address.link_type).to eq("direct")
+        end
       end
     end
   end
