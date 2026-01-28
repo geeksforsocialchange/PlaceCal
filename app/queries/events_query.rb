@@ -118,18 +118,40 @@ class EventsQuery
   end
 
   # Inline of Event.for_site - finds events belonging to partners in this site
-  # or whose address is in the site's neighbourhoods
+  # When site has tags: only events from tagged partners (no address fallback)
+  # When site has no tags: events from site partners OR events with address in site neighbourhoods
   def events_for_site
-    partner_ids = PartnersQuery.new(site: @site).call.reorder(nil).pluck(:id)
-    site_neighbourhood_ids = @site.owned_neighbourhood_ids
+    partners = PartnersQuery.new(site: @site).call.reorder(nil)
+    partner_ids = partners.pluck(:id)
 
-    Event
-      .left_joins(:address)
-      .where(
-        'partner_id IN (:partner_ids) OR addresses.neighbourhood_id IN (:neighbourhood_ids)',
-        partner_ids: partner_ids,
-        neighbourhood_ids: site_neighbourhood_ids
-      )
+    if @site.tags.any?
+      # Site has tags - only show events from partners with those tags
+      # Address fallback matches partner name/postcode (legacy behavior)
+      partner_names = partners.map { |p| p.name.downcase }
+      partner_postcodes = partners.includes(:address).filter_map(&:address).map { |a| a.postcode.downcase }
+
+      Event
+        .left_joins(:address)
+        .where(
+          'partner_id IN (:partner_ids) OR ' \
+          '(lower(addresses.street_address) IN (:partner_names) AND ' \
+          'lower(addresses.postcode) IN (:partner_postcodes))',
+          partner_ids: partner_ids,
+          partner_names: partner_names,
+          partner_postcodes: partner_postcodes
+        )
+    else
+      # No site tags - events from partners OR events with address in site neighbourhoods
+      site_neighbourhood_ids = @site.owned_neighbourhood_ids
+
+      Event
+        .left_joins(:address)
+        .where(
+          'partner_id IN (:partner_ids) OR addresses.neighbourhood_id IN (:neighbourhood_ids)',
+          partner_ids: partner_ids,
+          neighbourhood_ids: site_neighbourhood_ids
+        )
+    end
   end
 
   # ===================
