@@ -117,9 +117,32 @@ module CalendarImporter::Events
       #   <p>(event url)</p>
 
       {
+        # Video conferencing
         'meet.jit.si' => { regex: %r{#{http}#{subdomain}meet.jit.si/#{suffix}}, type: 'direct' },
         'meet.google.com' => { regex: %r{#{http}#{subdomain}meet.google.com/#{suffix}}, type: 'direct' },
-        'zoom.us' => { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' }
+        'zoom.us' => { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' },
+        'teams.microsoft.com' => { regex: %r{#{http}#{subdomain}teams.microsoft.com/#{suffix}}, type: 'direct' },
+        'teams.live.com' => { regex: %r{#{http}#{subdomain}teams.live.com/#{suffix}}, type: 'direct' },
+        'webex.com' => { regex: %r{#{http}#{subdomain}webex.com/#{suffix}}, type: 'direct' },
+        'gotomeet.me' => { regex: %r{#{http}gotomeet.me/#{suffix}}, type: 'direct' },
+        'gotomeeting.com' => { regex: %r{#{http}#{subdomain}gotomeeting.com/#{suffix}}, type: 'direct' },
+        'discord.gg' => { regex: %r{#{http}discord.gg/#{suffix}}, type: 'direct' },
+        'discord.com' => { regex: %r{#{http}#{subdomain}discord.com/#{suffix}}, type: 'direct' },
+
+        # Live streaming
+        'youtube.com' => { regex: %r{#{http}#{subdomain}youtube.com/#{suffix}}, type: 'direct' },
+        'youtu.be' => { regex: %r{#{http}youtu.be/#{suffix}}, type: 'direct' },
+        'twitch.tv' => { regex: %r{#{http}#{subdomain}twitch.tv/#{suffix}}, type: 'direct' },
+        'vimeo.com' => { regex: %r{#{http}#{subdomain}vimeo.com/#{suffix}}, type: 'direct' },
+        'facebook.com' => { regex: %r{#{http}#{subdomain}facebook.com/#{suffix}}, type: 'direct' },
+        'fb.watch' => { regex: %r{#{http}fb.watch/#{suffix}}, type: 'direct' },
+        'instagram.com' => { regex: %r{#{http}#{subdomain}instagram.com/#{suffix}}, type: 'direct' },
+        'linkedin.com' => { regex: %r{#{http}#{subdomain}linkedin.com/video/#{suffix}}, type: 'direct' },
+
+        # Webinar platforms
+        'crowdcast.io' => { regex: %r{#{http}#{subdomain}crowdcast.io/#{suffix}}, type: 'direct' },
+        'streamyard.com' => { regex: %r{#{http}#{subdomain}streamyard.com/#{suffix}}, type: 'direct' },
+        'hopin.com' => { regex: %r{#{http}#{subdomain}hopin.com/#{suffix}}, type: 'direct' }
       }
     end
   end

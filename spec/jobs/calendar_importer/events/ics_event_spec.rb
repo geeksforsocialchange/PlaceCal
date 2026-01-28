@@ -122,6 +122,94 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
       end
     end
 
+    context "when location is a YouTube link" do
+      let(:location) { "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
+    context "when location is a YouTube short link" do
+      let(:location) { "https://youtu.be/dQw4w9WgXcQ" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://youtu.be/dQw4w9WgXcQ")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
+    context "when location is a Twitch link" do
+      let(:location) { "https://www.twitch.tv/somechannel" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://www.twitch.tv/somechannel")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
+    context "when location is a Microsoft Teams link" do
+      let(:location) { "https://teams.microsoft.com/l/meetup-join/abc123" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://teams.microsoft.com/l/meetup-join/abc123")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
+    context "when location is a Webex link" do
+      let(:location) { "https://meet.webex.com/meet/abc123" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://meet.webex.com/meet/abc123")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
+    context "when location is a Discord invite link" do
+      let(:location) { "https://discord.gg/abc123" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://discord.gg/abc123")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
+    context "when location is a Vimeo link" do
+      let(:location) { "https://vimeo.com/123456789" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://vimeo.com/123456789")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
+    context "when location is a Facebook link" do
+      let(:location) { "https://www.facebook.com/events/123456789" }
+
+      it "treats it as a direct online event" do
+        expect(ics_event.online_event_id).not_to be_nil
+        online_address = OnlineAddress.find(ics_event.online_event_id)
+        expect(online_address.url).to eq("https://www.facebook.com/events/123456789")
+        expect(online_address.link_type).to eq("direct")
+      end
+    end
+
     context "when location is blank" do
       let(:location) { "" }
 
