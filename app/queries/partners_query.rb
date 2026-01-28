@@ -16,10 +16,10 @@ class PartnersQuery
     @site = site
   end
 
-  # Returns partners filtered by optional neighbourhood and tag
+  # Main entry point - returns partners filtered and sorted
   #
-  # @param neighbourhood_id [Integer, nil] filter by neighbourhood
-  # @param tag_id [Integer, nil] filter by tag/category
+  # @param neighbourhood_id [Integer] filter by neighbourhood (address or service area)
+  # @param tag_id [Integer] filter by tag/category
   # @return [ActiveRecord::Relation<Partner>]
   def call(neighbourhood_id: nil, tag_id: nil)
     partners = base_scope
@@ -58,12 +58,13 @@ class PartnersQuery
 
   private
 
-  # Base scope: visible partners for the site
-  #
+  # ===================
+  # Base Scope
+  # ===================
+
   # Partners belong to a site via:
-  # 1. Their address being in a site's neighbourhood
+  # 1. Their address being in a site's neighbourhood, OR
   # 2. Their service areas overlapping with site's neighbourhoods
-  # 3. (Optional) Having tags that match site's tags
   def base_scope
     @base_scope ||= build_base_scope
   end
@@ -75,12 +76,16 @@ class PartnersQuery
     scope = scope.joins(:tags).where(tags: { id: site_tag_ids }) if site_tag_ids.any?
     scope
       .left_joins(:address, :service_areas)
-      .where(in_site_neighbourhoods)
+      .where(in_site_neighbourhoods_sql)
       .distinct
   end
 
+  # ===================
+  # Filtering
+  # ===================
+
+  # Filter by neighbourhood (partner's address OR service area)
   def filter_by_neighbourhood(partners, neighbourhood_id)
-    # Partners are in a neighbourhood via address OR service area
     partners
       .left_joins(:address, :service_areas)
       .where(
@@ -93,7 +98,11 @@ class PartnersQuery
     partners.joins(:tags).where(tags: { id: tag_id })
   end
 
-  def in_site_neighbourhoods
+  # ===================
+  # Site Scope Helpers
+  # ===================
+
+  def in_site_neighbourhoods_sql
     [
       'addresses.neighbourhood_id IN (:ids) OR service_areas.neighbourhood_id IN (:ids)',
       { ids: site_neighbourhood_ids }
