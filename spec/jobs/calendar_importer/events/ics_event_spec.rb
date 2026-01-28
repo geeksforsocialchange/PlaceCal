@@ -10,6 +10,8 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
   let(:location) { nil }
   let(:event_url) { nil }
 
+  let(:custom_properties) { {} }
+
   let(:ical_event) do
     event = double("Icalendar::Event")
     allow(event).to receive_messages(
@@ -20,7 +22,7 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
       rrule: nil,
       last_modified: nil,
       url: event_url,
-      custom_properties: {}
+      custom_properties: custom_properties
     )
     event
   end
@@ -50,6 +52,24 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
   end
 
   describe "#online_event_id" do
+    # Calendar custom properties for online meetings
+    {
+      "x_google_conference" => "https://meet.google.com/abc-defg-hij",
+      "x_microsoft_skypeteamsmeetingurl" => "https://teams.microsoft.com/l/meetup-join/abc123",
+      "x_microsoft_onlinemeetingconflink" => "https://teams.microsoft.com/meet/abc123",
+      "x_zoom_meeting_url" => "https://zoom.us/j/123456789"
+    }.each do |property, url|
+      context "when #{property} custom property is set" do
+        let(:custom_properties) { { property => url } }
+
+        it "treats it as a direct online event" do
+          expect(ics_event.online_event_id).not_to be_nil
+          online_address = OnlineAddress.find(ics_event.online_event_id)
+          expect(online_address.url).to eq(url)
+        end
+      end
+    end
+
     # Things that should NOT be detected as online
     [
       ["event URL property (webpage link)", { event_url: "https://example.com/events/my-event" }],

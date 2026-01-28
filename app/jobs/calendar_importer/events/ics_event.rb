@@ -55,7 +55,7 @@ module CalendarImporter::Events
     def online_event_id
       # Check for actual online meeting links - NOT the event URL property
       # which is just a link to more info about the event
-      link = @event.custom_properties['x_google_conference']
+      link = online_meeting_custom_property
       link ||= maybe_location_is_link
       link ||= find_event_link
 
@@ -70,6 +70,19 @@ module CalendarImporter::Events
     end
 
     private
+
+    # Check for calendar-specific custom properties that contain online meeting URLs
+    # Different calendar providers use different property names
+    def online_meeting_custom_property
+      props = @event.custom_properties
+      # Google Calendar
+      props['x_google_conference'] ||
+        # Microsoft Outlook/Teams
+        props['x_microsoft_skypeteamsmeetingurl'] ||
+        props['x_microsoft_onlinemeetingconflink'] ||
+        # Zoom calendar integration
+        props['x_zoom_meeting_url']
+    end
 
     def maybe_location_is_link
       return if location.blank?
