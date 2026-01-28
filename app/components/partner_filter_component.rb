@@ -3,6 +3,8 @@
 class PartnerFilterComponent < ViewComponent::Base
   include Turbo::FramesHelper
 
+  attr_reader :selected_category, :selected_neighbourhood
+
   def initialize(partners:, site:, selected_category:, selected_neighbourhood:)
     super()
     @partners = partners
@@ -16,20 +18,36 @@ class PartnerFilterComponent < ViewComponent::Base
     @categories ||= @query.categories_with_counts
   end
 
+  def category_items
+    categories.map do |c|
+      { id: c[:category].id, name: c[:category].name, count: c[:count] }
+    end
+  end
+
   def category_selected?(id)
     @selected_category == id
   end
 
   def show_category_filter?
-    categories.any?
+    categories.length > 1
   end
 
   def neighbourhoods
     @neighbourhoods ||= @query.neighbourhoods_with_counts
   end
 
+  def neighbourhood_items
+    neighbourhoods.map do |n|
+      { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] }
+    end
+  end
+
   def neighbourhood_selected?(id)
     @selected_neighbourhood == id
+  end
+
+  def show_neighbourhood_filter?
+    neighbourhoods.length > 1
   end
 
   def any_filter_active?

@@ -50,16 +50,17 @@ class EventsQuery
     base_scope.future(day).first
   end
 
-  # Returns neighbourhoods that have events, with counts
-  def neighbourhoods_with_counts
-    partner_ids = base_scope.distinct.pluck(:partner_id).compact
+  # Returns neighbourhoods that have events, with event counts for the given period
+  def neighbourhoods_with_counts(period: 'future')
+    events_for_period = events_in_period(period)
+    partner_ids = events_for_period.distinct.pluck(:partner_id).compact
     return [] if partner_ids.empty?
 
     # Find neighbourhoods where partners have addresses or service areas
     Neighbourhood
       .where(id: neighbourhood_ids_for_partners(partner_ids))
       .order(:name)
-      .map { |n| { neighbourhood: n, count: count_partners_in_neighbourhood(n.id, partner_ids) } }
+      .map { |n| { neighbourhood: n, count: count_events_in_neighbourhood(n.id, events_for_period) } }
   end
 
   private
@@ -68,18 +69,19 @@ class EventsQuery
     @base_scope ||= Event.for_site(@site).includes(:place, :partner)
   end
 
-  # Filter events by neighbourhood via partner's address or service areas
+  # Filter events by neighbourhood based on where the event physically takes place:
+  # 1. Event's own address neighbourhood (if event has its own address), OR
+  # 2. Event's partner's address neighbourhood (if event uses partner's address)
+  # This shows events happening IN the neighbourhood, not events from partners based there.
   def filter_by_neighbourhood(events, neighbourhood_id)
-    partner_ids_in_neighbourhood = Partner
-                                   .left_joins(:address, :service_areas)
-                                   .where(
-                                     'addresses.neighbourhood_id = :id OR service_areas.neighbourhood_id = :id',
-                                     id: neighbourhood_id
-                                   )
-                                   .distinct
-                                   .pluck(:id)
-
-    events.where(partner_id: partner_ids_in_neighbourhood)
+    events
+      .left_joins(:address, partner: :address)
+      .where(
+        '(events.address_id IS NOT NULL AND addresses.neighbourhood_id = :id) OR ' \
+        '(events.address_id IS NULL AND addresses_partners.neighbourhood_id = :id)',
+        id: neighbourhood_id
+      )
+      .distinct
   end
 
   def filter_by_period(events, period)
@@ -125,16 +127,20 @@ class EventsQuery
     (address_neighbourhood_ids + service_area_neighbourhood_ids).uniq
   end
 
-  # Helper: count how many of these partners are in a neighbourhood
-  def count_partners_in_neighbourhood(neighbourhood_id, partner_ids)
-    Partner
-      .where(id: partner_ids)
-      .left_joins(:address, :service_areas)
-      .where(
-        'addresses.neighbourhood_id = :id OR service_areas.neighbourhood_id = :id',
-        id: neighbourhood_id
-      )
-      .distinct
-      .count
+  # Helper: get events for a specific period
+  def events_in_period(period)
+    case period
+    when 'future'
+      base_scope.future(@day)
+    when 'week'
+      base_scope.find_next_7_days(@day)
+    else
+      base_scope.find_by_day(@day)
+    end
+  end
+
+  # Helper: count events in a neighbourhood (using same logic as filter_by_neighbourhood)
+  def count_events_in_neighbourhood(neighbourhood_id, events)
+    filter_by_neighbourhood(events, neighbourhood_id).count
   end
 end
