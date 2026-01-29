@@ -3,6 +3,10 @@
 # In order for a parser to be recognized, it must be added
 # to the PARSERS constant list in app/jobs/calendar_importer/calendar_importer.rb.
 # Parent parser classes should not be added.
+#
+# This is the first parser that uses an authenticated REST API rather than
+# scraping HTML or parsing iCal feeds. If we add a second API-based importer,
+# consider extracting shared auth/pagination logic into a base class.
 
 module CalendarImporter
   module Parsers

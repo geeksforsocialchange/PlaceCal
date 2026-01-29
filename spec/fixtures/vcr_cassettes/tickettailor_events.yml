@@ -1,0 +1,1124 @@
+---
+http_interactions:
+  - request:
+      method: get
+      uri: https://api.tickettailor.com/v1/events?limit=100&status=published
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        Accept:
+          - application/json
+        Authorization:
+          - Basic FILTERED
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        User-Agent:
+          - Ruby
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Date:
+          - Thu, 29 Jan 2026 15:15:56 GMT
+        Content-Type:
+          - application/json
+        Transfer-Encoding:
+          - chunked
+        Connection:
+          - keep-alive
+        Server:
+          - cloudflare
+        X-Content-Type-Options:
+          - nosniff
+        X-Rate-Limit-Limit:
+          - "10000"
+        X-Rate-Limit-Remaining:
+          - "9997"
+        X-Rate-Limit-Reset:
+          - "1350"
+        Vary:
+          - Accept-Encoding
+        Strict-Transport-Security:
+          - max-age=31536000; includeSubDomains; preload
+        Cf-Cache-Status:
+          - DYNAMIC
+        Cf-Ray:
+          - 9c59b015985c2565-LHR
+      body:
+        encoding: ASCII-8BIT
+        string:
+          '{"data":[{"object":"event","id":"ev_4668136","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/4668136/chk/0252/","chk":"0252","created_at":1727200787,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive
+          11s is by and for people of marginalised gender identities, including trans
+          and non-binary people and all women\u003Cstrong\u003E.\u003C/strong\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission is to create gender-inclusive
+          spaces for amateur adult football players to connect, have fun, and play competitive
+          11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019re running an 11-a-side session
+          on Saturday October 12th, from 10:00-12:30. Here\u2019s what you can expect
+          if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe welcome absolute beginners, players
+          with 5-a-side or 7-a-side experience, or players who\u2019ve played 11-a-side
+          before but are looking to find an inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWhat
+          will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford.\u003C/span\u003E\u003C/p\u003E","end":{"date":"2024-10-12","formatted":"Sat
+          12 Oct 2024 12:00 PM","iso":"2024-10-12T12:00:00+01:00","time":"12:00","timezone":"+01:00","unix":1728730800},"event_series_id":"es_1408295","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_635,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/yiakyj50arvh1kf9dw4z.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":38,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":100,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2024-10-12","formatted":"Sat
+          12 Oct 2024 10:00 AM","iso":"2024-10-12T10:00:00+01:00","time":"10:00","timezone":"+01:00","unix":1728723600},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4453322","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":18,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":12,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4453323","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":15,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":15,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4453324","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":25,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":5,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":32,"total_orders":32,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1408295","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_4739593","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/4739593/chk/b53e/","chk":"b53e","created_at":1729072318,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive
+          11s is by and for people of marginalised gender identities, including trans
+          and non-binary people and all women\u003Cstrong\u003E.\u003C/strong\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission is to create gender-inclusive
+          spaces for amateur adult football players to connect, have fun, and play competitive
+          11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019re running an 11-a-side session
+          on Saturday November 16th, from 10:00-12:30. Here\u2019s what you can expect
+          if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe welcome absolute beginners, players
+          with 5-a-side or 7-a-side experience, or players who\u2019ve played 11-a-side
+          before but are looking to find an inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWhat
+          will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford.\u003C/span\u003E\u003C/p\u003E","end":{"date":"2024-11-16","formatted":"Sat
+          16 Nov 2024 12:30 PM","iso":"2024-11-16T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1731760200},"event_series_id":"es_1435045","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/ndoo3jcydljorvtd5dsk.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":84,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2024-11-16","formatted":"Sat
+          16 Nov 2024 10:00 AM","iso":"2024-11-16T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1731751200},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4516432","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":18,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":12,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4516433","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":21,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":9,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4516434","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":24,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":6,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":27,"total_orders":27,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1435045","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5084164","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5084164/chk/d812/","chk":"d812","created_at":1735642233,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive
+          11s is by and for people of marginalised gender identities, including trans
+          and non-binary people and all women\u003Cstrong\u003E.\u003C/strong\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission is to create gender-inclusive
+          spaces for amateur adult football players to connect, have fun, and play competitive
+          11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019re running an 11-a-side session
+          on Saturday January 18th, from 10:00-12:30. Here\u2019s what you can expect
+          if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe welcome absolute beginners, players
+          with 5-a-side or 7-a-side experience, or players who\u2019ve played 11-a-side
+          before but are looking to find an inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWhat
+          will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-01-18","formatted":"Sat
+          18 Jan 2025 12:30 PM","iso":"2025-01-18T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1737203400},"event_series_id":"es_1517721","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_635,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/fk7sv3ee4wq74vuehwko.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":84,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-01-18","formatted":"Sat
+          18 Jan 2025 10:00 AM","iso":"2025-01-18T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1737194400},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4704496","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4704497","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":21,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":9,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4704498","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":24,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":6,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":25,"total_orders":25,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1517721","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5180349","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5180349/chk/c6cf/","chk":"c6cf","created_at":1737228290,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EThis
+          session is for\u00a0people of marginalised gender identities, including trans
+          and non-binary people and all women.\u003Cbr /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EOur
+          mission at Inclusive 11s\u00a0is to create gender-inclusive spaces for amateur
+          adult football players to connect, have fun, and play competitive 11-a-side
+          football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019re running an 11-a-side session
+          on Saturday February 15th, from 10:00-12:30. Here\u2019s what you can expect
+          if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe welcome absolute beginners, players
+          with 5-a-side or 7-a-side experience, or players who\u2019ve played 11-a-side
+          before but are looking to find an inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWhat
+          will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-02-15","formatted":"Sat
+          15 Feb 2025 12:30 PM","iso":"2025-02-15T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1739622600},"event_series_id":"es_1541288","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/mvqcfwbdhyt4dppbppee.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":68,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-02-15","formatted":"Sat
+          15 Feb 2025 10:00 AM","iso":"2025-02-15T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1739613600},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4759564","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":25,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":5,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4759565","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":17,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":13,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4759566","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":28,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":2,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":20,"total_orders":22,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1541288","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5541369","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5541369/chk/28c0/","chk":"28c0","created_at":1739823955,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s \u0027Try 11-A-Side\u0027\u00a0sessions are\u00a0for\u00a0people of marginalised
+          gender identities, including trans and non-binary people and all women.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission at Inclusive 11s\u00a0is
+          to create gender-inclusive spaces for amateur adult football players to connect,
+          have fun, and play competitive 11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          run monthly sessions on Saturdays\u00a0from 10:00-12:30. Here\u2019s what
+          you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-03-15","formatted":"Sat
+          15 Mar 2025 12:30 PM","iso":"2025-03-15T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1742041800},"event_series_id":"es_1595497","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tyvs8tj7c3p969kglti1.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":96,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-03-15","formatted":"Sat
+          15 Mar 2025 10:00 AM","iso":"2025-03-15T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1742032800},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4876037","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":24,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":6,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876038","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876039","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":23,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":7,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":23,"total_orders":22,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1595497","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5541371","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5541371/chk/02ac/","chk":"02ac","created_at":1739823955,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s \u0027Try 11-A-Side\u0027\u00a0sessions are\u00a0for\u00a0people of marginalised
+          gender identities, including trans and non-binary people and all women.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission at Inclusive 11s\u00a0is
+          to create gender-inclusive spaces for amateur adult football players to connect,
+          have fun, and play competitive 11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          run monthly sessions on Saturdays\u00a0from 10:00-12:30. Here\u2019s what
+          you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-04-12","formatted":"Sat
+          12 Apr 2025 12:30 PM","iso":"2025-04-12T12:30:00+01:00","time":"12:30","timezone":"+01:00","unix":1744457400},"event_series_id":"es_1595497","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tyvs8tj7c3p969kglti1.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":120,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-04-12","formatted":"Sat
+          12 Apr 2025 10:00 AM","iso":"2025-04-12T10:00:00+01:00","time":"10:00","timezone":"+01:00","unix":1744448400},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4876037","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876038","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876039","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":30,"total_orders":30,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1595497","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5541373","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5541373/chk/a13b/","chk":"a13b","created_at":1739823955,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s \u0027Try 11-A-Side\u0027\u00a0sessions are\u00a0for\u00a0people of marginalised
+          gender identities, including trans and non-binary people and all women.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission at Inclusive 11s\u00a0is
+          to create gender-inclusive spaces for amateur adult football players to connect,
+          have fun, and play competitive 11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          run monthly sessions on Saturdays\u00a0from 10:00-12:30. Here\u2019s what
+          you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-05-17","formatted":"Sat
+          17 May 2025 12:30 PM","iso":"2025-05-17T12:30:00+01:00","time":"12:30","timezone":"+01:00","unix":1747481400},"event_series_id":"es_1595497","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tyvs8tj7c3p969kglti1.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":148,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-05-17","formatted":"Sat
+          17 May 2025 10:00 AM","iso":"2025-05-17T10:00:00+01:00","time":"10:00","timezone":"+01:00","unix":1747472400},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4876037","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":22,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":8,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876038","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":15,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":15,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876039","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":19,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":11,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":34,"total_orders":33,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1595497","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5541401","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5541401/chk/6df5/","chk":"6df5","created_at":1739824018,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s \u0027Try 11-A-Side\u0027\u00a0sessions are\u00a0for\u00a0people of marginalised
+          gender identities, including trans and non-binary people and all women.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission at Inclusive 11s\u00a0is
+          to create gender-inclusive spaces for amateur adult football players to connect,
+          have fun, and play competitive 11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          run monthly sessions on Saturdays\u00a0from 10:00-12:30. Here\u2019s what
+          you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-08-16","formatted":"Sat
+          16 Aug 2025 12:30 PM","iso":"2025-08-16T12:30:00+01:00","time":"12:30","timezone":"+01:00","unix":1755343800},"event_series_id":"es_1595497","hidden":"true","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tyvs8tj7c3p969kglti1.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":0,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-08-16","formatted":"Sat
+          16 Aug 2025 10:00 AM","iso":"2025-08-16T10:00:00+01:00","time":"10:00","timezone":"+01:00","unix":1755334800},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4876037","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876038","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876039","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":0,"total_orders":0,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1595497","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5541402","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5541402/chk/ab83/","chk":"ab83","created_at":1739824018,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s \u0027Try 11-A-Side\u0027\u00a0sessions are\u00a0for\u00a0people of marginalised
+          gender identities, including trans and non-binary people and all women.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission at Inclusive 11s\u00a0is
+          to create gender-inclusive spaces for amateur adult football players to connect,
+          have fun, and play competitive 11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          run monthly sessions on Saturdays\u00a0from 10:00-12:30. Here\u2019s what
+          you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-09-20","formatted":"Sat
+          20 Sep 2025 12:30 PM","iso":"2025-09-20T12:30:00+01:00","time":"12:30","timezone":"+01:00","unix":1758367800},"event_series_id":"es_1595497","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tyvs8tj7c3p969kglti1.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":64,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-09-20","formatted":"Sat
+          20 Sep 2025 10:00 AM","iso":"2025-09-20T10:00:00+01:00","time":"10:00","timezone":"+01:00","unix":1758358800},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4876037","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":17,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":13,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876038","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876039","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":27,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":3,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":26,"total_orders":26,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1595497","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5541403","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5541403/chk/20c6/","chk":"20c6","created_at":1739824018,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s \u0027Try 11-A-Side\u0027\u00a0sessions are\u00a0for\u00a0people of marginalised
+          gender identities, including trans and non-binary people and all women.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission at Inclusive 11s\u00a0is
+          to create gender-inclusive spaces for amateur adult football players to connect,
+          have fun, and play competitive 11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          run monthly sessions on Saturdays\u00a0from 10:00-12:30. Here\u2019s what
+          you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-10-18","formatted":"Sat
+          18 Oct 2025 12:30 PM","iso":"2025-10-18T12:30:00+01:00","time":"12:30","timezone":"+01:00","unix":1760787000},"event_series_id":"es_1595497","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tyvs8tj7c3p969kglti1.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":100,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-10-18","formatted":"Sat
+          18 Oct 2025 10:00 AM","iso":"2025-10-18T10:00:00+01:00","time":"10:00","timezone":"+01:00","unix":1760778000},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4876037","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876038","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":19,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":11,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876039","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":23,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":7,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":28,"total_orders":28,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1595497","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_5541404","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/5541404/chk/6cc0/","chk":"6cc0","created_at":1739824018,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s \u0027Try 11-A-Side\u0027\u00a0sessions are\u00a0for\u00a0people of marginalised
+          gender identities, including trans and non-binary people and all women.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EOur mission at Inclusive 11s\u00a0is
+          to create gender-inclusive spaces for amateur adult football players to connect,
+          have fun, and play competitive 11-a-side football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          run monthly sessions on Saturdays\u00a0from 10:00-12:30. Here\u2019s what
+          you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2025-11-22","formatted":"Sat
+          22 Nov 2025 12:30 PM","iso":"2025-11-22T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1763814600},"event_series_id":"es_1595497","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_634,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tyvs8tj7c3p969kglti1.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Manchester Inclusive 11s","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":108,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-11-22","formatted":"Sat
+          22 Nov 2025 10:00 AM","iso":"2025-11-22T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1763805600},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_4876037","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":21,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":9,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876038","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":19,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":11,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_4876039","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":22,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":8,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":28,"total_orders":28,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1595497","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_6075167","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/6075167/chk/6c28/","chk":"6c28","created_at":1746614771,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EJoin
+          us for an\u00a0Inclusive 11-a-side football\u00a0session\u00a0for\u00a0people
+          of marginalised gender identities, including trans and non-binary people and
+          all women!\u003Cbr /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EOur
+          mission at Inclusive 11s\u00a0is to create gender-inclusive spaces for amateur
+          adult football players to connect, have fun, and play competitive 11-a-side
+          football. While we are based in Manchester, we\u0027re delighted to be collaborating
+          with Enjoy FC to bring an 11-a-side session to London this May!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019re
+          running an 11-a-side session at Hackney Marshes\u00a0on Saturday May 31st,
+          from 12pm-4pm. Here\u2019s what you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a training session to get warmed up and
+          improve our skills. There will be drills  for total beginners and for more
+          confident/experienced players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a friendly game of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s and Enjoy FC are\u00a0completely
+          volunteer-run and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a36
+          or \u00a310, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cstrong\u003EWhat
+          are the facilities like?\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003EHackney
+          Marshes centre has the following accessible facilities:\u003Cbr /\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003ELevel Access and Automatic -Doors
+          (or No Doors)\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EMobility
+          Impaired Walker\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EOn-Site
+          Parking with\u00a0Blue Badge/Accessible Parking Bays\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EAccessible Toilet,\u00a0Ambulant
+          Toilet,\u00a0Step Free Standard Toilet\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EAccessible Changing Room (gender
+          neutral),\u00a0Accessible Shower\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EBaby Changing Facility\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003ESeat(s) Available\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003ESign Language\u003C/span\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EHow do I get there?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003ETo get to Hackney Marshes football
+          pitches from Leyton, you can take bus routes W15, 308, or N26, or walk from
+          the nearby Leyton or Hackney Wick train stations. The Hackney Marshes Centre,
+          which houses the pitches, is located off Homerton Road and has its own parking
+          and bike storage\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EBy Bus:\u00a0Buses like the W15,
+          308, and N26 stop near Hackney Marshes Centre on Homerton Road.\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EBy Train:\u00a0Hackney Wick and Homerton
+          stations on the London Overground Line are within a mile of the centre. You
+          can walk to the pitches from these stations.\u003C/span\u003E\u003C/li\u003E\u003Cli\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EBy Underground:\u00a0The nearest
+          Tube station to Hackney Marshes is Leyton, about 1.2 miles away.\u003C/span\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr /\u003E\u003C/span\u003E\u003C/li\u003E\u003C/ul\u003E","end":{"date":"2025-05-31","formatted":"Sat
+          31 May 2025 4:00 PM","iso":"2025-05-31T16:00:00+01:00","time":"16:00","timezone":"+01:00","unix":1748703600},"event_series_id":"es_1694513","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_635,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/tt27x0txtghwdyqzebp2.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Try
+          11-A-Side Football with Inclusive 11s and Enjoy FC","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":162,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2025-05-31","formatted":"Sat
+          31 May 2025 12:00 PM","iso":"2025-05-31T12:00:00+01:00","time":"12:00","timezone":"+01:00","unix":1748689200},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_5116719","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket (low waged or unwaged)","override_id":null,"price":0,"quantity":35,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":5,"quantity_total":40,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5116720","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":4,"min_per_order":1,"name":"\u00a36
+          ticket","override_id":null,"price":600,"quantity":33,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":7,"quantity_total":40,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5116721","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a310
+          ticket","override_id":null,"price":1000,"quantity":28,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":12,"quantity_total":40,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":24,"total_orders":23,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/1694513","venue":{"country":"GB","name":"Hackney
+          Marshes Football Pitches","postal_code":"E9 5PF"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_7426518","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/7426518/chk/8895/","chk":"8895","created_at":1767630059,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s open sessions are\u00a0for\u00a0people of marginalised gender identities,
+          including trans and non-binary people and all women.\u003Cbr /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EOur
+          mission at Inclusive 11s\u00a0is to create gender-inclusive spaces for amateur
+          adult football players to connect, have fun, and play competitive 11-a-side
+          football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe run monthly sessions on Saturdays\u00a0from
+          10:00-12:30. Here\u2019s what you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2026-01-24","formatted":"Sat
+          24 Jan 2026 12:30 PM","iso":"2026-01-24T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1769257800},"event_series_id":"es_2007344","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_635,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/rxwkc0lg6gg1m4sc1hdx.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Inclusive
+          11s Open Sessions","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":116,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2026-01-24","formatted":"Sat
+          24 Jan 2026 10:00 AM","iso":"2026-01-24T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1769248800},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_5862833","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":19,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":11,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5862834","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":21,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":9,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5862835","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":20,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":10,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":30,"total_orders":29,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/2007344","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_7426519","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/7426519/chk/cf8a/","chk":"cf8a","created_at":1767630072,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s open sessions are\u00a0for\u00a0people of marginalised gender identities,
+          including trans and non-binary people and all women.\u003Cbr /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EOur
+          mission at Inclusive 11s\u00a0is to create gender-inclusive spaces for amateur
+          adult football players to connect, have fun, and play competitive 11-a-side
+          football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe run monthly sessions on Saturdays\u00a0from
+          10:00-12:30. Here\u2019s what you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2026-02-21","formatted":"Sat
+          21 Feb 2026 12:30 PM","iso":"2026-02-21T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1771677000},"event_series_id":"es_2007344","hidden":"true","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_635,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/rxwkc0lg6gg1m4sc1hdx.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Inclusive
+          11s Open Sessions","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":0,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2026-02-21","formatted":"Sat
+          21 Feb 2026 10:00 AM","iso":"2026-02-21T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1771668000},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_5862833","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5862834","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5862835","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":0,"total_orders":0,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/2007344","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_7426520","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Register","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/7426520/chk/3da1/","chk":"3da1","created_at":1767630089,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EInclusive
+          11s open sessions are\u00a0for\u00a0people of marginalised gender identities,
+          including trans and non-binary people and all women.\u003Cbr /\u003E\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EOur
+          mission at Inclusive 11s\u00a0is to create gender-inclusive spaces for amateur
+          adult football players to connect, have fun, and play competitive 11-a-side
+          football! \u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe run monthly sessions on Saturdays\u00a0from
+          10:00-12:30. Here\u2019s what you can expect if you come along:\u003C/span\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWelcome:
+          \u003C/strong\u003EOur volunteers will welcome you to the session and we\u2019ll
+          get to know each other by sharing our names and pronouns.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli
+          dir=\u0022ltr\u0022\u003E\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003ETraining:
+          \u003C/strong\u003EWe\u2019ll run a 30-minute training session to get warmed
+          up. There will be drills  for total beginners and for more confident/experienced
+          players.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003Cli dir=\u0022ltr\u0022\u003E\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EMatch:\u003C/strong\u003E
+          We\u2019ll split into two 11-a-side teams and play a 60 minute friendly game
+          of football.\u003C/span\u003E\u003C/p\u003E\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWho
+          can attend?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWe invite people of marginalised
+          gender identities, including trans and non-binary people and all women, to
+          join us for this session.\u00a0\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          welcome absolute beginners, players with 5-a-side or 7-a-side experience,
+          or players who\u2019ve played 11-a-side before but are looking to find an
+          inclusive environment to play.\u003C/span\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EWhat will you need to bring?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe\u2019ll
+          be playing on grass, so we highly recommend wearing a pair of football boots.
+          You won\u2019t be turned away if you wear trainers, but be aware that there
+          you have a higher risk of slipping and injury without boots. Shin-pads are
+          encouraged, but optional. Be sure to bring plenty of water!\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cstrong\u003EWhere
+          will we be? What are the facilities?\u003C/strong\u003E\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EWe
+          play on the grass 11-a-side pitches on Hough End Playing Fields. There are
+          many pitches on the fields and a\u00a0map with our assigned\u00a0pitch will
+          be sent to you before the session. Our volunteers will be wearing pink bibs
+          so that you can spot us on the playing fields and we will send a contact number
+          for a volunteer who can help you find your way on the day.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003EPlayers
+          can use the toilets at the Hough End Leisure Centre. There are\u00a0gender-neutral
+          single stall toilets on the ground floor,\u00a0including a gender-neutral\u00a0accessible
+          toilet which can be opened with a\u00a0national key scheme/RADAR key.\u00a0You
+          can also fill water bottles at the centre.\u003C/span\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003EWe do not currently have access to changing room
+          facilities at the Leisure Centre but are looking into getting access to this
+          for future sessions. If you have any questions about the facilities or needs
+          that we haven\u0027t mentioned, please get in touch!\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003C/span\u003E\u003Cstrong\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EHow much does it cost?\u003C/span\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp\u003E\u003Cspan
+          style=\u0022color:rgb(0,0,0);\u0022\u003EInclusive 11s is a completely volunteer-run
+          organisation and we aim to keep our prices as low as possible for participation
+          whilst covering our costs. You can register this session for \u00a30, \u00a34
+          or \u00a38, depending on what you can afford. If you will be\u00a0attending
+          with a PA or\u00a0carer, or someone you care for, they are welcome to just
+          come along and\u00a0do not have to register.\u003C/span\u003E\u003Cspan style=\u0022color:rgb(0,0,0);\u0022\u003E\u003Cbr
+          /\u003E\u003C/span\u003E\u003C/p\u003E","end":{"date":"2026-03-21","formatted":"Sat
+          21 Mar 2026 12:30 PM","iso":"2026-03-21T12:30:00+00:00","time":"12:30","timezone":"+00:00","unix":1774096200},"event_series_id":"es_2007344","hidden":"true","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_635,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/rxwkc0lg6gg1m4sc1hdx.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_1000,q_100,w_1000,x_160,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/ya5feehoauyo1zk5h2ou.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":40,"name":"Inclusive
+          11s Open Sessions","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":0,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2026-03-21","formatted":"Sat
+          21 Mar 2026 10:00 AM","iso":"2026-03-21T10:00:00+00:00","time":"10:00","timezone":"+00:00","unix":1774087200},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_5862833","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"Free
+          ticket","override_id":null,"price":0,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5862834","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a34
+          ticket","override_id":null,"price":400,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10001,"status":"on_sale","type":"GA"},{"object":"ticket_type","id":"tt_5862835","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":5,"min_per_order":1,"name":"\u00a38
+          ticket","override_id":null,"price":800,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10002,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":0,"total_orders":0,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/2007344","venue":{"country":"GB","name":"Hough
+          End Playing Fields","postal_code":"M20 1HP"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."},{"object":"event","id":"ev_7585445","access_code":null,"available_status":null,"bundles":[],"call_to_action":"Sign
+          up","checkout_url":"https://www.tickettailor.com/checkout/view-event/id/7585445/chk/f4a5/","chk":"f4a5","created_at":1769689530,"currency":"gbp","description":"\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003EDo you want to see more LGBTQ+
+          inclusive football happening in Manchester?\u003Cbr /\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003ECome to Bridge 5 Mill on February
+          28th meet inclusive football teams and organisations from across the city\u00a0and
+          find out how you can get involved and volunteer with them on or off the pitch!\u003C/strong\u003E\u003C/p\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003E\u003Cstrong\u003EThis event is a #FootballPeople
+          event funded by Fare as part of Football vs Homophobia Month of Action 2026.\u003Cbr
+          /\u003E\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003EAt
+          this event, you can find out about volunteering opportunities with:\u003C/p\u003E\n\u003Cul\u003E\u003Cli\u003E\u003Cstrong\u003EThe
+          AF League\u003C/strong\u003E - A fully\u00a0inclusive 7-a-side league for
+          women, non-binary and trans players in Cheetham Hill with matches on Wednesday
+          evenings.\u003C/li\u003E\u003Cli\u003E\u003Cstrong\u003EBall Together Now
+          \u003C/strong\u003E-\u00a0An organisation dedicated to creating inclusive
+          and safe spaces for women, non binary and trans people. Ball Together Now
+          host an annual inclusive 7-a-side football tournament in Manchester.\u003C/li\u003E\u003Cli\u003E\u003Cstrong\u003EInclusive
+          11s \u003C/strong\u003E-\u00a0On a mission to\u00a0create gender-inclusive
+          spaces for amateur adult football players to connect, have fun, and play competitive
+          11-a-side football! We run monthly sessions on Saturdays from 10:00-12:30
+          for people\u00a0marginalised gender identities, including trans and non-binary
+          people and all women, and currently have a team playing in the Let Them Play
+          Cup with team in and around Leeds.\u003C/li\u003E\u003Cli\u003E\u003Cstrong\u003EPartisan
+          Football\u00a0\u003C/strong\u003E- \u0026lt;Info TBC\u0026gt;\u00a0Partisan
+          Collective\u0027s\u00a0weekly 5/6-a-side\u00a0football session - all about
+          welcoming newbies! We\u2019ll be doing drills and having a go at a game.\u00a0Every
+          Friday, 6.30 - 7.30pm.\u00a0\u003Cbr /\u003E\u003C/li\u003E\u003Cli\u003E\u003Cstrong\u003EUnion
+          Manchester FC\u003C/strong\u003E -\u00a0\u0026lt;Info TBC\u0026gt;\u00a0Queer
+          inclusive 5/6 a side football for all genders, with sessions on Tuesdays and
+          Saturday.\u00a0Aimed at beginners, but anyone\u0027s welcome!\u003C/li\u003E\u003C/ul\u003E\n\u003Cp
+          dir=\u0022ltr\u0022\u003ESign up for a 10 minute speed-meeting slot (or a
+          few!) to find your next volunteering opportunity. We will provide prompt questions
+          to guide conversations which you can use during your conversations if you
+          would like.\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003EAfter the speed-meeting,
+          stick around for a free film screening and food and drinks. You are also welcome
+          to bring your own food and drink. Please note and respect that Bridge 5 Mill
+          is a vegetarian-only building.\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003EEvent
+          timings\u003C/strong\u003E\u003C/p\u003E\n\u003Cul\u003E\u003Cli\u003E15:00
+          - Welcome!\u003C/li\u003E\u003Cli\u003E15:00 -16:00 - Speed meeting with inclusive
+          football teams\u003C/li\u003E\u003Cli\u003E16:00 - 17:00 - Film screening
+          with food and drinks\u003C/li\u003E\u003C/ul\u003E\n\u003Cp dir=\u0022ltr\u0022\u003E\u003Cstrong\u003EAccess
+          information\u003C/strong\u003E\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003EBridge
+          5 Mill has step-free access via a ramp and lift. There is a gender-neutral\u00a0disabled
+          toilet on the ground floor and three\u00a0gender-neutral cubicles up a small
+          flight of stairs.\u00a0The event will take place in the \u003Ca href=\u0022https://bridge5mill.org.uk/bridge-5-mill/venue-hire/#community-and-meeting-spaces\u0022
+          rel=\u0022nofollow\u0022\u003EFlaxworks\u003C/a\u003E room. There will be
+          a separate, quiet room available which will be\u00a0clearly signposted on
+          the day. Access details for the\u00a0film screening, including trigger warnings,
+          will be confirmed and shared before the event.\u003C/p\u003E\n\u003Cp dir=\u0022ltr\u0022\u003EVisit
+          the Bridge 5 Mill website for\u00a0\u003Ca href=\u0022https://bridge5mill.org.uk/contact-us/#how-to-get-here\u0022
+          rel=\u0022nofollow\u0022\u003Einstructions on how to get there\u003C/a\u003E.\u003Cbr
+          /\u003E\u003C/p\u003E","end":{"date":"2026-02-28","formatted":"Sat 28 Feb
+          2026 5:00 PM","iso":"2026-02-28T17:00:00+00:00","time":"17:00","timezone":"+00:00","unix":1772298000},"event_series_id":"es_2046519","hidden":"false","images":{"header":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_635,q_100,w_2000,x_0,y_1/c_scale,g_center,h_373,q_85,w_1172/v1/production/userfiles/l8t8j6u2vbvikmspaw0z.jpg?_a=BAAE6HDQ","thumbnail":"https://uploads.tickettailorassets.com/c_crop,dpr_1.0,h_636,q_100,w_636,x_1364,y_0/c_scale,h_250,q_85,w_250/v1/production/userfiles/l8t8j6u2vbvikmspaw0z.jpg?_a=BAAE6HDQ"},"max_tickets_sold_per_occurrence":null,"name":"Make
+          It Happen! Volunteer Speed Meeting with Inclusive Football Groups","online_event":"false","online_link":null,"override_id":null,"payment_methods":[{"id":"pm_139172","external_id":"ZS7K3P8WRRTGL","instructions":null,"name":null,"type":"paypal"}],"private":"false","revenue":0,"sales_tax_label":"VAT","sales_tax_percentage":null,"sales_tax_treatment":"exclusive","show_map":"true","start":{"date":"2026-02-28","formatted":"Sat
+          28 Feb 2026 3:00 PM","iso":"2026-02-28T15:00:00+00:00","time":"15:00","timezone":"+00:00","unix":1772290800},"status":"published","ticket_groups":[],"ticket_types":[{"object":"ticket_type","id":"tt_5951857","access_code":null,"booking_fee":0,"description":null,"discounts":[],"group_id":null,"has_overrides":"false","hide_after":null,"hide_until":null,"hide_when_sold_out":"false","max_per_order":1,"min_per_order":1,"name":"Ticket","override_id":null,"price":0,"quantity":30,"quantity_held":0,"quantity_in_baskets":0,"quantity_issued":0,"quantity_total":30,"show_quantity_remaining":"false","show_quantity_remaining_less_than":null,"sort_order":10000,"status":"on_sale","type":"GA"}],"tickets_available":"true","tickets_available_at":null,"tickets_available_at_message":"Tickets
+          are available in {countdown}","tickets_unavailable_at":null,"tickets_unavailable_at_message":"Tickets
+          are no longer available","timezone":"Europe/London","total_holds":0,"total_issued_tickets":0,"total_orders":0,"transaction_fee_fixed_amount":null,"transaction_fee_percentage":null,"unavailable":"false","unavailable_status":null,"url":"https://www.tickettailor.com/events/inclusive11s/2046519","venue":{"country":"GB","name":"Bridge
+          5 Mill","postal_code":"M4 7HR"},"voucher_ids":[],"waitlist_active":"false","waitlist_call_to_action":"Join
+          waiting list","waitlist_confirmation_message":"Done! You are on the waiting
+          list.","waitlist_event_page_text":"Join our waiting list to be notified when
+          tickets become available."}],"links":{"next":null,"previous":null}}'
+    recorded_at: Thu, 29 Jan 2026 15:15:56 GMT
+recorded_with: VCR 6.4.0

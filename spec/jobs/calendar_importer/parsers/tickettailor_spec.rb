@@ -67,17 +67,17 @@ RSpec.describe CalendarImporter::Parsers::Tickettailor do
     end
 
     context "with API key" do
-      let(:api_key) { "sk_test_1234567890abcdefghijklmnopqrstuvwxyz12345" }
+      let(:api_key) { "sk_test_placeholder" }
       let(:calendar) { build(:calendar, source: url, api_token: api_key) }
 
-      # This test requires a valid API key and VCR cassette
-      # Skip until we have test credentials
-      it "fetches events from the API", skip: "Requires valid TicketTailor API key" do
-        VCR.use_cassette("tickettailor_events", allow_playback_repeats: true) do
+      it "fetches events from the API" do
+        VCR.use_cassette("tickettailor_events", match_requests_on: %i[method uri]) do
           parser = described_class.new(calendar)
           data = parser.download_calendar
 
           expect(data).to be_an(Array)
+          expect(data.length).to eq(16)
+          expect(data.first).to include("id", "name", "status")
         end
       end
     end
