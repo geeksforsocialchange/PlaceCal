@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_28_110115) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_29_150325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,6 +61,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_110115) do
   end
 
   create_table "calendars", force: :cascade do |t|
+    t.string "api_token"
     t.string "calendar_state", default: "idle"
     t.datetime "checksum_updated_at"
     t.datetime "created_at", precision: nil, null: false
@@ -73,7 +74,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_110115) do
     t.string "name", null: false
     t.integer "notice_count"
     t.jsonb "notices"
-    t.string "page_access_token"
     t.bigint "partner_id", null: false
     t.bigint "place_id"
     t.string "public_contact_email"

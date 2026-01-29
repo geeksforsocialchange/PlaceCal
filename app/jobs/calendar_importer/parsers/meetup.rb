@@ -5,7 +5,7 @@
 # Parent parser classes should not be added.
 
 module CalendarImporter::Parsers
-  class Meetup < Base
+  class Meetup < Ics
     NAME = 'Meetup'
     KEY = 'meetup'
     DOMAINS = %w[www.meetup.com].freeze
@@ -15,17 +15,14 @@ module CalendarImporter::Parsers
     end
 
     def download_calendar
-      user_name = (@url =~ %r{^https://www\.meetup\.com/([^/]*)/?$}) && Regexp.last_match(1)
-      return [] if user_name.blank?
+      group_name = (@url =~ %r{^https://www\.meetup\.com/([^/]*)/?$}) && Regexp.last_match(1)
+      return [] if group_name.blank?
 
-      api_url = "https://api.meetup.com/#{user_name}/events"
-      response_body = Base.read_http_source(api_url)
+      ical_url = "https://www.meetup.com/#{group_name}/events/ical"
+      res = Base.read_http_source(ical_url)
 
-      Base.safely_parse_json response_body
-    end
-
-    def import_events_from(data)
-      data.map { |d| CalendarImporter::Events::MeetupEvent.new(d) }
+      # Remove DTSTAMP to prevent checksum changes on each request
+      res.split("\n").reject { |l| l.include? 'DTSTAMP' }.join("\n")
     end
   end
 end

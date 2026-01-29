@@ -1,0 +1,61 @@
+---
+http_interactions:
+  - request:
+      method: get
+      uri: https://www.meetup.com/this-group-does-not-exist-xyz123/events/ical
+      body:
+        encoding: US-ASCII
+        string: ""
+      headers:
+        User-Agent:
+          - Httparty
+        Accept-Encoding:
+          - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+        Accept:
+          - "*/*"
+    response:
+      status:
+        code: 404
+        message: Not Found
+      headers:
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "29"
+        Accept-Ranges:
+          - bytes
+        Content-Type:
+          - text/plain; charset=utf-8
+        Apigw-Requestid:
+          - X5M0mh2FoAMEYDw=
+        Strict-Transport-Security:
+          - max-age=7776000
+        Date:
+          - Wed, 28 Jan 2026 11:37:13 GMT
+        X-Cache:
+          - MISS, MISS, MISS
+        X-Cache-Hits:
+          - 0, 0, 0
+        Vary:
+          - Accept-Encoding,X-Test-Fastly-Refactor
+        Content-Security-Policy:
+          - "base-uri 'self'; connect-src * blob: data: *.crazyegg.com ; default-src
+            'self' *.meetup.com *.dev.meetup.com:8001 www.sjwoe.com *.crazyegg.com blob:
+            ; font-src * data:; frame-ancestors 'self'; frame-src *; img-src * data:
+            blob: *.crazyegg.com ;media-src *.meetup.com *.dev.meetup.com:8001 https://secure.meetupstatic.com
+            www.sjwoe.com *.sendbird.com https://sendbird-us-3.s3.amazonaws.com; script-src
+            * 'unsafe-eval' 'unsafe-inline' *.crazyegg.com; style-src * 'unsafe-inline'
+            *.crazyegg.com ; object-src 'none'"
+        X-Frame-Options:
+          - SAMEORIGIN
+        X-Xss-Protection:
+          - 1; mode=block
+        X-Content-Type-Options:
+          - nosniff
+        Cache-Control:
+          - private, no-cache, no-store, max-age=0, must-revalidate
+      body:
+        encoding: UTF-8
+        string: '{"message":"Group not found"}'
+    recorded_at: Tue, 08 Nov 2022 00:00:00 GMT
+recorded_with: VCR 6.4.0
