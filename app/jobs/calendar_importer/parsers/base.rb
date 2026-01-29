@@ -11,6 +11,10 @@ module CalendarImporter::Parsers
     PUBLIC = true
     NAME = ''
     KEY = ''
+
+    def self.skip_source_validation?
+      false
+    end
     Output = Struct.new(:events, :checksum_changed)
 
     CONTEXT = {

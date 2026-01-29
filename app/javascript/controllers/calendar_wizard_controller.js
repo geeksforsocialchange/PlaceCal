@@ -68,7 +68,7 @@ export default class extends Controller {
 		nextStep(
 			this,
 			() => this.validateCurrentStep(),
-			(step) => this.onStepChange(step),
+			(step) => this.onStepChange(step)
 		);
 	}
 
@@ -93,7 +93,8 @@ export default class extends Controller {
 	// Importers that require an API token
 	get requiresApiToken() {
 		if (!this.hasImporterModeSelectTarget) return false;
-		return this.importerModeSelectTarget.value === "tickettailor";
+		const mode = this.importerModeSelectTarget.value;
+		return mode === "tickettailor" || mode === "ticketsource";
 	}
 
 	// Check if current step is valid (without showing errors)
@@ -150,7 +151,7 @@ export default class extends Controller {
 		if (this.hasContinueButtonTarget) {
 			setContinueButtonEnabled(
 				this.continueButtonTarget,
-				this.isCurrentStepValid(),
+				this.isCurrentStepValid()
 			);
 		}
 
@@ -185,13 +186,13 @@ export default class extends Controller {
 			"bg-error",
 			"hover:bg-error",
 			"text-error-content",
-			"border-error",
+			"border-error"
 		);
 		btn.classList.add(
 			"bg-placecal-orange",
 			"hover:bg-orange-600",
 			"text-white",
-			"border-placecal-orange",
+			"border-placecal-orange"
 		);
 		// Reset icon and text
 		this.testIconNeutralTarget.classList.remove("hidden");
@@ -211,13 +212,13 @@ export default class extends Controller {
 			"bg-error",
 			"hover:bg-error",
 			"text-error-content",
-			"border-error",
+			"border-error"
 		);
 		btn.classList.add(
 			"bg-success",
 			"hover:bg-success",
 			"text-success-content",
-			"border-success",
+			"border-success"
 		);
 		// Update icon and text
 		this.testIconNeutralTarget.classList.add("hidden");
@@ -237,13 +238,13 @@ export default class extends Controller {
 			"bg-success",
 			"hover:bg-success",
 			"text-success-content",
-			"border-success",
+			"border-success"
 		);
 		btn.classList.add(
 			"bg-error",
 			"hover:bg-error",
 			"text-error-content",
-			"border-error",
+			"border-error"
 		);
 		// Update icon and text
 		this.testIconNeutralTarget.classList.add("hidden");

@@ -1,4 +1,4 @@
-<% if @calendar.importer_mode == 'tickettailor' || @calendar.api_token.present? %>
+<% if @calendar.importer_mode.in?(%w[tickettailor ticketsource]) || @calendar.api_token.present? %>
   <%= render Admin::SectionHeaderComponent.new(
     title: t('admin.calendars.fields.api_token'),
     description: t('admin.calendars.fields.api_token_hint')
