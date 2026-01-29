@@ -143,6 +143,7 @@ module Admin
         :partner_id,
         :place_id,
         :importer_mode,
+        :api_token,
         :public_contact_name,
         :public_contact_phone,
         :public_contact_email,

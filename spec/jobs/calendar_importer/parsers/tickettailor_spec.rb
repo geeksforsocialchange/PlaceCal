@@ -55,7 +55,7 @@ RSpec.describe CalendarImporter::Parsers::Tickettailor do
     let(:url) { "https://www.tickettailor.com/events/testorg" }
 
     context "without API key" do
-      let(:calendar) { build(:calendar, source: url, page_access_token: nil) }
+      let(:calendar) { build(:calendar, source: url, api_token: nil) }
 
       it "raises an error when API key is missing" do
         parser = described_class.new(calendar)
@@ -68,7 +68,7 @@ RSpec.describe CalendarImporter::Parsers::Tickettailor do
 
     context "with API key" do
       let(:api_key) { "sk_test_1234567890abcdefghijklmnopqrstuvwxyz12345" }
-      let(:calendar) { build(:calendar, source: url, page_access_token: api_key) }
+      let(:calendar) { build(:calendar, source: url, api_token: api_key) }
 
       # This test requires a valid API key and VCR cassette
       # Skip until we have test credentials
@@ -85,7 +85,7 @@ RSpec.describe CalendarImporter::Parsers::Tickettailor do
 
   describe "#import_events_from" do
     let(:url) { "https://www.tickettailor.com/events/testorg" }
-    let(:calendar) { build(:calendar, source: url, page_access_token: "test_key") }
+    let(:calendar) { build(:calendar, source: url, api_token: "test_key") }
     let(:parser) { described_class.new(calendar) }
 
     let(:sample_event_data) do

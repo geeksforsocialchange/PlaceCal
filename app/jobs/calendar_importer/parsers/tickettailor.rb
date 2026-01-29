@@ -39,7 +39,7 @@ module CalendarImporter
       private
 
       def api_key
-        @calendar.page_access_token
+        @calendar.api_token
       end
 
       def validate_api_key!
