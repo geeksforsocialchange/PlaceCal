@@ -26,6 +26,10 @@ module CalendarImporter::Parsers
       'event' => 'http://schema.org/event',
       'name' => 'http://schema.org/name',
       'street_address' => 'http://schema.org/streetAddress',
+      'address_locality' => 'http://schema.org/addressLocality',
+      'address_region' => 'http://schema.org/addressRegion',
+      'postal_code' => 'http://schema.org/postalCode',
+      'address_country' => 'http://schema.org/addressCountry',
 
       'logo_url' => { '@id' => 'http://schema.org/logo', '@type' => '@id' },
       'image_url' => { '@id' => 'http://schema.org/image', '@type' => '@id' },
