@@ -165,7 +165,7 @@ env:
 language: ruby
 dist: trusty
 addons:
-  postgresql: '9.6'
+  postgresql: '16.11'
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
