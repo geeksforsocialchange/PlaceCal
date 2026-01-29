@@ -1,0 +1,63 @@
+# frozen_string_literal: true
+
+module CalendarImporter::Events
+  class TicketsourceEvent < Base
+    def uid
+      event_id = @event.dig('attributes', 'id') || @event['id']
+      date_id = @event.dig('date', 'id')
+      "#{event_id}-#{date_id}"
+    end
+
+    def summary
+      @event.dig('attributes', 'name') || @event['name']
+    end
+
+    def description
+      @event.dig('attributes', 'description') || @event['description'] || ''
+    end
+
+    def dtstart
+      parse_iso8601(@event.dig('date', 'attributes', 'start'))
+    end
+
+    def dtend
+      parse_iso8601(@event.dig('date', 'attributes', 'end'))
+    end
+
+    def location
+      venue = @event['venue']
+      return nil unless venue.is_a?(Hash)
+
+      attrs = venue['attributes'] || venue
+      address = attrs['address'] || {}
+      parts = [
+        attrs['name'],
+        address['line_1'],
+        address['line_2'],
+        address['line_3'],
+        address['line_4'],
+        address['postcode']
+      ].compact_blank
+
+      parts.join(', ').presence
+    end
+
+    def publisher_url
+      @event['publisher_url']
+    end
+
+    def occurrences_between(*)
+      [Dates.new(dtstart, dtend)]
+    end
+
+    private
+
+    def parse_iso8601(value)
+      return nil if value.blank?
+
+      Time.zone.parse(value)
+    rescue ArgumentError
+      nil
+    end
+  end
+end

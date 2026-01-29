@@ -49,6 +49,12 @@ class CalendarImporter::CalendarImporter
     raise UnsupportedFeed, 'The provided URL is missing' if url.blank?
     raise UnsupportedFeed, 'The provided URL is not a valid URL' unless Calendar::CALENDAR_REGEX.match?(url)
 
+    # When a specific importer mode is set, we can check the parser first.
+    # API-based parsers skip the HTTP source check since they validate
+    # connectivity through their own authenticated API calls, and their
+    # source URLs may be behind Cloudflare challenges.
+    return if @calendar.importer_mode != 'auto' && parser&.skip_source_validation?
+
     CalendarImporter::Parsers::Base.read_http_source url
 
     raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?

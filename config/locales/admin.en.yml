@@ -325,8 +325,8 @@ en:
         partner_organiser: "Partner Organiser"
         source_placeholder: "https://your-domain.com/events.ics"
         api_token: "API Key"
-        api_token_hint: "Required for Ticket Tailor. You can find this in your Ticket Tailor account under Box Office > API Keys."
-        api_token_placeholder: "sk_..."
+        api_token_hint: "Required for Ticket Tailor and TicketSource. Find this in your account settings under API Keys."
+        api_token_placeholder: "Enter your API key"
         strategy_hint: "Where should location information for this calendar come from?"
       strategy:
         place: "Always use the calendar's default location (default)."

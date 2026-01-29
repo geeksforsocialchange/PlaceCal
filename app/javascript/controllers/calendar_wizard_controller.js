@@ -93,7 +93,8 @@ export default class extends Controller {
 	// Importers that require an API token
 	get requiresApiToken() {
 		if (!this.hasImporterModeSelectTarget) return false;
-		return this.importerModeSelectTarget.value === "tickettailor";
+		const mode = this.importerModeSelectTarget.value;
+		return mode === "tickettailor" || mode === "ticketsource";
 	}
 
 	// Check if current step is valid (without showing errors)
