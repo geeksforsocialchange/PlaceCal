@@ -49,6 +49,15 @@ class CalendarImporter::CalendarImporter
     raise UnsupportedFeed, 'The provided URL is missing' if url.blank?
     raise UnsupportedFeed, 'The provided URL is not a valid URL' unless Calendar::CALENDAR_REGEX.match?(url)
 
+    # Check if a parser can be matched by URL pattern alone (without HTTP fetching).
+    # API-based parsers (e.g. Ticket Tailor) don't fetch from the source URL directly,
+    # so skip the HTTP reachability check for them.
+    pattern_matched_parser = PARSERS.find { |p| p.respond_to?(:allowlist_pattern) && url.match?(p.allowlist_pattern) }
+    if pattern_matched_parser&.const_defined?(:SOURCE_VALIDATION_NOT_REQUIRED) && pattern_matched_parser::SOURCE_VALIDATION_NOT_REQUIRED
+      @parser = pattern_matched_parser
+      return
+    end
+
     CalendarImporter::Parsers::Base.read_http_source url
 
     raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?

@@ -95,7 +95,14 @@ module CalendarImporter::Parsers
       response = HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
       return response.body if response.success?
 
-      msg = "The source URL could not be read (code=#{response.code})"
+      msg = case response.code
+            when 403
+              I18n.t('admin.calendars.wizard.source.forbidden')
+            when 404
+              I18n.t('admin.calendars.wizard.source.not_found')
+            else
+              I18n.t('admin.calendars.wizard.source.unreadable', code: response.code)
+            end
       raise InaccessibleFeed, msg
     rescue HTTParty::ResponseError => e
       raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
