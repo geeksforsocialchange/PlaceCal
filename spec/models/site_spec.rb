@@ -78,6 +78,55 @@ RSpec.describe Site, type: :model do
     end
   end
 
+  describe "#events_this_week" do
+    let(:neighbourhood) { create(:neighbourhood) }
+    let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
+    let(:address) { create(:address, neighbourhood: neighbourhood) }
+    let(:partner) { create(:partner, address: address) }
+
+    it "counts events in the current week" do
+      create(:event, partner: partner, dtstart: Time.zone.now)
+      create(:event, partner: partner, dtstart: 2.days.from_now)
+      # Event outside the week
+      create(:event, partner: partner, dtstart: 2.weeks.from_now)
+
+      expect(site.events_this_week).to eq(2)
+    end
+
+    it "returns 0 when no events exist" do
+      expect(site.events_this_week).to eq(0)
+    end
+  end
+
+  describe "#refresh_partners_count!" do
+    let(:neighbourhood) { create(:neighbourhood) }
+    let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
+    let(:address) { create(:address, neighbourhood: neighbourhood) }
+
+    it "updates the cached partners_count" do
+      create(:partner, address: address)
+      create(:partner, address: address)
+
+      site.refresh_partners_count!
+      expect(site.reload.partners_count).to eq(2)
+    end
+  end
+
+  describe "#refresh_events_count!" do
+    let(:neighbourhood) { create(:neighbourhood) }
+    let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
+    let(:address) { create(:address, neighbourhood: neighbourhood) }
+    let(:partner) { create(:partner, address: address) }
+
+    it "updates the cached events_count" do
+      create(:event, partner: partner, dtstart: Time.zone.now)
+      create(:event, partner: partner, dtstart: 1.day.from_now)
+
+      site.refresh_events_count!
+      expect(site.reload.events_count).to eq(2)
+    end
+  end
+
   describe "scopes" do
     describe "default ordering" do
       let!(:site_a) { create(:site, name: "Alpha Site") }

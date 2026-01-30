@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Partner, ".for_site scope" do
+RSpec.describe PartnersQuery, "site filtering" do
   # NOTE: these MUST match up with the geocoder response defined in spec/support/normal_island_geocoder.rb
   let(:post_code) { "M15 5DD" }
   let(:unit) { "ward" }
@@ -30,7 +30,7 @@ RSpec.describe Partner, ".for_site scope" do
   end
 
   it "empty site returns nothing" do
-    output = described_class.for_site(site)
+    output = described_class.new(site: site).call
     expect(output).to be_empty
   end
 
@@ -39,7 +39,7 @@ RSpec.describe Partner, ".for_site scope" do
 
     create_list(:partner, 5, address: address_one)
 
-    output = described_class.for_site(site)
+    output = described_class.new(site: site).call
     expect(output.count).to eq(5)
   end
 
@@ -58,7 +58,7 @@ RSpec.describe Partner, ".for_site scope" do
       partner.save!
     end
 
-    output = described_class.for_site(site)
+    output = described_class.new(site: site).call
     expect(output.count).to eq(5)
   end
 
@@ -77,7 +77,7 @@ RSpec.describe Partner, ".for_site scope" do
     # partner by address
     create(:partner, address: address_one)
 
-    output = described_class.for_site(site)
+    output = described_class.new(site: site).call
     expect(output.count).to eq(2)
   end
 
@@ -117,7 +117,7 @@ RSpec.describe Partner, ".for_site scope" do
     end
 
     # finds set (neighbourhood_a OR neighbourhood_b)
-    output = described_class.for_site(site)
+    output = described_class.new(site: site).call
     expect(output.count).to eq(10)
   end
 
@@ -149,7 +149,7 @@ RSpec.describe Partner, ".for_site scope" do
       # skipped
       create_partner_with_tags(geocodable_neighbourhood)
 
-      found = described_class.for_site(site)
+      found = described_class.new(site: site).call
       expect(found.count).to eq(3)
 
       found_ids = found.map(&:id)

@@ -15,29 +15,14 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    # Set filter values
     @selected_category = params[:category]
     @selected_neighbourhood = params[:neighbourhood]
 
-    # Get all partners based in the neighbourhoods associated with this site.
-    neighbourhood_partners =
-      if @selected_neighbourhood
-        Neighbourhood
-          .find(@selected_neighbourhood)
-          .partners
-      else
-        Partner
-          .for_site(current_site)
-          .order(:name)
-      end
-
-    @partners =
-      if @selected_category
-        category_partners = Partner.with_tags(@selected_category)
-        [neighbourhood_partners, category_partners].reduce(:&)
-      else
-        neighbourhood_partners
-      end
+    query = PartnersQuery.new(site: current_site)
+    @partners = query.call(
+      neighbourhood_id: @selected_neighbourhood,
+      tag_id: @selected_category
+    )
 
     # When no filters active, show only partners with physical addresses (no service_areas)
     # When filters are active, show all filtered partners that have addresses
@@ -57,15 +42,21 @@ class PartnersController < ApplicationController
       @no_event_message = no_upcoming_events_reason(@partner)
     elsif upcoming_events.length < PAGINATION_THRESHOLD
       # If only a few, show them all with no pagination
-      @events = sort_events(upcoming_events, 'time')
+      query = EventsQuery.new(site: nil, day: @current_day)
+      @events = query.call(period: 'future', partner_or_place: @partner, sort: 'time')
       @paginator = false
     else
       # If a lot, show a paginator by week
       @period = params[:period] || 'week'
       @sort = params[:sort] || 'time'
       @repeating = params[:repeating] || 'on'
-      @events = filter_events(@period, partner_or_place: @partner)
-      @events = sort_events(@events, @sort)
+      query = EventsQuery.new(site: nil, day: @current_day)
+      @events = query.call(
+        period: @period,
+        partner_or_place: @partner,
+        repeating: @repeating,
+        sort: @sort
+      )
       @paginator = true
     end
 
@@ -86,9 +77,9 @@ class PartnersController < ApplicationController
 
   def embed
     period = params[:period] || 'week'
-    limit = params[:limit] || '10'
-    @events = filter_events(period, place: @partner, limit: limit)
-    @events = sort_events(@events, 'time')
+    limit = params[:limit]&.to_i || 10
+    query = EventsQuery.new(site: nil, day: @current_day)
+    @events = query.call(period: period, place: @partner, sort: 'time', limit: limit)
     response.headers.except! 'X-Frame-Options'
     render layout: false
   end

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Partner, ".with_tags scope" do
+RSpec.describe PartnersQuery, "tag filtering" do
   let(:post_code) { "M15 5DD" }
   let(:unit) { "ward" }
   let(:unit_code) { "E05011368" }
@@ -29,8 +29,7 @@ RSpec.describe Partner, ".with_tags scope" do
   end
 
   it "empty site/tag returns nothing" do
-    tag = nil
-    output = described_class.for_site(site).with_tags(tag)
+    output = described_class.new(site: site).call(tag_id: nil)
     expect(output).to be_empty
   end
 
@@ -56,7 +55,7 @@ RSpec.describe Partner, ".with_tags scope" do
       create(:partner, name: "Partner with no tags #{n}", address: address_one)
     end
 
-    output = described_class.for_site(site).with_tags(tag)
-    expect(output.all.length).to eq(4)
+    output = described_class.new(site: site).call(tag_id: tag.id)
+    expect(output.length).to eq(4)
   end
 end

@@ -79,7 +79,9 @@ class ArticlePolicy < ApplicationPolicy
       return scope.none unless user.neighbourhood_admin? || user.partner_admin?
 
       neighbourhood_ids = user.owned_neighbourhood_ids
-      neighbourhood_partners = Partner.from_neighbourhoods_and_service_areas(neighbourhood_ids)
+      neighbourhood_partners = Partner.left_joins(:address, :service_areas)
+                                      .where('addresses.neighbourhood_id IN (?) OR service_areas.neighbourhood_id IN (?)',
+                                             neighbourhood_ids, neighbourhood_ids)
       partner_ids = user.partners + neighbourhood_partners.map(&:id)
 
       Article.joins(:article_partners).where('article_partners.partner_id' => partner_ids)
@@ -92,6 +94,9 @@ class ArticlePolicy < ApplicationPolicy
   # @return [ActiveRecord::Relation<Article>] A list of Partners
   def owned_neighbourhoods_have_partners?
     # We can make this less shallow, but it's not important since scoping rules have the deeper stuff anyway
-    Partner.from_neighbourhoods_and_service_areas(user.owned_neighbourhood_ids).any?
+    Partner.left_joins(:address, :service_areas)
+           .where('addresses.neighbourhood_id IN (?) OR service_areas.neighbourhood_id IN (?)',
+                  user.owned_neighbourhood_ids, user.owned_neighbourhood_ids)
+           .any?
   end
 end

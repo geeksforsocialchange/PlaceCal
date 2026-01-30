@@ -294,30 +294,6 @@ RSpec.describe Partner, type: :model do
         expect(described_class.visible).not_to include(hidden)
       end
     end
-
-    describe ".from_neighbourhoods_and_service_areas" do
-      let(:ward) { create(:riverside_ward) }
-      let(:partner_with_address) do
-        address = create(:riverside_address)
-        create(:partner, address: address)
-      end
-      let(:partner_with_service_area) do
-        partner = create(:mobile_partner, service_area_wards: [ward])
-        partner
-      end
-
-      it "finds partners by address neighbourhood" do
-        partner_with_address
-        result = described_class.from_neighbourhoods_and_service_areas([partner_with_address.address.neighbourhood_id])
-        expect(result).to include(partner_with_address)
-      end
-
-      it "finds partners by service area neighbourhood" do
-        partner_with_service_area
-        result = described_class.from_neighbourhoods_and_service_areas([ward.id])
-        expect(result).to include(partner_with_service_area)
-      end
-    end
   end
 
   describe "#can_clear_address?" do

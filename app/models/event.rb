@@ -70,31 +70,6 @@ class Event < ApplicationRecord
       )
   }
 
-  # Filter by Site
-  scope :for_site, lambda { |site|
-    partners = Partner.for_site(site)
-
-    if site&.tags&.any?
-      left_joins(:address)
-        .where(
-          'partner_id in (:partner_ids) OR '\
-          '(lower(addresses.street_address) in (:partner_names) AND '\
-          'lower(addresses.postcode) in (:partner_postcodes))',
-          partner_ids: partners.map(&:id),
-          partner_names: partners.map { |p| p.name.downcase },
-          partner_postcodes: partners.map(&:address).compact_blank!.map { |a| a.postcode.downcase }
-        )
-    else
-      left_joins(:address)
-        .where(
-          'partner_id in (:partner_ids) OR '\
-          'addresses.neighbourhood_id in (:neighbourhoods)',
-          neighbourhoods: site.owned_neighbourhoods.map(&:id),
-          partner_ids: partners.map(&:id)
-        )
-    end
-  }
-
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
 

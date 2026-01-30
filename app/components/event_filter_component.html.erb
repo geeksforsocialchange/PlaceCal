@@ -8,6 +8,25 @@
   <%= hidden_field_tag :sort, sort, data: { date_picker_target: 'sort' } %>
   <%= hidden_field_tag :repeating, repeating, data: { date_picker_target: 'repeating' } %>
 </div>
+<% if show_neighbourhood_filter? %>
+  <div class="filters" data-controller="event-filter">
+    <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do %>
+      <%= hidden_field_tag :period, period %>
+      <%= hidden_field_tag :sort, sort %>
+      <%= hidden_field_tag :repeating, repeating %>
+      <%= render FilterComponent.new(
+        name: "neighbourhood",
+        label: "Neighbourhood",
+        items: neighbourhood_items,
+        selected_id: selected_neighbourhood,
+        controller: "event-filter",
+        toggle_action: "toggleNeighbourhood",
+        submit_action: "submitNeighbourhood",
+        reset_action: "resetNeighbourhood"
+      ) %>
+    <% end %>
+  </div>
+<% end %>
 <div class="filters" data-controller="filters">
   <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do %>
     <div class="filters__toggle">

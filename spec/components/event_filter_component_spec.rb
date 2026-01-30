@@ -105,7 +105,7 @@ RSpec.describe EventFilterComponent, type: :component do
     it "connects to filters Stimulus controller" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("[data-controller='filters']")
+      expect(page).to have_css("[data-controller~='filters']")
     end
 
     describe "sort options" do

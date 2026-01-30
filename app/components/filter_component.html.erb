@@ -1,0 +1,27 @@
+<div class="filters__toggle">
+  <button type="button" data-action="<%= toggle_action_value %>">
+    <span class="icon icon--arrow-down">↓</span>
+    <span class="filters__link" data-<%= controller %>-target="<%= name %>Text">
+      <%= button_text %>
+    </span>
+  </button>
+</div>
+<div class="filters__dropdown filters__dropdown--hidden" data-<%= controller %>-target="<%= name %>Dropdown">
+  <div class="filters__group">
+    <% items.each do |item| %>
+      <div class="filters__option">
+        <%= radio_button_tag name,
+                              item[:id],
+                              selected?(item[:id]),
+                              data: { action: submit_action_value },
+                              class: "tag__button" %>
+        <%= label_tag "#{name}_#{item[:id]}",
+                      "#{item[:name]} (#{item[:count]})",
+                      class: "filters__label" %>
+      </div>
+    <% end %>
+  </div>
+  <% if filter_active? %>
+    <button type="button" data-action="<%= reset_action_value %>" class="btn size-patch filter__reset">Reset</button>
+  <% end %>
+</div>
