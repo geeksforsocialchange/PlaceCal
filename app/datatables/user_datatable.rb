@@ -114,8 +114,7 @@ class UserDatatable < Datatable
 
     # For last_sign_in_at, put NULLs at the bottom regardless of sort direction
     if column_name == 'User.last_sign_in_at'
-      nulls_position = direction == 'desc' ? 'NULLS LAST' : 'NULLS FIRST'
-      records.order(Arel.sql("users.last_sign_in_at #{direction.upcase} #{nulls_position}"))
+      records.order(Arel.sql("users.last_sign_in_at #{direction.upcase} NULLS LAST"))
     else
       super
     end
