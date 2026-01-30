@@ -46,7 +46,7 @@ RSpec.describe CalendarImporter::Parsers::Base do
       VCR.use_cassette(:example_dot_com_bad_response) do
         expect do
           described_class.read_http_source("https://example.com")
-        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, "The source URL could not be read (code=401)")
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.unreadable", code: 401))
       end
     end
   end

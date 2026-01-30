@@ -99,7 +99,7 @@ module CalendarImporter::Parsers
             when 404
               I18n.t('admin.calendars.wizard.source.not_found')
             else
-              "The source URL could not be read (code=#{response.code})"
+              I18n.t('admin.calendars.wizard.source.unreadable', code: response.code)
             end
       raise InaccessibleFeed, msg
     rescue HTTParty::ResponseError => e

@@ -292,6 +292,7 @@ en:
           importer_hint: "Usually auto-detected. Only change if needed."
           api_importer_warning: "%{name} uses an API key to import events. This URL is used to identify the organiser but won't be fetched directly."
           not_found: "This URL returned a 404 (not found). Please check the URL is correct and that the feed or page has not been removed or set to private."
+          unreadable: "The source URL could not be read (code=%{code})"
         organiser:
           title: "Organiser"
           description: "Which partner organises these events, and what should we call this calendar?"
