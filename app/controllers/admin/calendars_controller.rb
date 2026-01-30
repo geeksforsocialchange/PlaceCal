@@ -110,8 +110,7 @@ module Admin
           # the import will use an API key rather than fetching this URL
           if parser.const_defined?(:SOURCE_VALIDATION_NOT_REQUIRED) && parser::SOURCE_VALIDATION_NOT_REQUIRED
             response[:warning] = true
-            response[:warning_message] = "#{parser::NAME} uses an API key to import events. " \
-                                         "This URL is used to identify the organiser but won't be fetched directly."
+            response[:warning_message] = t('admin.calendars.wizard.source.api_importer_warning', name: parser::NAME)
           end
 
           render json: response

@@ -97,8 +97,7 @@ module CalendarImporter::Parsers
 
       msg = case response.code
             when 404
-              'This URL returned a 404 (not found). Please check the URL is correct ' \
-              'and that the feed or page has not been removed or set to private.'
+              I18n.t('admin.calendars.wizard.source.not_found')
             else
               "The source URL could not be read (code=#{response.code})"
             end
