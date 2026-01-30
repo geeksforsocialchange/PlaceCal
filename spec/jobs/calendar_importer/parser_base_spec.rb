@@ -49,5 +49,21 @@ RSpec.describe CalendarImporter::Parsers::Base do
         end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.unreadable", code: 401))
       end
     end
+
+    it "raises a helpful message for 403 forbidden responses" do
+      VCR.use_cassette(:example_dot_com_403_response) do
+        expect do
+          described_class.read_http_source("https://example.com")
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.forbidden"))
+      end
+    end
+
+    it "raises a helpful message for 404 not found responses" do
+      VCR.use_cassette(:example_dot_com_404_response) do
+        expect do
+          described_class.read_http_source("https://example.com")
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.not_found"))
+      end
+    end
   end
 end
