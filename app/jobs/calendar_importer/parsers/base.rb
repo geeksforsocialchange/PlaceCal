@@ -96,6 +96,8 @@ module CalendarImporter::Parsers
       return response.body if response.success?
 
       msg = case response.code
+            when 403
+              I18n.t('admin.calendars.wizard.source.forbidden')
             when 404
               I18n.t('admin.calendars.wizard.source.not_found')
             else
