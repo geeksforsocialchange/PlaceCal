@@ -100,11 +100,21 @@ module Admin
         parser = importer.parser
 
         if parser
-          render json: {
+          response = {
             valid: true,
             importer_key: parser::KEY,
             importer_name: parser::NAME
           }
+
+          # API-based parsers skip source validation, so let the user know
+          # the import will use an API key rather than fetching this URL
+          if parser.const_defined?(:SOURCE_VALIDATION_NOT_REQUIRED) && parser::SOURCE_VALIDATION_NOT_REQUIRED
+            response[:warning] = true
+            response[:warning_message] = "#{parser::NAME} uses an API key to import events. " \
+                                         "This URL is used to identify the organiser but won't be fetched directly."
+          end
+
+          render json: response
         else
           render json: { valid: false, error: 'Unable to detect calendar format' }
         end

@@ -95,7 +95,13 @@ module CalendarImporter::Parsers
       response = HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
       return response.body if response.success?
 
-      msg = "The source URL could not be read (code=#{response.code})"
+      msg = case response.code
+            when 404
+              'This URL returned a 404 (not found). Please check the URL is correct ' \
+              'and that the feed or page has not been removed or set to private.'
+            else
+              "The source URL could not be read (code=#{response.code})"
+            end
       raise InaccessibleFeed, msg
     rescue HTTParty::ResponseError => e
       raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
