@@ -30,6 +30,8 @@ export default class extends Controller {
 		"sourceErrorMessage",
 		"detectedFormat",
 		"detectedFormatName",
+		"apiTokenSection",
+		"apiTokenInput",
 		"testButton",
 		"testSpinner",
 		"testIconNeutral",
@@ -88,10 +90,20 @@ export default class extends Controller {
 		}
 	}
 
+	// Importers that require an API token
+	get requiresApiToken() {
+		if (!this.hasImporterModeSelectTarget) return false;
+		return this.importerModeSelectTarget.value === "tickettailor";
+	}
+
 	// Check if current step is valid (without showing errors)
 	isCurrentStepValid() {
 		if (this.currentStepValue === 1) {
-			return this.sourceValidValue;
+			if (!this.sourceValidValue) return false;
+			if (this.requiresApiToken && this.hasApiTokenInputTarget) {
+				return this.apiTokenInputTarget.value.trim().length > 0;
+			}
+			return true;
 		} else if (this.currentStepValue === 2) {
 			const partnerValue = this.getPartnerValue();
 			const nameValue = this.hasNameInputTarget
@@ -109,6 +121,13 @@ export default class extends Controller {
 			if (!this.sourceValidValue) {
 				showInputError(this.sourceInputTarget);
 				return false;
+			}
+			// API token required for certain importers
+			if (this.requiresApiToken && this.hasApiTokenInputTarget) {
+				if (!this.apiTokenInputTarget.value.trim()) {
+					showInputError(this.apiTokenInputTarget);
+					return false;
+				}
 			}
 		} else if (this.currentStepValue === 2) {
 			// Step 2: Partner and name are required
@@ -271,9 +290,19 @@ export default class extends Controller {
 			if (data.valid) {
 				// Success - show detected format
 				this.sourceValidValue = true;
-				this.sourceSuccessTarget.classList.remove("hidden");
 				showInputSuccess(this.sourceInputTarget);
 				this.setTestButtonSuccess();
+
+				if (data.warning) {
+					// Show warning state (valid but with informational note)
+					this.sourceSuccessTarget.classList.add("hidden");
+					this.sourceErrorTarget.classList.remove("hidden");
+					this.sourceErrorTarget.classList.remove("alert-error");
+					this.sourceErrorTarget.classList.add("alert-warning");
+					this.sourceErrorMessageTarget.textContent = data.warning_message;
+				} else {
+					this.sourceSuccessTarget.classList.remove("hidden");
+				}
 
 				// Show the importer mode section
 				if (this.hasImporterModeSectionTarget) {
@@ -287,6 +316,9 @@ export default class extends Controller {
 					this.detectedFormatNameTarget.textContent = data.importer_name;
 					this.detectedFormatValue = data.importer_name;
 				}
+
+				// Show API token field if needed
+				this.updateApiTokenVisibility();
 			} else if (data.needs_manual_selection) {
 				// URL is reachable but format couldn't be auto-detected
 				// Allow user to manually select the format
@@ -327,13 +359,37 @@ export default class extends Controller {
 		}
 	}
 
+	// Show or hide the API token field based on the selected importer
+	updateApiTokenVisibility() {
+		if (!this.hasApiTokenSectionTarget) return;
+		if (this.requiresApiToken) {
+			this.apiTokenSectionTarget.classList.remove("hidden");
+		} else {
+			this.apiTokenSectionTarget.classList.add("hidden");
+		}
+		this.updateContinueButton();
+	}
+
+	apiTokenChanged() {
+		if (this.hasApiTokenInputTarget) {
+			clearInputError(this.apiTokenInputTarget);
+		}
+		this.updateContinueButton();
+	}
+
 	hideFeedback() {
 		this.sourceFeedbackTarget.classList.add("hidden");
 		this.sourceSuccessTarget.classList.add("hidden");
 		this.sourceErrorTarget.classList.add("hidden");
+		// Reset warning styling back to error for next use
+		this.sourceErrorTarget.classList.remove("alert-warning");
+		this.sourceErrorTarget.classList.add("alert-error");
 		this.detectedFormatTarget.classList.add("hidden");
 		if (this.hasImporterModeSectionTarget) {
 			this.importerModeSectionTarget.classList.add("hidden");
+		}
+		if (this.hasApiTokenSectionTarget) {
+			this.apiTokenSectionTarget.classList.add("hidden");
 		}
 	}
 
@@ -354,8 +410,9 @@ export default class extends Controller {
 			clearInputError(this.sourceInputTarget);
 			showInputSuccess(this.sourceInputTarget);
 			this.setTestButtonSuccess();
-			this.updateContinueButton();
 		}
+
+		this.updateApiTokenVisibility();
 	}
 
 	// Partner selection and name suggestion

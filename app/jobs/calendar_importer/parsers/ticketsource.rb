@@ -82,7 +82,7 @@ module CalendarImporter
         return response.body if response.success?
 
         raise CalendarImporter::Exceptions::InaccessibleFeed,
-              "The source URL could not be read (code=#{response.code})"
+              I18n.t('admin.calendars.wizard.source.unreadable', code: response.code)
       end
 
       def extract_event_urls(html)

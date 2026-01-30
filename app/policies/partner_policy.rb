@@ -83,15 +83,15 @@ class PartnerPolicy < ApplicationPolicy
 
         # If the user is a partner admin,
         # or if they manage their partnership tag AND they neighbourhood admin for them
-        clause = <<-SQL.squish
-        partners_users.user_id = ? OR
-          (
-          partner_tags.tag_id IN (?) AND
+        clause = <<~SQL.squish
+          partners_users.user_id = ? OR
             (
-              addresses.neighbourhood_id IN (?)
-              OR service_areas.neighbourhood_id IN (?)
+            partner_tags.tag_id IN (?) AND
+              (
+                addresses.neighbourhood_id IN (?)
+                OR service_areas.neighbourhood_id IN (?)
+              )
             )
-          )
         SQL
 
         scope
@@ -109,7 +109,7 @@ class PartnerPolicy < ApplicationPolicy
 
         # If the user is a partner admin,
         # or if they neighbourhood admin for them
-        clause = <<-SQL.squish
+        clause = <<~SQL.squish
           partners_users.user_id = ?
             OR addresses.neighbourhood_id IN (?)
             OR service_areas.neighbourhood_id IN (?)

@@ -143,6 +143,61 @@ RSpec.describe "Admin::Calendars", type: :request do
     end
   end
 
+  describe "POST /admin/calendars/test_source" do
+    let(:user) { create(:root_user) }
+
+    before { sign_in user }
+
+    it "returns warning for Ticket Tailor URLs" do
+      post test_source_admin_calendars_url(host: admin_host),
+           params: { source: "https://www.tickettailor.com/events/testorg" },
+           as: :json
+
+      expect(response).to be_successful
+      json = response.parsed_body
+      expect(json["valid"]).to be true
+      expect(json["warning"]).to be true
+      expect(json["warning_message"]).to include("API key")
+      expect(json["importer_key"]).to eq("tickettailor")
+      expect(json["importer_name"]).to eq("Ticket Tailor")
+    end
+
+    it "returns error for invalid URLs" do
+      post test_source_admin_calendars_url(host: admin_host),
+           params: { source: "not-a-url" },
+           as: :json
+
+      expect(response).to be_successful
+      json = response.parsed_body
+      expect(json["valid"]).to be false
+      expect(json["error"]).to include("valid URL")
+    end
+
+    it "returns error for blank source" do
+      post test_source_admin_calendars_url(host: admin_host),
+           params: { source: "" },
+           as: :json
+
+      expect(response).to be_successful
+      json = response.parsed_body
+      expect(json["valid"]).to be false
+      expect(json["error"]).to include("enter a URL")
+    end
+
+    it "returns error for unreachable URLs" do
+      VCR.use_cassette(:example_dot_com_bad_response, allow_playback_repeats: true) do
+        post test_source_admin_calendars_url(host: admin_host),
+             params: { source: "https://example.com/" },
+             as: :json
+
+        expect(response).to be_successful
+        json = response.parsed_body
+        expect(json["valid"]).to be false
+        expect(json["error"]).to be_present
+      end
+    end
+  end
+
   describe "PUT /admin/calendars/:id" do
     let(:user) { create(:partner_admin) }
     let(:admin_partner) { user.partners.first }

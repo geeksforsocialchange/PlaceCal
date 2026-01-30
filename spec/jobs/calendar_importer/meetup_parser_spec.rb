@@ -4,10 +4,10 @@ require "rails_helper"
 
 RSpec.describe CalendarImporter::Parsers::Meetup do
   describe "#download_calendar" do
-    it "downloads and parses data correctly" do
-      meetup_url = "https://www.meetup.com/tglondon/"
+    it "downloads iCal data from meetup group URL" do
+      meetup_url = "https://www.meetup.com/london-bisexual-women-games-wine-group"
 
-      VCR.use_cassette(:good_meetup_source) do
+      VCR.use_cassette(:meetup_ical) do
         calendar = build(
           :calendar,
           strategy: :event,
@@ -18,27 +18,45 @@ RSpec.describe CalendarImporter::Parsers::Meetup do
         parser = described_class.new(calendar, url: meetup_url)
 
         data = parser.download_calendar
-        expect(data.length).to eq(134)
+        expect(data).to include("BEGIN:VCALENDAR")
+        expect(data).to include("BEGIN:VEVENT")
       end
     end
 
-    it "handles badly formed responses (non JSON)" do
-      # non existant user
-      bad_user_url = "https://www.meetup.com/haeKohtheuwae7uY6sie"
+    it "parses events from iCal data" do
+      meetup_url = "https://www.meetup.com/london-bisexual-women-games-wine-group"
 
-      VCR.use_cassette(:bad_meetup_gateway) do
-        # FIXME: this is cheating a bit as we are knowingly building an
-        #  invalid calendar that would never exist IRL. but we get around
-        #  this by not saving it.
-
+      VCR.use_cassette(:meetup_ical) do
         calendar = build(
           :calendar,
           strategy: :event,
           name: :import_test_calendar,
-          source: bad_user_url
+          source: meetup_url
         )
 
-        parser = described_class.new(calendar, url: bad_user_url)
+        parser = described_class.new(calendar, url: meetup_url)
+
+        data = parser.download_calendar
+        events = parser.import_events_from(data)
+
+        expect(events).not_to be_empty
+        expect(events.first.summary).to be_present
+        expect(events.first.dtstart).to be_a(DateTime)
+      end
+    end
+
+    it "handles non-existent groups" do
+      bad_url = "https://www.meetup.com/this-group-does-not-exist-xyz123"
+
+      VCR.use_cassette(:meetup_not_found) do
+        calendar = build(
+          :calendar,
+          strategy: :event,
+          name: :import_test_calendar,
+          source: bad_url
+        )
+
+        parser = described_class.new(calendar, url: bad_url)
 
         expect do
           parser.download_calendar

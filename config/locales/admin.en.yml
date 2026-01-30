@@ -290,6 +290,10 @@ en:
           error: "Unable to validate this URL"
           detected_format: "Detected format:"
           importer_hint: "Usually auto-detected. Only change if needed."
+          api_importer_warning: "%{name} uses an API key to import events. This URL is used to identify the organiser but won't be fetched directly."
+          forbidden: "This URL returned a 403 (forbidden). The site may be blocking automated access. Please check the URL is correct and that the feed is publicly accessible."
+          not_found: "This URL returned a 404 (not found). Please check the URL is correct and that the feed or page has not been removed or set to private."
+          unreadable: "The source URL could not be read (code=%{code})"
         organiser:
           title: "Organiser"
           description: "Which partner organises these events, and what should we call this calendar?"
@@ -324,6 +328,9 @@ en:
         partner_hint: "Which group organises these events?"
         partner_organiser: "Partner Organiser"
         source_placeholder: "https://your-domain.com/events.ics"
+        api_token: "API Key"
+        api_token_hint: "Required for Ticket Tailor. You can find this in your Ticket Tailor account under Box Office > API Keys."
+        api_token_placeholder: "sk_..."
         strategy_hint: "Where should location information for this calendar come from?"
       strategy:
         place: "Always use the calendar's default location (default)."

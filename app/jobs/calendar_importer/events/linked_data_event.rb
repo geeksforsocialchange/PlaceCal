@@ -38,8 +38,17 @@ module CalendarImporter::Events
       return if loc.blank?
 
       address = loc['address']
-      address = address['street_address'] if address.is_a?(Hash)
-      address
+      return loc['name'] unless address.is_a?(Hash)
+
+      # Build full address from components
+      components = [
+        address['street_address'],
+        address['address_locality'],
+        address['address_region'],
+        address['postal_code']
+      ].compact_blank
+
+      components.join(', ').presence || loc['name']
     end
 
     def attributes

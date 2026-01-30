@@ -27,19 +27,6 @@ RSpec.describe CalendarImporter::EventResolver do
     keyword_init: true
   )
 
-  FakeMeetupEvent = Struct.new(
-    :id,
-    :name,
-    :description,
-    :link,
-    :venue,
-    :time,
-    :utc_offset,
-    :duration,
-    :is_online_event,
-    keyword_init: true
-  )
-
   def patch_ics_dates(event, from_date, to_date)
     patch = Module.new
     patch.define_method(:occurrences_between) do |_from, _to|
@@ -188,33 +175,6 @@ RSpec.describe CalendarImporter::EventResolver do
 
         online_address = OnlineAddress.find(resolver.data.online_address_id)
         expect(online_address.url).to eq(eventbrite_link)
-      end
-    end
-
-    context "with meetup events" do
-      it "detects online event url" do
-        meetup_link = "https://www.meetup.co.uk/e/some-random-event-woo-hoo-111111111111"
-        fake_meetup_event = FakeMeetupEvent.new(
-          id: "111111111",
-          name: { text: "A summary" },
-          description: { text: "<p>This is a meetup description!</p>" },
-          venue: nil,
-          time: start_date.to_i,
-          utc_offset: (end_date.to_i - start_date.to_i),
-          is_online_event: true,
-          link: meetup_link
-        )
-        event_data = CalendarImporter::Events::MeetupEvent.new(fake_meetup_event)
-
-        calendar = make_calendar_for_strategy("event")
-
-        resolver = described_class.new(event_data, calendar, [], start_date)
-        resolver.determine_online_location
-
-        expect(resolver.data.online_address_id).to be_present
-
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
-        expect(online_address.url).to eq(meetup_link)
       end
     end
   end

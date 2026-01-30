@@ -114,6 +114,23 @@
             </p>
           </fieldset>
 
+          <%# API Key (shown for importers that require it, e.g. Ticket Tailor) %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0" data-calendar-wizard-target="apiTokenSection">
+            <legend class="fieldset-legend text-base font-semibold">
+              <%= t('admin.calendars.fields.api_token') %> <span class="text-error"><%= t('admin.labels.required') %></span>
+            </legend>
+            <%= f.input_field :api_token,
+                type: :password,
+                class: 'input input-bordered w-full font-mono text-sm',
+                placeholder: t('admin.calendars.fields.api_token_placeholder'),
+                autocomplete: 'off',
+                'data-calendar-wizard-target': 'apiTokenInput',
+                'data-action': 'input->calendar-wizard#apiTokenChanged' %>
+            <p class="text-sm text-gray-600 mt-2">
+              <%= t('admin.calendars.fields.api_token_hint') %>
+            </p>
+          </fieldset>
+
           <%# Supported sources info %>
           <details class="collapse collapse-arrow bg-base-200/50 border border-base-300 rounded-box">
             <summary class="collapse-title text-sm font-medium">
