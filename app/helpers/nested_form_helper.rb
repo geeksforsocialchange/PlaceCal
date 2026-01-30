@@ -19,7 +19,7 @@ module NestedFormHelper
   #     <% end %>
   #   <% end %>
   #
-  def nested_form_for(form, association, options = {}, &block)
+  def nested_form_for(form, association, options = {}, &)
     add_text = options.delete(:add_text) || "Add #{association.to_s.singularize.humanize}"
     add_class = options.delete(:add_class) || 'inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-placecal-orange hover:bg-orange-600 transition-colors'
     container_class = options.delete(:container_class) || 'space-y-3'
@@ -44,7 +44,7 @@ module NestedFormHelper
     content_tag(:div, class: wrapper_class, data: { controller: 'nested-form' }) do
       safe_join([
                   content_tag(:template, template_content, data: { nested_form_target: 'template' }),
-                  content_tag(:div, capture(&block), class: container_class, data: { nested_form_target: 'container' }),
+                  content_tag(:div, capture(&), class: container_class, data: { nested_form_target: 'container' }),
                   content_tag(:div, class: 'mt-4') do
                     link_to(add_text, '#', class: add_class, data: { action: 'nested-form#add' })
                   end
