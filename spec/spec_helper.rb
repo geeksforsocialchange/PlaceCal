@@ -1,4 +1,5 @@
 require "simplecov"
+require "simplecov_json_formatter"
 SimpleCov.start "rails" do
   enable_coverage :branch
   add_group "Datatables", "app/datatables"
@@ -7,6 +8,13 @@ SimpleCov.start "rails" do
   add_group "Components", "app/components"
   add_group "Policies", "app/policies"
   add_group "Uploaders", "app/uploaders"
+
+  if ENV["CI"]
+    formatter SimpleCov::Formatter::MultiFormatter.new([
+                                                         SimpleCov::Formatter::HTMLFormatter,
+                                                         SimpleCov::Formatter::JSONFormatter
+                                                       ])
+  end
 end
 
 RSpec.configure do |config|
