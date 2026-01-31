@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_supporters
   before_action :set_navigation
+  before_action :set_appsignal_namespace
 
   include Pundit::Authorization
 
@@ -16,6 +17,10 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
 
   private
+
+  def set_appsignal_namespace
+    Appsignal::Transaction.current.set_namespace('public')
+  end
 
   def user_not_authorized
     redirect_to admin_root_path
