@@ -28,6 +28,9 @@ class GraphqlController < ApplicationController
     raise e unless Rails.env.development?
 
     handle_error_in_development(e)
+  ensure
+    Appsignal::Transaction.current.set_namespace('graphql')
+    Appsignal::Transaction.current.set_action(operation_name || 'Unknown')
   end
 
   private
