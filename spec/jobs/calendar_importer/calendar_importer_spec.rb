@@ -309,13 +309,20 @@ RSpec.describe CalendarImporter::CalendarImporter do
     end
   end
 
-  describe "SOURCE_VALIDATION_NOT_REQUIRED" do
+  describe "skip_source_validation?" do
     it "skips HTTP reachability check for Ticket Tailor URLs" do
       calendar = build(:calendar, source: "https://www.tickettailor.com/events/testorg")
 
-      # This should not make any HTTP requests - if it did, WebMock would raise
+      # This should not make any HTTP requests - if it did, VCR would raise
       importer = described_class.new(calendar)
       expect(importer.parser).to eq(CalendarImporter::Parsers::Tickettailor)
+    end
+
+    it "skips HTTP reachability check for TicketSource URLs" do
+      calendar = build(:calendar, source: "https://www.ticketsource.co.uk/some-venue")
+
+      importer = described_class.new(calendar)
+      expect(importer.parser).to eq(CalendarImporter::Parsers::Ticketsource)
     end
 
     it "still performs HTTP reachability check for other URLs" do
