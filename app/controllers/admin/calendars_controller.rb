@@ -106,9 +106,8 @@ module Admin
             importer_name: parser::NAME
           }
 
-          # API-based parsers skip source validation, so let the user know
-          # the import will use an API key rather than fetching this URL
-          if parser.const_defined?(:SOURCE_VALIDATION_NOT_REQUIRED) && parser::SOURCE_VALIDATION_NOT_REQUIRED
+          # API-based parsers need an API key rather than fetching this URL
+          if parser.requires_api_token?
             response[:warning] = true
             response[:warning_message] = t('admin.calendars.wizard.source.api_importer_warning', name: parser::NAME)
           end

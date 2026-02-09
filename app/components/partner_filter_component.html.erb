@@ -6,64 +6,37 @@
                     },
               class: 'filters__form' do %>
   <div class="breadcrumb__element breadcrumb__element--last">
-    <span class="filters__link">Filter by:</span>
-    <%# Category filter %>
+    <span>Filter by:</span>
+
     <% if show_category_filter? %>
       <div class="breadcrumb__filters filters">
-        <div class="filters__toggle">
-          <button type="button" data-action="partner-filter-component#toggleCategory">
-            <span class="icon icon--arrow-down">↓</span>
-            <span data-partner-filter-component-target="categoryText" class="filters__link">Category</span>
-          </button>
-        </div>
-        <div class="filters__dropdown filters__dropdown--hidden filters__dropdown--category" data-partner-filter-component-target="categoryDropdown">
-          <div class="filters__group">
-            <% categories.each do |item| %>
-              <div class="filters__option">
-                <%= radio_button_tag "category",
-                                      item[:category].id,
-                                      category_selected?(item[:category].id),
-                                      data: { action: "partner-filter-component#submitCategory",
-                                              "partner-filter-component-target": "category" },
-                                      class: "tag__button" %>
-                <%= label_tag "category_#{item[:category].id}", "#{item[:category].name} (#{item[:count]})", class: "filters__label" %>
-              </div>
-            <% end %>
-          </div>
-          <%# if category_active? %>
-            <button data-action="partner-filter-component#resetCategory" class="btn size-patch">Reset</button>
-          <%# end %>
-        </div>
+        <%= render FilterComponent.new(
+          name: "category",
+          label: "Category",
+          items: category_items,
+          selected_id: selected_category,
+          controller: "partner-filter-component",
+          toggle_action: "toggleCategory",
+          submit_action: "submitCategory",
+          reset_action: "resetCategory"
+        ) %>
       </div>
     <% end %>
 
-    <%# Neighbourhood filter %>
-    <div class="breadcrumb__filters filters">
-      <div class="filters__toggle">
-        <button type="button" data-action="partner-filter-component#toggleNeighbourhood">
-          <span class="icon icon--arrow-down">↓</span>
-          <span data-partner-filter-component-target="neighbourhoodText" class="filters__link">Neighbourhood</span>
-        </button>
+    <% if show_neighbourhood_filter? %>
+      <div class="breadcrumb__filters filters">
+        <%= render FilterComponent.new(
+          name: "neighbourhood",
+          label: "Neighbourhood",
+          items: neighbourhood_items,
+          selected_id: selected_neighbourhood,
+          controller: "partner-filter-component",
+          toggle_action: "toggleNeighbourhood",
+          submit_action: "submitNeighbourhood",
+          reset_action: "resetNeighbourhood"
+        ) %>
       </div>
-      <div class="filters__dropdown filters__dropdown--hidden filters__dropdown--neighbourhood" data-partner-filter-component-target="neighbourhoodDropdown">
-        <div class="filters__group" id="neighbourhoods_filter">
-          <% neighbourhoods.each do |item| %>
-            <div class="filters__option">
-              <%= radio_button_tag "neighbourhood",
-                                    item[:neighbourhood].id,
-                                    neighbourhood_selected?(item[:neighbourhood].id),
-                                    data: { action: "partner-filter-component#submitNeighbourhood",
-                                            "partner-filter-component-target": "neighbourhood" },
-                                    class: "tag__button" %>
-              <%= label_tag "neighbourhood_#{item[:neighbourhood].id}", "#{item[:neighbourhood].name} (#{item[:count]})", class: "filters__label" %>
-            </div>
-          <% end %>
-        </div>
-        <%# if neighbourhood_active? %>
-          <button data-action="partner-filter-component#resetNeighbourhood" class="btn size-patch filter__reset">Reset</button>
-        <%# end %>
-      </div>
-    </div>
+    <% end %>
 
     <% if any_filter_active? %>
       <div class="breadcrumb__filters">

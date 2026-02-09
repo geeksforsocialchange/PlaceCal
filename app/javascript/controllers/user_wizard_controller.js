@@ -85,6 +85,8 @@ export default class extends Controller {
 
 	// Email validation
 	checkEmail() {
+		// Skip if triggered by browser autofill (field not focused)
+		if (document.activeElement !== this.emailInputTarget) return;
 		this.checkEmailDebounced();
 	}
 

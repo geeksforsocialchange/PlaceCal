@@ -3,7 +3,8 @@
 <div data-controller="calendar-wizard"
      data-calendar-wizard-current-step-value="1"
      data-calendar-wizard-total-steps-value="3"
-     data-calendar-wizard-test-url-value="<%= test_source_admin_calendars_path %>">
+     data-calendar-wizard-test-url-value="<%= test_source_admin_calendars_path %>"
+     data-calendar-wizard-api-token-parsers-value="<%= CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }.to_json %>">
 
   <div class="max-w-4xl mx-auto">
     <%# Header %>

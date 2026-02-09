@@ -346,6 +346,8 @@ export default class extends Controller {
 	}
 
 	checkAdminEmail() {
+		// Skip if triggered by browser autofill (field not focused)
+		if (document.activeElement !== this.adminEmailTarget) return;
 		this.checkAdminEmailDebounced();
 	}
 

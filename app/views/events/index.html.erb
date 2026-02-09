@@ -17,7 +17,9 @@
               sort: @sort,
               repeating: @repeating,
               today_url: "/events/#{today.year}/#{today.month}/#{today.day}?period=#{@period}&sort=#{@sort}&repeating=#{@repeating}#paginator",
-              today: @current_day == today
+              today: @current_day == today,
+              site: @site,
+              selected_neighbourhood: @selected_neighbourhood
             )) %>
           </div>
         <% end %>

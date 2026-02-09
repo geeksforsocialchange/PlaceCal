@@ -173,7 +173,7 @@ RSpec.describe Event, type: :model do
       end
     end
 
-    describe ".for_site" do
+    describe "EventsQuery site filtering" do
       let(:ward) { create(:riverside_ward) }
       let(:site) { create(:site) }
       let(:address) { create(:address, neighbourhood: ward) }
@@ -200,7 +200,7 @@ RSpec.describe Event, type: :model do
       end
 
       it "returns events in the site neighbourhood" do
-        result = described_class.for_site(site)
+        result = EventsQuery.new(site: site).scope
         expect(result.count).to eq(2)
         expect(result).to include(event1, event2)
       end
@@ -210,7 +210,7 @@ RSpec.describe Event, type: :model do
         other_site = create(:site)
         other_site.neighbourhoods << other_ward
 
-        result = described_class.for_site(other_site)
+        result = EventsQuery.new(site: other_site).scope
         expect(result.count).to eq(0)
       end
 
@@ -222,7 +222,7 @@ RSpec.describe Event, type: :model do
         # Partner adds service area in the other site's neighbourhood
         partner.service_areas.create!(neighbourhood: other_ward)
 
-        result = described_class.for_site(other_site)
+        result = EventsQuery.new(site: other_site).scope
         expect(result.count).to eq(2)
       end
     end

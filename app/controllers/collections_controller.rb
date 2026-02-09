@@ -11,9 +11,9 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    @events = @collection.sorted_events
-    @map = get_map_markers(@events) if @events
-    @events = sort_events(@events, 'time')
+    events = @collection.sorted_events
+    @map = get_map_markers(events) if events
+    @events = events.distinct.sort_by_time.group_by_day(&:dtstart)
 
     respond_to do |format|
       format.html
