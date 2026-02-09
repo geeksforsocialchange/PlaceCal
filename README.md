@@ -4,23 +4,52 @@
 
 PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.
 
-The codebase has seeds that create a full development environment with fictional data (see [Seeds](#seeds) below).
-
 To get an idea of the project and what we're about, check out [the handbook](https://handbook.placecal.org/).
 
 ## Requirements
 
 To run PlaceCal locally you will need to install the following dependencies:
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Ruby 3.3.x](https://www.ruby-lang.org/)
-- [Node.js 20.x](https://nodejs.org/en/download) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
+- [Docker](https://docs.docker.com/get-docker/) (for PostgreSQL)
+- [Ruby](https://www.ruby-lang.org/) (see `.ruby-version` for exact version)
+- [Node.js](https://nodejs.org/en/download) (see `.node-version`) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - [Chrome/Chromium](https://www.chromium.org/chromium-projects/) for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 
-## Quickstart with docker for GFSC devs
+## Quickstart
+
+### Set up PostgreSQL with docker
+
+If you don't already have PostgreSQL installed and running, set it up with docker:
+
+```sh
+make docker
+```
+
+To tear down the docker setup, run `make clean`.
+
+### Run the setup script
+
+```sh
+bin/setup
+```
+
+This will install dependencies, create the database, and seed it with development data.
+
+- **Login**: `root@placecal.org` / `password`
+
+See [SEEDS.md](SEEDS.md) for full details on what gets created (users, sites, partners, events).
+
+### Run the thing
+
+- Start the server with `bin/dev`
+- Make sure you use `lvh.me:3000` instead of `localhost:3000` or you **will** have authentication problems
+- The admin interface is at `admin.lvh.me:3000`
+- Access code docs through your local filesystem and update them with `bin/rails yard`
+
+### Quickstart with docker for GFSC devs
 
 Make sure all of the above dependencies are installed (and ask someone to add your public ssh key to the servers if you are staff).
 
@@ -42,29 +71,6 @@ If the make command fails and you can't work out why, here are some suggestions:
 - Is the docker daemon running?
 - Is the port in use by another application or docker container? Try stopping or removing any conflicting containers
 - Are you using the correct node version? Try running `nvm use`
-
-## Quickstart for everyone else
-
-### Set up Postgresql locally with docker
-
-If you don't already have Postgresql installed and running, you can set it up with docker, just run `make docker`. To tear down the docker setup, run `make clean`.
-
-### Run the setup script
-
-```sh
-bin/setup
-```
-
-Amongst other things, this will create seed users for you. All passwords are `password`.
-
-- **Root admin**: `root@placecal.org` — full access to everything
-
-### Run the thing
-
-- Start the server with `bin/dev`
-- Make sure you use `lvh.me:3000` instead of `localhost:3000` or you **will** have authentication problems
-- The admin interface is at `admin.lvh.me:3000`
-- Access code docs through your local filesystem and update them with `bin/rails yard`
 
 ### Importing calendars
 
@@ -117,53 +123,6 @@ bundle exec rspec                        # Fast specs only
 RUN_SLOW_TESTS=true bundle exec rspec    # Include system specs
 bundle exec cucumber                     # Cucumber features
 ```
-
-### Test data: Normal Island
-
-Tests and seeds use a fictional geography called "Normal Island" (country code: ZZ, a user-assigned ISO 3166 code) to avoid conflicts with real UK data. See `lib/normal_island.rb` for the full data structure and `doc/testing-guide.md` for guidance on writing tests.
-
-## Seeds
-
-Running `bin/setup` or `bin/rails db:seed` populates the database with realistic development data using the Normal Island fictional geography. Seeds are **idempotent** (safe to re-run) and **additive** (layer alongside existing data, e.g. after cloning a production database).
-
-### What gets created
-
-- **Neighbourhoods**: Full Normal Island hierarchy (country, 2 regions, 2 counties, 3 districts, 8 wards)
-- **Tags**: 5 categories, 4 facilities, 3 partnerships
-- **Sites**: 4 published sites — 3 at different geographic levels (country, county, district) and 1 partnership site (Normal Island Book Clubs) — each with hero images, logos, and themes. Plus one unpublished default site.
-- **Users**: 9 users covering every admin role, with avatars (see table below). All passwords are `password`.
-- **Partners**: ~100 partners across all 8 wards, each with address, categories, social media links, opening times, phone numbers, and images
-- **Events**: 600+ events per partner (mix of past and future dates) with 50 different event types
-
-### Seed users
-
-| Email                                 | Role                | Scope                   |
-| ------------------------------------- | ------------------- | ----------------------- |
-| root@placecal.org                     | Root                | Everything              |
-| editor@placecal.org                   | Editor              | All news articles       |
-| neighbourhood-admin@placecal.org      | Neighbourhood admin | Millbrook district      |
-| partner-admin@placecal.org            | Partner admin       | Riverside Community Hub |
-| site-admin-normal-island@placecal.org | Site admin          | Normal Island site      |
-| site-admin-coastshire@placecal.org    | Site admin          | Coastshire site         |
-| site-admin-millbrook@placecal.org     | Site admin          | Millbrook site          |
-| site-admin-book-clubs@placecal.org    | Site admin          | Book Clubs site         |
-| citizen@placecal.org                  | Citizen             | No admin access         |
-
-### Geocoding
-
-Seeds use a custom geocoder lookup (`Geocoder::Lookup::NormalIsland`) that handles Normal Island's ZZ-prefix postcodes locally without hitting any external API. Real UK postcodes are delegated to postcodes.io as normal. This lookup is active in all environments.
-
-### Sites in development
-
-After seeding, these sites are available:
-
-| Site                     | URL                              | Type        |
-| ------------------------ | -------------------------------- | ----------- |
-| Normal Island            | http://normal-island.lvh.me:3000 | Country     |
-| Coastshire               | http://coastshire.lvh.me:3000    | County      |
-| Millbrook                | http://millbrook.lvh.me:3000     | District    |
-| Normal Island Book Clubs | http://book-clubs.lvh.me:3000    | Partnership |
-| Admin                    | http://admin.lvh.me:3000         | —           |
 
 ## Documentation
 
