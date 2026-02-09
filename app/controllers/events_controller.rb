@@ -15,10 +15,16 @@ class EventsController < ApplicationController
   def index
     @repeating = params[:repeating] || 'on'
     @sort = params[:sort] || 'time'
+    @selected_neighbourhood = params[:neighbourhood]
     @query = EventsQuery.new(site: current_site, day: @current_day)
     @period = params[:period] || default_period
 
-    @events = @query.call(period: @period, repeating: @repeating, sort: @sort)
+    @events = @query.call(
+      period: @period,
+      repeating: @repeating,
+      sort: @sort,
+      neighbourhood_id: @selected_neighbourhood
+    )
     @truncated = @query.truncated
     @next_date = @query.next_event_after(@current_day)
     @title = current_site.name
@@ -77,10 +83,8 @@ class EventsController < ApplicationController
   end
 
   def render_ical
-    events = Event.all
-    events = events.for_site(@site) if @site
-    ics_listing = events.ical_feed
-    cal = create_calendar(ics_listing)
+    query = EventsQuery.new(site: @site)
+    cal = create_calendar(query.for_ical)
     cal.publish
     render plain: cal.to_ical
   end

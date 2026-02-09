@@ -3,24 +3,23 @@
 class PartnerFilterComponent < ViewComponent::Base
   include Turbo::FramesHelper
 
-  def initialize(partners:, site:, selected_category:, selected_neighbourhood:)
+  attr_reader :selected_category, :selected_neighbourhood
+
+  def initialize(site:, selected_category:, selected_neighbourhood:)
     super()
-    @partners = partners
     @site = site
     @selected_category = selected_category.to_i
     @selected_neighbourhood = selected_neighbourhood.to_i
+    @query = PartnersQuery.new(site: @site)
   end
 
-  # Categories - show all from site's partners with counts (optimized SQL query)
   def categories
-    @categories ||= begin
-      partner_ids = Partner.for_site(@site).select(:id)
-      Tag.joins(:partner_tags)
-         .where(partner_tags: { partner_id: partner_ids }, type: 'Category')
-         .group('tags.id', 'tags.name')
-         .order('tags.name')
-         .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
-         .map { |tag| { category: tag, count: tag.partner_count } }
+    @categories ||= @query.categories_with_counts
+  end
+
+  def category_items
+    categories.map do |c|
+      { id: c[:category].id, name: c[:category].name, count: c[:count] }
     end
   end
 
@@ -29,25 +28,25 @@ class PartnerFilterComponent < ViewComponent::Base
   end
 
   def show_category_filter?
-    categories.any?
+    categories.length > 1
   end
 
-  # Neighbourhoods - show all from site's partners with counts
-  # Uses address-based neighbourhoods for partner counts
   def neighbourhoods
-    @neighbourhoods ||= begin
-      partner_ids = Partner.for_site(@site).pluck(:id)
-      Neighbourhood.joins(addresses: :partners)
-                   .where(partners: { id: partner_ids })
-                   .group('neighbourhoods.id', 'neighbourhoods.name')
-                   .order('neighbourhoods.name')
-                   .select('neighbourhoods.*, COUNT(DISTINCT partners.id) as partner_count')
-                   .map { |n| { neighbourhood: n, count: n.partner_count } }
+    @neighbourhoods ||= @query.neighbourhoods_with_counts
+  end
+
+  def neighbourhood_items
+    neighbourhoods.map do |n|
+      { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] }
     end
   end
 
   def neighbourhood_selected?(id)
     @selected_neighbourhood == id
+  end
+
+  def show_neighbourhood_filter?
+    neighbourhoods.length > 1
   end
 
   def any_filter_active?

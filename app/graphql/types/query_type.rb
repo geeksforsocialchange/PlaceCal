@@ -30,7 +30,7 @@ module Types
     end
 
     def partners_by_tag(tag_id:)
-      Partner.visible.with_tags(tag_id).order(:name)
+      Partner.visible.joins(:tags).where(tags: { id: tag_id }).order(:name)
     end
   end
 

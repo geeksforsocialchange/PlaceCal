@@ -48,41 +48,6 @@ class ApplicationController < ActionController::Base
     @sort = params[:sort].to_s ? params[:sort] : false
   end
 
-  def filter_events(period, **args)
-    site             = args[:site]             || false
-    place            = args[:place]            || false
-    partner          = args[:partner]          || false
-    partner_or_place = args[:partner_or_place] || false
-    repeating        = args[:repeating]        || 'on'
-
-    events = Event.all
-
-    events = events.for_site(site) if site
-    events = events.in_place(place) if place
-    events = events.by_partner(partner) if partner
-    events = events.by_partner_or_place(partner_or_place) if partner_or_place
-    events = events.one_off_events_only if repeating == 'off'
-    events = events.one_off_events_first if repeating == 'last'
-    events =
-      if period == 'future'
-        events.future(@today).includes(:place)
-      elsif period == 'week'
-        events.find_next_7_days(@current_day).includes(:place)
-      else
-        events.find_by_day(@current_day).includes(:place)
-      end
-
-    args[:limit] ? events.limit(limit) : events
-  end
-
-  def sort_events(events, sort)
-    if sort == 'summary'
-      [[Time.now, events.sort_by_summary]]
-    else
-      events.distinct.sort_by_time.group_by_day(&:dtstart)
-    end
-  end
-
   # Get an object representing the requested site.
   # Note:
   #   The admin site does not have a Site object.

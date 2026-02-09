@@ -3,7 +3,7 @@
 
 <%# Partners Section %>
 <div class="mb-8">
-  <% site_partners = Partner.for_site(@site).order(:name) %>
+  <% site_partners = PartnersQuery.new(site: @site).call %>
   <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
     <%= icon(:partnership, size: '5') %>
     <%= Partner.model_name.human(count: 2) %>
@@ -51,7 +51,7 @@
 
 <%# Events Section %>
 <div>
-  <% site_events = Event.for_site(@site).upcoming.where(dtstart: ..30.days.from_now).order(:dtstart) %>
+  <% site_events = EventsQuery.new(site: @site).scope.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart) %>
   <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
     <%= icon(:calendar, size: '5') %>
     <%= t('admin.sections.upcoming_events') %>
