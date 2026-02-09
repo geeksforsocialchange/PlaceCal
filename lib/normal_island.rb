@@ -289,24 +289,48 @@ module NormalIsland
   }.freeze
 
   # Sample users
+  # All passwords are 'password'
   USERS = {
-    root_admin: {
-      email: 'admin@normalcal.org',
-      first_name: 'Admin',
-      last_name: 'User',
+    root: {
+      email: 'root@placecal.org',
+      first_name: 'Root',
+      last_name: 'Admin',
       role: 'root'
     },
-    millbrook_admin: {
-      email: 'millbrook@normalcal.org',
-      first_name: 'Mill',
-      last_name: 'Brook',
-      role: 'neighbourhood_admin'
+    national_admin: {
+      email: 'national-admin@placecal.org',
+      first_name: 'National',
+      last_name: 'Admin',
+      role: 'national_admin'
     },
-    riverside_partner_admin: {
-      email: 'riverside@normalcal.org',
-      first_name: 'River',
-      last_name: 'Side',
-      role: 'partner_admin'
+    editor: {
+      email: 'editor@placecal.org',
+      first_name: 'Editor',
+      last_name: 'User',
+      role: 'editor'
+    },
+    neighbourhood_admin: {
+      email: 'neighbourhood-admin@placecal.org',
+      first_name: 'Neighbourhood',
+      last_name: 'Admin',
+      neighbourhood: 'Millbrook'
+    },
+    partner_admin: {
+      email: 'partner-admin@placecal.org',
+      first_name: 'Partner',
+      last_name: 'Admin',
+      partner: 'Riverside Community Hub'
+    },
+    site_admin: {
+      email: 'site-admin@placecal.org',
+      first_name: 'Site',
+      last_name: 'Admin',
+      site: 'millbrook'
+    },
+    citizen: {
+      email: 'citizen@placecal.org',
+      first_name: 'Citizen',
+      last_name: 'User'
     }
   }.freeze
 
