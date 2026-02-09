@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'normal_island/uk_postcode_extension'
+
 # Normal Island - Fictional Geography for Testing and Development
 #
 # This module provides consistent fictional geographic data that can be used
@@ -260,29 +262,29 @@ module NormalIsland
 
   # Sample sites
   SITES = {
-    millbrook_community_calendar: {
-      name: 'Millbrook Community Calendar',
-      slug: 'millbrook',
-      tagline: 'Events and activities in Millbrook',
-      district: :millbrook
-    },
-    ashdale_connect: {
-      name: 'Ashdale Connect',
-      slug: 'ashdale',
-      tagline: 'Connecting communities in Ashdale',
-      district: :ashdale
-    },
-    coastshire_events: {
-      name: 'Coastshire Events',
-      slug: 'coastshire',
-      tagline: 'What\'s on at the coast',
-      county: :coastshire
-    },
     normal_island_central: {
       name: 'Normal Island Central',
       slug: 'default-site',
-      tagline: 'Events across Normal Island',
+      tagline: 'Community events across Normal Island',
       country: true
+    },
+    normal_island_country: {
+      name: 'Normal Island (country)',
+      slug: 'normal-island',
+      tagline: 'Everything happening across Normal Island',
+      country: true
+    },
+    coastshire_county: {
+      name: 'Coastshire (county)',
+      slug: 'coastshire',
+      tagline: 'Events and activities on the coast',
+      county: :coastshire
+    },
+    millbrook_district: {
+      name: 'Millbrook (district)',
+      slug: 'millbrook',
+      tagline: 'What\'s on in Millbrook',
+      district: :millbrook
     }
   }.freeze
 
