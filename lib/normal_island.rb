@@ -261,6 +261,8 @@ module NormalIsland
   }.freeze
 
   # Sample sites
+  # Seeds use the geographic-level keys (normal_island_country, coastshire_county, etc.)
+  # Factories use the named keys (millbrook_community_calendar, ashdale_connect, etc.)
   SITES = {
     normal_island_central: {
       name: 'Normal Island Central',
@@ -280,11 +282,29 @@ module NormalIsland
       tagline: 'Events and activities on the coast',
       county: :coastshire
     },
+    coastshire_events: {
+      name: 'Coastshire Events',
+      slug: 'coastshire-events',
+      tagline: 'Events and activities on the coast',
+      county: :coastshire
+    },
     millbrook_district: {
       name: 'Millbrook (district)',
       slug: 'millbrook',
       tagline: 'What\'s on in Millbrook',
       district: :millbrook
+    },
+    millbrook_community_calendar: {
+      name: 'Millbrook Community Calendar',
+      slug: 'millbrook-community-calendar',
+      tagline: 'What\'s on in Millbrook',
+      district: :millbrook
+    },
+    ashdale_connect: {
+      name: 'Ashdale Connect',
+      slug: 'ashdale-connect',
+      tagline: 'Community events in Ashdale',
+      district: :ashdale
     }
   }.freeze
 
