@@ -226,7 +226,7 @@ class Site < ApplicationRecord
       sites = Site.all.order(:name)
       site_partners = []
       sites.each do |site|
-        partner_ids = PartnersQuery.new(site: site).call.pluck(:id)
+        partner_ids = PartnersQuery.new(site: site).call.reorder(nil).pluck(:id)
         site_partners.push({ site: site, partner_ids: partner_ids })
       end
       site_partners.select { |sp| sp[:partner_ids].include? partner.id }

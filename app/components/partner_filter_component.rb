@@ -5,9 +5,8 @@ class PartnerFilterComponent < ViewComponent::Base
 
   attr_reader :selected_category, :selected_neighbourhood
 
-  def initialize(partners:, site:, selected_category:, selected_neighbourhood:)
+  def initialize(site:, selected_category:, selected_neighbourhood:)
     super()
-    @partners = partners
     @site = site
     @selected_category = selected_category.to_i
     @selected_neighbourhood = selected_neighbourhood.to_i

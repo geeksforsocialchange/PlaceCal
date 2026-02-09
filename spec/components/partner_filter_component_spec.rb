@@ -9,7 +9,7 @@ RSpec.describe PartnerFilterComponent, type: :component do
     let(:site) { create(:site, neighbourhoods: [neighbourhood1, neighbourhood2]) }
     let(:address1) { create(:address, neighbourhood: neighbourhood1) }
     let(:address2) { create(:address, neighbourhood: neighbourhood2) }
-    let(:partners) do
+    let!(:partners) do
       [
         create(:partner, address: address1),
         create(:partner, address: address2)
@@ -18,7 +18,6 @@ RSpec.describe PartnerFilterComponent, type: :component do
 
     it "shows neighbourhood filter when multiple neighbourhoods exist" do
       render_inline(described_class.new(
-                      partners: partners,
                       site: site,
                       selected_category: nil,
                       selected_neighbourhood: nil
@@ -29,7 +28,6 @@ RSpec.describe PartnerFilterComponent, type: :component do
 
     it "does not show category filter when no partners have categories" do
       render_inline(described_class.new(
-                      partners: partners,
                       site: site,
                       selected_category: nil,
                       selected_neighbourhood: nil
@@ -58,7 +56,6 @@ RSpec.describe PartnerFilterComponent, type: :component do
 
     it "shows category filter dropdown when multiple categories exist" do
       render_inline(described_class.new(
-                      partners: partners,
                       site: site_with_neighbourhood,
                       selected_category: nil,
                       selected_neighbourhood: nil
@@ -75,7 +72,7 @@ RSpec.describe PartnerFilterComponent, type: :component do
     let(:address1) { create(:address, neighbourhood: neighbourhood1) }
     let(:address2) { create(:address, neighbourhood: neighbourhood2) }
     let(:category) { create(:category_tag) }
-    let(:partners) do
+    let!(:partners) do
       [
         create(:partner, address: address1),
         create(:partner, address: address2)
@@ -84,7 +81,6 @@ RSpec.describe PartnerFilterComponent, type: :component do
 
     it "renders with selected category" do
       render_inline(described_class.new(
-                      partners: partners,
                       site: site,
                       selected_category: category.slug,
                       selected_neighbourhood: nil
@@ -96,7 +92,6 @@ RSpec.describe PartnerFilterComponent, type: :component do
 
     it "renders with selected neighbourhood and shows selected name" do
       render_inline(described_class.new(
-                      partners: partners,
                       site: site,
                       selected_category: nil,
                       selected_neighbourhood: neighbourhood1.id

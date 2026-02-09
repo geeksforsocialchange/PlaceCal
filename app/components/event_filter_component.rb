@@ -33,15 +33,7 @@ class EventFilterComponent < ViewComponent::Base
     end
   end
 
-  def neighbourhood_selected?(id)
-    @selected_neighbourhood == id
-  end
-
   def show_neighbourhood_filter?
     neighbourhoods.length > 1
-  end
-
-  def neighbourhood_filter_active?
-    @selected_neighbourhood.positive?
   end
 end

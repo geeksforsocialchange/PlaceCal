@@ -20,11 +20,13 @@ class PartnersQuery
   #
   # @param neighbourhood_id [Integer] filter by neighbourhood (address or service area)
   # @param tag_id [Integer] filter by tag/category
+  # @param tag_slug [String] filter by tag slug (e.g. 'computers', 'wifi')
   # @return [ActiveRecord::Relation<Partner>]
-  def call(neighbourhood_id: nil, tag_id: nil)
+  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil)
     partners = base_scope
     partners = filter_by_neighbourhood(partners, neighbourhood_id) if neighbourhood_id.present?
     partners = filter_by_tag(partners, tag_id) if tag_id.present?
+    partners = filter_by_tag_slug(partners, tag_slug) if tag_slug.present?
     partners.order(:name)
   end
 
@@ -96,6 +98,10 @@ class PartnersQuery
 
   def filter_by_tag(partners, tag_id)
     partners.joins(:tags).where(tags: { id: tag_id })
+  end
+
+  def filter_by_tag_slug(partners, tag_slug)
+    partners.joins(:tags).where(tags: { slug: tag_slug })
   end
 
   # ===================

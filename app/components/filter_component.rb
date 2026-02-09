@@ -60,14 +60,6 @@ class FilterComponent < ViewComponent::Base
     "click->#{controller}##{@reset_action}"
   end
 
-  def text_target
-    "#{controller.tr('-', '')}Target"
-  end
-
-  def dropdown_target
-    "#{controller.tr('-', '')}Target"
-  end
-
   def render?
     items.any?
   end

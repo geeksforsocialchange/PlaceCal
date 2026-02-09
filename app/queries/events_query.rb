@@ -101,10 +101,20 @@ class EventsQuery
     return [] if partner_ids.empty?
 
     neighbourhood_ids = neighbourhood_ids_for_partners(partner_ids)
+    return [] if neighbourhood_ids.empty?
+
+    # Single grouped query instead of N separate counts
+    counts = events
+             .left_joins(:address, partner: :address)
+             .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IN (?)', neighbourhood_ids)
+             .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
+             .distinct
+             .count
+
     Neighbourhood
       .where(id: neighbourhood_ids)
       .order(:name)
-      .map { |n| { neighbourhood: n, count: count_events_in_neighbourhood(n.id, events) } }
+      .map { |n| { neighbourhood: n, count: counts[n.id] || 0 } }
   end
 
   private
@@ -121,14 +131,14 @@ class EventsQuery
   # When site has tags: only events from tagged partners (no address fallback)
   # When site has no tags: events from site partners OR events with address in site neighbourhoods
   def events_for_site
-    partners = PartnersQuery.new(site: @site).call.reorder(nil)
-    partner_ids = partners.pluck(:id)
+    partner_records = PartnersQuery.new(site: @site).call.reorder(nil).includes(:address).to_a
+    partner_ids = partner_records.map(&:id)
 
     if @site.tags.any?
       # Site has tags - only show events from partners with those tags
       # Address fallback matches partner name/postcode (legacy behavior)
-      partner_names = partners.map { |p| p.name.downcase }
-      partner_postcodes = partners.includes(:address).filter_map(&:address).map { |a| a.postcode.downcase }
+      partner_names = partner_records.map { |p| p.name.downcase }
+      partner_postcodes = partner_records.filter_map(&:address).map { |a| a.postcode.downcase }
 
       Event
         .left_joins(:address)
@@ -222,9 +232,5 @@ class EventsQuery
     address_ids = Address.joins(:partners).where(partners: { id: partner_ids }).pluck(:neighbourhood_id)
     service_area_ids = ServiceArea.where(partner_id: partner_ids).pluck(:neighbourhood_id)
     (address_ids + service_area_ids).uniq
-  end
-
-  def count_events_in_neighbourhood(neighbourhood_id, events)
-    filter_by_neighbourhood(events, neighbourhood_id).count
   end
 end
