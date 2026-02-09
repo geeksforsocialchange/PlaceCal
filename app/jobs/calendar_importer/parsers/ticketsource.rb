@@ -80,7 +80,7 @@ module CalendarImporter
         response = fetch_page_json(url)
         response['data'] || []
       rescue StandardError => e
-        Rails.logger.warn "TicketSource: Failed to fetch dates for event #{event_id}: #{e.message}"
+        Rails.logger.warn "#{NAME}: Failed to fetch dates for event #{event_id}: #{e.message}"
         []
       end
 
@@ -89,7 +89,7 @@ module CalendarImporter
         response = fetch_page_json(url)
         response['data'] || []
       rescue StandardError => e
-        Rails.logger.warn "TicketSource: Failed to fetch venues for event #{event_id}: #{e.message}"
+        Rails.logger.warn "#{NAME}: Failed to fetch venues for event #{event_id}: #{e.message}"
         []
       end
 

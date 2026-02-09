@@ -10,8 +10,7 @@ RSpec.describe CalendarImporter::Events::TicketsourceEvent do
       "id" => "evt_123",
       "attributes" => {
         "name" => "Test Show",
-        "description" => "A great show",
-        "id" => "evt_123"
+        "description" => "A great show"
       },
       "date" => {
         "id" => "date_456",

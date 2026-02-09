@@ -3,17 +3,15 @@
 module CalendarImporter::Events
   class TicketsourceEvent < Base
     def uid
-      event_id = @event.dig('attributes', 'id') || @event['id']
-      date_id = @event.dig('date', 'id')
-      "#{event_id}-#{date_id}"
+      "#{@event['id']}-#{@event.dig('date', 'id')}"
     end
 
     def summary
-      @event.dig('attributes', 'name') || @event['name']
+      @event.dig('attributes', 'name')
     end
 
     def description
-      @event.dig('attributes', 'description') || @event['description'] || ''
+      @event.dig('attributes', 'description') || ''
     end
 
     def dtstart
