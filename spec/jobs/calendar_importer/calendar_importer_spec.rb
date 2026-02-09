@@ -185,17 +185,71 @@ RSpec.describe CalendarImporter::CalendarImporter do
     context "with ticketsource calendars" do
       let(:url) { "https://www.ticketsource.co.uk/fairfield-house" }
 
+      let(:events_response) do
+        {
+          "data" => [
+            {
+              "id" => "evt_1",
+              "type" => "event",
+              "attributes" => {
+                "name" => "Guided Tour",
+                "description" => "A guided tour",
+                "reference" => "guided-tour",
+                "archived" => false,
+                "public" => true
+              }
+            }
+          ],
+          "links" => { "next" => nil }
+        }.to_json
+      end
+
+      let(:dates_response) do
+        {
+          "data" => [
+            {
+              "id" => "date_1",
+              "attributes" => {
+                "start" => "2026-03-15T10:00:00+00:00",
+                "end" => "2026-03-15T12:00:00+00:00",
+                "cancelled" => false
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      let(:venues_response) do
+        {
+          "data" => [
+            {
+              "id" => "ven_1",
+              "attributes" => {
+                "name" => "Fairfield House",
+                "address" => { "line_1" => "Bath", "postcode" => "BA1 5AH" }
+              }
+            }
+          ]
+        }.to_json
+      end
+
       it "imports ticketsource calendars" do
-        VCR.use_cassette("ticketsource_fairfield_house", allow_playback_repeats: true) do
-          calendar = create(:calendar, name: "Fairfield House", source: url)
+        stub_request(:get, %r{api\.ticketsource\.io/events\?})
+          .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, %r{api\.ticketsource\.io/events/evt_1/dates})
+          .to_return(status: 200, body: dates_response, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, %r{api\.ticketsource\.io/events/evt_1/venues})
+          .to_return(status: 200, body: venues_response, headers: { "Content-Type" => "application/json" })
 
-          parser_class = described_class.new(calendar).parser
-          output = parser_class.new(calendar).calendar_to_events
-          events = output.events
+        calendar = create(:calendar, name: "Fairfield House", source: url,
+                                     importer_mode: "ticketsource", api_token: "test_key")
 
-          expect(events.count).to eq(8)
-          expect(events.first.summary).to eq("Guided Tour of Fairfield House")
-        end
+        parser_class = described_class.new(calendar).parser
+        output = parser_class.new(calendar).calendar_to_events
+        events = output.events
+
+        expect(events.count).to eq(1)
+        expect(events.first.summary).to eq("Guided Tour")
       end
     end
   end
@@ -255,13 +309,20 @@ RSpec.describe CalendarImporter::CalendarImporter do
     end
   end
 
-  describe "SOURCE_VALIDATION_NOT_REQUIRED" do
+  describe "requires_api_token?" do
     it "skips HTTP reachability check for Ticket Tailor URLs" do
       calendar = build(:calendar, source: "https://www.tickettailor.com/events/testorg")
 
-      # This should not make any HTTP requests - if it did, WebMock would raise
+      # This should not make any HTTP requests - if it did, VCR would raise
       importer = described_class.new(calendar)
       expect(importer.parser).to eq(CalendarImporter::Parsers::Tickettailor)
+    end
+
+    it "skips HTTP reachability check for TicketSource URLs" do
+      calendar = build(:calendar, source: "https://www.ticketsource.co.uk/some-venue")
+
+      importer = described_class.new(calendar)
+      expect(importer.parser).to eq(CalendarImporter::Parsers::Ticketsource)
     end
 
     it "still performs HTTP reachability check for other URLs" do

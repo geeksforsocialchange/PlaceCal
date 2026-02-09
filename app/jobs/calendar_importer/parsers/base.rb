@@ -11,6 +11,10 @@ module CalendarImporter::Parsers
     PUBLIC = true
     NAME = ''
     KEY = ''
+
+    def self.requires_api_token?
+      false
+    end
     Output = Struct.new(:events, :checksum_changed)
 
     CONTEXT = {

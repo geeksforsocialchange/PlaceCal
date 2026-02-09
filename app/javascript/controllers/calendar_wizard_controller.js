@@ -49,6 +49,7 @@ export default class extends Controller {
 		testUrl: String,
 		sourceValid: { type: Boolean, default: false },
 		detectedFormat: { type: String, default: "" },
+		apiTokenParsers: { type: Array, default: [] },
 	};
 
 	connect() {
@@ -90,10 +91,12 @@ export default class extends Controller {
 		}
 	}
 
-	// Importers that require an API token
+	// Importers that require an API token (driven by server-side parser config)
 	get requiresApiToken() {
 		if (!this.hasImporterModeSelectTarget) return false;
-		return this.importerModeSelectTarget.value === "tickettailor";
+		return this.apiTokenParsersValue.includes(
+			this.importerModeSelectTarget.value,
+		);
 	}
 
 	// Check if current step is valid (without showing errors)

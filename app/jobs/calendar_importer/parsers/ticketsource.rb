@@ -6,10 +6,12 @@
 
 module CalendarImporter
   module Parsers
-    class Ticketsource < Base
+    class Ticketsource < ApiBase
       NAME = 'TicketSource'
       KEY = 'ticketsource'
       DOMAINS = %w[www.ticketsource.co.uk ticketsource.co.uk].freeze
+
+      API_BASE_URL = 'https://api.ticketsource.io'
 
       # Match TicketSource venue pages like:
       # https://www.ticketsource.co.uk/fairfield-house
@@ -18,188 +20,82 @@ module CalendarImporter
         %r{^https://(www\.)?ticketsource\.co\.uk/[^/]+/?$}i
       end
 
-      def download_calendar
-        venue_html = fetch_with_browser_headers(@url)
-        event_urls = extract_event_urls(venue_html)
-
-        events_data = []
-        seen_timeslots = Set.new
-
-        event_urls.each do |event_url|
-          event_html = fetch_page_safely(event_url)
-          next unless event_html
-
-          timeslot_urls = extract_timeslot_urls(event_html)
-
-          timeslot_urls.each do |timeslot_url|
-            # Skip if we've already processed this timeslot
-            next if seen_timeslots.include?(timeslot_url)
-
-            seen_timeslots.add(timeslot_url)
-
-            timeslot_html = fetch_page_safely(timeslot_url)
-            next unless timeslot_html
-
-            json_ld = extract_json_ld_event(timeslot_html)
-            events_data << json_ld if json_ld
-          end
-        end
-
-        events_data
-      end
-
       def import_events_from(data)
         return [] unless data.is_a?(Array)
 
-        data.filter_map do |event_json|
-          Events::LinkedDataEvent.new(event_json)
-        end
-      end
+        data.flat_map do |event_data|
+          attrs = event_data['attributes'] || {}
+          next if attrs['archived'] || !attrs['public']
 
-      # Browser-like headers to avoid Cloudflare blocking
-      BROWSER_HEADERS = {
-        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' \
-                        '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language' => 'en-GB,en;q=0.9'
-      }.freeze
+          event_id = event_data['id']
+          dates = fetch_event_dates(event_id)
+          venues = fetch_event_venues(event_id)
+          venue = venues.first
+
+          dates.filter_map do |date_data|
+            date_attrs = date_data['attributes'] || {}
+            next if date_attrs['cancelled']
+
+            merged = {
+              'id' => event_id,
+              'attributes' => attrs,
+              'date' => date_data,
+              'venue' => venue,
+              'publisher_url' => build_publisher_url(event_data)
+            }
+            Events::TicketsourceEvent.new(merged)
+          end
+        end.compact
+      end
 
       private
 
-      def fetch_page_safely(url)
-        fetch_with_browser_headers(url)
+      def fetch_all_events
+        events = []
+        page = 1
+
+        loop do
+          url = build_events_url(page)
+          response = fetch_page_json(url)
+          page_events = response['data'] || []
+
+          break if page_events.empty?
+
+          events.concat(page_events)
+
+          break unless response.dig('links', 'next')
+
+          page += 1
+        end
+
+        events
+      end
+
+      def build_events_url(page = 1)
+        "#{API_BASE_URL}/events?page=#{page}&per_page=100"
+      end
+
+      def fetch_event_dates(event_id)
+        url = "#{API_BASE_URL}/events/#{event_id}/dates?per_page=100"
+        response = fetch_page_json(url)
+        response['data'] || []
       rescue StandardError => e
-        Rails.logger.warn "TicketSource: Failed to fetch #{url}: #{e.message}"
-        nil
+        Rails.logger.warn "#{NAME}: Failed to fetch dates for event #{event_id}: #{e.message}"
+        []
       end
 
-      def fetch_with_browser_headers(url)
-        response = HTTParty.get(
-          url,
-          headers: BROWSER_HEADERS,
-          ssl_version: :TLSv1_2
-        )
-        return response.body if response.success?
-
-        raise CalendarImporter::Exceptions::InaccessibleFeed,
-              I18n.t('admin.calendars.wizard.source.unreadable', code: response.code)
+      def fetch_event_venues(event_id)
+        url = "#{API_BASE_URL}/events/#{event_id}/venues"
+        response = fetch_page_json(url)
+        response['data'] || []
+      rescue StandardError => e
+        Rails.logger.warn "#{NAME}: Failed to fetch venues for event #{event_id}: #{e.message}"
+        []
       end
 
-      def extract_event_urls(html)
-        doc = Nokogiri::HTML(html)
-        base_uri = URI.parse(@url)
-
-        # Find all links that match the event pattern /venue/event-name/e-xxxxx
-        doc.css('a[href*="/e-"]').filter_map do |link|
-          href = link['href']
-          next unless href&.match?(%r{/e-[a-z0-9]+$}i)
-
-          # Convert relative URLs to absolute
-          if href.start_with?('/')
-            "#{base_uri.scheme}://#{base_uri.host}#{href}"
-          elsif href.start_with?('http')
-            href
-          end
-        end.uniq
-      end
-
-      def extract_timeslot_urls(html)
-        doc = Nokogiri::HTML(html)
-        base_uri = URI.parse(@url)
-
-        # Find all links that match the timeslot pattern /venue/event/date/time/t-xxxxx
-        doc.css('a[href*="/t-"]').filter_map do |link|
-          href = link['href']
-          next unless href&.match?(%r{/t-[a-z0-9]+$}i)
-
-          # Convert relative URLs to absolute
-          if href.start_with?('/')
-            "#{base_uri.scheme}://#{base_uri.host}#{href}"
-          elsif href.start_with?('http')
-            href
-          end
-        end.uniq
-      end
-
-      def extract_json_ld_event(html)
-        doc = Nokogiri::HTML(html)
-
-        doc.css('script[type="application/ld+json"]').each do |script|
-          json = parse_json_safely(script.inner_html)
-          next unless json
-
-          # Find the Event object (may be at top level or nested)
-          event = find_event_object(json)
-          return normalize_event(event) if event
-        end
-
-        nil
-      end
-
-      def parse_json_safely(string)
-        JSON.parse(string)
-      rescue JSON::ParserError
-        nil
-      end
-
-      def find_event_object(json, depth = 0)
-        return nil if depth > 10
-
-        case json
-        when Hash
-          # Check if this is an Event
-          type = json['@type']
-          return json if %w[Event http://schema.org/Event].include?(type)
-
-          # Check @graph for events
-          if json['@graph'].is_a?(Array)
-            json['@graph'].each do |item|
-              result = find_event_object(item, depth + 1)
-              return result if result
-            end
-          end
-
-          # Recurse into hash values
-          json.each_value do |value|
-            result = find_event_object(value, depth + 1)
-            return result if result
-          end
-        when Array
-          json.each do |item|
-            result = find_event_object(item, depth + 1)
-            return result if result
-          end
-        end
-
-        nil
-      end
-
-      # Normalize TicketSource JSON-LD to the format expected by LinkedDataEvent
-      def normalize_event(event)
-        {
-          'url' => event['url'],
-          'name' => event['name'],
-          'description' => event['description'],
-          'start_date' => { '@value' => event['startDate'] },
-          'end_date' => event['endDate'] ? { '@value' => event['endDate'] } : nil,
-          'location' => normalize_location(event['location']),
-          # LinkedDataEvent requires eventStatus to be present for not_cancelled? check
-          # Default to Scheduled if not provided by TicketSource
-          'http://schema.org/eventStatus' => event['eventStatus'] || 'https://schema.org/EventScheduled'
-        }.compact
-      end
-
-      def normalize_location(location)
-        return nil unless location.is_a?(Hash)
-
-        address = location['address']
-        return nil unless address.is_a?(Hash)
-
-        {
-          'address' => {
-            'street_address' => address['streetAddress']
-          }
-        }
+      def build_publisher_url(event_data)
+        ref = event_data.dig('attributes', 'reference')
+        ref.present? ? "#{@url}/#{ref}" : @url
       end
     end
   end
