@@ -22,6 +22,11 @@ module CalendarImporter
         @calendar.api_token
       end
 
+      # Override in subclasses to set a custom User-Agent header
+      def user_agent
+        nil
+      end
+
       def validate_api_key!
         return if api_key.present?
 
@@ -32,13 +37,13 @@ module CalendarImporter
       def make_api_request(url)
         encoded_key = Base64.strict_encode64("#{api_key}:")
 
-        response = HTTParty.get(
-          url,
-          headers: {
-            'Accept' => 'application/json',
-            'Authorization' => "Basic #{encoded_key}"
-          }
-        )
+        headers = {
+          'Accept' => 'application/json',
+          'Authorization' => "Basic #{encoded_key}"
+        }
+        headers['User-Agent'] = user_agent if user_agent
+
+        response = HTTParty.get(url, headers: headers)
 
         unless response.success?
           case response.code

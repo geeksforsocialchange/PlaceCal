@@ -12,12 +12,17 @@ module CalendarImporter
       DOMAINS = %w[www.ticketsource.co.uk ticketsource.co.uk].freeze
 
       API_BASE_URL = 'https://api.ticketsource.io'
+      USER_AGENT = 'ticketsource-placecal'
 
       # Match TicketSource venue pages like:
       # https://www.ticketsource.co.uk/fairfield-house
       # https://ticketsource.co.uk/some-venue
       def self.allowlist_pattern
         %r{^https://(www\.)?ticketsource\.co\.uk/[^/]+/?$}i
+      end
+
+      def user_agent
+        USER_AGENT
       end
 
       def import_events_from(data)
