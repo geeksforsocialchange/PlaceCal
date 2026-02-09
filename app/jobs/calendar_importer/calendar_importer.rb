@@ -49,12 +49,11 @@ class CalendarImporter::CalendarImporter
     raise UnsupportedFeed, 'The provided URL is missing' if url.blank?
     raise UnsupportedFeed, 'The provided URL is not a valid URL' unless Calendar::CALENDAR_REGEX.match?(url)
 
-    # API-based parsers skip the HTTP source check since they validate
-    # connectivity through their own authenticated API calls, and their
-    # source URLs may be behind Cloudflare challenges.
+    # API-based parsers validate connectivity through their own authenticated
+    # API calls, and their source URLs may be behind Cloudflare challenges.
     # Check by URL pattern to avoid triggering LdJson's HTTP-based handles_url?.
     api_parser = PARSERS.find do |p|
-      p.skip_source_validation? &&
+      p.requires_api_token? &&
         p.respond_to?(:allowlist_pattern) &&
         url.match?(p.allowlist_pattern)
     end

@@ -16,8 +16,8 @@ RSpec.describe CalendarImporter::Parsers::Tickettailor do
       expect(described_class::DOMAINS).to eq(%w[www.tickettailor.com tickettailor.com])
     end
 
-    it "does not require source URL validation" do
-      expect(described_class::SOURCE_VALIDATION_NOT_REQUIRED).to be true
+    it "requires an API token" do
+      expect(described_class.requires_api_token?).to be true
     end
   end
 

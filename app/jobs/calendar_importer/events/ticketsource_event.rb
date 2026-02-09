@@ -17,11 +17,13 @@ module CalendarImporter::Events
     end
 
     def dtstart
-      parse_iso8601(@event.dig('date', 'attributes', 'start'))
+      value = @event.dig('date', 'attributes', 'start')
+      Time.zone.parse(value) if value.present?
     end
 
     def dtend
-      parse_iso8601(@event.dig('date', 'attributes', 'end'))
+      value = @event.dig('date', 'attributes', 'end')
+      Time.zone.parse(value) if value.present?
     end
 
     def location
@@ -48,16 +50,6 @@ module CalendarImporter::Events
 
     def occurrences_between(*)
       [Dates.new(dtstart, dtend)]
-    end
-
-    private
-
-    def parse_iso8601(value)
-      return nil if value.blank?
-
-      Time.zone.parse(value)
-    rescue ArgumentError
-      nil
     end
   end
 end

@@ -17,9 +17,9 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
     end
   end
 
-  describe ".skip_source_validation?" do
+  describe ".requires_api_token?" do
     it "returns true (API-based parser)" do
-      expect(described_class.skip_source_validation?).to be(true)
+      expect(described_class.requires_api_token?).to be(true)
     end
   end
 

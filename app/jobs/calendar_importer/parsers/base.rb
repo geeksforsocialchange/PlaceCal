@@ -12,7 +12,7 @@ module CalendarImporter::Parsers
     NAME = ''
     KEY = ''
 
-    def self.skip_source_validation?
+    def self.requires_api_token?
       false
     end
     Output = Struct.new(:events, :checksum_changed)

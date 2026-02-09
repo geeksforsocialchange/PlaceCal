@@ -10,8 +10,6 @@ module CalendarImporter
       NAME = 'Ticket Tailor'
       KEY = 'tickettailor'
       DOMAINS = %w[www.tickettailor.com tickettailor.com].freeze
-      SOURCE_VALIDATION_NOT_REQUIRED = true
-
       API_BASE_URL = 'https://api.tickettailor.com/v1'
 
       # Match TicketTailor box office pages like:

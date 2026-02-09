@@ -7,7 +7,7 @@
 module CalendarImporter
   module Parsers
     class ApiBase < Base
-      def self.skip_source_validation?
+      def self.requires_api_token?
         true
       end
 

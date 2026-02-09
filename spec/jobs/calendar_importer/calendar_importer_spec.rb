@@ -309,7 +309,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
     end
   end
 
-  describe "skip_source_validation?" do
+  describe "requires_api_token?" do
     it "skips HTTP reachability check for Ticket Tailor URLs" do
       calendar = build(:calendar, source: "https://www.tickettailor.com/events/testorg")
 
