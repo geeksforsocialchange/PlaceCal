@@ -55,6 +55,7 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
       summary: 'Monthly reading group and literary events',
       categories: ['Education & Learning', 'Arts & Culture'],
       facilities: ['Wheelchair Accessible', 'Hearing Loop'],
+      partnerships: ['Normal Island Book Clubs'],
       image: '03_library.jpg' },
     { suffix: 'Craft Workshop',
       summary: 'Hands-on craft sessions for all ages',
@@ -103,14 +104,11 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
   end
 
   def self.assign_tags(partner, type)
-    (type[:categories] || []).each do |cat_name|
-      tag = Tag.find_by(name: cat_name)
-      PartnerTag.find_or_create_by!(partner: partner, tag: tag) if tag
-    end
-
-    (type[:facilities] || []).each do |fac_name|
-      tag = Tag.find_by(name: fac_name)
-      PartnerTag.find_or_create_by!(partner: partner, tag: tag) if tag
+    %i[categories facilities partnerships].each do |tag_type|
+      (type[tag_type] || []).each do |tag_name|
+        tag = Tag.find_by(name: tag_name)
+        PartnerTag.find_or_create_by!(partner: partner, tag: tag) if tag
+      end
     end
   end
 

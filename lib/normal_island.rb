@@ -327,7 +327,8 @@ module NormalIsland
     ],
     partnerships: [
       { name: 'Millbrook Together', type: 'Partnership' },
-      { name: 'Coastal Alliance', type: 'Partnership' }
+      { name: 'Coastal Alliance', type: 'Partnership' },
+      { name: 'Normal Island Book Clubs', type: 'Partnership' }
     ]
   }.freeze
 

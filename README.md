@@ -130,8 +130,8 @@ Running `bin/setup` or `bin/rails db:seed` populates the database with realistic
 ### What gets created
 
 - **Neighbourhoods**: Full Normal Island hierarchy (country, 2 regions, 2 counties, 3 districts, 8 wards)
-- **Tags**: 5 categories, 4 facilities, 2 partnerships
-- **Sites**: 3 published sites at different geographic levels — Normal Island (country), Coastshire (county), Millbrook (district) — each with hero images, logos, and themes. Plus one unpublished default site.
+- **Tags**: 5 categories, 4 facilities, 3 partnerships
+- **Sites**: 4 published sites — 3 at different geographic levels (country, county, district) and 1 partnership site (Normal Island Book Clubs) — each with hero images, logos, and themes. Plus one unpublished default site.
 - **Partners**: ~100 partners across all 8 wards, each with address, categories, social media links, opening times, phone numbers, and images
 - **Events**: 600+ events per partner (mix of past and future dates) with 50 different event types
 
@@ -143,12 +143,13 @@ Seeds use a custom geocoder lookup (`Geocoder::Lookup::NormalIsland`) that handl
 
 After seeding, these sites are available:
 
-| Site          | URL                              | Level    |
-| ------------- | -------------------------------- | -------- |
-| Normal Island | http://normal-island.lvh.me:3000 | Country  |
-| Coastshire    | http://coastshire.lvh.me:3000    | County   |
-| Millbrook     | http://millbrook.lvh.me:3000     | District |
-| Admin         | http://admin.lvh.me:3000         | —        |
+| Site                     | URL                              | Type        |
+| ------------------------ | -------------------------------- | ----------- |
+| Normal Island            | http://normal-island.lvh.me:3000 | Country     |
+| Coastshire               | http://coastshire.lvh.me:3000    | County      |
+| Millbrook                | http://millbrook.lvh.me:3000     | District    |
+| Normal Island Book Clubs | http://book-clubs.lvh.me:3000    | Partnership |
+| Admin                    | http://admin.lvh.me:3000         | —           |
 
 ## Documentation
 

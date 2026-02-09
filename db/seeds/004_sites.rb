@@ -33,6 +33,13 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       theme: :blue,
       hero_image: 'millbrook_hero.jpg',
       logo: 'millbrook_logo.svg'
+    },
+    book_clubs_partnership: {
+      place_name: 'Normal Island Book Clubs',
+      hero_text: 'Reading groups and literary events across Normal Island',
+      theme: :green,
+      hero_image: 'normal_island_hero.jpg',
+      logo: 'book_clubs_logo.svg'
     }
   }.freeze
 
@@ -78,6 +85,13 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
     site
   end
 
+  def self.assign_partnership_tag(site, tag_name)
+    tag = Tag.find_by(name: tag_name, type: 'Partnership')
+    return unless tag
+
+    SitesTag.find_or_create_by!(site: site, tag: tag)
+  end
+
   def self.run
     $stdout.puts 'Sites'
 
@@ -120,6 +134,16 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       data_key: :millbrook_district,
       neighbourhood: Neighbourhood.find_by(name: 'Millbrook', unit: 'district')
     )
+
+    # Normal Island Book Clubs (partnership)
+    book_clubs = create_site(
+      slug: 'book-clubs',
+      name: 'Normal Island Book Clubs (partnership)',
+      tagline: 'Reading groups and literary events across Normal Island',
+      url: 'http://book-clubs.lvh.me:3000',
+      data_key: :book_clubs_partnership
+    )
+    assign_partnership_tag(book_clubs, 'Normal Island Book Clubs')
   end
 end
 
