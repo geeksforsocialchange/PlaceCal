@@ -1,3 +1,30 @@
+<% api_token_modes = CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }
+   if @calendar.importer_mode.in?(api_token_modes) || @calendar.api_token.present? %>
+  <%= render Admin::SectionHeaderComponent.new(
+    title: t('admin.calendars.fields.api_token'),
+    description: t('admin.calendars.fields.api_token_hint')
+  ) do |c| %>
+    <% c.with_icon do %>
+      <%= icon(:key, size: '5') %>
+    <% end %>
+  <% end %>
+
+  <div class="max-w-xl">
+    <fieldset class="fieldset">
+      <%= f.label :api_token, class: 'fieldset-legend' do %>
+        <%= t('admin.calendars.fields.api_token') %>
+      <% end %>
+      <%= f.input_field :api_token,
+          type: :password,
+          class: 'input input-bordered w-full font-mono text-sm',
+          placeholder: t('admin.calendars.fields.api_token_placeholder'),
+          autocomplete: 'off',
+          value: @calendar.api_token %>
+      <p class="fieldset-label"><%= t('admin.calendars.fields.api_token_hint') %></p>
+    </fieldset>
+  </div>
+<% end %>
+
 <%= render Admin::DangerZoneComponent.new(
   title: t('admin.actions.delete_model', model: Calendar.model_name.human.downcase),
   description: t('admin.calendars.danger_zone.delete_description', count: @calendar.events.count),

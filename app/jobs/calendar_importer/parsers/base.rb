@@ -11,6 +11,10 @@ module CalendarImporter::Parsers
     PUBLIC = true
     NAME = ''
     KEY = ''
+
+    def self.requires_api_token?
+      false
+    end
     Output = Struct.new(:events, :checksum_changed)
 
     CONTEXT = {
@@ -26,6 +30,10 @@ module CalendarImporter::Parsers
       'event' => 'http://schema.org/event',
       'name' => 'http://schema.org/name',
       'street_address' => 'http://schema.org/streetAddress',
+      'address_locality' => 'http://schema.org/addressLocality',
+      'address_region' => 'http://schema.org/addressRegion',
+      'postal_code' => 'http://schema.org/postalCode',
+      'address_country' => 'http://schema.org/addressCountry',
 
       'logo_url' => { '@id' => 'http://schema.org/logo', '@type' => '@id' },
       'image_url' => { '@id' => 'http://schema.org/image', '@type' => '@id' },
@@ -91,7 +99,14 @@ module CalendarImporter::Parsers
       response = HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
       return response.body if response.success?
 
-      msg = "The source URL could not be read (code=#{response.code})"
+      msg = case response.code
+            when 403
+              I18n.t('admin.calendars.wizard.source.forbidden')
+            when 404
+              I18n.t('admin.calendars.wizard.source.not_found')
+            else
+              I18n.t('admin.calendars.wizard.source.unreadable', code: response.code)
+            end
       raise InaccessibleFeed, msg
     rescue HTTParty::ResponseError => e
       raise InaccessibleFeed, "The source URL could not be resolved (#{e})"

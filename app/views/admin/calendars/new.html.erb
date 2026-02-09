@@ -3,7 +3,8 @@
 <div data-controller="calendar-wizard"
      data-calendar-wizard-current-step-value="1"
      data-calendar-wizard-total-steps-value="3"
-     data-calendar-wizard-test-url-value="<%= test_source_admin_calendars_path %>">
+     data-calendar-wizard-test-url-value="<%= test_source_admin_calendars_path %>"
+     data-calendar-wizard-api-token-parsers-value="<%= CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }.to_json %>">
 
   <div class="max-w-4xl mx-auto">
     <%# Header %>
@@ -111,6 +112,23 @@
                               } %>
             <p class="text-sm text-gray-600 mt-2">
               <%= t('admin.calendars.wizard.source.importer_hint') %>
+            </p>
+          </fieldset>
+
+          <%# API Key (shown for importers that require it, e.g. Ticket Tailor) %>
+          <fieldset class="fieldset bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0" data-calendar-wizard-target="apiTokenSection">
+            <legend class="fieldset-legend text-base font-semibold">
+              <%= t('admin.calendars.fields.api_token') %> <span class="text-error"><%= t('admin.labels.required') %></span>
+            </legend>
+            <%= f.input_field :api_token,
+                type: :password,
+                class: 'input input-bordered w-full font-mono text-sm',
+                placeholder: t('admin.calendars.fields.api_token_placeholder'),
+                autocomplete: 'off',
+                'data-calendar-wizard-target': 'apiTokenInput',
+                'data-action': 'input->calendar-wizard#apiTokenChanged' %>
+            <p class="text-sm text-gray-600 mt-2">
+              <%= t('admin.calendars.fields.api_token_hint') %>
             </p>
           </fieldset>
 

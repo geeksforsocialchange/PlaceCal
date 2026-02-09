@@ -7,7 +7,7 @@ class AddLevelToNeighbourhoods < ActiveRecord::Migration[7.2]
 
     reversible do |dir|
       dir.up do
-        execute <<-SQL.squish
+        execute <<~SQL.squish
           UPDATE neighbourhoods SET level = CASE unit
             WHEN 'country' THEN 5
             WHEN 'region' THEN 4

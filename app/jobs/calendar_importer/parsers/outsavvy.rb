@@ -6,6 +6,13 @@ module CalendarImporter::Parsers
     KEY = 'outsavvy'
     DOMAINS = %w[outsavvy.com].freeze
 
+    # Custom EventConsumer that uses OutsavvyEvent to handle malformed timestamps
+    class EventConsumer < LdJson::EventConsumer
+      def consume_event(data)
+        events << ::CalendarImporter::Events::OutsavvyEvent.new(data)
+      end
+    end
+
     def self.allowlist_pattern
       %r{^https://www\.outsavvy\.com/organiser/[^/]*/?$}
     end
@@ -29,7 +36,7 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      consumer = CalendarImporter::Parsers::LdJson::EventConsumer.new
+      consumer = EventConsumer.new
       consumer.consume data
       consumer.validate_events
       consumer.events

@@ -100,11 +100,19 @@ module Admin
         parser = importer.parser
 
         if parser
-          render json: {
+          response = {
             valid: true,
             importer_key: parser::KEY,
             importer_name: parser::NAME
           }
+
+          # API-based parsers need an API key rather than fetching this URL
+          if parser.requires_api_token?
+            response[:warning] = true
+            response[:warning_message] = t('admin.calendars.wizard.source.api_importer_warning', name: parser::NAME)
+          end
+
+          render json: response
         else
           render json: { valid: false, error: 'Unable to detect calendar format' }
         end
@@ -143,6 +151,7 @@ module Admin
         :partner_id,
         :place_id,
         :importer_mode,
+        :api_token,
         :public_contact_name,
         :public_contact_phone,
         :public_contact_email,

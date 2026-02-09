@@ -42,7 +42,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13.4
+        image: postgres:16
         env:
           POSTGRES_PORT: 5432
           POSTGRES_DB: placecal_test
@@ -124,6 +124,30 @@ jobs:
         run: bundle exec cucumber --tags "not @wip" features/public features/authentication.feature
         env:
           BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+
+      - name: Coverage summary
+        if: matrix.suite == 'unit' && always()
+        run: |
+          if [ -f coverage/.resultset.json ]; then
+            ruby -rjson -e '
+              data = JSON.parse(File.read("coverage/.resultset.json"))
+              result = data.values.first
+              line_data = result["coverage"].values.flat_map { |f| f["lines"] }.compact
+              branch_data = result["coverage"].values.flat_map { |f| (f["branches"] || {}).values }.compact.flatten(1)
+              lines_covered = line_data.count { |l| l.is_a?(Integer) && l > 0 }
+              lines_relevant = line_data.count { |l| l.is_a?(Integer) }
+              branches_covered = branch_data.flatten.count { |b| b.is_a?(Integer) && b > 0 }
+              branches_relevant = branch_data.flatten.count { |b| b.is_a?(Integer) }
+              line_pct = lines_relevant > 0 ? (100.0 * lines_covered / lines_relevant).round(2) : 0
+              branch_pct = branches_relevant > 0 ? (100.0 * branches_covered / branches_relevant).round(2) : 0
+              summary = "## Code Coverage\n\n"
+              summary += "| Metric | Covered | Total | % |\n"
+              summary += "|--------|---------|-------|---|\n"
+              summary += "| Lines | #{lines_covered} | #{lines_relevant} | #{line_pct}% |\n"
+              summary += "| Branches | #{branches_covered} | #{branches_relevant} | #{branch_pct}% |\n"
+              File.write(ENV["GITHUB_STEP_SUMMARY"], summary, mode: "a")
+            '
+          fi
 
       - name: Check database consistency
         if: matrix.suite == 'unit'

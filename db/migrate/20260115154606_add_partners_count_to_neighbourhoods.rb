@@ -8,7 +8,7 @@ class AddPartnersCountToNeighbourhoods < ActiveRecord::Migration[7.2]
     reversible do |dir|
       dir.up do
         # Backfill partner counts using efficient SQL
-        execute <<-SQL.squish
+        execute <<~SQL.squish
           UPDATE neighbourhoods SET partners_count = (
             SELECT COUNT(DISTINCT p.id)
             FROM addresses a

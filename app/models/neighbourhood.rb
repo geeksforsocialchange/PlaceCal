@@ -180,7 +180,7 @@ class Neighbourhood < ApplicationRecord
     # Refresh cached partners_count for all neighbourhoods
     # Run periodically or after bulk partner changes
     def refresh_partners_count!
-      connection.execute(<<-SQL.squish)
+      connection.execute(<<~SQL.squish)
         UPDATE neighbourhoods SET partners_count = (
           SELECT COUNT(*) FROM (
             SELECT DISTINCT p.id
