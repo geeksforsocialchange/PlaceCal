@@ -35,6 +35,10 @@ module PlaceCal
       )
     end
 
+    # Report ViewComponent render events to AppSignal
+    config.view_component.instrumentation_enabled = true
+    config.view_component.use_deprecated_instrumentation_name = false
+
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'

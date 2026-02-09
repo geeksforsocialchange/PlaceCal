@@ -5,7 +5,7 @@ This project optionally supports AI coding assistants with specialized agents fo
 ## Project Information
 
 - **Rails Version**: 8.x
-- **Ruby Version**: 3.3.6
+- **Ruby Version**: 4.0.1
 - **Project Type**: Full-stack Rails
 - **Test Framework**: RSpec
 - **GraphQL**: Enabled

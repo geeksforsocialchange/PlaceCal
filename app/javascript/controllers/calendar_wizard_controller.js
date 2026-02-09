@@ -291,9 +291,19 @@ export default class extends Controller {
 			if (data.valid) {
 				// Success - show detected format
 				this.sourceValidValue = true;
-				this.sourceSuccessTarget.classList.remove("hidden");
 				showInputSuccess(this.sourceInputTarget);
 				this.setTestButtonSuccess();
+
+				if (data.warning) {
+					// Show warning state (valid but with informational note)
+					this.sourceSuccessTarget.classList.add("hidden");
+					this.sourceErrorTarget.classList.remove("hidden");
+					this.sourceErrorTarget.classList.remove("alert-error");
+					this.sourceErrorTarget.classList.add("alert-warning");
+					this.sourceErrorMessageTarget.textContent = data.warning_message;
+				} else {
+					this.sourceSuccessTarget.classList.remove("hidden");
+				}
 
 				// Show the importer mode section
 				if (this.hasImporterModeSectionTarget) {
@@ -372,6 +382,9 @@ export default class extends Controller {
 		this.sourceFeedbackTarget.classList.add("hidden");
 		this.sourceSuccessTarget.classList.add("hidden");
 		this.sourceErrorTarget.classList.add("hidden");
+		// Reset warning styling back to error for next use
+		this.sourceErrorTarget.classList.remove("alert-warning");
+		this.sourceErrorTarget.classList.add("alert-error");
 		this.detectedFormatTarget.classList.add("hidden");
 		if (this.hasImporterModeSectionTarget) {
 			this.importerModeSectionTarget.classList.add("hidden");

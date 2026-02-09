@@ -4,6 +4,39 @@ module CalendarImporter::Events
   class IcsEvent < Base
     class MissingTypeForURL < StandardError; end
 
+    # Domains that indicate a direct online meeting/streaming link
+    ONLINE_MEETING_DOMAINS = %w[
+      meet.jit.si
+      meet.google.com
+      zoom.us
+      teams.microsoft.com
+      teams.live.com
+      webex.com
+      gotomeet.me
+      gotomeeting.com
+      discord.gg
+      discord.com
+      youtube.com
+      youtu.be
+      twitch.tv
+      vimeo.com
+      facebook.com
+      fb.watch
+      instagram.com
+      linkedin.com
+      crowdcast.io
+      streamyard.com
+      hopin.com
+    ].freeze
+
+    # Calendar custom properties that may contain online meeting URLs
+    ONLINE_MEETING_PROPERTIES = %w[
+      x_google_conference
+      x_microsoft_skypeteamsmeetingurl
+      x_microsoft_onlinemeetingconflink
+      x_zoom_meeting_url
+    ].freeze
+
     def initialize(event, start_date, end_date)
       @event = event
       @dtstart = start_date
@@ -23,9 +56,9 @@ module CalendarImporter::Events
 
     def description
       text = @event.description
-      text = text.join(' ') if text.is_a?(::Array)
+      text = text.join(' ') if text.is_a?(Array)
 
-      text.to_s # .gsub(/\A(\n)+\z/, '').strip
+      text.to_s
     end
 
     def location
@@ -44,72 +77,64 @@ module CalendarImporter::Events
 
     delegate :occurrences_between, to: :@event
 
+    # The iCal URL property links to more info about the event (its webpage),
+    # not to an online meeting. Use this for publisher_url, not online detection.
+    def publisher_url
+      url = @event.url
+      url = url.first if url.is_a?(Array)
+      url.to_s.presence
+    end
+
     def online_event_id
-      # Either return the google conference value, or find the link in the description
-      link = @event.url
-      link ||= @event.custom_properties['x_google_conference']
+      link = online_meeting_custom_property
       link ||= maybe_location_is_link
-      link ||= find_event_link
+      link ||= find_event_link_in_description
 
       link = link.first if link.is_a?(Array)
       link = link.to_s
 
       return if link.blank?
 
-      online_address = OnlineAddress.find_or_create_by(url: link,
-                                                       link_type: have_direct_url_to_stream?(link))
+      online_address = OnlineAddress.find_or_create_by(url: link, link_type: link_type_for(link))
       online_address.id
     end
 
     private
 
+    def online_meeting_custom_property
+      props = @event.custom_properties
+      ONLINE_MEETING_PROPERTIES.lazy.filter_map { |key| props[key] }.first
+    end
+
     def maybe_location_is_link
       return if location.blank?
 
-      URI.parse(location).to_s
+      uri = URI.parse(location)
+      return unless uri.scheme&.match?(/\Ahttps?\z/i)
 
+      uri.to_s
     rescue URI::InvalidURIError
-      # no URL found
+      nil
     end
 
-    def have_direct_url_to_stream?(link)
-      domain = event_link_types.keys.find { |domain| link.include?(domain) }
+    def find_event_link_in_description
+      return if description.blank?
 
-      return event_link_types[domain][:type] if domain
-
-      'indirect'
+      ONLINE_MEETING_DOMAINS.each do |domain|
+        match = description.match(url_regex_for(domain))
+        return match[0] if match
+      end
+      nil
     end
 
-    def find_event_link
-      link_regexes = event_link_types.values.pluck(:regex)
-      regex = Regexp.union link_regexes
-
-      regex.match(description).to_a
+    def link_type_for(link)
+      ONLINE_MEETING_DOMAINS.any? { |domain| link.include?(domain) } ? 'direct' : 'indirect'
     end
 
-    def event_link_types
-      # this only detects "direct" link types now and everything else is "indirect"
-
-      http = %r{(http(s)?://)?} # - https:// or http:// or nothing
-      alphanum = /[A-Za-z0-9]+/      # - alphanumeric strings
-      subdomain = /(#{alphanum}\.)?/ # - matches the www. or us04web in the zoom link
-      suffix = /[^\s<"]+/            # - matches until we see a whitespace character,
-      #   an angle bracket, or a quote (thanks html)
-
-      # We deal with the following strings:
-      #   meet.jit.si/foobarbaz
-      #   meet.google.com/kbv-byuf-cvq
-      #   us04web.zoom.us/j/(really long url)
-      #   zoom.us/j/(really long url)
-      # We also deal with strings like
-      #   <a href="(event url)">
-      #   <p>(event url)</p>
-
-      {
-        'meet.jit.si' => { regex: %r{#{http}#{subdomain}meet.jit.si/#{suffix}}, type: 'direct' },
-        'meet.google.com' => { regex: %r{#{http}#{subdomain}meet.google.com/#{suffix}}, type: 'direct' },
-        'zoom.us' => { regex: %r{#{http}#{subdomain}zoom.us/j/#{suffix}}, type: 'direct' }
-      }
+    def url_regex_for(domain)
+      # Matches URLs like: https://www.example.com/path or example.com/path
+      escaped = Regexp.escape(domain)
+      %r{(https?://)?([\w-]+\.)?#{escaped}/[^\s<"]+}
     end
   end
 end

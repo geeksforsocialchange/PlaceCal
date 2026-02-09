@@ -38,3 +38,6 @@ environment ENV.fetch('RAILS_ENV', 'development')
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
+
+# Report Puma metrics (thread/worker utilization) to AppSignal
+plugin :appsignal

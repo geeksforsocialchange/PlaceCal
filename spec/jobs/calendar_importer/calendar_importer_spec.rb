@@ -308,4 +308,24 @@ RSpec.describe CalendarImporter::CalendarImporter do
       end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed, /not a valid URL/)
     end
   end
+
+  describe "SOURCE_VALIDATION_NOT_REQUIRED" do
+    it "skips HTTP reachability check for Ticket Tailor URLs" do
+      calendar = build(:calendar, source: "https://www.tickettailor.com/events/testorg")
+
+      # This should not make any HTTP requests - if it did, WebMock would raise
+      importer = described_class.new(calendar)
+      expect(importer.parser).to eq(CalendarImporter::Parsers::Tickettailor)
+    end
+
+    it "still performs HTTP reachability check for other URLs" do
+      VCR.use_cassette(:example_dot_com_bad_response, allow_playback_repeats: true) do
+        calendar = build(:calendar, source: "https://example.com/")
+
+        expect do
+          described_class.new(calendar)
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
+      end
+    end
+  end
 end

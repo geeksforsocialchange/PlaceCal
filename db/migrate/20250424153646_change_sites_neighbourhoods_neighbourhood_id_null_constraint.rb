@@ -4,8 +4,8 @@ class ChangeSitesNeighbourhoodsNeighbourhoodIdNullConstraint < ActiveRecord::Mig
   def change
     # Step 1: Clean up existing NULLs (only on migrate up, not down)
     up_only do
-      execute <<-SQL.squish
-          DELETE FROM sites_neighbourhoods WHERE neighbourhood_id IS NULL;
+      execute <<~SQL.squish
+        DELETE FROM sites_neighbourhoods WHERE neighbourhood_id IS NULL;
       SQL
     end
 
