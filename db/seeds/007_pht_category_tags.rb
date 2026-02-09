@@ -26,6 +26,8 @@ module SeedPHTCategoryTags
     $stdout.puts 'PHT Category Tags'
 
     PHT_CATEGORIES.each do |category|
+      next if Tag.exists?(name: category)
+
       Category.create! name: category
     end
   end
