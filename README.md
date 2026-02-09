@@ -4,7 +4,7 @@
 
 PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.
 
-The codebase doesn't currently have enough seeds to create a dev environment suitable for developing from scratch. If you're interested in contributing to PlaceCal please get in touch at support@placecal.org
+The codebase has seeds that create a full development environment with fictional data (see [Seeds](#seeds) below).
 
 To get an idea of the project and what we're about, check out [the handbook](https://handbook.placecal.org/).
 
@@ -121,7 +121,34 @@ bundle exec cucumber                     # Cucumber features
 
 ### Test data: Normal Island
 
-Tests use a fictional geography called "Normal Island" (country code: ZZ, a user-assigned ISO 3166 code) to avoid conflicts with real UK data. See `lib/normal_island.rb` for the full data structure and `doc/testing-guide.md` for guidance on writing tests.
+Tests and seeds use a fictional geography called "Normal Island" (country code: ZZ, a user-assigned ISO 3166 code) to avoid conflicts with real UK data. See `lib/normal_island.rb` for the full data structure and `doc/testing-guide.md` for guidance on writing tests.
+
+## Seeds
+
+Running `bin/setup` or `bin/rails db:seed` populates the database with realistic development data using the Normal Island fictional geography. Seeds are **idempotent** (safe to re-run) and **additive** (layer alongside existing data, e.g. after cloning a production database).
+
+### What gets created
+
+- **Neighbourhoods**: Full Normal Island hierarchy (country, 2 regions, 2 counties, 3 districts, 8 wards)
+- **Tags**: 5 categories, 4 facilities, 2 partnerships
+- **Sites**: 3 published sites at different geographic levels — Normal Island (country), Coastshire (county), Millbrook (district) — each with hero images, logos, and themes. Plus one unpublished default site.
+- **Partners**: ~100 partners across all 8 wards, each with address, categories, social media links, opening times, phone numbers, and images
+- **Events**: 600+ events per partner (mix of past and future dates) with 50 different event types
+
+### Geocoding
+
+Seeds use a custom geocoder lookup (`Geocoder::Lookup::NormalIsland`) that handles Normal Island's ZZ-prefix postcodes locally without hitting any external API. Real UK postcodes are delegated to postcodes.io as normal. This lookup is active in all environments.
+
+### Sites in development
+
+After seeding, these sites are available:
+
+| Site          | URL                              | Level    |
+| ------------- | -------------------------------- | -------- |
+| Normal Island | http://normal-island.lvh.me:3000 | Country  |
+| Coastshire    | http://coastshire.lvh.me:3000    | County   |
+| Millbrook     | http://millbrook.lvh.me:3000     | District |
+| Admin         | http://admin.lvh.me:3000         | —        |
 
 ## Documentation
 
