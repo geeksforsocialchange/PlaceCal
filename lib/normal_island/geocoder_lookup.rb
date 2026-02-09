@@ -32,6 +32,10 @@ module Geocoder
         postcode.match?(/\AZZ[A-Z]{2}\s*\d[A-Z]{2}\z/i)
       end
 
+      # Resolve a postcode locally if possible, or return nil to delegate
+      # to the real postcodes.io API. This means production is unaffected —
+      # only ZZ-prefix (Normal Island) and supplementary test postcodes are
+      # handled locally; everything else hits postcodes.io as normal.
       def local_result_for(postcode)
         # Check Normal Island postcodes (ZZ-prefix)
         return normal_island_result(postcode) if normal_island_postcode?(postcode)
@@ -40,11 +44,11 @@ module Geocoder
         supplementary = supplementary_result(postcode)
         return supplementary if supplementary
 
-        # In test environment, return the default stub for unknown postcodes
-        # so tests don't hit the real API
+        # In test environment only, return a default stub so specs never
+        # hit the real postcodes.io API
         return default_stub_result(postcode) if Rails.env.test?
 
-        # Not a local postcode — return nil to trigger postcodes.io delegation
+        # Not a local postcode — return nil to delegate to postcodes.io
         nil
       end
 
