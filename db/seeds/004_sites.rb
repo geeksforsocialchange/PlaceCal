@@ -141,7 +141,8 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       name: 'Normal Island Book Clubs (partnership)',
       tagline: 'Reading groups and literary events across Normal Island',
       url: 'http://book-clubs.lvh.me:3000',
-      data_key: :book_clubs_partnership
+      data_key: :book_clubs_partnership,
+      neighbourhood: Neighbourhood.find_by(name: 'Normal Island', unit: 'country')
     )
     assign_partnership_tag(book_clubs, 'Normal Island Book Clubs')
   end
