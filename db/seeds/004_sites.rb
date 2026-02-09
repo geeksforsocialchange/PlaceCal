@@ -3,7 +3,7 @@
 require_relative '../../lib/normal_island'
 
 module SeedSites # rubocop:disable Metrics/ModuleLength
-  IMAGES_DIR = Rails.root.join('db/seeds/images')
+  IMAGES_DIR = Rails.root.join('db/seeds/images/sites')
 
   SITE_DATA = {
     normal_island_default: {
