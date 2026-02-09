@@ -3,13 +3,15 @@
 require_relative '../../lib/normal_island'
 
 module SeedUsers
+  AVATARS_DIR = Rails.root.join('db/seeds/images/avatars')
+
   def self.run
     $stdout.puts 'Users'
 
     NormalIsland::USERS.each do |_key, data|
       next if User.exists?(email: data[:email])
 
-      User.create!(
+      user = User.create!(
         email: data[:email],
         password: 'password',
         password_confirmation: 'password',
@@ -17,8 +19,19 @@ module SeedUsers
         last_name: data[:last_name],
         role: data[:role] || 'citizen'
       )
+      attach_avatar(user, data[:avatar])
       $stdout.puts "  Created user: #{data[:first_name]} #{data[:last_name]} (#{data[:email]})"
     end
+  end
+
+  def self.attach_avatar(user, filename)
+    return unless filename
+
+    path = AVATARS_DIR.join(filename)
+    return unless path.exist?
+
+    user.avatar = File.open(path)
+    user.save!
   end
 
   # Assign neighbourhood, partner, and site associations

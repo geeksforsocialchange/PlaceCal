@@ -131,21 +131,23 @@ Running `bin/setup` or `bin/rails db:seed` populates the database with realistic
 - **Neighbourhoods**: Full Normal Island hierarchy (country, 2 regions, 2 counties, 3 districts, 8 wards)
 - **Tags**: 5 categories, 4 facilities, 3 partnerships
 - **Sites**: 4 published sites — 3 at different geographic levels (country, county, district) and 1 partnership site (Normal Island Book Clubs) — each with hero images, logos, and themes. Plus one unpublished default site.
-- **Users**: 7 users covering every admin role (see table below). All passwords are `password`.
+- **Users**: 9 users covering every admin role, with avatars (see table below). All passwords are `password`.
 - **Partners**: ~100 partners across all 8 wards, each with address, categories, social media links, opening times, phone numbers, and images
 - **Events**: 600+ events per partner (mix of past and future dates) with 50 different event types
 
 ### Seed users
 
-| Email                            | Role                | Scope                   |
-| -------------------------------- | ------------------- | ----------------------- |
-| root@placecal.org                | Root                | Everything              |
-| national-admin@placecal.org      | National admin      | All partners            |
-| editor@placecal.org              | Editor              | All news articles       |
-| neighbourhood-admin@placecal.org | Neighbourhood admin | Millbrook district      |
-| partner-admin@placecal.org       | Partner admin       | Riverside Community Hub |
-| site-admin@placecal.org          | Site admin          | Millbrook site          |
-| citizen@placecal.org             | Citizen             | No admin access         |
+| Email                                 | Role                | Scope                   |
+| ------------------------------------- | ------------------- | ----------------------- |
+| root@placecal.org                     | Root                | Everything              |
+| editor@placecal.org                   | Editor              | All news articles       |
+| neighbourhood-admin@placecal.org      | Neighbourhood admin | Millbrook district      |
+| partner-admin@placecal.org            | Partner admin       | Riverside Community Hub |
+| site-admin-normal-island@placecal.org | Site admin          | Normal Island site      |
+| site-admin-coastshire@placecal.org    | Site admin          | Coastshire site         |
+| site-admin-millbrook@placecal.org     | Site admin          | Millbrook site          |
+| site-admin-book-clubs@placecal.org    | Site admin          | Book Clubs site         |
+| citizen@placecal.org                  | Citizen             | No admin access         |
 
 ### Geocoding
 

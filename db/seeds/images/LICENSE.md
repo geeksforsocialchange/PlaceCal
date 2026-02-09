@@ -30,6 +30,18 @@ attributing the photographer or Unsplash.
 | `partners/09_walking.jpg`   | Toomas Tartes  | https://unsplash.com/photos/Yizrl9N_eDA |
 | `partners/10_workshop.jpg`  | Barn Images    | https://unsplash.com/photos/t5YUoHW6zRo |
 
+## User Avatars
+
+| File                    | Photographer         | Unsplash URL                            |
+| ----------------------- | -------------------- | --------------------------------------- |
+| `avatars/01_avatar.jpg` | Foto Sushi           | https://unsplash.com/photos/6anudmpILw4 |
+| `avatars/02_avatar.jpg` | Christopher Campbell | https://unsplash.com/photos/rDEOVtE7vOs |
+| `avatars/03_avatar.jpg` | Jurica Koletic       | https://unsplash.com/photos/7YVZYZeITc8 |
+| `avatars/04_avatar.jpg` | Megan Bucknall       | https://unsplash.com/photos/ept-WnH8ywo |
+| `avatars/05_avatar.jpg` | Albert Dera          | https://unsplash.com/photos/ILip77SbmOE |
+| `avatars/06_avatar.jpg` | Michael Dam          | https://unsplash.com/photos/mEZ3PoFGs_k |
+| `avatars/07_avatar.jpg` | Vince Fleming        | https://unsplash.com/photos/j3lf-Jn6deo |
+
 ## Logo SVGs
 
 The SVG logo files (`*_logo.svg`) are simple text-on-colour placeholders created for

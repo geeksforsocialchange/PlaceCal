@@ -295,42 +295,63 @@ module NormalIsland
       email: 'root@placecal.org',
       first_name: 'Root',
       last_name: 'Admin',
-      role: 'root'
-    },
-    national_admin: {
-      email: 'national-admin@placecal.org',
-      first_name: 'National',
-      last_name: 'Admin',
-      role: 'national_admin'
+      role: 'root',
+      avatar: '01_avatar.jpg'
     },
     editor: {
       email: 'editor@placecal.org',
       first_name: 'Editor',
       last_name: 'User',
-      role: 'editor'
+      role: 'editor',
+      avatar: '02_avatar.jpg'
     },
     neighbourhood_admin: {
       email: 'neighbourhood-admin@placecal.org',
       first_name: 'Neighbourhood',
       last_name: 'Admin',
-      neighbourhood: 'Millbrook'
+      neighbourhood: 'Millbrook',
+      avatar: '03_avatar.jpg'
     },
     partner_admin: {
       email: 'partner-admin@placecal.org',
       first_name: 'Partner',
       last_name: 'Admin',
-      partner: 'Riverside Community Hub'
+      partner: 'Riverside Community Hub',
+      avatar: '04_avatar.jpg'
     },
-    site_admin: {
-      email: 'site-admin@placecal.org',
-      first_name: 'Site',
-      last_name: 'Admin',
-      site: 'millbrook'
+    site_admin_normal_island: {
+      email: 'site-admin-normal-island@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Normal Island)',
+      site: 'normal-island',
+      avatar: '05_avatar.jpg'
+    },
+    site_admin_coastshire: {
+      email: 'site-admin-coastshire@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Coastshire)',
+      site: 'coastshire',
+      avatar: '06_avatar.jpg'
+    },
+    site_admin_millbrook: {
+      email: 'site-admin-millbrook@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Millbrook)',
+      site: 'millbrook',
+      avatar: '07_avatar.jpg'
+    },
+    site_admin_book_clubs: {
+      email: 'site-admin-book-clubs@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Book Clubs)',
+      site: 'book-clubs',
+      avatar: '01_avatar.jpg'
     },
     citizen: {
       email: 'citizen@placecal.org',
       first_name: 'Citizen',
-      last_name: 'User'
+      last_name: 'User',
+      avatar: '02_avatar.jpg'
     }
   }.freeze
 
