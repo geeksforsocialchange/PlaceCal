@@ -5,7 +5,7 @@ Running `bin/setup` or `bin/rails db:seed` populates the database with realistic
 ## What gets created
 
 - **Neighbourhoods**: Full Normal Island hierarchy (country, 2 regions, 2 counties, 3 districts, 8 wards)
-- **Tags**: 5 categories, 4 facilities, 3 partnerships
+- **Tags**: 21 categories (e.g. Health & Wellbeing, Food, LGBTQ+, Arts & Culture), 4 facilities, 3 partnerships
 - **Sites**: 4 published sites — 3 at different geographic levels (country, county, district) and 1 partnership site (Normal Island Book Clubs) — each with hero images, logos, and themes. Plus one unpublished default site.
 - **Users**: 9 users covering every admin role, with avatars (see table below). All passwords are `password`.
 - **Partners**: ~100 partners across all 8 wards, each with address, categories, social media links, opening times, phone numbers, and images
