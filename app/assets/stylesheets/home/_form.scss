@@ -123,10 +123,17 @@
 		}
 
 		input:checked + label {
-			background: image-url("icons/forms/selected.svg");
 			background-position: 100% 0%;
 			background-size: 30px 30px;
 			background-repeat: no-repeat;
+		}
+
+		input[type="radio"]:checked + label {
+			background-image: image-url("icons/forms/selected.svg");
+		}
+
+		input[type="checkbox"]:checked + label {
+			background-image: image-url("icons/forms/ticked.svg");
 		}
 
 		@include for-tablet-portrait-up {
