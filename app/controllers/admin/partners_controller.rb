@@ -254,6 +254,14 @@ module Admin
       end
     end
 
+    # Override ApplicationController#set_partner with eager loading for admin forms
+    def set_partner
+      @partner = Partner.friendly
+                        .includes(:calendars, :users, :facilities, :categories,
+                                  :service_areas, address: :neighbourhood)
+                        .find(params[:id])
+    end
+
     def user_not_authorized
       flash[:alert] = 'Unable to access'
       redirect_to admin_partners_url

@@ -131,37 +131,41 @@ class EventsQuery
   # When site has tags: only events from tagged partners (no address fallback)
   # When site has no tags: events from site partners OR events with address in site neighbourhoods
   def events_for_site
-    partner_records = PartnersQuery.new(site: @site).call.reorder(nil).includes(:address).to_a
-    partner_ids = partner_records.map(&:id)
+    partners_scope = PartnersQuery.new(site: @site).call.reorder(nil)
 
     if @site.tags.any?
-      # Site has tags - only show events from partners with those tags
-      # Address fallback matches partner name/postcode (legacy behavior)
-      partner_names = partner_records.map { |p| p.name.downcase }
-      partner_postcodes = partner_records.filter_map(&:address).map { |a| a.postcode.downcase }
-
-      Event
-        .left_joins(:address)
-        .where(
-          'partner_id IN (:partner_ids) OR ' \
-          '(lower(addresses.street_address) IN (:partner_names) AND ' \
-          'lower(addresses.postcode) IN (:partner_postcodes))',
-          partner_ids: partner_ids,
-          partner_names: partner_names,
-          partner_postcodes: partner_postcodes
-        )
+      events_for_tagged_site(partners_scope)
     else
-      # No site tags - events from partners OR events with address in site neighbourhoods
-      site_neighbourhood_ids = @site.owned_neighbourhood_ids
-
-      Event
-        .left_joins(:address)
-        .where(
-          'partner_id IN (:partner_ids) OR addresses.neighbourhood_id IN (:neighbourhood_ids)',
-          partner_ids: partner_ids,
-          neighbourhood_ids: site_neighbourhood_ids
-        )
+      events_for_untagged_site(partners_scope)
     end
+  end
+
+  # For sites without tags: use subquery instead of materializing partners
+  def events_for_untagged_site(partners_scope)
+    site_neighbourhood_ids = @site.owned_neighbourhood_ids
+    partner_subquery = partners_scope.select(:id)
+
+    base = Event.left_joins(:address)
+    base.where(partner_id: partner_subquery)
+        .or(base.where(addresses: { neighbourhood_id: site_neighbourhood_ids }))
+  end
+
+  # For sites with tags: must load partners for legacy name/postcode address matching
+  def events_for_tagged_site(partners_scope)
+    partner_records = partners_scope.includes(:address).load
+    partner_names = partner_records.map { |p| p.name.downcase }
+    partner_postcodes = partner_records.filter_map(&:address).map { |a| a.postcode.downcase }
+
+    Event
+      .left_joins(:address)
+      .where(
+        'partner_id IN (:partner_ids) OR ' \
+        '(lower(addresses.street_address) IN (:partner_names) AND ' \
+        'lower(addresses.postcode) IN (:partner_postcodes))',
+        partner_ids: partner_records.map(&:id),
+        partner_names: partner_names,
+        partner_postcodes: partner_postcodes
+      )
   end
 
   # ===================
