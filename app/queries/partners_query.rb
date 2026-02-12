@@ -27,7 +27,7 @@ class PartnersQuery
     partners = filter_by_neighbourhood(partners, neighbourhood_id) if neighbourhood_id.present?
     partners = filter_by_tag(partners, tag_id) if tag_id.present?
     partners = filter_by_tag_slug(partners, tag_slug) if tag_slug.present?
-    partners.order(:name)
+    partners.includes(:address, :service_areas).order(:name)
   end
 
   # Returns neighbourhoods that have partners, with counts
