@@ -115,11 +115,18 @@
 			font-weight: normal;
 			padding-right: 48px;
 			line-height: 30px;
-			background: image-url("icons/forms/unselected.svg");
 			background-position: 100% 0%;
 			background-size: 30px 30px;
 			background-repeat: no-repeat;
 			cursor: pointer;
+		}
+
+		input[type="radio"] + label {
+			background-image: url("icons/forms/unselected.svg");
+		}
+
+		input[type="checkbox"] + label {
+			background-image: url("icons/forms/unticked.svg");
 		}
 
 		input:checked + label {
@@ -129,11 +136,11 @@
 		}
 
 		input[type="radio"]:checked + label {
-			background-image: image-url("icons/forms/selected.svg");
+			background-image: url("icons/forms/selected.svg");
 		}
 
 		input[type="checkbox"]:checked + label {
-			background-image: image-url("icons/forms/ticked.svg");
+			background-image: url("icons/forms/ticked.svg");
 		}
 
 		@include for-tablet-portrait-up {
