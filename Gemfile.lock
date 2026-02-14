@@ -592,7 +592,7 @@ GEM
     rubocop-ast (1.49.0)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
-    rubocop-graphql (1.5.6)
+    rubocop-graphql (1.6.0)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1, < 2)
     rubocop-performance (1.26.1)
@@ -782,7 +782,7 @@ DEPENDENCIES
   rdoc
   rspec-rails (~> 8.0)
   rubocop (= 1.84.1)
-  rubocop-graphql (= 1.5.6)
+  rubocop-graphql (= 1.6.0)
   rubocop-performance (= 1.26.1)
   rubocop-rails (= 2.34.3)
   rubocop-rake
