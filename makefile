@@ -42,8 +42,8 @@ setup_env:
 	echo PGUSER=postgres >> .env
 
 setup_db:
-	bundle exec rails db:create db:schema:load
-	bundle exec rails events:import_all_calendars
+	bundle exec rails db:prepare
+	bundle exec rails db:seed
 
 seed_GFSC_prod_copy_db:
 	rails db:dump_production_and_restore_other restore_on_local=1
