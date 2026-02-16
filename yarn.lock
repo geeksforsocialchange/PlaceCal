@@ -697,9 +697,9 @@ to-regex-range@^5.0.1:
     is-number "^7.0.0"
 
 tom-select@^2.4.3:
-  version "2.4.6"
-  resolved "https://registry.yarnpkg.com/tom-select/-/tom-select-2.4.6.tgz#23acdfc09ee235eb752706d418c9c9ae6ccf67f0"
-  integrity sha512-Hhqi15AiTl0+FjaHVTXvUkF3t7x4W5LXUHxLYlzp7r8bcIgGJyz9M+3ZvrHdTRvEmV4EmNyJPbHJJnZOjr5Iig==
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/tom-select/-/tom-select-2.5.1.tgz#8c8d3f11e5c1780b5f26c9e90f4e650842ff9596"
+  integrity sha512-63D5/Qf6bb6kLSgksEuas/60oawDcuUHrD90jZofeOpF6bkQFYriKrvtpJBQQ4xIA5dUGcjhBbk/yrlfOQsy3g==
   dependencies:
     "@orchidjs/sifter" "^1.1.0"
     "@orchidjs/unicode-variants" "^1.1.2"
