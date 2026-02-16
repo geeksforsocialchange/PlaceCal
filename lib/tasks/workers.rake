@@ -54,7 +54,7 @@ namespace :workers do
     # Find all the Calendars that are listed as running
     listed_active_calendars = Calendar.where(calendar_state: %i[in_worker in_queue]).map(&:id)
 
-    pp [active: active_calendars, listed_active_calendars: listed_active_calendars]
+    pp [{ active: active_calendars, listed_active_calendars: listed_active_calendars }]
 
     # Prune the listed Calendars to find ones that are not running, but are listed as such
     ids_to_unset = listed_active_calendars.reject { |calendar_id| active_calendars.include?(calendar_id) }
