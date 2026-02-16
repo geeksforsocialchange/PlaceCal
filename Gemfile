@@ -104,3 +104,5 @@ end
 group :ai, optional: true do
   gem 'claude-on-rails'
 end
+
+gem 'brakeman', '~> 8.0', :group => :development
