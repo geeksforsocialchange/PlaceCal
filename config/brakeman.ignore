@@ -22,8 +22,8 @@
       "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
     },
     {
-      "fingerprint": "cf33cff0d7a914cda42cf102b1fb24ebf5c2fd611c12928b247ca5a48f7ef06c",
-      "code": "Partner.friendly.find(params[:id]).hidden_reason_html.to_s",
+      "fingerprint": "fda983d58849943f088734dc59b1162cd6f16fa386200ee0e9cba18ff5af1c5a",
+      "code": "Partner.friendly.includes(...).find(params[:id]).hidden_reason_html.to_s",
       "file": "app/views/admin/partners/_form.html.erb",
       "line": 10,
       "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
