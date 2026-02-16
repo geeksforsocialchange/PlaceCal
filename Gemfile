@@ -65,6 +65,7 @@ end
 group :development do
   gem 'better_errors'             # Better error pages
   gem 'binding_of_caller'         # REPL in error pages
+  gem 'brakeman', '~> 8.0'        # Static security analysis
   gem 'database_consistency', require: false # Schema validation
   gem 'foreman'                   # Process manager (Procfile.dev)
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
@@ -104,5 +105,3 @@ end
 group :ai, optional: true do
   gem 'claude-on-rails'
 end
-
-gem 'brakeman', '~> 8.0', :group => :development
