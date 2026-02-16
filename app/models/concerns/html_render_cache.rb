@@ -27,18 +27,23 @@ module HtmlRenderCache
 
       if changed.include?(field_name.to_s)
         value = changes[field_name.to_s][1]
-        html = Kramdown::Document.new(value).to_html
-        self[cache_name] = html
+        self[cache_name] = markdown_to_safe_html(value)
         next
       end
-
-      # puts attributes.to_json
 
       next unless @force_html_generation
 
       value = attributes[field_name.to_s].to_s
-      html = Kramdown::Document.new(value).to_html
-      self[cache_name] = html
+      self[cache_name] = markdown_to_safe_html(value)
     end
+  end
+
+  def markdown_to_safe_html(value)
+    html = Kramdown::Document.new(value).to_html
+    sanitize_html(html)
+  end
+
+  def sanitize_html(html)
+    Rails::HTML5::SafeListSanitizer.new.sanitize(html)
   end
 end

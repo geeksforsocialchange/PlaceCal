@@ -32,6 +32,19 @@ jobs:
           bin/yarn run format:check
           bundle exec rubocop
 
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          cache-version: 3
+
+      - name: Run Brakeman
+        run: bundle exec brakeman --no-pager
+
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -125,30 +138,6 @@ jobs:
         env:
           BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
-      - name: Coverage summary
-        if: matrix.suite == 'unit' && always()
-        run: |
-          if [ -f coverage/.resultset.json ]; then
-            ruby -rjson -e '
-              data = JSON.parse(File.read("coverage/.resultset.json"))
-              result = data.values.first
-              line_data = result["coverage"].values.flat_map { |f| f["lines"] }.compact
-              branch_data = result["coverage"].values.flat_map { |f| (f["branches"] || {}).values }.compact.flatten(1)
-              lines_covered = line_data.count { |l| l.is_a?(Integer) && l > 0 }
-              lines_relevant = line_data.count { |l| l.is_a?(Integer) }
-              branches_covered = branch_data.flatten.count { |b| b.is_a?(Integer) && b > 0 }
-              branches_relevant = branch_data.flatten.count { |b| b.is_a?(Integer) }
-              line_pct = lines_relevant > 0 ? (100.0 * lines_covered / lines_relevant).round(2) : 0
-              branch_pct = branches_relevant > 0 ? (100.0 * branches_covered / branches_relevant).round(2) : 0
-              summary = "## Code Coverage\n\n"
-              summary += "| Metric | Covered | Total | % |\n"
-              summary += "|--------|---------|-------|---|\n"
-              summary += "| Lines | #{lines_covered} | #{lines_relevant} | #{line_pct}% |\n"
-              summary += "| Branches | #{branches_covered} | #{branches_relevant} | #{branch_pct}% |\n"
-              File.write(ENV["GITHUB_STEP_SUMMARY"], summary, mode: "a")
-            '
-          fi
-
       - name: Check database consistency
         if: matrix.suite == 'unit'
         run: RAILS_ENV=test bundle exec database_consistency
@@ -164,21 +153,22 @@ jobs:
   # This job provides a single status check for branch protection rules
   # It runs on all PRs and pushes, unlike deploy which only runs on main/production
   ci:
-    needs: [lint, test]
+    needs: [lint, security, test]
     runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Check all jobs passed
         run: |
-          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ]; then
+          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.security.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ]; then
             echo "lint result: ${{ needs.lint.result }}"
+            echo "security result: ${{ needs.security.result }}"
             echo "test result: ${{ needs.test.result }}"
             exit 1
           fi
           echo "All checks passed!"
 
   deploy:
-    needs: [lint, test]
+    needs: [lint, security, test]
     runs-on: ubuntu-latest
     if: github.repository == 'geeksforsocialchange/PlaceCal' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production')
 

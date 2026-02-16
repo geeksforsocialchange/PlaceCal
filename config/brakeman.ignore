@@ -1,0 +1,48 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "1d5844e513130ce552047ee9654e23f352173eb531d9c0adb5f5eb67d3b27ea9",
+      "code": "Event.find(params[:id]).description_html.to_s",
+      "file": "app/views/events/show.html.erb",
+      "line": 8,
+      "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
+    },
+    {
+      "fingerprint": "53e5f8a9d1d1f3adb94c6d43e169a6affa347a28ee0f992432158d14e87a5809",
+      "code": "Arel.sql(\"users.last_sign_in_at #{datatable.orders.first.direction.upcase} NULLS LAST\")",
+      "file": "app/datatables/user_datatable.rb",
+      "line": 117,
+      "note": "False positive: direction is whitelisted by ajax-datatables-rails to ASC/DESC"
+    },
+    {
+      "fingerprint": "bb08d8349c03c86ea93d64bf3d1288e5063c95bdbbaaf77ec1a046dbdcf08113",
+      "code": "Partner.friendly.find(params[:id]).accessibility_info_html.to_s",
+      "file": "app/views/partners/show.html.erb",
+      "line": 46,
+      "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
+    },
+    {
+      "fingerprint": "fda983d58849943f088734dc59b1162cd6f16fa386200ee0e9cba18ff5af1c5a",
+      "code": "Partner.friendly.includes(...).find(params[:id]).hidden_reason_html.to_s",
+      "file": "app/views/admin/partners/_form.html.erb",
+      "line": 10,
+      "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
+    },
+    {
+      "fingerprint": "d690fd563063ca48fd6b9e6cf41ec5d645d0f605babf491cb3cdaf41c7c8a635",
+      "code": "Article.published.friendly.find(params[:id]).body_html.to_s",
+      "file": "app/views/news/show.html.erb",
+      "line": 31,
+      "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
+    },
+    {
+      "fingerprint": "fb3dea79144aad4464b27dd7d70e67796b27831d86eaa254895d0a732f2b91f7",
+      "code": "Partner.friendly.find(params[:id]).description_html.to_s",
+      "file": "app/views/partners/show.html.erb",
+      "line": 27,
+      "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
+    }
+  ],
+  "updated": "2026-02-16",
+  "brakeman_version": "8.0.2"
+}
