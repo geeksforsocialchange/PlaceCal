@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe PartnersQuery, "site filtering" do
-  # NOTE: these MUST match up with the geocoder response defined in spec/support/normal_island_geocoder.rb
+  # NOTE: these MUST match up with the supplementary postcode data in lib/normal_island/supplementary_postcodes.yml
   let(:post_code) { "M15 5DD" }
   let(:unit) { "ward" }
   let(:unit_code) { "E05011368" }

@@ -3,82 +3,87 @@
 require_relative '../../lib/normal_island'
 
 module SeedNeighbourhoods
-  def self.run
+  def self.run # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     $stdout.puts 'Neighbourhoods - Normal Island'
 
     # Country
-    country = Neighbourhood.create!(
-      name: NormalIsland::COUNTRY[:name],
-      name_abbr: 'ZZ',
-      unit: NormalIsland::COUNTRY[:unit],
-      unit_code_key: NormalIsland::COUNTRY[:unit_code_key],
-      unit_code_value: NormalIsland::COUNTRY[:unit_code_value],
-      unit_name: NormalIsland::COUNTRY[:name],
-      release_date: DateTime.now
-    )
-    $stdout.puts "  Created country: #{country.name}"
+    country = Neighbourhood.find_or_create_by!(
+      unit_code_value: NormalIsland::COUNTRY[:unit_code_value]
+    ) do |n|
+      n.name = NormalIsland::COUNTRY[:name]
+      n.name_abbr = 'ZZ'
+      n.unit = NormalIsland::COUNTRY[:unit]
+      n.unit_code_key = NormalIsland::COUNTRY[:unit_code_key]
+      n.unit_name = NormalIsland::COUNTRY[:name]
+      n.release_date = DateTime.now
+    end
+    $stdout.puts "  Country: #{country.name}"
 
     # Regions
     regions = {}
     NormalIsland::REGIONS.each do |key, data|
-      regions[key] = Neighbourhood.create!(
-        name: data[:name],
-        name_abbr: data[:name],
-        unit: data[:unit],
-        unit_code_key: data[:unit_code_key],
-        unit_code_value: data[:unit_code_value],
-        unit_name: data[:name],
-        release_date: DateTime.now,
-        parent: country
-      )
-      $stdout.puts "  Created region: #{data[:name]}"
+      regions[key] = Neighbourhood.find_or_create_by!(
+        unit_code_value: data[:unit_code_value]
+      ) do |n|
+        n.name = data[:name]
+        n.name_abbr = data[:name]
+        n.unit = data[:unit]
+        n.unit_code_key = data[:unit_code_key]
+        n.unit_name = data[:name]
+        n.release_date = DateTime.now
+        n.parent = country
+      end
+      $stdout.puts "  Region: #{data[:name]}"
     end
 
     # Counties
     counties = {}
     NormalIsland::COUNTIES.each do |key, data|
-      counties[key] = Neighbourhood.create!(
-        name: data[:name],
-        name_abbr: data[:name],
-        unit: data[:unit],
-        unit_code_key: data[:unit_code_key],
-        unit_code_value: data[:unit_code_value],
-        unit_name: data[:name],
-        release_date: DateTime.now,
-        parent: regions[data[:parent_region]]
-      )
-      $stdout.puts "  Created county: #{data[:name]}"
+      counties[key] = Neighbourhood.find_or_create_by!(
+        unit_code_value: data[:unit_code_value]
+      ) do |n|
+        n.name = data[:name]
+        n.name_abbr = data[:name]
+        n.unit = data[:unit]
+        n.unit_code_key = data[:unit_code_key]
+        n.unit_name = data[:name]
+        n.release_date = DateTime.now
+        n.parent = regions[data[:parent_region]]
+      end
+      $stdout.puts "  County: #{data[:name]}"
     end
 
     # Districts
     districts = {}
     NormalIsland::DISTRICTS.each do |key, data|
-      districts[key] = Neighbourhood.create!(
-        name: data[:name],
-        name_abbr: data[:name],
-        unit: data[:unit],
-        unit_code_key: data[:unit_code_key],
-        unit_code_value: data[:unit_code_value],
-        unit_name: data[:name],
-        release_date: DateTime.now,
-        parent: counties[data[:parent_county]]
-      )
-      $stdout.puts "  Created district: #{data[:name]}"
+      districts[key] = Neighbourhood.find_or_create_by!(
+        unit_code_value: data[:unit_code_value]
+      ) do |n|
+        n.name = data[:name]
+        n.name_abbr = data[:name]
+        n.unit = data[:unit]
+        n.unit_code_key = data[:unit_code_key]
+        n.unit_name = data[:name]
+        n.release_date = DateTime.now
+        n.parent = counties[data[:parent_county]]
+      end
+      $stdout.puts "  District: #{data[:name]}"
     end
 
     # Wards
     NormalIsland::WARDS.each do |_key, data|
-      Neighbourhood.create!(
-        name: data[:name],
-        name_abbr: data[:name],
-        unit: data[:unit],
-        unit_code_key: data[:unit_code_key],
-        unit_code_value: data[:unit_code_value],
-        unit_name: data[:name],
-        release_date: DateTime.now,
-        parent: districts[data[:parent_district]]
-      )
-      $stdout.puts "  Created ward: #{data[:name]}"
+      Neighbourhood.find_or_create_by!(
+        unit_code_value: data[:unit_code_value]
+      ) do |n|
+        n.name = data[:name]
+        n.name_abbr = data[:name]
+        n.unit = data[:unit]
+        n.unit_code_key = data[:unit_code_key]
+        n.unit_name = data[:name]
+        n.release_date = DateTime.now
+        n.parent = districts[data[:parent_district]]
+      end
+      $stdout.puts "  Ward: #{data[:name]}"
     end
   end
 end

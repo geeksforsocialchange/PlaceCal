@@ -10,9 +10,8 @@ require "cucumber/rails"
 require "capybara/cucumber"
 require "selenium-webdriver"
 
-# Load shared spec support files (UK postcode stub, geocoder stubs)
-require Rails.root.join("spec/support/uk_postcode_stub")
-require Rails.root.join("spec/support/normal_island_geocoder")
+# Normal Island geocoder lookup is loaded via config/initializers/geocoder.rb
+# UK postcode extension is loaded via lib/normal_island.rb
 
 # FactoryBot is already loaded by cucumber-rails
 # Just configure paths if not already set

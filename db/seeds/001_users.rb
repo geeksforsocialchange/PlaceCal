@@ -3,20 +3,68 @@
 require_relative '../../lib/normal_island'
 
 module SeedUsers
+  AVATARS_DIR = Rails.root.join('db/seeds/images/avatars')
+
   def self.run
     $stdout.puts 'Users'
 
-    # Root admin
-    User.create!(
-      email: NormalIsland::USERS[:root_admin][:email],
-      password: 'password',
-      password_confirmation: 'password',
-      first_name: NormalIsland::USERS[:root_admin][:first_name],
-      last_name: NormalIsland::USERS[:root_admin][:last_name],
-      role: NormalIsland::USERS[:root_admin][:role]
-    )
+    NormalIsland::USERS.each do |_key, data|
+      next if User.exists?(email: data[:email])
 
-    $stdout.puts "  Created admin user: #{NormalIsland::USERS[:root_admin][:email]}"
+      user = User.create!(
+        email: data[:email],
+        password: 'password',
+        password_confirmation: 'password',
+        first_name: data[:first_name],
+        last_name: data[:last_name],
+        role: data[:role] || 'citizen'
+      )
+      attach_avatar(user, data[:avatar])
+      $stdout.puts "  Created user: #{data[:first_name]} #{data[:last_name]} (#{data[:email]})"
+    end
+  end
+
+  def self.attach_avatar(user, filename)
+    return unless filename
+
+    path = AVATARS_DIR.join(filename)
+    return unless path.exist?
+
+    user.avatar = File.open(path)
+    user.save!
+  end
+
+  # Assign neighbourhood, partner, and site associations
+  # Called from a later seed after those records exist
+  def self.assign_associations
+    NormalIsland::USERS.each do |_key, data|
+      user = User.find_by(email: data[:email])
+      next unless user
+
+      if data[:neighbourhood]
+        neighbourhood = Neighbourhood.find_by(name: data[:neighbourhood], unit: 'district')
+        if neighbourhood && user.neighbourhoods.exclude?(neighbourhood)
+          user.neighbourhoods << neighbourhood
+          $stdout.puts "  Assigned #{user.email} as neighbourhood admin for #{neighbourhood.name}"
+        end
+      end
+
+      if data[:partner]
+        partner = Partner.find_by(name: data[:partner])
+        if partner && user.partners.exclude?(partner)
+          user.partners << partner
+          $stdout.puts "  Assigned #{user.email} as partner admin for #{partner.name}"
+        end
+      end
+
+      next unless data[:site]
+
+      site = Site.find_by(slug: data[:site])
+      if site && site.site_admin != user
+        site.update!(site_admin: user)
+        $stdout.puts "  Assigned #{user.email} as site admin for #{site.name}"
+      end
+    end
   end
 end
 

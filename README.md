@@ -4,23 +4,52 @@
 
 PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.
 
-The codebase doesn't currently have enough seeds to create a dev environment suitable for developing from scratch. If you're interested in contributing to PlaceCal please get in touch at support@placecal.org
-
 To get an idea of the project and what we're about, check out [the handbook](https://handbook.placecal.org/).
 
 ## Requirements
 
 To run PlaceCal locally you will need to install the following dependencies:
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Ruby 3.3.x](https://www.ruby-lang.org/)
-- [Node.js 20.x](https://nodejs.org/en/download) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
+- [Docker](https://docs.docker.com/get-docker/) (for PostgreSQL)
+- [Ruby](https://www.ruby-lang.org/) (see `.ruby-version` for exact version)
+- [Node.js](https://nodejs.org/en/download) (see `.node-version`) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - [Chrome/Chromium](https://www.chromium.org/chromium-projects/) for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 
-## Quickstart with docker for GFSC devs
+## Quickstart
+
+### Set up PostgreSQL with docker
+
+If you don't already have PostgreSQL installed and running, set it up with docker:
+
+```sh
+make docker
+```
+
+To tear down the docker setup, run `make clean`.
+
+### Run the setup script
+
+```sh
+bin/setup
+```
+
+This will install dependencies, create the database, and seed it with development data.
+
+- **Login**: `root@placecal.org` / `password`
+
+See [SEEDS.md](SEEDS.md) for full details on what gets created (users, sites, partners, events).
+
+### Run the thing
+
+- Start the server with `bin/dev`
+- Make sure you use `lvh.me:3000` instead of `localhost:3000` or you **will** have authentication problems
+- The admin interface is at `admin.lvh.me:3000`
+- Access code docs through your local filesystem and update them with `bin/rails yard`
+
+### Quickstart with docker for GFSC devs
 
 Make sure all of the above dependencies are installed (and ask someone to add your public ssh key to the servers if you are staff).
 
@@ -42,30 +71,6 @@ If the make command fails and you can't work out why, here are some suggestions:
 - Is the docker daemon running?
 - Is the port in use by another application or docker container? Try stopping or removing any conflicting containers
 - Are you using the correct node version? Try running `nvm use`
-
-## Quickstart for everyone else
-
-### Set up Postgresql locally with docker
-
-If you don't already have Postgresql installed and running, you can set it up with docker, just run `make docker`. To tear down the docker setup, run `make clean`.
-
-### Run the setup script
-
-```sh
-bin/setup
-```
-
-Amongst other things, this will create an admin user for you:
-
-- Username: `info@placecal.org`
-- Password: `password`
-
-### Run the thing
-
-- Start the server with `bin/dev`
-- Make sure you use `lvh.me:3000` instead of `localhost:3000` or you **will** have authentication problems
-- The admin interface is at `admin.lvh.me:3000`
-- Access code docs through your local filesystem and update them with `bin/rails yard`
 
 ### Importing calendars
 
@@ -118,10 +123,6 @@ bundle exec rspec                        # Fast specs only
 RUN_SLOW_TESTS=true bundle exec rspec    # Include system specs
 bundle exec cucumber                     # Cucumber features
 ```
-
-### Test data: Normal Island
-
-Tests use a fictional geography called "Normal Island" (country code: ZZ, a user-assigned ISO 3166 code) to avoid conflicts with real UK data. See `lib/normal_island.rb` for the full data structure and `doc/testing-guide.md` for guidance on writing tests.
 
 ## Documentation
 

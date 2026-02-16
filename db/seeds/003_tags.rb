@@ -6,37 +6,18 @@ module SeedTags
   def self.run
     $stdout.puts 'Tags'
 
-    # Create category tags
-    NormalIsland::TAGS[:categories].each do |tag_data|
-      tag = Tag.create!(
-        name: tag_data[:name],
-        slug: tag_data[:name].parameterize,
-        type: tag_data[:type],
-        description: "Events and activities related to #{tag_data[:name].downcase}"
-      )
-      $stdout.puts "  Created category: #{tag.name}"
-    end
-
-    # Create facility tags
-    NormalIsland::TAGS[:facilities].each do |tag_data|
-      tag = Tag.create!(
-        name: tag_data[:name],
-        slug: tag_data[:name].parameterize,
-        type: tag_data[:type],
-        description: "Venue has: #{tag_data[:name]}"
-      )
-      $stdout.puts "  Created facility: #{tag.name}"
-    end
-
-    # Create partnership tags
-    NormalIsland::TAGS[:partnerships].each do |tag_data|
-      tag = Tag.create!(
-        name: tag_data[:name],
-        slug: tag_data[:name].parameterize,
-        type: tag_data[:type],
-        description: "Part of the #{tag_data[:name]} partnership"
-      )
-      $stdout.puts "  Created partnership: #{tag.name}"
+    { categories: 'category', facilities: 'facility', partnerships: 'partnership' }.each do |group, label|
+      NormalIsland::TAGS[group].each do |tag_data|
+        tag = Tag.find_or_create_by!(name: tag_data[:name], type: tag_data[:type]) do |t|
+          t.slug = tag_data[:name].parameterize
+          t.description = case tag_data[:type]
+                          when 'Category' then "Events and activities related to #{tag_data[:name].downcase}"
+                          when 'Facility' then "Venue has: #{tag_data[:name]}"
+                          when 'Partnership' then "Part of the #{tag_data[:name]} partnership"
+                          end
+        end
+        $stdout.puts "  #{tag.previously_new_record? ? 'Created' : 'Found'} #{label}: #{tag.name}"
+      end
     end
   end
 end
