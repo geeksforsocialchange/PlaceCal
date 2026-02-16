@@ -581,7 +581,7 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.7)
-    rubocop (1.84.1)
+    rubocop (1.84.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -785,7 +785,7 @@ DEPENDENCIES
   rails-erd
   rdoc
   rspec-rails (~> 8.0)
-  rubocop (= 1.84.1)
+  rubocop (= 1.84.2)
   rubocop-graphql (= 1.6.0)
   rubocop-performance (= 1.26.1)
   rubocop-rails (= 2.34.3)
