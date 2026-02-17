@@ -44,14 +44,22 @@
             <div class="form__contact-child">
               <p><strong>I'd like:</strong></p>
             </div>
-            <div class="form__contact-child">
+          <div class="form__contact-child">
               <div class="form__checkbox">
                 <%= f.check_box :ringback %>
-                <%= f.label :ringback, 'A ring back' %>
+                <label for="join_ringback">
+                  A ring back
+                  <%= icon(:clock) %>
+                  <%= icon(:cross, css_class: "checked") %>
+                </label>
               </div>
               <div class="form__checkbox">
                 <%= f.check_box :more_info %>
-                <%= f.label :more_info, 'More information' %>
+                <label for="join_more_info">
+                  More information
+                  <%= icon(:clock) %>
+                  <%= icon(:cross, css_class: "checked") %>
+                </label>
               </div>
             </div>
           </div>

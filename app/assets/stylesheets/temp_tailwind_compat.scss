@@ -1,0 +1,77 @@
+// temporary Tailwind classes so `SvgIconsHelper` can be used in the non-admin frontend
+
+// from app/helpers/svg_icons_helper.rb
+
+.size-3 {
+	width: calc(0.25rem * 3);
+	height: calc(0.25rem * 3);
+}
+
+.size-4 {
+	width: calc(0.25rem * 4);
+	height: calc(0.25rem * 4);
+}
+
+.size-5 {
+	width: calc(0.25rem * 5);
+	height: calc(0.25rem * 5);
+}
+
+.size-6 {
+	width: calc(0.25rem * 6);
+	height: calc(0.25rem * 6);
+}
+
+.size-8 {
+	width: calc(0.25rem * 8);
+	height: calc(0.25rem * 8);
+}
+
+.size-10 {
+	width: calc(0.25rem * 10);
+	height: calc(0.25rem * 10);
+}
+
+.size-12 {
+	width: calc(0.25rem * 12);
+	height: calc(0.25rem * 12);
+}
+
+.size-16 {
+	width: calc(0.25rem * 16);
+	height: calc(0.25rem * 16);
+}
+
+// from app/tailwind/admin_tailwind.css
+
+.text-placecal-brown {
+	color: #5b4e46;
+}
+
+.text-placecal-cream {
+	color: #f5f1eb;
+}
+
+.text-placecal-orange {
+	color: #e87d1e;
+}
+
+.text-placecal-orange-dark {
+	color: #b35500; /* WCAG AA compliant for text on white (5.0:1) */
+}
+
+.text-placecal-teal {
+	color: #00a9a5;
+}
+
+.text-placecal-teal-dark {
+	color: #007a77; /* WCAG AA compliant for text on white (4.7:1) */
+}
+
+.text-placecal-pink {
+	color: #e91e63;
+}
+
+.text-placecal-purple {
+	color: #9c27b0;
+}

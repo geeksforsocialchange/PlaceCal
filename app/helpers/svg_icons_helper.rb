@@ -98,7 +98,10 @@ module SvgIconsHelper
     unlock: 'M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z',
     search_alert: 'M15.75 16.5a7.5 7.5 0 1 0-5.25 2.13M21 21l-4.35-4.35M11 8v2m0 4h.01',
     warning: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
-    x_circle: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
+    x_circle: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
+
+    # Forms
+    cross: { path: 'M6.5,5.5 l11.8,11.8 M6.5,17.3 l11.8,-11.8', css_class: 'text-placecal-brown', stroke_width: '4.8', stroke_linecap: 'square' }
   }.freeze
   # rubocop:enable Layout/LineLength
 
@@ -110,34 +113,57 @@ module SvgIconsHelper
   # @return [String] HTML-safe SVG element
   # Size mapping to Tailwind classes (w-N h-N for better JIT detection)
   SIZE_CLASSES = {
-    '3' => 'w-3 h-3',
-    '4' => 'w-4 h-4',
-    '5' => 'w-5 h-5',
-    '6' => 'w-6 h-6',
-    '8' => 'w-8 h-8',
-    '10' => 'w-10 h-10',
-    '12' => 'w-12 h-12',
-    '16' => 'w-16 h-16'
+    '3' => 'size-3',
+    '4' => 'size-4',
+    '5' => 'size-5',
+    '6' => 'size-6',
+    '8' => 'size-8',
+    '10' => 'size-10',
+    '12' => 'size-12',
+    '16' => 'size-16'
   }.freeze
 
   def svg_icon(name, size: '5', css_class: '', stroke_width: '2')
-    path = ICONS[name.to_sym]
-    return content_tag(:span, "[icon:#{name}]", class: 'text-error') unless path
+    entry = ICONS[name.to_sym]
+    return content_tag(:span, "[icon:#{name}]", class: 'text-error') unless entry
 
-    size_class = SIZE_CLASSES[size.to_s] || "w-#{size} h-#{size}"
+    # these (and css_class, stroke_width) can all be overriden by using a Hash instead of String value in ICONS
+    # TODO: maybe add optional params for all of these?
+    fill = 'none'
+    stroke = 'currentColor'
+    stroke_linecap = 'round'
+    stroke_linejoin = 'round'
+    viewbox = '0 0 24 24'
+
+    if entry.is_a? Hash
+      path = entry[:path]
+      fill = entry[:fill] if entry[:fill].present?
+      stroke = entry[:stroke] if entry[:stroke].present?
+      stroke_linecap = entry[:stroke_linecap] if entry[:stroke_linecap].present?
+      stroke_linejoin = entry[:stroke_linejoin] if entry[:stroke_linejoin].present?
+      stroke_width = entry[:stroke_width] if entry[:stroke_width].present?
+      css_class += " #{entry[:css_class]}" if entry[:css_class].present?
+    else
+      path = entry
+    end
+
+    # BUG: tailwind does a string search at build time so anything dynamic here may not exist in the final stylesheet. use either a fixed string fallback or css
+    size_class = SIZE_CLASSES[size.to_s] || "size-#{size}"
     classes = size_class
     classes += " #{css_class}" if css_class.present?
 
+    # tailwind compat classes for non-admin frontend are in app/assets/stylesheets/temp_tailwind_compat.scss
+
     tag.svg(
       class: classes,
-      fill: 'none',
-      stroke: 'currentColor',
-      viewBox: '0 0 24 24'
+      fill: fill,
+      stroke: stroke,
+      viewbox: viewbox,
+      'stroke-linecap': stroke_linecap,
+      'stroke-linejoin': stroke_linejoin,
+      'stroke-width': stroke_width
     ) do
       tag.path(
-        'stroke-linecap': 'round',
-        'stroke-linejoin': 'round',
-        'stroke-width': stroke_width,
         d: path
       )
     end
