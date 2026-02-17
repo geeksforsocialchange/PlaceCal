@@ -17,6 +17,16 @@
           </div>
         <% end %>
 
+        <%# FIXME: this is for testing icons and should be deleted %>
+        <div style="display:flex; flex-wrap: wrap; gap: 1em">
+          <%= icon(:checkbox) %>
+          <%= icon(:checkbox_check) %>
+          <%= icon(:cross) %>
+          <%= icon(:radio) %>
+          <%= icon(:radio_check) %>
+          <%= icon(:tick) %>
+        </div>
+
         <%= simple_form_for @join, url: get_in_touch_path, html: { class: 'form' } do |f| %>
           <%= invisible_captcha %>
           <div class="form__person form__mid-width">
@@ -44,21 +54,21 @@
             <div class="form__contact-child">
               <p><strong>I'd like:</strong></p>
             </div>
-          <div class="form__contact-child">
+            <div class="form__contact-child">
               <div class="form__checkbox">
                 <%= f.check_box :ringback %>
                 <label for="join_ringback">
                   A ring back
-                  <%= icon(:clock) %>
-                  <%= icon(:cross, css_class: "checked") %>
+                  <%= icon(:checkbox, size: '0') %>
+                  <%= icon(:checkbox_check, size: '0', css_class: 'checked') %>
                 </label>
               </div>
               <div class="form__checkbox">
                 <%= f.check_box :more_info %>
                 <label for="join_more_info">
                   More information
-                  <%= icon(:clock) %>
-                  <%= icon(:cross, css_class: "checked") %>
+                  <%= icon(:radio, size: '0') %>
+                  <%= icon(:radio_check, size: '0', css_class: 'checked') %>
                 </label>
               </div>
             </div>

@@ -101,17 +101,15 @@ module SvgIconsHelper
     x_circle: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
 
     # Forms
-    cross: { path: 'M6.5,5.5 l11.8,11.8 M6.5,17.3 l11.8,-11.8', css_class: 'text-placecal-brown', stroke_width: '4.8', stroke_linecap: 'square' }
+    checkbox: { path: 'M5.6,4 h12.8 a1.6,1.6,90,0,1,1.6,1.6 v12.8 a1.6,1.6,90,0,1,-1.6,1.6 h-12.8 a1.6,1.6,90,0,1,-1.6,-1.6 v-12.8 a1.6,1.6,90,0,1,1.6,-1.6', css_class: 'text-base-background' },
+    checkbox_check: { path: 'M4.48,11.04 l5.2,5.2 l10.4,-10.4', stroke_linecap: 'butt', stroke_linejoin: 'butt', stroke_width: '5.36' },
+    cross: { path: 'M19.932,7.2,16.548,3.768,12.3,8.004,8.052,3.768,4.668,7.2,8.904,11.4,4.668,15.6 l3.384,3.384,4.248,-4.236,4.248,4.236 L19.932,15.6,15.696,11.4 Z', stroke: 'none', fill: 'currentColor' },
+    radio: { path: 'M12,1 A11,11,0,1,0,12.001,1', css_class: 'text-base-background' },
+    radio_check: { path: 'M12,6 A6,6,0,1,0,12.001,6', stroke: 'none', fill: 'currentColor' },
+    tick: { path: 'M20.328,8.532 l-3.804,-3.84 L10.8,10.428,8.076,7.644,4.272,11.484 l2.76,2.784,3.192,3.216 L20.328,8.532 Z', stroke: 'none', fill: 'currentColor' }
   }.freeze
   # rubocop:enable Layout/LineLength
 
-  # Render an SVG icon
-  # @param name [Symbol] Icon name from ICONS hash
-  # @param size [String] Tailwind size class (e.g., "4", "5", "8")
-  # @param css_class [String] Additional CSS classes
-  # @param stroke_width [String] SVG stroke width (default: "2")
-  # @return [String] HTML-safe SVG element
-  # Size mapping to Tailwind classes (w-N h-N for better JIT detection)
   SIZE_CLASSES = {
     '3' => 'size-3',
     '4' => 'size-4',
@@ -123,6 +121,13 @@ module SvgIconsHelper
     '16' => 'size-16'
   }.freeze
 
+  # Render an SVG icon
+  # @param name [Symbol] Icon name from ICONS hash
+  # @param size [String] Tailwind size class (e.g., "4", "5", "8")
+  # @param css_class [String] Additional CSS classes
+  # @param stroke_width [String] SVG stroke width (default: "2")
+  # @return [String] HTML-safe SVG element
+  # Size mapping to Tailwind classes (size-N for better JIT detection)
   def svg_icon(name, size: '5', css_class: '', stroke_width: '2')
     entry = ICONS[name.to_sym]
     return content_tag(:span, "[icon:#{name}]", class: 'text-error') unless entry
@@ -147,8 +152,13 @@ module SvgIconsHelper
       path = entry
     end
 
-    # BUG: tailwind does a string search at build time so anything dynamic here may not exist in the final stylesheet. use either a fixed string fallback or css
-    size_class = SIZE_CLASSES[size.to_s] || "size-#{size}"
+    size_class = SIZE_CLASSES[size.to_s] || ''
+    # output no size_class or style if size<=0,
+    style = if size.to_i.positive? && size_class.blank?
+              "width: #{0.25 * size.to_f}rem; height: #{0.25 * size.to_f}rem;"
+            else
+              ''
+            end
     classes = size_class
     classes += " #{css_class}" if css_class.present?
 
@@ -158,10 +168,11 @@ module SvgIconsHelper
       class: classes,
       fill: fill,
       stroke: stroke,
-      viewbox: viewbox,
+      viewBox: viewbox,
       'stroke-linecap': stroke_linecap,
       'stroke-linejoin': stroke_linejoin,
-      'stroke-width': stroke_width
+      'stroke-width': stroke_width,
+      style: style
     ) do
       tag.path(
         d: path

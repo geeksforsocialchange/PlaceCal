@@ -113,7 +113,7 @@
 			line-height: 30px;
 			cursor: pointer;
 			user-select: none;
-			gap: 0.25em;
+			gap: 1em;
 		}
 
 		svg {
@@ -130,25 +130,6 @@
 		input:checked + label .checked {
 			display: inline;
 		}
-
-		/* 		input[type="radio"] + label {
-			background-image: url("icons/forms/unselected.svg");
-		}
-
-		svg {
-			grid-column-start: 2;
-			grid-row-start: 1;
-			width: 30px;
-			height: 30px;
-		}
-
-		input + label .checked {
-			display: none;
-		}
-
-		input[type="checkbox"]:checked + label {
-			background-image: url("icons/forms/ticked.svg");
-		} */
 
 		@include for-tablet-portrait-up {
 			padding-bottom: 0px;
