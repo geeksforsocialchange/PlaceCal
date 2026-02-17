@@ -2,7 +2,10 @@
   <% unless today? %>
     <%= link_to 'Today', today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
   <% end %>
-  <button type="button" data-action="click->date-picker#open"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Go to date</span></button>
+  <button type="button" data-action="click->date-picker#open">
+    <%= icon(:triangle_down, size: '2', css_class: 'text-base-primary') %>
+    <span class="filters__link">Go to date</span>
+  </button>
   <%= date_field_tag :date, pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' } %>
   <%= hidden_field_tag :period, period, data: { date_picker_target: 'period' } %>
   <%= hidden_field_tag :sort, sort, data: { date_picker_target: 'sort' } %>
@@ -30,7 +33,10 @@
 <div class="filters" data-controller="filters">
   <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do %>
     <div class="filters__toggle">
-      <button type="button" data-action="click->filters#toggle"><span class="icon icon--arrow-down">↓</span> <span class="filters__link">Filter and sort</span></button>
+      <button type="button" data-action="click->filters#toggle">
+        <%= icon(:triangle_down, size: '2', css_class: 'text-base-primary') %>
+        <span class="filters__link">Filter and sort</span>
+      </button>
     </div>
     <div class="filters__dropdown filters__dropdown--hidden" data-filters-target="dropdown">
       <div class="filters__group">

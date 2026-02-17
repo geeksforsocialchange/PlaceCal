@@ -1,6 +1,6 @@
 <div class="filters__toggle">
   <button type="button" data-action="<%= toggle_action_value %>">
-    <span class="icon icon--arrow-down">↓</span>
+    <%= icon(:triangle_down, size: '2', css_class: 'text-base-primary') %>
     <span class="filters__link" data-<%= controller %>-target="<%= name %>Text">
       <%= button_text %>
     </span>

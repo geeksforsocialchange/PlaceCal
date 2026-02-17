@@ -18,14 +18,48 @@
         <% end %>
 
         <%# FIXME: this is for testing icons and should be deleted %>
-        <div style="display:flex; flex-wrap: wrap; gap: 1em">
+        <h3>Form Icons</h3>
+        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1em; width: fit-content; ">
           <%= icon(:checkbox) %>
           <%= icon(:checkbox_check) %>
           <%= icon(:cross) %>
           <%= icon(:radio) %>
           <%= icon(:radio_check) %>
           <%= icon(:tick) %>
+
+          <img src='/assets/icons/forms/unticked.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/forms/ticked.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/forms/cross.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/forms/unselected.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/forms/selected.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/forms/tick.svg' style="width: 1.25rem; height: 1.25rem"/>
         </div>
+
+        <h3>Arrow Icons</h3>
+        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1em; width: fit-content; ">
+          <%= icon(:chevron_up) %>
+          <%= icon(:chevron_down) %>
+          <%= icon(:chevron_left) %>
+          <%= icon(:chevron_right) %>
+          <%= icon(:arrow_up) %>
+          <%= icon(:arrow_down) %>
+
+          <i></i>
+          <img src='/assets/icons/arrow/down.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/arrow/left.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/arrow/right.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/arrow/left-grey.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/arrow/right-grey.svg' style="width: 1.25rem; height: 1.25rem"/>
+
+          <%= icon(:triangle_up, css_class: 'text-base-primary') %>
+          <%= icon(:triangle_down, css_class: 'text-base-primary') %>
+          <%= icon(:triangle_left, css_class: 'text-base-primary') %>
+          <%= icon(:triangle_right, css_class: 'text-base-primary') %>
+          <%= icon(:triangle_left, css_class: 'text-base-background') %>
+          <%= icon(:triangle_right, css_class: 'text-base-background') %>
+        </div>
+
+
 
         <%= simple_form_for @join, url: get_in_touch_path, html: { class: 'form' } do |f| %>
           <%= invisible_captcha %>

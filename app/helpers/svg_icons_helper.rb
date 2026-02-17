@@ -100,13 +100,19 @@ module SvgIconsHelper
     warning: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
     x_circle: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
 
-    # Forms
+    # Forms - app/assets/images/icons/forms/
     checkbox: { path: 'M5.6,4 h12.8 a1.6,1.6,90,0,1,1.6,1.6 v12.8 a1.6,1.6,90,0,1,-1.6,1.6 h-12.8 a1.6,1.6,90,0,1,-1.6,-1.6 v-12.8 a1.6,1.6,90,0,1,1.6,-1.6', css_class: 'text-base-background' },
     checkbox_check: { path: 'M4.48,11.04 l5.2,5.2 l10.4,-10.4', stroke_linecap: 'butt', stroke_linejoin: 'butt', stroke_width: '5.36' },
     cross: { path: 'M19.932,7.2,16.548,3.768,12.3,8.004,8.052,3.768,4.668,7.2,8.904,11.4,4.668,15.6 l3.384,3.384,4.248,-4.236,4.248,4.236 L19.932,15.6,15.696,11.4 Z', stroke: 'none', fill: 'currentColor' },
     radio: { path: 'M12,1 A11,11,0,1,0,12.001,1', css_class: 'text-base-background' },
     radio_check: { path: 'M12,6 A6,6,0,1,0,12.001,6', stroke: 'none', fill: 'currentColor' },
-    tick: { path: 'M20.328,8.532 l-3.804,-3.84 L10.8,10.428,8.076,7.644,4.272,11.484 l2.76,2.784,3.192,3.216 L20.328,8.532 Z', stroke: 'none', fill: 'currentColor' }
+    tick: { path: 'M20.328,8.532 l-3.804,-3.84 L10.8,10.428,8.076,7.644,4.272,11.484 l2.76,2.784,3.192,3.216 L20.328,8.532 Z', stroke: 'none', fill: 'currentColor' },
+
+    # Triangles - app/assets/images/icons/arrows/
+    triangle_up: { path: 'M0,18 l12,-12,12,12 Z', stroke: 'none', fill: 'currentColor' },
+    triangle_down: { path: 'M0,6 l24,0,-12,12 Z', stroke: 'none', fill: 'currentColor' },
+    triangle_left: { path: 'M18,0 l0,24,-12,-12 Z', stroke: 'none', fill: 'currentColor' },
+    triangle_right: { path: 'M6,0 l12,12,-12,12 Z', stroke: 'none', fill: 'currentColor' }
   }.freeze
   # rubocop:enable Layout/LineLength
 
