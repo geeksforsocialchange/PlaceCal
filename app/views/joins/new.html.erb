@@ -20,19 +20,19 @@
         <%# FIXME: this is for testing icons and should be deleted %>
         <h3>Form Icons</h3>
         <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1em; width: fit-content; ">
-          <%= icon(:checkbox) %>
-          <%= icon(:checkbox_check) %>
-          <%= icon(:cross) %>
-          <%= icon(:radio) %>
-          <%= icon(:radio_check) %>
-          <%= icon(:tick) %>
-
           <img src='/assets/icons/forms/unticked.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/forms/ticked.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/forms/cross.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/forms/unselected.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/forms/selected.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/forms/tick.svg' style="width: 1.25rem; height: 1.25rem"/>
+
+          <%= icon(:checkbox) %>
+          <%= icon(:checkbox_check) %>
+          <%= icon(:cross) %>
+          <%= icon(:radio) %>
+          <%= icon(:radio_check) %>
+          <%= icon(:tick) %>
         </div>
 
         <h3>Arrow Icons</h3>
@@ -59,7 +59,22 @@
           <%= icon(:triangle_right, css_class: 'text-base-background') %>
         </div>
 
+        <h3>Event Icons</h3>
+        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1em; width: fit-content; ">
+          <img src='/assets/icons/event/date.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/event/duration.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/event/place.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/event/repeats.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/event/time.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/event/time-grey.svg' style="width: 1.25rem; height: 1.25rem"/>
 
+          <%= icon(:event_date, css_class: 'text-base-secondary') %>
+          <%= icon(:event_duration, css_class: 'text-base-secondary') %>
+          <%= icon(:event_place, css_class: 'text-base-secondary') %>
+          <%= icon(:event_repeats, css_class: 'text-base-secondary') %>
+          <%= icon(:event_time, css_class: 'text-base-secondary') %>
+          <%= icon(:event_time) %>
+        </div>
 
         <%= simple_form_for @join, url: get_in_touch_path, html: { class: 'form' } do |f| %>
           <%= invisible_captcha %>
