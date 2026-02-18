@@ -36,7 +36,7 @@ RSpec.describe Admin::EmptyStateComponent, type: :component do
 
   it "uses default icon size" do
     render_inline(described_class.new(icon: :calendar, message: "Empty"))
-    # Default size is 10, which adds w-10 h-10 classes
+    # Default size is 10, which adds size-10 class
     expect(page).to have_css("svg.size-10")
   end
 
