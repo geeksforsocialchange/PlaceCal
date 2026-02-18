@@ -39,6 +39,9 @@ module Types
           method: :publisher_url,
           description: 'The URL of the partners original page'
 
+    field :repeatFrequency, String,
+          description: 'How often this event repeats, e.g. "Weekly", "Monthly". Null for one-off events', method: :repeat_frequency
+
     field :onlineEventUrl, String,
           description: 'The URL of the online event. Can be an event link e.g. Eventbrite, or a Zoom/Meet/Jitsi link'
 
