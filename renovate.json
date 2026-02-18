@@ -5,6 +5,7 @@
 		"helpers:pinGitHubActionDigests",
 		"schedule:nonOfficeHours"
 	],
+	"automerge": true,
 	"automergeStrategy": "squash",
 	"labels": ["dependencies"],
 	"lockFileMaintenance": {
@@ -16,21 +17,6 @@
 		"labels": ["security"]
 	},
 	"packageRules": [
-		{
-			"matchUpdateTypes": ["pin", "digest"],
-			"automerge": true
-		},
-		{
-			"matchManagers": ["bundler", "npm"],
-			"matchUpdateTypes": ["minor", "patch"],
-			"matchCurrentVersion": ">=1.0.0",
-			"automerge": true
-		},
-		{
-			"matchManagers": ["nodenv"],
-			"matchUpdateTypes": ["patch"],
-			"automerge": true
-		},
 		{
 			"matchDatasources": ["docker"],
 			"matchPackageNames": ["postgres"],

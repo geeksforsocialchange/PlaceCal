@@ -2,6 +2,7 @@
 
 require 'yaml'
 require 'geocoder/lookups/base'
+require 'geocoder/lookups/postcodes_io'
 require 'geocoder/results/postcodes_io'
 
 module Geocoder

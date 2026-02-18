@@ -97,7 +97,7 @@ module Admin
         # Make a dictionary of { neighbourhood_id => sites_neighbourhood_id }
         @sites_neighbourhoods_ids =
           @site.sites_neighbourhoods.map { |sn| { sn.neighbourhood_id => sn.id } }
-               .reduce({}, :merge)
+                                    .reduce({}, :merge)
       end
     end
   end
