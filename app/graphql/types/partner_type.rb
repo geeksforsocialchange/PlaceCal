@@ -55,6 +55,9 @@ module Types
     field :articles, [ArticleType],
           description: 'News and information from this partner'
 
+    field :events, [EventType],
+          description: 'Upcoming events from this partner'
+
     def contact
       object
     end
@@ -65,6 +68,10 @@ module Types
 
     def articles
       object.articles.published.by_publish_date
+    end
+
+    def events
+      object.events.upcoming.sort_by_time
     end
 
     def logo

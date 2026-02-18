@@ -23,6 +23,19 @@ body:graphql {
       twitterUrl
       facebookUrl
       instagramUrl
+      events {
+        id
+        name
+        summary
+        startDate
+        endDate
+        publisherUrl
+        address {
+          streetAddress
+          postalCode
+          addressLocality
+        }
+      }
     }
   }
   

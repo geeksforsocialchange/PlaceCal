@@ -100,6 +100,41 @@ RSpec.describe "GraphQL Partners", type: :request do
     end
   end
 
+  describe "partner events field" do
+    let(:partner) { create(:partner) }
+    let!(:future_event) { create(:event, partner: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours) }
+    let!(:past_event) { create(:past_event, partner: partner) }
+    let!(:other_partner_event) { create(:event) }
+
+    let(:query) do
+      <<-GRAPHQL
+        query($id: ID!) {
+          partner(id: $id) {
+            id
+            events {
+              id
+              name
+              startDate
+              endDate
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it "returns only upcoming events for the partner" do
+      result = execute_query(query, variables: { id: partner.id })
+
+      expect(result["errors"]).to be_nil
+      events = result["data"]["partner"]["events"]
+      event_ids = events.map { |e| e["id"].to_i }
+
+      expect(event_ids).to include(future_event.id)
+      expect(event_ids).not_to include(past_event.id)
+      expect(event_ids).not_to include(other_partner_event.id)
+    end
+  end
+
   describe "partnersByTag query" do
     let(:category) { create(:category_tag) }
     let!(:tagged_partners) do
