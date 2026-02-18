@@ -217,20 +217,42 @@ class Site < ApplicationRecord
       Site.find_by(slug: site_slug)
     end
 
-    # Get a list of Sites that are either share neighbourhoods
-    # with the Site, or share Tags with the Site
+    # Get a list of Sites whose neighbourhood subtree and tags
+    # match the given partner (i.e. where the partner would appear).
     #
-    # @param [Partner]
-    # @return [ActiveRecord::Relation<Site>]
+    # @param partner [Partner]
+    # @return [Array<Site>]
     def sites_that_contain_partner(partner)
-      sites = Site.all.order(:name)
-      site_partners = []
-      sites.each do |site|
-        partner_ids = PartnersQuery.new(site: site).call.reorder(nil).pluck(:id)
-        site_partners.push({ site: site, partner_ids: partner_ids })
+      # Collect all neighbourhood IDs the partner is associated with
+      partner_neighbourhood_ids = []
+      partner_neighbourhood_ids << partner.address.neighbourhood_id if partner.address&.neighbourhood_id
+      partner_neighbourhood_ids += partner.service_areas.pluck(:neighbourhood_id)
+      partner_neighbourhood_ids.uniq!
+
+      return [] if partner_neighbourhood_ids.empty?
+
+      # A partner's neighbourhood is in a site's subtree when the site's
+      # neighbourhood is an ancestor of (or equal to) the partner's neighbourhood.
+      matching_neighbourhood_ids = Neighbourhood.where(id: partner_neighbourhood_ids)
+                                                .flat_map(&:path_ids)
+                                                .uniq
+
+      return [] if matching_neighbourhood_ids.empty?
+
+      site_ids = SitesNeighbourhood.where(neighbourhood_id: matching_neighbourhood_ids)
+                                   .distinct
+                                   .pluck(:site_id)
+
+      return [] if site_ids.empty?
+
+      sites = Site.where(id: site_ids).includes(:tags).order(:name)
+
+      # Sites with tags only match if the partner has at least one of those tags
+      partner_tag_ids = partner.tag_ids.to_set
+
+      sites.select do |site|
+        site.tags.empty? || site.tags.any? { |tag| partner_tag_ids.include?(tag.id) }
       end
-      site_partners.select { |sp| sp[:partner_ids].include? partner.id }
-                   .map { |sp| sp[:site] }
     end
   end
 end

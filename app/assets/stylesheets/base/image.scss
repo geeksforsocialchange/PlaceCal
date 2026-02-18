@@ -1,13 +1,14 @@
 img {
 	max-width: 100%;
-}
+	max-height: 100%;
 
-img.rounded {
-	border-radius: 1rem;
-}
+	&.rounded {
+		border-radius: 1rem;
+	}
 
-img.round {
-	border-radius: 50%;
+	&.round {
+		border-radius: 50%;
+	}
 }
 
 figure {

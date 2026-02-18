@@ -1,0 +1,71 @@
+# Supplementary postcodes for test/development use
+# These are looked up locally by the NormalIsland geocoder to avoid hitting the real API.
+#
+# Manchester postcodes: from VCR cassettes used in integration tests
+# Invalid/unmapped postcodes: for testing error paths
+# Default: catch-all for any unrecognised postcode in test environment
+
+manchester:
+  postcodes:
+    - "M15 5DD"
+    - "M155DD"
+    - "M16 7BA"
+    - "M167BA"
+    - "M15 6BX"
+    - "M156BX"
+  data:
+    quality: 1
+    eastings: 384000
+    northings: 397000
+    country: "England"
+    longitude: -2.2426
+    latitude: 53.4668
+    region: "North West"
+    admin_district: "Manchester"
+    admin_county: "Greater Manchester"
+    admin_ward: "Hulme"
+    codes:
+      admin_district: "E08000003"
+      admin_county: "E11000001"
+      admin_ward: "E05011368"
+
+invalid:
+  postcodes:
+    - "ZZXX 0XX"
+  data: null
+
+unmapped:
+  postcodes:
+    - "ZZUN 9ZZ"
+  data:
+    quality: 1
+    eastings: 999000
+    northings: 999000
+    country: "Normal Island"
+    longitude: 0.0
+    latitude: 50.0
+    region: "Unknown Region"
+    admin_district: "Unknown District"
+    admin_county: "Unknown County"
+    admin_ward: "Unknown Ward"
+    codes:
+      admin_district: "ZZ9999999"
+      admin_county: "ZZ9999999"
+      admin_ward: "ZZ9999999"
+
+default:
+  data:
+    quality: 1
+    eastings: 400000
+    northings: 400000
+    country: "England"
+    longitude: -1.5
+    latitude: 53.0
+    region: "Test Region"
+    admin_district: "Test District"
+    admin_county: "Test County"
+    admin_ward: "Test Ward"
+    codes:
+      admin_district: "E00000001"
+      admin_county: "E00000001"
+      admin_ward: "E00000001"

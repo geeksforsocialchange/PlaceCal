@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_29_150325) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_12_204459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_29_150325) do
     t.string "source", null: false
     t.string "strategy"
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["calendar_state"], name: "index_calendars_on_calendar_state"
     t.index ["partner_id"], name: "index_calendars_on_partner_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
     t.index ["source"], name: "index_calendars_source", unique: true
@@ -144,7 +145,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_29_150325) do
     t.index ["calendar_id", "dtstart"], name: "index_events_calendar_id_dtstart"
     t.index ["dtstart"], name: "index_events_dtstart"
     t.index ["online_address_id"], name: "index_events_on_online_address_id"
-    t.index ["partner_id"], name: "index_events_partner_id"
+    t.index ["partner_id", "dtstart"], name: "index_events_on_partner_id_and_dtstart"
     t.index ["place_id"], name: "index_events_on_place_id"
     t.index ["uid"], name: "index_events_uid"
   end

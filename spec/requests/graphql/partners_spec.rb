@@ -100,6 +100,57 @@ RSpec.describe "GraphQL Partners", type: :request do
     end
   end
 
+  describe "partner events field" do
+    let(:partner) { create(:partner) }
+    let!(:future_event) { create(:event, partner: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours) }
+    let!(:recurring_event) do
+      create(:event, partner: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours,
+                     rrule: [{ "table" => { "frequency" => "weekly" } }])
+    end
+    let!(:past_event) { create(:past_event, partner: partner) }
+    let!(:other_partner_event) { create(:event) }
+
+    let(:query) do
+      <<-GRAPHQL
+        query($id: ID!) {
+          partner(id: $id) {
+            id
+            events {
+              id
+              name
+              startDate
+              endDate
+              repeatFrequency
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it "returns only upcoming events for the partner" do
+      result = execute_query(query, variables: { id: partner.id })
+
+      expect(result["errors"]).to be_nil
+      events = result["data"]["partner"]["events"]
+      event_ids = events.map { |e| e["id"].to_i }
+
+      expect(event_ids).to include(future_event.id)
+      expect(event_ids).not_to include(past_event.id)
+      expect(event_ids).not_to include(other_partner_event.id)
+    end
+
+    it "includes repeat frequency for recurring events" do
+      result = execute_query(query, variables: { id: partner.id })
+
+      events = result["data"]["partner"]["events"]
+      recurring = events.find { |e| e["id"].to_i == recurring_event.id }
+      one_off = events.find { |e| e["id"].to_i == future_event.id }
+
+      expect(recurring["repeatFrequency"]).to eq("Weekly")
+      expect(one_off["repeatFrequency"]).to be_nil
+    end
+  end
+
   describe "partnersByTag query" do
     let(:category) { create(:category_tag) }
     let!(:tagged_partners) do

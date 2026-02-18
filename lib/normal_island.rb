@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'normal_island/uk_postcode_extension'
+
 # Normal Island - Fictional Geography for Testing and Development
 #
 # This module provides consistent fictional geographic data that can be used
@@ -259,52 +261,117 @@ module NormalIsland
   }.freeze
 
   # Sample sites
+  # Seeds use the geographic-level keys (normal_island_country, coastshire_county, etc.)
+  # Factories use the named keys (millbrook_community_calendar, ashdale_connect, etc.)
   SITES = {
+    normal_island_central: {
+      name: 'Normal Island Central',
+      slug: 'default-site',
+      tagline: 'Community events across Normal Island',
+      country: true
+    },
+    normal_island_country: {
+      name: 'Normal Island (country)',
+      slug: 'normal-island',
+      tagline: 'Everything happening across Normal Island',
+      country: true
+    },
+    coastshire_county: {
+      name: 'Coastshire (county)',
+      slug: 'coastshire',
+      tagline: 'Events and activities on the coast',
+      county: :coastshire
+    },
+    coastshire_events: {
+      name: 'Coastshire Events',
+      slug: 'coastshire-events',
+      tagline: 'Events and activities on the coast',
+      county: :coastshire
+    },
+    millbrook_district: {
+      name: 'Millbrook (district)',
+      slug: 'millbrook',
+      tagline: 'What\'s on in Millbrook',
+      district: :millbrook
+    },
     millbrook_community_calendar: {
       name: 'Millbrook Community Calendar',
-      slug: 'millbrook',
-      tagline: 'Events and activities in Millbrook',
+      slug: 'millbrook-community-calendar',
+      tagline: 'What\'s on in Millbrook',
       district: :millbrook
     },
     ashdale_connect: {
       name: 'Ashdale Connect',
-      slug: 'ashdale',
-      tagline: 'Connecting communities in Ashdale',
+      slug: 'ashdale-connect',
+      tagline: 'Community events in Ashdale',
       district: :ashdale
-    },
-    coastshire_events: {
-      name: 'Coastshire Events',
-      slug: 'coastshire',
-      tagline: 'What\'s on at the coast',
-      county: :coastshire
-    },
-    normal_island_central: {
-      name: 'Normal Island Central',
-      slug: 'default-site',
-      tagline: 'Events across Normal Island',
-      country: true
     }
   }.freeze
 
   # Sample users
+  # All passwords are 'password'
   USERS = {
-    root_admin: {
-      email: 'admin@normalcal.org',
-      first_name: 'Admin',
+    root: {
+      email: 'root@placecal.org',
+      first_name: 'Root',
+      last_name: 'Admin',
+      role: 'root',
+      avatar: '01_avatar.jpg'
+    },
+    editor: {
+      email: 'editor@placecal.org',
+      first_name: 'Editor',
       last_name: 'User',
-      role: 'root'
+      role: 'editor',
+      avatar: '02_avatar.jpg'
     },
-    millbrook_admin: {
-      email: 'millbrook@normalcal.org',
-      first_name: 'Mill',
-      last_name: 'Brook',
-      role: 'neighbourhood_admin'
+    neighbourhood_admin: {
+      email: 'neighbourhood-admin@placecal.org',
+      first_name: 'Neighbourhood',
+      last_name: 'Admin',
+      neighbourhood: 'Millbrook',
+      avatar: '03_avatar.jpg'
     },
-    riverside_partner_admin: {
-      email: 'riverside@normalcal.org',
-      first_name: 'River',
-      last_name: 'Side',
-      role: 'partner_admin'
+    partner_admin: {
+      email: 'partner-admin@placecal.org',
+      first_name: 'Partner',
+      last_name: 'Admin',
+      partner: 'Riverside Community Hub',
+      avatar: '04_avatar.jpg'
+    },
+    site_admin_normal_island: {
+      email: 'site-admin-normal-island@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Normal Island)',
+      site: 'normal-island',
+      avatar: '05_avatar.jpg'
+    },
+    site_admin_coastshire: {
+      email: 'site-admin-coastshire@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Coastshire)',
+      site: 'coastshire',
+      avatar: '06_avatar.jpg'
+    },
+    site_admin_millbrook: {
+      email: 'site-admin-millbrook@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Millbrook)',
+      site: 'millbrook',
+      avatar: '07_avatar.jpg'
+    },
+    site_admin_book_clubs: {
+      email: 'site-admin-book-clubs@placecal.org',
+      first_name: 'Site Admin',
+      last_name: '(Book Clubs)',
+      site: 'book-clubs',
+      avatar: '01_avatar.jpg'
+    },
+    citizen: {
+      email: 'citizen@placecal.org',
+      first_name: 'Citizen',
+      last_name: 'User',
+      avatar: '02_avatar.jpg'
     }
   }.freeze
 
@@ -315,7 +382,23 @@ module NormalIsland
       { name: 'Arts & Culture', type: 'Category' },
       { name: 'Sports & Fitness', type: 'Category' },
       { name: 'Education & Learning', type: 'Category' },
-      { name: 'Community Events', type: 'Category' }
+      { name: 'Community Events', type: 'Category' },
+      { name: 'Activism', type: 'Category' },
+      { name: 'Arts & Crafts', type: 'Category' },
+      { name: 'Children & Family', type: 'Category' },
+      { name: 'Young Adults', type: 'Category' },
+      { name: 'Over 50s', type: 'Category' },
+      { name: 'Entertainment', type: 'Category' },
+      { name: 'Education', type: 'Category' },
+      { name: 'Food', type: 'Category' },
+      { name: 'Outdoors', type: 'Category' },
+      { name: 'Places of Worship', type: 'Category' },
+      { name: 'Community Hubs', type: 'Category' },
+      { name: 'Housing', type: 'Category' },
+      { name: 'Legal Advice', type: 'Category' },
+      { name: 'Immigration', type: 'Category' },
+      { name: 'LGBTQ+', type: 'Category' },
+      { name: 'Communities of Colour', type: 'Category' }
     ],
     facilities: [
       { name: 'Wheelchair Accessible', type: 'Facility' },
@@ -325,7 +408,8 @@ module NormalIsland
     ],
     partnerships: [
       { name: 'Millbrook Together', type: 'Partnership' },
-      { name: 'Coastal Alliance', type: 'Partnership' }
+      { name: 'Coastal Alliance', type: 'Partnership' },
+      { name: 'Normal Island Book Clubs', type: 'Partnership' }
     ]
   }.freeze
 

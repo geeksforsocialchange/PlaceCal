@@ -72,7 +72,7 @@ class UserPolicy < ApplicationPolicy
     if user.root?
       permitted_attributes
     elsif user.neighbourhood_admin?
-      [partner_ids: []]
+      [{ partner_ids: [] }]
     end
   end
 

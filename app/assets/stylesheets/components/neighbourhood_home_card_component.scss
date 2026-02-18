@@ -19,6 +19,7 @@
 .neighbourhood_home_card__name {
 	margin: 0;
 }
+
 .neighbourhood_home_card__text {
 	margin: 0;
 }
@@ -40,4 +41,12 @@
 	text-decoration: none;
 	white-space: nowrap;
 	width: 100%;
+	transition-property: background-color, color;
+	transition-duration: 0.3s;
+	transition-timing-function: ease-in-out;
+
+	&:hover {
+		background-color: $base-text;
+		color: $base-background;
+	}
 }

@@ -31,7 +31,6 @@ module Admin
 
     def edit
       authorize @calendar
-      @versions = @calendar.recent_activity
       @partner = @calendar.partner
     end
 

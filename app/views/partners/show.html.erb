@@ -49,7 +49,7 @@
 
         <% if @partner.managees.any? %>
           <p class="small"><%= @partner.name %> manage
-          <%= @partner.managees.map { |place| link_to place.name, place }.to_sentence.html_safe %>.
+          <%= safe_join(@partner.managees.map { |place| link_to place.name, place }, ', ') %>.
         <% end %>
       </div>
       <div class="gi gi__2-5">

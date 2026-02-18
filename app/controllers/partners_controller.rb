@@ -35,12 +35,12 @@ class PartnersController < ApplicationController
   def show
     redirect_to root_path if @partner.hidden
 
-    upcoming_events = Event.by_partner(@partner).upcoming
-    if upcoming_events.none?
+    upcoming_count = Event.by_partner(@partner).upcoming.count
+    if upcoming_count.zero?
       # If no events, show an appropriate message why
       @events = []
       @no_event_message = no_upcoming_events_reason(@partner)
-    elsif upcoming_events.length < PAGINATION_THRESHOLD
+    elsif upcoming_count < PAGINATION_THRESHOLD
       # If only a few, show them all with no pagination
       query = EventsQuery.new(site: nil, day: @current_day)
       @events = query.call(period: 'future', partner_or_place: @partner, sort: 'time')

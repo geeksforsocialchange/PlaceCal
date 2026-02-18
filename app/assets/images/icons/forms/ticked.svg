@@ -1,0 +1,21 @@
+<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<style>
+			#square {
+				stroke: #fffcf0;
+				stroke-width: 2px;
+				fill: none;
+			}
+
+			#tick3 {
+				stroke-width: 6.7px;
+				stroke: #5b4e46;
+				fill: none;
+			}
+		</style>
+	</defs>
+	<g>
+		<path id="square" d="M7,5 h16 a2,2,90,0,1,2,2 v16 a2,2,90,0,1,-2,2 h-16 a2,2,90,0,1,-2,-2 v-16 a2,2,90,0,1,2,-2" />
+		<path id="tick3" d="M5.6,13.8 l6.5,6.5 l13,-13" />
+	</g>
+</svg>

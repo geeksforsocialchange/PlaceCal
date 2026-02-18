@@ -65,14 +65,15 @@ end
 group :development do
   gem 'better_errors'             # Better error pages
   gem 'binding_of_caller'         # REPL in error pages
+  gem 'brakeman', '~> 8.0'        # Static security analysis
   gem 'database_consistency', require: false # Schema validation
   gem 'foreman'                   # Process manager (Procfile.dev)
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
   gem 'letter_opener'             # Preview emails in browser
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.84.1', require: false
-  gem 'rubocop-graphql', '1.5.6', require: false
+  gem 'rubocop', '1.84.2', require: false
+  gem 'rubocop-graphql', '1.6.0', require: false
   gem 'rubocop-performance', '1.26.1', require: false
   gem 'rubocop-rails', '2.34.3', require: false
   gem 'rubocop-rake', require: false
