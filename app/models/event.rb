@@ -95,7 +95,7 @@ class Event < ApplicationRecord
   scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
 
   # Global feed
-  scope :ical_feed, -> { where(dtstart: (Time.now - 1.week)..).where(dtend: ...(Time.now + 1.month)) }
+  scope :ical_feed, -> { where(dtstart: (Time.now - 1.week)..).where(dtend: ...(Time.now + 6.months)) }
 
   def repeat_frequency
     rrule[0]['table']['frequency'].titleize if rrule
