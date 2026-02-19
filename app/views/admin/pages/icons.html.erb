@@ -5,6 +5,7 @@
   <p class="text-sm text-gray-600 mt-1">
     All <%= SvgIconsHelper::ICONS.count %> icons available via the <code class="bg-base-200 px-1 rounded">icon()</code> helper.
     Usage: <code class="bg-base-200 px-1 rounded">&lt;%= icon(:name, size: '5', css_class: 'text-red-500 stroke-3') %&gt;</code>
+    For non-admin frontend, prefer to use <code class="bg-base-200 px-1 rounded">size: '0'</code> (unsized) and style with CSS.
   </p>
 </div>
 
@@ -83,8 +84,8 @@
   <div class="card-body p-4">
     <h2 class="font-bold text-lg mb-4">Stroke Width Reference</h2>
     <p class="text-sm text-gray-600 mb-4">
-      Use the <code class="bg-base-200 px-1 rounded"><a href="https://tailwindcss.com/docs/stroke-width" target="__blank">stroke-width-</a></code> classes to control line thickness.
-      Default is <code class="bg-base-200 px-1 rounded">'2'</code>.
+      Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind <a href="https://tailwindcss.com/docs/stroke-width" target="_blank">stroke-width-</a> classes to control line thickness.
+      Default is <code class="bg-base-200 px-1 rounded">'2'</code>. Enclose non-integer values in square brackets.
     </p>
 
     <div class="flex flex-wrap items-end gap-6">
@@ -93,7 +94,7 @@
           <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
             <%= icon(:calendar, size: '8', css_class: sw) %>
           </div>
-          <code class="text-xs font-mono text-gray-600">stroke-width: '<%= sw %>'</code>
+          <code class="text-xs font-mono text-gray-600">'<%= sw %>'</code>
         </div>
       <% end %>
     </div>
@@ -105,8 +106,8 @@
   <div class="card-body p-4">
     <h2 class="font-bold text-lg mb-4">Color Examples</h2>
     <p class="text-sm text-gray-600 mb-4">
-      Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind color classes.
-      Icons inherit color via <code class="bg-base-200 px-1 rounded">stroke="currentColor"</code>.
+      Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind <a href="https://tailwindcss.com/docs/colors#using-color-utilities" target="_blank">color</a> classes.
+      Icons inherit color via <code class="bg-base-200 px-1 rounded">stroke="currentColor"</code> or <code class="bg-base-200 px-1 rounded">fill="currentColor"</code>.
     </p>
 
     <div class="flex flex-wrap items-end gap-6">
@@ -122,7 +123,8 @@
           <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
             <%= icon(:check_circle, size: '8', css_class: css_class) %>
           </div>
-          <code class="text-xs font-mono text-gray-600"><%= label %></code>
+          <code class="text-xs font-mono text-gray-600">'<%= css_class %>'</code>
+          <p class="text-xs mt-1"><%= label %></p>
         </div>
       <% end %>
     </div>

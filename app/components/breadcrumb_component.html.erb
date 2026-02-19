@@ -6,14 +6,11 @@
   </div>
   <% @trail.each do |link| %>
     <div class="breadcrumb__element">
-      <%= icon(:triangle_right, size: '4', css_class: 'text-base-primary') %>
+      <%= icon(:triangle_right, size: '0') %>
       <%= link_to link[0], link[1] %>
     </div>
   <% end %>
   <div class="breadcrumb__element breadcrumb__element--last">
     <%= content %>
-    <!-- <div class="breadcrumb__help">
-    <a href="#">Help</a> <span class="icon icon--question-mark">?</span>
-    </div> -->
   </div>
 </div>

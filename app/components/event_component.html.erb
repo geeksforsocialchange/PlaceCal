@@ -15,28 +15,28 @@
     <% end %>
     <div class="event__details">
       <div class="event__detail event__time">
-        <span class="icon-font icon-time"></span>
+        <%= icon(:event_time, size: '0') %>
         <%= time %>
       </div>
       <% if duration %>
         <div class="event__detail event__duration">
-          <span class="icon-font icon-duration"></span>
+          <%= icon(:event_duration, size: '0') %>
           <%= duration %>
         </div>
       <% end %>
       <div class="event__detail event__date">
-        <span class="icon-font icon-date"></span>
+        <%= icon(:event_date, size: '0') %>
         <%= date %>
       </div>
       <% if online? %>
         <div class="event__detail event__repeats">
-          <span class="icon-font icon-online"> </span>
+          <%= icon(:event_online, size: '0') %>
           Online
         </div>
       <% end %>
       <% if partner_at_location || first_address_line %>
         <div class="event__detail event__location">
-          <span class="icon-font icon-place"></span>
+          <%= icon(:event_place, size: '0') %>
           <% if partner_at_location %>
             <%= link_to partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' } %>
           <% elsif first_address_line %>
@@ -46,7 +46,7 @@
       <% end %>
       <% if repeats %>
         <div class="event__detail event__repeats">
-          <span class="icon-font icon-repeats"></span>
+          <%= icon(:event_repeats, size: '0') %>
           <%= repeats %>
         </div>
       <% end %>

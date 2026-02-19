@@ -17,7 +17,11 @@
           </div>
         <% end %>
 
-        <%# FIXME: this is for testing icons and should be deleted %>
+        <%# FIXME: these grids are for temporarily testing icons migrated to SvgIconsHelper
+            The HTML elements and all the SVG files referenced are safe to delete
+            Note that app/assets/images/icons/map contains PNGs which should be kept for now
+            See https://github.com/geeksforsocialchange/PlaceCal/issues/2517
+        %>
         <h3>Form Icons</h3>
         <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/forms/unticked.svg' style="width: 1.25rem; height: 1.25rem"/>
@@ -59,14 +63,16 @@
           <%= icon(:triangle_right, css_class: 'text-base-background') %>
         </div>
 
-        <h3>Event Icons</h3>
-        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1rem; width: fit-content; ">
+        <h3>Event Icons (last two are from an icon front so the originals have display quirks)</h3>
+        <div style="display: grid; grid-template-columns: repeat(8, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/event/date.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/duration.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/place.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/repeats.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/time.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/time-grey.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <i class="icon-font icon-online" style="width: 1.25rem; height: 1.25rem"></i>
+          <i class="icon-font icon-online-alt" style="width: 1.25rem; height: 1.25rem"></i>
 
           <%= icon(:event_date, css_class: 'text-base-secondary') %>
           <%= icon(:event_duration, css_class: 'text-base-secondary') %>
@@ -74,6 +80,8 @@
           <%= icon(:event_repeats, css_class: 'text-base-secondary') %>
           <%= icon(:event_time, css_class: 'text-base-secondary') %>
           <%= icon(:event_time) %>
+          <%= icon(:event_online, css_class: 'text-base-secondary') %>
+          <%= icon(:event_online_alt, css_class: 'text-base-secondary') %>
         </div>
 
         <h3>Misc Icons</h3>

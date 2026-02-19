@@ -85,10 +85,10 @@ class TimelineComponent < ViewComponent::Base
   end
 
   def back_arrow
-    icon(:triangle_left, size: '4', css_class: 'text-base-background')
+    icon(:triangle_left, size: '0')
   end
 
   def forward_arrow
-    icon(:triangle_right, size: '4', css_class: 'text-base-background')
+    icon(:triangle_right, size: '0')
   end
 end

@@ -1,3 +1,4 @@
+// TODO: delete as part of https://github.com/geeksforsocialchange/PlaceCal/issues/2517
 .icon {
 	text-indent: -9999px;
 	width: 1rem;
@@ -89,6 +90,13 @@
 	}
 }
 
+/*
+	used by inline svgs in
+	- app/components/computer_access.html.erb
+	- app/components/help_adding_events.html.erb
+	- app/components/help_getting_help.html.erb
+	- app/components/navigation_component.html.erb
+*/
 .svg {
 	&__background {
 		fill: $base-rules;

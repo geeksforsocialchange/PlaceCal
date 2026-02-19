@@ -3,7 +3,7 @@
     <%= link_to 'Today', today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' } %>
   <% end %>
   <button type="button" data-action="click->date-picker#open">
-    <%= icon(:triangle_down, size: '2', css_class: 'text-base-primary') %>
+    <%= icon(:triangle_down, size: '0') %>
     <span class="filters__link">Go to date</span>
   </button>
   <%= date_field_tag :date, pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' } %>
@@ -34,7 +34,7 @@
   <%= form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do %>
     <div class="filters__toggle">
       <button type="button" data-action="click->filters#toggle">
-        <%= icon(:triangle_down, size: '2', css_class: 'text-base-primary') %>
+        <%= icon(:triangle_down, size: '0') %>
         <span class="filters__link">Filter and sort</span>
       </button>
     </div>
