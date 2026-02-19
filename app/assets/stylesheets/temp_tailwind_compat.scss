@@ -1,7 +1,11 @@
-// temporary Tailwind classes so `SvgIconsHelper` can be used in the non-admin frontend
+/*
+	temporary Tailwind compatibility classes so `SvgIconsHelper` can be used in the non-admin frontend before styling is cleaned up
+	see https://github.com/geeksforsocialchange/PlaceCal/issues/1812
+*/
+
+// TODO: remove this file as part of https://github.com/geeksforsocialchange/PlaceCal/issues/1812
 
 // from app/helpers/svg_icons_helper.rb
-
 .size-3 {
 	width: calc(0.25rem * 3);
 	height: calc(0.25rem * 3);
@@ -42,8 +46,28 @@
 	height: calc(0.25rem * 16);
 }
 
-// from app/tailwind/admin_tailwind.css
+// from app/views/admin/pages/icons.html.erb
+.stroke-1 {
+	stroke-width: 1;
+}
 
+.stroke-\[1\.5\] {
+	stroke-width: 1.5;
+}
+
+.stroke-2 {
+	stroke-width: 2;
+}
+
+.stroke-\[2\.5\] {
+	stroke-width: 2.5;
+}
+
+.stroke-3 {
+	stroke-width: 3;
+}
+
+// from app/tailwind/admin_tailwind.css
 .text-placecal-brown {
 	color: #5b4e46;
 }

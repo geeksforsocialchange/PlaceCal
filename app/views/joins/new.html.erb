@@ -19,7 +19,7 @@
 
         <%# FIXME: this is for testing icons and should be deleted %>
         <h3>Form Icons</h3>
-        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1em; width: fit-content; ">
+        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/forms/unticked.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/forms/ticked.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/forms/cross.svg' style="width: 1.25rem; height: 1.25rem"/>
@@ -36,7 +36,7 @@
         </div>
 
         <h3>Arrow Icons</h3>
-        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1em; width: fit-content; ">
+        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1rem; width: fit-content; ">
           <%= icon(:chevron_up) %>
           <%= icon(:chevron_down) %>
           <%= icon(:chevron_left) %>
@@ -60,7 +60,7 @@
         </div>
 
         <h3>Event Icons</h3>
-        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1em; width: fit-content; ">
+        <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/event/date.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/duration.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/place.svg' style="width: 1.25rem; height: 1.25rem"/>
@@ -77,7 +77,7 @@
         </div>
 
         <h3>Misc Icons</h3>
-        <div style="display: grid; grid-template-columns: repeat(13, auto); gap: 1em; width: fit-content; ">
+        <div style="display: grid; grid-template-columns: repeat(13, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/email.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/facebook.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/instagram.svg' style="width: 1.25rem; height: 1.25rem"/>
@@ -148,8 +148,8 @@
                 <%= f.check_box :more_info %>
                 <label for="join_more_info">
                   More information
-                  <%= icon(:form_radio, size: '0') %>
-                  <%= icon(:form_radio_check, size: '0', css_class: 'checked') %>
+                  <%= icon(:form_checkbox, size: '0') %>
+                  <%= icon(:form_checkbox_check, size: '0', css_class: 'checked') %>
                 </label>
               </div>
             </div>

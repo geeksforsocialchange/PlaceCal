@@ -100,6 +100,8 @@ module SvgIconsHelper
     warning: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
     x_circle: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
 
+    # below here converted from existing PlaceCal SVG files with https://github.com/idkidk000/placecal-svg-migrator
+
     # Forms - app/assets/images/icons/forms/
     form_checkbox: { path: 'M5.6,4 h12.8 a1.6,1.6,90,0,1,1.6,1.6 v12.8 a1.6,1.6,90,0,1,-1.6,1.6 h-12.8 a1.6,1.6,90,0,1,-1.6,-1.6 v-12.8 a1.6,1.6,90,0,1,1.6,-1.6', css_class: 'text-base-background' },
     form_checkbox_check: { path: 'M4.48,11.04 l5.2,5.2 l10.4,-10.4', stroke_linecap: 'butt', stroke_linejoin: 'butt', stroke_width: '5.36' },
@@ -124,7 +126,6 @@ module SvgIconsHelper
 
     # Misc - app/assets/images/icons (non-recursive)
     # TODO: these need updating in templates
-    # TODO: the following still need migration: instagram-circle, place, question-mark, repeats, roundel
     misc_email: { path: 'M12,0 a12,12,0,1,0,12,12 A12,12,0,0,0,12,0 Z M6.158,8.681 A1.817,1.817,0,0,1,7.92,7.56 H16.08 A1.843,1.843,0,0,1,17.825,8.64,0.326,0.326,0,0,1,17.76,9.096 a0.288,0.288,0,0,1,-0.098,0.048 L12.24,11.964 a0.454,0.454,0,0,1,-0.449,0 L6.31,9.12 a0.286,0.286,0,0,1,-0.192,-0.355 A0.274,0.274,0,0,1,6.158,8.681 Z m11.808,6.214 a1.826,1.826,0,0,1,-1.834,1.546 H7.903 a1.853,1.853,0,0,1,-1.831,-1.375,1.898,1.898,0,0,1,-0.067,-0.48 V10.666 c0,-0.338,0.211,-0.463,0.516,-0.307 q2.556,1.33,5.107,2.664 a0.737,0.737,0,0,0,0.756,0 q2.537,-1.332,5.086,-2.64 a0.607,0.607,0,0,1,0.154,-0.062 A0.288,0.288,0,0,1,18,10.625 V14.016 A5.369,5.369,0,0,1,17.966,14.894 Z', stroke: 'none', fill: 'currentColor' },
     misc_facebook: { path: 'M12,0 a12,12,0,0,0,-1.874,23.854 V15.468 H7.078 V12 h3.048 V9.36 c0,-3.007,1.79,-4.668,4.531,-4.668 a18.434,18.434,0,0,1,2.688,0.24 v2.952 H15.84 c-1.49,0,-1.956,0.926,-1.956,1.874 V12 H17.203 L16.67,15.468 H13.874 V23.854 A12,12,0,0,0,12,0 Z', stroke: 'none', fill: 'currentColor' },
     misc_instagram: { path: 'M11.995,7.997 a4.003,4.003,0,1,0,4.003,4.003,4.013,4.013,0,0,0,-4.003,-4.003 m12.004,4.003 c0,-1.659,0.014,-3.3,-0.08,-4.954 a7.129,7.129,0,0,0,-1.936,-5.029 A7.129,7.129,0,0,0,16.954,0.08 C15.295,-0.013,13.654,0,12,0 S8.7,-0.013,7.045,0.08 A7.129,7.129,0,0,0,2.016,2.016,7.129,7.129,0,0,0,0.08,7.045 C-0.013,8.705,0,10.346,0,12 s-0.014,3.3,0.08,4.954 a7.129,7.129,0,0,0,1.936,5.029,7.129,7.129,0,0,0,5.029,1.936 c1.659,0.094,3.3,0.08,4.954,0.08 s3.3,0.014,4.954,-0.08 a7.122,7.122,0,0,0,5.029,-1.936,7.129,7.129,0,0,0,1.936,-5.029 c0.098,-1.655,0.08,-3.295,0.08,-4.954 M11.995,18.159 a6.159,6.159,0,1,1,6.159,-6.159,6.151,6.151,0,0,1,-6.159,6.159 m6.412,-11.133 a1.439,1.439,0,1,1,1.439,-1.439,1.437,1.437,0,0,1,-1.439,1.439', stroke: 'none', fill: 'currentColor' },
@@ -138,7 +139,6 @@ module SvgIconsHelper
     misc_time: { path: 'M13.946,12.654 L12,14.599 L11.582,14.18 L9.401,12 L7.514,10.114 L10.114,7.514 L12,9.401 L15.886,5.514 L18.486,8.114 L13.946,12.654 Z M12,0 C5.373,0,0,5.372,0,12 C0,18.627,5.373,24,12,24 C18.628,24,24,18.627,24,12 C24,5.372,18.628,0,12,0 L12,0 Z', stroke: 'none', fill: 'currentColor' },
     misc_twitter: { path: 'M11.928,0 a12,12,0,1,0,12,12 A12,12,0,0,0,11.928,0 Z M18.24,9.43 c0,0.134,0,0.269,0,0.406 C18.24,13.966,15.106,18.72,9.36,18.72 a8.856,8.856,0,0,1,-4.8,-1.404,6.353,6.353,0,0,0,0.744,0.043,6.264,6.264,0,0,0,3.883,-1.339,3.12,3.12,0,0,1,-2.921,-2.16,3.17,3.17,0,0,0,0.588,0.055 A3.098,3.098,0,0,0,7.68,13.805,3.12,3.12,0,0,1,5.179,10.74 v-0.038 a3.12,3.12,0,0,0,1.416,0.391,3.12,3.12,0,0,1,-1.392,-2.602,3.089,3.089,0,0,1,0.425,-1.572 A8.88,8.88,0,0,0,12.07,10.186 a3.182,3.182,0,0,1,-0.082,-0.72,3.12,3.12,0,0,1,5.407,-2.138,6.329,6.329,0,0,0,1.985,-0.758 A3.139,3.139,0,0,1,18,8.304 a6.158,6.158,0,0,0,1.795,-0.492 A6.288,6.288,0,0,1,18.24,9.43 Z', stroke: 'none', fill: 'currentColor' },
     misc_website: { path: 'M16.164,7.728 a6,6,0,0,0,-1.512,-1.068 A6.876,6.876,0,0,1,15.36,8.074,7.474,7.474,0,0,0,16.164,7.728 Z M9.048,11.587 H11.609 v-2.16 a10.908,10.908,0,0,1,-2.196,-0.317 A10.942,10.942,0,0,0,9.048,11.587 Z M9.36,14.7 a10.668,10.668,0,0,1,2.244,-0.334 V12.413 H9.048 A10.978,10.978,0,0,0,9.36,14.7 Z M9.67,8.316 a9.938,9.938,0,0,0,1.939,0.276 V6.06 c-0.12,0,-0.24,0.019,-0.355,0.036 C10.62,6.48,10.066,7.274,9.67,8.316 Z M7.8,16.198 a6.012,6.012,0,0,0,1.865,1.272,7.097,7.097,0,0,1,-0.862,-1.735 A6.886,6.886,0,0,0,7.8,16.198 Z M9.658,6.535 a5.969,5.969,0,0,0,-1.716,1.13 A6.629,6.629,0,0,0,8.88,8.074,6.96,6.96,0,0,1,9.658,6.535 Z M8.618,8.858 a7.649,7.649,0,0,1,-1.25,-0.571,5.93,5.93,0,0,0,-1.286,3.3 h2.141 A11.573,11.573,0,0,1,8.618,8.858 Z M8.222,12.413 H6.082 a5.93,5.93,0,0,0,1.171,3.151,7.385,7.385,0,0,1,1.315,-0.619 A11.834,11.834,0,0,1,8.222,12.413 Z M11.28,17.906 c0.113,0.014,0.226,0.026,0.341,0.034 V15.192 A10.08,10.08,0,0,0,9.6,15.487 C10.001,16.632,10.591,17.503,11.28,17.906 Z M15.66,14.942 a7.44,7.44,0,0,1,1.186,0.542,5.911,5.911,0,0,0,1.116,-3.072 H16.006 A11.81,11.81,0,0,1,15.66,14.942 Z M14.64,17.345 a6.05,6.05,0,0,0,1.658,-1.2,6.742,6.742,0,0,0,-0.883,-0.396 A7.253,7.253,0,0,1,14.64,17.345 Z M12.022,0.072 A11.928,11.928,0,1,0,23.947,12,11.928,11.928,0,0,0,12.022,0.072 Z m0,19.121 a7.2,7.2,0,1,1,7.2,-7.2 A7.2,7.2,0,0,1,12.022,19.2 Z M13.032,6.132 q-0.295,-0.05,-0.598,-0.072 V8.599 a10.034,10.034,0,0,0,2.124,-0.286 C14.174,7.306,13.642,6.528,13.032,6.132 Z M15.6,8.856 a11.846,11.846,0,0,1,0.396,2.731 h1.956 a5.935,5.935,0,0,0,-1.231,-3.228 A7.8,7.8,0,0,1,15.6,8.856 Z M12.434,17.94 c0.197,-0.014,0.394,-0.036,0.586,-0.07,0.65,-0.418,1.217,-1.272,1.606,-2.381 a9.869,9.869,0,0,0,-2.191,-0.305 Z M14.813,9.098 a10.85,10.85,0,0,1,-2.378,0.326 v2.16 H15.18 A10.958,10.958,0,0,0,14.813,9.098 Z M15.18,12.413 H12.434 v1.946 a10.944,10.944,0,0,1,2.431,0.334 A11.04,11.04,0,0,0,15.18,12.413 Z', stroke: 'none', fill: 'currentColor' }
-
   }.freeze
   # rubocop:enable Layout/LineLength
 
@@ -153,32 +153,38 @@ module SvgIconsHelper
     '16' => 'size-16'
   }.freeze
 
+  # rubocop:disable Metrics/PerceivedComplexity
+
   # Render an SVG icon
   # @param name [Symbol] Icon name from ICONS hash
   # @param size [String] Tailwind size class (e.g., "4", "5", "8")
   # @param css_class [String] Additional CSS classes
-  # @param stroke_width [String] SVG stroke width (default: "2")
   # @return [String] HTML-safe SVG element
   # Size mapping to Tailwind classes (size-N for better JIT detection)
-  def svg_icon(name, size: '5', css_class: '', stroke_width: '2')
+  # Helpful Tailwind classes: `text-{colour}`, `stroke-{i}`, `stroke-[{f}]`
+  def svg_icon(name, size: '5', css_class: '')
     entry = ICONS[name.to_sym]
     return content_tag(:span, "[icon:#{name}]", class: 'text-error') unless entry
 
-    # these (and css_class, stroke_width) can all be overriden by using a Hash instead of String value in ICONS
+    # these can be overriden by using a Hash instead of String value in ICONS. css_class can be extended in the same way
     fill = 'none'
     stroke = 'currentColor'
     stroke_linecap = 'round'
     stroke_linejoin = 'round'
+    stroke_width = '2'
     viewbox = '0 0 24 24'
 
     if entry.is_a? Hash
+      # required
       path = entry[:path]
+      # optional
+      css_class += " #{entry[:css_class]}" if entry[:css_class].present?
       fill = entry[:fill] if entry[:fill].present?
       stroke = entry[:stroke] if entry[:stroke].present?
       stroke_linecap = entry[:stroke_linecap] if entry[:stroke_linecap].present?
       stroke_linejoin = entry[:stroke_linejoin] if entry[:stroke_linejoin].present?
       stroke_width = entry[:stroke_width] if entry[:stroke_width].present?
-      css_class += " #{entry[:css_class]}" if entry[:css_class].present?
+      viewbox = entry[:viewbox] if entry[:viewbox].present?
     else
       path = entry
     end
@@ -211,6 +217,7 @@ module SvgIconsHelper
       )
     end
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # Shorthand method
   def icon(name, **)
