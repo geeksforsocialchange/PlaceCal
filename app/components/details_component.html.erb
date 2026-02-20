@@ -1,0 +1,31 @@
+<details class="details details-image-<%= @image_url ? @image_left ? 'left' : 'right' : 'none' %>">
+  <summary>
+    <% if @header %>
+      <% if @header_level.to_i == 1 %>
+        <h1 class="details-header"><%= @header %></h1>
+      <% elsif @header_level.to_i ==2 %>
+        <h2 class="details-header"><%= @header %></h2>
+      <% elsif @header_level.to_i ==3 %>
+        <h3 class="details-header"><%= @header %></h3>
+      <% elsif @header_level.to_i ==4 %>
+        <h4 class="details-header"><%= @header %></h4>
+      <% else %>
+        <h5 class="details-header"><%= @header %></h5>
+      <% end %>
+    <% end %>
+    <div class="details-summary"><p><%= @summary %></p></div>
+    <% if @image_url %>
+      <%= image_tag @image_url %>
+    <% end %>
+    <div class="btn btn--small btn--home-3">
+      <%= icon(:home_plus, size: '0', css_class:'details_button_child_open') %>
+      <%= icon(:home_minus, size: '0', css_class:'details_button_child_close') %>
+      <span class="details_button_child_open">Open to read more</span>
+      <span class="details_button_child_close">Close</span>
+    </div>
+    <%# this is technically incorrect - it should be the second child of details. but that causes problems making it a grid child %>
+    <div class="details-detail">
+      <%= content %>
+    </div>
+  </summary>
+</details>

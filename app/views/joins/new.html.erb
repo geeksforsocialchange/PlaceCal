@@ -22,6 +22,11 @@
             Note that app/assets/images/icons/map contains PNGs which should be kept for now
             See https://github.com/geeksforsocialchange/PlaceCal/issues/2517
         %>
+
+        <%= render(DetailsComponent.new(header: 'Here is a header', summary: 'Here is a summary. It might go on for quite a while. Like this I suppose', header_level: 3, image_url: 'home/our_story/no_tech_skills.png')) do %>
+          <p>Here are the details. They can contain any HTML content.</p>
+        <% end %>
+
         <h3>Form Icons</h3>
         <div style="display: grid; grid-template-columns: repeat(6, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/forms/unticked.svg' style="width: 1.25rem; height: 1.25rem"/>
