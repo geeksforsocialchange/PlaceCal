@@ -2,6 +2,7 @@
 
 class NavigationComponent < ViewComponent::Base
   include ApplicationHelper
+  include SvgIconsHelper
 
   def initialize(navigation:, site: nil)
     super()

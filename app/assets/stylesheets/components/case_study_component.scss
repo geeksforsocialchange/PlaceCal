@@ -63,13 +63,13 @@
 	@include for-tablet-landscape-up {
 		bottom: 0;
 		left: 0;
-		padding: 1rem 2rem 2rem;
+		padding: 1rem 2rem;
 		position: absolute;
 		right: 0;
 	}
 
 	@include for-desktop-up {
-		padding: 1rem 1rem 2rem;
+		padding: 1rem 1rem;
 	}
 }
 

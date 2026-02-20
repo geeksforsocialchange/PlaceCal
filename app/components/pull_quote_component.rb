@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PullQuoteComponent < ViewComponent::Base
+  include SvgIconsHelper
+
   def initialize(source:, context:, options:)
     super()
     @context = context

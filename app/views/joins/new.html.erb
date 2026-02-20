@@ -63,7 +63,7 @@
           <%= icon(:triangle_right, css_class: 'text-base-background') %>
         </div>
 
-        <h3>Event Icons (last two are from an icon front so the originals have display quirks)</h3>
+        <h3>Event Icons (last two are from an icon font so the originals have display quirks)</h3>
         <div style="display: grid; grid-template-columns: repeat(8, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/event/date.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/duration.svg' style="width: 1.25rem; height: 1.25rem"/>
@@ -71,8 +71,8 @@
           <img src='/assets/icons/event/repeats.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/time.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/event/time-grey.svg' style="width: 1.25rem; height: 1.25rem"/>
-          <i class="icon-font icon-online" style="width: 1.25rem; height: 1.25rem"></i>
-          <i class="icon-font icon-online-alt" style="width: 1.25rem; height: 1.25rem"></i>
+          <i class="icon-font icon-online" style="width: 1.25rem; height: 1.25rem; font-family: none; font-size: small;"></i>
+          <i class="icon-font icon-online-alt" style="width: 1.25rem; height: 1.25rem; font-family: none; font-size: small;"></i>
 
           <%= icon(:event_date, css_class: 'text-base-secondary') %>
           <%= icon(:event_duration, css_class: 'text-base-secondary') %>
@@ -84,36 +84,58 @@
           <%= icon(:event_online_alt, css_class: 'text-base-secondary') %>
         </div>
 
-        <h3>Misc Icons</h3>
+        <h3>Misc Icons (these are split into contact_ and misc_)</h3>
         <div style="display: grid; grid-template-columns: repeat(13, auto); gap: 1rem; width: fit-content; ">
           <img src='/assets/icons/email.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/facebook.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/instagram.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/instagram-circle.svg' style="width: 1.25rem; height: 1.25rem"/>
-          <img src='/assets/icons/menu.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/phone.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/twitter.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/website.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/icons/menu.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/place.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/question-mark.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/repeats.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/roundel.svg' style="width: 1.25rem; height: 1.25rem"/>
           <img src='/assets/icons/time.svg' style="width: 1.25rem; height: 1.25rem"/>
-          <img src='/assets/icons/twitter.svg' style="width: 1.25rem; height: 1.25rem"/>
-          <img src='/assets/icons/website.svg' style="width: 1.25rem; height: 1.25rem"/>
 
 
-          <%= icon(:misc_email ) %>
-          <%= icon(:misc_facebook ) %>
-          <%= icon(:misc_instagram ) %>
-          <%= icon(:misc_instagram_circle ) %>
+          <%= icon(:contact_email ) %>
+          <%= icon(:contact_facebook ) %>
+          <%= icon(:contact_instagram ) %>
+          <%= icon(:contact_instagram_circle ) %>
+          <%= icon(:contact_phone) %>
+          <%= icon(:contact_twitter) %>
+          <%= icon(:contact_website) %>
           <%= icon(:misc_menu, css_class: 'text-base-secondary') %>
-          <%= icon(:misc_phone) %>
           <%= icon(:misc_place, css_class: 'text-base-secondary') %>
           <%= icon(:misc_question_mark, css_class: 'text-base-primary') %>
           <%= icon(:misc_repeats, css_class: 'text-base-secondary') %>
           <%= icon(:misc_roundel, css_class: 'text-base-primary') %>
           <%= icon(:misc_time, css_class: 'text-base-secondary') %>
-          <%= icon(:misc_twitter) %>
-          <%= icon(:misc_website) %>
+        </div>
+
+        <h3>Home Icons</h3>
+        <div style="display: grid; grid-template-columns: repeat(8, auto); gap: 1rem; width: fit-content; ">
+          <img src='/assets/home/icons/ldquo.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/home/icons/rdquo.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/home/icons/slide.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/home/icons/minus-small.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/home/icons/plus-small.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/home/icons/plus.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <%# multicolour - either extend SvgIconsHelper or have an SvgImageHelper %>
+          <img src='/assets/home/icons/award.svg' style="width: 1.25rem; height: 1.25rem"/>
+          <img src='/assets/home/icons/logo.svg' style="width: 1.25rem; height: 1.25rem"/>
+
+          <%= icon(:home_quote_open, css_class: 'text-base-primary') %>
+          <%= icon(:home_quote_close, css_class: 'text-base-primary') %>
+          <%= icon(:home_slide, css_class: 'text-base-primary') %>
+          <%= icon(:home_minus) %>
+          <%= icon(:home_plus) %>
+          <%= icon(:home_plus, css_class: 'text-base-secondary') %>
+          <span>TODO</span>
+          <span>TODO</span>
         </div>
 
         <%= simple_form_for @join, url: get_in_touch_path, html: { class: 'form' } do |f| %>
