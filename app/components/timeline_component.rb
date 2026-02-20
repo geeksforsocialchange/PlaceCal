@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TimelineComponent < ViewComponent::Base
+  include SvgIconsHelper
+
   DEFAULT_STEPS = 7
 
   def initialize(pointer:, period:, sort:, repeating:, path:)
@@ -83,10 +85,10 @@ class TimelineComponent < ViewComponent::Base
   end
 
   def back_arrow
-    '<span class="icon icon--arrow-left-grey">←</span>'.html_safe # rubocop:disable Rails/OutputSafety
+    icon(:triangle_left, size: '0')
   end
 
   def forward_arrow
-    '<span class="icon icon--arrow-right-grey">→</span>'.html_safe # rubocop:disable Rails/OutputSafety
+    icon(:triangle_right, size: '0')
   end
 end

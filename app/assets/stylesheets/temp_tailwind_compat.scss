@@ -1,0 +1,120 @@
+/*
+	temporary Tailwind compatibility classes so `SvgIconsHelper` can be used in the non-admin frontend before styling is cleaned up
+	see https://github.com/geeksforsocialchange/PlaceCal/issues/1812
+*/
+
+// TODO: remove this file as part of https://github.com/geeksforsocialchange/PlaceCal/issues/1812
+
+// from app/helpers/svg_icons_helper.rb
+.size-3 {
+	width: 0.75rem;
+	height: 0.75rem;
+}
+
+.size-4 {
+	width: 1rem;
+	height: 1rem;
+}
+
+.size-5 {
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+.size-6 {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.size-8 {
+	width: 2rem;
+	height: 2rem;
+}
+
+.size-10 {
+	width: 2.5rem;
+	height: 2.5rem;
+}
+
+.size-12 {
+	width: 3rem;
+	height: 3rem;
+}
+
+.size-16 {
+	width: 4rem;
+	height: 4rem;
+}
+
+// from app/views/admin/pages/icons.html.erb
+.stroke-1 {
+	stroke-width: 1;
+}
+
+.stroke-\[1\.5\] {
+	stroke-width: 1.5;
+}
+
+.stroke-2 {
+	stroke-width: 2;
+}
+
+.stroke-\[2\.5\] {
+	stroke-width: 2.5;
+}
+
+.stroke-3 {
+	stroke-width: 3;
+}
+
+// from app/tailwind/admin_tailwind.css
+.text-placecal-brown {
+	color: #5b4e46;
+}
+
+.text-placecal-cream {
+	color: #f5f1eb;
+}
+
+.text-placecal-orange {
+	color: #e87d1e;
+}
+
+.text-placecal-orange-dark {
+	color: #b35500; /* WCAG AA compliant for text on white (5.0:1) */
+}
+
+.text-placecal-teal {
+	color: #00a9a5;
+}
+
+.text-placecal-teal-dark {
+	color: #007a77; /* WCAG AA compliant for text on white (4.7:1) */
+}
+
+.text-placecal-pink {
+	color: #e91e63;
+}
+
+.text-placecal-purple {
+	color: #9c27b0;
+}
+
+// temp names for colours from app/assets/stylesheets/variables/colours.scss used in svgs
+// TODO: these could use site-specific theme colour vars and fallback to defaults
+
+.text-base-background {
+	color: $base-background;
+}
+
+.text-home-background {
+	color: $home-background;
+}
+
+.text-base-primary {
+	color: $base-primary;
+}
+
+.text-base-secondary {
+	color: $base-secondary;
+}

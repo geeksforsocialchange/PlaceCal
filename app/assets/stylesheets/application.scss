@@ -1,5 +1,6 @@
-@import "variables/fonts";
 @import "globals";
+@import "temp_tailwind_compat";
+@import "variables/fonts";
 
 :root {
 	// Main site colour
@@ -36,6 +37,7 @@
 @import "components/case_study_component";
 @import "components/contact_details_component";
 @import "components/container_with_header_component";
+@import "components/details_component";
 @import "components/featured_partnerships_component";
 @import "components/filters";
 @import "components/footer";

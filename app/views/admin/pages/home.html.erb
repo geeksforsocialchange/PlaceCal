@@ -185,7 +185,7 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:calendar, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_upcoming_events') %></p>
       </div>
     <% end %>
@@ -204,7 +204,7 @@
               <%= image_tag partner.image.url, class: "w-9 h-9 rounded-lg object-cover flex-shrink-0" %>
             <% else %>
               <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-                <%= icon(:partner, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
+                <%= icon(:partner, size: '4', css_class: 'text-gray-400 stroke-[1.5]') %>
               </div>
             <% end %>
             <div class="flex-1 min-w-0">
@@ -216,7 +216,7 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:partner, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:partner, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_partners') %></p>
         <%= link_to t('admin.dashboard.cards.add_first_partner'), new_admin_partner_path, class: "text-xs text-placecal-orange hover:text-orange-600 mt-1" %>
       </div>
@@ -233,7 +233,7 @@
         <% @calendars.take(6).each do |calendar| %>
           <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-              <%= icon(:calendar, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
+              <%= icon(:calendar, size: '4', css_class: 'text-gray-400 stroke-[1.5]') %>
             </div>
             <div class="flex-1 min-w-0">
               <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= calendar.name %></span>
@@ -244,7 +244,7 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:calendar, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_calendars') %></p>
       </div>
     <% end %>
@@ -260,7 +260,7 @@
         <% @users.take(6).each do |user| %>
           <%= link_to edit_admin_user_path(user), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-              <%= icon(:user, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
+              <%= icon(:user, size: '4', css_class: 'text-gray-400 stroke-[1.5]') %>
             </div>
             <div class="flex-1 min-w-0">
               <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= user.full_name.presence || user.email %></span>
@@ -271,7 +271,7 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:users, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:users, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_users') %></p>
       </div>
     <% end %>

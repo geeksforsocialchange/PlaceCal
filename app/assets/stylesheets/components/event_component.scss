@@ -77,6 +77,14 @@
 
 			margin-bottom: 0rem;
 		}
+
+		svg {
+			width: 1.75rem;
+			height: 1.75rem;
+			margin-right: 0.25rem;
+			// TODO: maybe this should be theme colour??
+			color: $base-secondary;
+		}
 	}
 
 	&__time,

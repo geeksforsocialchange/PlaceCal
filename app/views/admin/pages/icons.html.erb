@@ -4,7 +4,8 @@
   <h1 class="text-2xl font-bold">Icon Reference</h1>
   <p class="text-sm text-gray-600 mt-1">
     All <%= SvgIconsHelper::ICONS.count %> icons available via the <code class="bg-base-200 px-1 rounded">icon()</code> helper.
-    Usage: <code class="bg-base-200 px-1 rounded">&lt;%= icon(:name, size: '5', css_class: 'text-red-500') %&gt;</code>
+    Usage: <code class="bg-base-200 px-1 rounded">&lt;%= icon(:name, size: '5', css_class: 'text-red-500 stroke-3') %&gt;</code>
+    For non-admin frontend, prefer to use <code class="bg-base-200 px-1 rounded">size: '0'</code> (unsized) and style with CSS.
   </p>
 </div>
 
@@ -19,7 +20,12 @@
     'Location' => %i[location map_pin],
     'Communication' => %i[chat link mail],
     'Resources' => %i[book clipboard desktop newspaper list credit_card bug map code],
-    'Social' => %i[website facebook twitter instagram]
+    'Social' => %i[website facebook twitter instagram],
+    'Form' => %i[form_checkbox form_checkbox_check form_cross form_radio form_radio_check form_tick],
+    'Triangle' => %i[triangle_up triangle_down triangle_left triangle_right],
+    'Event' => %i[event_date event_duration event_place event_repeats event_time],
+    'Contact' => %i[contact_email contact_facebook contact_instagram contact_instagram_circle contact_phone contact_twitter contact_website],
+    'Misc' => %i[misc_menu misc_place misc_question_mark misc_repeats misc_roundel misc_time]
   }
 %>
 
@@ -79,17 +85,17 @@
   <div class="card-body p-4">
     <h2 class="font-bold text-lg mb-4">Stroke Width Reference</h2>
     <p class="text-sm text-gray-600 mb-4">
-      Use the <code class="bg-base-200 px-1 rounded">stroke_width</code> parameter to control line thickness.
-      Default is <code class="bg-base-200 px-1 rounded">'2'</code>.
+      Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind <a href="https://tailwindcss.com/docs/stroke-width" target="_blank">stroke-width-</a> classes to control line thickness.
+      Default is <code class="bg-base-200 px-1 rounded">'2'</code>. Enclose non-integer values in square brackets.
     </p>
 
     <div class="flex flex-wrap items-end gap-6">
-      <% ['1', '1.5', '2', '2.5', '3'].each do |sw| %>
+      <% ['stroke-1', 'stroke-[1.5]', 'stroke-2', 'stroke-[2.5]', 'stroke-3'].each do |sw| %>
         <div class="flex flex-col items-center">
           <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
-            <%= icon(:calendar, size: '8', stroke_width: sw) %>
+            <%= icon(:calendar, size: '8', css_class: sw) %>
           </div>
-          <code class="text-xs font-mono text-gray-600">stroke_width: '<%= sw %>'</code>
+          <code class="text-xs font-mono text-gray-600">'<%= sw %>'</code>
         </div>
       <% end %>
     </div>
@@ -101,8 +107,8 @@
   <div class="card-body p-4">
     <h2 class="font-bold text-lg mb-4">Color Examples</h2>
     <p class="text-sm text-gray-600 mb-4">
-      Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind color classes.
-      Icons inherit color via <code class="bg-base-200 px-1 rounded">stroke="currentColor"</code>.
+      Use the <code class="bg-base-200 px-1 rounded">css_class</code> parameter to add Tailwind <a href="https://tailwindcss.com/docs/colors#using-color-utilities" target="_blank">color</a> classes.
+      Icons inherit color via <code class="bg-base-200 px-1 rounded">stroke="currentColor"</code> or <code class="bg-base-200 px-1 rounded">fill="currentColor"</code>.
     </p>
 
     <div class="flex flex-wrap items-end gap-6">
@@ -118,7 +124,8 @@
           <div class="flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2">
             <%= icon(:check_circle, size: '8', css_class: css_class) %>
           </div>
-          <code class="text-xs font-mono text-gray-600"><%= label %></code>
+          <code class="text-xs font-mono text-gray-600">'<%= css_class %>'</code>
+          <p class="text-xs mt-1"><%= label %></p>
         </div>
       <% end %>
     </div>

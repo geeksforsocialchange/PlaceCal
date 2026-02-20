@@ -1,0 +1,159 @@
+@import "../variables_mixins";
+
+.details {
+	text-align: left;
+	display: grid;
+	gap: 0.5rem 2rem;
+	// default mobile layout. all variants are below this block
+	grid-template:
+		"header"
+		"image"
+		"summary"
+		"detail"
+		"button";
+
+	> summary {
+		display: contents;
+
+		> .details-header {
+			grid-area: header;
+		}
+
+		> img {
+			grid-area: image;
+		}
+
+		> .details-summary {
+			grid-area: summary;
+		}
+
+		// this is a visual aid to indicate that the content can be expanded. <summary/> already toggles open on click
+		// it's invalid to have an interactive element inside a `<summary/>`
+		// need higher specificity than the external `.btn` styling which sets display:inline-block
+		> .btn {
+			grid-area: button;
+			display: grid;
+			grid-template-columns: 1rem 1fr 1rem;
+			align-items: center;
+
+			.details_button_child_close {
+				display: none;
+			}
+		}
+
+		> .details-detail {
+			grid-area: detail;
+			// undo grid gap so paragraph spacing is consistent
+			margin-top: -0.5rem;
+			display: none;
+		}
+	}
+}
+
+.details:open {
+	> summary {
+		div.btn {
+			.details_button_child_open {
+				display: none;
+			}
+
+			.details_button_child_close {
+				display: inline;
+			}
+		}
+
+		> .details-detail {
+			display: block;
+		}
+	}
+}
+
+.details.details-image-none {
+	grid-template:
+		"summary"
+		"detail"
+		"button";
+}
+
+.details.details-image-none:has(.details-header) {
+	grid-template:
+		"header"
+		"summary"
+		"detail"
+		"button";
+}
+
+.details.details-image-left,
+.details.details-image-right {
+	grid-template:
+		"image"
+		"summary"
+		"detail"
+		"button";
+}
+
+.details.details-image-left:has(.details-header),
+.details.details-image-right:has(.details-header) {
+	grid-template:
+		"header"
+		"image"
+		"summary"
+		"detail"
+		"button";
+}
+
+@include for-tablet-landscape-up {
+	.details {
+		padding: 0 4rem;
+		> summary {
+			> div.btn.btn {
+				display: none;
+			}
+			> .details-detail {
+				display: block;
+			}
+		}
+	}
+
+	.details.details-image-left {
+		grid-template:
+			"summary image" 1fr
+			"detail image" auto;
+	}
+
+	.details.details-image-left:has(.details-header) {
+		grid-template:
+			"header image" auto
+			"summary image" 1fr
+			"detail image" auto;
+	}
+
+	.details.details-image-right {
+		grid-template:
+			"image summary" 1fr
+			"image detail" auto;
+	}
+
+	.details.details-image-right:has(.details-header) {
+		grid-template:
+			"image header" auto
+			"image summary" 1fr
+			"image detail" auto;
+	}
+
+	.details.details-image-none {
+		grid-template: "summary detail" 1fr;
+	}
+
+	details.details-image-none:has(.details-header) {
+		grid-template:
+			"header header" auto
+			"summary detail" 1fr;
+	}
+}
+
+@include for-desktop-up {
+	.details {
+		padding: 0 12rem;
+	}
+}

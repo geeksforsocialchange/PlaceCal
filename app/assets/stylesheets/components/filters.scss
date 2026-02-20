@@ -15,6 +15,15 @@
 			background: none;
 			font-family: $sans-serif;
 			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 0.25em;
+
+			svg {
+				width: 0.5rem;
+				height: 0.5rem;
+				color: $base_primary;
+			}
 		}
 	}
 

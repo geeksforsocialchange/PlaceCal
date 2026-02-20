@@ -97,11 +97,6 @@
 	&__checkbox {
 		margin: 0.25rem;
 
-		label,
-		input {
-			width: auto;
-		}
-
 		input {
 			position: absolute;
 			opacity: 0;
@@ -111,36 +106,29 @@
 		}
 
 		label {
-			display: inline-block;
+			display: grid;
+			align-items: center;
+			grid-template-columns: auto auto;
 			font-weight: normal;
-			padding-right: 48px;
 			line-height: 30px;
-			background-position: 100% 0%;
-			background-size: 30px 30px;
-			background-repeat: no-repeat;
 			cursor: pointer;
+			user-select: none;
+			gap: 1em;
 		}
 
-		input[type="radio"] + label {
-			background-image: url("icons/forms/unselected.svg");
+		svg {
+			grid-column-start: 2;
+			grid-row-start: 1;
+			width: 30px;
+			height: 30px;
 		}
 
-		input[type="checkbox"] + label {
-			background-image: url("icons/forms/unticked.svg");
+		input + label .checked {
+			display: none;
 		}
 
-		input:checked + label {
-			background-position: 100% 0%;
-			background-size: 30px 30px;
-			background-repeat: no-repeat;
-		}
-
-		input[type="radio"]:checked + label {
-			background-image: url("icons/forms/selected.svg");
-		}
-
-		input[type="checkbox"]:checked + label {
-			background-image: url("icons/forms/ticked.svg");
+		input:checked + label .checked {
+			display: inline;
 		}
 
 		@include for-tablet-portrait-up {

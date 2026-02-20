@@ -2,6 +2,8 @@
 
 # app/components/contact_details/contact_details_component.rb
 class ContactDetails < ViewComponent::Base
+  include SvgIconsHelper
+
   # rubocop:disable Metrics/ParameterLists
   def initialize(partner: Partner, email: nil, phone: nil, url: nil)
     # rubocop:enable Metrics/ParameterLists

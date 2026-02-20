@@ -1,11 +1,15 @@
 <div class="pullquote">
   <blockquote class="blockquote--<%= @color_mode%>">
-    <%= render(MaxWidthComponent.new()) do %>
-      <p class="alt-title-small"><%= content %></p>
-    <% end %>
+    <%= icon(:home_quote_open, size: '0') %>
+    <p class="alt-title-small"><%= content %></p>
+    <%= icon(:home_quote_close, size: '0') %>
   </blockquote>
   <cite>
-    <strong class="h3-small"><%= @source %></strong>
-    <span class="small"><%= @context %></cite>
+    <% if @source.respond_to?(:length) && @source.length.positive? %>
+      <strong class="h3-small"><%= @source %></strong>
+    <% end %>
+    <% if @context.respond_to?(:length) && @source.length.positive? %>
+      <span class="small"><%= @context %></cite>
+    <% end %>
   </cite>
 </div>
