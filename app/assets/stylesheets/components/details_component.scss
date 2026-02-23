@@ -1,5 +1,17 @@
 @import "../variables_mixins";
 
+@mixin button-child-hidden {
+	content-visibility: hidden;
+	opacity: 0;
+	scale: 0.9;
+}
+
+@mixin button-child-visible {
+	content-visibility: visible;
+	opacity: 1;
+	scale: 1;
+}
+
 .details {
 	text-align: left;
 	display: grid;
@@ -13,18 +25,26 @@
 		"button";
 
 	> summary {
+		// make <summary/> children behave as if they were children of <details/>
 		display: contents;
 
 		> .details-header {
 			grid-area: header;
+			text-wrap-mode: wrap;
+			text-wrap-style: balance;
 		}
 
 		> img {
 			grid-area: image;
+			border-radius: 1rem;
 		}
 
 		> .details-summary {
 			grid-area: summary;
+			margin-block: 0;
+			> * {
+				margin-block: 0;
+			}
 		}
 
 		// this is a visual aid to indicate that the content can be expanded. <summary/> already toggles open on click
@@ -34,18 +54,57 @@
 			grid-area: button;
 			display: grid;
 			grid-template-columns: 1rem 1fr 1rem;
+			grid-template-areas: "icon label pad";
 			align-items: center;
+			user-select: none;
+
+			> svg {
+				grid-area: icon;
+			}
+
+			> span {
+				grid-area: label;
+			}
+
+			> * {
+				transition-behavior: allow-discrete;
+				transition-property: content-visibility, opacity, scale;
+				transition-duration: 0.3s;
+				transition-timing-function: ease-in-out;
+			}
 
 			.details_button_child_close {
-				display: none;
+				@include button-child-hidden();
+			}
+
+			.details_button_child_open {
+				@include button-child-visible();
 			}
 		}
 
 		> .details-detail {
 			grid-area: detail;
 			// undo grid gap so paragraph spacing is consistent
-			margin-top: -0.5rem;
-			display: none;
+			// margin-top: -0.5rem;
+			content-visibility: hidden;
+			interpolate-size: allow-keywords;
+			transition-behavior: allow-discrete;
+			height: 0;
+			transition-property: display, content-visibility, height;
+			transition-duration: 0.3s;
+			transition-timing-function: ease-in-out;
+			overflow: clip;
+		}
+
+		> .details-detail,
+		> .details-summary {
+			// override inherited y margins so things are consistent and predictable
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+			> * {
+				margin-block: 0;
+			}
 		}
 	}
 }
@@ -54,16 +113,17 @@
 	> summary {
 		div.btn {
 			.details_button_child_open {
-				display: none;
+				@include button-child-hidden();
 			}
 
 			.details_button_child_close {
-				display: inline;
+				@include button-child-visible();
 			}
 		}
 
 		> .details-detail {
-			display: block;
+			content-visibility: visible;
+			height: auto;
 		}
 	}
 }
@@ -102,6 +162,12 @@
 		"button";
 }
 
+@include for-tablet-portrait-up {
+	.details-image-center {
+		padding: 0 2rem;
+	}
+}
+
 @include for-tablet-landscape-up {
 	.details {
 		padding: 0 4rem;
@@ -110,8 +176,19 @@
 				display: none;
 			}
 			> .details-detail {
-				display: block;
+				content-visibility: visible;
+				height: auto;
 			}
+		}
+	}
+
+	.details-image-center {
+		padding: 0 6rem;
+
+		img {
+			margin-inline: -3rem;
+			width: calc(100% + 6rem);
+			max-width: calc(100% + 6rem);
 		}
 	}
 
@@ -124,21 +201,34 @@
 	.details.details-image-left:has(.details-header) {
 		grid-template:
 			"header image" auto
-			"summary image" 1fr
-			"detail image" auto;
+			"summary image" auto
+			"detail image" 1fr;
+	}
+
+	.details.details-image-center {
+		grid-template:
+			"image image" auto
+			"summary detail" 1fr;
+	}
+
+	.details.details-image-center:has(.details-header) {
+		grid-template:
+			"header header" auto
+			"image image" auto
+			"summary detail" 1fr;
 	}
 
 	.details.details-image-right {
 		grid-template:
-			"image summary" 1fr
-			"image detail" auto;
+			"image summary" auto
+			"image detail" 1fr;
 	}
 
 	.details.details-image-right:has(.details-header) {
 		grid-template:
 			"image header" auto
-			"image summary" 1fr
-			"image detail" auto;
+			"image summary" auto
+			"image detail" 1fr;
 	}
 
 	.details.details-image-none {
@@ -155,5 +245,11 @@
 @include for-desktop-up {
 	.details {
 		padding: 0 12rem;
+	}
+
+	.details.details-image-center img {
+		margin-inline: -6rem;
+		width: calc(100% + 12rem);
+		max-width: calc(100% + 12rem);
 	}
 }

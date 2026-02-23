@@ -1,21 +1,28 @@
-<details class="details details-image-<%= @image_url ? @image_left ? 'left' : 'right' : 'none' %>">
+<details class="details details-image-<%= @image_url ? @image_left ? 'left' : @image_left == false ? 'right' : 'center' : 'none' %>">
   <summary>
     <% if @header %>
       <% if @header_level.to_i == 1 %>
-        <h1 class="details-header"><%= @header %></h1>
-      <% elsif @header_level.to_i ==2 %>
-        <h2 class="details-header"><%= @header %></h2>
-      <% elsif @header_level.to_i ==3 %>
-        <h3 class="details-header"><%= @header %></h3>
-      <% elsif @header_level.to_i ==4 %>
-        <h4 class="details-header"><%= @header %></h4>
+        <h1 class="details-header <%= @header_class %>"><%= @header %></h1>
+      <% elsif @header_level.to_i == 2 %>
+        <h2 class="details-header <%= @header_class %>"><%= @header %></h2>
+      <% elsif @header_level.to_i == 3 %>
+        <h3 class="details-header <%= @header_class %>"><%= @header %></h3>
+      <% elsif @header_level.to_i == 4 %>
+        <h4 class="details-header <%= @header_class %>"><%= @header %></h4>
       <% else %>
-        <h5 class="details-header"><%= @header %></h5>
+        <h5 class="details-header <%= @header_class %>"><%= @header %></h5>
       <% end %>
     <% end %>
-    <div class="details-summary"><p><%= @summary %></p></div>
+    <div class="details-summary">
+    <%# don't wrap summary in a <p> if it already begins with `<p` %>
+      <% if @summary.match(/^<p/) %>
+        <%= @summary %>
+      <% else %>
+        <p><%= @summary %></p>
+      <% end %>
+    </div>
     <% if @image_url %>
-      <%= image_tag @image_url %>
+      <%= image_tag @image_url, alt: @image_alt %>
     <% end %>
     <div class="btn btn--small btn--home-3">
       <%= icon(:home_plus, size: '0', css_class:'details_button_child_open') %>
