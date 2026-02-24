@@ -181,7 +181,6 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │       ├── joins               # "Join PlaceCal" form page
 │       ├── layouts             # Page templates
 │       ├── moderation_mailer   # Templates for when partners get moderated
-│       ├── mountain_view       # Component previews
 │       ├── news                # News article templates - half implemented
 │       ├── pages               # Static pages mostly used on homepage
 │       ├── partners            # Partner indexes and show pages
