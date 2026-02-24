@@ -21,7 +21,7 @@
               [label, u.id]
             },
             { include_blank: t('admin.placeholders.select_model', model: t('admin.models.admin.one').downcase) },
-            { class: 'select select-bordered w-full', data: { controller: 'tom-select' } } %>
+            { class: 'select select-bordered w-full', 'aria-label': t('admin.sites.fields.site_admin'), data: { controller: 'tom-select' } } %>
     </fieldset>
   <% else %>
     <%
