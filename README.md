@@ -152,6 +152,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   │   ├── images
 │   │   └── stylesheets
 │   ├── components              # ViewComponent components for reusable UI elements
+│   │   └── admin               # Admin-specific components (forms, cards, etc.)
 │   ├── constraints             # Directs to correct site based on subdomain
 │   ├── controllers             # Public app controllers
 │   │   ├── admin               # Admin area controllers
@@ -160,28 +161,31 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   ├── datatables              # Admin area datatables
 │   ├── graphql                 # API
 │   ├── helpers
-│   ├── javascript              # Source JavaScript
-│   │   ├── controllers
-│   │   └── src
+│   ├── javascript              # Source JavaScript (importmap-rails, no build step)
+│   │   └── controllers         # Stimulus controllers
+│   │       └── mixins          # Shared Stimulus controller mixins
 │   ├── jobs                    # Importer logic - jobs are created by cron (`/lib/tasks`). There's a readme here with more info
 │   ├── mailers                 # Email configuration
 │   ├── models
 │   ├── policies                # Pundit rules for who can do and access what
+│   ├── queries                 # Query objects for complex database queries
+│   ├── tailwind                # Tailwind CSS source files (admin interface)
 │   ├── uploaders               # CarrierWave rules for handling image and logo uploads
-│   ├── validators              # Postcode validator - should possibly live somewhere else, or have other validators moved in here
+│   ├── validators              # Custom validators (e.g. postcode)
 │   └── views
 │       ├── admin               # Admin area
-│       ├── collections         # Deprecated feature to create abritrary event collections, was previously used for our early winter festivals
+│       ├── collections         # Deprecated feature to create arbitrary event collections
 │       ├── devise              # Authentication
 │       ├── events              # Event indexes and show page
 │       ├── join_mailer         # Templates for creating accounts
 │       ├── joins               # "Join PlaceCal" form page
 │       ├── layouts             # Page templates
 │       ├── moderation_mailer   # Templates for when partners get moderated
+│       ├── mountain_view       # Component previews
 │       ├── news                # News article templates - half implemented
-│       ├── pages               # Static pages mostly used on homepage. Some pages here are not linked anywhere currently
+│       ├── pages               # Static pages mostly used on homepage
 │       ├── partners            # Partner indexes and show pages
-│       ├── shared              # Some shared elements - should probably be migrated to view_components
+│       ├── shared              # Shared partials
 │       └── sites               # Site homepages e.g. mysite.placecal.org
 ├── collections                 # API examples to be loaded with Bruno
 ├── config
@@ -190,22 +194,21 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   ├── locales
 │   └── robots
 ├── db
-│   ├── images                  # Some seed images - not been looked at for a while
+│   ├── images                  # Some seed images
 │   │   ├── sites
 │   │   └── supporters
 │   ├── migrate
 │   └── seeds                   # Seeds using Normal Island data for development
 ├── doc                         # Documentation including testing guides and ADRs
 │   ├── adr                     # Architectural decision records
-│   ├── ai                      # Optional AI coding assistant configuration
-│   └── testing-guide.md        # Guide for writing tests with Normal Island data
+│   └── ai                      # Optional AI coding assistant configuration
 ├── features                    # Cucumber BDD features
 │   ├── step_definitions        # Step implementations
 │   └── support                 # Cucumber environment setup
 ├── lib
 │   ├── assets
 │   ├── data                    # UK geography ward to district data used to create neighbourhood info
-│   ├── normal_island.rb        # Fictional geography data for tests and seeds
+│   ├── normal_island           # Fictional geography data for tests and seeds
 │   ├── tasks                   # Rake tasks that create ActiveJobs
 │   └── templates
 │       └── erb                 # Rails scaffold templates
@@ -215,6 +218,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 ├── scripts
 ├── spec                        # RSpec test suite
 │   ├── components              # ViewComponent specs
+│   ├── datatables              # Datatable specs
 │   ├── factories               # FactoryBot factories using Normal Island data
 │   │   └── normal_island       # Normal Island-specific factories
 │   ├── fixtures
@@ -224,6 +228,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   ├── mailers                 # Mailer specs
 │   ├── models                  # Model specs
 │   ├── policies                # Pundit policy specs
+│   ├── queries                 # Query object specs
 │   ├── requests                # Request specs (controllers, GraphQL)
 │   │   ├── admin
 │   │   ├── graphql
