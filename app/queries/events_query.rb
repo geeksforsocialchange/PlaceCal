@@ -93,28 +93,36 @@ class EventsQuery
   # Returns neighbourhoods that have events, with counts for the given period
   # Used for filter dropdowns
   #
+  # Shows all descendant neighbourhoods of the site's configured neighbourhoods,
+  # at every level. Each neighbourhood's count includes events in its subtree.
+  #
   # @param period [String] 'day', 'week', or 'future'
   # @return [Array<Hash>] array of { neighbourhood: Neighbourhood, count: Integer }
   def neighbourhoods_with_counts(period: 'future')
+    return [] unless @site
+
+    all_descendants = @site.neighbourhoods.flat_map { |n| n.descendants.to_a }
+    return [] if all_descendants.empty?
+
     events = apply_period(base_scope, period)
-    partner_ids = events.distinct.pluck(:partner_id).compact
-    return [] if partner_ids.empty?
 
-    neighbourhood_ids = neighbourhood_ids_for_partners(partner_ids)
-    return [] if neighbourhood_ids.empty?
+    # Count events per leaf neighbourhood
+    raw_counts = events
+                 .left_joins(:address, partner: :address)
+                 .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
+                 .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
+                 .distinct
+                 .count
 
-    # Single grouped query instead of N separate counts
-    counts = events
-             .left_joins(:address, partner: :address)
-             .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IN (?)', neighbourhood_ids)
-             .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
-             .distinct
-             .count
+    # For each descendant, sum counts from its entire subtree
+    results = all_descendants.map do |n|
+      subtree_count = n.subtree_ids.sum { |id| raw_counts[id] || 0 }
+      { neighbourhood: n, count: subtree_count }
+    end
 
-    Neighbourhood
-      .where(id: neighbourhood_ids)
-      .order(:name)
-      .map { |n| { neighbourhood: n, count: counts[n.id] || 0 } }
+    results
+      .select { |entry| entry[:count].positive? }
+      .sort_by { |entry| entry[:neighbourhood].name }
   end
 
   private
@@ -182,10 +190,15 @@ class EventsQuery
   end
 
   # Filter by physical location of event (event address, or partner address if no event address)
+  # When a parent neighbourhood is selected (e.g. a district), includes all descendants
   def filter_by_neighbourhood(events, neighbourhood_id)
+    neighbourhood = Neighbourhood.find_by(id: neighbourhood_id)
+    return events.none unless neighbourhood
+
+    matching_ids = neighbourhood.subtree_ids
     events
       .left_joins(:address, partner: :address)
-      .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) = ?', neighbourhood_id)
+      .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IN (?)', matching_ids)
       .distinct
   end
 
@@ -225,16 +238,5 @@ class EventsQuery
     else
       events.distinct.sort_by_time.group_by_day(&:dtstart)
     end
-  end
-
-  # ===================
-  # Neighbourhood Helpers
-  # ===================
-
-  # Get all neighbourhood IDs where these partners have presence (address or service area)
-  def neighbourhood_ids_for_partners(partner_ids)
-    address_ids = Address.joins(:partners).where(partners: { id: partner_ids }).pluck(:neighbourhood_id)
-    service_area_ids = ServiceArea.where(partner_id: partner_ids).pluck(:neighbourhood_id)
-    (address_ids + service_area_ids).uniq
   end
 end
