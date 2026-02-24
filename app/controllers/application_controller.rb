@@ -91,16 +91,24 @@ class ApplicationController < ActionController::Base
 
   # Convert an event object into an ics listing
   def create_ical_event(e, site_url)
+    event_url = "#{site_url}/events/#{e.id}"
     event = Icalendar::Event.new
     event.dtstart = e.dtstart
     event.dtend = e.dtend
     event.summary = e.summary
-    event.description = "#{unescape_ical_text(e.description)}\n\n#{site_url}/events/#{e.id}"
+    event.description = "#{unescape_ical_text(e.description)}\n\n#{event_url}"
+    event.url = event_url
     event.location = e.location
     event
   end
 
   # Unescape iCal escape sequences stored in the DB from source calendar imports.
+  #
+  # We do this ourselves rather than using icalendar gem's Text unescaping because:
+  # 1. The gem only handles standard RFC 5545 escapes (\n \, \; \\), not non-standard
+  #    \' and \" that some source calendars produce
+  # 2. Simpler to have one function that handles everything than split responsibility
+  #
   # Order matters: unescape \\ last so we don't clobber other sequences.
   def unescape_ical_text(text)
     return '' if text.blank?
