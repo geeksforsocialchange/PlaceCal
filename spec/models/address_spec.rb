@@ -80,11 +80,11 @@ RSpec.describe Address, type: :model do
 
     context "with postcode that has no mapped neighbourhood" do
       before do
-        # Stub geocoder to return a response but with unmapped ward code
+        # Stub geocoder to return a response but with unmapped ward and district codes
         mock_data = {
           "latitude" => 50.0,
           "longitude" => -1.0,
-          "codes" => { "admin_ward" => "UNMAPPED1" }
+          "codes" => { "admin_ward" => "UNMAPPED1", "admin_district" => "UNMAPPED2" }
         }
         mock_result = double("GeocoderResult", data: mock_data)
         allow(Geocoder).to receive(:search).and_return([mock_result])
@@ -100,6 +100,34 @@ RSpec.describe Address, type: :model do
         address.valid?
         expect(address).not_to be_valid
         expect(address.errors[:postcode]).to include("has been found but could not be mapped to a neighbourhood at this time")
+      end
+    end
+
+    context "with postcode whose ward is unknown but district is known" do
+      let!(:district) { create(:millbrook_district) }
+
+      before do
+        mock_data = {
+          "latitude" => 53.5,
+          "longitude" => -1.5,
+          "codes" => {
+            "admin_ward" => "E05099999",                 # unknown new ward
+            "admin_district" => district.unit_code_value  # known district
+          }
+        }
+        mock_result = double("GeocoderResult", data: mock_data)
+        allow(Geocoder).to receive(:search).and_return([mock_result])
+      end
+
+      it "assigns the district as neighbourhood via fallback" do
+        address = described_class.new(
+          street_address: "123 Redistricted Street",
+          postcode: "ZZ11 2ZZ",
+          country_code: "GB"
+        )
+        address.valid?
+        expect(address).to be_valid
+        expect(address.neighbourhood).to eq(district)
       end
     end
   end

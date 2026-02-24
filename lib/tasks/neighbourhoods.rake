@@ -38,6 +38,7 @@ module NeighbourhoodImporter
         name: @ons_data[:name], # human name for us
         unit_name: @ons_data[:name],
         unit: @ons_data[:type],
+        level: Neighbourhood::LEVELS[@ons_data[:type].to_sym],
         unit_code_value: @ons_id,
         unit_code_key: @ons_data[:ons_id_key], # table key of ONS ID
         release_date: @ons_data[:release_date]
@@ -97,7 +98,7 @@ module NeighbourhoodImporter
     ons_id # this is the parent for the next step
   end
 
-  def load_csv(release_date, file_name)
+  def load_csv(release_date, file_name, county_prefix: 'CTY')
     log "  loading from #{file_name}"
     year_prefix = release_date.year % 100
 
@@ -111,8 +112,13 @@ module NeighbourhoodImporter
       # region
       parent_ons_id = process_row(row, release_date, parent_ons_id, 'region', "RGN#{year_prefix}CD", "RGN#{year_prefix}NM")
 
-      # county
-      parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "CTY#{year_prefix}CD", "CTY#{year_prefix}NM")
+      # county (column prefix changed from CTY to CTYUA in May 2024 ONS data)
+      # For unitary authorities, CTYUA code = LAD code. Skip the county row
+      # in that case so the district row creates the entry as type 'district'
+      # (needed for ward.district lookups and badge display).
+      county_code = row["#{county_prefix}#{year_prefix}CD"]
+      district_code = row["LAD#{year_prefix}CD"]
+      parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "#{county_prefix}#{year_prefix}CD", "#{county_prefix}#{year_prefix}NM") unless county_code.present? && county_code == district_code
 
       # district
       parent_ons_id = process_row(row, release_date, parent_ons_id, 'district', "LAD#{year_prefix}CD", "LAD#{year_prefix}NM")
@@ -138,6 +144,13 @@ module NeighbourhoodImporter
     end
   end
 
+  def backfill_levels
+    Neighbourhood::LEVELS.each do |unit_name, level_value|
+      count = Neighbourhood.where(unit: unit_name.to_s, level: nil).update_all(level: level_value) # rubocop:disable Rails/SkipsModelValidations
+      log "  set level=#{level_value} for #{count} #{unit_name} records" if count.positive?
+    end
+  end
+
   def run
     @neighbourhoods = {}
 
@@ -157,6 +170,12 @@ module NeighbourhoodImporter
       'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(May_2023)_Lookup_in_United_Kingdom.csv'
     )
 
+    load_csv(
+      DateTime.new(2024, 5),
+      'Ward_to_Local_Authority_District_to_CTYUA_to_RGN_to_CTRY_(May_2024)_Lookup_in_the_UK.csv',
+      county_prefix: 'CTYUA'
+    )
+
     # 3. for each neighbourhood, figure out its parent relationship, save it to database
     log 'Saving neighbourhoods'
     save_missing_neighbourhoods
@@ -164,6 +183,10 @@ module NeighbourhoodImporter
     # 4. update neighbourhoods with parents and save
     log 'Reparenting neighbourhoods'
     reparent_neighbourhoods
+
+    # 5. backfill nil levels from unit string (for records not updated by save step)
+    log 'Backfilling missing level values'
+    backfill_levels
   end
 end
 
