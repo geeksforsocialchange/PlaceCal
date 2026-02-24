@@ -38,6 +38,7 @@ module NeighbourhoodImporter
         name: @ons_data[:name], # human name for us
         unit_name: @ons_data[:name],
         unit: @ons_data[:type],
+        level: Neighbourhood::LEVELS[@ons_data[:type].to_sym],
         unit_code_value: @ons_id,
         unit_code_key: @ons_data[:ons_id_key], # table key of ONS ID
         release_date: @ons_data[:release_date]
@@ -143,6 +144,13 @@ module NeighbourhoodImporter
     end
   end
 
+  def backfill_levels
+    Neighbourhood::LEVELS.each do |unit_name, level_value|
+      count = Neighbourhood.where(unit: unit_name.to_s, level: nil).update_all(level: level_value) # rubocop:disable Rails/SkipsModelValidations
+      log "  set level=#{level_value} for #{count} #{unit_name} records" if count.positive?
+    end
+  end
+
   def run
     @neighbourhoods = {}
 
@@ -175,6 +183,10 @@ module NeighbourhoodImporter
     # 4. update neighbourhoods with parents and save
     log 'Reparenting neighbourhoods'
     reparent_neighbourhoods
+
+    # 5. backfill nil levels from unit string (for records not updated by save step)
+    log 'Backfilling missing level values'
+    backfill_levels
   end
 end
 
