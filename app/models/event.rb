@@ -83,8 +83,12 @@ class Event < ApplicationRecord
   scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
   scope :sort_by_time, -> { order(dtstart: :asc).order(summary: :asc) }
 
-  scope :without_matching_times, lambda { |start_times, end_times|
-    where.not(dtstart: start_times).or(where.not(dtend: end_times))
+  scope :without_matching_times, lambda { |time_pairs|
+    return none if time_pairs.empty?
+
+    conditions = time_pairs.map { |s, e| arel_table[:dtstart].eq(s).and(arel_table[:dtend].eq(e)) }
+    matching = conditions.reduce(:or)
+    where.not(matching)
   }
 
   # Only events that don't repeat

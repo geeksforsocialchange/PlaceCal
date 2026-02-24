@@ -8,6 +8,9 @@ module Types
           null: false,
           description: 'Our internal ID for further querying'
 
+    field :uid, String,
+          description: 'The stable unique identifier from the source calendar'
+
     # Summary and name are aliases, this is left as a convenience
     #   for people used to iCal format
     field :name, String,
