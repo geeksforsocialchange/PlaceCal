@@ -60,10 +60,10 @@ Verify the import by checking neighbourhood counts by release date:
 rails runner "puts Neighbourhood.group(:release_date).count"
 ```
 
-Example output:
+Example output (counts depend on pre-existing data; May 2024 has ~8,800 wards+districts+counties+regions+countries):
 
 ```
-{Mon, 01 May 2024 01:00:00 BST +01:00=>8845, Mon, 01 May 2023 01:00:00 BST +01:00=>8844, Sun, 01 Dec 2019 00:00:00 GMT +00:00=>3827}
+{Mon, 01 May 2024 01:00:00 BST +01:00=>8791, Mon, 01 May 2023 01:00:00 BST +01:00=>399, Sun, 01 Dec 2019 00:00:00 GMT +00:00=>3827}
 ```
 
 ## Update the neighbourhood model

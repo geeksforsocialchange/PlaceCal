@@ -125,7 +125,6 @@ RSpec.describe Address, type: :model do
           postcode: "ZZ11 2ZZ",
           country_code: "GB"
         )
-        # Don't use the factory's geocode stub — let geocode_with_ward run
         address.valid?
         expect(address).to be_valid
         expect(address.neighbourhood).to eq(district)
