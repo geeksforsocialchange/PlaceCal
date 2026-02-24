@@ -1,7 +1,5 @@
 # Updating neighbourhoods
 
-_PLEASE READ CAREFULLY._
-
 ## Background
 
 PlaceCal maps postcodes to neighbourhoods using data from two sources:
