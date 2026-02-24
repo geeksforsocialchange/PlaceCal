@@ -2,66 +2,113 @@
 
 _PLEASE READ CAREFULLY._
 
-Placecal depends upon data from ONS (Office of National Statistics) and postcodes.io to map postcodes to neighbourhoods.
+## Background
 
-These are how Sites find their Partners or Events through Addresses or Service Areas.
+PlaceCal maps postcodes to neighbourhoods using data from two sources:
 
-The data in the Neighbourhoods table may become obsolete as the ONS datasets are updated. This can result in newer postcodes not being found.
+1. **ONS (Office for National Statistics)** publishes CSV lookup files that define the hierarchy: ward → district → county → region → country. We import these into the `neighbourhoods` table.
+2. **postcodes.io** maps postcodes to ONS ward/district codes at geocoding time.
 
-This document describes the procedure for updating neighbourhoods.
+When the ONS conducts boundary reviews (e.g. County Durham in March 2024, effective May 2025), postcodes.io adopts the new ward codes before we import them. This causes postcodes to return ward codes that don't exist in our database, resulting in the error "postcode has been found but could not be mapped to a neighbourhood at this time".
 
-It is expected that when this task needs to be done it will be done on a local dev machine first, then staging, then production. Hopefully this will minimize any problems from affecting clients/the public.
+**Fallback matching:** Since v2024.05, `Neighbourhood.find_from_postcodesio_response` falls back to matching by `admin_district` code when a ward code isn't found. This means postcodes in redistricted areas will still resolve — to the district level — even before we import the new ward data.
+
+## Full workflow checklist
+
+1. Download new CSV from ONS → add to `lib/data/`
+2. Update `lib/tasks/neighbourhoods.rake` with new `load_csv` call
+3. Update `LATEST_RELEASE_DATE` in `app/models/neighbourhood.rb`
+4. Run `rails neighbourhoods:import` locally and verify
+5. Run `rails db:clean_bad_addresses` to prune orphaned addresses
+6. Run `rails addresses:regeocde` to update stale address→neighbourhood links
+7. Verify a specific postcode works (see Verification section)
+8. Commit, merge, deploy
+9. Run import + re-geocode on production
 
 ## Download new data
 
-Check out the [ONS Open Geography Portal](https://geoportal.statistics.gov.uk/search?collection=Dataset&q=Ward%20to%20Local%20Authority%20District%20to%20County%20to%20Region%20to%20Country%20Lookup) and look for something titled like "Ward to Local Authority District to County to Region to Country (May 2023) Lookup in United Kingdom". Download and extract this into the PlaceCal repo in `/lib/data/`. You then want to open `/lib/tasks/neighbourhoods.rake` (around line 150) and add a line like:
+Check out the [ONS Open Geography Portal](https://geoportal.statistics.gov.uk/search?collection=Dataset&q=Ward%20to%20Local%20Authority%20District) and look for something titled like "Ward to Local Authority District to CTYUA to RGN to CTRY (May 2024) Lookup in the UK". Download and extract this into the PlaceCal repo in `/lib/data/`.
+
+### Column name changes
+
+The county column name changed in the May 2024 ONS data:
+
+- **Pre-2024**: `CTY{YY}CD` / `CTY{YY}NM` — only contained shire counties (Lancashire, Norfolk). **Empty** for unitary authorities (County Durham, Bristol, etc.)
+- **May 2024+**: `CTYUA{YY}CD` / `CTYUA{YY}NM` — includes both shire counties AND unitary authorities. For unitary authorities, the CTYUA code equals the LAD code (e.g. County Durham is `E06000047` at both levels).
+
+When adding a new CSV with the `CTYUA` column, pass `county_prefix: 'CTYUA'` to `load_csv`:
 
 ```ruby
 load_csv(
-  DateTime.new(2019, 12),
-  'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(December_2019)_Lookup_in_United_Kingdom.csv'
+  DateTime.new(2024, 5),
+  'Ward_to_Local_Authority_District_to_CTYUA_to_RGN_to_CTRY_(May_2024)_Lookup_in_the_UK.csv',
+  county_prefix: 'CTYUA'
 )
 ```
 
-With the correct name and Date (!!THIS IS VERY IMPORTANT!!) - just year and month will suffice.
+The rake task's dedup logic (`@neighbourhoods[ons_id] ||=`) handles the case where a unitary authority's CTYUA code equals its LAD code — the first occurrence (county level) wins, and the ward still gets the correct parent.
 
-## Perform the update
-
-Once done there is only one command to run
+## Perform the import
 
 ```bash
 rails neighbourhoods:import
 ```
 
-You may wish to check this by openning a rails console and running `Neighbourhood.group(:release_date).count` and seeing how many neighbourhoods by release data are present.
+Verify the import by checking neighbourhood counts by release date:
 
-Example:
-
-```
-irb(main):002:0> Neighbourhood.group(:release_date).count
-   (6.3ms)  SELECT COUNT(*) AS count_all, "neighbourhoods"."release_date" AS neighbourhoods_release_date FROM "neighbourhoods" GROUP BY "neighbourhoods"."release_date"
-=> {Mon, 01 May 2023 01:00:00.000000000 BST +01:00=>8844, Sun, 01 Dec 2019 00:00:00.000000000 GMT +00:00=>3827}
+```bash
+rails runner "puts Neighbourhood.group(:release_date).count"
 ```
 
-## Adjust the neighbourhood model
+Example output:
 
-If you are adding a new ONS dataset (currently May 2023) you _MUST_ change the value in `/app/models/neighbourhood.rb`! Which looks something like
+```
+{Mon, 01 May 2024 01:00:00 BST +01:00=>8845, Mon, 01 May 2023 01:00:00 BST +01:00=>8844, Sun, 01 Dec 2019 00:00:00 GMT +00:00=>3827}
+```
+
+## Update the neighbourhood model
+
+Update `LATEST_RELEASE_DATE` in `/app/models/neighbourhood.rb` to match the new dataset:
 
 ```ruby
-# frozen_string_literal: true
+LATEST_RELEASE_DATE = DateTime.new(2024, 5).freeze
+```
 
-class Neighbourhood < ApplicationRecord
-  # WARNING: this must be updated for every new ONS dataset
-  #    see /lib/tasks/neighbourhoods.rake
-  LATEST_RELEASE_DATE = DateTime.new(2023, 5).freeze  <----
+## Re-geocode stale addresses
 
-  ...
+After importing new neighbourhood data, existing addresses may still point to old neighbourhoods. Run:
+
+```bash
+# First, clean up orphaned addresses (not linked to any partner or event)
+rails db:clean_bad_addresses
+
+# Then re-geocode in-use addresses with stale neighbourhoods
+rails addresses:regeocde
+```
+
+The re-geocode task finds addresses linked to partners or events that have either:
+
+- No neighbourhood (`neighbourhood_id IS NULL`)
+- A neighbourhood from an older release date
+
+It re-queries postcodes.io for each and updates the neighbourhood link.
+
+## Verification
+
+Test that a specific postcode resolves correctly:
+
+```bash
+rails runner 'res = Geocoder.search("DH1 3EL").first.data; n = Neighbourhood.find_from_postcodesio_response(res); puts "#{n&.name} (#{n&.unit}) - #{n&.unit_code_value}"'
 ```
 
 ## Deploying
 
-The new dataset file and modified script/model must be commited to the repo and merged on to main when it comes to updating staging or production. Warning: between the time that your new code has been deployed to staging/production and the time the new import script has been run nobody will be able to select any neighbourhoods (as your updates will be filtering for the latest neighbourhoods which you have not inserted yet).
+The new dataset file and modified script/model must be committed to the repo and merged to main. Then on production:
 
-## Fin
+```bash
+dokku run placecal rails neighbourhoods:import
+dokku run placecal rails db:clean_bad_addresses
+dokku run placecal rails addresses:regeocde
+```
 
-Congratulations, neighbourhoods should now be up to date.
+**Warning:** Between the time your new code is deployed and the import script runs, the `latest_release` scope will filter for the new release date which hasn't been imported yet. This means neighbourhood selection will be temporarily broken. Minimise this window by running the import immediately after deploy.

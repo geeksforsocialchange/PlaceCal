@@ -97,7 +97,7 @@ module NeighbourhoodImporter
     ons_id # this is the parent for the next step
   end
 
-  def load_csv(release_date, file_name)
+  def load_csv(release_date, file_name, county_prefix: 'CTY')
     log "  loading from #{file_name}"
     year_prefix = release_date.year % 100
 
@@ -111,8 +111,8 @@ module NeighbourhoodImporter
       # region
       parent_ons_id = process_row(row, release_date, parent_ons_id, 'region', "RGN#{year_prefix}CD", "RGN#{year_prefix}NM")
 
-      # county
-      parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "CTY#{year_prefix}CD", "CTY#{year_prefix}NM")
+      # county (column prefix changed from CTY to CTYUA in May 2024 ONS data)
+      parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "#{county_prefix}#{year_prefix}CD", "#{county_prefix}#{year_prefix}NM")
 
       # district
       parent_ons_id = process_row(row, release_date, parent_ons_id, 'district', "LAD#{year_prefix}CD", "LAD#{year_prefix}NM")
@@ -155,6 +155,12 @@ module NeighbourhoodImporter
     load_csv(
       DateTime.new(2023, 5),
       'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(May_2023)_Lookup_in_United_Kingdom.csv'
+    )
+
+    load_csv(
+      DateTime.new(2024, 5),
+      'Ward_to_Local_Authority_District_to_CTYUA_to_RGN_to_CTRY_(May_2024)_Lookup_in_the_UK.csv',
+      county_prefix: 'CTYUA'
     )
 
     # 3. for each neighbourhood, figure out its parent relationship, save it to database
