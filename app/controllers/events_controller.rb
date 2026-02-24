@@ -55,6 +55,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html
       format.ics do
+        track_ical_download
         cal = create_calendar([@event])
         cal.publish
         render plain: cal.to_ical
@@ -83,6 +84,7 @@ class EventsController < ApplicationController
   end
 
   def render_ical
+    track_ical_download
     query = EventsQuery.new(site: @site)
     cal = create_calendar(query.for_ical)
     cal.publish

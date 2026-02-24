@@ -81,23 +81,58 @@ class ApplicationController < ActionController::Base
   def create_calendar(events, title = false)
     cal = Icalendar::Calendar.new
     cal.x_wr_calname = title || 'PlaceCal'
+    site_url = current_site&.url || 'https://placecal.org'
     events.each do |e|
-      ical = create_ical_event(e)
+      ical = create_ical_event(e, site_url)
       cal.add_event(ical)
     end
     cal
   end
 
-  # TODO: Refactor this to a view or something
   # Convert an event object into an ics listing
-  def create_ical_event(e)
+  def create_ical_event(e, site_url)
     event = Icalendar::Event.new
     event.dtstart = e.dtstart
     event.dtend = e.dtend
     event.summary = e.summary
-    event.description = "#{e.description}\n\n<a href='https://placecal.org/events/#{e.id}'>More information about this event on PlaceCal.org</a>"
+    event.description = "#{unescape_ical_text(e.description)}\n\n#{site_url}/events/#{e.id}"
     event.location = e.location
     event
+  end
+
+  # Strip iCal escape sequences from text that was stored pre-escaped during import.
+  # The icalendar gem will re-escape as needed when serializing.
+  def unescape_ical_text(text)
+    return '' if text.blank?
+
+    text.gsub('\\n', "\n")
+        .gsub('\\,', ',')
+        .gsub('\\;', ';')
+        .gsub("\\'", "'")
+        .gsub('\\"', '"')
+        .gsub('\\\\', '\\')
+  end
+
+  # Track iCal feed downloads in AppSignal and Plausible.
+  # Sets a distinct AppSignal action name and sends a server-side pageview
+  # to Plausible (iCal clients don't execute JavaScript).
+  def track_ical_download
+    Appsignal::Transaction.current.set_action("#{self.class.name}#ical_feed")
+
+    return unless Rails.env.production?
+
+    Thread.new do
+      uri = URI('https://plausible.io/api/event')
+      Net::HTTP.post(
+        uri,
+        { name: 'pageview', url: request.original_url, domain: 'placecal.org' }.to_json,
+        'Content-Type' => 'application/json',
+        'User-Agent' => request.user_agent.to_s,
+        'X-Forwarded-For' => request.remote_ip
+      )
+    rescue StandardError => e
+      Rails.logger.warn("Plausible tracking failed: #{e.message}")
+    end
   end
 
   def authenticate_by_ip
