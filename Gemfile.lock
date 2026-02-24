@@ -269,7 +269,7 @@ GEM
     dumb_delegator (1.1.0)
     enumerize (2.8.1)
       activesupport (>= 3.2)
-    erb (6.0.1)
+    erb (6.0.2)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
     eventbrite_sdk (3.6.0)
@@ -326,7 +326,7 @@ GEM
       activesupport (>= 6.1)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.5.19)
+    graphql (2.5.20)
       base64
       fiber-storage
       logger
@@ -415,7 +415,8 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (6.0.1)
+    minitest (6.0.2)
+      drb (~> 2.0)
       prism (~> 1.5)
     msgpack (1.8.0)
     multi_json (1.19.1)
@@ -702,11 +703,10 @@ GEM
       descendants_tracker (~> 0.0, >= 0.0.3)
     warden (1.2.9)
       rack (>= 2.0.9)
-    web-console (4.2.1)
-      actionview (>= 6.0.0)
-      activemodel (>= 6.0.0)
+    web-console (4.3.0)
+      actionview (>= 8.0.0)
       bindex (>= 0.4.0)
-      railties (>= 6.0.0)
+      railties (>= 8.0.0)
     webmock (3.26.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
