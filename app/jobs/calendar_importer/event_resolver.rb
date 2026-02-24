@@ -120,9 +120,12 @@ class CalendarImporter::EventResolver
 
     # If any dates of this event don't match the imported start times or end times, delete them
     if data.recurring_event?
-      events_with_invalid_dates = calendar_events.without_matching_times(occurences.map(&:start_time),
-                                                                         occurences.map(&:end_time))
+      time_pairs = occurences.map { |o| [o.start_time, o.end_time] }
+      events_with_invalid_dates = calendar_events.without_matching_times(time_pairs)
       events_with_invalid_dates.destroy_all
+
+      # Re-query after destroy to avoid stale relation returning destroyed records
+      calendar_events = calendar.events.where(uid: data.uid)
     end
 
     occurences.each do |occurence|
