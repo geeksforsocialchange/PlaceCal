@@ -100,14 +100,17 @@ class ApplicationController < ActionController::Base
     event
   end
 
-  # Strip non-standard iCal escape sequences stored in the DB from source imports.
-  # The icalendar gem handles standard escapes (\n \, \; \\) but not \' or \"
-  # which some source calendars produce.
+  # Unescape iCal escape sequences stored in the DB from source calendar imports.
+  # Order matters: unescape \\ last so we don't clobber other sequences.
   def unescape_ical_text(text)
     return '' if text.blank?
 
-    text.gsub("\\'", "'")
+    text.gsub('\\n', "\n")
+        .gsub('\\,', ',')
+        .gsub('\\;', ';')
+        .gsub("\\'", "'")
         .gsub('\\"', '"')
+        .gsub('\\\\', '\\')
   end
 
   # Track iCal feed downloads in AppSignal and Plausible.
