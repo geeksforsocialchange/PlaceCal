@@ -112,7 +112,12 @@ module NeighbourhoodImporter
       parent_ons_id = process_row(row, release_date, parent_ons_id, 'region', "RGN#{year_prefix}CD", "RGN#{year_prefix}NM")
 
       # county (column prefix changed from CTY to CTYUA in May 2024 ONS data)
-      parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "#{county_prefix}#{year_prefix}CD", "#{county_prefix}#{year_prefix}NM")
+      # For unitary authorities, CTYUA code = LAD code. Skip the county row
+      # in that case so the district row creates the entry as type 'district'
+      # (needed for ward.district lookups and badge display).
+      county_code = row["#{county_prefix}#{year_prefix}CD"]
+      district_code = row["LAD#{year_prefix}CD"]
+      parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "#{county_prefix}#{year_prefix}CD", "#{county_prefix}#{year_prefix}NM") unless county_code.present? && county_code == district_code
 
       # district
       parent_ons_id = process_row(row, release_date, parent_ons_id, 'district', "LAD#{year_prefix}CD", "LAD#{year_prefix}NM")
