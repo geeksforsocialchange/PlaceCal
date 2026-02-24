@@ -93,6 +93,7 @@ class ApplicationController < ActionController::Base
   def create_ical_event(e, site_url)
     event_url = "#{site_url}/events/#{e.id}"
     event = Icalendar::Event.new
+    event.uid = e.uid.presence || "event-#{e.id}@placecal.org"
     event.dtstart = e.dtstart
     event.dtend = e.dtend
     event.summary = e.summary
