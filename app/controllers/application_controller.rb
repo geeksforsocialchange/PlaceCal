@@ -92,6 +92,7 @@ class ApplicationController < ActionController::Base
   # Convert an event object into an ics listing
   def create_ical_event(e)
     event = Icalendar::Event.new
+    event.uid = e.uid.presence || "event-#{e.id}@placecal.org"
     event.dtstart = e.dtstart
     event.dtend = e.dtend
     event.summary = e.summary
