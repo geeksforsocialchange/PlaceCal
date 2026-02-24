@@ -172,9 +172,39 @@ RSpec.describe Neighbourhood, type: :model do
     end
 
     it "returns nil when no match found" do
-      response = { "codes" => { "admin_ward" => "NONEXIST1" } }
+      response = { "codes" => { "admin_ward" => "NONEXIST1", "admin_district" => "NONEXIST2" } }
       result = described_class.find_from_postcodesio_response(response)
       expect(result).to be_nil
+    end
+
+    context "when ward code is unknown but district code exists" do
+      let!(:district) { ward.parent } # millbrook_district
+
+      it "falls back to district match" do
+        response = {
+          "codes" => {
+            "admin_ward" => "E05099999",       # unknown new ward code
+            "admin_district" => district.unit_code_value  # known district
+          }
+        }
+        result = described_class.find_from_postcodesio_response(response)
+        expect(result).to eq(district)
+      end
+    end
+
+    context "when ward code is missing from response" do
+      let!(:district) { ward.parent }
+
+      it "falls back to district match" do
+        response = {
+          "codes" => {
+            "admin_ward" => nil,
+            "admin_district" => district.unit_code_value
+          }
+        }
+        result = described_class.find_from_postcodesio_response(response)
+        expect(result).to eq(district)
+      end
     end
   end
 end
