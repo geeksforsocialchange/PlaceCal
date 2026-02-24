@@ -44,13 +44,15 @@ load_csv(
 )
 ```
 
-The rake task's dedup logic (`@neighbourhoods[ons_id] ||=`) handles the case where a unitary authority's CTYUA code equals its LAD code — the first occurrence (county level) wins, and the ward still gets the correct parent.
+For unitary authorities, the CTYUA code equals the LAD code (e.g. Newcastle upon Tyne is `E08000021` at both levels). The rake task **skips the county row** when this happens, so the district row creates the entry with `unit: 'district'`. This is important because ward→district lookups and badge display depend on the parent being typed as `district`, not `county`.
 
 ## Perform the import
 
 ```bash
 rails neighbourhoods:import
 ```
+
+The import also backfills the integer `level` column for any records where it's nil (based on their `unit` string). This column is used by the admin cascading neighbourhood picker to filter by hierarchy level.
 
 Verify the import by checking neighbourhood counts by release date:
 
