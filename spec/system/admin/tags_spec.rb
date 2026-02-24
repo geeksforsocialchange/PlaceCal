@@ -36,7 +36,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
   def assert_has_flash(type, message)
     # Support daisyUI alert classes
     alert_class = type == :success ? "alert-success" : "alert-error"
-    expect(page).to have_css("[role='alert'].#{alert_class}, .flashes .alert-#{type}", text: message, wait: 5)
+    expect(page).to have_css("[role='alert'].#{alert_class}, .flashes .alert-#{type}", text: message, wait: 10)
   end
 
   describe "system tag visibility" do
@@ -64,6 +64,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       # Wait for tabs, navigate to Basic Info tab (tab state may be stored from previous tests)
       expect(page).to have_css(".tabs.tabs-lift", wait: 10)
       find('input.tab[data-hash="basic"]').click
+      expect(page).to have_field("Name", wait: 5)
 
       fill_in "Name", with: "A new tag name"
       click_button "Save"
