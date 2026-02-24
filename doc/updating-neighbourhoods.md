@@ -18,7 +18,7 @@ When the ONS conducts boundary reviews (e.g. County Durham in March 2024, effect
 3. Update `LATEST_RELEASE_DATE` in `app/models/neighbourhood.rb`
 4. Run `rails neighbourhoods:import` locally and verify
 5. Run `rails db:clean_bad_addresses` to prune orphaned addresses
-6. Run `rails addresses:regeocde` to update stale address→neighbourhood links
+6. Run `rails addresses:regeocode` to update stale address→neighbourhood links
 7. Verify a specific postcode works (see Verification section)
 8. Commit, merge, deploy
 9. Run import + re-geocode on production
@@ -83,7 +83,7 @@ After importing new neighbourhood data, existing addresses may still point to ol
 rails db:clean_bad_addresses
 
 # Then re-geocode in-use addresses with stale neighbourhoods
-rails addresses:regeocde
+rails addresses:regeocode
 ```
 
 The re-geocode task finds addresses linked to partners or events that have either:
@@ -108,7 +108,7 @@ The new dataset file and modified script/model must be committed to the repo and
 ```bash
 dokku run placecal rails neighbourhoods:import
 dokku run placecal rails db:clean_bad_addresses
-dokku run placecal rails addresses:regeocde
+dokku run placecal rails addresses:regeocode
 ```
 
 **Warning:** Between the time your new code is deployed and the import script runs, the `latest_release` scope will filter for the new release date which hasn't been imported yet. This means neighbourhood selection will be temporarily broken. Minimise this window by running the import immediately after deploy.

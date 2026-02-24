@@ -2,7 +2,7 @@
 
 namespace :addresses do
   desc 'Re-geocode addresses with stale or missing neighbourhoods'
-  task regeocde: :environment do
+  task regeocode: :environment do
     latest = Neighbourhood::LATEST_RELEASE_DATE
 
     # Find in-use addresses (linked to a partner or event) with stale neighbourhoods
