@@ -106,7 +106,7 @@ class EventsQuery
 
     events = apply_period(base_scope, period)
 
-    # Count events per leaf neighbourhood
+    # Count events per leaf neighbourhood (single query)
     raw_counts = events
                  .left_joins(:address, partner: :address)
                  .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
@@ -114,15 +114,14 @@ class EventsQuery
                  .distinct
                  .count
 
-    # For each descendant, sum counts from its entire subtree
-    results = all_descendants.map do |n|
-      subtree_count = n.subtree_ids.sum { |id| raw_counts[id] || 0 }
-      { neighbourhood: n, count: subtree_count }
-    end
+    # Build parent→children map from ancestry data already in memory,
+    # then compute subtree counts without extra DB queries
+    subtree_counts = subtree_counts_from_ancestry(all_descendants, raw_counts)
 
-    results
-      .select { |entry| entry[:count].positive? }
-      .sort_by { |entry| entry[:neighbourhood].name }
+    all_descendants
+      .select { |n| (subtree_counts[n.id] || 0).positive? }
+      .sort_by(&:name)
+      .map { |n| { neighbourhood: n, count: subtree_counts[n.id] } }
   end
 
   private
@@ -238,5 +237,31 @@ class EventsQuery
     else
       events.distinct.sort_by_time.group_by_day(&:dtstart)
     end
+  end
+
+  # Compute subtree event counts using in-memory ancestry data (no extra queries).
+  # Builds a parent→children map, then propagates leaf counts upward.
+  def subtree_counts_from_ancestry(descendants, raw_counts)
+    ids = descendants.to_set(&:id)
+    children_map = Hash.new { |h, k| h[k] = [] }
+    roots = []
+
+    descendants.each do |n|
+      if n.parent_id && ids.include?(n.parent_id)
+        children_map[n.parent_id] << n.id
+      else
+        roots << n.id
+      end
+    end
+
+    counts = {}
+    # Post-order traversal: compute children first, then sum into parent
+    compute = lambda do |id|
+      own = raw_counts[id] || 0
+      child_sum = children_map[id].sum { |cid| compute.call(cid) }
+      counts[id] = own + child_sum
+    end
+    roots.each { |id| compute.call(id) }
+    counts
   end
 end
