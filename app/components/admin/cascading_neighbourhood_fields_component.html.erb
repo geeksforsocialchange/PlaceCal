@@ -10,7 +10,7 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <%= icon(:neighbourhood, size: '4', css_class: 'text-gray-600') %>
-        <span class="text-sm font-medium text-base-content/70"><%= t('admin.service_areas.new_area') %></span>
+        <span class="text-sm font-medium text-base-content/70"><%= title || t('admin.service_areas.new_area') %></span>
       </div>
       <div class="flex items-center gap-1">
         <span class="loading loading-spinner loading-xs hidden" data-cascading-neighbourhood-target="loading"></span>
