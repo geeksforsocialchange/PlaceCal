@@ -279,25 +279,22 @@ RSpec.describe EventsQuery do
   end
 
   describe "#neighbourhoods_with_counts" do
-    let(:neighbourhood1) { site.primary_neighbourhood }
-    let(:neighbourhood2) { create(:neighbourhood) }
-    let(:address1) { create(:address, neighbourhood: neighbourhood1) }
-    let(:address2) { create(:address, neighbourhood: neighbourhood2) }
+    context "when site has a district with ward children" do
+      let(:district) { site.primary_neighbourhood }
+      let(:ward1) { create(:neighbourhood, name: "Hillcrest", unit: "ward", parent: district) }
+      let(:ward2) { create(:neighbourhood, name: "Valleyview", unit: "ward", parent: district) }
+      let(:address1) { create(:address, neighbourhood: ward1) }
+      let(:address2) { create(:address, neighbourhood: ward2) }
 
-    before do
-      site.neighbourhoods << neighbourhood2
-    end
-
-    context "with events in different neighbourhoods" do
       let(:partner1) do
         p = create(:partner, address: address1)
-        p.service_areas << create(:service_area, neighbourhood: neighbourhood1)
+        p.service_areas << create(:service_area, neighbourhood: ward1)
         p
       end
 
       let(:partner2) do
         p = create(:partner, address: address2)
-        p.service_areas << create(:service_area, neighbourhood: neighbourhood2)
+        p.service_areas << create(:service_area, neighbourhood: ward2)
         p
       end
 
@@ -306,15 +303,14 @@ RSpec.describe EventsQuery do
         create_list(:future_event, 2, partner: partner2, address: address2)
       end
 
-      it "returns neighbourhoods with event counts" do
+      it "shows all descendant neighbourhoods with event counts" do
         query = described_class.new(site: site, day: today)
         result = query.neighbourhoods_with_counts(period: "future")
 
-        n1_result = result.find { |r| r[:neighbourhood].id == neighbourhood1.id }
-        n2_result = result.find { |r| r[:neighbourhood].id == neighbourhood2.id }
-
-        expect(n1_result[:count]).to eq(3)
-        expect(n2_result[:count]).to eq(2)
+        ward1_result = result.find { |r| r[:neighbourhood].id == ward1.id }
+        ward2_result = result.find { |r| r[:neighbourhood].id == ward2.id }
+        expect(ward1_result[:count]).to eq(3)
+        expect(ward2_result[:count]).to eq(2)
       end
 
       it "orders neighbourhoods by name" do
@@ -326,24 +322,100 @@ RSpec.describe EventsQuery do
       end
     end
 
-    context "with period filtering" do
-      let(:partner_in_n1) do
+    context "when site has a county with deeper hierarchy" do
+      # county → district → wards
+      let(:county) { create(:neighbourhood, name: "Coastshire", unit: "county") }
+      let(:district) { create(:neighbourhood, name: "Seaview", unit: "district", parent: county) }
+      let(:ward1) { create(:neighbourhood, name: "Cliffside", unit: "ward", parent: district) }
+      let(:ward2) { create(:neighbourhood, name: "Beachfront", unit: "ward", parent: district) }
+
+      let(:county_site) do
+        s = create(:site)
+        create(:sites_neighbourhood, site: s, neighbourhood: county)
+        s
+      end
+
+      let(:address1) { create(:address, neighbourhood: ward1) }
+      let(:address2) { create(:address, neighbourhood: ward2) }
+
+      let(:partner1) do
         p = create(:partner, address: address1)
-        p.service_areas << create(:service_area, neighbourhood: neighbourhood1)
+        p.service_areas << create(:service_area, neighbourhood: ward1)
+        p
+      end
+
+      let(:partner2) do
+        p = create(:partner, address: address2)
+        p.service_areas << create(:service_area, neighbourhood: ward2)
         p
       end
 
       before do
-        create(:future_event, partner: partner_in_n1, address: address1, dtstart: 2.days.from_now)
-        create(:future_event, partner: partner_in_n1, address: address1, dtstart: 10.days.from_now)
+        create_list(:future_event, 3, partner: partner1, address: address1)
+        create_list(:future_event, 2, partner: partner2, address: address2)
+      end
+
+      it "shows all levels with subtree counts" do
+        query = described_class.new(site: county_site, day: today)
+        result = query.neighbourhoods_with_counts(period: "future")
+
+        # Should include district (with sum of all ward events) AND both wards
+        district_result = result.find { |r| r[:neighbourhood].id == district.id }
+        ward1_result = result.find { |r| r[:neighbourhood].id == ward1.id }
+        ward2_result = result.find { |r| r[:neighbourhood].id == ward2.id }
+
+        expect(district_result[:count]).to eq(5)
+        expect(ward1_result[:count]).to eq(3)
+        expect(ward2_result[:count]).to eq(2)
+      end
+    end
+
+    context "when site neighbourhood has no children (leaf level)" do
+      let(:leaf_site) do
+        s = create(:site)
+        ward = create(:neighbourhood, name: "Leaf Ward")
+        create(:sites_neighbourhood, site: s, neighbourhood: ward)
+        s
+      end
+
+      before do
+        ward = leaf_site.primary_neighbourhood
+        address = create(:address, neighbourhood: ward)
+        partner_in_ward = create(:partner, address: address)
+        partner_in_ward.service_areas << create(:service_area, neighbourhood: ward)
+        create_list(:future_event, 3, partner: partner_in_ward, address: address)
+      end
+
+      it "returns empty (no descendants to show)" do
+        query = described_class.new(site: leaf_site, day: today)
+        result = query.neighbourhoods_with_counts(period: "future")
+
+        expect(result).to be_empty
+      end
+    end
+
+    context "with period filtering" do
+      let(:district) { site.primary_neighbourhood }
+      let(:ward) { create(:neighbourhood, name: "Test Ward", unit: "ward", parent: district) }
+      let(:address) { create(:address, neighbourhood: ward) }
+
+      let(:partner_in_ward) do
+        p = create(:partner, address: address)
+        p.service_areas << create(:service_area, neighbourhood: ward)
+        p
+      end
+
+      before do
+        create(:future_event, partner: partner_in_ward, address: address, dtstart: 2.days.from_now)
+        create(:future_event, partner: partner_in_ward, address: address, dtstart: 10.days.from_now)
       end
 
       it "counts only events in the specified period" do
         query = described_class.new(site: site, day: today)
         result = query.neighbourhoods_with_counts(period: "week")
 
-        n1_result = result.find { |r| r[:neighbourhood].id == neighbourhood1.id }
-        expect(n1_result[:count]).to eq(1)
+        ward_result = result.find { |r| r[:neighbourhood].id == ward.id }
+        expect(ward_result[:count]).to eq(1)
       end
     end
 
@@ -358,100 +430,129 @@ RSpec.describe EventsQuery do
   end
 
   describe "#call with neighbourhood_id filter" do
-    let(:neighbourhood1) { site.primary_neighbourhood }
-    let(:neighbourhood2) { create(:neighbourhood) }
-    let(:address1) { create(:address, neighbourhood: neighbourhood1) }
-    let(:address2) { create(:address, neighbourhood: neighbourhood2) }
+    let(:district) { site.primary_neighbourhood }
 
-    before do
-      site.neighbourhoods << neighbourhood2
-    end
+    context "filtering by exact neighbourhood" do
+      let(:ward1) { create(:neighbourhood, name: "Ward A", unit: "ward", parent: district) }
+      let(:ward2) { create(:neighbourhood, name: "Ward B", unit: "ward", parent: district) }
+      let(:address1) { create(:address, neighbourhood: ward1) }
+      let(:address2) { create(:address, neighbourhood: ward2) }
 
-    context "filtering by event's own address" do
-      let(:partner_in_n1) do
+      let(:partner1) do
         p = create(:partner, address: address1)
-        p.service_areas << create(:service_area, neighbourhood: neighbourhood1)
+        p.service_areas << create(:service_area, neighbourhood: ward1)
         p
       end
 
-      let!(:event_in_n1) { create(:future_event, partner: partner_in_n1, address: address1) }
-      let!(:event_in_n2) { create(:future_event, partner: partner_in_n1, address: address2) }
+      let!(:event_in_ward1) { create(:future_event, partner: partner1, address: address1) }
+      let!(:event_in_ward2) { create(:future_event, partner: partner1, address: address2) }
 
       it "includes events with address in the neighbourhood" do
         query = described_class.new(site: site, day: today)
-        result = query.call(period: "future", neighbourhood_id: neighbourhood1.id)
+        result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
-        expect(events).to include(event_in_n1)
+        expect(events).to include(event_in_ward1)
       end
 
       it "excludes events with address in other neighbourhoods" do
         query = described_class.new(site: site, day: today)
-        result = query.call(period: "future", neighbourhood_id: neighbourhood1.id)
+        result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
-        expect(events).not_to include(event_in_n2)
+        expect(events).not_to include(event_in_ward2)
+      end
+    end
+
+    context "filtering by parent neighbourhood includes descendants" do
+      let(:ward) { create(:neighbourhood, name: "Child Ward", unit: "ward", parent: district) }
+      let(:ward_address) { create(:address, neighbourhood: ward) }
+
+      let(:ward_partner) do
+        p = create(:partner, address: ward_address)
+        p.service_areas << create(:service_area, neighbourhood: ward)
+        p
+      end
+
+      let!(:event_in_ward) { create(:future_event, partner: ward_partner, address: ward_address) }
+
+      it "includes events in child wards when filtering by district" do
+        query = described_class.new(site: site, day: today)
+        result = query.call(period: "future", neighbourhood_id: district.id)
+        events = result.values.flatten
+
+        expect(events).to include(event_in_ward)
       end
     end
 
     context "filtering by partner's address when event has no address" do
-      let(:partner_in_n1) do
+      let(:ward1) { create(:neighbourhood, name: "Ward A", unit: "ward", parent: district) }
+      let(:ward2) { create(:neighbourhood, name: "Ward B", unit: "ward", parent: district) }
+      let(:address1) { create(:address, neighbourhood: ward1) }
+      let(:address2) { create(:address, neighbourhood: ward2) }
+
+      let(:partner_in_ward1) do
         p = create(:partner, address: address1)
-        p.service_areas << create(:service_area, neighbourhood: neighbourhood1)
+        p.service_areas << create(:service_area, neighbourhood: ward1)
         p
       end
 
-      let(:partner_in_n2) do
+      let(:partner_in_ward2) do
         p = create(:partner, address: address2)
-        p.service_areas << create(:service_area, neighbourhood: neighbourhood2)
+        p.service_areas << create(:service_area, neighbourhood: ward2)
         p
       end
 
-      let!(:event_no_address_partner_n1) { create(:future_event, partner: partner_in_n1, address: nil) }
-      let!(:event_no_address_partner_n2) { create(:future_event, partner: partner_in_n2, address: nil) }
+      let!(:event_no_address_partner_ward1) { create(:future_event, partner: partner_in_ward1, address: nil) }
+      let!(:event_no_address_partner_ward2) { create(:future_event, partner: partner_in_ward2, address: nil) }
 
       it "includes events where partner address is in neighbourhood" do
         query = described_class.new(site: site, day: today)
-        result = query.call(period: "future", neighbourhood_id: neighbourhood1.id)
+        result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
-        expect(events).to include(event_no_address_partner_n1)
+        expect(events).to include(event_no_address_partner_ward1)
       end
 
       it "excludes events where partner address is in other neighbourhood" do
         query = described_class.new(site: site, day: today)
-        result = query.call(period: "future", neighbourhood_id: neighbourhood1.id)
+        result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
-        expect(events).not_to include(event_no_address_partner_n2)
+        expect(events).not_to include(event_no_address_partner_ward2)
       end
     end
 
     context "event address takes precedence over partner address" do
-      let(:partner_in_n1) do
+      let(:ward1) { create(:neighbourhood, name: "Ward A", unit: "ward", parent: district) }
+      let(:ward2) { create(:neighbourhood, name: "Ward B", unit: "ward", parent: district) }
+      let(:address1) { create(:address, neighbourhood: ward1) }
+      let(:address2) { create(:address, neighbourhood: ward2) }
+
+      let(:partner_in_ward1) do
         p = create(:partner, address: address1)
-        p.service_areas << create(:service_area, neighbourhood: neighbourhood1)
+        p.service_areas << create(:service_area, neighbourhood: ward1)
         p
       end
 
-      # Event is in n2, but partner's office is in n1
-      let!(:event_in_n2_partner_in_n1) { create(:future_event, partner: partner_in_n1, address: address2) }
+      # Event is in ward2, but partner's office is in ward1
+      let!(:event_in_ward2_partner_in_ward1) { create(:future_event, partner: partner_in_ward1, address: address2) }
 
       it "filters by event address, not partner address" do
         query = described_class.new(site: site, day: today)
-        result = query.call(period: "future", neighbourhood_id: neighbourhood1.id)
+        result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
-        # Event should NOT appear when filtering by n1, because event is physically in n2
-        expect(events).not_to include(event_in_n2_partner_in_n1)
+        # Event should NOT appear when filtering by ward1, because event is physically in ward2
+        expect(events).not_to include(event_in_ward2_partner_in_ward1)
       end
 
       it "shows event when filtering by its actual location" do
         query = described_class.new(site: site, day: today)
-        result = query.call(period: "future", neighbourhood_id: neighbourhood2.id)
+        result = query.call(period: "future", neighbourhood_id: ward2.id)
         events = result.values.flatten
 
-        expect(events).to include(event_in_n2_partner_in_n1)
+        expect(events).to include(event_in_ward2_partner_in_ward1)
       end
     end
   end
