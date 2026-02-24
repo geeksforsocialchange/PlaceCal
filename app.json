@@ -15,6 +15,10 @@
 		{
 			"command": "bundle exec rails counters:refresh_all",
 			"schedule": "30 4 * * *"
+		},
+		{
+			"command": "bundle exec rails db:clean_bad_addresses",
+			"schedule": "30 5 * * *"
 		}
 	]
 }
