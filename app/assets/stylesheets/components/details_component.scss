@@ -82,7 +82,8 @@
 			}
 		}
 
-		> .details-detail {
+		> .details-detail,
+		.details-summary-collapsible {
 			grid-area: detail;
 			// undo grid gap so paragraph spacing is consistent
 			// margin-top: -0.5rem;
@@ -121,7 +122,8 @@
 			}
 		}
 
-		> .details-detail {
+		> .details-detail,
+		.details-summary-collapsible {
 			content-visibility: visible;
 			height: auto;
 		}
@@ -175,7 +177,8 @@
 			> div.btn.btn {
 				display: none;
 			}
-			> .details-detail {
+			> .details-detail,
+			.details-summary-collapsible {
 				content-visibility: visible;
 				height: auto;
 			}
