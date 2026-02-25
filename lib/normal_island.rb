@@ -404,7 +404,9 @@ module NormalIsland
       { name: 'Wheelchair Accessible', type: 'Facility' },
       { name: 'Parking Available', type: 'Facility' },
       { name: 'Child Friendly', type: 'Facility' },
-      { name: 'Hearing Loop', type: 'Facility' }
+      { name: 'Hearing Loop', type: 'Facility' },
+      { name: 'Computers', type: 'Facility' },
+      { name: 'Wifi', type: 'Facility' }
     ],
     partnerships: [
       { name: 'Millbrook Together', type: 'Partnership' },
