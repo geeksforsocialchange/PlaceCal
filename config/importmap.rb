@@ -15,8 +15,8 @@ pin '@hotwired/turbo-rails', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo-r
 pin '@hotwired/turbo', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/+esm'
 
 # External dependencies
-# Using esm.sh which auto-bundles sub-dependencies (sifter, unicode-variants)
-pin 'tom-select', to: 'https://esm.sh/tom-select@2.4.3'
+# jsdelivr bundles ESM with sub-dependencies inline (more reliable than esm.sh)
+pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.4.3/+esm'
 pin 'leaflet', to: 'https://esm.sh/leaflet@1.9.4'
 
 # MapLibre GL for vector tile rendering with custom styles
