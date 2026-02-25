@@ -17,9 +17,7 @@
 
   <body>
     <div class="background">
-      <header>
-        <%= render(NavigationComponent.new(navigation: @navigation, site: @site)) %>
-      </header>
+      <%= render(NavigationComponent.new(navigation: @navigation, site: @site)) %>
       <main>
         <%= render(FlashComponent.new) %>
         <%= yield %>

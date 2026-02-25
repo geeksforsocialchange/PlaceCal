@@ -17,7 +17,7 @@ module SvgImagesHelper
                   "#{name}.svg"
                 end
     # See https://www.rubydoc.info/gems/inline_svg/1.10.0
-    return inline_svg_tag(
+    return helpers.inline_svg_tag(
       file_name,
       aria: true,
       class: css_class,

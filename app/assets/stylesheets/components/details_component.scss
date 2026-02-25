@@ -57,6 +57,7 @@
 			grid-template-areas: "icon label pad";
 			align-items: center;
 			user-select: none;
+			margin-bottom: 0;
 
 			> svg {
 				grid-area: icon;
@@ -168,6 +169,64 @@
 	.details-image-center {
 		padding: 0 2rem;
 	}
+
+	.details.details-image-left {
+		grid-template:
+			"summary image" 1fr
+			"detail image" auto
+			"button button" auto;
+	}
+
+	.details.details-image-left:has(.details-header) {
+		grid-template:
+			"header image" auto
+			"summary image" auto
+			"detail image" 1fr
+			"button button" auto;
+	}
+
+	.details.details-image-center {
+		grid-template:
+			"image image" auto
+			"summary detail" 1fr
+			"button button" auto;
+	}
+
+	.details.details-image-center:has(.details-header) {
+		grid-template:
+			"header header" auto
+			"image image" auto
+			"summary detail" 1fr
+			"button button" auto;
+	}
+
+	.details.details-image-right {
+		grid-template:
+			"image summary" auto
+			"image detail" 1fr
+			"button button" auto;
+	}
+
+	.details.details-image-right:has(.details-header) {
+		grid-template:
+			"image header" auto
+			"image summary" auto
+			"image detail" 1fr
+			"button button" auto;
+	}
+
+	.details.details-image-none {
+		grid-template:
+			"summary detail" 1fr
+			"button button" auto;
+	}
+
+	.details.details-image-none:has(.details-header) {
+		grid-template:
+			"header header" auto
+			"summary detail" 1fr
+			"button button" auto;
+	}
 }
 
 @include for-tablet-landscape-up {
@@ -238,7 +297,7 @@
 		grid-template: "summary detail" 1fr;
 	}
 
-	details.details-image-none:has(.details-header) {
+	.details.details-image-none:has(.details-header) {
 		grid-template:
 			"header header" auto
 			"summary detail" 1fr;

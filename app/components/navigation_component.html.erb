@@ -1,24 +1,25 @@
-<div class="header" data-controller="mobile-menu">
-  <% if @site&.logo&.present? %>
-    <div class="header__branding header__branding--<%= @site.slug %>"
-         style="background-image: url(<%= image_url @site.logo %>)"
-         role="banner">
-  <% else %>
-    <div class="header__branding" role="banner">
-  <% end %>
-    <%= link_to root_path do %>
-      <% if @site&.default_site? %>
-        <% if request.path == '/' %>
-          <h1>PlaceCal</h1>
-        <% else %>
-          <h2>PlaceCal</h2>
-        <% end %>
+<header class="header" data-controller="mobile-menu">
+  <%= link_to(root_path, class:'header__branding') do %>
+    <% if @logo_path %>
+      <% if @logo_path =~ /\.svg$/ %>
+        <%= svg_image(@logo_path, alt_text: @site.name, css_class: "header__branding header__branding--#{ @site.slug }") %>
       <% else %>
-        <h2><%= @site&.name %></h2>
-        <p>The Community Calendar</p>
+        <%= image_tag(@logo_path, alt: @site.name, class: "header__branding header__branding--#{ @site.slug }") %>
       <% end %>
+    <% else %>
+      <%= svg_image('home/icons/logo.svg', alt_text: 'PlaceCal', css_class: "header__branding header__branding--#{ @site.slug }") %>
     <% end %>
-  </div>
+    <% if @site&.default_site? %>
+      <% if request.path == '/' %>
+        <h1>PlaceCal</h1>
+      <% else %>
+        <h2>PlaceCal</h2>
+      <% end %>
+    <% else %>
+      <h2><%= @site&.name %></h2>
+      <p>The Community Calendar</p>
+    <% end %>
+  <% end %>
   <nav class="nav header__menu" data-mobile-menu-target="menu" role="navigation">
     <ul>
       <li><%= active_link_to "Home", root_path %></li>
@@ -27,7 +28,8 @@
       <% end %>
     </ul>
   </nav>
-  <a href="#" class="header__toggle" data-action="click->mobile-menu#toggle" data-turbo="false">
+  <button type="button" class="header__toggle" data-action="click->mobile-menu#toggle" data-turbo="false">
+    Menu
     <%= icon(:misc_menu, size:'0') %>
-  </a>
-</div>
+  </button>
+</header>
