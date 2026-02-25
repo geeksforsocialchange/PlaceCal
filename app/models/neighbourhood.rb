@@ -3,7 +3,7 @@
 class Neighbourhood < ApplicationRecord
   # WARNING: this must be updated for every new ONS dataset
   #    see /lib/tasks/neighbourhoods.rake
-  LATEST_RELEASE_DATE = DateTime.new(2023, 5).freeze
+  LATEST_RELEASE_DATE = DateTime.new(2024, 5).freeze
 
   # Level constants (1=ward, 5=country)
   # Used for generic level abstraction across different locales
@@ -173,8 +173,16 @@ class Neighbourhood < ApplicationRecord
 
   class << self
     def find_from_postcodesio_response(res)
-      ons_id = res['codes']['admin_ward']
-      Neighbourhood.where(unit_code_value: ons_id).first
+      # Try ward first (most specific)
+      ward_code = res.dig('codes', 'admin_ward')
+      result = Neighbourhood.where(unit_code_value: ward_code).first if ward_code.present?
+      return result if result
+
+      # Fallback to district when ward code is from a newer ONS release
+      # than what we have imported (e.g. boundary reviews that postcodes.io
+      # has adopted but ONS hasn't published in their hierarchy files yet)
+      district_code = res.dig('codes', 'admin_district')
+      Neighbourhood.where(unit_code_value: district_code).first if district_code.present?
     end
 
     # Refresh cached partners_count for all neighbourhoods

@@ -68,6 +68,7 @@ class PartnersController < ApplicationController
     respond_to do |format|
       format.html
       format.ics do
+        track_ical_download
         cal = create_calendar(Event.by_partner(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
         cal.publish
         render plain: cal.to_ical

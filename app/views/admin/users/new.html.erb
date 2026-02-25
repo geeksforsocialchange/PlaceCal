@@ -203,18 +203,14 @@
             </div>
 
             <% if current_user.root? %>
-              <%= render Admin::StackedListSelectorComponent.new(
-                field_name: "user[neighbourhood_ids][]",
-                items: @user.neighbourhoods.order(:name),
-                options: options_for_user_neighbourhoods(@user),
-                permitted_ids: nil,
-                icon_name: :map_pin,
-                icon_color: "bg-sky-100 text-sky-600",
-                empty_text: t('admin.empty.none_assigned', items: Neighbourhood.model_name.human(count: 2).downcase),
-                add_placeholder: t('admin.placeholders.add_model', model: Neighbourhood.model_name.human.downcase),
-                use_tom_select: true,
-                wrapper_class: "user_neighbourhoods"
-              ) %>
+              <%= nested_form_for(f, :neighbourhoods_users,
+                    add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
+                    add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange mt-2',
+                    partial: 'neighbourhoods_user_fields') do %>
+                <%= f.simple_fields_for :neighbourhoods_users do |nuf| %>
+                  <%= render 'neighbourhoods_user_fields', f: nuf %>
+                <% end %>
+              <% end %>
             <% else %>
               <%= render Admin::ItemBadgeListComponent.new(
                 items: @user.neighbourhoods.order(:name),
