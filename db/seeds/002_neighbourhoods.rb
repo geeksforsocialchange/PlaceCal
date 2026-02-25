@@ -15,7 +15,8 @@ module SeedNeighbourhoods
       n.unit = NormalIsland::COUNTRY[:unit]
       n.unit_code_key = NormalIsland::COUNTRY[:unit_code_key]
       n.unit_name = NormalIsland::COUNTRY[:name]
-      n.release_date = DateTime.now
+      n.release_date = Neighbourhood::LATEST_RELEASE_DATE
+      n.level = 5
     end
     $stdout.puts "  Country: #{country.name}"
 
@@ -30,8 +31,9 @@ module SeedNeighbourhoods
         n.unit = data[:unit]
         n.unit_code_key = data[:unit_code_key]
         n.unit_name = data[:name]
-        n.release_date = DateTime.now
+        n.release_date = Neighbourhood::LATEST_RELEASE_DATE
         n.parent = country
+        n.level = 4
       end
       $stdout.puts "  Region: #{data[:name]}"
     end
@@ -47,8 +49,9 @@ module SeedNeighbourhoods
         n.unit = data[:unit]
         n.unit_code_key = data[:unit_code_key]
         n.unit_name = data[:name]
-        n.release_date = DateTime.now
+        n.release_date = Neighbourhood::LATEST_RELEASE_DATE
         n.parent = regions[data[:parent_region]]
+        n.level = 3
       end
       $stdout.puts "  County: #{data[:name]}"
     end
@@ -64,8 +67,9 @@ module SeedNeighbourhoods
         n.unit = data[:unit]
         n.unit_code_key = data[:unit_code_key]
         n.unit_name = data[:name]
-        n.release_date = DateTime.now
+        n.release_date = Neighbourhood::LATEST_RELEASE_DATE
         n.parent = counties[data[:parent_county]]
+        n.level = 2
       end
       $stdout.puts "  District: #{data[:name]}"
     end
@@ -80,8 +84,9 @@ module SeedNeighbourhoods
         n.unit = data[:unit]
         n.unit_code_key = data[:unit_code_key]
         n.unit_name = data[:name]
-        n.release_date = DateTime.now
+        n.release_date = Neighbourhood::LATEST_RELEASE_DATE
         n.parent = districts[data[:parent_district]]
+        n.level = 1
       end
       $stdout.puts "  Ward: #{data[:name]}"
     end
