@@ -24,9 +24,15 @@ RSpec.describe Admin::CascadingNeighbourhoodFieldsComponent, type: :component do
     expect(page).to have_css(".card")
   end
 
-  it "shows 'New Service Area' header" do
+  it "shows 'New Service Area' header by default" do
     render_inline(described_class.new(form: form))
     expect(page).to have_text(I18n.t("admin.service_areas.new_area"))
+  end
+
+  it "shows custom title when provided" do
+    render_inline(described_class.new(form: form, title: "New Neighbourhood"))
+    expect(page).to have_text("New Neighbourhood")
+    expect(page).not_to have_text(I18n.t("admin.service_areas.new_area"))
   end
 
   describe "country select" do

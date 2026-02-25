@@ -179,6 +179,120 @@ RSpec.describe CalendarImporter::EventResolver do
     end
   end
 
+  describe "recurring event dedup" do
+    def make_recurring_ics_event(uid:, occurrences:)
+      event = FakeICSEvent.new(
+        uid: uid,
+        summary: "Recurring Event",
+        description: "A recurring event",
+        location: "",
+        rrule: "FREQ=WEEKLY",
+        last_modified: "",
+        custom_properties: {}
+      )
+
+      patch = Module.new
+      patch.define_method(:occurrences_between) do |_from, _to|
+        occurrences.map { |s, e| CalendarImporter::Events::Base::Dates.new(s, e) }
+      end
+      event.extend patch
+
+      CalendarImporter::Events::IcsEvent.new(event, occurrences.first[0], occurrences.first[1])
+    end
+
+    it "does not create duplicates when re-importing identical recurring events" do
+      calendar = make_calendar_for_strategy("no_location")
+
+      occ1_start = DateTime.new(2024, 1, 8, 10, 0)
+      occ1_end   = DateTime.new(2024, 1, 8, 11, 0)
+      occ2_start = DateTime.new(2024, 1, 15, 10, 0)
+      occ2_end   = DateTime.new(2024, 1, 15, 11, 0)
+
+      occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
+      event_data = make_recurring_ics_event(uid: "recurring-123", occurrences: occurrences)
+
+      resolver = described_class.new(event_data, calendar, [], occ1_start)
+      resolver.determine_location_for_strategy
+      resolver.save_all_occurences
+
+      expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
+
+      # Re-import identical data
+      event_data2 = make_recurring_ics_event(uid: "recurring-123", occurrences: occurrences)
+      resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
+      resolver2.determine_location_for_strategy
+      resolver2.save_all_occurences
+
+      expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
+    end
+
+    it "removes stale occurrences when schedule changes" do
+      calendar = make_calendar_for_strategy("no_location")
+
+      occ1_start = DateTime.new(2024, 1, 8, 10, 0)
+      occ1_end   = DateTime.new(2024, 1, 8, 11, 0)
+      occ2_start = DateTime.new(2024, 1, 15, 10, 0)
+      occ2_end   = DateTime.new(2024, 1, 15, 11, 0)
+
+      occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
+      event_data = make_recurring_ics_event(uid: "recurring-456", occurrences: occurrences)
+
+      resolver = described_class.new(event_data, calendar, [], occ1_start)
+      resolver.determine_location_for_strategy
+      resolver.save_all_occurences
+
+      expect(calendar.events.where(uid: "recurring-456").count).to eq(2)
+
+      # Re-import with only one occurrence (second was cancelled)
+      new_occurrences = [[occ1_start, occ1_end]]
+      event_data2 = make_recurring_ics_event(uid: "recurring-456", occurrences: new_occurrences)
+      resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
+      resolver2.determine_location_for_strategy
+      resolver2.save_all_occurences
+
+      expect(calendar.events.where(uid: "recurring-456").count).to eq(1)
+      expect(calendar.events.find_by(uid: "recurring-456").dtstart).to eq(occ1_start)
+    end
+
+    it "correctly handles time pair matching (not independent start/end matching)" do
+      calendar = make_calendar_for_strategy("no_location")
+
+      # Create two occurrences where occ1's dtstart matches occ2's dtstart would not,
+      # and occ1's dtend matches occ2's dtend would not — the old OR logic would
+      # incorrectly delete valid events in this case
+      occ1_start = DateTime.new(2024, 1, 8, 10, 0)
+      occ1_end   = DateTime.new(2024, 1, 8, 11, 0)
+      occ2_start = DateTime.new(2024, 1, 15, 10, 0)
+      occ2_end   = DateTime.new(2024, 1, 15, 12, 0)
+
+      occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
+      event_data = make_recurring_ics_event(uid: "recurring-789", occurrences: occurrences)
+
+      resolver = described_class.new(event_data, calendar, [], occ1_start)
+      resolver.determine_location_for_strategy
+      resolver.save_all_occurences
+
+      expect(calendar.events.where(uid: "recurring-789").count).to eq(2)
+
+      # Now re-import with the second occurrence's end time changed.
+      # The old OR logic would have incorrectly deleted occ1 here because
+      # occ1's dtend (11:00) doesn't appear in the new end_times list.
+      new_occ2_end = DateTime.new(2024, 1, 15, 13, 0)
+      new_occurrences = [[occ1_start, occ1_end], [occ2_start, new_occ2_end]]
+      event_data2 = make_recurring_ics_event(uid: "recurring-789", occurrences: new_occurrences)
+      resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
+      resolver2.determine_location_for_strategy
+      resolver2.save_all_occurences
+
+      events = calendar.events.where(uid: "recurring-789").order(:dtstart)
+      expect(events.count).to eq(2)
+      expect(events.first.dtstart).to eq(occ1_start)
+      expect(events.first.dtend).to eq(occ1_end)
+      expect(events.last.dtstart).to eq(occ2_start)
+      expect(events.last.dtend).to eq(new_occ2_end)
+    end
+  end
+
   describe "notices" do
     it "are empty when no problems occur" do
       calendar = make_calendar_for_strategy("no_location")

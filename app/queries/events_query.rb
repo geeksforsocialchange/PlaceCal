@@ -93,28 +93,35 @@ class EventsQuery
   # Returns neighbourhoods that have events, with counts for the given period
   # Used for filter dropdowns
   #
+  # Shows all descendant neighbourhoods of the site's configured neighbourhoods,
+  # at every level. Each neighbourhood's count includes events in its subtree.
+  #
   # @param period [String] 'day', 'week', or 'future'
   # @return [Array<Hash>] array of { neighbourhood: Neighbourhood, count: Integer }
   def neighbourhoods_with_counts(period: 'future')
+    return [] unless @site
+
+    all_descendants = @site.neighbourhoods.flat_map { |n| n.descendants.to_a }
+    return [] if all_descendants.empty?
+
     events = apply_period(base_scope, period)
-    partner_ids = events.distinct.pluck(:partner_id).compact
-    return [] if partner_ids.empty?
 
-    neighbourhood_ids = neighbourhood_ids_for_partners(partner_ids)
-    return [] if neighbourhood_ids.empty?
+    # Count events per leaf neighbourhood (single query)
+    raw_counts = events
+                 .left_joins(:address, partner: :address)
+                 .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
+                 .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
+                 .distinct
+                 .count
 
-    # Single grouped query instead of N separate counts
-    counts = events
-             .left_joins(:address, partner: :address)
-             .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IN (?)', neighbourhood_ids)
-             .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
-             .distinct
-             .count
+    # Build parent→children map from ancestry data already in memory,
+    # then compute subtree counts without extra DB queries
+    subtree_counts = subtree_counts_from_ancestry(all_descendants, raw_counts)
 
-    Neighbourhood
-      .where(id: neighbourhood_ids)
-      .order(:name)
-      .map { |n| { neighbourhood: n, count: counts[n.id] || 0 } }
+    all_descendants
+      .select { |n| (subtree_counts[n.id] || 0).positive? }
+      .sort_by(&:name)
+      .map { |n| { neighbourhood: n, count: subtree_counts[n.id] } }
   end
 
   private
@@ -182,10 +189,15 @@ class EventsQuery
   end
 
   # Filter by physical location of event (event address, or partner address if no event address)
+  # When a parent neighbourhood is selected (e.g. a district), includes all descendants
   def filter_by_neighbourhood(events, neighbourhood_id)
+    neighbourhood = Neighbourhood.find_by(id: neighbourhood_id)
+    return events.none unless neighbourhood
+
+    matching_ids = neighbourhood.subtree_ids
     events
       .left_joins(:address, partner: :address)
-      .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) = ?', neighbourhood_id)
+      .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IN (?)', matching_ids)
       .distinct
   end
 
@@ -227,14 +239,29 @@ class EventsQuery
     end
   end
 
-  # ===================
-  # Neighbourhood Helpers
-  # ===================
+  # Compute subtree event counts using in-memory ancestry data (no extra queries).
+  # Builds a parent→children map, then propagates leaf counts upward.
+  def subtree_counts_from_ancestry(descendants, raw_counts)
+    ids = descendants.to_set(&:id)
+    children_map = Hash.new { |h, k| h[k] = [] }
+    roots = []
 
-  # Get all neighbourhood IDs where these partners have presence (address or service area)
-  def neighbourhood_ids_for_partners(partner_ids)
-    address_ids = Address.joins(:partners).where(partners: { id: partner_ids }).pluck(:neighbourhood_id)
-    service_area_ids = ServiceArea.where(partner_id: partner_ids).pluck(:neighbourhood_id)
-    (address_ids + service_area_ids).uniq
+    descendants.each do |n|
+      if n.parent_id && ids.include?(n.parent_id)
+        children_map[n.parent_id] << n.id
+      else
+        roots << n.id
+      end
+    end
+
+    counts = {}
+    # Post-order traversal: compute children first, then sum into parent
+    compute = lambda do |id|
+      own = raw_counts[id] || 0
+      child_sum = children_map[id].sum { |cid| compute.call(cid) }
+      counts[id] = own + child_sum
+    end
+    roots.each { |id| compute.call(id) }
+    counts
   end
 end
