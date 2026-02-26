@@ -144,7 +144,7 @@ jobs:
 
       - if: failure()
         name: Upload test screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: test-screenshots-${{ matrix.suite }}
           path: tmp/capybara/
