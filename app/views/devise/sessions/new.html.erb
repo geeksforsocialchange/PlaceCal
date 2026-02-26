@@ -14,7 +14,21 @@
 
         <div class="form__field">
           <%= f.label :password %>
-          <%= f.password_field :password, autocomplete: "off" %>
+          <div id="passwordWrapper" style="display: flex; justify-items: center; border-radius: 1.5rem; border-color: #afcf5a; border-style: solid; border-width: 2px; margin-bottom: 1rem;">
+            <%= f.password_field :password, autocomplete: "off", style: "border: 0; margin: 0; border-radius: 1.5rem 0 0 1.5rem" %>
+            <button type="button" id="toggleShow" style="background: #afcf5a; display: flex; padding-inline: 1rem; border-radius: 0 1.5rem 1.5rem 0; width: 4rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="eyeShow">
+                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="eyeHide" style="opacity: 0.5">
+                <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/>
+                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/>
+                <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/>
+                <path d="m2 2 20 20"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <% if devise_mapping.rememberable? -%>
@@ -39,4 +53,46 @@
     </div>
     <br><br>
   </div>
+  <script>
+    const wrapper = document.querySelector('#passwordWrapper')
+    const password = wrapper.querySelector('#user_password');
+    const button = wrapper.querySelector('#toggleShow');
+    const eyeShow = button.querySelector('#eyeShow');
+    const eyeHide = button.querySelector('#eyeHide');
+
+    let show = false;
+    let focus = false
+
+    updateButton();
+
+    function updateButton() {
+      console.debug({show, focus});
+      eyeShow.style.display = show ? 'inline' : 'none';
+      eyeHide.style.display = show ? 'none' : 'inline';
+    }
+
+    function updateInput() {
+      console.debug({show, focus});
+      if (focus && show) password.type = 'text';
+      else password.type = 'password';
+    }
+
+    button.addEventListener('click', ()=>{
+      show = !show;
+      if (show) focus = true;
+      updateButton();
+      updateInput();
+    })
+
+    password.addEventListener('focus', ()=>{
+      focus = true;
+      updateInput();
+    });
+
+    password.addEventListener('blur', ()=>{
+      focus = false;
+      updateInput();
+    });
+
+  </script>
 </article>
