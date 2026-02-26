@@ -1,6 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
 import "leaflet";
-import maplibregl from "maplibre-gl";
 import "@maplibre/maplibre-gl-leaflet";
 
 // Connects to data-controller="leaflet"
@@ -13,17 +12,15 @@ export default class extends Controller {
 
 	connect() {
 		this.element.classList.add("map");
-		this.argsValue.styleClass.forEach((className) => {
-			this.element.classList.add(className);
-		});
+		if (this.argsValue.styleClass?.length)
+			this.element.classList.add(...this.argsValue.styleClass);
 		this.createMap();
 	}
 
 	disconnect() {
 		this.element.classList.remove("map");
-		this.argsValue.styleClass.forEach((className) => {
-			this.element.classList.remove(className);
-		});
+		if (this.argsValue.styleClass?.length)
+			this.element.classList.remove(...this.argsValue.styleClass);
 		this.map.remove();
 	}
 
@@ -46,8 +43,8 @@ export default class extends Controller {
 
 			iconSize: [46, 43], // size of the icon
 			shadowSize: [46, 43], // size of the shadow
-			iconAnchor: [17, 0], // point of the icon which will correspond to marker's location
-			shadowAnchor: [17, 0], // the same for the shadow
+			iconAnchor: [17, 43], // point of the icon which will correspond to marker's location
+			shadowAnchor: [17, 43], // the same for the shadow
 			popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
 		});
 
