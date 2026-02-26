@@ -28,7 +28,7 @@
 		// make <summary/> children behave as if they were children of <details/>
 		display: contents;
 
-		> .details-header {
+		> .details__header {
 			grid-area: header;
 			text-wrap-mode: wrap;
 			text-wrap-style: balance;
@@ -39,7 +39,7 @@
 			border-radius: 1rem;
 		}
 
-		> .details-summary {
+		> .details__summary {
 			grid-area: summary;
 			margin-block: 0;
 			> * {
@@ -74,17 +74,17 @@
 				transition-timing-function: ease-in-out;
 			}
 
-			.details_button_child_close {
+			.details__button__child__close {
 				@include button-child-hidden();
 			}
 
-			.details_button_child_open {
+			.details__button__child__open {
 				@include button-child-visible();
 			}
 		}
 
-		> .details-detail,
-		.details-summary-collapsible {
+		> .details__detail,
+		.details__summary__collapsible {
 			grid-area: detail;
 			// undo grid gap so paragraph spacing is consistent
 			// margin-top: -0.5rem;
@@ -98,8 +98,8 @@
 			overflow: clip;
 		}
 
-		> .details-detail,
-		> .details-summary {
+		> .details__detail,
+		> .details__summary {
 			// override inherited y margins so things are consistent and predictable
 			display: flex;
 			flex-direction: column;
@@ -114,31 +114,31 @@
 .details:open {
 	> summary {
 		div.btn {
-			.details_button_child_open {
+			.details__button__child__open {
 				@include button-child-hidden();
 			}
 
-			.details_button_child_close {
+			.details__button__child__close {
 				@include button-child-visible();
 			}
 		}
 
-		> .details-detail,
-		.details-summary-collapsible {
+		> .details__detail,
+		.details__summary__collapsible {
 			content-visibility: visible;
 			height: auto;
 		}
 	}
 }
 
-.details.details-image-none {
+.details.details__image__none {
 	grid-template:
 		"summary"
 		"detail"
 		"button";
 }
 
-.details.details-image-none:has(.details-header) {
+.details.details__image__none:has(.details__header) {
 	grid-template:
 		"header"
 		"summary"
@@ -146,8 +146,8 @@
 		"button";
 }
 
-.details.details-image-left,
-.details.details-image-right {
+.details.details__image__left,
+.details.details__image__right {
 	grid-template:
 		"image"
 		"summary"
@@ -155,8 +155,8 @@
 		"button";
 }
 
-.details.details-image-left:has(.details-header),
-.details.details-image-right:has(.details-header) {
+.details.details__image__left:has(.details__header),
+.details.details__image__right:has(.details__header) {
 	grid-template:
 		"header"
 		"image"
@@ -166,18 +166,18 @@
 }
 
 @include for-tablet-portrait-up {
-	.details-image-center {
+	.details__image__center {
 		padding: 0 2rem;
 	}
 
-	.details.details-image-left {
+	.details.details__image__left {
 		grid-template:
 			"summary image" 1fr
 			"detail image" auto
 			"button button" auto;
 	}
 
-	.details.details-image-left:has(.details-header) {
+	.details.details__image__left:has(.details__header) {
 		grid-template:
 			"header image" auto
 			"summary image" auto
@@ -185,14 +185,14 @@
 			"button button" auto;
 	}
 
-	.details.details-image-center {
+	.details.details__image__center {
 		grid-template:
 			"image image" auto
 			"summary detail" 1fr
 			"button button" auto;
 	}
 
-	.details.details-image-center:has(.details-header) {
+	.details.details__image__center:has(.details__header) {
 		grid-template:
 			"header header" auto
 			"image image" auto
@@ -200,14 +200,14 @@
 			"button button" auto;
 	}
 
-	.details.details-image-right {
+	.details.details__image__right {
 		grid-template:
 			"image summary" auto
 			"image detail" 1fr
 			"button button" auto;
 	}
 
-	.details.details-image-right:has(.details-header) {
+	.details.details__image__right:has(.details__header) {
 		grid-template:
 			"image header" auto
 			"image summary" auto
@@ -215,13 +215,13 @@
 			"button button" auto;
 	}
 
-	.details.details-image-none {
+	.details.details__image__none {
 		grid-template:
 			"summary detail" 1fr
 			"button button" auto;
 	}
 
-	.details.details-image-none:has(.details-header) {
+	.details.details__image__none:has(.details__header) {
 		grid-template:
 			"header header" auto
 			"summary detail" 1fr
@@ -236,15 +236,15 @@
 			> div.btn.btn {
 				display: none;
 			}
-			> .details-detail,
-			.details-summary-collapsible {
+			> .details__detail,
+			.details__summary__collapsible {
 				content-visibility: visible;
 				height: auto;
 			}
 		}
 	}
 
-	.details-image-center {
+	.details__image__center {
 		padding: 0 6rem;
 
 		img {
@@ -254,50 +254,50 @@
 		}
 	}
 
-	.details.details-image-left {
+	.details.details__image__left {
 		grid-template:
 			"summary image" 1fr
 			"detail image" auto;
 	}
 
-	.details.details-image-left:has(.details-header) {
+	.details.details__image__left:has(.details__header) {
 		grid-template:
 			"header image" auto
 			"summary image" auto
 			"detail image" 1fr;
 	}
 
-	.details.details-image-center {
+	.details.details__image__center {
 		grid-template:
 			"image image" auto
 			"summary detail" 1fr;
 	}
 
-	.details.details-image-center:has(.details-header) {
+	.details.details__image__center:has(.details__header) {
 		grid-template:
 			"header header" auto
 			"image image" auto
 			"summary detail" 1fr;
 	}
 
-	.details.details-image-right {
+	.details.details__image__right {
 		grid-template:
 			"image summary" auto
 			"image detail" 1fr;
 	}
 
-	.details.details-image-right:has(.details-header) {
+	.details.details__image__right:has(.details__header) {
 		grid-template:
 			"image header" auto
 			"image summary" auto
 			"image detail" 1fr;
 	}
 
-	.details.details-image-none {
+	.details.details__image__none {
 		grid-template: "summary detail" 1fr;
 	}
 
-	.details.details-image-none:has(.details-header) {
+	.details.details__image__none:has(.details__header) {
 		grid-template:
 			"header header" auto
 			"summary detail" 1fr;
@@ -309,7 +309,7 @@
 		padding: 0 12rem;
 	}
 
-	.details.details-image-center img {
+	.details.details__image__center img {
 		margin-inline: -6rem;
 		width: calc(100% + 12rem);
 		max-width: calc(100% + 12rem);

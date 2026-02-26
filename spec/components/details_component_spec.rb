@@ -25,7 +25,7 @@ RSpec.describe DetailsComponent, type: :component do
   it "renders summary" do
     render_inline(described_class.new(**attrs))
 
-    expect(page).to have_selector(".details-summary")
+    expect(page).to have_selector(".details__summary")
   end
 
   it "renders image alt text" do
@@ -40,12 +40,12 @@ RSpec.describe DetailsComponent, type: :component do
     end
 
     expect(page).to have_text("The detail value")
-    expect(page).to have_selector(".details-detail")
+    expect(page).to have_selector(".details__detail")
   end
 
   it "renders fallback layout" do
     render_inline(described_class.new(**attrs))
 
-    expect(page).to have_selector(".details-image-right")
+    expect(page).to have_selector(".details__image__right")
   end
 end

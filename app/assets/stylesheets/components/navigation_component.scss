@@ -1,17 +1,36 @@
 @import "variables_mixins";
 
+/*
+	`app/assets/stylesheets/home/_headers.scss` previously overrode a lot of this for the default site, e.g. http://lvh.me:3000/
+	now .header is given an additional class so both sets of styling can be done here
+	  .header__default is the default site, e.g. http://lvh.me:3000/
+	  .header__partner is (usually) a subdomain, e.g. http://normal-island.lvh.me:3000/
+
+	header__branding sizes are copied them from the old css
+*/
+
+// base (mobile, default site)
 .header {
 	display: grid;
 	grid-template:
 		"branding toggle" auto
 		"menu menu" auto;
 	align-items: center;
-	margin-inline: 2rem;
-	margin-block: 0;
-	padding-top: 2rem;
+	margin-inline: 0.75rem;
+	padding-block: 1rem;
 
 	.header__branding {
 		grid-area: branding;
+		width: 148px;
+		height: 43.56px;
+
+		svg,
+		img {
+			object-fit: contain;
+			max-width: 100%;
+			max-height: 100%;
+		}
+
 		h1,
 		h2,
 		p {
@@ -25,16 +44,19 @@
 
 	.header__menu {
 		grid-area: menu;
-		margin-left: auto;
-		background-color: $base-tertiary;
+		// margin-left: auto;
+		background-color: transparent;
 		display: flex;
 		flex-direction: column;
-		gap: 2rem;
-		padding-block: 1rem;
-		margin-inline: -2rem;
-		width: calc(100% + 4rem);
+		gap: 0.25rem;
+		padding-block: 1rem 0;
+		// fill screen width
+		margin-inline: -1.5rem;
 		justify-content: space-evenly;
+		// allow transition between keywords (i.e. `auto`, `min-content`) and numerics
+		// not in firefox yet https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/interpolate-size#browser_compatibility
 		interpolate-size: allow-keywords;
+		// transition discrete properties (i.e. `display`) at the start/end of transition rather than at 50%
 		transition-behavior: allow-discrete;
 		height: auto;
 		transition-property: display, height, margin-top, padding-block;
@@ -44,12 +66,19 @@
 
 		ul {
 			display: contents;
+
 			li {
+				// background-color: $base-tertiary;
+				background-color: var(--base-tertiary, $base-tertiary);
+				padding-block: 1rem;
+
 				a {
-					color: $base-background;
+					color: var(--base-background, $base-background);
 					text-decoration: none;
 					font-size: 1rem;
 					font-weight: 600;
+
+					// used for active page/hover underlines at some breakpoints
 					&::after {
 						content: "";
 						display: block;
@@ -59,18 +88,19 @@
 						background-color: transparent;
 						transition: background-color 0.3s ease-in-out;
 					}
+
 					&:hover::after,
 					&.active::after {
 						background-color: transparent;
 					}
 				}
+
 				text-align: center;
 				list-style-type: none;
 			}
 		}
 
-		@include for-phone-and-tablet-only {
-			margin-top: 1rem;
+		@include for-phone-and-tablet-portrait-only {
 			&.is-hidden {
 				margin-top: 0;
 				height: 0;
@@ -85,49 +115,143 @@
 		gap: 0.5rem;
 		margin-left: auto;
 		align-items: center;
-		color: $base-background;
+		color: var(--base-background, $base-background);
 		background-color: transparent;
+		font-size: 1rem;
+		font-weight: 600;
+		font-family: $sans-serif;
+
 		svg {
 			width: 33px;
 			height: 33px;
 			fill: var(--base-secondary);
 		}
 	}
-}
 
-@include for-tablet-portrait-up {
-	.header {
+	@include for-tablet-portrait-up {
+		margin-inline: 1.5rem;
+
+		.header__branding {
+			width: 191px;
+			height: 56.22px;
+		}
+
 		.header__menu {
 			flex-direction: row;
-			ul li a {
-				&:hover::after,
-				&.active::after {
-					background-color: var(--base-primary);
+			background-color: var(--base-tertiary, $base-tertiary);
+			gap: 2rem;
+			padding-block: 1rem;
+			margin-top: 1rem;
+
+			ul li {
+				background-color: transparent;
+				padding-block: 0;
+
+				a {
+					&:hover::after,
+					&.active::after {
+						background-color: var(--base-primary, $base-primary);
+					}
 				}
 			}
 		}
 	}
-}
 
-@include for-tablet-landscape-up {
-	.header {
+	@include for-tablet-landscape-up {
 		grid-template: "branding menu" auto;
-		margin-bottom: 2rem;
+
 		.header__menu {
 			background-color: transparent;
 			justify-content: end;
 			margin-inline: 0;
+			margin-top: 0;
 			width: auto;
+			transition: none;
+			padding-block: 0;
+
 			ul li a {
 				&:hover::after,
 				&.active::after {
-					background-color: $base-tertiary;
+					background-color: var(--base-tertiary, $base-tertiary);
 				}
 			}
 		}
 
 		.header__toggle {
 			display: none;
+		}
+	}
+
+	// subdomain overrides
+	&.header__partner {
+		@include for-phone-and-tablet-portrait-only {
+			padding-bottom: 0;
+		}
+
+		.header__menu {
+			ul li a {
+				letter-spacing: 0.166rem;
+				font-weight: 800;
+				text-transform: uppercase;
+			}
+
+			@include for-phone-only {
+				background-color: var(--base-tertiary, $base-tertiary);
+				margin-top: 1rem;
+
+				&:not(.is-hidden) {
+					padding-block: 0 0.25rem;
+				}
+
+				ul li {
+					background-color: var(--base-text, $base-text);
+					transition: background-color 0.3s ease-in-out;
+
+					&:hover {
+						background-color: var(--base-tertiary, $base-tertiary);
+					}
+
+					a {
+						font-size: 1.333rem;
+					}
+				}
+			}
+
+			@include for-tablet-portrait-only {
+				justify-content: space-evenly;
+				background-color: var(--base-text, $base-text);
+
+				// subdomains force the menu open at tablet-portrait breakpoint. root forces it at tablet-landscape
+				&.is-hidden {
+					height: auto;
+					margin-top: 1rem;
+					padding-block: 1rem;
+				}
+
+				// give li's equal width
+				ul li {
+					flex: 1 1 1px;
+				}
+			}
+
+			@include for-tablet-landscape-up {
+				ul li a {
+					color: var(--base-text, $base-text);
+
+					&:hover::after,
+					&.active::after {
+						background-color: var(--base-primary, $base-primary);
+					}
+				}
+			}
+		}
+
+		.header__toggle {
+			color: var(--base-text, $base-text);
+
+			@include for-tablet-portrait-up {
+				display: none;
+			}
 		}
 	}
 }

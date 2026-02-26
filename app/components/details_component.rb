@@ -12,7 +12,7 @@
 # <%= render(DetailsComponent.new(header: 'Value'|nil, summary: 'Value')) do %>
 #   <p>Additional markup to show when expanded</p>
 # <% end %>
-# add class `details-summary-collapsible` for any details added to `summary` for layout purposes
+# add class `details__summary__collapsible` for any details added to `summary` for layout purposes
 class DetailsComponent < ViewComponent::Base
   include SvgIconsHelper
 

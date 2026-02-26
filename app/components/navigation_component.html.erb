@@ -1,13 +1,13 @@
-<header class="header" data-controller="mobile-menu">
-  <%= link_to(root_path, class:'header__branding') do %>
+<header class="header <%= @site&.default_site? ? 'header__default' : 'header__partner' %>" data-controller="mobile-menu">
+  <%= link_to(root_path, class: "header__branding header__branding--#{ @site&.slug }") do %>
     <% if @logo_path %>
       <% if @logo_path =~ /\.svg$/ %>
-        <%= svg_image(@logo_path, alt_text: @site.name, css_class: "header__branding header__branding--#{ @site.slug }") %>
+        <%= svg_image(@logo_path, alt_text: @site.name) %>
       <% else %>
-        <%= image_tag(@logo_path, alt: @site.name, class: "header__branding header__branding--#{ @site.slug }") %>
+        <%= image_tag(@logo_path, alt: @site.name) %>
       <% end %>
     <% else %>
-      <%= svg_image('home/icons/logo.svg', alt_text: 'PlaceCal', css_class: "header__branding header__branding--#{ @site.slug }") %>
+      <%= svg_image('home/icons/logo.svg', alt_text: 'PlaceCal') %>
     <% end %>
     <% if @site&.default_site? %>
       <% if request.path == '/' %>
@@ -20,7 +20,7 @@
       <p>The Community Calendar</p>
     <% end %>
   <% end %>
-  <nav class="nav header__menu" data-mobile-menu-target="menu" role="navigation">
+  <nav class="nav header__menu" data-mobile-menu-target="menu">
     <ul>
       <li><%= active_link_to "Home", root_path %></li>
       <% navigation.each do |link_text, link_path| %>
@@ -30,6 +30,6 @@
   </nav>
   <button type="button" class="header__toggle" data-action="click->mobile-menu#toggle" data-turbo="false">
     Menu
-    <%= icon(:misc_menu, size:'0') %>
+    <%= icon(:misc_menu, size: '0') %>
   </button>
 </header>

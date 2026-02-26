@@ -1,3 +1,5 @@
+// this is injected into app/views/layouts/application.html.erb for the default site (
+
 @import "variables_mixins";
 
 $text-spacing-portrait: 4rem;
@@ -7,7 +9,7 @@ $text-spacing-desktop: 12rem;
 @import "home/card";
 @import "home/form";
 @import "home/grid";
-@import "home/header";
+@import "home/layout";
 @import "home/margins";
 @import "home/pattern";
 @import "home/typography";
