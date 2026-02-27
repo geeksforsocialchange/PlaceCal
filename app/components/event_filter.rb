@@ -8,7 +8,7 @@ class Components::EventFilter < Components::Base
   prop :today_url, String
   prop :today, _Boolean, default: false
   prop :site, _Nilable(::Site), default: nil
-  prop :selected_neighbourhood, _Nilable(_Any), default: nil  # coerced via to_i
+  prop :selected_neighbourhood, _Nilable(String), default: nil
 
   def after_initialize
     @sort ||= 'time'

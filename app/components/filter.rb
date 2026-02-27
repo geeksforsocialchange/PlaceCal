@@ -8,11 +8,7 @@ class Components::Filter < Components::Base
   prop :toggle_action, String
   prop :submit_action, String
   prop :reset_action, String
-  prop :selected_id, _Nilable(_Any), default: nil
-
-  def after_initialize
-    @selected_id = @selected_id.to_i
-  end
+  prop :selected_id, Integer, default: 0
 
   def view_template
     return unless @items.any?

@@ -2,7 +2,7 @@
 
 class Components::Admin::StatCard < Components::Admin::Base
   prop :label, String
-  prop :value, _Nilable(_Any), default: nil
+  prop :value, _Nilable(String), default: nil
   prop :icon, _Nilable(Symbol), default: nil
   prop :subtitle, _Nilable(String), default: nil
 
@@ -21,7 +21,7 @@ class Components::Admin::StatCard < Components::Admin::Base
             icon(@icon_name, size: '4', css_class: 'text-gray-400')
           end
         end
-        div(class: 'text-2xl font-bold text-base-content') { @value.to_s }
+        div(class: 'text-2xl font-bold text-base-content') { @value }
         yield if block
       end
     end

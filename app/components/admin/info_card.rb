@@ -12,7 +12,7 @@ class Components::Admin::InfoCard < Components::Admin::Base
 
   prop :icon, Symbol
   prop :label, String
-  prop :value, _Nilable(_Any), default: nil
+  prop :value, _Nilable(String), default: nil
   prop :color, Symbol, default: :orange
 
   def after_initialize
@@ -31,7 +31,7 @@ class Components::Admin::InfoCard < Components::Admin::Base
             if block
               yield
             elsif @value.present?
-              p(class: 'font-semibold text-lg') { @value.to_s }
+              p(class: 'font-semibold text-lg') { @value }
             else
               p(class: 'text-gray-600 italic') { 'Not set' }
             end

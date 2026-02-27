@@ -4,7 +4,7 @@ class Components::Admin::Fieldset < Components::Admin::Base
   prop :label, String
   prop :hint, _Nilable(String), default: nil
   prop :required, _Boolean, default: false
-  prop :char_counter, _Nilable(_Any), default: nil
+  prop :char_counter, _Nilable(Integer), default: nil
 
   def after_initialize
     @input_block = nil

@@ -3,7 +3,7 @@
 class Components::Timeline < Components::Base
   DEFAULT_STEPS = 7
 
-  prop :pointer, _Any
+  prop :pointer, _Union(Date, String)
   prop :period, String
   prop :sort, _Nilable(String), default: nil
   prop :repeating, _Nilable(String), default: nil

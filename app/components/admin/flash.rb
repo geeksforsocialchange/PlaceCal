@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Components::Admin::Flash < Components::Admin::Base
-  prop :flash, _Nilable(_Any), default: nil
+  prop :flash_messages, _Nilable(Hash), default: nil
 
   def view_template
-    flash_messages = @flash || flash
-    return unless flash_messages.any?
+    messages = @flash_messages || flash
+    return unless messages.any?
 
     div(class: 'space-y-3 mb-3') do
-      flash_messages.each do |key, value|
+      messages.each do |key, value|
         render Components::Admin::Alert.new(type: key, message: value)
       end
     end

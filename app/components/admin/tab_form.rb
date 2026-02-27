@@ -4,8 +4,8 @@ class Components::Admin::TabForm < Components::Admin::Base
   prop :tabs, Array
   prop :tab_name, String
   prop :storage_key, String
-  prop :form, _Any
-  prop :record, _Any
+  prop :form, ActionView::Helpers::FormBuilder
+  prop :record, _Interface(:model_name) # ActiveRecord model
   prop :settings_hash, _Nilable(String), default: nil
   prop :preview_hash, _Nilable(String), default: nil
 

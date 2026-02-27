@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::SourceInput < Components::Admin::Base
-  prop :form, _Any
+  prop :form, ActionView::Helpers::FormBuilder
   prop :test_url, String
   prop :show_importer, _Boolean, default: true
 

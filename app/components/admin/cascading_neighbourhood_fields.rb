@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::CascadingNeighbourhoodFields < Components::Admin::Base
-  prop :form, _Any
+  prop :form, ActionView::Helpers::FormBuilder
   prop :show_remove, _Boolean, default: true
   prop :relation_type, _Nilable(String), default: nil
   prop :title, _Nilable(String), default: nil

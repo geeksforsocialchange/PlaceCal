@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::OpeningTimes < Components::Admin::Base
-  prop :form, _Any
+  prop :form, ActionView::Helpers::FormBuilder
   prop :partner, ::Partner
 
   def view_template

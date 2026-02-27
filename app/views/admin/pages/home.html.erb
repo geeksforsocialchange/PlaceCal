@@ -41,7 +41,7 @@
   <%# Partners %>
   <%= render Components::Admin::StatCard.new(
         label: t('admin.dashboard.stats.partners'),
-        value: @total_partners,
+        value: @total_partners.to_s,
         icon: :partner
       ) %>
 
@@ -70,7 +70,7 @@
   <%# Events this week %>
   <%= render Components::Admin::StatCard.new(
         label: t('admin.dashboard.stats.events_this_week'),
-        value: @total_events_this_week,
+        value: @total_events_this_week.to_s,
         icon: :calendar
       ) %>
 

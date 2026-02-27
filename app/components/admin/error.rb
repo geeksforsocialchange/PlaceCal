@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::Error < Components::Admin::Base
-  prop :object, _Any, :positional
+  prop :object, _Interface(:errors), :positional
 
   def view_template
     return unless @object.errors.any?

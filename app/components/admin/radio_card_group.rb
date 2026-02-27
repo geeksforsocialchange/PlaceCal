@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::RadioCardGroup < Components::Admin::Base
-  prop :form, _Any
+  prop :form, ActionView::Helpers::FormBuilder
   prop :attribute, Symbol
   prop :values, Array
   prop :i18n_scope, _Nilable(String), default: nil

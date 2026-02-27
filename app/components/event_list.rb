@@ -5,8 +5,8 @@ class Components::EventList < Components::Base
   prop :period, _Nilable(String), default: nil
   prop :primary_neighbourhood, _Nilable(::Neighbourhood), default: nil
   prop :show_neighbourhoods, _Boolean, default: false
-  prop :badge_zoom_level, _Nilable(_Any), default: nil # Integer or Enumerize::Value
-  prop :next_date, _Nilable(_Any), default: nil  # event-like object with dtstart
+  prop :badge_zoom_level, _Nilable(String), default: nil
+  prop :next_date, _Nilable(Time), default: nil
   prop :site_tagline, _Nilable(String), default: nil
   prop :truncated, _Boolean, default: false
 

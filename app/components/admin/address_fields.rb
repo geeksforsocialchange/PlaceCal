@@ -3,7 +3,7 @@
 class Components::Admin::AddressFields < Components::Admin::Base
   include ApplicationHelper
 
-  prop :form, _Any
+  prop :form, ActionView::Helpers::FormBuilder
   prop :partner, ::Partner
   prop :current_user, ::User
 

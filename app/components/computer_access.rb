@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::ComputerAccess < Components::Base
-  prop :places, _Any, :positional
+  prop :places, _Interface(:each), :positional
 
   def view_template # rubocop:disable Metrics/MethodLength
     div(class: 'help help__computer_access') do

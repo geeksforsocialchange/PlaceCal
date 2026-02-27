@@ -59,15 +59,11 @@ RSpec.describe Components::EventList, type: :component do
   end
 
   context "with next_date provided" do
-    let(:next_event) do
-      double(dtstart: Time.zone.parse("2024-01-20 10:00"))
-    end
-
     let(:attrs) do
       {
         events: {},
         period: "day",
-        next_date: next_event
+        next_date: Time.zone.parse("2024-01-20 10:00")
       }
     end
 

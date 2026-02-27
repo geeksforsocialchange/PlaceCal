@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::HeroSection < Components::Base
-  prop :image_path, _Nilable(_Any), default: nil # CarrierWave uploader or String
+  prop :image_path, _Nilable(String), default: nil
   prop :image_credit, _Nilable(String), default: nil
   prop :title, _Nilable(String), default: nil
   prop :alttext, _Nilable(String), default: nil

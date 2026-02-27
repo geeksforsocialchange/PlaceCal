@@ -1,23 +1,20 @@
 # frozen_string_literal: true
 
 class Components::Flash < Components::Base
-  prop :flash, _Nilable(_Any), default: nil
+  prop :flash_messages, _Nilable(Hash), default: nil
 
   def view_template
-    return unless flash_messages.any?
+    messages = @flash_messages || flash
+    return unless messages.any?
 
     div(class: 'flashes') do
-      flash_messages.each do |key, value|
+      messages.each do |key, value|
         div(class: "alert #{alert_class(key)}", role: 'alert') { value }
       end
     end
   end
 
   private
-
-  def flash_messages
-    @flash || flash
-  end
 
   def alert_class(key)
     case key.to_sym

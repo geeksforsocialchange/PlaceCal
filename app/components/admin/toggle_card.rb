@@ -3,7 +3,7 @@
 class Components::Admin::ToggleCard < Components::Admin::Base
   include Phlex::Rails::Helpers::FormWith
 
-  prop :form, _Any
+  prop :form, ActionView::Helpers::FormBuilder
   prop :attribute, Symbol
   prop :title, String
   prop :description, _Nilable(String), default: nil

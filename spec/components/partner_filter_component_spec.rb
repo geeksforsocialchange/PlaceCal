@@ -94,7 +94,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
       render_inline(described_class.new(
                       site: site,
                       selected_category: nil,
-                      selected_neighbourhood: neighbourhood1.id
+                      selected_neighbourhood: neighbourhood1.id.to_s
                     ))
 
       # When a neighbourhood is selected, it shows the neighbourhood name instead of "Neighbourhood"

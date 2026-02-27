@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::ImageUpload < Components::Admin::Base
-  prop :form, _Any
+  prop :form, ActionView::Helpers::FormBuilder
   prop :attribute, Symbol
   prop :title, _Nilable(String), default: nil
   prop :header_icon, Symbol, default: :photo

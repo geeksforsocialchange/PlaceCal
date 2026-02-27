@@ -6,7 +6,7 @@ class Components::Admin::NeighbourhoodCard < Components::Admin::Base
   prop :neighbourhood, ::Neighbourhood
   prop :show_header, _Boolean, default: true
   prop :show_remove, _Boolean, default: false
-  prop :form, _Nilable(_Any), default: nil
+  prop :form, _Nilable(ActionView::Helpers::FormBuilder), default: nil
   prop :inline, _Boolean, default: false
 
   def view_template
