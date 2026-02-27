@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Components::HeroSection < Components::Base
-  prop :image_path, _Nilable(_Any), default: nil
-  prop :image_credit, _Nilable(_Any), default: nil
-  prop :title, _Nilable(_Any), default: nil
-  prop :alttext, _Nilable(_Any), default: nil
+  prop :image_path, _Nilable(String), default: nil
+  prop :image_credit, _Nilable(String), default: nil
+  prop :title, _Nilable(String), default: nil
+  prop :alttext, _Nilable(String), default: nil
 
   def after_initialize
     @title = @title.presence || I18n.t('meta.description', site: 'PlaceCal')

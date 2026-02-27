@@ -3,7 +3,7 @@
 class Components::Admin::RadioFilter < Components::Admin::Base
   prop :column, String
   prop :label, String
-  prop :options, _Any
+  prop :options, Array
   prop :show_all, _Boolean, default: true
 
   def view_template

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::TabForm < Components::Admin::Base
-  prop :tabs, _Any
+  prop :tabs, Array
   prop :tab_name, String
   prop :storage_key, String
   prop :form, _Any

@@ -3,7 +3,7 @@
 class Components::Admin::RadioCardGroup < Components::Admin::Base
   prop :form, _Any
   prop :attribute, Symbol
-  prop :values, _Any
+  prop :values, Array
   prop :i18n_scope, _Nilable(String), default: nil
 
   def view_template

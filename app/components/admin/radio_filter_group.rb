@@ -2,7 +2,7 @@
 
 class Components::Admin::RadioFilterGroup < Components::Admin::Base
   prop :group_label, String
-  prop :filters, _Any
+  prop :filters, Array
   prop :show_all, _Boolean, default: true
 
   def view_template

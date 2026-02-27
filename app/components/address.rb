@@ -3,7 +3,7 @@
 class Components::Address < Components::Base
   include Phlex::Rails::Helpers::Sanitize
 
-  prop :address, _Nilable(_Any), default: nil
+  prop :address, _Nilable(::Address), default: nil
   prop :raw_location, _Nilable(String), default: nil
 
   def view_template

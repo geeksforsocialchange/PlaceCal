@@ -3,7 +3,7 @@
 class Components::HelpAddingEvents < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
-  prop :site, _Any, :positional
+  prop :site, ::Site, :positional
 
   def view_template # rubocop:disable Metrics/MethodLength
     return unless @site.site_admin

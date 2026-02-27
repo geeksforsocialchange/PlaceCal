@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::OpeningTimes < Components::Base
-  prop :times, _Any
+  prop :times, Array
 
   def view_template
     ul(class: 'opening_times reset') do

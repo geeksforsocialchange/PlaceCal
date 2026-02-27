@@ -14,7 +14,7 @@ class Components::Admin::Card < Components::Admin::Base
   prop :icon, _Nilable(Symbol), default: nil
   prop :icon_class, _Nilable(String), default: nil
   prop :variant, Symbol, default: :default
-  prop :header_link, _Nilable(_Any), default: nil
+  prop :header_link, _Nilable(String), default: nil
   prop :header_link_text, _Nilable(String), default: nil
   prop :decorative_blur, _Nilable(Symbol), default: nil
 

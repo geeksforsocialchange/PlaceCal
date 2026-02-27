@@ -3,7 +3,7 @@
 class Components::Footer < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
-  prop :site, _Nilable(_Any), :positional, default: nil
+  prop :site, _Nilable(::Site), :positional, default: nil
 
   def view_template # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     div(class: 'footer') do

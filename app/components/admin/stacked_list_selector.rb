@@ -2,9 +2,9 @@
 
 class Components::Admin::StackedListSelector < Components::Admin::Base
   prop :field_name, String
-  prop :items, _Any
-  prop :options, _Any, default: -> { [] }
-  prop :permitted_ids, _Nilable(_Any), default: nil
+  prop :items, Array
+  prop :options, Array, default: -> { [] }
+  prop :permitted_ids, _Nilable(Array), default: nil
   prop :icon_name, Symbol, default: :partnership
   prop :icon_color, String, default: 'bg-placecal-orange/10 text-placecal-orange'
   prop :empty_text, _Nilable(String), default: nil
@@ -14,7 +14,7 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
   prop :controller, String, default: 'stacked-list-selector'
   prop :use_tom_select, _Boolean, default: false
   prop :wrapper_class, _Nilable(String), default: nil
-  prop :link_path, _Nilable(_Any), default: nil
+  prop :link_path, _Nilable(Symbol), default: nil
   prop :read_only, _Boolean, default: false
 
   def after_initialize

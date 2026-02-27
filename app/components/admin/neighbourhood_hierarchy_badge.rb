@@ -3,7 +3,7 @@
 class Components::Admin::NeighbourhoodHierarchyBadge < Components::Admin::Base
   include NeighbourhoodsHelper
 
-  prop :neighbourhood, _Any
+  prop :neighbourhood, ::Neighbourhood
   prop :max_levels, _Nilable(Integer), default: nil
   prop :show_icons, _Boolean, default: false
   prop :truncate, _Boolean, default: true

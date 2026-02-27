@@ -3,7 +3,7 @@
 class Components::Filter < Components::Base
   prop :name, String
   prop :label, String
-  prop :items, _Any
+  prop :items, Array
   prop :controller, String
   prop :toggle_action, String
   prop :submit_action, String

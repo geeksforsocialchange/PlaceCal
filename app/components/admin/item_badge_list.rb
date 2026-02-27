@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Components::Admin::ItemBadgeList < Components::Admin::Base
-  prop :items, _Any
+  prop :items, Array
   prop :icon_name, Symbol
   prop :icon_color, String
-  prop :link_path, _Any
+  prop :link_path, Symbol
   prop :empty_text, _Nilable(String), default: nil
   prop :vertical, _Boolean, default: false
 

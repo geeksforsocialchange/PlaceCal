@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Components::EventList < Components::Base
-  prop :events, _Any
-  prop :period, _Nilable(_Any), default: nil
-  prop :primary_neighbourhood, _Nilable(_Any), default: nil
+  prop :events, Hash
+  prop :period, _Nilable(String), default: nil
+  prop :primary_neighbourhood, _Nilable(::Neighbourhood), default: nil
   prop :show_neighbourhoods, _Boolean, default: false
-  prop :badge_zoom_level, _Nilable(_Any), default: nil
-  prop :next_date, _Nilable(_Any), default: nil
+  prop :badge_zoom_level, _Nilable(Integer), default: nil
+  prop :next_date, _Nilable(_Any), default: nil  # event-like object with dtstart
   prop :site_tagline, _Nilable(String), default: nil
   prop :truncated, _Boolean, default: false
 

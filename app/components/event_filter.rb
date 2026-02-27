@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Components::EventFilter < Components::Base
-  prop :pointer, _Any
-  prop :period, _Any
+  prop :pointer, Date
+  prop :period, String
   prop :sort, _Nilable(String), default: nil
-  prop :repeating, _Nilable(_Any), default: nil
+  prop :repeating, _Nilable(String), default: nil
   prop :today_url, String
   prop :today, _Boolean, default: false
-  prop :site, _Nilable(_Any), default: nil
-  prop :selected_neighbourhood, _Nilable(_Any), default: nil
+  prop :site, _Nilable(::Site), default: nil
+  prop :selected_neighbourhood, _Nilable(_Any), default: nil  # coerced via to_i
 
   def after_initialize
     @sort ||= 'time'

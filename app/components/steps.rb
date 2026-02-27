@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Steps < Components::Base
-  prop :steps, _Any
+  prop :steps, Array
   prop :start_message, _Nilable(String), default: nil
   prop :end_message, _Nilable(String), default: nil
 

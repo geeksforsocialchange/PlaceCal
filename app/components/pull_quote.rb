@@ -3,7 +3,7 @@
 class Components::PullQuote < Components::Base
   prop :source, String
   prop :quote_context, String
-  prop :options, _Any
+  prop :options, Hash
 
   def after_initialize
     @color_mode = @options[:light_mode] ? 'light' : 'dark'

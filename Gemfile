@@ -32,6 +32,7 @@ gem 'kramdown'                    # Markdown to HTML rendering
 gem 'literal'                     # Typed properties for Phlex components
 gem 'phlex-rails', '~> 2.3'       # Ruby-native view components
 gem 'simple_form'                 # Form builder
+gem 'strict_ivars', require: false # Catch undefined instance variable reads
 
 # Auth and permissions
 gem 'devise'                      # User authentication

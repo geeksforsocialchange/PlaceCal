@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Meta < Components::Base
-  prop :permalink, _Any, :positional
+  prop :permalink, _Nilable(String), :positional
 
   def after_initialize
     @link_content = nil

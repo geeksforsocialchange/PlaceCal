@@ -3,7 +3,7 @@
 class Components::ContactDetails < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
-  prop :partner, _Any
+  prop :partner, ::Partner
   prop :email, _Nilable(String), default: nil
   prop :phone, _Nilable(String), default: nil
   prop :url, _Nilable(String), default: nil

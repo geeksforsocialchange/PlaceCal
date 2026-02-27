@@ -3,7 +3,7 @@
 class Components::Admin::NeighbourhoodCard < Components::Admin::Base
   include NeighbourhoodsHelper
 
-  prop :neighbourhood, _Any
+  prop :neighbourhood, ::Neighbourhood
   prop :show_header, _Boolean, default: true
   prop :show_remove, _Boolean, default: false
   prop :form, _Nilable(_Any), default: nil

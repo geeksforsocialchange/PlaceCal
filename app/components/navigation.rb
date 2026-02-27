@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Components::Navigation < Components::Base
-  prop :navigation, _Any
-  prop :site, _Nilable(_Any), default: nil
+  prop :navigation, Array
+  prop :site, _Nilable(::Site), default: nil
 
   def view_template # rubocop:disable Metrics/MethodLength
     div(class: 'header', data: { controller: 'mobile-menu' }) do

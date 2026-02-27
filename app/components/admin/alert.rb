@@ -9,8 +9,8 @@ class Components::Admin::Alert < Components::Admin::Base
     danger: { class: 'alert-error', icon: :x_circle }
   }.freeze
 
-  prop :type, _Any
-  prop :message, _Any
+  prop :type, _Union(String, Symbol)
+  prop :message, String
 
   def after_initialize
     @type = @type.to_sym

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::PartnershipCard < Components::Base
-  prop :site, _Any
+  prop :site, ::Site
 
   def after_initialize
     url_concatenator = @site.url[-1] == '/' ? '' : '/'

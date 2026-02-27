@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::NeighbourhoodHomeCard < Components::Base
-  prop :site, _Any
+  prop :site, ::Site
 
   def view_template
     li(class: 'neighbourhood_home_card') do

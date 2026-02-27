@@ -2,7 +2,7 @@
 
 class Components::Admin::OpeningTimes < Components::Admin::Base
   prop :form, _Any
-  prop :partner, _Any
+  prop :partner, ::Partner
 
   def view_template
     div(data_controller: 'opening-times', data_opening_times_data_value: @partner.opening_times_data) do

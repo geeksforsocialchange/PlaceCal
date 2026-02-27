@@ -4,8 +4,8 @@ class Components::Admin::AddressFields < Components::Admin::Base
   include ApplicationHelper
 
   prop :form, _Any
-  prop :partner, _Any
-  prop :current_user, _Any
+  prop :partner, ::Partner
+  prop :current_user, ::User
 
   def view_template
     raw @form.fields_for(:address, address) { |address_form|

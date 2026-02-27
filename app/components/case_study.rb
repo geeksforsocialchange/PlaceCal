@@ -8,7 +8,7 @@ class Components::CaseStudy < Components::Base
   prop :image_src, String
   prop :partner_url, String
   prop :pull_quote, String
-  prop :description, _Any
+  prop :description, Array
 
   def view_template
     section(class: 'case_study__section--outer') do

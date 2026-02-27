@@ -2,10 +2,10 @@
 
 class Components::Event < Components::Base
   prop :display_context, _Any
-  prop :event, _Any
-  prop :primary_neighbourhood, _Nilable(_Any), default: nil
+  prop :event, _Any  # Event model or test double
+  prop :primary_neighbourhood, _Nilable(::Neighbourhood), default: nil
   prop :show_neighbourhoods, _Boolean, default: false
-  prop :badge_zoom_level, _Nilable(_Any), default: nil
+  prop :badge_zoom_level, _Nilable(Integer), default: nil
   prop :site_tagline, _Nilable(String), default: nil
 
   def view_template # rubocop:disable Metrics/MethodLength,Metrics/AbcSize

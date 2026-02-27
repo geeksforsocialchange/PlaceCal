@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Components::PartnerPreview < Components::Base
-  prop :partner, _Any
-  prop :site, _Any
+  prop :partner, ::Partner
+  prop :site, ::Site
 
   def view_template
     li(class: 'preview') do

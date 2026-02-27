@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Breadcrumb < Components::Base
-  prop :trail, _Any, default: -> { [] }
+  prop :trail, Array, default: -> { [] }
   prop :site_name, String, default: 'The Community Calendar'
 
   def view_template(&)

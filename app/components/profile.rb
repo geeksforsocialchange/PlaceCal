@@ -3,7 +3,7 @@
 class Components::Profile < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
-  prop :user, _Any
+  prop :user, _Any  # User model or test double
 
   def view_template
     div(class: 'profile') do

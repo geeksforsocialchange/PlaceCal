@@ -3,8 +3,8 @@
 class Components::Paginator < Components::Base
   DEFAULT_STEPS = 7
 
-  prop :pointer, _Any
-  prop :period, _Any
+  prop :pointer, Date
+  prop :period, String
   prop :sort, _Nilable(String), default: nil
   prop :repeating, _Nilable(String), default: nil
   prop :path, _Nilable(String), default: nil

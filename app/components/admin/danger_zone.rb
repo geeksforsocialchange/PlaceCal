@@ -4,7 +4,7 @@ class Components::Admin::DangerZone < Components::Admin::Base
   prop :title, String
   prop :description, String
   prop :button_text, String
-  prop :button_path, _Any
+  prop :button_path, String
   prop :button_method, Symbol, default: :delete
   prop :confirm, _Nilable(String), default: nil
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::FeaturedPartnerships < Components::Base
-  prop :sites, _Any
+  prop :sites, Array
 
   def view_template
     div(class: 'featured_partnerships') do

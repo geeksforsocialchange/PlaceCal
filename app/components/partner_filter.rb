@@ -3,9 +3,9 @@
 class Components::PartnerFilter < Components::Base
   include Phlex::Rails::Helpers::FormWith
 
-  prop :site, _Any
-  prop :selected_category, _Nilable(_Any), default: nil
-  prop :selected_neighbourhood, _Nilable(_Any), default: nil
+  prop :site, ::Site
+  prop :selected_category, _Nilable(_Any), default: nil   # coerced via to_i
+  prop :selected_neighbourhood, _Nilable(_Any), default: nil  # coerced via to_i
 
   def after_initialize
     @selected_category = @selected_category.to_i

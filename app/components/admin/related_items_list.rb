@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Components::Admin::RelatedItemsList < Components::Admin::Base
-  prop :items, _Any
+  prop :items, Array
   prop :title_attr, Symbol
-  prop :edit_path, _Any
+  prop :edit_path, _Any  # lambda or symbol
   prop :subtitle_attr, _Nilable(Symbol), default: nil
   prop :empty_message, _Nilable(String), default: nil
 
