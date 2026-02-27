@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Event < Components::Base
-  prop :display_context, _Union(String, Symbol)
+  prop :display_context, _Nilable(_Union(String, Symbol)), default: nil
   prop :event, _Any  # Event model or test double
   prop :primary_neighbourhood, _Nilable(::Neighbourhood), default: nil
   prop :show_neighbourhoods, _Boolean, default: false

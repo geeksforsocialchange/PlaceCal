@@ -39,8 +39,8 @@ When("I create a new partner with name {string}") do |name|
   click_button "Continue"
 
   # Step 2: Location - address fields
-  expect(page).to have_content("Set Location", wait: 5)
-  fill_in_fieldset "Street address", with: "123 Main Street"
+  expect(page).to have_css("[data-step='2']:not(.hidden) h2", text: "Set Location", wait: 10)
+  fill_in_fieldset "Street Address", with: "123 Main Street"
   fill_in_fieldset "City", with: "Millbrook"
   fill_in_fieldset "Postcode", with: "ZZMB 1RS"
 
