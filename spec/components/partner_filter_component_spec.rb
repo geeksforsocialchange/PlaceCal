@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PartnerFilterComponent, type: :component do
+RSpec.describe Components::PartnerFilter, type: :component do
   describe "with partners in multiple neighbourhoods" do
     let(:neighbourhood1) { create(:neighbourhood) }
     let(:neighbourhood2) { create(:neighbourhood) }

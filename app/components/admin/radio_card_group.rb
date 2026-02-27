@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+class Components::Admin::RadioCardGroup < Components::Admin::Base
+  prop :form, _Any
+  prop :attribute, Symbol
+  prop :values, _Any
+  prop :i18n_scope, _Nilable(String), default: nil
+
+  def view_template
+    div(class: 'space-y-3') do
+      @values.each do |value|
+        label(class: 'flex items-start gap-3 p-3 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200/50 cursor-pointer transition-colors has-[:checked]:border-placecal-orange has-[:checked]:bg-orange-50/50') do
+          raw @form.radio_button(@attribute, value, class: 'radio radio-warning mt-0.5')
+          span(class: 'text-sm leading-relaxed') { raw safe(label_for(value).to_s) }
+        end
+      end
+    end
+  end
+
+  private
+
+  def model_class
+    @form.object.class
+  end
+
+  def label_for(value)
+    name = model_class.human_attribute_name("#{@attribute}.#{value}")
+    description = @i18n_scope ? I18n.t("#{@i18n_scope}.#{value}", default: nil) : nil
+
+    if description
+      helpers.safe_join([helpers.tag.strong(name), ': ', description])
+    else
+      name
+    end
+  end
+end

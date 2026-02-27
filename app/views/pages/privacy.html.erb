@@ -1,11 +1,11 @@
 <% content_for :title, "Privacy Policy" %>
 
 <article class="home margin">
-  <%= render(HeroComponent.new("PlaceCal Privacy Policy")) %>
+  <%= render(Components::Hero.new("PlaceCal Privacy Policy")) %>
   
 
   <div class="card card--plain">
-    <%= render MaxWidthComponent.new do %>
+    <%= render Components::MaxWidth.new do %>
       <br> 
     
       <p>At PlaceCal.org, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by PlaceCal.org and how we use it.</p><p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us through email at <%= t('contact.email') %>.</p>

@@ -1,6 +1,6 @@
 <%= simple_form_for [:admin, @article], html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } } do |f| %>
 
-  <%= render(Views::Admin::Components::Error.new(@article)) %>
+  <%= render(Components::Admin::Error.new(@article)) %>
 
   <% if @article.new_record? %>
     <%# New record - single page layout %>
@@ -12,7 +12,7 @@
 
     <div class="card bg-base-100 border border-base-300 shadow-sm">
       <div class="card-body p-6">
-        <%= render Views::Admin::Components::SectionHeader.new(
+        <%= render Components::Admin::SectionHeader.new(
           title: "Image",
           description: "Image will be cropped to 16:9 ratio.",
           margin: 4
@@ -23,7 +23,7 @@
 
     <div class="card bg-base-100 border border-base-300 shadow-sm">
       <div class="card-body p-6">
-        <%= render Views::Admin::Components::SectionHeader.new(
+        <%= render Components::Admin::SectionHeader.new(
           title: "References",
           description: "Link this article to partners and partnerships.",
           margin: 4
@@ -32,12 +32,12 @@
       </div>
     </div>
 
-    <%= render Views::Admin::Components::SaveBar.new do %>
+    <%= render Components::Admin::SaveBar.new do %>
       <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
     <% end %>
   <% else %>
     <%# Existing record - tabbed interface %>
-    <%= render Views::Admin::Components::TabForm.new(
+    <%= render Components::Admin::TabForm.new(
       tabs: [
         { label: '📝 Text', hash: 'text', partial: 'admin/articles/form_tab_text' },
         { label: '🖼️ Image', hash: 'image', partial: 'admin/articles/form_tab_image' },

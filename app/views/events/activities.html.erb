@@ -11,7 +11,7 @@
   <ol class="events reset">
     <% @events.each do |event| %>
       <li class="event">
-<%= render(EventComponent.new(context: :week,
+<%= render(Components::Event.new(display_context: :week,
                                       event: event,
                                       primary_neighbourhood: @primary_neighbourhood,
                                       show_neighbourhoods: @current_site.show_neighbourhoods?,

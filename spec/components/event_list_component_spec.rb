@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe EventListComponent, type: :component do
+RSpec.describe Components::EventList, type: :component do
   let(:event) do
     double(
       id: 1,

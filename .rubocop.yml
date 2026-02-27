@@ -68,7 +68,7 @@ Layout/LineContinuationSpacing:
 # Phlex components don't need super in initialize (+ inherited from todo)
 Lint/MissingSuper:
   Exclude:
-    - "app/views/admin/components/*.rb"
+    - "app/components/**/*.rb"
     - "app/jobs/calendar_importer/events/eventbrite_event.rb"
     - "app/jobs/calendar_importer/events/ics_event.rb"
     - "app/jobs/calendar_importer/events/manchester_uni_event.rb"
@@ -126,6 +126,11 @@ Metrics/PerceivedComplexity:
 # Naming cops
 # =============================================================================
 
+# Literal Properties' after_initialize is not memoization
+Naming/MemoizedInstanceVariableName:
+  Exclude:
+    - "app/components/**/*.rb"
+
 Naming/BlockForwarding:
   Enabled: false
 
@@ -149,7 +154,7 @@ Performance/StringReplacement:
 # Phlex uses `raw` for rendering form helpers and HTML content (+ inherited from todo)
 Rails/OutputSafety:
   Exclude:
-    - "app/views/admin/components/*.rb"
+    - "app/components/**/*.rb"
     - "app/helpers/application_helper.rb"
     - "app/helpers/articles_helper.rb"
     - "app/helpers/events_helper.rb"

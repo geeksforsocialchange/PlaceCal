@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PaginatorComponent, type: :component do
+RSpec.describe Components::Paginator, type: :component do
   let(:pointer) { Date.new(2024, 1, 15) }
 
   it "renders paginator structure" do
@@ -61,7 +61,7 @@ RSpec.describe PaginatorComponent, type: :component do
     end
 
     it "uses provided sort value" do
-      component = described_class.new(pointer: pointer, period: "day", sort: "summary")
+      component = described_class.new(pointer: pointer, period: "day", sort: "summary", show_breadcrumb: false)
       expect(component.sort).to eq("summary")
     end
   end

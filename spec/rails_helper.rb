@@ -11,8 +11,8 @@ require "rspec/rails"
 # Add additional requires below this line. Rails is not loaded until this point!
 require "capybara/rspec"
 require "pundit/rspec"
-require "view_component/test_helpers"
-require "view_component/system_test_helpers"
+# Phlex component test helper (render_inline for Phlex components)
+require_relative "support/phlex_test_helper"
 
 # Load all support files
 Rails.root.glob("spec/support/**/*.rb").sort_by(&:to_s).each { |f| require f }
@@ -47,10 +47,10 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :feature
 
-  # Include ViewComponent test helpers (for both ViewComponent and Phlex components)
-  config.include ViewComponent::TestHelpers, type: :component
+  # Include Phlex test helpers for component specs
+  config.include PhlexTestHelper, type: :component
   config.include Capybara::RSpecMatchers, type: :component
-  config.include ViewComponent::TestHelpers, type: :phlex
+  config.include PhlexTestHelper, type: :phlex
   config.include Capybara::RSpecMatchers, type: :phlex
 
   # Include Pundit helpers for helper specs

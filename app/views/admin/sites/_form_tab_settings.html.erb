@@ -1,4 +1,4 @@
-<%= render Views::Admin::Components::SectionHeader.new(
+<%= render Components::Admin::SectionHeader.new(
   title: t('admin.sections.admin_settings'),
   description: t('admin.sites.sections.admin_description')
 ) %>
@@ -6,7 +6,7 @@
 <div class="max-w-xl space-y-8">
   <fieldset class="fieldset">
     <legend class="fieldset-legend"><%= t('admin.sites.fields.publishing_status') %></legend>
-    <%= render Views::Admin::Components::ToggleCard.new(
+    <%= render Components::Admin::ToggleCard.new(
       form: f,
       attribute: :is_published,
       title: t('admin.sites.fields.published'),
@@ -37,7 +37,7 @@
   <% unless @site.new_record? %>
     <div class="divider"></div>
 
-    <%= render Views::Admin::Components::DangerZone.new(
+    <%= render Components::Admin::DangerZone.new(
       title: t('admin.danger_zone.delete_title', model: Site.model_name.human),
       description: t('admin.danger_zone.delete_description', model: Site.model_name.human.downcase),
       button_text: t('admin.actions.delete_model', model: Site.model_name.human),

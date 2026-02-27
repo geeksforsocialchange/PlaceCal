@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe BreadcrumbComponent, type: :component do
+RSpec.describe Components::Breadcrumb, type: :component do
   let(:site_name) { "Normal Island Central" }
   let(:trail) { [["Partners", "/partners"], ["Events", "/events"]] }
 

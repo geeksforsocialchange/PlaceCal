@@ -394,6 +394,8 @@ GEM
       launchy (>= 2.2, < 4)
     link_header (0.0.8)
     lint_roller (1.1.0)
+    literal (1.9.0)
+      zeitwerk
     logger (1.7.0)
     loofah (2.25.0)
       crass (~> 1.0.2)
@@ -703,10 +705,6 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     vcr (6.4.0)
-    view_component (4.4.0)
-      actionview (>= 7.1.0)
-      activesupport (>= 7.1.0)
-      concurrent-ruby (~> 1)
     virtus (2.0.0)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -785,6 +783,7 @@ DEPENDENCIES
   json-ld
   kramdown
   letter_opener
+  literal
   paper_trail
   pg
   phlex-rails (~> 2.3)
@@ -813,7 +812,6 @@ DEPENDENCIES
   turbo-rails
   uk_postcode
   vcr
-  view_component
   web-console
   webmock
   yard

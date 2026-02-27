@@ -1,8 +1,8 @@
-<%= render(Views::Admin::Components::Error.new(f.object)) %>
+<%= render(Components::Admin::Error.new(f.object)) %>
 
 <%# Radio Tabs - daisyUI tabs-lift %>
 <div class="tabs tabs-lift">
-  <%= render Views::Admin::Components::TabPanel.new(
+  <%= render Components::Admin::TabPanel.new(
     name: 'user_tabs',
     label: '👤 Personal Details',
     hash: 'personal',
@@ -12,7 +12,7 @@
     <%= render 'form_tab_personal', f: f %>
   <% end %>
 
-  <%= render Views::Admin::Components::TabPanel.new(
+  <%= render Components::Admin::TabPanel.new(
     name: 'user_tabs',
     label: '🔑 Permissions',
     hash: 'permissions',
@@ -25,7 +25,7 @@
     <%# Spacer to push Admin tab right %>
     <div class="tab flex-1 cursor-default"></div>
 
-    <%= render Views::Admin::Components::TabPanel.new(
+    <%= render Components::Admin::TabPanel.new(
       name: 'user_tabs',
       label: '⚙️ Settings',
       hash: 'settings',

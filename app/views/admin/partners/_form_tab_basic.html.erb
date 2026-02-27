@@ -1,6 +1,6 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <div class="lg:col-span-2 space-y-4">
-    <%= render Views::Admin::Components::SectionHeader.new(
+    <%= render Components::Admin::SectionHeader.new(
       title: t('admin.sections.basic_information'),
       description: t('admin.partners.sections.basic_info_description'),
       margin: 4
@@ -43,7 +43,7 @@
   </div>
 
   <%# Partner Image - Right column on larger screens %>
-  <%= render Views::Admin::Components::ImageUpload.new(
+  <%= render Components::Admin::ImageUpload.new(
     form: f,
     attribute: :image,
     title: t('admin.partners.image.title'),

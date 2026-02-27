@@ -1,6 +1,6 @@
 <% if policy(@partner).permitted_attributes.include? :slug %>
   <div class="mb-8">
-    <%= render Views::Admin::Components::SectionHeader.new(
+    <%= render Components::Admin::SectionHeader.new(
       title: t('admin.sections.url_settings'),
       description: t('admin.partners.sections.url_settings_description'),
       margin: 4
@@ -160,7 +160,7 @@
 
   <% if policy(@partner).destroy? %>
     <div class="mt-8">
-      <%= render Views::Admin::Components::DangerZone.new(
+      <%= render Components::Admin::DangerZone.new(
         title: t('admin.actions.delete_model', model: Partner.model_name.human.downcase),
         description: t('admin.danger_zone.delete_description', model: Partner.model_name.human.downcase),
         button_text: t('admin.actions.delete_model', model: Partner.model_name.human),

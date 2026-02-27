@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe ImpactStoryComponent, type: :component do
+RSpec.describe Components::ImpactStory, type: :component do
   let(:attrs) do
     {
       title: "We made organising community festivals a breeze",

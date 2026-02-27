@@ -48,7 +48,7 @@
   </div>
 <% else %>
   <div class="mb-8">
-    <%= render Views::Admin::Components::EmptyState.new(icon: :calendar, message: t('admin.empty.no_items', items: t('admin.sections.upcoming_events').downcase)) %>
+    <%= render Components::Admin::EmptyState.new(icon: :calendar, message: t('admin.empty.no_items', items: t('admin.sections.upcoming_events').downcase)) %>
   </div>
 <% end %>
 

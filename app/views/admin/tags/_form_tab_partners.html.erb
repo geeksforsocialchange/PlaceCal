@@ -39,6 +39,6 @@
       <p class="text-sm text-gray-600 mt-2"><%= t('admin.sites.preview.showing_first', limit: 50, total: tag_partners.count, items: Partner.model_name.human(count: 2).downcase) %></p>
     <% end %>
   <% else %>
-    <%= render Views::Admin::Components::EmptyState.new(icon: :partner, message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)) %>
+    <%= render Components::Admin::EmptyState.new(icon: :partner, message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)) %>
   <% end %>
 </div>

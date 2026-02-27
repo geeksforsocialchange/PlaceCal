@@ -23,12 +23,8 @@ module PlaceCal
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
 
-    # NOTE: Admin ViewComponents were migrated to Phlex in app/views/admin/components/
+    # Phlex views: app/views/ (Views::), components: app/components/ (Components::)
     # See config/initializers/phlex.rb for Zeitwerk namespace configuration
-
-    # Report ViewComponent render events to AppSignal
-    config.view_component.instrumentation_enabled = true
-    config.view_component.use_deprecated_instrumentation_name = false
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do

@@ -1,4 +1,4 @@
-<%= render Views::Admin::Components::SectionHeader.new(
+<%= render Components::Admin::SectionHeader.new(
   title: t('admin.calendars.tabs.contact'),
   description: t('admin.calendars.sections.contact_description')
 ) do |c| %>
@@ -8,7 +8,7 @@
 <% end %>
 
 <div class="max-w-xl">
-  <%= render Views::Admin::Components::FormCard.new(icon: :phone, title: t('admin.sections.public_contact')) do %>
+  <%= render Components::Admin::FormCard.new(icon: :phone, title: t('admin.sections.public_contact')) do %>
     <fieldset class="fieldset">
       <legend class="fieldset-legend"><%= attr_label(:calendar, :public_contact_name) %></legend>
       <%= f.input_field :public_contact_name, class: 'input input-bordered input-sm w-full bg-base-100' %>

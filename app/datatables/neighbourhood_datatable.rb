@@ -117,7 +117,7 @@ class NeighbourhoodDatatable < Datatable
   def render_hierarchy_cell(record)
     # Use the hierarchy badge component for full path display
     @view.render(
-      Views::Admin::Components::NeighbourhoodHierarchyBadge.new(
+      Components::Admin::NeighbourhoodHierarchyBadge.new(
         neighbourhood: record,
         max_levels: 4, # Show up to 4 levels
         truncate: true,

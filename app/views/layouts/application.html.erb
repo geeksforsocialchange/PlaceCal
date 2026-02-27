@@ -18,17 +18,17 @@
   <body>
     <div class="background">
       <header>
-        <%= render(NavigationComponent.new(navigation: @navigation, site: @site)) %>
+        <%= render(Components::Navigation.new(navigation: @navigation, site: @site)) %>
       </header>
       <main>
-        <%= render(FlashComponent.new) %>
+        <%= render(Components::Flash.new) %>
         <%= yield %>
       </main>
       <footer>
         <% if @site&.default_site? %>
-          <%= render(HomeFooterComponent.new()) %>
+          <%= render(Components::HomeFooter.new()) %>
         <% else %>
-          <%= render(Footer.new(@site)) %>
+          <%= render(Components::Footer.new(@site)) %>
         <% end %>
       </footer>
      </div>

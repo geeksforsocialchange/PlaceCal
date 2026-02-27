@@ -9,10 +9,10 @@
 <% content_for :description, @partner.summary if @partner.summary %>
 
 <div vocab="http://schema.org/" typeof="Organization">
-  <%= render(HeroComponent.new(@partner.name, @site.tagline, 'name')) %>
+  <%= render(Components::Hero.new(@partner.name, @site.tagline, 'name')) %>
 
   <div class="c c--lg-space-after">
-    <%= render(BreadcrumbComponent.new(trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name)) %>
+    <%= render(Components::Breadcrumb.new(trail: [['Partners', partners_path], [@partner.name, partner_path(@partner)]], site_name: @site.name)) %>
 
     <hr>
 
@@ -30,7 +30,7 @@
         <% end %>
 
         <h3 class="udl udl--fw allcaps h4">Get in touch</h3>
-        <%= render ContactDetails.new(partner: @partner)
+        <%= render Components::ContactDetails.new(partner: @partner)
         %>
 
         <h3 class="udl udl--fw allcaps h4">Address</h3>
@@ -38,7 +38,7 @@
           <p>We operate in <%= partner_service_area_text(@partner) %>.</p>
         <% end %>
 
-        <%= render AddressComponent.new(address: @partner.address) %>
+        <%= render Components::Address.new(address: @partner.address) %>
 
         <% unless @partner.accessibility_info_html.blank? %>
           <details id='accessibility-info'>
@@ -66,7 +66,7 @@
         <% if @opening_times.any? %>
           <br>
           <h3 class="udl udl--fw allcaps h4">Opening times</h3>
-          <%= render(OpeningTimes.new(times: @opening_times)) %>
+          <%= render(Components::OpeningTimes.new(times: @opening_times)) %>
         <% end %>
       </div>
     </div>
@@ -84,11 +84,11 @@
         <div class="gi gi__1-2">
           <h3 class="udl udl--fw allcaps h4">Address</h3>
           <div class="small">
-            <%= render AddressComponent.new(address: place.address) %>
+            <%= render Components::Address.new(address: place.address) %>
           </div>
           <h3 class="udl udl--fw allcaps h4">Contact</h3>
           <div class="small">
-            <%= render ContactDetails.new(
+            <%= render Components::ContactDetails.new(
               partner: @partner,
               email: place.public_email,
               phone: place.public_phone,
@@ -107,7 +107,7 @@
         <% path = "partners/#{@partner.slug}/events" %>
         <% today = Time.zone.today %>
         <div class="paginator" id="paginator">
-          <%= render(TimelineComponent.new(
+          <%= render(Components::Timeline.new(
             pointer: @current_day,
             period: @period,
             sort: @sort,
@@ -115,7 +115,7 @@
             path: path
           )) %>
           <div class="paginator__actions">
-            <%= render(EventFilterComponent.new(
+            <%= render(Components::EventFilter.new(
               pointer: @current_day,
               period: @period,
               sort: @sort,
@@ -125,7 +125,7 @@
             )) %>
           </div>
         </div>
-        <%= render(EventListComponent.new(
+        <%= render(Components::EventList.new(
           events: @events,
           period: @period,
           primary_neighbourhood: @primary_neighbourhood,
@@ -140,7 +140,7 @@
   </div>
 </div>
 
-<%= render(Meta.new("/partners/#{@partner.id}")) do |component| %>
+<%= render(Components::Meta.new("/partners/#{@partner.id}")) do |component| %>
 <% component.with_link do %>
   <%= link_to "Subscribe to #{@partner}'s events with iCal", partner_url(@partner, protocol: :webcal, format: :ics) %>
   <% end %>

@@ -2,15 +2,8 @@
 
 require "rails_helper"
 
-RSpec.describe NavigationComponent, type: :component do
+RSpec.describe Components::Navigation, type: :component do
   let(:navigation) { [["Events", "/events"], ["Partners", "/partners"]] }
-
-  before do
-    # Set up request context for active_link_to helper
-    allow_any_instance_of(described_class).to receive(:request).and_return(
-      double(original_fullpath: "/")
-    )
-  end
 
   it "renders navigation links" do
     render_inline(described_class.new(navigation: navigation))

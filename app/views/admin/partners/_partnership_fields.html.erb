@@ -3,7 +3,7 @@
     <legend class="fieldset-legend"><%= Partnership.model_name.human(count: 2) %></legend>
     <p class="fieldset-label mb-3"><%= t('admin.partners.sections.tags_description') %></p>
 
-    <%= render Views::Admin::Components::StackedListSelector.new(
+    <%= render Components::Admin::StackedListSelector.new(
       field_name: "partner[partnership_ids][]",
       items: @partner.partnerships,
       options: options_for_partner_partnerships,

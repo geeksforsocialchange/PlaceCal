@@ -5,11 +5,11 @@
       <h1 class="section">Find your PlaceCal</h1>
       <p class="alt-title-small">Here's a list of all PlaceCal instances, organised by interest and location.</p>
     </div>
-    <%= render(FeaturedPartnershipsComponent.new(sites: @partnerships)) %>
-    <%= render(ContainerWithHeaderComponent.new(title: "Place-based calendars",  color: "green")) do %>
-      <%= render(FourColGridComponent.new()) do %>
+    <%= render(Components::FeaturedPartnerships.new(sites: @partnerships)) %>
+    <%= render(Components::ContainerWithHeader.new(title: "Place-based calendars",  color: "green")) do %>
+      <%= render(Components::FourColGrid.new()) do %>
         <% @neighbourhoods.each do |site| %>
-          <%= render(NeighbourhoodHomeCardComponent.new(site: site)) %>
+          <%= render(Components::NeighbourhoodHomeCard.new(site: site)) %>
         <% end %>
       <% end %>
     <% end %>
