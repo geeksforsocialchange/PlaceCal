@@ -10,29 +10,41 @@ class Components::EventList < Components::Base
   prop :site_tagline, _Nilable(String), default: nil
   prop :truncated, _Boolean, default: false
 
-  def view_template # rubocop:disable Metrics/MethodLength
-    if @events.any?
-      @events.each do |day, day_events|
-        h2(class: 'udl udl--fw') { day.strftime('%A %e %B') }
-        ol(class: 'events reset') do
-          day_events.each do |event|
-            li do
-              Event(
-                display_context: @period,
-                event: event,
-                primary_neighbourhood: @primary_neighbourhood,
-                show_neighbourhoods: @show_neighbourhoods,
-                badge_zoom_level: @badge_zoom_level,
-                site_tagline: @site_tagline
-              )
-            end
-          end
-        end
-      end
-      p(class: 'event-list__truncated') { 'Showing first 50 events. Use the date picker to see more.' } if @truncated
-    else
-      p { 'No events with this selection.' }
-      p { link_to('Skip to next date with events.', next_url(@next_date)) } if @next_date.present?
+  def view_template
+    @events.any? ? render_events : render_empty_state
+  end
+
+  private
+
+  def render_events
+    @events.each do |day, day_events|
+      h2(class: 'udl udl--fw') { day.strftime('%A %e %B') }
+      render_day(day_events)
     end
+    p(class: 'event-list__truncated') { 'Showing first 50 events. Use the date picker to see more.' } if @truncated
+  end
+
+  def render_day(day_events)
+    ol(class: 'events reset') do
+      day_events.each do |event|
+        li { render_event(event) }
+      end
+    end
+  end
+
+  def render_event(event)
+    Event(
+      display_context: @period,
+      event: event,
+      primary_neighbourhood: @primary_neighbourhood,
+      show_neighbourhoods: @show_neighbourhoods,
+      badge_zoom_level: @badge_zoom_level,
+      site_tagline: @site_tagline
+    )
+  end
+
+  def render_empty_state
+    p { 'No events with this selection.' }
+    p { link_to('Skip to next date with events.', next_url(@next_date)) } if @next_date.present?
   end
 end

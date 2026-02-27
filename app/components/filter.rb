@@ -30,28 +30,40 @@ class Components::Filter < Components::Base
     end
   end
 
-  def render_dropdown # rubocop:disable Metrics/MethodLength
+  def render_dropdown
     div(class: 'filters__dropdown filters__dropdown--hidden', data: { "#{@controller}-target": "#{@name}Dropdown" }) do
-      div(class: 'filters__group') do
-        @items.each do |item|
-          div(class: 'filters__option') do
-            radio_button_tag(
-              @name,
-              item[:id],
-              selected?(item[:id]),
-              data: { action: submit_action_value },
-              class: 'tag__button'
-            )
-            label_tag(
-              "#{@name}_#{item[:id]}",
-              "#{item[:name]} (#{item[:count]})",
-              class: 'filters__label'
-            )
-          end
-        end
-      end
-      button(type: 'button', data: { action: reset_action_value }, class: 'btn size-patch filter__reset') { 'Reset' } if filter_active?
+      render_filter_options
+      render_reset_button
     end
+  end
+
+  def render_filter_options
+    div(class: 'filters__group') do
+      @items.each { |item| render_filter_option(item) }
+    end
+  end
+
+  def render_filter_option(item)
+    div(class: 'filters__option') do
+      radio_button_tag(
+        @name,
+        item[:id],
+        selected?(item[:id]),
+        data: { action: submit_action_value },
+        class: 'tag__button'
+      )
+      label_tag(
+        "#{@name}_#{item[:id]}",
+        "#{item[:name]} (#{item[:count]})",
+        class: 'filters__label'
+      )
+    end
+  end
+
+  def render_reset_button
+    return unless filter_active?
+
+    button(type: 'button', data: { action: reset_action_value }, class: 'btn size-patch filter__reset') { 'Reset' }
   end
 
   def selected?(id)

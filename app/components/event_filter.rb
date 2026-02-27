@@ -15,7 +15,7 @@ class Components::EventFilter < Components::Base
     @selected_neighbourhood = @selected_neighbourhood.to_i
   end
 
-  def view_template # rubocop:disable Metrics/MethodLength
+  def view_template
     render_date_picker
     render_neighbourhood_filter if show_neighbourhood_filter?
     render_sort_filter
@@ -23,19 +23,33 @@ class Components::EventFilter < Components::Base
 
   private
 
-  def render_date_picker # rubocop:disable Metrics/MethodLength
+  def render_date_picker
     div(class: 'filters__toggle', data: { controller: 'date-picker' }) do
-      link_to('Today', @today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) unless @today
-      button(type: 'button', data: { action: 'click->date-picker#open' }) do
-        span(class: 'icon icon--arrow-down') { plain "\u2193" }
-        plain ' '
-        span(class: 'filters__link') { 'Go to date' }
-      end
-      date_field_tag(:date, @pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' })
-      hidden_field_tag(:period, @period, data: { date_picker_target: 'period' })
-      hidden_field_tag(:sort, @sort, data: { date_picker_target: 'sort' })
-      hidden_field_tag(:repeating, @repeating, data: { date_picker_target: 'repeating' })
+      render_today_link
+      render_goto_date_button
+      render_date_picker_fields
     end
+  end
+
+  def render_today_link
+    return if @today
+
+    link_to('Today', @today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+  end
+
+  def render_goto_date_button
+    button(type: 'button', data: { action: 'click->date-picker#open' }) do
+      span(class: 'icon icon--arrow-down') { plain "\u2193" }
+      plain ' '
+      span(class: 'filters__link') { 'Go to date' }
+    end
+  end
+
+  def render_date_picker_fields
+    date_field_tag(:date, @pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' })
+    hidden_field_tag(:period, @period, data: { date_picker_target: 'period' })
+    hidden_field_tag(:sort, @sort, data: { date_picker_target: 'sort' })
+    hidden_field_tag(:repeating, @repeating, data: { date_picker_target: 'repeating' })
   end
 
   def render_neighbourhood_filter
@@ -60,44 +74,68 @@ class Components::EventFilter < Components::Base
     end
   end
 
-  def render_sort_filter # rubocop:disable Metrics/MethodLength
+  def render_sort_filter
     div(class: 'filters', data: { controller: 'filters' }) do
-      raw safe(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) {
-        buf = ActiveSupport::SafeBuffer.new
-        buf << view_context.content_tag(:div, class: 'filters__toggle') {
-          view_context.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) {
-            view_context.content_tag(:span, "\u2193", class: 'icon icon--arrow-down') +
-            ' '.html_safe +
-            view_context.content_tag(:span, 'Filter and sort', class: 'filters__link')
-          }
-        }
-        buf << view_context.content_tag(:div, class: 'filters__dropdown filters__dropdown--hidden', data: { filters_target: 'dropdown' }) {
-          render_filter_groups
-        }
-        buf
-      })
+      raw safe(build_sort_filter_form)
     end
   end
 
-  def render_filter_groups # rubocop:disable Metrics/MethodLength
+  def build_sort_filter_form
+    view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do
+      buf = ActiveSupport::SafeBuffer.new
+      buf << build_sort_toggle
+      buf << build_sort_dropdown
+      buf
+    end
+  end
+
+  def build_sort_toggle
+    view_context.content_tag(:div, class: 'filters__toggle') do
+      view_context.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) do
+        view_context.content_tag(:span, "\u2193", class: 'icon icon--arrow-down') +
+          ' '.html_safe +
+          view_context.content_tag(:span, 'Filter and sort', class: 'filters__link')
+      end
+    end
+  end
+
+  def build_sort_dropdown
+    view_context.content_tag(:div, class: 'filters__dropdown filters__dropdown--hidden', data: { filters_target: 'dropdown' }) do
+      render_filter_groups
+    end
+  end
+
+  def render_filter_groups
     buf = ActiveSupport::SafeBuffer.new
-    buf << view_context.content_tag(:div, class: 'filters__group') do
+    buf << render_sort_group
+    buf << view_context.tag.hr
+    buf << render_period_group
+    buf << view_context.tag.hr
+    buf << render_repeating_group
+    buf
+  end
+
+  def render_sort_group
+    view_context.content_tag(:div, class: 'filters__group') do
       render_radio('sort', 'time', @sort == 'time', 'Sort by date') +
         render_radio('sort', 'summary', @sort == 'summary', 'Sort by name')
     end
-    buf << view_context.tag.hr
-    buf << view_context.content_tag(:div, class: 'filters__group') do
+  end
+
+  def render_period_group
+    view_context.content_tag(:div, class: 'filters__group') do
       render_radio('period', 'day', @period == 'day', 'Daily view') +
         render_radio('period', 'week', @period == 'week', 'Weekly view') +
         render_radio('period', 'future', @period == 'future', 'Show all')
     end
-    buf << view_context.tag.hr
-    buf << view_context.content_tag(:div, class: 'filters__group') do
+  end
+
+  def render_repeating_group
+    view_context.content_tag(:div, class: 'filters__group') do
       render_radio('repeating', 'on', @repeating == 'on', 'Show repeats') +
         render_radio('repeating', 'last', @repeating == 'last', 'Show repeats last') +
         render_radio('repeating', 'off', @repeating == 'off', 'Hide repeats')
     end
-    buf
   end
 
   def render_radio(name, value, checked, label_text)

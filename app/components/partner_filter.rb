@@ -13,55 +13,64 @@ class Components::PartnerFilter < Components::Base
     @query = PartnersQuery.new(site: @site)
   end
 
-  def view_template # rubocop:disable Metrics/MethodLength
-    form_with(url: partners_path, method: :get, data: {
-                controller: 'partner-filter-component',
-                'partner-filter-component-target': 'form',
-                'turbo-action': 'advance'
-              }, class: 'filters__form') do
+  def view_template
+    form_with(**form_data, class: 'filters__form') do
       div(class: 'breadcrumb__element breadcrumb__element--last') do
         span { 'Filter by:' }
-
-        if show_category_filter?
-          div(class: 'breadcrumb__filters filters') do
-            Filter(
-              name: 'category',
-              label: 'Category',
-              items: category_items,
-              selected_id: @selected_category,
-              controller: 'partner-filter-component',
-              toggle_action: 'toggleCategory',
-              submit_action: 'submitCategory',
-              reset_action: 'resetCategory'
-            )
-          end
-        end
-
-        if show_neighbourhood_filter?
-          div(class: 'breadcrumb__filters filters') do
-            Filter(
-              name: 'neighbourhood',
-              label: 'Neighbourhood',
-              items: neighbourhood_items,
-              selected_id: @selected_neighbourhood,
-              controller: 'partner-filter-component',
-              toggle_action: 'toggleNeighbourhood',
-              submit_action: 'submitNeighbourhood',
-              reset_action: 'resetNeighbourhood'
-            )
-          end
-        end
-
-        if any_filter_active?
-          div(class: 'breadcrumb__filters') do
-            link_to('Reset filters', partners_path, class: 'filters__link', data: { turbo_frame: 'partner_previews' })
-          end
-        end
+        render_category_filter if show_category_filter?
+        render_neighbourhood_filter if show_neighbourhood_filter?
+        render_reset_link if any_filter_active?
       end
     end
   end
 
   private
+
+  def form_data
+    {
+      url: partners_path, method: :get, data: {
+        controller: 'partner-filter-component',
+        'partner-filter-component-target': 'form',
+        'turbo-action': 'advance'
+      }
+    }
+  end
+
+  def render_category_filter
+    div(class: 'breadcrumb__filters filters') do
+      Filter(
+        name: 'category',
+        label: 'Category',
+        items: category_items,
+        selected_id: @selected_category,
+        controller: 'partner-filter-component',
+        toggle_action: 'toggleCategory',
+        submit_action: 'submitCategory',
+        reset_action: 'resetCategory'
+      )
+    end
+  end
+
+  def render_neighbourhood_filter
+    div(class: 'breadcrumb__filters filters') do
+      Filter(
+        name: 'neighbourhood',
+        label: 'Neighbourhood',
+        items: neighbourhood_items,
+        selected_id: @selected_neighbourhood,
+        controller: 'partner-filter-component',
+        toggle_action: 'toggleNeighbourhood',
+        submit_action: 'submitNeighbourhood',
+        reset_action: 'resetNeighbourhood'
+      )
+    end
+  end
+
+  def render_reset_link
+    div(class: 'breadcrumb__filters') do
+      link_to('Reset filters', partners_path, class: 'filters__link', data: { turbo_frame: 'partner_previews' })
+    end
+  end
 
   def categories
     @categories ||= @query.categories_with_counts

@@ -5,25 +5,31 @@ class Components::Footer < Components::Base
 
   prop :site, _Nilable(::Site), :positional, default: nil
 
-  def view_template # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+  def view_template
     div(class: 'footer') do
       div(class: 'c') do
-        div(class: "footer__inner #{'footer__inner--nosite' unless @site&.site_admin}".strip) do
-          render_logo
-          hr(class: 'footer__item footer__hr footer__hr--1')
-          render_nav
-          render_site_enquiries if @site&.site_admin
-          render_general_enquiries
-          render_site_supporters if @site&.supporters&.any?
-          hr(class: 'footer__item footer__hr')
-          render_global_supporters
-          render_impressum
-        end
+        div(class: footer_inner_class) { render_footer_content }
       end
     end
   end
 
   private
+
+  def footer_inner_class
+    "footer__inner #{'footer__inner--nosite' unless @site&.site_admin}".strip
+  end
+
+  def render_footer_content
+    render_logo
+    hr(class: 'footer__item footer__hr footer__hr--1')
+    render_nav
+    render_site_enquiries if @site&.site_admin
+    render_general_enquiries
+    render_site_supporters if @site&.supporters&.any?
+    hr(class: 'footer__item footer__hr')
+    render_global_supporters
+    render_impressum
+  end
 
   def render_logo
     div(class: 'footer__item footer__logo') do
@@ -51,21 +57,23 @@ class Components::Footer < Components::Base
     end
   end
 
-  def render_site_enquiries # rubocop:disable Metrics/AbcSize
+  def render_site_enquiries
     div(class: 'footer__item footer__enquiries footer__enquiries--regional') do
       h5(class: 'allcaps small') { "#{@site.name} Enquiries" }
       p { @site.site_admin.full_name }
-      p do
-        if @site.site_admin.phone&.length&.positive?
-          strong { 'T:' }
-          plain " #{@site.site_admin.phone}"
-          br
-        end
-        strong { 'E:' }
-        plain ' '
-        mail_to(@site.site_admin.email)
-      end
+      p { render_site_contact_info }
     end
+  end
+
+  def render_site_contact_info
+    if @site.site_admin.phone&.length&.positive?
+      strong { 'T:' }
+      plain " #{@site.site_admin.phone}"
+      br
+    end
+    strong { 'E:' }
+    plain ' '
+    mail_to(@site.site_admin.email)
   end
 
   def render_general_enquiries

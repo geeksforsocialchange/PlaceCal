@@ -33,7 +33,7 @@ class Components::Timeline < Components::Base
 
   private
 
-  def buttons # rubocop:disable Metrics/MethodLength
+  def buttons
     pages = []
     pages << { text: back_arrow, link: url_for(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
     (0..steps).each do |i|

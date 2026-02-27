@@ -17,45 +17,49 @@ class Components::Paginator < Components::Base
     @path ||= 'events'
   end
 
-  def view_template # rubocop:disable Metrics/MethodLength
+  def view_template
     div(class: 'paginator', id: 'paginator', data: { controller: 'paginator' }) do
-      if @show_breadcrumb
-        div(class: 'paginator__context') do
-          Breadcrumb(trail: [['Events', events_path]], site_name: @site_name) do
-            div(class: 'breadcrumb__actions') do
-              EventFilter(
-                pointer: @pointer, period: @period, sort: @sort,
-                repeating: @repeating, today_url: today_url, today: today?
-              )
-            end
-          end
-        end
-      else
-        div(class: 'paginator__actions') do
-          EventFilter(
-            pointer: @pointer, period: @period, sort: @sort,
-            repeating: @repeating, today_url: today_url, today: today?
-          )
-        end
-      end
-
-      if @period == 'day' || @period == 'week'
-        ol(class: 'paginator__buttons paginator__buttons--day') do
-          paginator_links.each do |page|
-            li_attrs = { class: page[:css] }
-            page[:data].each do |k, v|
-              li_attrs[:"data-#{k.to_s.dasherize}"] = v
-            end
-            li(**li_attrs) do
-              link_to(raw(safe(page[:text])), page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
-            end
-          end
-        end
-      end
+      @show_breadcrumb ? render_breadcrumb_context : render_plain_context
+      render_paginator_buttons if @period == 'day' || @period == 'week'
     end
   end
 
   attr_reader :pointer, :sort, :path
+
+  def render_breadcrumb_context
+    div(class: 'paginator__context') do
+      Breadcrumb(trail: [['Events', events_path]], site_name: @site_name) do
+        div(class: 'breadcrumb__actions') { render_event_filter }
+      end
+    end
+  end
+
+  def render_plain_context
+    div(class: 'paginator__actions') { render_event_filter }
+  end
+
+  def render_event_filter
+    EventFilter(
+      pointer: @pointer, period: @period, sort: @sort,
+      repeating: @repeating, today_url: today_url, today: today?
+    )
+  end
+
+  def render_paginator_buttons
+    ol(class: 'paginator__buttons paginator__buttons--day') do
+      paginator_links.each do |page|
+        render_paginator_button(page)
+      end
+    end
+  end
+
+  def render_paginator_button(page)
+    li_attrs = { class: page[:css] }
+    page[:data].each { |k, v| li_attrs[:"data-#{k.to_s.dasherize}"] = v }
+    li(**li_attrs) do
+      link_to(raw(safe(page[:text])), page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    end
+  end
 
   def step
     @period == 'week' ? 1.week : 1.day
@@ -89,7 +93,7 @@ class Components::Paginator < Components::Base
 
   private
 
-  def paginator_links # rubocop:disable Metrics/MethodLength
+  def paginator_links
     pages = []
     pages << { text: back_arrow, link: create_event_url(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
     (0..steps).each do |i|

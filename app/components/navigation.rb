@@ -4,26 +4,34 @@ class Components::Navigation < Components::Base
   prop :navigation, Array
   prop :site, _Nilable(::Site), default: nil
 
-  def view_template # rubocop:disable Metrics/MethodLength
+  def view_template
     div(class: 'header', data: { controller: 'mobile-menu' }) do
       render_branding
-      nav(class: 'nav header__menu', data: { mobile_menu_target: 'menu' }, role: 'navigation') do
-        ul do
-          li { active_link_to('Home', root_path) }
-          @navigation.each do |link_text, link_path|
-            li { active_link_to(link_text, link_path, data: { turbolinks: false }) }
-          end
-        end
-      end
-      a(href: '#', class: 'header__toggle', data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
-        raw safe(hamburger_svg)
-      end
+      render_nav_menu
+      render_toggle
     end
   end
 
   private
 
-  def render_branding # rubocop:disable Metrics/MethodLength
+  def render_nav_menu
+    nav(class: 'nav header__menu', data: { mobile_menu_target: 'menu' }, role: 'navigation') do
+      ul do
+        li { active_link_to('Home', root_path) }
+        @navigation.each do |link_text, link_path|
+          li { active_link_to(link_text, link_path, data: { turbolinks: false }) }
+        end
+      end
+    end
+  end
+
+  def render_toggle
+    a(href: '#', class: 'header__toggle', data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
+      raw safe(hamburger_svg)
+    end
+  end
+
+  def render_branding
     if @site&.logo.present?
       div(
         class: "header__branding header__branding--#{@site.slug}",

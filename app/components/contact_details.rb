@@ -22,43 +22,67 @@ class Components::ContactDetails < Components::Base
     @contact = @phone || @email || @url || @partner.facebook_link || @partner.twitter_handle
   end
 
-  def view_template # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+  def view_template
     p(class: 'contact_details') do
-      if @phone.present?
-        strong(class: 'icon icon--contact icon--phone') { 'Phone:' }
-        span do
-          if @is_valid_phone
-            link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener')
-          else
-            plain @phone
-          end
-        end
-      end
-      if @email.present?
-        strong(class: 'icon icon--contact icon--email') { 'Email:' }
-        span { mail_to(@email, @email, target: '_blank') }
-      end
-      if @url.present?
-        strong(class: 'icon icon--contact icon--website') { ' Website:' }
-        span { link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener') }
-      end
-      if @facebook_link.present?
-        strong(class: 'icon icon--contact icon--facebook') { 'Facebook:' }
-        span { link_to(@facebook_link, @facebook_url, target: '_blank', rel: 'noopener') }
-      end
-      if @twitter_handle.present?
-        strong(class: 'icon icon--contact icon--twitter') { 'Twitter:' }
-        span { link_to("@#{@twitter_handle}", @twitter_url, target: '_blank', rel: 'noopener') }
-      end
-      if @instagram_handle.present?
-        strong(class: 'icon icon--contact icon--instagram') { 'Instagram:' }
-        span { link_to("@#{@instagram_handle}", "https://www.instagram.com/#{@instagram_handle}/", target: '_blank', rel: 'noopener') }
-      end
+      render_phone
+      render_email
+      render_website
+      render_facebook
+      render_twitter
+      render_instagram
       plain 'No contact information - let us know!' unless @contact
     end
   end
 
   private
+
+  def render_phone
+    return if @phone.blank?
+
+    strong(class: 'icon icon--contact icon--phone') { 'Phone:' }
+    span do
+      if @is_valid_phone
+        link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener')
+      else
+        plain @phone
+      end
+    end
+  end
+
+  def render_email
+    return if @email.blank?
+
+    strong(class: 'icon icon--contact icon--email') { 'Email:' }
+    span { mail_to(@email, @email, target: '_blank') }
+  end
+
+  def render_website
+    return if @url.blank?
+
+    strong(class: 'icon icon--contact icon--website') { ' Website:' }
+    span { link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener') }
+  end
+
+  def render_facebook
+    return if @facebook_link.blank?
+
+    strong(class: 'icon icon--contact icon--facebook') { 'Facebook:' }
+    span { link_to(@facebook_link, @facebook_url, target: '_blank', rel: 'noopener') }
+  end
+
+  def render_twitter
+    return if @twitter_handle.blank?
+
+    strong(class: 'icon icon--contact icon--twitter') { 'Twitter:' }
+    span { link_to("@#{@twitter_handle}", @twitter_url, target: '_blank', rel: 'noopener') }
+  end
+
+  def render_instagram
+    return if @instagram_handle.blank?
+
+    strong(class: 'icon icon--contact icon--instagram') { 'Instagram:' }
+    span { link_to("@#{@instagram_handle}", "https://www.instagram.com/#{@instagram_handle}/", target: '_blank', rel: 'noopener') }
+  end
 
   def strip_url(target_url)
     target_url.gsub('http://', '')

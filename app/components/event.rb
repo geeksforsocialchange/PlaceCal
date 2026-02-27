@@ -8,23 +8,25 @@ class Components::Event < Components::Base
   prop :badge_zoom_level, _Nilable(String), default: nil
   prop :site_tagline, _Nilable(String), default: nil
 
-  def view_template # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+  def view_template
     div(class: "event #{page? ? 'event--full' : 'event--list'}") do
       article do
-        if page?
-          Hero(summary, @site_tagline)
-          div(class: 'c') do
-            render_event_details
-          end
-        else
-          render_list_header
-          render_event_details
-        end
+        page? ? render_page_layout : render_list_layout
       end
     end
   end
 
   private
+
+  def render_page_layout
+    Hero(summary, @site_tagline)
+    div(class: 'c') { render_event_details }
+  end
+
+  def render_list_layout
+    render_list_header
+    render_event_details
+  end
 
   delegate :id, :partner_at_location, :summary, :description, to: :@event
 
@@ -38,7 +40,7 @@ class Components::Event < Components::Base
     end
   end
 
-  def render_event_details # rubocop:disable Metrics/MethodLength
+  def render_event_details
     div(class: 'event__details') do
       render_detail('event__time', 'icon-time', time)
       render_detail('event__duration', 'icon-duration', duration) if duration
