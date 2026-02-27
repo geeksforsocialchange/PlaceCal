@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::FeaturedPartnerships < Components::Base
-  prop :sites, Array
+  prop :sites, _Interface(:each) # Array or ActiveRecord relation
 
   def view_template
     div(class: 'featured_partnerships') do

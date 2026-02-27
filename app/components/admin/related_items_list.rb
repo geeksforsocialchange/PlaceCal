@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::RelatedItemsList < Components::Admin::Base
-  prop :items, Array
+  prop :items, _Interface(:each) # Array or ActiveRecord relation
   prop :title_attr, Symbol
   prop :edit_path, _Any  # lambda or symbol
   prop :subtitle_attr, _Nilable(Symbol), default: nil

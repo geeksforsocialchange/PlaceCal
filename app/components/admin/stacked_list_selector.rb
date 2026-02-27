@@ -2,9 +2,9 @@
 
 class Components::Admin::StackedListSelector < Components::Admin::Base
   prop :field_name, String
-  prop :items, Array
-  prop :options, Array, default: -> { [] }
-  prop :permitted_ids, _Nilable(Array), default: nil
+  prop :items, _Interface(:each) # Array or ActiveRecord relation
+  prop :options, _Interface(:each), default: -> { [] }
+  prop :permitted_ids, _Nilable(_Interface(:each)), default: nil
   prop :icon_name, Symbol, default: :partnership
   prop :icon_color, String, default: 'bg-placecal-orange/10 text-placecal-orange'
   prop :empty_text, _Nilable(String), default: nil

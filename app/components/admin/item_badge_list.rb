@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Admin::ItemBadgeList < Components::Admin::Base
-  prop :items, Array
+  prop :items, _Interface(:each) # Array or ActiveRecord relation
   prop :icon_name, Symbol
   prop :icon_color, String
   prop :link_path, Symbol
