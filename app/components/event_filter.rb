@@ -2,7 +2,7 @@
 
 class Components::EventFilter < Components::Base
   prop :pointer, Date
-  prop :period, String
+  prop :period, _Nilable(String), default: nil
   prop :sort, _Nilable(String), default: nil
   prop :repeating, _Nilable(String), default: nil
   prop :today_url, String
