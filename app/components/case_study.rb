@@ -1,24 +1,14 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 class Components::CaseStudy < Components::Base
-  prop :partner_key, String
-
-  def after_initialize
-    partner_info = YAML.load_file(
-      File.join(__dir__, 'case_study_data.yml')
-    )[@partner_key]
-
-    @partner = partner_info['partner']
-    @logo_src = partner_info['logo_src']
-    @image_src = partner_info['image_src']
-    @image_alt = partner_info['image_alt']
-    @partner_url = partner_info['partner_url']
-    @link_url = partner_info['link_url']
-    @description = partner_info['description']
-    @pull_quote = partner_info['pull_quote']
-  end
+  prop :partner, String
+  prop :link_url, String
+  prop :logo_src, String
+  prop :image_alt, String
+  prop :image_src, String
+  prop :partner_url, String
+  prop :pull_quote, String
+  prop :description, _Any
 
   def view_template
     section(class: 'case_study__section--outer') do
