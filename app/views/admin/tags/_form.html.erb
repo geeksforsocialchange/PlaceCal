@@ -18,13 +18,13 @@
     url: form_url,
     html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'tagTabAfterSave' } } do |f| %>
 
-  <%= render(Admin::ErrorComponent.new(@tag)) %>
+  <%= render(Views::Admin::Components::Error.new(@tag)) %>
 
   <% if @tag.new_record? %>
     <%# New record - single card, no tabs %>
     <div class="card bg-base-100 border border-base-300 shadow-sm">
       <div class="card-body p-6">
-        <%= render Admin::SectionHeaderComponent.new(
+        <%= render Views::Admin::Components::SectionHeader.new(
           title: t('admin.sections.basic_information'),
           margin: 4
         ) %>
@@ -79,7 +79,7 @@
             </div>
           </div>
 
-          <%= render Admin::StackedListSelectorComponent.new(
+          <%= render Views::Admin::Components::StackedListSelector.new(
             field_name: "tag[user_ids][]",
             items: @tag.users.order(:last_name, :first_name),
             options: options_for_users,
@@ -96,7 +96,7 @@
   <% else %>
     <%# Existing record - tabbed interface %>
     <div class="tabs tabs-lift">
-      <%= render Admin::TabPanelComponent.new(
+      <%= render Views::Admin::Components::TabPanel.new(
         name: 'tag_tabs',
         label: '📋 Basic Info',
         hash: 'basic',
@@ -106,7 +106,7 @@
         <%= render 'admin/tags/form_tab_basic', f: f %>
       <% end %>
 
-      <%= render Admin::TabPanelComponent.new(
+      <%= render Views::Admin::Components::TabPanel.new(
         name: 'tag_tabs',
         label: '🏢 Partners',
         hash: 'partners',
@@ -118,7 +118,7 @@
       <%# Spacer to push Settings tab right %>
       <div class="tab flex-1 cursor-default"></div>
 
-      <%= render Admin::TabPanelComponent.new(
+      <%= render Views::Admin::Components::TabPanel.new(
         name: 'tag_tabs',
         label: '⚙️ Settings',
         hash: 'settings',
@@ -130,13 +130,11 @@
   <% end %>
 
   <% if @tag.new_record? %>
-    <%= render Admin::SaveBarComponent.new do |c| %>
-      <% c.with_button do %>
-        <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-      <% end %>
+    <%= render Views::Admin::Components::SaveBar.new do %>
+      <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
     <% end %>
   <% else %>
-    <%= render Admin::SaveBarComponent.new(
+    <%= render Views::Admin::Components::SaveBar.new(
       multi_step: true,
       tab_name: 'tag_tabs',
       settings_hash: 'settings',

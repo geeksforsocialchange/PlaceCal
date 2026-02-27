@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 /**
  * Generic stacked list selector controller
- * Used by Admin::StackedListSelectorComponent for managing lists of items
+ * Used by Views::Admin::Components::StackedListSelector for managing lists of items
  * (partnerships, partners, neighbourhoods, etc.)
  */
 export default class extends Controller {

@@ -1,12 +1,12 @@
-<%= render Admin::SectionHeaderComponent.new(
+<%= render Views::Admin::Components::SectionHeader.new(
   title: t('admin.tabs.location'),
   description: t('admin.partners.sections.location_description')
 ) %>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <div class="space-y-6">
-    <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
-      <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
+    <%= render Views::Admin::Components::FormCard.new(icon: :map, title: attr_label(:partner, :address)) do %>
+      <%= render Views::Admin::Components::AddressFields.new(form: f, partner: @partner, current_user: current_user) %>
       <% if @partner&.address&.neighbourhood&.legacy_neighbourhood? %>
         <div role="alert" class="alert alert-warning text-sm">
           <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
@@ -25,7 +25,7 @@
             <%= icon(:neighbourhood, size: '4') %>
             <%= t('admin.address.neighbourhood_label') %>
           </legend>
-          <%= render Admin::NeighbourhoodCardComponent.new(
+          <%= render Views::Admin::Components::NeighbourhoodCard.new(
                 neighbourhood: @partner.address.neighbourhood,
                 show_header: false
               ) %>
@@ -34,7 +34,7 @@
     <% end %>
   </div>
 
-  <%= render Admin::FormCardComponent.new(
+  <%= render Views::Admin::Components::FormCard.new(
     icon: :car,
     title: t('admin.sections.service_areas'),
     description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
@@ -49,7 +49,7 @@
 </div>
 
 <div class="mt-6">
-  <%= render Admin::FormCardComponent.new(icon: :clock, title: t('admin.sections.opening_times')) do %>
-    <%= render Admin::OpeningTimesComponent.new(form: f, partner: @partner) %>
+  <%= render Views::Admin::Components::FormCard.new(icon: :clock, title: t('admin.sections.opening_times')) do %>
+    <%= render Views::Admin::Components::OpeningTimes.new(form: f, partner: @partner) %>
   <% end %>
 </div>

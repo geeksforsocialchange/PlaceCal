@@ -19,21 +19,21 @@
 
 <% error_count = @calendars.where(calendar_state: [:error, :bad_source]).count %>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-  <%= render Admin::InfoCardComponent.new(
+  <%= render Views::Admin::Components::InfoCard.new(
     icon: :calendar,
     label: Calendar.model_name.human(count: 2),
     value: @calendars.count,
     color: :orange
   ) %>
 
-  <%= render Admin::InfoCardComponent.new(
+  <%= render Views::Admin::Components::InfoCard.new(
     icon: :check,
     label: t('admin.labels.healthy'),
     value: @calendars.where(calendar_state: :idle).count,
     color: :success
   ) %>
 
-  <%= render Admin::InfoCardComponent.new(
+  <%= render Views::Admin::Components::InfoCard.new(
     icon: :warning,
     label: t('admin.labels.issues'),
     value: error_count,
@@ -114,7 +114,7 @@
         </table>
       </div>
     <% else %>
-      <%= render Admin::EmptyStateComponent.new(
+      <%= render Views::Admin::Components::EmptyState.new(
         icon: :calendar,
         message: t('admin.sites.show.empty.title'),
         hint: t('admin.sites.show.empty.hint'),

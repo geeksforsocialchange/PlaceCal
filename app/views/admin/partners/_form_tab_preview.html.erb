@@ -1,4 +1,4 @@
-<%= render Admin::SectionHeaderComponent.new(
+<%= render Views::Admin::Components::SectionHeader.new(
   title: t('admin.partners.sections.live_preview'),
   description: t('admin.partners.sections.preview_description')
 ) %>
@@ -81,7 +81,7 @@
 
 <div class="divider my-8"></div>
 
-<%= render Admin::SectionHeaderComponent.new(
+<%= render Views::Admin::Components::SectionHeader.new(
   title: t('admin.sections.upcoming_events'),
   description: t('admin.partners.sections.upcoming_events_description'),
   tag: :h3
@@ -118,5 +118,5 @@
     </table>
   </div>
 <% else %>
-  <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: t('admin.time.no_upcoming_in_days', days: 30)) %>
+  <%= render Views::Admin::Components::EmptyState.new(icon: :calendar, message: t('admin.time.no_upcoming_in_days', days: 30)) %>
 <% end %>

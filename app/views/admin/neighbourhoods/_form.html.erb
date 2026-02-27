@@ -1,12 +1,12 @@
 <%= simple_form_for [:admin, @neighbourhood], html: { data: { controller: 'form-dirty' } } do |f| %>
-  <%= render(Admin::ErrorComponent.new(@neighbourhood)) %>
+  <%= render(Views::Admin::Components::Error.new(@neighbourhood)) %>
 
   <%# Two-column layout: Name + Admins (2/3) | ONS Info (1/3) %>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     <%# Left column - 2/3 width %>
     <div class="lg:col-span-2 space-y-6">
       <%# Neighbourhood Name %>
-      <%= render Admin::CardComponent.new(
+      <%= render Views::Admin::Components::Card.new(
             title: t('admin.neighbourhoods.form.name_title'),
             icon: :edit
           ) do %>
@@ -39,7 +39,7 @@
               </div>
             </div>
 
-            <%= render Admin::StackedListSelectorComponent.new(
+            <%= render Views::Admin::Components::StackedListSelector.new(
               field_name: "neighbourhood[user_ids][]",
               items: @neighbourhood.users.order(:last_name),
               options: options_for_users,
@@ -59,7 +59,7 @@
     <%# Right column - Official ONS Data - 1/3 width %>
     <div class="lg:col-span-1">
       <% is_current = !@neighbourhood.legacy_neighbourhood? %>
-      <%= render Admin::CardComponent.new(
+      <%= render Views::Admin::Components::Card.new(
             title: t('admin.neighbourhoods.form.official_title'),
             icon: :globe
           ) do %>
@@ -104,9 +104,7 @@
   </div>
 
   <%# Save Bar %>
-  <%= render Admin::SaveBarComponent.new(track_changes: true) do |save_bar| %>
-    <% save_bar.with_button do %>
-      <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-    <% end %>
+  <%= render Views::Admin::Components::SaveBar.new(track_changes: true) do %>
+    <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
   <% end %>
 <% end %>

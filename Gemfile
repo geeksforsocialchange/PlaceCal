@@ -29,6 +29,7 @@ gem 'friendly_id'                 # Human-readable URL slugs
 gem 'groupdate'                   # Group events by day/week/month
 gem 'image_processing'            # Image resizing for uploads
 gem 'kramdown'                    # Markdown to HTML rendering
+gem 'phlex-rails', '~> 2.3'       # Ruby-native view components
 gem 'simple_form'                 # Form builder
 gem 'view_component'              # Encapsulated view components
 

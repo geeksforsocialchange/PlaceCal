@@ -1,4 +1,4 @@
-<%= render Admin::SectionHeaderComponent.new(
+<%= render Views::Admin::Components::SectionHeader.new(
   title: t('admin.calendars.tabs.source'),
   description: t('admin.calendars.sections.source_description')
 ) do |c| %>
@@ -29,7 +29,7 @@
       <p class="fieldset-label"><%= t('admin.calendars.fields.partner_hint') %></p>
     </fieldset>
 
-    <%= render Admin::SourceInputComponent.new(
+    <%= render Views::Admin::Components::SourceInput.new(
       form: f,
       test_url: test_source_admin_calendars_path
     ) %>
@@ -55,7 +55,7 @@
   </div>
 
   <div>
-    <%= render Admin::FormCardComponent.new(icon: :info, title: t('admin.calendars.sections.supported_sources')) do %>
+    <%= render Views::Admin::Components::FormCard.new(icon: :info, title: t('admin.calendars.sections.supported_sources')) do %>
       <ul class="text-xs text-base-content/70 space-y-1">
         <% calendar_import_sources do |name, domains| %>
           <li class="flex items-start gap-2">

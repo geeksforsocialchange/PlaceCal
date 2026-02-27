@@ -65,6 +65,11 @@ Layout/LineContinuationSpacing:
 # Lint cops
 # =============================================================================
 
+# Phlex components don't need super in initialize
+Lint/MissingSuper:
+  Exclude:
+    - "app/views/admin/components/*.rb"
+
 Lint/ConstantDefinitionInBlock:
   Exclude:
     - "spec/**/*.rb"
@@ -135,6 +140,11 @@ Performance/StringReplacement:
 # =============================================================================
 # Rails cops
 # =============================================================================
+
+# Phlex uses `raw` for rendering form helpers and HTML content
+Rails/OutputSafety:
+  Exclude:
+    - "app/views/admin/components/*.rb"
 
 Rails/ActionOrder:
   Enabled: false

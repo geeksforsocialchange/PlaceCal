@@ -1,5 +1,5 @@
 <div class="space-y-6">
-  <%= render Admin::FormCardComponent.new(
+  <%= render Views::Admin::Components::FormCard.new(
     icon: :desktop,
     title: t('admin.sections.online_presence'),
     description: t('admin.partners.sections.online_presence_description')
@@ -36,7 +36,7 @@
   <% end %>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <%= render Admin::FormCardComponent.new(
+    <%= render Views::Admin::Components::FormCard.new(
       icon: :website,
       title: t('admin.sections.public_contact'),
       description: t('admin.hints.shown_publicly')
@@ -57,7 +57,7 @@
       </fieldset>
     <% end %>
 
-    <%= render Admin::FormCardComponent.new(
+    <%= render Views::Admin::Components::FormCard.new(
       icon: :partnership,
       title: t('admin.partners.sections.partnership_contact'),
       description: t('admin.partners.sections.partnership_contact_description')

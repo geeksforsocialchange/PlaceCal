@@ -1,0 +1,30 @@
+# frozen_string_literal: true
+
+class Views::Admin::Components::TabPanel < Views::Admin::Components::Base
+  def initialize(name:, label:, hash:, controller_name:, checked: false)
+    @name = name
+    @label = label
+    @hash = hash
+    @controller_name = controller_name
+    @checked = checked
+  end
+
+  def view_template(&block)
+    input(
+      type: 'radio',
+      name: @name,
+      class: 'tab',
+      aria_label: @label,
+      **{ "data-#{@controller_name}-target" => 'tab' },
+      data_hash: @hash,
+      **(@checked ? { checked: 'checked' } : {})
+    )
+    div(
+      class: 'tab-content bg-base-100 border-base-300 p-6',
+      **{ "data-#{@controller_name}-target" => 'panel' },
+      data_section: @hash
+    ) do
+      yield if block
+    end
+  end
+end

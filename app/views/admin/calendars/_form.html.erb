@@ -4,7 +4,7 @@
 
 <%= simple_form_for [:admin, @calendar], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'calendarTabAfterSave' } } do |f| %>
   <div class="mt-6">
-    <%= render Admin::TabFormComponent.new(
+    <%= render Views::Admin::Components::TabForm.new(
       tabs: [
         { label: '📥 Source', hash: 'source', partial: 'form_tab_source' },
         { label: '📍 Location', hash: 'location', partial: 'form_tab_location' },

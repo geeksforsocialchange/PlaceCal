@@ -1,7 +1,7 @@
 <%- disabled_fields = policy(@article).disabled_fields %>
 
 <div class="max-w-2xl">
-  <%= render Admin::ImageUploadComponent.new(
+  <%= render Views::Admin::Components::ImageUpload.new(
     form: f,
     attribute: :article_image,
     title: t('admin.articles.image.title'),

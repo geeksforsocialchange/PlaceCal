@@ -5,7 +5,7 @@
 </h2>
 <p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.calendars_description') %></p>
 
-<%= render Admin::RelatedItemsListComponent.new(
+<%= render Views::Admin::Components::RelatedItemsList.new(
   items: @partner.calendars,
   title_attr: :name,
   subtitle_attr: :source,

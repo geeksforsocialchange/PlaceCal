@@ -1,11 +1,11 @@
 <div class="space-y-8">
   <div class="max-w-2xl">
-    <%= render Admin::FormCardComponent.new(
+    <%= render Views::Admin::Components::FormCard.new(
       icon: :lock,
       title: attr_label(:user, :role),
       description: t('admin.users.fields.role_hint')
     ) do %>
-      <%= render Admin::RadioCardGroupComponent.new(
+      <%= render Views::Admin::Components::RadioCardGroup.new(
         form: f,
         attribute: :role,
         values: User.role.values,
@@ -34,7 +34,7 @@
             </div>
           </div>
         <% else %>
-          <%= render Admin::DangerZoneComponent.new(
+          <%= render Views::Admin::Components::DangerZone.new(
             title: t('admin.danger_zone.delete_title', model: User.model_name.human),
             description: t('admin.danger_zone.delete_description', model: User.model_name.human.downcase),
             button_text: t('admin.actions.delete_model', model: User.model_name.human),

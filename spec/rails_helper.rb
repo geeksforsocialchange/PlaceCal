@@ -47,9 +47,11 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :feature
 
-  # Include ViewComponent test helpers
+  # Include ViewComponent test helpers (for both ViewComponent and Phlex components)
   config.include ViewComponent::TestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
+  config.include ViewComponent::TestHelpers, type: :phlex
+  config.include Capybara::RSpecMatchers, type: :phlex
 
   # Include Pundit helpers for helper specs
   config.include Pundit::Authorization, type: :helper

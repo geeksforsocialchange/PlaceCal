@@ -19,7 +19,7 @@
                      html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'userTabAfterSave' } }) do |f| %>
   <%= render 'form', f: f %>
 
-  <%= render Admin::SaveBarComponent.new(
+  <%= render Views::Admin::Components::SaveBar.new(
     multi_step: true,
     tab_name: 'user_tabs',
     settings_hash: 'settings',

@@ -39,14 +39,14 @@
 <%# Stats Row - Compact horizontal cards %>
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
   <%# Partners %>
-  <%= render Admin::StatCardComponent.new(
+  <%= render Views::Admin::Components::StatCard.new(
         label: t('admin.dashboard.stats.partners'),
         value: @total_partners,
         icon: :partner
       ) %>
 
   <%# Calendars - Consolidated with tooltips %>
-  <%= render Admin::StatCardComponent.new(
+  <%= render Views::Admin::Components::StatCard.new(
         label: t('admin.dashboard.stats.calendars'),
         value: nil,
         subtitle: t('admin.dashboard.stats.calendars_total', count: @total_calendars)
@@ -68,7 +68,7 @@
   <% end %>
 
   <%# Events this week %>
-  <%= render Admin::StatCardComponent.new(
+  <%= render Views::Admin::Components::StatCard.new(
         label: t('admin.dashboard.stats.events_this_week'),
         value: @total_events_this_week,
         icon: :calendar
@@ -94,7 +94,7 @@
 
   <%# Sites Section %>
   <% if @sites.any? %>
-    <%= render Admin::CardComponent.new(
+    <%= render Views::Admin::Components::Card.new(
           title: t('admin.dashboard.cards.your_sites'),
           icon: :site,
           header_link: admin_sites_path,
@@ -121,7 +121,7 @@
   <% end %>
 
   <%# Action Items Card %>
-  <%= render Admin::CardComponent.new(
+  <%= render Views::Admin::Components::Card.new(
         title: t('admin.dashboard.cards.action_items'),
         icon: :clipboard,
         icon_class: @problem_calendars_count > 0 ? 'text-error' : 'text-success',
@@ -161,7 +161,7 @@
   <% end %>
 
   <%# Upcoming Events %>
-  <%= render Admin::CardComponent.new(
+  <%= render Views::Admin::Components::Card.new(
         title: t('admin.dashboard.cards.upcoming_events'),
         icon: :event
       ) do %>
@@ -192,7 +192,7 @@
   <% end %>
 
   <%# Updated Partners %>
-  <%= render Admin::CardComponent.new(
+  <%= render Views::Admin::Components::Card.new(
         title: t('admin.dashboard.cards.updated_partners'),
         icon: :partner
       ) do %>
@@ -224,7 +224,7 @@
   <% end %>
 
   <%# Updated Calendars %>
-  <%= render Admin::CardComponent.new(
+  <%= render Views::Admin::Components::Card.new(
         title: t('admin.dashboard.cards.updated_calendars'),
         icon: :calendar
       ) do %>
@@ -251,7 +251,7 @@
   <% end %>
 
   <%# Updated Users %>
-  <%= render Admin::CardComponent.new(
+  <%= render Views::Admin::Components::Card.new(
         title: t('admin.dashboard.cards.updated_users'),
         icon: :users
       ) do %>
@@ -279,7 +279,7 @@
 
   <%# Your Partnerships %>
   <% if @user_partnerships.any? %>
-    <%= render Admin::CardComponent.new(
+    <%= render Views::Admin::Components::Card.new(
           title: t('admin.dashboard.cards.your_partnerships'),
           icon: :partnership
         ) do %>
@@ -301,7 +301,7 @@
   <% end %>
 
   <%# Quick Links %>
-  <%= render Admin::CardComponent.new(
+  <%= render Views::Admin::Components::Card.new(
         title: t('admin.dashboard.cards.quick_links'),
         icon: :link
       ) do %>

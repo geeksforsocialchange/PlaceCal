@@ -5,7 +5,7 @@
 </h2>
 <p class="text-sm text-gray-600 mb-6"><%= t('admin.partners.sections.admins_description') %></p>
 
-<%= render Admin::StackedListSelectorComponent.new(
+<%= render Views::Admin::Components::StackedListSelector.new(
   field_name: "partner[user_ids][]",
   items: @partner.users,
   options: options_for_partner_users(@partner),

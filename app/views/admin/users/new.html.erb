@@ -28,7 +28,7 @@
                         display_only: display_fields,
                         html: { class: 'space-y-6', data: { controller: 'live-validation', user_wizard_target: 'form' } }) do |f| %>
 
-    <%= render(Admin::ErrorComponent.new(@user)) %>
+    <%= render(Views::Admin::Components::Error.new(@user)) %>
 
     <div class="max-w-4xl mx-auto">
     <%# Step 1: Personal Details %>
@@ -119,7 +119,7 @@
               </div>
             </div>
 
-            <%= render Admin::RadioCardGroupComponent.new(
+            <%= render Views::Admin::Components::RadioCardGroup.new(
               form: f,
               attribute: :role,
               values: User.role.values,
@@ -146,7 +146,7 @@
               </div>
             </div>
 
-            <%= render Admin::StackedListSelectorComponent.new(
+            <%= render Views::Admin::Components::StackedListSelector.new(
               field_name: "user[partner_ids][]",
               items: @user.partners.order(:name),
               options: options_for_partners(@user),
@@ -174,7 +174,7 @@
               </div>
             </div>
 
-            <%= render Admin::StackedListSelectorComponent.new(
+            <%= render Views::Admin::Components::StackedListSelector.new(
               field_name: "user[tag_ids][]",
               items: @user.partnerships.order(:name),
               options: options_for_user_partnerships,
@@ -212,7 +212,7 @@
                 <% end %>
               <% end %>
             <% else %>
-              <%= render Admin::ItemBadgeListComponent.new(
+              <%= render Views::Admin::Components::ItemBadgeList.new(
                 items: @user.neighbourhoods.order(:name),
                 icon_name: :map_pin,
                 icon_color: "bg-sky-100 text-sky-600",
@@ -232,7 +232,7 @@
     </div><%# Close max-w-4xl wrapper %>
 
     <%# Save Bar %>
-    <%= render Admin::SaveBarComponent.new(
+    <%= render Views::Admin::Components::SaveBar.new(
       wizard: true,
       wizard_controller: 'user-wizard',
       submit_label: t('admin.users.actions.invite'),

@@ -2,7 +2,7 @@
 
 <%# Hierarchy breadcrumb - matching show page %>
 <div class="mb-6">
-  <%= render Admin::NeighbourhoodHierarchyBadgeComponent.new(
+  <%= render Views::Admin::Components::NeighbourhoodHierarchyBadge.new(
         neighbourhood: @neighbourhood,
         link_each: true,
         show_icons: true

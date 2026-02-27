@@ -1,11 +1,11 @@
-<%= render Admin::SectionHeaderComponent.new(
+<%= render Views::Admin::Components::SectionHeader.new(
   title: Neighbourhood.model_name.human(count: 2),
   description: t('admin.sites.sections.neighbourhoods_description')
 ) %>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <div class="space-y-6">
-    <%= render Admin::FormCardComponent.new(
+    <%= render Views::Admin::Components::FormCard.new(
       icon: :neighbourhood,
       title: t('admin.sites.sections.main_neighbourhood'),
       description: t('admin.sites.sections.main_neighbourhood_description')
@@ -13,7 +13,7 @@
       <%= f.simple_fields_for :sites_neighbourhood do |sn| %>
         <% primary_neighbourhood = (@all_neighbourhoods.where(id: @primary_neighbourhood_id).first if @primary_neighbourhood_id.present?) %>
         <% if primary_neighbourhood.present? %>
-          <%= render Admin::NeighbourhoodCardComponent.new(
+          <%= render Views::Admin::Components::NeighbourhoodCard.new(
                 neighbourhood: primary_neighbourhood,
                 show_header: false,
                 show_remove: false
@@ -27,12 +27,12 @@
             </div>
           <% end %>
         <% else %>
-          <%= render Admin::CascadingNeighbourhoodFieldsComponent.new(form: sn, relation_type: 'Primary', show_remove: false) %>
+          <%= render Views::Admin::Components::CascadingNeighbourhoodFields.new(form: sn, relation_type: 'Primary', show_remove: false) %>
         <% end %>
       <% end %>
     <% end %>
 
-    <%= render Admin::FormCardComponent.new(
+    <%= render Views::Admin::Components::FormCard.new(
       icon: :map_pin,
       title: t('admin.sites.sections.other_neighbourhoods'),
       description: t('admin.sites.sections.other_neighbourhoods_description')
@@ -48,7 +48,7 @@
         <% end %>
       <% else %>
         <% secondary_neighbourhoods = @site.sites_neighbourhoods.where.not(relation_type: 'Primary').map(&:neighbourhood) %>
-        <%= render Admin::ItemBadgeListComponent.new(
+        <%= render Views::Admin::Components::ItemBadgeList.new(
           items: secondary_neighbourhoods,
           icon_name: :map_pin,
           icon_color: "bg-sky-100 text-sky-600",
@@ -59,13 +59,13 @@
     <% end %>
   </div>
 
-  <%= render Admin::FormCardComponent.new(
+  <%= render Views::Admin::Components::FormCard.new(
     icon: :zoom,
     title: t('admin.sites.sections.display_level'),
     description: t('admin.sites.sections.display_level_description'),
     fit_height: true
   ) do %>
-    <%= render Admin::RadioCardGroupComponent.new(
+    <%= render Views::Admin::Components::RadioCardGroup.new(
       form: f,
       attribute: :badge_zoom_level,
       values: Site.badge_zoom_level.values
