@@ -21,8 +21,8 @@ class Components::HomeFooter < Components::Base
       hr(class: 'footer_home__hr footer_home__hr--mobile_only')
       nav do
         ul(class: 'footer_home__nav') do
-          li { link_to('Admin log in', helpers.new_user_session_path, class: 'footer_home__nav__link') }
-          li { link_to('Get PlaceCal', helpers.get_in_touch_path, class: 'footer_home__nav__link') }
+          li { link_to('Admin log in', new_user_session_path, class: 'footer_home__nav__link') }
+          li { link_to('Get PlaceCal', get_in_touch_path, class: 'footer_home__nav__link') }
           li { mail_to('info@placecal.org', 'Email us', class: 'footer_home__nav__link') }
         end
       end
@@ -59,9 +59,9 @@ class Components::HomeFooter < Components::Base
         br
         plain t('colophon.address')
         br
-        link_to('Privacy policy', helpers.privacy_path, class: 'footer_home__foot__link')
+        link_to('Privacy policy', privacy_path, class: 'footer_home__foot__link')
         plain ' | '
-        link_to('Terms of use', helpers.terms_of_use_path, class: 'footer_home__foot__link')
+        link_to('Terms of use', terms_of_use_path, class: 'footer_home__foot__link')
       end
 
       p do

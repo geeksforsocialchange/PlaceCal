@@ -17,7 +17,7 @@ class Components::Admin::ItemBadgeList < Components::Admin::Base
       container_class = @vertical ? 'flex flex-col gap-2' : 'flex flex-wrap gap-2'
       div(class: container_class) do
         @items.each do |item|
-          link_to helpers.send(@link_path, item),
+          link_to view_context.public_send(@link_path, item),
                   class: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg #{bg_class} #{text_class} text-sm font-medium hover:opacity-80 transition-opacity" do
             icon(@icon_name, size: '3.5')
             plain item_name(item)

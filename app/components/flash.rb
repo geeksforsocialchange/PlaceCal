@@ -16,7 +16,7 @@ class Components::Flash < Components::Base
   private
 
   def flash_messages
-    @flash || helpers.flash
+    @flash || flash
   end
 
   def alert_class(key)

@@ -21,7 +21,7 @@ class Components::Paginator < Components::Base
     div(class: 'paginator', id: 'paginator', data: { controller: 'paginator' }) do
       if @show_breadcrumb
         div(class: 'paginator__context') do
-          Breadcrumb(trail: [['Events', helpers.events_path]], site_name: @site_name) do
+          Breadcrumb(trail: [['Events', events_path]], site_name: @site_name) do
             div(class: 'breadcrumb__actions') do
               EventFilter(
                 pointer: @pointer, period: @period, sort: @sort,

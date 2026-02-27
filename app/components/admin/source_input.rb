@@ -81,7 +81,7 @@ class Components::Admin::SourceInput < Components::Admin::Base
       raw @form.label(:importer_mode, I18n.t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend')
       raw @form.input_field(:importer_mode,
                             as: :select,
-                            collection: helpers.options_for_importer,
+                            collection: options_for_importer,
                             selected: @form.object.importer_mode || 'auto',
                             class: 'select select-bordered w-full',
                             data: { 'source-validator-target': 'importerModeSelect' })

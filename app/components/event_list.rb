@@ -32,7 +32,7 @@ class Components::EventList < Components::Base
       p(class: 'event-list__truncated') { 'Showing first 50 events. Use the date picker to see more.' } if @truncated
     else
       p { 'No events with this selection.' }
-      p { link_to('Skip to next date with events.', helpers.next_url(@next_date)) } if @next_date.present?
+      p { link_to('Skip to next date with events.', next_url(@next_date)) } if @next_date.present?
     end
   end
 end

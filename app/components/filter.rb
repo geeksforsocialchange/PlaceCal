@@ -39,18 +39,18 @@ class Components::Filter < Components::Base
       div(class: 'filters__group') do
         @items.each do |item|
           div(class: 'filters__option') do
-            raw safe(helpers.radio_button_tag(
-                       @name,
-                       item[:id],
-                       selected?(item[:id]),
-                       data: { action: submit_action_value },
-                       class: 'tag__button'
-                     ))
-            raw safe(helpers.label_tag(
-                       "#{@name}_#{item[:id]}",
-                       "#{item[:name]} (#{item[:count]})",
-                       class: 'filters__label'
-                     ))
+            radio_button_tag(
+              @name,
+              item[:id],
+              selected?(item[:id]),
+              data: { action: submit_action_value },
+              class: 'tag__button'
+            )
+            label_tag(
+              "#{@name}_#{item[:id]}",
+              "#{item[:name]} (#{item[:count]})",
+              class: 'filters__label'
+            )
           end
         end
       end

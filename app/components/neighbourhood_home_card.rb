@@ -15,7 +15,7 @@ class Components::NeighbourhoodHomeCard < Components::Base
       hr(class: 'neighbourhood_home_card__rule')
       link_to(
         "#{@site.place_name} calendar",
-        "#{helpers.root_url(subdomain: @site.slug)}events",
+        "#{root_url(subdomain: @site.slug)}events",
         class: 'neighbourhood_home_card__link'
       )
     end

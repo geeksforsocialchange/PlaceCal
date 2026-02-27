@@ -14,7 +14,7 @@ class Components::PartnerFilter < Components::Base
   end
 
   def view_template # rubocop:disable Metrics/MethodLength
-    form_with(url: helpers.partners_path, method: :get, data: {
+    form_with(url: partners_path, method: :get, data: {
                 controller: 'partner-filter-component',
                 'partner-filter-component-target': 'form',
                 'turbo-action': 'advance'
@@ -54,7 +54,7 @@ class Components::PartnerFilter < Components::Base
 
         if any_filter_active?
           div(class: 'breadcrumb__filters') do
-            link_to('Reset filters', helpers.partners_path, class: 'filters__link', data: { turbo_frame: 'partner_previews' })
+            link_to('Reset filters', partners_path, class: 'filters__link', data: { turbo_frame: 'partner_previews' })
           end
         end
       end

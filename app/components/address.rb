@@ -17,7 +17,7 @@ class Components::Address < Components::Base
   def formatted_address
     if @address.present?
       address_lines = @address.all_address_lines.map(&:strip)
-      return address_lines.join(", #{helpers.tag.br}")
+      return address_lines.join(", #{view_context.tag.br}")
     end
 
     uri = URI.parse(@raw_location)

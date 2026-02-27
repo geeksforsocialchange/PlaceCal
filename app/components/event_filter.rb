@@ -31,30 +31,30 @@ class Components::EventFilter < Components::Base
         plain ' '
         span(class: 'filters__link') { 'Go to date' }
       end
-      raw safe(helpers.date_field_tag(:date, @pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' }))
-      raw safe(helpers.hidden_field_tag(:period, @period, data: { date_picker_target: 'period' }))
-      raw safe(helpers.hidden_field_tag(:sort, @sort, data: { date_picker_target: 'sort' }))
-      raw safe(helpers.hidden_field_tag(:repeating, @repeating, data: { date_picker_target: 'repeating' }))
+      date_field_tag(:date, @pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' })
+      hidden_field_tag(:period, @period, data: { date_picker_target: 'period' })
+      hidden_field_tag(:sort, @sort, data: { date_picker_target: 'sort' })
+      hidden_field_tag(:repeating, @repeating, data: { date_picker_target: 'repeating' })
     end
   end
 
   def render_neighbourhood_filter
     div(class: 'filters', data: { controller: 'event-filter' }) do
-      raw safe(helpers.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) {
+      raw safe(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) {
         safe_join([
-                    helpers.hidden_field_tag(:period, @period),
-                    helpers.hidden_field_tag(:sort, @sort),
-                    helpers.hidden_field_tag(:repeating, @repeating),
-                    helpers.render(Components::Filter.new(
-                                     name: 'neighbourhood',
-                                     label: 'Neighbourhood',
-                                     items: neighbourhood_items,
-                                     selected_id: @selected_neighbourhood,
-                                     controller: 'event-filter',
-                                     toggle_action: 'toggleNeighbourhood',
-                                     submit_action: 'submitNeighbourhood',
-                                     reset_action: 'resetNeighbourhood'
-                                   ))
+                    view_context.hidden_field_tag(:period, @period),
+                    view_context.hidden_field_tag(:sort, @sort),
+                    view_context.hidden_field_tag(:repeating, @repeating),
+                    view_context.render(Components::Filter.new(
+                                          name: 'neighbourhood',
+                                          label: 'Neighbourhood',
+                                          items: neighbourhood_items,
+                                          selected_id: @selected_neighbourhood,
+                                          controller: 'event-filter',
+                                          toggle_action: 'toggleNeighbourhood',
+                                          submit_action: 'submitNeighbourhood',
+                                          reset_action: 'resetNeighbourhood'
+                                        ))
                   ])
       })
     end
@@ -62,16 +62,16 @@ class Components::EventFilter < Components::Base
 
   def render_sort_filter # rubocop:disable Metrics/MethodLength
     div(class: 'filters', data: { controller: 'filters' }) do
-      raw safe(helpers.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) {
+      raw safe(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) {
         buf = ActiveSupport::SafeBuffer.new
-        buf << helpers.content_tag(:div, class: 'filters__toggle') {
-          helpers.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) {
-            helpers.content_tag(:span, "\u2193", class: 'icon icon--arrow-down') +
+        buf << view_context.content_tag(:div, class: 'filters__toggle') {
+          view_context.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) {
+            view_context.content_tag(:span, "\u2193", class: 'icon icon--arrow-down') +
             ' '.html_safe +
-            helpers.content_tag(:span, 'Filter and sort', class: 'filters__link')
+            view_context.content_tag(:span, 'Filter and sort', class: 'filters__link')
           }
         }
-        buf << helpers.content_tag(:div, class: 'filters__dropdown filters__dropdown--hidden', data: { filters_target: 'dropdown' }) {
+        buf << view_context.content_tag(:div, class: 'filters__dropdown filters__dropdown--hidden', data: { filters_target: 'dropdown' }) {
           render_filter_groups
         }
         buf
@@ -81,18 +81,18 @@ class Components::EventFilter < Components::Base
 
   def render_filter_groups # rubocop:disable Metrics/MethodLength
     buf = ActiveSupport::SafeBuffer.new
-    buf << helpers.content_tag(:div, class: 'filters__group') do
+    buf << view_context.content_tag(:div, class: 'filters__group') do
       render_radio('sort', 'time', @sort == 'time', 'Sort by date') +
         render_radio('sort', 'summary', @sort == 'summary', 'Sort by name')
     end
-    buf << helpers.tag.hr
-    buf << helpers.content_tag(:div, class: 'filters__group') do
+    buf << view_context.tag.hr
+    buf << view_context.content_tag(:div, class: 'filters__group') do
       render_radio('period', 'day', @period == 'day', 'Daily view') +
         render_radio('period', 'week', @period == 'week', 'Weekly view') +
         render_radio('period', 'future', @period == 'future', 'Show all')
     end
-    buf << helpers.tag.hr
-    buf << helpers.content_tag(:div, class: 'filters__group') do
+    buf << view_context.tag.hr
+    buf << view_context.content_tag(:div, class: 'filters__group') do
       render_radio('repeating', 'on', @repeating == 'on', 'Show repeats') +
         render_radio('repeating', 'last', @repeating == 'last', 'Show repeats last') +
         render_radio('repeating', 'off', @repeating == 'off', 'Hide repeats')
@@ -101,9 +101,9 @@ class Components::EventFilter < Components::Base
   end
 
   def render_radio(name, value, checked, label_text)
-    helpers.content_tag(:div, class: 'filters__option') do
-      helpers.radio_button_tag(name, value, checked) +
-        helpers.label_tag("#{name}_#{value}", label_text)
+    view_context.content_tag(:div, class: 'filters__option') do
+      view_context.radio_button_tag(name, value, checked) +
+        view_context.label_tag("#{name}_#{value}", label_text)
     end
   end
 

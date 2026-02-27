@@ -30,7 +30,7 @@ class Components::Event < Components::Base
 
   def render_list_header
     div(class: 'event__header') do
-      h3(itemprop: 'name') { link_to(summary, helpers.event_path(id), data: { turbo_frame: '_top' }) }
+      h3(itemprop: 'name') { link_to(summary, event_path(id), data: { turbo_frame: '_top' }) }
       if neighbourhood_name && @show_neighbourhoods
         css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} event__neighbourhood"
         div(class: css) { span { neighbourhood_name } }
@@ -61,7 +61,7 @@ class Components::Event < Components::Base
       span(class: 'icon-font icon-place')
       if partner_at_location
         plain ' '
-        link_to(partner_at_location, helpers.partner_path(partner_at_location), data: { turbo_frame: '_top' })
+        link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
       elsif first_address_line
         plain " #{first_address_line}"
       end
@@ -84,10 +84,10 @@ class Components::Event < Components::Base
 
     if hours < 25
       mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
-      hours_str = hours.positive? ? helpers.pluralize(hours, 'hour') : ''
+      hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
       [hours_str, mins_str].reject(&:empty?).join(' ')
     else
-      helpers.distance_of_time_in_words(@event.dtend - @event.dtstart)
+      distance_of_time_in_words(@event.dtend - @event.dtstart)
     end
   end
 

@@ -20,8 +20,8 @@ class Components::AudienceIntro < Components::Base
       end
       div(class: 'audience__body', &)
       div(class: 'center') do
-        link_to('Our story', helpers.our_story_path, class: 'btn btn--big btn--home-3')
-        link_to('See it in action', helpers.find_placecal_path, class: 'btn btn--big btn--home-3')
+        link_to('Our story', our_story_path, class: 'btn btn--big btn--home-3')
+        link_to('See it in action', find_placecal_path, class: 'btn btn--big btn--home-3')
       end
       button(class: 'reveal__button', data: { reveal_target: 'button', action: 'click->reveal#toggle' }) do
         'Open to read more'

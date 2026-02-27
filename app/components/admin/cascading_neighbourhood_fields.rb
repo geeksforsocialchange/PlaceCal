@@ -41,8 +41,8 @@ class Components::Admin::CascadingNeighbourhoodFields < Components::Admin::Base
         span(class: 'loading loading-spinner loading-xs hidden',
              data_cascading_neighbourhood_target: 'loading')
         if @show_remove
-          raw helpers.nested_form_remove_link(@form, helpers.icon(:trash, size: '4'),
-                                              class: 'btn btn-ghost btn-sm btn-square text-error')
+          nested_form_remove_link(@form, capture { icon(:trash, size: '4') },
+                                  class: 'btn btn-ghost btn-sm btn-square text-error')
         end
       end
     end

@@ -26,8 +26,8 @@ class Components::Admin::NeighbourhoodCard < Components::Admin::Base
           end
 
           if @show_remove && @form
-            raw helpers.nested_form_remove_link(@form, helpers.icon(:x, size: '4'),
-                                                class: 'btn btn-ghost btn-sm btn-square text-gray-500 hover:text-error hover:bg-error/10')
+            nested_form_remove_link(@form, capture { icon(:x, size: '4') },
+                                    class: 'btn btn-ghost btn-sm btn-square text-gray-500 hover:text-error hover:bg-error/10')
           end
         end
       end
@@ -37,9 +37,9 @@ class Components::Admin::NeighbourhoodCard < Components::Admin::Base
   private
 
   def render_current_neighbourhood
-    link_to helpers.admin_neighbourhood_path(@neighbourhood),
+    link_to admin_neighbourhood_path(@neighbourhood),
             class: 'flex items-center gap-2 py-2 pr-2 rounded-lg hover:bg-base-300/50 transition-colors group' do
-      raw helpers.level_badge(@neighbourhood.level)
+      level_badge(@neighbourhood.level)
       div do
         span(class: 'text-base font-semibold text-base-content group-hover:text-placecal-orange transition-colors') do
           @neighbourhood.shortname
@@ -56,7 +56,7 @@ class Components::Admin::NeighbourhoodCard < Components::Admin::Base
     div(class: 'flex flex-wrap items-center gap-1') do
       ancestors.each_with_index do |ancestor, index|
         span(class: 'text-gray-300') { '/' } if index.positive?
-        link_to helpers.admin_neighbourhood_path(ancestor),
+        link_to admin_neighbourhood_path(ancestor),
                 class: "inline-flex items-center gap-1 px-1.5 py-0.5 text-xs rounded #{neighbourhood_colour(ancestor.level)} hover:opacity-80 transition-opacity" do
           plain ancestor.shortname
         end

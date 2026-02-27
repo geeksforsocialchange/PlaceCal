@@ -12,7 +12,7 @@ class Components::ComputerAccess < Components::Base
       if @places
         ul do
           @places.each do |location|
-            li { link_to(location.name, helpers.partner_path(location)) }
+            li { link_to(location.name, partner_path(location)) }
           end
         end
       else

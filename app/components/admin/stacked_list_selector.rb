@@ -169,7 +169,7 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
   def item_link(item)
     return nil unless @link_path
 
-    helpers.public_send(@link_path, item)
+    view_context.public_send(@link_path, item)
   end
 
   def selected_ids

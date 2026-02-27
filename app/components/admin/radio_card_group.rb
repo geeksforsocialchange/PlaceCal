@@ -28,7 +28,7 @@ class Components::Admin::RadioCardGroup < Components::Admin::Base
     description = @i18n_scope ? I18n.t("#{@i18n_scope}.#{value}", default: nil) : nil
 
     if description
-      helpers.safe_join([helpers.tag.strong(name), ': ', description])
+      safe_join([view_context.tag.strong(name), ': ', description])
     else
       name
     end

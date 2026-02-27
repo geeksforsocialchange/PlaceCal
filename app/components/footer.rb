@@ -40,12 +40,12 @@ class Components::Footer < Components::Base
       h5(class: 'allcaps small') { 'Site Navigation' }
       nav(role: 'navigation') do
         ul do
-          li { raw safe(helpers.active_link_to('Home', helpers.root_path)) }
-          li { raw safe(helpers.active_link_to('Events', helpers.events_path)) }
-          li { raw safe(helpers.active_link_to('Partners', helpers.partners_path)) }
-          li { raw safe(helpers.active_link_to('Log in', helpers.new_user_session_path)) }
-          li { raw safe(helpers.active_link_to('Privacy', helpers.privacy_path)) }
-          li { raw safe(helpers.active_link_to('Terms', helpers.terms_of_use_path)) }
+          li { active_link_to('Home', root_path) }
+          li { active_link_to('Events', events_path) }
+          li { active_link_to('Partners', partners_path) }
+          li { active_link_to('Log in', new_user_session_path) }
+          li { active_link_to('Privacy', privacy_path) }
+          li { active_link_to('Terms', terms_of_use_path) }
         end
       end
     end
@@ -95,9 +95,9 @@ class Components::Footer < Components::Base
   end
 
   def render_global_supporters
-    return unless helpers.instance_variable_get(:@global_supporters)
+    return unless view_context.instance_variable_get(:@global_supporters)
 
-    global_supporters = helpers.instance_variable_get(:@global_supporters)
+    global_supporters = view_context.instance_variable_get(:@global_supporters)
     div(class: 'footer__item footer__supporters') do
       h5(class: 'allcaps small') { 'PlaceCal Supporters' }
       ul do

@@ -9,9 +9,9 @@ class Components::Navigation < Components::Base
       render_branding
       nav(class: 'nav header__menu', data: { mobile_menu_target: 'menu' }, role: 'navigation') do
         ul do
-          li { raw safe(helpers.active_link_to('Home', helpers.root_path)) }
+          li { active_link_to('Home', root_path) }
           @navigation.each do |link_text, link_path|
-            li { raw safe(helpers.active_link_to(link_text, link_path, data: { turbolinks: false })) }
+            li { active_link_to(link_text, link_path, data: { turbolinks: false }) }
           end
         end
       end
@@ -27,7 +27,7 @@ class Components::Navigation < Components::Base
     if @site&.logo.present?
       div(
         class: "header__branding header__branding--#{@site.slug}",
-        style: "background-image: url(#{helpers.image_url(@site.logo)})",
+        style: "background-image: url(#{image_url(@site.logo)})",
         role: 'banner'
       ) { branding_content }
     else
@@ -36,9 +36,9 @@ class Components::Navigation < Components::Base
   end
 
   def branding_content
-    link_to(helpers.root_path) do
+    link_to(root_path) do
       if @site&.default_site?
-        if helpers.request.path == '/'
+        if request.path == '/'
           h1 { 'PlaceCal' }
         else
           h2 { 'PlaceCal' }

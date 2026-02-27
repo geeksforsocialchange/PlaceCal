@@ -67,7 +67,7 @@ class Components::Admin::ImageUpload < Components::Admin::Base
           end
           div(class: 'flex-1 min-w-0') do
             p(class: 'text-sm font-medium text-base-content') { t('admin.images.choose_file_drag') }
-            p(class: 'text-xs text-gray-600') { raw safe(helpers.image_uploader_hint(uploader)) }
+            p(class: 'text-xs text-gray-600') { raw safe(image_uploader_hint(uploader)) }
           end
           raw @form.input_field(@attribute, as: :file, class: 'sr-only',
                                             data: { action: 'change->image-preview#file', image_preview_target: 'input' })
