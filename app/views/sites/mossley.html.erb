@@ -42,13 +42,13 @@
   <div class="c">
     <div class="g">
       <div class="gi gi__1-3">
-        <%= render(Components::HelpAddingEvents.new(@site)) %>
+        <%= render(Components::HelpCard.new(variant: :adding_events, site: @site)) %>
       </div>
       <div class="gi gi__1-3">
-        <%= render(Components::ComputerAccess.new(@places_to_get_online)) %>
+        <%= render(Components::HelpCard.new(@places_to_get_online, variant: :computer_access)) %>
       </div>
       <div class="gi gi__1-3">
-        <%= render(Components::HelpGettingHelp.new()) %>
+        <%= render(Components::HelpCard.new(variant: :getting_help)) %>
       </div>
     </div>
   </div>

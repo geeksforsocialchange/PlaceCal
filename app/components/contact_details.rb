@@ -9,17 +9,9 @@ class Components::ContactDetails < Components::Base
   prop :url, _Nilable(String), default: nil
 
   def after_initialize
-    @name = @partner.name
     @phone ||= @partner.public_phone
     @url ||= @partner.url
     @email ||= @partner.public_email
-    @facebook_link = @partner.facebook_link
-    @twitter_handle = @partner.twitter_handle
-    @instagram_handle = @partner.instagram_handle
-    @is_valid_phone = @phone.present? || @partner.valid_public_phone?
-    @twitter_url = "https://twitter.com/#{@partner.twitter_handle}"
-    @facebook_url = "https://facebook.com/#{@partner.facebook_link}"
-    @contact = @phone || @email || @url || @partner.facebook_link || @partner.twitter_handle
   end
 
   def view_template
@@ -30,7 +22,7 @@ class Components::ContactDetails < Components::Base
       render_facebook
       render_twitter
       render_instagram
-      plain 'No contact information - let us know!' unless @contact
+      plain 'No contact information - let us know!' unless any_contact?
     end
   end
 
@@ -41,7 +33,7 @@ class Components::ContactDetails < Components::Base
 
     strong(class: 'icon icon--contact icon--phone') { 'Phone:' }
     span do
-      if @is_valid_phone
+      if @partner.valid_public_phone?
         link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener')
       else
         plain @phone
@@ -64,24 +56,28 @@ class Components::ContactDetails < Components::Base
   end
 
   def render_facebook
-    return if @facebook_link.blank?
+    return if @partner.facebook_link.blank?
 
     strong(class: 'icon icon--contact icon--facebook') { 'Facebook:' }
-    span { link_to(@facebook_link, @facebook_url, target: '_blank', rel: 'noopener') }
+    span { link_to(@partner.facebook_link, "https://facebook.com/#{@partner.facebook_link}", target: '_blank', rel: 'noopener') }
   end
 
   def render_twitter
-    return if @twitter_handle.blank?
+    return if @partner.twitter_handle.blank?
 
     strong(class: 'icon icon--contact icon--twitter') { 'Twitter:' }
-    span { link_to("@#{@twitter_handle}", @twitter_url, target: '_blank', rel: 'noopener') }
+    span { link_to("@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}", target: '_blank', rel: 'noopener') }
   end
 
   def render_instagram
-    return if @instagram_handle.blank?
+    return if @partner.instagram_handle.blank?
 
     strong(class: 'icon icon--contact icon--instagram') { 'Instagram:' }
-    span { link_to("@#{@instagram_handle}", "https://www.instagram.com/#{@instagram_handle}/", target: '_blank', rel: 'noopener') }
+    span { link_to("@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/", target: '_blank', rel: 'noopener') }
+  end
+
+  def any_contact?
+    @phone.present? || @email.present? || @url.present? || @partner.facebook_link.present? || @partner.twitter_handle.present?
   end
 
   def strip_url(target_url)
