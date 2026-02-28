@@ -28,8 +28,8 @@ class Components::CaseStudy < Components::Base
               image_tag(@logo_src, alt: "#{@partner} logo", class: 'case_study__img--logo')
             end
             div(class: 'case_study__column case_study__buttons_column') do
-              LinkBtnLrg(link_url: @partner_url, color: 'pink') { 'Find out more' }
-              LinkBtnLrg(link_url: @link_url, color: 'pink') { 'Find your PlaceCal' }
+              a(href: @partner_url, class: 'link_btn_lrg link_btn_lrg--pink') { 'Find out more' }
+              a(href: @link_url, class: 'link_btn_lrg link_btn_lrg--pink') { 'Find your PlaceCal' }
             end
           end
           div(class: 'case_study__description_column') do

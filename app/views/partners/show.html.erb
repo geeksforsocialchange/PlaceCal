@@ -66,7 +66,11 @@
         <% if @opening_times.any? %>
           <br>
           <h3 class="udl udl--fw allcaps h4">Opening times</h3>
-          <%= render(Components::OpeningTimes.new(times: @opening_times)) %>
+          <ul class="opening_times reset">
+            <% @opening_times.each do |slot| %>
+              <li><%= slot %></li>
+            <% end %>
+          </ul>
         <% end %>
       </div>
     </div>

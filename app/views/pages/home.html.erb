@@ -1,6 +1,10 @@
 <article class="home">
   <div class="margin home__flow">
-    <%= render(Components::HomeStrapline.new) %>
+    <div class="home__strapline">
+      <div class="max_width">
+        <h2 class="home__strapline-quote">PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.</h2>
+      </div>
+    </div>
     <%= render(Components::CaseStudy.new(
       partner: "The Trans Dimension",
       link_url: "/find-placecal",
@@ -14,13 +18,18 @@
         "The Trans Dimension is run by Geeks for Social Change in partnership with Gendered Intelligence with support from the Comic Relief Tech for Good programme. At this stage, the Trans Dimension is focussed on London-based events listings only, however we do plan to expand to cover more areas across the UK."
       ]
     )) %>
-    <%= render(Components::ContainerWithHeader.new(title: "Place-based calendars",  color: "green")) do %>
-      <%= render(Components::FourColGrid.new()) do %>
-        <% @neighbourhoods.take(4).each do |site| %>
-          <%= render(Components::NeighbourhoodHomeCard.new(site: site)) %>
-        <% end %>
-      <% end %>
-    <% end %>
+    <div class="container-with-header">
+      <div class="container-with-header__head container-with-header__head--green">
+        <h3 class="container-with-header__title">Place-based calendars</h3>
+      </div>
+      <div class="container-with-header__body">
+        <ul class="four_col_grid">
+          <% @neighbourhoods.take(4).each do |site| %>
+            <%= render(Components::NeighbourhoodHomeCard.new(site: site)) %>
+          <% end %>
+        </ul>
+      </div>
+    </div>
     <%= render(Components::FullWidthAction.new(title: "Find your PlaceCal", link_text: "See calendars", link_url: find_placecal_path, color: "red")) do %>
       Ready to get started with PlaceCal? Here you can see a list of all current PlaceCal instances, organised by interest and location.
     <% end %>

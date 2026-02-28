@@ -19,10 +19,8 @@ class Components::FullWidthAction < Components::Base
         h3(class: 'full_width_action__title') { @title }
         p(class: 'full_width_action__content', &)
         div(class: 'full_width_action__btn') do
-          btn_color = @color == 'cream' ? 'green' : ''
-          LinkBtnLrg(link_url: @link_url, color: btn_color) do
-            @link_text
-          end
+          btn_class = @color == 'cream' ? 'link_btn_lrg link_btn_lrg--green' : 'link_btn_lrg link_btn_lrg--light'
+          a(href: @link_url, class: btn_class) { @link_text }
         end
       end
     end
