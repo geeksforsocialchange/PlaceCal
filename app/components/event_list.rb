@@ -34,7 +34,7 @@ class Components::EventList < Components::Base
 
   def render_event(event)
     Event(
-      display_context: @period,
+      display_context: @period&.to_sym,
       event: event,
       primary_neighbourhood: @primary_neighbourhood,
       show_neighbourhoods: @show_neighbourhoods,
