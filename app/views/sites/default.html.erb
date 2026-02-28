@@ -41,12 +41,12 @@
       </div>
       <% if @places_to_get_computer_access.present? -%>
       <div>
-        <%= render(Components::HelpCard.new(@places_to_get_computer_access, variant: :computer_access)) %>
+        <%= render(Components::HelpCard.new(places: @places_to_get_computer_access, variant: :computer_access)) %>
       </div>
       <% end -%>
       <% if @places_with_free_wifi.present? -%>
       <div>
-        <%= render(Components::HelpCard.new(@places_with_free_wifi, variant: :free_wifi)) %>
+        <%= render(Components::HelpCard.new(places: @places_with_free_wifi, variant: :free_wifi)) %>
       </div>
       <% end -%>
       <div>

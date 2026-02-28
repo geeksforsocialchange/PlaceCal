@@ -45,7 +45,7 @@
         <%= render(Components::HelpCard.new(variant: :adding_events, site: @site)) %>
       </div>
       <div class="gi gi__1-3">
-        <%= render(Components::HelpCard.new(@places_to_get_online, variant: :computer_access)) %>
+        <%= render(Components::HelpCard.new(places: @places_to_get_online, variant: :computer_access)) %>
       </div>
       <div class="gi gi__1-3">
         <%= render(Components::HelpCard.new(variant: :getting_help)) %>
