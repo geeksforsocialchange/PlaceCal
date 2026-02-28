@@ -18,7 +18,7 @@ class Components::HelpGettingHelp < Components::Base
 
   def view_template
     div(class: 'help help__getting_help') do
-      safe(HELP_SVG)
+      raw(safe(HELP_SVG))
 
       h3(class: 'h2--alt') { span { 'PlaceCal Support' } }
       p { 'You can find out more about how PlaceCal works in our handbook.' }

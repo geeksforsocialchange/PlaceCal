@@ -11,7 +11,7 @@ class Components::Admin::ToggleCard < Components::Admin::Base
 
   def view_template
     label(class: "flex items-center gap-3 p-4 rounded-lg border border-base-300 bg-base-100 cursor-pointer transition-colors #{checked_border_class}") do
-      safe(@form.check_box(@attribute, class: "checkbox checkbox-#{@variant}"))
+      raw(safe(@form.check_box(@attribute, class: "checkbox checkbox-#{@variant}")))
       div do
         p(class: 'font-medium') { @title }
         p(class: 'text-sm text-gray-600') { @description } if @description.present?

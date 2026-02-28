@@ -22,7 +22,7 @@ class Components::Admin::CascadingNeighbourhoodFields < Components::Admin::Base
         render_selectors
       end
 
-      safe(@form.hidden_field(:relation_type, value: @relation_type)) if @relation_type.present?
+      raw(safe(@form.hidden_field(:relation_type, value: @relation_type))) if @relation_type.present?
       safe(@form.hidden_field(:neighbourhood_id, data: { cascading_neighbourhood_target: 'output' }))
     end
   end

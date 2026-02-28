@@ -22,12 +22,12 @@ class Components::Admin::SourceInput < Components::Admin::Base
         span(class: 'text-error') { I18n.t('admin.labels.required') }
       end
       div(class: 'flex gap-2') do
-        safe(@form.input_field(:source,
-                               class: 'input input-bordered flex-1 font-mono text-sm',
-                               placeholder: I18n.t('admin.calendars.fields.source_placeholder'),
-                               autocomplete: 'off',
-                               'data-source-validator-target': 'input',
-                               'data-action': 'input->source-validator#sourceChanged'))
+        raw(safe(@form.input_field(:source,
+                                   class: 'input input-bordered flex-1 font-mono text-sm',
+                                   placeholder: I18n.t('admin.calendars.fields.source_placeholder'),
+                                   autocomplete: 'off',
+                                   'data-source-validator-target': 'input',
+                                   'data-action': 'input->source-validator#sourceChanged')))
         render_test_button
       end
       p(class: 'fieldset-label') { safe(I18n.t('admin.calendars.handbook_hint_html')) }
@@ -78,7 +78,7 @@ class Components::Admin::SourceInput < Components::Admin::Base
 
   def render_importer_field
     fieldset(class: 'fieldset mt-4') do
-      safe(@form.label(:importer_mode, I18n.t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend'))
+      raw(safe(@form.label(:importer_mode, I18n.t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend')))
       safe(@form.input_field(:importer_mode,
                              as: :select,
                              collection: options_for_importer,

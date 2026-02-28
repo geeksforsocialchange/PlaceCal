@@ -17,7 +17,7 @@ class Components::Meta < Components::Base
 
     div(class: 'meta small') do
       div(class: 'c') do
-        safe(view_context.capture(&@link_content)) if @link_content
+        raw(safe(view_context.capture(&@link_content))) if @link_content
         if @permalink
           div(class: 'meta__permalink') do
             a(href: "https://placecal.org#{@permalink}") { 'Permalink' }

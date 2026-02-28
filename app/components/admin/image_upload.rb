@@ -101,7 +101,7 @@ class Components::Admin::ImageUpload < Components::Admin::Base
     end
     div(class: 'mt-2 flex justify-end') do
       label(class: 'inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60') do
-        safe(@form.check_box(@remove_attribute, class: 'sr-only'))
+        raw(safe(@form.check_box(@remove_attribute, class: 'sr-only')))
         icon(:trash, size: '3.5')
         plain " #{t('admin.images.remove_on_save')}"
       end

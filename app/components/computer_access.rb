@@ -19,7 +19,7 @@ class Components::ComputerAccess < Components::Base
 
   def view_template
     div(class: 'help help__computer_access') do
-      safe(COMPUTER_SVG)
+      raw(safe(COMPUTER_SVG))
 
       h3(class: 'h2--alt') { span { 'Computer access' } }
       p { 'Places with computers you can use' }
