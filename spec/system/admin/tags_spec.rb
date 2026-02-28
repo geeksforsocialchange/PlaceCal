@@ -48,7 +48,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       # Wait for tabs to be present, then click Settings
       expect(page).to have_css(".tabs.tabs-lift", wait: 10)
       find('input.tab[data-hash="settings"]').click
-      expect(page).to have_css("input#tag_system_tag")
+      expect(page).to have_css("input#tag_system_tag", visible: :all)
     end
 
     # NOTE: Citizen users cannot access the tag edit page at all (TagPolicy#edit? requires root)
