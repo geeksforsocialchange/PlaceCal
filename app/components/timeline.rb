@@ -25,7 +25,13 @@ class Components::Timeline < Components::Base
           li_attrs[:"data-#{k.to_s.dasherize}"] = v
         end
         li(**li_attrs) do
-          link_to(raw(safe(btn[:text])), btn[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+          a(href: btn[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
+            if btn[:icon]
+              span(class: btn[:icon_class]) { btn[:text] }
+            else
+              plain btn[:text]
+            end
+          end
         end
       end
     end
@@ -35,13 +41,13 @@ class Components::Timeline < Components::Base
 
   def buttons
     pages = []
-    pages << { text: back_arrow, link: url_for(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
+    pages << { text: "\u2190", icon: true, icon_class: 'icon icon--arrow-left-grey', link: url_for(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
     (0..steps).each do |i|
       day = window_start + (step * i)
       css = day == @pointer ? 'active' : ''
       pages << { text: format_date(day), link: url_for(day), css: css, data: { paginator_target: 'button' } }
     end
-    pages << { text: forward_arrow, link: url_for(@pointer + step), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
+    pages << { text: "\u2192", icon: true, icon_class: 'icon icon--arrow-right-grey', link: url_for(@pointer + step), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
   end
 
   def step
@@ -93,13 +99,5 @@ class Components::Timeline < Components::Base
   def url_for(date)
     d = date.respond_to?(:year) ? date : date.to_date
     "/#{@path}/#{d.year}/#{d.month}/#{d.day}?period=#{@period}&sort=#{@sort}&repeating=#{@repeating}#paginator"
-  end
-
-  def back_arrow
-    '<span class="icon icon--arrow-left-grey">&larr;</span>'
-  end
-
-  def forward_arrow
-    '<span class="icon icon--arrow-right-grey">&rarr;</span>'
   end
 end
