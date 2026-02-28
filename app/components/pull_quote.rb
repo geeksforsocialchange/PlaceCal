@@ -12,7 +12,7 @@ class Components::PullQuote < Components::Base
   def view_template(&)
     div(class: 'pullquote') do
       blockquote(class: "blockquote--#{@color_mode}") do
-        MaxWidth do
+        div(class: 'max_width') do
           p(class: 'alt-title-small', &)
         end
       end

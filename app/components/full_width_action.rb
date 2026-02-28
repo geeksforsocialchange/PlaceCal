@@ -15,7 +15,7 @@ class Components::FullWidthAction < Components::Base
 
   def view_template(&)
     section(class: "full_width_action #{COLOR_CLASSES[@color]}") do
-      MaxWidth do
+      div(class: 'max_width') do
         h3(class: 'full_width_action__title') { @title }
         p(class: 'full_width_action__content', &)
         div(class: 'full_width_action__btn') do

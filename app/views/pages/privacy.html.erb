@@ -5,7 +5,7 @@
   
 
   <div class="card card--plain">
-    <%= render Components::MaxWidth.new do %>
+    <div class="max_width">
       <br> 
     
       <p>At PlaceCal.org, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by PlaceCal.org and how we use it.</p><p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us through email at <%= t('contact.email') %>.</p>
@@ -84,6 +84,6 @@
       <p>By using our website, you hereby consent to our Privacy Policy and agree to its <%= link_to 'Terms and Conditions', terms_of_use_url %>.</p>
 
       <br>
-    <% end %>
+    </div>
   </div>
 </article>
