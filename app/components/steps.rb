@@ -39,7 +39,7 @@ class Components::Steps < Components::Base
     @steps.each do |step|
       div(class: 'card__body') do
         image_tag("home/how/#{step[:id]}.png", alt: step[:image_alt], class: 'steps__image steps__image--numeral')
-        div(class: 'steps__caption') { raw(safe(step[:content])) }
+        div(class: 'steps__caption') { safe(step[:content]) }
       end
     end
   end

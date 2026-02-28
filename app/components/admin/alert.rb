@@ -19,7 +19,7 @@ class Components::Admin::Alert < Components::Admin::Base
   def view_template
     div(role: 'alert', class: "alert #{alert_class} shadow-md") do
       icon(icon_name, size: '6', css_class: 'shrink-0')
-      span { raw(safe(@message)) }
+      span { safe(@message) }
     end
   end
 

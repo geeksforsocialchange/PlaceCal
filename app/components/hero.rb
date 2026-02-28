@@ -17,9 +17,9 @@ class Components::Hero < Components::Base
           div(role: 'presentation', class: 'hero__divider')
         end
         if @schema
-          h1(property: @schema) { raw(safe(@title)) }
+          h1(property: @schema) { safe(@title) }
         else
-          h1 { raw(safe(@title)) }
+          h1 { safe(@title) }
         end
       end
     end

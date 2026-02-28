@@ -57,7 +57,13 @@ class Components::Paginator < Components::Base
     li_attrs = { class: page[:css] }
     page[:data].each { |k, v| li_attrs[:"data-#{k.to_s.dasherize}"] = v }
     li(**li_attrs) do
-      link_to(raw(safe(page[:text])), page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+      a(href: page[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
+        if page[:icon]
+          span(class: page[:icon_class]) { page[:text] }
+        else
+          plain page[:text]
+        end
+      end
     end
   end
 
@@ -95,13 +101,13 @@ class Components::Paginator < Components::Base
 
   def paginator_links
     pages = []
-    pages << { text: back_arrow, link: create_event_url(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
+    pages << { text: "\u2190", icon: true, icon_class: 'icon icon--arrow-left-grey', link: create_event_url(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
     (0..steps).each do |i|
       day = window_start + (step * i)
       css = active?(day) ? 'active' : ''
       pages << { text: format_date(day), link: create_event_url(day), css: css, data: { paginator_target: 'button' } }
     end
-    pages << { text: forward_arrow, link: create_event_url(@pointer + step), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
+    pages << { text: "\u2192", icon: true, icon_class: 'icon icon--arrow-right-grey', link: create_event_url(@pointer + step), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
   end
 
   def title
@@ -153,14 +159,6 @@ class Components::Paginator < Components::Base
     str << "sort=#{@sort}" if @sort
     str << "repeating=#{@repeating}" if @repeating
     "?#{str.join('&')}" if str.any?
-  end
-
-  def back_arrow
-    '<span class="icon icon--arrow-left-grey">&larr;</span>'
-  end
-
-  def forward_arrow
-    '<span class="icon icon--arrow-right-grey">&rarr;</span>'
   end
 
   def active?(day)

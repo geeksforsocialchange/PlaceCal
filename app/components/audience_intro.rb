@@ -13,7 +13,7 @@ class Components::AudienceIntro < Components::Base
 
     div(class: 'card card--plain audience pattern pattern--audience reveal', data: { controller: 'reveal' }) do
       div(class: 'reveal__teaser') do
-        h2(class: 'center alt-title') { raw(safe(@subtitle)) }
+        h2(class: 'center alt-title') { safe(@subtitle) }
         div(class: 'audience__photo') do
           image_tag("home/audiences/#{@image}", alt: @image_alt)
         end
