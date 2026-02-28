@@ -132,16 +132,7 @@ The developer Procfile will load a `yard` language server, this is visible at `h
 
 If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers.
 
-### Generating new components
-
-We use view_component to make components, and you can create a new one by running `rails g component <Name> <args>`
-Previously this system used mountain view, and some of the components are still generated using this.
-
-More info here: https://viewcomponent.org/guide/generators.html
-
 ### Folder structure
-
-Our project is showing it's age and migration across multiple Rails version. Here's the state of play at the moment - we are currently aiming to simplify this and remove deprecated files.
 
 ```
 ── app
@@ -151,7 +142,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 │   │   ├── fonts
 │   │   ├── images
 │   │   └── stylesheets
-│   ├── components              # ViewComponent components for reusable UI elements
+│   ├── components              # Phlex components for reusable UI elements
 │   │   └── admin               # Admin-specific components (forms, cards, etc.)
 │   ├── constraints             # Directs to correct site based on subdomain
 │   ├── controllers             # Public app controllers
@@ -216,7 +207,7 @@ Our project is showing it's age and migration across multiple Rails version. Her
 ├── public
 ├── scripts
 ├── spec                        # RSpec test suite
-│   ├── components              # ViewComponent specs
+│   ├── components              # Phlex component specs
 │   ├── datatables              # Datatable specs
 │   ├── factories               # FactoryBot factories using Normal Island data
 │   │   └── normal_island       # Normal Island-specific factories
