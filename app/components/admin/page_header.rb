@@ -3,7 +3,7 @@
 class Components::Admin::PageHeader < Components::Admin::Base
   prop :model_name, String
   prop :title, _Nilable(String), default: nil
-  prop :id, _Nilable(_Union(Integer, String)), default: nil
+  prop :id, _Nilable(Integer), default: nil
   prop :new_record, _Boolean, default: false
 
   def view_template
