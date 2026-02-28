@@ -54,7 +54,7 @@ class Components::EventFilter < Components::Base
 
   def render_neighbourhood_filter
     div(class: 'filters', data: { controller: 'event-filter' }) do
-      safe(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
+      raw(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
         safe_join([
                     view_context.hidden_field_tag(:period, @period),
                     view_context.hidden_field_tag(:sort, @sort),
@@ -76,7 +76,7 @@ class Components::EventFilter < Components::Base
 
   def render_sort_filter
     div(class: 'filters', data: { controller: 'filters' }) do
-      safe(build_sort_filter_form)
+      raw(build_sort_filter_form)
     end
   end
 

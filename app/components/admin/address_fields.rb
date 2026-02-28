@@ -29,8 +29,8 @@ class Components::Admin::AddressFields < Components::Admin::Base
       address_field_configs.each do |field_config|
         fieldset(class: 'fieldset') do
           legend(class: 'fieldset-legend') { attr_label(:address, field_config[:label_key]) }
-          safe(@address_form.input_field(field_config[:field],
-                                         class: 'input input-bordered w-full bg-base-100 address_field'))
+          raw(@address_form.input_field(field_config[:field],
+                                        class: 'input input-bordered w-full bg-base-100 address_field'))
         end
       end
 

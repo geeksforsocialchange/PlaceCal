@@ -67,10 +67,10 @@ class Components::Admin::ImageUpload < Components::Admin::Base
           end
           div(class: 'flex-1 min-w-0') do
             p(class: 'text-sm font-medium text-base-content') { t('admin.images.choose_file_drag') }
-            p(class: 'text-xs text-gray-600') { safe(image_uploader_hint(uploader)) }
+            p(class: 'text-xs text-gray-600') { image_uploader_hint(uploader) }
           end
-          safe(@form.input_field(@attribute, as: :file, class: 'sr-only',
-                                             data: { action: 'change->image-preview#file', image_preview_target: 'input' }))
+          raw(@form.input_field(@attribute, as: :file, class: 'sr-only',
+                                            data: { action: 'change->image-preview#file', image_preview_target: 'input' }))
         end
       end
     end
@@ -94,14 +94,14 @@ class Components::Admin::ImageUpload < Components::Admin::Base
         label(class: 'btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer') do
           icon(:upload, size: '4')
           plain " #{t('admin.images.replace')}"
-          safe(@form.input_field(@attribute, as: :file, class: 'sr-only',
-                                             data: { action: 'change->image-preview#file' }))
+          raw(@form.input_field(@attribute, as: :file, class: 'sr-only',
+                                            data: { action: 'change->image-preview#file' }))
         end
       end
     end
     div(class: 'mt-2 flex justify-end') do
       label(class: 'inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60') do
-        raw(safe(@form.check_box(@remove_attribute, class: 'sr-only')))
+        raw(@form.check_box(@remove_attribute, class: 'sr-only'))
         icon(:trash, size: '3.5')
         plain " #{t('admin.images.remove_on_save')}"
       end
