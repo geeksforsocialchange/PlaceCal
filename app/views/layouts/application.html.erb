@@ -9,7 +9,9 @@
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload' %>
     <%= render "layouts/meta" %>
-    <%= render "layouts/plausible" %>
+    <% if Rails.env.production? %>
+    <script defer data-domain="placecal.org" src="https://plausible.io/js/plausible.js"></script>
+    <% end %>
     <%= javascript_include_tag "es-module-shims", async: true %>
     <%= javascript_importmap_tags %>
     <meta name="turbo-refresh-method" content="morph">

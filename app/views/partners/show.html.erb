@@ -62,7 +62,7 @@
           </div>
         <% end %>
 
-        <%= render "shared/map", points: @map, site: @current_site.slug, compact: true %>
+        <%= render Components::Map.new(points: @map, site: @current_site.slug, compact: true) %>
         <% if @opening_times.any? %>
           <br>
           <h3 class="udl udl--fw allcaps h4">Opening times</h3>

@@ -1,2 +1,2 @@
-<%= render 'layouts/admin/page_header', model_name: 'Collection', title: @collection.name, id: @collection.id %>
+<%= render Components::Admin::PageHeader.new(model_name: 'Collection', title: @collection.name, id: @collection.id) %>
 <%= render 'form' %>

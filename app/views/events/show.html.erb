@@ -36,7 +36,7 @@
     </div>
   </div>
 </div>
-<%= render 'shared/map', points: @map, site: @current_site.slug, style: :multi %>
+<%= render Components::Map.new(points: @map, site: @current_site.slug, style: :multi) %>
 
 <%= render(Components::Meta.new("/events/#{@event.id}")) do |component| %>
 <% component.with_link do %>

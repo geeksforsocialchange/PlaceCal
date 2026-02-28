@@ -22,6 +22,6 @@
 
 </div>
 <div id="map">
-  <%= render 'shared/map', points: @map, site: @current_site.slug %>
+  <%= render Components::Map.new(points: @map, site: @current_site.slug) %>
 </div>
 <% end %>
