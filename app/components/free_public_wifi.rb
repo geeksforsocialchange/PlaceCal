@@ -27,7 +27,7 @@ class Components::FreePublicWifi < Components::Base
 
   def view_template
     div(class: 'help help__free_public_wifi') do
-      raw safe(WIFI_SVG)
+      safe(WIFI_SVG)
 
       h3(class: 'h2--alt') { span { 'Public Wifi' } }
       render_places_list

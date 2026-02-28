@@ -22,15 +22,15 @@ class Components::Admin::SourceInput < Components::Admin::Base
         span(class: 'text-error') { I18n.t('admin.labels.required') }
       end
       div(class: 'flex gap-2') do
-        raw @form.input_field(:source,
-                              class: 'input input-bordered flex-1 font-mono text-sm',
-                              placeholder: I18n.t('admin.calendars.fields.source_placeholder'),
-                              autocomplete: 'off',
-                              'data-source-validator-target': 'input',
-                              'data-action': 'input->source-validator#sourceChanged')
+        safe(@form.input_field(:source,
+                               class: 'input input-bordered flex-1 font-mono text-sm',
+                               placeholder: I18n.t('admin.calendars.fields.source_placeholder'),
+                               autocomplete: 'off',
+                               'data-source-validator-target': 'input',
+                               'data-action': 'input->source-validator#sourceChanged'))
         render_test_button
       end
-      p(class: 'fieldset-label') { raw safe(I18n.t('admin.calendars.handbook_hint_html')) }
+      p(class: 'fieldset-label') { safe(I18n.t('admin.calendars.handbook_hint_html')) }
       render_feedback
     end
   end
@@ -78,13 +78,13 @@ class Components::Admin::SourceInput < Components::Admin::Base
 
   def render_importer_field
     fieldset(class: 'fieldset mt-4') do
-      raw @form.label(:importer_mode, I18n.t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend')
-      raw @form.input_field(:importer_mode,
-                            as: :select,
-                            collection: options_for_importer,
-                            selected: @form.object.importer_mode || 'auto',
-                            class: 'select select-bordered w-full',
-                            data: { 'source-validator-target': 'importerModeSelect' })
+      safe(@form.label(:importer_mode, I18n.t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend'))
+      safe(@form.input_field(:importer_mode,
+                             as: :select,
+                             collection: options_for_importer,
+                             selected: @form.object.importer_mode || 'auto',
+                             class: 'select select-bordered w-full',
+                             data: { 'source-validator-target': 'importerModeSelect' }))
     end
   end
 end

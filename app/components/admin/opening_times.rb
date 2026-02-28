@@ -10,7 +10,7 @@ class Components::Admin::OpeningTimes < Components::Admin::Base
         render_times_display
         render_add_form
       end
-      raw @form.text_area(:opening_times, data: { opening_times_target: 'textarea' }, hidden: true)
+      safe(@form.text_area(:opening_times, data: { opening_times_target: 'textarea' }, hidden: true))
     end
   end
 

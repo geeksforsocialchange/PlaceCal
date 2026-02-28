@@ -30,7 +30,7 @@ class Components::HelpAddingEvents < Components::Base
     return unless @site.site_admin
 
     div(class: 'help help__adding_events') do
-      raw safe(CALENDAR_SVG)
+      safe(CALENDAR_SVG)
       h3(class: 'h2--alt') { span { 'Adding Your Events' } }
       p { "Want to add your organisation's events? Something on we should know about?" }
       mail_to(@site.site_admin.email, 'Email now', class: 'btn btn--lg')

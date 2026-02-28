@@ -27,7 +27,7 @@ class Components::Navigation < Components::Base
 
   def render_toggle
     a(href: '#', class: 'header__toggle', data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
-      raw safe(hamburger_svg)
+      safe(hamburger_svg)
     end
   end
 
