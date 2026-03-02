@@ -19,6 +19,10 @@
 		{
 			"command": "bundle exec rails db:clean_bad_addresses",
 			"schedule": "30 5 * * *"
+		},
+		{
+			"command": "bundle exec rails events:deduplicate",
+			"schedule": "0 4 * * *"
 		}
 	]
 }
