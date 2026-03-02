@@ -293,6 +293,59 @@ RSpec.describe CalendarImporter::EventResolver do
     end
   end
 
+  describe "duplicate cleanup" do
+    it "removes pre-existing duplicate events during import" do
+      calendar = make_calendar_for_strategy("no_location")
+
+      # Temporarily drop the unique index to simulate pre-existing bad data
+      ActiveRecord::Base.connection.remove_index :events, name: "index_events_unique_per_calendar"
+
+      # Create duplicate events bypassing validation
+      3.times do
+        event = calendar.events.new(
+          uid: "dup-123",
+          summary: "Duplicate Event",
+          dtstart: start_date,
+          dtend: end_date,
+          partner: calendar.partner
+        )
+        event.save!(validate: false)
+      end
+
+      # Re-add the unique index won't work with dupes present, so test cleanup without it
+      expect(calendar.events.where(uid: "dup-123").count).to eq(3)
+
+      # Now import the same event — resolver should clean up duplicates
+      event_data = ics_event_data
+      allow(event_data).to receive(:uid).and_return("dup-123")
+
+      resolver = described_class.new(event_data, calendar, [], start_date)
+      resolver.determine_location_for_strategy
+      resolver.save_all_occurences
+
+      expect(calendar.events.where(uid: "dup-123").count).to eq(1)
+    ensure
+      # Restore the unique index
+      unless ActiveRecord::Base.connection.index_exists?(:events, name: "index_events_unique_per_calendar")
+        ActiveRecord::Base.connection.add_index :events, %i[calendar_id uid dtstart dtend],
+                                                unique: true,
+                                                name: "index_events_unique_per_calendar"
+      end
+    end
+
+    it "handles RecordNotUnique gracefully on new event insert" do
+      calendar = make_calendar_for_strategy("no_location")
+      notices = []
+
+      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
+      resolver.determine_location_for_strategy
+      resolver.save_all_occurences
+
+      expect(calendar.events.where(uid: ics_event_data.uid).count).to eq(1)
+      expect(notices).to be_empty
+    end
+  end
+
   describe "notices" do
     it "are empty when no problems occur" do
       calendar = make_calendar_for_strategy("no_location")

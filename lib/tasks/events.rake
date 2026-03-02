@@ -86,6 +86,31 @@ namespace :events do
     PaperTrail::Version.all.delete_all
   end
 
+  desc 'Remove duplicate events (same uid, dtstart, dtend, calendar_id)'
+  task deduplicate: :environment do
+    result = ActiveRecord::Base.connection.execute(<<~SQL.squish)
+      WITH duplicates AS (
+        SELECT id, ROW_NUMBER() OVER (
+          PARTITION BY uid, dtstart, dtend, calendar_id
+          ORDER BY id
+        ) as rn
+        FROM events
+      )
+      DELETE FROM events WHERE id IN (
+        SELECT id FROM duplicates WHERE rn > 1
+      )
+    SQL
+    deleted = result.cmd_tuples
+
+    if deleted.positive?
+      msg = "events:deduplicate removed #{deleted} duplicate event rows"
+      puts msg
+      Appsignal.send_error(StandardError.new(msg)) if defined?(Appsignal)
+    else
+      puts 'No duplicate events found'
+    end
+  end
+
   desc 'clean up OnlineAddresses'
   task refresh_online_addresses: :environment do
     Event.where.not(online_address_id: nil).map do |e|
