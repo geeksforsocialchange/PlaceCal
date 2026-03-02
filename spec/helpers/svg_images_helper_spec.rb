@@ -19,4 +19,8 @@ RSpec.describe SvgImagesHelper, type: :helper do
   it "renders a custom class" do
     expect(helper.svg_image("home/icons/logo", css_class: "custom-class")).to include('class="custom-class"')
   end
+
+  it "renders an error when an invalid path is given" do
+    expect(helper.svg_image("aaa/bbb/ccc")).to include("<!-- SVG file not found: 'aaa/bbb/ccc.svg' -->")
+  end
 end
