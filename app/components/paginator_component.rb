@@ -149,11 +149,11 @@ class PaginatorComponent < ViewComponent::Base
   end
 
   def back_arrow
-    icon(:triangle_left, size: '0')
+    icon(:triangle_left, size: nil)
   end
 
   def forward_arrow
-    icon(:triangle_right, size: '0')
+    icon(:triangle_right, size: nil)
   end
 
   def active?(day)

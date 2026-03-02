@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO: Per Quinn on the discord, this might be a better option: https://rubygems.org/gems/inline_svg
-# failing that, it might improve readability to move ICONS to a separate file per Spydarlee on github
+# TODO: it might improve readability to move ICONS to a separate file per Spydarlee on github
 
 # SVG Icons Helper
 #
@@ -171,10 +170,11 @@ module SvgIconsHelper
   }.freeze
 
   # rubocop:disable Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/CyclomaticComplexity
 
   # Render an SVG icon
   # @param name [Symbol] Icon name from ICONS hash
-  # @param size [String] Tailwind size class (e.g., "4", "5", "8")
+  # @param size [String|nil] Tailwind size class (e.g., "4", "5", "8")
   # @param css_class [String] Additional CSS classes
   # @return [String] HTML-safe SVG element
   # Size mapping to Tailwind classes (size-N for better JIT detection)
@@ -208,7 +208,7 @@ module SvgIconsHelper
 
     size_class = SIZE_CLASSES[size.to_s] || ''
     # output no size_class or style if size<=0,
-    style = if size.to_i.positive? && size_class.blank?
+    style = if size&.to_i&.positive? && size_class.blank?
               "width: #{0.25 * size.to_f}rem; height: #{0.25 * size.to_f}rem;"
             else
               ''
@@ -233,6 +233,7 @@ module SvgIconsHelper
     end
   end
   # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   # Shorthand method
   def icon(name, **)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # app/components/contact_details/contact_details_component.rb
-class ContactDetails < ViewComponent::Base
+class ContactDetailsComponent < ViewComponent::Base
   include SvgIconsHelper
 
   # rubocop:disable Metrics/ParameterLists
@@ -18,7 +18,7 @@ class ContactDetails < ViewComponent::Base
     @is_valid_phone = phone || partner.valid_public_phone?
     @twitter_url = "https://twitter.com/#{partner.twitter_handle}"
     @facebook_url = "https://facebook.com/#{partner.facebook_link}"
-    @contact = @phone || partner.public_phone || email || partner.public_email || url || partner.url || partner.facebook_link || partner.twitter_handle
+    @instagram_url = "https://www.instagram.com/#{partner.instagram_handle}/"
   end
 
   def strip_url(target_url)
@@ -26,5 +26,9 @@ class ContactDetails < ViewComponent::Base
               .gsub('https://', '')
               .gsub('www.', '')
               .gsub(%r{/$}, '')
+  end
+
+  def contact?
+    @phone.present? || @email.present? || @url.present? || @facebook_link.present? || @twitter_handle.present? || @instagram_handle.present?
   end
 end

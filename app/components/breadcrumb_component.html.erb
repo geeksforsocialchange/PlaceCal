@@ -6,7 +6,7 @@
   </div>
   <% @trail.each do |link| %>
     <div class="breadcrumb__element">
-      <%= icon(:triangle_right, size: '0') %>
+      <%= icon(:triangle_right, size: nil) %>
       <%= link_to link[0], link[1] %>
     </div>
   <% end %>

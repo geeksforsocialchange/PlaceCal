@@ -222,7 +222,7 @@
                 <% end %>
                 <% if sortable %>
                   <span class="text-gray-400 opacity-0 group-hover:opacity-100" data-admin-table-target="sortIcon" data-column="<%= columns[index] %>">
-                    <%= icon(:arrow_up_down, size: '0', ) %>
+                    <%= icon(:arrow_up_down, size: nil, ) %>
                   </span>
                 <% end %>
               </div>
@@ -235,8 +235,8 @@
           <td colspan="<%= columns.length %>" class="px-6 py-12 text-center">
             <div class="flex flex-col items-center justify-center text-gray-500">
               <span class="grid size-8 text-placecal-orange" style="animation: spin 1s linear infinite;">
-                <%= icon(:circle, size: '0', css_class: 'opacity-25 stroke-4 row-start-1 col-start-1') %>
-                <%= icon(:spinner, size: '0', css_class: 'opacity-75') %>
+                <%= icon(:circle, size: nil, css_class: 'opacity-25 stroke-4 row-start-1 col-start-1') %>
+                <%= icon(:spinner, size: nil, css_class: 'opacity-75') %>
               </span>
               <span class="mt-2 text-sm"><%= t('admin.datatable.loading') %></span>
             </div>

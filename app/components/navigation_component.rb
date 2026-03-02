@@ -2,7 +2,6 @@
 
 class NavigationComponent < ViewComponent::Base
   include ApplicationHelper
-  include SvgIconsHelper
   include SvgImagesHelper
 
   def initialize(navigation:, site: nil)
@@ -10,7 +9,7 @@ class NavigationComponent < ViewComponent::Base
     @navigation = navigation
     @site = site
     # rubocop:disable Style/SafeNavigationChainLength
-    @logo_path = site&.logo&.to_s&.sub(%r{^/uploads/}, '')
+    @logo_path = site&.logo&.to_s&.sub(%r{^/uploads/}, '').presence
     # rubocop:enable Style/SafeNavigationChainLength
   end
 
