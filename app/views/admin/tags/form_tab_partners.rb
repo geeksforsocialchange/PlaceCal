@@ -59,7 +59,7 @@ class Views::Admin::Tags::FormTabPartners < Views::Admin::Base
   def render_partner_row(partner)
     tr do
       td do
-        link_to(helpers.edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange font-medium') do
+        link_to(edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange font-medium') do
           plain partner.name
         end
         span(class: 'badge badge-error badge-xs ml-1') { t('admin.labels.hidden') } if partner.hidden

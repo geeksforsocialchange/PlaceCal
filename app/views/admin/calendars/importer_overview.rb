@@ -87,7 +87,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
 
   def render_retry_button(retry_button)
     div(class: 'ml-auto') do
-      simple_form_for(:import, url: helpers.import_admin_calendar_path(calendar)) do |f|
+      simple_form_for(:import, url: import_admin_calendar_path(calendar)) do |f|
         if retry_button == :idle
           raw f.submit(t('admin.calendars.importer.reimport'),
                        class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange')

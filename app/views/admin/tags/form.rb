@@ -12,11 +12,11 @@ class Views::Admin::Tags::Form < Views::Admin::Base
     end
 
     form_url = if tag.new_record?
-                 helpers.admin_tags_path
+                 admin_tags_path
                elsif tag.is_a?(Partnership)
-                 helpers.admin_partnership_path(tag)
+                 admin_partnership_path(tag)
                else
-                 helpers.admin_tag_path(tag)
+                 admin_tag_path(tag)
                end
 
     simple_form_for(tag, as: :tag, url: form_url,
@@ -87,7 +87,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base
                                              data: { controller: 'auto-expand' }, id: 'tag_description')
         end
 
-        if helpers.current_user.root?
+        if current_user.root?
           fieldset(class: 'fieldset') do
             raw form.input(:system_tag, wrapper: :tw_boolean, hint: t('admin.partnerships.fields.system_tag_hint'))
           end

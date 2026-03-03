@@ -33,7 +33,7 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
   end
 
   def render_danger_zone(user)
-    return unless user.persisted? && helpers.policy(user).destroy?
+    return unless user.persisted? && policy(user).destroy?
 
     div do
       h2(class: 'text-lg font-bold flex items-center gap-2 text-error/80 mb-4') do
@@ -49,7 +49,7 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
             title: t('admin.danger_zone.delete_title', model: User.model_name.human),
             description: t('admin.danger_zone.delete_description', model: User.model_name.human.downcase),
             button_text: t('admin.actions.delete_model', model: User.model_name.human),
-            button_path: helpers.admin_user_path(user),
+            button_path: admin_user_path(user),
             confirm: t('admin.confirm.delete_permanent', model: User.model_name.human.downcase)
           )
         end

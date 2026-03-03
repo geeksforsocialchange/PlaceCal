@@ -18,7 +18,7 @@ class Views::Admin::Users::Form < Views::Admin::Base
         controller_name: 'form-tabs'
       ) { render Views::Admin::Users::FormTabRoles.new(form: form) }
 
-      if helpers.policy(user).permitted_attributes_for_update.include?(:role) || helpers.policy(user).destroy?
+      if policy(user).permitted_attributes_for_update.include?(:role) || policy(user).destroy?
         div(class: 'tab flex-1 cursor-default')
 
         TabPanel(

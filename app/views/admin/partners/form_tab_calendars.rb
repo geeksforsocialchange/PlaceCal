@@ -18,12 +18,12 @@ class Views::Admin::Partners::FormTabCalendars < Views::Admin::Base
       items: partner.calendars,
       title_attr: :name,
       subtitle_attr: :source,
-      edit_path: ->(item) { helpers.edit_admin_calendar_path(item) },
+      edit_path: ->(item) { edit_admin_calendar_path(item) },
       empty_message: t('admin.empty.none_connected', items: Calendar.model_name.human(count: 2).downcase)
     )
 
     div(class: 'mt-6') do
-      link_to helpers.new_admin_calendar_path(partner_id: partner.id),
+      link_to new_admin_calendar_path(partner_id: partner.id),
               class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange' do
         raw icon(:plus, size: '4')
         plain t('admin.actions.add_model', model: Calendar.model_name.human)

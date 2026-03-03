@@ -14,12 +14,12 @@ class Views::Admin::Users::Edit < Views::Admin::Base
       div(class: 'text-sm text-gray-600') { "ID: #{user.id}" }
     end
 
-    disabled_fields = helpers.policy(user).disabled_attributes_for_update
-    displayable_fields = helpers.policy(user).permitted_attributes_for_update
+    disabled_fields = policy(user).disabled_attributes_for_update
+    displayable_fields = policy(user).permitted_attributes_for_update
 
     filtered_form_for(user,
                       method: :put,
-                      url: helpers.admin_user_path(user),
+                      url: admin_user_path(user),
                       disabled: disabled_fields,
                       display_only: displayable_fields,
                       html: { data: { controller: 'form-tabs live-validation',

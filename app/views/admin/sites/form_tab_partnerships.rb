@@ -16,7 +16,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
         legend(class: 'fieldset-legend') { t('admin.sites.fields.partnership_tags') }
         p(class: 'fieldset-label mb-3') { t('admin.sites.fields.partnership_tags_hint') }
         div(class: 'site_tags') do
-          if helpers.policy(site).permitted_attributes.include?(:tags)
+          if policy(site).permitted_attributes.include?(:tags)
             raw form.input_field(:tag_ids,
                                  as: :select,
                                  collection: options_for_tags,

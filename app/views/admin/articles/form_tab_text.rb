@@ -5,7 +5,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
 
   def view_template
     article = form.object
-    disabled_fields = helpers.policy(article).disabled_fields
+    disabled_fields = policy(article).disabled_fields
 
     div(class: 'space-y-6') do
       render_details_section(article, disabled_fields)

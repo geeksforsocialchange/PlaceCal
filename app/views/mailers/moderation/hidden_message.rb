@@ -8,7 +8,7 @@ class Views::Mailers::Moderation::HiddenMessage < Views::Mailers::Base
   def email_content
     div { image_tag(image_url('logo.png'), height: '75') }
 
-    p { "#{helpers.greeting_text(user)}," }
+    p { "#{greeting_text(user)}," }
 
     p { "Your partner (#{partner.name}, id: #{partner.id}) has been hidden from PlaceCal for the following reasons:" }
 

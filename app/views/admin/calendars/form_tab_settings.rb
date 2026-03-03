@@ -12,7 +12,7 @@ class Views::Admin::Calendars::FormTabSettings < Views::Admin::Base
       title: t('admin.actions.delete_model', model: Calendar.model_name.human.downcase),
       description: t('admin.calendars.danger_zone.delete_description', count: calendar.events.count),
       button_text: t('admin.actions.delete_model', model: Calendar.model_name.human),
-      button_path: helpers.admin_calendar_path(calendar),
+      button_path: admin_calendar_path(calendar),
       confirm: t('admin.confirm.delete_with_count',
                  model: Calendar.model_name.human.downcase,
                  count: calendar.events.count,

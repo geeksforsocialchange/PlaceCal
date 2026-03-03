@@ -6,7 +6,7 @@ class Views::Admin::Users::New < Views::Admin::Base
   def view_template
     content_for(:title) { 'New User' }
 
-    display_fields = helpers.policy(helpers.current_user).permitted_attributes_for_create
+    display_fields = policy(current_user).permitted_attributes_for_create
 
     div(data: { controller: 'user-wizard',
                 'user-wizard-current-step-value': '1',
@@ -59,7 +59,7 @@ class Views::Admin::Users::New < Views::Admin::Base
   def render_step_personal(form)
     div(data: { 'user-wizard-target': 'step', step: '1' }) do
       render_personal_details_card(form)
-      render_role_card(form) if helpers.current_user.root?
+      render_role_card(form) if current_user.root?
     end
   end
 
@@ -139,7 +139,7 @@ class Views::Admin::Users::New < Views::Admin::Base
         raw icon(:info, size: '5', css_class: 'text-blue-500')
         span do
           plain 'Inviting a user will require their acceptance of the PlaceCal '
-          a(href: helpers.terms_of_use_path, class: 'link link-hover text-placecal-teal font-medium') { 'Terms of Use' }
+          a(href: terms_of_use_path, class: 'link link-hover text-placecal-teal font-medium') { 'Terms of Use' }
           plain '.'
         end
       end
@@ -187,10 +187,10 @@ class Views::Admin::Users::New < Views::Admin::Base
   def render_neighbourhoods_card(form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300 lg:col-span-2') do
       div(class: 'card-body') do
-        neighbourhoods_hint = helpers.current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint')
+        neighbourhoods_hint = current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint')
         render_permission_header(:map_pin, 'from-sky-100 to-blue-100', 'text-sky-600',
                                  Neighbourhood.model_name.human(count: 2), neighbourhoods_hint)
-        if helpers.current_user.root?
+        if current_user.root?
           nested_form_for(form, :neighbourhoods_users,
                           add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
                           add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange mt-2',

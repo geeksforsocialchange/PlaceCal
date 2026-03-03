@@ -5,7 +5,7 @@ class Views::Devise::Invitations::New < Views::Devise::Base
     h2 { t('devise.invitations.new.header') }
 
     simple_form_for(resource, as: resource_name,
-                              url: helpers.invitation_path(resource_name),
+                              url: invitation_path(resource_name),
                               html: { method: :post }) do |form|
       raw form.error_notification
 

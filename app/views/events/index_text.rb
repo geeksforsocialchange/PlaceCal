@@ -20,13 +20,13 @@ class Views::Events::IndexText < Views::TextBase
         lines << ('-' * event.summary.length)
         lines << "#{event.date.to_s.strip}, #{event.time}"
         lines << ''
-        lines << helpers.sanitize(event.description, tags: [])
+        lines << sanitize(event.description, tags: [])
         location = ''
         location += "#{event.partner_at_location}, " if event.partner_at_location
         location += event.location.to_s
         lines << location
         lines << ''
-        lines << "https://placecal.org#{helpers.event_path(event)}"
+        lines << "https://placecal.org#{event_path(event)}"
         lines << ''
       end
     end

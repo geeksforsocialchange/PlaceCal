@@ -12,7 +12,7 @@ class Views::Devise::Passwords::New < Views::Devise::Base
 
         div(class: 'centre form--login') do
           form_for(resource, as: resource_name,
-                             url: helpers.password_path(resource_name),
+                             url: password_path(resource_name),
                              html: { method: :post, class: 'form', data: { turbo: 'false' } }) do |form|
             div(class: 'form__field') do
               raw form.label(:email)

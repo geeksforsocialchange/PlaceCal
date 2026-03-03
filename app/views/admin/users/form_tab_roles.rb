@@ -42,14 +42,14 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
   end
 
   def render_neighbourhoods_card(user)
-    neighbourhoods_hint = helpers.current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint')
+    neighbourhoods_hint = current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint')
 
     FormCard(
       icon: :map_pin,
       title: Neighbourhood.model_name.human(count: 2),
       description: neighbourhoods_hint
     ) do
-      if helpers.current_user.root?
+      if current_user.root?
         nested_form_for(form, :neighbourhoods_users,
                         add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
                         add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange mt-2',
@@ -90,7 +90,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
   end
 
   def render_site_link(site)
-    link_to(helpers.edit_admin_site_path(site),
+    link_to(edit_admin_site_path(site),
             class: 'group flex items-center gap-3 p-3 bg-base-200/80 rounded-xl border border-base-300/50 hover:border-base-300 transition-all') do
       div(class: 'shrink-0 w-9 h-9 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center') do
         raw icon(:site, size: '5')

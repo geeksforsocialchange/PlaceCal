@@ -5,7 +5,7 @@ class Views::Admin::Articles::FormTabSettings < Views::Admin::Base
 
   def view_template
     article = form.object
-    disabled_fields = helpers.policy(article).disabled_fields
+    disabled_fields = policy(article).disabled_fields
 
     div(class: 'max-w-2xl space-y-8') do
       render_publishing_section(article, disabled_fields)
@@ -42,7 +42,7 @@ class Views::Admin::Articles::FormTabSettings < Views::Admin::Base
 
   def render_danger_zone(article)
     return if article.new_record?
-    return unless helpers.policy(article).destroy?
+    return unless policy(article).destroy?
 
     DangerZone(
       title: t('admin.actions.delete_model', model: Article.model_name.human),

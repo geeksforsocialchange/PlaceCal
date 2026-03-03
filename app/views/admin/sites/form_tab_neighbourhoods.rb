@@ -66,7 +66,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
       title: t('admin.sites.sections.other_neighbourhoods'),
       description: t('admin.sites.sections.other_neighbourhoods_description')
     ) do
-      if helpers.policy(site).permitted_attributes.include?(:sites_neighbourhoods)
+      if policy(site).permitted_attributes.include?(:sites_neighbourhoods)
         nested_form_for(form, :sites_neighbourhoods,
                         add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
                         add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',

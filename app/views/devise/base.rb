@@ -4,18 +4,25 @@ class Views::Devise::Base < Views::Base
   register_output_helper :form_for
   register_output_helper :simple_form_for
 
+  # Devise provides shortened route helpers (e.g. session_path instead of user_session_path)
+  register_value_helper :session_path
+  register_value_helper :password_path
+  register_value_helper :invitation_path
+  register_value_helper :new_session_path
+  register_value_helper :new_password_path
+
   private
 
   def resource
-    helpers.resource
+    view_context.resource
   end
 
   def resource_name
-    helpers.resource_name
+    view_context.resource_name
   end
 
   def devise_mapping
-    helpers.devise_mapping
+    view_context.devise_mapping
   end
 
   def render_error_messages
@@ -30,16 +37,14 @@ class Views::Devise::Base < Views::Base
   end
 
   def render_shared_links
-    controller = helpers.controller_name
-
-    if controller != 'sessions'
-      link_to('Log in', helpers.new_session_path(resource_name))
+    if controller_name != 'sessions'
+      link_to('Log in', new_session_path(resource_name))
       br
     end
 
-    return unless devise_mapping.recoverable? && controller != 'passwords' && controller != 'registrations'
+    return unless devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
 
-    link_to('Forgot your password?', helpers.new_password_path(resource_name))
+    link_to('Forgot your password?', new_password_path(resource_name))
     br
   end
 end

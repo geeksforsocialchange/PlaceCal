@@ -8,7 +8,7 @@ class Views::Devise::Passwords::Edit < Views::Devise::Base
 
         div(class: 'centre form--login') do
           form_for(resource, as: resource_name,
-                             url: helpers.password_path(resource_name),
+                             url: password_path(resource_name),
                              html: { method: :put, class: 'form', data: { turbo: 'false' } }) do |form|
             render_error_messages
 

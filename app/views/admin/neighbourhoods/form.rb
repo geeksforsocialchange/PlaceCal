@@ -10,7 +10,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base
       div(class: 'grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8') do
         div(class: 'lg:col-span-2 space-y-6') do
           render_name_card(form)
-          render_admins_card if helpers.policy(neighbourhood).set_users?
+          render_admins_card if policy(neighbourhood).set_users?
         end
 
         div(class: 'lg:col-span-1') do

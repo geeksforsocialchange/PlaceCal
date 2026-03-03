@@ -40,7 +40,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
           whitespace
           span(class: 'text-error') { t('admin.labels.required') }
         end
-        if helpers.policy(site).permitted_attributes.include?(:url)
+        if policy(site).permitted_attributes.include?(:url)
           raw form.input_field(:url, class: 'input input-bordered w-full font-mono text-sm')
         else
           raw form.input_field(:url, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
@@ -53,7 +53,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
           whitespace
           span(class: 'text-error') { t('admin.labels.required') }
         end
-        if helpers.policy(site).permitted_attributes.include?(:slug)
+        if policy(site).permitted_attributes.include?(:slug)
           raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm')
         else
           raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
@@ -71,7 +71,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
       title: t('admin.danger_zone.delete_title', model: Site.model_name.human),
       description: t('admin.danger_zone.delete_description', model: Site.model_name.human.downcase),
       button_text: t('admin.actions.delete_model', model: Site.model_name.human),
-      button_path: helpers.admin_site_path(site),
+      button_path: admin_site_path(site),
       confirm: t('admin.confirm.delete_permanent', model: Site.model_name.human.downcase)
     )
   end

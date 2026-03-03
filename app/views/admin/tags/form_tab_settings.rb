@@ -24,7 +24,7 @@ class Views::Admin::Tags::FormTabSettings < Views::Admin::Base
   private
 
   def render_advanced_section(tag_record)
-    return unless helpers.current_user.root? && !tag_record.is_a?(Partnership)
+    return unless current_user.root? && !tag_record.is_a?(Partnership)
 
     div(class: 'mb-8') do
       FormCard(
@@ -39,12 +39,12 @@ class Views::Admin::Tags::FormTabSettings < Views::Admin::Base
   end
 
   def render_danger_zone(tag_record)
-    return unless helpers.policy(tag_record).destroy?
+    return unless policy(tag_record).destroy?
 
     delete_path = if tag_record.is_a?(Partnership)
-                    helpers.admin_partnership_path(tag_record)
+                    admin_partnership_path(tag_record)
                   else
-                    helpers.admin_tag_path(tag_record)
+                    admin_tag_path(tag_record)
                   end
 
     DangerZone(

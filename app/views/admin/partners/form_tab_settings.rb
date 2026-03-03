@@ -18,7 +18,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
   private
 
   def render_url_settings(partner)
-    return unless helpers.policy(partner).permitted_attributes.include?(:slug)
+    return unless policy(partner).permitted_attributes.include?(:slug)
 
     div(class: 'mb-8') do
       SectionHeader(
@@ -120,7 +120,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
   end
 
   def render_moderation(partner)
-    return unless helpers.policy(partner).permitted_attributes.include?(:hidden)
+    return unless policy(partner).permitted_attributes.include?(:hidden)
 
     div(class: 'mb-8') do
       h2(class: 'text-lg font-bold mb-4') { t('admin.partners.sections.moderation') }
@@ -232,14 +232,14 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
   end
 
   def render_danger_zone(partner)
-    return unless helpers.policy(partner).destroy?
+    return unless policy(partner).destroy?
 
     div(class: 'mt-8') do
       DangerZone(
         title: t('admin.actions.delete_model', model: Partner.model_name.human.downcase),
         description: t('admin.danger_zone.delete_description', model: Partner.model_name.human.downcase),
         button_text: t('admin.actions.delete_model', model: Partner.model_name.human),
-        button_path: helpers.admin_partner_path(partner),
+        button_path: admin_partner_path(partner),
         confirm: t('admin.confirm.delete_permanent', model: Partner.model_name.human.downcase)
       )
     end

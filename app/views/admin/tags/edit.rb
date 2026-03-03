@@ -6,7 +6,7 @@ class Views::Admin::Tags::Edit < Views::Admin::Base
   def view_template
     tag_type_name = tag.instance_of?(Tag) ? 'Tag' : "#{tag.class.name} Tag"
 
-    if tag.system_tag && !helpers.current_user.root?
+    if tag.system_tag && !current_user.root?
       content_for(:title) { tag.name }
 
       div(class: 'flex items-center justify-between mb-6') do

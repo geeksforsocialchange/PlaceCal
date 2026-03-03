@@ -16,7 +16,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
           controller: 'calendar-wizard',
           'calendar-wizard-current-step-value': '1',
           'calendar-wizard-total-steps-value': '3',
-          'calendar-wizard-test-url-value': helpers.test_source_admin_calendars_path,
+          'calendar-wizard-test-url-value': test_source_admin_calendars_path,
           'calendar-wizard-api-token-parsers-value': api_token_parsers
         }) do
       div(class: 'max-w-4xl mx-auto') do
@@ -24,7 +24,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
         render_steps_indicator
       end
 
-      simple_form_for calendar, url: helpers.admin_calendars_path, html: { data: { turbo: false } } do |form|
+      simple_form_for calendar, url: admin_calendars_path, html: { data: { turbo: false } } do |form|
         div(class: 'max-w-4xl mx-auto') do
           Error(calendar)
           render_step_source(form)
@@ -175,7 +175,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
       end
       div(class: 'collapse-content') do
         ul(class: 'text-xs text-base-content/70 space-y-1 pt-2') do
-          helpers.calendar_import_sources do |name, domains|
+          calendar_import_sources do |name, domains|
             li(class: 'flex items-start gap-2') do
               span(class: 'text-placecal-orange') { "\u2022" }
               span do

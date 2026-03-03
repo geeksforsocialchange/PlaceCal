@@ -5,7 +5,6 @@ class Views::Admin::Partners::ServiceAreaFields < Views::Admin::Base
   prop :partner, Partner, reader: :private
 
   def view_template
-    current_user = helpers.current_user
     can_remove = !form.object.neighbourhood_id ||
                  current_user.can_edit_partners_neighbourhood_by_id?(form.object.neighbourhood_id, partner.id)
 

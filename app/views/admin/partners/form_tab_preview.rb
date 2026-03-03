@@ -143,14 +143,14 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
           events.each do |event|
             tr do
               td do
-                div(class: 'font-medium') { helpers.truncate(event.summary, length: 50) }
+                div(class: 'font-medium') { truncate(event.summary, length: 50) }
               end
               td(class: 'whitespace-nowrap text-sm') do
                 plain event.dtstart.strftime('%a %d %b %H:%M')
               end
               td do
                 if event.calendar
-                  link_to event.calendar.name, helpers.edit_admin_calendar_path(event.calendar),
+                  link_to event.calendar.name, edit_admin_calendar_path(event.calendar),
                           class: 'link text-placecal-orange hover:text-orange-600 text-sm'
                 end
               end

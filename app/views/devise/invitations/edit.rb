@@ -10,7 +10,7 @@ class Views::Devise::Invitations::Edit < Views::Devise::Base
 
         div(class: 'centre form--login') do
           form_for(resource, as: resource_name,
-                             url: helpers.invitation_path(resource_name),
+                             url: invitation_path(resource_name),
                              html: { method: :put, class: 'form', data: { turbo: 'false' } }) do |form|
             raw form.hidden_field(:invitation_token)
 

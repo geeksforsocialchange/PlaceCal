@@ -34,7 +34,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
   end
 
   def render_site_admin_field(site)
-    if helpers.policy(site).permitted_attributes.include?(:site_admin_id)
+    if policy(site).permitted_attributes.include?(:site_admin_id)
       render_editable_admin_field
     else
       render_readonly_admin_field(site)

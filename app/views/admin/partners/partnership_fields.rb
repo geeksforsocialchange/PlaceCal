@@ -5,7 +5,6 @@ class Views::Admin::Partners::PartnershipFields < Views::Admin::Base
 
   def view_template
     partner = form.object
-    current_user = helpers.current_user
 
     return unless current_user.partnership_admin? || current_user.root?
 

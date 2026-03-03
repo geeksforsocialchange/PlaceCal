@@ -8,7 +8,7 @@ class Views::Devise::Sessions::New < Views::Devise::Base
 
         div(class: 'centre form--login') do
           form_for(resource, as: resource_name,
-                             url: helpers.session_path(resource_name),
+                             url: session_path(resource_name),
                              html: { class: 'form' },
                              data: { turbo: 'false' }) do |form|
             div(class: 'form__field') do

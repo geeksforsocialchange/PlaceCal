@@ -26,10 +26,10 @@ class Views::Admin::Partners::FormTabAdmins < Views::Admin::Base
       link_path: :edit_admin_user_path
     )
 
-    return unless helpers.policy(User).create?
+    return unless policy(User).create?
 
     div(class: 'mt-6') do
-      link_to helpers.new_admin_user_path(partner_id: partner.id),
+      link_to new_admin_user_path(partner_id: partner.id),
               class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange' do
         raw icon(:plus, size: '4')
         plain t('admin.partners.admins.add_new')

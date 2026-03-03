@@ -4,7 +4,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template
-    current = helpers.current_user
+    current = current_user
 
     div(class: 'space-y-6') do
       div(class: 'card bg-base-100 border border-base-300 shadow-sm') do

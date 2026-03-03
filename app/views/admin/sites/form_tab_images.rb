@@ -19,7 +19,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   private
 
   def render_theme_field(site)
-    return unless helpers.policy(site).permitted_attributes.include?(:theme)
+    return unless policy(site).permitted_attributes.include?(:theme)
 
     fieldset(class: 'fieldset max-w-xs mb-8') do
       legend(class: 'fieldset-legend') { attr_label(:site, :theme) }
@@ -30,7 +30,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   end
 
   def render_logo_fields(site)
-    return unless helpers.policy(site).permitted_attributes.include?(:logo)
+    return unless policy(site).permitted_attributes.include?(:logo)
 
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-8 mb-8') do
       div do

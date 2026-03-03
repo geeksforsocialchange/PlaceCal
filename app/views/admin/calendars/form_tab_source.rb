@@ -27,7 +27,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
 
       SourceInput(
         form: form,
-        test_url: helpers.test_source_admin_calendars_path
+        test_url: test_source_admin_calendars_path
       )
 
       render_name_field
