@@ -8,6 +8,7 @@ module Admin
     def index
       @supporters = Supporter.all.reorder(:name)
       authorize current_user
+      render Views::Admin::Supporters::Index.new(supporters: @supporters)
     end
 
     def show; end

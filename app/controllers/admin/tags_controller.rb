@@ -9,7 +9,10 @@ module Admin
       authorize @tags
 
       respond_to do |format|
-        format.html { @tags = @tags.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @tags = @tags.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Tags::Index.new(tags: @tags)
+        end
         format.json do
           render json: TagDatatable.new(
             params,

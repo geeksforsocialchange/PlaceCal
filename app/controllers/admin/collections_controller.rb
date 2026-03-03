@@ -8,6 +8,7 @@ module Admin
     def index
       @collections = Collection.all.reorder(:name)
       authorize current_user
+      render Views::Admin::Collections::Index.new(collections: @collections)
     end
 
     def show; end

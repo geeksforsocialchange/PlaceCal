@@ -29,7 +29,10 @@ module Admin
       authorize current_user
 
       respond_to do |format|
-        format.html { @users = @users.order(updated_at: :desc, last_name: :asc, first_name: :asc) }
+        format.html do
+          @users = @users.order(updated_at: :desc, last_name: :asc, first_name: :asc)
+          render Views::Admin::Users::Index.new(users: @users)
+        end
         format.json do
           render json: UserDatatable.new(
             params,

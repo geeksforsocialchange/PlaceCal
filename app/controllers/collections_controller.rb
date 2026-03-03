@@ -8,6 +8,7 @@ class CollectionsController < ApplicationController
 
   def index
     @collections = Collection.all
+    render Views::Collections::Index.new(collections: @collections)
   end
 
   def show
@@ -16,7 +17,12 @@ class CollectionsController < ApplicationController
     @events = events.distinct.sort_by_time.group_by_day(&:dtstart)
 
     respond_to do |format|
-      format.html
+      format.html do
+        render Views::Collections::Show.new(
+          collection: @collection, site: @site, events: @events,
+          current_site: current_site, primary_neighbourhood: @primary_neighbourhood
+        )
+      end
       format.text
     end
   end

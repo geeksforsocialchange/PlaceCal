@@ -1,0 +1,32 @@
+# frozen_string_literal: true
+
+class Views::Admin::Tags::Index < Views::Admin::Base
+  prop :tags, _Any, reader: :private
+
+  def view_template
+    render Components::Admin::Datatable.new(
+      title: 'Tags',
+      model: :tags,
+      column_titles: ['Tag', 'Type', 'Partners', 'Last Updated', ''],
+      columns: %i[name type partners_count updated_at actions],
+      column_config: {
+        name: {},
+        type: { fit: true },
+        partners_count: { align: :center, sortable: false, fit: true },
+        updated_at: { fit: true },
+        actions: { sortable: false, fit: true }
+      },
+      default_sort: { column: 'updated_at', direction: 'desc' },
+      filters: [
+        { column: 'type', label: 'Type', width: 'w-36',
+          options: [{ value: 'Category', label: 'Category' }, { value: 'Partnership', label: 'Partnership' },
+                    { value: 'Facility', label: 'Facility' }] },
+        { column: 'has_partners', label: 'Partners', width: 'w-36',
+          options: [{ value: 'yes', label: 'Has partners' }, { value: 'no', label: 'No partners' }] }
+      ],
+      data: tags,
+      source: admin_tags_path(format: :json),
+      new_link: (new_admin_tag_path if view_context.current_user.role.root?)
+    )
+  end
+end

@@ -9,7 +9,13 @@ module Admin
       authorize @partnerships, policy_class: PartnershipPolicy
 
       respond_to do |format|
-        format.html { @partnerships = @partnerships.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @partnerships = @partnerships.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Partnerships::Index.new(
+            partnerships: @partnerships,
+            admin_options: build_admin_options
+          )
+        end
         format.json do
           render json: PartnershipDatatable.new(
             params,
@@ -84,6 +90,15 @@ module Admin
     end
 
     private
+
+    def build_admin_options
+      admin_ids = TagsUser.where(tag_id: Partnership.select(:id)).distinct.pluck(:user_id)
+      User.where(id: admin_ids).order(:first_name, :last_name).map do |u|
+        name = [u.first_name, u.last_name].compact.join(' ')
+        name = u.email.split('@').first if name.blank?
+        { value: u.id.to_s, label: name }
+      end
+    end
 
     def set_partnership
       @partnership = Partnership.friendly.find(params[:id])

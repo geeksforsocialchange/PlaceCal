@@ -62,7 +62,13 @@ module Admin
       authorize @neighbourhoods
 
       respond_to do |format|
-        format.html { @neighbourhoods = @neighbourhoods.order(:name) }
+        format.html do
+          @neighbourhoods = @neighbourhoods.order(:name)
+          render Views::Admin::Neighbourhoods::Index.new(
+            neighbourhoods: @neighbourhoods,
+            current_user: @current_user
+          )
+        end
         format.json do
           render json: NeighbourhoodDatatable.new(
             params,
@@ -81,6 +87,7 @@ module Admin
 
     def show
       authorize @neighbourhood
+      render Views::Admin::Neighbourhoods::Show.new(neighbourhood: @neighbourhood)
     end
 
     def edit

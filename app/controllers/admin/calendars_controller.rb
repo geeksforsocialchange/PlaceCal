@@ -11,7 +11,14 @@ module Admin
       authorize Calendar
 
       respond_to do |format|
-        format.html { @calendars = @calendars.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @calendars = @calendars.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Calendars::Index.new(
+            calendars: @calendars,
+            partner_options: build_partner_options,
+            importer_options: build_importer_options
+          )
+        end
         format.json do
           render json: CalendarDatatable.new(
             params,
@@ -36,6 +43,7 @@ module Admin
 
     def show
       authorize @calendar
+      render Views::Admin::Calendars::Show.new(calendar: @calendar)
     end
 
     def create
@@ -128,6 +136,21 @@ module Admin
     end
 
     private
+
+    def build_partner_options
+      partner_ids_with_calendars = Calendar.distinct.pluck(:partner_id).compact
+      Partner.where(id: partner_ids_with_calendars).order(:name).map do |p|
+        { value: p.id.to_s, label: p.name.truncate(40) }
+      end
+    end
+
+    def build_importer_options
+      importer_names = CalendarImporter::CalendarImporter::PARSERS.to_h { |p| [p::KEY, p::NAME] }
+      [{ value: 'pending', label: I18n.t('admin.calendars.importer.pending') }] +
+        Calendar.distinct.pluck(:importer_used).compact.compact_blank.sort.map do |i|
+          { value: i, label: importer_names[i] || i.titleize }
+        end
+    end
 
     def preselect_partner
       return if params[:partner_id].blank?

@@ -10,7 +10,10 @@ module Admin
       authorize @sites
 
       respond_to do |format|
-        format.html { @sites = @sites.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @sites = @sites.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Sites::Index.new(sites: @sites, site_admin_options: build_site_admin_options)
+        end
         format.json do
           render json: SiteDatatable.new(
             params,
@@ -24,6 +27,7 @@ module Admin
     def show
       authorize @site
       @calendars = Calendar.that_appear_on_site(@site).order(:name)
+      render Views::Admin::Sites::Show.new(site: @site, calendars: @calendars)
     end
 
     def new
@@ -77,6 +81,13 @@ module Admin
     end
 
     private
+
+    def build_site_admin_options
+      site_admin_ids = Site.where.not(site_admin_id: nil).distinct.pluck(:site_admin_id)
+      User.where(id: site_admin_ids).order(:first_name, :last_name).map do |u|
+        { value: u.id.to_s, label: [u.first_name, u.last_name].compact.join(' ') }
+      end
+    end
 
     def set_site
       @site ||= Site.friendly.find(params[:id]) # rubocop:disable Naming/MemoizedInstanceVariableName

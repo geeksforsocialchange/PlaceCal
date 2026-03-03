@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   end
 
   def resource_not_found
-    render 'pages/resource_not_found', status: :not_found
+    render Views::Pages::ResourceNotFound.new, status: :not_found
   end
 
   # Set the day either using the URL or by today's date

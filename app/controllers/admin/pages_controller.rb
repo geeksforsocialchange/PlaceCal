@@ -38,10 +38,31 @@ module Admin
 
       # User's partnerships (tags they manage)
       @user_partnerships = current_user.partnerships.includes(:partners).order(:name)
+
+      render Views::Admin::Pages::Home.new(
+        user: @user,
+        sites: @sites,
+        partners: @partners,
+        calendars: @calendars,
+        users: @users,
+        errored_calendars: @errored_calendars,
+        bad_source_calendars: @bad_source_calendars,
+        upcoming_events: @upcoming_events,
+        total_partners: @total_partners,
+        total_calendars: @total_calendars,
+        total_events_this_week: @total_events_this_week,
+        working_calendars_count: @working_calendars_count,
+        processing_calendars_count: @processing_calendars_count,
+        errored_calendars_count: @errored_calendars_count,
+        bad_source_calendars_count: @bad_source_calendars_count,
+        problem_calendars_count: @problem_calendars_count,
+        user_partnerships: @user_partnerships
+      )
     end
 
     def icons
       @icons = SvgIconsHelper::ICONS
+      render Views::Admin::Pages::Icons.new(icons: @icons)
     end
 
     private

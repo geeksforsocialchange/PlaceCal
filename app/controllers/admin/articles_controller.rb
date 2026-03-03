@@ -9,7 +9,10 @@ module Admin
       authorize @articles
 
       respond_to do |format|
-        format.html { @articles = @articles.order(updated_at: :desc, title: :asc) }
+        format.html do
+          @articles = @articles.order(updated_at: :desc, title: :asc)
+          render Views::Admin::Articles::Index.new(articles: @articles)
+        end
         format.json do
           render json: ArticleDatatable.new(
             params,

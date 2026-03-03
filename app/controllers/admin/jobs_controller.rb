@@ -13,7 +13,13 @@ module Admin
 
       @error_calendars = Calendar.where(calendar_state: 'error')
       @busy_calendars = Calendar.where(calendar_state: 'in_worker')
-      # @bad_source_calendars = Calendar.where(calendar_state: 'bad_source')
+
+      render Views::Admin::Jobs::Index.new(
+        job_count: @job_count,
+        calendar_counts: @calendar_counts,
+        error_calendars: @error_calendars,
+        busy_calendars: @busy_calendars
+      )
     end
 
     private

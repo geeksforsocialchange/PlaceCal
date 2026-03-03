@@ -32,9 +32,14 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html do
         if params[:simple].present?
-          render :index_simple, layout: false
+          render Views::Events::IndexSimple.new(events: @events), layout: false
         else
-          render :index
+          render Views::Events::Index.new(
+            events: @events, period: @period, sort: @sort, repeating: @repeating,
+            current_day: @current_day, site: @site, primary_neighbourhood: @primary_neighbourhood,
+            current_site: current_site, selected_neighbourhood: @selected_neighbourhood,
+            next_date: @next_date, title: @title, truncated: @truncated
+          )
         end
       end
       format.text
@@ -53,7 +58,12 @@ class EventsController < ApplicationController
       @map = get_map_markers([@event.address])
     end
     respond_to do |format|
-      format.html
+      format.html do
+        render Views::Events::Show.new(
+          event: @event, site: @site, primary_neighbourhood: @primary_neighbourhood,
+          current_site: current_site, map: @map
+        )
+      end
       format.ics do
         track_ical_download
         cal = create_calendar([@event])
