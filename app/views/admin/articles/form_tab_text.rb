@@ -32,7 +32,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
   def render_title_field
     fieldset(class: 'fieldset') do
       raw form.label(:title, class: 'fieldset-legend') {
-        safe "#{attr_label(:article, :title)} <span class=\"text-error\">#{t('admin.labels.required')}</span>"
+        "#{attr_label(:article, :title)} <span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
       }
       raw form.input_field(:title, as: :string, class: 'input input-bordered w-full text-xl font-semibold',
                                    id: 'article_title',
@@ -90,7 +90,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
   def render_body_section
     div(data: { controller: 'markdown-preview' }) do
       raw form.label(:body, class: 'fieldset-legend') {
-        safe "#{attr_label(:article, :body)} <span class=\"text-error\">#{t('admin.labels.required')}</span>"
+        "#{attr_label(:article, :body)} <span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
       }
 
       p(class: 'text-sm text-gray-600 mb-3') do
