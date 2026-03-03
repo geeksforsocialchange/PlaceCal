@@ -98,29 +98,37 @@ def active_link_to(name, path, options = {})
 end
 ```
 
-## Rails View Components
+## Phlex Components
 
-### ViewComponent Classes
+All UI components use **Phlex 2.x** with **Literal** typed props. Components live in `app/components/` and are namespaced under `Components::`.
 
-When creating ViewComponents that need helper methods (like `icon`), include the helper module:
+### Component Structure
 
 ```ruby
-module Admin
-  class MyComponent < ViewComponent::Base
-    include SvgIconsHelper  # Required to use icon() helper in template
+class Components::Admin::MyCard < Components::Admin::Base
+  prop :title, String
+  prop :icon_name, Symbol
+  prop :description, _Nilable(String), default: nil
 
-    def initialize(icon_name:, title:)
-      super()
-      @icon_name = icon_name  # Use icon_name, not icon (avoids conflict with helper)
-      @title = title
+  def view_template
+    div(class: 'card') do
+      h2 { @title }
+      p { @description } if @description
     end
-
-    attr_reader :icon_name, :title
   end
 end
 ```
 
-**Important**: Avoid naming attributes `icon` as this conflicts with the `icon()` helper method. Use `icon_name` instead.
+### Key Patterns
+
+- **Base classes**: Public components inherit `Components::Base`, admin components inherit `Components::Admin::Base`
+- **Typed props**: Use `prop :name, Type` with Literal types (`String`, `_Nilable(...)`, `_Boolean`, `_Interface(:method)`, `_Any`)
+- **Positional props**: `prop :title, String, :positional` allows `Hero("Title")` instead of `Hero(title: "Title")`
+- **Rails form helpers**: Use `raw safe(...)` or `raw` to embed form builder output (e.g. `raw @form.input_field(...)`)
+- **Namespace collisions**: Use `::ModelName` (e.g. `::Address.new`) inside components to avoid resolving to `Components::ModelName`
+- **`fields_for` in Phlex**: Store the nested form builder in an ivar, then render Phlex content separately (the `raw { capture { ... } }` pattern doesn't work)
+- **SVG content**: Store as frozen class constants, render with `raw safe(CONSTANT)`
+- **i18n**: Use `t('key')` helper (defined on `Components::Base`) or `attr_label(:model, :attribute)` for AR attribute labels
 
 ### Forms
 

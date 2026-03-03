@@ -1,6 +1,6 @@
 <% api_token_modes = CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }
    if @calendar.importer_mode.in?(api_token_modes) || @calendar.api_token.present? %>
-  <%= render Admin::SectionHeaderComponent.new(
+  <%= render Components::Admin::SectionHeader.new(
     title: t('admin.calendars.fields.api_token'),
     description: t('admin.calendars.fields.api_token_hint')
   ) do |c| %>
@@ -25,7 +25,7 @@
   </div>
 <% end %>
 
-<%= render Admin::DangerZoneComponent.new(
+<%= render Components::Admin::DangerZone.new(
   title: t('admin.actions.delete_model', model: Calendar.model_name.human.downcase),
   description: t('admin.calendars.danger_zone.delete_description', count: @calendar.events.count),
   button_text: t('admin.actions.delete_model', model: Calendar.model_name.human),

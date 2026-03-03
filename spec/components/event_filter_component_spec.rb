@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe EventFilterComponent, type: :component do
+RSpec.describe Components::EventFilter, type: :component do
   # Tests run with time frozen at 2022-11-08 (Tuesday)
   let(:today) { Date.new(2022, 11, 8) }
 
@@ -53,7 +53,7 @@ RSpec.describe EventFilterComponent, type: :component do
     it "renders with down arrow icon" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css(".icon--arrow-down")
+      expect(page).to have_selector('svg[data-icon-name="triangle_down"]')
     end
 
     it "renders hidden date input" do

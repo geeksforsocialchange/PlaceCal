@@ -1,4 +1,4 @@
-<%= render Admin::SectionHeaderComponent.new(
+<%= render Components::Admin::SectionHeader.new(
   title: t('admin.calendars.tabs.location'),
   description: t('admin.calendars.sections.location_description')
 ) do |c| %>
@@ -27,7 +27,7 @@
     <fieldset class="fieldset">
       <legend class="fieldset-legend"><%= attr_label(:calendar, :strategy) %></legend>
       <p class="text-sm text-gray-600 mb-4"><%= t('admin.calendars.fields.strategy_hint') %></p>
-      <%= render Admin::RadioCardGroupComponent.new(
+      <%= render Components::Admin::RadioCardGroup.new(
         form: f,
         attribute: :strategy,
         values: Calendar.strategy.values,

@@ -1,7 +1,7 @@
 <%= simple_form_for [:admin, @site], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'siteTabAfterSave' } } do |f| %>
-  <%= render(Admin::ErrorComponent.new(@site)) %>
+  <%= render(Components::Admin::Error.new(@site)) %>
 
-  <%= render Admin::TabFormComponent.new(
+  <%= render Components::Admin::TabForm.new(
     tabs: [
       { label: '📋 Basic Info', hash: 'basic', partial: 'form_tab_basic' },
       { label: '🖼️ Images', hash: 'images', partial: 'form_tab_images' },

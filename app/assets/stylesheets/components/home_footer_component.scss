@@ -18,6 +18,12 @@
 	justify-content: center;
 	list-style: none;
 	padding: 0;
+
+	svg[data-icon-name="home_plus"] {
+		color: $base-secondary;
+		width: 0.9rem;
+		height: 0.9rem;
+	}
 }
 
 .footer_home__body__title {

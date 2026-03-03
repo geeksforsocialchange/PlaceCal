@@ -39,14 +39,14 @@
 <%# Stats Row - Compact horizontal cards %>
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
   <%# Partners %>
-  <%= render Admin::StatCardComponent.new(
+  <%= render Components::Admin::StatCard.new(
         label: t('admin.dashboard.stats.partners'),
-        value: @total_partners,
+        value: @total_partners.to_s,
         icon: :partner
       ) %>
 
   <%# Calendars - Consolidated with tooltips %>
-  <%= render Admin::StatCardComponent.new(
+  <%= render Components::Admin::StatCard.new(
         label: t('admin.dashboard.stats.calendars'),
         value: nil,
         subtitle: t('admin.dashboard.stats.calendars_total', count: @total_calendars)
@@ -68,9 +68,9 @@
   <% end %>
 
   <%# Events this week %>
-  <%= render Admin::StatCardComponent.new(
+  <%= render Components::Admin::StatCard.new(
         label: t('admin.dashboard.stats.events_this_week'),
-        value: @total_events_this_week,
+        value: @total_events_this_week.to_s,
         icon: :calendar
       ) %>
 
@@ -94,7 +94,7 @@
 
   <%# Sites Section %>
   <% if @sites.any? %>
-    <%= render Admin::CardComponent.new(
+    <%= render Components::Admin::Card.new(
           title: t('admin.dashboard.cards.your_sites'),
           icon: :site,
           header_link: admin_sites_path,
@@ -121,7 +121,7 @@
   <% end %>
 
   <%# Action Items Card %>
-  <%= render Admin::CardComponent.new(
+  <%= render Components::Admin::Card.new(
         title: t('admin.dashboard.cards.action_items'),
         icon: :clipboard,
         icon_class: @problem_calendars_count > 0 ? 'text-error' : 'text-success',
@@ -161,7 +161,7 @@
   <% end %>
 
   <%# Upcoming Events %>
-  <%= render Admin::CardComponent.new(
+  <%= render Components::Admin::Card.new(
         title: t('admin.dashboard.cards.upcoming_events'),
         icon: :event
       ) do %>
@@ -185,14 +185,14 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:calendar, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_upcoming_events') %></p>
       </div>
     <% end %>
   <% end %>
 
   <%# Updated Partners %>
-  <%= render Admin::CardComponent.new(
+  <%= render Components::Admin::Card.new(
         title: t('admin.dashboard.cards.updated_partners'),
         icon: :partner
       ) do %>
@@ -204,7 +204,7 @@
               <%= image_tag partner.image.url, class: "w-9 h-9 rounded-lg object-cover flex-shrink-0" %>
             <% else %>
               <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-                <%= icon(:partner, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
+                <%= icon(:partner, size: '4', css_class: 'text-gray-400 stroke-[1.5]') %>
               </div>
             <% end %>
             <div class="flex-1 min-w-0">
@@ -216,7 +216,7 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:partner, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:partner, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_partners') %></p>
         <%= link_to t('admin.dashboard.cards.add_first_partner'), new_admin_partner_path, class: "text-xs text-placecal-orange hover:text-orange-600 mt-1" %>
       </div>
@@ -224,7 +224,7 @@
   <% end %>
 
   <%# Updated Calendars %>
-  <%= render Admin::CardComponent.new(
+  <%= render Components::Admin::Card.new(
         title: t('admin.dashboard.cards.updated_calendars'),
         icon: :calendar
       ) do %>
@@ -233,7 +233,7 @@
         <% @calendars.take(6).each do |calendar| %>
           <%= link_to edit_admin_calendar_path(calendar), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-              <%= icon(:calendar, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
+              <%= icon(:calendar, size: '4', css_class: 'text-gray-400 stroke-[1.5]') %>
             </div>
             <div class="flex-1 min-w-0">
               <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= calendar.name %></span>
@@ -244,14 +244,14 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:calendar, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:calendar, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_calendars') %></p>
       </div>
     <% end %>
   <% end %>
 
   <%# Updated Users %>
-  <%= render Admin::CardComponent.new(
+  <%= render Components::Admin::Card.new(
         title: t('admin.dashboard.cards.updated_users'),
         icon: :users
       ) do %>
@@ -260,7 +260,7 @@
         <% @users.take(6).each do |user| %>
           <%= link_to edit_admin_user_path(user), class: "flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group" do %>
             <div class="w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0">
-              <%= icon(:user, size: '4', css_class: 'text-gray-400', stroke_width: '1.5') %>
+              <%= icon(:user, size: '4', css_class: 'text-gray-400 stroke-[1.5]') %>
             </div>
             <div class="flex-1 min-w-0">
               <span class="text-sm font-medium text-base-content group-hover:text-placecal-orange transition-colors truncate"><%= user.full_name.presence || user.email %></span>
@@ -271,7 +271,7 @@
       </div>
     <% else %>
       <div class="flex flex-col items-center justify-center py-6 text-gray-500">
-        <%= icon(:users, size: '8', css_class: 'mb-2', stroke_width: '1.5') %>
+        <%= icon(:users, size: '8', css_class: 'mb-2 stroke-[1.5]') %>
         <p class="text-sm"><%= t('admin.dashboard.cards.no_users') %></p>
       </div>
     <% end %>
@@ -279,7 +279,7 @@
 
   <%# Your Partnerships %>
   <% if @user_partnerships.any? %>
-    <%= render Admin::CardComponent.new(
+    <%= render Components::Admin::Card.new(
           title: t('admin.dashboard.cards.your_partnerships'),
           icon: :partnership
         ) do %>
@@ -301,7 +301,7 @@
   <% end %>
 
   <%# Quick Links %>
-  <%= render Admin::CardComponent.new(
+  <%= render Components::Admin::Card.new(
         title: t('admin.dashboard.cards.quick_links'),
         icon: :link
       ) do %>

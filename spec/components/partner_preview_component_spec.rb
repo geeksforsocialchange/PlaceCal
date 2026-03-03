@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PartnerPreviewComponent, type: :component do
+RSpec.describe Components::PartnerPreview, type: :component do
   let(:partner) { create(:riverside_partner) }
   let(:site) { create(:site) }
 

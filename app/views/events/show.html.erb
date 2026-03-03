@@ -2,7 +2,7 @@
 <% content_for :image, @site.og_image %>
 <% content_for :description, html_to_plaintext(@event.description_html) %>
 
-<%= render(EventComponent.new(context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood, site_tagline: @site.tagline)) %>
+<%= render(Components::Event.new(display_context: :page, event: @event, primary_neighbourhood: @primary_neighbourhood, site_tagline: @site.tagline)) %>
 
 <div class="c c--narrowish c--space-after event__fullinfo">
   <%= @event.description_html.to_s.html_safe %>
@@ -17,7 +17,7 @@
       <% if @event.partner %>
         <h3 class="h4 udl">Contact information</h3>
         <div class="small">
-          <%= render ContactDetails.new(partner: @event.partner)
+          <%= render Components::ContactDetails.new(partner: @event.partner)
           %>
         <% end %>
       </div>
@@ -25,7 +25,7 @@
     <div class="gi gi__1-3">
       <h3 class="h4 udl">Event address</h3>
       <div class="small">
-        <%= render AddressComponent.new(address: @event.address, raw_location: @event.raw_location_from_source) %>
+        <%= render Components::Address.new(address: @event.address, raw_location: @event.raw_location_from_source) %>
       </div>
     </div>
     <div class="gi gi__1-3">
@@ -36,9 +36,9 @@
     </div>
   </div>
 </div>
-<%= render 'shared/map', points: @map, site: @current_site.slug, style: :multi %>
+<%= render Components::Map.new(points: @map, site: @current_site.slug, style: :multi) %>
 
-<%= render(Meta.new("/events/#{@event.id}")) do |component| %>
+<%= render(Components::Meta.new("/events/#{@event.id}")) do |component| %>
 <% component.with_link do %>
   <%# link_to 'Subscribe to this event with iCal', event_url(@event, protocol: :webcal, format: :ics) %>
   <% contact = @event&.calendar&.contact_information %>

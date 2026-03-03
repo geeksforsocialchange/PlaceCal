@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_12_204459) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_110029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -143,6 +143,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_12_204459) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["address_id"], name: "index_events_address_id"
     t.index ["calendar_id", "dtstart"], name: "index_events_calendar_id_dtstart"
+    t.index ["calendar_id", "uid", "dtstart", "dtend"], name: "index_events_unique_per_calendar", unique: true
     t.index ["dtstart"], name: "index_events_dtstart"
     t.index ["online_address_id"], name: "index_events_on_online_address_id"
     t.index ["partner_id", "dtstart"], name: "index_events_on_partner_id_and_dtstart"

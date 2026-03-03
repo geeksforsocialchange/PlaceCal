@@ -2,7 +2,7 @@
 <div class="space-y-6">
   <div class="card bg-base-100 border border-base-300 shadow-sm">
     <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
+      <%= render Components::Admin::SectionHeader.new(
         title: t('admin.users.profile.permissions_title'),
         description: t('admin.users.profile.permissions_description'),
         margin: 4
@@ -31,7 +31,7 @@
                 </div>
                 <h4 class="font-medium"><%= t('admin.users.profile.your_partners') %></h4>
               </div>
-              <%= render Admin::ItemBadgeListComponent.new(
+              <%= render Components::Admin::ItemBadgeList.new(
                 items: current_user.partners.order(:name),
                 icon_name: :partner,
                 icon_color: "bg-emerald-100 text-emerald-600",
@@ -51,7 +51,7 @@
                 </div>
                 <h4 class="font-medium"><%= t('admin.users.profile.your_neighbourhoods') %></h4>
               </div>
-              <%= render Admin::ItemBadgeListComponent.new(
+              <%= render Components::Admin::ItemBadgeList.new(
                 items: current_user.neighbourhoods.order(:name),
                 icon_name: :map_pin,
                 icon_color: "bg-sky-100 text-sky-600",
@@ -71,7 +71,7 @@
                 </div>
                 <h4 class="font-medium"><%= t('admin.users.profile.your_partnerships') %></h4>
               </div>
-              <%= render Admin::ItemBadgeListComponent.new(
+              <%= render Components::Admin::ItemBadgeList.new(
                 items: current_user.tags.order(:name),
                 icon_name: :partnership,
                 icon_color: "bg-amber-100 text-amber-700",
@@ -91,7 +91,7 @@
                 </div>
                 <h4 class="font-medium"><%= t('admin.users.profile.your_sites') %></h4>
               </div>
-              <%= render Admin::ItemBadgeListComponent.new(
+              <%= render Components::Admin::ItemBadgeList.new(
                 items: current_user.sites.order(:name),
                 icon_name: :site,
                 icon_color: "bg-violet-100 text-violet-600",

@@ -11,6 +11,8 @@ Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'pdfs'
 Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
 Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.paths << Rails.root.join('app', 'components')
+# So we can use SvgImagesHelper for logos etc
+Rails.application.config.assets.paths << Rails.root.join(Rails.public_path, 'uploads')
 # Rails.application.config.assets.paths << Emoji.images_path
 
 # Precompile additional assets.

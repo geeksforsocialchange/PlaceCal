@@ -37,7 +37,7 @@ bundle exec rspec --format documentation
 | Model specs     | `spec/models/`     | Validations, scopes, methods |
 | Policy specs    | `spec/policies/`   | Authorization rules          |
 | Request specs   | `spec/requests/`   | HTTP responses, APIs         |
-| Component specs | `spec/components/` | ViewComponent rendering      |
+| Component specs | `spec/components/` | Phlex component rendering    |
 | Job specs       | `spec/jobs/`       | Background job logic         |
 | Helper specs    | `spec/helpers/`    | View helper methods          |
 | Mailer specs    | `spec/mailers/`    | Email delivery               |
@@ -203,30 +203,25 @@ end
 
 ### 4. Component Specs
 
-Test ViewComponent rendering.
+Test Phlex component rendering. Use `type: :phlex` and `render_inline` (provided by `PhlexTestHelper`).
 
 ```ruby
-# spec/components/partner_preview_component_spec.rb
-RSpec.describe PartnerPreviewComponent, type: :component do
-  let(:partner) { create(:riverside_community_hub) }
-
-  it 'renders partner name' do
-    render_inline(described_class.new(partner: partner))
-    expect(page).to have_text(partner.name)
+# spec/components/admin/alert_spec.rb
+RSpec.describe Components::Admin::Alert, type: :phlex do
+  it 'renders with message' do
+    render_inline(described_class.new(type: :notice, message: 'Test message'))
+    expect(page).to have_css('.alert')
+    expect(page).to have_text('Test message')
   end
 
-  it 'renders partner summary' do
-    render_inline(described_class.new(partner: partner))
-    expect(page).to have_text(partner.summary)
+  it 'renders success type with success styling' do
+    render_inline(described_class.new(type: :success, message: 'Success'))
+    expect(page).to have_css('.alert.alert-success')
   end
 
-  context 'when partner has no image' do
-    let(:partner) { create(:partner, image: nil) }
-
-    it 'renders placeholder' do
-      render_inline(described_class.new(partner: partner))
-      expect(page).to have_css('.placeholder-image')
-    end
+  it 'accepts string type and converts to symbol' do
+    render_inline(described_class.new(type: 'success', message: 'String type'))
+    expect(page).to have_css('.alert.alert-success')
   end
 end
 ```

@@ -140,13 +140,26 @@ class CalendarImporter::EventResolver
                 end
       end
 
+      # Clean up any remaining duplicates for this specific occurrence
+      if event&.persisted?
+        calendar_events.where(event_time).where.not(id: event.id).delete_all
+      end
+
       event ||= calendar.events.new
 
       event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
       attributes = data.attributes.merge(event_time)
-      unless event.update(attributes)
-        notices << event.errors.full_messages.join(', ')
+      begin
+        unless event.update(attributes)
+          notices << event.errors.full_messages.join(', ')
+        end
+      rescue ActiveRecord::RecordNotUnique
+        # Duplicate detected by DB constraint — find and update existing instead
+        existing = calendar.events.find_by!(uid: data.uid, dtstart: event_time[:dtstart], dtend: event_time[:dtend])
+        unless existing.update(attributes)
+          notices << existing.errors.full_messages.join(', ')
+        end
       end
     end
   end

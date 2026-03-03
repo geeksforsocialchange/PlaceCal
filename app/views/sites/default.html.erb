@@ -2,8 +2,8 @@
 <% content_for :description, @site.og_description %>
 
 <%= render(
-  HeroSectionComponent.new(
-    image_path: @site.hero_image,
+  Components::HeroSection.new(
+    image_path: @site.hero_image.url,
     image_credit: @site.hero_image_credit,
     title: @site.hero_text,
     alttext: @site.hero_alttext
@@ -25,7 +25,7 @@
   <div class="c c--narrow first-ele-h3-serif">
     <%= @site.description_html.to_s.html_safe %>
     <% if @site.site_admin.present? %>
-      <%= render(ProfileComponent.new(user: @site.site_admin)) %>
+      <%= render(Components::Profile.new(user: @site.site_admin)) %>
     <% end %>
   </div>
 </section>
@@ -37,20 +37,20 @@
   <div class="c">
     <div class="gr gr--3">
       <div>
-        <%= render(HelpAddingEvents.new(@site)) %>
+        <%= render(Components::HelpCard.new(variant: :adding_events, site: @site)) %>
       </div>
       <% if @places_to_get_computer_access.present? -%>
       <div>
-        <%= render(ComputerAccess.new(@places_to_get_computer_access)) %>
+        <%= render(Components::HelpCard.new(places: @places_to_get_computer_access, variant: :computer_access)) %>
       </div>
       <% end -%>
       <% if @places_with_free_wifi.present? -%>
       <div>
-        <%= render(FreePublicWifi.new(@places_with_free_wifi)) %>
+        <%= render(Components::HelpCard.new(places: @places_with_free_wifi, variant: :free_wifi)) %>
       </div>
       <% end -%>
       <div>
-        <%= render(HelpGettingHelp.new()) %>
+        <%= render(Components::HelpCard.new(variant: :getting_help)) %>
       </div>
     </div>
   </div>

@@ -9,7 +9,7 @@ module HtmlRenderCache
     end
 
     def self.html_fields
-      @html_fiels ||= []
+      @html_fields ||= []
     end
 
     before_save :render_html_fields

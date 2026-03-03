@@ -6,10 +6,8 @@
 
 inherit_from: .rubocop_todo.yml
 
-require:
-  - rubocop-rake
-
 plugins:
+  - rubocop-rake
   - rubocop-rspec
   - rubocop-performance
   - rubocop-graphql
@@ -65,6 +63,16 @@ Layout/LineContinuationSpacing:
 # Lint cops
 # =============================================================================
 
+# Phlex components don't need super in initialize (+ inherited from todo)
+Lint/MissingSuper:
+  Exclude:
+    - "app/components/**/*.rb"
+    - "app/jobs/calendar_importer/events/eventbrite_event.rb"
+    - "app/jobs/calendar_importer/events/ics_event.rb"
+    - "app/jobs/calendar_importer/events/manchester_uni_event.rb"
+    - "app/jobs/calendar_importer/events/meetup_event.rb"
+    - "app/policies/user_policy.rb"
+
 Lint/ConstantDefinitionInBlock:
   Exclude:
     - "spec/**/*.rb"
@@ -116,6 +124,11 @@ Metrics/PerceivedComplexity:
 # Naming cops
 # =============================================================================
 
+# Literal Properties' after_initialize is not memoization
+Naming/MemoizedInstanceVariableName:
+  Exclude:
+    - "app/components/**/*.rb"
+
 Naming/BlockForwarding:
   Enabled: false
 
@@ -135,6 +148,17 @@ Performance/StringReplacement:
 # =============================================================================
 # Rails cops
 # =============================================================================
+
+# Phlex uses `raw` for rendering form helpers and HTML content (+ inherited from todo)
+Rails/OutputSafety:
+  Exclude:
+    - "app/components/**/*.rb"
+    - "app/helpers/application_helper.rb"
+    - "app/helpers/articles_helper.rb"
+    - "app/helpers/events_helper.rb"
+    - "app/helpers/map_helper.rb"
+    - "app/helpers/partners_helper.rb"
+    - "app/models/partner.rb"
 
 Rails/ActionOrder:
   Enabled: false

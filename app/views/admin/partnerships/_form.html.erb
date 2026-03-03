@@ -10,11 +10,11 @@
     url: (@partnership.new_record? ? admin_partnerships_path : admin_partnership_path),
     html: { class: 'space-y-6', data: { controller: 'live-validation' } } do |f| %>
 
-  <%= render(Admin::ErrorComponent.new(@partnership)) %>
+  <%= render(Components::Admin::Error.new(@partnership)) %>
 
   <div class="card bg-base-100 border border-base-300 shadow-sm">
     <div class="card-body p-6">
-      <%= render Admin::SectionHeaderComponent.new(
+      <%= render Components::Admin::SectionHeader.new(
         title: t('admin.sections.basic_information'),
         margin: 4
       ) %>
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <%= render Admin::StackedListSelectorComponent.new(
+      <%= render Components::Admin::StackedListSelector.new(
         field_name: "partnership[partner_ids][]",
         items: @partnership.partners.order(:name),
         options: options_for_partners,
@@ -82,7 +82,7 @@
           </div>
         </div>
 
-        <%= render Admin::StackedListSelectorComponent.new(
+        <%= render Components::Admin::StackedListSelector.new(
           field_name: "partnership[user_ids][]",
           items: @partnership.users.order(:last_name, :first_name),
           options: options_for_users,
@@ -98,7 +98,7 @@
   <% end %>
 
   <% if !@partnership.new_record? && policy(@partnership).destroy? %>
-    <%= render Admin::DangerZoneComponent.new(
+    <%= render Components::Admin::DangerZone.new(
       title: t('admin.actions.delete_model', model: Partnership.model_name.human),
       description: t('admin.danger_zone.delete_description', model: Partnership.model_name.human.downcase),
       button_text: t('admin.actions.delete_model', model: Partnership.model_name.human),
@@ -107,9 +107,7 @@
     ) %>
   <% end %>
 
-  <%= render Admin::SaveBarComponent.new do |c| %>
-    <% c.with_button do %>
-      <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
-    <% end %>
+  <%= render Components::Admin::SaveBar.new do %>
+    <%= f.submit t('admin.actions.save'), class: "btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange" %>
   <% end %>
 <% end %>

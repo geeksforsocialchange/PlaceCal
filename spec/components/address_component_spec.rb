@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe AddressComponent, type: :component do
+RSpec.describe Components::Address, type: :component do
   let(:address) { create(:riverside_address) }
   let(:raw_location) { "Unformatted Address, Ungeolocated Lane" }
 

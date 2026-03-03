@@ -36,11 +36,11 @@ module EventsHelper
     Nokogiri::HTML.fragment(input).text
   end
 
-  def next_url(next_event)
+  def next_url(date)
     opts = {
-      year: next_event.dtstart.year,
-      month: next_event.dtstart.month,
-      day: next_event.dtstart.day,
+      year: date.year,
+      month: date.month,
+      day: date.day,
       anchor: 'paginator',
       period: @period,
       sort: @sort,

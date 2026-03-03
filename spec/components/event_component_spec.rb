@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe EventComponent, type: :component do
+RSpec.describe Components::Event, type: :component do
   let(:event) do
     double(
       id: 1,
@@ -19,46 +19,46 @@ RSpec.describe EventComponent, type: :component do
   end
 
   it "renders event summary" do
-    render_inline(described_class.new(context: :list, event: event))
+    render_inline(described_class.new(display_context: :list, event: event))
 
     expect(page).to have_text("Community Meetup")
   end
 
   it "renders event time" do
-    render_inline(described_class.new(context: :list, event: event))
+    render_inline(described_class.new(display_context: :list, event: event))
 
     expect(page).to have_text("10am")
     expect(page).to have_text("12pm")
   end
 
   it "renders event date" do
-    render_inline(described_class.new(context: :list, event: event))
+    render_inline(described_class.new(display_context: :list, event: event))
 
     expect(page).to have_text("15 Jan")
   end
 
   it "renders event duration" do
-    render_inline(described_class.new(context: :list, event: event))
+    render_inline(described_class.new(display_context: :list, event: event))
 
     expect(page).to have_text("2 hours")
   end
 
   it "renders address when present" do
-    render_inline(described_class.new(context: :list, event: event))
+    render_inline(described_class.new(display_context: :list, event: event))
 
     expect(page).to have_text("123 Main St")
   end
 
   context "with list context" do
     it "renders list structure" do
-      render_inline(described_class.new(context: :list, event: event))
+      render_inline(described_class.new(display_context: :list, event: event))
 
       expect(page).to have_css(".event.event--list")
       expect(page).to have_css(".event__header")
     end
 
     it "renders link to event" do
-      render_inline(described_class.new(context: :list, event: event))
+      render_inline(described_class.new(display_context: :list, event: event))
 
       expect(page).to have_link("Community Meetup", href: "/events/1")
     end
@@ -66,7 +66,7 @@ RSpec.describe EventComponent, type: :component do
 
   context "with page context" do
     it "renders page structure" do
-      render_inline(described_class.new(context: :page, event: event, site_tagline: "The Community Calendar"))
+      render_inline(described_class.new(display_context: :page, event: event, site_tagline: "The Community Calendar"))
 
       expect(page).to have_css(".event.event--full")
     end
@@ -89,7 +89,7 @@ RSpec.describe EventComponent, type: :component do
     end
 
     it "shows online indicator" do
-      render_inline(described_class.new(context: :list, event: event))
+      render_inline(described_class.new(display_context: :list, event: event))
 
       expect(page).to have_text("Online")
     end
@@ -112,7 +112,7 @@ RSpec.describe EventComponent, type: :component do
     end
 
     it "shows repeat frequency" do
-      render_inline(described_class.new(context: :list, event: event))
+      render_inline(described_class.new(display_context: :list, event: event))
 
       expect(page).to have_text("Weekly")
     end

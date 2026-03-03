@@ -1,51 +1,48 @@
 @import "../variables_mixins";
 
 .pullquote {
-	margin: 0 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
 	text-align: center;
+	margin-bottom: 1rem;
+	margin-top: 1rem;
 
 	blockquote {
-		background-image:
-			image-url("home/icons/ldquo.svg"), image-url("home/icons/rdquo.svg");
-		background-repeat: no-repeat;
-		background-position:
-			50% 0,
-			50% 100%;
-		background-size: 43px auto;
-		padding: 2rem 0;
-		margin: 0 0.5rem 1rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2rem;
+		justify-content: space-evenly;
+		margin-bottom: 0;
+		margin-top: 0;
+
+		.blockquote--dark {
+			color: $home-background;
+		}
 
 		@include for-tablet-portrait-up {
-			background-position:
-				0 50%,
-				100% 50%;
-			padding: 1rem 4rem 0rem;
+			gap: 1.25rem;
+			flex-direction: row;
 		}
 
-		@include for-desktop-up {
-			background-position:
-				2.5% 50%,
-				97.5% 50%;
-			margin-left: 2rem;
-			margin-right: 2rem;
+		svg {
+			color: $base-primary;
+			width: 2.5rem;
+			height: 2.5rem;
+			flex-shrink: 0;
 		}
-	}
 
-	.blockquote--dark {
-		color: $home-background;
+		.alt-title-small {
+			margin: 0;
+			max-width: 860px;
+			text-wrap: balance;
+		}
 	}
 
 	cite {
-		font-style: normal;
 		color: $base-primary;
-	}
-
-	strong {
-		margin: 1.25rem 0;
-		display: block;
-	}
-
-	span {
-		display: block;
+		display: contents;
+		font-style: normal;
 	}
 }

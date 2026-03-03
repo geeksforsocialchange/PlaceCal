@@ -4,12 +4,15 @@
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
     <link rel="stylesheet" href="/vendor/maplibre-gl.css" media="all" data-turbo-track="reload">
+    <%# @site&.stylesheet_link might be 'home', 'themes/pink', etc  #%>
     <% if @site&.stylesheet_link %>
       <%= stylesheet_link_tag @site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' %>
     <% end %>
     <%= stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload' %>
     <%= render "layouts/meta" %>
-    <%= render "layouts/plausible" %>
+    <% if Rails.env.production? %>
+    <script defer data-domain="placecal.org" src="https://plausible.io/js/plausible.js"></script>
+    <% end %>
     <%= javascript_include_tag "es-module-shims", async: true %>
     <%= javascript_importmap_tags %>
     <meta name="turbo-refresh-method" content="morph">
@@ -17,18 +20,16 @@
 
   <body>
     <div class="background">
-      <header>
-        <%= render(NavigationComponent.new(navigation: @navigation, site: @site)) %>
-      </header>
+      <%= render(Components::Navigation.new(navigation: @navigation, site: @site)) %>
       <main>
-        <%= render(FlashComponent.new) %>
+        <%= render(Components::Flash.new) %>
         <%= yield %>
       </main>
       <footer>
         <% if @site&.default_site? %>
-          <%= render(HomeFooterComponent.new()) %>
+          <%= render(Components::HomeFooter.new()) %>
         <% else %>
-          <%= render(Footer.new(@site)) %>
+          <%= render(Components::Footer.new(@site)) %>
         <% end %>
       </footer>
      </div>

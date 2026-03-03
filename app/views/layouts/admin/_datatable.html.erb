@@ -27,9 +27,7 @@
       <%- if policy(model_name.constantize).create? && defined?(new_link) %>
         <%= link_to new_link, data: { turbo: false },
             class: "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-white bg-orange-700 hover:bg-orange-800 transition-colors shadow-sm" do %>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
+          <%= icon(:plus, size: '4') %>
           <%= t('admin.actions.add_model', model: model_name) %>
         <% end %>
       <% end %>
@@ -53,9 +51,7 @@
         <fieldset class="relative flex items-center px-3 py-2 pt-3 border border-gray-300 rounded-lg bg-gray-100">
           <legend class="font-medium text-gray-400 uppercase tracking-wider px-1 ml-1 bg-gray-50" style="font-size: 9px; line-height: 1;"><%= t('admin.datatable.search') %></legend>
           <div class="flex items-center gap-2">
-            <svg class="h-3.5 w-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+            <%= icon(:search, size: '3.5', css_class: 'text-gray-400 shrink-0') %>
             <input type="search"
                    class="w-44 bg-transparent text-xs text-gray-700 placeholder-gray-400 focus:outline-none"
                    placeholder="<%= t('admin.placeholders.type_to_filter') %>"
@@ -66,9 +62,7 @@
       <% else %>
         <div class="relative">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+            <%= icon(:search, size: '4', css_class: 'text-gray-400') %>
           </div>
           <input type="search"
                  class="block w-56 pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -81,7 +75,7 @@
       <% if has_radio_filters %>
         <%# Render ungrouped radio filters (each in its own fieldset) %>
         <% ungrouped_filters.each do |filter| %>
-          <%= render Admin::RadioFilterComponent.new(
+          <%= render Components::Admin::RadioFilter.new(
             column: filter[:column],
             label: filter[:label],
             options: filter[:options] || []
@@ -90,7 +84,7 @@
 
         <%# Render grouped radio filters %>
         <% grouped_filters.each do |group_name, group_filters| %>
-          <%= render Admin::RadioFilterGroupComponent.new(
+          <%= render Components::Admin::RadioFilterGroup.new(
             group_label: group_name,
             filters: group_filters
           ) %>
@@ -168,7 +162,7 @@
       <div class="flex flex-wrap items-center gap-3 mt-3">
         <% secondary_filters.each do |filter| %>
           <% if filter[:type] == :radio %>
-            <%= render Admin::RadioFilterComponent.new(
+            <%= render Components::Admin::RadioFilter.new(
               column: filter[:column],
               label: filter[:label],
               options: filter[:options] || []
@@ -227,9 +221,9 @@
                   <span class="sr-only"><%= t('admin.labels.actions') %></span>
                 <% end %>
                 <% if sortable %>
-                  <svg class="w-3 h-3 text-gray-400 opacity-0 group-hover:opacity-100" data-admin-table-target="sortIcon" data-column="<%= columns[index] %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                  </svg>
+                  <span class="text-gray-400 opacity-0 group-hover:opacity-100" data-admin-table-target="sortIcon" data-column="<%= columns[index] %>">
+                    <%= icon(:arrow_up_down, size: nil, ) %>
+                  </span>
                 <% end %>
               </div>
             </th>
@@ -240,10 +234,10 @@
         <tr>
           <td colspan="<%= columns.length %>" class="px-6 py-12 text-center">
             <div class="flex flex-col items-center justify-center text-gray-500">
-              <svg style="width: 2rem; height: 2rem; animation: spin 1s linear infinite; color: #e87d1e;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
+              <span class="grid size-8 text-placecal-orange" style="animation: spin 1s linear infinite;">
+                <%= icon(:circle, size: nil, css_class: 'opacity-25 stroke-4 row-start-1 col-start-1') %>
+                <%= icon(:spinner, size: nil, css_class: 'opacity-75') %>
+              </span>
               <span class="mt-2 text-sm"><%= t('admin.datatable.loading') %></span>
             </div>
           </td>

@@ -1,12 +1,10 @@
 <%- disabled_fields = policy(@article).disabled_fields %>
 
 <div class="max-w-2xl">
-  <%= render Admin::ImageUploadComponent.new(
+  <%= render Components::Admin::ImageUpload.new(
     form: f,
     attribute: :article_image,
     title: t('admin.articles.image.title'),
-    description: t('admin.articles.image.description'),
-    aspect: '16:9',
-    disabled: disabled_fields.include?(:article_image)
+    aspect: '16:9'
   ) %>
 </div>

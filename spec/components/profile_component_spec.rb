@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe ProfileComponent, type: :component do
+RSpec.describe Components::Profile, type: :component do
   let(:user) do
     double(
       full_name: "Jane Doe",

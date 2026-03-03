@@ -16,6 +16,6 @@
     <span>This partnership is a <strong>system partnership</strong> meaning that it cannot be edited by non-root admins.</span>
   </div>
 <% else %>
-  <%= render 'layouts/admin/page_header', model_name: 'Partnership', title: @tag.name, id: @tag.id %>
+  <%= render Components::Admin::PageHeader.new(model_name: 'Partnership', title: @tag.name, id: @tag.id) %>
   <%= render 'admin/tags/form' %>
 <% end %>

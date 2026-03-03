@@ -37,6 +37,12 @@ Neighbourhood:
   addresses:
     enabled: false # Intentional: addresses should persist if neighbourhood is deleted
 
+# Event model - uniqueness enforced at DB level, handled via RecordNotUnique rescue
+Event:
+  index_events_unique_per_calendar:
+    UniqueIndexChecker:
+      enabled: false # Intentional: enforced by DB constraint + rescue in EventResolver
+
 # Foreign key cascade checks - we use model-level dependent options,
 # not database-level cascades, for safer application-level control
 OnlineAddress:
