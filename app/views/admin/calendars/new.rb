@@ -3,7 +3,6 @@
 class Views::Admin::Calendars::New < Views::Admin::Base
   prop :calendar, Calendar, reader: :private
   prop :partner, _Nilable(Partner), reader: :private
-  prop :partner_missing_address, _Boolean, reader: :private
 
   def view_template
     content_for(:title) { 'New Calendar' }
@@ -249,7 +248,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
           end
           fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
             legend(class: 'fieldset-legend text-base font-semibold') { t('admin.calendars.fields.default_location') }
-            if partner_missing_address
+            if partner && partner.address_id.blank?
               div(class: 'alert alert-warning mb-4') do
                 raw icon(:warning, size: '5', css_class: 'shrink-0')
                 span { t('admin.calendars.wizard.location.partner_no_address', partner: partner.name) }

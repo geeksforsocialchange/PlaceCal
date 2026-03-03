@@ -16,10 +16,13 @@ class Views::Admin::Pages::Home < Views::Admin::Base
   prop :processing_calendars_count, Integer, reader: :private
   prop :errored_calendars_count, Integer, reader: :private
   prop :bad_source_calendars_count, Integer, reader: :private
-  prop :problem_calendars_count, Integer, reader: :private
   prop :user_partnerships, ActiveRecord::Relation, reader: :private
 
   register_value_helper :user_has_no_rights?
+
+  def problem_calendars_count
+    errored_calendars_count + bad_source_calendars_count
+  end
 
   def view_template
     content_for(:title) { t('admin.dashboard.title') }

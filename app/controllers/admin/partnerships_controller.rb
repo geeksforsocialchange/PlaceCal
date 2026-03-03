@@ -36,7 +36,7 @@ module Admin
       authorize @partnership
       @tag = @partnership
       @partners = @partnership.partners
-      render Views::Admin::Partnerships::Edit.new(partnership: @partnership, current_user: current_user)
+      render Views::Admin::Partnerships::Edit.new(partnership: @partnership)
     end
 
     def create
@@ -77,7 +77,7 @@ module Admin
       else
         @tag = @partnership
         flash.now[:danger] = 'Partnership was not saved'
-        render Views::Admin::Partnerships::Edit.new(partnership: @partnership, current_user: current_user), status: :unprocessable_content
+        render Views::Admin::Partnerships::Edit.new(partnership: @partnership), status: :unprocessable_content
       end
     end
 

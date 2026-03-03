@@ -5,12 +5,9 @@ class Views::Partners::Show < Views::Base
 
   prop :partner, Partner, reader: :private
   prop :site, Site, reader: :private
-  prop :current_site, Site, reader: :private
   prop :current_day, Date, reader: :private
   prop :map, _Nilable(Array), reader: :private
   prop :events, _Interface(:each), reader: :private
-  prop :opening_times, Array, reader: :private
-  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
   prop :period, _Nilable(String), reader: :private
   prop :sort, _Nilable(String), reader: :private
   prop :repeating, _Nilable(_Boolean), reader: :private
@@ -56,7 +53,7 @@ class Views::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        Map(points: map, site: current_site.slug, compact: true)
+        Map(points: map, site: site.slug, compact: true)
         render_opening_times
       end
     end
@@ -114,12 +111,13 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_opening_times
-    return unless opening_times.any?
+    times = partner.human_readable_opening_times
+    return unless times.any?
 
     br
     h3(class: 'udl udl--fw allcaps h4') { 'Opening times' }
     ul(class: 'opening_times reset') do
-      opening_times.each do |slot|
+      times.each do |slot|
         li { slot }
       end
     end
@@ -160,9 +158,9 @@ class Views::Partners::Show < Views::Base
         EventList(
           events: events,
           period: period,
-          primary_neighbourhood: primary_neighbourhood,
-          show_neighbourhoods: current_site.show_neighbourhoods?,
-          badge_zoom_level: current_site.badge_zoom_level&.to_s,
+          primary_neighbourhood: site.primary_neighbourhood,
+          show_neighbourhoods: site.show_neighbourhoods?,
+          badge_zoom_level: site.badge_zoom_level&.to_s,
           site_tagline: site.tagline
         )
       else

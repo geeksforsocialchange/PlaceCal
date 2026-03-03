@@ -32,12 +32,10 @@ module Admin
     def new
       @calendar = Calendar.new
       @calendar.place_id = @partner&.id if @partner&.address_id.present?
-      @partner_missing_address = @partner.present? && @partner.address_id.blank?
       authorize @calendar
       render Views::Admin::Calendars::New.new(
         calendar: @calendar,
-        partner: @partner,
-        partner_missing_address: @partner_missing_address || false
+        partner: @partner
       )
     end
 
@@ -61,11 +59,9 @@ module Admin
         flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
         flash.now[:danger] = 'Calendar did not save'
-        @partner_missing_address = @partner.present? && @partner.address_id.blank?
         render Views::Admin::Calendars::New.new(
           calendar: @calendar,
-          partner: @partner,
-          partner_missing_address: @partner_missing_address || false
+          partner: @partner
         ), status: :unprocessable_content
       end
     end

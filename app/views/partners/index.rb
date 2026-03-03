@@ -3,7 +3,6 @@
 class Views::Partners::Index < Views::Base
   prop :partners, ActiveRecord::Relation, reader: :private
   prop :site, Site, reader: :private
-  prop :current_site, Site, reader: :private
   prop :map, _Nilable(Array), reader: :private
   prop :selected_category, _Nilable(String), reader: :private
   prop :selected_neighbourhood, _Nilable(String), reader: :private
@@ -33,7 +32,7 @@ class Views::Partners::Index < Views::Base
         end
       end
       div(id: 'map') do
-        Map(points: map, site: current_site.slug)
+        Map(points: map, site: site.slug)
       end
     end
   end

@@ -34,7 +34,7 @@ module Admin
       @partner.partnerships = current_user.partnerships
 
       authorize @partner
-      render Views::Admin::Partners::New.new(partner: @partner, current_user: current_user)
+      render Views::Admin::Partners::New.new(partner: @partner)
     end
 
     def show
@@ -65,7 +65,7 @@ module Admin
           format.html do
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
-            render Views::Admin::Partners::New.new(partner: @partner, current_user: current_user), status: :unprocessable_content
+            render Views::Admin::Partners::New.new(partner: @partner), status: :unprocessable_content
           end
           format.json { render json: @partner.errors, status: :unprocessable_content }
         end

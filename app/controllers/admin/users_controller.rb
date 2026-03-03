@@ -8,7 +8,7 @@ module Admin
 
     def profile
       authorize current_user, :profile?
-      render Views::Admin::Users::Profile.new(current_user: current_user)
+      render Views::Admin::Users::Profile.new
     end
 
     def update_profile
@@ -21,7 +21,7 @@ module Admin
 
       else
         flash.now[:danger] = 'User profile was not updated'
-        render Views::Admin::Users::Profile.new(current_user: current_user), status: :unprocessable_content
+        render Views::Admin::Users::Profile.new, status: :unprocessable_content
       end
     end
 
@@ -51,7 +51,7 @@ module Admin
       # Preselect partners for new user (needed for StackedListSelectorComponent)
       @user.partners = Partner.where(id: @partners) if @partners.present?
       authorize @user
-      render Views::Admin::Users::New.new(user: @user, current_user: current_user)
+      render Views::Admin::Users::New.new(user: @user)
     end
 
     def edit
@@ -88,7 +88,7 @@ module Admin
       else
         @partners = collect_partners
         flash.now[:danger] = 'User was not created'
-        render Views::Admin::Users::New.new(user: @user, current_user: current_user), status: :unprocessable_content
+        render Views::Admin::Users::New.new(user: @user), status: :unprocessable_content
       end
     end
 
@@ -172,7 +172,7 @@ module Admin
       # we're about to refresh the page so save the users input
       @user = User.new(permitted_attributes(User))
       flash.now[:danger] = 'User was not created: You must assign a Partner to the User or you will not be able to access it after creation'
-      render Views::Admin::Users::New.new(user: @user, current_user: current_user), status: :unprocessable_content
+      render Views::Admin::Users::New.new(user: @user), status: :unprocessable_content
     end
   end
 end

@@ -19,8 +19,7 @@ class CollectionsController < ApplicationController
     respond_to do |format|
       format.html do
         render Views::Collections::Show.new(
-          collection: @collection, site: @site, events: @events,
-          current_site: current_site, primary_neighbourhood: @primary_neighbourhood
+          collection: @collection, site: @site, events: @events
         )
       end
       format.text

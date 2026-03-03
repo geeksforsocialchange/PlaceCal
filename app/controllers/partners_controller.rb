@@ -30,7 +30,7 @@ class PartnersController < ApplicationController
     @map = get_map_markers(@partners, addresses_only) if @partners.detect(&:address)
 
     render Views::Partners::Index.new(
-      partners: @partners, site: @site, current_site: current_site,
+      partners: @partners, site: @site,
       map: @map, selected_category: @selected_category,
       selected_neighbourhood: @selected_neighbourhood
     )
@@ -66,17 +66,15 @@ class PartnersController < ApplicationController
       @paginator = true
     end
 
-    @opening_times = @partner.human_readable_opening_times
-
     # Map
     @map = get_map_markers([@partner])
 
     respond_to do |format|
       format.html do
         render Views::Partners::Show.new(
-          partner: @partner, site: @site, current_site: current_site, current_day: @current_day,
-          map: @map, events: @events, opening_times: @opening_times,
-          primary_neighbourhood: @primary_neighbourhood, period: @period, sort: @sort,
+          partner: @partner, site: @site, current_day: @current_day,
+          map: @map, events: @events,
+          period: @period, sort: @sort,
           repeating: @repeating, no_event_message: @no_event_message, paginator: @paginator
         )
       end

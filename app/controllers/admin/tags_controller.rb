@@ -32,7 +32,7 @@ module Admin
     def edit
       authorize @tag
       @partners = @tag.partners
-      render Views::Admin::Tags::Edit.new(tag: @tag, current_user: current_user)
+      render Views::Admin::Tags::Edit.new(tag: @tag)
     end
 
     def create
@@ -75,7 +75,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Tag was not saved'
-        render Views::Admin::Tags::Edit.new(tag: @tag, current_user: current_user), status: :unprocessable_content
+        render Views::Admin::Tags::Edit.new(tag: @tag), status: :unprocessable_content
       end
     end
 

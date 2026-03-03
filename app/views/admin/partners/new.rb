@@ -2,7 +2,6 @@
 
 class Views::Admin::Partners::New < Views::Admin::Base
   prop :partner, Partner, reader: :private
-  prop :current_user, User, reader: :private
 
   def view_template
     content_for(:title) { 'New Partner' }
@@ -165,7 +164,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
         div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
           FormCard(icon: :map, title: attr_label(:partner, :address)) do
             div(data: { 'partner-wizard-target': 'addressFields', action: 'input->partner-wizard#updateContinueButton' }) do
-              AddressFields(form: form, partner: partner, current_user: current_user)
+              AddressFields(form: form, partner: partner)
               div(class: 'alert alert-warning mt-4 hidden', data: { 'partner-wizard-target': 'addressIncompleteHint' }) do
                 raw icon(:warning, size: '5', css_class: 'shrink-0')
                 span { t('admin.partners.validation.address_incomplete') }

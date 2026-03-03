@@ -4,7 +4,6 @@ class Views::Admin::Neighbourhoods::Index < Views::Admin::Base
   register_value_helper :safe_neighbourhood_name
 
   prop :neighbourhoods, ActiveRecord::Relation, reader: :private
-  prop :current_user, User, reader: :private
 
   def view_template
     Datatable(
@@ -31,7 +30,7 @@ class Views::Admin::Neighbourhoods::Index < Views::Admin::Base
       filters: neighbourhoods_filters,
       secondary_filters: neighbourhoods_secondary_filters,
       data: neighbourhoods,
-      source: admin_neighbourhoods_path(current_user: current_user, format: :json)
+      source: admin_neighbourhoods_path(format: :json)
     )
 
     render_roots_section

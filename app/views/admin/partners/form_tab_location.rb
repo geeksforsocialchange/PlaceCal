@@ -14,7 +14,7 @@ class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
     div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
       div(class: 'space-y-6') do
         FormCard(icon: :map, title: attr_label(:partner, :address)) do
-          AddressFields(form: form, partner: partner, current_user: helpers.current_user)
+          AddressFields(form: form, partner: partner)
           render_outdated_neighbourhood_warning(partner)
           render_unmappable_postcode_warning(partner)
           render_neighbourhood_display(partner)

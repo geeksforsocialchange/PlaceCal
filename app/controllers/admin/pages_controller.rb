@@ -34,7 +34,6 @@ module Admin
       @processing_calendars_count = (state_counts['in_queue'] || 0) + (state_counts['in_worker'] || 0)
       @errored_calendars_count = state_counts['error'] || 0
       @bad_source_calendars_count = state_counts['bad_source'] || 0
-      @problem_calendars_count = @errored_calendars_count + @bad_source_calendars_count
 
       # User's partnerships (tags they manage)
       @user_partnerships = current_user.partnerships.includes(:partners).order(:name)
@@ -55,7 +54,6 @@ module Admin
         processing_calendars_count: @processing_calendars_count,
         errored_calendars_count: @errored_calendars_count,
         bad_source_calendars_count: @bad_source_calendars_count,
-        problem_calendars_count: @problem_calendars_count,
         user_partnerships: @user_partnerships
       )
     end

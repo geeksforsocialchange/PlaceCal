@@ -7,11 +7,8 @@ class Views::Events::Index < Views::Base
   prop :repeating, String, reader: :private
   prop :current_day, Date, reader: :private
   prop :site, Site, reader: :private
-  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
-  prop :current_site, Site, reader: :private
   prop :selected_neighbourhood, _Nilable(String), reader: :private
   prop :next_date, _Nilable(::Event), reader: :private
-  prop :title, String, reader: :private
   prop :truncated, _Boolean, reader: :private
 
   def view_template
@@ -68,9 +65,9 @@ class Views::Events::Index < Views::Base
     EventList(
       events: events,
       period: period,
-      primary_neighbourhood: primary_neighbourhood,
-      show_neighbourhoods: current_site.show_neighbourhoods?,
-      badge_zoom_level: current_site.badge_zoom_level&.to_s,
+      primary_neighbourhood: site.primary_neighbourhood,
+      show_neighbourhoods: site.show_neighbourhoods?,
+      badge_zoom_level: site.badge_zoom_level&.to_s,
       next_date: next_date&.dtstart,
       site_tagline: site.tagline,
       truncated: truncated
@@ -80,7 +77,7 @@ class Views::Events::Index < Views::Base
   def render_meta_section
     Meta('/hello/world') do |component|
       component.with_link do
-        link_to "Subscribe to #{title} with iCal", events_url(protocol: :webcal, format: :ics)
+        link_to "Subscribe to #{site.name} with iCal", events_url(protocol: :webcal, format: :ics)
       end
     end
   end

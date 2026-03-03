@@ -5,7 +5,6 @@ class Components::Admin::AddressFields < Components::Admin::Base
 
   prop :form, ActionView::Helpers::FormBuilder
   prop :partner, ::Partner
-  prop :current_user, ::User
 
   def view_template
     # Store the nested form builder, then render Phlex content separately.
@@ -49,11 +48,11 @@ class Components::Admin::AddressFields < Components::Admin::Base
   end
 
   def warn_of_delisting_value
-    @partner.warn_user_clear_address?(@current_user) ? 'true' : 'false'
+    @partner.warn_user_clear_address?(helpers.current_user) ? 'true' : 'false'
   end
 
   def can_clear_address?
-    @partner.can_clear_address?(@current_user)
+    @partner.can_clear_address?(helpers.current_user)
   end
 
   def address_field_configs

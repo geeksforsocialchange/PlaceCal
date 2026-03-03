@@ -4,8 +4,6 @@ class Views::Collections::Show < Views::Base
   prop :collection, Collection, reader: :private
   prop :site, Site, reader: :private
   prop :events, Hash, reader: :private
-  prop :current_site, Site, reader: :private
-  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
 
   def view_template
     content_for(:title) { collection.name }
@@ -51,9 +49,9 @@ class Views::Collections::Show < Views::Base
   def render_events
     EventList(
       events: events,
-      primary_neighbourhood: primary_neighbourhood,
-      show_neighbourhoods: current_site.show_neighbourhoods?,
-      badge_zoom_level: current_site.badge_zoom_level&.to_s,
+      primary_neighbourhood: site.primary_neighbourhood,
+      show_neighbourhoods: site.show_neighbourhoods?,
+      badge_zoom_level: site.badge_zoom_level&.to_s,
       site_tagline: site.tagline
     )
   end

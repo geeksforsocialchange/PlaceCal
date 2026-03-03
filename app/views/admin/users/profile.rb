@@ -1,26 +1,24 @@
 # frozen_string_literal: true
 
 class Views::Admin::Users::Profile < Views::Admin::Base
-  prop :current_user, User, reader: :private
-
   def view_template
     content_for(:title) { t('admin.users.profile.title') }
 
     div(class: 'mb-6') do
       h1(class: 'text-2xl font-semibold') { t('admin.users.profile.title') }
-      p(class: 'text-gray-600 mt-1') { current_user.email }
+      p(class: 'text-gray-600 mt-1') { helpers.current_user.email }
     end
 
-    simple_form_for(current_user,
+    simple_form_for(helpers.current_user,
                     as: :user,
                     method: :patch,
-                    url: helpers.update_profile_admin_user_path(current_user),
+                    url: helpers.update_profile_admin_user_path(helpers.current_user),
                     html: { class: 'space-y-6', data: {
                       controller: 'form-tabs live-validation form-dirty',
                       'form-tabs-storage-key-value': 'profileTabAfterSave',
                       'form-dirty-tab-name-value': 'profile_tabs'
                     } }) do |form|
-      Error(current_user)
+      Error(helpers.current_user)
       render_tabs(form)
       render_save_bar(form)
     end

@@ -5,8 +5,6 @@ class Views::Events::Activities < Views::Base
   prop :current_day, Date, reader: :private
   prop :next_week, Date, reader: :private
   prop :previous_week, Date, reader: :private
-  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
-  prop :current_site, Site, reader: :private
   prop :site, Site, reader: :private
 
   def view_template
@@ -30,8 +28,8 @@ class Views::Events::Activities < Views::Base
             Event(
               display_context: :week,
               event: event,
-              primary_neighbourhood: primary_neighbourhood,
-              show_neighbourhoods: current_site.show_neighbourhoods?,
+              primary_neighbourhood: site.primary_neighbourhood,
+              show_neighbourhoods: site.show_neighbourhoods?,
               site_tagline: site.tagline
             )
           end

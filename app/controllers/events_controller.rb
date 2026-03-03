@@ -27,8 +27,6 @@ class EventsController < ApplicationController
     )
     @truncated = @query.truncated
     @next_date = @query.next_event_after(@current_day)
-    @title = current_site.name
-
     respond_to do |format|
       format.html do
         if params[:simple].present?
@@ -36,9 +34,9 @@ class EventsController < ApplicationController
         else
           render Views::Events::Index.new(
             events: @events, period: @period, sort: @sort, repeating: @repeating,
-            current_day: @current_day, site: @site, primary_neighbourhood: @primary_neighbourhood,
-            current_site: current_site, selected_neighbourhood: @selected_neighbourhood,
-            next_date: @next_date, title: @title, truncated: @truncated
+            current_day: @current_day, site: @site,
+            selected_neighbourhood: @selected_neighbourhood,
+            next_date: @next_date, truncated: @truncated
           )
         end
       end
@@ -60,8 +58,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html do
         render Views::Events::Show.new(
-          event: @event, site: @site, primary_neighbourhood: @primary_neighbourhood,
-          current_site: current_site, map: @map
+          event: @event, site: @site, map: @map
         )
       end
       format.ics do

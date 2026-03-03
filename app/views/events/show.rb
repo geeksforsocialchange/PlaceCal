@@ -7,8 +7,6 @@ class Views::Events::Show < Views::Base
 
   prop :event, ::Event, reader: :private
   prop :site, Site, reader: :private
-  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
-  prop :current_site, Site, reader: :private
   prop :map, _Nilable(Array), reader: :private
 
   def view_template
@@ -19,12 +17,12 @@ class Views::Events::Show < Views::Base
     Event(
       display_context: :page,
       event: event,
-      primary_neighbourhood: primary_neighbourhood,
+      primary_neighbourhood: site.primary_neighbourhood,
       site_tagline: site.tagline
     )
 
     render_event_details
-    Map(points: map, site: current_site.slug, style: :multi)
+    Map(points: map, site: site.slug, style: :multi)
     render_event_meta
   end
 
