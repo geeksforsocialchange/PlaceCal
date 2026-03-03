@@ -30,7 +30,7 @@
     <p>We provide training and support to help you publish your events and promote your activities.</p>
     <%= @site.description_html.to_s.html_safe %>
     <% if @site.site_admin.present? %>
-      <%= render(ProfileComponent.new(user: @site.site_admin)) %>
+      <%= render(Components::Profile.new(user: @site.site_admin)) %>
     <% end %>
   </div>
 </section>
@@ -42,13 +42,13 @@
   <div class="c">
     <div class="g">
       <div class="gi gi__1-3">
-        <%= render(HelpAddingEvents.new(@site)) %>
+        <%= render(Components::HelpCard.new(variant: :adding_events, site: @site)) %>
       </div>
       <div class="gi gi__1-3">
-        <%= render(ComputerAccess.new(@places_to_get_online)) %>
+        <%= render(Components::HelpCard.new(places: @places_to_get_online, variant: :computer_access)) %>
       </div>
       <div class="gi gi__1-3">
-        <%= render(HelpGettingHelp.new()) %>
+        <%= render(Components::HelpCard.new(variant: :getting_help)) %>
       </div>
     </div>
   </div>

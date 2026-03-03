@@ -30,8 +30,10 @@ gem 'groupdate'                   # Group events by day/week/month
 gem 'image_processing'            # Image resizing for uploads
 gem 'inline_svg'                  # Inlines SVGs into markup. Used in SvgImagesHelper
 gem 'kramdown'                    # Markdown to HTML rendering
+gem 'literal'                     # Typed properties for Phlex components
+gem 'phlex-rails', '~> 2.3'       # Ruby-native view components
 gem 'simple_form'                 # Form builder
-gem 'view_component'              # Encapsulated view components
+gem 'strict_ivars', require: false # Catch undefined instance variable reads
 
 # Auth and permissions
 gem 'devise'                      # User authentication

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe TimelineComponent, type: :component do
+RSpec.describe Components::Timeline, type: :component do
   # Tests run with time frozen at 2022-11-08 (Tuesday)
   let(:today) { Date.new(2022, 11, 8) }
 

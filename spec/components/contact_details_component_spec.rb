@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe ContactDetailsComponent, type: :component do
+RSpec.describe Components::ContactDetails, type: :phlex do
   # see spec/factories/partners.rb and lib/normal_island.rb
   let(:contact_partner) { create(:riverside_community_hub) }
   let(:contact_email) { "info@example.org" }

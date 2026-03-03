@@ -75,7 +75,7 @@
       <% if has_radio_filters %>
         <%# Render ungrouped radio filters (each in its own fieldset) %>
         <% ungrouped_filters.each do |filter| %>
-          <%= render Admin::RadioFilterComponent.new(
+          <%= render Components::Admin::RadioFilter.new(
             column: filter[:column],
             label: filter[:label],
             options: filter[:options] || []
@@ -84,7 +84,7 @@
 
         <%# Render grouped radio filters %>
         <% grouped_filters.each do |group_name, group_filters| %>
-          <%= render Admin::RadioFilterGroupComponent.new(
+          <%= render Components::Admin::RadioFilterGroup.new(
             group_label: group_name,
             filters: group_filters
           ) %>
@@ -162,7 +162,7 @@
       <div class="flex flex-wrap items-center gap-3 mt-3">
         <% secondary_filters.each do |filter| %>
           <% if filter[:type] == :radio %>
-            <%= render Admin::RadioFilterComponent.new(
+            <%= render Components::Admin::RadioFilter.new(
               column: filter[:column],
               label: filter[:label],
               options: filter[:options] || []

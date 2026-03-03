@@ -21,18 +21,18 @@
 <div class="divider my-6"></div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-  <%= render Admin::InfoCardComponent.new(icon: :partner, label: "Partner", color: :orange) do %>
+  <%= render Components::Admin::InfoCard.new(icon: :partner, label: "Partner", color: :orange) do %>
     <%= link_to @calendar.partner.name, edit_admin_partner_path(@calendar.partner), class: "font-semibold link link-hover text-placecal-orange" %>
   <% end %>
 
-  <%= render Admin::InfoCardComponent.new(
+  <%= render Components::Admin::InfoCard.new(
     icon: :cog,
     label: "Strategy",
     value: @calendar.strategy.to_s.titleize,
     color: :info
   ) %>
 
-  <%= render Admin::InfoCardComponent.new(icon: :map_pin, label: "Default Location", color: :success) do %>
+  <%= render Components::Admin::InfoCard.new(icon: :map_pin, label: "Default Location", color: :success) do %>
     <% if @calendar.place %>
       <%= link_to @calendar.place.name, edit_admin_partner_path(@calendar.place), class: "font-semibold link link-hover text-placecal-orange" %>
     <% end %>
@@ -91,7 +91,7 @@
             </table>
           </div>
         <% else %>
-          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No upcoming events", icon_size: '12', padding: 'py-12') %>
+          <%= render Components::Admin::EmptyState.new(icon: :calendar, message: "No upcoming events", icon_size: '12', padding: 'py-12') %>
         <% end %>
       </div>
 
@@ -135,7 +135,7 @@
             <p class="text-center text-sm text-gray-600 mt-4">Showing 50 of <%= @calendar.events.past.count %> past events</p>
           <% end %>
         <% else %>
-          <%= render Admin::EmptyStateComponent.new(icon: :calendar, message: "No past events", icon_size: '12', padding: 'py-12') %>
+          <%= render Components::Admin::EmptyState.new(icon: :calendar, message: "No past events", icon_size: '12', padding: 'py-12') %>
         <% end %>
       </div>
     </div>

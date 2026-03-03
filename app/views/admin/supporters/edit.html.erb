@@ -1,2 +1,2 @@
-<%= render 'layouts/admin/page_header', model_name: 'Supporter', title: @supporter.name, id: @supporter.id %>
+<%= render Components::Admin::PageHeader.new(model_name: 'Supporter', title: @supporter.name, id: @supporter.id) %>
 <%= render 'form' %>

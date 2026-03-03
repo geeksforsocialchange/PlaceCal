@@ -1,8 +1,8 @@
-<%= render 'layouts/admin/page_header', model_name: 'Neighbourhood', title: @neighbourhood.name, id: @neighbourhood.id %>
+<%= render Components::Admin::PageHeader.new(model_name: 'Neighbourhood', title: @neighbourhood.name, id: @neighbourhood.id) %>
 
 <%# Hierarchy breadcrumb - matching show page %>
 <div class="mb-6">
-  <%= render Admin::NeighbourhoodHierarchyBadgeComponent.new(
+  <%= render Components::Admin::NeighbourhoodHierarchyBadge.new(
         neighbourhood: @neighbourhood,
         link_each: true,
         show_icons: true

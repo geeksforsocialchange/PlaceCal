@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe AudienceComponent, type: :component do
+RSpec.describe Components::Audience, type: :component do
   let(:attrs) do
     {
       title: "Community groups",

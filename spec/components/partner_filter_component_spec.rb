@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PartnerFilterComponent, type: :component do
+RSpec.describe Components::PartnerFilter, type: :component do
   describe "with partners in multiple neighbourhoods" do
     let(:neighbourhood1) { create(:neighbourhood) }
     let(:neighbourhood2) { create(:neighbourhood) }
@@ -94,7 +94,7 @@ RSpec.describe PartnerFilterComponent, type: :component do
       render_inline(described_class.new(
                       site: site,
                       selected_category: nil,
-                      selected_neighbourhood: neighbourhood1.id
+                      selected_neighbourhood: neighbourhood1.id.to_s
                     ))
 
       # When a neighbourhood is selected, it shows the neighbourhood name instead of "Neighbourhood"

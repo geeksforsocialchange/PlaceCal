@@ -22,8 +22,10 @@ en:
     sections:
       accessibility: "Accessibility"
       admin_settings: "Admin Settings"
+      advanced: "Advanced"
       basic_information: "Basic Information"
       danger_zone: "Danger Zone"
+      details: "Details"
       images_theme: "Images & Theme"
       location_settings: "Location Settings"
       online_presence: "Online Presence"
@@ -75,6 +77,7 @@ en:
       enabled: "Enabled"
       healthy: "Healthy"
       hidden: "Hidden"
+      actions: "Actions"
       id: "ID"
       issues: "Issues"
       loading: "Loading..."
@@ -192,13 +195,24 @@ en:
         afternoon: "Good afternoon"
         evening: "Good evening"
       stats:
+        calendars: "Calendars"
+        calendars_total: "%{count} total"
+        errors: "Errors"
         events_this_week: "Events this week"
         need_help: "Need help?"
+        partners: "Partners"
+        queue: "Queue"
+        working: "Working"
       cards:
         action_items: "Action Items"
+        add_first_partner: "Add your first partner"
         all_healthy: "All calendars healthy"
         bad_url: "Bad URL"
+        no_calendars: "No calendars yet"
         no_issues: "No issues to fix"
+        no_partners: "No partners yet"
+        no_upcoming_events: "No upcoming events"
+        no_users: "No users yet"
         quick_links: "Quick Links"
         upcoming_events: "Upcoming Events"
         updated_calendars: "Updated Calendars"
@@ -216,6 +230,8 @@ en:
       links:
         all_calendars: "All Calendars"
         all_partners: "All Partners"
+        discord: "Discord"
+        handbook: "Handbook"
 
     missing_permissions:
       title: "Missing Permissions"
@@ -586,6 +602,7 @@ en:
         partners_hint: "Partners this user can edit, as well as their associated calendars."
         new_neighbourhood: "New Neighbourhood"
         partnerships_hint: "Grants access to add or remove partners from partnerships"
+        sites_hint: "Sites where this user is assigned as admin"
         role_hint: "Determines the user's system-wide access level and permissions."
       roles:
         root: "Can do everything - use with care!"

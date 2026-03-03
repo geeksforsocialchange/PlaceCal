@@ -14,7 +14,7 @@
     <% end %>
   <% end %>
 
-  <%= render Admin::TabFormComponent.new(
+  <%= render Components::Admin::TabForm.new(
     tabs: [
       { label: '📋 Basic Info', hash: 'basic', partial: 'form_tab_basic' },
       { label: '📍 Location', hash: 'location', partial: 'form_tab_location' },

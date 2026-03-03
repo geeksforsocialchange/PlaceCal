@@ -1,11 +1,11 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <div class="space-y-6">
-    <%= render Admin::FormCardComponent.new(
+    <%= render Components::Admin::FormCard.new(
       icon: :partnership,
       title: Partnership.model_name.human(count: 2),
       description: t('admin.users.fields.partnerships_hint')
     ) do %>
-      <%= render Admin::StackedListSelectorComponent.new(
+      <%= render Components::Admin::StackedListSelector.new(
         field_name: "user[tag_ids][]",
         items: @user.partnerships.order(:name),
         options: options_for_user_partnerships,
@@ -19,7 +19,7 @@
     <% end %>
 
     <% neighbourhoods_hint = current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint') %>
-    <%= render Admin::FormCardComponent.new(
+    <%= render Components::Admin::FormCard.new(
       icon: :map_pin,
       title: Neighbourhood.model_name.human(count: 2),
       description: neighbourhoods_hint
@@ -34,7 +34,7 @@
           <% end %>
         <% end %>
       <% else %>
-        <%= render Admin::ItemBadgeListComponent.new(
+        <%= render Components::Admin::ItemBadgeList.new(
           items: @user.neighbourhoods.order(:name),
           icon_name: :map_pin,
           icon_color: "bg-sky-100 text-sky-600",
@@ -46,7 +46,7 @@
   </div>
 
   <div class="space-y-6">
-    <%= render Admin::FormCardComponent.new(
+    <%= render Components::Admin::FormCard.new(
       icon: :site,
       title: Site.model_name.human(count: 2),
       description: t('admin.users.fields.sites_hint', default: 'Sites where this user is assigned as admin')
@@ -75,12 +75,12 @@
       <% end %>
     <% end %>
 
-    <%= render Admin::FormCardComponent.new(
+    <%= render Components::Admin::FormCard.new(
       icon: :partner,
       title: Partner.model_name.human(count: 2),
       description: t('admin.users.fields.partners_hint')
     ) do %>
-      <%= render Admin::StackedListSelectorComponent.new(
+      <%= render Components::Admin::StackedListSelector.new(
         field_name: "user[partner_ids][]",
         items: @user.partners.order(:name),
         options: options_for_partners(@user),

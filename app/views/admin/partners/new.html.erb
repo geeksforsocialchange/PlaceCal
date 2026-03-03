@@ -36,7 +36,7 @@
 
   <%= simple_form_for @partner, html: { data: { partner_wizard_target: 'form' } } do |f| %>
     <div class="max-w-4xl mx-auto">
-      <%= render(Admin::ErrorComponent.new(@partner)) %>
+      <%= render(Components::Admin::Error.new(@partner)) %>
 
     <%# Step 1: Name %>
     <div class="card bg-base-100 shadow-lg border border-base-300" data-partner-wizard-target="step" data-step="1">
@@ -147,9 +147,9 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <%# Address %>
-          <%= render Admin::FormCardComponent.new(icon: :map, title: attr_label(:partner, :address)) do %>
+          <%= render Components::Admin::FormCard.new(icon: :map, title: attr_label(:partner, :address)) do %>
             <div data-partner-wizard-target="addressFields" data-action="input->partner-wizard#updateContinueButton">
-              <%= render Admin::AddressFieldsComponent.new(form: f, partner: @partner, current_user: current_user) %>
+              <%= render Components::Admin::AddressFields.new(form: f, partner: @partner, current_user: current_user) %>
               <div class="alert alert-warning mt-4 hidden" data-partner-wizard-target="addressIncompleteHint">
                 <%= icon(:warning, size: '5', css_class: 'shrink-0') %>
                 <span><%= t('admin.partners.validation.address_incomplete') %></span>
@@ -158,7 +158,7 @@
           <% end %>
 
           <%# Service Areas %>
-          <%= render Admin::FormCardComponent.new(
+          <%= render Components::Admin::FormCard.new(
             icon: :car,
             title: t('admin.sections.service_areas'),
             description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
@@ -251,7 +251,7 @@
 
         <div class="space-y-6">
           <%# Online Presence %>
-          <%= render Admin::FormCardComponent.new(
+          <%= render Components::Admin::FormCard.new(
             icon: :desktop,
             title: t('admin.sections.online_presence'),
             description: t('admin.partners.sections.online_presence_description')
@@ -287,7 +287,7 @@
 
           <%# Public Contact %>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <%= render Admin::FormCardComponent.new(
+            <%= render Components::Admin::FormCard.new(
               icon: :website,
               title: t('admin.sections.public_contact'),
               description: t('admin.hints.shown_publicly')
@@ -312,7 +312,7 @@
               </fieldset>
             <% end %>
 
-            <%= render Admin::FormCardComponent.new(
+            <%= render Components::Admin::FormCard.new(
               icon: :partnership,
               title: t('admin.partners.sections.partnership_contact'),
               description: t('admin.partners.sections.partnership_contact_description')
@@ -360,7 +360,7 @@
           </div>
 
           <div data-partner-wizard-target="adminFields">
-            <%= render Admin::FormCardComponent.new(
+            <%= render Components::Admin::FormCard.new(
               icon: :user,
               title: 'Admin Details',
               description: 'Enter the details for the person who will manage this partner.'
@@ -507,7 +507,7 @@
     </div><%# Close max-w-4xl wrapper %>
 
     <%# Save Bar %>
-    <%= render Admin::SaveBarComponent.new(
+    <%= render Components::Admin::SaveBar.new(
       wizard: true,
       wizard_controller: 'partner-wizard',
       submit_label: "Create Partner"

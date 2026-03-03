@@ -29,7 +29,7 @@
 
   <%= simple_form_for @calendar, url: admin_calendars_path, html: { data: { turbo: false } } do |f| %>
     <div class="max-w-4xl mx-auto">
-    <%= render(Admin::ErrorComponent.new(@calendar)) %>
+    <%= render(Components::Admin::Error.new(@calendar)) %>
 
     <%# Step 1: Source URL %>
     <div class="card bg-base-100 shadow-lg border border-base-300" data-calendar-wizard-target="step" data-step="1">
@@ -221,7 +221,7 @@
           <%# Strategy %>
           <fieldset class="fieldset bg-base-200/50 rounded-xl p-6">
             <legend class="fieldset-legend text-base font-semibold"><%= attr_label(:calendar, :strategy) %></legend>
-            <%= render Admin::RadioCardGroupComponent.new(
+            <%= render Components::Admin::RadioCardGroup.new(
               form: f,
               attribute: :strategy,
               values: Calendar.strategy.values,
@@ -260,7 +260,7 @@
     </div>
 
     <%# Save Bar %>
-    <%= render Admin::SaveBarComponent.new(
+    <%= render Components::Admin::SaveBar.new(
       wizard: true,
       wizard_controller: 'calendar-wizard',
       submit_label: t('admin.calendars.wizard.create_button'),

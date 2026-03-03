@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe EventFilterComponent, type: :component do
+RSpec.describe Components::EventFilter, type: :component do
   # Tests run with time frozen at 2022-11-08 (Tuesday)
   let(:today) { Date.new(2022, 11, 8) }
 

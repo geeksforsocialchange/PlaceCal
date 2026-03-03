@@ -7,6 +7,7 @@ This project optionally supports AI coding assistants with specialized agents fo
 - **Rails Version**: 8.x
 - **Ruby Version**: 4.0.1
 - **Project Type**: Full-stack Rails
+- **Component Framework**: Phlex 2.x (with Literal typed props)
 - **Test Framework**: RSpec
 - **GraphQL**: Enabled
 - **Turbo/Stimulus**: Enabled
