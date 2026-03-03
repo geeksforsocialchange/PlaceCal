@@ -5,7 +5,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
 
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     site = form.object
 
     h2(class: 'text-lg font-bold mb-1') { t('admin.sites.sections.preview_title') }
@@ -20,7 +20,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
 
   private
 
-  def render_partners_section(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partners_section(site)
     site_partners = PartnersQuery.new(site: site).call
 
     div(class: 'mb-8') do
@@ -49,7 +49,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_partners_table(site_partners) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partners_table(site_partners)
     div(class: 'overflow-x-auto') do
       table(class: 'table table-sm table-zebra') do
         thead do
@@ -68,7 +68,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_partner_row(partner) # rubocop:disable Metrics/AbcSize
+  def render_partner_row(partner)
     tr do
       td do
         link_to(helpers.edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange font-medium') do
@@ -81,7 +81,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_events_section(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_events_section(site)
     site_events = EventsQuery.new(site: site).scope.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart)
 
     div do
@@ -110,7 +110,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_events_table(site_events) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_events_table(site_events)
     div(class: 'overflow-x-auto') do
       table(class: 'table table-sm table-zebra') do
         thead do
@@ -130,7 +130,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_event_row(event) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_event_row(event)
     tr do
       td do
         div(class: 'font-medium') { truncate(event.summary, length: 40) }

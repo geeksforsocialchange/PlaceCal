@@ -48,7 +48,7 @@ class Views::Sites::Default < Views::Base
     end
   end
 
-  def render_support # rubocop:disable Metrics/AbcSize
+  def render_support
     section(class: 'region region__support') do
       div(class: 'c') do
         div(class: 'gr gr--3') do

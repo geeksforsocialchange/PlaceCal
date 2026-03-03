@@ -7,7 +7,7 @@ class Views::Joins::New < Views::Base
 
   prop :join, Join, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize
+  def view_template
     article(class: 'home') do
       div(class: 'margin') do
         div(class: 'card card--alt card--split center') do
@@ -51,8 +51,7 @@ class Views::Joins::New < Views::Base
     end
   end
 
-  def render_form # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    # rubocop:disable Rails/OutputSafety
+  def render_form
     simple_form_for join, url: get_in_touch_path, html: { class: 'form' } do |f|
       invisible_captcha
       div(class: 'form__person form__mid-width') do
@@ -81,12 +80,11 @@ class Views::Joins::New < Views::Base
 
       raw f.submit('Submit', class: 'btn form__submit')
     end
-    # rubocop:enable Rails/OutputSafety
   end
 
   def render_checkbox(form, field, label_text)
     div(class: 'form__checkbox') do
-      raw form.check_box(field) # rubocop:disable Rails/OutputSafety
+      raw form.check_box(field)
       label(for: "join_#{field}") do
         plain label_text
         icon(:form_checkbox, size: nil)

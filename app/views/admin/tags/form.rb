@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Tags::Form < Views::Admin::Base
   prop :tag, Tag, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     if tag.system_tag
       div(role: 'alert', class: 'alert bg-yellow-50 border-yellow-200 text-yellow-800 mb-6') do
         raw icon(:warning, size: '5', css_class: 'text-yellow-500')
@@ -40,7 +40,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
     render_assigned_users_card if show_assigned_user_field_for?(form)
   end
 
-  def render_edit_layout(form) # rubocop:disable Metrics/MethodLength
+  def render_edit_layout(form)
     div(class: 'tabs tabs-lift') do
       TabPanel(
         name: 'tag_tabs', label: "\u{1F4CB} Basic Info", hash: 'basic',
@@ -61,7 +61,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_basic_info_card(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_basic_info_card(form)
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
         SectionHeader(title: t('admin.sections.basic_information'), margin: 4)
@@ -113,7 +113,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_assigned_users_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_assigned_users_card
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
         div(class: 'flex items-start gap-4 mb-4') do

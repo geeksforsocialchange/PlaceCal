@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Partners::New < Views::Admin::Base
   prop :partner, Partner, reader: :private
   prop :current_user, User, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     content_for(:title) { 'New Partner' }
 
     div(data: { controller: 'partner-wizard',
@@ -44,7 +44,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_steps_indicator # rubocop:disable Metrics/MethodLength
+  def render_steps_indicator
     steps = %w[Name Location Tags Contact Invite Confirm]
     ul(class: 'steps steps-horizontal w-full mb-8 text-xs') do
       steps.each_with_index do |step_name, i|
@@ -74,7 +74,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
         data: { 'partner-wizard-target': 'step', step: step.to_s }, &)
   end
 
-  def render_step_name(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_name(form)
     wizard_card(step: 1, hidden: false) do
       div(class: 'card-body') do
         render_step_header(:partner, 'Name Your Partner',
@@ -86,7 +86,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_name_field(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_name_field(form)
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
       legend(class: 'fieldset-legend text-base font-semibold') do
         plain 'Partner Name '
@@ -105,7 +105,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_name_feedback # rubocop:disable Metrics/MethodLength
+  def render_name_feedback
     div(class: 'mt-4 hidden', data: { 'partner-wizard-target': 'nameFeedback' }) do
       div(class: 'alert alert-warning text-sm hidden', data: { 'partner-wizard-target': 'exactMatch' }) do
         raw icon(:warning, size: '5', css_class: 'shrink-0')
@@ -154,7 +154,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_step_location(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_location(form)
     wizard_card(step: 2) do
       div(class: 'card-body') do
         render_step_header(:location, 'Set Location',
@@ -192,7 +192,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_step_tags(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_tags(form)
     wizard_card(step: 3) do
       div(class: 'card-body') do
         render_step_header(:tag, 'Tags & Categories',
@@ -206,7 +206,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_categories_field # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_categories_field
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6',
              data: { controller: 'checkbox-limit', 'checkbox-limit-max-value': Partner::MAX_CATEGORIES.to_s }) do
       legend(class: 'fieldset-legend text-base font-semibold') { t('admin.partners.categories.title') }
@@ -229,7 +229,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_facilities_field # rubocop:disable Metrics/AbcSize
+  def render_facilities_field
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
       legend(class: 'fieldset-legend text-base font-semibold') { t('admin.partners.facilities.title') }
       p(class: 'text-sm text-gray-600 mb-3') { t('admin.partners.facilities.hint') }
@@ -247,7 +247,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_step_contact(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_contact(form)
     wizard_card(step: 4) do
       div(class: 'card-body') do
         render_step_header(:phone, 'Contact Information',
@@ -263,7 +263,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_online_presence(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_online_presence(form)
     FormCard(
       icon: :desktop, title: t('admin.sections.online_presence'),
       description: t('admin.partners.sections.online_presence_description')
@@ -291,7 +291,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_public_contact(form) # rubocop:disable Metrics/AbcSize
+  def render_public_contact(form)
     FormCard(
       icon: :website, title: t('admin.sections.public_contact'), description: t('admin.hints.shown_publicly')
     ) do
@@ -319,7 +319,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_step_invite(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_invite(form)
     wizard_card(step: 5) do
       div(class: 'card-body') do
         render_step_header(:user_add, 'Invite a Partner Admin',
@@ -339,7 +339,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_admin_details_card(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_admin_details_card(form)
     FormCard(
       icon: :user, title: 'Admin Details',
       description: 'Enter the details for the person who will manage this partner.'
@@ -373,7 +373,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_admin_email_field(form) # rubocop:disable Metrics/MethodLength, Lint/UnusedMethodArgument
+  def render_admin_email_field(_form)
     fieldset(class: 'fieldset') do
       legend(class: 'fieldset-legend') do
         plain attr_label(:user, :email)
@@ -404,7 +404,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_step_confirm(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Lint/UnusedMethodArgument
+  def render_step_confirm(_form)
     wizard_card(step: 6) do
       div(class: 'card-body') do
         render_step_header(:check_circle, 'Confirm & Create',
@@ -432,7 +432,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_after_create_options # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_after_create_options
     div(class: 'space-y-4 mt-6') do
       h3(class: 'font-semibold text-sm text-gray-600') { 'After creating, I want to:' }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-4') do
@@ -444,7 +444,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
     end
   end
 
-  def render_after_create_radio(value, icon_name, bg_class, text_class, title, description, checked: false) # rubocop:disable Metrics/ParameterLists
+  def render_after_create_radio(value, icon_name, bg_class, text_class, title, description, checked: false)
     label(class: 'cursor-pointer') do
       input(type: 'radio', name: 'after_create', value: value, class: 'peer sr-only', **(checked ? { checked: true } : {}))
       div(class: 'card bg-base-100 border-2 border-base-300 peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors') do

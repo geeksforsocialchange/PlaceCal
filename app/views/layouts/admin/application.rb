@@ -42,7 +42,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
             yield
             if Rails.env.development?
               div(class: 'font-mono text-gray-500 mt-8 text-sm') do
-                raw view_context.debug(view_context.params) # rubocop:disable Rails/OutputSafety
+                raw view_context.debug(view_context.params)
               end
             end
           end

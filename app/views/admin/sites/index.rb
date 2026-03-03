@@ -6,7 +6,7 @@ class Views::Admin::Sites::Index < Views::Admin::Base
   prop :sites, ActiveRecord::Relation, reader: :private
   prop :site_admin_options, Array, reader: :private
 
-  def view_template # rubocop:disable Metrics/MethodLength
+  def view_template
     Datatable(
       title: 'Sites',
       model: :sites,

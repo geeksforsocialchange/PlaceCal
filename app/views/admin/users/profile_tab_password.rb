@@ -3,7 +3,7 @@
 class Views::Admin::Users::ProfileTabPassword < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     div(class: 'space-y-6') do
       div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
         div(class: 'card-body p-6') do
@@ -25,7 +25,7 @@ class Views::Admin::Users::ProfileTabPassword < Views::Admin::Base
 
   private
 
-  def render_new_password_field # rubocop:disable Metrics/AbcSize
+  def render_new_password_field
     div(class: 'fieldset') do
       label(for: 'user_password', class: 'fieldset-legend') { t('admin.users.profile.new_password') }
       raw form.input_field(:password,
@@ -55,7 +55,7 @@ class Views::Admin::Users::ProfileTabPassword < Views::Admin::Base
     end
   end
 
-  def render_current_password_field # rubocop:disable Metrics/AbcSize
+  def render_current_password_field
     div(class: 'fieldset') do
       label(for: 'user_current_password', class: 'fieldset-legend') do
         plain t('admin.users.profile.current_password')

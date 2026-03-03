@@ -3,7 +3,7 @@
 class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     calendar = form.object
 
     SectionHeader(
@@ -21,7 +21,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
 
   private
 
-  def render_left_column(calendar) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_left_column(calendar)
     div(class: 'lg:col-span-2 space-y-4', data: { controller: 'calendar-name-suggest' }) do
       render_partner_field(calendar)
 
@@ -34,7 +34,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
     end
   end
 
-  def render_partner_field(calendar) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partner_field(calendar)
     fieldset(class: 'fieldset') do
       label(for: 'calendar_partner_id', class: 'fieldset-legend') do
         plain t('admin.calendars.fields.partner_organiser')
@@ -57,7 +57,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
     end
   end
 
-  def render_name_field # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_name_field
     fieldset(class: 'fieldset') do
       label(for: 'calendar_name', class: 'fieldset-legend') do
         plain t('admin.calendars.fields.calendar_name')
@@ -80,7 +80,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
     end
   end
 
-  def render_right_column(calendar) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_right_column(calendar)
     div do
       FormCard(icon: :info, title: t('admin.calendars.sections.supported_sources')) do
         ul(class: 'text-xs text-base-content/70 space-y-1') do

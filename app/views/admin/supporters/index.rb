@@ -3,7 +3,7 @@
 class Views::Admin::Supporters::Index < Views::Admin::Base
   prop :supporters, ActiveRecord::Relation, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     content_for(:title) { 'Supporters' }
 
     div(class: 'mb-6') do
@@ -27,7 +27,7 @@ class Views::Admin::Supporters::Index < Views::Admin::Base
 
   private
 
-  def render_table # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_table
     div(class: 'bg-white shadow-sm rounded-lg overflow-hidden') do
       table(class: 'min-w-full divide-y divide-gray-200') do
         thead(class: 'bg-gray-50') do
@@ -44,7 +44,7 @@ class Views::Admin::Supporters::Index < Views::Admin::Base
     end
   end
 
-  def render_row(supporter) # rubocop:disable Metrics/AbcSize
+  def render_row(supporter)
     tr(class: 'hover:bg-gray-50') do
       td(class: 'px-6 py-4 whitespace-nowrap text-sm text-gray-500') { supporter.id.to_s }
       td(class: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900') { supporter.name }

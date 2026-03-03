@@ -3,7 +3,7 @@
 class Views::Admin::Users::FormTabRoles < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     user = form.object
 
     div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
@@ -21,7 +21,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
 
   private
 
-  def render_partnerships_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partnerships_card(user)
     FormCard(
       icon: :partnership,
       title: Partnership.model_name.human(count: 2),
@@ -41,7 +41,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
     end
   end
 
-  def render_neighbourhoods_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_neighbourhoods_card(user)
     neighbourhoods_hint = helpers.current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint')
 
     FormCard(
@@ -70,7 +70,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
     end
   end
 
-  def render_sites_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_sites_card(user)
     FormCard(
       icon: :site,
       title: Site.model_name.human(count: 2),
@@ -89,7 +89,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
     end
   end
 
-  def render_site_link(site) # rubocop:disable Metrics/AbcSize
+  def render_site_link(site)
     link_to(helpers.edit_admin_site_path(site),
             class: 'group flex items-center gap-3 p-3 bg-base-200/80 rounded-xl border border-base-300/50 hover:border-base-300 transition-all') do
       div(class: 'shrink-0 w-9 h-9 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center') do
@@ -109,7 +109,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
     end
   end
 
-  def render_partners_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partners_card(user)
     FormCard(
       icon: :partner,
       title: Partner.model_name.human(count: 2),

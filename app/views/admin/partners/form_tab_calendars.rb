@@ -3,7 +3,7 @@
 class Views::Admin::Partners::FormTabCalendars < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     partner = form.object
 
     h2(class: 'text-lg font-bold mb-1 flex items-center gap-2') do

@@ -3,7 +3,7 @@
 class Views::Admin::Articles::FormTabText < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     article = form.object
     disabled_fields = helpers.policy(article).disabled_fields
 
@@ -15,7 +15,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
 
   private
 
-  def render_details_section(article, disabled_fields) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_details_section(article, disabled_fields)
     div(class: 'space-y-3') do
       h2(class: 'text-base font-semibold flex items-center gap-2') do
         raw icon(:edit, size: '4')
@@ -40,14 +40,14 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     end
   end
 
-  def render_author_and_date(article, disabled_fields) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_author_and_date(article, disabled_fields)
     div(class: 'flex flex-col sm:flex-row sm:items-end gap-4') do
       render_author_field(article, disabled_fields)
       render_publication_date(article) unless article.new_record?
     end
   end
 
-  def render_author_field(article, disabled_fields) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_author_field(article, disabled_fields)
     fieldset(class: 'fieldset min-w-64 article_author') do
       raw form.label(:author_id, attr_label(:article, :author), class: 'fieldset-legend')
 
@@ -69,7 +69,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     end
   end
 
-  def render_publication_date(article) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_publication_date(article)
     fieldset(class: 'fieldset w-auto') do
       legend(class: 'fieldset-legend') { t('admin.articles.fields.published') }
       div(class: 'input input-bordered h-9 flex items-center gap-2 bg-base-200/50 cursor-default') do
@@ -87,7 +87,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     end
   end
 
-  def render_body_section # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_body_section
     div(data: { controller: 'markdown-preview' }) do
       raw form.label(:body, class: 'fieldset-legend') {
         safe "#{attr_label(:article, :body)} <span class=\"text-error\">#{t('admin.labels.required')}</span>"
@@ -108,7 +108,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     end
   end
 
-  def render_markdown_header # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_markdown_header
     div(class: 'flex items-center gap-0 mb-2', data: { markdown_preview_target: 'container' }) do
       div(class: 'flex-1 min-w-64 flex items-center justify-between', data: { markdown_preview_target: 'editorPane' }) do
         div(class: 'text-xs font-medium text-gray-600 flex items-center gap-1') do
@@ -130,7 +130,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     end
   end
 
-  def render_markdown_toolbar # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_markdown_toolbar
     div(class: 'flex items-center gap-0.5', data: { markdown_preview_target: 'toolbar' }) do
       toolbar_button('click->markdown-preview#insertBold', t('admin.articles.markdown.toolbar.bold')) do
         strong { 'B' }
@@ -165,7 +165,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     button(type: 'button', class: 'btn btn-ghost btn-xs px-2', data: { action: action }, title: title, &)
   end
 
-  def render_markdown_content # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_markdown_content
     div(class: 'flex gap-0', data: { markdown_preview_target: 'contentContainer' }) do
       # Editor
       div(class: 'flex-1 min-w-64', data: { markdown_preview_target: 'editorContent' }) do

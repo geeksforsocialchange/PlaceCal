@@ -5,7 +5,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
 
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     calendar = form.object
 
     render_header(calendar)
@@ -29,7 +29,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
 
   private
 
-  def render_header(calendar) # rubocop:disable Metrics/AbcSize
+  def render_header(calendar)
     h2(class: 'text-lg font-bold mb-1 flex items-center gap-2') do
       raw icon(:event, size: '5')
       plain ::Event.model_name.human(count: 2)
@@ -38,7 +38,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
     p(class: 'text-sm text-gray-600 mb-6') { t('admin.calendars.sections.events_description') }
   end
 
-  def render_upcoming_events(upcoming_events) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_upcoming_events(upcoming_events)
     h3(class: 'font-semibold mb-3 flex items-center gap-2') do
       span(class: 'text-success') { "\u25CF" }
       plain t('admin.sections.upcoming_events')
@@ -49,7 +49,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_past_events(past_events) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_past_events(past_events)
     div(class: 'collapse collapse-arrow bg-base-200/50 border border-base-300 rounded-lg') do
       input(type: 'checkbox')
       div(class: 'collapse-title font-semibold flex items-center gap-2') do
@@ -65,7 +65,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_events_table(events, opacity: false) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_events_table(events, opacity: false)
     table(class: 'table table-sm table-zebra') do
       thead do
         tr do
@@ -82,7 +82,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_event_row(event, opacity: false) # rubocop:disable Metrics/AbcSize
+  def render_event_row(event, opacity: false)
     tr(class: opacity ? 'opacity-70' : nil) do
       td do
         div(class: 'font-medium') { truncate(event.summary, length: 60) }

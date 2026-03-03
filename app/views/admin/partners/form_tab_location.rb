@@ -3,7 +3,7 @@
 class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     partner = form.object
 
     SectionHeader(
@@ -66,7 +66,7 @@ class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
     end
   end
 
-  def render_service_areas # rubocop:disable Metrics/MethodLength
+  def render_service_areas
     FormCard(
       icon: :car,
       title: t('admin.sections.service_areas'),

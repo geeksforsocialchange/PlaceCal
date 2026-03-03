@@ -3,7 +3,7 @@
 class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     site = form.object
 
     SectionHeader(

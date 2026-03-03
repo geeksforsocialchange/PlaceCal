@@ -3,7 +3,7 @@
 class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     partner = form.object
 
     SectionHeader(
@@ -20,7 +20,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
 
   private
 
-  def render_browser_mockup(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_browser_mockup(partner)
     div(class: 'mockup-browser bg-base-300 border border-base-300 max-w-4xl') do
       div(class: 'mockup-browser-toolbar') do
         div(class: 'input text-sm') { "placecal.org/partners/#{partner.slug}" }
@@ -79,7 +79,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_sidebar_details(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_sidebar_details(partner)
     div(class: 'card bg-base-200 card-body p-4 text-sm') do
       if partner.address&.to_s.present?
         div(class: 'mb-3') do
@@ -113,7 +113,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_upcoming_events(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_upcoming_events(partner)
     SectionHeader(
       title: t('admin.sections.upcoming_events'),
       description: t('admin.partners.sections.upcoming_events_description'),
@@ -129,7 +129,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
     end
   end
 
-  def render_events_table(events) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_events_table(events)
     div(class: 'overflow-x-auto') do
       table(class: 'table table-sm table-zebra') do
         thead do

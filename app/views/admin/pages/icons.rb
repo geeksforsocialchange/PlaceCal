@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Pages::Icons < Views::Admin::Base
   prop :icons, Hash, reader: :private
 
   ICON_CATEGORIES = {
@@ -35,7 +35,7 @@ class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/
 
   private
 
-  def render_header # rubocop:disable Metrics/AbcSize
+  def render_header
     div(class: 'mb-6') do
       h1(class: 'text-2xl font-bold') { 'Icon Reference' }
       p(class: 'text-sm text-gray-600 mt-1') do
@@ -58,7 +58,7 @@ class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/
     end
   end
 
-  def render_category(category, icon_names) # rubocop:disable Metrics/AbcSize
+  def render_category(category, icon_names)
     div(class: 'card bg-base-100 border border-base-300') do
       div(class: 'card-body p-4') do
         h2(class: 'font-bold text-lg mb-4 flex items-center gap-2') do
@@ -89,7 +89,7 @@ class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/
     div(class: 'divider my-8')
   end
 
-  def render_size_reference # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_size_reference
     div(class: 'card bg-base-100 border border-base-300 mb-8') do
       div(class: 'card-body p-4') do
         h2(class: 'font-bold text-lg mb-4') { 'Size Reference' }
@@ -114,7 +114,7 @@ class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/
     end
   end
 
-  def render_stroke_reference # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_stroke_reference
     div(class: 'card bg-base-100 border border-base-300 mb-8') do
       div(class: 'card-body p-4') do
         h2(class: 'font-bold text-lg mb-4') { 'Stroke Width Reference' }
@@ -138,7 +138,7 @@ class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/
     end
   end
 
-  def render_color_examples # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_color_examples
     colors = [
       ['text-placecal-orange', 'PlaceCal Orange'], ['text-success', 'Success'], ['text-error', 'Error'],
       ['text-warning', 'Warning'], ['text-info', 'Info'], ['text-gray-600', '50% opacity']

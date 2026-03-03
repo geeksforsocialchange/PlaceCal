@@ -3,7 +3,7 @@
 class Views::Admin::Users::FormTabSettings < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     user = form.object
 
     div(class: 'space-y-8') do
@@ -32,7 +32,7 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
     end
   end
 
-  def render_danger_zone(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_danger_zone(user)
     return unless user.persisted? && helpers.policy(user).destroy?
 
     div do
@@ -57,7 +57,7 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
     end
   end
 
-  def render_site_admin_warning # rubocop:disable Metrics/AbcSize
+  def render_site_admin_warning
     div(class: 'card bg-base-200/50 border border-base-300') do
       div(class: 'card-body p-5') do
         h4(class: 'font-semibold flex items-center gap-2 mb-2 text-base-content/70') do

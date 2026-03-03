@@ -3,7 +3,7 @@
 class Views::Admin::Calendars::FormTabSettings < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     calendar = form.object
 
     render_api_token_section(calendar)
@@ -22,7 +22,7 @@ class Views::Admin::Calendars::FormTabSettings < Views::Admin::Base
 
   private
 
-  def render_api_token_section(calendar) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_api_token_section(calendar)
     api_token_modes = CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }
     return unless calendar.importer_mode.in?(api_token_modes) || calendar.api_token.present?
 

@@ -3,7 +3,7 @@
 class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     div(class: 'grid grid-cols-1 lg:grid-cols-3 gap-6') do
       div(class: 'lg:col-span-2 space-y-4') do
         SectionHeader(
@@ -29,11 +29,11 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
 
   private
 
-  def render_name_field # rubocop:disable Metrics/MethodLength
+  def render_name_field
     fieldset(class: 'fieldset') do
       raw form.label(:name, class: 'fieldset-legend') {
         "#{Partner.model_name.human} #{attr_label(:partner, :name)} " \
-        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe # rubocop:disable Rails/OutputSafety
+        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
       }
       raw form.input_field(:name, class: 'input input-bordered w-full',
                                   'data-controller': 'partner-form-validation',
@@ -46,7 +46,7 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
     end
   end
 
-  def render_summary_field # rubocop:disable Metrics/MethodLength
+  def render_summary_field
     fieldset(class: 'fieldset', data: { controller: 'char-counter', 'char-counter-max-value': '200' }) do
       raw form.label(:summary, attr_label(:partner, :summary), class: 'fieldset-legend')
       raw form.input_field(:summary, as: :text,

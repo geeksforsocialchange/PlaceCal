@@ -44,16 +44,12 @@ class Views::Pages::TermsOfUse < Views::Base
   def render_safety
     h3 { 'Safety' }
     p { 'PlaceCal is not responsible for the conduct of any member on or off of the Service. You agree to use caution in all interactions with other members, especially if you decide to communicate off the Service or meet in person, such as attending an event.' }
-    # rubocop:disable Rails/OutputSafety
     p { raw(safe('<strong>You are solely responsible for your interactions with organisations and events. You understand that PlaceCal does not conduct background checks on users or otherwise inquire into the background of users. PlaceCal makes no representations or warranties as to the content or safety of events and organisations listed on its service.</strong>')) }
-    # rubocop:enable Rails/OutputSafety
   end
 
-  def render_community_rules # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_community_rules
     h3 { 'Community Rules' }
-    # rubocop:disable Rails/OutputSafety
     p { raw(safe('<strong>PlaceCal is dedicated to providing an inclusive, kind, welcoming, and harassment-free experience for everyone using the platform or going to events listed on it. We do not tolerate harassment of partners or site users in any form.</strong>')) }
-    # rubocop:enable Rails/OutputSafety
     p { 'These community rules apply both the PlaceCal platform and our adjacent platforms, including our Discord, emails and direct messages, both online and off. Anyone who violates the community rules may be sanctioned or expelled from these spaces at the discretion of the administrators.' }
     p { 'Prohibited topics for events on our platform, partner descriptions, and communication with the PlaceCal team include:' }
     ul do

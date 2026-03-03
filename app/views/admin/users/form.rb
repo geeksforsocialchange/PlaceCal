@@ -4,7 +4,7 @@ class Views::Admin::Users::Form < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
   prop :user, User, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     Error(form.object)
 
     div(class: 'tabs tabs-lift') do

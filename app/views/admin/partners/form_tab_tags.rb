@@ -3,7 +3,7 @@
 class Views::Admin::Partners::FormTabTags < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     partner = form.object
 
     SectionHeader(
@@ -20,7 +20,7 @@ class Views::Admin::Partners::FormTabTags < Views::Admin::Base
 
   private
 
-  def render_facilities(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_facilities(partner)
     fieldset(class: 'fieldset') do
       legend(class: 'fieldset-legend') { t('admin.partners.facilities.title') }
       p(class: 'fieldset-label mb-3') { t('admin.partners.facilities.hint') }
@@ -38,7 +38,7 @@ class Views::Admin::Partners::FormTabTags < Views::Admin::Base
     end
   end
 
-  def render_categories(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_categories(partner)
     fieldset(class: 'fieldset',
              data: { controller: 'checkbox-limit', 'checkbox-limit-max-value': Partner::MAX_CATEGORIES.to_s }) do
       legend(class: 'fieldset-legend') { t('admin.partners.categories.title') }

@@ -24,7 +24,7 @@ class Views::News::Show < Views::Base
 
   private
 
-  def render_article_body # rubocop:disable Metrics/AbcSize
+  def render_article_body
     div(class: 'g article') do
       div(class: 'gi gi__1-5 article__aside') do
         p(class: 'article__published', title: article.published_at.to_s) do

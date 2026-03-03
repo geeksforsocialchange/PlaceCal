@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Neighbourhoods::Form < Views::Admin::Base
   prop :neighbourhood, Neighbourhood, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     simple_form_for([:admin, neighbourhood], html: { data: { controller: 'form-dirty' } }) do |form|
       Error(neighbourhood)
 
@@ -43,7 +43,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_admins_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_admins_card
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
         div(class: 'flex items-start gap-4 mb-4') do
@@ -72,7 +72,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_official_data_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_official_data_card
     is_current = !neighbourhood.legacy_neighbourhood?
 
     Card(title: t('admin.neighbourhoods.form.official_title'), icon: :globe) do

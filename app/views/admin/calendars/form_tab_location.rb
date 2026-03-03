@@ -3,7 +3,7 @@
 class Views::Admin::Calendars::FormTabLocation < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     SectionHeader(
       title: t('admin.calendars.tabs.location'),
       description: t('admin.calendars.sections.location_description')

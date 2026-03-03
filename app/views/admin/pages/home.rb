@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Pages::Home < Views::Admin::Base
   prop :user, User, reader: :private
   prop :sites, ActiveRecord::Relation, reader: :private
   prop :partners, ActiveRecord::Relation, reader: :private
@@ -41,7 +41,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_welcome_header # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_welcome_header
     hour = Time.current.hour
     greeting_key = if hour < 12 then 'morning'
                    elsif hour < 17 then 'afternoon'
@@ -60,7 +60,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_quick_action_buttons # rubocop:disable Metrics/AbcSize
+  def render_quick_action_buttons
     div(class: 'flex flex-wrap gap-2') do
       [Partner, Calendar, User].each do |model|
         next unless view_context.policy(model).create?
@@ -75,7 +75,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_stats_row # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_stats_row
     div(class: 'grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6') do
       StatCard(
         label: t('admin.dashboard.stats.partners'), value: total_partners.to_s, icon: :partner
@@ -88,7 +88,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_calendars_stat_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_calendars_stat_card
     StatCard(
       label: t('admin.dashboard.stats.calendars'), value: nil,
       subtitle: t('admin.dashboard.stats.calendars_total', count: total_calendars)
@@ -116,7 +116,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_handbook_link # rubocop:disable Metrics/AbcSize
+  def render_handbook_link
     link_to('https://handbook.placecal.org/', target: '_blank',
                                               class: 'card bg-base-100 border border-base-300 shadow-sm ' \
                                                      'hover:border-placecal-orange/30 transition-all group', rel: 'noopener') do
@@ -137,7 +137,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_bento_grid # rubocop:disable Metrics/AbcSize
+  def render_bento_grid
     div(class: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4') do
       render_sites_card if sites.any?
       render_action_items_card
@@ -150,7 +150,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_sites_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_sites_card
     Card(
       title: t('admin.dashboard.cards.your_sites'), icon: :site,
       header_link: admin_sites_path, header_link_text: t('admin.actions.view_all')
@@ -179,7 +179,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_action_items_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_action_items_card
     Card(
       title: t('admin.dashboard.cards.action_items'), icon: :clipboard,
       icon_class: problem_calendars_count.positive? ? 'text-error' : 'text-success',
@@ -230,7 +230,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_upcoming_events_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_upcoming_events_card
     Card(title: t('admin.dashboard.cards.upcoming_events'), icon: :event) do
       if upcoming_events.any?
         div(class: 'space-y-1') do
@@ -256,7 +256,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_updated_partners_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_updated_partners_card
     Card(title: t('admin.dashboard.cards.updated_partners'), icon: :partner) do
       if partners.any?
         div(class: 'space-y-1') do
@@ -290,7 +290,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_updated_calendars_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_updated_calendars_card
     Card(title: t('admin.dashboard.cards.updated_calendars'), icon: :calendar) do
       if calendars.any?
         div(class: 'space-y-1') do
@@ -314,7 +314,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_updated_users_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_updated_users_card
     Card(title: t('admin.dashboard.cards.updated_users'), icon: :users) do
       if users.any?
         div(class: 'space-y-1') do
@@ -338,7 +338,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_partnerships_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partnerships_card
     Card(
       title: t('admin.dashboard.cards.your_partnerships'), icon: :partnership
     ) do
@@ -365,7 +365,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_quick_links_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_quick_links_card
     Card(title: t('admin.dashboard.cards.quick_links'), icon: :link) do
       div(class: 'space-y-1') do
         render_quick_link(admin_calendars_path, :calendar, t('admin.dashboard.links.all_calendars'))
@@ -378,7 +378,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
     end
   end
 
-  def render_quick_link(path, icon_name, text, external: false) # rubocop:disable Metrics/AbcSize
+  def render_quick_link(path, icon_name, text, external: false)
     attrs = { class: 'flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors group' }
     attrs[:target] = '_blank' if external
 

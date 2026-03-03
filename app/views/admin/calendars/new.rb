@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Calendars::New < Views::Admin::Base
   prop :calendar, Calendar, reader: :private
   prop :partner, _Nilable(Partner), reader: :private
   prop :partner_missing_address, _Boolean, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     content_for(:title) { 'New Calendar' }
 
     api_token_parsers = CalendarImporter::CalendarImporter::PARSERS
@@ -67,7 +67,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metric
     end
   end
 
-  def render_step_source(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_source(form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300',
         data: { 'calendar-wizard-target': 'step', step: '1' }) do
       div(class: 'card-body') do
@@ -83,7 +83,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metric
     end
   end
 
-  def render_source_url_field(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_source_url_field(form)
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
       legend(class: 'fieldset-legend text-base font-semibold') do
         plain attr_label(:calendar, :source)
@@ -112,7 +112,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metric
     end
   end
 
-  def render_source_feedback # rubocop:disable Metrics/MethodLength
+  def render_source_feedback
     div(class: 'mt-2 hidden', data: { 'calendar-wizard-target': 'sourceFeedback' }) do
       div(class: 'alert alert-success text-sm hidden', data: { 'calendar-wizard-target': 'sourceSuccess' }) do
         raw icon(:check_circle, size: '5', css_class: 'shrink-0')
@@ -191,7 +191,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metric
     end
   end
 
-  def render_step_organiser(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_organiser(form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300 hidden',
         data: { 'calendar-wizard-target': 'step', step: '2' }) do
       div(class: 'card-body') do
@@ -232,7 +232,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metric
     end
   end
 
-  def render_step_location(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_location(form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300 hidden',
         data: { 'calendar-wizard-target': 'step', step: '3' }) do
       div(class: 'card-body') do

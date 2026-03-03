@@ -12,7 +12,7 @@ class Views::Admin::Sites::Show < Views::Admin::Base
 
   private
 
-  def render_header # rubocop:disable Metrics/AbcSize
+  def render_header
     div(class: 'mb-6') do
       div(class: 'flex flex-wrap items-center justify-between gap-4') do
         div do
@@ -30,7 +30,7 @@ class Views::Admin::Sites::Show < Views::Admin::Base
     end
   end
 
-  def render_stats # rubocop:disable Metrics/AbcSize
+  def render_stats
     error_count = calendars.where(calendar_state: %i[error bad_source]).count
     div(class: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-6') do
       InfoCard(
@@ -48,7 +48,7 @@ class Views::Admin::Sites::Show < Views::Admin::Base
     end
   end
 
-  def render_calendars_table # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_calendars_table
     div(class: 'card bg-base-100 border border-base-300') do
       div(class: 'card-body p-0') do
         div(class: 'p-4 border-b border-base-300 flex items-center justify-between') do
@@ -87,7 +87,7 @@ class Views::Admin::Sites::Show < Views::Admin::Base
     end
   end
 
-  def render_calendar_row(calendar) # rubocop:disable Metrics/AbcSize
+  def render_calendar_row(calendar)
     tr(class: 'hover') do
       td do
         div(class: 'flex flex-col') do
@@ -102,7 +102,7 @@ class Views::Admin::Sites::Show < Views::Admin::Base
     end
   end
 
-  def render_calendar_state(calendar) # rubocop:disable Metrics/MethodLength
+  def render_calendar_state(calendar)
     case calendar.calendar_state.to_s
     when 'idle'
       span(class: 'inline-flex items-center gap-1 text-success', title: 'Ready') { icon(:check, size: '4') }

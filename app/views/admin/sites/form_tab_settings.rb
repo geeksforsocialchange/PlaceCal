@@ -3,7 +3,7 @@
 class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     site = form.object
 
     SectionHeader(
@@ -32,7 +32,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
     end
   end
 
-  def render_url_slug_fields(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_url_slug_fields(site)
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-4') do
       fieldset(class: 'fieldset') do
         legend(class: 'fieldset-legend') do

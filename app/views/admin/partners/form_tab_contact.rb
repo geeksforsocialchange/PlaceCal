@@ -3,7 +3,7 @@
 class Views::Admin::Partners::FormTabContact < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     partner = form.object
 
     div(class: 'space-y-6') do
@@ -17,7 +17,7 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
 
   private
 
-  def render_online_presence # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_online_presence
     FormCard(
       icon: :desktop,
       title: t('admin.sections.online_presence'),
@@ -48,7 +48,7 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
     end
   end
 
-  def render_public_contact # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_public_contact
     FormCard(
       icon: :website,
       title: t('admin.sections.public_contact'),
@@ -71,7 +71,7 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
     end
   end
 
-  def render_partnership_contact(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partnership_contact(partner)
     FormCard(
       icon: :partnership,
       title: t('admin.partners.sections.partnership_contact'),

@@ -5,7 +5,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
   prop :all_neighbourhoods, ActiveRecord::Relation, reader: :private
   prop :primary_neighbourhood_id, _Nilable(Integer), reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     site = form.object
 
     SectionHeader(
@@ -25,7 +25,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
 
   private
 
-  def render_primary_neighbourhood_card(_site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_primary_neighbourhood_card(_site)
     FormCard(
       icon: :neighbourhood,
       title: t('admin.sites.sections.main_neighbourhood'),
@@ -43,7 +43,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
     end
   end
 
-  def render_existing_primary(sites_neighbourhood, primary) # rubocop:disable Metrics/AbcSize
+  def render_existing_primary(sites_neighbourhood, primary)
     NeighbourhoodCard(
       neighbourhood: primary,
       show_header: false,
@@ -60,7 +60,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
     end
   end
 
-  def render_other_neighbourhoods_card(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_other_neighbourhoods_card(site)
     FormCard(
       icon: :map_pin,
       title: t('admin.sites.sections.other_neighbourhoods'),

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
   register_value_helper :safe_neighbourhood_name
 
   prop :neighbourhood, Neighbourhood, reader: :private
@@ -15,7 +15,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
 
   private
 
-  def render_header # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_header
     div(class: 'flex items-center justify-between mb-6') do
       div do
         h1(class: 'text-2xl font-semibold') { safe_neighbourhood_name(neighbourhood) }
@@ -39,7 +39,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_stats_row # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_stats_row
     div(class: 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6') do
       StatCard(
         label: t('admin.neighbourhoods.show.stats.partners'),
@@ -59,7 +59,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_level_card # rubocop:disable Metrics/AbcSize
+  def render_level_card
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-3') do
         div(class: 'flex items-center justify-between') do
@@ -71,7 +71,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_ons_code_card # rubocop:disable Metrics/AbcSize
+  def render_ons_code_card
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-3') do
         div(class: 'flex items-center justify-between') do
@@ -85,7 +85,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_ons_dataset_card # rubocop:disable Metrics/AbcSize
+  def render_ons_dataset_card
     is_current = !neighbourhood.legacy_neighbourhood?
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-3') do
@@ -111,7 +111,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_ancestors_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_ancestors_card
     Card(
       title: t('admin.neighbourhoods.show.parent_hierarchy'), icon: :arrow_up
     ) do
@@ -141,7 +141,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_children_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_children_card
     Card(
       title: t('admin.neighbourhoods.show.child_neighbourhoods'), icon: :arrow_down
     ) do
@@ -164,7 +164,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_child_row(child) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_child_row(child)
     can_view = child.descendants.present? || view_context.current_user.can_view_neighbourhood_by_id?(child.id)
     if can_view
       link_to(admin_neighbourhood_path(child),
@@ -198,7 +198,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_partners_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partners_card
     all_partners = neighbourhood.partners.sort_by(&:name)
     display_partners = all_partners.first(10)
 
@@ -225,7 +225,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_partner_row(partner) # rubocop:disable Metrics/AbcSize
+  def render_partner_row(partner)
     if view_context.policy(partner).update?
       link_to(edit_admin_partner_path(partner),
               class: 'flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group') do
@@ -245,7 +245,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_sites_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_sites_card
     sites = neighbourhood.sites.order(:name)
     Card(title: Site.model_name.human(count: 2), icon: :site) do
       if sites.any?
@@ -273,7 +273,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_admins_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_admins_card
     admins = neighbourhood.users.order(:email)
     Card(
       title: t('admin.neighbourhoods.show.neighbourhood_admins'), icon: :users
@@ -291,7 +291,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     end
   end
 
-  def render_admin_row(admin_user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_admin_row(admin_user)
     if view_context.policy(admin_user).update?
       link_to(edit_admin_user_path(admin_user),
               class: 'flex items-center gap-3 p-2 rounded-lg hover:bg-base-200/50 transition-colors group') do

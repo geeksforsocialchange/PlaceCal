@@ -3,7 +3,7 @@
 class Views::Admin::Calendars::FormTabContact < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/MethodLength
+  def view_template
     SectionHeader(
       title: t('admin.calendars.tabs.contact'),
       description: t('admin.calendars.sections.contact_description')

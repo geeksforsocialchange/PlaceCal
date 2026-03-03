@@ -7,7 +7,7 @@ class Views::Admin::Calendars::Index < Views::Admin::Base
   prop :partner_options, Array, reader: :private
   prop :importer_options, Array, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     Datatable(
       title: 'Calendars',
       model: :calendars,
@@ -40,7 +40,7 @@ class Views::Admin::Calendars::Index < Views::Admin::Base
 
   private
 
-  def calendars_filters # rubocop:disable Metrics/MethodLength
+  def calendars_filters
     [
       { type: :radio, column: 'has_events', label: 'Events',
         options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }] },

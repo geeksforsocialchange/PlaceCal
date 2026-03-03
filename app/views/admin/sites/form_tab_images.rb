@@ -3,7 +3,7 @@
 class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     site = form.object
 
     SectionHeader(
@@ -29,7 +29,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
     end
   end
 
-  def render_logo_fields(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_logo_fields(site)
     return unless helpers.policy(site).permitted_attributes.include?(:logo)
 
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-8 mb-8') do
@@ -56,7 +56,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
     end
   end
 
-  def render_image_upload_field(legend_text:, attribute:, image_url:, hint_uploader:, preview_class:, preview_wrapper_class: nil) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/ParameterLists
+  def render_image_upload_field(legend_text:, attribute:, image_url:, hint_uploader:, preview_class:, preview_wrapper_class: nil)
     fieldset(class: 'fieldset') do
       legend(class: 'fieldset-legend') { legend_text }
       div(data: { controller: 'image-preview' }) do
@@ -74,7 +74,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
     end
   end
 
-  def render_upload_label(attribute, hint_uploader) # rubocop:disable Metrics/AbcSize
+  def render_upload_label(attribute, hint_uploader)
     label(class: 'flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3') do
       div(class: 'flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center') do
         raw icon(:upload, size: '5', css_class: 'text-placecal-orange')
@@ -88,7 +88,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
     end
   end
 
-  def render_hero_image_field(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_hero_image_field(site)
     fieldset(class: 'fieldset bg-base-200/50 border border-base-300 rounded-box p-4') do
       legend(class: 'fieldset-legend') { attr_label(:site, :hero_image) }
       p(class: 'text-sm text-gray-600 mb-4') do
@@ -111,7 +111,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
     end
   end
 
-  def render_hero_upload_label(site) # rubocop:disable Metrics/AbcSize
+  def render_hero_upload_label(site)
     label(class: 'flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer bg-base-100 mb-4') do
       div(class: 'flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center') do
         raw icon(:upload, size: '5', css_class: 'text-placecal-orange')

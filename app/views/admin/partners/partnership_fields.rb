@@ -3,7 +3,7 @@
 class Views::Admin::Partners::PartnershipFields < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     partner = form.object
     current_user = helpers.current_user
 

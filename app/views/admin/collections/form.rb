@@ -3,7 +3,7 @@
 class Views::Admin::Collections::Form < Views::Admin::Base
   prop :collection, Collection, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     simple_form_for([:admin, collection], html: { class: 'space-y-6' }) do |form|
       Error(collection)
 

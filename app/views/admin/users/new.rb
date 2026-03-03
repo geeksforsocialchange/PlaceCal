@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Users::New < Views::Admin::Base
   prop :user, User, reader: :private
   prop :current_user, User, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     content_for(:title) { 'New User' }
 
     display_fields = helpers.policy(current_user).permitted_attributes_for_create
@@ -64,7 +64,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_personal_details_card(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_personal_details_card(form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300') do
       div(class: 'card-body') do
         render_step_header(:user, 'Personal Details',
@@ -86,10 +86,10 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_email_field(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_email_field(form)
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-4') do
       raw form.label(:email, class: 'fieldset-legend font-semibold') {
-        "#{attr_label(:user, :email)} <span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe # rubocop:disable Rails/OutputSafety
+        "#{attr_label(:user, :email)} <span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
       }
       raw form.input_field(:email,
                            class: 'input input-bordered w-full',
@@ -117,7 +117,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_role_card(form) # rubocop:disable Metrics/AbcSize
+  def render_role_card(form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300 mt-6') do
       div(class: 'card-body') do
         render_step_header(:crown, attr_label(:user, :role), t('admin.users.fields.role_hint'))
@@ -129,7 +129,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_step_permissions(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_step_permissions(form)
     div(class: 'hidden', data: { 'user-wizard-target': 'step', step: '2' }) do
       div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
         render_partners_card(form)
@@ -147,7 +147,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_partners_card(form) # rubocop:disable Metrics/AbcSize, Lint/UnusedMethodArgument
+  def render_partners_card(_form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300') do
       div(class: 'card-body') do
         render_permission_header(:partner, 'from-emerald-100 to-teal-100', 'text-emerald-600',
@@ -166,7 +166,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_partnerships_card(form) # rubocop:disable Lint/UnusedMethodArgument
+  def render_partnerships_card(_form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300') do
       div(class: 'card-body') do
         render_permission_header(:partnership, 'from-amber-100 to-orange-100', 'text-amber-700',
@@ -185,7 +185,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     end
   end
 
-  def render_neighbourhoods_card(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_neighbourhoods_card(form)
     div(class: 'card bg-base-100 shadow-lg border border-base-300 lg:col-span-2') do
       div(class: 'card-body') do
         neighbourhoods_hint = current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint')

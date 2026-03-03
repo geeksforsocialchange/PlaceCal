@@ -3,7 +3,7 @@
 class Views::Admin::Calendars::Form < Views::Admin::Base
   prop :calendar, Calendar, reader: :private
 
-  def view_template # rubocop:disable Metrics/MethodLength
+  def view_template
     render Views::Admin::Calendars::ImporterOverview.new(calendar: calendar) unless calendar.new_record?
 
     simple_form_for([:admin, calendar], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'calendarTabAfterSave' } }) do |form|

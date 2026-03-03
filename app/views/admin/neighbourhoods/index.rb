@@ -6,7 +6,7 @@ class Views::Admin::Neighbourhoods::Index < Views::Admin::Base
   prop :neighbourhoods, ActiveRecord::Relation, reader: :private
   prop :current_user, User, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     Datatable(
       title: t('admin.neighbourhoods.index.title'),
       model: :neighbourhoods,
@@ -53,7 +53,7 @@ class Views::Admin::Neighbourhoods::Index < Views::Admin::Base
     ]
   end
 
-  def neighbourhoods_secondary_filters # rubocop:disable Metrics/MethodLength
+  def neighbourhoods_secondary_filters
     country_options = Neighbourhood.countries.latest_release.order(:name).map do |n|
       { value: n.id, label: n.name }
     end

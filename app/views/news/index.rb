@@ -26,7 +26,7 @@ class Views::News::Index < Views::Base
 
   private
 
-  def render_article_card(article) # rubocop:disable Metrics/AbcSize
+  def render_article_card(article)
     div(class: 'articles__article-card g') do
       div(class: 'gi gi__1-5 articles__aside') do
         p(class: 'articles__published', title: article.published_at.to_s) do

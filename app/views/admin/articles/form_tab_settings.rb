@@ -3,7 +3,7 @@
 class Views::Admin::Articles::FormTabSettings < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     article = form.object
     disabled_fields = helpers.policy(article).disabled_fields
 
@@ -15,7 +15,7 @@ class Views::Admin::Articles::FormTabSettings < Views::Admin::Base
 
   private
 
-  def render_publishing_section(article, disabled_fields) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_publishing_section(article, disabled_fields)
     div(class: 'mb-8') do
       FormCard(
         icon: :newspaper,

@@ -3,7 +3,7 @@
 class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     site = form.object
 
     SectionHeader(
@@ -27,13 +27,13 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
     fieldset(class: 'fieldset') do
       raw form.label(:name, class: 'fieldset-legend') {
         "#{Site.model_name.human} #{attr_label(:site, :name)} " \
-        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe # rubocop:disable Rails/OutputSafety
+        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
       }
       raw form.input_field(:name, class: 'input input-bordered w-full')
     end
   end
 
-  def render_site_admin_field(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_site_admin_field(site)
     if helpers.policy(site).permitted_attributes.include?(:site_admin_id)
       render_editable_admin_field
     else
@@ -41,7 +41,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
     end
   end
 
-  def render_editable_admin_field # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_editable_admin_field
     fieldset(class: 'fieldset') do
       raw form.label(:site_admin_id, t('admin.sites.fields.site_admin'), class: 'fieldset-legend')
       raw form.select(:site_admin_id,
@@ -55,7 +55,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
     end
   end
 
-  def render_readonly_admin_field(site) # rubocop:disable Metrics/AbcSize
+  def render_readonly_admin_field(site)
     admin = site.site_admin
     admin_display = if admin
                       full_name = [admin.first_name, admin.last_name].compact.join(' ').presence
@@ -87,7 +87,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
     end
   end
 
-  def render_hero_text_field # rubocop:disable Metrics/AbcSize
+  def render_hero_text_field
     fieldset(class: 'fieldset', data: { controller: 'char-counter', char_counter_max_value: '120' }) do
       raw form.label(:hero_text, attr_label(:site, :hero_text), class: 'fieldset-legend')
       raw form.input_field(:hero_text, as: :text,

@@ -3,7 +3,7 @@
 class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     current = helpers.current_user
 
     div(class: 'space-y-6') do
@@ -35,7 +35,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     end
   end
 
-  def render_permissions_content(current) # rubocop:disable Metrics/AbcSize
+  def render_permissions_content(current)
     if user_has_no_rights?(current)
       render_no_rights_warning
     elsif current.partners.any? || current.neighbourhoods.any? || current.partnership_admin? || current.sites.any?
@@ -50,7 +50,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     end
   end
 
-  def render_permissions_grid(current) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_permissions_grid(current)
     div(class: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4') do
       render_partners_section(current) if current.partners.any?
       render_neighbourhoods_section(current) if current.neighbourhoods.any?
@@ -59,7 +59,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     end
   end
 
-  def render_partners_section(current) # rubocop:disable Metrics/AbcSize
+  def render_partners_section(current)
     render_permission_card(
       icon_name: :partner,
       icon_bg: 'bg-emerald-100',
@@ -77,7 +77,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     end
   end
 
-  def render_neighbourhoods_section(current) # rubocop:disable Metrics/AbcSize
+  def render_neighbourhoods_section(current)
     render_permission_card(
       icon_name: :map_pin,
       icon_bg: 'bg-sky-100',
@@ -95,7 +95,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     end
   end
 
-  def render_partnerships_section(current) # rubocop:disable Metrics/AbcSize
+  def render_partnerships_section(current)
     render_permission_card(
       icon_name: :partnership,
       icon_bg: 'bg-amber-100',
@@ -113,7 +113,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     end
   end
 
-  def render_sites_section(current) # rubocop:disable Metrics/AbcSize
+  def render_sites_section(current)
     render_permission_card(
       icon_name: :site,
       icon_bg: 'bg-violet-100',
@@ -131,7 +131,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     end
   end
 
-  def render_permission_card(icon_name:, icon_bg:, icon_color:, title:) # rubocop:disable Metrics/AbcSize
+  def render_permission_card(icon_name:, icon_bg:, icon_color:, title:)
     div(class: 'bg-base-200/50 rounded-lg p-4') do
       div(class: 'flex items-center gap-2 mb-3') do
         div(class: "w-8 h-8 rounded-lg #{icon_bg} flex items-center justify-center") do

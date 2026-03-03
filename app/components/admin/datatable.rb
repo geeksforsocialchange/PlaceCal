@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable Metrics/ClassLength
+class Components::Admin::Datatable < Components::Admin::Base
   register_value_helper :icon_column_header
 
   prop :title, String
@@ -16,7 +16,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
   prop :new_link, _Nilable(String), default: nil
   prop :search_fieldset, _Boolean, default: false
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     content_for(:title) { @title }
     model_name = @model.to_s.chop.humanize
 
@@ -48,7 +48,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end.to_json
   end
 
-  def render_header(model_name) # rubocop:disable Metrics/AbcSize
+  def render_header(model_name)
     div(class: 'px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white') do
       div(class: 'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4') do
         div do
@@ -69,7 +69,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_filter_bar # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_filter_bar
     has_radio = @filters.any? { |f| f[:type] == :radio }
     has_dropdown = @filters.any? { |f| f[:type] != :radio }
     radio_filters = @filters.select { |f| f[:type] == :radio }
@@ -85,7 +85,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_search_input # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_search_input
     if @search_fieldset
       fieldset(class: 'relative flex items-center px-3 py-2 pt-3 border border-gray-300 rounded-lg bg-gray-100') do
         legend(class: 'font-medium text-gray-400 uppercase tracking-wider px-1 ml-1 bg-gray-50',
@@ -131,7 +131,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_dropdown_filters(all_filters) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_dropdown_filters(all_filters)
     all_filters.each do |filter|
       next if filter[:type] == :radio
 
@@ -143,7 +143,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_tom_select_filter(filter) # rubocop:disable Metrics/AbcSize
+  def render_tom_select_filter(filter)
     div(class: "ts-filter #{filter[:width]}") do
       select(data_controller: 'tom-select',
              data_admin_table_target: 'filter',
@@ -158,7 +158,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_select_filter(filter) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_select_filter(filter)
     is_hierarchical = filter[:type] == :hierarchical
     is_dependent = filter[:depends_on].present? || filter[:parent_filter].present?
     target_name = if is_hierarchical
@@ -182,7 +182,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def build_select_attrs(filter, target_name, is_hierarchical, is_dependent) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def build_select_attrs(filter, target_name, is_hierarchical, is_dependent)
     css = +'select-filter'
     css << ' hidden' if is_dependent
     css << " #{filter[:width]}" if filter[:width]
@@ -202,7 +202,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     attrs
   end
 
-  def render_clear_buttons # rubocop:disable Metrics/MethodLength
+  def render_clear_buttons
     if @filters.any? || @secondary_filters.any?
       button(type: 'button',
              data_action: 'click->admin-table#clearFilters',
@@ -223,7 +223,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_secondary_filters # rubocop:disable Metrics/AbcSize
+  def render_secondary_filters
     div(class: 'flex flex-wrap items-center gap-3 mt-3') do
       @secondary_filters.each do |filter|
         if filter[:type] == :radio
@@ -237,7 +237,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_table # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_table
     div(class: 'overflow-x-auto') do
       table(class: 'min-w-full', data_admin_table_target: 'table') do
         thead do
@@ -254,7 +254,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     end
   end
 
-  def render_column_header(col_title, index) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_column_header(col_title, index)
     col_config = @column_config[@columns[index]]
     return if col_config&.dig(:hidden)
 

@@ -5,7 +5,7 @@ class Views::Admin::Tags::FormTabPartners < Views::Admin::Base
 
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     tag_record = form.object
     tag_partners = tag_record.partners.order(:name)
 
@@ -37,7 +37,7 @@ class Views::Admin::Tags::FormTabPartners < Views::Admin::Base
 
   private
 
-  def render_partners_table(tag_partners) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_partners_table(tag_partners)
     div(class: 'overflow-x-auto') do
       table(class: 'table table-sm table-zebra') do
         thead do
@@ -56,7 +56,7 @@ class Views::Admin::Tags::FormTabPartners < Views::Admin::Base
     end
   end
 
-  def render_partner_row(partner) # rubocop:disable Metrics/AbcSize
+  def render_partner_row(partner)
     tr do
       td do
         link_to(helpers.edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange font-medium') do

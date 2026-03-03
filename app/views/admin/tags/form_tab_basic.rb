@@ -3,7 +3,7 @@
 class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     tag_record = form.object
 
     div(class: 'mb-6') do
@@ -23,7 +23,7 @@ class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
 
   private
 
-  def render_details_card(tag_record) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_details_card(tag_record)
     FormCard(
       icon: :tag,
       title: t('admin.sections.details'),
@@ -46,7 +46,7 @@ class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
     end
   end
 
-  def render_assigned_users_card(tag_record) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_assigned_users_card(tag_record)
     FormCard(
       icon: :users,
       title: t('admin.tags.sections.assigned_users'),

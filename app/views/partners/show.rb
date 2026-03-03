@@ -48,7 +48,7 @@ class Views::Partners::Show < Views::Base
 
   private
 
-  def render_partner_details # rubocop:disable Metrics/AbcSize
+  def render_partner_details
     div(class: 'g g--partner') do
       div(class: 'gi gi__3-5') do
         render_partner_description
@@ -75,7 +75,7 @@ class Views::Partners::Show < Views::Base
     end
   end
 
-  def render_contact_and_address # rubocop:disable Metrics/AbcSize
+  def render_contact_and_address
     h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
     ContactDetails(partner: partner)
 
@@ -153,7 +153,7 @@ class Views::Partners::Show < Views::Base
     end
   end
 
-  def render_events_section # rubocop:disable Metrics/AbcSize
+  def render_events_section
     turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
       if events.any?
         render_events_paginator if paginator

@@ -28,7 +28,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
 
   private
 
-  def render_tabs(form) # rubocop:disable Metrics/MethodLength
+  def render_tabs(form)
     div(class: 'tabs tabs-lift') do
       TabPanel(
         name: 'profile_tabs',

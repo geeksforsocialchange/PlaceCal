@@ -3,7 +3,7 @@
 class Views::Admin::Supporters::Form < Views::Admin::Base
   prop :supporter, Supporter, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     simple_form_for([:admin, supporter], html: { class: 'space-y-6' }) do |form|
       Error(supporter) if supporter.errors.any?
 

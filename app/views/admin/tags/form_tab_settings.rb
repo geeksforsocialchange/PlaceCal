@@ -3,7 +3,7 @@
 class Views::Admin::Tags::FormTabSettings < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     tag_record = form.object
 
     div(class: 'mb-8') do
@@ -38,7 +38,7 @@ class Views::Admin::Tags::FormTabSettings < Views::Admin::Base
     end
   end
 
-  def render_danger_zone(tag_record) # rubocop:disable Metrics/AbcSize
+  def render_danger_zone(tag_record)
     return unless helpers.policy(tag_record).destroy?
 
     delete_path = if tag_record.is_a?(Partnership)

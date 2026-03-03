@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     partner = form.object
 
     render_url_settings(partner)
@@ -17,7 +17,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
 
   private
 
-  def render_url_settings(partner) # rubocop:disable Metrics/MethodLength
+  def render_url_settings(partner)
     return unless helpers.policy(partner).permitted_attributes.include?(:slug)
 
     div(class: 'mb-8') do
@@ -40,7 +40,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_event_matching(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_event_matching(partner)
     is_enabled = partner.can_be_assigned_events
 
     div(class: 'mb-8') do
@@ -66,7 +66,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_event_matching_content(is_enabled) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_event_matching_content(is_enabled)
     div(class: 'flex-1 min-w-0') do
       div(class: 'flex items-center justify-between gap-4 mb-2') do
         h3(class: 'font-semibold', id: 'event-matching-title') do
@@ -88,7 +88,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_event_matching_benefits # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_event_matching_benefits
     div(class: 'text-sm text-base-content/70 space-y-2') do
       p(class: 'font-medium text-base-content/90') { t('admin.partners.event_matching.when_enabled') }
       ul(class: 'list-none space-y-1.5 ml-0') do
@@ -119,7 +119,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_moderation(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_moderation(partner)
     return unless helpers.policy(partner).permitted_attributes.include?(:hidden)
 
     div(class: 'mb-8') do
@@ -140,7 +140,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     render_visibility_script
   end
 
-  def render_moderation_icon # rubocop:disable Metrics/MethodLength
+  def render_moderation_icon
     div(class: 'shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors',
         data: { inverted_toggle_target: 'icon' }) do
       span(data: { inverted_toggle_target: 'iconHidden' }) do
@@ -152,7 +152,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_moderation_content(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_moderation_content(partner)
     div(class: 'flex-1 min-w-0') do
       div(class: 'flex items-center justify-between gap-4 mb-2') do
         h3(class: 'font-semibold transition-colors', data: { inverted_toggle_target: 'title' },
@@ -179,7 +179,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_moderation_consequences # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_moderation_consequences
     div(class: 'text-sm text-base-content/70 space-y-2') do
       p(class: 'font-medium text-base-content/90') { t('admin.partners.moderation.when_hidden') }
       ul(class: 'list-none space-y-1.5 ml-0') do
@@ -207,7 +207,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_moderation_reason_field # rubocop:disable Metrics/MethodLength
+  def render_moderation_reason_field
     div(class: 'mt-4 pt-4 border-t border-base-300/50') do
       fieldset(class: 'fieldset') do
         legend(class: 'fieldset-legend') { t('admin.partners.moderation.reason_label') }
@@ -231,7 +231,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:dis
     end
   end
 
-  def render_danger_zone(partner) # rubocop:disable Metrics/MethodLength
+  def render_danger_zone(partner)
     return unless helpers.policy(partner).destroy?
 
     div(class: 'mt-8') do

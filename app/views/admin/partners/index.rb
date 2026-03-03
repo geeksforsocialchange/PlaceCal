@@ -7,7 +7,7 @@ class Views::Admin::Partners::Index < Views::Admin::Base
   prop :partnership_options, Array, reader: :private
   prop :category_options, Array, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     Datatable(
       title: 'Partners',
       model: :partners,
@@ -53,7 +53,7 @@ class Views::Admin::Partners::Index < Views::Admin::Base
     ]
   end
 
-  def partners_secondary_filters # rubocop:disable Metrics/MethodLength
+  def partners_secondary_filters
     [
       { column: 'category', label: 'Category', width: 'w-40', options: category_options },
       { column: 'country_id', label: 'Country (L5)', width: 'min-w-40', type: :hierarchical, level: 5,

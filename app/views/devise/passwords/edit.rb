@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Devise::Passwords::Edit < Views::Devise::Base
-  def view_template # rubocop:disable Metrics/AbcSize
+  def view_template
     article(class: 'home margin') do
       div(class: 'card card--plainer') do
         h1(class: 'center fc-primary') { 'Change your password' }

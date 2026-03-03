@@ -23,7 +23,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
     end
   end
 
-  def render_stats # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_stats
     div(class: 'flex flex-wrap gap-2 mb-8') do
       div(class: 'badge badge-lg badge-outline gap-1') do
         span(class: 'text-gray-600') { "#{t('admin.jobs.stats.jobs')}:" }
@@ -49,7 +49,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
     end
   end
 
-  def render_error_calendars # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_error_calendars
     div(class: 'mb-6') do
       h2(class: 'font-bold flex items-center gap-2 mb-3 text-error') do
         icon(:warning, size: '4')
@@ -80,7 +80,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
     end
   end
 
-  def render_error_row(cal) # rubocop:disable Metrics/AbcSize
+  def render_error_row(cal)
     tr(class: 'hover') do
       td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange font-medium' }
       td(class: 'text-sm') { link_to cal.partner.name, admin_partner_path(cal.partner), class: 'link link-hover' }
@@ -90,7 +90,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
     end
   end
 
-  def render_busy_calendars # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_busy_calendars
     div(class: 'mb-6') do
       h2(class: 'font-bold flex items-center gap-2 mb-3 text-info') do
         span(class: 'loading loading-spinner loading-xs')
@@ -121,7 +121,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
     end
   end
 
-  def render_busy_row(cal) # rubocop:disable Metrics/AbcSize
+  def render_busy_row(cal)
     tr(class: 'hover') do
       td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange font-medium' }
       td(class: 'text-sm') { link_to cal.partner.name, admin_partner_path(cal.partner), class: 'link link-hover' }

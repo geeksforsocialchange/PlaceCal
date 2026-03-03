@@ -49,7 +49,7 @@ class Views::Pages::Privacy < Views::Base
     end
   end
 
-  def render_personal_information # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_personal_information
     h3 { 'Personal Information' }
     h4 { 'The type of personal information we collect' }
     p { "We currently collect and process the following information from organisations who sign-up to use PlaceCal's services, and any individuals who represent them:" }
@@ -85,16 +85,14 @@ class Views::Pages::Privacy < Views::Base
     p { 'Copies of this data may be created by employees and registered volunteers of GFSC Community Interest Company solely for development purposes. This information is destroyed when employees leave the company or volunteer agreements end.' }
   end
 
-  def render_data_rights # rubocop:disable Metrics/AbcSize
+  def render_data_rights
     h4 { 'Your data protection rights' }
     p { 'Under data protection law, you have rights including:' }
-    # rubocop:disable Rails/OutputSafety
     p { raw(safe('<strong>Your right of access</strong> - You have the right to ask us for copies of your personal information.')) }
     p { raw(safe('<strong>Your right to rectification</strong> - You have the right to ask us to rectify personal information you think is inaccurate. You also have the right to ask us to complete information you think is incomplete.')) }
     p { raw(safe('<strong>Your right to erasure</strong> - You have the right to ask us to erase your personal information in certain circumstances.')) }
     p { raw(safe('<strong>Your right to restriction of processing</strong> - You have the right to ask us to restrict the processing of your personal information in certain circumstances.')) }
     p { raw(safe('<strong>Your right to data portability</strong> - You have the right to ask that we transfer the personal information you gave us to another organisation, or to you, in certain circumstances.')) }
-    # rubocop:enable Rails/OutputSafety
     p { 'You are not required to pay any charge for exercising your rights. If you make a request, we have one month to respond to you.' }
     p do
       plain 'Please contact us at '

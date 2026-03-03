@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metrics/ClassLength
+class Views::Admin::Calendars::Show < Views::Admin::Base
   include Phlex::Rails::Helpers::Truncate
 
   prop :calendar, Calendar, reader: :private
@@ -15,7 +15,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
 
   private
 
-  def render_header # rubocop:disable Metrics/AbcSize
+  def render_header
     div(class: 'mb-6') do
       div(class: 'flex flex-wrap items-center justify-between gap-4') do
         div do
@@ -37,7 +37,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
     end
   end
 
-  def render_info_cards # rubocop:disable Metrics/AbcSize
+  def render_info_cards
     div(class: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-8') do
       InfoCard(icon: :partner, label: 'Partner', color: :orange) do
         link_to calendar.partner.name, edit_admin_partner_path(calendar.partner),
@@ -55,7 +55,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
     end
   end
 
-  def render_events_section # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_events_section
     upcoming = calendar.events.upcoming
     past = calendar.events.past.limit(50)
 
@@ -77,7 +77,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
     end
   end
 
-  def render_upcoming_tab(upcoming) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_upcoming_tab(upcoming)
     input(type: 'radio', name: 'events_tabs', role: 'tab', class: 'tab',
           aria_label: "Upcoming (#{upcoming.count})", checked: true)
     div(role: 'tabpanel', class: 'tab-content py-4') do
@@ -90,7 +90,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
     end
   end
 
-  def render_past_tab(past) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_past_tab(past)
     input(type: 'radio', name: 'events_tabs', role: 'tab', class: 'tab',
           aria_label: "Past (#{past.count})")
     div(role: 'tabpanel', class: 'tab-content py-4') do
@@ -105,7 +105,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
     end
   end
 
-  def render_events_table(events, type) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_events_table(events, type)
     div(class: 'overflow-x-auto') do
       table(class: 'table table-sm') do
         thead do
@@ -122,7 +122,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
     end
   end
 
-  def render_event_row(event, type) # rubocop:disable Metrics/AbcSize
+  def render_event_row(event, type)
     tr(class: "hover#{' opacity-70' if type == :past}") do
       td(class: 'whitespace-nowrap') do
         div(class: 'font-semibold text-sm') { event.dtstart.strftime('%d %b') }

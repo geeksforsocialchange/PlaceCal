@@ -28,7 +28,7 @@ class Views::Sites::Mossley < Views::Base
     end
   end
 
-  def render_mission # rubocop:disable Metrics/AbcSize
+  def render_mission
     section(class: 'region region__mission') do
       div(class: 'c c--narrow') do
         p { 'There are around 40 groups, mostly volunteer led, offering an amazing amount of activities at a variety of locations in our little town. Marvellous Mossley is a platform to bring all of this together in one place through this website and also the printed Mossley Missive.' }

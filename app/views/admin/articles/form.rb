@@ -3,7 +3,7 @@
 class Views::Admin::Articles::Form < Views::Admin::Base
   prop :article, Article, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     simple_form_for([:admin, article], html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } }) do |form|
       Error(article)
 
@@ -17,7 +17,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
 
   private
 
-  def render_new_layout(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_new_layout(form)
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
         render Views::Admin::Articles::FormTabText.new(form: form)

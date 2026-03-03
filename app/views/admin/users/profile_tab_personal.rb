@@ -3,7 +3,7 @@
 class Views::Admin::Users::ProfileTabPersonal < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     div(class: 'grid grid-cols-1 lg:grid-cols-3 gap-6') do
       div(class: 'lg:col-span-2 space-y-4') do
         div(class: 'grid grid-cols-2 gap-4') do

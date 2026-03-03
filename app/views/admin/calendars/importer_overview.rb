@@ -5,7 +5,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
 
   prop :calendar, Calendar, reader: :private
 
-  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def view_template
     return if calendar.new_record?
 
     render_stale_warning
@@ -23,7 +23,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
 
   private
 
-  def render_stale_warning # rubocop:disable Metrics/AbcSize
+  def render_stale_warning
     return unless calendar.checksum_updated_at.present? && calendar.last_import_at.present?
     return unless calendar.checksum_updated_at < 6.months.ago || calendar.last_import_at < 6.months.ago
 
@@ -43,7 +43,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
     :error
   end
 
-  def render_status_badge(retry_button) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_status_badge(retry_button)
     div(class: 'flex items-center gap-2') do
       span(class: 'text-sm font-medium text-gray-600') { t('admin.calendars.importer.status_label') }
       if calendar.calendar_state.idle?
@@ -85,7 +85,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
     end
   end
 
-  def render_retry_button(retry_button) # rubocop:disable Metrics/MethodLength
+  def render_retry_button(retry_button)
     div(class: 'ml-auto') do
       simple_form_for(:import, url: helpers.import_admin_calendar_path(calendar)) do |f|
         if retry_button == :idle
@@ -99,7 +99,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
     end
   end
 
-  def render_notices # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_notices
     return if calendar.notices.blank?
 
     div(class: 'collapse collapse-arrow bg-warning/10 border border-warning/30 rounded-lg mt-4') do
