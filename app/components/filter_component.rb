@@ -15,6 +15,8 @@
 #   ) %>
 #
 class FilterComponent < ViewComponent::Base
+  include SvgIconsHelper
+
   # rubocop:disable Metrics/ParameterLists
   def initialize(name:, label:, items:, controller:, toggle_action:, submit_action:, reset_action:, selected_id: nil)
     super()

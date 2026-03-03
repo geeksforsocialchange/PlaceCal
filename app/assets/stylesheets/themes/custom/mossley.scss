@@ -314,7 +314,6 @@ a {
 	background-color: $mossley-secondary;
 }
 
-[class^="icon-font--"]:before,
-[class*="icon-font--"]:before {
+svg[data-icon-name] {
 	color: $mossley-secondary;
 }

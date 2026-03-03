@@ -53,7 +53,7 @@ RSpec.describe EventFilterComponent, type: :component do
     it "renders with down arrow icon" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css(".icon--arrow-down")
+      expect(page).to have_selector('svg[data-icon-name="triangle_down"]')
     end
 
     it "renders hidden date input" do

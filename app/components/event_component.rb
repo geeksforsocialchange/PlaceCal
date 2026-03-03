@@ -3,6 +3,7 @@
 class EventComponent < ViewComponent::Base
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::DateHelper
+  include SvgIconsHelper
 
   # rubocop:disable Metrics/ParameterLists
   def initialize(context:, event:, primary_neighbourhood: nil, show_neighbourhoods: false, badge_zoom_level: nil, site_tagline: nil)

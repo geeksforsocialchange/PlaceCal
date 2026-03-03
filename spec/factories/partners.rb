@@ -16,12 +16,17 @@ FactoryBot.define do
     factory :riverside_community_hub, aliases: [:riverside_partner] do
       name { NormalIsland::PARTNERS[:riverside_community_hub][:name] }
       summary { NormalIsland::PARTNERS[:riverside_community_hub][:summary] }
+      # with contact details for spec/components/contact_details_component_spec.rb
+      twitter_handle { "rchtwit" }
+      instagram_handle { "rchinsta" }
+      facebook_link { "rchfb" }
       association :address, factory: :riverside_address
     end
 
     factory :oldtown_library do
       name { NormalIsland::PARTNERS[:oldtown_library][:name] }
       summary { NormalIsland::PARTNERS[:oldtown_library][:summary] }
+      # without contact details for spec/components/contact_details_component_spec.rb
       association :address, factory: :oldtown_address
     end
 

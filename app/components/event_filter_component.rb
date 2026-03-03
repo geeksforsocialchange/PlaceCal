@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class EventFilterComponent < ViewComponent::Base
+  include SvgIconsHelper
+
   attr_reader :pointer, :period, :sort, :repeating, :today_url, :selected_neighbourhood
 
   # rubocop:disable Metrics/ParameterLists

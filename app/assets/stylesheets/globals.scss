@@ -3,12 +3,11 @@
 
 // External libraries (local copy to avoid path issues between sass CLI and Sprockets)
 @import "vendor/leaflet";
-@import "../fonts/fontello/css/placecal-icons-codes";
 
 // Overall styling
 @import "base/buttons";
 @import "base/grid";
-@import "base/icon-font";
+// TODO: delete as part of https://github.com/geeksforsocialchange/PlaceCal/issues/2517
 @import "base/icons";
 @import "base/image";
 @import "base/layout";

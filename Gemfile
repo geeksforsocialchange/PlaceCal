@@ -28,6 +28,7 @@ gem 'carrierwave'                 # File uploads (logos, hero images)
 gem 'friendly_id'                 # Human-readable URL slugs
 gem 'groupdate'                   # Group events by day/week/month
 gem 'image_processing'            # Image resizing for uploads
+gem 'inline_svg'                  # Inlines SVGs into markup. Used in SvgImagesHelper
 gem 'kramdown'                    # Markdown to HTML rendering
 gem 'simple_form'                 # Form builder
 gem 'view_component'              # Encapsulated view components
