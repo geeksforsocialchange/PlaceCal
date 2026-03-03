@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :neighbourhood, _Any, reader: :private
+  prop :neighbourhood, Neighbourhood, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     simple_form_for([:admin, neighbourhood], html: { data: { controller: 'form-dirty' } }) do |form|

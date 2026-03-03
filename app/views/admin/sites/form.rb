@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Sites::Form < Views::Admin::Base
-  prop :site, _Any, reader: :private
+  prop :site, Site, reader: :private
 
   def view_template # rubocop:disable Metrics/MethodLength
     simple_form_for([:admin, site], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'siteTabAfterSave' } }) do |form|

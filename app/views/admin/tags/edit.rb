@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Tags::Edit < Views::Admin::Base
-  prop :tag, _Any, reader: :private
-  prop :current_user, _Any, reader: :private
+  prop :tag, Tag, reader: :private
+  prop :current_user, User, reader: :private
 
   def view_template
     tag_type_name = tag.instance_of?(Tag) ? 'Tag' : "#{tag.class.name} Tag"

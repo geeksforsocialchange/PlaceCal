@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Views::Partners::Index < Views::Base
-  prop :partners, _Any, reader: :private
-  prop :site, _Any, reader: :private
-  prop :current_site, _Any, reader: :private
-  prop :map, _Nilable(_Any), reader: :private
-  prop :selected_category, _Nilable(_Any), reader: :private
-  prop :selected_neighbourhood, _Nilable(_Any), reader: :private
+  prop :partners, ActiveRecord::Relation, reader: :private
+  prop :site, Site, reader: :private
+  prop :current_site, Site, reader: :private
+  prop :map, _Nilable(Array), reader: :private
+  prop :selected_category, _Nilable(String), reader: :private
+  prop :selected_neighbourhood, _Nilable(String), reader: :private
 
   def view_template
     content_for(:title) { 'Partners' }

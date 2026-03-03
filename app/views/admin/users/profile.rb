@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Users::Profile < Views::Admin::Base
-  prop :current_user, _Any, reader: :private
+  prop :current_user, User, reader: :private
 
   def view_template
     content_for(:title) { t('admin.users.profile.title') }

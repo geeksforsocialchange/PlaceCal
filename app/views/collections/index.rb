@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Collections::Index < Views::Base
-  prop :collections, _Any, reader: :private
+  prop :collections, ActiveRecord::Relation, reader: :private
 
   def view_template
     p(id: 'notice') { view_context.notice }

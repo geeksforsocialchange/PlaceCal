@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
 class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :user, _Any, reader: :private
-  prop :sites, _Any, reader: :private
-  prop :partners, _Any, reader: :private
-  prop :calendars, _Any, reader: :private
-  prop :users, _Any, reader: :private
-  prop :errored_calendars, _Any, reader: :private
-  prop :bad_source_calendars, _Any, reader: :private
-  prop :upcoming_events, _Any, reader: :private
-  prop :total_partners, _Any, reader: :private
-  prop :total_calendars, _Any, reader: :private
-  prop :total_events_this_week, _Any, reader: :private
-  prop :working_calendars_count, _Any, reader: :private
-  prop :processing_calendars_count, _Any, reader: :private
-  prop :errored_calendars_count, _Any, reader: :private
-  prop :bad_source_calendars_count, _Any, reader: :private
-  prop :problem_calendars_count, _Any, reader: :private
-  prop :user_partnerships, _Any, reader: :private
+  prop :user, User, reader: :private
+  prop :sites, ActiveRecord::Relation, reader: :private
+  prop :partners, ActiveRecord::Relation, reader: :private
+  prop :calendars, ActiveRecord::Relation, reader: :private
+  prop :users, ActiveRecord::Relation, reader: :private
+  prop :errored_calendars, ActiveRecord::Relation, reader: :private
+  prop :bad_source_calendars, ActiveRecord::Relation, reader: :private
+  prop :upcoming_events, ActiveRecord::Relation, reader: :private
+  prop :total_partners, Integer, reader: :private
+  prop :total_calendars, Integer, reader: :private
+  prop :total_events_this_week, Integer, reader: :private
+  prop :working_calendars_count, Integer, reader: :private
+  prop :processing_calendars_count, Integer, reader: :private
+  prop :errored_calendars_count, Integer, reader: :private
+  prop :bad_source_calendars_count, Integer, reader: :private
+  prop :problem_calendars_count, Integer, reader: :private
+  prop :user_partnerships, ActiveRecord::Relation, reader: :private
 
   register_value_helper :user_has_no_rights?
 

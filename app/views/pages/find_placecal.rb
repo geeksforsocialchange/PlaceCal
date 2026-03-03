@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Pages::FindPlacecal < Views::Base
-  prop :neighbourhoods, _Any, reader: :private
-  prop :partnerships, _Any, reader: :private
+  prop :neighbourhoods, _Interface(:each), reader: :private
+  prop :partnerships, _Interface(:each), reader: :private
 
   def view_template
     article(class: 'home') do

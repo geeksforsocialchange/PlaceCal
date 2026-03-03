@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Collections::Form < Views::Admin::Base
-  prop :collection, _Any, reader: :private
+  prop :collection, Collection, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     simple_form_for([:admin, collection], html: { class: 'space-y-6' }) do |form|

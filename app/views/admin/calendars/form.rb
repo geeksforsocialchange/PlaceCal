@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Calendars::Form < Views::Admin::Base
-  prop :calendar, _Any, reader: :private
+  prop :calendar, Calendar, reader: :private
 
   def view_template # rubocop:disable Metrics/MethodLength
     render Views::Admin::Calendars::ImporterOverview.new(calendar: calendar) unless calendar.new_record?

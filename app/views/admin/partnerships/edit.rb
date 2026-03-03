@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Partnerships::Edit < Views::Admin::Base
-  prop :partnership, _Any, reader: :private
-  prop :current_user, _Any, reader: :private
+  prop :partnership, Partnership, reader: :private
+  prop :current_user, User, reader: :private
 
   def view_template
     tag = partnership

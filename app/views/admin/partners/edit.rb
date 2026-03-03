@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Partners::Edit < Views::Admin::Base
-  prop :partner, _Any, reader: :private
+  prop :partner, Partner, reader: :private
 
   def view_template
     content_for(:title) { "Edit Partner: #{partner.name}" }

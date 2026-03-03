@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Supporters::Index < Views::Admin::Base
-  prop :supporters, _Any, reader: :private
+  prop :supporters, ActiveRecord::Relation, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     content_for(:title) { 'Supporters' }

@@ -3,7 +3,7 @@
 class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
   include Phlex::Rails::Helpers::TimeAgoInWords
 
-  prop :calendar, _Any, reader: :private
+  prop :calendar, Calendar, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     return if calendar.new_record?

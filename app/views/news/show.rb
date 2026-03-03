@@ -3,8 +3,8 @@
 class Views::News::Show < Views::Base
   register_output_helper :article_partner_links
 
-  prop :article, _Any, reader: :private
-  prop :site, _Any, reader: :private
+  prop :article, Article, reader: :private
+  prop :site, Site, reader: :private
 
   def view_template
     content_for(:title) { article.title }

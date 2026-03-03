@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Sites::Mossley < Views::Base
-  prop :site, _Any, reader: :private
-  prop :places_to_get_online, _Nilable(_Any), reader: :private
+  prop :site, Site, reader: :private
+  prop :places_to_get_online, _Nilable(ActiveRecord::Relation), reader: :private
 
   def view_template
     content_for(:title) { site.name }

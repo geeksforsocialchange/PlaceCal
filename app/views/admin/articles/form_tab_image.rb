@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Articles::FormTabImage < Views::Admin::Base
-  prop :form, _Any, reader: :private
+  prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template
     div(class: 'max-w-2xl') do

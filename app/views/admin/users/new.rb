@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :user, _Any, reader: :private
-  prop :current_user, _Any, reader: :private
+  prop :user, User, reader: :private
+  prop :current_user, User, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     content_for(:title) { 'New User' }

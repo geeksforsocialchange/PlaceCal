@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Views::Sites::Default < Views::Base
-  prop :site, _Any, reader: :private
-  prop :places_to_get_computer_access, _Any, reader: :private
-  prop :places_with_free_wifi, _Any, reader: :private
+  prop :site, Site, reader: :private
+  prop :places_to_get_computer_access, ActiveRecord::Relation, reader: :private
+  prop :places_with_free_wifi, ActiveRecord::Relation, reader: :private
 
   def view_template
     content_for(:image) { site.og_image }

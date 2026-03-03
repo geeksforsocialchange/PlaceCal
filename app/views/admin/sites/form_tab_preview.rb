@@ -3,7 +3,7 @@
 class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
   include Phlex::Rails::Helpers::Truncate
 
-  prop :form, _Any, reader: :private
+  prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     site = form.object

@@ -7,11 +7,11 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
   prop :model, Symbol
   prop :column_titles, _Array(String)
   prop :columns, _Array(Symbol)
-  prop :column_config, _Any, default: -> { {} }
-  prop :default_sort, _Any, default: -> { {} }
-  prop :filters, _Any, default: -> { [] }
-  prop :secondary_filters, _Any, default: -> { [] }
-  prop :data, _Any
+  prop :column_config, Hash, default: -> { {} }
+  prop :default_sort, Hash, default: -> { {} }
+  prop :filters, Array, default: -> { [] }
+  prop :secondary_filters, Array, default: -> { [] }
+  prop :data, ActiveRecord::Relation
   prop :source, String
   prop :new_link, _Nilable(String), default: nil
   prop :search_fieldset, _Boolean, default: false

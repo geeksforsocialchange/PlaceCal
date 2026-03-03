@@ -3,7 +3,7 @@
 class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metrics/ClassLength
   include Phlex::Rails::Helpers::Truncate
 
-  prop :calendar, _Any, reader: :private
+  prop :calendar, Calendar, reader: :private
 
   def view_template
     render_header

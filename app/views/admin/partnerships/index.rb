@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Partnerships::Index < Views::Admin::Base
-  prop :partnerships, _Any, reader: :private
-  prop :admin_options, _Any, reader: :private
+  prop :partnerships, ActiveRecord::Relation, reader: :private
+  prop :admin_options, Array, reader: :private
 
   def view_template
     render Components::Admin::Datatable.new(

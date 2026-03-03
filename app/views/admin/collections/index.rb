@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Collections::Index < Views::Admin::Base
-  prop :collections, _Any, reader: :private
+  prop :collections, ActiveRecord::Relation, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     content_for(:title) { 'Collections' }

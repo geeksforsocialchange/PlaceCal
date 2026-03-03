@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Users::Index < Views::Admin::Base
-  prop :users, _Any, reader: :private
+  prop :users, ActiveRecord::Relation, reader: :private
 
   def view_template
     render Components::Admin::Datatable.new(

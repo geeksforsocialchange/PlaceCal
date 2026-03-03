@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class Views::Events::Index < Views::Base
-  prop :events, _Any, reader: :private
-  prop :period, _Any, reader: :private
-  prop :sort, _Any, reader: :private
-  prop :repeating, _Any, reader: :private
-  prop :current_day, _Any, reader: :private
-  prop :site, _Any, reader: :private
-  prop :primary_neighbourhood, _Nilable(_Any), reader: :private
-  prop :current_site, _Any, reader: :private
-  prop :selected_neighbourhood, _Nilable(_Any), reader: :private
-  prop :next_date, _Nilable(_Any), reader: :private
-  prop :title, _Any, reader: :private
-  prop :truncated, _Any, reader: :private
+  prop :events, Hash, reader: :private
+  prop :period, String, reader: :private
+  prop :sort, String, reader: :private
+  prop :repeating, String, reader: :private
+  prop :current_day, Date, reader: :private
+  prop :site, Site, reader: :private
+  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
+  prop :current_site, Site, reader: :private
+  prop :selected_neighbourhood, _Nilable(String), reader: :private
+  prop :next_date, _Nilable(::Event), reader: :private
+  prop :title, String, reader: :private
+  prop :truncated, _Boolean, reader: :private
 
   def view_template
     content_for(:title) { 'Events' }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Neighbourhoods::New < Views::Admin::Base
-  prop :neighbourhood, _Any, reader: :private
+  prop :neighbourhood, Neighbourhood, reader: :private
 
   def view_template
     p(class: 'alert alert-danger', role: 'alert') do

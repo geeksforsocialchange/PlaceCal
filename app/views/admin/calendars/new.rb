@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :calendar, _Any, reader: :private
-  prop :partner, _Nilable(_Any), reader: :private
+  prop :calendar, Calendar, reader: :private
+  prop :partner, _Nilable(Partner), reader: :private
   prop :partner_missing_address, _Boolean, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength

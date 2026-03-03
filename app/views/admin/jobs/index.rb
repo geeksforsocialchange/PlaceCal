@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Views::Admin::Jobs::Index < Views::Admin::Base
-  prop :job_count, _Any, reader: :private
-  prop :calendar_counts, _Any, reader: :private
-  prop :error_calendars, _Any, reader: :private
-  prop :busy_calendars, _Any, reader: :private
+  prop :job_count, Integer, reader: :private
+  prop :calendar_counts, Hash, reader: :private
+  prop :error_calendars, ActiveRecord::Relation, reader: :private
+  prop :busy_calendars, ActiveRecord::Relation, reader: :private
 
   def view_template
     render_header

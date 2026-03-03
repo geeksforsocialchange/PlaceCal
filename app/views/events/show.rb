@@ -5,11 +5,11 @@ class Views::Events::Show < Views::Base
   register_output_helper :online_link
   register_value_helper :html_to_plaintext
 
-  prop :event, _Any, reader: :private
-  prop :site, _Any, reader: :private
-  prop :primary_neighbourhood, _Nilable(_Any), reader: :private
-  prop :current_site, _Any, reader: :private
-  prop :map, _Nilable(_Any), reader: :private
+  prop :event, ::Event, reader: :private
+  prop :site, Site, reader: :private
+  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
+  prop :current_site, Site, reader: :private
+  prop :map, _Nilable(Array), reader: :private
 
   def view_template
     content_for(:title) { event.og_title }

@@ -3,9 +3,9 @@
 class Views::Admin::Partners::Index < Views::Admin::Base
   register_value_helper :icon_column_header
 
-  prop :partners, _Any, reader: :private
-  prop :partnership_options, _Any, reader: :private
-  prop :category_options, _Any, reader: :private
+  prop :partners, ActiveRecord::Relation, reader: :private
+  prop :partnership_options, Array, reader: :private
+  prop :category_options, Array, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     render Components::Admin::Datatable.new(

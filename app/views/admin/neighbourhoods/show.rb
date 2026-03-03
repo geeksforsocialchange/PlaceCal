@@ -3,7 +3,7 @@
 class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable Metrics/ClassLength
   register_value_helper :safe_neighbourhood_name
 
-  prop :neighbourhood, _Any, reader: :private
+  prop :neighbourhood, Neighbourhood, reader: :private
 
   def view_template
     content_for(:title) { safe_neighbourhood_name(neighbourhood) }

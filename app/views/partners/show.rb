@@ -3,19 +3,19 @@
 class Views::Partners::Show < Views::Base
   register_value_helper :partner_service_area_text
 
-  prop :partner, _Any, reader: :private
-  prop :site, _Any, reader: :private
-  prop :current_site, _Any, reader: :private
-  prop :current_day, _Any, reader: :private
-  prop :map, _Nilable(_Any), reader: :private
-  prop :events, _Any, reader: :private
-  prop :opening_times, _Any, reader: :private
-  prop :primary_neighbourhood, _Nilable(_Any), reader: :private
-  prop :period, _Nilable(_Any), reader: :private
-  prop :sort, _Nilable(_Any), reader: :private
-  prop :repeating, _Nilable(_Any), reader: :private
-  prop :no_event_message, _Nilable(_Any), reader: :private
-  prop :paginator, _Nilable(_Any), reader: :private
+  prop :partner, Partner, reader: :private
+  prop :site, Site, reader: :private
+  prop :current_site, Site, reader: :private
+  prop :current_day, Date, reader: :private
+  prop :map, _Nilable(Array), reader: :private
+  prop :events, _Interface(:each), reader: :private
+  prop :opening_times, Array, reader: :private
+  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
+  prop :period, _Nilable(String), reader: :private
+  prop :sort, _Nilable(String), reader: :private
+  prop :repeating, _Nilable(_Boolean), reader: :private
+  prop :no_event_message, _Nilable(String), reader: :private
+  prop :paginator, _Nilable(_Boolean), reader: :private
 
   def view_template
     content_for(:title) { partner.name }

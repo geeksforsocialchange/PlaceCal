@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Partners::FormTabSettings < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :form, _Any, reader: :private
+  prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     partner = form.object

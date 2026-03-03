@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Partners::Form < Views::Admin::Base
-  prop :partner, _Any, reader: :private
+  prop :partner, Partner, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     simple_form_for(partner, html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'partnerTabAfterSave' } }) do |form|

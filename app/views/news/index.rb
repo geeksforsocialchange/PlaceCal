@@ -4,9 +4,9 @@ class Views::News::Index < Views::Base
   register_output_helper :article_partner_links
   register_value_helper :article_summary_text
 
-  prop :articles, _Any, reader: :private
-  prop :site, _Any, reader: :private
-  prop :next_offset, _Any, reader: :private
+  prop :articles, ActiveRecord::Relation, reader: :private
+  prop :site, Site, reader: :private
+  prop :next_offset, _Nilable(Integer), reader: :private
 
   def view_template
     content_for(:title) { 'News from your area' }

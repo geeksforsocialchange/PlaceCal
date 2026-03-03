@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :icons, _Any, reader: :private
+  prop :icons, Hash, reader: :private
 
   ICON_CATEGORIES = {
     'Actions' => %i[trash plus check edit x upload external_link logout cog swap eye eye_off bell],

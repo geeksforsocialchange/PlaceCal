@@ -3,8 +3,8 @@
 class Views::Admin::Neighbourhoods::Index < Views::Admin::Base
   register_value_helper :safe_neighbourhood_name
 
-  prop :neighbourhoods, _Any, reader: :private
-  prop :current_user, _Any, reader: :private
+  prop :neighbourhoods, ActiveRecord::Relation, reader: :private
+  prop :current_user, User, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     render Components::Admin::Datatable.new(

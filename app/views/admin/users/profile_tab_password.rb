@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Users::ProfileTabPassword < Views::Admin::Base
-  prop :form, _Any, reader: :private
+  prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     div(class: 'space-y-6') do

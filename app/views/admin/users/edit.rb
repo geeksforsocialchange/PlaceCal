@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Users::Edit < Views::Admin::Base
-  prop :user, _Any, reader: :private
+  prop :user, User, reader: :private
 
   def view_template
     content_for(:title) { "Edit User: #{user.full_name.presence || user.email}" }

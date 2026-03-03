@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Partners::ServiceAreaFields < Views::Admin::Base
-  prop :form, _Any, reader: :private
-  prop :partner, _Any, reader: :private
+  prop :form, ActionView::Helpers::FormBuilder, reader: :private
+  prop :partner, Partner, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize
     current_user = helpers.current_user

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :tag, _Any, reader: :private
+  prop :tag, Tag, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     if tag.system_tag

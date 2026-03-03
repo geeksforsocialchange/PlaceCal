@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics/ClassLength
-  prop :partner, _Any, reader: :private
-  prop :current_user, _Any, reader: :private
+  prop :partner, Partner, reader: :private
+  prop :current_user, User, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     content_for(:title) { 'New Partner' }

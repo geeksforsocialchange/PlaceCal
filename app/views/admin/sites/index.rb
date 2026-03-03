@@ -3,8 +3,8 @@
 class Views::Admin::Sites::Index < Views::Admin::Base
   register_value_helper :icon_column_header
 
-  prop :sites, _Any, reader: :private
-  prop :site_admin_options, _Any, reader: :private
+  prop :sites, ActiveRecord::Relation, reader: :private
+  prop :site_admin_options, Array, reader: :private
 
   def view_template # rubocop:disable Metrics/MethodLength
     render Components::Admin::Datatable.new(

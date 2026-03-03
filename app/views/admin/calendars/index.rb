@@ -3,9 +3,9 @@
 class Views::Admin::Calendars::Index < Views::Admin::Base
   register_value_helper :icon_column_header
 
-  prop :calendars, _Any, reader: :private
-  prop :partner_options, _Any, reader: :private
-  prop :importer_options, _Any, reader: :private
+  prop :calendars, ActiveRecord::Relation, reader: :private
+  prop :partner_options, Array, reader: :private
+  prop :importer_options, Array, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     render Components::Admin::Datatable.new(

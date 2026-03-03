@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Sites::Show < Views::Admin::Base
-  prop :site, _Any, reader: :private
-  prop :calendars, _Any, reader: :private
+  prop :site, Site, reader: :private
+  prop :calendars, ActiveRecord::Relation, reader: :private
 
   def view_template
     render_header

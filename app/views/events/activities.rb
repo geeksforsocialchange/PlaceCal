@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class Views::Events::Activities < Views::Base
-  prop :events, _Any, reader: :private
-  prop :current_day, _Any, reader: :private
-  prop :next_week, _Any, reader: :private
-  prop :previous_week, _Any, reader: :private
-  prop :primary_neighbourhood, _Any, reader: :private
-  prop :current_site, _Any, reader: :private
-  prop :site, _Any, reader: :private
+  prop :events, Hash, reader: :private
+  prop :current_day, Date, reader: :private
+  prop :next_week, Date, reader: :private
+  prop :previous_week, Date, reader: :private
+  prop :primary_neighbourhood, _Nilable(Neighbourhood), reader: :private
+  prop :current_site, Site, reader: :private
+  prop :site, Site, reader: :private
 
   def view_template
     p(id: 'notice') { view_context.notice }

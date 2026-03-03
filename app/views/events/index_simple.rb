@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Events::IndexSimple < Views::Base
-  prop :events, _Any, reader: :private
+  prop :events, Hash, reader: :private
 
   def view_template
     if events.any?

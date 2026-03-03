@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Calendars::FormTabContact < Views::Admin::Base
-  prop :form, _Any, reader: :private
+  prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template # rubocop:disable Metrics/MethodLength
     render Components::Admin::SectionHeader.new(

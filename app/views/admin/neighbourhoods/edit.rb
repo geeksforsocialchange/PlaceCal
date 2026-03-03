@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Neighbourhoods::Edit < Views::Admin::Base
-  prop :neighbourhood, _Any, reader: :private
+  prop :neighbourhood, Neighbourhood, reader: :private
 
   def view_template
     render Components::Admin::PageHeader.new(model_name: 'Neighbourhood', title: neighbourhood.name, id: neighbourhood.id)

@@ -5,7 +5,7 @@ class Views::Joins::New < Views::Base
   register_output_helper :invisible_captcha
   register_output_helper :icon
 
-  prop :join, _Any, reader: :private
+  prop :join, Join, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize
     article(class: 'home') do
