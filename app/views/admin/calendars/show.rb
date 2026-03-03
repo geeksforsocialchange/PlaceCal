@@ -7,7 +7,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
 
   def view_template
     render_header
-    raw view_context.render('importer_overview', calendar: calendar) # rubocop:disable Rails/OutputSafety
+    render Views::Admin::Calendars::ImporterOverview.new(calendar: calendar)
     div(class: 'divider my-6')
     render_info_cards
     render_events_section

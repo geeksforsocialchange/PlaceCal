@@ -23,14 +23,14 @@ class Views::Admin::Partners::Form < Views::Admin::Base
 
       render Components::Admin::TabForm.new(
         tabs: [
-          { label: "\u{1F4CB} Basic Info", hash: 'basic', partial: 'form_tab_basic' },
-          { label: "\u{1F4CD} Location", hash: 'location', partial: 'form_tab_location' },
-          { label: "\u{1F4DE} Contact", hash: 'contact', partial: 'form_tab_contact' },
-          { label: "\u{1F3F7}\u{FE0F} Tags", hash: 'tags', partial: 'form_tab_tags' },
-          { label: "\u{1F4C5} Calendars", hash: 'calendars', partial: 'form_tab_calendars', persisted_only: true },
-          { label: "\u{1F465} Admins", hash: 'admins', partial: 'form_tab_admins', persisted_only: true },
-          { label: "\u{1F441}\u{FE0F} Preview", hash: 'preview', partial: 'form_tab_preview', persisted_only: true },
-          { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', partial: 'form_tab_settings', spacer_before: true }
+          { label: "\u{1F4CB} Basic Info", hash: 'basic', component: Views::Admin::Partners::FormTabBasic },
+          { label: "\u{1F4CD} Location", hash: 'location', component: Views::Admin::Partners::FormTabLocation },
+          { label: "\u{1F4DE} Contact", hash: 'contact', component: Views::Admin::Partners::FormTabContact },
+          { label: "\u{1F3F7}\u{FE0F} Tags", hash: 'tags', component: Views::Admin::Partners::FormTabTags },
+          { label: "\u{1F4C5} Calendars", hash: 'calendars', component: Views::Admin::Partners::FormTabCalendars, persisted_only: true },
+          { label: "\u{1F465} Admins", hash: 'admins', component: Views::Admin::Partners::FormTabAdmins, persisted_only: true },
+          { label: "\u{1F441}\u{FE0F} Preview", hash: 'preview', component: Views::Admin::Partners::FormTabPreview, persisted_only: true },
+          { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', component: Views::Admin::Partners::FormTabSettings, spacer_before: true }
         ],
         tab_name: 'partner_tabs',
         storage_key: 'partnerTabAfterSave',

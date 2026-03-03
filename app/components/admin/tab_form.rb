@@ -21,7 +21,11 @@ class Components::Admin::TabForm < Components::Admin::Base
           controller_name: 'form-tabs',
           checked: index.zero?
         ) do
-          raw(view_context.render(tab[:partial], f: @form))
+          if tab[:component]
+            render tab[:component].new(form: @form)
+          else
+            raw(view_context.render(tab[:partial], f: @form))
+          end
         end
       end
     end

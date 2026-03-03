@@ -9,12 +9,12 @@ class Views::Admin::Sites::Form < Views::Admin::Base
 
       render Components::Admin::TabForm.new(
         tabs: [
-          { label: "\u{1F4CB} Basic Info", hash: 'basic', partial: 'form_tab_basic' },
-          { label: "\u{1F5BC}\u{FE0F} Images", hash: 'images', partial: 'form_tab_images' },
-          { label: "\u{1F4CD} Neighbourhoods", hash: 'neighbourhoods', partial: 'form_tab_neighbourhoods' },
-          { label: "\u{1F3F7}\u{FE0F} Partnerships", hash: 'partnerships', partial: 'form_tab_partnerships' },
-          { label: "\u{1F441}\u{FE0F} Preview", hash: 'preview', partial: 'form_tab_preview', persisted_only: true },
-          { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', partial: 'form_tab_settings', spacer_before: true }
+          { label: "\u{1F4CB} Basic Info", hash: 'basic', component: Views::Admin::Sites::FormTabBasic },
+          { label: "\u{1F5BC}\u{FE0F} Images", hash: 'images', component: Views::Admin::Sites::FormTabImages },
+          { label: "\u{1F4CD} Neighbourhoods", hash: 'neighbourhoods', component: Views::Admin::Sites::FormTabNeighbourhoods },
+          { label: "\u{1F3F7}\u{FE0F} Partnerships", hash: 'partnerships', component: Views::Admin::Sites::FormTabPartnerships },
+          { label: "\u{1F441}\u{FE0F} Preview", hash: 'preview', component: Views::Admin::Sites::FormTabPreview, persisted_only: true },
+          { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', component: Views::Admin::Sites::FormTabSettings, spacer_before: true }
         ],
         tab_name: 'site_tabs',
         storage_key: 'siteTabAfterSave',

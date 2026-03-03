@@ -20,7 +20,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
   def render_new_layout(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
-        raw view_context.render('admin/articles/form_tab_text', f: form)
+        render Views::Admin::Articles::FormTabText.new(form: form)
       end
     end
 
@@ -31,7 +31,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
           description: 'Image will be cropped to 16:9 ratio.',
           margin: 4
         )
-        raw view_context.render('admin/articles/form_tab_image', f: form)
+        render Views::Admin::Articles::FormTabImage.new(form: form)
       end
     end
 
@@ -42,7 +42,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
           description: 'Link this article to partners and partnerships.',
           margin: 4
         )
-        raw view_context.render('admin/articles/form_tab_references', f: form)
+        render Views::Admin::Articles::FormTabReferences.new(form: form)
       end
     end
 
@@ -54,10 +54,10 @@ class Views::Admin::Articles::Form < Views::Admin::Base
   def render_edit_layout(form)
     render Components::Admin::TabForm.new(
       tabs: [
-        { label: "\u{1F4DD} Text", hash: 'text', partial: 'admin/articles/form_tab_text' },
-        { label: "\u{1F5BC}\u{FE0F} Image", hash: 'image', partial: 'admin/articles/form_tab_image' },
-        { label: "\u{1F517} References", hash: 'references', partial: 'admin/articles/form_tab_references' },
-        { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', partial: 'admin/articles/form_tab_settings', spacer_before: true }
+        { label: "\u{1F4DD} Text", hash: 'text', component: Views::Admin::Articles::FormTabText },
+        { label: "\u{1F5BC}\u{FE0F} Image", hash: 'image', component: Views::Admin::Articles::FormTabImage },
+        { label: "\u{1F517} References", hash: 'references', component: Views::Admin::Articles::FormTabReferences },
+        { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', component: Views::Admin::Articles::FormTabSettings, spacer_before: true }
       ],
       tab_name: 'article_tabs',
       storage_key: 'articleTabAfterSave',

@@ -45,19 +45,19 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
       render Components::Admin::TabPanel.new(
         name: 'tag_tabs', label: "\u{1F4CB} Basic Info", hash: 'basic',
         controller_name: 'form-tabs', checked: true
-      ) { raw view_context.render('admin/tags/form_tab_basic', f: form) }
+      ) { render Views::Admin::Tags::FormTabBasic.new(form: form) }
 
       render Components::Admin::TabPanel.new(
         name: 'tag_tabs', label: "\u{1F3E2} Partners", hash: 'partners',
         controller_name: 'form-tabs'
-      ) { raw view_context.render('admin/tags/form_tab_partners', f: form) }
+      ) { render Views::Admin::Tags::FormTabPartners.new(form: form) }
 
       div(class: 'tab flex-1 cursor-default')
 
       render Components::Admin::TabPanel.new(
         name: 'tag_tabs', label: "\u{2699}\u{FE0F} Settings", hash: 'settings',
         controller_name: 'form-tabs'
-      ) { raw view_context.render('admin/tags/form_tab_settings', f: form) }
+      ) { render Views::Admin::Tags::FormTabSettings.new(form: form) }
     end
   end
 
