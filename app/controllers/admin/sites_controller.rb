@@ -34,10 +34,12 @@ module Admin
       @site = Site.new
       @site.build_sites_neighbourhood
       authorize @site
+      render Views::Admin::Sites::New.new(site: @site)
     end
 
     def edit
       authorize @site
+      render Views::Admin::Sites::Edit.new(site: @site)
     end
 
     def create
@@ -50,7 +52,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not created'
         set_variables_for_sites_neighbourhoods_selection
-        render 'new', status: :unprocessable_content
+        render Views::Admin::Sites::New.new(site: @site), status: :unprocessable_content
       end
     end
 
@@ -63,7 +65,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not saved'
         set_variables_for_sites_neighbourhoods_selection
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Sites::Edit.new(site: @site), status: :unprocessable_content
       end
     end
 

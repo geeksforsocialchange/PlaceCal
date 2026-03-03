@@ -39,6 +39,7 @@ module Admin
     def edit
       authorize @calendar
       @partner = @calendar.partner
+      render Views::Admin::Calendars::Edit.new(calendar: @calendar)
     end
 
     def show
@@ -65,7 +66,7 @@ module Admin
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Calendars::Edit.new(calendar: @calendar), status: :unprocessable_content
       end
     end
 

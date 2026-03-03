@@ -16,10 +16,12 @@ module Admin
     def new
       @collection = Collection.new
       authorize @collection
+      render Views::Admin::Collections::New.new(collection: @collection)
     end
 
     def edit
       authorize @collection
+      render Views::Admin::Collections::Edit.new(collection: @collection)
     end
 
     def create
@@ -30,7 +32,7 @@ module Admin
         redirect_to admin_collections_path
       else
         flash.now[:danger] = 'Collection did not save'
-        render 'new', status: :unprocessable_content
+        render Views::Admin::Collections::New.new(collection: @collection), status: :unprocessable_content
       end
     end
 
@@ -38,10 +40,10 @@ module Admin
       authorize @collection
       if @collection.update(collection_params)
         flash.now[:success] = 'Collection has been saved'
-        render 'edit'
+        render Views::Admin::Collections::Edit.new(collection: @collection)
       else
         flash.now[:danger] = 'Collection did not save'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Collections::Edit.new(collection: @collection), status: :unprocessable_content
       end
     end
 

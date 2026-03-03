@@ -74,6 +74,7 @@ module Admin
     def edit
       authorize @partner
       @sites = Site.sites_that_contain_partner(@partner)
+      render Views::Admin::Partners::Edit.new(partner: @partner)
     end
 
     def update
@@ -120,7 +121,7 @@ module Admin
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
-        render :edit, status: :unprocessable_content
+        render Views::Admin::Partners::Edit.new(partner: @partner), status: :unprocessable_content
       end
     end
 

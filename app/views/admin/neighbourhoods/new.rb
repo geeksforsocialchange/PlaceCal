@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+class Views::Admin::Neighbourhoods::New < Views::Admin::Base
+  prop :neighbourhood, _Any, reader: :private
+
+  def view_template
+    p(class: 'alert alert-danger', role: 'alert') do
+      plain 'Warning: neighbourhoods should not be created here and this page is only left as a placeholder!'
+    end
+    render Components::Admin::PageHeader.new(model_name: 'Neighbourhood', new_record: true)
+    raw(view_context.render('form'))
+  end
+end

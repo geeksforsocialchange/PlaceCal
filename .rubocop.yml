@@ -153,6 +153,7 @@ Performance/StringReplacement:
 Rails/OutputSafety:
   Exclude:
     - "app/components/**/*.rb"
+    - "app/views/**/*.rb"
     - "app/helpers/application_helper.rb"
     - "app/helpers/articles_helper.rb"
     - "app/helpers/events_helper.rb"
