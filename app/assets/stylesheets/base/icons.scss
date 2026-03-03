@@ -1,94 +1,12 @@
-.icon {
-	text-indent: -9999px;
-	width: 1rem;
-	height: 1rem;
-	display: inline-block;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: contain;
-	text-align: left;
+// TODO: delete as part of https://github.com/geeksforsocialchange/PlaceCal/issues/2517
 
-	// Arrows for general UI goodness
-	&--arrow-left {
-		background-image: image-url("icons/arrow/left.svg");
-	}
-
-	&--arrow-right {
-		background-image: image-url("icons/arrow/right.svg");
-	}
-
-	&--arrow-down {
-		background-image: image-url("icons/arrow/down.svg");
-	}
-
-	&--arrow-left-grey {
-		background-image: image-url("icons/arrow/left-grey.svg");
-	}
-
-	&--arrow-right-grey {
-		background-image: image-url("icons/arrow/right-grey.svg");
-	}
-
-	// Help icon
-	&--question-mark {
-		background-image: image-url("icons/question-mark.svg");
-	}
-
-	// Event icons
-	&--time {
-		background-image: image-url("icons/event/time.svg");
-	}
-
-	&--time-grey {
-		background-image: image-url("icons/event/time-grey.svg");
-	}
-
-	&--duration {
-		background-image: image-url("icons/event/duration.svg");
-	}
-
-	&--date {
-		background-image: image-url("icons/event/date.svg");
-	}
-
-	&--place {
-		background-image: image-url("icons/event/place.svg");
-	}
-
-	&--repeats {
-		background-image: image-url("icons/event/repeats.svg");
-	}
-
-	// Contact info on partners
-	&--contact {
-		margin: 0.4rem 0 0.2rem;
-	}
-
-	&--phone {
-		background-image: image-url("icons/phone.svg");
-	}
-
-	&--email {
-		background-image: image-url("icons/email.svg");
-	}
-
-	&--website {
-		background-image: image-url("icons/website.svg");
-	}
-
-	&--twitter {
-		background-image: image-url("icons/twitter.svg");
-	}
-
-	&--instagram {
-		background-image: image-url("icons/instagram.svg");
-	}
-
-	&--facebook {
-		background-image: image-url("icons/facebook.svg");
-	}
-}
-
+/*
+	used by inline svgs in
+	- app/components/computer_access.html.erb
+	- app/components/help_adding_events.html.erb
+	- app/components/help_getting_help.html.erb
+	- app/components/navigation_component.html.erb
+*/
 .svg {
 	&__background {
 		fill: $base-rules;

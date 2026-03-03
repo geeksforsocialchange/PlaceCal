@@ -22,7 +22,7 @@ class Components::Filter < Components::Base
   def render_toggle
     div(class: 'filters__toggle') do
       button(type: 'button', data: { action: toggle_action_value }) do
-        span(class: 'icon icon--arrow-down') { plain "\u2193" }
+        raw(view_context.icon(:triangle_down, size: nil))
         span(class: 'filters__link', data: { "#{@controller}-target": "#{@name}Text" }) do
           button_text
         end

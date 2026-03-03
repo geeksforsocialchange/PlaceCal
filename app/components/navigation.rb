@@ -4,8 +4,15 @@ class Components::Navigation < Components::Base
   prop :navigation, Array
   prop :site, _Nilable(::Site), default: nil
 
+  def after_initialize
+    # rubocop:disable Style/SafeNavigationChainLength
+    @logo_path = @site&.logo&.to_s&.sub(%r{^/uploads/}, '').presence
+    # rubocop:enable Style/SafeNavigationChainLength
+  end
+
   def view_template
-    div(class: 'header', data: { controller: 'mobile-menu' }) do
+    header_class = @site&.default_site? ? 'header__default' : 'header__partner'
+    header(class: "header #{header_class}", data: { controller: 'mobile-menu' }) do
       render_branding
       render_nav_menu
       render_toggle
@@ -15,7 +22,7 @@ class Components::Navigation < Components::Base
   private
 
   def render_nav_menu
-    nav(class: 'nav header__menu', data: { mobile_menu_target: 'menu' }, role: 'navigation') do
+    nav(class: 'nav header__menu', data: { mobile_menu_target: 'menu' }) do
       ul do
         li { active_link_to('Home', root_path) }
         @navigation.each do |link_text, link_path|
@@ -26,45 +33,41 @@ class Components::Navigation < Components::Base
   end
 
   def render_toggle
-    a(href: '#', class: 'header__toggle', data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
-      safe(hamburger_svg)
+    button(type: 'button', class: 'header__toggle', data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
+      plain 'Menu'
+      raw(view_context.icon(:misc_menu, size: nil))
     end
   end
 
   def render_branding
-    if @site&.logo.present?
-      div(
-        class: "header__branding header__branding--#{@site.slug}",
-        style: "background-image: url(#{image_url(@site.logo)})",
-        role: 'banner'
-      ) { branding_content }
-    else
-      div(class: 'header__branding', role: 'banner') { branding_content }
+    link_to(root_path, class: "header__branding header__branding--#{@site&.slug}") do
+      render_logo
+      render_site_name
     end
   end
 
-  def branding_content
-    link_to(root_path) do
-      if @site&.default_site?
-        if request.path == '/'
-          h1 { 'PlaceCal' }
-        else
-          h2 { 'PlaceCal' }
-        end
+  def render_logo
+    if @logo_path
+      if /\.svg$/.match?(@logo_path)
+        raw(view_context.svg_image(@logo_path, alt_text: @site.name))
       else
-        h2 { @site&.name }
-        p { 'The Community Calendar' }
+        image_tag(@site.logo.url, alt: @site.name)
       end
+    else
+      raw(view_context.svg_image('home/icons/logo.svg', alt_text: 'PlaceCal'))
     end
   end
 
-  def hamburger_svg
-    <<~SVG
-      <svg viewBox="0 0 33 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <polygon class="svg__primary" points="0 5 33 5 33 0 0 0"></polygon>
-        <polygon class="svg__primary" points="0 18 33 18 33 13 0 13"></polygon>
-        <polygon class="svg__primary" points="0 31 33 31 33 26 0 26"></polygon>
-      </svg>
-    SVG
+  def render_site_name
+    if @site&.default_site?
+      if request.path == '/'
+        h1 { 'PlaceCal' }
+      else
+        h2 { 'PlaceCal' }
+      end
+    else
+      h2 { @site&.name }
+      p { 'The Community Calendar' }
+    end
   end
 end

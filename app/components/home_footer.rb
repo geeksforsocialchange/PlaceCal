@@ -35,7 +35,7 @@ class Components::HomeFooter < Components::Base
 
       ul(class: 'footer_home__body__logos') do
         li { link_to('https://gfsc.studio') { image_tag('home/logos/gfsc.svg', alt: 'Geeks For Social Change') } }
-        li('aria-hidden': 'true') { image_tag('home/icons/plus.svg', alt: '') }
+        li('aria-hidden': 'true') { raw(view_context.icon(:home_plus, size: '0')) }
         li { image_tag('home/logos/phase.svg', alt: 'PHASE: place, health, architecture, space, enviroment') }
       end
 

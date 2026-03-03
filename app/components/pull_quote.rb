@@ -12,13 +12,13 @@ class Components::PullQuote < Components::Base
   def view_template(&)
     div(class: 'pullquote') do
       blockquote(class: "blockquote--#{@color_mode}") do
-        div(class: 'max_width') do
-          p(class: 'alt-title-small', &)
-        end
+        raw(view_context.icon(:home_quote_open, size: nil))
+        p(class: 'alt-title-small', &)
+        raw(view_context.icon(:home_quote_close, size: nil))
       end
       cite do
-        strong(class: 'h3-small') { @source }
-        span(class: 'small') { @quote_context }
+        strong(class: 'h3-small') { @source } if @source.present?
+        span(class: 'small') { @quote_context } if @quote_context.present? && @source.present?
       end
     end
   end

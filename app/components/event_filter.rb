@@ -39,7 +39,7 @@ class Components::EventFilter < Components::Base
 
   def render_goto_date_button
     button(type: 'button', data: { action: 'click->date-picker#open' }) do
-      span(class: 'icon icon--arrow-down') { plain "\u2193" }
+      raw(view_context.icon(:triangle_down, size: nil))
       plain ' '
       span(class: 'filters__link') { 'Go to date' }
     end
@@ -92,7 +92,7 @@ class Components::EventFilter < Components::Base
   def build_sort_toggle
     view_context.content_tag(:div, class: 'filters__toggle') do
       view_context.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) do
-        view_context.content_tag(:span, "\u2193", class: 'icon icon--arrow-down') +
+        view_context.icon(:triangle_down, size: nil) +
           ' '.html_safe +
           view_context.content_tag(:span, 'Filter and sort', class: 'filters__link')
       end

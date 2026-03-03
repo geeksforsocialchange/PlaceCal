@@ -42,25 +42,25 @@ class Components::Event < Components::Base
 
   def render_event_details
     div(class: 'event__details') do
-      render_detail('event__time', 'icon-time', time)
-      render_detail('event__duration', 'icon-duration', duration) if duration
-      render_detail('event__date', 'icon-date', date)
-      render_detail('event__repeats', 'icon-online', 'Online') if online?
+      render_detail('event__time', :event_time, time)
+      render_detail('event__duration', :event_duration, duration) if duration
+      render_detail('event__date', :event_date, date)
+      render_detail('event__repeats', :event_online, 'Online') if online?
       render_location if partner_at_location || first_address_line
-      render_detail('event__repeats', 'icon-repeats', repeats) if repeats
+      render_detail('event__repeats', :event_repeats, repeats) if repeats
     end
   end
 
-  def render_detail(css, icon_css, text)
+  def render_detail(css, icon_name, text)
     div(class: "event__detail #{css}") do
-      span(class: "icon-font #{icon_css}")
+      raw(view_context.icon(icon_name, size: nil))
       plain " #{text}"
     end
   end
 
   def render_location
     div(class: 'event__detail event__location') do
-      span(class: 'icon-font icon-place')
+      raw(view_context.icon(:event_place, size: nil))
       if partner_at_location
         plain ' '
         link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })

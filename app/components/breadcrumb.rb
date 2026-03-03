@@ -13,7 +13,7 @@ class Components::Breadcrumb < Components::Base
       end
       @trail.each do |link|
         div(class: 'breadcrumb__element') do
-          span(class: 'icon icon--arrow-right') { plain "\u2192" }
+          raw(view_context.icon(:triangle_right, size: nil))
           link_to(link[0], link[1])
         end
       end

@@ -26,8 +26,8 @@ class Components::Timeline < Components::Base
         end
         li(**li_attrs) do
           a(href: btn[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
-            if btn[:icon]
-              span(class: btn[:icon_class]) { btn[:text] }
+            if btn[:svg]
+              raw(btn[:svg])
             else
               plain btn[:text]
             end
@@ -41,13 +41,13 @@ class Components::Timeline < Components::Base
 
   def buttons
     pages = []
-    pages << { text: "\u2190", icon: true, icon_class: 'icon icon--arrow-left-grey', link: url_for(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
+    pages << { svg: view_context.icon(:triangle_left, size: nil), link: url_for(@pointer - step), css: 'paginator__arrow paginator__arrow--back', data: {} }
     (0..steps).each do |i|
       day = window_start + (step * i)
       css = day == @pointer ? 'active' : ''
       pages << { text: format_date(day), link: url_for(day), css: css, data: { paginator_target: 'button' } }
     end
-    pages << { text: "\u2192", icon: true, icon_class: 'icon icon--arrow-right-grey', link: url_for(@pointer + step), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
+    pages << { svg: view_context.icon(:triangle_right, size: nil), link: url_for(@pointer + step), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
   end
 
   def step

@@ -1,173 +1,257 @@
 @import "variables_mixins";
 
+/*
+	`app/assets/stylesheets/home/_headers.scss` previously overrode a lot of this for the default site, e.g. http://lvh.me:3000/
+	now .header is given an additional class so both sets of styling can be done here
+	  .header__default is the default site, e.g. http://lvh.me:3000/
+	  .header__partner is (usually) a subdomain, e.g. http://normal-island.lvh.me:3000/
+
+	header__branding sizes are copied them from the old css
+*/
+
+// base (mobile, default site)
 .header {
-	@include flexbox;
-	@include align-items(center);
-	@include justify-content(space-between);
-	@include flex-wrap(wrap);
-	@include for-tablet-landscape-up {
-		padding: 1rem $big-page-margin;
-	}
+	display: grid;
+	grid-template:
+		"branding toggle" auto
+		"menu menu" auto;
+	align-items: center;
+	margin-inline: 0.75rem;
+	padding-block: 1rem;
 
-	h2 {
-		margin-bottom: 0;
-	}
+	.header__branding {
+		grid-area: branding;
+		width: 148px;
+		height: 43.56px;
 
-	&__branding {
-		@include order(1);
-
-		margin: 1rem 0 1rem 1rem;
-
-		@include for-tablet-landscape-up {
-			margin-left: 0;
+		svg,
+		img {
+			object-fit: contain;
+			max-width: 100%;
+			max-height: 100%;
 		}
-
-		text-indent: -9999px;
-		background-image: image-url("header.svg");
-		background-repeat: no-repeat;
-		width: 187px;
-		height: 55px;
-		background-size: contain;
 
 		h1,
-		h2 {
+		h2,
+		p {
+			width: 0;
+			height: 0;
 			margin: 0;
+			padding: 0;
+			overflow: clip;
 		}
 	}
 
-	&__menu {
-		@include order(3);
-
-		width: 100%;
-
-		@include for-phone-only {
-			&.is-hidden {
-				display: none;
-			}
-		}
-
-		@include for-tablet-portrait-up {
-			@include flex(1 1 100%);
-		}
-
-		@include for-tablet-landscape-up {
-			@include flex(0 1 auto);
-
-			width: auto;
-		}
+	.header__menu {
+		grid-area: menu;
+		// margin-left: auto;
+		background-color: transparent;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding-block: 1rem 0;
+		// fill screen width
+		margin-inline: -1.5rem;
+		justify-content: space-evenly;
+		// allow transition between keywords (i.e. `auto`, `min-content`) and numerics
+		// not in firefox yet https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/interpolate-size#browser_compatibility
+		interpolate-size: allow-keywords;
+		// transition discrete properties (i.e. `display`) at the start/end of transition rather than at 50%
+		transition-behavior: allow-discrete;
+		height: auto;
+		transition-property: display, height, margin-top, padding-block;
+		transition-duration: 0.3s;
+		transition-timing-function: ease-in-out;
+		overflow: clip;
 
 		ul {
-			@include flexbox;
-			@include flex-wrap(wrap);
+			display: contents;
 
-			width: 100%;
-			margin: 0;
-			padding: 0;
+			li {
+				// background-color: $base-tertiary;
+				background-color: var(--base-tertiary, $base-tertiary);
+				padding-block: 1rem;
 
-			@include for-tablet-portrait-up {
-				@include justify-content(center);
-			}
+				a {
+					color: var(--base-background, $base-background);
+					text-decoration: none;
+					font-size: 1rem;
+					font-weight: 600;
 
-			@include for-tablet-landscape-up {
-				width: auto;
-			}
-		}
-
-		li {
-			@include flex(1 1 100%);
-
-			text-align: center;
-			list-style-type: none;
-			background-color: $base-text;
-
-			@include for-phone-only {
-				border-bottom-width: 4px;
-				border-bottom-color: $base-tertiary;
-				border-bottom-style: solid;
-
-				&:hover {
-					background-color: $base-tertiary;
-				}
-			}
-
-			@include for-tablet-portrait-up {
-				@include flex(1 1 auto);
-			}
-
-			@include for-tablet-landscape-up {
-				@include flex(0 1 auto);
-
-				background-color: transparent;
-				margin-left: 2rem;
-			}
-		}
-
-		a {
-			font-size: $h3-size;
-			font-weight: $extra-bold;
-			letter-spacing: $title-letter-spacing;
-			display: inline-block;
-			padding: 1rem 0;
-			text-transform: uppercase;
-			text-decoration: none;
-			color: $base-background;
-			width: 100%;
-			border-bottom-width: 0;
-
-			&:hover {
-				color: $base-text;
-			}
-
-			@include for-tablet-portrait-up {
-				font-size: 1rem;
-				width: auto;
-
-				&:hover,
-				&.active {
-					color: $base-background;
-					position: relative;
-
-					&:after {
+					// used for active page/hover underlines at some breakpoints
+					&::after {
 						content: "";
 						display: block;
 						width: 2.5rem;
-						margin: 0 auto;
-						border-width: 0 0 4px 0;
-						border-color: $base-primary;
-						border-color: var(--base-primary);
-						border-style: solid;
+						margin-inline: auto;
+						height: 4px;
+						background-color: transparent;
+						transition: background-color 0.3s ease-in-out;
+					}
 
-						// padding-bottom: 0.1em
+					&:hover::after,
+					&.active::after {
+						background-color: transparent;
+					}
+				}
+
+				text-align: center;
+				list-style-type: none;
+			}
+		}
+
+		@include for-phone-and-tablet-portrait-only {
+			&.is-hidden {
+				margin-top: 0;
+				height: 0;
+				padding-block: 0;
+			}
+		}
+	}
+
+	.header__toggle {
+		grid-area: toggle;
+		display: flex;
+		gap: 0.5rem;
+		margin-left: auto;
+		align-items: center;
+		color: var(--base-background, $base-background);
+		background-color: transparent;
+		font-size: 1rem;
+		font-weight: 600;
+		font-family: $sans-serif;
+
+		svg {
+			width: 33px;
+			height: 33px;
+			fill: var(--base-secondary);
+		}
+	}
+
+	@include for-tablet-portrait-up {
+		margin-inline: 1.5rem;
+
+		.header__branding {
+			width: 191px;
+			height: 56.22px;
+		}
+
+		.header__menu {
+			flex-direction: row;
+			background-color: var(--base-tertiary, $base-tertiary);
+			gap: 2rem;
+			padding-block: 1rem;
+			margin-top: 1rem;
+
+			ul li {
+				background-color: transparent;
+				padding-block: 0;
+
+				a {
+					&:hover::after,
+					&.active::after {
+						background-color: var(--base-primary, $base-primary);
+					}
+				}
+			}
+		}
+	}
+
+	@include for-tablet-landscape-up {
+		grid-template: "branding menu" auto;
+
+		.header__menu {
+			background-color: transparent;
+			justify-content: end;
+			margin-inline: 0;
+			margin-top: 0;
+			width: auto;
+			transition: none;
+			padding-block: 0;
+
+			ul li a {
+				&:hover::after,
+				&.active::after {
+					background-color: var(--base-tertiary, $base-tertiary);
+				}
+			}
+		}
+
+		.header__toggle {
+			display: none;
+		}
+	}
+
+	// subdomain overrides
+	&.header__partner {
+		@include for-phone-and-tablet-portrait-only {
+			padding-bottom: 0;
+		}
+
+		.header__menu {
+			ul li a {
+				letter-spacing: 0.166rem;
+				font-weight: 800;
+				text-transform: uppercase;
+			}
+
+			@include for-phone-only {
+				background-color: var(--base-tertiary, $base-tertiary);
+				margin-top: 1rem;
+
+				&:not(.is-hidden) {
+					padding-block: 0 0.25rem;
+				}
+
+				ul li {
+					background-color: var(--base-text, $base-text);
+					transition: background-color 0.3s ease-in-out;
+
+					&:hover {
+						background-color: var(--base-tertiary, $base-tertiary);
+					}
+
+					a {
+						font-size: 1.333rem;
 					}
 				}
 			}
 
-			@include for-tablet-landscape-up {
-				color: $base-text;
+			@include for-tablet-portrait-only {
+				justify-content: space-evenly;
+				background-color: var(--base-text, $base-text);
 
-				&:hover,
-				&.active {
-					color: $base-text;
+				// subdomains force the menu open at tablet-portrait breakpoint. root forces it at tablet-landscape
+				&.is-hidden {
+					height: auto;
+					margin-top: 1rem;
+					padding-block: 1rem;
+				}
+
+				// give li's equal width
+				ul li {
+					flex: 1 1 1px;
+				}
+			}
+
+			@include for-tablet-landscape-up {
+				ul li a {
+					color: var(--base-text, $base-text);
+
+					&:hover::after,
+					&.active::after {
+						background-color: var(--base-primary, $base-primary);
+					}
 				}
 			}
 		}
-	}
 
-	&__toggle {
-		@include order(2);
-		@include for-tablet-portrait-up {
-			display: none;
-		}
+		.header__toggle {
+			color: var(--base-text, $base-text);
 
-		border-width: 0;
-		margin-right: 1rem;
-		line-height: 1;
-
-		svg {
-			width: 33px;
-			height: 31px;
-			fill: $base-secondary;
-			fill: var(--base-secondary);
+			@include for-tablet-portrait-up {
+				display: none;
+			}
 		}
 	}
 }
