@@ -73,6 +73,32 @@ We need to implement the new design and get the styles into a maintainable state
 - If you want to add dark/light themes, this is probably the time to do so. It would only be a case of redefining the theme colours and deciding on if you want to just follow the browser's colour scheme or add an auto/light/dark toggle button somewhere
 - We need to test the changes on both modern and older browsers (I now have [a way to do this](https://github.com/idkidk000/old-browsers-docker))
 
+## Tailwind & Phlex Partner Theming Options
+
+- Partner themes can provide a CSS file which overrides the base Tailwind variables. This allows for simple overrides of
+  - Animation timing, easing functions
+  - Border widths, radii
+  - Colours
+  - Shadows (if we use them)
+  - Spacing
+  - Fonts (using either system font families or faces which we already include in the base CSS)
+- They could provide inline [`@font-face`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@font-face) declarations and override the appropriate theme variables to use custom fonts
+- We'll continue to use targetable class names for elements and use [`grid-template`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template) for layout where appropriate. This allows for
+  - Redefining layouts - the nav bar could be moved to the left or bottom, or the `event--list` could have its children reordered
+  - Adding [filters](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/filter) to all event or partner images - e.g. to increase contrast, add a blur, or adjust colours
+  - Swapping out block colours for gradients - e.g. on the nav bar or hero
+- Defining an entire component in a single file makes it easier to conditionally output child elements based on partner or site settings. We could control this with a nilable hash of field_name, boolean (should we display the field) which is stored in `partners` or `sites` and can be configured through the admin frontend. Nil would mean "use the defaults". For example:
+  - `event--list` could optionally display an event image, a truncated description, and hide the location
+- If necessary, we could even just not output the Tailwind `<style/>` tag in in `app/views/layouts/application.html.erb` according to partner/site configuration. Tailwind classes would be inert and a partner theme would essentially start from a blank slate
+- We could build an admin UI to create your own theme
+  - Provide one colour and we calculate the complementary and contrast colours by rotating the hue and adjusting lightness in [LCH colour space](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/lch) so that perceived brightnesses are consistent and predictable. E.g. in RGB space, #0F0 (green) is much brighter than #00F (blue) despite the channel values being equivalent. LCH fixes that
+  - Or they can provide all the colours if they prefer
+  - Sliders (range inputs) for spacing, font sizes, etc
+  - Options for border styles
+  - Provide font links, e.g. from https://openfont.org/ or https://fonts.google.com/. We could download the font, store it as an asset, and include it in their CSS
+  - Checkboxes for which fields to display on which components
+  - On save, we could store everything to the DB as a JSON object and generate a CSS file to include in `app/views/layouts/application.html.erb`
+
 ## Decision Outcome
 
 ### Components
