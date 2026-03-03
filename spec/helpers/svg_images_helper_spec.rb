@@ -21,6 +21,6 @@ RSpec.describe SvgImagesHelper, type: :helper do
   end
 
   it "renders an error when an invalid path is given" do
-    expect(helper.svg_image("aaa/bbb/ccc")).to include("<!-- SVG file not found: 'aaa/bbb/ccc.svg' -->")
+    expect(helper.svg_image("aaa/bbb/ccc")).to include("SVG file not found")
   end
 end

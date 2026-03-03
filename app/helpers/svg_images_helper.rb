@@ -17,7 +17,9 @@ module SvgImagesHelper
                   "#{name}.svg"
                 end
     # See https://www.rubydoc.info/gems/inline_svg/1.10.0
-    return helpers.inline_svg_tag(
+    # Use helpers proxy when available (ViewComponents), fall back to direct call (views, helper specs)
+    svg_helper = respond_to?(:helpers) ? helpers : self
+    svg_helper.inline_svg_tag(
       file_name,
       aria: true,
       class: css_class,
