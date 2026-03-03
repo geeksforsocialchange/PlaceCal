@@ -6,7 +6,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     site = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.sections.admin_settings'),
       description: t('admin.sites.sections.admin_description')
     )
@@ -23,7 +23,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
   def render_publishing_status
     fieldset(class: 'fieldset') do
       legend(class: 'fieldset-legend') { t('admin.sites.fields.publishing_status') }
-      render Components::Admin::ToggleCard.new(
+      ToggleCard(
         form: form,
         attribute: :is_published,
         title: t('admin.sites.fields.published'),
@@ -67,7 +67,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
 
     div(class: 'divider')
 
-    render Components::Admin::DangerZone.new(
+    DangerZone(
       title: t('admin.danger_zone.delete_title', model: Site.model_name.human),
       description: t('admin.danger_zone.delete_description', model: Site.model_name.human.downcase),
       button_text: t('admin.actions.delete_model', model: Site.model_name.human),

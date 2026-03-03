@@ -8,7 +8,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     site = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: Neighbourhood.model_name.human(count: 2),
       description: t('admin.sites.sections.neighbourhoods_description')
     )
@@ -26,7 +26,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
   private
 
   def render_primary_neighbourhood_card(_site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :neighbourhood,
       title: t('admin.sites.sections.main_neighbourhood'),
       description: t('admin.sites.sections.main_neighbourhood_description')
@@ -37,14 +37,14 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
         if primary.present?
           render_existing_primary(sn, primary)
         else
-          render Components::Admin::CascadingNeighbourhoodFields.new(form: sn, relation_type: 'Primary', show_remove: false)
+          CascadingNeighbourhoodFields(form: sn, relation_type: 'Primary', show_remove: false)
         end
       }
     end
   end
 
   def render_existing_primary(sites_neighbourhood, primary) # rubocop:disable Metrics/AbcSize
-    render Components::Admin::NeighbourhoodCard.new(
+    NeighbourhoodCard(
       neighbourhood: primary,
       show_header: false,
       show_remove: false
@@ -61,7 +61,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
   end
 
   def render_other_neighbourhoods_card(site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :map_pin,
       title: t('admin.sites.sections.other_neighbourhoods'),
       description: t('admin.sites.sections.other_neighbourhoods_description')
@@ -77,7 +77,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
         end
       else
         secondary_neighbourhoods = site.sites_neighbourhoods.where.not(relation_type: 'Primary').map(&:neighbourhood)
-        render Components::Admin::ItemBadgeList.new(
+        ItemBadgeList(
           items: secondary_neighbourhoods,
           icon_name: :map_pin,
           icon_color: 'bg-sky-100 text-sky-600',
@@ -89,13 +89,13 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
   end
 
   def render_display_level_card
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :zoom,
       title: t('admin.sites.sections.display_level'),
       description: t('admin.sites.sections.display_level_description'),
       fit_height: true
     ) do
-      render Components::Admin::RadioCardGroup.new(
+      RadioCardGroup(
         form: form,
         attribute: :badge_zoom_level,
         values: Site.badge_zoom_level.values

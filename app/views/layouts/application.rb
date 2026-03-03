@@ -28,16 +28,16 @@ class Views::Layouts::Application < Phlex::HTML
 
       body do
         div(class: 'background') do
-          render Components::Navigation.new(navigation: navigation, site: site)
+          Navigation(navigation: navigation, site: site)
           main do
-            render Components::Flash.new
+            Flash()
             yield
           end
           footer do
             if site&.default_site?
-              render Components::HomeFooter.new
+              HomeFooter()
             else
-              render Components::Footer.new(site)
+              Footer(site)
             end
           end
         end

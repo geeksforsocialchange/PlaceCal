@@ -20,7 +20,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
                       'form-tabs-storage-key-value': 'profileTabAfterSave',
                       'form-dirty-tab-name-value': 'profile_tabs'
                     } }) do |form|
-      render Components::Admin::Error.new(current_user)
+      Error(current_user)
       render_tabs(form)
       render_save_bar(form)
     end
@@ -30,7 +30,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
 
   def render_tabs(form) # rubocop:disable Metrics/MethodLength
     div(class: 'tabs tabs-lift') do
-      render Components::Admin::TabPanel.new(
+      TabPanel(
         name: 'profile_tabs',
         label: "\u{1F464} #{t('admin.users.profile.tabs.personal')}",
         hash: 'personal',
@@ -40,7 +40,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
         render Views::Admin::Users::ProfileTabPersonal.new(form: form)
       end
 
-      render Components::Admin::TabPanel.new(
+      TabPanel(
         name: 'profile_tabs',
         label: "\u{1F511} #{t('admin.users.profile.tabs.password')}",
         hash: 'password',
@@ -49,7 +49,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
         render Views::Admin::Users::ProfileTabPassword.new(form: form)
       end
 
-      render Components::Admin::TabPanel.new(
+      TabPanel(
         name: 'profile_tabs',
         label: "\u{1F6E1}\u{FE0F} #{t('admin.users.profile.tabs.permissions')}",
         hash: 'permissions',
@@ -61,7 +61,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
   end
 
   def render_save_bar(form)
-    render Components::Admin::SaveBar.new(track_changes: true) do
+    SaveBar(track_changes: true) do
       raw form.submit(t('admin.users.profile.save_button'),
                       class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange btn-disabled opacity-50 cursor-not-allowed',
                       disabled: true,

@@ -9,7 +9,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
     div(class: 'space-y-6') do
       div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
         div(class: 'card-body p-6') do
-          render Components::Admin::SectionHeader.new(
+          SectionHeader(
             title: t('admin.users.profile.permissions_title'),
             description: t('admin.users.profile.permissions_description'),
             margin: 4
@@ -66,7 +66,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
       icon_color: 'text-emerald-600',
       title: t('admin.users.profile.your_partners')
     ) do
-      render Components::Admin::ItemBadgeList.new(
+      ItemBadgeList(
         items: current.partners.order(:name),
         icon_name: :partner,
         icon_color: 'bg-emerald-100 text-emerald-600',
@@ -84,7 +84,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
       icon_color: 'text-sky-600',
       title: t('admin.users.profile.your_neighbourhoods')
     ) do
-      render Components::Admin::ItemBadgeList.new(
+      ItemBadgeList(
         items: current.neighbourhoods.order(:name),
         icon_name: :map_pin,
         icon_color: 'bg-sky-100 text-sky-600',
@@ -102,7 +102,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
       icon_color: 'text-amber-700',
       title: t('admin.users.profile.your_partnerships')
     ) do
-      render Components::Admin::ItemBadgeList.new(
+      ItemBadgeList(
         items: current.tags.order(:name),
         icon_name: :partnership,
         icon_color: 'bg-amber-100 text-amber-700',
@@ -120,7 +120,7 @@ class Views::Admin::Users::ProfileTabPermissions < Views::Admin::Base
       icon_color: 'text-violet-600',
       title: t('admin.users.profile.your_sites')
     ) do
-      render Components::Admin::ItemBadgeList.new(
+      ItemBadgeList(
         items: current.sites.order(:name),
         icon_name: :site,
         icon_color: 'bg-violet-100 text-violet-600',

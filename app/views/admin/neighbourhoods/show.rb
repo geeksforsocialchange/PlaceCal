@@ -20,7 +20,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
       div do
         h1(class: 'text-2xl font-semibold') { safe_neighbourhood_name(neighbourhood) }
         div(class: 'mt-1') do
-          render Components::Admin::NeighbourhoodHierarchyBadge.new(
+          NeighbourhoodHierarchyBadge(
             neighbourhood: neighbourhood, link_each: true, show_icons: true
           )
         end
@@ -41,16 +41,16 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
 
   def render_stats_row # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     div(class: 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6') do
-      render Components::Admin::StatCard.new(
+      StatCard(
         label: t('admin.neighbourhoods.show.stats.partners'),
         value: neighbourhood.partners.count.to_s, icon: :partner
       )
       render_level_card
-      render Components::Admin::StatCard.new(
+      StatCard(
         label: t('admin.neighbourhoods.show.stats.children'),
         value: neighbourhood.descendants.count.to_s, icon: :arrow_down
       )
-      render Components::Admin::StatCard.new(
+      StatCard(
         label: t('admin.neighbourhoods.show.stats.sites'),
         value: neighbourhood.sites.count.to_s, icon: :site
       )
@@ -112,9 +112,9 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
   end
 
   def render_ancestors_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(
-             title: t('admin.neighbourhoods.show.parent_hierarchy'), icon: :arrow_up
-           )) do
+    Card(
+      title: t('admin.neighbourhoods.show.parent_hierarchy'), icon: :arrow_up
+    ) do
       ancestors = neighbourhood.ancestors.order(:ancestry)
       if ancestors.any?
         div(class: 'space-y-1') do
@@ -142,9 +142,9 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
   end
 
   def render_children_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(
-             title: t('admin.neighbourhoods.show.child_neighbourhoods'), icon: :arrow_down
-           )) do
+    Card(
+      title: t('admin.neighbourhoods.show.child_neighbourhoods'), icon: :arrow_down
+    ) do
       children = neighbourhood.children.order(:name)
       if children.any?
         div(class: 'space-y-1 max-h-96 overflow-y-auto') do
@@ -156,7 +156,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
           end
         end
       else
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :neighbourhood, message: t('admin.neighbourhoods.show.no_children'),
           icon_size: '8', padding: 'py-6'
         )
@@ -202,11 +202,11 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
     all_partners = neighbourhood.partners.sort_by(&:name)
     display_partners = all_partners.first(10)
 
-    render(Components::Admin::Card.new(
-             title: Partner.model_name.human(count: 2), icon: :partner,
-             header_link: all_partners.count > 10 ? admin_partners_path : nil,
-             header_link_text: all_partners.count > 10 ? t('admin.actions.view_all') : nil
-           )) do
+    Card(
+      title: Partner.model_name.human(count: 2), icon: :partner,
+      header_link: all_partners.count > 10 ? admin_partners_path : nil,
+      header_link_text: all_partners.count > 10 ? t('admin.actions.view_all') : nil
+    ) do
       if display_partners.any?
         div(class: 'space-y-1') do
           display_partners.each { |partner| render_partner_row(partner) }
@@ -217,7 +217,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
           end
         end
       else
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :partner, message: t('admin.neighbourhoods.show.no_partners'),
           icon_size: '8', padding: 'py-6'
         )
@@ -247,7 +247,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
 
   def render_sites_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     sites = neighbourhood.sites.order(:name)
-    render(Components::Admin::Card.new(title: Site.model_name.human(count: 2), icon: :site)) do
+    Card(title: Site.model_name.human(count: 2), icon: :site) do
       if sites.any?
         div(class: 'space-y-1') do
           sites.each do |site|
@@ -265,7 +265,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
           end
         end
       else
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :site, message: t('admin.neighbourhoods.show.no_sites'),
           icon_size: '8', padding: 'py-6'
         )
@@ -275,15 +275,15 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base # rubocop:disable 
 
   def render_admins_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     admins = neighbourhood.users.order(:email)
-    render(Components::Admin::Card.new(
-             title: t('admin.neighbourhoods.show.neighbourhood_admins'), icon: :users
-           )) do
+    Card(
+      title: t('admin.neighbourhoods.show.neighbourhood_admins'), icon: :users
+    ) do
       if admins.any?
         div(class: 'space-y-1') do
           admins.each { |admin_user| render_admin_row(admin_user) }
         end
       else
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :users, message: t('admin.neighbourhoods.show.no_admins'),
           icon_size: '8', padding: 'py-6'
         )

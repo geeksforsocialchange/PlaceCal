@@ -6,7 +6,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     site = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.sections.basic_information'),
       description: t('admin.sites.sections.basic_info_description')
     )

@@ -27,7 +27,7 @@ class Views::Admin::Tags::FormTabPartners < Views::Admin::Base
           end
         end
       else
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :partner,
           message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)
         )

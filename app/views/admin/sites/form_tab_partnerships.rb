@@ -6,7 +6,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     site = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: Partnership.model_name.human(count: 2),
       description: t('admin.sites.sections.partnerships_description')
     )

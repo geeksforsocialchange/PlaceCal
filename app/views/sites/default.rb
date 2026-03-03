@@ -9,12 +9,12 @@ class Views::Sites::Default < Views::Base
     content_for(:image) { site.og_image }
     content_for(:description) { site.og_description }
 
-    render(Components::HeroSection.new(
-             image_path: site.hero_image.url,
-             image_credit: site.hero_image_credit,
-             title: site.hero_text,
-             alttext: site.hero_alttext
-           ))
+    HeroSection(
+      image_path: site.hero_image.url,
+      image_credit: site.hero_image_credit,
+      title: site.hero_text,
+      alttext: site.hero_alttext
+    )
 
     render_mission
     render_about
@@ -43,7 +43,7 @@ class Views::Sites::Default < Views::Base
       end
       div(class: 'c c--narrow first-ele-h3-serif') do
         raw safe(site.description_html.to_s)
-        render(Components::Profile.new(user: site.site_admin)) if site.site_admin.present?
+        Profile(user: site.site_admin) if site.site_admin.present?
       end
     end
   end
@@ -52,10 +52,10 @@ class Views::Sites::Default < Views::Base
     section(class: 'region region__support') do
       div(class: 'c') do
         div(class: 'gr gr--3') do
-          div { render(Components::HelpCard.new(variant: :adding_events, site: site)) }
-          div { render(Components::HelpCard.new(places: places_to_get_computer_access, variant: :computer_access)) } if places_to_get_computer_access.present?
-          div { render(Components::HelpCard.new(places: places_with_free_wifi, variant: :free_wifi)) } if places_with_free_wifi.present?
-          div { render(Components::HelpCard.new(variant: :getting_help)) }
+          div { HelpCard(variant: :adding_events, site: site) }
+          div { HelpCard(places: places_to_get_computer_access, variant: :computer_access) } if places_to_get_computer_access.present?
+          div { HelpCard(places: places_with_free_wifi, variant: :free_wifi) } if places_with_free_wifi.present?
+          div { HelpCard(variant: :getting_help) }
         end
       end
     end

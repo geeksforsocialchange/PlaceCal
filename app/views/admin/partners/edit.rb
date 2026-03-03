@@ -6,7 +6,7 @@ class Views::Admin::Partners::Edit < Views::Admin::Base
   def view_template
     content_for(:title) { "Edit Partner: #{partner.name}" }
 
-    render(Components::Admin::Error.new(partner))
+    Error(partner)
 
     div(class: 'flex items-center justify-between mb-6') do
       div do

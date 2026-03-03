@@ -41,7 +41,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
           end
         end
       else
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :partnership,
           message: t('admin.empty.no_items', items: Partner.model_name.human(count: 2).downcase)
         )
@@ -102,7 +102,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
           end
         end
       else
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :calendar,
           message: t('admin.time.no_upcoming_in_days', days: 30)
         )

@@ -17,7 +17,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
 
       simple_form_for partner, html: { data: { partner_wizard_target: 'form' } } do |form|
         div(class: 'max-w-4xl mx-auto') do
-          render Components::Admin::Error.new(partner)
+          Error(partner)
           render_step_name(form)
           render_step_location(form)
           render_step_tags(form)
@@ -26,7 +26,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
           render_step_confirm(form)
         end
 
-        render Components::Admin::SaveBar.new(
+        SaveBar(
           wizard: true,
           wizard_controller: 'partner-wizard',
           submit_label: 'Create Partner'
@@ -163,16 +163,16 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
           plain t('admin.partners.validation.location_required')
         end
         div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
-          render Components::Admin::FormCard.new(icon: :map, title: attr_label(:partner, :address)) do
+          FormCard(icon: :map, title: attr_label(:partner, :address)) do
             div(data: { 'partner-wizard-target': 'addressFields', action: 'input->partner-wizard#updateContinueButton' }) do
-              render Components::Admin::AddressFields.new(form: form, partner: partner, current_user: current_user)
+              AddressFields(form: form, partner: partner, current_user: current_user)
               div(class: 'alert alert-warning mt-4 hidden', data: { 'partner-wizard-target': 'addressIncompleteHint' }) do
                 raw icon(:warning, size: '5', css_class: 'shrink-0')
                 span { t('admin.partners.validation.address_incomplete') }
               end
             end
           end
-          render Components::Admin::FormCard.new(
+          FormCard(
             icon: :car, title: t('admin.sections.service_areas'),
             description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
             fit_height: true
@@ -264,7 +264,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
   end
 
   def render_online_presence(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :desktop, title: t('admin.sections.online_presence'),
       description: t('admin.partners.sections.online_presence_description')
     ) do
@@ -292,7 +292,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
   end
 
   def render_public_contact(form) # rubocop:disable Metrics/AbcSize
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :website, title: t('admin.sections.public_contact'), description: t('admin.hints.shown_publicly')
     ) do
       render_contact_field(form, :public_name, attr_label(:partner, :name), 'partner-wizard-target': 'publicName')
@@ -302,7 +302,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
   end
 
   def render_partnership_contact(form)
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :partnership, title: t('admin.partners.sections.partnership_contact'),
       description: t('admin.partners.sections.partnership_contact_description')
     ) do
@@ -340,7 +340,7 @@ class Views::Admin::Partners::New < Views::Admin::Base # rubocop:disable Metrics
   end
 
   def render_admin_details_card(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :user, title: 'Admin Details',
       description: 'Enter the details for the person who will manage this partner.'
     ) do

@@ -17,12 +17,12 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
 
   def render_role_card
     div(class: 'max-w-2xl') do
-      render Components::Admin::FormCard.new(
+      FormCard(
         icon: :lock,
         title: attr_label(:user, :role),
         description: t('admin.users.fields.role_hint')
       ) do
-        render Components::Admin::RadioCardGroup.new(
+        RadioCardGroup(
           form: form,
           attribute: :role,
           values: User.role.values,
@@ -45,7 +45,7 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
         if user.site_admin?
           render_site_admin_warning
         else
-          render Components::Admin::DangerZone.new(
+          DangerZone(
             title: t('admin.danger_zone.delete_title', model: User.model_name.human),
             description: t('admin.danger_zone.delete_description', model: User.model_name.human.downcase),
             button_text: t('admin.actions.delete_model', model: User.model_name.human),

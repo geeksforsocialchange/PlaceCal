@@ -4,7 +4,7 @@ class Views::Admin::Partnerships::New < Views::Admin::Base
   prop :partnership, Partnership, reader: :private
 
   def view_template
-    render Components::Admin::PageHeader.new(model_name: 'Partnership', new_record: true)
+    PageHeader(model_name: 'Partnership', new_record: true)
     render Views::Admin::Tags::Form.new(tag: partnership)
   end
 end

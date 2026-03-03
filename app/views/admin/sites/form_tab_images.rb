@@ -6,7 +6,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     site = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.sections.images_theme'),
       description: t('admin.sites.sections.images_description')
     )

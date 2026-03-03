@@ -6,7 +6,7 @@ class Views::Admin::Sites::Edit < Views::Admin::Base
   prop :primary_neighbourhood_id, _Nilable(Integer), reader: :private
 
   def view_template
-    render Components::Admin::PageHeader.new(model_name: 'Site', title: site.name, id: site.id)
+    PageHeader(model_name: 'Site', title: site.name, id: site.id)
     render Views::Admin::Sites::Form.new(site: site, all_neighbourhoods: all_neighbourhoods,
                                          primary_neighbourhood_id: primary_neighbourhood_id)
   end

@@ -22,12 +22,12 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
   private
 
   def render_partnerships_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :partnership,
       title: Partnership.model_name.human(count: 2),
       description: t('admin.users.fields.partnerships_hint')
     ) do
-      render Components::Admin::StackedListSelector.new(
+      StackedListSelector(
         field_name: 'user[tag_ids][]',
         items: user.partnerships.order(:name),
         options: options_for_user_partnerships,
@@ -44,7 +44,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
   def render_neighbourhoods_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     neighbourhoods_hint = helpers.current_user.root? ? t('admin.users.fields.neighbourhoods_hint_root') : t('admin.users.fields.neighbourhoods_hint')
 
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :map_pin,
       title: Neighbourhood.model_name.human(count: 2),
       description: neighbourhoods_hint
@@ -59,7 +59,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
           }
         end
       else
-        render Components::Admin::ItemBadgeList.new(
+        ItemBadgeList(
           items: user.neighbourhoods.order(:name),
           icon_name: :map_pin,
           icon_color: 'bg-sky-100 text-sky-600',
@@ -71,7 +71,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
   end
 
   def render_sites_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :site,
       title: Site.model_name.human(count: 2),
       description: t('admin.users.fields.sites_hint', default: 'Sites where this user is assigned as admin')
@@ -110,12 +110,12 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
   end
 
   def render_partners_card(user) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :partner,
       title: Partner.model_name.human(count: 2),
       description: t('admin.users.fields.partners_hint')
     ) do
-      render Components::Admin::StackedListSelector.new(
+      StackedListSelector(
         field_name: 'user[partner_ids][]',
         items: user.partners.order(:name),
         options: options_for_partners(user),

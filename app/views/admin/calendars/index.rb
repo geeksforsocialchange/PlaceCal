@@ -8,7 +8,7 @@ class Views::Admin::Calendars::Index < Views::Admin::Base
   prop :importer_options, Array, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::Datatable.new(
+    Datatable(
       title: 'Calendars',
       model: :calendars,
       column_titles: [

@@ -27,7 +27,7 @@ class Views::Admin::Articles::FormTabReferences < Views::Admin::Base
         end
       end
 
-      render Components::Admin::StackedListSelector.new(
+      StackedListSelector(
         field_name: 'article[partner_ids][]',
         items: article.partners,
         options: disabled_fields.include?(:partner_ids) ? [] : options_for_partners,
@@ -53,7 +53,7 @@ class Views::Admin::Articles::FormTabReferences < Views::Admin::Base
         end
       end
 
-      render Components::Admin::StackedListSelector.new(
+      StackedListSelector(
         field_name: 'article[tag_ids][]',
         items: article.tags,
         options: disabled_fields.include?(:tag_ids) ? [] : helpers.options_for_tags,

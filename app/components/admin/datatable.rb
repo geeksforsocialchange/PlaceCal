@@ -119,13 +119,13 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     grouped = radio_filters.select { |f| f[:group] }.group_by { |f| f[:group] }
 
     ungrouped.each do |filter|
-      render Components::Admin::RadioFilter.new(
+      RadioFilter(
         column: filter[:column], label: filter[:label], options: filter[:options] || []
       )
     end
 
     grouped.each do |group_name, group_filters|
-      render Components::Admin::RadioFilterGroup.new(
+      RadioFilterGroup(
         group_label: group_name, filters: group_filters
       )
     end
@@ -227,7 +227,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
     div(class: 'flex flex-wrap items-center gap-3 mt-3') do
       @secondary_filters.each do |filter|
         if filter[:type] == :radio
-          render Components::Admin::RadioFilter.new(
+          RadioFilter(
             column: filter[:column], label: filter[:label], options: filter[:options] || []
           )
         else

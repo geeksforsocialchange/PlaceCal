@@ -5,7 +5,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable 
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     simple_form_for([:admin, neighbourhood], html: { data: { controller: 'form-dirty' } }) do |form|
-      render(Components::Admin::Error.new(neighbourhood))
+      Error(neighbourhood)
 
       div(class: 'grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8') do
         div(class: 'lg:col-span-2 space-y-6') do
@@ -18,7 +18,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable 
         end
       end
 
-      render Components::Admin::SaveBar.new(track_changes: true) do
+      SaveBar(track_changes: true) do
         raw form.submit(t('admin.actions.save'), class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange')
       end
     end
@@ -27,7 +27,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable 
   private
 
   def render_name_card(form)
-    render Components::Admin::Card.new(title: t('admin.neighbourhoods.form.name_title'), icon: :edit) do
+    Card(title: t('admin.neighbourhoods.form.name_title'), icon: :edit) do
       p(class: 'text-sm text-gray-600 mb-4') { t('admin.neighbourhoods.form.name_description') }
       div(class: 'space-y-4') do
         fieldset(class: 'fieldset') do
@@ -56,7 +56,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable 
           end
         end
 
-        render Components::Admin::StackedListSelector.new(
+        StackedListSelector(
           field_name: 'neighbourhood[user_ids][]',
           items: neighbourhood.users.order(:last_name),
           options: options_for_users,
@@ -75,7 +75,7 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base # rubocop:disable 
   def render_official_data_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     is_current = !neighbourhood.legacy_neighbourhood?
 
-    render Components::Admin::Card.new(title: t('admin.neighbourhoods.form.official_title'), icon: :globe) do
+    Card(title: t('admin.neighbourhoods.form.official_title'), icon: :globe) do
       p(class: 'text-sm text-gray-600 mb-4') { t('admin.neighbourhoods.form.official_description') }
       div(class: 'space-y-3') do
         render_stat_row(t('admin.neighbourhoods.show.stats.level')) do

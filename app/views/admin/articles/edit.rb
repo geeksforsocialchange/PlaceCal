@@ -4,7 +4,7 @@ class Views::Admin::Articles::Edit < Views::Admin::Base
   prop :article, Article, reader: :private
 
   def view_template
-    render Components::Admin::PageHeader.new(model_name: 'Article', title: article.title, id: article.id)
+    PageHeader(model_name: 'Article', title: article.title, id: article.id)
     render Views::Admin::Articles::Form.new(article: article)
   end
 end

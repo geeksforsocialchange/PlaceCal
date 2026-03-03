@@ -27,13 +27,13 @@ class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metric
 
       simple_form_for calendar, url: helpers.admin_calendars_path, html: { data: { turbo: false } } do |form|
         div(class: 'max-w-4xl mx-auto') do
-          render Components::Admin::Error.new(calendar)
+          Error(calendar)
           render_step_source(form)
           render_step_organiser(form)
           render_step_location(form)
         end
 
-        render Components::Admin::SaveBar.new(
+        SaveBar(
           wizard: true,
           wizard_controller: 'calendar-wizard',
           submit_label: t('admin.calendars.wizard.create_button'),
@@ -241,7 +241,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base # rubocop:disable Metric
         div(class: 'space-y-6') do
           fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
             legend(class: 'fieldset-legend text-base font-semibold') { attr_label(:calendar, :strategy) }
-            render Components::Admin::RadioCardGroup.new(
+            RadioCardGroup(
               form: form, attribute: :strategy,
               values: Calendar.strategy.values, i18n_scope: 'admin.calendars.strategy'
             )

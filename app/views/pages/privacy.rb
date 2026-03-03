@@ -5,7 +5,7 @@ class Views::Pages::Privacy < Views::Base
     content_for(:title) { 'Privacy Policy' }
 
     article(class: 'home margin') do
-      render Components::Hero.new('PlaceCal Privacy Policy')
+      Hero('PlaceCal Privacy Policy')
 
       div(class: 'card card--plain') do
         div(class: 'max_width') do

@@ -8,7 +8,7 @@ class Views::Admin::Calendars::Form < Views::Admin::Base
 
     simple_form_for([:admin, calendar], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'calendarTabAfterSave' } }) do |form|
       div(class: 'mt-6') do
-        render Components::Admin::TabForm.new(
+        TabForm(
           tabs: [
             { label: "\u{1F4E5} Source", hash: 'source', component: Views::Admin::Calendars::FormTabSource },
             { label: "\u{1F4CD} Location", hash: 'location', component: Views::Admin::Calendars::FormTabLocation },

@@ -30,7 +30,7 @@ class Views::Admin::Users::ProfileTabPersonal < Views::Admin::Base
         end
       end
 
-      render Components::Admin::ImageUpload.new(
+      ImageUpload(
         form: form,
         attribute: :avatar,
         rounded: 'rounded-xl'

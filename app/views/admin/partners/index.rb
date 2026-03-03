@@ -8,7 +8,7 @@ class Views::Admin::Partners::Index < Views::Admin::Base
   prop :category_options, Array, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::Datatable.new(
+    Datatable(
       title: 'Partners',
       model: :partners,
       column_titles: [

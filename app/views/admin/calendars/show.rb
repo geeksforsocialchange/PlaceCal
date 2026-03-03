@@ -39,14 +39,14 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
 
   def render_info_cards # rubocop:disable Metrics/AbcSize
     div(class: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-8') do
-      render(Components::Admin::InfoCard.new(icon: :partner, label: 'Partner', color: :orange)) do
+      InfoCard(icon: :partner, label: 'Partner', color: :orange) do
         link_to calendar.partner.name, edit_admin_partner_path(calendar.partner),
                 class: 'font-semibold link link-hover text-placecal-orange'
       end
-      render Components::Admin::InfoCard.new(
+      InfoCard(
         icon: :cog, label: 'Strategy', value: calendar.strategy.to_s.titleize, color: :info
       )
-      render(Components::Admin::InfoCard.new(icon: :map_pin, label: 'Default Location', color: :success)) do
+      InfoCard(icon: :map_pin, label: 'Default Location', color: :success) do
         if calendar.place
           link_to calendar.place.name, edit_admin_partner_path(calendar.place),
                   class: 'font-semibold link link-hover text-placecal-orange'
@@ -84,8 +84,8 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
       if upcoming.any?
         render_events_table(upcoming, :upcoming)
       else
-        render Components::Admin::EmptyState.new(icon: :calendar, message: 'No upcoming events',
-                                                 icon_size: '12', padding: 'py-12')
+        EmptyState(icon: :calendar, message: 'No upcoming events',
+                   icon_size: '12', padding: 'py-12')
       end
     end
   end
@@ -99,8 +99,8 @@ class Views::Admin::Calendars::Show < Views::Admin::Base # rubocop:disable Metri
         total_past = calendar.events.past.count
         p(class: 'text-center text-sm text-gray-600 mt-4') { "Showing 50 of #{total_past} past events" } if total_past > 50
       else
-        render Components::Admin::EmptyState.new(icon: :calendar, message: 'No past events',
-                                                 icon_size: '12', padding: 'py-12')
+        EmptyState(icon: :calendar, message: 'No past events',
+                   icon_size: '12', padding: 'py-12')
       end
     end
   end

@@ -4,7 +4,7 @@ class Views::Admin::Articles::Index < Views::Admin::Base
   prop :articles, ActiveRecord::Relation, reader: :private
 
   def view_template
-    render Components::Admin::Datatable.new(
+    Datatable(
       title: 'Articles',
       model: :articles,
       column_titles: ['Article', 'Author', 'Partners', 'Status', 'Last Updated', ''],

@@ -4,7 +4,7 @@ class Views::Admin::Calendars::FormTabContact < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template # rubocop:disable Metrics/MethodLength
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.calendars.tabs.contact'),
       description: t('admin.calendars.sections.contact_description')
     ) do |c|
@@ -12,7 +12,7 @@ class Views::Admin::Calendars::FormTabContact < Views::Admin::Base
     end
 
     div(class: 'max-w-xl') do
-      render(Components::Admin::FormCard.new(icon: :phone, title: t('admin.sections.public_contact'))) do
+      FormCard(icon: :phone, title: t('admin.sections.public_contact')) do
         render_contact_name
         render_contact_email
         render_contact_phone

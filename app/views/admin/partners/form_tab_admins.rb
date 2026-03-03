@@ -14,7 +14,7 @@ class Views::Admin::Partners::FormTabAdmins < Views::Admin::Base
     end
     p(class: 'text-sm text-gray-600 mb-6') { t('admin.partners.sections.admins_description') }
 
-    render Components::Admin::StackedListSelector.new(
+    StackedListSelector(
       field_name: 'partner[user_ids][]',
       items: partner.users,
       options: options_for_partner_users(partner),

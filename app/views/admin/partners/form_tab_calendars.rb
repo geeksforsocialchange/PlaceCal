@@ -14,7 +14,7 @@ class Views::Admin::Partners::FormTabCalendars < Views::Admin::Base
     end
     p(class: 'text-sm text-gray-600 mb-6') { t('admin.partners.sections.calendars_description') }
 
-    render Components::Admin::RelatedItemsList.new(
+    RelatedItemsList(
       items: partner.calendars,
       title_attr: :name,
       subtitle_attr: :source,

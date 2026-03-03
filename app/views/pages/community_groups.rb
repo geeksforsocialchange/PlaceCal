@@ -26,15 +26,15 @@ class Views::Pages::CommunityGroups < Views::Base
 
   def render_details
     div(class: 'card card--plain pattern pattern--audience') do
-      render(Components::Details.new(
-               header: 'We turn your local knowledge into great community information websites',
-               header_class: 'center alt-title',
-               header_level: 2,
-               summary: '<p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p><p class="details__summary__collapsible">The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.</p>',
-               image_url: 'home/audiences/communities_wide.jpg',
-               image_alt: 'A photograph of a middle aged woman and young girl enjoying a pottery class',
-               image_layout: 'center'
-             )) do
+      Details(
+        header: 'We turn your local knowledge into great community information websites',
+        header_class: 'center alt-title',
+        header_level: 2,
+        summary: '<p>We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society.</p><p class="details__summary__collapsible">The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.</p>',
+        image_url: 'home/audiences/communities_wide.jpg',
+        image_alt: 'A photograph of a middle aged woman and young girl enjoying a pottery class',
+        image_layout: 'center'
+      ) do
         p { 'We can help your partnership help everyone work together to produce a high quality and constantly updated website that\'s proven to work even in areas left behind by other digital initiatives.' }
         p { 'This information helps communities work better together, improves health outcomes, and saves everyone time manually collating information.' }
       end
@@ -46,7 +46,7 @@ class Views::Pages::CommunityGroups < Views::Base
   end
 
   def render_steps
-    render Components::Steps.new(
+    Steps(
       steps: [
         { id: 1, content: '<p>We have a chat on the phone to get the ball rolling, and set a time to come and show you how it works.</p>', image_alt: 'Two people talking on the phone' },
         { id: 2, content: '<p>We help you enter all the information you already know about local groups into PlaceCal.</p>', image_alt: 'Two people entering information into PlaceCal' },

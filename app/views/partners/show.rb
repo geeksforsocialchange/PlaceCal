@@ -27,13 +27,13 @@ class Views::Partners::Show < Views::Base
     content_for(:description) { partner.summary } if partner.summary
 
     div(vocab: 'http://schema.org/', typeof: 'Organization') do
-      render(Components::Hero.new(partner.name, site.tagline, 'name'))
+      Hero(partner.name, site.tagline, 'name')
 
       div(class: 'c c--lg-space-after') do
-        render(Components::Breadcrumb.new(
-                 trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
-                 site_name: site.name
-               ))
+        Breadcrumb(
+          trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
+          site_name: site.name
+        )
 
         hr
         render_partner_details
@@ -56,7 +56,7 @@ class Views::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        render Components::Map.new(points: map, site: current_site.slug, compact: true)
+        Map(points: map, site: current_site.slug, compact: true)
         render_opening_times
       end
     end
@@ -77,12 +77,12 @@ class Views::Partners::Show < Views::Base
 
   def render_contact_and_address # rubocop:disable Metrics/AbcSize
     h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
-    render Components::ContactDetails.new(partner: partner)
+    ContactDetails(partner: partner)
 
     h3(class: 'udl udl--fw allcaps h4') { 'Address' }
     p { "We operate in #{partner_service_area_text(partner)}." } if partner.has_service_areas?
 
-    render Components::Address.new(address: partner.address)
+    Address(address: partner.address)
 
     if partner.accessibility_info_html.present?
       details(id: 'accessibility-info') do
@@ -137,11 +137,11 @@ class Views::Partners::Show < Views::Base
         div(class: 'gi gi__1-2') do
           h3(class: 'udl udl--fw allcaps h4') { 'Address' }
           div(class: 'small') do
-            render Components::Address.new(address: place.address)
+            Address(address: place.address)
           end
           h3(class: 'udl udl--fw allcaps h4') { 'Contact' }
           div(class: 'small') do
-            render Components::ContactDetails.new(
+            ContactDetails(
               partner: partner,
               email: place.public_email,
               phone: place.public_phone,
@@ -157,14 +157,14 @@ class Views::Partners::Show < Views::Base
     turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
       if events.any?
         render_events_paginator if paginator
-        render(Components::EventList.new(
-                 events: events,
-                 period: period,
-                 primary_neighbourhood: primary_neighbourhood,
-                 show_neighbourhoods: current_site.show_neighbourhoods?,
-                 badge_zoom_level: current_site.badge_zoom_level&.to_s,
-                 site_tagline: site.tagline
-               ))
+        EventList(
+          events: events,
+          period: period,
+          primary_neighbourhood: primary_neighbourhood,
+          show_neighbourhoods: current_site.show_neighbourhoods?,
+          badge_zoom_level: current_site.badge_zoom_level&.to_s,
+          site_tagline: site.tagline
+        )
       else
         p { em { no_event_message } }
       end
@@ -175,29 +175,29 @@ class Views::Partners::Show < Views::Base
     path = "partners/#{partner.slug}/events"
     today = Time.zone.today
     div(class: 'paginator', id: 'paginator') do
-      render(Components::Timeline.new(
-               pointer: current_day,
-               period: period,
-               sort: sort,
-               repeating: repeating,
-               path: path
-             ))
+      Timeline(
+        pointer: current_day,
+        period: period,
+        sort: sort,
+        repeating: repeating,
+        path: path
+      )
       div(class: 'paginator__actions') do
         today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#paginator"
-        render(Components::EventFilter.new(
-                 pointer: current_day,
-                 period: period,
-                 sort: sort,
-                 repeating: repeating,
-                 today_url: today_url,
-                 today: current_day == today
-               ))
+        EventFilter(
+          pointer: current_day,
+          period: period,
+          sort: sort,
+          repeating: repeating,
+          today_url: today_url,
+          today: current_day == today
+        )
       end
     end
   end
 
   def render_meta_section
-    render(Components::Meta.new("/partners/#{partner.id}")) do |component|
+    Meta("/partners/#{partner.id}") do |component|
       component.with_link do
         link_to "Subscribe to #{partner}'s events with iCal", partner_url(partner, protocol: :webcal, format: :ics)
       end

@@ -5,7 +5,7 @@ class Views::Admin::Partnerships::Index < Views::Admin::Base
   prop :admin_options, Array, reader: :private
 
   def view_template
-    render Components::Admin::Datatable.new(
+    Datatable(
       title: 'Partnerships',
       model: :partnerships,
       column_titles: ['Partnership', 'Admins', 'Partners', 'Last Updated', ''],

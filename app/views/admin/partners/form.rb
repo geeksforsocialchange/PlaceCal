@@ -21,7 +21,7 @@ class Views::Admin::Partners::Form < Views::Admin::Base
         end
       end
 
-      render Components::Admin::TabForm.new(
+      TabForm(
         tabs: [
           { label: "\u{1F4CB} Basic Info", hash: 'basic', component: Views::Admin::Partners::FormTabBasic },
           { label: "\u{1F4CD} Location", hash: 'location', component: Views::Admin::Partners::FormTabLocation },

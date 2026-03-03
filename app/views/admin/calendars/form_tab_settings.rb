@@ -8,7 +8,7 @@ class Views::Admin::Calendars::FormTabSettings < Views::Admin::Base
 
     render_api_token_section(calendar)
 
-    render Components::Admin::DangerZone.new(
+    DangerZone(
       title: t('admin.actions.delete_model', model: Calendar.model_name.human.downcase),
       description: t('admin.calendars.danger_zone.delete_description', count: calendar.events.count),
       button_text: t('admin.actions.delete_model', model: Calendar.model_name.human),
@@ -26,7 +26,7 @@ class Views::Admin::Calendars::FormTabSettings < Views::Admin::Base
     api_token_modes = CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }
     return unless calendar.importer_mode.in?(api_token_modes) || calendar.api_token.present?
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.calendars.fields.api_token'),
       description: t('admin.calendars.fields.api_token_hint')
     ) do |c|

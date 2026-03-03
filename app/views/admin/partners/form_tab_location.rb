@@ -6,15 +6,15 @@ class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     partner = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.tabs.location'),
       description: t('admin.partners.sections.location_description')
     )
 
     div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
       div(class: 'space-y-6') do
-        render Components::Admin::FormCard.new(icon: :map, title: attr_label(:partner, :address)) do
-          render Components::Admin::AddressFields.new(form: form, partner: partner, current_user: helpers.current_user)
+        FormCard(icon: :map, title: attr_label(:partner, :address)) do
+          AddressFields(form: form, partner: partner, current_user: helpers.current_user)
           render_outdated_neighbourhood_warning(partner)
           render_unmappable_postcode_warning(partner)
           render_neighbourhood_display(partner)
@@ -25,8 +25,8 @@ class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
     end
 
     div(class: 'mt-6') do
-      render Components::Admin::FormCard.new(icon: :clock, title: t('admin.sections.opening_times')) do
-        render Components::Admin::OpeningTimes.new(form: form, partner: partner)
+      FormCard(icon: :clock, title: t('admin.sections.opening_times')) do
+        OpeningTimes(form: form, partner: partner)
       end
     end
   end
@@ -59,7 +59,7 @@ class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
         raw icon(:neighbourhood, size: '4')
         plain t('admin.address.neighbourhood_label')
       end
-      render Components::Admin::NeighbourhoodCard.new(
+      NeighbourhoodCard(
         neighbourhood: partner.address.neighbourhood,
         show_header: false
       )
@@ -67,7 +67,7 @@ class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
   end
 
   def render_service_areas # rubocop:disable Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :car,
       title: t('admin.sections.service_areas'),
       description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",

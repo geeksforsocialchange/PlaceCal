@@ -5,7 +5,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     simple_form_for([:admin, article], html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } }) do |form|
-      render(Components::Admin::Error.new(article))
+      Error(article)
 
       if article.new_record?
         render_new_layout(form)
@@ -26,7 +26,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
 
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
-        render Components::Admin::SectionHeader.new(
+        SectionHeader(
           title: 'Image',
           description: 'Image will be cropped to 16:9 ratio.',
           margin: 4
@@ -37,7 +37,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
 
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
-        render Components::Admin::SectionHeader.new(
+        SectionHeader(
           title: 'References',
           description: 'Link this article to partners and partnerships.',
           margin: 4
@@ -46,13 +46,13 @@ class Views::Admin::Articles::Form < Views::Admin::Base
       end
     end
 
-    render Components::Admin::SaveBar.new do
+    SaveBar() do
       raw form.submit(t('admin.actions.save'), class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange')
     end
   end
 
   def render_edit_layout(form)
-    render Components::Admin::TabForm.new(
+    TabForm(
       tabs: [
         { label: "\u{1F4DD} Text", hash: 'text', component: Views::Admin::Articles::FormTabText },
         { label: "\u{1F5BC}\u{FE0F} Image", hash: 'image', component: Views::Admin::Articles::FormTabImage },

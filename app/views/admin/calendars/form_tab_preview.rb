@@ -17,7 +17,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
       render_upcoming_events(upcoming_events)
     else
       div(class: 'mb-8') do
-        render Components::Admin::EmptyState.new(
+        EmptyState(
           icon: :calendar,
           message: t('admin.empty.no_items', items: t('admin.sections.upcoming_events').downcase)
         )

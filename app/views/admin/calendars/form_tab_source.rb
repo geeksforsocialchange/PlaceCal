@@ -6,7 +6,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     calendar = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.calendars.tabs.source'),
       description: t('admin.calendars.sections.source_description')
     ) do |c|
@@ -25,7 +25,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
     div(class: 'lg:col-span-2 space-y-4', data: { controller: 'calendar-name-suggest' }) do
       render_partner_field(calendar)
 
-      render Components::Admin::SourceInput.new(
+      SourceInput(
         form: form,
         test_url: helpers.test_source_admin_calendars_path
       )
@@ -82,7 +82,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
 
   def render_right_column(calendar) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     div do
-      render(Components::Admin::FormCard.new(icon: :info, title: t('admin.calendars.sections.supported_sources'))) do
+      FormCard(icon: :info, title: t('admin.calendars.sections.supported_sources')) do
         ul(class: 'text-xs text-base-content/70 space-y-1') do
           calendar_import_sources do |name, domains|
             li(class: 'flex items-start gap-2') do

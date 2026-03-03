@@ -7,7 +7,7 @@ class Views::Admin::Sites::Index < Views::Admin::Base
   prop :site_admin_options, Array, reader: :private
 
   def view_template # rubocop:disable Metrics/MethodLength
-    render Components::Admin::Datatable.new(
+    Datatable(
       title: 'Sites',
       model: :sites,
       column_titles: [

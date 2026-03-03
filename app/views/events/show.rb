@@ -16,15 +16,15 @@ class Views::Events::Show < Views::Base
     content_for(:image) { site.og_image }
     content_for(:description) { html_to_plaintext(event.description_html) }
 
-    render(Components::Event.new(
-             display_context: :page,
-             event: event,
-             primary_neighbourhood: primary_neighbourhood,
-             site_tagline: site.tagline
-           ))
+    Event(
+      display_context: :page,
+      event: event,
+      primary_neighbourhood: primary_neighbourhood,
+      site_tagline: site.tagline
+    )
 
     render_event_details
-    render(Components::Map.new(points: map, site: current_site.slug, style: :multi))
+    Map(points: map, site: current_site.slug, style: :multi)
     render_event_meta
   end
 
@@ -52,7 +52,7 @@ class Views::Events::Show < Views::Base
       if event.partner
         h3(class: 'h4 udl') { 'Contact information' }
         div(class: 'small') do
-          render Components::ContactDetails.new(partner: event.partner)
+          ContactDetails(partner: event.partner)
         end
       end
     end
@@ -62,7 +62,7 @@ class Views::Events::Show < Views::Base
     div(class: 'gi gi__1-3') do
       h3(class: 'h4 udl') { 'Event address' }
       div(class: 'small') do
-        render Components::Address.new(address: event.address, raw_location: event.raw_location_from_source)
+        Address(address: event.address, raw_location: event.raw_location_from_source)
       end
     end
   end
@@ -77,7 +77,7 @@ class Views::Events::Show < Views::Base
   end
 
   def render_event_meta
-    render(Components::Meta.new("/events/#{event.id}")) do |component|
+    Meta("/events/#{event.id}") do |component|
       component.with_link do
         contact = event.calendar&.contact_information
         if contact

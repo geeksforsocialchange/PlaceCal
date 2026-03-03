@@ -33,15 +33,15 @@ class Views::Admin::Sites::Show < Views::Admin::Base
   def render_stats # rubocop:disable Metrics/AbcSize
     error_count = calendars.where(calendar_state: %i[error bad_source]).count
     div(class: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-6') do
-      render Components::Admin::InfoCard.new(
+      InfoCard(
         icon: :calendar, label: Calendar.model_name.human(count: 2),
         value: calendars.count.to_s, color: :orange
       )
-      render Components::Admin::InfoCard.new(
+      InfoCard(
         icon: :check, label: t('admin.labels.healthy'),
         value: calendars.where(calendar_state: :idle).count.to_s, color: :success
       )
-      render Components::Admin::InfoCard.new(
+      InfoCard(
         icon: :warning, label: t('admin.labels.issues'),
         value: error_count.to_s, color: error_count.positive? ? :error : :neutral
       )
@@ -67,7 +67,7 @@ class Views::Admin::Sites::Show < Views::Admin::Base
             end
           end
         else
-          render Components::Admin::EmptyState.new(
+          EmptyState(
             icon: :calendar, message: t('admin.sites.show.empty.title'),
             hint: t('admin.sites.show.empty.hint'), icon_size: '12', padding: 'py-12'
           )

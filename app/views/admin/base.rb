@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Admin::Base < Views::Base
+  include Components::Admin
   include Components::Admin::SvgIcons
   include Phlex::Rails::Helpers::CheckBoxTag
 

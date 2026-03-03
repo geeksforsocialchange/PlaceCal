@@ -5,7 +5,7 @@ class Views::Pages::TermsOfUse < Views::Base
     content_for(:title) { 'Terms of Use' }
 
     article(class: 'home margin') do
-      render Components::Hero.new('PlaceCal Terms of Use')
+      Hero('PlaceCal Terms of Use')
 
       div(class: 'card card--plain') do
         div(class: 'max_width') do

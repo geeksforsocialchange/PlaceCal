@@ -7,7 +7,7 @@ class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
     tag_record = form.object
 
     div(class: 'mb-6') do
-      render Components::Admin::SectionHeader.new(
+      SectionHeader(
         title: t('admin.sections.basic_information')
       )
     end
@@ -24,7 +24,7 @@ class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
   private
 
   def render_details_card(tag_record) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :tag,
       title: t('admin.sections.details'),
       fit_height: true
@@ -47,13 +47,13 @@ class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
   end
 
   def render_assigned_users_card(tag_record) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::FormCard.new(
+    FormCard(
       icon: :users,
       title: t('admin.tags.sections.assigned_users'),
       description: t('admin.tags.sections.assigned_users_description'),
       fit_height: true
     ) do
-      render Components::Admin::StackedListSelector.new(
+      StackedListSelector(
         field_name: 'tag[user_ids][]',
         items: tag_record.users.order(:last_name, :first_name),
         options: options_for_users,

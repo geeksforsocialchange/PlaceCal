@@ -4,7 +4,7 @@ class Views::Admin::Users::NeighbourhoodsUserFields < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template
-    render Components::Admin::CascadingNeighbourhoodFields.new(
+    CascadingNeighbourhoodFields(
       form: form,
       show_remove: true,
       relation_type: nil,

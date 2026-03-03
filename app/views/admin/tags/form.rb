@@ -21,7 +21,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
 
     simple_form_for(tag, as: :tag, url: form_url,
                          html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'tagTabAfterSave' } }) do |form|
-      render(Components::Admin::Error.new(tag))
+      Error(tag)
 
       if tag.new_record?
         render_new_layout(form)
@@ -42,19 +42,19 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
 
   def render_edit_layout(form) # rubocop:disable Metrics/MethodLength
     div(class: 'tabs tabs-lift') do
-      render Components::Admin::TabPanel.new(
+      TabPanel(
         name: 'tag_tabs', label: "\u{1F4CB} Basic Info", hash: 'basic',
         controller_name: 'form-tabs', checked: true
       ) { render Views::Admin::Tags::FormTabBasic.new(form: form) }
 
-      render Components::Admin::TabPanel.new(
+      TabPanel(
         name: 'tag_tabs', label: "\u{1F3E2} Partners", hash: 'partners',
         controller_name: 'form-tabs'
       ) { render Views::Admin::Tags::FormTabPartners.new(form: form) }
 
       div(class: 'tab flex-1 cursor-default')
 
-      render Components::Admin::TabPanel.new(
+      TabPanel(
         name: 'tag_tabs', label: "\u{2699}\u{FE0F} Settings", hash: 'settings',
         controller_name: 'form-tabs'
       ) { render Views::Admin::Tags::FormTabSettings.new(form: form) }
@@ -64,7 +64,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
   def render_basic_info_card(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
-        render Components::Admin::SectionHeader.new(title: t('admin.sections.basic_information'), margin: 4)
+        SectionHeader(title: t('admin.sections.basic_information'), margin: 4)
 
         div(class: 'fieldset') do
           label(for: 'tag_name', class: 'fieldset-legend') do
@@ -126,7 +126,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
           end
         end
 
-        render Components::Admin::StackedListSelector.new(
+        StackedListSelector(
           field_name: 'tag[user_ids][]',
           items: tag.users.order(:last_name, :first_name),
           options: options_for_users,
@@ -143,11 +143,11 @@ class Views::Admin::Tags::Form < Views::Admin::Base # rubocop:disable Metrics/Cl
 
   def render_save_bar(form)
     if tag.new_record?
-      render Components::Admin::SaveBar.new do
+      SaveBar() do
         raw form.submit(t('admin.actions.save'), class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange')
       end
     else
-      render Components::Admin::SaveBar.new(
+      SaveBar(
         multi_step: true,
         tab_name: 'tag_tabs',
         settings_hash: 'settings',

@@ -77,11 +77,11 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
 
   def render_stats_row # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     div(class: 'grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6') do
-      render Components::Admin::StatCard.new(
+      StatCard(
         label: t('admin.dashboard.stats.partners'), value: total_partners.to_s, icon: :partner
       )
       render_calendars_stat_card
-      render Components::Admin::StatCard.new(
+      StatCard(
         label: t('admin.dashboard.stats.events_this_week'), value: total_events_this_week.to_s, icon: :calendar
       )
       render_handbook_link
@@ -89,10 +89,10 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_calendars_stat_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::StatCard.new(
-             label: t('admin.dashboard.stats.calendars'), value: nil,
-             subtitle: t('admin.dashboard.stats.calendars_total', count: total_calendars)
-           )) do
+    StatCard(
+      label: t('admin.dashboard.stats.calendars'), value: nil,
+      subtitle: t('admin.dashboard.stats.calendars_total', count: total_calendars)
+    ) do
       div(class: 'flex items-baseline gap-3') do
         render_calendar_stat_tooltip('working_calendars', working_calendars_count, 'text-success',
                                      t('admin.dashboard.stats.working'))
@@ -151,10 +151,10 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_sites_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(
-             title: t('admin.dashboard.cards.your_sites'), icon: :site,
-             header_link: admin_sites_path, header_link_text: t('admin.actions.view_all')
-           )) do
+    Card(
+      title: t('admin.dashboard.cards.your_sites'), icon: :site,
+      header_link: admin_sites_path, header_link_text: t('admin.actions.view_all')
+    ) do
       div(class: 'space-y-2') do
         sites.take(4).each do |site|
           link_to(edit_admin_site_path(site),
@@ -180,11 +180,11 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_action_items_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(
-             title: t('admin.dashboard.cards.action_items'), icon: :clipboard,
-             icon_class: problem_calendars_count.positive? ? 'text-error' : 'text-success',
-             variant: problem_calendars_count.positive? ? :error : :success
-           )) do
+    Card(
+      title: t('admin.dashboard.cards.action_items'), icon: :clipboard,
+      icon_class: problem_calendars_count.positive? ? 'text-error' : 'text-success',
+      variant: problem_calendars_count.positive? ? :error : :success
+    ) do
       if errored_calendars.any? || bad_source_calendars.any?
         div(class: 'space-y-1') do
           render_calendar_issue_links(errored_calendars.take(5), :warning, 'text-error',
@@ -231,7 +231,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_upcoming_events_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(title: t('admin.dashboard.cards.upcoming_events'), icon: :event)) do
+    Card(title: t('admin.dashboard.cards.upcoming_events'), icon: :event) do
       if upcoming_events.any?
         div(class: 'space-y-1') do
           upcoming_events.take(6).each do |event|
@@ -257,7 +257,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_updated_partners_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(title: t('admin.dashboard.cards.updated_partners'), icon: :partner)) do
+    Card(title: t('admin.dashboard.cards.updated_partners'), icon: :partner) do
       if partners.any?
         div(class: 'space-y-1') do
           partners.take(6).each do |partner|
@@ -291,7 +291,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_updated_calendars_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(title: t('admin.dashboard.cards.updated_calendars'), icon: :calendar)) do
+    Card(title: t('admin.dashboard.cards.updated_calendars'), icon: :calendar) do
       if calendars.any?
         div(class: 'space-y-1') do
           calendars.take(6).each do |calendar|
@@ -315,7 +315,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_updated_users_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(title: t('admin.dashboard.cards.updated_users'), icon: :users)) do
+    Card(title: t('admin.dashboard.cards.updated_users'), icon: :users) do
       if users.any?
         div(class: 'space-y-1') do
           users.take(6).each do |u|
@@ -339,9 +339,9 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_partnerships_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(
-             title: t('admin.dashboard.cards.your_partnerships'), icon: :partnership
-           )) do
+    Card(
+      title: t('admin.dashboard.cards.your_partnerships'), icon: :partnership
+    ) do
       div(class: 'space-y-1') do
         user_partnerships.take(6).each do |partnership|
           link_to(edit_admin_tag_path(partnership),
@@ -366,7 +366,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base # rubocop:disable Metrics/C
   end
 
   def render_quick_links_card # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render(Components::Admin::Card.new(title: t('admin.dashboard.cards.quick_links'), icon: :link)) do
+    Card(title: t('admin.dashboard.cards.quick_links'), icon: :link) do
       div(class: 'space-y-1') do
         render_quick_link(admin_calendars_path, :calendar, t('admin.dashboard.links.all_calendars'))
         render_quick_link(admin_partners_path, :partner, t('admin.dashboard.links.all_partners'))

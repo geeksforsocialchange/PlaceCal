@@ -7,7 +7,7 @@ class Views::Admin::Users::ProfileTabPassword < Views::Admin::Base
     div(class: 'space-y-6') do
       div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
         div(class: 'card-body p-6') do
-          render Components::Admin::SectionHeader.new(
+          SectionHeader(
             title: t('admin.users.profile.password_title'),
             description: t('admin.users.profile.password_description'),
             margin: 4

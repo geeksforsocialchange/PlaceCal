@@ -6,7 +6,7 @@ class Views::Admin::Partners::FormTabTags < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     partner = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.partners.sections.tags_associations'),
       description: t('admin.partners.sections.tags_description')
     )

@@ -6,7 +6,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     partner = form.object
 
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.partners.sections.live_preview'),
       description: t('admin.partners.sections.preview_description')
     )
@@ -114,7 +114,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
   end
 
   def render_upcoming_events(partner) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.sections.upcoming_events'),
       description: t('admin.partners.sections.upcoming_events_description'),
       tag: :h3
@@ -125,7 +125,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
     if upcoming_events.any?
       render_events_table(upcoming_events)
     else
-      render Components::Admin::EmptyState.new(icon: :calendar, message: t('admin.time.no_upcoming_in_days', days: 30))
+      EmptyState(icon: :calendar, message: t('admin.time.no_upcoming_in_days', days: 30))
     end
   end
 

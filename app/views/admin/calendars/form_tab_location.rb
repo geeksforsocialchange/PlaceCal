@@ -4,7 +4,7 @@ class Views::Admin::Calendars::FormTabLocation < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::SectionHeader.new(
+    SectionHeader(
       title: t('admin.calendars.tabs.location'),
       description: t('admin.calendars.sections.location_description')
     ) do |c|
@@ -39,7 +39,7 @@ class Views::Admin::Calendars::FormTabLocation < Views::Admin::Base
       fieldset(class: 'fieldset') do
         legend(class: 'fieldset-legend') { attr_label(:calendar, :strategy) }
         p(class: 'text-sm text-gray-600 mb-4') { t('admin.calendars.fields.strategy_hint') }
-        render Components::Admin::RadioCardGroup.new(
+        RadioCardGroup(
           form: form,
           attribute: :strategy,
           values: Calendar.strategy.values,

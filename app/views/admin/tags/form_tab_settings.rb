@@ -7,7 +7,7 @@ class Views::Admin::Tags::FormTabSettings < Views::Admin::Base
     tag_record = form.object
 
     div(class: 'mb-8') do
-      render Components::Admin::FormCard.new(
+      FormCard(
         icon: :link,
         title: attr_label(:tag, :slug),
         description: t('admin.hints.leave_blank_to_autogenerate')
@@ -27,7 +27,7 @@ class Views::Admin::Tags::FormTabSettings < Views::Admin::Base
     return unless helpers.current_user.root? && !tag_record.is_a?(Partnership)
 
     div(class: 'mb-8') do
-      render Components::Admin::FormCard.new(
+      FormCard(
         icon: :lock,
         title: t('admin.sections.advanced')
       ) do
@@ -47,7 +47,7 @@ class Views::Admin::Tags::FormTabSettings < Views::Admin::Base
                     helpers.admin_tag_path(tag_record)
                   end
 
-    render Components::Admin::DangerZone.new(
+    DangerZone(
       title: t('admin.actions.delete_model', model: tag_record.class.model_name.human),
       description: t('admin.danger_zone.delete_description', model: tag_record.class.model_name.human.downcase),
       button_text: t('admin.actions.delete_model', model: tag_record.class.model_name.human),

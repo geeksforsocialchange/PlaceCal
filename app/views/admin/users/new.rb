@@ -20,14 +20,14 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
       filtered_form_for([:admin, user],
                         display_only: display_fields,
                         html: { class: 'space-y-6', data: { controller: 'live-validation', user_wizard_target: 'form' } }) do |form|
-        render Components::Admin::Error.new(user)
+        Error(user)
 
         div(class: 'max-w-4xl mx-auto') do
           render_step_personal(form)
           render_step_permissions(form)
         end
 
-        render Components::Admin::SaveBar.new(
+        SaveBar(
           wizard: true,
           wizard_controller: 'user-wizard',
           submit_label: t('admin.users.actions.invite'),
@@ -121,7 +121,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
     div(class: 'card bg-base-100 shadow-lg border border-base-300 mt-6') do
       div(class: 'card-body') do
         render_step_header(:crown, attr_label(:user, :role), t('admin.users.fields.role_hint'))
-        render Components::Admin::RadioCardGroup.new(
+        RadioCardGroup(
           form: form, attribute: :role,
           values: User.role.values, i18n_scope: 'admin.users.roles'
         )
@@ -152,7 +152,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
       div(class: 'card-body') do
         render_permission_header(:partner, 'from-emerald-100 to-teal-100', 'text-emerald-600',
                                  Partner.model_name.human(count: 2), t('admin.users.fields.partners_hint'))
-        render Components::Admin::StackedListSelector.new(
+        StackedListSelector(
           field_name: 'user[partner_ids][]',
           items: user.partners.order(:name),
           options: options_for_partners(user),
@@ -171,7 +171,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
       div(class: 'card-body') do
         render_permission_header(:partnership, 'from-amber-100 to-orange-100', 'text-amber-700',
                                  Partnership.model_name.human(count: 2), t('admin.users.fields.partnerships_hint'))
-        render Components::Admin::StackedListSelector.new(
+        StackedListSelector(
           field_name: 'user[tag_ids][]',
           items: user.partnerships.order(:name),
           options: options_for_user_partnerships,
@@ -199,7 +199,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
             raw form.simple_fields_for(:neighbourhoods_users) { |nuf| view_context.render('neighbourhoods_user_fields', f: nuf) }
           end
         else
-          render Components::Admin::ItemBadgeList.new(
+          ItemBadgeList(
             items: user.neighbourhoods.order(:name),
             icon_name: :map_pin, icon_color: 'bg-sky-100 text-sky-600',
             link_path: :admin_neighbourhood_path,

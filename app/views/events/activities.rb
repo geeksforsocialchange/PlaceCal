@@ -27,13 +27,13 @@ class Views::Events::Activities < Views::Base
       ol(class: 'events reset') do
         events.each do |event|
           li(class: 'event') do
-            render(Components::Event.new(
-                     display_context: :week,
-                     event: event,
-                     primary_neighbourhood: primary_neighbourhood,
-                     show_neighbourhoods: current_site.show_neighbourhoods?,
-                     site_tagline: site.tagline
-                   ))
+            Event(
+              display_context: :week,
+              event: event,
+              primary_neighbourhood: primary_neighbourhood,
+              show_neighbourhoods: current_site.show_neighbourhoods?,
+              site_tagline: site.tagline
+            )
           end
         end
       end

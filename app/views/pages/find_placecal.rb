@@ -15,7 +15,7 @@ class Views::Pages::FindPlacecal < Views::Base
           h3(class: 'featured_partnerships--title') { 'Curated Calendars' }
           ul(class: 'four_col_grid--larger') do
             partnerships.each do |site|
-              render Components::PartnershipCard.new(site: site)
+              PartnershipCard(site: site)
             end
           end
         end
@@ -26,7 +26,7 @@ class Views::Pages::FindPlacecal < Views::Base
           div(class: 'container-with-header__body') do
             ul(class: 'four_col_grid') do
               neighbourhoods.each do |site|
-                render Components::NeighbourhoodHomeCard.new(site: site)
+                NeighbourhoodHomeCard(site: site)
               end
             end
           end

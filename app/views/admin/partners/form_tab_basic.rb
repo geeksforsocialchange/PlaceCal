@@ -6,7 +6,7 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     div(class: 'grid grid-cols-1 lg:grid-cols-3 gap-6') do
       div(class: 'lg:col-span-2 space-y-4') do
-        render Components::Admin::SectionHeader.new(
+        SectionHeader(
           title: t('admin.sections.basic_information'),
           description: t('admin.partners.sections.basic_info_description'),
           margin: 4
@@ -18,7 +18,7 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
         render_accessibility_field
       end
 
-      render Components::Admin::ImageUpload.new(
+      ImageUpload(
         form: form,
         attribute: :image,
         title: t('admin.partners.image.title'),

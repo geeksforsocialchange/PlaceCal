@@ -14,7 +14,7 @@ class Components::Admin::TabForm < Components::Admin::Base
       visible_tabs.each_with_index do |tab, index|
         div(class: 'tab flex-1 cursor-default') if tab[:spacer_before]
 
-        render Components::Admin::TabPanel.new(
+        TabPanel(
           name: @tab_name,
           label: tab[:label],
           hash: tab[:hash],
@@ -30,7 +30,7 @@ class Components::Admin::TabForm < Components::Admin::Base
       end
     end
 
-    render Components::Admin::SaveBar.new(
+    SaveBar(
       multi_step: true,
       tab_name: @tab_name,
       settings_hash: @settings_hash,

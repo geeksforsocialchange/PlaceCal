@@ -5,7 +5,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     simple_form_for([:admin, supporter], html: { class: 'space-y-6' }) do |form|
-      render(Components::Admin::Error.new(supporter)) if supporter.errors.any?
+      Error(supporter) if supporter.errors.any?
 
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
         h3(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { 'Supporter Details' }

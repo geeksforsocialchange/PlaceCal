@@ -10,12 +10,12 @@ class Views::News::Show < Views::Base
     content_for(:title) { article.title }
 
     div(vocab: 'http://schema.org/', typeof: 'Article') do
-      render(Components::Hero.new(article.title, site.tagline, 'name'))
+      Hero(article.title, site.tagline, 'name')
       div(class: 'c c--lg-space-after') do
-        render(Components::Breadcrumb.new(
-                 trail: [['News', news_index_path], [article.title, news_path(article)]],
-                 site_name: site.name
-               ))
+        Breadcrumb(
+          trail: [['News', news_index_path], [article.title, news_path(article)]],
+          site_name: site.name
+        )
         hr
         render_article_body
       end

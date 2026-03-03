@@ -16,10 +16,10 @@ class Views::Collections::Show < Views::Base
       content_for(:image_alt) { "Image for #{collection.name}" }
     end
 
-    render(Components::Hero.new(collection.name, site.tagline))
+    Hero(collection.name, site.tagline)
 
     div(class: 'c c--lg-space-after') do
-      render(Components::Breadcrumb.new(trail: [[collection.name, collection.named_route]], site_name: site.name))
+      Breadcrumb(trail: [[collection.name, collection.named_route]], site_name: site.name)
 
       hr
 
@@ -49,12 +49,12 @@ class Views::Collections::Show < Views::Base
   end
 
   def render_events
-    render(Components::EventList.new(
-             events: events,
-             primary_neighbourhood: primary_neighbourhood,
-             show_neighbourhoods: current_site.show_neighbourhoods?,
-             badge_zoom_level: current_site.badge_zoom_level&.to_s,
-             site_tagline: site.tagline
-           ))
+    EventList(
+      events: events,
+      primary_neighbourhood: primary_neighbourhood,
+      show_neighbourhoods: current_site.show_neighbourhoods?,
+      badge_zoom_level: current_site.badge_zoom_level&.to_s,
+      site_tagline: site.tagline
+    )
   end
 end

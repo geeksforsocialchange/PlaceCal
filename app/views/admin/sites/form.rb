@@ -7,9 +7,9 @@ class Views::Admin::Sites::Form < Views::Admin::Base
 
   def view_template # rubocop:disable Metrics/MethodLength
     simple_form_for([:admin, site], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'siteTabAfterSave' } }) do |form|
-      render(Components::Admin::Error.new(site))
+      Error(site)
 
-      render Components::Admin::TabForm.new(
+      TabForm(
         tabs: [
           { label: "\u{1F4CB} Basic Info", hash: 'basic', component: Views::Admin::Sites::FormTabBasic },
           { label: "\u{1F5BC}\u{FE0F} Images", hash: 'images', component: Views::Admin::Sites::FormTabImages },

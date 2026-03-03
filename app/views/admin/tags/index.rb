@@ -4,7 +4,7 @@ class Views::Admin::Tags::Index < Views::Admin::Base
   prop :tags, ActiveRecord::Relation, reader: :private
 
   def view_template
-    render Components::Admin::Datatable.new(
+    Datatable(
       title: 'Tags',
       model: :tags,
       column_titles: ['Tag', 'Type', 'Partners', 'Last Updated', ''],

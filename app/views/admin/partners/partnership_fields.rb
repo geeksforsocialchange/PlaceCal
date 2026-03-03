@@ -13,7 +13,7 @@ class Views::Admin::Partners::PartnershipFields < Views::Admin::Base
       legend(class: 'fieldset-legend') { Partnership.model_name.human(count: 2) }
       p(class: 'fieldset-label mb-3') { t('admin.partners.sections.tags_description') }
 
-      render Components::Admin::StackedListSelector.new(
+      StackedListSelector(
         field_name: 'partner[partnership_ids][]',
         items: partner.partnerships,
         options: options_for_partner_partnerships,

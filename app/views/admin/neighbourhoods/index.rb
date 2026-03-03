@@ -7,7 +7,7 @@ class Views::Admin::Neighbourhoods::Index < Views::Admin::Base
   prop :current_user, User, reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    render Components::Admin::Datatable.new(
+    Datatable(
       title: t('admin.neighbourhoods.index.title'),
       model: :neighbourhoods,
       column_titles: [

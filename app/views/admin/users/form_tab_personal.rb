@@ -32,7 +32,7 @@ class Views::Admin::Users::FormTabPersonal < Views::Admin::Base
         end
       end
 
-      render Components::Admin::ImageUpload.new(
+      ImageUpload(
         form: form,
         attribute: :avatar,
         rounded: 'rounded-xl'
