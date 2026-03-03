@@ -34,12 +34,12 @@ module Admin
       @site = Site.new
       @site.build_sites_neighbourhood
       authorize @site
-      render Views::Admin::Sites::New.new(site: @site)
+      render Views::Admin::Sites::New.new(site: @site, **neighbourhood_props)
     end
 
     def edit
       authorize @site
-      render Views::Admin::Sites::Edit.new(site: @site)
+      render Views::Admin::Sites::Edit.new(site: @site, **neighbourhood_props)
     end
 
     def create
@@ -52,7 +52,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not created'
         set_variables_for_sites_neighbourhoods_selection
-        render Views::Admin::Sites::New.new(site: @site), status: :unprocessable_content
+        render Views::Admin::Sites::New.new(site: @site, **neighbourhood_props), status: :unprocessable_content
       end
     end
 
@@ -65,7 +65,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not saved'
         set_variables_for_sites_neighbourhoods_selection
-        render Views::Admin::Sites::Edit.new(site: @site), status: :unprocessable_content
+        render Views::Admin::Sites::Edit.new(site: @site, **neighbourhood_props), status: :unprocessable_content
       end
     end
 
@@ -93,6 +93,10 @@ module Admin
 
     def set_site
       @site ||= Site.friendly.find(params[:id]) # rubocop:disable Naming/MemoizedInstanceVariableName
+    end
+
+    def neighbourhood_props
+      { all_neighbourhoods: @all_neighbourhoods, primary_neighbourhood_id: @primary_neighbourhood_id }
     end
 
     def set_variables_for_sites_neighbourhoods_selection

@@ -2,6 +2,8 @@
 
 class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
   prop :form, ActionView::Helpers::FormBuilder, reader: :private
+  prop :all_neighbourhoods, ActiveRecord::Relation, reader: :private
+  prop :primary_neighbourhood_id, _Nilable(Integer), reader: :private
 
   def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     site = form.object
@@ -22,14 +24,6 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
   end
 
   private
-
-  def all_neighbourhoods
-    view_context.controller.instance_variable_get(:@all_neighbourhoods)
-  end
-
-  def primary_neighbourhood_id
-    view_context.controller.instance_variable_get(:@primary_neighbourhood_id)
-  end
 
   def render_primary_neighbourhood_card(_site) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     render Components::Admin::FormCard.new(

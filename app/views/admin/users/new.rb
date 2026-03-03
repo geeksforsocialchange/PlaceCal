@@ -89,7 +89,7 @@ class Views::Admin::Users::New < Views::Admin::Base # rubocop:disable Metrics/Cl
   def render_email_field(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-4') do
       raw form.label(:email, class: 'fieldset-legend font-semibold') {
-        "#{attr_label(:user, :email)} <span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
+        "#{attr_label(:user, :email)} <span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe # rubocop:disable Rails/OutputSafety
       }
       raw form.input_field(:email,
                            class: 'input input-bordered w-full',

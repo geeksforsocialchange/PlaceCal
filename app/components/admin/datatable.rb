@@ -274,7 +274,7 @@ class Components::Admin::Datatable < Components::Admin::Base # rubocop:disable M
       justify = col_config&.dig(:align) == :center ? ' justify-center' : ''
       div(class: "flex items-center gap-1#{justify}") do
         if col_title.present?
-          raw col_title.to_s.html_safe # rubocop:disable Rails/OutputSafety
+          raw safe(col_title.to_s)
         else
           span(class: 'sr-only') { t('admin.labels.actions') }
         end

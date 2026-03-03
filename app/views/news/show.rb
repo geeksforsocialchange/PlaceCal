@@ -55,7 +55,7 @@ class Views::News::Show < Views::Base
         end
 
         div(class: 'article__content') do
-          raw article.body_html.to_s.html_safe # rubocop:disable Rails/OutputSafety
+          raw safe(article.body_html.to_s)
         end
 
         div(class: 'article__back') do

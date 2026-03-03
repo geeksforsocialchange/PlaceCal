@@ -53,7 +53,7 @@ class Views::Sites::Mossley < Views::Base
       div(class: 'c c--narrow first-ele-h3') do
         p { "If you're a local organisation and want to join our network, get in touch below." }
         p { 'We provide training and support to help you publish your events and promote your activities.' }
-        raw site.description_html.to_s.html_safe # rubocop:disable Rails/OutputSafety
+        raw safe(site.description_html.to_s)
         render(Components::Profile.new(user: site.site_admin)) if site.site_admin.present?
       end
     end

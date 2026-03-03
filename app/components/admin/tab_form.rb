@@ -22,7 +22,7 @@ class Components::Admin::TabForm < Components::Admin::Base
           checked: index.zero?
         ) do
           if tab[:component]
-            render tab[:component].new(form: @form)
+            render tab[:component].new(form: @form, **tab.fetch(:props, {}))
           else
             raw(view_context.render(tab[:partial], f: @form))
           end

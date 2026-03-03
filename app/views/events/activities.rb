@@ -14,7 +14,7 @@ class Views::Events::Activities < Views::Base
 
     h1 do
       plain "Activities from #{current_day.strftime('%A %e %B')} "
-      raw safe('&mdash; ') # rubocop:disable Rails/OutputSafety
+      raw safe('&mdash; ')
       plain (next_week - 1.day).strftime('%A %e %B, %Y')
     end
 

@@ -42,7 +42,7 @@ class Views::Admin::Pages::Icons < Views::Admin::Base # rubocop:disable Metrics/
         plain "All #{SvgIconsHelper::ICONS.count} icons available via the "
         code(class: 'bg-base-200 px-1 rounded') { 'icon()' }
         plain ' helper. Usage: '
-        code(class: 'bg-base-200 px-1 rounded') { raw safe("<%= icon(:name, size: '5', css_class: 'text-red-500 stroke-3') %>") } # rubocop:disable Rails/OutputSafety
+        code(class: 'bg-base-200 px-1 rounded') { raw safe("<%= icon(:name, size: '5', css_class: 'text-red-500 stroke-3') %>") }
         plain ' For non-admin frontend, prefer to use '
         code(class: 'bg-base-200 px-1 rounded') { 'size: nil' }
         plain ' (unsized) and style with CSS.'

@@ -42,7 +42,7 @@ class Views::Sites::Default < Views::Base
         h2(class: 'h2--alt') { 'About Us' }
       end
       div(class: 'c c--narrow first-ele-h3-serif') do
-        raw site.description_html.to_s.html_safe # rubocop:disable Rails/OutputSafety
+        raw safe(site.description_html.to_s)
         render(Components::Profile.new(user: site.site_admin)) if site.site_admin.present?
       end
     end

@@ -71,7 +71,7 @@ class Views::Partners::Show < Views::Base
     return if partner.description_html.blank?
 
     div(property: 'description') do
-      raw partner.description_html.to_s.html_safe # rubocop:disable Rails/OutputSafety
+      raw safe(partner.description_html.to_s)
     end
   end
 
@@ -87,7 +87,7 @@ class Views::Partners::Show < Views::Base
     if partner.accessibility_info_html.present?
       details(id: 'accessibility-info') do
         summary { 'Accessibility information' }
-        raw partner.accessibility_info_html.to_s.html_safe # rubocop:disable Rails/OutputSafety
+        raw safe(partner.accessibility_info_html.to_s)
       end
     end
 
@@ -95,7 +95,7 @@ class Views::Partners::Show < Views::Base
 
     p(class: 'small') do
       plain "#{partner.name} manage "
-      raw safe_join(partner.managees.map { |place| link_to place.name, place }, ', ').to_s # rubocop:disable Rails/OutputSafety
+      raw safe_join(partner.managees.map { |place| link_to place.name, place }, ', ')
       plain '.'
     end
   end
@@ -132,9 +132,7 @@ class Views::Partners::Show < Views::Base
       h2(class: 'place__title') { link_to place.name, partner_path(place), class: 'udl udl--red' }
       div(class: 'g g--place-list') do
         div(class: 'gi gi__1-2') do
-          if place.summary_html.present?
-            raw place.summary_html.to_s.html_safe # rubocop:disable Rails/OutputSafety
-          end
+          raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
         div(class: 'gi gi__1-2') do
           h3(class: 'udl udl--fw allcaps h4') { 'Address' }

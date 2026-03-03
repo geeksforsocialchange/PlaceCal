@@ -33,7 +33,7 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
     fieldset(class: 'fieldset') do
       raw form.label(:name, class: 'fieldset-legend') {
         "#{Partner.model_name.human} #{attr_label(:partner, :name)} " \
-        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
+        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe # rubocop:disable Rails/OutputSafety
       }
       raw form.input_field(:name, class: 'input input-bordered w-full',
                                   'data-controller': 'partner-form-validation',

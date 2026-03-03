@@ -32,7 +32,7 @@ class Views::Events::Show < Views::Base
 
   def render_event_details # rubocop:disable Metrics/AbcSize
     div(class: 'c c--narrowish c--space-after event__fullinfo') do
-      raw event.description_html.to_s.html_safe # rubocop:disable Rails/OutputSafety
+      raw safe(event.description_html.to_s)
       event_link(event)
 
       br

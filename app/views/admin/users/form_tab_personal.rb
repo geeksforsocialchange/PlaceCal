@@ -21,7 +21,7 @@ class Views::Admin::Users::FormTabPersonal < Views::Admin::Base
         fieldset(class: 'fieldset') do
           raw form.label(:email, class: 'fieldset-legend') {
             "#{attr_label(:user, :email)} " \
-            "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
+            "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe # rubocop:disable Rails/OutputSafety
           }
           raw form.input_field(:email, class: 'input input-bordered w-full')
         end

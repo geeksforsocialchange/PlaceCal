@@ -23,7 +23,7 @@ class Views::Pages::OurStory < Views::Base
     div(class: 'card card--plain pattern pattern--research') do
       render(Components::Details.new(
                header: nil,
-               summary: '<p>We spoke to over 6,000 people in Manchester and divested over £200,000 in funds directly to community groups.</p><p>A key finding was that people who were isolated commonly thought <em>"There\'s nothing to do in my neighbourhood!"</em>. In communities up and down the country, this has led to social isolation and loneliness for a number of citizens, and therefore a lack of community resilience.</p>'.html_safe
+               summary: '<p>We spoke to over 6,000 people in Manchester and divested over £200,000 in funds directly to community groups.</p><p>A key finding was that people who were isolated commonly thought <em>"There\'s nothing to do in my neighbourhood!"</em>. In communities up and down the country, this has led to social isolation and loneliness for a number of citizens, and therefore a lack of community resilience.</p>'
              )) do
         p { 'This is a big issue in the UK in particular, where it is estimated that 2 million older people will be lonely and isolated by 2024. Studies show that social isolation and loneliness is as bad for your health as smoking two packets of cigarettes a week.' }
         p { 'Despite massive investments of time and money by big institutions such as city councils and health providers into event listings, asset maps and community directories, still no one could find out what was happening in their area.' }

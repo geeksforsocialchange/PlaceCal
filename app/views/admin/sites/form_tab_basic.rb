@@ -27,7 +27,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
     fieldset(class: 'fieldset') do
       raw form.label(:name, class: 'fieldset-legend') {
         "#{Site.model_name.human} #{attr_label(:site, :name)} " \
-        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
+        "<span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe # rubocop:disable Rails/OutputSafety
       }
       raw form.input_field(:name, class: 'input input-bordered w-full')
     end

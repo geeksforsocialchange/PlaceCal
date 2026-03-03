@@ -51,7 +51,6 @@ class Views::Collections::Show < Views::Base
   def render_events
     render(Components::EventList.new(
              events: events,
-             period: @period,
              primary_neighbourhood: primary_neighbourhood,
              show_neighbourhoods: current_site.show_neighbourhoods?,
              badge_zoom_level: current_site.badge_zoom_level&.to_s,
