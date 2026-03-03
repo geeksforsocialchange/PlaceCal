@@ -58,8 +58,107 @@ RSpec.describe "Public Pages", type: :request do
 
   describe "GET /privacy" do
     it "returns successful response" do
-      # NOTE: /about doesn't exist, but /privacy does
       get "/privacy", headers: { "Host" => "#{site.slug}.lvh.me" }
+      expect(response).to be_successful
+    end
+
+    it "includes privacy-related content" do
+      get "/privacy", headers: { "Host" => "#{site.slug}.lvh.me" }
+      expect(response.body).to match(/privacy/i)
+    end
+  end
+
+  describe "GET /terms-of-use" do
+    it "returns successful response" do
+      get "/terms-of-use", headers: { "Host" => "#{site.slug}.lvh.me" }
+      expect(response).to be_successful
+    end
+
+    it "includes terms content" do
+      get "/terms-of-use", headers: { "Host" => "#{site.slug}.lvh.me" }
+      expect(response.body).to match(/terms/i)
+    end
+  end
+
+  describe "GET /our-story" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/our-story", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+    end
+
+    it "includes page content" do
+      get "/our-story", headers: { "Host" => "lvh.me" }
+      expect(response.body).to match(/PlaceCal/i)
+    end
+  end
+
+  describe "GET /find-placecal" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/find-placecal", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "GET /community-groups" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/community-groups", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+    end
+
+    it "includes audience content" do
+      get "/community-groups", headers: { "Host" => "lvh.me" }
+      expect(response.body).to match(/communit/i)
+    end
+  end
+
+  # Audience pages
+  describe "GET /vcses" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/vcses", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "GET /housing-providers" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/housing-providers", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "GET /metropolitan-areas" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/metropolitan-areas", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "GET /culture-tourism" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/culture-tourism", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "GET /social-prescribers" do
+    let!(:default_site) { create(:default_site) }
+
+    it "returns successful response" do
+      get "/social-prescribers", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
     end
   end
