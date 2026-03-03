@@ -5,6 +5,6 @@ class Views::Admin::Collections::Edit < Views::Admin::Base
 
   def view_template
     render Components::Admin::PageHeader.new(model_name: 'Collection', title: collection.name, id: collection.id)
-    raw(view_context.render('form'))
+    render Views::Admin::Collections::Form.new(collection: collection)
   end
 end

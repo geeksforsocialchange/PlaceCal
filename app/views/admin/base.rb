@@ -19,4 +19,6 @@ class Views::Admin::Base < Views::Base
   register_value_helper :permitted_options_for_partners
   register_value_helper :attr_label
   register_value_helper :show_assigned_user_field_for?
+  register_value_helper :options_for_events
+  register_value_helper :calendar_import_sources
 end

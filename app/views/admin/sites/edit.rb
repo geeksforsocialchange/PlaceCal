@@ -5,6 +5,6 @@ class Views::Admin::Sites::Edit < Views::Admin::Base
 
   def view_template
     render Components::Admin::PageHeader.new(model_name: 'Site', title: site.name, id: site.id)
-    raw(view_context.render('form'))
+    render Views::Admin::Sites::Form.new(site: site)
   end
 end

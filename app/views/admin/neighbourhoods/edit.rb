@@ -12,6 +12,6 @@ class Views::Admin::Neighbourhoods::Edit < Views::Admin::Base
         show_icons: true
       )
     end
-    raw(view_context.render('form'))
+    render Views::Admin::Neighbourhoods::Form.new(neighbourhood: neighbourhood)
   end
 end

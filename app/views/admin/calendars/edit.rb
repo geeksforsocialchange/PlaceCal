@@ -5,6 +5,6 @@ class Views::Admin::Calendars::Edit < Views::Admin::Base
 
   def view_template
     render Components::Admin::PageHeader.new(model_name: 'Calendar', title: calendar.name, id: calendar.id)
-    raw(view_context.render('form'))
+    render Views::Admin::Calendars::Form.new(calendar: calendar)
   end
 end

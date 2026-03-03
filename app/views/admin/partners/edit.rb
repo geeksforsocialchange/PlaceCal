@@ -16,6 +16,6 @@ class Views::Admin::Partners::Edit < Views::Admin::Base
       div(class: 'text-sm text-gray-600') { "ID: #{partner.id}" }
     end
 
-    raw(view_context.render('form', model: :partner))
+    render Views::Admin::Partners::Form.new(partner: partner)
   end
 end

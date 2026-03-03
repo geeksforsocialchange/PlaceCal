@@ -5,6 +5,6 @@ class Views::Admin::Partnerships::New < Views::Admin::Base
 
   def view_template
     render Components::Admin::PageHeader.new(model_name: 'Partnership', new_record: true)
-    raw(view_context.render('form'))
+    render Views::Admin::Tags::Form.new(tag: partnership)
   end
 end

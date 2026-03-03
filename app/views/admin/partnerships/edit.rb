@@ -28,7 +28,7 @@ class Views::Admin::Partnerships::Edit < Views::Admin::Base
       end
     else
       render Components::Admin::PageHeader.new(model_name: 'Partnership', title: tag.name, id: tag.id)
-      raw(view_context.render('admin/tags/form'))
+      render Views::Admin::Tags::Form.new(tag: tag)
     end
   end
 end

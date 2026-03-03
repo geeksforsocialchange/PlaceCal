@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+class Views::Admin::Partners::Form < Views::Admin::Base
+  prop :partner, _Any, reader: :private
+
+  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    simple_form_for(partner, html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'partnerTabAfterSave' } }) do |form|
+      if helpers.policy(partner).permitted_attributes.exclude?(:hidden) && partner.hidden
+        div(role: 'alert', class: 'alert alert-error mb-6') do
+          raw icon(:warning, size: '6', css_class: 'shrink-0')
+          div do
+            h3(class: 'font-bold') { 'This partner is hidden' }
+            p { 'Your partner is currently not visible to the public for the following reason:' }
+            div(class: 'mt-2 p-3 bg-error/20 rounded') { raw safe(partner.hidden_reason_html.to_s) }
+            p(class: 'mt-2') do
+              plain 'Once you have fixed this issue, contact '
+              a(href: 'mailto:support@placecal.org', class: 'link') { 'support@placecal.org' }
+              plain ' to make your partner public again.'
+            end
+          end
+        end
+      end
+
+      render Components::Admin::TabForm.new(
+        tabs: [
+          { label: "\u{1F4CB} Basic Info", hash: 'basic', partial: 'form_tab_basic' },
+          { label: "\u{1F4CD} Location", hash: 'location', partial: 'form_tab_location' },
+          { label: "\u{1F4DE} Contact", hash: 'contact', partial: 'form_tab_contact' },
+          { label: "\u{1F3F7}\u{FE0F} Tags", hash: 'tags', partial: 'form_tab_tags' },
+          { label: "\u{1F4C5} Calendars", hash: 'calendars', partial: 'form_tab_calendars', persisted_only: true },
+          { label: "\u{1F465} Admins", hash: 'admins', partial: 'form_tab_admins', persisted_only: true },
+          { label: "\u{1F441}\u{FE0F} Preview", hash: 'preview', partial: 'form_tab_preview', persisted_only: true },
+          { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', partial: 'form_tab_settings', spacer_before: true }
+        ],
+        tab_name: 'partner_tabs',
+        storage_key: 'partnerTabAfterSave',
+        settings_hash: 'settings',
+        preview_hash: 'preview',
+        form: form,
+        record: partner
+      )
+    end
+  end
+end

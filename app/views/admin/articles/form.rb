@@ -1,0 +1,69 @@
+# frozen_string_literal: true
+
+class Views::Admin::Articles::Form < Views::Admin::Base
+  prop :article, _Any, reader: :private
+
+  def view_template # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    simple_form_for([:admin, article], html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } }) do |form|
+      render(Components::Admin::Error.new(article))
+
+      if article.new_record?
+        render_new_layout(form)
+      else
+        render_edit_layout(form)
+      end
+    end
+  end
+
+  private
+
+  def render_new_layout(form) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
+      div(class: 'card-body p-6') do
+        raw view_context.render('admin/articles/form_tab_text', f: form)
+      end
+    end
+
+    div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
+      div(class: 'card-body p-6') do
+        render Components::Admin::SectionHeader.new(
+          title: 'Image',
+          description: 'Image will be cropped to 16:9 ratio.',
+          margin: 4
+        )
+        raw view_context.render('admin/articles/form_tab_image', f: form)
+      end
+    end
+
+    div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
+      div(class: 'card-body p-6') do
+        render Components::Admin::SectionHeader.new(
+          title: 'References',
+          description: 'Link this article to partners and partnerships.',
+          margin: 4
+        )
+        raw view_context.render('admin/articles/form_tab_references', f: form)
+      end
+    end
+
+    render Components::Admin::SaveBar.new do
+      raw form.submit(t('admin.actions.save'), class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange')
+    end
+  end
+
+  def render_edit_layout(form)
+    render Components::Admin::TabForm.new(
+      tabs: [
+        { label: "\u{1F4DD} Text", hash: 'text', partial: 'admin/articles/form_tab_text' },
+        { label: "\u{1F5BC}\u{FE0F} Image", hash: 'image', partial: 'admin/articles/form_tab_image' },
+        { label: "\u{1F517} References", hash: 'references', partial: 'admin/articles/form_tab_references' },
+        { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', partial: 'admin/articles/form_tab_settings', spacer_before: true }
+      ],
+      tab_name: 'article_tabs',
+      storage_key: 'articleTabAfterSave',
+      settings_hash: 'settings',
+      form: form,
+      record: article
+    )
+  end
+end
