@@ -3,7 +3,7 @@
 - Author: @idkidk000 (Jo)
 - Deciders: @idkidk000 (Jo) & @kimadactyl (Kim)
 - Date: 2026-02-26
-- Status: **Proposed**
+- Status: **Agreed**
 
 ## Context and Problem Statement
 
@@ -100,6 +100,8 @@ We need to implement the new design and get the styles into a maintainable state
   - On save, we could store everything to the DB as a JSON object and generate a CSS file to include in `app/views/layouts/application.html.erb`
 
 ## Decision Outcome
+
+Phlex + Tailwind
 
 ### Components
 
