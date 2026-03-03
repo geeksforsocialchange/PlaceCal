@@ -22,7 +22,7 @@ class CollectionsController < ApplicationController
           collection: @collection, site: @site, events: @events
         )
       end
-      format.text
+      format.text { render Views::Events::IndexText.new(events: @events) }
     end
   end
 
