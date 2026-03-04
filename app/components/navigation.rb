@@ -49,7 +49,12 @@ class Components::Navigation < Components::Base
   def render_logo
     if @logo_path
       if /\.svg$/.match?(@logo_path)
-        raw(view_context.svg_image(@logo_path, alt_text: @site.name))
+        file_path = Rails.public_path.join('uploads', @logo_path)
+        if File.exist?(file_path)
+          raw(safe(File.read(file_path)))
+        else
+          image_tag(@site.logo.url, alt: @site.name)
+        end
       else
         image_tag(@site.logo.url, alt: @site.name)
       end
