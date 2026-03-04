@@ -142,7 +142,8 @@ namespace :db do
   STAGING_HOST_KEY = 'STAGING_HOST'
   DB_DUMP_ENV_KEY = 'db_dump_filename'
 
-  # Remote paths for Kamal-managed servers
+  # Remote Docker container and paths for Kamal-managed servers
+  REMOTE_DB_CONTAINER = 'placecal-db'
   REMOTE_UPLOADS_PATH = '/data/placecal/uploads'
 
   desc 'Synchronize staging with the production database'
@@ -153,12 +154,15 @@ namespace :db do
     timestamp = Time.now.strftime('%Y%m%d%H%M%S')
     dump_file = "/tmp/placecal_prod_#{timestamp}.sql"
 
+    pg_user = ENV.fetch('POSTGRES_USER', 'placecal')
+    pg_db = ENV.fetch('POSTGRES_DB', 'placecal_production')
+
     $stdout.puts 'Dumping production database...'
-    system("ssh root@#{prod_host} 'docker exec placecal-db pg_dump -U placecal -Fc placecal_production' > #{dump_file}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{pg_db}' > #{dump_file}")
     abort 'Failed to dump production database!' unless $CHILD_STATUS.success?
 
     $stdout.puts 'Restoring to staging database...'
-    system("cat #{dump_file} | ssh root@#{staging_host} 'docker exec -i placecal-db pg_restore -U placecal -d placecal_production --clean --no-owner'")
+    system("cat #{dump_file} | ssh root@#{staging_host} 'docker exec -i #{REMOTE_DB_CONTAINER} pg_restore -U #{pg_user} -d #{pg_db} --clean --no-owner'")
 
     if $CHILD_STATUS.success?
       $stdout.puts 'Replicated production to staging. You may need to run migrations:'
@@ -177,8 +181,11 @@ namespace :db do
 
     FileUtils.mkdir_p(File.dirname(filename))
 
+    pg_user = ENV.fetch('POSTGRES_USER', 'placecal')
+    pg_db = ENV.fetch('POSTGRES_DB', 'placecal_production')
+
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
-    system("ssh root@#{prod_host} 'docker exec placecal-db pg_dump -U placecal -Fc placecal_production' > #{filename}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{pg_db}' > #{filename}")
     if $CHILD_STATUS.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename

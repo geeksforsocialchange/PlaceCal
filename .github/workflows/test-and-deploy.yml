@@ -227,18 +227,25 @@ jobs:
           gem install kamal
           kamal deploy -d ${{ steps.dest.outputs.destination }}
         env:
-          DEPLOY_HOST: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_HOST || secrets.STAGING_HOST }}
-          RAILS_ENV: ${{ steps.dest.outputs.destination }}
+          # Kamal builds + pushes the Docker image to GHCR, then deploys to server
+          KAMAL_REGISTRY_USERNAME: ${{ github.actor }}
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          # Server host (destination files use ERB to read these)
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          PRODUCTION_HOST: ${{ secrets.PRODUCTION_HOST }}
+          # Rails
+          RAILS_ENV: ${{ steps.dest.outputs.destination == 'production' && 'production' || 'staging' }}
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           SITE_DOMAIN: ${{ steps.dest.outputs.destination == 'production' && 'placecal.org' || 'placecal-staging.org' }}
+          # Database
           POSTGRES_HOST: placecal-db
           POSTGRES_PORT: "5432"
-          POSTGRES_DB: placecal_production
+          POSTGRES_DB: ${{ steps.dest.outputs.destination == 'production' && 'placecal_production' || 'placecal_staging' }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          # Services
           MAILERSEND_USERNAME: ${{ secrets.MAILERSEND_USERNAME }}
           MAILERSEND_PASSWORD: ${{ secrets.MAILERSEND_PASSWORD }}
           APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
           EVENTBRITE_TOKEN: ${{ secrets.EVENTBRITE_TOKEN }}
-          KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}

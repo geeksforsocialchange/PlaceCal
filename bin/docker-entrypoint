@@ -5,8 +5,9 @@ if [ -z "${LD_PRELOAD+x}" ] && [ -f /usr/lib/*/libjemalloc.so.2 ]; then
   export LD_PRELOAD="$(echo /usr/lib/*/libjemalloc.so.2)"
 fi
 
-# If running the rails server then migrate and remove stale pids
-if [ "${@: -1}" == "./bin/rails" ] || [ "${1}" == "./bin/rails" ]; then
+# Only prepare the database when starting the Rails server (web role).
+# Job worker and cron roles skip this to avoid race conditions.
+if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
   ./bin/rails db:prepare
   rm -f tmp/pids/server.pid
 fi

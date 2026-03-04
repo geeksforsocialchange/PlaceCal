@@ -9,9 +9,10 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 WORKDIR /rails
 
-# Install base packages
+# Install base packages (cron needed for the cron container role)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y cron curl libjemalloc2 libpq5 imagemagick libmagickwand-7-q16-6 && \
+    apt-get install --no-install-recommends -y \
+      cron curl imagemagick libjemalloc2 libpq5 libvips && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
@@ -26,7 +27,7 @@ FROM base AS build
 # Install build dependencies
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      build-essential git libpq-dev pkg-config \
+      build-essential git libpq-dev libvips-dev pkg-config \
       imagemagick libmagickwand-dev \
       node-gyp python3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
@@ -70,7 +71,8 @@ FROM base
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Run as non-root user for security
+# Run as non-root user for security (web + job_worker roles).
+# The cron role overrides this via Docker --user flag or runs cron as root.
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log tmp public

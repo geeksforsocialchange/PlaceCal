@@ -1,31 +1,29 @@
 # Kamal 2 deployment configuration for PlaceCal
 # See https://kamal-deploy.org/docs/configuration/overview/
+#
+# Hosts are set per-destination in deploy.staging.yml / deploy.production.yml
 
 service: placecal
 image: ghcr.io/geeksforsocialchange/placecal
 
 servers:
   web:
-    hosts:
-      - "%{DEPLOY_HOST}"
     options:
       memory: 512m
   job_worker:
-    hosts:
-      - "%{DEPLOY_HOST}"
     cmd: bin/rails jobs:work
+    proxy: false
     options:
       memory: 256m
   cron:
-    hosts:
-      - "%{DEPLOY_HOST}"
     cmd: bash -c "bundle exec whenever --update-crontab && cron -f"
+    proxy: false
     options:
       memory: 128m
+      user: root
 
 proxy:
   ssl: true
-  host: "%{SITE_DOMAIN}"
   app_port: 3000
   healthcheck:
     path: /up
@@ -36,6 +34,13 @@ proxy:
     requests: true
     responses: true
     max_request_body: 10_000_000 # 10MB — replaces nginx client_max_body_size
+
+registry:
+  server: ghcr.io
+  username:
+    - KAMAL_REGISTRY_USERNAME
+  password:
+    - KAMAL_REGISTRY_PASSWORD
 
 env:
   clear:
@@ -62,7 +67,6 @@ volumes:
 accessories:
   db:
     image: postgres:18
-    host: "%{DEPLOY_HOST}"
     port: "127.0.0.1:5432:5432"
     env:
       secret:
