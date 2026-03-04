@@ -150,13 +150,23 @@ To preview the generated crontab:
 bundle exec whenever
 ```
 
-## Migrating uploads from old server
+## Syncing data between environments
 
 ```sh
-# From the old Dokku server to the new Hetzner server
-rsync -avz --progress \
-  root@old-server:/var/lib/dokku/data/storage/placecal/public/uploads/ \
-  root@new-server:/data/placecal/uploads/
+# Sync production database to staging
+export PRODUCTION_HOST="<production-ip>"
+export STAGING_HOST="<staging-ip>"
+rake db:sync_prod_staging
+
+# Sync uploads from production to staging
+rake db:sync_uploads
+
+# Download production database to local machine
+export PRODUCTION_HOST="<production-ip>"
+rake db:dump_production
+
+# Download uploads to local machine
+rake db:get_files
 ```
 
 ## Teardown
