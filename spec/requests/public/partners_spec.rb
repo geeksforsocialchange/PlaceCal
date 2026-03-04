@@ -184,6 +184,37 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
+  describe "GET /partners/:id with paginated events" do
+    let(:partner) { create(:riverside_partner) }
+    let(:calendar) { create(:calendar, partner: partner) }
+
+    before do
+      # Create enough upcoming events to trigger the paginator code path (threshold is 30)
+      31.times do |i|
+        create(:event,
+               partner: partner,
+               calendar: calendar,
+               dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+               dtend: (i + 1).days.from_now.at_beginning_of_hour + 2.hours)
+      end
+    end
+
+    it "renders successfully with repeating param as string" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me", params: { repeating: "on" })
+      expect(response).to be_successful
+    end
+
+    it "renders successfully with default repeating param" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response).to be_successful
+    end
+
+    it "renders successfully with repeating off" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me", params: { repeating: "off" })
+      expect(response).to be_successful
+    end
+  end
+
   describe "default site redirect" do
     let!(:default_site) { create_default_site }
 
