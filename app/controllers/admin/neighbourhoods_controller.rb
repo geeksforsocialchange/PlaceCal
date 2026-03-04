@@ -62,7 +62,12 @@ module Admin
       authorize @neighbourhoods
 
       respond_to do |format|
-        format.html { @neighbourhoods = @neighbourhoods.order(:name) }
+        format.html do
+          @neighbourhoods = @neighbourhoods.order(:name)
+          render Views::Admin::Neighbourhoods::Index.new(
+            neighbourhoods: @neighbourhoods
+          )
+        end
         format.json do
           render json: NeighbourhoodDatatable.new(
             params,
@@ -77,15 +82,18 @@ module Admin
     def new
       @neighbourhood = Neighbourhood.new
       authorize @neighbourhood
+      render Views::Admin::Neighbourhoods::New.new(neighbourhood: @neighbourhood)
     end
 
     def show
       authorize @neighbourhood
+      render Views::Admin::Neighbourhoods::Show.new(neighbourhood: @neighbourhood)
     end
 
     def edit
       authorize @neighbourhood
       @users = @neighbourhood.users
+      render Views::Admin::Neighbourhoods::Edit.new(neighbourhood: @neighbourhood)
     end
 
     def create
@@ -96,7 +104,7 @@ module Admin
         redirect_to admin_neighbourhoods_path
       else
         flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'new', status: :unprocessable_content
+        render Views::Admin::Neighbourhoods::New.new(neighbourhood: @neighbourhood), status: :unprocessable_content
       end
     end
 
@@ -107,7 +115,7 @@ module Admin
         redirect_to admin_neighbourhood_path(@neighbourhood)
       else
         flash.now[:danger] = 'Neighbourhood was not saved'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Neighbourhoods::Edit.new(neighbourhood: @neighbourhood), status: :unprocessable_content
       end
     end
 

@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+class Views::Admin::Collections::New < Views::Admin::Base
+  prop :collection, Collection, reader: :private
+
+  def view_template
+    PageHeader(model_name: 'Collection', new_record: true)
+    render Views::Admin::Collections::Form.new(collection: collection)
+  end
+end

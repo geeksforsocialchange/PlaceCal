@@ -3,7 +3,7 @@
 class Components::Admin::RelatedItemsList < Components::Admin::Base
   prop :items, _Interface(:each) # Array or ActiveRecord relation
   prop :title_attr, Symbol
-  prop :edit_path, _Any  # lambda or symbol
+  prop :edit_path, _Union(Proc, Symbol)
   prop :subtitle_attr, _Nilable(Symbol), default: nil
   prop :empty_message, _Nilable(String), default: nil
 

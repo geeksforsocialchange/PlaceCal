@@ -2,6 +2,8 @@
 
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
+  layout -> { Views::Layouts::Application }
+
   # http_basic_authenticate_with name: ENV['AUTHENTICATION_NAME'], password: ENV['AUTHENTICATION_PASSWORD'] if Rails.env.staging?
   before_action :store_user_location!, if: :storable_location?
   before_action :authenticate_by_ip if Rails.env.staging?
@@ -27,7 +29,7 @@ class ApplicationController < ActionController::Base
   end
 
   def resource_not_found
-    render 'pages/resource_not_found', status: :not_found
+    render Views::Pages::ResourceNotFound.new, status: :not_found
   end
 
   # Set the day either using the URL or by today's date

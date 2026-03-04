@@ -9,7 +9,10 @@ module Admin
       authorize @articles
 
       respond_to do |format|
-        format.html { @articles = @articles.order(updated_at: :desc, title: :asc) }
+        format.html do
+          @articles = @articles.order(updated_at: :desc, title: :asc)
+          render Views::Admin::Articles::Index.new(articles: @articles)
+        end
         format.json do
           render json: ArticleDatatable.new(
             params,
@@ -25,10 +28,12 @@ module Admin
       @article.partners = current_user.partners if current_user.partners.one?
       @article.author = current_user unless current_user.root?
       authorize @article
+      render Views::Admin::Articles::New.new(article: @article)
     end
 
     def edit
       authorize @article
+      render Views::Admin::Articles::Edit.new(article: @article)
     end
 
     def create
@@ -41,7 +46,7 @@ module Admin
         redirect_to admin_articles_path
       else
         flash.now[:danger] = 'Article has not been created'
-        render :new, status: :unprocessable_content
+        render Views::Admin::Articles::New.new(article: @article), status: :unprocessable_content
       end
     end
 
@@ -53,7 +58,7 @@ module Admin
         redirect_to edit_admin_article_path(@article)
       else
         flash.now[:danger] = 'Article was not saved'
-        render :edit, status: :unprocessable_content
+        render Views::Admin::Articles::Edit.new(article: @article), status: :unprocessable_content
       end
     end
 

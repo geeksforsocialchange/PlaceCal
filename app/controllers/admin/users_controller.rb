@@ -8,6 +8,7 @@ module Admin
 
     def profile
       authorize current_user, :profile?
+      render Views::Admin::Users::Profile.new
     end
 
     def update_profile
@@ -20,7 +21,7 @@ module Admin
 
       else
         flash.now[:danger] = 'User profile was not updated'
-        render 'profile', status: :unprocessable_content
+        render Views::Admin::Users::Profile.new, status: :unprocessable_content
       end
     end
 
@@ -29,7 +30,10 @@ module Admin
       authorize current_user
 
       respond_to do |format|
-        format.html { @users = @users.order(updated_at: :desc, last_name: :asc, first_name: :asc) }
+        format.html do
+          @users = @users.order(updated_at: :desc, last_name: :asc, first_name: :asc)
+          render Views::Admin::Users::Index.new(users: @users)
+        end
         format.json do
           render json: UserDatatable.new(
             params,
@@ -47,12 +51,14 @@ module Admin
       # Preselect partners for new user (needed for StackedListSelectorComponent)
       @user.partners = Partner.where(id: @partners) if @partners.present?
       authorize @user
+      render Views::Admin::Users::New.new(user: @user)
     end
 
     def edit
       @partners = collect_partners
 
       authorize @user
+      render Views::Admin::Users::Edit.new(user: @user)
     end
 
     def update
@@ -64,7 +70,7 @@ module Admin
 
       else
         flash.now[:danger] = 'User was not saved'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Users::Edit.new(user: @user), status: :unprocessable_content
       end
     end
 
@@ -82,7 +88,7 @@ module Admin
       else
         @partners = collect_partners
         flash.now[:danger] = 'User was not created'
-        render 'new', status: :unprocessable_content
+        render Views::Admin::Users::New.new(user: @user), status: :unprocessable_content
       end
     end
 
@@ -166,7 +172,7 @@ module Admin
       # we're about to refresh the page so save the users input
       @user = User.new(permitted_attributes(User))
       flash.now[:danger] = 'User was not created: You must assign a Partner to the User or you will not be able to access it after creation'
-      render 'new', status: :unprocessable_content
+      render Views::Admin::Users::New.new(user: @user), status: :unprocessable_content
     end
   end
 end

@@ -92,9 +92,7 @@ class Components::EventFilter < Components::Base
   def build_sort_toggle
     view_context.content_tag(:div, class: 'filters__toggle') do
       view_context.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) do
-        view_context.icon(:triangle_down, size: nil) +
-          ' '.html_safe +
-          view_context.content_tag(:span, 'Filter and sort', class: 'filters__link')
+        safe_join([view_context.icon(:triangle_down, size: nil), ' ', view_context.content_tag(:span, 'Filter and sort', class: 'filters__link')])
       end
     end
   end

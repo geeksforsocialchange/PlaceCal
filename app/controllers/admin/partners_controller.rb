@@ -13,7 +13,14 @@ module Admin
       @partners = policy_scope(Partner).includes(:address)
 
       respond_to do |format|
-        format.html { @partners = @partners.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @partners = @partners.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Partners::Index.new(
+            partners: @partners,
+            partnership_options: build_partnership_options,
+            category_options: build_category_options
+          )
+        end
         format.json do
           render json: PartnerDatatable.new(params,
                                             view_context: view_context,
@@ -27,6 +34,7 @@ module Admin
       @partner.partnerships = current_user.partnerships
 
       authorize @partner
+      render Views::Admin::Partners::New.new(partner: @partner)
     end
 
     def show
@@ -57,7 +65,7 @@ module Admin
           format.html do
             flash.now[:danger] = 'Partner was not saved.'
             set_neighbourhoods
-            render :new, status: :unprocessable_content
+            render Views::Admin::Partners::New.new(partner: @partner), status: :unprocessable_content
           end
           format.json { render json: @partner.errors, status: :unprocessable_content }
         end
@@ -67,6 +75,7 @@ module Admin
     def edit
       authorize @partner
       @sites = Site.sites_that_contain_partner(@partner)
+      render Views::Admin::Partners::Edit.new(partner: @partner)
     end
 
     def update
@@ -113,7 +122,7 @@ module Admin
       else
         flash.now[:danger] = 'Partner was not saved.'
         set_neighbourhoods
-        render :edit, status: :unprocessable_content
+        render Views::Admin::Partners::Edit.new(partner: @partner), status: :unprocessable_content
       end
     end
 
@@ -231,6 +240,20 @@ module Admin
       msg = " Invitation sent to #{result[:email]}."
       msg += " <a href=\"#{result[:invitation_url]}\" target=\"_blank\" class=\"underline\">View invitation</a>" if Rails.env.development? && result[:invitation_url]
       msg
+    end
+
+    def build_partnership_options
+      counts = Partnership.joins(:partners).group('tags.id').count
+      Partnership.where(id: counts.keys).order(:name).map do |p|
+        { value: p.id.to_s, label: "#{p.name} (#{counts[p.id]})" }
+      end
+    end
+
+    def build_category_options
+      counts = Category.joins(:partners).group('tags.id').count
+      Category.where(id: counts.keys).order(:name).map do |c|
+        { value: c.id.to_s, label: "#{c.name} (#{counts[c.id]})" }
+      end
     end
 
     def set_partner_tags_controller

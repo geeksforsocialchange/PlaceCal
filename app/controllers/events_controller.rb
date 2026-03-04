@@ -27,17 +27,20 @@ class EventsController < ApplicationController
     )
     @truncated = @query.truncated
     @next_date = @query.next_event_after(@current_day)
-    @title = current_site.name
-
     respond_to do |format|
       format.html do
         if params[:simple].present?
-          render :index_simple, layout: false
+          render Views::Events::IndexSimple.new(events: @events), layout: false
         else
-          render :index
+          render Views::Events::Index.new(
+            events: @events, period: @period, sort: @sort, repeating: @repeating,
+            current_day: @current_day, site: @site,
+            selected_neighbourhood: @selected_neighbourhood,
+            next_date: @next_date, truncated: @truncated
+          )
         end
       end
-      format.text
+      format.text { render Views::Events::IndexText.new(events: @events) }
       format.ics { render_ical }
     end
   end
@@ -53,7 +56,11 @@ class EventsController < ApplicationController
       @map = get_map_markers([@event.address])
     end
     respond_to do |format|
-      format.html
+      format.html do
+        render Views::Events::Show.new(
+          event: @event, site: @site, map: @map
+        )
+      end
       format.ics do
         track_ical_download
         cal = create_calendar([@event])

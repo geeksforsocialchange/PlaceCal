@@ -101,11 +101,30 @@ Lint/SymbolConversion:
 # Metrics cops
 # =============================================================================
 
+# Phlex views/components are template code where each HTML element call
+# inflates AbcSize/MethodLength. These metrics don't add value for templates.
+Metrics/AbcSize:
+  Exclude:
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
+
+Metrics/MethodLength:
+  Exclude:
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
+
+Metrics/ParameterLists:
+  Exclude:
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
+
 Metrics/ClassLength:
   Exclude:
     - "spec/**/*.rb"
     - "app/models/partner.rb"
     - "app/controllers/admin/partners_controller.rb"
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
 
 Metrics/CyclomaticComplexity:
   Exclude:
@@ -153,6 +172,7 @@ Performance/StringReplacement:
 Rails/OutputSafety:
   Exclude:
     - "app/components/**/*.rb"
+    - "app/views/**/*.rb"
     - "app/helpers/application_helper.rb"
     - "app/helpers/articles_helper.rb"
     - "app/helpers/events_helper.rb"
