@@ -383,10 +383,11 @@ namespace :db do
   end
 
   def with_config
-    yield Rails.application.class.parent_name.underscore,
-          ActiveRecord::Base.connection_config[:host],
-          ActiveRecord::Base.connection_config[:database],
-          ActiveRecord::Base.connection_config[:username]
+    db_config = ActiveRecord::Base.connection_db_config.configuration_hash
+    yield Rails.application.class.module_parent_name.underscore,
+          db_config[:host],
+          db_config[:database],
+          db_config[:username]
   end
 
   def to_boolean(value)
