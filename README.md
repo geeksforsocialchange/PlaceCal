@@ -15,7 +15,6 @@ To run PlaceCal locally you will need to install the following dependencies:
 - [Node.js](https://nodejs.org/en/download) (see `.node-version`) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
-- [Exuberant Ctags](https://ctags.sourceforge.net/) (`etags`) for `make tags` (optional — generates tag files for editor navigation)
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - [Chrome/Chromium](https://www.chromium.org/chromium-projects/) for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 

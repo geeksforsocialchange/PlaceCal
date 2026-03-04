@@ -50,6 +50,3 @@ seed_GFSC_prod_copy_db:
 
 test:
 	$(TIME) sh -c "bundle exec rspec && bundle exec cucumber --tags 'not @wip' && rubocop && prettier -c app/"
-
-tags:
-	find app/ lib/ spec/ -iname '*.rb' | xargs etags
