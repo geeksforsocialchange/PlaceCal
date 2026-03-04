@@ -16,7 +16,9 @@ servers:
       - <%= ENV["STAGING_HOST"] %>
 
 proxy:
-  host: placecal-staging.org
+  hosts:
+    - placecal-staging.org
+    - "*.placecal-staging.org"
 
 accessories:
   db:

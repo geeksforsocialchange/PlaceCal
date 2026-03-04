@@ -28,6 +28,9 @@
 # User config
 .env
 .env.*
+.kamal/*.pem
+.kamal/secrets.staging
+.kamal/secrets.production
 
 # Files
 /public/uploads/**
