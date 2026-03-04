@@ -36,11 +36,6 @@
 /public/uploads/**
 /public/assets/**
 
-# Credentials
-.travis/*.key
-.travis/*.key.pub
-.travis/*.tar
-
 # Notes
 notes.md
 
@@ -52,7 +47,6 @@ coverage
 
 # ERD pdf as it's messing up diffs
 erd.pdf
-sendgrid.env
 
 # Ignore the dump directory
 dump/
@@ -60,12 +54,9 @@ dump/
 # Ignore node stuff
 /node_modules/**
 
-/public/packs
-/public/packs-test
 /node_modules
 /yarn-error.log
 yarn-debug.log*
-.yarn-integrity
 /app/assets/builds/*
 !/app/assets/builds/.keep
 

@@ -322,8 +322,8 @@ namespace :db do
 
       event_cluster = Event.where(uid: uid)
 
-      start_date = event_cluster.each_with_object({}) do |event, out|
-        out[event.dtstart] = out[event.dtstart].to_i + 1
+      start_date = event_cluster.to_h do |event|
+        [event.dtstart, out[event.dtstart].to_i + 1]
       end
 
       bad_dates = start_date.keep_if { |_date, count| count > 1 }

@@ -38,8 +38,6 @@ doc
 # Build artifacts (rebuilt in Docker)
 app/assets/builds
 public/assets
-public/packs
-public/packs-test
 
 # Uploads (mounted as volume)
 public/uploads

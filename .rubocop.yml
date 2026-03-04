@@ -307,6 +307,24 @@ RSpec/RepeatedExample:
 Style/ArrayIntersect:
   Enabled: false
 
+# CarrierWave needs File.open without a block — it takes ownership of the handle.
+# system_helpers suppresses stdout during tests, also needs persistent handle.
+Style/FileOpen:
+  Exclude:
+    - "db/seeds/001_users.rb"
+    - "db/seeds/004_sites.rb"
+    - "db/seeds/005_partners.rb"
+    - "spec/support/system_helpers.rb"
+
+# These files legitimately define multiple classes/modules together
+Style/OneClassPerFile:
+  Exclude:
+    - "app/controllers/users/auth_common.rb"
+    - "app/helpers/application_helper.rb"
+    - "config/initializers/phlex.rb"
+    - "features/step_definitions/tom_select_steps.rb"
+    - "lib/normal_island/uk_postcode_extension.rb"
+
 Style/Documentation:
   Enabled: false
 
