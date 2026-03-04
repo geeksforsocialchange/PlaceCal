@@ -72,10 +72,6 @@ Rails.application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   #
-  #   KF: Disabling this due to this comment:
-  #     https://github.com/rails/jsbundling-rails/issues/40#issuecomment-1006503192
-  #   I imagine this is because asset bundling is done with esbuild now so this is just
-  #   confusing matters and overwriting the sourcemap url.
   config.assets.debug = false
 
   # Suppress logger output for asset requests.
