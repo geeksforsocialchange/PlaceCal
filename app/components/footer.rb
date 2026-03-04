@@ -6,7 +6,7 @@ class Components::Footer < Components::Base
   prop :site, _Nilable(::Site), :positional, default: nil
 
   def view_template
-    div(class: 'footer') do
+    div(class: 'bg-base-text text-base-background text-[0.9rem] leading-[1.4rem] py-12 [&_p]:my-2 [&_a]:text-base-background [&_a]:border-base-secondary [&_h5]:mt-0 [&_pre]:overflow-hidden') do
       div(class: 'c') do
         div(class: footer_inner_class) { render_footer_content }
       end
@@ -16,23 +16,25 @@ class Components::Footer < Components::Base
   private
 
   def footer_inner_class
-    "footer__inner #{'footer__inner--nosite' unless @site&.site_admin}".strip
+    base = 'pc-footer__inner'
+    base += ' pc-footer__inner--nosite' unless @site&.site_admin
+    base
   end
 
   def render_footer_content
     render_logo
-    hr(class: 'footer__item footer__hr footer__hr--1')
+    hr(class: 'col-span-full pc-footer__hr--1 w-full border-[3px] border-base-tertiary tl:hidden')
     render_nav
     render_site_enquiries if @site&.site_admin
     render_general_enquiries
     render_site_supporters if @site&.supporters&.any?
-    hr(class: 'footer__item footer__hr')
+    hr(class: 'col-span-full w-full border-[3px] border-base-tertiary')
     render_global_supporters
     render_impressum
   end
 
   def render_logo
-    div(class: 'footer__item footer__logo') do
+    div(class: 'col-span-full pc-footer__logo self-center [&_img]:max-w-[187px]') do
       if @site&.footer_logo.present?
         image_tag(@site.footer_logo.url) if @site.footer_logo.url
       else
@@ -42,7 +44,7 @@ class Components::Footer < Components::Base
   end
 
   def render_nav
-    div(class: 'footer__item footer__nav') do
+    div(class: 'col-span-full pc-footer__nav text-base [&_ul]:list-none [&_ul]:ml-0 [&_ul]:pl-0 [&_li]:inline-block [&_li]:mr-2') do
       h5(class: 'allcaps small') { 'Site Navigation' }
       nav(role: 'navigation') do
         ul do
@@ -58,7 +60,7 @@ class Components::Footer < Components::Base
   end
 
   def render_site_enquiries
-    div(class: 'footer__item footer__enquiries footer__enquiries--regional') do
+    div(class: 'col-span-full pc-footer__enquiries--regional') do
       h5(class: 'allcaps small') { "#{@site.name} Enquiries" }
       p { @site.site_admin.full_name }
       p { render_site_contact_info }
@@ -77,7 +79,7 @@ class Components::Footer < Components::Base
   end
 
   def render_general_enquiries
-    div(class: 'footer__item footer__enquiries footer__enquiries--general') do
+    div(class: 'col-span-full pc-footer__enquiries--general') do
       h5(class: 'allcaps small') { 'General Enquiries' }
       p { 'Get in touch!' }
       p do
@@ -89,12 +91,12 @@ class Components::Footer < Components::Base
   end
 
   def render_site_supporters
-    hr(class: 'footer__item footer__hr')
-    div(class: 'footer__item footer__supporters') do
+    hr(class: 'col-span-full w-full border-[3px] border-base-tertiary')
+    div(class: 'col-span-full') do
       h5(class: 'allcaps small') { " PlaceCal #{@site.name} Supporters" }
-      ul do
+      ul(class: 'p-0 mt-4 grid grid-cols-2 tp:grid-cols-3 tl:grid-cols-6 gap-4 list-none') do
         @site.supporters&.each do |supporter|
-          li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do
+          li(class: 'grid items-center justify-items-center [&_img]:max-w-full') do
             link_to(supporter.url) { image_tag(supporter.logo.url) }
           end
         end
@@ -106,11 +108,11 @@ class Components::Footer < Components::Base
     return unless view_context.instance_variable_get(:@global_supporters)
 
     global_supporters = view_context.instance_variable_get(:@global_supporters)
-    div(class: 'footer__item footer__supporters') do
+    div(class: 'col-span-full') do
       h5(class: 'allcaps small') { 'PlaceCal Supporters' }
-      ul do
+      ul(class: 'p-0 mt-4 grid grid-cols-2 tp:grid-cols-3 tl:grid-cols-6 gap-4 list-none') do
         global_supporters&.each do |supporter|
-          li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do
+          li(class: 'grid items-center justify-items-center [&_img]:max-w-full') do
             link_to(supporter.url) { image_tag(supporter.logo.url, alt: supporter.name) }
           end
         end
@@ -119,7 +121,7 @@ class Components::Footer < Components::Base
   end
 
   def render_impressum
-    div(class: 'footer__item footer__impressum') do
+    div(class: 'col-span-full mt-12 text-base-tertiary [&_a]:text-base-tertiary [&_a]:decoration-base-tertiary') do
       p do
         plain "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}"
         br

@@ -15,11 +15,11 @@ class Components::Meta < Components::Base
   def view_template
     yield self if block_given?
 
-    div(class: 'meta small') do
+    div(class: 'pc-meta bg-base-rules py-8 small') do
       div(class: 'c') do
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink
-          div(class: 'meta__permalink') do
+          div(class: 'float-right') do
             a(href: "https://placecal.org#{@permalink}") { 'Permalink' }
           end
         end

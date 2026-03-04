@@ -116,7 +116,7 @@ class Components::HelpCard < Components::Base
     config = VARIANTS.fetch(@variant)
     return if @variant == :adding_events && !@site&.site_admin
 
-    div(class: "help #{config[:css_class]}") do
+    div(class: 'text-center mb-12 [&_h3]:my-8 [&_h3_span]:border-b-[3px] [&_ul]:list-none [&_ul]:p-0 [&_ol]:list-none [&_ol]:p-0') do
       raw(safe(SVGS.fetch(@variant)))
 
       h3(class: 'h2--alt') { span { config[:title] } }

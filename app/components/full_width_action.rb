@@ -2,10 +2,10 @@
 
 class Components::FullWidthAction < Components::Base
   COLOR_CLASSES = {
-    'blue' => 'full_width_action--blue',
-    'cream' => 'full_width_action--cream',
-    'green' => 'full_width_action--green',
-    'red' => 'full_width_action--red'
+    'blue' => 'bg-home-blue',
+    'cream' => 'bg-home-background-3',
+    'green' => 'bg-home-green',
+    'red' => 'bg-base-secondary'
   }.freeze
 
   prop :title, String
@@ -14,13 +14,14 @@ class Components::FullWidthAction < Components::Base
   prop :color, String
 
   def view_template(&)
-    section(class: "full_width_action #{COLOR_CLASSES[@color]}") do
-      div(class: 'max_width') do
-        h3(class: 'full_width_action__title') { @title }
-        p(class: 'full_width_action__content', &)
-        div(class: 'full_width_action__btn') do
-          btn_class = @color == 'cream' ? 'link_btn_lrg link_btn_lrg--green' : 'link_btn_lrg link_btn_lrg--light'
-          a(href: @link_url, class: btn_class) { @link_text }
+    section(class: "rounded-[1.11rem] py-12 px-4 #{COLOR_CLASSES.fetch(@color, 'bg-base-secondary')}") do
+      div(class: 'max-w-[860px] mx-auto') do
+        h3(class: 'text-[1.8rem] tp:text-[2.2rem] font-normal mx-auto mb-4 text-center') { @title }
+        p(class: 'text-[1.3rem] mx-auto mb-12 text-center', &)
+        div(class: 'w-max mx-auto') do
+          btn_base = 'rounded-[3rem] font-bold outline-offset-2 py-1 px-6 text-center no-underline whitespace-nowrap transition-[300ms] hover:bg-base-text hover:text-home-background hover:outline-base-text'
+          btn_variant = @color == 'cream' ? 'bg-home-green outline outline-2 outline-home-green' : 'bg-home-background outline outline-2 outline-home-background'
+          a(href: @link_url, class: "#{btn_base} #{btn_variant}") { @link_text }
         end
       end
     end
