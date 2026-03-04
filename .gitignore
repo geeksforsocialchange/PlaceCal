@@ -27,6 +27,7 @@
 
 # User config
 .env
+.env.*
 
 # Files
 /public/uploads/**
