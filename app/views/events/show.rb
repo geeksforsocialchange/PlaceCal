@@ -37,7 +37,7 @@ class Views::Events::Show < Views::Base
 
       online_link
 
-      div(class: 'g three-col') do
+      div(class: 'g grid grid-cols-1 tl:grid-cols-3 gap-4 items-start') do
         render_contact_info
         render_event_address
         render_event_organiser

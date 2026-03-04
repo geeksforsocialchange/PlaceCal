@@ -4,11 +4,11 @@ class Views::Pages::Privacy < Views::Base
   def view_template
     content_for(:title) { 'Privacy Policy' }
 
-    article(class: 'home margin') do
+    article(class: 'home mx-3 tp:mx-6') do
       Hero('PlaceCal Privacy Policy')
 
       div(class: 'card card--plain') do
-        div(class: 'max_width') do
+        div(class: 'max-w-[860px] mx-auto') do
           br
           render_intro
           render_contact_details

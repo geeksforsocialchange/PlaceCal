@@ -25,7 +25,7 @@ class Views::Partners::Index < Views::Base
 
         hr
 
-        ul(class: 'partners reset two-col', id: 'partners') do
+        ul(class: 'partners reset grid grid-cols-1 tl:grid-cols-2 gap-4 items-start', id: 'partners') do
           partners.each do |partner|
             PartnerPreview(partner: partner, site: site)
           end

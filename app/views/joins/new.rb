@@ -9,7 +9,7 @@ class Views::Joins::New < Views::Base
 
   def view_template
     article(class: 'home') do
-      div(class: 'margin') do
+      div(class: 'mx-3 tp:mx-6') do
         div(class: 'card card--alt card--split center') do
           render_header
           div(class: 'card__body') do
