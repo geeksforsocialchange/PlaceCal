@@ -106,9 +106,9 @@ rails runner 'res = Geocoder.search("DH1 3EL").first.data; n = Neighbourhood.fin
 The new dataset file and modified script/model must be committed to the repo and merged to main. Then on production:
 
 ```bash
-dokku run placecal rails neighbourhoods:import
-dokku run placecal rails db:clean_bad_addresses
-dokku run placecal rails addresses:regeocode
+kamal app exec -d production 'bin/rails neighbourhoods:import'
+kamal app exec -d production 'bin/rails db:clean_bad_addresses'
+kamal app exec -d production 'bin/rails addresses:regeocode'
 ```
 
 **Warning:** Between the time your new code is deployed and the import script runs, the `latest_release` scope will filter for the new release date which hasn't been imported yet. This means neighbourhood selection will be temporarily broken. Minimise this window by running the import immediately after deploy.

@@ -1,0 +1,45 @@
+# Version control
+.git
+
+# Dependencies (reinstalled in build)
+node_modules
+vendor/bundle
+
+# Temporary files
+tmp
+log
+
+# Environment files
+.env*
+
+# Database backups
+db/backups
+dump
+
+# Test files
+spec
+features
+coverage
+
+# Documentation
+doc
+
+# OS files
+.DS_Store
+
+# IDE config
+.vscode
+.claude
+.claude-swarm
+
+# CI
+.github
+
+# Build artifacts (rebuilt in Docker)
+app/assets/builds
+public/assets
+public/packs
+public/packs-test
+
+# Uploads (mounted as volume)
+public/uploads

@@ -1,34 +1,54 @@
 # Releasing PlaceCal
 
-## 1. Validate changes since the [last release](https://github.com/geeksforsocialchange/PlaceCal/releases)
+PlaceCal uses **Kamal 2** for deployments. Pushes to `main` auto-deploy to staging. Publishing a GitHub release deploys to production.
 
-Every pull request gets added to the latest draft release automatically. Validate them on the staging server before continuing.
+## 1. Validate changes on staging
 
-1. Validate that each pull request in the draft release does what it's meant to:
-   1. If it's a bug fix, check the bug linked in the PR is fixed on the [staging server](https://placecal-staging.org/). If it is, add a screenshot in a comment on the bug's issue ticket so the original reporter gets notified a fix is on the way.
-   2. If it's a new feature, make a screenshot or video of the feature working on the staging server and add it as a comment in the pull release.
-2. In both cases, open new issues as needed if these don't resolve the issue.
-3. Add the `verified` label to resolved issues if you're happy the fix is working
-4. If you're happy to proceed, move to the next section of the guide. If not, merge PRs to address issues until you are.
-5. Decide the next version number [by reviewing the current one](https://github.com/geeksforsocialchange/PlaceCal/releases)
+Every pull request merged to `main` is automatically deployed to [placecal-staging.org](https://placecal-staging.org/) and added to the draft release by [release-drafter](https://github.com/release-drafter/release-drafter).
+
+1. For each PR in the [draft release](https://github.com/geeksforsocialchange/PlaceCal/releases):
+   - **Bug fix**: Check the bug is fixed on staging. Screenshot it and comment on the issue.
+   - **New feature**: Screenshot/video the feature on staging and comment on the PR.
+2. Open new issues for anything that doesn't look right.
+3. Add the `verified` label to resolved issues.
 
 ## 2. Deploy to production
 
-1. [Open a pull request from `main` into `production`](https://github.com/geeksforsocialchange/PlaceCal/compare/production...main)
-2. Title it with the next version number.
-3. Ensure you are doing a **merge commit based merge**. Do not squash or rebase, and wait for CI to pass.
-4. **Do not update the branch using the automatically generated prompt**. Github will invite you to update the branch because `production` has additional merge commits that don't exist in `main`. It's no big deal if you forget, but this just creates an unneeded extra commit that needs merging back into `main` later.
-5. Get someone to approve the PR, then merge into production.
-6. Once the CI passes on the `production` branch, the patch is live. You can double check the git reference in the admin interface on the left sidebar to check this has happened.
+1. [Edit the draft release](https://github.com/geeksforsocialchange/PlaceCal/releases).
+2. Set the version number as the tag (e.g. `v1.2.3`). Refer to previous releases for numbering.
+3. Write a description of what's changed.
+4. Press **Publish release** — this triggers the production deploy via GitHub Actions.
 
-## 3. Make a release
+## 3. Verify the deploy
 
-Assuming everything is working, create a new release.
+```sh
+# Check the deploy completed successfully
+kamal app details -d production
 
-1. [Edit the draft release](https://github.com/geeksforsocialchange/PlaceCal/releases)
-2. Give it a version number and nice description of what's changed. Refer to previous releases to get an idea how to write these.
-3. Match the release title to a tag with the same version number.
-4. Press the "Publish" button on the release.
-5. Email releases@lists.placecal.org with the patch notes.
+# Check the running version
+kamal app version -d production
+```
 
-Well done! You released a new version of PlaceCal.
+You can also check the git reference in the admin sidebar on [placecal.org](https://placecal.org/).
+
+## 4. Rollback (if needed)
+
+```sh
+# Roll back to the previous version
+kamal rollback -d production
+
+# Or deploy a specific version
+kamal rollback <version> -d production
+```
+
+## 5. Notify
+
+Email [releases@lists.placecal.org](mailto:releases@lists.placecal.org) with the release notes.
+
+## Manual deploys
+
+For ad-hoc deploys (e.g. hotfixes), use the [workflow_dispatch trigger](https://github.com/geeksforsocialchange/PlaceCal/actions/workflows/test-and-deploy.yml) or deploy from your local machine:
+
+```sh
+kamal deploy -d staging    # or -d production
+```
