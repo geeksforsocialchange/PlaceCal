@@ -148,7 +148,7 @@ class ApplicationController < ActionController::Base
     # Is whitelist mode enabled?
     return unless ENV['WHITELIST_MODE']
 
-    # Whitelisted ips are stored as comma separated values in the dokku config
+    # Whitelisted IPs are stored as comma-separated values in the environment
     whitelist = ENV['WHITELISTED_IPS'].split(',')
     return if whitelist.include?(request.remote_ip)
 

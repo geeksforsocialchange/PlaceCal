@@ -1,0 +1,86 @@
+# Kamal 2 deployment configuration for PlaceCal
+# See https://kamal-deploy.org/docs/configuration/overview/
+#
+# Hosts are set per-destination in deploy.staging.yml / deploy.production.yml
+
+service: placecal
+image: ghcr.io/geeksforsocialchange/placecal
+
+servers:
+  web:
+    options:
+      memory: 512m
+  job_worker:
+    cmd: bin/rails jobs:work
+    proxy: false
+    options:
+      memory: 256m
+  cron:
+    cmd: bash -c "env > /etc/environment && bundle exec whenever --update-crontab && cron -f"
+    proxy: false
+    options:
+      memory: 128m
+      user: root
+
+proxy:
+  ssl: true
+  app_port: 3000
+  healthcheck:
+    path: /up
+    interval: 3
+    timeout: 7
+  response_timeout: 30
+  buffering:
+    requests: true
+    responses: true
+    max_request_body: 10_000_000 # 10MB — replaces nginx client_max_body_size
+
+registry:
+  server: ghcr.io
+  username:
+    - KAMAL_REGISTRY_USERNAME
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    RAILS_SERVE_STATIC_FILES: true
+    RAILS_LOG_TO_STDOUT: true
+  secret:
+    - RAILS_ENV
+    - RAILS_MASTER_KEY
+    - SECRET_KEY_BASE
+    - POSTGRES_HOST
+    - POSTGRES_PORT
+    - POSTGRES_DB
+    - POSTGRES_USER
+    - PGPASSWORD
+    - MAILERSEND_USERNAME
+    - MAILERSEND_PASSWORD
+    - APPSIGNAL_PUSH_API_KEY
+    - EVENTBRITE_TOKEN
+    - SITE_DOMAIN
+
+volumes:
+  - "/data/placecal/uploads:/rails/public/uploads"
+
+accessories:
+  db:
+    image: postgres:18
+    port: "127.0.0.1:5432:5432"
+    env:
+      secret:
+        - POSTGRES_USER
+        - POSTGRES_PASSWORD
+        - POSTGRES_DB
+    directories:
+      - data:/var/lib/postgresql
+    options:
+      memory: 512m
+
+asset_path: /rails/public/assets
+
+builder:
+  arch: amd64
+
+# Database migrations run via bin/docker-entrypoint (db:prepare)

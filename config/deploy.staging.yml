@@ -1,0 +1,23 @@
+# Staging destination overrides
+# Usage: kamal deploy -d staging
+#
+# Set STAGING_HOST in your environment or .kamal/secrets.staging
+<% begin; require "dotenv"; Dotenv.load(".kamal/secrets.staging"); rescue LoadError; end %>
+
+servers:
+  web:
+    hosts:
+      - <%= ENV["STAGING_HOST"] %>
+  job_worker:
+    hosts:
+      - <%= ENV["STAGING_HOST"] %>
+  cron:
+    hosts:
+      - <%= ENV["STAGING_HOST"] %>
+
+proxy:
+  host: placecal-staging.org
+
+accessories:
+  db:
+    host: <%= ENV["STAGING_HOST"] %>

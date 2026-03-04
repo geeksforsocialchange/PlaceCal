@@ -1,0 +1,23 @@
+# Production destination overrides
+# Usage: kamal deploy -d production
+#
+# Set PRODUCTION_HOST in your environment or .kamal/secrets.production
+<% begin; require "dotenv"; Dotenv.load(".kamal/secrets.production"); rescue LoadError; end %>
+
+servers:
+  web:
+    hosts:
+      - <%= ENV["PRODUCTION_HOST"] %>
+  job_worker:
+    hosts:
+      - <%= ENV["PRODUCTION_HOST"] %>
+  cron:
+    hosts:
+      - <%= ENV["PRODUCTION_HOST"] %>
+
+proxy:
+  host: placecal.org
+
+accessories:
+  db:
+    host: <%= ENV["PRODUCTION_HOST"] %>

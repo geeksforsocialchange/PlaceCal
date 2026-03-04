@@ -4,6 +4,7 @@ ruby '4.0.1'
 source 'https://gem.coop'
 
 # Core
+gem 'kamal'                       # Container deployment
 gem 'pg'                          # PostgreSQL database adapter
 gem 'puma'                        # Web server
 gem 'rails', '~> 8.0'             # Web framework
@@ -50,6 +51,7 @@ gem 'rack-cors', require: 'rack/cors' # Cross-origin request support
 
 # Background jobs
 gem 'delayed_job_active_record'   # Async job queue (calendar imports)
+gem 'whenever', require: false    # Cron schedule management
 
 # Utilities
 gem 'appsignal'                   # Error tracking and performance monitoring
