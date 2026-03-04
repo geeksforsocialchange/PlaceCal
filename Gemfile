@@ -4,6 +4,7 @@ ruby '4.0.1'
 source 'https://gem.coop'
 
 # Core
+gem 'kamal'                       # Container deployment
 gem 'pg'                          # PostgreSQL database adapter
 gem 'puma'                        # Web server
 gem 'rails', '~> 8.0'             # Web framework

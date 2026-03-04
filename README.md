@@ -15,6 +15,7 @@ To run PlaceCal locally you will need to install the following dependencies:
 - [Node.js](https://nodejs.org/en/download) (see `.node-version`) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
+- [Exuberant Ctags](https://ctags.sourceforge.net/) (`etags`) for `make tags` (optional — generates tag files for editor navigation)
 - [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - [Chrome/Chromium](https://www.chromium.org/chromium-projects/) for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 
@@ -80,7 +81,7 @@ To import all events, run the following command.
 rails events:import_all_calendars
 ```
 
-After this has run once, the following command can be run which attempts to skip calendars which have not been updated. This should be run regularly on a cron in production environments. If you are using dokku to deploy like we are, this is handled in the `app.json` config file.
+After this has run once, the following command can be run which attempts to skip calendars which have not been updated. This should be run regularly on a cron in production environments. See `INSTALL.md` for cron setup on the server.
 
 ```sh
 rails events:scan_for_calendars_needing_import
@@ -203,9 +204,9 @@ If you are working with the code and are completely lost you can also try the [G
 │   └── templates
 │       └── erb                 # Rails scaffold templates
 ├── log
-├── nginx.conf.d                # Config files here get added to the nginx config by dokku
+├── config/deploy.yml           # Kamal deployment configuration
 ├── public
-├── scripts
+├── .kamal                      # Kamal secrets configuration
 ├── spec                        # RSpec test suite
 │   ├── components              # Phlex component specs
 │   ├── datatables              # Datatable specs

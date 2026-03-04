@@ -1,0 +1,5 @@
+# Production destination overrides
+# Usage: kamal deploy -d production
+
+proxy:
+  host: placecal.org

@@ -137,40 +137,48 @@ namespace :db do
     end
   end
 
-  # Capitalisation differences:
-  # db_dump_filename is intended to be a direct environment argument to the rake task
-  # Whereas db_dump_ssh_url is intended to live in .bashrc / wherever
+  # Server hostnames — override via environment variables if needed
+  PRODUCTION_HOST_KEY = 'PRODUCTION_HOST'
+  STAGING_HOST_KEY = 'STAGING_HOST'
   DB_DUMP_ENV_KEY = 'db_dump_filename'
-  DB_DUMP_SSH_URL = 'DB_DUMP_SSH_URL'
-  DB_DUMP_STAGING_SSH_URL = 'DB_DUMP_STAGING_SSH_URL'
 
-  desc 'Synchronize staging with the production database in one fell swoop'
+  # Remote paths for Kamal-managed servers
+  REMOTE_UPLOADS_PATH = '/data/placecal/uploads'
+
+  desc 'Synchronize staging with the production database'
   task sync_prod_staging: :environment do
-    prod_ssh_url = ENV.fetch(DB_DUMP_SSH_URL, 'root@placecal.org -p 666')
+    prod_host = ENV.fetch(PRODUCTION_HOST_KEY) { abort "Set #{PRODUCTION_HOST_KEY} to the production server IP/hostname" }
+    staging_host = ENV.fetch(STAGING_HOST_KEY) { abort "Set #{STAGING_HOST_KEY} to the staging server IP/hostname" }
 
-    ssh_url = ENV.fetch(DB_DUMP_STAGING_SSH_URL, 'root@placecal-staging.org -p 666')
+    timestamp = Time.now.strftime('%Y%m%d%H%M%S')
+    dump_file = "/tmp/placecal_prod_#{timestamp}.sql"
 
-    $stdout.puts 'Backing up staging db (May take a while.) ...'
-    puts `ssh #{ssh_url} dokku postgres:export placecal-db > $(date -Im)_placecal-staging.sql`
+    $stdout.puts 'Dumping production database...'
+    system("ssh root@#{prod_host} 'docker exec placecal-db pg_dump -U placecal -Fc placecal_production' > #{dump_file}")
+    abort 'Failed to dump production database!' unless $CHILD_STATUS.success?
 
-    $stdout.puts 'Replicating production db to staging db (May take a while.) ...'
-    puts `ssh #{prod_ssh_url} dokku postgres:export placecal-db | ssh #{ssh_url} dokku postgres:import placecal-db`
+    $stdout.puts 'Restoring to staging database...'
+    system("cat #{dump_file} | ssh root@#{staging_host} 'docker exec -i placecal-db pg_restore -U placecal -d placecal_production --clean --no-owner'")
 
     if $CHILD_STATUS.success?
-      $stdout.puts 'Replicated production to staging (you might have to run rails db:migrate in dokku?)'
+      $stdout.puts 'Replicated production to staging. You may need to run migrations:'
+      $stdout.puts "  kamal app exec -d staging 'bin/rails db:migrate'"
     else
-      warn 'Failed to replicate production to staging!'
+      warn 'Failed to restore to staging (partial restore may have occurred).'
     end
+
+    FileUtils.rm_f(dump_file)
   end
 
   desc 'Download production DB dump'
   task dump_production: :environment do
-    filename = ENV.fetch(DB_DUMP_ENV_KEY) { "#{Rails.root}/dump/production_#{Time.now.to_i}.sql" }
+    prod_host = ENV.fetch(PRODUCTION_HOST_KEY) { abort "Set #{PRODUCTION_HOST_KEY} to the production server IP/hostname" }
+    filename = ENV.fetch(DB_DUMP_ENV_KEY) { "#{Rails.root}/dump/production_#{Time.now.to_i}.dump" }
 
-    ssh_url = ENV.fetch(DB_DUMP_SSH_URL, 'root@placecal.org -p 666')
+    FileUtils.mkdir_p(File.dirname(filename))
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
-    puts `ssh #{ssh_url} dokku postgres:export placecal-db2 > #{filename}`
+    system("ssh root@#{prod_host} 'docker exec placecal-db pg_dump -U placecal -Fc placecal_production' > #{filename}")
     if $CHILD_STATUS.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename
@@ -182,7 +190,7 @@ namespace :db do
   desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to local dev DB"
   task restore_local: :environment do
     filename = ENV.fetch(DB_DUMP_ENV_KEY, nil)
-    raise "Could not find #{filename} file!" unless File.exist? filename
+    raise "Could not find #{filename} file!" unless File.exist?(filename)
 
     $stdout.puts "Restoring DB dump file #{filename} to local dev DB. (May take a while.) ..."
 
@@ -190,9 +198,7 @@ namespace :db do
 
     begin
       Rake::Task['db:drop'].invoke
-
     rescue ActiveRecord::ProtectedEnvironmentError
-      # https://github.com/rails/rails/issues/34041#issuecomment-426097998
       puts "*** DB drop failed, you may have pending migrations ***\n\n"
       raise
     end
@@ -212,36 +218,33 @@ namespace :db do
     end
   end
 
-  desc "Restore db dump file #{DB_DUMP_ENV_KEY}=<filename> to staging server DB"
-  task restore_staging: :environment do
-    filename = ENV.fetch(DB_DUMP_ENV_KEY, nil)
-    ssh_url = ENV.fetch(DB_DUMP_STAGING_SSH_URL, 'root@placecal-staging.org -p 666')
-    raise "Could not find #{filename} file!" unless File.exist? filename
-
-    $stdout.puts "Restoring DB dump file #{filename} to staging server DB. (May take a while.) ..."
-    puts `< #{filename} ssh #{ssh_url} dokku postgres:import placecal-staging-db`
-    if $CHILD_STATUS.success?
-      $stdout.puts '... done.'
-    else
-      warn 'Failed to restore DB dump to staging server DB!'
-      warn 'Please manually check to see whether staging server DB still exists.'
-      exit
-    end
-  end
-
-  desc 'Download production DB dump and optionally use it to restore_on_local=1 and/or restore_on_staging=1'
-  task dump_production_and_restore_other: :dump_production do
-    $stdout.puts "restore_on_local = #{ENV['restore_on_local']}" if ENV['restore_on_local']
-    $stdout.puts "restore_on_staging = #{ENV['restore_on_staging']}" if ENV['restore_on_staging']
+  desc 'Download production DB dump and optionally restore_on_local=1'
+  task dump_production_and_restore_local: :dump_production do
     Rake::Task['db:restore_local'].execute if ENV['restore_on_local']
-    Rake::Task['db:restore_staging'].execute if ENV['restore_on_staging']
   end
 
-  desc 'SCP uploads from production to local server'
+  desc 'Download uploads from production to local ./public/'
   task get_files: :environment do
+    prod_host = ENV.fetch(PRODUCTION_HOST_KEY) { abort "Set #{PRODUCTION_HOST_KEY} to the production server IP/hostname" }
+
     $stdout.puts 'Getting files...'
-    `scp -r root@placecal.org:/var/lib/dokku/data/storage/placecal/public/ ./`
+    system("rsync -avz --progress root@#{prod_host}:#{REMOTE_UPLOADS_PATH}/ ./public/uploads/")
     $stdout.puts '... done.'
+  end
+
+  desc 'Sync uploads directory from production to staging'
+  task sync_uploads: :environment do
+    prod_host = ENV.fetch(PRODUCTION_HOST_KEY) { abort "Set #{PRODUCTION_HOST_KEY} to the production server IP/hostname" }
+    staging_host = ENV.fetch(STAGING_HOST_KEY) { abort "Set #{STAGING_HOST_KEY} to the staging server IP/hostname" }
+
+    $stdout.puts 'Syncing uploads from production to staging...'
+    system("ssh root@#{prod_host} 'rsync -avz #{REMOTE_UPLOADS_PATH}/ root@#{staging_host}:#{REMOTE_UPLOADS_PATH}/'")
+
+    if $CHILD_STATUS.success?
+      $stdout.puts 'Uploads synced successfully.'
+    else
+      warn 'Failed to sync uploads!'
+    end
   end
 
   desc 'Prints out a list of tables and their counts'

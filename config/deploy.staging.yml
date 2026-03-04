@@ -1,0 +1,5 @@
+# Staging destination overrides
+# Usage: kamal deploy -d staging
+
+proxy:
+  host: placecal-staging.org

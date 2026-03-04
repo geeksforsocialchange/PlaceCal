@@ -1,12 +1,10 @@
 {
 	"name": "PlaceCal",
 	"description": "The Community Calendar",
-	"keywords": ["dokku", "rails"],
 	"scripts": {
-		"dokku": {
-			"postdeploy": "bundle exec rails db:migrate"
-		}
+		"postdeploy": "bundle exec rails db:migrate"
 	},
+	"cron_note": "Cron jobs are managed on the server via crontab. See INSTALL.md for setup.",
 	"cron": [
 		{
 			"command": "bundle exec rails events:scan_for_calendars_needing_import",
