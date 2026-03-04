@@ -15,9 +15,10 @@
 		"tom-select": "^2.4.3"
 	},
 	"scripts": {
-		"build": "yarn css-admin",
+		"build": "yarn css-admin && yarn css-public",
 		"build:all": "yarn build",
 		"css-admin": "./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./public/assets/admin_tailwind.css --minify",
+		"css-public": "./node_modules/.bin/tailwindcss -i ./app/tailwind/public_tailwind.css -o ./public/assets/public_tailwind.css --minify",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"prepare": "husky install"

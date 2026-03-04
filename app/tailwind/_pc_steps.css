@@ -1,0 +1,90 @@
+/* Steps: image sizing (works with shared .card classes in SCSS) */
+.steps .steps__image--numeral {
+	max-width: 250px;
+	margin-left: -5%;
+}
+
+@media (min-width: 600px) {
+	.steps .steps__image--numeral {
+		float: left;
+		max-width: 200px;
+		margin-left: 0;
+		margin-right: 1rem;
+	}
+}
+
+@media (min-width: 900px) {
+	.steps .steps__image--numeral {
+		max-width: 220px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.steps .steps__image--numeral {
+		max-width: 300px;
+	}
+}
+
+/* Steps: card body grid at tablet */
+@media (min-width: 600px) {
+	.steps .card__body {
+		min-height: 250px;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-content: center;
+		align-items: center;
+		padding: 0 10% 0 5%;
+		grid-gap: 0 1rem;
+	}
+
+	.steps .card__body--wide {
+		grid-template-columns: 1fr;
+		padding: 0 10%;
+	}
+}
+
+@media (min-width: 900px) {
+	.steps .card__body {
+		padding: 0 15% 0 17% !important;
+	}
+
+	.steps .card__body--wide {
+		padding: 0 10% !important;
+	}
+}
+
+@media (min-width: 1200px) {
+	.steps .card__body {
+		min-height: 328px !important;
+	}
+}
+
+/* Steps: caption typography */
+.steps .steps__caption {
+	text-align: left;
+	font-size: 1rem;
+	line-height: 1.444;
+	font-weight: bold;
+}
+
+@media (min-width: 600px) {
+	.steps .steps__caption {
+		font-size: 1.333rem;
+		line-height: 1.25;
+	}
+}
+
+/* Steps: wide card caption (serif) */
+.steps .card__body--wide .steps__caption {
+	font-size: 1.444rem;
+	line-height: 1.308;
+	font-family: "Trocchi", Georgia, serif;
+	font-weight: 300;
+}
+
+@media (min-width: 900px) {
+	.steps .card__body--wide .steps__caption {
+		font-size: 1.667rem;
+		line-height: 1.333;
+	}
+}

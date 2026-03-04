@@ -1,0 +1,11 @@
+/* Breadcrumb: descendant link + btn styles */
+.pc-breadcrumb a {
+	border-bottom: 2px solid var(--base-rules-dark, #decbba);
+	text-decoration: none;
+}
+
+.pc-breadcrumb .btn {
+	border-bottom-color: var(--base-primary, #afcf5a);
+	margin: 0.75rem 0 0.2rem 0;
+	line-height: normal;
+}

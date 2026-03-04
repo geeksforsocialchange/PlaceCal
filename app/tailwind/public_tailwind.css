@@ -1,0 +1,66 @@
+/*
+ * Public Site Tailwind CSS
+ *
+ * Tailwind v4 uses CSS-first configuration.
+ * Skips preflight to avoid conflicts with existing SCSS base styles.
+ */
+
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities);
+
+/* Source paths for content detection */
+@source "../components/*.rb";
+@source "../views/**/*.rb";
+@source "../helpers/**/*.rb";
+
+/* Custom theme: colors reference CSS vars for partner theming */
+@theme {
+	/* Partner-themeable colors (CSS var with fallback) */
+	--color-base-primary: var(--base-primary, #afcf5a);
+	--color-base-primary-light: var(--base-primary-light, #c3db83);
+	--color-base-background: var(--base-background, #fffcf0);
+	--color-base-text: var(--base-text, #5b4e46);
+	--color-base-rules: var(--base-rules, #f1e9da);
+	--color-base-rules-dark: var(--base-rules-dark, #decbba);
+	--color-base-secondary: var(--base-secondary, #f19089);
+	--color-base-tertiary: var(--base-tertiary, #998675);
+	--color-base-map-stripe-second: var(--base-map-stripe-second, #c7b299);
+
+	/* Home page colors */
+	--color-home-background: #fffbef;
+	--color-home-background-2: #f19089;
+	--color-home-background-3: #f0e9da;
+	--color-home-blue: #74d4ec;
+	--color-home-blue-soft: #97dff1;
+	--color-home-pink: var(--base-secondary, #f19089);
+	--color-home-pink-soft: #f4a6a1;
+	--color-home-green: var(--base-primary, #afcf5a);
+	--color-home-green-soft: var(--base-primary-light, #c3db83);
+
+	/* PlaceCal brand colors */
+	--color-placecal-brown: #5b4e46;
+	--color-placecal-cream: #f5f1eb;
+	--color-placecal-orange: #e87d1e;
+
+	/* Custom breakpoints matching SCSS */
+	--breakpoint-tp: 600px;
+	--breakpoint-tl: 900px;
+	--breakpoint-dt: 1200px;
+	--breakpoint-bd: 1800px;
+
+	/* Fonts */
+	--font-sans: "Rawline", "Raleway", sans-serif;
+	--font-serif: "Trocchi", Georgia, serif;
+
+	/* Border radius */
+	--radius-card: 5px;
+}
+
+/* Public component CSS (attribute selectors, bg images, grid areas) */
+@import "./_pc_turbo_loading.css";
+@import "./_pc_meta.css";
+@import "./_pc_breadcrumb.css";
+@import "./_pc_steps.css";
+@import "./_pc_hero.css";
+@import "./_pc_footer.css";
+@import "./_pc_home_strapline.css";
