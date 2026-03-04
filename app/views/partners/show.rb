@@ -10,7 +10,7 @@ class Views::Partners::Show < Views::Base
   prop :events, _Interface(:each), reader: :private
   prop :period, _Nilable(String), reader: :private
   prop :sort, _Nilable(String), reader: :private
-  prop :repeating, _Nilable(_Boolean), reader: :private
+  prop :repeating, _Nilable(String), reader: :private
   prop :no_event_message, _Nilable(String), reader: :private
   prop :paginator, _Nilable(_Boolean), reader: :private
 
