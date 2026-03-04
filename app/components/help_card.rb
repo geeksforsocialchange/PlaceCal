@@ -5,25 +5,21 @@ class Components::HelpCard < Components::Base
 
   VARIANTS = {
     computer_access: {
-      css_class: 'help__computer_access',
       title: 'Computer access',
       description: 'Places with computers you can use',
       empty_message: 'Information about getting online coming soon.'
     },
     free_wifi: {
-      css_class: 'help__free_public_wifi',
       title: 'Public Wifi',
       description: nil,
       empty_message: 'Information about getting public wifi coming soon.'
     },
     getting_help: {
-      css_class: 'help__getting_help',
       title: 'PlaceCal Support',
       description: 'You can find out more about how PlaceCal works in our handbook.',
       link: { text: 'Handbook', url: 'https://handbook.placecal.org' }
     },
     adding_events: {
-      css_class: 'help__adding_events',
       title: 'Adding Your Events',
       description: "Want to add your organisation's events? Something on we should know about?"
     }
