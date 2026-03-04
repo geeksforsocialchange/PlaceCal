@@ -53,16 +53,25 @@ systemctl restart ssh
 Set these environment variables in your shell or CI:
 
 ```sh
-export DEPLOY_HOST="<server-ip>"
-export RAILS_ENV="production"  # or "staging"
+# Server + registry
+export PRODUCTION_HOST="<server-ip>"          # or STAGING_HOST for staging
+export KAMAL_REGISTRY_USERNAME="<github-username>"
+export KAMAL_REGISTRY_PASSWORD="<github-pat>"
+
+# Rails
+export RAILS_ENV="production"                 # or "staging"
 export SECRET_KEY_BASE="<generate with: rails secret>"
 export RAILS_MASTER_KEY="<from config/master.key>"
-export SITE_DOMAIN="placecal.org"  # or "placecal-staging.org"
+export SITE_DOMAIN="placecal.org"             # or "placecal-staging.org"
+
+# Database
 export POSTGRES_HOST="placecal-db"
 export POSTGRES_PORT="5432"
 export POSTGRES_DB="placecal_production"
 export POSTGRES_USER="placecal"
 export POSTGRES_PASSWORD="<strong password>"
+
+# Services
 export MAILERSEND_USERNAME="<smtp username>"
 export MAILERSEND_PASSWORD="<smtp password>"
 export APPSIGNAL_PUSH_API_KEY="<key>"
