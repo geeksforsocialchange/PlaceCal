@@ -7,7 +7,7 @@ fi
 
 # Only prepare the database when starting the Rails server (web role).
 # Job worker and cron roles skip this to avoid race conditions.
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
+if [ "${2}" == "server" ]; then
   ./bin/rails db:prepare
   rm -f tmp/pids/server.pid
 fi

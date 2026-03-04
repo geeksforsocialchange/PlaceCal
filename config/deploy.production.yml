@@ -2,7 +2,7 @@
 # Usage: kamal deploy -d production
 #
 # Set PRODUCTION_HOST in your environment or .kamal/secrets.production
-<% require "dotenv"; Dotenv.load(".kamal/secrets.production") rescue nil %>
+<% begin; require "dotenv"; Dotenv.load(".kamal/secrets.production"); rescue LoadError; end %>
 
 servers:
   web:

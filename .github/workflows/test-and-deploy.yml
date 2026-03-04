@@ -224,15 +224,15 @@ jobs:
 
       - name: Deploy with Kamal
         run: |
-          gem install kamal
+          gem install kamal -v '~> 2.10'
           kamal deploy -d ${{ steps.dest.outputs.destination }}
         env:
           # Kamal builds + pushes the Docker image to GHCR, then deploys to server
           KAMAL_REGISTRY_USERNAME: ${{ github.actor }}
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           # Server host (destination files use ERB to read these)
-          STAGING_HOST: ${{ secrets.STAGING_HOST }}
-          PRODUCTION_HOST: ${{ secrets.PRODUCTION_HOST }}
+          STAGING_HOST: ${{ steps.dest.outputs.destination == 'staging' && secrets.STAGING_HOST || '' }}
+          PRODUCTION_HOST: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_HOST || '' }}
           # Rails
           RAILS_ENV: ${{ steps.dest.outputs.destination == 'production' && 'production' || 'staging' }}
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}

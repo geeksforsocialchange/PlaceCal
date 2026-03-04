@@ -2,7 +2,7 @@
 # Usage: kamal deploy -d staging
 #
 # Set STAGING_HOST in your environment or .kamal/secrets.staging
-<% require "dotenv"; Dotenv.load(".kamal/secrets.staging") rescue nil %>
+<% begin; require "dotenv"; Dotenv.load(".kamal/secrets.staging"); rescue LoadError; end %>
 
 servers:
   web:
