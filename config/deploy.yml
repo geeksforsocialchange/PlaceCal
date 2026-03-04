@@ -4,7 +4,7 @@
 # Hosts are set per-destination in deploy.staging.yml / deploy.production.yml
 
 service: placecal
-image: ghcr.io/geeksforsocialchange/placecal
+image: geeksforsocialchange/placecal
 
 servers:
   web:
