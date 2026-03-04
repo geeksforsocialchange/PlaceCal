@@ -11,7 +11,7 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libpq5 imagemagick libmagickwand-7-q16-6 && \
+    apt-get install --no-install-recommends -y cron curl libjemalloc2 libpq5 imagemagick libmagickwand-7-q16-6 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment

@@ -16,6 +16,12 @@ servers:
     cmd: bin/rails jobs:work
     options:
       memory: 256m
+  cron:
+    hosts:
+      - "%{DEPLOY_HOST}"
+    cmd: bash -c "bundle exec whenever --update-crontab && cron -f"
+    options:
+      memory: 128m
 
 proxy:
   ssl: true

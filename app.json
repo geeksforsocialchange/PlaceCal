@@ -4,7 +4,7 @@
 	"scripts": {
 		"postdeploy": "bundle exec rails db:migrate"
 	},
-	"cron_note": "Cron jobs are managed on the server via crontab. See INSTALL.md for setup.",
+	"cron_note": "Cron jobs are managed by the whenever gem (config/schedule.rb) and run in a dedicated container. See INSTALL.md.",
 	"cron": [
 		{
 			"command": "bundle exec rails events:scan_for_calendars_needing_import",

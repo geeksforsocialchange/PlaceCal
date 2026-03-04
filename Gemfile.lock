@@ -147,6 +147,7 @@ GEM
     childprocess (5.1.0)
       logger (~> 1.5)
     choice (0.2.0)
+    chronic (0.10.2)
     claude-code-sdk-ruby (0.1.6)
       async (~> 2)
       logger (~> 1)
@@ -756,6 +757,8 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    whenever (1.1.2)
+      chronic (>= 0.6.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.38)
@@ -849,6 +852,7 @@ DEPENDENCIES
   vcr
   web-console
   webmock
+  whenever
   yard
 
 RUBY VERSION

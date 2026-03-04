@@ -105,20 +105,12 @@ kamal rollback -d production
 
 ## Cron jobs
 
-Set up cron on the server (these run inside the app container via `kamal app exec`):
+Cron jobs are managed by the [whenever](https://github.com/javan/whenever) gem and run in a dedicated `cron` container role (defined in `config/deploy.yml`). The schedule is defined in `config/schedule.rb` and deploys automatically with the app — no manual server configuration needed.
+
+To preview the generated crontab:
 
 ```sh
-ssh root@SERVER_IP
-crontab -e
-```
-
-Add:
-
-```cron
-0 * * * *   /usr/bin/docker exec placecal-web bundle exec rails events:scan_for_calendars_needing_import 2>&1 | logger -t placecal-cron
-0 4 * * *   /usr/bin/docker exec placecal-web bundle exec rails events:deduplicate 2>&1 | logger -t placecal-cron
-30 4 * * *  /usr/bin/docker exec placecal-web bundle exec rails counters:refresh_all 2>&1 | logger -t placecal-cron
-30 5 * * *  /usr/bin/docker exec placecal-web bundle exec rails db:clean_bad_addresses 2>&1 | logger -t placecal-cron
+bundle exec whenever
 ```
 
 ## Migrating uploads from old server
