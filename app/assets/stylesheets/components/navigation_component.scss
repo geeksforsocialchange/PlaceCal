@@ -21,8 +21,8 @@
 
 	.header__branding {
 		grid-area: branding;
-		width: 187px;
-		height: 55px;
+		width: 148px;
+		height: 43.56px;
 
 		svg,
 		img {
@@ -132,8 +132,8 @@
 		margin-inline: 1.5rem;
 
 		.header__branding {
-			width: 187px;
-			height: 55px;
+			width: 191px;
+			height: 56.22px;
 		}
 
 		.header__menu {
@@ -159,7 +159,6 @@
 
 	@include for-tablet-landscape-up {
 		grid-template: "branding menu" auto;
-		padding: 1rem $big-page-margin;
 
 		.header__menu {
 			background-color: transparent;
