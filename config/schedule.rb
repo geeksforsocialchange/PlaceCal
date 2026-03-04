@@ -10,6 +10,9 @@
 
 set :output, '/proc/1/fd/1' # Log to container stdout
 
+# Source container environment variables (Docker env vars aren't available to cron)
+job_type :rake, 'cd :path && . /etc/environment && :environment_variable=:environment bundle exec rake :task :output'
+
 every 1.hour do
   rake 'events:scan_for_calendars_needing_import'
 end

@@ -152,17 +152,18 @@ namespace :db do
     staging_host = ENV.fetch(STAGING_HOST_KEY) { abort "Set #{STAGING_HOST_KEY} to the staging server IP/hostname" }
 
     timestamp = Time.now.strftime('%Y%m%d%H%M%S')
-    dump_file = "/tmp/placecal_prod_#{timestamp}.sql"
+    dump_file = "/tmp/placecal_prod_#{timestamp}.dump"
 
     pg_user = ENV.fetch('POSTGRES_USER', 'placecal')
-    pg_db = ENV.fetch('POSTGRES_DB', 'placecal_production')
+    prod_db = ENV.fetch('PROD_DB', 'placecal_production')
+    staging_db = ENV.fetch('STAGING_DB', 'placecal_staging')
 
     $stdout.puts 'Dumping production database...'
-    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{pg_db}' > #{dump_file}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{prod_db}' > #{dump_file}")
     abort 'Failed to dump production database!' unless $CHILD_STATUS.success?
 
     $stdout.puts 'Restoring to staging database...'
-    system("cat #{dump_file} | ssh root@#{staging_host} 'docker exec -i #{REMOTE_DB_CONTAINER} pg_restore -U #{pg_user} -d #{pg_db} --clean --no-owner'")
+    system("cat #{dump_file} | ssh root@#{staging_host} 'docker exec -i #{REMOTE_DB_CONTAINER} pg_restore -U #{pg_user} -d #{staging_db} --clean --no-owner'")
 
     if $CHILD_STATUS.success?
       $stdout.puts 'Replicated production to staging. You may need to run migrations:'

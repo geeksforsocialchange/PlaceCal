@@ -16,7 +16,7 @@ servers:
     options:
       memory: 256m
   cron:
-    cmd: bash -c "bundle exec whenever --update-crontab && cron -f"
+    cmd: bash -c "env > /etc/environment && bundle exec whenever --update-crontab && cron -f"
     proxy: false
     options:
       memory: 128m

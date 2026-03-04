@@ -49,7 +49,7 @@ RUN bundle install && \
 
 # Install Node packages
 COPY package.json yarn.lock ./
-RUN yarn install --immutable
+RUN yarn install --frozen-lockfile
 
 # Copy application code
 COPY . .
@@ -62,6 +62,9 @@ RUN yarn build
 
 # Precompile assets (sprockets + importmap)
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+
+# Remove node_modules — not needed at runtime (saves ~100-300MB)
+RUN rm -rf node_modules
 
 # ---------- Runtime stage ----------
 FROM base

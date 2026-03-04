@@ -69,7 +69,7 @@ export POSTGRES_HOST="placecal-db"
 export POSTGRES_PORT="5432"
 export POSTGRES_DB="placecal_production"
 export POSTGRES_USER="placecal"
-export POSTGRES_PASSWORD="<strong password>"
+export POSTGRES_PASSWORD="<strong password>"  # mapped to PGPASSWORD via .kamal/secrets
 
 # Services
 export MAILERSEND_USERNAME="<smtp username>"

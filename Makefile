@@ -30,7 +30,7 @@ setup_docker_network:
 	docker network create placecal-network
 
 setup_docker_container:
-	docker create --name placecal-db --network placecal-network --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 -e 'POSTGRES_DB=placecal_dev' -e 'POSTGRES_USER=postgres' -e 'PGUSER=postgres' -e 'POSTGRES_PASSWORD=foobar' -e 'POSTGRES_PORT=5432' postgres:16
+	docker create --name placecal-db --network placecal-network --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 -e 'POSTGRES_DB=placecal_dev' -e 'POSTGRES_USER=postgres' -e 'PGUSER=postgres' -e 'POSTGRES_PASSWORD=foobar' -e 'POSTGRES_PORT=5432' postgres:18
 	docker start placecal-db
 
 setup_env:
@@ -46,7 +46,7 @@ setup_db:
 	bundle exec rails db:seed
 
 seed_GFSC_prod_copy_db:
-	rails db:dump_production_and_restore_other restore_on_local=1
+	rails db:dump_production_and_restore_local restore_on_local=1
 
 test:
 	$(TIME) sh -c "bundle exec rspec && bundle exec cucumber --tags 'not @wip' && rubocop && prettier -c app/"

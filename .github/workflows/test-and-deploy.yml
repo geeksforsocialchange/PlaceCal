@@ -35,7 +35,7 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - run: yarn install --immutable
+      - run: yarn install --frozen-lockfile
 
       - name: Run linters
         run: |
@@ -113,7 +113,7 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - run: yarn install --immutable
+      - run: yarn install --frozen-lockfile
 
       - name: Prepare database
         run: bin/rails db:test:prepare
