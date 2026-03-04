@@ -16,7 +16,9 @@ servers:
       - <%= ENV["PRODUCTION_HOST"] %>
 
 proxy:
-  host: placecal.org
+  hosts:
+    - placecal.org
+    - "*.placecal.org"
 
 accessories:
   db:

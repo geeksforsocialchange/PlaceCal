@@ -23,7 +23,10 @@ servers:
       user: root
 
 proxy:
-  ssl: true
+  ssl:
+    certificate_pem: SSL_CERTIFICATE_PEM
+    private_key_pem: SSL_PRIVATE_KEY_PEM
+  forward_headers: true
   app_port: 3000
   healthcheck:
     path: /up

@@ -249,3 +249,6 @@ jobs:
           MAILERSEND_PASSWORD: ${{ secrets.MAILERSEND_PASSWORD }}
           APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
           EVENTBRITE_TOKEN: ${{ secrets.EVENTBRITE_TOKEN }}
+          # SSL (Cloudflare Origin CA certificate — per-destination)
+          SSL_CERTIFICATE_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_CERTIFICATE_PEM || secrets.STAGING_SSL_CERTIFICATE_PEM }}
+          SSL_PRIVATE_KEY_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_PRIVATE_KEY_PEM || secrets.STAGING_SSL_PRIVATE_KEY_PEM }}

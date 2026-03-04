@@ -40,11 +40,39 @@ sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_
 systemctl restart ssh
 ```
 
-### 3. Configure Cloudflare DNS
+### 3. Configure Cloudflare
 
-1. Add an **A record** pointing to the server IP with Cloudflare **proxy enabled** (orange cloud).
-2. Set SSL/TLS mode to **Full (Strict)**.
-3. Kamal's Let's Encrypt on the origin handles the Cloudflare-to-origin TLS connection.
+PlaceCal uses Cloudflare proxy (orange cloud) for DDoS protection and caching. Since Cloudflare intercepts port 80, Let's Encrypt HTTP-01 challenges won't work. Instead, we use a **Cloudflare Origin CA certificate** that kamal-proxy serves directly.
+
+#### Create an Origin CA certificate
+
+1. Go to **Cloudflare dashboard → SSL/TLS → Origin Server → Create Certificate**.
+2. Let Cloudflare generate a private key (RSA).
+3. Set hostnames to `placecal.org`, `*.placecal.org` (or `placecal-staging.org`, `*.placecal-staging.org` for staging).
+4. Set validity to **15 years**.
+5. Copy the **Origin Certificate** (PEM) and **Private Key** (PEM).
+
+#### Store the certificate
+
+The PEM values must be available as environment variables for Kamal:
+
+- **Local deploys**: export `SSL_CERTIFICATE_PEM` and `SSL_PRIVATE_KEY_PEM` in your shell (or add to `.kamal/secrets.staging` / `.kamal/secrets.production`).
+- **CI deploys**: add both as GitHub repository secrets (`SSL_CERTIFICATE_PEM`, `SSL_PRIVATE_KEY_PEM`).
+
+#### DNS records
+
+Add **A records** for the root domain and any subdomains, all pointing to the server IP with **Proxy status: Proxied** (orange cloud):
+
+| Type | Name                 | Content       | Proxy   |
+| ---- | -------------------- | ------------- | ------- |
+| A    | `placecal.org`       | `<server IP>` | Proxied |
+| A    | `admin.placecal.org` | `<server IP>` | Proxied |
+
+#### SSL/TLS settings
+
+- **Encryption mode**: Full (Strict) — Origin CA certs are trusted by Cloudflare.
+- **Edge Certificates → Always Use HTTPS**: On.
+- **Edge Certificates → Minimum TLS Version**: 1.2.
 
 ## Kamal setup
 
