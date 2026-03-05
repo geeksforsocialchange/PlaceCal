@@ -55,13 +55,14 @@ Zed has built-in Ruby LSP support. Add to your Zed settings (`~/.config/zed/sett
 
 ## First-time setup
 
-After `bundle install`, generate the YARD documentation cache for your gems:
+After `bundle install`, run these two commands to give Solargraph full type information:
 
 ```bash
-bundle exec yard gems
+bundle exec yard gems              # YARD docs for gem dependencies
+bundle exec rbs collection install  # RBS type definitions (Rails, ActiveRecord, etc.)
 ```
 
-This gives Solargraph type information for all your dependencies. Re-run after adding new gems.
+Re-run after adding new gems. The RBS collection config (`rbs_collection.yaml`) is checked into git but the downloaded types (`.gem_rbs_collection/`) are gitignored.
 
 ## Phlex support
 
