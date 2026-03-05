@@ -6,7 +6,7 @@
 
 - **ruby-lsp** — Ruby language server
 - **ruby-lsp-rails** — Rails addon (model attributes, route helpers, etc.)
-- **Phlex support** — Built-in via `phlex-rails` addon (go-to-definition, intellisense for components including Kit shorthand methods)
+- **Phlex support** — Built-in addon indexes Phlex HTML helper methods (`div`, `span`, etc.)
 
 ## Editor setup
 
@@ -62,11 +62,12 @@ Just run `bundle install` — no extra setup steps required. Ruby LSP uses the P
 
 ## Phlex support
 
-Works out of the box via the `phlex-rails` gem's built-in ruby-lsp addon. You get:
+The `phlex` and `phlex-rails` gems include built-in ruby-lsp addons that index:
 
-- Go-to-definition for Phlex components
-- Intellisense for Kit shorthand methods (e.g. `Hero("title")`)
-- Component prop completions
+- Phlex HTML helper methods (`div`, `span`, `h1`, etc. registered via `register_element`)
+- Output/value helpers (registered via `register_output_helper` / `register_value_helper`)
+
+**Limitation:** Kit shorthand methods (e.g. `Hero("title")`) are defined dynamically via `method_missing` and won't appear in autocomplete. Use explicit `Components::Hero` references when you need go-to-definition.
 
 ## Alternative: Solargraph
 
