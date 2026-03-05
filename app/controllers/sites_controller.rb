@@ -9,9 +9,12 @@ class SitesController < ApplicationController
 
   def index
     if current_site.slug == 'mossley'
-      render template: "sites/#{current_site.slug}"
+      render Views::Sites::Mossley.new(site: @site, places_to_get_online: @places_to_get_computer_access)
     else
-      render template: 'sites/default'
+      render Views::Sites::Default.new(
+        site: @site, places_to_get_computer_access: @places_to_get_computer_access,
+        places_with_free_wifi: @places_with_free_wifi
+      )
     end
   end
 

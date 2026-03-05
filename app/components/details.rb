@@ -38,10 +38,8 @@ class Components::Details < Components::Base
 
   def render_summary_content
     div(class: 'details__summary') do
-      if @summary.html_safe?
-        raw(@summary)
-      elsif @summary.match?(/^<p/)
-        raw(safe(@summary))
+      if @summary.match?(/^<p/)
+        raw safe(@summary)
       else
         p { plain @summary }
       end

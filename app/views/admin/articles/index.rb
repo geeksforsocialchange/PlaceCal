@@ -1,0 +1,32 @@
+# frozen_string_literal: true
+
+class Views::Admin::Articles::Index < Views::Admin::Base
+  prop :articles, ActiveRecord::Relation, reader: :private
+
+  def view_template
+    Datatable(
+      title: 'Articles',
+      model: :articles,
+      column_titles: ['Article', 'Author', 'Partners', 'Status', 'Last Updated', ''],
+      columns: %i[title author partners is_draft updated_at actions],
+      column_config: {
+        title: {},
+        author: { sortable: true },
+        partners: { sortable: false },
+        is_draft: { align: :center, fit: true },
+        updated_at: { fit: true },
+        actions: { sortable: false, fit: true }
+      },
+      default_sort: { column: 'updated_at', direction: 'desc' },
+      filters: [
+        { column: 'is_draft', label: 'Status', width: 'w-32',
+          options: [{ value: 'no', label: 'Published' }, { value: 'yes', label: 'Draft' }] },
+        { column: 'has_partners', label: 'Partners', width: 'w-36',
+          options: [{ value: 'yes', label: 'Has partners' }, { value: 'no', label: 'No partners' }] }
+      ],
+      data: articles,
+      source: admin_articles_path(format: :json),
+      new_link: new_admin_article_path
+    )
+  end
+end

@@ -1,276 +1,178 @@
-# Creating a Digital Ocean droplet running Rails + Postgres with persistant storage and https
+# Deploying PlaceCal with Kamal
 
-For your ctrl-D pleasure...
+PlaceCal is deployed using [Kamal 2](https://kamal-deploy.org/) to Hetzner Cloud (or any Ubuntu VPS with Docker).
 
-```
-SERVER_IP
-APP_NAME
-RAILS_SECRET (generate with `rails secret`)
-ADMIN_EMAIL
-```
+## Prerequisites
 
-## Create and configure droplet
+On your **local machine**:
 
-### Sign in and update
+- Ruby (see `.ruby-version`)
+- Kamal: `gem install kamal` (or use the bundled version via `bundle exec kamal`)
 
-```
+On the **server**:
+
+- Ubuntu 22.04+ (Kamal installs Docker automatically on first setup)
+- SSH access as root with key-based authentication
+
+## Server provisioning
+
+### 1. Create a server
+
+Create a Hetzner Cloud server (CX23 for staging, CX33 for production) with Ubuntu 22.04+. Note the IP address.
+
+### 2. Basic server hardening
+
+```sh
 ssh root@SERVER_IP
-apt update && apt upgrade
+
+# Firewall — allow only SSH, HTTP, HTTPS
+ufw allow OpenSSH
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw enable
+
+# Automatic security updates
+apt update && apt install -y unattended-upgrades
+dpkg-reconfigure -plow unattended-upgrades
+
+# Disable password auth (ensure your SSH key is already added)
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+systemctl restart ssh
 ```
 
-### Optionally add your locale
+### 3. Configure Cloudflare
 
-```
-locale-gen en_GB en_GB.UTF-8
-dpkg-reconfigure locales
-```
+PlaceCal uses Cloudflare proxy (orange cloud) for DDoS protection and caching. Since Cloudflare intercepts port 80, Let's Encrypt HTTP-01 challenges won't work. Instead, we use a **Cloudflare Origin CA certificate** that kamal-proxy serves directly.
 
-### Optionally add Imagemagick if we know we are going to be using it
+#### Create an Origin CA certificate
 
-```
-apt install imagemagick libmagickwand-dev
-```
+1. Go to **Cloudflare dashboard → SSL/TLS → Origin Server → Create Certificate**.
+2. Let Cloudflare generate a private key (RSA).
+3. Set hostnames to `placecal.org`, `*.placecal.org` (or `placecal-staging.org`, `*.placecal-staging.org` for staging).
+4. Set validity to **15 years**.
+5. Copy the **Origin Certificate** (PEM) and **Private Key** (PEM).
 
-### Create a swap if you're using a cheapo box ($5 tier)
+#### Store the certificate
 
-```
-fallocate -l 2048m /mnt/swap_file.swap
-chmod 600 /mnt/swap_file.swap
-mkswap /mnt/swap_file.swap
-swapon /mnt/swap_file.swap
-echo "/mnt/swap_file.swap none swap sw 0 0" >> /etc/fstab
-```
+The PEM values must be available as environment variables for Kamal:
 
-## Create a Dokku app and addons
+- **Local deploys**: export `SSL_CERTIFICATE_PEM` and `SSL_PRIVATE_KEY_PEM` in your shell (or add to `.kamal/secrets.staging` / `.kamal/secrets.production`).
+- **CI deploys**: add both as GitHub repository secrets (`SSL_CERTIFICATE_PEM`, `SSL_PRIVATE_KEY_PEM`).
 
-### Add a domain name (mandatory)
+#### DNS records
 
-Go to http://SERVER_IP and add a domain name (if you don't it seems to go weird: use a junk one if needed)
+Add **A records** for the root domain and any subdomains, all pointing to the server IP with **Proxy status: Proxied** (orange cloud):
 
-### Create the app and database
+| Type | Name                 | Content       | Proxy   |
+| ---- | -------------------- | ------------- | ------- |
+| A    | `placecal.org`       | `<server IP>` | Proxied |
+| A    | `admin.placecal.org` | `<server IP>` | Proxied |
 
-```
-dokku apps:create APP_NAME
-dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
-dokku postgres:create APP_NAME-db
-dokku postgres:link APP_NAME-db APP_NAME
-```
+#### SSL/TLS settings
 
-### Increase the timeout as initial setup can take a while
+- **Encryption mode**: Full (Strict) — Origin CA certs are trusted by Cloudflare.
+- **Edge Certificates → Always Use HTTPS**: On.
+- **Edge Certificates → Minimum TLS Version**: 1.2.
 
-```
-dokku config:set APP_NAME CURL_CONNECT_TIMEOUT=30 CURL_TIMEOUT=300
-dokku config APP_NAME
-```
+## Kamal setup
 
-### Add persistent storage
+### 1. Configure secrets
 
-[Guide](http://dokku.viewdocs.io/dokku~v0.10.3/advanced-usage/persistent-storage/)
+Set these environment variables in your shell or CI:
 
-Paperclip defaults to: `/public/system/uploads`
+```sh
+# Server + registry
+export PRODUCTION_HOST="<server-ip>"          # or STAGING_HOST for staging
+export KAMAL_REGISTRY_USERNAME="<github-username>"
+export KAMAL_REGISTRY_PASSWORD="<github-pat>"
 
-```
-mkdir /var/lib/dokku/data/storage/APP_NAME
-chown dokku.dokku /var/lib/dokku/data/storage/APP_NAME
-```
+# Rails
+export RAILS_ENV="production"                 # or "staging"
+export SECRET_KEY_BASE="<generate with: rails secret>"
+export RAILS_MASTER_KEY="<from config/master.key>"
+export SITE_DOMAIN="placecal.org"             # or "placecal-staging.org"
 
-`/app` comes from the Dockerfile location for the container (see below)
+# Database
+export POSTGRES_HOST="placecal-db"
+export POSTGRES_PORT="5432"
+export POSTGRES_DB="placecal_production"
+export POSTGRES_USER="placecal"
+export POSTGRES_PASSWORD="<strong password>"  # mapped to PGPASSWORD via .kamal/secrets
 
-```
-dokku storage:mount APP_NAME /var/lib/dokku/data/storage/APP_NAME/public/uploads:/app/public/uploads
-dokku ps:rebuild APP_NAME
-```
-
-To have a look at the file structure if you get lost: `dokku enter APP_NAME`
-
-You'll also want to increase the maximum file size to something a bit more sensible.
-
-Write a file: `/home/dokku/APP_NAME/nginx.conf.d/upload_limit.conf`
-
-Add a line like: `client_max_body_size 50m;`
-
-## Local config
-
-### Create app.json in Rails root
-
-```
-{
-  "name": "APP_NAME",
-  "description": "App Description",
-  "keywords": [
-    "dokku",
-    "rails"
-  ],
-  "scripts": {
-    "dokku": {
-      "postdeploy": "bundle exec rails db:migrate"
-    }
-  }
-}
+# Services
+export MAILERSEND_USERNAME="<smtp username>"
+export MAILERSEND_PASSWORD="<smtp password>"
+export APPSIGNAL_PUSH_API_KEY="<key>"
+export EVENTBRITE_TOKEN="<token>"
 ```
 
-## No CI
+### 2. First deploy
 
-If you don't want CI you can skip to "Set production environment variables" and just do this.
-
-```
-git remote add dokku dokku@SERVER_IP:APP_NAME
-git push dokku main
-```
-
-## Fancy pants staging/prod/CI etc
-
-### For non-production environments e.g. staging
-
-Update `config/secrets.yml`
-
-```
-staging:
-  secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
+```sh
+# This installs Docker, sets up the database, builds and pushes the image,
+# and starts the app with kamal-proxy handling SSL.
+kamal setup -d production
 ```
 
-Add environment file to `config/environments` folder
+### 3. Verify
 
-`cp config/environments/production.rb config/environments/staging.rb`
-
-Be sure to make any relevant changes to the file
-
-### Travis deployment for production and staging environment
-
-```
-mkdir .travis/ #if doesn't exist
-cd .travis/
-ssh-keygen -t rsa -b 4096 -f ENV_KEY_NAME
-cat KEY_NAME | ssh root@DOMAIN_NAME dokku ssh-keys:add ENV_KEY_NAME
+```sh
+kamal app details -d production
+curl -I https://placecal.org
 ```
 
-Be sure to add `.travis/*.key` and `.travis/*key.pub` to `.gitignore`
+## Ongoing operations
 
-Then:
+```sh
+# Deploy latest code
+kamal deploy -d production
 
-```
-gem install travis
-travis login
-travis encrypt-file ENV_KEY_NAME --add
-```
+# View logs
+kamal app logs -d production
 
-This encrypts the key, creates an entry in `before_install` in .travis.yml, and adds two variables in the travis environment with the decryption keys. Repeat for each environement. Be sure to make a note of the encrypted key and encrypted key iv variables added to travis environment.
+# Open a Rails console
+kamal app exec -d production 'bin/rails console'
 
-Modify your travis.yml to the template below.
+# Run a rake task
+kamal app exec -d production 'bin/rails db:migrate'
 
-```
-env:
-  globalss
-    - CC_TEST_REPORTER_ID=7e0e573cd74e3418226d922174406b38d5692b01d6464701fa57ce51e75eb72a
-language: ruby
-dist: trusty
-addons:
-  postgresql: '16.11'
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-  - psql -c 'create database placecal_test;' -U postgres
-before_install:
-  - |
-      if [ "$TRAVIS_BRANCH" = "production" ]; then
-        openssl aes-256-cbc -K PROD_ENCRYPTED_KEY -iv PROD_ENCRYPTED_KEY_IV -in $TRAVIS_BUILD_DIR/.travis/PROD_KEY_NAME.enc -out PROD_KEY_NAME -d
-      elif [ "$TRAVIS_BRANCH" = STAGING_BRANCH_NAME ]; then
-        openssl aes-256-cbc -K STAGING_ENCRYPTED_KEY -iv STAGING_ENCRYPTED_KEY_IV -in $TRAVIS_BUILD_DIR/.travis/STAGING_KEY_NAME.enc -out STAGING_KEY_NAME -d
-      fi
-
-deploy:
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/staging.sh
-    on:
-      branch: main
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/production.sh
-    on:
-      branch: production
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+# Rollback to previous version
+kamal rollback -d production
 ```
 
-Then, in the `scripts/`, create the deploy script for each environment. For example:
+## Cron jobs
 
-```
-#scripts/ENV_NAME.sh
+Cron jobs are managed by the [whenever](https://github.com/javan/whenever) gem and run in a dedicated `cron` container role (defined in `config/deploy.yml`). The schedule is defined in `config/schedule.rb` and deploys automatically with the app — no manual server configuration needed.
 
-eval "$(ssh-agent -s)" #start the ssh agent
-chmod 600 ./ENV_KEY_NAME # this key should have push access
-ssh-add ./ENV_KEY_NAME
-ssh-keyscan DOMAIN_NAME >> ~/.ssh/known_hosts
-git remote add deploy DOKKU_GIT_URL #i.e. dokku@DOMAIN_NAME:APP_NAME
-git config --global push.default simple
-git push deploy main #or BRANCH_NAME:main if deploying a non-main branch
+To preview the generated crontab:
+
+```sh
+bundle exec whenever
 ```
 
-Commit, push to repo, and merge into the branch when ready.
+## Syncing data between environments
 
-## Set production environment variables
+```sh
+# Sync production database to staging
+export PRODUCTION_HOST="<production-ip>"
+export STAGING_HOST="<staging-ip>"
+rake db:sync_prod_staging
 
-You can fenerate a key with `rails secret`
+# Sync uploads from production to staging
+rake db:sync_uploads
 
-`dokku config:set APP_NAME RAILS_ENV=production SECRET_KEY_BASE=RAILS_SECRET RAILS_SERVE_STATIC_FILES=true`
+# Download production database to local machine
+export PRODUCTION_HOST="<production-ip>"
+rake db:dump_production
 
-## Nice extras
-
-### Let's Encrypt
-
-When site is accessible and DNS set up, we can set up https
-
-```
-dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
-dokku config:set --no-restart APP_NAME DOKKU_LETSENCRYPT_EMAIL=ADMIN_EMAIL
-dokku letsencrypt APP_NAME
-dokku letsencrypt:cron-job --add
+# Download uploads to local machine
+rake db:get_files
 ```
 
-### Log rotate docker logs
+## Teardown
 
-This can cause space issues if you don't do it
-
-Create the file `/etc/logrotate.d/docker-container` and add the following lines:
-
-```
-/var/lib/docker/containers/*/*.log {
-  rotate 7
-  daily
-  compress
-  size=1M
-  missingok
-  delaycompress
-  copytruncate
-}
+```sh
+kamal remove -d production
 ```
 
-You can then test the file with `logrotate -fv /etc/logrotate.d/docker-container`.
-
-If the command is successful you should see a file with the suffix
-`[CONTAINER ID]-json.log.1` in the output.
-
-[Reference](https://sandro-keil.de/blog/2015/03/11/logrotate-for-docker-container/)
-
-## Copy database from production to staging (the long way for now)
-
-### Generate production dump on server
-
-`dokku postgres:export PROD_APP_NAME-db > /tmp/PROD_APP_NAME_production.dump`
-
-### Download from production server and upload to
-
-In your terminal:
-
-```
-scp root@PROD_DOMAIN_NAME:/tmp/PROD_APP_NAME_production.dump /path/to/local/dir
-scp /path/to/local/dir/PROD_APP_NAME_production.dump root@STAGING_DOMAIN_NAME:/tmp/PROD_APP_NAME_production.dump
-```
-
-### Dump into staging datatbase
-
-```
-dokku postgres:import STAGING_APP_NAME-db < /tmp/PROD_APP_NAME_production.dump
-```
+This stops all containers and removes the app from the server. Database volumes are preserved — delete `/data/placecal/` on the server to fully clean up.

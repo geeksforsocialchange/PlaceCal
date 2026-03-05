@@ -2,6 +2,9 @@
 
 # config/routes.rb
 Rails.application.routes.draw do
+  # Health check for Kamal proxy
+  get 'up', to: proc { [200, {}, ['OK']] }
+
   # User login stuff
   devise_for :users,
              controllers: {
