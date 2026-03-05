@@ -37,6 +37,8 @@
 	text-align: center;
 
 	@include for-phone-and-tablet-portrait-only {
+		// the top margin is extending outside of the card and causing layout bugs at smaller sizes
+		margin-top: 0;
 		background-image:
 			image-url("home/site_title/mobile_top.svg"),
 			image-url("home/site_title/mobile_bottom.svg");
