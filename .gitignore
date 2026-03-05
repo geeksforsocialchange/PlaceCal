@@ -65,9 +65,6 @@ doc/rdoc
 .yardoc
 ./tags
 
-# RBS type collection cache (regenerate with: bundle exec rbs collection install)
-/.gem_rbs_collection
-
 # Ignore IDE config files
 .vscode
 /config/master.key
