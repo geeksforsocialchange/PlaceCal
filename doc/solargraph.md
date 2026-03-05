@@ -53,6 +53,32 @@ Zed has built-in Ruby LSP support. Add to your Zed settings (`~/.config/zed/sett
 }
 ```
 
+### Vim / Neovim
+
+With [coc.nvim](https://github.com/neoclide/coc.nvim), add to `:CocConfig`:
+
+```json
+{
+	"solargraph.useBundler": true,
+	"solargraph.diagnostics": true,
+	"solargraph.formatting": false
+}
+```
+
+With [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) (Neovim native LSP):
+
+```lua
+require('lspconfig').solargraph.setup({
+  cmd = { "bundle", "exec", "solargraph", "stdio" },
+  settings = {
+    solargraph = {
+      diagnostics = true,
+      formatting = false,
+    },
+  },
+})
+```
+
 ## First-time setup
 
 After `bundle install`, run these two commands to give Solargraph full type information:
