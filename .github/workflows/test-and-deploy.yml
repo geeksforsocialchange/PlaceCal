@@ -4,11 +4,21 @@ on:
   push:
     branches:
       - main
-      - production
   pull_request:
     branches:
       - main
-      - production
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      destination:
+        description: "Deploy destination"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
   lint:
@@ -25,7 +35,7 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - run: yarn install --immutable
+      - run: yarn install --frozen-lockfile
 
       - name: Run linters
         run: |
@@ -55,7 +65,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16
+        image: postgres:18
         env:
           POSTGRES_PORT: 5432
           POSTGRES_DB: placecal_test
@@ -103,7 +113,7 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - run: yarn install --immutable
+      - run: yarn install --frozen-lockfile
 
       - name: Prepare database
         run: bin/rails db:test:prepare
@@ -170,27 +180,78 @@ jobs:
   deploy:
     needs: [lint, security, test]
     runs-on: ubuntu-latest
-    if: github.repository == 'geeksforsocialchange/PlaceCal' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production')
+    if: >-
+      github.repository == 'geeksforsocialchange/PlaceCal' &&
+      (github.ref == 'refs/heads/main' || github.event_name == 'release' || github.event_name == 'workflow_dispatch')
+    concurrency:
+      group: deploy-${{ github.event_name == 'release' && 'production' || github.event.inputs.destination || 'staging' }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      DOCKER_BUILDKIT: 1
+      REGISTRY: ghcr.io
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
-      - if: github.ref == 'refs/heads/main'
-        name: Deploy to placecal-staging.org
-        uses: dokku/github-action@823c08b33e974704528c7c7f3d3d8002426e7634 # v1.9.0
-        with:
-          branch: main
-          ci_branch_name: main
-          git_remote_url: "ssh://dokku@placecal-staging.org:666/placecal"
-          ssh_private_key: ${{ secrets.CI_STAGING_KEY }}
+      - name: Set deploy destination
+        id: dest
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "destination=production" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "destination=${{ github.event.inputs.destination }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "destination=staging" >> "$GITHUB_OUTPUT"
+          fi
 
-      - if: github.ref == 'refs/heads/production'
-        name: Deploy to placecal.org
-        uses: dokku/github-action@823c08b33e974704528c7c7f3d3d8002426e7634 # v1.9.0
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
         with:
-          branch: main
-          ci_branch_name: production
-          git_remote_url: "ssh://dokku@placecal.org:666/placecal"
-          ssh_private_key: ${{ secrets.CI_PRODUCTION_KEY }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          cache-version: 3
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
+        with:
+          ssh-private-key: ${{ steps.dest.outputs.destination == 'production' && secrets.KAMAL_PRODUCTION_SSH_KEY || secrets.KAMAL_STAGING_SSH_KEY }}
+
+      - name: Deploy with Kamal
+        run: |
+          gem install kamal -v '~> 2.10'
+          kamal deploy -d ${{ steps.dest.outputs.destination }}
+        env:
+          # Kamal builds + pushes the Docker image to GHCR, then deploys to server
+          KAMAL_REGISTRY_USERNAME: ${{ github.actor }}
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          # Server host (destination files use ERB to read these)
+          STAGING_HOST: ${{ steps.dest.outputs.destination == 'staging' && secrets.STAGING_HOST || '' }}
+          PRODUCTION_HOST: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_HOST || '' }}
+          # Rails
+          RAILS_ENV: ${{ steps.dest.outputs.destination == 'production' && 'production' || 'staging' }}
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          SITE_DOMAIN: ${{ steps.dest.outputs.destination == 'production' && 'placecal.org' || 'placecal-staging.org' }}
+          # Database
+          POSTGRES_HOST: placecal-db
+          POSTGRES_PORT: "5432"
+          POSTGRES_DB: ${{ steps.dest.outputs.destination == 'production' && 'placecal_production' || 'placecal_staging' }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          # Services
+          MAILERSEND_USERNAME: ${{ secrets.MAILERSEND_USERNAME }}
+          MAILERSEND_PASSWORD: ${{ secrets.MAILERSEND_PASSWORD }}
+          APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
+          EVENTBRITE_TOKEN: ${{ secrets.EVENTBRITE_TOKEN }}
+          # SSL (Cloudflare Origin CA certificate — per-destination)
+          SSL_CERTIFICATE_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_CERTIFICATE_PEM || secrets.STAGING_SSL_CERTIFICATE_PEM }}
+          SSL_PRIVATE_KEY_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_PRIVATE_KEY_PEM || secrets.STAGING_SSL_PRIVATE_KEY_PEM }}

@@ -9,7 +9,13 @@ module Admin
       authorize @partnerships, policy_class: PartnershipPolicy
 
       respond_to do |format|
-        format.html { @partnerships = @partnerships.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @partnerships = @partnerships.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Partnerships::Index.new(
+            partnerships: @partnerships,
+            admin_options: build_admin_options
+          )
+        end
         format.json do
           render json: PartnershipDatatable.new(
             params,
@@ -23,11 +29,14 @@ module Admin
     def new
       @partnership = Partnership.new
       authorize @partnership
+      render Views::Admin::Partnerships::New.new(partnership: @partnership)
     end
 
     def edit
       authorize @partnership
+      @tag = @partnership
       @partners = @partnership.partners
+      render Views::Admin::Partnerships::Edit.new(partnership: @partnership)
     end
 
     def create
@@ -43,7 +52,7 @@ module Admin
         else
           format.html do
             flash.now[:danger] = 'Partnership was not created'
-            render :new, status: :unprocessable_content
+            render Views::Admin::Partnerships::New.new(partnership: @partnership), status: :unprocessable_content
           end
           format.json { render json: @partnership.errors, status: :unprocessable_content }
         end
@@ -66,8 +75,9 @@ module Admin
         flash[:success] = 'Partnership was saved successfully'
         redirect_to admin_partnerships_path
       else
+        @tag = @partnership
         flash.now[:danger] = 'Partnership was not saved'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Partnerships::Edit.new(partnership: @partnership), status: :unprocessable_content
       end
     end
 
@@ -84,6 +94,15 @@ module Admin
     end
 
     private
+
+    def build_admin_options
+      admin_ids = TagsUser.where(tag_id: Partnership.select(:id)).distinct.pluck(:user_id)
+      User.where(id: admin_ids).order(:first_name, :last_name).map do |u|
+        name = [u.first_name, u.last_name].compact.join(' ')
+        name = u.email.split('@').first if name.blank?
+        { value: u.id.to_s, label: name }
+      end
+    end
 
     def set_partnership
       @partnership = Partnership.friendly.find(params[:id])

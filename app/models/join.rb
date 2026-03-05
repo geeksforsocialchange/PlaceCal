@@ -2,9 +2,17 @@
 
 class Join
   include ActiveModel::Model
+  include ActiveModel::Attributes
 
-  attr_accessor :name, :email, :phone, :job_title, :job_org, :area,
-                :ringback, :more_info, :why
+  attribute :name, :string
+  attribute :email, :string
+  attribute :phone, :string
+  attribute :job_title, :string
+  attribute :job_org, :string
+  attribute :area, :string
+  attribute :ringback, :boolean
+  attribute :more_info, :boolean
+  attribute :why, :string
 
   validates :name, :email, :why, presence: true
 

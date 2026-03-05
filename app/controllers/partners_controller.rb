@@ -28,6 +28,12 @@ class PartnersController < ApplicationController
     # When filters are active, show all filtered partners that have addresses
     addresses_only = @selected_category.blank? && @selected_neighbourhood.blank?
     @map = get_map_markers(@partners, addresses_only) if @partners.detect(&:address)
+
+    render Views::Partners::Index.new(
+      partners: @partners, site: @site,
+      map: @map, selected_category: @selected_category,
+      selected_neighbourhood: @selected_neighbourhood
+    )
   end
 
   # GET /partners/1
@@ -60,13 +66,18 @@ class PartnersController < ApplicationController
       @paginator = true
     end
 
-    @opening_times = @partner.human_readable_opening_times
-
     # Map
     @map = get_map_markers([@partner])
 
     respond_to do |format|
-      format.html
+      format.html do
+        render Views::Partners::Show.new(
+          partner: @partner, site: @site, current_day: @current_day,
+          map: @map, events: @events,
+          period: @period, sort: @sort,
+          repeating: @repeating, no_event_message: @no_event_message, paginator: @paginator
+        )
+      end
       format.ics do
         track_ical_download
         cal = create_calendar(Event.by_partner(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")

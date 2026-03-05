@@ -10,7 +10,10 @@ module Admin
       authorize @sites
 
       respond_to do |format|
-        format.html { @sites = @sites.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @sites = @sites.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Sites::Index.new(sites: @sites, site_admin_options: build_site_admin_options)
+        end
         format.json do
           render json: SiteDatatable.new(
             params,
@@ -24,16 +27,19 @@ module Admin
     def show
       authorize @site
       @calendars = Calendar.that_appear_on_site(@site).order(:name)
+      render Views::Admin::Sites::Show.new(site: @site, calendars: @calendars)
     end
 
     def new
       @site = Site.new
       @site.build_sites_neighbourhood
       authorize @site
+      render Views::Admin::Sites::New.new(site: @site, **neighbourhood_props)
     end
 
     def edit
       authorize @site
+      render Views::Admin::Sites::Edit.new(site: @site, **neighbourhood_props)
     end
 
     def create
@@ -46,7 +52,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not created'
         set_variables_for_sites_neighbourhoods_selection
-        render 'new', status: :unprocessable_content
+        render Views::Admin::Sites::New.new(site: @site, **neighbourhood_props), status: :unprocessable_content
       end
     end
 
@@ -59,7 +65,7 @@ module Admin
       else
         flash.now[:danger] = 'Site was not saved'
         set_variables_for_sites_neighbourhoods_selection
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Sites::Edit.new(site: @site, **neighbourhood_props), status: :unprocessable_content
       end
     end
 
@@ -78,8 +84,19 @@ module Admin
 
     private
 
+    def build_site_admin_options
+      site_admin_ids = Site.where.not(site_admin_id: nil).distinct.pluck(:site_admin_id)
+      User.where(id: site_admin_ids).order(:first_name, :last_name).map do |u|
+        { value: u.id.to_s, label: [u.first_name, u.last_name].compact.join(' ') }
+      end
+    end
+
     def set_site
       @site ||= Site.friendly.find(params[:id]) # rubocop:disable Naming/MemoizedInstanceVariableName
+    end
+
+    def neighbourhood_props
+      { all_neighbourhoods: @all_neighbourhoods, primary_neighbourhood_id: @primary_neighbourhood_id }
     end
 
     def set_variables_for_sites_neighbourhoods_selection

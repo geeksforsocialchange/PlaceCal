@@ -10,3 +10,4 @@
 /public/assets/
 /coverage/
 /config/cucumber.yml
+/config/deploy.*.yml

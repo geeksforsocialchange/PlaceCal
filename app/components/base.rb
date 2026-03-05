@@ -25,6 +25,8 @@ class Components::Base < Phlex::HTML
   register_value_helper :safe_join
   register_output_helper :active_link_to
   register_value_helper :next_url
+  register_value_helper :current_user
+  register_value_helper :policy
 
   # I18n translate helper
   def t(key, **)

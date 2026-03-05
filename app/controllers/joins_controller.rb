@@ -6,6 +6,7 @@ class JoinsController < ApplicationController
 
   def new
     @join = Join.new
+    render Views::Joins::New.new(join: @join)
   end
 
   def create
@@ -15,7 +16,7 @@ class JoinsController < ApplicationController
       redirect_to '/', notice: "Thank you for your interest in PlaceCal. We'll  be in touch with you shortly."
     else
       flash[:error] = 'Please fill out the required fields below'
-      render :new
+      render Views::Joins::New.new(join: @join)
     end
   end
 
