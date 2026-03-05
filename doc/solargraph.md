@@ -101,6 +101,12 @@ Phlex `prop` declarations are picked up as instance variables, so `@title` etc. 
 prop :title, String
 ```
 
+### Alternative: ruby-lsp
+
+[ruby-lsp](https://github.com/Shopify/ruby-lsp) is a separate language server from Shopify. Phlex has a **built-in ruby-lsp addon** (via `phlex-rails`) that provides go-to-definition and intellisense for Phlex components, including Kit shorthand methods. If Phlex support is a priority, ruby-lsp may be a better fit.
+
+The two language servers can coexist — Solargraph is stronger for YARD-documented gems, while ruby-lsp has better support for gems with native addons (Phlex, Rails itself). See the [ruby-lsp docs](https://shopify.github.io/ruby-lsp/) for editor setup.
+
 ## Troubleshooting
 
 - **Restart Solargraph** after changing `.solargraph.yml` (VS Code: `Cmd+Shift+P` → "Solargraph: Restart")
