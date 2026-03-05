@@ -80,3 +80,6 @@ doc/rdoc
 claude-swarm.log
 spec/examples.txt
 .mcp.json
+
+# User local files
+.local/
