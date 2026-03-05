@@ -11,12 +11,12 @@ class Views::Devise::Passwords::New < Views::Devise::Base
         br
 
         div(class: 'centre form--login') do
-          form_for(resource, as: resource_name,
-                             url: password_path(resource_name),
-                             html: { method: :post, class: 'form', data: { turbo: 'false' } }) do |form|
+          simple_form_for(resource,
+                          as: resource_name,
+                          url: password_path(resource_name),
+                          html: { method: :post, class: 'form', data: { turbo: 'false' } }) do |form|
             div(class: 'form__field') do
-              raw form.label(:email)
-              raw form.email_field(:email, autofocus: true)
+              raw form.input(:email, autofocus: true)
             end
             br
 

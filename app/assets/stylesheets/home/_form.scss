@@ -278,11 +278,10 @@
 		}
 
 		.form__field--remember {
-			text-align: center;
-
+			margin-inline: auto;
+			width: max-content;
 			label,
 			input {
-				display: inline-block;
 				width: auto;
 			}
 		}
@@ -335,6 +334,9 @@
 		&[aria-checked] {
 			svg {
 				opacity: 1;
+				&.checked {
+					opacity: 0;
+				}
 			}
 		}
 	}

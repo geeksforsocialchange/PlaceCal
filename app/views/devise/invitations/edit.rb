@@ -9,17 +9,16 @@ class Views::Devise::Invitations::Edit < Views::Devise::Base
         render Components::Admin::Error.new(resource)
 
         div(class: 'centre form--login') do
-          form_for(resource, as: resource_name,
-                             url: invitation_path(resource_name),
-                             html: { method: :put, class: 'form', data: { turbo: 'false' } }) do |form|
+          simple_form_for(resource,
+                          as: resource_name,
+                          url: invitation_path(resource_name),
+                          html: { method: :put, class: 'form', data: { turbo: 'false' } }) do |form|
             raw form.hidden_field(:invitation_token)
 
             div(class: 'form__field') do
-              raw form.label(:password, 'New password')
-              raw form.password_field(:password)
+              raw form.input(:password, as: :password_custom, label: 'New password')
 
-              raw form.label(:password_confirmation, 'Repeat password')
-              raw form.password_field(:password_confirmation)
+              raw form.input(:password_confirmation, as: :password_custom, label: 'Repeat password')
             end
 
             div(class: 'form__field') do

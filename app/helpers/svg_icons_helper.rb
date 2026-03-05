@@ -36,6 +36,8 @@ module SvgIconsHelper
     more_vertical: 'M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z',
     plus: 'M12 4v16m8-8H4',
     search: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+    # From eye-off, used in password_custom_input
+    strike: 'M2 2 l20 20',
     swap: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
     trash: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
     upload: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12',
@@ -114,7 +116,7 @@ module SvgIconsHelper
 
     # Forms - app/assets/images/icons/forms/
     # note that checkbox and radio outers have hardcoded colour classes
-    form_checkbox: { path: 'M5.6,4 h12.8 a1.6,1.6,90,0,1,1.6,1.6 v12.8 a1.6,1.6,90,0,1,-1.6,1.6 h-12.8 a1.6,1.6,90,0,1,-1.6,-1.6 v-12.8 a1.6,1.6,90,0,1,1.6,-1.6', css_class: 'text-base-background' },
+    form_checkbox: { path: 'M5.6,4 h12.8 a1.6,1.6,90,0,1,1.6,1.6 v12.8 a1.6,1.6,90,0,1,-1.6,1.6 h-12.8 a1.6,1.6,90,0,1,-1.6,-1.6 v-12.8 a1.6,1.6,90,0,1,1.6,-1.6' },
     form_checkbox_check: { path: 'M4.48,11.04 l5.2,5.2 l10.4,-10.4', stroke_linecap: 'butt', stroke_linejoin: 'butt', stroke_width: '5.36' },
     form_cross: { path: 'M19.932,7.2,16.548,3.768,12.3,8.004,8.052,3.768,4.668,7.2,8.904,11.4,4.668,15.6 l3.384,3.384,4.248,-4.236,4.248,4.236 L19.932,15.6,15.696,11.4 Z', stroke: 'none', fill: 'currentColor' },
     form_radio: { path: 'M12,1 A11,11,0,1,0,12.001,1', css_class: 'text-base-background' },
