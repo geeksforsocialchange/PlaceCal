@@ -15,10 +15,8 @@ servers:
     hosts:
       - <%= ENV["PRODUCTION_HOST"] %>
 
-proxy:
-  hosts:
-    - placecal.org
-    - "*.placecal.org"
+# No proxy.hosts — accept any hostname (Cloudflare handles routing/SSL)
+# This allows custom domains like www.queerleeds.lgbt without code changes
 
 accessories:
   db:
