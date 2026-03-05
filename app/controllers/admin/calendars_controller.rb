@@ -11,7 +11,14 @@ module Admin
       authorize Calendar
 
       respond_to do |format|
-        format.html { @calendars = @calendars.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @calendars = @calendars.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Calendars::Index.new(
+            calendars: @calendars,
+            partner_options: build_partner_options,
+            importer_options: build_importer_options
+          )
+        end
         format.json do
           render json: CalendarDatatable.new(
             params,
@@ -25,17 +32,22 @@ module Admin
     def new
       @calendar = Calendar.new
       @calendar.place_id = @partner&.id if @partner&.address_id.present?
-      @partner_missing_address = @partner.present? && @partner.address_id.blank?
       authorize @calendar
+      render Views::Admin::Calendars::New.new(
+        calendar: @calendar,
+        partner: @partner
+      )
     end
 
     def edit
       authorize @calendar
       @partner = @calendar.partner
+      render Views::Admin::Calendars::Edit.new(calendar: @calendar)
     end
 
     def show
       authorize @calendar
+      render Views::Admin::Calendars::Show.new(calendar: @calendar)
     end
 
     def create
@@ -47,7 +59,10 @@ module Admin
         flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'new', status: :unprocessable_content
+        render Views::Admin::Calendars::New.new(
+          calendar: @calendar,
+          partner: @partner
+        ), status: :unprocessable_content
       end
     end
 
@@ -57,7 +72,7 @@ module Admin
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Calendars::Edit.new(calendar: @calendar), status: :unprocessable_content
       end
     end
 
@@ -128,6 +143,21 @@ module Admin
     end
 
     private
+
+    def build_partner_options
+      partner_ids_with_calendars = Calendar.distinct.pluck(:partner_id).compact
+      Partner.where(id: partner_ids_with_calendars).order(:name).map do |p|
+        { value: p.id.to_s, label: p.name.truncate(40) }
+      end
+    end
+
+    def build_importer_options
+      importer_names = CalendarImporter::CalendarImporter::PARSERS.to_h { |p| [p::KEY, p::NAME] }
+      [{ value: 'pending', label: I18n.t('admin.calendars.importer.pending') }] +
+        Calendar.distinct.pluck(:importer_used).compact.compact_blank.sort.map do |i|
+          { value: i, label: importer_names[i] || i.titleize }
+        end
+    end
 
     def preselect_partner
       return if params[:partner_id].blank?

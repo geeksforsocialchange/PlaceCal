@@ -26,8 +26,7 @@ RSpec.describe CalendarImporter::EventResolver do
     :last_modified,
     :ocurrences_between,
     :has_location?,
-    :postcode,
-    keyword_init: true
+    :postcode
   )
 
   let(:neighbourhood) { create(:neighbourhood, unit_code_value: "E05011368") }

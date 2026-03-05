@@ -77,6 +77,9 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows Back, Save, and Continue buttons on middle tabs" do
+      # Wait for Stimulus save-bar controller to connect
+      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
+
       # Go to Location tab
       find('input[aria-label="📍 Location"]').click
 
@@ -122,11 +125,14 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "changes button text to include Save when dirty" do
+      # Wait for Stimulus save-bar controller to connect
+      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
+
       # Go to a middle tab first
       find('input[aria-label="📍 Location"]').click
 
       # Initially shows "Back" and "Continue"
-      expect(page).to have_button("Back")
+      expect(page).to have_button("Back", wait: 5)
       expect(page).to have_button("Continue", visible: :all)
 
       # Go back to basic and modify
@@ -190,7 +196,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to next tab when clicking Continue without changes" do
-      # Wait for Continue button to be visible (shown by Stimulus controller)
+      # Wait for Stimulus save-bar controller to connect and show the Continue button
+      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
       expect(page).to have_button("Continue", visible: :visible, wait: 5)
       click_button "Continue"
 
@@ -199,8 +206,12 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to previous tab when clicking Back without changes" do
+      # Wait for Stimulus save-bar controller to connect
+      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
+
       # Go to Location tab first
       find('input[aria-label="📍 Location"]').click
+      expect(page).to have_button("Back", visible: :visible, wait: 5)
 
       click_button "Back"
 

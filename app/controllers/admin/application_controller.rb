@@ -2,7 +2,7 @@
 
 module Admin
   class ApplicationController < ::ApplicationController
-    layout 'admin/application'
+    layout -> { Views::Layouts::Admin::Application }
 
     before_action :authenticate_user!
     before_action :set_appsignal_namespace

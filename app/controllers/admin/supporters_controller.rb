@@ -8,6 +8,7 @@ module Admin
     def index
       @supporters = Supporter.all.reorder(:name)
       authorize current_user
+      render Views::Admin::Supporters::Index.new(supporters: @supporters)
     end
 
     def show; end
@@ -15,10 +16,12 @@ module Admin
     def new
       @supporter = Supporter.new
       authorize @supporter
+      render Views::Admin::Supporters::New.new(supporter: @supporter)
     end
 
     def edit
       authorize @supporter
+      render Views::Admin::Supporters::Edit.new(supporter: @supporter)
     end
 
     def create
@@ -30,7 +33,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Supporter not created'
-        render 'new', status: :unprocessable_content
+        render Views::Admin::Supporters::New.new(supporter: @supporter), status: :unprocessable_content
       end
     end
 
@@ -42,7 +45,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Supporter was not updated'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Supporters::Edit.new(supporter: @supporter), status: :unprocessable_content
       end
     end
 

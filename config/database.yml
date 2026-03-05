@@ -22,6 +22,18 @@ test:
   host: <%= ENV['POSTGRES_HOST'] || 'localhost' %>
   port: <%= ENV['POSTGRES_PORT'] || 5432 %>
 
+staging:
+  <<: *default
+  database: <%= ENV['POSTGRES_DB'] || 'placecal_staging' %>
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['PGPASSWORD'] %>
+  host: <%= ENV['POSTGRES_HOST'] || 'localhost' %>
+  port: <%= ENV['POSTGRES_PORT'] || 5432 %>
+
 production:
   <<: *default
-  database: placecal_production
+  database: <%= ENV['POSTGRES_DB'] || 'placecal_production' %>
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['PGPASSWORD'] %>
+  host: <%= ENV['POSTGRES_HOST'] || 'localhost' %>
+  port: <%= ENV['POSTGRES_PORT'] || 5432 %>

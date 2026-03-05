@@ -26,14 +26,19 @@ class Components::Navigation < Components::Base
     # ensure nil if whitespace string
     logo_url = @site&.logo&.url.presence
 
-    if logo_url
+    if @site&.default_site?
+      # home logo for default site
+      raw(view_context.svg_image('home/icons/logo.svg', alt_text: 'PlaceCal'))
+    elsif logo_url
+      # inline svg or use an image tag if the site has a logo
       if /\.svg$/i.match?(logo_url)
         raw(view_context.svg_image(logo_url.sub(%r{^/uploads/}, ''), alt_text: @site.name))
       else
-        image_tag(@logo_url, alt: @site.name)
+        image_tag(logo_url, alt: @site.name)
       end
     else
-      raw(view_context.svg_image('home/icons/logo.svg', alt_text: 'PlaceCal'))
+      # fallback to header logo
+      raw(view_context.svg_image('header.svg', alt_text: 'PlaceCal'))
     end
   end
 

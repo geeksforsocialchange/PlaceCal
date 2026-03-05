@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+class Views::Admin::Partnerships::New < Views::Admin::Base
+  prop :partnership, Partnership, reader: :private
+
+  def view_template
+    PageHeader(model_name: 'Partnership', new_record: true)
+    render Views::Admin::Tags::Form.new(tag: partnership)
+  end
+end

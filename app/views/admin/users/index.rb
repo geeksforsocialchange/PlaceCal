@@ -1,0 +1,38 @@
+# frozen_string_literal: true
+
+class Views::Admin::Users::Index < Views::Admin::Base
+  prop :users, ActiveRecord::Relation, reader: :private
+
+  def view_template
+    Datatable(
+      title: 'Users',
+      model: :users,
+      column_titles: ['User', 'Roles', 'Last Login', 'Last Updated', ''],
+      columns: %i[name roles last_sign_in_at updated_at actions],
+      column_config: {
+        name: {},
+        roles: { sortable: false },
+        last_sign_in_at: { fit: true },
+        updated_at: { fit: true },
+        actions: { sortable: false, fit: true }
+      },
+      default_sort: { column: 'last_sign_in_at', direction: 'desc' },
+      filters: [
+        { type: :radio, column: 'role', label: 'Role',
+          options: [{ value: 'root', label: 'Root' }, { value: 'editor', label: 'Editor' },
+                    { value: 'citizen', label: 'Citizen' }] }
+      ],
+      secondary_filters: [
+        { type: :radio, column: 'is_site_admin', label: 'Site Admin',
+          options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }] },
+        { type: :radio, column: 'has_neighbourhoods', label: 'Neighbourhood Admin',
+          options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }] },
+        { type: :radio, column: 'has_partners', label: 'Partner Admin',
+          options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }] }
+      ],
+      data: users,
+      source: admin_users_path(format: :json),
+      new_link: new_admin_user_path
+    )
+  end
+end

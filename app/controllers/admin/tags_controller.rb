@@ -9,7 +9,10 @@ module Admin
       authorize @tags
 
       respond_to do |format|
-        format.html { @tags = @tags.order(updated_at: :desc, name: :asc) }
+        format.html do
+          @tags = @tags.order(updated_at: :desc, name: :asc)
+          render Views::Admin::Tags::Index.new(tags: @tags)
+        end
         format.json do
           render json: TagDatatable.new(
             params,
@@ -23,11 +26,13 @@ module Admin
     def new
       @tag = Tag.new
       authorize @tag
+      render Views::Admin::Tags::New.new(tag: @tag)
     end
 
     def edit
       authorize @tag
       @partners = @tag.partners
+      render Views::Admin::Tags::Edit.new(tag: @tag)
     end
 
     def create
@@ -44,7 +49,7 @@ module Admin
         else
           format.html do
             flash.now[:danger] = 'Tag was not created'
-            render :new, status: :unprocessable_content
+            render Views::Admin::Tags::New.new(tag: @tag), status: :unprocessable_content
           end
 
           format.json { render json: @tag.errors, status: :unprocessable_content }
@@ -70,7 +75,7 @@ module Admin
 
       else
         flash.now[:danger] = 'Tag was not saved'
-        render 'edit', status: :unprocessable_content
+        render Views::Admin::Tags::Edit.new(tag: @tag), status: :unprocessable_content
       end
     end
 
