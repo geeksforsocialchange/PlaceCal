@@ -23,22 +23,27 @@ class Components::Navigation < Components::Base
   end
 
   def render_logo
-    # ensure nil if whitespace string
     logo_url = @site&.logo&.url.presence
 
     if @site&.default_site?
-      # home logo for default site
       raw(view_context.svg_image('home/icons/logo.svg', alt_text: 'PlaceCal'))
     elsif logo_url
-      # inline svg or use an image tag if the site has a logo
       if /\.svg$/i.match?(logo_url)
-        raw(view_context.svg_image(logo_url.sub(%r{^/uploads/}, ''), alt_text: @site.name))
+        render_uploaded_svg(logo_url)
       else
         image_tag(logo_url, alt: @site.name)
       end
     else
-      # fallback to header logo
       raw(view_context.svg_image('header.svg', alt_text: 'PlaceCal'))
+    end
+  end
+
+  def render_uploaded_svg(logo_url)
+    file_path = Rails.public_path.join(logo_url.delete_prefix('/'))
+    if File.exist?(file_path)
+      raw(safe(File.read(file_path)))
+    else
+      image_tag(logo_url, alt: @site.name)
     end
   end
 
