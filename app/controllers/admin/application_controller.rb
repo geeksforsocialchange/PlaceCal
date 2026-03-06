@@ -6,8 +6,8 @@ module Admin
 
     before_action :authenticate_user!
     before_action :set_appsignal_namespace
-    after_action :verify_authorized, except: :index # rubocop:disable Rails/LexicallyScopedActionFilter
-    after_action :verify_policy_scoped, only: :index # rubocop:disable Rails/LexicallyScopedActionFilter
+    after_action :verify_authorized, except: :index
+    after_action :verify_policy_scoped, only: :index
     protect_from_forgery with: :exception
 
     private
