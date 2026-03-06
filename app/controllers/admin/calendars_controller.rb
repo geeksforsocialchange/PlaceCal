@@ -67,6 +67,7 @@ module Admin
     end
 
     def update
+      authorize @calendar
       if @calendar.update(calendar_params)
         flash[:success] = 'Calendar successfully updated'
         redirect_to edit_admin_calendar_path(@calendar)
@@ -90,6 +91,7 @@ module Admin
     end
 
     def import
+      authorize @calendar
       force_import = true
       @calendar.queue_for_import! force_import
 

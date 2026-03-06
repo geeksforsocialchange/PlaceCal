@@ -2,6 +2,8 @@
 
 module Admin
   class JobsController < Admin::ApplicationController
+    skip_after_action :verify_authorized
+    skip_after_action :verify_policy_scoped
     before_action :must_have_root_user
 
     def index

@@ -34,10 +34,16 @@ RSpec.describe UserPolicy, type: :policy do
       it { is_expected.to permit_action(:update) }
     end
 
-    context "viewing other users" do
-      # Partner admin can access users section if they have partners
-      it { is_expected.to permit_action(:update) }
+    context "viewing other users outside their scope" do
+      it { is_expected.to forbid_action(:update) }
       it { is_expected.to forbid_action(:destroy) }
+    end
+
+    context "viewing users within their scope" do
+      let(:partner) { current_user.partners.first }
+      let(:target_user) { create(:user, partners: [partner]) }
+
+      it { is_expected.to permit_action(:update) }
     end
   end
 

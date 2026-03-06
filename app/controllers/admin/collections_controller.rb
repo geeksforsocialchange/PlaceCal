@@ -3,6 +3,7 @@
 # app/controllers/admin/collections_controller.rb
 module Admin
   class CollectionsController < Admin::ApplicationController
+    skip_after_action :verify_policy_scoped, only: :index
     before_action :set_collection, only: %i[edit update destroy]
 
     def index

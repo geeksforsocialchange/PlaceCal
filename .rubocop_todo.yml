@@ -192,9 +192,10 @@ Rails/HelperInstanceVariable:
 Rails/I18nLocaleTexts:
   Enabled: false
 
-# Offense count: 4
+# Offense count: 5
 Rails/LexicallyScopedActionFilter:
   Exclude:
+    - 'app/controllers/admin/application_controller.rb'
     - 'app/controllers/admin/tags_controller.rb'
     - 'app/controllers/collections_controller.rb'
     - 'app/controllers/pages_controller.rb'
