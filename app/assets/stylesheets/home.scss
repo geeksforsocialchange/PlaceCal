@@ -1,4 +1,6 @@
-// this is injected into app/views/layouts/application.html.erb for the default site (
+// Default site (placecal.org) stylesheet.
+// Loaded via Site#stylesheet_link → stylesheet_link_tag in the public layout.
+// Partner sites load a theme stylesheet instead (e.g. themes/pink.css).
 
 @import "variables_mixins";
 
