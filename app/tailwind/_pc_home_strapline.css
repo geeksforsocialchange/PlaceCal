@@ -1,10 +1,10 @@
-/* HomeStrapline: background pattern SVGs (Sprockets asset paths) */
+/* HomeStrapline: background pattern SVGs */
 
 /* Mobile/tablet-portrait: top+bottom patterns on the quote */
 .pc-home-strapline__quote {
 	background-image:
-		url("/assets/home/site_title/mobile_top.svg"),
-		url("/assets/home/site_title/mobile_bottom.svg");
+		url("home/site_title/mobile_top.svg"),
+		url("home/site_title/mobile_bottom.svg");
 	background-repeat: no-repeat;
 	background-position:
 		50% 0,
@@ -21,8 +21,8 @@
 @media (min-width: 900px) {
 	.pc-home-strapline {
 		background-image:
-			url("/assets/home/site_title/landscape_left.svg"),
-			url("/assets/home/site_title/landscape_right.svg");
+			url("home/site_title/landscape_left.svg"),
+			url("home/site_title/landscape_right.svg");
 		background-repeat: no-repeat;
 		background-position:
 			0 50%,
@@ -44,8 +44,8 @@
 @media (min-width: 1200px) {
 	.pc-home-strapline {
 		background-image:
-			url("/assets/home/site_title/desktop_left.svg"),
-			url("/assets/home/site_title/desktop_right.svg");
+			url("home/site_title/desktop_left.svg"),
+			url("home/site_title/desktop_right.svg");
 		min-height: 477px;
 	}
 }

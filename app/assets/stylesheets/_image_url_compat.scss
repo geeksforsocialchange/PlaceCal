@@ -1,0 +1,5 @@
+// Compatibility shim for Sprockets' image-url() helper.
+// Propshaft's CssAssetUrls compiler rewrites url() paths to fingerprinted versions.
+@function image-url($path) {
+	@return url($path);
+}

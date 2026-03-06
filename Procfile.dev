@@ -1,5 +1,6 @@
 web: bin/rails server -p 3000 -b 0.0.0.0
-css: ./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./public/assets/admin_tailwind.css --watch=always
-css_public: ./node_modules/.bin/tailwindcss -i ./app/tailwind/public_tailwind.css -o ./public/assets/public_tailwind.css --watch=always
+css: ./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./app/assets/builds/admin_tailwind.css --watch=always
+css_public: ./node_modules/.bin/tailwindcss -i ./app/tailwind/public_tailwind.css -o ./app/assets/builds/public_tailwind.css --watch=always
+scss: bin/rails dartsass:watch
 job_worker: bin/rails jobs:work
 yard: yard server --reload

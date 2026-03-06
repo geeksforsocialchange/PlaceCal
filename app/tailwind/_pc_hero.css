@@ -1,7 +1,6 @@
-/* Hero: background pattern SVGs (Sprockets asset paths) */
+/* Hero: background pattern SVGs */
 .pc-hero {
-	background-image:
-		url("/assets/patterns/mobile-l.svg"), url("/assets/patterns/mobile-r.svg");
+	background-image: url("patterns/mobile-l.svg"), url("patterns/mobile-r.svg");
 	background-position:
 		-2.5rem 1.5rem,
 		right -2.5rem top 1.5rem;
@@ -11,7 +10,7 @@
 @media (min-width: 600px) {
 	.pc-hero {
 		background-image:
-			url("/assets/patterns/tablet-l.svg"), url("/assets/patterns/tablet-r.svg");
+			url("patterns/tablet-l.svg"), url("patterns/tablet-r.svg");
 		background-position:
 			-6.5rem -1rem,
 			right -6.5rem top -1rem;

@@ -1,3 +1,9 @@
+@use "sass:list";
+@use "sass:math";
+
+// Sprockets → Propshaft compatibility: replaces Sprockets' image-url() with plain url()
+@import "image_url_compat";
+
 // Main site colour
 @import "variables/colours";
 
@@ -14,11 +20,11 @@ $default-radius: 1rem;
 // Turns an array of sizes into responsive CSS
 // [ Size in pt, Line height, Weight]
 @mixin fontmarkup($sizes) {
-	font-size: #{nth($sizes, 1) / $home-base-size}rem;
-	line-height: #{nth($sizes, 2) / nth($sizes, 1)};
+	font-size: #{math.div(list.nth($sizes, 1), $home-base-size)}rem;
+	line-height: #{math.div(list.nth($sizes, 2), list.nth($sizes, 1))};
 
-	@if length($sizes) == 3 {
-		font-weight: nth($sizes, 3);
+	@if list.length($sizes) == 3 {
+		font-weight: list.nth($sizes, 3);
 	}
 }
 
@@ -30,19 +36,19 @@ $default-radius: 1rem;
 ) {
 	@include fontmarkup($default);
 
-	@if length($portrait) > 1 {
+	@if list.length($portrait) > 1 {
 		@include for-tablet-portrait-up {
 			@include fontmarkup($portrait);
 		}
 	}
 
-	@if length($landscape) > 1 {
+	@if list.length($landscape) > 1 {
 		@include for-tablet-landscape-up {
 			@include fontmarkup($landscape);
 		}
 	}
 
-	@if length($desktop) > 1 {
+	@if list.length($desktop) > 1 {
 		@include for-desktop-up {
 			@include fontmarkup($desktop);
 		}
