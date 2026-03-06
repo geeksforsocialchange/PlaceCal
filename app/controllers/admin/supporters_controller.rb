@@ -3,6 +3,7 @@
 # app/controllers/admin/supporters_controller.rb
 module Admin
   class SupportersController < Admin::ApplicationController
+    skip_after_action :verify_policy_scoped, only: :index
     before_action :set_supporter, only: %i[edit update destroy]
 
     def index

@@ -29,11 +29,14 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    index?
+    return true if user.root?
+    return false unless can_see_any_partners?
+
+    Pundit.policy_scope(user, record.class).exists?(id: record.id)
   end
 
   def edit?
-    index?
+    update?
   end
 
   def destroy?
