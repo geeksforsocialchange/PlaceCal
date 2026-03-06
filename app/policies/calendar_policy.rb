@@ -23,11 +23,11 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def import?
-    index?
+    update?
   end
 
   def destroy?
-    index?
+    update?
   end
 
   class Scope < Scope
