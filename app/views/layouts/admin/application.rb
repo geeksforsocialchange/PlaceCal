@@ -25,7 +25,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
           end
         end
         csrf_meta_tags
-        link(rel: 'stylesheet', href: '/assets/admin_tailwind.css', media: 'all', 'data-turbo-track': 'reload')
+        stylesheet_link_tag 'admin_tailwind', media: 'all', 'data-turbo-track': 'reload'
         javascript_include_tag 'es-module-shims', async: true
         javascript_importmap_tags
         render_meta
