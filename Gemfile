@@ -77,12 +77,14 @@ group :development do
   gem 'letter_opener'             # Preview emails in browser
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.85.0', require: false
+  gem 'rubocop', '1.85.1', require: false
   gem 'rubocop-graphql', '1.6.0', require: false
   gem 'rubocop-performance', '1.26.1', require: false
   gem 'rubocop-rails', '2.34.3', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
+  gem 'ruby-lsp', require: false   # Ruby language server (IDE support)
+  gem 'ruby-lsp-rails', require: false # Rails-aware completions
   gem 'spring'                    # Application preloader
   gem 'web-console'               # In-browser Rails console
   gem 'yard'                      # API documentation
