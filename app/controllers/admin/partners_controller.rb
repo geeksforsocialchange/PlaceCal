@@ -152,6 +152,7 @@ module Admin
     end
 
     def lookup_name
+      authorize Partner, :create?
       return render json: { name_available: true, similar: [] } if params[:name].blank?
 
       name = params[:name].downcase

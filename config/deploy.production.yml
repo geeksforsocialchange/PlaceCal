@@ -15,10 +15,13 @@ servers:
     hosts:
       - <%= ENV["PRODUCTION_HOST"] %>
 
+# Cloudflare handles routing/SSL — list all hostnames served by this app
+# Custom domains (e.g. queerleeds.lgbt) need adding here and redeploying
 proxy:
   hosts:
     - placecal.org
     - "*.placecal.org"
+    - www.queerleeds.lgbt
 
 accessories:
   db:

@@ -209,7 +209,7 @@ jobs:
           fi
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -221,7 +221,7 @@ jobs:
           cache-version: 3
 
       - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
         with:
           ssh-private-key: ${{ steps.dest.outputs.destination == 'production' && secrets.KAMAL_PRODUCTION_SSH_KEY || secrets.KAMAL_STAGING_SSH_KEY }}
 

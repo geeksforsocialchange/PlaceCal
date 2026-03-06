@@ -14,7 +14,7 @@ class SitePolicy < ApplicationPolicy
   end
 
   def edit?
-    user.root? || user.site_admin?
+    user.root? || record.site_admin == user
   end
 
   def show?
@@ -22,7 +22,7 @@ class SitePolicy < ApplicationPolicy
   end
 
   def update?
-    user.root? || user.site_admin?
+    user.root? || record.site_admin == user
   end
 
   def destroy?
