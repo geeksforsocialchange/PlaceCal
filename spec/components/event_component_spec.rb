@@ -72,6 +72,161 @@ RSpec.describe Components::Event, type: :component do
     end
   end
 
+  context "organiser and place display" do
+    let(:organiser) { Partner.new(id: 10, name: "Book Club", slug: "book-club") }
+    let(:place) { Partner.new(id: 20, name: "Central Library", slug: "central-library") }
+
+    context "when organiser differs from place" do
+      let(:event) do
+        double(
+          id: 1,
+          dtstart: Time.zone.parse("2024-01-15 10:00"),
+          dtend: Time.zone.parse("2024-01-15 12:00"),
+          summary: "Reading Group",
+          description: "Weekly reading",
+          organiser: organiser,
+          partner_at_location: place,
+          address: double(street_address: "123 Main St"),
+          rrule: nil,
+          neighbourhood: nil,
+          online_address: nil
+        )
+      end
+
+      it "shows both organiser and place" do
+        render_inline(described_class.new(display_context: :list, event: event))
+
+        expect(page).to have_css(".event__organiser", text: "Book Club")
+        expect(page).to have_css(".event__location", text: "Central Library")
+      end
+    end
+
+    context "when organiser is the same as place" do
+      let(:event) do
+        double(
+          id: 1,
+          dtstart: Time.zone.parse("2024-01-15 10:00"),
+          dtend: Time.zone.parse("2024-01-15 12:00"),
+          summary: "Library Tour",
+          description: "Tour of the library",
+          organiser: place,
+          partner_at_location: place,
+          address: double(street_address: "123 Main St"),
+          rrule: nil,
+          neighbourhood: nil,
+          online_address: nil
+        )
+      end
+
+      it "shows only the place, not a duplicate organiser" do
+        render_inline(described_class.new(display_context: :list, event: event))
+
+        expect(page).to have_no_css(".event__organiser")
+        expect(page).to have_css(".event__location", text: "Central Library")
+      end
+    end
+
+    context "when on the organiser's partner page" do
+      let(:event) do
+        double(
+          id: 1,
+          dtstart: Time.zone.parse("2024-01-15 10:00"),
+          dtend: Time.zone.parse("2024-01-15 12:00"),
+          summary: "Reading Group",
+          description: "Weekly reading",
+          organiser: organiser,
+          partner_at_location: place,
+          address: double(street_address: "123 Main St"),
+          rrule: nil,
+          neighbourhood: nil,
+          online_address: nil
+        )
+      end
+
+      it "hides the organiser but shows the place" do
+        render_inline(described_class.new(display_context: :list, event: event, context_partner: organiser))
+
+        expect(page).to have_no_css(".event__organiser")
+        expect(page).to have_css(".event__location", text: "Central Library")
+      end
+    end
+
+    context "when on the place's partner page" do
+      let(:event) do
+        double(
+          id: 1,
+          dtstart: Time.zone.parse("2024-01-15 10:00"),
+          dtend: Time.zone.parse("2024-01-15 12:00"),
+          summary: "Reading Group",
+          description: "Weekly reading",
+          organiser: organiser,
+          partner_at_location: place,
+          address: double(street_address: "123 Main St"),
+          rrule: nil,
+          neighbourhood: nil,
+          online_address: nil
+        )
+      end
+
+      it "shows the organiser but hides the place" do
+        render_inline(described_class.new(display_context: :list, event: event, context_partner: place))
+
+        expect(page).to have_css(".event__organiser", text: "Book Club")
+        expect(page).to have_no_css(".event__location")
+      end
+    end
+
+    context "when there is no place but has an address" do
+      let(:event) do
+        double(
+          id: 1,
+          dtstart: Time.zone.parse("2024-01-15 10:00"),
+          dtend: Time.zone.parse("2024-01-15 12:00"),
+          summary: "Pop-up Event",
+          description: "One-off event",
+          organiser: organiser,
+          partner_at_location: nil,
+          address: double(street_address: "456 Oak Ave"),
+          rrule: nil,
+          neighbourhood: nil,
+          online_address: nil
+        )
+      end
+
+      it "shows organiser and address text" do
+        render_inline(described_class.new(display_context: :list, event: event))
+
+        expect(page).to have_css(".event__organiser", text: "Book Club")
+        expect(page).to have_css(".event__location", text: "456 Oak Ave")
+      end
+    end
+
+    context "when there is no place and no address" do
+      let(:event) do
+        double(
+          id: 1,
+          dtstart: Time.zone.parse("2024-01-15 10:00"),
+          dtend: Time.zone.parse("2024-01-15 12:00"),
+          summary: "Virtual Workshop",
+          description: "Online only",
+          organiser: organiser,
+          partner_at_location: nil,
+          address: nil,
+          rrule: nil,
+          neighbourhood: nil,
+          online_address: nil
+        )
+      end
+
+      it "shows the organiser but no place" do
+        render_inline(described_class.new(display_context: :list, event: event))
+
+        expect(page).to have_css(".event__organiser", text: "Book Club")
+        expect(page).to have_no_css(".event__location")
+      end
+    end
+  end
+
   context "with online event" do
     let(:event) do
       double(
