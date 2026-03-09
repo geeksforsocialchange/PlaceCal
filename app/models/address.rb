@@ -34,12 +34,12 @@ class Address < ApplicationRecord
     self
   end
 
+  def street_lines
+    [street_address, street_address2, street_address3].compact_blank
+  end
+
   def missing_values?
-    street_address.blank? &&
-      street_address2.blank? &&
-      street_address3.blank? &&
-      city.blank? &&
-      postcode.blank?
+    street_lines.empty? && city.blank? && postcode.blank?
   end
 
   def first_address_line
@@ -48,28 +48,11 @@ class Address < ApplicationRecord
 
   # Needed for schema.org outputs as streetAddress
   def full_street_address
-    [street_address,
-     street_address2,
-     street_address3].compact_blank.join(', ')
-  end
-
-  def other_address_lines
-    [street_address2,
-     street_address3,
-     city,
-     postcode].compact_blank
+    street_lines.join(', ')
   end
 
   def all_address_lines
-    [street_address,
-     street_address2,
-     street_address3,
-     city,
-     postcode].compact_blank
-  end
-
-  def last_line_of_address
-    all_address_lines[-2]
+    [*street_lines, city, postcode].compact_blank
   end
 
   def to_s
