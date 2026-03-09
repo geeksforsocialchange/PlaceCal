@@ -28,9 +28,9 @@ class Address < ApplicationRecord
   end
 
   def prepend_room_number(room_number_string)
-    street_address3 = street_address2
-    street_address2 = street_address
-    street_address = room_number_string
+    self.street_address3 = street_address2
+    self.street_address2 = street_address
+    self.street_address = room_number_string
     self
   end
 
