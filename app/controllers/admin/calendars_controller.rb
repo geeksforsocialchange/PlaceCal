@@ -41,7 +41,7 @@ module Admin
 
     def edit
       authorize @calendar
-      @partner = @calendar.partner
+      @partner = @calendar.organiser
       render Views::Admin::Calendars::Edit.new(calendar: @calendar)
     end
 
@@ -147,7 +147,7 @@ module Admin
     private
 
     def build_partner_options
-      partner_ids_with_calendars = Calendar.distinct.pluck(:partner_id).compact
+      partner_ids_with_calendars = Calendar.distinct.pluck(:organiser_id).compact
       Partner.where(id: partner_ids_with_calendars).order(:name).map do |p|
         { value: p.id.to_s, label: p.name.truncate(40) }
       end
@@ -179,7 +179,7 @@ module Admin
         :strategy,
         :address_id,
         :strategy,
-        :partner_id,
+        :organiser_id,
         :place_id,
         :importer_mode,
         :api_token,

@@ -10,7 +10,7 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
   let!(:partner) { create(:partner) }
   let!(:site) { create(:site) }
   let!(:tag) { create(:tag) }
-  let!(:calendar) { create(:calendar, partner: partner) }
+  let!(:calendar) { create(:calendar, organiser: partner) }
   let!(:neighbourhood) { create(:neighbourhood) }
   let!(:partnership) { create(:partnership) }
   let!(:collection) { create(:collection) }

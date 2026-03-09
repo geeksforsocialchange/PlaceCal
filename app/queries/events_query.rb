@@ -12,10 +12,10 @@
 #     sort: 'time'
 #   )
 #
-# @example For a partner's events (used on partner show page)
+# @example For an organiser's events (used on organiser show page)
 #   EventsQuery.new(site: nil).call(
 #     period: 'week',
-#     partner_or_place: partner
+#     organiser_or_place: organiser
 #   )
 #
 class EventsQuery
@@ -36,21 +36,21 @@ class EventsQuery
   # @param period [String] 'day', 'week', or 'future'
   # @param sort [String] 'time' (default) or 'summary'
   # @param repeating [String] 'on' (default), 'off', or 'last'
-  # @param partner [Partner] filter to events by this partner
+  # @param organiser [Partner] filter to events by this organiser
   # @param place [Partner] filter to events at this place
-  # @param partner_or_place [Partner] filter to events by OR at this partner
+  # @param organiser_or_place [Partner] filter to events by OR at this organiser
   # @param neighbourhood_id [Integer] filter to events in this neighbourhood
   # @param limit [Integer] max number of events to return
   #
   # @return [Hash] events grouped by date { Date => [Event, ...] }
   # rubocop:disable Metrics/ParameterLists
-  def call(period:, sort: 'time', repeating: 'on', partner: nil, place: nil,
-           partner_or_place: nil, neighbourhood_id: nil, limit: nil)
+  def call(period:, sort: 'time', repeating: 'on', organiser: nil, place: nil,
+           organiser_or_place: nil, neighbourhood_id: nil, limit: nil)
     # rubocop:enable Metrics/ParameterLists
     events = build_filtered_scope(
-      partner: partner,
+      organiser: organiser,
       place: place,
-      partner_or_place: partner_or_place,
+      organiser_or_place: organiser_or_place,
       neighbourhood_id: neighbourhood_id,
       repeating: repeating
     )
@@ -118,7 +118,7 @@ class EventsQuery
 
     # Count events per leaf neighbourhood (single query)
     raw_counts = events
-                 .left_joins(:address, partner: :address)
+                 .left_joins(:address, organiser: :address)
                  .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
                  .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
                  .distinct
@@ -141,7 +141,7 @@ class EventsQuery
   # ===================
 
   def base_scope
-    @base_scope ||= @site ? events_for_site.includes(:place, :partner) : Event.includes(:place, :partner)
+    @base_scope ||= @site ? events_for_site.includes(:place, :organiser) : Event.includes(:place, :organiser)
   end
 
   # Inline of Event.for_site - finds events belonging to partners in this site
@@ -163,7 +163,7 @@ class EventsQuery
     partner_subquery = partners_scope.select(:id)
 
     base = Event.left_joins(:address)
-    base.where(partner_id: partner_subquery)
+    base.where(organiser_id: partner_subquery)
         .or(base.where(addresses: { neighbourhood_id: site_neighbourhood_ids }))
   end
 
@@ -176,7 +176,7 @@ class EventsQuery
     Event
       .left_joins(:address)
       .where(
-        'partner_id IN (:partner_ids) OR ' \
+        'organiser_id IN (:partner_ids) OR ' \
         '(lower(addresses.street_address) IN (:partner_names) AND ' \
         'lower(addresses.postcode) IN (:partner_postcodes))',
         partner_ids: partner_records.map(&:id),
@@ -189,11 +189,11 @@ class EventsQuery
   # Filtering
   # ===================
 
-  def build_filtered_scope(partner:, place:, partner_or_place:, neighbourhood_id:, repeating:)
+  def build_filtered_scope(organiser:, place:, organiser_or_place:, neighbourhood_id:, repeating:)
     events = base_scope
-    events = events.by_partner(partner) if partner
+    events = events.by_organiser(organiser) if organiser
     events = events.in_place(place) if place
-    events = events.by_partner_or_place(partner_or_place) if partner_or_place
+    events = events.by_organiser_or_place(organiser_or_place) if organiser_or_place
     events = filter_by_neighbourhood(events, neighbourhood_id) if neighbourhood_id.present?
     apply_repeating_filter(events, repeating)
   end
@@ -206,7 +206,7 @@ class EventsQuery
 
     matching_ids = neighbourhood.subtree_ids
     events
-      .left_joins(:address, partner: :address)
+      .left_joins(:address, organiser: :address)
       .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IN (?)', matching_ids)
       .distinct
   end

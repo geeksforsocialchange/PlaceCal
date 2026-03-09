@@ -139,9 +139,9 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
         plain event.dtstart.strftime('%a %d %b %H:%M')
       end
       td do
-        if event.partner
-          link_to(truncate(event.partner.name, length: 25),
-                  edit_admin_partner_path(event.partner),
+        if event.organiser
+          link_to(truncate(event.organiser.name, length: 25),
+                  edit_admin_partner_path(event.organiser),
                   class: 'link text-placecal-orange hover:text-orange-600 text-sm')
         end
       end

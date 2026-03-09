@@ -22,8 +22,8 @@ class Partner < ApplicationRecord
 
   # Associations
   has_and_belongs_to_many :users
-  has_many :calendars, dependent: :destroy
-  has_many :events, dependent: :destroy
+  has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
+  has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   belongs_to :address, optional: true, dependent: :destroy
 
   has_many :partner_tags, dependent: :destroy

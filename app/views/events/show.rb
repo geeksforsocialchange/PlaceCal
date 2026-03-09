@@ -41,16 +41,17 @@ class Views::Events::Show < Views::Base
         render_contact_info
         render_event_address
         render_event_organiser
+        render_event_venue if show_venue?
       end
     end
   end
 
   def render_contact_info
     div(class: 'gi gi__1-3') do
-      if event.partner
+      if event.organiser
         h3(class: 'h4 udl') { 'Contact information' }
         div(class: 'small') do
-          ContactDetails(partner: event.partner)
+          ContactDetails(partner: event.organiser)
         end
       end
     end
@@ -69,7 +70,20 @@ class Views::Events::Show < Views::Base
     div(class: 'gi gi__1-3') do
       h3(class: 'h4 udl') { 'Event organiser' }
       div(class: 'small') do
-        span { link_to event.partner, event.partner }
+        span { link_to event.organiser, event.organiser }
+      end
+    end
+  end
+
+  def show_venue?
+    event.place.present? && event.place != event.organiser
+  end
+
+  def render_event_venue
+    div(class: 'gi gi__1-3') do
+      h3(class: 'h4 udl') { 'Venue' }
+      div(class: 'small') do
+        span { link_to event.place, event.place }
       end
     end
   end

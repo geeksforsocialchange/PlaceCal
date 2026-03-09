@@ -186,13 +186,13 @@ RSpec.describe "Public Partners", type: :request do
 
   describe "GET /partners/:id with paginated events" do
     let(:partner) { create(:riverside_partner) }
-    let(:calendar) { create(:calendar, partner: partner) }
+    let(:calendar) { create(:calendar, organiser: partner) }
 
     before do
       # Create enough upcoming events to trigger the paginator code path (threshold is 30)
       31.times do |i|
         create(:event,
-               partner: partner,
+               organiser: partner,
                calendar: calendar,
                dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                dtend: (i + 1).days.from_now.at_beginning_of_hour + 2.hours)

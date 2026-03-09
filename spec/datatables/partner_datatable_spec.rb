@@ -207,7 +207,7 @@ RSpec.describe PartnerDatatable do
       end
 
       it "shows check icon when calendar connected" do
-        create(:calendar, partner: partner)
+        create(:calendar, organiser: partner)
 
         datatable = create_datatable
 
@@ -216,7 +216,7 @@ RSpec.describe PartnerDatatable do
       end
 
       it "shows error icon when calendar has errors" do
-        calendar = create(:calendar, partner: partner)
+        calendar = create(:calendar, organiser: partner)
         # Update calendar state after creation to ensure it's persisted
         calendar.update_column(:calendar_state, "error")
 
@@ -365,7 +365,7 @@ RSpec.describe PartnerDatatable do
       let!(:partner_with_calendar) { create(:partner, name: "Has Calendar") }
       let!(:partner_without_calendar) { create(:partner, name: "No Calendar") }
 
-      before { create(:calendar, partner: partner_with_calendar) }
+      before { create(:calendar, organiser: partner_with_calendar) }
 
       it "filters for connected calendars" do
         datatable = create_datatable("filter" => { "calendar_status" => "connected" })
@@ -530,7 +530,7 @@ RSpec.describe PartnerDatatable do
       let!(:partner_neither) { create(:partner, name: "Neither Partner") }
 
       before do
-        create(:calendar, partner: partner_both)
+        create(:calendar, organiser: partner_both)
         create(:partner_admin, partner: partner_both)
         partner_both.tags << partnership
         partner_both.tags << category
@@ -563,7 +563,7 @@ RSpec.describe PartnerDatatable do
     end
 
     it "returns same total count even when filters applied" do
-      create(:calendar, partner: Partner.first)
+      create(:calendar, organiser: Partner.first)
 
       datatable = create_datatable("filter" => { "calendar_status" => "connected" })
 
@@ -592,7 +592,7 @@ RSpec.describe PartnerDatatable do
 
     it "returns count after custom filter" do
       match_partner = Partner.where("name LIKE ?", "Match%").first
-      create(:calendar, partner: match_partner)
+      create(:calendar, organiser: match_partner)
 
       datatable = create_datatable("filter" => { "calendar_status" => "connected" })
 
@@ -601,7 +601,7 @@ RSpec.describe PartnerDatatable do
 
     it "returns count after both search and custom filter" do
       match_partner = Partner.where("name LIKE ?", "Match%").first
-      create(:calendar, partner: match_partner)
+      create(:calendar, organiser: match_partner)
 
       datatable = create_datatable(
         "search" => { "value" => "Match" },

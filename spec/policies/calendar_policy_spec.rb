@@ -7,7 +7,7 @@ RSpec.describe CalendarPolicy, type: :policy do
 
   let(:partner) { create(:partner) }
   let(:calendar) do
-    cal = build(:calendar, partner: partner)
+    cal = build(:calendar, organiser: partner)
     allow(cal).to receive(:check_source_reachable)
     cal.save!
     cal

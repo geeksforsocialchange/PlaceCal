@@ -10,11 +10,11 @@ class Calendar < ApplicationRecord
 
   self.inheritance_column = nil
 
-  belongs_to :partner, optional: true
+  belongs_to :organiser, class_name: 'Partner', optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   has_many :events, dependent: :destroy
 
-  validates :name, :partner, :source, presence: true
+  validates :name, :organiser, :source, presence: true
   validates :place, presence: { if: :requires_default_location?,
                                 message: "can't be blank with this strategy" }
   validates :source, uniqueness: { message: 'calendar source already in use' },
@@ -53,7 +53,7 @@ class Calendar < ApplicationRecord
     site_partnership_tag_ids = site.tags.map(&:id)
 
     if site_partnership_tag_ids.length.positive?
-      return Calendar.left_joins(partner: %i[address service_areas partnerships])
+      return Calendar.left_joins(organiser: %i[address service_areas partnerships])
                      .where(
                        '(partner_tags.tag_id IN (:tags) AND '\
                        '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
@@ -63,7 +63,7 @@ class Calendar < ApplicationRecord
                      )
                      .distinct
     else
-      return Calendar.left_joins(partner: %i[address service_areas])
+      return Calendar.left_joins(organiser: %i[address service_areas])
                      .left_joins(events: %i[address])
                      .where(
                        '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
@@ -100,8 +100,8 @@ class Calendar < ApplicationRecord
   def contact_information
     if public_contact_email
       [public_contact_email, public_contact_name]
-    elsif partner&.public_email
-      [partner.public_email, partner.public_name]
+    elsif organiser&.public_email
+      [organiser.public_email, organiser.public_name]
     elsif place&.public_email
       [place.public_email, place.public_name]
     else
