@@ -86,7 +86,7 @@ class Components::Event < Components::Base
     div(class: 'event__detail event__organiser') do
       raw(view_context.icon(:partner, size: nil))
       plain ' '
-      link_to(organiser, partner_path(organiser), data: { turbo_frame: '_top' })
+      link_to(truncate(organiser.name, length: 30), partner_path(organiser), data: { turbo_frame: '_top' })
     end
   end
 
@@ -95,9 +95,9 @@ class Components::Event < Components::Base
       raw(view_context.icon(:event_place, size: nil))
       plain ' '
       if partner_at_location
-        link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
+        link_to(truncate(partner_at_location.name, length: 30), partner_path(partner_at_location), data: { turbo_frame: '_top' })
       elsif first_address_line
-        plain first_address_line
+        plain truncate(first_address_line, length: 30)
       end
     end
   end

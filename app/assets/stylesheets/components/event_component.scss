@@ -100,14 +100,6 @@
 		}
 	}
 
-	&__location,
-	&__organiser {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		min-width: 0;
-	}
-
 	&__location {
 		@include for-tablet-portrait-up {
 			@include flex(1 0 61%);
