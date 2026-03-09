@@ -62,23 +62,20 @@ class Components::Event < Components::Base
     end
   end
 
-  # Show organiser row when:
-  # - the event has an organiser
-  # - organiser is different from the place (otherwise place row is enough)
-  # - organiser is not the context_partner (we're already on their page)
   def show_organiser?
-    organiser = @event.respond_to?(:organiser) ? @event.organiser : nil
-    organiser.present? && organiser != partner_at_location && organiser != @context_partner
+    organiser = @event.try(:organiser)
+    return false if organiser.blank?
+    return false if organiser == partner_at_location  # place row already shows it
+    return false if organiser == @context_partner      # we're on their page
+
+    true
   end
 
-  # Show place row when:
-  # - the event has a place or address
-  # - the place is not the context_partner (we're already on their page)
   def show_place?
-    return false unless partner_at_location || first_address_line
-    return true unless @context_partner
+    return false if partner_at_location.blank? && first_address_line.blank?
+    return true if @context_partner.blank?  # no context to suppress against
 
-    partner_at_location != @context_partner
+    partner_at_location != @context_partner  # hide if we're on the place's page
   end
 
   def render_organiser
