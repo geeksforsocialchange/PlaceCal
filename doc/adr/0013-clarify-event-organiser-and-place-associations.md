@@ -1,9 +1,8 @@
 # Clarify Event Organiser and Place Associations
 
 - Author: @kimadactyl (Kim)
-- Deciders: @kimadactyl (Kim)
 - Date: 2026-03-09
-- Status: **Agreed**
+- Status: **In progress**
 
 ## Context and Problem Statement
 
