@@ -44,17 +44,14 @@ class CalendarImporter::LocationResolver
   end
 
   def event_override_strategy
-    if event_data.has_location?
-      address = Address.build_from_components(event_location_components, event_data.postcode)
-      if address
-        place = Partner.find_from_event_address(address) || calendar.place
-        [place, address]
-      else
-        [calendar.place, calendar.place&.address]
-      end
-    else
-      [calendar.place, calendar.place&.address]
-    end
+    # Fall back to calendar's place when the event has no location or address can't be built
+    return [calendar.place, calendar.place&.address] unless event_data.has_location?
+
+    address = Address.build_from_components(event_location_components, event_data.postcode)
+    return [calendar.place, calendar.place&.address] unless address
+
+    place = Partner.find_from_event_address(address) || calendar.place
+    [place, address]
   end
 
   def place_strategy
