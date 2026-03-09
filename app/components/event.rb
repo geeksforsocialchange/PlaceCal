@@ -48,10 +48,10 @@ class Components::Event < Components::Base
       render_detail('event__time', :event_time, time)
       render_detail('event__duration', :event_duration, duration) if duration
       render_detail('event__date', :event_date, date)
+      render_detail('event__repeats', :event_repeats, repeats) if repeats
       render_detail('event__repeats', :event_online, 'Online') if online?
       render_organiser if show_organiser?
       render_place if show_place?
-      render_detail('event__repeats', :event_repeats, repeats) if repeats
     end
   end
 
