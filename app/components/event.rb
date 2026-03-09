@@ -46,7 +46,8 @@ class Components::Event < Components::Base
       render_detail('event__duration', :event_duration, duration) if duration
       render_detail('event__date', :event_date, date)
       render_detail('event__repeats', :event_online, 'Online') if online?
-      render_location if partner_at_location || first_address_line
+      render_organiser if show_organiser?
+      render_place if partner_at_location || first_address_line
       render_detail('event__repeats', :event_repeats, repeats) if repeats
     end
   end
@@ -58,32 +59,29 @@ class Components::Event < Components::Base
     end
   end
 
-  def render_location
-    div(class: 'event__detail event__location') do
-      raw(view_context.icon(:event_place, size: nil))
+  def show_organiser?
+    organiser = @event.respond_to?(:organiser) ? @event.organiser : nil
+    organiser.present? && partner_at_location.blank?
+  end
+
+  def render_organiser
+    organiser = @event.organiser
+    div(class: 'event__detail event__organiser') do
+      raw(view_context.icon(:partner, size: nil))
       plain ' '
-      render_organiser_at_location
+      link_to(organiser, partner_path(organiser), data: { turbo_frame: '_top' })
     end
   end
 
-  def render_organiser_at_location
-    organiser = @event.respond_to?(:organiser) ? @event.organiser : nil
-
-    if organiser && partner_at_location && organiser != partner_at_location
-      # "By [Organiser] at [Place]"
-      plain 'By '
-      link_to(organiser, partner_path(organiser), data: { turbo_frame: '_top' })
-      plain ' at '
-      link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
-    elsif partner_at_location
-      # Organiser is the place (or no organiser) — just show place
-      link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
-    elsif organiser
-      # No place, just organiser
-      plain 'By '
-      link_to(organiser, partner_path(organiser), data: { turbo_frame: '_top' })
-    elsif first_address_line
-      plain first_address_line
+  def render_place
+    div(class: 'event__detail event__location') do
+      raw(view_context.icon(:event_place, size: nil))
+      plain ' '
+      if partner_at_location
+        link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
+      elsif first_address_line
+        plain first_address_line
+      end
     end
   end
 
