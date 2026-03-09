@@ -41,7 +41,7 @@ class PartnersController < ApplicationController
   def show
     redirect_to root_path if @partner.hidden
 
-    upcoming_count = Event.by_organiser(@partner).upcoming.count
+    upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
     if upcoming_count.zero?
       # If no events, show an appropriate message why
       @events = []
@@ -80,7 +80,7 @@ class PartnersController < ApplicationController
       end
       format.ics do
         track_ical_download
-        cal = create_calendar(Event.by_organiser(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
+        cal = create_calendar(Event.by_organiser_or_place(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
         cal.publish
         render plain: cal.to_ical
       end
