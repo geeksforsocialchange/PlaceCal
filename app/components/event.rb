@@ -7,6 +7,9 @@ class Components::Event < Components::Base
   prop :show_neighbourhoods, _Boolean, default: false
   prop :badge_zoom_level, _Nilable(String), default: nil
   prop :site_tagline, _Nilable(String), default: nil
+  # When rendered on a partner page, set this to that partner so we don't
+  # redundantly show "By X" or "at X" when X is the page we're already on.
+  prop :context_partner, _Nilable(::Partner), default: nil
 
   def view_template
     div(class: "event #{page? ? 'event--full' : 'event--list'}") do
@@ -47,7 +50,7 @@ class Components::Event < Components::Base
       render_detail('event__date', :event_date, date)
       render_detail('event__repeats', :event_online, 'Online') if online?
       render_organiser if show_organiser?
-      render_place if partner_at_location || first_address_line
+      render_place if show_place?
       render_detail('event__repeats', :event_repeats, repeats) if repeats
     end
   end
@@ -59,9 +62,23 @@ class Components::Event < Components::Base
     end
   end
 
+  # Show organiser row when:
+  # - the event has an organiser
+  # - organiser is different from the place (otherwise place row is enough)
+  # - organiser is not the context_partner (we're already on their page)
   def show_organiser?
     organiser = @event.respond_to?(:organiser) ? @event.organiser : nil
-    organiser.present? && organiser != partner_at_location
+    organiser.present? && organiser != partner_at_location && organiser != @context_partner
+  end
+
+  # Show place row when:
+  # - the event has a place or address
+  # - the place is not the context_partner (we're already on their page)
+  def show_place?
+    return false unless partner_at_location || first_address_line
+    return true unless @context_partner
+
+    partner_at_location != @context_partner
   end
 
   def render_organiser

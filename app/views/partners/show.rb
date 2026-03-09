@@ -161,7 +161,8 @@ class Views::Partners::Show < Views::Base
           primary_neighbourhood: site.primary_neighbourhood,
           show_neighbourhoods: site.show_neighbourhoods?,
           badge_zoom_level: site.badge_zoom_level&.to_s,
-          site_tagline: site.tagline
+          site_tagline: site.tagline,
+          context_partner: partner
         )
       else
         p { em { no_event_message } }
