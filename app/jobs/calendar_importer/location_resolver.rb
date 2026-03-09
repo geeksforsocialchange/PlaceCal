@@ -36,7 +36,7 @@ class CalendarImporter::LocationResolver
   def event_strategy
     if event_data.has_location?
       address = Address.build_from_components(event_location_components, event_data.postcode)
-      place = Partner.find_from_event_address(address)
+      place = Partner.matching_venue_for(address)
       [place, address]
     else
       [calendar.place, nil]
@@ -50,7 +50,7 @@ class CalendarImporter::LocationResolver
     address = Address.build_from_components(event_location_components, event_data.postcode)
     return [calendar.place, calendar.place&.address] unless address
 
-    place = Partner.find_from_event_address(address) || calendar.place
+    place = Partner.matching_venue_for(address) || calendar.place
     [place, address]
   end
 

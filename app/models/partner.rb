@@ -305,7 +305,7 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.find_from_event_address(address)
+  def self.matching_venue_for(address)
     address_components = [
       address&.street_address || '',
       address&.street_address2 || '',

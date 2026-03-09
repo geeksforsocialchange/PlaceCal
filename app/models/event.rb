@@ -154,7 +154,7 @@ class Event < ApplicationRecord
   end
 
   def partner_at_location
-    @partner_at_location ||= place || Partner.find_from_event_address(address)
+    @partner_at_location ||= place || Partner.matching_venue_for(address)
   end
 
   # TODO: plan this out on paper, currently half finished
