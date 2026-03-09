@@ -63,9 +63,9 @@ class Address < ApplicationRecord
     return if components.blank?
 
     address = Address.new(
-      street_address: components[0]&.strip,
-      street_address2: components[1]&.strip,
-      street_address3: components[2]&.strip,
+      street_address: components[0],
+      street_address2: components[1],
+      street_address3: components[2],
       postcode: postcode
     )
     address.save ? address : nil
