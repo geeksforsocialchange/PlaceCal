@@ -12,7 +12,7 @@ module CalendarImporter::Events
 
     attr_accessor :place_id,
                   :address_id,
-                  :partner_id,
+                  :organiser_id,
                   :online_address_id
 
     def rrule
@@ -89,7 +89,7 @@ module CalendarImporter::Events
         rrule: rrule,
         place_id: place_id,
         address_id: address_id,
-        partner_id: partner_id,
+        organiser_id: organiser_id,
         publisher_url: publisher_url,
         online_address_id: online_address_id }
     end

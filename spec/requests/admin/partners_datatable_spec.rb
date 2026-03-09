@@ -70,7 +70,7 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       let!(:partner_with_calendar) { create(:partner, name: "Unique Alpha") }
       let!(:partner_without_calendar) { create(:partner, name: "Unique Beta") }
 
-      before { create(:calendar, partner: partner_with_calendar) }
+      before { create(:calendar, organiser: partner_with_calendar) }
 
       it "recordsTotal remains constant when filters applied" do
         datatable_request("filter" => { "calendar_status" => "connected" })
@@ -215,7 +215,7 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       let!(:partner_without_calendar) { create(:partner, name: "Without Calendar") }
 
       before do
-        create(:calendar, partner: partner_with_calendar)
+        create(:calendar, organiser: partner_with_calendar)
       end
 
       it "filters partners with connected calendars" do
@@ -366,8 +366,8 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       let!(:partner_neither) { create(:partner, name: "Neither") }
 
       before do
-        create(:calendar, partner: partner_both)
-        create(:calendar, partner: partner_partnership_only)
+        create(:calendar, organiser: partner_both)
+        create(:calendar, organiser: partner_partnership_only)
         partner_both.tags << partnership
         partner_both.tags << category
         partner_partnership_only.tags << partnership
@@ -478,7 +478,7 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       end
 
       before do
-        create(:calendar, partner: partner)
+        create(:calendar, organiser: partner)
         create(:partner_admin, partner: partner)
         partner.tags << partnership
         partner.tags << category

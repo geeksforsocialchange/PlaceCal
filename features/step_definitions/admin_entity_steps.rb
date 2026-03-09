@@ -26,7 +26,7 @@ end
 Given("there are {int} calendars in the system") do |count|
   partner = Partner.first || create(:partner)
   count.times do
-    create(:calendar, partner: partner)
+    create(:calendar, organiser: partner)
   end
 end
 

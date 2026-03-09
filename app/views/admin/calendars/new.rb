@@ -203,7 +203,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
               whitespace
               span(class: 'text-error') { t('admin.labels.required') }
             end
-            raw form.input_field(:partner_id,
+            raw form.input_field(:organiser_id,
                                  as: :select,
                                  collection: options_for_organiser,
                                  include_blank: t('admin.placeholders.select_model', model: Partner.model_name.human.downcase),

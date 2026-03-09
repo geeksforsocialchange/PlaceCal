@@ -22,7 +22,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
           h1(class: 'text-2xl font-bold') { calendar.name }
           p(class: 'text-sm text-gray-600 mt-1') do
             plain 'Calendar for '
-            link_to calendar.partner.name, edit_admin_partner_path(calendar.partner),
+            link_to calendar.organiser.name, edit_admin_partner_path(calendar.organiser),
                     class: 'link link-hover text-placecal-orange'
           end
         end
@@ -40,7 +40,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
   def render_info_cards
     div(class: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-8') do
       InfoCard(icon: :partner, label: 'Partner', color: :orange) do
-        link_to calendar.partner.name, edit_admin_partner_path(calendar.partner),
+        link_to calendar.organiser.name, edit_admin_partner_path(calendar.organiser),
                 class: 'font-semibold link link-hover text-placecal-orange'
       end
       InfoCard(
@@ -138,8 +138,8 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
   def render_event_location(event)
     if event.address
       plain truncate(event.address.to_s, length: 50)
-    elsif event.partner
-      plain event.partner.name
+    elsif event.organiser
+      plain event.organiser.name
     else
       span(class: 'text-gray-500') { "\u2014" }
     end

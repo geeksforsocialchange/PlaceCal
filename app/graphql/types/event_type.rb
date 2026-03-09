@@ -61,7 +61,7 @@ module Types
     end
 
     def organizer
-      partner = object&.partner
+      partner = object&.organiser
       return if partner.blank? || partner.hidden
 
       partner

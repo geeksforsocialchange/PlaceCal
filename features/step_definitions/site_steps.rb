@@ -26,7 +26,7 @@ end
 
 Given("there is an event called {string} for partner {string}") do |event_name, partner_name|
   partner = Partner.find_by(name: partner_name) || create(:partner, name: partner_name)
-  @event = create(:event, summary: event_name, partner: partner, dtstart: Time.zone.local(2022, 11, 10))
+  @event = create(:event, summary: event_name, organiser: partner, dtstart: Time.zone.local(2022, 11, 10))
 end
 
 When("I visit the site {string}") do |name|

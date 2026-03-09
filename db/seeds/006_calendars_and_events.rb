@@ -75,11 +75,11 @@ module SeedCalendarsAndEvents
 
     Partner.find_each.with_index do |partner, partner_idx|
       # Skip if this partner already has a calendar
-      next if Calendar.exists?(partner: partner)
+      next if Calendar.exists?(organiser: partner)
 
       calendar = Calendar.new(
         name: "#{partner.name} Calendar",
-        partner: partner,
+        organiser: partner,
         source: "https://example.com/cal/#{partner.id}",
         calendar_state: 'idle',
         strategy: 'no_location'
@@ -106,7 +106,7 @@ module SeedCalendarsAndEvents
           summary: title,
           description: "#{title} at #{partner.name}. Everyone welcome!",
           dtstart: (today + day_offset.days).to_datetime.change(hour: time[:hour], min: time[:min]),
-          partner: partner,
+          organiser: partner,
           calendar: calendar,
           address: partner.address
         )

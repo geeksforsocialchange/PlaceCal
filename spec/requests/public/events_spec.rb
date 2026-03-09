@@ -16,7 +16,7 @@ RSpec.describe "Public Events", type: :request do
   describe "GET /events" do
     let!(:events) do
       create_list(:event, 5,
-                  partner: partner,
+                  organiser: partner,
                   dtstart: 1.day.from_now,
                   address: address)
     end
@@ -37,7 +37,7 @@ RSpec.describe "Public Events", type: :request do
   describe "GET /events/:id" do
     let(:event) do
       create(:event,
-             partner: partner,
+             organiser: partner,
              summary: "Test Event",
              dtstart: 1.day.from_now,
              address: address)
@@ -58,14 +58,14 @@ RSpec.describe "Public Events", type: :request do
   describe "GET /events with date filter" do
     let!(:today_event) do
       create(:event,
-             partner: partner,
+             organiser: partner,
              summary: "Today Event",
              dtstart: Time.current.beginning_of_day + 10.hours,
              address: address)
     end
     let!(:future_event) do
       create(:event,
-             partner: partner,
+             organiser: partner,
              summary: "Future Event",
              dtstart: 7.days.from_now,
              address: address)
@@ -99,7 +99,7 @@ RSpec.describe "Public Events", type: :request do
       # Create events for tagged partner
       2.times do |n|
         create(:event,
-               partner: partner_with_tag,
+               organiser: partner_with_tag,
                summary: "Event with tagged partner #{n}",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
@@ -109,7 +109,7 @@ RSpec.describe "Public Events", type: :request do
       # Create events for untagged partner
       3.times do |n|
         create(:event,
-               partner: partner_without_tag,
+               organiser: partner_without_tag,
                summary: "Event without tagged partner #{n}",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
@@ -132,7 +132,7 @@ RSpec.describe "Public Events", type: :request do
   describe "GET /events index content" do
     let!(:events) do
       create_list(:event, 5,
-                  partner: partner,
+                  organiser: partner,
                   dtstart: 1.hour.from_now,
                   dtend: 2.hours.from_now,
                   address: address)
@@ -152,7 +152,7 @@ RSpec.describe "Public Events", type: :request do
   describe "GET /events/:id show content" do
     let(:event) do
       create(:event,
-             partner: partner,
+             organiser: partner,
              summary: "Community Workshop",
              dtstart: 1.day.from_now,
              dtend: 1.day.from_now + 2.hours,
@@ -190,7 +190,7 @@ RSpec.describe "Public Events", type: :request do
     end
 
     it "redirects event page on base domain" do
-      event = create(:event, partner: partner, dtstart: 1.day.from_now, address: address)
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
       get event_url(event, host: "lvh.me")
       expect(response).to be_redirect
     end

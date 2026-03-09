@@ -22,8 +22,8 @@ class Partner < ApplicationRecord
 
   # Associations
   has_and_belongs_to_many :users
-  has_many :calendars, dependent: :destroy
-  has_many :events, dependent: :destroy
+  has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
+  has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   belongs_to :address, optional: true, dependent: :destroy
 
   has_many :partner_tags, dependent: :destroy
@@ -305,23 +305,17 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.find_from_event_address(address)
-    address_components = [
-      address&.street_address || '',
-      address&.street_address2 || '',
-      address&.street_address3 || ''
-    ].reject(&:empty?)
+  def self.matching_venue_for(address)
+    return unless address&.street_lines&.any? && address&.postcode
 
-    if address_components.any? && address&.postcode
-      Partner.left_joins(:address)
-             .find_by(
-               'can_be_assigned_events AND '\
-               'lower(name) IN (:components) AND '\
-               'lower(addresses.postcode) = (:postcode)',
-               components: address_components.map(&:downcase),
-               postcode: address.postcode.downcase
-             )
-    end
+    Partner.left_joins(:address)
+           .find_by(
+             'can_be_assigned_events AND '\
+             'lower(name) IN (:components) AND '\
+             'lower(addresses.postcode) = (:postcode)',
+             components: address.street_lines.map(&:downcase),
+             postcode: address.postcode.downcase
+           )
   end
 
   private

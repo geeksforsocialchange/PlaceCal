@@ -34,6 +34,7 @@
 		@include align-items(center);
 		@include justify-content(flex-start);
 
+		font-size: 0.9rem;
 		border-width: 3px 0;
 		border-color: $base-rules;
 		border-style: solid;
@@ -61,8 +62,8 @@
 		@include flexbox;
 		@include align-items(center);
 
-		margin-right: 1.3rem;
-		margin-bottom: 0.3rem;
+		margin-right: 1rem;
+		margin-bottom: 0.15rem;
 
 		@include for-phone-only {
 			@include flex(1 0 100%);

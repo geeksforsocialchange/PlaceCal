@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_110029) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_172023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -74,7 +74,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_110029) do
     t.string "name", null: false
     t.integer "notice_count"
     t.jsonb "notices"
-    t.bigint "partner_id", null: false
+    t.bigint "organiser_id", null: false
     t.bigint "place_id"
     t.string "public_contact_email"
     t.string "public_contact_name"
@@ -83,7 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_110029) do
     t.string "strategy"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["calendar_state"], name: "index_calendars_on_calendar_state"
-    t.index ["partner_id"], name: "index_calendars_on_partner_id"
+    t.index ["organiser_id"], name: "index_calendars_on_organiser_id"
     t.index ["place_id"], name: "index_calendars_on_place_id"
     t.index ["source"], name: "index_calendars_source", unique: true
   end
@@ -132,7 +132,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_110029) do
     t.boolean "is_active", default: true, null: false
     t.jsonb "notices"
     t.bigint "online_address_id"
-    t.bigint "partner_id", null: false
+    t.bigint "organiser_id", null: false
     t.bigint "place_id"
     t.string "publisher_url"
     t.text "raw_location_from_source"
@@ -146,7 +146,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_110029) do
     t.index ["calendar_id", "uid", "dtstart", "dtend"], name: "index_events_unique_per_calendar", unique: true
     t.index ["dtstart"], name: "index_events_dtstart"
     t.index ["online_address_id"], name: "index_events_on_online_address_id"
-    t.index ["partner_id", "dtstart"], name: "index_events_on_partner_id_and_dtstart"
+    t.index ["organiser_id", "dtstart"], name: "index_events_on_organiser_id_and_dtstart"
     t.index ["place_id"], name: "index_events_on_place_id"
     t.index ["uid"], name: "index_events_uid"
   end
@@ -409,12 +409,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_110029) do
   add_foreign_key "article_tags", "articles"
   add_foreign_key "article_tags", "tags"
   add_foreign_key "articles", "users", column: "author_id"
-  add_foreign_key "calendars", "partners"
+  add_foreign_key "calendars", "partners", column: "organiser_id"
   add_foreign_key "calendars", "partners", column: "place_id"
   add_foreign_key "events", "addresses"
   add_foreign_key "events", "calendars"
   add_foreign_key "events", "online_addresses"
-  add_foreign_key "events", "partners"
+  add_foreign_key "events", "partners", column: "organiser_id"
   add_foreign_key "events", "partners", column: "place_id"
   add_foreign_key "neighbourhoods_users", "neighbourhoods"
   add_foreign_key "neighbourhoods_users", "users"

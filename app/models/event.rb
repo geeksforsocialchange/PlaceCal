@@ -9,14 +9,14 @@ class Event < ApplicationRecord
   html_render_cache :description
   html_render_cache :summary
 
-  belongs_to :partner, optional: true
+  belongs_to :organiser, class_name: 'Partner', optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   belongs_to :address, optional: true
   belongs_to :online_address, optional: true
   belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
-  validates :summary, :dtstart, :partner, presence: true
+  validates :summary, :dtstart, :organiser, presence: true
   validate :require_location
   validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
 
@@ -53,7 +53,7 @@ class Event < ApplicationRecord
   scope :for_neighbourhoods, lambda { |neighbourhoods|
     neighbourhood_ids = neighbourhoods.map(&:id)
 
-    joins('left outer join partners on events.partner_id = partners.id')
+    joins('left outer join partners on events.organiser_id = partners.id')
       .joins('left outer join addresses on partners.address_id = addresses.id')
       .joins('left outer join service_areas on partners.id = service_areas.partner_id')
       .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
@@ -62,7 +62,7 @@ class Event < ApplicationRecord
   }
 
   scope :with_tags, lambda { |tags|
-    joins(:partner)
+    joins(:organiser)
       .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
       .where(
         'partner_tags.tag_id in (:tag_ids)',
@@ -73,11 +73,11 @@ class Event < ApplicationRecord
   # Filter by Place
   scope :in_place, ->(place) { where(place: place) }
 
-  # Filter by Partner
-  scope :by_partner, ->(partner) { where(partner: partner) }
+  # Filter by Organiser
+  scope :by_organiser, ->(organiser) { where(organiser: organiser) }
 
-  # Filter by Partner or Place
-  scope :by_partner_or_place, ->(partner) { in_place(partner).or(by_partner(partner)) }
+  # Filter by Organiser or Place
+  scope :by_organiser_or_place, ->(organiser) { in_place(organiser).or(by_organiser(organiser)) }
 
   # Sort by Summary or Start Time
   scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
@@ -140,30 +140,30 @@ class Event < ApplicationRecord
   end
 
   def location
-    use_address = address || partner_at_location&.address || partner&.address
+    use_address = address || partner_at_location&.address || organiser&.address
     return '' if use_address.nil?
 
     use_address.to_s
   end
 
   def partner_at_location
-    @partner_at_location ||= place || Partner.find_from_event_address(address)
+    @partner_at_location ||= place || Partner.matching_venue_for(address)
   end
 
   # TODO: plan this out on paper, currently half finished
   # Who to contact if the event is wrong
   def blame
-    partner = calendar&.partner
-    return false unless partner
+    organiser = calendar&.organiser
+    return false unless organiser
 
-    email = partner.admin_email
-    name = partner.admin_name
+    email = organiser.admin_email
+    name = organiser.admin_name
     "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
   end
 
   def og_title
     str = "#{summary}, #{date}, #{time}"
-    str += " @ #{partner.name}" if partner
+    str += " @ #{organiser.name}" if organiser
   end
 
   private

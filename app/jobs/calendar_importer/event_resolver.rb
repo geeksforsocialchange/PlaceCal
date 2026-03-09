@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+# Coordinates event import: resolves location, detects online links, and saves occurrences.
+#
+# Delegates location resolution to LocationResolver and online detection to OnlineDetector.
 class CalendarImporter::EventResolver
   attr_reader :data, :uid, :notices, :calendar
-
-  class Problem < StandardError; end
 
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
@@ -26,93 +27,15 @@ class CalendarImporter::EventResolver
   end
 
   def determine_online_location
-    data.online_address_id = data.online_event_id
+    CalendarImporter::OnlineDetector.new(data).detect
   end
 
   def determine_location_for_strategy
-    # this algorithm is derived from the notion doc at
-    #   GFSC
-    #     PlaceCal
-    #       PlaceCal Handbook
-    #         PlaceCal developer handbook
-    #           How does the Calendar importer detect Places and Addresses?
+    place, address = CalendarImporter::LocationResolver.new(calendar, data).resolve
 
-    strategies = {
-      'event' => :event_strategy,
-      'event_override' => :event_override_strategy,
-      'place' => :place_strategy,
-      'room_number' => :room_number_strategy,
-      'no_location' => :no_location_strategy,
-      'online_only' => :online_only_strategy
-    }
-
-    if strategies.key?(calendar.strategy)
-      strategy = strategies[calendar.strategy]
-      partner, address = method(strategy).call(calendar.place)
-    else
-      # this shouldn't happen and should be fatal to the entire job
-      raise "Calendar import strategy unknown! (ID=#{calendar.id}, strategy=#{calendar.strategy})"
-    end
-
-    # NOTE: In this context, data is a calendar object. But this doesn't make sense because
-    #       determine_online_location sees a CalendarImporter::Events::IcsEvent object?
-    data.place_id = partner.id if partner
+    data.place_id = place.id if place
     data.address_id = address&.id
-    data.partner_id = calendar.partner_id
-  end
-
-  def event_strategy(partner, address: nil)
-    if data.has_location?
-      address = Address.build_from_components(event_location_components, data.postcode)
-      partner = nil
-    end
-    [partner, address]
-  end
-
-  def event_override_strategy(partner, address: nil)
-    if data.has_location?
-      address = Address.build_from_components(
-        event_location_components,
-        data.postcode
-      )
-    end
-    if address.nil?
-      address = partner&.address
-    else
-      partner = nil
-    end
-    [partner, address]
-  end
-
-  def place_strategy(_partner, _address: nil)
-    [calendar.place, calendar.place.address]
-    # NOTE: calendar.place can be nil, in which case this event will be dropped on the floor
-    #       (Likely what is happening with Velociposse?)
-  end
-
-  def room_number_strategy(partner, address: nil)
-    if data.has_location?
-      if partner.present?
-        new_address = partner.address.dup
-        address = new_address.prepend_room_number(data.location)
-        address.save
-      else # no partner, yes location
-        raise Problem, 'N/A'
-      end
-    elsif partner.present? # no location
-      address = partner.address
-    else # no place, no location
-      raise Problem, 'N/A'
-    end
-    [partner, address]
-  end
-
-  def no_location_strategy(_partner, _address: nil)
-    [nil, nil]
-  end
-
-  def online_only_strategy(_partner, _address: nil)
-    [nil, nil]
+    data.organiser_id = calendar.organiser_id
   end
 
   def save_all_occurences
@@ -162,19 +85,5 @@ class CalendarImporter::EventResolver
         end
       end
     end
-  end
-
-  def event_location_components
-    return @event_location_components if @event_location_components
-
-    regex_string = 'UK|United Kingdom'
-    regex_string += "|#{data.postcode.strip}" if data.postcode.present?
-
-    regexp = Regexp.new(regex_string, Regexp::IGNORECASE)
-
-    @event_location_components = (data.location || '')
-                                 .split(', ')
-                                 .map { |component| component.gsub(regexp, '').strip }
-                                 .compact_blank
   end
 end

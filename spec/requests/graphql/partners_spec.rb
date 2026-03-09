@@ -102,12 +102,12 @@ RSpec.describe "GraphQL Partners", type: :request do
 
   describe "partner events field" do
     let(:partner) { create(:partner) }
-    let!(:future_event) { create(:event, partner: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours) }
+    let!(:future_event) { create(:event, organiser: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours) }
     let!(:recurring_event) do
-      create(:event, partner: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours,
+      create(:event, organiser: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours,
                      rrule: [{ "table" => { "frequency" => "weekly" } }])
     end
-    let!(:past_event) { create(:past_event, partner: partner) }
+    let!(:past_event) { create(:past_event, organiser: partner) }
     let!(:other_partner_event) { create(:event) }
 
     let(:query) do

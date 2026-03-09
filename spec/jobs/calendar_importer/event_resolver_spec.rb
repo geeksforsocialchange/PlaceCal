@@ -66,7 +66,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       expect(resolver.data.place_id).to be_nil
       expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.partner_id).to eq(calendar.partner_id)
+      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
     end
 
     it "no location strategy does not set place or address" do
@@ -78,7 +78,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       expect(resolver.data.place_id).to be_nil
       expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.partner_id).to eq(calendar.partner_id)
+      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
     end
   end
 
@@ -305,7 +305,7 @@ RSpec.describe CalendarImporter::EventResolver do
           summary: "Duplicate Event",
           dtstart: start_date,
           dtend: end_date,
-          partner: calendar.partner
+          organiser: calendar.organiser
         )
         event.save!(validate: false)
       end

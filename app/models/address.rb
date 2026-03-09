@@ -28,18 +28,18 @@ class Address < ApplicationRecord
   end
 
   def prepend_room_number(room_number_string)
-    street_address3 = street_address2
-    street_address2 = street_address
-    street_address = room_number_string
+    self.street_address3 = street_address2
+    self.street_address2 = street_address
+    self.street_address = room_number_string
     self
   end
 
+  def street_lines
+    [street_address, street_address2, street_address3].compact_blank
+  end
+
   def missing_values?
-    street_address.blank? &&
-      street_address2.blank? &&
-      street_address3.blank? &&
-      city.blank? &&
-      postcode.blank?
+    street_lines.empty? && city.blank? && postcode.blank?
   end
 
   def first_address_line
@@ -48,33 +48,30 @@ class Address < ApplicationRecord
 
   # Needed for schema.org outputs as streetAddress
   def full_street_address
-    [street_address,
-     street_address2,
-     street_address3].compact_blank.join(', ')
-  end
-
-  def other_address_lines
-    [street_address2,
-     street_address3,
-     city,
-     postcode].compact_blank
+    street_lines.join(', ')
   end
 
   def all_address_lines
-    [street_address,
-     street_address2,
-     street_address3,
-     city,
-     postcode].compact_blank
-  end
-
-  def last_line_of_address
-    all_address_lines[-2]
+    [*street_lines, city, postcode].compact_blank
   end
 
   def to_s
     all_address_lines.join(', ')
   end
+
+  def self.build_from_components(components, postcode)
+    return if components.blank?
+
+    address = Address.new(
+      street_address: components[0],
+      street_address2: components[1],
+      street_address3: components[2],
+      postcode: postcode
+    )
+    address.save ? address : nil
+  end
+
+  private
 
   # Set the (lat,lon) and neighbourhood from address data.
   #
@@ -107,22 +104,6 @@ class Address < ApplicationRecord
     self.longitude = res['longitude']
     self.latitude = res['latitude']
   end
-
-  class << self
-    def build_from_components(components, postcode)
-      return if components.blank?
-
-      address = Address.new(
-        street_address: components[0]&.strip,
-        street_address2: components[1]&.strip,
-        street_address3: components[2]&.strip,
-        postcode: postcode
-      )
-      address.save ? address : nil
-    end
-  end
-
-  private
 
   def refresh_neighbourhood_partners_count
     # Refresh current neighbourhood

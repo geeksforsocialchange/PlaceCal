@@ -93,7 +93,7 @@ end
 Given("the partner has {int} upcoming events") do |count|
   count.times do |i|
     date = Time.current + (i % 28).days + 1.day
-    create(:event, partner: @partner, dtstart: date, dtend: date + 2.hours)
+    create(:event, organiser: @partner, dtstart: date, dtend: date + 2.hours)
   end
 end
 

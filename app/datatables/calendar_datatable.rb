@@ -35,9 +35,9 @@ class CalendarDatatable < Datatable
 
   def get_raw_records
     records = options[:calendars]
-              .includes(:partner, :events)
-              .left_joins(:partner)
-              .references(:partner)
+              .includes(:organiser, :events)
+              .left_joins(:organiser)
+              .references(:organiser)
 
     # Apply filters from request params
     if params[:filter].present?
@@ -45,7 +45,7 @@ class CalendarDatatable < Datatable
       records = records.where(calendar_state: params[:filter][:state]) if params[:filter][:state].present?
 
       # Partner filter
-      records = records.where(partner_id: params[:filter][:partner]) if params[:filter][:partner].present?
+      records = records.where(organiser_id: params[:filter][:partner]) if params[:filter][:partner].present?
 
       # Has events filter
       if params[:filter][:has_events].present?
@@ -100,7 +100,7 @@ class CalendarDatatable < Datatable
   end
 
   def render_partner_cell(record)
-    partner = record.partner
+    partner = record.organiser
     return '<span class="text-gray-500">—</span>'.html_safe unless partner
 
     <<~HTML.html_safe
