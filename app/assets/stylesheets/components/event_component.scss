@@ -105,7 +105,9 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
 
+	&__location {
 		@include for-tablet-portrait-up {
 			@include flex(1 0 61%);
 
