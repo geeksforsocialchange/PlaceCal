@@ -34,6 +34,7 @@
 		@include align-items(center);
 		@include justify-content(flex-start);
 
+		font-size: 0.875rem;
 		border-width: 3px 0;
 		border-color: $base-rules;
 		border-style: solid;
