@@ -61,7 +61,7 @@ class Components::Event < Components::Base
 
   def show_organiser?
     organiser = @event.respond_to?(:organiser) ? @event.organiser : nil
-    organiser.present? && partner_at_location.blank?
+    organiser.present? && organiser != partner_at_location
   end
 
   def render_organiser
