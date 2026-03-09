@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Components::Event < Components::Base
+  include Phlex::Rails::Helpers::Truncate
+
   prop :display_context, _Nilable(Symbol), default: nil
   prop :event, _Interface(:summary, :dtstart)  # Event model or test double
   prop :primary_neighbourhood, _Nilable(::Neighbourhood), default: nil
