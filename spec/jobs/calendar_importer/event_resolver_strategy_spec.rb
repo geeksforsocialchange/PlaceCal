@@ -35,8 +35,10 @@ RSpec.describe CalendarImporter::LocationResolver do
   let(:end_date) { Date.new(1990, 1, 2) }
   let(:address) { create(:address, street_address: "123 alpha", neighbourhood: neighbourhood, postcode: "M15 5DD") }
   let(:other_address) { create(:address, street_address: "456 beta", neighbourhood: other_neighbourhood, postcode: "OL6 8BH") }
+  let(:venue_address) { create(:address, street_address: "Community Hall", neighbourhood: neighbourhood, postcode: "M15 5DD") }
   let(:address_partner) { create(:partner, name: "Address Partner", address: address) }
   let(:other_address_partner) { create(:partner, name: "Other Address Partner", address: other_address) }
+  let(:venue_partner) { create(:partner, name: "Community Hall", address: venue_address, can_be_assigned_events: true) }
   let(:event_data) do
     FakeEvent.new(
       uid: 123,
@@ -57,36 +59,69 @@ RSpec.describe CalendarImporter::LocationResolver do
   end
 
   describe "event strategy" do
-    it "with data location uses event location instead of place" do
+    it "builds address from event location data" do
       event_data.location = address_partner.name
       event_data.postcode = address_partner.address.postcode
 
       calendar = create_calendar_with(strategy: "event", place: other_address_partner)
 
       resolver = described_class.new(calendar, event_data)
-      place, address_result = resolver.resolve
+      _place, address_result = resolver.resolve
 
-      expect(place).to be_nil
       expect(address_result).not_to eq(address_partner.address)
       expect(address_result.street_address).to eq(event_data.location)
       expect(address_result.postcode).to eq(event_data.postcode)
     end
+
+    it "matches a partner as place when address matches a can_be_assigned_events partner" do
+      event_data.location = venue_partner.name
+      event_data.postcode = venue_partner.address.postcode
+
+      calendar = create_calendar_with(strategy: "event", place: other_address_partner)
+
+      resolver = described_class.new(calendar, event_data)
+      place, _address_result = resolver.resolve
+
+      expect(place).to eq(venue_partner)
+    end
+
+    it "returns nil place when no matching partner found" do
+      event_data.location = "Unknown Venue"
+      event_data.postcode = "M15 5DD"
+
+      calendar = create_calendar_with(strategy: "event", place: other_address_partner)
+
+      resolver = described_class.new(calendar, event_data)
+      place, _address_result = resolver.resolve
+
+      expect(place).to be_nil
+    end
   end
 
   describe "event_override strategy" do
-    it "with data location uses event location instead of place" do
-      event_data.location = address_partner.name
-      event_data.postcode = address_partner.address.postcode
+    it "matches a partner as place when address matches" do
+      event_data.location = venue_partner.name
+      event_data.postcode = venue_partner.address.postcode
 
       calendar = create_calendar_with(strategy: "event_override", place: other_address_partner)
 
       resolver = described_class.new(calendar, event_data)
       place, address_result = resolver.resolve
 
-      expect(place).to be_nil
-      expect(address_result).not_to eq(address_partner.address)
+      expect(place).to eq(venue_partner)
       expect(address_result.street_address).to eq(event_data.location)
-      expect(address_result.postcode).to eq(event_data.postcode)
+    end
+
+    it "falls back to calendar place when no matching partner found" do
+      event_data.location = "Unknown Venue"
+      event_data.postcode = "M15 5DD"
+
+      calendar = create_calendar_with(strategy: "event_override", place: other_address_partner)
+
+      resolver = described_class.new(calendar, event_data)
+      place, _address_result = resolver.resolve
+
+      expect(place).to eq(other_address_partner)
     end
 
     it "falls back to place when no data location" do
