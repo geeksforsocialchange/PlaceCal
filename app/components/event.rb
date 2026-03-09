@@ -61,12 +61,29 @@ class Components::Event < Components::Base
   def render_location
     div(class: 'event__detail event__location') do
       raw(view_context.icon(:event_place, size: nil))
-      if partner_at_location
-        plain ' '
-        link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
-      elsif first_address_line
-        plain " #{first_address_line}"
-      end
+      plain ' '
+      render_organiser_at_location
+    end
+  end
+
+  def render_organiser_at_location
+    organiser = @event.respond_to?(:organiser) ? @event.organiser : nil
+
+    if organiser && partner_at_location && organiser != partner_at_location
+      # "By [Organiser] at [Place]"
+      plain 'By '
+      link_to(organiser, partner_path(organiser), data: { turbo_frame: '_top' })
+      plain ' at '
+      link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
+    elsif partner_at_location
+      # Organiser is the place (or no organiser) — just show place
+      link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
+    elsif organiser
+      # No place, just organiser
+      plain 'By '
+      link_to(organiser, partner_path(organiser), data: { turbo_frame: '_top' })
+    elsif first_address_line
+      plain first_address_line
     end
   end
 

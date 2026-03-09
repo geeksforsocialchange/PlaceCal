@@ -6,7 +6,7 @@ FactoryBot.define do
     description { Faker::Lorem.paragraph }
     dtstart { 1.day.from_now.at_beginning_of_hour }
     dtend { 1.day.from_now.at_beginning_of_hour + 2.hours }
-    association :partner
+    association :organiser, factory: :partner
     association :calendar
     association :address
 

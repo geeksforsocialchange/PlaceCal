@@ -5,11 +5,11 @@ FactoryBot.define do
     sequence(:name) { |n| "Calendar #{n}" }
     sequence(:source) { |n| "https://calendar.google.com/calendar/ical/example#{n}/public/basic.ics" }
     strategy { "event" }
-    association :partner
+    association :organiser, factory: :partner
 
     # Auto-set place when strategy requires it
     after(:build) do |calendar|
-      calendar.place = calendar.partner if %w[place room_number event_override].include?(calendar.strategy) && calendar.place.nil?
+      calendar.place = calendar.organiser if %w[place room_number event_override].include?(calendar.strategy) && calendar.place.nil?
     end
 
     # Skip source validation in tests (HTTP request)

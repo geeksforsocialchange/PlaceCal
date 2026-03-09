@@ -159,8 +159,8 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
     context "partner filter" do
       let!(:partner_a) { create(:partner, name: "Partner Alpha") }
       let!(:partner_b) { create(:partner, name: "Partner Beta") }
-      let!(:calendar_a) { create(:calendar, name: "Calendar A", partner: partner_a) }
-      let!(:calendar_b) { create(:calendar, name: "Calendar B", partner: partner_b) }
+      let!(:calendar_a) { create(:calendar, name: "Calendar A", organiser: partner_a) }
+      let!(:calendar_b) { create(:calendar, name: "Calendar B", organiser: partner_b) }
 
       it "filters by specific partner" do
         datatable_request("filter" => { "partner" => partner_a.id.to_s })
@@ -197,7 +197,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
 
     context "multiple filters combined" do
       let!(:partner) { create(:partner, name: "Test Partner") }
-      let!(:matching_calendar) { create(:calendar, name: "Match Calendar", partner: partner) }
+      let!(:matching_calendar) { create(:calendar, name: "Match Calendar", organiser: partner) }
       let!(:other_calendar) { create(:calendar, name: "Other Calendar") }
 
       before { create(:event, calendar: matching_calendar) }
@@ -216,8 +216,8 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
 
     context "search combined with filters" do
       let!(:partner) { create(:partner, name: "Partner") }
-      let!(:matching_calendar) { create(:calendar, name: "Alpha Calendar", partner: partner) }
-      let!(:other_calendar) { create(:calendar, name: "Beta Calendar", partner: partner) }
+      let!(:matching_calendar) { create(:calendar, name: "Alpha Calendar", organiser: partner) }
+      let!(:other_calendar) { create(:calendar, name: "Beta Calendar", organiser: partner) }
 
       it "applies both search and filter" do
         datatable_request(
@@ -252,7 +252,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
 
     context "data rendering" do
       let!(:partner) { create(:partner, name: "Render Partner") }
-      let!(:calendar) { create(:calendar, name: "Render Test", partner: partner, notice_count: 3) }
+      let!(:calendar) { create(:calendar, name: "Render Test", organiser: partner, notice_count: 3) }
 
       before do
         calendar.update_column(:calendar_state, "idle")

@@ -4,8 +4,8 @@ require "rails_helper"
 
 RSpec.describe Calendar, type: :model do
   describe "associations" do
-    # NOTE: partner has optional: true on association but presence validation
-    it { is_expected.to belong_to(:partner).optional(false) }
+    # NOTE: organiser has optional: true on association but presence validation
+    it { is_expected.to belong_to(:organiser).class_name("Partner").optional(false) }
 
     # NOTE: place is conditionally required based on strategy (default strategy is 'place')
     # Test with a strategy that doesn't require place
@@ -19,27 +19,27 @@ RSpec.describe Calendar, type: :model do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:partner) }
+    it { is_expected.to validate_presence_of(:organiser) }
     it { is_expected.to validate_presence_of(:source) }
 
     describe "source URL validation" do
       let(:partner) { create(:partner) }
 
       it "accepts valid https URLs" do
-        calendar = build(:calendar, partner: partner, source: "https://example.com/calendar.ics")
+        calendar = build(:calendar, organiser: partner, source: "https://example.com/calendar.ics")
         # Skip the reachability check for testing
         allow(calendar).to receive(:check_source_reachable)
         expect(calendar).to be_valid
       end
 
       it "accepts webcal URLs" do
-        calendar = build(:calendar, partner: partner, source: "webcal://example.com/calendar.ics")
+        calendar = build(:calendar, organiser: partner, source: "webcal://example.com/calendar.ics")
         allow(calendar).to receive(:check_source_reachable)
         expect(calendar).to be_valid
       end
 
       it "rejects invalid URLs" do
-        calendar = build(:calendar, partner: partner, source: "not-a-url")
+        calendar = build(:calendar, organiser: partner, source: "not-a-url")
         allow(calendar).to receive(:check_source_reachable)
         expect(calendar).not_to be_valid
         expect(calendar.errors[:source]).to include("not a valid URL")
@@ -52,7 +52,7 @@ RSpec.describe Calendar, type: :model do
       %i[place room_number event_override].each do |strategy|
         it "requires place for #{strategy} strategy" do
           # Build with 'event' strategy first (doesn't require place), then change
-          calendar = build(:calendar, partner: partner, strategy: "event")
+          calendar = build(:calendar, organiser: partner, strategy: "event")
           calendar.place = nil
           calendar.strategy = strategy
           allow(calendar).to receive(:check_source_reachable)
@@ -63,7 +63,7 @@ RSpec.describe Calendar, type: :model do
 
       %i[event no_location online_only].each do |strategy|
         it "does not require place for #{strategy} strategy" do
-          calendar = build(:calendar, partner: partner, strategy: strategy, place: nil)
+          calendar = build(:calendar, organiser: partner, strategy: strategy, place: nil)
           allow(calendar).to receive(:check_source_reachable)
           calendar.valid?
           expect(calendar.errors[:place]).to be_empty

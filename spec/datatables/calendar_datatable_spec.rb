@@ -79,7 +79,7 @@ RSpec.describe CalendarDatatable do
 
   describe "#data" do
     let!(:partner) { create(:partner, name: "Test Partner") }
-    let!(:calendar) { create(:calendar, name: "Test Calendar", partner: partner, notice_count: 5) }
+    let!(:calendar) { create(:calendar, name: "Test Calendar", organiser: partner, notice_count: 5) }
 
     before do
       # Set to idle state for consistent testing (after_create sets to in_queue)
@@ -215,8 +215,8 @@ RSpec.describe CalendarDatatable do
   describe "#get_raw_records with filters" do
     let!(:partner1) { create(:partner, name: "Partner 1") }
     let!(:partner2) { create(:partner, name: "Partner 2") }
-    let!(:calendar1) { create(:calendar, name: "Calendar 1", partner: partner1, notice_count: 3) }
-    let!(:calendar2) { create(:calendar, name: "Calendar 2", partner: partner2, notice_count: 0) }
+    let!(:calendar1) { create(:calendar, name: "Calendar 1", organiser: partner1, notice_count: 3) }
+    let!(:calendar2) { create(:calendar, name: "Calendar 2", organiser: partner2, notice_count: 0) }
 
     before do
       calendar1.update_column(:calendar_state, "idle")

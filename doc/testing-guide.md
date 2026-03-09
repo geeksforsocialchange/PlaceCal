@@ -414,11 +414,11 @@ create(:site, slug: 'default-site') # Required for routing
 ### Events & Calendars
 
 ```ruby
-create(:calendar, partner: partner)
-create(:calendar, partner: partner, source: 'https://example.com/feed.ics')
+create(:calendar, organiser: partner)
+create(:calendar, organiser: partner, source: 'https://example.com/feed.ics')
 
-create(:event, partner: partner)
-create(:event, partner: partner, dtstart: 1.day.from_now)
+create(:event, organiser: partner)
+create(:event, organiser: partner, dtstart: 1.day.from_now)
 ```
 
 ### Tags

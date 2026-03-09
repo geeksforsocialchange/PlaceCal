@@ -23,12 +23,12 @@ module Admin
 
       # Recent/upcoming events from user's partners (subquery instead of pluck)
       partner_ids_subquery = partners_scope.select(:id)
-      @upcoming_events = Event.where(partner_id: partner_ids_subquery).upcoming.order(:dtstart).limit(8)
+      @upcoming_events = Event.where(organiser_id: partner_ids_subquery).upcoming.order(:dtstart).limit(8)
 
       # Stats
       @total_partners = partners_scope.count
       @total_calendars = calendars_scope.count
-      @total_events_this_week = Event.where(partner_id: partner_ids_subquery).where(dtstart: Time.current.all_week).count
+      @total_events_this_week = Event.where(organiser_id: partner_ids_subquery).where(dtstart: Time.current.all_week).count
 
       # Calendar state counts - single grouped query instead of 4 separate queries
       state_counts = calendars_scope.group(:calendar_state).count

@@ -4,7 +4,7 @@
 
 Given("there is a calendar called {string} for partner {string}") do |calendar_name, partner_name|
   partner = Partner.find_by(name: partner_name) || create(:partner, name: partner_name)
-  @calendar = create(:calendar, name: calendar_name, partner: partner)
+  @calendar = create(:calendar, name: calendar_name, organiser: partner)
 end
 
 Given("the calendar {string} has URL {string}") do |name, url|

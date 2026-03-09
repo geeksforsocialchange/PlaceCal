@@ -40,7 +40,7 @@ RSpec.describe "Admin::Calendars", type: :request do
 
   describe "GET /admin/calendars/:id" do
     let(:calendar) do
-      cal = build(:calendar, partner: partner)
+      cal = build(:calendar, organiser: partner)
       allow(cal).to receive(:check_source_reachable)
       cal.save!
       cal
@@ -124,7 +124,7 @@ RSpec.describe "Admin::Calendars", type: :request do
     let!(:partner1) { create(:partner) }
     let!(:partner2) { create(:partner) }
     let(:calendar) do
-      cal = build(:calendar, partner: partner1, importer_mode: "ical")
+      cal = build(:calendar, organiser: partner1, importer_mode: "ical")
       allow(cal).to receive(:check_source_reachable)
       cal.save!
       cal
@@ -202,7 +202,7 @@ RSpec.describe "Admin::Calendars", type: :request do
     let(:user) { create(:partner_admin) }
     let(:admin_partner) { user.partners.first }
     let(:calendar) do
-      cal = build(:calendar, partner: admin_partner, importer_mode: "ical")
+      cal = build(:calendar, organiser: admin_partner, importer_mode: "ical")
       allow(cal).to receive(:check_source_reachable)
       cal.save!
       cal
