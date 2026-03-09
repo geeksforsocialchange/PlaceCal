@@ -91,18 +91,16 @@ class Address < ApplicationRecord
     self.latitude = res['latitude']
   end
 
-  class << self
-    def build_from_components(components, postcode)
-      return if components.blank?
+  def self.build_from_components(components, postcode)
+    return if components.blank?
 
-      address = Address.new(
-        street_address: components[0]&.strip,
-        street_address2: components[1]&.strip,
-        street_address3: components[2]&.strip,
-        postcode: postcode
-      )
-      address.save ? address : nil
-    end
+    address = Address.new(
+      street_address: components[0]&.strip,
+      street_address2: components[1]&.strip,
+      street_address3: components[2]&.strip,
+      postcode: postcode
+    )
+    address.save ? address : nil
   end
 
   # Delete addresses not referenced by any partner or event.
