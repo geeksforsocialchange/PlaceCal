@@ -1,0 +1,10 @@
+/* Meta: descendant link styles */
+.pc-meta a {
+	border-bottom: 0;
+	text-decoration: underline;
+	margin-right: 1.5rem;
+}
+
+.pc-meta .float-right a {
+	margin-right: 0;
+}

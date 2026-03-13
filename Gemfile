@@ -10,8 +10,9 @@ gem 'puma'                        # Web server
 gem 'rails', '~> 8.0'             # Web framework
 
 # Frontend
+gem 'dartsass-rails'              # SCSS compilation (public site)
 gem 'importmap-rails'             # ES module imports without bundling
-gem 'sass-rails', '6.0.0'         # SCSS stylesheets (public site)
+gem 'propshaft'                   # Asset pipeline (fingerprinting + serving)
 gem 'stimulus-rails'              # Stimulus JS controllers
 gem 'turbo-rails'                 # Turbo Drive/Frames/Streams
 

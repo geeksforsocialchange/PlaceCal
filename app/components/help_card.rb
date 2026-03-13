@@ -5,25 +5,21 @@ class Components::HelpCard < Components::Base
 
   VARIANTS = {
     computer_access: {
-      css_class: 'help__computer_access',
       title: 'Computer access',
       description: 'Places with computers you can use',
       empty_message: 'Information about getting online coming soon.'
     },
     free_wifi: {
-      css_class: 'help__free_public_wifi',
       title: 'Public Wifi',
       description: nil,
       empty_message: 'Information about getting public wifi coming soon.'
     },
     getting_help: {
-      css_class: 'help__getting_help',
       title: 'PlaceCal Support',
       description: 'You can find out more about how PlaceCal works in our handbook.',
       link: { text: 'Handbook', url: 'https://handbook.placecal.org' }
     },
     adding_events: {
-      css_class: 'help__adding_events',
       title: 'Adding Your Events',
       description: "Want to add your organisation's events? Something on we should know about?"
     }
@@ -109,7 +105,7 @@ class Components::HelpCard < Components::Base
     config = VARIANTS.fetch(@variant)
     return if @variant == :adding_events && !@site&.site_admin
 
-    div(class: "help #{config[:css_class]}") do
+    div(class: 'text-center mb-12 [&_h3]:my-8 [&_h3_span]:border-b-[3px] [&_ul]:list-none [&_ul]:p-0 [&_ol]:list-none [&_ol]:p-0') do
       raw(safe(SVGS.fetch(@variant)))
 
       h3(class: 'h2--alt') { span { config[:title] } }

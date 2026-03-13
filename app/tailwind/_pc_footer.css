@@ -1,0 +1,54 @@
+/* Footer: grid-template-areas layout */
+.pc-footer__inner {
+	display: grid;
+	grid-gap: 1rem;
+	grid-template-columns: 1fr;
+	grid-template-areas: "logo" "hr-1" "navigation" "regional" "general";
+}
+
+.pc-footer__inner--nosite {
+	display: grid;
+	grid-gap: 1rem;
+	grid-template-columns: 1fr;
+	grid-template-areas: "logo" "hr-1" "navigation" "general";
+}
+
+@media (min-width: 600px) {
+	.pc-footer__inner {
+		grid-template-columns: repeat(2, 1fr);
+		grid-template-areas: "logo logo" "hr-1 hr-1" "navigation navigation" "regional general";
+	}
+
+	.pc-footer__inner--nosite {
+		grid-template-columns: 1fr;
+		grid-template-areas: "logo" "hr-1" "navigation" "general";
+	}
+}
+
+@media (min-width: 900px) {
+	.pc-footer__inner {
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-areas: "logo navigation navigation" ". regional general";
+	}
+
+	.pc-footer__inner--nosite {
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-areas: "logo navigation navigation" ". general general";
+	}
+}
+
+.pc-footer__logo {
+	grid-area: logo;
+}
+.pc-footer__hr--1 {
+	grid-area: hr-1;
+}
+.pc-footer__nav {
+	grid-area: navigation;
+}
+.pc-footer__enquiries--regional {
+	grid-area: regional;
+}
+.pc-footer__enquiries--general {
+	grid-area: general;
+}

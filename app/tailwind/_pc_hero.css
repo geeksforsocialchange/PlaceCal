@@ -1,0 +1,26 @@
+/* Hero: background pattern SVGs */
+.pc-hero {
+	background-image: url("patterns/mobile-l.svg"), url("patterns/mobile-r.svg");
+	background-position:
+		-2.5rem 1.5rem,
+		right -2.5rem top 1.5rem;
+	background-repeat: no-repeat, no-repeat;
+}
+
+@media (min-width: 600px) {
+	.pc-hero {
+		background-image:
+			url("patterns/tablet-l.svg"), url("patterns/tablet-r.svg");
+		background-position:
+			-6.5rem -1rem,
+			right -6.5rem top -1rem;
+	}
+}
+
+@media (min-width: 900px) {
+	.pc-hero {
+		background-position:
+			5% -1rem,
+			right 5% top -1rem;
+	}
+}

@@ -15,7 +15,7 @@ class Components::ContactDetails < Components::Base
   end
 
   def view_template
-    p(class: 'contact_details') do
+    p(class: 'grid grid-cols-[auto_1fr] gap-x-2 items-center [&_svg]:mt-1') do
       render_phone
       render_email
       render_website

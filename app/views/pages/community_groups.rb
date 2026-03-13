@@ -5,7 +5,7 @@ class Views::Pages::CommunityGroups < Views::Base
 
   def view_template
     article(class: 'home') do
-      div(class: 'margin') do
+      div(class: 'mx-3 tp:mx-6') do
         render_hero
         render_details
         render_steps

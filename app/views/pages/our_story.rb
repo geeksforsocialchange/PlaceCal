@@ -4,7 +4,7 @@ class Views::Pages::OurStory < Views::Base
   include Views::Pages::Audiences
 
   def view_template
-    article(class: 'home margin') do
+    article(class: 'home mx-3 tp:mx-6') do
       render_introduction
       render_problems
       render_solutions

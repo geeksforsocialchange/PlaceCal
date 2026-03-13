@@ -50,8 +50,8 @@ RSpec.describe Components::Profile, type: :component do
   it "renders profile structure" do
     render_inline(described_class.new(user: user))
 
-    expect(page).to have_css(".profile")
-    expect(page).to have_css(".profile__title")
-    expect(page).to have_css(".profile__details")
+    expect(page).to have_css(".bg-base-background")
+    expect(page).to have_text("Your local contact")
+    expect(page).to have_css("h3")
   end
 end

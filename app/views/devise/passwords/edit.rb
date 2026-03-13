@@ -2,7 +2,7 @@
 
 class Views::Devise::Passwords::Edit < Views::Devise::Base
   def view_template
-    article(class: 'home margin') do
+    article(class: 'home mx-3 tp:mx-6') do
       div(class: 'card card--plainer') do
         h1(class: 'center fc-primary') { 'Change your password' }
 

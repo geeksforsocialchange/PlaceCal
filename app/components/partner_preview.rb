@@ -5,17 +5,19 @@ class Components::PartnerPreview < Components::Base
   prop :site, ::Site
 
   def view_template
-    li(class: 'preview') do
-      div(class: 'preview__header') do
-        h3 { link_to(@partner.name, @partner, data: { turbo_frame: '_top', turbo_action: 'replace' }) }
+    li do
+      div(class: 'grid gap-x-4 grid-cols-[1fr_auto] border-b-[3px] border-base-rules') do
+        h3(class: '!my-0 py-2 self-center text-[1.33333rem] [&_a]:no-underline [&_a:hover]:underline') do
+          link_to(@partner.name, @partner, data: { turbo_frame: '_top', turbo_action: 'replace' })
+        end
         if show_neighbourhood?
-          css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} preview__neighbourhood"
+          css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} self-center [&_span]:!mt-0"
           div(class: css) { span { neighbourhood_name } }
         end
       end
 
       if @partner.description
-        div(class: 'preview__details') do
+        div do
           comment { "Categories: #{@partner.categories.map(&:name).join(', ')}" }
           p { @partner.summary }
         end

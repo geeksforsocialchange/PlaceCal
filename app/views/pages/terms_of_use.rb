@@ -4,11 +4,11 @@ class Views::Pages::TermsOfUse < Views::Base
   def view_template
     content_for(:title) { 'Terms of Use' }
 
-    article(class: 'home margin') do
+    article(class: 'home mx-3 tp:mx-6') do
       Hero('PlaceCal Terms of Use')
 
       div(class: 'card card--plain') do
-        div(class: 'max_width') do
+        div(class: 'max-w-[860px] mx-auto') do
           br
           render_acceptance
           render_eligibility

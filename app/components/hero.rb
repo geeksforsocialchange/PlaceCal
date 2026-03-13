@@ -10,16 +10,16 @@ class Components::Hero < Components::Base
   end
 
   def view_template
-    div(class: 'hero') do
+    div(class: 'pc-hero bg-base-primary text-center pt-8 pb-4 [&_br]:hidden tp:[&_br]:block') do
       div(class: 'c') do
         if @subtitle
-          h4(class: 'allcaps') { @subtitle }
-          div(role: 'presentation', class: 'hero__divider')
+          h4(class: 'allcaps inline-block mt-2 mb-6 leading-[1.2] max-tp:max-w-[14rem]') { @subtitle }
+          div(role: 'presentation', class: 'mx-auto w-[4.5rem] border-b-4 border-base-background')
         end
         if @schema
-          h1(property: @schema) { safe(@title) }
+          h1(property: @schema, class: 'mt-5 text-center') { safe(@title) }
         else
-          h1 { safe(@title) }
+          h1(class: 'mt-5 text-center') { safe(@title) }
         end
       end
     end

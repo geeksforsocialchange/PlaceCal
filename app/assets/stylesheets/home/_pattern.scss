@@ -65,46 +65,4 @@
 				top left;
 		}
 	}
-
-	// Home: "We help communities to thrive"
-	&--thrive {
-		@include for-tablet-portrait-up {
-			background-image:
-				image-url("home/patterns/portrait/thrive_br.svg"),
-				image-url("home/patterns/portrait/thrive_tl.svg");
-			background-position:
-				bottom right,
-				top left;
-		}
-
-		@include for-tablet-landscape-up {
-			background-image:
-				image-url("home/patterns/landscape/thrive_br.svg"),
-				image-url("home/patterns/landscape/thrive_tl.svg");
-		}
-
-		@include for-desktop-up {
-			background-image:
-				image-url("home/patterns/desktop/thrive_br.svg"),
-				image-url("home/patterns/desktop/thrive_tl.svg");
-		}
-	}
-
-	// Who are PlaceCal?
-	&--who {
-		@include for-tablet-landscape-up {
-			background-image:
-				image-url("home/patterns/landscape/who_bl.svg"),
-				image-url("home/patterns/landscape/who_tr.svg");
-			background-position:
-				bottom left,
-				top right;
-		}
-
-		@include for-desktop-up {
-			background-image:
-				image-url("home/patterns/desktop/who_bl.svg"),
-				image-url("home/patterns/desktop/who_tr.svg");
-		}
-	}
 }

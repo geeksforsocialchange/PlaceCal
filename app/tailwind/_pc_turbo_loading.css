@@ -1,6 +1,4 @@
-@import "../variables_mixins";
-
-// Loading state for Turbo Frame - uses aria-busy attribute set by Turbo
+/* TurboLoading: Turbo Frame busy state */
 turbo-frame[aria-busy="true"],
 turbo-frame[busy] {
 	.partners,
@@ -13,7 +11,6 @@ turbo-frame[busy] {
 	}
 }
 
-// Ensure turbo-frame displays as block
 turbo-frame {
 	display: block;
 }

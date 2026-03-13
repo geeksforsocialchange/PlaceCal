@@ -16,6 +16,7 @@ class Views::Layouts::Application < Phlex::HTML
       head do
         csrf_meta_tags
         stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
+        stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
         link(rel: 'stylesheet', href: '/vendor/maplibre-gl.css', media: 'all', 'data-turbo-track': 'reload')
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'

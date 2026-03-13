@@ -1,21 +1,19 @@
-// this is injected into app/views/layouts/application.html.erb for the default site (
+// Default site (placecal.org) stylesheet.
+// Loaded via Site#stylesheet_link → stylesheet_link_tag in the public layout.
+// Partner sites load a theme stylesheet instead (e.g. themes/pink.css).
 
 @import "variables_mixins";
 
 $text-spacing-portrait: 4rem;
 $text-spacing-desktop: 12rem;
 
-@import "home/border";
 @import "home/card";
 @import "home/form";
 @import "home/grid";
 @import "home/layout";
-@import "home/margins";
 @import "home/pattern";
 @import "home/typography";
 
-@import "home/pages/audience";
-@import "home/pages/find";
 @import "home/pages/impact";
 @import "home/pages/index";
 @import "home/pages/our_story";

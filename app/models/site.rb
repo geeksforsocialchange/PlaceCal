@@ -143,6 +143,8 @@ class Site < ApplicationRecord
     refresh_events_count!
   end
 
+  # Returns the SCSS stylesheet name for this site, loaded via stylesheet_link_tag
+  # in the public layout. Compiled by dartsass-rails (see config/initializers/dartsass.rb).
   def stylesheet_link
     return 'home' if default_site?
 

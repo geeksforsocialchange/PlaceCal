@@ -5,10 +5,10 @@ class Views::Pages::Home < Views::Base
 
   def view_template
     article(class: 'home') do
-      div(class: 'margin home__flow') do
-        div(class: 'home__strapline') do
-          div(class: 'max_width') do
-            h2(class: 'home__strapline-quote') do
+      div(class: 'mx-3 tp:mx-6 [&>*+*]:mt-8') do
+        div(class: 'pc-home-strapline bg-base-primary rounded-[1rem] text-base-text font-serif') do
+          div(class: 'max-w-[860px] mx-auto') do
+            h2(class: 'pc-home-strapline__quote text-[1.222rem] tp:text-[1.333rem] tl:p-0 tl:px-24 dt:text-[1.66rem] dt:leading-[1.6em] text-center py-20 px-2') do
               'PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.'
             end
           end
@@ -26,12 +26,12 @@ class Views::Pages::Home < Views::Base
             'The Trans Dimension is run by Geeks for Social Change in partnership with Gendered Intelligence with support from the Comic Relief Tech for Good programme. At this stage, the Trans Dimension is focussed on London-based events listings only, however we do plan to expand to cover more areas across the UK.'
           ]
         )
-        div(class: 'container-with-header') do
-          div(class: 'container-with-header__head container-with-header__head--green') do
-            h3(class: 'container-with-header__title') { 'Place-based calendars' }
+        div(class: 'grid grid-cols-1 grid-rows-[auto_2rem_auto]') do
+          div(class: 'bg-home-green rounded-t-[1.11rem] col-start-1 col-end-2 row-start-1 row-end-3 pt-6 px-4 pb-14') do
+            h3(class: 'text-[1.8rem] tp:text-[2.2rem] font-normal mx-auto max-w-[25ch] text-center') { 'Place-based calendars' }
           end
-          div(class: 'container-with-header__body') do
-            ul(class: 'four_col_grid') do
+          div(class: 'bg-home-background rounded-[1.11rem] col-start-1 col-end-2 row-start-2 row-end-4 py-12 px-4') do
+            ul(class: 'grid gap-y-8 gap-x-4 grid-cols-[repeat(auto-fit,minmax(clamp(13rem,calc(25%-1rem),15rem),1fr))] list-none m-0 p-0 dt:px-8') do
               neighbourhoods.take(4).each do |site|
                 NeighbourhoodHomeCard(site: site)
               end

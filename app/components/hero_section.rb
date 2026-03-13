@@ -11,9 +11,12 @@ class Components::HeroSection < Components::Base
   end
 
   def view_template
-    div(class: 'hero_section') do
+    div(class: 'grid grid-cols-1 grid-rows-[auto_1.11rem_auto]') do
       if @image_path.presence
-        img_attrs = { class: 'hero_section__img', src: @image_path }
+        img_attrs = {
+          class: 'aspect-[2/1] tl:aspect-[3/1] col-[1/2] row-[1/span_2] object-cover w-full',
+          src: @image_path
+        }
         if @alttext.presence
           img_attrs[:alt] = @alttext
         else
@@ -21,9 +24,9 @@ class Components::HeroSection < Components::Base
         end
         img(**img_attrs)
       end
-      div(class: 'hero_section__text') do
-        p(class: 'hero_section__credit') { "Image credit: #{@image_credit}" } if @image_credit.presence
-        h1(class: 'hero_section__title') { @title }
+      div(class: 'flex flex-col items-center gap-[1.55rem] bg-base-background rounded-t-[1.1rem] col-[1/2] row-[2/span_2] p-[1.55rem] z-10') do
+        p(class: 'text-[0.8rem] m-0') { "Image credit: #{@image_credit}" } if @image_credit.presence
+        h1(class: 'text-[1.77778rem] tl:text-[2.22222rem] leading-[1.2] m-0 max-w-[860px] text-center') { @title }
       end
     end
   end

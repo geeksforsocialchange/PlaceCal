@@ -73,7 +73,7 @@ RSpec.describe "Public Sites", type: :request do
 
       it "shows computer access card when partners have tag" do
         get "http://hulme.lvh.me"
-        expect(response.body).to include("help__computer_access")
+        expect(response.body).to include("Computer access")
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe "Public Sites", type: :request do
 
       it "shows wifi card when partners have tag" do
         get "http://hulme.lvh.me"
-        expect(response.body).to include("help__free_public_wifi")
+        expect(response.body).to include("Public Wifi")
       end
     end
   end
