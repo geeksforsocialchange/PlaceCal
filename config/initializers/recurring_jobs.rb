@@ -13,7 +13,7 @@ Rails.application.config.after_initialize do
 
   begin
     next unless Delayed::Job.table_exists?
-  rescue ActiveRecord::NoDatabaseError
+  rescue ActiveRecord::NoDatabaseError, ActiveRecord::ConnectionNotEstablished
     next
   end
 
