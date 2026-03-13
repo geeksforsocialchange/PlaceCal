@@ -27,6 +27,7 @@ class EventsController < ApplicationController
     )
     @truncated = @query.truncated
     @next_date = @query.next_event_after(@current_day)
+    @show_monthly = @query.show_monthly?
     respond_to do |format|
       format.html do
         if params[:simple].present?
@@ -36,7 +37,8 @@ class EventsController < ApplicationController
             events: @events, period: @period, sort: @sort, repeating: @repeating,
             current_day: @current_day, site: @site,
             selected_neighbourhood: @selected_neighbourhood,
-            next_date: @next_date, truncated: @truncated
+            next_date: @next_date, truncated: @truncated,
+            show_monthly: @show_monthly
           )
         end
       end

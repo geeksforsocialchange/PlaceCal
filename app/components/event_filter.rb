@@ -9,6 +9,7 @@ class Components::EventFilter < Components::Base
   prop :today, _Boolean, default: false
   prop :site, _Nilable(::Site), default: nil
   prop :selected_neighbourhood, _Nilable(String), default: nil
+  prop :show_monthly, _Boolean, default: true
 
   def after_initialize
     @sort ||= 'time'
@@ -122,9 +123,10 @@ class Components::EventFilter < Components::Base
 
   def render_period_group
     view_context.content_tag(:div, class: 'filters__group') do
-      render_radio('period', 'day', @period == 'day', 'Daily view') +
-        render_radio('period', 'week', @period == 'week', 'Weekly view') +
-        render_radio('period', 'future', @period == 'future', 'Show all')
+      buf = render_radio('period', 'day', @period == 'day', 'Daily view') +
+            render_radio('period', 'week', @period == 'week', 'Weekly view')
+      buf += render_radio('period', 'month', @period == 'month', 'Monthly view') if @show_monthly
+      buf + render_radio('period', 'future', @period == 'future', 'Show all')
     end
   end
 
