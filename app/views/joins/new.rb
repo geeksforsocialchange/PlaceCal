@@ -88,7 +88,7 @@ class Views::Joins::New < Views::Base
       label(for: "join_#{field}") do
         plain label_text
         icon(:form_checkbox, size: nil)
-        icon(:form_checkbox_check, size: nil, css_class: 'checked')
+        icon(:form_checkbox_check, size: nil, css_class: 'checked text-base-background')
       end
     end
   end

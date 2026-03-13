@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"module": "CommonJS",
+		"target": "ES6",
+		"checkJs": true,
+		"allowJs": true,
+		"baseUrl": ".",
+		"paths": {
+			"controllers/*": ["app/javascript/controllers/*"]
+		}
+	},
+	"exclude": ["node_modules"]
+}

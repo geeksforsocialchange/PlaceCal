@@ -278,13 +278,71 @@
 		}
 
 		.form__field--remember {
-			text-align: center;
-
+			margin-inline: auto;
+			width: max-content;
 			label,
 			input {
-				display: inline-block;
 				width: auto;
 			}
 		}
+	}
+}
+
+// overrides for password input with `show` toggle
+// see `app/javascript/controllers/password_toggle_controller.js`
+.form .input__group {
+	display: flex;
+	align-items: center;
+
+	// copied from input
+	border-radius: 1.5rem;
+	border-color: $base-primary;
+	border-style: solid;
+	border-width: 2px;
+	margin-bottom: 1rem;
+
+	input {
+		border: 0;
+		margin: 0;
+		border-radius: 1.5rem 0 0 1.5rem;
+
+		&:focus-visible {
+			outline: none;
+		}
+	}
+
+	button {
+		background: $base-primary;
+		color: $base-text;
+		display: grid;
+		align-items: center;
+		justify-content: center;
+		padding-inline: 1rem;
+		border-radius: 0 1.5rem 1.5rem 0;
+		// ideally should be 100%
+		height: 2.25rem;
+
+		svg {
+			grid-column-start: 1;
+			grid-row-start: 1;
+			width: 1.25rem;
+			height: 1.25rem;
+			opacity: 0.5;
+			transition: opacity 0.3s ease-in-out;
+		}
+
+		&[aria-checked] {
+			svg {
+				opacity: 1;
+				&.checked {
+					opacity: 0;
+				}
+			}
+		}
+	}
+
+	// show focus ring on the input__group rather than the input
+	&:focus-within {
+		outline: auto;
 	}
 }

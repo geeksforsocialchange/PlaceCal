@@ -7,27 +7,25 @@ class Views::Devise::Passwords::Edit < Views::Devise::Base
         h1(class: 'center fc-primary') { 'Change your password' }
 
         div(class: 'centre form--login') do
-          form_for(resource, as: resource_name,
-                             url: password_path(resource_name),
-                             html: { method: :put, class: 'form', data: { turbo: 'false' } }) do |form|
+          simple_form_for(resource,
+                          as: resource_name,
+                          url: password_path(resource_name),
+                          html: { method: :put, class: 'form', data: { turbo: 'false' } }) do |form|
             render_error_messages
 
             raw form.hidden_field(:reset_password_token)
 
             div(class: 'form__field') do
-              raw form.label(:password, 'New password')
-              min_length = resource.class.password_length.min
+              input_html = { autofocus: true }
               if min_length
-                whitespace
-                em { "(#{min_length} characters minimum)" }
-                br
+                input_html[:minlength] = min_length
+                input_html[:hint] = "#{min_length} characters minimum"
               end
-              raw form.password_field(:password, autofocus: true, autocomplete: 'off')
+              raw form.input(:password, as: :password_custom, input_html: input_html)
             end
 
             div(class: 'form__field') do
-              raw form.label(:password_confirmation, 'Confirm new password')
-              raw form.password_field(:password_confirmation, autocomplete: 'off')
+              raw form.input(:password_confirmation, as: :password_custom, label: 'Confirm new password')
             end
             br
 
