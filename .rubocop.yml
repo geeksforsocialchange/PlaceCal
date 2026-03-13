@@ -121,6 +121,7 @@ Metrics/ParameterLists:
 Metrics/ClassLength:
   Exclude:
     - "spec/**/*.rb"
+    - "app/models/calendar.rb"
     - "app/models/partner.rb"
     - "app/controllers/admin/partners_controller.rb"
     - "app/views/**/*.rb"

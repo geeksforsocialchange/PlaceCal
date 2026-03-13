@@ -8,6 +8,7 @@
 # seeding once. This initializer ensures they exist after deploys.
 
 Rails.application.config.after_initialize do
+  next unless Rails.env.production? || Rails.env.staging? # rubocop:disable Rails/UnknownEnv
   next unless defined?(Delayed::Job)
 
   begin

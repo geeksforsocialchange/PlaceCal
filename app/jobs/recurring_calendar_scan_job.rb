@@ -9,9 +9,7 @@ class RecurringCalendarScanJob < ApplicationJob
   INTERVAL = 1.hour
 
   def perform
-    Calendar.find_each do |calendar|
-      calendar.queue_for_import! false, Date.current.beginning_of_day
-    end
+    Calendar.queue_all_for_import!
   ensure
     self.class.set(wait: INTERVAL).perform_later
   end
