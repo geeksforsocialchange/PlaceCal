@@ -40,7 +40,7 @@ class EventsController < ApplicationController
           )
         end
       end
-      format.text { render Views::Events::IndexText.new(events: @events) }
+      format.text { render Views::Events::IndexText.new(events: @events), layout: false }
       format.ics { render_ical }
     end
   end
