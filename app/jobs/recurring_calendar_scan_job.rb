@@ -9,7 +9,9 @@ class RecurringCalendarScanJob < ApplicationJob
   INTERVAL = 1.hour
 
   def perform
-    Calendar.queue_all_for_import!
+    Appsignal::CheckIn.cron('calendar_scan') do
+      Calendar.queue_all_for_import!
+    end
   ensure
     self.class.set(wait: INTERVAL).perform_later
   end
