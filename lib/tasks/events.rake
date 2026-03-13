@@ -88,19 +88,7 @@ namespace :events do
 
   desc 'Remove duplicate events (same uid, dtstart, dtend, calendar_id)'
   task deduplicate: :environment do
-    result = ActiveRecord::Base.connection.execute(<<~SQL.squish)
-      WITH duplicates AS (
-        SELECT id, ROW_NUMBER() OVER (
-          PARTITION BY uid, dtstart, dtend, calendar_id
-          ORDER BY id
-        ) as rn
-        FROM events
-      )
-      DELETE FROM events WHERE id IN (
-        SELECT id FROM duplicates WHERE rn > 1
-      )
-    SQL
-    deleted = result.cmd_tuples
+    deleted = Event.deduplicate!
 
     if deleted.positive?
       msg = "events:deduplicate removed #{deleted} duplicate event rows"
