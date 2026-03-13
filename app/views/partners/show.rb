@@ -153,8 +153,9 @@ class Views::Partners::Show < Views::Base
 
   def render_events_section
     turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
+      render_events_paginator if paginator
+
       if events.any?
-        render_events_paginator if paginator
         EventList(
           events: events,
           period: period,
@@ -164,7 +165,7 @@ class Views::Partners::Show < Views::Base
           site_tagline: site.tagline
         )
       else
-        p { em { no_event_message } }
+        p { em { no_event_message || empty_period_message } }
       end
     end
   end
@@ -191,6 +192,14 @@ class Views::Partners::Show < Views::Base
           today: current_day == today
         )
       end
+    end
+  end
+
+  def empty_period_message
+    case period
+    when 'day' then 'No events this day.'
+    when 'future' then 'No upcoming events.'
+    else 'No events this week.'
     end
   end
 
