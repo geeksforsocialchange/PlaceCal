@@ -10,6 +10,7 @@ class Views::Events::Index < Views::Base
   prop :selected_neighbourhood, _Nilable(String), reader: :private
   prop :next_date, _Nilable(::Event), reader: :private
   prop :truncated, _Boolean, reader: :private
+  prop :show_monthly, _Boolean, reader: :private, default: true
 
   def view_template
     content_for(:title) { 'Events' }
@@ -46,7 +47,8 @@ class Views::Events::Index < Views::Base
               today_url: today_url,
               today: current_day == today,
               site: site,
-              selected_neighbourhood: selected_neighbourhood
+              selected_neighbourhood: selected_neighbourhood,
+              show_monthly: show_monthly
             )
           end
         end

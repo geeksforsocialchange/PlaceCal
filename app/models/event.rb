@@ -43,6 +43,13 @@ class Event < ApplicationRecord
     where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, day_end)
   }
 
+  # Find from given day to end of that month
+  scope :for_month, lambda { |day|
+    day_start = day.to_date
+    month_end = day_start.end_of_month
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, month_end)
+  }
+
   # Find by day onwards
   scope :future, lambda { |day|
     day_start = day.midnight # 2024-04-01 00:00:00 +0100
