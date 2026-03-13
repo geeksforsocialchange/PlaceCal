@@ -166,6 +166,24 @@ class Event < ApplicationRecord
     str += " @ #{partner.name}" if partner
   end
 
+  # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
+  # keeping the oldest record. Returns the number of deleted rows.
+  def self.deduplicate!
+    result = connection.execute(<<~SQL.squish)
+      WITH duplicates AS (
+        SELECT id, ROW_NUMBER() OVER (
+          PARTITION BY uid, dtstart, dtend, calendar_id
+          ORDER BY id
+        ) as rn
+        FROM events
+      )
+      DELETE FROM events WHERE id IN (
+        SELECT id FROM duplicates WHERE rn > 1
+      )
+    SQL
+    result.cmd_tuples
+  end
+
   private
 
   def require_location
