@@ -123,10 +123,17 @@ RSpec.describe EventsQuery do
       end
 
       context "with sort: 'summary'" do
-        it "returns events grouped under today's date" do
+        it "returns events grouped under the selected day" do
           query = described_class.new(site: site, day: today)
           result = query.call(period: "future", sort: "summary")
           expect(result.keys).to eq([today])
+        end
+
+        it "uses the selected day, not today, as the group key" do
+          selected_day = today + 3.days
+          query = described_class.new(site: site, day: selected_day)
+          result = query.call(period: "future", sort: "summary")
+          expect(result.keys).to eq([selected_day])
         end
       end
     end
