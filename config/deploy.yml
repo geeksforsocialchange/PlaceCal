@@ -79,5 +79,7 @@ asset_path: /rails/public/assets
 
 builder:
   arch: amd64
+  args:
+    RUBY_VERSION: <%= File.read('.ruby-version').strip %>
 
 # Database migrations run via bin/docker-entrypoint (db:prepare)
