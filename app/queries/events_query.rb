@@ -245,7 +245,7 @@ class EventsQuery
 
   def group_and_sort(events, sort)
     if sort == 'summary'
-      { Time.zone.today => events.sort_by_summary }
+      { @day => events.sort_by_summary }
     else
       events.distinct.sort_by_time.group_by_day(&:dtstart)
     end
