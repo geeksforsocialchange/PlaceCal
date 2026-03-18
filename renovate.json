@@ -16,6 +16,17 @@
 	"vulnerabilityAlerts": {
 		"labels": ["security"]
 	},
+	"customManagers": [
+		{
+			"customType": "regex",
+			"fileMatch": ["^Dockerfile$"],
+			"matchStrings": [
+				"ARG RUBY_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)\\n"
+			],
+			"depNameTemplate": "ruby",
+			"datasourceTemplate": "ruby-version"
+		}
+	],
 	"packageRules": [
 		{
 			"matchDatasources": ["docker"],
@@ -29,8 +40,14 @@
 		},
 		{
 			"matchDepNames": ["ruby"],
+			"matchDatasources": ["ruby-version"],
 			"groupName": "ruby version",
 			"groupSlug": "ruby"
+		},
+		{
+			"matchDatasources": ["docker"],
+			"matchPackageNames": ["ruby"],
+			"enabled": false
 		}
 	]
 }
