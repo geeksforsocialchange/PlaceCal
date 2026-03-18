@@ -26,6 +26,11 @@
 		{
 			"matchManagers": ["npm", "rubygems"],
 			"minimumReleaseAge": "7 days"
+		},
+		{
+			"matchDepNames": ["ruby"],
+			"groupName": "ruby version",
+			"groupSlug": "ruby"
 		}
 	]
 }
