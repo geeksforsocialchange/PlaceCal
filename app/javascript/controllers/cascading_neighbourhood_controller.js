@@ -159,6 +159,14 @@ export default class extends Controller {
 				this.showSelect(target);
 				target.parentElement.classList.remove("opacity-60");
 				this.populateSelect(target, data, this.getPlaceholder(level));
+				// Add a "skip" option so users can bypass this optional level
+				// (e.g., select a district without picking a county first).
+				if (level > 1 && level < 5) {
+					const skipOption = document.createElement("option");
+					skipOption.value = `skip:${parentId}`;
+					skipOption.textContent = "— Show all (skip this level) —";
+					target.insertBefore(skipOption, target.options[1]);
+				}
 				this.clearLevelsBelow(level);
 			}
 		} catch (error) {
@@ -206,6 +214,14 @@ export default class extends Controller {
 			return;
 		}
 
+		// Handle "skip" option — load next level from the parent scope
+		if (selectedId.startsWith("skip:")) {
+			const parentId = selectedId.replace("skip:", "");
+			this.updateOutput(parentId);
+			await this.loadLevel(level - 1, parentId);
+			return;
+		}
+
 		// Update output to the selected value
 		this.updateOutput(selectedId);
 
@@ -225,7 +241,11 @@ export default class extends Controller {
 		for (const level of levels) {
 			const target = this.getTargetForLevel(level);
 			if (target && target.value && !target.disabled) {
-				this.updateOutput(target.value);
+				// If a "skip" option is selected, use the parent ID it encodes
+				const val = target.value.startsWith("skip:")
+					? target.value.replace("skip:", "")
+					: target.value;
+				this.updateOutput(val);
 				return;
 			}
 		}
