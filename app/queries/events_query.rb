@@ -20,6 +20,8 @@
 #
 class EventsQuery
   FUTURE_LIMIT = 50
+  UPCOMING_LIMIT = 10
+  WEEKLY_DENSITY_THRESHOLD = 10
 
   def initialize(site:, day: Time.zone.today)
     @site = site
@@ -84,6 +86,14 @@ class EventsQuery
 
   def next_7_days_count
     base_scope.find_next_7_days(@day).count
+  end
+
+  def monthly_count
+    base_scope.for_month(@day).count
+  end
+
+  def show_monthly?
+    monthly_count <= FUTURE_LIMIT
   end
 
   def next_event_after(day)
@@ -216,6 +226,8 @@ class EventsQuery
   def apply_period(events, period)
     case period
     when 'future' then apply_future_period(events)
+    when 'upcoming' then events.future(@day).limit(UPCOMING_LIMIT)
+    when 'month' then events.for_month(@day)
     when 'week' then events.find_next_7_days(@day)
     else events.find_by_day(@day)
     end
@@ -233,7 +245,7 @@ class EventsQuery
 
   def group_and_sort(events, sort)
     if sort == 'summary'
-      { Time.zone.today => events.sort_by_summary }
+      { @day => events.sort_by_summary }
     else
       events.distinct.sort_by_time.group_by_day(&:dtstart)
     end

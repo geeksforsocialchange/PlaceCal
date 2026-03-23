@@ -1,4 +1,5 @@
-/* TurboLoading: Turbo Frame busy state */
+/* TurboLoading: Turbo Frame busy state.
+   Uses attribute selectors on <turbo-frame> which can't be expressed as Tailwind utilities. */
 turbo-frame[aria-busy="true"],
 turbo-frame[busy] {
 	.partners,

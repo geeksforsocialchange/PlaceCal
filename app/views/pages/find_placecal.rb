@@ -20,10 +20,10 @@ class Views::Pages::FindPlacecal < Views::Base
           end
         end
         div(class: 'grid grid-cols-1 grid-rows-[auto_2rem_auto]') do
-          div(class: 'bg-home-green rounded-t-[1.11rem] col-start-1 col-end-2 row-start-1 row-end-3 pt-6 px-4 pb-14') do
+          div(class: 'bg-home-green rounded-t-panel col-start-1 col-end-2 row-start-1 row-end-3 pt-6 px-4 pb-14') do
             h3(class: 'text-[1.8rem] tp:text-[2.2rem] font-normal mx-auto max-w-[25ch] text-center') { 'Place-based calendars' }
           end
-          div(class: 'bg-home-background rounded-[1.11rem] col-start-1 col-end-2 row-start-2 row-end-4 py-12 px-4') do
+          div(class: 'bg-home-background rounded-panel col-start-1 col-end-2 row-start-2 row-end-4 py-12 px-4') do
             ul(class: 'grid gap-y-8 gap-x-4 grid-cols-[repeat(auto-fit,minmax(clamp(13rem,calc(25%-1rem),15rem),1fr))] list-none m-0 p-0 dt:px-8') do
               neighbourhoods.each do |site|
                 NeighbourhoodHomeCard(site: site)

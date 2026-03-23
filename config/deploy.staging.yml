@@ -11,9 +11,6 @@ servers:
   job_worker:
     hosts:
       - <%= ENV["STAGING_HOST"] %>
-  cron:
-    hosts:
-      - <%= ENV["STAGING_HOST"] %>
 
 proxy:
   hosts:

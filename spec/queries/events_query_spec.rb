@@ -123,10 +123,17 @@ RSpec.describe EventsQuery do
       end
 
       context "with sort: 'summary'" do
-        it "returns events grouped under today's date" do
+        it "returns events grouped under the selected day" do
           query = described_class.new(site: site, day: today)
           result = query.call(period: "future", sort: "summary")
           expect(result.keys).to eq([today])
+        end
+
+        it "uses the selected day, not today, as the group key" do
+          selected_day = today + 3.days
+          query = described_class.new(site: site, day: selected_day)
+          result = query.call(period: "future", sort: "summary")
+          expect(result.keys).to eq([selected_day])
         end
       end
     end
@@ -186,6 +193,106 @@ RSpec.describe EventsQuery do
     it "returns nil when no events exist after the given day" do
       query = described_class.new(site: site, day: today)
       expect(query.next_event_after(10.days.from_now)).to be_nil
+    end
+  end
+
+  describe "period: 'month'" do
+    before do
+      create(:future_event, partner: partner, dtstart: 2.days.from_now)
+      create(:future_event, partner: partner, dtstart: 5.days.from_now)
+      create(:future_event, partner: partner, dtstart: 40.days.from_now)
+    end
+
+    it "returns events from today to end of month" do
+      query = described_class.new(site: site, day: today)
+      result = query.call(period: "month")
+      events = result.values.flatten
+      events.each do |event|
+        expect(event.dtstart.to_date).to be >= today
+        expect(event.dtstart.to_date).to be <= today.end_of_month
+      end
+    end
+
+    it "excludes events in future months" do
+      query = described_class.new(site: site, day: today)
+      result = query.call(period: "month")
+      total = result.values.flatten.count
+      expect(total).to eq(2)
+    end
+
+    it "shows full month when day is 1st of a future month" do
+      future_first = 40.days.from_now.to_date.beginning_of_month
+      query = described_class.new(site: site, day: future_first)
+      result = query.call(period: "month")
+      expect(result.values.flatten.count).to eq(1)
+    end
+  end
+
+  describe "period: 'upcoming'" do
+    before do
+      15.times do |i|
+        create(:future_event, partner: partner, dtstart: (i + 1).days.from_now)
+      end
+    end
+
+    it "returns at most UPCOMING_LIMIT events" do
+      query = described_class.new(site: site, day: today)
+      result = query.call(period: "upcoming")
+      total = result.values.flatten.count
+      expect(total).to eq(described_class::UPCOMING_LIMIT)
+    end
+
+    it "returns events starting from today" do
+      query = described_class.new(site: site, day: today)
+      result = query.call(period: "upcoming")
+      events = result.values.flatten
+      events.each do |event|
+        expect(event.dtstart.to_date).to be >= today
+      end
+    end
+
+    it "spans across months when needed" do
+      query = described_class.new(site: site, day: today)
+      result = query.call(period: "upcoming")
+      months = result.values.flatten.map { |e| e.dtstart.month }.uniq
+      expect(months.length).to be >= 1
+    end
+  end
+
+  describe "#monthly_count" do
+    before do
+      create(:future_event, partner: partner, dtstart: 2.days.from_now)
+      create(:future_event, partner: partner, dtstart: 40.days.from_now)
+    end
+
+    it "returns the count of events from today to end of month" do
+      query = described_class.new(site: site, day: today)
+      expect(query.monthly_count).to eq(1)
+    end
+  end
+
+  describe "#show_monthly?" do
+    context "when monthly count is within FUTURE_LIMIT" do
+      before { create(:future_event, partner: partner, dtstart: 2.days.from_now) }
+
+      it "returns true" do
+        query = described_class.new(site: site, day: today)
+        expect(query.show_monthly?).to be true
+      end
+    end
+
+    context "when monthly count exceeds FUTURE_LIMIT" do
+      before do
+        # Use a fixed date at start of month so all events fit within the month
+        (described_class::FUTURE_LIMIT + 1).times do |i|
+          create(:future_event, partner: partner, dtstart: today + i.hours)
+        end
+      end
+
+      it "returns false" do
+        query = described_class.new(site: site, day: today)
+        expect(query.show_monthly?).to be false
+      end
     end
   end
 

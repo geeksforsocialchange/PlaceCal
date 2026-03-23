@@ -1,4 +1,7 @@
-/* Steps: image sizing (works with shared .card classes in SCSS) */
+/* Steps: image sizing and card body overrides.
+   Overrides shared .card classes from SCSS. Will be removable when .card is
+   converted to a Card(variant:) Phlex component. Uses !important in places
+   to override base .card__body styles — accepted tech debt until card rewrite. */
 .steps .steps__image--numeral {
 	max-width: 250px;
 	margin-left: -5%;

@@ -1,4 +1,6 @@
-/* Meta: descendant link styles */
+/* Meta: descendant link styles.
+   Styles links inside .pc-meta (set on the wrapper). Can't use Tailwind utilities
+   because these are descendant selectors on elements we don't control (rendered HTML content). */
 .pc-meta a {
 	border-bottom: 0;
 	text-decoration: underline;

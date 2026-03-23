@@ -52,8 +52,11 @@ class PartnersController < ApplicationController
       @events = query.call(period: 'future', organiser_or_place: @partner, sort: 'time')
       @paginator = false
     else
-      # If a lot, show a paginator by week
-      @period = params[:period] || 'week'
+      # If a lot, paginate - default to "upcoming" which shows next N events
+      partner_events = Event.by_partner(@partner)
+      weekly_count = partner_events.find_next_7_days(@current_day).count
+      @date_period = weekly_count >= EventsQuery::WEEKLY_DENSITY_THRESHOLD ? 'week' : 'month'
+      @period = params[:period] || 'upcoming'
       @sort = params[:sort] || 'time'
       @repeating = params[:repeating] || 'on'
       query = EventsQuery.new(site: nil, day: @current_day)
@@ -63,6 +66,7 @@ class PartnersController < ApplicationController
         repeating: @repeating,
         sort: @sort
       )
+      @show_monthly = query.show_monthly?
       @paginator = true
     end
 
@@ -74,8 +78,9 @@ class PartnersController < ApplicationController
         render Views::Partners::Show.new(
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
-          period: @period, sort: @sort,
-          repeating: @repeating, no_event_message: @no_event_message, paginator: @paginator
+          period: @period, date_period: @date_period, sort: @sort,
+          repeating: @repeating, no_event_message: @no_event_message,
+          paginator: @paginator, show_monthly: @show_monthly || false
         )
       end
       format.ics do

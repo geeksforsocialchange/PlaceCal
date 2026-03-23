@@ -13,29 +13,15 @@
 @source "../views/**/*.rb";
 @source "../helpers/**/*.rb";
 
-/* Custom theme: colors reference CSS vars for partner theming */
+/* Static theme values (resolved at build time) */
 @theme {
-	/* Partner-themeable colors (CSS var with fallback) */
-	--color-base-primary: var(--base-primary, #afcf5a);
-	--color-base-primary-light: var(--base-primary-light, #c3db83);
-	--color-base-background: var(--base-background, #fffcf0);
-	--color-base-text: var(--base-text, #5b4e46);
-	--color-base-rules: var(--base-rules, #f1e9da);
-	--color-base-rules-dark: var(--base-rules-dark, #decbba);
-	--color-base-secondary: var(--base-secondary, #f19089);
-	--color-base-tertiary: var(--base-tertiary, #998675);
-	--color-base-map-stripe-second: var(--base-map-stripe-second, #c7b299);
-
-	/* Home page colors */
+	/* Home page colors (static) */
 	--color-home-background: #fffbef;
 	--color-home-background-2: #f19089;
 	--color-home-background-3: #f0e9da;
 	--color-home-blue: #74d4ec;
 	--color-home-blue-soft: #97dff1;
-	--color-home-pink: var(--base-secondary, #f19089);
 	--color-home-pink-soft: #f4a6a1;
-	--color-home-green: var(--base-primary, #afcf5a);
-	--color-home-green-soft: var(--base-primary-light, #c3db83);
 
 	/* PlaceCal brand colors */
 	--color-placecal-brown: #5b4e46;
@@ -46,7 +32,6 @@
 	--breakpoint-tp: 600px;
 	--breakpoint-tl: 900px;
 	--breakpoint-dt: 1200px;
-	--breakpoint-bd: 1800px;
 
 	/* Fonts */
 	--font-sans: "Rawline", "Raleway", sans-serif;
@@ -54,6 +39,39 @@
 
 	/* Border radius */
 	--radius-card: 5px;
+	--radius-panel: 1.11rem;
+	--radius-pill: 3rem;
+
+	/* Max widths */
+	--max-w-content: 860px;
+}
+
+/* Runtime theme values: CSS vars resolved at runtime for partner theming */
+@theme inline {
+	--color-base-primary: var(--base-primary, #afcf5a);
+	--color-base-primary-light: var(--base-primary-light, #c3db83);
+	--color-base-background: var(--base-background, #fffcf0);
+	--color-base-text: var(--base-text, #5b4e46);
+	--color-base-rules: var(--base-rules, #f1e9da);
+	--color-base-rules-dark: var(--base-rules-dark, #decbba);
+	--color-base-secondary: var(--base-secondary, #f19089);
+	--color-base-tertiary: var(--base-tertiary, #998675);
+	--color-base-map-stripe-second: var(--base-map-stripe-second, #c7b299);
+	--color-home-pink: var(--base-secondary, #f19089);
+	--color-home-green: var(--base-primary, #afcf5a);
+	--color-home-green-soft: var(--base-primary-light, #c3db83);
+}
+
+/* Base resets (migrated from SCSS) */
+@layer base {
+	img {
+		max-width: 100%;
+		max-height: 100%;
+	}
+	figure {
+		padding: 0;
+		margin: 0;
+	}
 }
 
 /* Public component CSS (attribute selectors, bg images, grid areas) */

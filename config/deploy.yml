@@ -14,13 +14,7 @@ servers:
     cmd: bin/rails jobs:work
     proxy: false
     options:
-      memory: 256m
-  cron:
-    cmd: bash -c "env > /etc/environment && bundle exec whenever --update-crontab && cron -f"
-    proxy: false
-    options:
-      memory: 128m
-      user: root
+      memory: 512m
 
 proxy:
   ssl:
@@ -85,5 +79,7 @@ asset_path: /rails/public/assets
 
 builder:
   arch: amd64
+  args:
+    RUBY_VERSION: <%= File.read('.ruby-version').strip %>
 
 # Database migrations run via bin/docker-entrypoint (db:prepare)

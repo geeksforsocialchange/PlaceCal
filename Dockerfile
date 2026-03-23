@@ -4,7 +4,7 @@
 # Multi-stage Dockerfile for PlaceCal
 # Used by Kamal for production deployments
 
-ARG RUBY_VERSION=4.0.1
+ARG RUBY_VERSION=4.0.2
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 WORKDIR /rails

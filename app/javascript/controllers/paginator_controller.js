@@ -18,15 +18,26 @@ export default class extends Controller {
 	updateButtons() {
 		if (this.buttonTargets.length === 0 || !this.hasForwardTarget) return;
 
-		const rightThreshold = this.forwardTarget.offsetLeft - 30;
+		// Show all buttons to measure layout
+		this.buttonTargets.forEach((btn) => (btn.style.display = ""));
 
-		this.buttonTargets.forEach((button) => {
-			button.style.display = "";
-			const rightEdge = button.offsetLeft + button.offsetWidth;
-			if (rightEdge >= rightThreshold) {
-				button.style.display = "none";
+		// Detect wrapping: if the forward arrow is on a different line than the
+		// back arrow, some items have wrapped and we need to hide a few buttons.
+		const backArrow = this.element.querySelector(".paginator__arrow--back");
+		const baseTop = backArrow
+			? backArrow.offsetTop
+			: this.buttonTargets[0].offsetTop;
+
+		if (this.forwardTarget.offsetTop <= baseTop) return; // all fits
+
+		// Hide non-active buttons from the left until the forward arrow
+		// is back on the first line. This keeps the active tab visible.
+		for (let i = 0; i < this.buttonTargets.length; i++) {
+			if (this.forwardTarget.offsetTop <= baseTop) break;
+			if (!this.buttonTargets[i].classList.contains("active")) {
+				this.buttonTargets[i].style.display = "none";
 			}
-		});
+		}
 	}
 
 	debounce(func, wait) {

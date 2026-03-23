@@ -1,4 +1,5 @@
-/* Footer: grid-template-areas layout */
+/* Footer: grid-template-areas layout.
+   Named grid areas can't be expressed as Tailwind utilities. */
 .pc-footer__inner {
 	display: grid;
 	grid-gap: 1rem;

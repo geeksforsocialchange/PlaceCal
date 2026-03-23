@@ -117,6 +117,12 @@ class Calendar < ApplicationRecord
     1.year.from_now
   end
 
+  def self.queue_all_for_import!(force: false, from: Date.current.beginning_of_day)
+    find_each do |calendar|
+      calendar.queue_for_import! force, from
+    end
+  end
+
   # internal model function
   def update_notice_count
     self.notice_count = (notices || []).count if notices_changed?

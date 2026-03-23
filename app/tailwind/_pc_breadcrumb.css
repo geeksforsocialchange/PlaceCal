@@ -1,4 +1,6 @@
-/* Breadcrumb: descendant link + btn styles */
+/* Breadcrumb: descendant link + btn styles.
+   Styles links and buttons inside .pc-breadcrumb. Uses descendant selectors on
+   shared .btn classes from SCSS — will be removable when .btn is converted to Phlex. */
 .pc-breadcrumb a {
 	border-bottom: 2px solid var(--base-rules-dark, #decbba);
 	text-decoration: none;
