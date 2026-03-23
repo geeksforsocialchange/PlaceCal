@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# FIXME: `link_to`s and `mail_to`s require `!` (important) on their colour classes to override `app/assets/stylesheets/base/typography.scss`. Remove the `!` when the scss is removed.
+
 class Components::Footer < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
@@ -48,12 +50,12 @@ class Components::Footer < Components::Base
       h5(class: 'allcaps small') { 'Site Navigation' }
       nav(role: 'navigation') do
         ul do
-          li { active_link_to('Home', root_path) }
-          li { active_link_to('Events', events_path) }
-          li { active_link_to('Partners', partners_path) }
-          li { active_link_to('Log in', new_user_session_path) }
-          li { active_link_to('Privacy', privacy_path) }
-          li { active_link_to('Terms', terms_of_use_path) }
+          li { link_to('Home', root_path, class: 'text-base-background!') }
+          li { link_to('Events', events_path, class: 'text-base-background!') }
+          li { link_to('Partners', partners_path, class: 'text-base-background!') }
+          li { link_to('Log in', new_user_session_path, class: 'text-base-background!') }
+          li { link_to('Privacy', privacy_path, class: 'text-base-background!') }
+          li { link_to('Terms', terms_of_use_path, class: 'text-base-background!') }
         end
       end
     end
@@ -75,7 +77,7 @@ class Components::Footer < Components::Base
     end
     strong { 'E:' }
     plain ' '
-    mail_to(@site.site_admin.email)
+    mail_to(@site.site_admin.email, class: 'text-base-background!')
   end
 
   def render_general_enquiries
@@ -85,7 +87,7 @@ class Components::Footer < Components::Base
       p do
         strong { 'E:' }
         plain ' '
-        mail_to('support@placecal.org')
+        mail_to('support@placecal.org', class: 'text-base-background!')
       end
     end
   end
@@ -97,7 +99,7 @@ class Components::Footer < Components::Base
       ul(class: 'p-0 mt-4 grid grid-cols-2 tp:grid-cols-3 tl:grid-cols-6 gap-4 list-none') do
         @site.supporters&.each do |supporter|
           li(class: 'grid items-center justify-items-center [&_img]:max-w-full') do
-            link_to(supporter.url) { image_tag(supporter.logo.url) }
+            link_to(supporter.url, class: 'text-base-background!') { image_tag(supporter.logo.url) }
           end
         end
       end
@@ -113,7 +115,7 @@ class Components::Footer < Components::Base
       ul(class: 'p-0 mt-4 grid grid-cols-2 tp:grid-cols-3 tl:grid-cols-6 gap-4 list-none') do
         global_supporters&.each do |supporter|
           li(class: 'grid items-center justify-items-center [&_img]:max-w-full') do
-            link_to(supporter.url) { image_tag(supporter.logo.url, alt: supporter.name) }
+            link_to(supporter.url, class: 'text-base-background!') { image_tag(supporter.logo.url, alt: supporter.name) }
           end
         end
       end
@@ -133,7 +135,7 @@ class Components::Footer < Components::Base
         build = ENV['GIT_REV'] ? ENV['GIT_REV'][0, 7] : 'main'
         plain 'Build: '
         tag.tt do
-          link_to(build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}")
+          link_to(build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}", class: 'text-base-tertiary!')
         end
       end
     end

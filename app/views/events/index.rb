@@ -36,7 +36,7 @@ class Views::Events::Index < Views::Base
     div(class: 'paginator', id: 'paginator') do
       div(class: 'paginator__context') do
         Breadcrumb(trail: [['Events', events_path]], site_name: site.name) do
-          div(class: 'breadcrumb__actions') do
+          div(class: 'breadcrumb__actions contents') do
             today = Time.zone.today
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#paginator"
             EventFilter(

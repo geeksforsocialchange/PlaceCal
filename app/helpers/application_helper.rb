@@ -72,6 +72,7 @@ module ApplicationHelper
     end
   end
 
+  # FIXME: this needs extending to support `class` param. the active class should probably be configurable too
   # ported from https://github.com/comfy/active_link_to/blob/master/lib/active_link_to/active_link_to.rb
   def active_link_to(title, url, data: nil)
     current_path = request.original_fullpath

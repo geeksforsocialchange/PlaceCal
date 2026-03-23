@@ -1,7 +1,7 @@
 // this was previously named _headers.scss and additionally contained default site overrides for navigation_component. those are now in the css for navigation_component
 
 body {
-	background-image: image-url("patterns/PlaceCal_Backing.svg");
+	background-image: url("patterns/PlaceCal_Backing.svg");
 	background-color: $base-text;
 	background-repeat: repeat;
 	background-size: 75rem auto;

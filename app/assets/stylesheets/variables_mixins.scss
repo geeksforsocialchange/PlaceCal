@@ -1,9 +1,6 @@
 @use "sass:list";
 @use "sass:math";
 
-// Sprockets → Propshaft compatibility: replaces Sprockets' image-url() with plain url()
-@import "image_url_compat";
-
 // Main site colour
 @import "variables/colours";
 
