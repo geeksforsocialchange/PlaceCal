@@ -59,7 +59,36 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
 
     before { sign_in root_user }
 
-    it "returns all districts in region subtree when parent_id is the region" do
+    it "returns countries at the top level" do
+      get children_admin_neighbourhoods_url(host: admin_host, params: { level: 5 }),
+          headers: { "Accept" => "application/json" }
+
+      expect(response).to be_successful
+      names = response.parsed_body.map { |n| n["name"] }
+      expect(names).to include("Normal Island")
+    end
+
+    it "returns regions for a country" do
+      get children_admin_neighbourhoods_url(host: admin_host, params: { parent_id: country.id, level: 4 }),
+          headers: { "Accept" => "application/json" }
+
+      expect(response).to be_successful
+      names = response.parsed_body.map { |n| n["name"] }
+      expect(names).to include("Northvale")
+    end
+
+    it "returns counties for a region" do
+      get children_admin_neighbourhoods_url(host: admin_host, params: { parent_id: region.id, level: 3 }),
+          headers: { "Accept" => "application/json" }
+
+      expect(response).to be_successful
+      names = response.parsed_body.map { |n| n["name"] }
+      expect(names).to include("Greater Millbrook")
+    end
+
+    # Skip county scenario: user selects "Show all (skip this level)"
+    # on the county dropdown, JS sends parent_id=region to load districts
+    it "returns all districts in region subtree when skipping county level" do
       get children_admin_neighbourhoods_url(host: admin_host, params: { parent_id: region.id, level: 2 }),
           headers: { "Accept" => "application/json" }
 
@@ -69,7 +98,8 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
       expect(names).to include("Stanfield")
     end
 
-    it "returns only county descendants when parent_id is the county" do
+    # Normal county selection: only shows that county's districts
+    it "returns only county descendants when a county is selected" do
       get children_admin_neighbourhoods_url(host: admin_host, params: { parent_id: county.id, level: 2 }),
           headers: { "Accept" => "application/json" }
 
@@ -77,6 +107,19 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
       names = response.parsed_body.map { |n| n["name"] }
       expect(names).to include("Millbrook")
       expect(names).not_to include("Stanfield")
+    end
+
+    # Auto-select scenario: when there's only one county, the JS auto-selects
+    # it but loads the next level from the parent (region) scope so all
+    # districts remain reachable
+    it "returns all districts including those not under any county" do
+      get children_admin_neighbourhoods_url(host: admin_host, params: { parent_id: region.id, level: 2 }),
+          headers: { "Accept" => "application/json" }
+
+      expect(response).to be_successful
+      ids = response.parsed_body.map { |n| n["id"] }
+      expect(ids).to include(district_under_county.id)
+      expect(ids).to include(district_under_region.id)
     end
   end
 
