@@ -148,12 +148,12 @@ export default class extends Controller {
 				target.parentElement.classList.add("opacity-60");
 				this.updateOutput(data[0].id);
 
-				// Check if this single item has children before loading next level
-				if (data[0].has_children) {
-					await this.loadLevel(level - 1, data[0].id);
-				} else {
-					this.clearLevelsBelow(level);
-				}
+				// Load next level from the parent scope, not the auto-selected item.
+				// This ensures all children are reachable even when they aren't
+				// descendants of the auto-selected item (e.g., Manchester is a direct
+				// child of North West, not Lancashire, but Lancashire is auto-selected
+				// as the only county).
+				await this.loadLevel(level - 1, parentId);
 			} else {
 				// Multiple options: show the dropdown
 				this.showSelect(target);

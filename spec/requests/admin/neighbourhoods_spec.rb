@@ -39,6 +39,47 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
     end
   end
 
+  describe "GET /admin/neighbourhoods/children" do
+    let!(:country) { create(:normal_island_country, level: 5) }
+    let!(:region) { create(:northvale_region, parent: country, level: 4) }
+    let!(:county) { create(:greater_millbrook_county, parent: region, level: 3) }
+    let!(:district_under_county) { create(:millbrook_district, parent: county, level: 2) }
+    # A district directly under the region (not under any county) —
+    # mirrors Manchester being a direct child of North West, not Lancashire
+    let!(:district_under_region) do
+      create(:neighbourhood,
+             name: "Stanfield",
+             unit: "district",
+             unit_code_key: "ZZ00DT",
+             unit_code_value: "ZZ3000099",
+             level: 2,
+             release_date: Neighbourhood::LATEST_RELEASE_DATE,
+             parent: region)
+    end
+
+    before { sign_in root_user }
+
+    it "returns all districts in region subtree when parent_id is the region" do
+      get children_admin_neighbourhoods_url(host: admin_host, params: { parent_id: region.id, level: 2 }),
+          headers: { "Accept" => "application/json" }
+
+      expect(response).to be_successful
+      names = response.parsed_body.map { |n| n["name"] }
+      expect(names).to include("Millbrook")
+      expect(names).to include("Stanfield")
+    end
+
+    it "returns only county descendants when parent_id is the county" do
+      get children_admin_neighbourhoods_url(host: admin_host, params: { parent_id: county.id, level: 2 }),
+          headers: { "Accept" => "application/json" }
+
+      expect(response).to be_successful
+      names = response.parsed_body.map { |n| n["name"] }
+      expect(names).to include("Millbrook")
+      expect(names).not_to include("Stanfield")
+    end
+  end
+
   describe "GET /admin/neighbourhoods/:id/edit" do
     context "as a root user" do
       before { sign_in root_user }
