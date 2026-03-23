@@ -6,6 +6,10 @@
 #
 # Each job re-enqueues itself after completion, so they only need
 # seeding once. This initializer ensures they exist after deploys.
+#
+# The watchdog job periodically verifies the other two still exist,
+# re-seeding any that dropped out (e.g. due to a transient DB outage
+# during re-enqueue, or DJ exhausting retries on a failed job).
 
 Rails.application.config.after_initialize do
   next unless Rails.env.production? || Rails.env.staging? # rubocop:disable Rails/UnknownEnv
@@ -17,7 +21,7 @@ Rails.application.config.after_initialize do
     next
   end
 
-  [RecurringCalendarScanJob, RecurringMaintenanceJob].each do |job_class|
+  [RecurringCalendarScanJob, RecurringMaintenanceJob, RecurringWatchdogJob].each do |job_class|
     unless Delayed::Job.exists?(['handler LIKE ?', "%#{job_class.name}%"])
       job_class.perform_later
       Rails.logger.info("Seeded #{job_class.name}")
