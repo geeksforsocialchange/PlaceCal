@@ -122,6 +122,18 @@ class Address < ApplicationRecord
     end
   end
 
+  # Delete addresses not referenced by any partner or event.
+  # Returns the number of deleted rows.
+  def self.delete_orphaned!
+    in_use_ids = Set.new(Partner.pluck(:address_id).compact) |
+                 Set.new(Event.pluck(:address_id).compact)
+
+    orphaned = where.not(id: in_use_ids)
+    count = orphaned.count
+    orphaned.in_batches(of: 1000).delete_all if count.positive?
+    count
+  end
+
   private
 
   def refresh_neighbourhood_partners_count

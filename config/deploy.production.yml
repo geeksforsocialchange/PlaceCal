@@ -11,9 +11,6 @@ servers:
   job_worker:
     hosts:
       - <%= ENV["PRODUCTION_HOST"] %>
-  cron:
-    hosts:
-      - <%= ENV["PRODUCTION_HOST"] %>
 
 # Cloudflare handles routing/SSL — list all hostnames served by this app
 # Custom domains (e.g. queerleeds.lgbt) need adding here and redeploying

@@ -140,15 +140,9 @@ kamal app exec -d production 'bin/rails db:migrate'
 kamal rollback -d production
 ```
 
-## Cron jobs
+## Recurring jobs
 
-Cron jobs are managed by the [whenever](https://github.com/javan/whenever) gem and run in a dedicated `cron` container role (defined in `config/deploy.yml`). The schedule is defined in `config/schedule.rb` and deploys automatically with the app — no manual server configuration needed.
-
-To preview the generated crontab:
-
-```sh
-bundle exec whenever
-```
+Recurring tasks (calendar import scanning, deduplication, counter refresh, address cleanup) run as self-scheduling delayed jobs inside the `job_worker` container. They are seeded on boot by `config/initializers/recurring_jobs.rb` and re-enqueue themselves after each run.
 
 ## Syncing data between environments
 

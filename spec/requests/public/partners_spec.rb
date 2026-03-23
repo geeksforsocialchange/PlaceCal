@@ -215,6 +215,90 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
+  describe "GET /partners/:id period defaulting" do
+    let(:partner) { create(:riverside_partner) }
+    let(:calendar) { create(:calendar, partner: partner) }
+
+    context "with many events" do
+      before do
+        31.times do |i|
+          create(:event,
+                 partner: partner,
+                 calendar: calendar,
+                 dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+                 dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "defaults to upcoming period" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("period=upcoming")
+      end
+
+      it "shows Upcoming tab" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        expect(response.body).to include("Upcoming")
+      end
+    end
+
+    context "with sparse events (month date tabs)" do
+      before do
+        31.times do |i|
+          create(:event,
+                 partner: partner,
+                 calendar: calendar,
+                 dtstart: ((i * 2) + 1).days.from_now.at_beginning_of_hour,
+                 dtend: ((i * 2) + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "uses month stepping for date tabs" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("period=month")
+      end
+    end
+
+    context "with dense events (week date tabs)" do
+      before do
+        31.times do |i|
+          create(:event,
+                 partner: partner,
+                 calendar: calendar,
+                 dtstart: ((i % 6) + 1).days.from_now.at_beginning_of_hour + i.hours,
+                 dtend: ((i % 6) + 1).days.from_now.at_beginning_of_hour + i.hours + 1.hour)
+        end
+      end
+
+      it "uses week stepping for date tabs" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("period=week")
+      end
+    end
+
+    context "with events only in future months" do
+      before do
+        31.times do |i|
+          create(:event,
+                 partner: partner,
+                 calendar: calendar,
+                 dtstart: (35 + i).days.from_now.at_beginning_of_hour,
+                 dtend: (35 + i).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "still shows events via Upcoming tab" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("Upcoming")
+        # Upcoming shows next 10 events regardless of month
+        expect(response.body).to match(/<article/)
+      end
+    end
+  end
+
   describe "default site redirect" do
     let!(:default_site) { create_default_site }
 

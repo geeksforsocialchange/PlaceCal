@@ -43,6 +43,13 @@ class Event < ApplicationRecord
     where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, day_end)
   }
 
+  # Find from given day to end of that month
+  scope :for_month, lambda { |day|
+    day_start = day.to_date
+    month_end = day_start.end_of_month
+    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, month_end)
+  }
+
   # Find by day onwards
   scope :future, lambda { |day|
     day_start = day.midnight # 2024-04-01 00:00:00 +0100
@@ -164,6 +171,24 @@ class Event < ApplicationRecord
   def og_title
     str = "#{summary}, #{date}, #{time}"
     str += " @ #{partner.name}" if partner
+  end
+
+  # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
+  # keeping the oldest record. Returns the number of deleted rows.
+  def self.deduplicate!
+    result = connection.execute(<<~SQL.squish)
+      WITH duplicates AS (
+        SELECT id, ROW_NUMBER() OVER (
+          PARTITION BY uid, dtstart, dtend, calendar_id
+          ORDER BY id
+        ) as rn
+        FROM events
+      )
+      DELETE FROM events WHERE id IN (
+        SELECT id FROM duplicates WHERE rn > 1
+      )
+    SQL
+    result.cmd_tuples
   end
 
   private
