@@ -161,7 +161,7 @@ export default class extends Controller {
 				this.populateSelect(target, data, this.getPlaceholder(level));
 				// Add a "skip" option so users can bypass this optional level
 				// (e.g., select a district without picking a county first).
-				if (level > 1 && level < 5) {
+				if (level >= 3 && level < 5) {
 					const skipOption = document.createElement("option");
 					skipOption.value = `skip:${parentId}`;
 					skipOption.textContent = "— Show all (skip this level) —";
