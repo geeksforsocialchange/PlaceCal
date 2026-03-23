@@ -1,4 +1,5 @@
-/* HomeStrapline: background pattern SVGs */
+/* HomeStrapline: background pattern SVGs.
+   Multi-value background-image/position/size can't be expressed as Tailwind utilities. */
 
 /* Mobile/tablet-portrait: top+bottom patterns on the quote */
 .pc-home-strapline__quote {

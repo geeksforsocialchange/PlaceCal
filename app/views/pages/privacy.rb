@@ -8,7 +8,7 @@ class Views::Pages::Privacy < Views::Base
       Hero('PlaceCal Privacy Policy')
 
       div(class: 'card card--plain') do
-        div(class: 'max-w-[860px] mx-auto') do
+        div(class: 'max-w-content mx-auto') do
           br
           render_intro
           render_contact_details

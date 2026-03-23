@@ -1,5 +1,7 @@
-// Compatibility shim for Sprockets' image-url() helper.
-// Propshaft's CssAssetUrls compiler rewrites url() paths to fingerprinted versions.
+// SCSS @function (compiled by dartsass-rails at build time, NOT CSS @function).
+// Replaces Sprockets' built-in image-url() helper with plain url().
+// Propshaft's CssAssetUrls compiler then rewrites url() paths to fingerprinted versions.
+// Required while SCSS files still call image-url() (home/, themes/, layout).
 @function image-url($path) {
 	@return url($path);
 }

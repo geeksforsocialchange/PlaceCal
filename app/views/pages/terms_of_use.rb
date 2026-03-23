@@ -8,7 +8,7 @@ class Views::Pages::TermsOfUse < Views::Base
       Hero('PlaceCal Terms of Use')
 
       div(class: 'card card--plain') do
-        div(class: 'max-w-[860px] mx-auto') do
+        div(class: 'max-w-content mx-auto') do
           br
           render_acceptance
           render_eligibility

@@ -7,7 +7,7 @@ class Components::NeighbourhoodHomeCard < Components::Base
     li(class: 'flex flex-col items-center gap-2 text-base-text px-8 pb-4') do
       img(
         'aria-hidden': 'true',
-        class: 'aspect-[1.25] rounded-[1.11rem] object-cover w-full',
+        class: 'aspect-[1.25] rounded-panel object-cover w-full',
         src: @site.hero_image&.url,
         alt: ''
       )
@@ -16,7 +16,7 @@ class Components::NeighbourhoodHomeCard < Components::Base
       link_to(
         "#{@site.place_name} calendar",
         "#{root_url(subdomain: @site.slug)}events",
-        class: 'bg-home-green rounded-[1.11rem] text-[0.8rem] font-bold m-0 py-1 text-center no-underline whitespace-nowrap w-full transition-colors duration-300 ease-in-out hover:bg-base-text hover:text-base-background'
+        class: 'bg-home-green rounded-panel text-[0.8rem] font-bold m-0 py-1 text-center no-underline whitespace-nowrap w-full transition-colors duration-300 ease-in-out hover:bg-base-text hover:text-base-background'
       )
     end
   end

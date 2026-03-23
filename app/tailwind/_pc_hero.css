@@ -1,4 +1,5 @@
-/* Hero: background pattern SVGs */
+/* Hero: background pattern SVGs.
+   Multi-value background-image/position/repeat can't be expressed as Tailwind utilities. */
 .pc-hero {
 	background-image: url("patterns/mobile-l.svg"), url("patterns/mobile-r.svg");
 	background-position:
