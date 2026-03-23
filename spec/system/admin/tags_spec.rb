@@ -81,6 +81,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
       expect(page).to have_css(".tabs.tabs-lift", wait: 10)
       find('input.tab[data-hash="settings"]').click
+      expect(page).to have_field("System Tag", visible: true, wait: 5)
       check "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
@@ -89,7 +90,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
       expect(page).to have_css(".tabs.tabs-lift", wait: 10)
       find('input.tab[data-hash="settings"]').click
-      expect(page).to have_checked_field("System Tag", visible: :all)
+      expect(page).to have_checked_field("System Tag", visible: true, wait: 5)
 
       # Toggle off
       uncheck "System Tag"
@@ -100,7 +101,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
       expect(page).to have_css(".tabs.tabs-lift", wait: 10)
       find('input.tab[data-hash="settings"]').click
-      expect(page).to have_unchecked_field("System Tag", visible: :all)
+      expect(page).to have_unchecked_field("System Tag", visible: true, wait: 5)
     end
   end
 

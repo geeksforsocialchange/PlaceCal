@@ -1,7 +1,7 @@
 GEM
   remote: https://gem.coop/
   specs:
-    action_text-trix (2.1.16)
+    action_text-trix (2.1.17)
       railties
     actioncable (8.1.2)
       actionpack (= 8.1.2)
@@ -83,11 +83,11 @@ GEM
     ancestry (5.1.0)
       activerecord (>= 5.2.6)
       logger
-    appsignal (4.8.3)
+    appsignal (4.8.4)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
-    async (2.38.0)
+    async (2.38.1)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
@@ -110,7 +110,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     base64 (0.3.0)
     bcp47_spec (0.2.1)
-    bcrypt (3.1.21)
+    bcrypt (3.1.22)
     bcrypt_pbkdf (1.1.2)
     benchmark (0.5.0)
     better_errors (2.10.1)
@@ -147,7 +147,6 @@ GEM
     childprocess (5.1.0)
       logger (~> 1.5)
     choice (0.2.0)
-    chronic (0.10.2)
     claude-code-sdk-ruby (0.1.6)
       async (~> 2)
       logger (~> 1)
@@ -200,7 +199,7 @@ GEM
     cucumber-html-formatter (22.3.0)
       cucumber-messages (> 23, < 33)
     cucumber-messages (32.2.0)
-    cucumber-rails (4.0.0)
+    cucumber-rails (4.0.1)
       capybara (>= 3.25, < 4)
       cucumber (>= 7, < 11)
       railties (>= 6.1, < 9)
@@ -209,7 +208,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
     database_cleaner-core (2.0.1)
-    database_consistency (3.0.1)
+    database_consistency (3.0.2)
       activerecord (>= 3.2)
     date (3.5.1)
     debug_inspector (1.2.0)
@@ -222,7 +221,7 @@ GEM
       delayed_job (>= 3.0, < 5)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    devise (5.0.2)
+    devise (5.0.3)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 7.0)
@@ -329,7 +328,7 @@ GEM
       activesupport (>= 6.1)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.5.20)
+    graphql (2.5.21)
       base64
       fiber-storage
       logger
@@ -349,7 +348,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    icalendar (2.12.1)
+    icalendar (2.12.2)
       base64
       ice_cube (~> 0.16)
       logger
@@ -373,13 +372,13 @@ GEM
     invisible_captcha (2.3.0)
       rails (>= 5.2)
     io-console (0.8.2)
-    io-event (1.14.3)
+    io-event (1.14.4)
     irb (1.17.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.1)
+    json (2.19.2)
     json-canonicalization (1.0.0)
     json-ld (3.3.2)
       htmlentities (~> 4.3)
@@ -392,7 +391,7 @@ GEM
     json-schema (6.2.0)
       addressable (~> 2.8)
       bigdecimal (>= 3.1, < 5)
-    kamal (2.10.1)
+    kamal (2.11.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
       bcrypt_pbkdf (~> 1.0)
@@ -417,7 +416,7 @@ GEM
     literal (1.9.0)
       zeitwerk
     logger (1.7.0)
-    loofah (2.25.0)
+    loofah (2.25.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.9.0)
@@ -428,14 +427,14 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.3)
-    mcp (0.8.0)
+    mcp (0.9.0)
       json-schema (>= 4.1)
     memoist3 (1.0.0)
     metrics (0.15.0)
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0303)
+    mime-types-data (3.2026.0317)
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
@@ -465,24 +464,24 @@ GEM
       net-ssh (>= 5.0.0, < 8.0.0)
     net-smtp (0.5.1)
       net-protocol
-    net-ssh (7.3.0)
+    net-ssh (7.3.2)
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokogiri (1.19.1-aarch64-linux-gnu)
+    nokogiri (1.19.2-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.1-aarch64-linux-musl)
+    nokogiri (1.19.2-aarch64-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.1-arm-linux-gnu)
+    nokogiri (1.19.2-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.1-arm-linux-musl)
+    nokogiri (1.19.2-arm-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.1-arm64-darwin)
+    nokogiri (1.19.2-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.1-x86_64-darwin)
+    nokogiri (1.19.2-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.1-x86_64-linux-gnu)
+    nokogiri (1.19.2-x86_64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.1-x86_64-linux-musl)
+    nokogiri (1.19.2-x86_64-linux-musl)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
@@ -573,8 +572,9 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
-    rbs (3.10.3)
+    rbs (4.0.0)
       logger
+      prism (>= 1.6.0)
       tsort
     rdf (3.3.4)
       bcp47_spec (~> 0.2)
@@ -616,14 +616,14 @@ GEM
     rspec-mocks (3.13.8)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-rails (8.0.3)
+    rspec-rails (8.0.4)
       actionpack (>= 7.2)
       activesupport (>= 7.2)
       railties (>= 7.2)
-      rspec-core (~> 3.13)
-      rspec-expectations (~> 3.13)
-      rspec-mocks (~> 3.13)
-      rspec-support (~> 3.13)
+      rspec-core (>= 3.13.0, < 5.0.0)
+      rspec-expectations (>= 3.13.0, < 5.0.0)
+      rspec-mocks (>= 3.13.0, < 5.0.0)
+      rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
     rubocop (1.85.1)
       json (~> 2.3)
@@ -637,7 +637,7 @@ GEM
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.49.0)
+    rubocop-ast (1.49.1)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
     rubocop-graphql (1.6.0)
@@ -661,7 +661,7 @@ GEM
       rubocop (~> 1.81)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-lsp (0.26.7)
+    ruby-lsp (0.26.8)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
@@ -731,14 +731,14 @@ GEM
       prism
       require-hooks (~> 0.2)
     stringio (3.2.0)
-    sys-uname (1.5.0)
+    sys-uname (1.5.1)
       ffi (~> 1.1)
       memoist3 (~> 1.0.0)
     thor (1.5.0)
     thread_safe (0.3.6)
     tilt (2.7.0)
     timecop (0.9.10)
-    timeout (0.6.0)
+    timeout (0.6.1)
     traces (0.18.2)
     tsort (0.2.0)
     turbo-rails (2.0.23)
@@ -763,7 +763,7 @@ GEM
       actionview (>= 8.0.0)
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
-    webmock (3.26.1)
+    webmock (3.26.2)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -772,8 +772,6 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    whenever (1.1.2)
-      chronic (>= 0.6.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.38)
@@ -869,11 +867,10 @@ DEPENDENCIES
   vcr
   web-console
   webmock
-  whenever
   yard
 
 RUBY VERSION
-   ruby 4.0.1p0
+   ruby 4.0.2p0
 
 BUNDLED WITH
    2.5.22

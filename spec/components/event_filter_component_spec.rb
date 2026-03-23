@@ -189,6 +189,36 @@ RSpec.describe Components::EventFilter, type: :component do
     end
   end
 
+  describe "monthly view option" do
+    context "when show_monthly is true (default)" do
+      it "renders Monthly view option" do
+        render_inline(described_class.new(**base_attrs))
+
+        expect(page).to have_field("period_month", type: "radio")
+        expect(page).to have_text("Monthly view")
+      end
+    end
+
+    context "when show_monthly is false" do
+      let(:attrs) { base_attrs.merge(show_monthly: false) }
+
+      it "does not render Monthly view option" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).not_to have_field("period_month", type: "radio")
+        expect(page).not_to have_text("Monthly view")
+      end
+
+      it "still renders other period options" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_field("period_day", type: "radio")
+        expect(page).to have_field("period_week", type: "radio")
+        expect(page).to have_field("period_future", type: "radio")
+      end
+    end
+  end
+
   describe "with different parameter values" do
     context "with week period" do
       let(:attrs) { base_attrs.merge(period: "week") }

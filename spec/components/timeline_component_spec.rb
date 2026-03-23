@@ -80,6 +80,104 @@ RSpec.describe Components::Timeline, type: :component do
       end
     end
 
+    context "with month period" do
+      let(:attrs) { base_attrs.merge(period: "month") }
+
+      it "renders timeline buttons" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_css("ol.paginator__buttons--month")
+      end
+
+      it "shows This month for current month" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_text("This month")
+      end
+
+      it "shows abbreviated month names for other months" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_text("Dec")
+        expect(page).to have_text("Jan")
+      end
+
+      it "marks current month as active" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_css("li.active", text: "This month")
+      end
+
+      it "generates URLs with month period" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_link(href: %r{/events/\d+/\d+/\d+\?period=month&sort=time&repeating=on#paginator})
+      end
+    end
+
+    context "with month period pointing to a future month" do
+      let(:future_month) { Date.new(2023, 3, 1) }
+      let(:attrs) { base_attrs.merge(period: "month", pointer: future_month) }
+
+      it "shows abbreviated month name for non-current months" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_css("li.active", text: "Mar")
+      end
+    end
+
+    context "with upcoming period and show_upcoming" do
+      let(:attrs) { base_attrs.merge(period: "upcoming", show_upcoming: true) }
+
+      it "renders timeline with Upcoming tab" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_css("ol.paginator__buttons")
+        expect(page).to have_text("Upcoming")
+      end
+
+      it "marks Upcoming as active" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_css("li.active", text: "Upcoming")
+      end
+
+      it "shows month tabs alongside Upcoming" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_text("This month")
+      end
+
+      it "generates upcoming URL with period=upcoming" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_link("Upcoming", href: /period=upcoming/)
+      end
+
+      it "generates month URLs with period=month" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_link("This month", href: /period=month/)
+      end
+    end
+
+    context "with month period and show_upcoming" do
+      let(:attrs) { base_attrs.merge(period: "month", show_upcoming: true) }
+
+      it "shows Upcoming tab as inactive" do
+        render_inline(described_class.new(**attrs))
+
+        upcoming_li = page.find("li", text: "Upcoming")
+        expect(upcoming_li[:class]).not_to include("active")
+      end
+
+      it "marks This month as active" do
+        render_inline(described_class.new(**attrs))
+
+        expect(page).to have_css("li.active", text: "This month")
+      end
+    end
+
     context "with future period" do
       let(:attrs) { base_attrs.merge(period: "future") }
 

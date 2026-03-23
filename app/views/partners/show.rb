@@ -13,6 +13,8 @@ class Views::Partners::Show < Views::Base
   prop :repeating, _Nilable(String), reader: :private
   prop :no_event_message, _Nilable(String), reader: :private
   prop :paginator, _Nilable(_Boolean), reader: :private
+  prop :date_period, _Nilable(String), reader: :private, default: nil
+  prop :show_monthly, _Boolean, reader: :private, default: true
 
   def view_template
     content_for(:title) { partner.name }
@@ -153,8 +155,9 @@ class Views::Partners::Show < Views::Base
 
   def render_events_section
     turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
+      render_events_paginator if paginator
+
       if events.any?
-        render_events_paginator if paginator
         EventList(
           events: events,
           period: period,
@@ -164,7 +167,7 @@ class Views::Partners::Show < Views::Base
           site_tagline: site.tagline
         )
       else
-        p { em { no_event_message } }
+        p { em { no_event_message || empty_period_message } }
       end
     end
   end
@@ -172,25 +175,39 @@ class Views::Partners::Show < Views::Base
   def render_events_paginator
     path = "partners/#{partner.slug}/events"
     today = Time.zone.today
+    # Use date_period for filter/URL context, period for active state
+    filter_period = date_period || period
     div(class: 'paginator', id: 'paginator') do
       Timeline(
         pointer: current_day,
         period: period,
+        date_period: date_period,
         sort: sort,
         repeating: repeating,
-        path: path
+        path: path,
+        show_upcoming: true
       )
       div(class: 'paginator__actions') do
-        today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#paginator"
+        today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{filter_period}&sort=#{sort}&repeating=#{repeating}#paginator"
         EventFilter(
           pointer: current_day,
-          period: period,
+          period: filter_period,
           sort: sort,
           repeating: repeating,
           today_url: today_url,
-          today: current_day == today
+          today: current_day == today,
+          show_monthly: show_monthly
         )
       end
+    end
+  end
+
+  def empty_period_message
+    case period
+    when 'day' then 'No events this day.'
+    when 'week' then 'No events this week.'
+    when 'month' then 'No events this month.'
+    else 'No upcoming events.'
     end
   end
 

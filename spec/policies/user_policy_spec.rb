@@ -95,5 +95,28 @@ RSpec.describe UserPolicy, type: :policy do
         expect(scope).not_to include(user1)
       end
     end
+
+    describe "for neighbourhood admin" do
+      let(:ward) { create(:riverside_ward) }
+      let(:current_user) { create(:neighbourhood_admin, neighbourhood: ward) }
+
+      it "always includes themselves" do
+        scope = Pundit.policy_scope(current_user, User)
+        expect(scope).to include(current_user)
+      end
+
+      it "includes users with partners in their neighbourhood" do
+        partner_in_hood = create(:partner, address: create(:address, neighbourhood: ward))
+        user_with_partner = create(:user, partners: [partner_in_hood])
+
+        scope = Pundit.policy_scope(current_user, User)
+        expect(scope).to include(user_with_partner)
+      end
+
+      it "excludes users with partners outside their neighbourhood" do
+        scope = Pundit.policy_scope(current_user, User)
+        expect(scope).not_to include(user1)
+      end
+    end
   end
 end

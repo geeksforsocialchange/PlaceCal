@@ -70,15 +70,7 @@ namespace :events do
     force_import = to_boolean(args[:force_import])
     from = to_date(args[:from])
 
-    scope = Calendar
-
-    # this could be useful?
-    # scope = scope.where_idle if force_import == false
-
-    scope.find_each do |calendar|
-      puts "queueing #{calendar.name}"
-      calendar.queue_for_import! force_import, from
-    end
+    Calendar.queue_all_for_import!(force: force_import, from: from)
   end
 
   desc 'empty the papertrail table for calendars'
@@ -88,19 +80,7 @@ namespace :events do
 
   desc 'Remove duplicate events (same uid, dtstart, dtend, calendar_id)'
   task deduplicate: :environment do
-    result = ActiveRecord::Base.connection.execute(<<~SQL.squish)
-      WITH duplicates AS (
-        SELECT id, ROW_NUMBER() OVER (
-          PARTITION BY uid, dtstart, dtend, calendar_id
-          ORDER BY id
-        ) as rn
-        FROM events
-      )
-      DELETE FROM events WHERE id IN (
-        SELECT id FROM duplicates WHERE rn > 1
-      )
-    SQL
-    deleted = result.cmd_tuples
+    deleted = Event.deduplicate!
 
     if deleted.positive?
       msg = "events:deduplicate removed #{deleted} duplicate event rows"
