@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 # Helpers for system specs
-module SystemHelpers # rubocop:disable Metrics/ModuleLength
+module SystemHelpers
+  # Build a URL for the admin subdomain with the current test server port
   def admin_url(path)
     port = Capybara.current_session.server.port
     "http://admin.lvh.me:#{port}#{path}"
   end
 
+  # Build a URL for the public site with the current test server port
   def public_url(path)
     port = Capybara.current_session.server.port
     "http://lvh.me:#{port}#{path}"
@@ -30,11 +32,13 @@ module SystemHelpers # rubocop:disable Metrics/ModuleLength
     end
   end
 
+  # Click a tab by its data-hash attribute and wait for the panel to be visible
   def click_tab(hash)
     find("input.tab[data-hash='#{hash}']").click
     expect(page).to have_css("[data-section='#{hash}']", visible: true)
   end
 
+  # Navigate to a partner form tab by its aria-label (includes emoji prefix)
   def go_to_partner_tab(tab_label)
     expect(page).to have_css("[data-controller*='form-tabs']")
     tab = find("input.tab[aria-label='#{tab_label}']")
@@ -58,6 +62,7 @@ module SystemHelpers # rubocop:disable Metrics/ModuleLength
     end
   end
 
+  # Wait for Stimulus admin-table to finish loading data
   def await_datatables(time = 10)
     find_element_with_retry do
       expect(page).not_to have_css("[data-admin-table-target='tbody']", text: "Loading data...", wait: time)
