@@ -24,10 +24,16 @@ Rails.application.configure do
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   # Compress CSS using a preprocessor.
-  config.assets.css_compressor = :sass
+  # CSS is already compressed by dartsass-rails (--style=compressed)
+  # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
+
+  # Use a fixed manifest filename so Kamal's asset_path volume doesn't
+  # accumulate old .sprockets-manifest-<random>.json files across deploys,
+  # causing Rails to read a stale manifest with wrong digests.
+  config.assets.manifest = Rails.public_path.join('assets/.sprockets-manifest.json').to_s
 
   # Explicitly use manifest for asset resolution (required for importmap digested paths)
   config.assets.resolve_with = [:manifest]
