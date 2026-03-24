@@ -68,10 +68,10 @@ bin/visual-regression clean
 ## Running the spec directly
 
 ```bash
-bundle exec rspec spec/system/visual_regression_spec.rb --order defined
+VISUAL_REGRESSION=1 bundle exec rspec spec/system/visual_regression_spec.rb --order defined
 ```
 
-Screenshots are saved to `tmp/screenshots/`. Use `--order defined` to ensure deterministic output.
+The `VISUAL_REGRESSION=1` env var is needed because the spec is excluded from the normal test suite by default. Screenshots are saved to `tmp/screenshots/`. Use `--order defined` to ensure deterministic output.
 
 ## Adding pages
 
