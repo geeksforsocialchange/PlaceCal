@@ -7,8 +7,6 @@
 // NOTE: admin_tailwind.css is built directly to public/assets/ by Tailwind CLI
 // to bypass Sprockets/Sass processing (which fails on modern CSS syntax)
 
-//= link print.css
-
 // JavaScript files for importmap
 // These are served directly via Sprockets as ES modules
 //= link application.js

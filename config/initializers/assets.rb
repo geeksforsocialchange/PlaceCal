@@ -20,7 +20,6 @@ Rails.application.config.assets.paths << Rails.root.join(Rails.public_path, 'upl
 # Rails.application.config.assets.precompile += %w( search.js )
 
 Rails.application.config.assets.precompile += %w[
-  print.css
   es-module-shims.js
 ]
 
